@@ -296,3 +296,42 @@ nameless project, sanitized-consumer filename) + unit checks. Suite 1553
 passed. **The export-subsystem audit is now COMPLETE** — engine.js, Kivy
 templates + codegen, Android/WSL pipeline, and exporter IO/registry have
 all been audited and their confirmed findings fixed.
+
+---
+
+## Exporter-IO re-run — 2026-07-19 (desktop .spec writers)
+
+Re-ran the `exporter-io-registry` finder (single agent, all leads personally
+verified against the code). The 2026-07-14 pass covered `base_exporter`/HTML5
+`encode_*`, `ide_exporters`, and `project_adapter`, but never looked at the
+**PyInstaller `.spec` writers** (`exe`/`linux`/`macos` `_create_spec_file`) —
+which build a Python file PyInstaller `exec()`s by interpolating asset paths and
+the icon path into string literals. Two hazards were unescaped there:
+
+- [x] **EIO-9 (med)** — `datas` asset paths interpolated into single-quoted
+  literals with no quote-escape. A French asset filename with an apostrophe
+  (e.g. `épée d'or.png`, plausible for this project's content — the exporter
+  copies assets under their original basename) closed the literal early →
+  `SyntaxError` when PyInstaller loads the spec → the WHOLE export fails.
+  Affected `exe_exporter.py:248`, `linux_exporter.py:218`, `macos_exporter.py:359`
+  (linux/macos didn't even forward-slash, so a Windows-run cross-export also hit
+  the `\U` escape). FIXED: forward-slash separators + `repr()` at all three.
+- [x] **EIO-10 (med)** — the user's `icon_path` interpolated raw into the spec.
+  A Windows path `C:\Users\…\icon.ico` injects an invalid `\U` escape →
+  `SyntaxError` → export fails. Affected `exe_exporter.py:269` **and**
+  `macos_exporter.py:405` (the latter not in the finder's report — surfaced by
+  the regression test compiling the full spec). FIXED: forward-slash + `repr()`.
+  The pre-existing `game_name` sanitisation (exe:221) proves the author knew this
+  hazard class; `datas`/`icon` were just missed.
+  Regression: `tests/test_pyinstaller_spec_escaping.py` (5) — builds each
+  exporter's spec from a game dir with an apostrophe-named asset + a backslash
+  icon path and asserts the result `compile()`s. Suite 1939→1944.
+- [ ] **EIO-11 (low, DEFERRED)** — Kivy `_export_sprite`/`_export_background`
+  copy each asset to `assets/images/<src.name>`, keyed only by basename, so two
+  assets whose source files share a basename (e.g. `sprites/tile.png` +
+  `backgrounds/tile.png`) silently overwrite each other on disk (the map-key
+  collision is already guarded at `kivy_exporter.py:64-73`, but not the
+  destination path). Real but low-severity (needs a same-basename-across-dirs
+  collision); the fix must disambiguate the destination filename AND re-key the
+  name→path / frame-metadata maps + the generated loader, so it's left as a
+  focused follow-up rather than bundled with the spec-escaping fix.

@@ -214,8 +214,13 @@ if __name__ == "__main__":
 
                 datas.append((rel_path, dest_dir))
 
-        # Format datas for spec file
-        datas_str = ',\n        '.join([f"('{d[0]}', '{d[1]}')" for d in datas])
+        # Format datas for spec file. The .spec is exec()'d by PyInstaller, so
+        # each path must be a valid Python literal: forward-slash separators and
+        # repr() so an asset filename with an apostrophe (French "épée d'or.png")
+        # or a Windows backslash can't break the literal.
+        datas_str = ',\n        '.join(
+            [f"({d[0].replace(chr(92), '/')!r}, {d[1].replace(chr(92), '/')!r})"
+             for d in datas])
 
         # Hidden imports for Kivy
         hidden_imports = [
