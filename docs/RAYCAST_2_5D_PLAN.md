@@ -794,6 +794,11 @@ harness if one is available.)
 
 Then fold the result into `raycast_1`'s README (drop the "desktop-only" caveat)
 and, optionally, add `raycast_1` to `tools/smoke_run_samples.py`.
+— **BOTH DONE 2026-07-19.** README parity update `4021c95`; `raycast_1` added to
+the smoke runner (`[OK]` at 120 frames — the injected RIGHT/LEFT/UP keys drive
+the turn/move controls, so the first-person renderer incl. the floor cast runs
+headlessly; 14/14 samples clean). **The whole raycast 2.5D plan is now closed
+across all three targets.**
 
 #### Risks / open questions
 
