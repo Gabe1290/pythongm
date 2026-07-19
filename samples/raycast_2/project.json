@@ -180,6 +180,54 @@
         "created": "2026-05-23T14:34:54.961536",
         "modified": "2026-06-16T15:12:34.811782",
         "thumbnail": ""
+      },
+      "spr_wall_ice": {
+        "name": "spr_wall_ice",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_ice.png",
+        "width": 64,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 64,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_sky_ice": {
+        "name": "spr_sky_ice",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_sky_ice.png",
+        "width": 256,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 256,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_floor_ice": {
+        "name": "spr_floor_ice",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_floor_ice.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
       }
     },
     "sounds": {},
@@ -235,14 +283,10 @@
                 "parameters": {}
               },
               {
-                "action": "show_message",
+                "action": "next_room",
                 "parameters": {
-                  "message": "Bravo ! Tu as trouvé la sortie avec toutes les gemmes."
+                  "transition": "0"
                 }
-              },
-              {
-                "action": "restart_game",
-                "parameters": {}
               },
               {
                 "action": "end_block",
@@ -297,22 +341,7 @@
             "target_object": "obj_wall_v"
           },
           "create": {
-            "actions": [
-              {
-                "action": "enable_raycast_view",
-                "parameters": {
-                  "fov": "66",
-                  "cell_size": "32",
-                  "render_distance": "20",
-                  "wall_color": "#993333",
-                  "floor_color": "#464632",
-                  "ceiling_color": "#87CEEB",
-                  "wall_texture": "spr_wall_texture",
-                  "sky_texture": "spr_sky",
-                  "floor_texture": "spr_floor"
-                }
-              }
-            ]
+            "actions": []
           },
           "keyboard": {
             "up": {
@@ -475,11 +504,158 @@
           }
         },
         "parent": ""
+      },
+      "obj_cam0": {
+        "name": "obj_cam0",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": false,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "enable_raycast_view",
+                "parameters": {
+                  "camera_object": "obj_person",
+                  "fov": "66",
+                  "cell_size": "32",
+                  "render_distance": "20",
+                  "wall_color": "#993333",
+                  "floor_color": "#464632",
+                  "ceiling_color": "#87CEEB",
+                  "wall_texture": "spr_wall_texture",
+                  "sky_texture": "spr_sky",
+                  "floor_texture": "spr_floor"
+                }
+              }
+            ]
+          }
+        },
+        "parent": ""
+      },
+      "obj_cam1": {
+        "name": "obj_cam1",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": false,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "enable_raycast_view",
+                "parameters": {
+                  "camera_object": "obj_person",
+                  "fov": "66",
+                  "cell_size": "32",
+                  "render_distance": "20",
+                  "wall_color": "#993333",
+                  "floor_color": "#464632",
+                  "ceiling_color": "#87CEEB",
+                  "wall_texture": "spr_wall_ice",
+                  "sky_texture": "spr_sky_ice",
+                  "floor_texture": "spr_floor_ice"
+                }
+              }
+            ]
+          }
+        },
+        "parent": ""
+      },
+      "obj_goal_final": {
+        "name": "obj_goal_final",
+        "asset_type": "object",
+        "sprite": "spr_goal",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "test_instance_count",
+                "parameters": {
+                  "object": "obj_gem",
+                  "number": "0",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "Bravo ! Tu as terminé les deux niveaux avec toutes les gemmes."
+                }
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "test_instance_count",
+                "parameters": {
+                  "object": "obj_gem",
+                  "number": "0",
+                  "operation": "greater"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "Ramasse toutes les gemmes avant de sortir !"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_person"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:54.997955",
+        "modified": "2026-05-24T10:32:34.419459",
+        "parent": ""
       }
     },
     "rooms": {
       "room0": {
         "name": "room0",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#e3e3e3",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 131,
+        "instances": [],
+        "created": "2026-07-16T00:00:00.000000",
+        "modified": "2026-07-16T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      },
+      "room1": {
+        "name": "room1",
         "asset_type": "room",
         "width": 480,
         "height": 480,
@@ -501,6 +677,7 @@
     "data": {}
   },
   "room_order": [
-    "room0"
+    "room0",
+    "room1"
   ]
 }

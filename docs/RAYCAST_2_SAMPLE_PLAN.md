@@ -145,8 +145,22 @@ limit loses nothing and the next session resumes from clean `main`.
   messages verified as real UTF-8 (bytes `c3 a9` = é, no mojibake).
   `tests/test_raycast_2_sample.py` +2 (the gate blocks/opens; accented-French
   assertion). Suite 1957→1959.
-- **Unit 5 (optional) — second themed room.** room1 with a different
-  wall/sky/floor texture set via its own `enable_raycast_view`.
+- **Unit 5 (optional) — second themed room. DONE 2026-07-19.** A second room1
+  (recursive-backtracker, seed 99) with a **cool "crystal cavern" theme** — blue-
+  tinted `*_ice` variants of the wall/sky/floor textures (PIL multiply-tint).
+  **Per-room theming architecture:** `enable_raycast_view` moved OFF `obj_person`
+  (whose `create` is now empty) onto tiny invisible camera-controller objects —
+  `obj_cam0` (warm) in room0, `obj_cam1` (ice) in room1 — each naming
+  `obj_person` as the camera via the action's `camera_object` param (verified all
+  three targets honor an explicit `camera_object`: runtime line 4433, HTML5
+  `params.camera_object || this.name`, Kivy `_find_raycast_camera` name lookup).
+  **Room transition (no shared-goal if/else):** `obj_goal` (room0) → `next_room`;
+  a separate `obj_goal_final` (room1) → win (`show_message` "Bravo ! Tu as
+  terminé les deux niveaux…" + `restart_game`) — both gem-gated. `room_order`
+  now `[room0, room1]`. Verified through the real loop: room0 warm + `obj_person`
+  camera → collect gems + goal → room1 ice theme. `tests/test_raycast_2_sample.py`
+  +2, and the two Unit-4 goal tests updated for the advance/win split. Suite
+  1959→1961.
 - **Unit 6 — ship.** README (mirroring `raycast_1`'s depth, French-accurate);
   `thumbnails/`; add to the Welcome-tab `SAMPLE_PROJECTS` + the
   `add_sample_name_translations.py` term tables ("Raycast — Level 2" →

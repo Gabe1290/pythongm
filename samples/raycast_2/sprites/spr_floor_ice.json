@@ -1,0 +1,16 @@
+{
+  "name": "spr_floor_ice",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_floor_ice.png",
+  "width": 32,
+  "height": 32,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 32,
+  "frame_height": 32,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true
+}

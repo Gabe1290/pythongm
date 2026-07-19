@@ -295,44 +295,92 @@ def _run_capturing_messages(runner, frames):
 
 
 def test_goal_is_gated_on_collecting_all_gems():
-    """Unit 4: reaching the goal shows a 'collect them all' prompt while gems
-    remain, and the win message only once every gem is gone."""
+    """Unit 4: reaching a goal while gems remain shows the 'collect them all'
+    prompt and does NOT let you through. (room0's goal advances, room1's wins —
+    the advance/win split is covered by the Unit 5 transition test.)"""
     runner = _runner()
     msgs = _run_capturing_messages(runner, 5)
     goal = next(i for i in runner.current_room.instances
                 if i.object_name == "obj_goal")
 
-    # gems still present -> prompt, not a win
+    # gems still present -> prompt, and the room does not change
     runner.action_executor.execute_event(
         goal, "collision_with_obj_person", goal.object_data["events"])
     assert msgs and "Ramasse toutes les gemmes" in msgs[-1]
-
-    # collect (destroy) every gem, then reach the goal -> win
-    for g in [i for i in runner.current_room.instances
-              if i.object_name == "obj_gem"]:
-        g._destroyed = True
-    runner.current_room.instances = [
-        i for i in runner.current_room.instances
-        if not getattr(i, "_destroyed", False)]
-    msgs.clear()
-    runner.action_executor.execute_event(
-        goal, "collision_with_obj_person", goal.object_data["events"])
-    assert msgs and "Bravo" in msgs[-1]
+    assert runner.current_room.name == "room0"
 
 
 def test_goal_messages_are_accented_french():
-    """French UI text must carry proper accents (project rule)."""
+    """French UI text must carry proper accents (project rule). The win message
+    lives on obj_goal_final (room1); both goals gate on test_instance_count."""
     import json
-    acts = json.loads((REPO_ROOT / "samples" / "raycast_2" / "objects"
-                       / "obj_goal.json").read_text(encoding="utf-8")
-                      )["events"]["collision_with_obj_person"]["actions"]
-    messages = [a["parameters"]["message"] for a in acts
-                if a["action"] == "show_message"]
-    joined = " ".join(messages)
-    assert "trouvé" in joined            # é, not a stripped 'trouve'
-    # the gate uses test_instance_count(obj_gem == 0) + a start_block/end_block
-    assert any(a["action"] == "test_instance_count"
-               and a["parameters"]["object"] == "obj_gem" for a in acts)
+    root = REPO_ROOT / "samples" / "raycast_2" / "objects"
+    final = json.loads((root / "obj_goal_final.json").read_text(encoding="utf-8"))
+    win = " ".join(a["parameters"]["message"]
+                   for a in final["events"]["collision_with_obj_person"]["actions"]
+                   if a["action"] == "show_message")
+    assert "terminé" in win               # é, not a stripped 'termine'
+
+    for name in ("obj_goal", "obj_goal_final"):
+        acts = json.loads((root / f"{name}.json").read_text(encoding="utf-8")
+                          )["events"]["collision_with_obj_person"]["actions"]
+        assert any(a["action"] == "test_instance_count"
+                   and a["parameters"]["object"] == "obj_gem" for a in acts)
+
+
+def test_two_rooms_with_per_room_camera_themes():
+    """Unit 5: two rooms, each with its own camera controller enabling the
+    raycast view (naming obj_person as the camera) with a distinct texture set."""
+    import json
+    root = REPO_ROOT / "samples" / "raycast_2"
+    proj = json.loads((root / "project.json").read_text(encoding="utf-8"))
+    assert proj["room_order"] == ["room0", "room1"]
+
+    # enable_raycast_view moved off obj_person onto the per-room controllers
+    person = json.loads((root / "objects" / "obj_person.json").read_text(encoding="utf-8"))
+    assert not any(a["action"] == "enable_raycast_view"
+                   for a in person["events"]["create"]["actions"])
+
+    def cam_cfg(name):
+        obj = json.loads((root / "objects" / f"{name}.json").read_text(encoding="utf-8"))
+        a = obj["events"]["create"]["actions"][0]
+        assert a["action"] == "enable_raycast_view"
+        assert a["parameters"]["camera_object"] == "obj_person"
+        return a["parameters"]
+    warm, ice = cam_cfg("obj_cam0"), cam_cfg("obj_cam1")
+    assert warm["wall_texture"] == "spr_wall_texture"
+    assert ice["wall_texture"] == "spr_wall_ice"       # distinct theme
+    assert warm["sky_texture"] != ice["sky_texture"]
+    for s in ("spr_wall_ice", "spr_sky_ice", "spr_floor_ice"):
+        assert s in proj["assets"]["sprites"]
+
+
+def test_room0_goal_advances_and_room1_goal_wins():
+    """room0's goal advances to room1 (both gem-gated); room1's obj_goal_final
+    is the win. Drive the real loop through the transition."""
+    runner = _runner()
+    _run(runner, {}, 4)
+    assert runner.current_room.name == "room0"
+    cfg0 = runner.current_room.raycast_camera
+    assert cfg0["wall_texture"] == "spr_wall_texture"
+    assert runner.current_room._find_first_instance(cfg0["camera_object"]).object_name == "obj_person"
+
+    # clear gems, hit room0 goal -> next_room
+    room = runner.current_room
+    for g in [i for i in room.instances if i.object_name == "obj_gem"]:
+        g._destroyed = True
+    room.instances = [i for i in room.instances if not getattr(i, "_destroyed", False)]
+    goal = next(i for i in room.instances if i.object_name == "obj_goal")
+    runner.action_executor.execute_event(goal, "collision_with_obj_person",
+                                         goal.object_data["events"])
+    runner.running = True
+    _run(runner, {}, 4)
+    assert runner.current_room.name == "room1"
+    assert runner.current_room.raycast_camera["wall_texture"] == "spr_wall_ice"
+
+    # room1 has obj_goal_final (win), not obj_goal
+    names = {i.object_name for i in runner.current_room.instances}
+    assert "obj_goal_final" in names
 
 
 def test_raycast_2_room0_is_a_thin_wall_maze():
