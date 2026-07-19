@@ -169,6 +169,30 @@ def test_gem_collision_awards_score_and_destroys():
     assert len(gems_after) == 7, f"one gem should be gone, {len(gems_after)} remain"
 
 
+def test_score_hud_enabled_from_start():
+    """Unit 2 polish: set_score 0 in obj_person's create enables the window
+    caption score HUD from frame 1 (in-view HUD is a tracked engine follow-up)."""
+    import json
+    create = json.loads((REPO_ROOT / "samples" / "raycast_2" / "objects"
+                         / "obj_person.json").read_text(encoding="utf-8")
+                        )["events"]["create"]["actions"]
+    assert create[0]["action"] == "set_score"      # runs before enable_raycast_view
+
+    runner = _runner()
+    _run(runner, {}, 5)
+    assert runner.show_score_in_caption is True
+    assert runner.score == 0
+
+
+def test_gem_sprite_sized_for_billboard():
+    """The placeholder gem was resized to 32px so it reads in the raycast view."""
+    import json
+    s = json.loads((REPO_ROOT / "samples" / "raycast_2" / "sprites"
+                    / "spr_gem.json").read_text(encoding="utf-8"))
+    assert s["width"] == 32 and s["height"] == 32
+    assert s["origin_x"] == 16 and s["origin_y"] == 16
+
+
 def test_raycast_2_room0_is_a_thin_wall_maze():
     """The generated room uses raycast_1's thin edge-wall objects, not
     full-cell blocks — a sanity check on the geometry conversion."""

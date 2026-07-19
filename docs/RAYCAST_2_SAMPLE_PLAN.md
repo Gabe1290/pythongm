@@ -105,21 +105,16 @@ limit loses nothing and the next session resumes from clean `main`.
   `project.json`. `spr_gem` is a **reused 88×88 match3 gem** (`spr_gem_blue.png`,
   centred origin). Verified: `tests/test_raycast_2_sample.py` +2 (data wiring +
   a behavioural collision→`score==10`→gem-destroyed run through the real loop).
-  **⚠️ RESUME STATE for next session (do these FIRST, with full budget):**
-  1. **Run the FULL suite** — the lean pass gated on only `test_raycast_2_sample.py`
-     to save budget; changes are additive (new sample data + a self-contained
-     test file) so risk is low, but the full gate is owed. Baseline was 1950
-     passed before Unit 2; confirm it's 1952 (or the current count + 2) with 0
-     failed.
-  2. **Score HUD polish:** score currently shows only in the **window caption**
-     (auto-enabled on first `set_score`) and only *after* the first gem. Add a
-     `set_score 0` to `obj_person`'s create event for a from-start HUD, and
-     consider an in-view `draw_score` (confirm the draw queue renders over the
-     raycast view — it may not; if not, that's a small engine note, not a
-     sample bug).
-  3. **Gem art:** the 88×88 placeholder renders as a large billboard — resize
-     `spr_gem` (or reskin) to ~24–32 px for proportion.
-  Then proceed to Unit 3.
+  **Full-Unit-2 completion 2026-07-19 (next session, full budget):**
+  1. ✅ Full suite gated: **1952 passed, 0 failed** (was 1950 pre-Unit-2).
+  2. ✅ Score-HUD: added `set_score 0` to `obj_person`'s create event → the
+     window caption shows the score from frame 1 (`show_score_in_caption`
+     auto-enabled). **In-view `draw_score` is NOT possible without engine work**
+     — `_render_room` early-returns after `_render_raycast_view`, skipping the
+     HUD draw-queue pass (confirmed in code). Logged as a tracked 3-target
+     engine follow-up in `RAYCAST_2_5D_PLAN.md` ("in-view HUD compositing"), per
+     the plan's "no engine changes in the sample" rule.
+  3. ✅ Gem art resized 88×88 → 32×32 (centred origin) for billboard proportion.
 - **Unit 3 — patrolling enemy.** `obj_monster` (non-solid, sprited, moving);
   wall-bounce via `collision_with_obj_wall_*`; `obj_monster`↔`obj_person`
   collision deducts a life and restarts the room; `set_lives` HUD on. Verify the

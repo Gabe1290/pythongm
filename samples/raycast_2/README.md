@@ -13,11 +13,9 @@ and [`docs/RAYCAST_2_SAMPLE_PLAN.md`](../../docs/RAYCAST_2_SAMPLE_PLAN.md) for
 this sample's design and unit plan.
 
 > **Work in progress.** This is being built one commit-sized unit at a time.
-> **Landed:** Unit 1 — maze geometry + first-person baseline; Unit 2 (lean) —
+> **Landed:** Unit 1 — maze geometry + first-person baseline; Unit 2 —
 > collectible gems that add to the score. **Coming:** a patrolling billboard
-> monster (Unit 3), a gem-gated exit (Unit 4), and Unit-2 polish (an in-view
-> `draw_score` HUD, and resizing/reskinning the placeholder gem art — the gem
-> sprite is currently a large 88×88 reused match3 gem).
+> monster (Unit 3) and a gem-gated exit (Unit 4).
 
 ## How to play
 
@@ -27,7 +25,10 @@ this sample's design and unit plan.
 - **Left / Right** — turn in place (rotates `facing_angle`, independent of
   movement — you can turn while standing still).
 - **Collect the gems** scattered through the maze — each one adds 10 to the
-  score (shown in the window caption once the first is picked up).
+  score. The score shows in the **window caption** (title bar). *In-view HUD
+  compositing over the raycast view is a tracked engine follow-up — see
+  `docs/RAYCAST_2_5D_PLAN.md` — so on the HTML5/Kivy exports the score isn't yet
+  visible on-screen.*
 - **Objective:** find the goal at the far corner of the maze.
 
 ## Level geometry
