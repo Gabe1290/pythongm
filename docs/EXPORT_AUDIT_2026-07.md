@@ -74,12 +74,21 @@ related name-as-filename crash it surfaced). Full suite 1523 passed;
   **Fix:** route both through `getBoundingBox`/`boxWidth`/`boxHeight`
   (already origin- and frame-aware) instead of raw positions.
 
-- [ ] **M2 — (folded into H1)** `check_empty` / `check_collision` no-ops.
-  Same root cause as H1; tracked there.
+- [x] **M2 — (folded into H1)** `check_empty` / `check_collision` no-ops.
+  Same root cause as H1; **verified closed 2026-07-19** — both are in
+  `isConditionalAction` and implemented in `evaluateCondition`
+  (engine.js @1258-1259), not `executeAction` stubs.
 
-- [ ] **M3 — (folded into H1)** `test_lives`/`test_health`/`test_chance`/
-  `test_question` unrecognized. Same root cause as H1; verify which (if
-  any) the runtime defines and samples use, then cover in the H1 fix.
+- [x] **M3 — (folded into H1)** `test_lives`/`test_health`/`test_chance`/
+  `test_question` unrecognized. **Verified closed 2026-07-19** — all four are
+  recognized (`isConditionalAction`) and implemented in `evaluateCondition`
+  (test_lives @1276, test_health @1291, test_chance @1306, test_question @1313),
+  and cross-checked against the runtime handlers: test_lives/test_health carry
+  the full 6-operator set matching `execute_test_*_action`; test_chance is
+  1-in-N (default 6); test_question returns a yes/no boolean. Parity is exact
+  except two degenerate/cosmetic edges not worth a fix — test_chance's
+  `sides < 1` fallback (runtime clamps to 1, HTML5 to 6; nonsensical input) and
+  test_question's default prompt text.
 
 ## Low
 
