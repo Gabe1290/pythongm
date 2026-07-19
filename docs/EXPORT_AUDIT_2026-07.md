@@ -326,12 +326,19 @@ the icon path into string literals. Two hazards were unescaped there:
   Regression: `tests/test_pyinstaller_spec_escaping.py` (5) — builds each
   exporter's spec from a game dir with an apostrophe-named asset + a backslash
   icon path and asserts the result `compile()`s. Suite 1939→1944.
-- [ ] **EIO-11 (low, DEFERRED)** — Kivy `_export_sprite`/`_export_background`
-  copy each asset to `assets/images/<src.name>`, keyed only by basename, so two
-  assets whose source files share a basename (e.g. `sprites/tile.png` +
-  `backgrounds/tile.png`) silently overwrite each other on disk (the map-key
-  collision is already guarded at `kivy_exporter.py:64-73`, but not the
-  destination path). Real but low-severity (needs a same-basename-across-dirs
-  collision); the fix must disambiguate the destination filename AND re-key the
-  name→path / frame-metadata maps + the generated loader, so it's left as a
-  focused follow-up rather than bundled with the spec-escaping fix.
+- [x] **EIO-11 (low)** — Kivy `_export_sprite`/`_export_background` copied each
+  asset to `assets/images/<src.name>`, keyed only by basename, so two assets
+  whose source files shared a basename (e.g. `player/idle.png` + `enemy/idle.png`)
+  silently overwrote each other on disk and clobbered each other's path /
+  frame-metadata map entries. **FIXED 2026-07-19** — a single
+  `_exported_asset_filename(asset_name, file_path)` helper now keys the exported
+  filename on the project-unique ASSET NAME plus the source extension, applied
+  at every site that must stay consistent: the sprite/sound/background path maps
+  + the sprite_meta_map key, the three copy sites, `_generate_object`'s
+  initial-sprite path, and the room-render background filename. (The L22 test was
+  updated: a non-PNG background now exports as `<name><real-ext>` — the L22 intent
+  of keeping the real extension is preserved.) The rarer sprite-name ==
+  background-name edge, both in `assets/images/`, is left as-is (pre-existing;
+  documented in the helper). `tests/test_kivy_asset_basename_collision.py` (3) —
+  two same-basename sprites + a background export to distinct files with the
+  right bytes. Suite 1944→1947.

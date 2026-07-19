@@ -236,8 +236,11 @@ def test_l22_background_uses_real_filename(tmp_path):
     exp._generate_scene("room_main", room_data)
     src = (exp.output_path / "game" / "scenes" / "room_main.py").read_text()
 
-    assert "assets/images/sky_photo.jpg" in src, src
-    # The old hardcoded '<name>.png' form must be gone for this asset.
+    # EIO-11: the exported name is now keyed on the (unique) ASSET NAME plus the
+    # source EXTENSION — so a non-PNG background keeps its real extension (the
+    # L22 intent) while two assets sharing a source basename can't collide.
+    assert "assets/images/bg_sky.jpg" in src, src
+    # The old hardcoded '<name>.png' form must still be gone (real ext kept).
     assert "assets/images/bg_sky.png" not in src, src
     ast.parse(src)
 
