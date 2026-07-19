@@ -18,6 +18,13 @@
     "create": {
       "actions": [
         {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": false
+          }
+        },
+        {
           "action": "enable_raycast_view",
           "parameters": {
             "fov": "66",

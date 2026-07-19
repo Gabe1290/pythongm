@@ -800,6 +800,27 @@ the turn/move controls, so the first-person renderer incl. the floor cast runs
 headlessly; 14/14 samples clean). **The whole raycast 2.5D plan is now closed
 across all three targets.**
 
+### Open engine follow-up — in-view HUD compositing (surfaced by `raycast_2`, 2026-07-19)
+
+The one *by-design v1 gap* that's still open and now actually wanted: **HUD
+draw-queue actions (`draw_score` / `draw_text` / `draw_lives` / draw primitives)
+do not render while raycast mode is active.** `_render_room` early-returns after
+`_render_raycast_view` (game_runner.py ~1670), so the per-instance draw-event
+pass that normally composites the HUD is skipped. `raycast_2`'s gems/score
+(and any future lives/health) therefore have **no in-view HUD** — score/lives
+show only in the desktop **window caption**, which isn't visible on the HTML5
+(browser tab) or Kivy (fullscreen) export targets. This makes it a real
+limitation for any scored/lives-based raycast game, not just cosmetic.
+
+**Scope of the fix (a 3-target engine feature, NOT part of the raycast_2 sample
+units):** after drawing the first-person view, run the HUD draw-queue on top —
+- Desktop: don't early-return; process the draw-event / `_process_draw_queue`
+  pass over the raycast frame (screen-space, no camera offset).
+- HTML5 (`engine.js`) and Kivy (`kivy_exporter.py`): the equivalent — composite
+  the draw-queue/HUD after `renderRaycastView` / `_render_raycast`.
+Then a parity test like the existing `test_raycast_export_parity.py`. Until this
+lands, raycast samples keep the window-caption HUD (desktop) and document it.
+
 #### Risks / open questions
 
 - **Floor casting perf on each target** is the main unknown — JS `ImageData`
