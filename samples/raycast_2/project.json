@@ -223,71 +223,55 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "if_next_room_exists",
-                "parameters": {}
-              },
-              {
-                "action": "next_room",
+                "action": "test_instance_count",
                 "parameters": {
-                  "transition": "0"
+                  "object": "obj_gem",
+                  "number": "0",
+                  "operation": "equal"
                 }
               },
               {
-                "action": "set_health",
+                "action": "start_block",
                 "parameters": {}
+              },
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "Bravo ! Tu as trouvé la sortie avec toutes les gemmes."
+                }
               },
               {
                 "action": "restart_game",
                 "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "test_instance_count",
+                "parameters": {
+                  "object": "obj_gem",
+                  "number": "0",
+                  "operation": "greater"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "Ramasse toutes les gemmes avant de sortir !"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
               }
             ],
             "target_object": "obj_person"
-          },
-          "keyboard_press": {
-            "p": {
-              "actions": [
-                {
-                  "action": "if_previous_room_exists",
-                  "parameters": {}
-                },
-                {
-                  "action": "next_room",
-                  "parameters": {
-                    "transition": "0"
-                  }
-                },
-                {
-                  "action": "set_health",
-                  "parameters": {}
-                },
-                {
-                  "action": "restart_game",
-                  "parameters": {}
-                }
-              ]
-            },
-            "n": {
-              "actions": [
-                {
-                  "action": "if_next_room_exists",
-                  "parameters": {}
-                },
-                {
-                  "action": "next_room",
-                  "parameters": {
-                    "transition": "0"
-                  }
-                },
-                {
-                  "action": "set_health",
-                  "parameters": {}
-                },
-                {
-                  "action": "restart_game",
-                  "parameters": {}
-                }
-              ]
-            }
           }
         },
         "imported": true,

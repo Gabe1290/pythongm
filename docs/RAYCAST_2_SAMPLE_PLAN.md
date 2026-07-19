@@ -131,9 +131,20 @@ limit loses nothing and the next session resumes from clean `main`.
   whose `raycast_camera` is None). `tests/test_raycast_2_sample.py` +5 (monster
   wiring/patrol/lives-init/collision-costs-a-life, + the corrected
   score/lives-in-`game_start` test). Suite 1952→1957.
-- **Unit 4 — gated exit.** Goal's collision checks `test_instance_count`
-  (`obj_gem` == 0) before advancing; otherwise a `show_message`/draw prompt
-  ("Ramasse toutes les gemmes !"). Verify the gate blocks until gems are gone.
+- **Unit 4 — gated exit. DONE 2026-07-19.** `obj_goal`'s
+  `collision_with_obj_person` rewritten (dropping raycast_1's inherited
+  next-room/set_health cruft + the single-room-irrelevant `keyboard_press`
+  debug keys) as maze_3's `test_instance_count` + `start_block`/`end_block`
+  gate: `test_instance_count(obj_gem == 0)` → win block (`show_message` "Bravo !
+  Tu as trouvé la sortie avec toutes les gemmes." + `restart_game`);
+  `test_instance_count(obj_gem > 0)` → prompt block (`show_message` "Ramasse
+  toutes les gemmes avant de sortir !"). Param key is `number` (not maze_3's
+  `count`, which the desktop runtime actually ignores — works there only by the
+  0-default coincidence); `number` is read by all three targets (HTML5 reads
+  `number`, Kivy reads `number`→`count`, desktop reads `number`). French
+  messages verified as real UTF-8 (bytes `c3 a9` = é, no mojibake).
+  `tests/test_raycast_2_sample.py` +2 (the gate blocks/opens; accented-French
+  assertion). Suite 1957→1959.
 - **Unit 5 (optional) — second themed room.** room1 with a different
   wall/sky/floor texture set via its own `enable_raycast_view`.
 - **Unit 6 — ship.** README (mirroring `raycast_1`'s depth, French-accurate);

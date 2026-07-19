@@ -15,7 +15,9 @@ this sample's design and unit plan.
 > **Work in progress.** This is being built one commit-sized unit at a time.
 > **Landed:** Unit 1 — maze geometry + first-person baseline; Unit 2 —
 > collectible gems + score; Unit 3 — a patrolling monster that costs a life on
-> contact. **Coming:** a gem-gated exit (Unit 4).
+> contact; Unit 4 — a gem-gated exit. **Coming:** an optional second themed room
+> (Unit 5) and the ship pass (Unit 6 — Welcome-tab listing, thumbnails,
+> per-target playtest).
 
 ## How to play
 
@@ -33,7 +35,9 @@ this sample's design and unit plan.
   draw as camera-facing billboards. Touching one costs a life and restarts the
   room; you start with 3 lives (shown in the caption). Run out and the game
   restarts.
-- **Objective:** find the goal at the far corner of the maze.
+- **Objective:** collect **all** the gems, then reach the goal at the far
+  corner. Reaching the goal early just prompts you to *"Ramasse toutes les
+  gemmes !"* — the exit only opens once every gem is gone.
 
 ## Level geometry
 
