@@ -1,0 +1,34 @@
+{
+  "name": "obj_gem",
+  "asset_type": "object",
+  "sprite": "spr_gem",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self"
+          }
+        }
+      ],
+      "target_object": "obj_person"
+    },
+    "destroy": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "10",
+            "relative": true
+          }
+        }
+      ]
+    }
+  },
+  "parent": ""
+}

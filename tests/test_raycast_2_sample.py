@@ -102,6 +102,73 @@ def test_raycast_2_player_is_blocked_by_walls():
     assert -8 <= player.y <= 480, f"player y escaped the room: {player.y}"
 
 
+def test_gems_placed_and_registered():
+    """Unit 2: obj_gem billboards are scattered and wired to score + destroy."""
+    import json
+    root = REPO_ROOT / "samples" / "raycast_2"
+    room = json.loads((root / "rooms" / "room0.json").read_text(encoding="utf-8"))
+    gems = [i for i in room["instances"] if i.get("object_name") == "obj_gem"]
+    assert len(gems) >= 4, "expected several collectible gems"
+
+    obj = json.loads((root / "objects" / "obj_gem.json").read_text(encoding="utf-8"))
+    assert obj["solid"] is False and obj["sprite"] == "spr_gem"   # billboard, not a wall
+    ev = obj["events"]
+    # collision destroys self; the destroy event awards score (maze_2 pattern)
+    assert ev["collision_with_obj_person"]["actions"][0]["action"] == "destroy_instance"
+    assert ev["destroy"]["actions"][0]["action"] == "set_score"
+    assert ev["destroy"]["actions"][0]["parameters"].get("relative") is True
+
+    proj = json.loads((root / "project.json").read_text(encoding="utf-8"))
+    assert "obj_gem" in proj["assets"]["objects"]
+    assert "spr_gem" in proj["assets"]["sprites"]
+
+
+def test_gem_collision_awards_score_and_destroys():
+    """Colliding with a gem (via the real event dispatch) destroys it and adds
+    10 to the score through its destroy event — run through the loop so the
+    destroy/cleanup phase actually fires."""
+    runner = _runner()
+    hit = {"done": False}
+
+    def _fire(runner):
+        gems = [i for i in runner.current_room.instances
+                if i.object_name == "obj_gem"]
+        if gems and not hit["done"]:
+            hit["done"] = True
+            g = gems[0]
+            runner.action_executor.execute_event(
+                g, "collision_with_obj_person", g.object_data["events"])
+
+    state = {"frames": 0}
+
+    class _FakeClock:
+        def tick(self, fps=0):
+            f = state["frames"] = state["frames"] + 1
+            if f == 5:
+                _fire(runner)                 # collide with a gem
+            if f >= 20:                        # let cleanup fire the destroy event
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    n_before = None
+    real = pygame.time.Clock
+    pygame.time.Clock = _FakeClock
+    try:
+        # snapshot gem count after startup by hooking the first tick
+        runner.run()
+    finally:
+        pygame.time.Clock = real
+
+    gems_after = [i for i in runner.current_room.instances
+                  if i.object_name == "obj_gem" and not getattr(i, "_destroyed", False)]
+    assert hit["done"], "never found a gem to collide with"
+    assert runner.score == 10, f"score should be 10 after one gem, got {runner.score}"
+    assert len(gems_after) == 7, f"one gem should be gone, {len(gems_after)} remain"
+
+
 def test_raycast_2_room0_is_a_thin_wall_maze():
     """The generated room uses raycast_1's thin edge-wall objects, not
     full-cell blocks — a sanity check on the geometry conversion."""

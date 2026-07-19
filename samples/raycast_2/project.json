@@ -142,6 +142,25 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true
+      },
+      "spr_gem": {
+        "name": "spr_gem",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_gem.png",
+        "width": 88,
+        "height": 88,
+        "origin_x": 44,
+        "origin_y": 44,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 88,
+        "frame_height": 88,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-16T15:12:34.811782",
+        "thumbnail": ""
       }
     },
     "sounds": {},
@@ -355,6 +374,17 @@
         "modified": "2026-07-16T00:00:00.000000",
         "parent": "",
         "remember_destroyed": false
+      },
+      "obj_gem": {
+        "name": "obj_gem",
+        "asset_type": "object",
+        "sprite": "spr_gem",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "parent": ""
       }
     },
     "rooms": {

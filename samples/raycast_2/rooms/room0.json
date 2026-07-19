@@ -7,7 +7,7 @@
   "background_image": "",
   "tile_horizontal": false,
   "tile_vertical": false,
-  "instance_count": 198,
+  "instance_count": 206,
   "instances": [
     {
       "object_name": "obj_wall_h",
@@ -1790,6 +1790,78 @@
       "visible": true,
       "x": 416,
       "y": 416
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 112,
+      "y": 48
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 304,
+      "y": 80
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 112,
+      "y": 144
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 432,
+      "y": 176
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 368,
+      "y": 240
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 304,
+      "y": 304
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 48,
+      "y": 368
+    },
+    {
+      "object_name": "obj_gem",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 48,
+      "y": 432
     }
   ],
   "created": "2026-05-23T14:34:55.001771",
