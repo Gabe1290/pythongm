@@ -78,7 +78,9 @@ def test_wall_render_samples_texture_strip():
     # subsurface+scale)
     assert "ctx.drawImage(texSprite, texX, 0, 1, th, x0, y0, stripW, stripH)" in body
     assert "if (!r.hit) continue" in body         # miss columns draw no wall
-    assert "r.side === 1" in body                 # y-face depth cue
+    # depth cue is now the shared shading model (subtle side hint + distance
+    # falloff), not the old binary `r.side === 1` half-brightness overlay
+    assert "this.wallShade(r.side, corrected, renderDist * cellSize)" in body
 
 
 def test_sky_panorama_pans_over_ceiling():

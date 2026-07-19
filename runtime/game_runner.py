@@ -1931,6 +1931,32 @@ class GameRoom:
         # wall's own render distance.
         return max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None
 
+    # --- wall shading model (shared by all three renderers; keep in sync) ----
+    # A y-face (side==1) used to be drawn at HALF brightness. That binary 2:1
+    # break produced a hard vertical seam wherever an h-wall met a v-wall at
+    # roughly the same distance -- no depth change behind it, so the eye read it
+    # as a corner that slid along the wall as you moved (user report,
+    # 2026-07-19; measured 60k+ such same-distance side flips in raycast_2).
+    # Replaced with: a SUBTLE side hint plus real distance falloff, which is
+    # what actually sells depth in a raycaster and stops flat runs from faking
+    # corners. HTML5 (engine.js wallShade) and Kivy (_wall_shade) implement the
+    # identical formula -- pinned by tests/test_raycast_export_parity.py.
+    RAYCAST_SIDE_SHADE = 0.85    # y-face brightness (was 0.5 -- too harsh)
+    RAYCAST_FOG_STRENGTH = 0.55  # darkening at max render distance
+    RAYCAST_MIN_SHADE = 0.35     # never fully black
+
+    @classmethod
+    def _wall_shade(cls, side: int, corrected: float, max_dist: float) -> float:
+        """Brightness multiplier in [MIN_SHADE, 1] for a wall strip."""
+        side_factor = cls.RAYCAST_SIDE_SHADE if side == 1 else 1.0
+        t = corrected / max_dist if max_dist > 0 else 0.0
+        if t < 0.0:
+            t = 0.0
+        elif t > 1.0:
+            t = 1.0
+        dist_factor = 1.0 - cls.RAYCAST_FOG_STRENGTH * t
+        return max(cls.RAYCAST_MIN_SHADE, side_factor * dist_factor)
+
     def _render_raycast_view(self, screen: pygame.Surface):
         """Render the room as a first-person raycast projection instead of
         the normal top-down view. See docs/RAYCAST_2_5D_PLAN.md."""
@@ -1967,10 +1993,6 @@ class GameRoom:
         cam_y = camera.y + camera._cached_height / 2
 
         wall_color = self.parse_color(cfg.get('wall_color', '#993333'))
-        # Half brightness on the y-face (side==1) walls -- a much stronger
-        # depth cue than the original 75% factor, which read as barely
-        # distinguishable from the unshaded x-face walls (user feedback).
-        wall_color_shaded = tuple(c // 2 for c in wall_color)
         fov_deg = cfg.get('fov', 66)
         fov_rad = math.radians(fov_deg)
         render_distance_cells = int(cfg.get('render_distance', 20))
@@ -2058,6 +2080,9 @@ class GameRoom:
             strip_w = max(1, x1 - x0)
             y0 = int(half_h - strip_h / 2)
 
+            # Subtle side hint + distance falloff (see _wall_shade).
+            shade = self._wall_shade(side, corrected,
+                                     render_distance_cells * cell_size)
             tex_sprite = wall_texture if wall_texture is not None else wall_sprite
             if textured and tex_sprite is not None:
                 frame = tex_sprite.get_frame(0)
@@ -2065,12 +2090,12 @@ class GameRoom:
                 tex_x = min(tw - 1, max(0, int(tex_u * tw)))
                 col_surf = frame.subsurface((tex_x, 0, 1, th))
                 strip = pygame.transform.scale(col_surf, (strip_w, strip_h))
-                if side == 1:
-                    # Same half-brightness y-face depth cue as the flat path.
-                    strip.fill((128, 128, 128), special_flags=pygame.BLEND_RGB_MULT)
+                if shade < 1.0:
+                    v = int(shade * 255)
+                    strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
                 screen.blit(strip, (x0, y0))
             else:
-                color = wall_color if side == 0 else wall_color_shaded
+                color = tuple(int(c * shade) for c in wall_color)
                 screen.fill(color, (x0, y0, strip_w, strip_h))
 
         # Billboard sprites (Phase 6 of the plan doc, scoped down to a

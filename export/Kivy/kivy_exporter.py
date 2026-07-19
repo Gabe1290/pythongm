@@ -1745,6 +1745,26 @@ class {class_name}(Widget):
                 return max(dist_cells, 1e-4) * cell_size, side, True, tex_u, sprite
         return max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None
 
+    # Wall shading model — MUST match game_runner.GameRoom._wall_shade and
+    # engine.js wallShade (pinned by tests/test_raycast_export_parity.py).
+    # A subtle side hint + distance falloff; the old binary half-brightness
+    # y-face made h/v junctions at equal distance read as false corners.
+    RAYCAST_SIDE_SHADE = 0.85
+    RAYCAST_FOG_STRENGTH = 0.55
+    RAYCAST_MIN_SHADE = 0.35
+
+    @classmethod
+    def _wall_shade(cls, side, corrected, max_dist):
+        """Brightness multiplier in [MIN_SHADE, 1] for a wall strip."""
+        side_factor = cls.RAYCAST_SIDE_SHADE if side == 1 else 1.0
+        t = corrected / max_dist if max_dist > 0 else 0.0
+        if t < 0.0:
+            t = 0.0
+        elif t > 1.0:
+            t = 1.0
+        dist_factor = 1.0 - cls.RAYCAST_FOG_STRENGTH * t
+        return max(cls.RAYCAST_MIN_SHADE, side_factor * dist_factor)
+
     def _raycast_color(self, spec, default):
         """Parse a '#rrggbb' color to an (r, g, b) float triple in 0..1."""
         try:
@@ -1943,7 +1963,6 @@ class {class_name}(Widget):
         cam_y = gm_y + float(getattr(camera, 'image_height', 0) or 0) / 2.0
 
         wall_color = self._raycast_color(cfg.get('wall_color'), '993333')
-        wall_color_shaded = tuple(c / 2.0 for c in wall_color)
         fov_deg = float(cfg.get('fov', 66))
         fov_rad = math.radians(fov_deg)
         render_distance_cells = int(cfg.get('render_distance', 20))
@@ -2014,18 +2033,20 @@ class {class_name}(Widget):
             # y0 works in both y-down (desktop) and y-up (Kivy) space.
             y0 = half_h - strip_h / 2.0
 
+            # Subtle side hint + distance falloff (see _wall_shade).
+            shade = self._wall_shade(side, corrected,
+                                     render_distance_cells * cell_size)
             tex = wall_texture if wall_texture is not None \\
                 else self._raycast_texture(wall_sprite)
             if textured and tex is not None:
                 tw = tex.width
                 tex_x = min(tw - 1, max(0, int(tex_u * tw)))
                 region = tex.get_region(tex_x, 0, 1, tex.height)
-                shade = 0.5 if side == 1 else 1.0
                 group.add(Color(shade, shade, shade, 1))
                 group.add(Rectangle(texture=region, pos=(x0, y0),
                                     size=(strip_w, strip_h)))
             else:
-                color = wall_color if side == 0 else wall_color_shaded
+                color = tuple(c * shade for c in wall_color)
                 group.add(Color(*color, 1))
                 group.add(Rectangle(pos=(x0, y0), size=(strip_w, strip_h)))
 
