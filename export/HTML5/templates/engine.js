@@ -2883,6 +2883,24 @@ class GameRoom {
             }
         }
 
+        // Floor (and, indoors, ceiling) texture casting (Phase 5 port). Low-res
+        // per-pixel cast + upscale — full-res was ~13x too slow on desktop;
+        // res comes from cfg.floor_cast_res (default 4, desktop parity — the
+        // browser has ample headroom, timing spike measured res=2 at ~0.4ms).
+        // floor_texture casts the floor; ceiling_texture casts the ceiling ONLY
+        // when no sky claimed it. Absent both -> the flat fills above stand.
+        const castRes = Math.max(1, Math.floor(cfg.floor_cast_res || 4));
+        const floorTex = cfg.floor_texture ? this._textureData(sprites[cfg.floor_texture]) : null;
+        const camCx = camX / cellSize, camCy = camY / cellSize;
+        if (floorTex) {
+            this.castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false);
+        }
+        const ceilTex = (cfg.ceiling_texture && !skyTex)
+            ? this._textureData(sprites[cfg.ceiling_texture]) : null;
+        if (ceilTex) {
+            this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true);
+        }
+
         const colWallDist = new Array(numCols).fill(Infinity);  // for billboard occlusion
         for (let col = 0; col < numCols; col++) {
             const rayOffset = -fovRad / 2 + fovRad * (col / numCols);
@@ -2944,6 +2962,85 @@ class GameRoom {
                     ctx.drawImage(img, srcX, 0, 1, img.height, screenX, yTop, 1, spriteH);
                 }
             }
+        }
+    }
+
+    // Cached ImageData for a loaded sprite, for per-pixel floor sampling.
+    // Drawn once into an offscreen canvas; returns null for an unloaded or
+    // cross-origin-tainted image (the caller then keeps the flat fill).
+    _textureData(sprite) {
+        if (!sprite || !sprite.complete || !sprite.width) return null;
+        if (!this._texDataCache) this._texDataCache = new Map();
+        if (this._texDataCache.has(sprite)) return this._texDataCache.get(sprite);
+        let data = null;
+        try {
+            const c = document.createElement('canvas');
+            c.width = sprite.width; c.height = sprite.height;
+            const g = c.getContext('2d');
+            g.drawImage(sprite, 0, 0);
+            data = g.getImageData(0, 0, sprite.width, sprite.height);
+        } catch (e) {
+            data = null;  // tainted canvas — skip textured floor for this sprite
+        }
+        this._texDataCache.set(sprite, data);
+        return data;
+    }
+
+    // Low-res floor/ceiling texture casting (faithful port of
+    // game_runner._cast_floor_plane). Fills a downsampled ImageData per-pixel
+    // by sampling `texData` in CELL units (so the texture tiles once per grid
+    // cell and meets the wall bases), then upscales with drawImage. `ceiling`
+    // mirrors the same cast into the top half via a vertical flip.
+    castFloorPlane(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling) {
+        const w = ctx.canvas.width, h = ctx.canvas.height;
+        const halfH = Math.floor(h / 2);
+        const regionH = h - halfH;
+        if (regionH <= 0) return;
+        const tw = texData.width, th = texData.height, src = texData.data;
+        if (tw <= 0 || th <= 0) return;
+        const dirX = Math.cos(facingScreenRad), dirY = Math.sin(facingScreenRad);
+        const plane = Math.tan(fovRad / 2);
+        const planeX = -dirY * plane, planeY = dirX * plane;
+        const rdx0 = dirX - planeX, rdy0 = dirY - planeY;
+        const rdx1 = dirX + planeX, rdy1 = dirY + planeY;
+        const posZ = 0.5 * h;
+        const sw = Math.max(1, Math.floor(w / res));
+        const sh = Math.max(1, Math.floor(regionH / res));
+        const stepScale = res / w;
+        if (!this._floorSmall) this._floorSmall = document.createElement('canvas');
+        const small = this._floorSmall;
+        if (small.width !== sw || small.height !== sh) { small.width = sw; small.height = sh; }
+        const sctx = small.getContext('2d');
+        const img = sctx.createImageData(sw, sh);
+        const d = img.data;
+        for (let j = 0; j < sh; j++) {
+            const y = halfH + j * res;
+            let p = y - halfH; if (p <= 0) p = 1;
+            const rowd = posZ / p;
+            const stepx = rowd * (rdx1 - rdx0) * stepScale;
+            const stepy = rowd * (rdy1 - rdy0) * stepScale;
+            let fx = camCx + rowd * rdx0;
+            let fy = camCy + rowd * rdy0;
+            let di = j * sw * 4;
+            for (let i = 0; i < sw; i++) {
+                let tx = (tw * (fx - Math.floor(fx))) | 0;
+                let ty = (th * (fy - Math.floor(fy))) | 0;
+                if (tx >= tw) tx = tw - 1;
+                if (ty >= th) ty = th - 1;
+                const si = (ty * tw + tx) * 4;
+                d[di] = src[si]; d[di + 1] = src[si + 1]; d[di + 2] = src[si + 2]; d[di + 3] = 255;
+                di += 4;
+                fx += stepx; fy += stepy;
+            }
+        }
+        sctx.putImageData(img, 0, 0);
+        if (ceiling) {
+            ctx.save();
+            ctx.scale(1, -1);   // flip vertically into the top half
+            ctx.drawImage(small, 0, 0, sw, sh, 0, -regionH, w, regionH);
+            ctx.restore();
+        } else {
+            ctx.drawImage(small, 0, 0, sw, sh, 0, halfH, w, regionH);
         }
     }
 

@@ -707,10 +707,21 @@ harness if one is available.)
    panorama pan+wrap over the ceiling; per-column `colWallDist`; billboard pass
    — non-solid sprited instances, farthest-first, per-column occlusion via
    `ctx.drawImage` source-column slices; `tests/test_html5_raycast.py` +2, added
-   lines brace-balanced). **HTML5 floor casting DEFERRED to its own unit (3b)**:
-   the per-pixel `ImageData` low-res cast is the risky piece and its timing
-   can't be spiked here (no JS engine in CI) — needs a browser-based spike
-   before committing, with a flat-floor fallback if a browser can't hit budget.
+   lines brace-balanced).
+   — **3b HTML5 floor casting DONE 2026-07-19.** The browser timing spike
+   (`spikes/floor_cast_html5.html`) came back green: Brave + Edge both measured
+   **res=2 at ~0.3–0.4 ms median** (target <8 ms), so the cast is affordable
+   with huge headroom. `engine.js` gained `_textureData` (offscreen-canvas
+   `getImageData` per sprite, cached; returns null on a cross-origin taint so
+   the flat fill stands) and `castFloorPlane` — a faithful port of
+   `_cast_floor_plane` (camera-plane rays, `rowd = 0.5h/(y−horizon)`, per-cell
+   tiling, low-res `ImageData` fill + `drawImage` upscale; `ceiling` flips
+   vertically). Called between the sky and wall passes; honors
+   `cfg.floor_cast_res` (default 4, desktop parity) and casts the ceiling only
+   when no sky claimed it. `tests/test_html5_raycast.py` +4 (source structure +
+   floor-precedes-walls order + real raycast_1 export ships `spr_floor`); added
+   lines brace-balanced (whole-file bracket mismatch is pre-existing at HEAD).
+   Suite 1912→1916.
 4. Kivy facing_angle + walls (+ stub test). Medium.
    — **4a movement/action parity DONE 2026-07-19** (`kivy_exporter.py`:
    `facing_angle` on the base object, `raycast_camera=None` on the scene;
