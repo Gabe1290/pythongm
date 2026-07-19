@@ -21,22 +21,22 @@ look (no pitch), corridors must be grid-aligned, and there's no true
 room-over-room. That's a deliberate, honest limitation, not a missing
 feature — see the plan doc's "why raycasting" pedagogy note.
 
-**Status — fully textured (walls, sky, floor), desktop (pygame) only.**
-Walls sample a **brick texture** (`spr_wall_texture`, via `wall_texture`):
-each screen column samples a vertical strip at the ray's hit position, scaled
-by distance, with the away-facing wall face at half brightness as a free depth
-cue. The ceiling is a **DOOM-style sky** (`spr_sky`, via `sky_texture`) — a
-panorama that pans horizontally as you turn (a full 360° turn pans it once)
-and does *not* recede with distance, so it reads as an infinitely-far horizon.
-The floor is a **cast stone texture** (`spr_floor`, via `floor_texture`) —
-low-res floor casting (full-res per-pixel was ~13× too slow in pure Python;
-`floor_cast_res` sets the downsample, 4 ≈ 5ms) that tiles per grid cell and
-meets the wall bases seamlessly. `obj_goal` renders as a camera-facing
-billboard sprite (scaled by distance, occluded by walls) — see "What's new
-here". Still ahead: Kivy/HTML5 export parity — this sample currently only runs
-through `Build → Test Game` / desktop export. To go back to the flat look,
-clear `wall_texture`/`sky_texture`/`floor_texture` on the
-`enable_raycast_view` action.
+**Status — fully textured (walls, sky, floor) on desktop; walls + sky +
+billboards also render on HTML5 and native (Kivy) export; the cast floor is
+desktop-only for now.** Walls sample a **brick texture** (`spr_wall_texture`,
+via `wall_texture`): each screen column samples a vertical strip at the ray's
+hit position, scaled by distance, with the away-facing wall face at half
+brightness as a free depth cue. The ceiling is a **DOOM-style sky** (`spr_sky`,
+via `sky_texture`) — a panorama that pans horizontally as you turn (a full 360°
+turn pans it once) and does *not* recede with distance, so it reads as an
+infinitely-far horizon. The floor is a **cast stone texture** (`spr_floor`, via
+`floor_texture`) — low-res floor casting (full-res per-pixel was ~13× too slow
+in pure Python; `floor_cast_res` sets the downsample, 4 ≈ 5ms) that tiles per
+grid cell and meets the wall bases seamlessly. `obj_goal` renders as a
+camera-facing billboard sprite (scaled by distance, occluded by walls) — see
+"What's new here". To go back to the flat look, clear
+`wall_texture`/`sky_texture`/`floor_texture` on the `enable_raycast_view`
+action.
 
 ## How to play
 
@@ -98,7 +98,8 @@ clear `wall_texture`/`sky_texture`/`floor_texture` on the
 - FOV `66`°, `render_distance` `20` cells, `cell_size` `32` — all
   `enable_raycast_view` parameters on `obj_person`'s `create` event.
 - Wall/floor/ceiling colors are also `enable_raycast_view` parameters —
-  easy first thing to experiment with before textures land.
+  the flat-look fallback when the matching texture is cleared (and what the
+  floor uses on HTML5/Kivy export, where the cast floor isn't wired up yet).
 - Wall thickness is `8`px, hardcoded in the conversion that generated
   `rooms/*.json` (not a runtime parameter) — regenerate the rooms to
   change it.
@@ -111,5 +112,20 @@ clear `wall_texture`/`sky_texture`/`floor_texture` on the
 
 ## Export status
 
-Desktop (pygame) only — see the plan doc's phased status. Not yet in the
-IDE's Welcome tab sample list; open the project folder directly for now.
+The first-person view now renders on **all three targets** — desktop (pygame),
+**HTML5** (`export/HTML5/templates/engine.js`), and **native/Kivy**
+(`export/Kivy/kivy_exporter.py`) — with facing-angle look controls, textured +
+flat walls, the panning sky, and occlusion-clipped billboard sprites. The three
+renderers share no code (three hand-written copies), so their DDA core is
+locked together by `tests/test_raycast_export_parity.py` (desktop↔Kivy exact
+numeric equality across a 260-ray matrix; HTML5 structural parity, since there's
+no JS engine in CI).
+
+**The one gap: textured *floor* casting is still desktop-only.** The low-res
+per-pixel cast (JS `ImageData`, Kivy `blit_buffer`) needs a per-target timing
+spike before it can land, so on HTML5/Kivy the floor falls back to the flat
+`floor_color` fill (the ceiling still gets the full panning sky). See the plan
+doc's units 3b/5b.
+
+Not yet in the IDE's Welcome tab sample list; open the project folder directly
+for now.
