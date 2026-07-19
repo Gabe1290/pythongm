@@ -760,10 +760,25 @@ harness if one is available.)
    [current animation frame]. `tests/test_kivy_raycast.py` +2 headless: sky
    panorama sized `w*360/fov` in the ceiling half; a goal billboard drawn when
    visible and fully suppressed when a solid wall sits between it and the
-   camera. Suite 1907→1909.) **Kivy floor casting DEFERRED to unit 5b**, same
-   reason as HTML5 3b — the low-res per-pixel cast (`blit_buffer`) is the risky
-   piece and its per-frame cost can't be measured without a real GL run; needs a
-   spike + a flat-floor fallback before committing.
+   camera. Suite 1907→1909.)
+   — **5b Kivy floor casting DONE 2026-07-19.** The GL timing spike
+   (`spikes/floor_cast_kivy.py`) on the Windows box (AMD 840M) came back:
+   naive Python cast + real `blit_buffer` upload measured **res=4 at ~5.1 ms
+   median** (res=1 86 ms, res=2 20 ms, res=8 1.2 ms) — so res=4 naive fits the
+   <8 ms target, matching the desktop default; numpy wasn't needed (and isn't
+   installed on that box). `kivy_exporter.py` gained `_raycast_texture_pixels`
+   (cached `texture.pixels`), `_floor_buffer` (the pure naive cast → RGBA bytes,
+   **flipping the source row since Kivy `.pixels` are bottom-up**), and
+   `_render_floor_plane` (builds a low-res `Texture`, `blit_buffer`, draws a
+   Rectangle GPU-upscaled to the region). **y-up handled with tex_coords**: the
+   floor is the bottom half and the cast's horizon row (row 0) must sit at the
+   TOP of that region, so the floor uses `tex_coords=(0,1,1,1,1,0,0,0)` and the
+   ceiling mirrors it. `Texture` is imported LOCALLY inside `_render_floor_plane`
+   (a top-level import broke every other test's stub-kivy env, which doesn't
+   stub `kivy.graphics.texture`). `tests/test_kivy_raycast.py` +2: `_floor_buffer`
+   returns a 120×60 opaque sampled buffer for a 480×480 display at res=4;
+   `_render_raycast` adds the v-flipped floor Rectangle at the bottom half
+   (stub `Texture`). Suite 1916→1918.
 6. 3-target `_cast_ray` parity test. Small.
    — **DONE 2026-07-19** (`tests/test_raycast_export_parity.py`, 3 tests).
    Desktop `GameRoom._cast_ray` and the Kivy generated scene `_cast_ray` are fed
