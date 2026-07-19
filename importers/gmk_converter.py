@@ -686,6 +686,15 @@ class GmkConverter:
                 parameters["directions"]
             )
 
+        # GM's Set Font action (action_font) carries a horizontal-align menu
+        # (0=left, 1=center, 2=right) under the key `align`. The runtime and the
+        # events-panel metadata both speak `halign` ('left'/'center'/'right'),
+        # not GM's int, so translate it here — otherwise any center/right GM
+        # font alignment is silently ignored on import (it landed on `align`,
+        # which nothing reads). valign has no GM analogue in this action.
+        if pygm2_action == "set_draw_font" and "align" in parameters:
+            parameters["halign"] = _convert_font_align(parameters.pop("align"))
+
         # Translate GM's "0/1" collision-kind byte into pygm2's "solid"/"all"
         # (check_empty) or "solid"/"any" (if_collision) string vocabulary.
         kind_map = GM_COLLISION_KIND_TO_PYGM2.get(pygm2_action)
@@ -1008,6 +1017,22 @@ def _convert_direction_string(value):
     if len(names) == 1:
         return names[0]
     return names
+
+
+# GM's Set Font action encodes horizontal alignment as a 0/1/2 menu.
+_GM_FONT_ALIGN = {"0": "left", "1": "center", "2": "right",
+                  0: "left", 1: "center", 2: "right"}
+
+
+def _convert_font_align(value):
+    """Map GM's set-font align (0=left, 1=center, 2=right) to a pygm2 `halign`
+    string. Already-named values pass through; anything unrecognised falls back
+    to 'left' (the runtime's own default)."""
+    if value in _GM_FONT_ALIGN:
+        return _GM_FONT_ALIGN[value]
+    if isinstance(value, str) and value.strip() in ("left", "center", "right"):
+        return value.strip()
+    return "left"
 
 
 # ============================================================================

@@ -1457,7 +1457,7 @@
                 "action": "set_draw_font",
                 "parameters": {
                   "font": "score_font",
-                  "align": "0"
+                  "halign": "left"
                 }
               },
               {
