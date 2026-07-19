@@ -820,6 +820,7 @@ units):** after drawing the first-person view, run the HUD draw-queue on top —
   the draw-queue/HUD after `renderRaycastView` / `_render_raycast`.
 Then a parity test like the existing `test_raycast_export_parity.py`. Until this
 lands, raycast samples keep the window-caption HUD (desktop) and document it.
+**Full design + unit plan: [`docs/RAYCAST_HUD_PLAN.md`](RAYCAST_HUD_PLAN.md).**
 
 #### Risks / open questions
 

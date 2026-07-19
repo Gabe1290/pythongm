@@ -604,3 +604,42 @@ Kivy `export/Kivy/kivy_exporter.py`), so a parity test locks the DDA core.
   (`kivy_exporter.py` ~line 1430-1990) — every literal `{`/`}` in added code
   must be doubled. Commit messages with double-quotes/parens must go through
   `git commit -F <file>` (PowerShell 5.1 here-strings mangle them).
+
+**2026-07-19 — Audit cleanup, GMK fixes, and the `raycast_2` sample.** One long
+Windows-box session, one commit per unit, all pushed.
+- **Audit registries all closed.** `EXPORT_AUDIT_2026-07.md` and
+  `GMK_IMPORTER_HARDENING_PLAN.md` are now fully closed; `EXPORT_SYSTEM_STATUS.md`
+  was reconciled (a stale Jan-2026 snapshot — corrected line counts, non-existent
+  modules, bucketed its checkboxes into done/feature/QA/docs). Real fixes landed:
+  `multi_choice` param widget for list-valued action params (`32396d5`,
+  `start_moving_direction` directions now a 3×3 checkbox picker);
+  draw-action UI metadata `relative`/`image` alias (`5e209b7`); GM Set-Font
+  `align`→`halign` in the importer + runtime fallback (`6cafe7b`); PyInstaller
+  `.spec` path escaping across exe/linux/macos (`c4dd07b` — apostrophe/`\U`
+  crashes; the regression test caught a macos icon bug the finder missed); Kivy
+  asset same-basename clobber → name-keyed export filenames (`c496ef8`).
+- **`raycast_2` sample — COMPLETE (Units 1–6, plan `docs/RAYCAST_2_SAMPLE_PLAN.md`).**
+  A two-level Doom-style game built with **zero engine changes** (all authoring
+  on the finished raycast engine): hand-built recursive-backtracker mazes run
+  through raycast_1's edge-wall formulas; collectible gems + score; a patrolling
+  billboard monster + lives; a `test_instance_count` gem-gated exit; a second
+  crystal-cavern room via **per-room camera controllers** (`enable_raycast_view`
+  with an explicit `camera_object='obj_person'` — moved off `obj_person` so each
+  room's controller can carry its own texture theme). Shipped: Welcome-tab entry
+  + translations ("Lancer de rayons — Niveau 2"), smoke runner, 3-target
+  playtest. Commits `848f774`(1) `15ed197`(2) `d2fd437`(3) `790945e`(4)
+  `e80fbdf`(5) `b957891`(6). Suite ended **1961 passed, 0 failed**.
+  - **Sample-authoring landmine (cost a real bug):** `create` **re-runs on
+    `restart_room`**, so score/lives init belongs in **`game_start`** (fires
+    once, survives a room restart) — `set_lives` in `create` reset lives to full
+    on every death. `enable_raycast_view` must stay in `create` (the camera
+    re-arms per room entry; `restart_room` builds a fresh room with
+    `raycast_camera=None`).
+  - **`test_instance_count` param key is `number`, not `count`** — the desktop
+    runtime reads `number` (maze_3's `count` works only by the 0-default
+    coincidence); all three targets read `number`.
+- **Open engine follow-up (NOT started):** in-view HUD compositing —
+  `draw_score`/`draw_lives` over the raycast view (3 targets). Right now
+  `_render_room` early-returns after `_render_raycast_view`, so raycast games
+  show score/lives only in the desktop window caption (invisible on HTML5/Kivy
+  exports). Plan: `docs/RAYCAST_HUD_PLAN.md`; tracked in `RAYCAST_2_5D_PLAN.md`.
