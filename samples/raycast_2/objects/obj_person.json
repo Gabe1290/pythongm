@@ -18,13 +18,6 @@
     "create": {
       "actions": [
         {
-          "action": "set_score",
-          "parameters": {
-            "value": "0",
-            "relative": false
-          }
-        },
-        {
           "action": "enable_raycast_view",
           "parameters": {
             "fov": "66",
@@ -96,6 +89,49 @@
           }
         ]
       }
+    },
+    "collision_with_obj_monster": {
+      "actions": [
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "obj_monster"
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ]
+    },
+    "game_start": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "3"
+          }
+        }
+      ]
     }
   },
   "imported": false,

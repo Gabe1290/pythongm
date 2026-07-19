@@ -115,10 +115,22 @@ limit loses nothing and the next session resumes from clean `main`.
      engine follow-up in `RAYCAST_2_5D_PLAN.md` ("in-view HUD compositing"), per
      the plan's "no engine changes in the sample" rule.
   3. ✅ Gem art resized 88×88 → 32×32 (centred origin) for billboard proportion.
-- **Unit 3 — patrolling enemy.** `obj_monster` (non-solid, sprited, moving);
-  wall-bounce via `collision_with_obj_wall_*`; `obj_monster`↔`obj_person`
-  collision deducts a life and restarts the room; `set_lives` HUD on. Verify the
-  monster renders as a moving billboard and the collision restarts.
+- **Unit 3 — patrolling enemy. DONE 2026-07-19.** `obj_monster` (non-solid,
+  sprited → billboard; `spr_monster` = maze_3's `sprite_monster1`, 32×32), using
+  maze_3's patrol pattern: `create` → `start_moving_direction ['up','down']`
+  speed 2; `collision_with_obj_wall_h` → `reverse_vertical`,
+  `collision_with_obj_wall_v` → `reverse_horizontal` (bounces off both wall
+  orientations). 2 monsters placed at open cells with a vertical run.
+  `obj_person` gained `collision_with_obj_monster` → `set_lives -1 relative` +
+  `restart_room`, and `no_more_lives` → `restart_game`. **Design fix caught by
+  the collision test:** score/lives init moved from `create` to **`game_start`**
+  — `create` re-runs on `restart_room`, so a death would reset lives to 3 (and
+  score to 0); `game_start` fires once and survives a room restart, so only
+  `restart_game` resets them. `enable_raycast_view` stays in `create` (the
+  camera must re-arm on every room entry — `restart_room` builds a fresh room
+  whose `raycast_camera` is None). `tests/test_raycast_2_sample.py` +5 (monster
+  wiring/patrol/lives-init/collision-costs-a-life, + the corrected
+  score/lives-in-`game_start` test). Suite 1952→1957.
 - **Unit 4 — gated exit.** Goal's collision checks `test_instance_count`
   (`obj_gem` == 0) before advancing; otherwise a `show_message`/draw prompt
   ("Ramasse toutes les gemmes !"). Verify the gate blocks until gems are gone.

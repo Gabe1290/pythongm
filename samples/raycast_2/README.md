@@ -14,8 +14,8 @@ this sample's design and unit plan.
 
 > **Work in progress.** This is being built one commit-sized unit at a time.
 > **Landed:** Unit 1 — maze geometry + first-person baseline; Unit 2 —
-> collectible gems that add to the score. **Coming:** a patrolling billboard
-> monster (Unit 3) and a gem-gated exit (Unit 4).
+> collectible gems + score; Unit 3 — a patrolling monster that costs a life on
+> contact. **Coming:** a gem-gated exit (Unit 4).
 
 ## How to play
 
@@ -29,6 +29,10 @@ this sample's design and unit plan.
   compositing over the raycast view is a tracked engine follow-up — see
   `docs/RAYCAST_2_5D_PLAN.md` — so on the HTML5/Kivy exports the score isn't yet
   visible on-screen.*
+- **Avoid the monsters** — they patrol the corridors (bouncing off walls) and
+  draw as camera-facing billboards. Touching one costs a life and restarts the
+  room; you start with 3 lives (shown in the caption). Run out and the game
+  restarts.
 - **Objective:** find the goal at the far corner of the maze.
 
 ## Level geometry

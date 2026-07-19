@@ -7,7 +7,7 @@
   "background_image": "",
   "tile_horizontal": false,
   "tile_vertical": false,
-  "instance_count": 206,
+  "instance_count": 208,
   "instances": [
     {
       "object_name": "obj_wall_h",
@@ -1862,6 +1862,24 @@
       "visible": true,
       "x": 48,
       "y": 432
+    },
+    {
+      "object_name": "obj_monster",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 176,
+      "y": 80
+    },
+    {
+      "object_name": "obj_monster",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 240,
+      "y": 240
     }
   ],
   "created": "2026-05-23T14:34:55.001771",
