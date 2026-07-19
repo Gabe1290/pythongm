@@ -1,0 +1,127 @@
+# Plan: `raycast_2` — a "Level 2" for the Doom-style raycast sample
+
+Status: **PLAN (2026-07-19).** Not started. This is a **sample-authoring**
+project, not engine work — the raycast 2.5D engine is fully complete on all
+three targets (walls, panning sky, textured floor casting, occlusion-clipped
+billboards; see `RAYCAST_2_5D_PLAN.md`, closed). `raycast_2` showcases
+mechanics `raycast_1` doesn't, using only features that already exist.
+
+## Concept
+
+`raycast_1` is a maze_1-derived Doom-style corridor maze: turn-in-place FPS
+controls, thin edge-walls, textured walls/sky/floor, and a single billboard
+(the goal). It teaches *the first-person view itself*.
+
+`raycast_2` is the next level up — a bigger maze with **things happening in the
+3D view**:
+
+1. **Collectible gems + score** — several billboard gems scattered through the
+   maze; walking into one adds to the score and destroys it.
+2. **A patrolling enemy** — a billboard monster that walks the corridors and
+   bounces off walls; touching the player costs a life and sends them back to
+   the start.
+3. **A gated exit** — the goal only advances the room once *all* gems are
+   collected; otherwise it shows a "collect all the gems first" message.
+4. *(optional)* **A second, differently-themed room** — room1 uses a different
+   wall/sky/floor texture set, proving the raycast config is per-room.
+
+Delta taught vs `raycast_1`: multiple billboards, **moving** billboards, score,
+lives, collision→destroy / collision→restart, and an instance-count conditional
+gate — all standard 2D GameMaker mechanics, now experienced in first person.
+
+## Engine-risk assessment — NONE required
+
+Every mechanic maps to a shipped feature. Verified against the code before
+writing this plan:
+
+| Mechanic | Existing feature it rides on |
+|---|---|
+| Gems/monster as 3D sprites | `_render_raycast_view`'s billboard pass draws **every** visible, non-solid, sprited instance at its live `x/y` each frame (`game_runner.py:2086`) — moving instances included, zero extra work |
+| Monster patrol + wall bounce | Runtime AABB collision fires between any two sprited instances regardless of `solid`; a `collision_with_obj_wall_*` handler reverses direction — exactly how maze_2/maze_3 monsters work |
+| Gem pickup → score | `set_score`/score HUD + `collision` event + `destroy_instance` (all registered, all export-parity-tested) |
+| Enemy hit → lose life + restart | `set_lives`/lives HUD + collision event + `restart_room`/goto-room (H3/M51 covered) |
+| Gated exit | `test_instance_count` conditional (H6/H7 gave it GM skip-next scoping on all three targets; part of the 3-target parity suite) |
+| Per-room theme | `enable_raycast_view` is a per-room create-event action with its own texture params |
+
+Because it's all engine features that already pass the 3-target parity tests,
+`raycast_2` renders on **desktop + HTML5 + Kivy** with no new engine code.
+
+## Assets
+
+**Reuse from `raycast_1` (proven):** `obj_person` (player/camera), `obj_wall_h`,
+`obj_wall_v`, and their sprites; `spr_wall_texture`, `spr_sky`, `spr_floor`,
+`spr_person`.
+
+**New billboards needed:**
+- `spr_gem` — the collectible. Small new art, or reuse a coin/star from a
+  match3 sample.
+- `spr_monster` — the patrolling enemy. Can reuse `samples/maze_3/sprites/
+  sprite_monster1.png` (already a billboard-friendly single sprite) or new art.
+
+Art is the one thing that may want the user (the user authors sprite art in the
+IDE). The plan can bootstrap with reused sprites and let the user reskin later —
+none of the code/logic depends on the specific art.
+
+**French:** the README and every in-game message (e.g. the gated-exit prompt
+"Ramasse toutes les gemmes !") must carry proper accents.
+
+## Level design
+
+Derive room geometry from **maze_2** (medium size — keeps the "raycast is the
+same maze family, seen in first person" relationship that `raycast_1`↔`maze_1`
+established) using the same topology-preserving thin-edge-wall conversion
+documented in `RAYCAST_2_5D_PLAN.md` ("Complete rethink" section: every open
+maze cell becomes a floor cell; walls become 8-px `obj_wall_h`/`obj_wall_v`
+edges on the grid lines between an open cell and a blocked neighbour). Then
+hand-place gems, the monster spawn, and the goal.
+
+## Unit sequence (one commit each — session-limit discipline)
+
+Work the queue one unit at a time; commit + push after each so a mid-session
+limit loses nothing and the next session resumes from clean `main`.
+
+- **Unit 0 — this plan doc.** Commit first (done with this file).
+- **Unit 1 — geometry + baseline.** Convert maze_2 topology to thin-wall
+  rooms; assemble `samples/raycast_2/` (project.json + reused objects/sprites +
+  `obj_person` create-event `enable_raycast_view`). Player can drive the FPS
+  view and reach a plain goal (raycast_1 parity baseline). Verify: runs headless
+  via a smoke harness (mirror `TestRaycast1SampleSmoke`).
+- **Unit 2 — gems + score.** `obj_gem` (non-solid, sprited) + N room instances;
+  `obj_gem`↔`obj_person` collision adds score and destroys the gem; `set_score`
+  HUD on. Verify score increments and gems disappear from the billboard pass.
+- **Unit 3 — patrolling enemy.** `obj_monster` (non-solid, sprited, moving);
+  wall-bounce via `collision_with_obj_wall_*`; `obj_monster`↔`obj_person`
+  collision deducts a life and restarts the room; `set_lives` HUD on. Verify the
+  monster renders as a moving billboard and the collision restarts.
+- **Unit 4 — gated exit.** Goal's collision checks `test_instance_count`
+  (`obj_gem` == 0) before advancing; otherwise a `show_message`/draw prompt
+  ("Ramasse toutes les gemmes !"). Verify the gate blocks until gems are gone.
+- **Unit 5 (optional) — second themed room.** room1 with a different
+  wall/sky/floor texture set via its own `enable_raycast_view`.
+- **Unit 6 — ship.** README (mirroring `raycast_1`'s depth, French-accurate);
+  `thumbnails/`; add to the Welcome-tab `SAMPLE_PROJECTS` + the
+  `add_sample_name_translations.py` term tables ("Raycast — Level 2" →
+  "Lancer de rayons — Niveau 2", etc.) + recompile `.qm`; add to
+  `tools/smoke_run_samples.py`; a `tests/test_raycast_2_sample.py` smoke test.
+  Test on desktop (`Test Game`), HTML5 export, and Kivy export.
+
+## Testing per unit
+
+- Desktop: the runtime smoke harness (real `GameRunner.run()` loop with injected
+  keys + `_FakeClock`, matching `TestRaycast1SampleSmoke`) — the raycast render
+  path needs `set_sprites_for_instances` to have run, so tests must go through
+  the real `run()` startup, not a hand-built room (landmine from the 2026-07-17
+  raycast bug hunt).
+- Export parity is already locked by `tests/test_raycast_export_parity.py`
+  (desktop↔Kivy exact `_cast_ray`, HTML5 structural) — `raycast_2` is content,
+  so it inherits that guarantee; a per-target manual playtest at Unit 6 confirms
+  the sample plays, not the engine.
+
+## Out of scope (do NOT expand into)
+
+- No engine changes. If a desired mechanic needs one, it's a separate
+  `RAYCAST_2_5D_PLAN.md` item, not this sample.
+- No new raycast features (sprite facing/rotation, alpha blending, vertical
+  look) — those remain deferred engine work, unrelated to this sample.
+- No multi-agent workflows — single-thread authoring, one commit-sized unit at
+  a time (account session-limit discipline).
