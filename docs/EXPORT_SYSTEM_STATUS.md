@@ -6,6 +6,47 @@
 
 ---
 
+> ## ⚠️ Reconciliation — 2026-07-19
+>
+> **Everything below is a 2026-01-14 snapshot, superseded by the June–July 2026
+> export audit.** Treat its checkboxes and figures as historical. The **live**
+> export bug/status registries are
+> [`EXPORT_AUDIT_2026-07.md`](EXPORT_AUDIT_2026-07.md) and
+> [`GMK_IMPORTER_HARDENING_PLAN.md`](GMK_IMPORTER_HARDENING_PLAN.md) (both now
+> fully closed).
+>
+> **Factual corrections to the report below:**
+> - Line counts are all stale: `html5_exporter.py` 215→**346**, `engine.js`
+>   1810→**3720**, `kivy_exporter.py` 2133→**4619**, `exe_exporter.py` 524→**459**.
+> - Kivy modules that **no longer exist**: `export/Kivy/action_converter.py`
+>   and `export/Kivy/asset_bundler.py`. The Kivy exporter is now
+>   `kivy_exporter.py` + `code_generator.py` + `buildspec_generator.py` +
+>   `project_adapter.py`.
+> - Referenced files that **don't exist**: `docs/EXPORT_ARCHITECTURE.md`,
+>   `test_kivy_exporter.py`.
+> - The "5 tests, all passing" / "100% test pass rate" claim is obsolete — the
+>   export subsystem has dozens of dedicated test files now; the full suite is
+>   **1947 passing**.
+>
+> **The "Improvements Needed" / "Future Enhancements" lists, reconciled:**
+> - ✅ **Done since this snapshot:** HTML5 **sound embedding** (`encode_sounds`,
+>   base64 data URLs); EXE **UPX compression** (wired to the `optimize` export
+>   setting); **error handling / validation / messages** (the 2026-07 EIO-1..11
+>   audit added the missing-asset, non-dict, `.spec`-path-escape and
+>   filename-collision guards). These boxes are flipped inline below.
+> - 🔮 **Still open — deferred FEATURES** (not bugs; governed by the repo's
+>   stability-over-features stance): HTML5 external-asset loading, PWA manifest;
+>   EXE code signing, version-info embedding, dependency slimming; Kivy export
+>   presets, background-scrolling animation, foreground-layer rendering.
+>   Room/background scrolling is tracked in `TODO.md`.
+> - 🧪 **Manual device QA** (cannot be closed by code — needs real hardware): the
+>   "Testing Checklist" device rows (APK build, Android/iOS run, antivirus scan,
+>   mobile-browser / touch).
+> - 📄 **Docs**: the user-guide / troubleshooting / options-reference items are
+>   still TODO.
+
+---
+
 ## Executive Summary
 
 The PyGameMaker export system is **production-ready** with three fully working exporters:
@@ -57,11 +98,11 @@ exporter.export(project_path, output_path)
 ```
 
 **Improvements Needed:**
-- [ ] Add sound file embedding
-- [ ] Support external asset loading (for large games)
-- [ ] Add PWA manifest generation
-- [ ] Improve error handling and validation
-- [ ] Add export options (debug mode, optimization level)
+- [x] Add sound file embedding — DONE (`encode_sounds`: base64 audio data URLs)
+- [ ] Support external asset loading (for large games) *(deferred feature)*
+- [ ] Add PWA manifest generation *(deferred feature)*
+- [x] Improve error handling and validation — largely DONE (2026-07 EIO audit)
+- [ ] Add export options (debug mode, optimization level) *(deferred feature)*
 
 **Priority:** LOW (already production-ready)
 
@@ -110,12 +151,12 @@ exporter.export(project_path, output_path, platform='windows')
 - Antivirus false positives (common with PyInstaller)
 
 **Improvements Needed:**
-- [ ] Add UPX compression option
-- [ ] Implement better progress reporting
-- [ ] Add code signing support
-- [ ] Optimize bundled dependencies
-- [ ] Add version info embedding
-- [ ] Improve error messages
+- [x] Add UPX compression option — DONE (`upx={optimize}` in the generated spec)
+- [ ] Implement better progress reporting *(deferred)*
+- [ ] Add code signing support *(deferred feature)*
+- [ ] Optimize bundled dependencies *(deferred)*
+- [ ] Add version info embedding *(deferred feature)*
+- [x] Improve error messages — largely DONE (2026-07 EIO audit + `.spec` escaping)
 
 **Priority:** MEDIUM (functional but could be better)
 
@@ -179,12 +220,12 @@ exporter.export(project_path, output_path)
 - [x] Validated Python syntax of all generated files
 
 **Future Enhancements:**
-- [ ] Add export presets (debug/release)
-- [ ] Improve error reporting with detailed messages
-- [ ] Add progress signals for UI integration
-- [ ] Test on actual mobile devices (user testing phase)
-- [ ] Implement background scrolling animation
-- [ ] Implement foreground layer rendering
+- [ ] Add export presets (debug/release) *(deferred feature)*
+- [ ] Improve error reporting with detailed messages *(deferred)*
+- [ ] Add progress signals for UI integration *(deferred)*
+- [ ] Test on actual mobile devices (user testing phase) *(manual device QA)*
+- [ ] Implement background scrolling animation *(deferred feature; see `TODO.md`)*
+- [ ] Implement foreground layer rendering *(deferred feature)*
 
 **Priority:** LOW (production-ready, enhancements optional)
 
@@ -451,6 +492,11 @@ class BaseExporter(QObject):
 
 ## Testing Checklist
 
+> *2026-07-19: the unchecked rows below are **manual device/browser QA** —
+> they need real hardware (an Android/iOS device, an antivirus scan, a mobile
+> browser) and cannot be closed by code. The automated export coverage they
+> once stood in for is now the `tests/test_*export*.py` suite.*
+
 ### Before Release
 
 **HTML5 Exporter:**
@@ -485,12 +531,13 @@ class BaseExporter(QObject):
 
 ## Documentation Status
 
-**Existing Documentation:**
-- ✅ `EXPORT_ARCHITECTURE.md` - System overview
-- ✅ `EXPORT_SYSTEM_STATUS.md` - This file (current status)
+**Existing Documentation:** *(corrected 2026-07-19 — two entries below were stale)*
+- ❌ `EXPORT_ARCHITECTURE.md` — **does not exist** (see `ARCHITECTURE.md` instead)
+- ✅ `EXPORT_SYSTEM_STATUS.md` - This file (a superseded snapshot; see the banner)
 - ✅ `EXPORT_TESTING_GUIDE.md` - Testing procedures
 - ✅ `KIVY_EXPORTER_COMPLETION.md` - Kivy completion report
-- ✅ `test_kivy_exporter.py` - Comprehensive test suite
+- ❌ `test_kivy_exporter.py` — **does not exist**; export coverage now lives in
+  the many `tests/test_*export*.py` / `tests/test_kivy_*.py` files
 
 **Future Documentation:**
 - [ ] HTML5 exporter user guide
