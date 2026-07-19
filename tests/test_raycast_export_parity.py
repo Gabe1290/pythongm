@@ -138,6 +138,54 @@ def test_html5_cast_ray_mirrors_desktop_dda():
     assert "hit: true" in body and "hit: false" in body
 
 
+def test_wall_shade_model_matches_desktop_and_kivy():
+    """The wall-shading model (subtle side hint + distance falloff) must be
+    numerically identical on desktop and Kivy. It replaced a binary
+    half-brightness y-face that made h/v junctions at equal distance read as
+    false corners (user report 2026-07-19)."""
+    game = _export_raycast_1()
+    with _stub_kivy_env(game):
+        cls = _scene_class(game)
+        for side in (0, 1):
+            for corrected in (0.0, 8.0, 64.0, 320.0, 640.0, 5000.0):
+                d = GameRoom._wall_shade(side, corrected, 640.0)
+                k = cls._wall_shade(side, corrected, 640.0)
+                assert abs(d - k) < 1e-12, (side, corrected, d, k)
+        # constants agree too
+        assert GameRoom.RAYCAST_SIDE_SHADE == cls.RAYCAST_SIDE_SHADE
+        assert GameRoom.RAYCAST_FOG_STRENGTH == cls.RAYCAST_FOG_STRENGTH
+        assert GameRoom.RAYCAST_MIN_SHADE == cls.RAYCAST_MIN_SHADE
+
+
+def test_wall_shade_behaviour():
+    """Sanity on the model itself: a y-face is only slightly darker than an
+    x-face (no 2:1 break), and distance darkens both, floored at MIN_SHADE."""
+    M = 640.0
+    near0 = GameRoom._wall_shade(0, 0.0, M)
+    near1 = GameRoom._wall_shade(1, 0.0, M)
+    far0 = GameRoom._wall_shade(0, M, M)
+    assert near0 == 1.0
+    assert 0.8 < near1 < 1.0, "side hint must be subtle, not the old 0.5"
+    assert far0 < near0, "distance must darken"
+    assert GameRoom._wall_shade(1, 10 * M, M) >= GameRoom.RAYCAST_MIN_SHADE
+
+
+def test_html5_wall_shade_mirrors_the_same_constants():
+    """No JS engine in CI — pin engine.js's constants + formula structurally."""
+    assert "const RAYCAST_SIDE_SHADE = 0.85" in ENGINE
+    assert "const RAYCAST_FOG_STRENGTH = 0.55" in ENGINE
+    assert "const RAYCAST_MIN_SHADE = 0.35" in ENGINE
+    m = re.search(r"wallShade\(side, corrected, maxDist\)\s*\{(.*?)\n    \}",
+                  ENGINE, re.S)
+    assert m, "engine.js wallShade not found"
+    body = m.group(1)
+    assert "RAYCAST_SIDE_SHADE : 1.0" in body
+    assert "1.0 - RAYCAST_FOG_STRENGTH * t" in body
+    assert "Math.max(RAYCAST_MIN_SHADE" in body
+    # the old binary half-shade overlay must be gone
+    assert "rgba(0,0,0,0.5)" not in ENGINE
+
+
 def test_all_three_share_the_facing_angle_convention():
     """Turning maps to screen-space radians the same way on every target:
     -facing_angle (GM 0=right/90=up -> y-down screen)."""

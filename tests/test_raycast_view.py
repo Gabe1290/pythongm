@@ -336,7 +336,12 @@ class TestRenderRaycastView:
         screen = pygame.Surface((320, 240))
         room._render_raycast_view(screen)
         w, h = screen.get_size()
-        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 0)
+        px = screen.get_at((w // 2, h // 2))[:3]
+        # The wall colour (#ff0000), darkened by the distance-falloff shading
+        # model (see GameRoom._wall_shade) -- still a pure red hue.
+        assert px[1] == 0 and px[2] == 0
+        assert int(255 * room.RAYCAST_MIN_SHADE) <= px[0] <= 255
+        assert px[0] > 0
 
     def test_corners_show_floor_and_ceiling(self):
         room = self._room_with_camera_and_wall()
@@ -346,11 +351,11 @@ class TestRenderRaycastView:
         assert screen.get_at((2, 2))[:3] == (0, 0, 255)          # ceiling
         assert screen.get_at((2, h - 2))[:3] == (0, 255, 0)       # floor
 
-    def test_side_shading_is_half_brightness(self):
-        """Regression: the y-face (side==1) shading factor must give a
-        clearly visible depth cue -- the original 3/4 factor (only 25%
-        darker) read as barely distinguishable from an unshaded wall
-        (user feedback); it's now 1/2."""
+    def test_y_face_is_subtly_shaded_not_halved(self):
+        """The y-face (side==1) gets a SUBTLE hint (RAYCAST_SIDE_SHADE) plus
+        distance falloff -- NOT the old binary half-brightness. That 2:1 break
+        made an h-wall/v-wall junction at equal distance read as a hard corner
+        that slid along the wall as you moved (user report 2026-07-19)."""
         room = _room(160, 160)
         wall = _solid_instance("obj_wall", 0, 64)  # grid (0, 2) -- a y-face hit
         room.instances.append(wall)
@@ -369,7 +374,12 @@ class TestRenderRaycastView:
         room._render_raycast_view(screen)
         w, h = screen.get_size()
         shaded = screen.get_at((w // 2, h // 2))[:3]
-        assert shaded == (76, 25, 25)  # exactly half of (153, 51, 51)
+        # base wall colour is (153, 51, 51); the old model rendered exactly
+        # half of it (76, 25, 25). The new one must be clearly BRIGHTER than
+        # that (subtle side hint), while still darkened somewhat.
+        assert shaded[0] > 76, f"y-face still looks halved: {shaded}"
+        assert shaded[0] < 153, f"y-face should be darkened at all: {shaded}"
+        assert shaded[1] == shaded[2]  # hue preserved (r,g,g of the base)
 
     def test_missing_camera_still_renders_floor_and_ceiling(self):
         room = _room(160, 160)
@@ -545,8 +555,10 @@ class TestTexturedWalls:
         screen = pygame.Surface((320, 240))
         room._render_raycast_view(screen)
         w, h = screen.get_size()
-        # centre column shows the sprite's colour, NOT the flat wall_color red
-        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 255)
+        # centre column shows the sprite's MAGENTA hue (darkened by the
+        # distance-falloff shading), NOT the flat wall_color red
+        r, g, b = screen.get_at((w // 2, h // 2))[:3]
+        assert g == 0 and r > 0 and b > 0 and r == b   # magenta, scaled
 
     def test_wall_textured_false_forces_flat_colour(self):
         room = self._sprited_solid_wall(color=(255, 0, 255))
@@ -554,12 +566,15 @@ class TestTexturedWalls:
         screen = pygame.Surface((320, 240))
         room._render_raycast_view(screen)
         w, h = screen.get_size()
-        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 0)   # wall_color
+        # flat wall_color red (#ff0000), scaled by the shading model
+        r, g, b = screen.get_at((w // 2, h // 2))[:3]
+        assert g == 0 and b == 0 and r > 0
 
-    def test_y_face_texture_strip_is_half_brightness(self):
-        """A y-face (side==1) texture strip gets the same half-brightness
-        depth cue as the flat path (mirrors test_side_shading's geometry:
-        camera at (0,0) facing down into a wall on the (0,2) grid line)."""
+    def test_y_face_texture_strip_gets_the_same_subtle_shading(self):
+        """A y-face (side==1) texture strip gets the same subtle side hint +
+        distance falloff as the flat path -- not the old binary half-brightness
+        (mirrors the flat test's geometry: camera at (0,0) facing down into a
+        wall on the (0,2) grid line)."""
         from runtime.game_runner import GameSprite
         room = _room(160, 160)
         wall = _solid_instance("obj_wall", 0, 64)    # grid (0, 2) -- y-face hit
@@ -580,8 +595,12 @@ class TestTexturedWalls:
         screen = pygame.Surface((160, 120))
         room._render_raycast_view(screen)
         w, h = screen.get_size()
-        # 200 * 128 / 255 == 100 (BLEND_RGB_MULT half-brightness)
-        assert screen.get_at((w // 2, h // 2))[:3] == (100, 100, 100)
+        # the 200-grey texture, multiplied by the shade factor. The old model
+        # gave exactly 100 (half); the new one must be clearly brighter while
+        # still darkened, and stay neutral grey.
+        px = screen.get_at((w // 2, h // 2))[:3]
+        assert px[0] == px[1] == px[2], f"should stay neutral grey: {px}"
+        assert 100 < px[0] < 200, f"expected a subtle shade, got {px}"
 
     def test_cast_ray_returns_tex_u_and_sprite_on_hit(self):
         room = self._sprited_solid_wall()
@@ -614,7 +633,9 @@ class TestTexturedWalls:
         screen = pygame.Surface((320, 240))
         room._render_raycast_view(screen)
         w, h = screen.get_size()
-        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 0)
+        # flat wall_color red, scaled by the shading model
+        r, g, b = screen.get_at((w // 2, h // 2))[:3]
+        assert g == 0 and b == 0 and r > 0
 
 
 class TestSky:
