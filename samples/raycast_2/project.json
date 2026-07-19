@@ -161,6 +161,25 @@
         "created": "2026-05-23T14:34:54.961536",
         "modified": "2026-06-16T15:12:34.811782",
         "thumbnail": ""
+      },
+      "spr_monster": {
+        "name": "spr_monster",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_monster.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-16T15:12:34.811782",
+        "thumbnail": ""
       }
     },
     "sounds": {},
@@ -296,13 +315,6 @@
           "create": {
             "actions": [
               {
-                "action": "set_score",
-                "parameters": {
-                  "value": "0",
-                  "relative": false
-                }
-              },
-              {
                 "action": "enable_raycast_view",
                 "parameters": {
                   "fov": "66",
@@ -374,6 +386,49 @@
                 }
               ]
             }
+          },
+          "collision_with_obj_monster": {
+            "actions": [
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              }
+            ],
+            "target_object": "obj_monster"
+          },
+          "no_more_lives": {
+            "actions": [
+              {
+                "action": "restart_game",
+                "parameters": {}
+              }
+            ]
+          },
+          "game_start": {
+            "actions": [
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": false
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "3"
+                }
+              }
+            ]
           }
         },
         "imported": false,
@@ -391,6 +446,50 @@
         "persistent": false,
         "depth": 0,
         "events": {},
+        "parent": ""
+      },
+      "obj_monster": {
+        "name": "obj_monster",
+        "asset_type": "object",
+        "sprite": "spr_monster",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": [
+                    "up",
+                    "down"
+                  ],
+                  "speed": "2"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_wall_h": {
+            "actions": [
+              {
+                "action": "reverse_vertical",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_wall_h"
+          },
+          "collision_with_obj_wall_v": {
+            "actions": [
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_wall_v"
+          }
+        },
         "parent": ""
       }
     },

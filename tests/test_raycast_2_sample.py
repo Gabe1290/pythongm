@@ -169,19 +169,22 @@ def test_gem_collision_awards_score_and_destroys():
     assert len(gems_after) == 7, f"one gem should be gone, {len(gems_after)} remain"
 
 
-def test_score_hud_enabled_from_start():
-    """Unit 2 polish: set_score 0 in obj_person's create enables the window
-    caption score HUD from frame 1 (in-view HUD is a tracked engine follow-up)."""
+def test_score_and_lives_init_in_game_start():
+    """score/lives init lives in game_start (fires once), NOT create — create
+    re-runs on restart_room, which would reset the score to 0 and lives to 3 on
+    every death. game_start survives a room restart; only restart_game resets."""
     import json
-    create = json.loads((REPO_ROOT / "samples" / "raycast_2" / "objects"
-                         / "obj_person.json").read_text(encoding="utf-8")
-                        )["events"]["create"]["actions"]
-    assert create[0]["action"] == "set_score"      # runs before enable_raycast_view
+    ev = json.loads((REPO_ROOT / "samples" / "raycast_2" / "objects"
+                     / "obj_person.json").read_text(encoding="utf-8"))["events"]
+    gs = [a["action"] for a in ev["game_start"]["actions"]]
+    assert "set_score" in gs and "set_lives" in gs
+    create = [a["action"] for a in ev["create"]["actions"]]
+    assert "set_score" not in create and "set_lives" not in create
 
     runner = _runner()
     _run(runner, {}, 5)
     assert runner.show_score_in_caption is True
-    assert runner.score == 0
+    assert runner.score == 0 and runner.lives == 3
 
 
 def test_gem_sprite_sized_for_billboard():
@@ -191,6 +194,97 @@ def test_gem_sprite_sized_for_billboard():
                     / "spr_gem.json").read_text(encoding="utf-8"))
     assert s["width"] == 32 and s["height"] == 32
     assert s["origin_x"] == 16 and s["origin_y"] == 16
+
+
+def test_monster_wired_and_placed():
+    """Unit 3: obj_monster is a moving, wall-bouncing billboard enemy."""
+    import json
+    root = REPO_ROOT / "samples" / "raycast_2"
+    room = json.loads((root / "rooms" / "room0.json").read_text(encoding="utf-8"))
+    mons = [i for i in room["instances"] if i.get("object_name") == "obj_monster"]
+    assert len(mons) >= 1
+
+    obj = json.loads((root / "objects" / "obj_monster.json").read_text(encoding="utf-8"))
+    assert obj["solid"] is False and obj["sprite"] == "spr_monster"
+    ev = obj["events"]
+    assert ev["create"]["actions"][0]["action"] == "start_moving_direction"
+    # bounces off both wall orientations
+    assert ev["collision_with_obj_wall_h"]["actions"][0]["action"] == "reverse_vertical"
+    assert ev["collision_with_obj_wall_v"]["actions"][0]["action"] == "reverse_horizontal"
+
+    proj = json.loads((root / "project.json").read_text(encoding="utf-8"))
+    assert "obj_monster" in proj["assets"]["objects"]
+    assert "spr_monster" in proj["assets"]["sprites"]
+
+
+def test_monster_patrols_and_lives_init():
+    """The monster moves each frame (patrol), and the player starts with 3
+    lives shown in the caption HUD."""
+    runner = _runner()
+    start = {}
+
+    class _FakeClock:
+        def tick(self, fps=0):
+            f = start.setdefault("f", 0)
+            start["f"] = f + 1
+            if start["f"] == 2:
+                m = [i for i in runner.current_room.instances
+                     if i.object_name == "obj_monster"]
+                start["y0"] = m[0].y if m else None
+            if start["f"] >= 20:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real = pygame.time.Clock
+    pygame.time.Clock = _FakeClock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real
+
+    assert runner.lives == 3
+    assert runner.show_lives_in_caption is True
+    mon = next(i for i in runner.current_room.instances
+               if i.object_name == "obj_monster")
+    assert mon.y != start["y0"], "monster should be patrolling (moving)"
+
+
+def test_monster_collision_costs_a_life():
+    """Touching a monster deducts a life (via the real event dispatch)."""
+    runner = _runner()
+    fired = {"done": False}
+
+    class _FakeClock:
+        def tick(self, fps=0):
+            fired.setdefault("f", 0)
+            fired["f"] += 1
+            if fired["f"] == 5 and not fired["done"]:
+                fired["done"] = True
+                p = next(i for i in runner.current_room.instances
+                         if i.object_name == "obj_person")
+                fired["before"] = runner.lives
+                runner.action_executor.execute_event(
+                    p, "collision_with_obj_monster", p.object_data["events"])
+            if fired["f"] >= 12:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real = pygame.time.Clock
+    pygame.time.Clock = _FakeClock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real
+
+    assert fired["done"]
+    assert fired["before"] == 3
+    assert runner.lives == 2, f"a monster hit should cost one life, got {runner.lives}"
 
 
 def test_raycast_2_room0_is_a_thin_wall_maze():
