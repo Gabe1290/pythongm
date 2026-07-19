@@ -38,6 +38,22 @@ def _bg_color_to_rgb(value) -> tuple:
     return (0.5, 0.5, 0.5)
 
 
+def _exported_asset_filename(asset_name: str, file_path) -> str:
+    """The filename an asset is copied to under the flat export dir.
+
+    Keyed on the (project-unique) ASSET NAME plus the source file's extension,
+    NOT the source basename — otherwise two assets whose source files merely
+    share a basename (e.g. `player/idle.png` and `enemy/idle.png`, or a sprite
+    and a background both named `tile.png` imported from different folders)
+    overwrite each other on disk and clobber each other's path/frame-metadata
+    map entries (EIO-11). Asset names are unique within their type, so this is
+    collision-free per type; sprites and backgrounds share `assets/images/`, so
+    a sprite and a background with the *same asset name* would still collide —
+    that's a far rarer, pre-existing edge left as-is.
+    """
+    return f"{asset_name}{Path(str(file_path)).suffix}"
+
+
 class KivyExporter:
     """Export PyGameMaker projects to Kivy format"""
 
@@ -47,27 +63,28 @@ class KivyExporter:
         self.output_path = Path(output_path)
         self.grid_size = 32  # Default grid size for snapping
         # sprite_name -> exported asset path, so the set_sprite action can
-        # resolve a sprite by name (sprites are copied to assets/images/<file>
-        # by _export_sprite, matching _generate_object's initial-sprite path).
+        # resolve a sprite by name. Sprites are copied to
+        # assets/images/<asset_name><ext> by _export_sprite (name-keyed, not
+        # source-basename-keyed — see _exported_asset_filename), matching
+        # _generate_object's initial-sprite path.
         self.sprite_path_map = {
-            name: f"assets/images/{Path(data.get('file_path', '')).name}"
+            name: f"assets/images/{_exported_asset_filename(name, data.get('file_path', ''))}"
             for name, data in project_data.get('assets', {}).get('sprites', {}).items()
             if data.get('file_path')
         }
         # sound_name -> exported asset path, for the play_sound action.
-        # Sounds are copied to assets/sounds/<file> by _export_sound.
+        # Sounds are copied to assets/sounds/<asset_name><ext> by _export_sound.
         self.sound_path_map = {
-            name: f"assets/sounds/{Path(data.get('file_path', '')).name}"
+            name: f"assets/sounds/{_exported_asset_filename(name, data.get('file_path', ''))}"
             for name, data in project_data.get('assets', {}).get('sounds', {}).items()
             if data.get('file_path')
         }
         # background_name -> exported asset path, for the draw_background
-        # draw-queue command. Backgrounds are copied to assets/images/<file>
-        # by _export_background (same directory as sprites, but kept in its
-        # own map — not merged into sprite_path_map — so a background and a
-        # sprite that happen to share a name can never collide).
+        # draw-queue command. Backgrounds are copied to
+        # assets/images/<asset_name><ext> by _export_background (same directory
+        # as sprites, but kept in its own map — not merged into sprite_path_map).
         self.background_path_map = {
-            name: f"assets/images/{Path(data.get('file_path', '')).name}"
+            name: f"assets/images/{_exported_asset_filename(name, data.get('file_path', ''))}"
             for name, data in project_data.get('assets', {}).get('backgrounds', {}).items()
             if data.get('file_path')
         }
@@ -83,7 +100,7 @@ class KivyExporter:
             _frames = max(1, int(_data.get('frames', 1) or 1))
             _fw = int(_data.get('frame_width') or (_data.get('width') if _frames == 1 else 0) or 0)
             _fh = int(_data.get('frame_height') or _data.get('height') or 0)
-            self.sprite_meta_map[f"assets/images/{Path(_fp).name}"] = {
+            self.sprite_meta_map[f"assets/images/{_exported_asset_filename(_name, _fp)}"] = {
                 'frames': _frames,
                 'frame_width': _fw,
                 'frame_height': _fh,
@@ -242,7 +259,8 @@ class KivyExporter:
         if file_path:
             src = self.project_path / file_path
             if src.exists():
-                dst = self.output_path / "game" / "assets" / "images" / src.name
+                dst = (self.output_path / "game" / "assets" / "images"
+                       / _exported_asset_filename(name, file_path))
                 shutil.copy2(src, dst)
 
     def _export_sound(self, name: str, data: Dict):
@@ -251,7 +269,8 @@ class KivyExporter:
         if file_path:
             src = self.project_path / file_path
             if src.exists():
-                dst = self.output_path / "game" / "assets" / "sounds" / src.name
+                dst = (self.output_path / "game" / "assets" / "sounds"
+                       / _exported_asset_filename(name, file_path))
                 shutil.copy2(src, dst)
 
     def _export_background(self, name: str, data: Dict):
@@ -260,7 +279,8 @@ class KivyExporter:
         if file_path:
             src = self.project_path / file_path
             if src.exists():
-                dst = self.output_path / "game" / "assets" / "images" / src.name
+                dst = (self.output_path / "game" / "assets" / "images"
+                       / _exported_asset_filename(name, file_path))
                 shutil.copy2(src, dst)
 
     def _generate_main_app(self):
@@ -1259,14 +1279,15 @@ if __name__ == '__main__':
         bg_image = room_data.get('background', '') or room_data.get('background_image', '')
 
         # Resolve the background's actual exported filename. _export_background
-        # copies the file under its original name/extension, so hardcoding
-        # "<asset>.png" missed any non-PNG or renamed background and the room
-        # rendered without it (L22). Fall back to "<name>.png" for legacy data.
+        # copies the file to <asset_name><ext> (name-keyed — see
+        # _exported_asset_filename), so hardcoding "<asset>.png" missed any
+        # non-PNG background and the room rendered without it (L22). Fall back to
+        # "<name>.png" for legacy data with no file_path.
         bg_filename = ''
         if bg_image:
             bg_meta = self.project_data.get('assets', {}).get('backgrounds', {}).get(bg_image, {})
             bg_fp = bg_meta.get('file_path', '')
-            bg_filename = Path(bg_fp).name if bg_fp else f"{bg_image}.png"
+            bg_filename = _exported_asset_filename(bg_image, bg_fp) if bg_fp else f"{bg_image}.png"
 
         # Convert hex string or [r, g, b, a] list to RGB floats (0-1 range)
         r, g, b = _bg_color_to_rgb(bg_color)
@@ -3632,7 +3653,7 @@ class GameObject(Widget):
             if sprite_name in sprites:
                 sprite_file = sprites[sprite_name].get('file_path', '')
                 if sprite_file:
-                    sprite_path = f"assets/images/{Path(sprite_file).name}"
+                    sprite_path = f"assets/images/{_exported_asset_filename(sprite_name, sprite_file)}"
 
         # Generate event handlers from object's events
         events = obj_data.get('events', [])
