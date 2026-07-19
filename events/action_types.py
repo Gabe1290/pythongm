@@ -15,6 +15,9 @@ class ActionParameter:
         - number: Integer input
         - float: Decimal number input
         - choice: Dropdown selection
+        - multi_choice: Set of checkboxes (choices), value is a list of the
+          checked names — for list-valued params (e.g. start_moving_direction's
+          `directions`, GM's 3×3 direction picker)
         - boolean: Checkbox
         - action_list: List of actions
         - color: Color picker
@@ -1397,17 +1400,22 @@ ACTION_TYPES = {
         parameters=[
             ActionParameter(
                 name="directions", display_name="Directions",
-                # `string` rather than `number` because the GMK importer
-                # converts the original 9-bit bitmask into a Python list
-                # of direction names (e.g. `['down', 'up']` so
-                # start_moving_direction can pick at random). The events
-                # panel currently has no multi-select widget for list
-                # params, so the value round-trips through a QLineEdit
-                # as its stringified repr. The runtime tolerates both
-                # forms (list, stringified list, single name, numeric
-                # angle, expression) — see execute_start_moving_direction_action.
-                param_type="string", default_value="right",
-                description="Direction name ('up', 'down', 'left', 'right'), comma-separated list, or a single numeric angle",
+                # `multi_choice` because the GMK importer converts the original
+                # 9-bit bitmask into a Python list of direction names (e.g.
+                # `['down', 'up']` so start_moving_direction can pick one at
+                # random each step). The choices are laid out in GM's 3×3
+                # direction-grid reading order (top row = up), so the events
+                # panel renders them as a familiar 3×3 checkbox picker and the
+                # value round-trips as a real list — no more stringified repr
+                # through a QLineEdit. The runtime still tolerates every legacy
+                # form (list, stringified list, single name, numeric angle,
+                # expression) — see execute_start_moving_direction_action.
+                param_type="multi_choice",
+                choices=["up-left", "up", "up-right",
+                         "left", "stop", "right",
+                         "down-left", "down", "down-right"],
+                default_value=["right"],
+                description="Direction(s) to move — check one, or several to pick a random one each step. The centre cell is stop.",
             ),
             ActionParameter(
                 name="direction_expr", display_name="Direction Expression",

@@ -218,14 +218,18 @@ draw events without matching UI metadata).
 - [ ] `action_play_sound` mis-mapped to `set_sprite` — **closed by the
       maze_3 re-verification above** (all 5 sites now import correctly as
       `play_sound`). No further action.
-- [ ] List-typed action params (`start_moving_direction`'s `directions`)
+- [x] List-typed action params (`start_moving_direction`'s `directions`)
       round-tripping through the events panel as a stringified
-      `"['down', 'up']"` — **not re-investigated this pass** (confirmed
-      out of scope for the importer specifically: it's an events-panel
-      widget gap, not a GMK-conversion gap — the importer itself emits a
-      real list). Still open if someone wants to build a `multi_choice`
-      param_type; the `ast.literal_eval` runtime fallback means it isn't
-      urgent.
+      `"['down', 'up']"` — **DONE 2026-07-19.** Built the `multi_choice`
+      param_type: `ActionConfigDialog` renders a set of checkboxes (a 3-column
+      grid for 7-9 choices, so directions get GM's familiar 3×3 picker) and
+      reads the value back as a real Python list. `directions` is now
+      `param_type="multi_choice"` with the 9 GM direction names in 3×3 reading
+      order. `_parse_multi_choice` normalises every legacy stored form (real
+      list, stringified list, comma-separated, single name) so old saves still
+      populate the boxes; the runtime `ast.literal_eval` fallback stays as a
+      belt-and-braces. `tests/test_action_editor_multi_choice.py` (7). Suite
+      1918→1925.
 - [x] Asset-reference integrity check for `treasure`/`maze_4` — **DONE
       2026-07-16.** Every `object.sprite`, room-instance `object_name`,
       and room/layer `background_image` reference resolves to a real

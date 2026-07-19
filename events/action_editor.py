@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QLabel, QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox,
     QCheckBox, QComboBox, QDialogButtonBox, QTextEdit, QColorDialog,
     QWidget, QScrollArea, QFormLayout, QMessageBox,
-    QGroupBox, QRadioButton, QButtonGroup,
+    QGroupBox, QRadioButton, QButtonGroup, QGridLayout,
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
@@ -251,6 +251,30 @@ class ActionConfigDialog(QDialog):
                     widget.setCurrentText(str(self.current_params[param.name]))
                 else:
                     widget.setCurrentText(str(param.default_value))
+
+            # Multi-select checkboxes for list-valued params (e.g.
+            # start_moving_direction's `directions`). The value round-trips as a
+            # real Python list of the checked choice names — not a stringified
+            # repr through a QLineEdit. Choices of 7-9 items wrap into a 3-column
+            # grid, giving GM's 3×3 direction picker its familiar layout.
+            elif param.param_type == "multi_choice":
+                container = QWidget()
+                grid = QGridLayout(container)
+                grid.setContentsMargins(0, 0, 0, 0)
+                grid.setSpacing(4)
+                raw = self.current_params.get(param.name, param.default_value)
+                selected = self._parse_multi_choice(raw)
+                cols = 3 if len(param.choices) > 4 else max(1, len(param.choices))
+                boxes = []
+                for i, choice in enumerate(param.choices):
+                    cb = QCheckBox(self.tr(choice))
+                    cb.setChecked(choice in selected)
+                    grid.addWidget(cb, i // cols, i % cols)
+                    boxes.append((choice, cb))
+                # Read back in get_parameter_values via this marker attribute
+                # (a bare QWidget matches none of the isinstance branches there).
+                container._choice_boxes = boxes
+                widget = container
 
             elif param.param_type == "boolean":
                 widget = QCheckBox()
@@ -662,6 +686,33 @@ class ActionConfigDialog(QDialog):
             return {'target': 'other', 'target_object': ''}
         return {'target': 'self', 'target_object': ''}
 
+    @staticmethod
+    def _parse_multi_choice(value) -> List[str]:
+        """Normalise a stored multi_choice value into a list of choice names.
+
+        Tolerates every form the value may arrive in: a real list (the new
+        canonical form and what the GMK importer emits), a stringified list
+        (``"['down', 'up']"`` — the legacy QLineEdit round-trip this widget
+        replaces), a comma-separated string (``"down, up"``), or a single name
+        (``"right"``). Empty / None → ``[]``.
+        """
+        if value is None:
+            return []
+        if isinstance(value, (list, tuple)):
+            return [str(v).strip() for v in value if str(v).strip()]
+        s = str(value).strip()
+        if not s:
+            return []
+        if s.startswith("[") and s.endswith("]"):
+            try:
+                import ast
+                parsed = ast.literal_eval(s)
+                if isinstance(parsed, (list, tuple)):
+                    return [str(v).strip() for v in parsed if str(v).strip()]
+            except (ValueError, SyntaxError):
+                pass  # not a valid list literal — fall through to comma split
+        return [tok.strip().strip("'\"") for tok in s.split(",") if tok.strip()]
+
     def get_parameter_values(self) -> Dict[str, Any]:
         """Get configured parameter values including nested action parameters"""
         if self.is_conditional:
@@ -670,7 +721,11 @@ class ActionConfigDialog(QDialog):
         # Get current parameter values from widgets
         values = self._get_applies_to_values()
         for param_name, widget in self.param_widgets.items():
-            if isinstance(widget, QLineEdit):
+            if hasattr(widget, "_choice_boxes"):
+                # multi_choice: a real list of the checked choice names.
+                values[param_name] = [c for c, cb in widget._choice_boxes
+                                      if cb.isChecked()]
+            elif isinstance(widget, QLineEdit):
                 values[param_name] = widget.text()
             elif isinstance(widget, QSpinBox):
                 values[param_name] = widget.value()
