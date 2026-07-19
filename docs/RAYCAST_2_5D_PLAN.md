@@ -712,6 +712,16 @@ harness if one is available.)
    can't be spiked here (no JS engine in CI) — needs a browser-based spike
    before committing, with a flat-floor fallback if a browser can't hit budget.
 4. Kivy facing_angle + walls (+ stub test). Medium.
+   — **4a movement/action parity DONE 2026-07-19** (`kivy_exporter.py`:
+   `facing_angle` on the base object, `raycast_camera=None` on the scene;
+   `code_generator.py`: `set_direction_speed` [raycast_1's FPS controls, the
+   Kivy generator dropped it before], `set_facing_angle` [abs/relative],
+   `enable_raycast_view` [builds the scene `raycast_camera` cfg; no named camera
+   ⇒ `camera_instance=self`]. `tests/test_kivy_raycast.py`, 8 — codegen unit
+   asserts + real raycast_1 export compile check. Suite 1895→1903.) **4b — the
+   wall RENDERER** (scene `_render_raycast()`: DDA + wall `Rectangle`s via an
+   opaque overlay `InstructionGroup`, y-up flip; hook into `_update_impl`) is
+   the next unit.
 5. Kivy sky + floor (spike) + billboards (+ stub test). Medium.
 6. 3-target `_cast_ray` parity test. Small.
 

@@ -1464,6 +1464,10 @@ class {class_name}(Widget):
         self.views_enabled = {views_enabled}
         self.views = {views_repr}
         self._cam_translate = None
+        # Raycast (Doom-style first-person) camera config, set by the
+        # enable_raycast_view action; None = normal top-down rendering. The
+        # scene draws the first-person view as an opaque overlay when enabled.
+        self.raycast_camera = None
         # Displayed surface: for a views room it's the game WINDOW (a slice of
         # the larger room); otherwise it's the room itself. The exporter sizes
         # the OS window / Android fit-scale to this via scene.display_width/height.
@@ -2280,6 +2284,10 @@ class GameObject(Widget):
         self._friction = 0
         self._gravity = 0
         self._gravity_direction = 270
+        # Raycast (first-person) camera look direction, GM angle convention
+        # (0=right, 90=up), independent of movement — see set_facing_angle /
+        # enable_raycast_view and the scene's raycast render.
+        self.facing_angle = 0.0
 
         # GAMEMAKER 7.0: 12 alarm clocks per instance
         self.alarms = [-1] * 12  # -1 = inactive, >= 0 = active countdown
