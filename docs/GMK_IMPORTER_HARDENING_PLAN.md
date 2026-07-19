@@ -268,11 +268,31 @@ draw events without matching UI metadata).
       queued as its own small commit). No visual playtest was possible in
       this headless session — flagged for a quick human confirmation when
       re-adding, but all automatable gates are green.
-- [ ] Draw events (`draw_self`, `draw_sprite_ext`, etc.) without matching
-      UI metadata in `treasure`/`maze_4` — not checked this pass; cross
-      reference against the "UI metadata coverage for runtime actions"
-      section of `TODO.md` before assuming any gap found is an importer
-      bug rather than a metadata-registry gap.
+- [x] Draw events (`draw_self`, `draw_sprite_ext`, etc.) without matching
+      UI metadata in `treasure`/`maze_4` — **INVESTIGATED + FIXED 2026-07-19.**
+      `treasure` uses no draw actions; `maze_4` uses `draw_lives`/`draw_score`/
+      `draw_text`/`set_draw_color`/`set_draw_font` — all already registered
+      (`draw_self`/`draw_sprite_ext` from the audit's examples aren't used by
+      either sample). Comparing each saved action's params against its
+      registered metadata surfaced two genuine **UI-metadata gaps** (the
+      runtime honours them but the panel dropped them on edit — the M11/M60
+      "editing corrupts the action" class): (1) GM's `relative` checkbox on
+      `draw_score`/`draw_text`/`draw_lives` (runtime reads it via `_is_relative`,
+      registry had no widget); (2) GM's `image` sprite-arg name on `draw_lives`
+      (runtime accepts `sprite` or `image`, registry had no alias). Fixed:
+      added a `relative` boolean to the three actions and `aliases=["image"]`
+      to `draw_lives`'s sprite param. `tests/test_draw_action_metadata_coverage.py`
+      (8). Suite 1925→1933.
+      **Separate finding (NOT a metadata gap — logged for follow-up):**
+      `set_draw_font`'s registry (`halign`/`valign`) is correct, but the GMK
+      importer emits GM's `align` int (`gmk_mappings.py:493,725` → `["font",
+      "align"]`) which **neither the runtime nor the registry reads** — the
+      runtime wants `halign`/`valign` strings. `maze_4`'s `align:"0"` (GM
+      fa_left) coincidentally matches the runtime's `halign` default, so it's
+      latent, not breaking; but any GM center/right align is silently ignored on
+      import. This is an **importer/runtime param-name mismatch**, distinct from
+      UI metadata — fix belongs in `_convert_*` (map GM align 0/1/2 →
+      left/center/right into `halign`) or as a runtime `align` fallback.
 - [x] Re-add `treasure` and `maze_4` to the bundled set — **DONE
       2026-07-16, verdict RE-ADD** (user played both through and approved).
       The playtest ran 15 findings; **12 were real bugs, all fixed** with
