@@ -16,22 +16,7 @@
       "target_object": "obj_wall_v"
     },
     "create": {
-      "actions": [
-        {
-          "action": "enable_raycast_view",
-          "parameters": {
-            "fov": "66",
-            "cell_size": "32",
-            "render_distance": "20",
-            "wall_color": "#993333",
-            "floor_color": "#464632",
-            "ceiling_color": "#87CEEB",
-            "wall_texture": "spr_wall_texture",
-            "sky_texture": "spr_sky",
-            "floor_texture": "spr_floor"
-          }
-        }
-      ]
+      "actions": []
     },
     "keyboard": {
       "up": {

@@ -1,5 +1,5 @@
 {
-  "name": "obj_goal",
+  "name": "obj_goal_final",
   "asset_type": "object",
   "sprite": "spr_goal",
   "visible": true,
@@ -22,10 +22,14 @@
           "parameters": {}
         },
         {
-          "action": "next_room",
+          "action": "show_message",
           "parameters": {
-            "transition": "0"
+            "message": "Bravo ! Tu as terminé les deux niveaux avec toutes les gemmes."
           }
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
         },
         {
           "action": "end_block",
