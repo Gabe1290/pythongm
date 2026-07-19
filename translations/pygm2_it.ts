@@ -8392,6 +8392,11 @@ Vuoi salvare comunque?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 1</source>
+            <translation>Raycasting — Livello 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 4</source>
             <translation>Labirinto — Livello 4</translation>
         </message>

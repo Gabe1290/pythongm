@@ -34,6 +34,7 @@ SAMPLES = [
     ("Platform", 1), ("Platform", 2), ("Platform", 3),
     ("Match-3", 1), ("Match-3", 2), ("Match-3", 3),
     ("Views", 1), ("Views", 2),
+    ("Raycast", 1),
 ]
 
 # Standalone sample names (no "— Level N" suffix). English label must
@@ -45,19 +46,23 @@ STANDALONE = {
     },
 }
 
-# Per language: (maze word, platform word, match-3 word, views word, level
-# word). "Level" is kept as-is for German (idiomatic in gaming); "Match-3" is
-# the established genre name in most locales, with the native "three in a row"
-# phrase for ru/uk. "Views" uses the native GameMaker camera-views term per
-# locale. The em-dash separator (—, U+2014) matches the English source exactly.
+# Per language: (maze word, platform word, match-3 word, views word, raycast
+# word, level word). "Level" is kept as-is for German (idiomatic in gaming);
+# "Match-3" is the established genre name in most locales, with the native
+# "three in a row" phrase for ru/uk. "Views" uses the native GameMaker
+# camera-views term per locale. "Raycast" (the Doom/Wolfenstein first-person
+# rendering technique) is properly localised in French — "Lancer de rayons",
+# the standard French term — and kept as the widely-used technical loanword
+# ("Raycasting" / native transliteration) elsewhere. The em-dash separator
+# (—, U+2014) matches the English source exactly.
 TERMS = {
-    "fr": ("Labyrinthe", "Plateforme", "Match-3", "Vues", "Niveau"),
-    "de": ("Labyrinth", "Plattform", "Match-3", "Ansichten", "Level"),
-    "es": ("Laberinto", "Plataforma", "Match-3", "Vistas", "Nivel"),
-    "it": ("Labirinto", "Piattaforma", "Match-3", "Viste", "Livello"),
-    "ru": ("Лабиринт", "Платформа", "Три в ряд", "Виды", "Уровень"),
-    "sl": ("Labirint", "Platforma", "Match-3", "Pogledi", "Stopnja"),
-    "uk": ("Лабіринт", "Платформа", "Три в ряд", "Види", "Рівень"),
+    "fr": ("Labyrinthe", "Plateforme", "Match-3", "Vues", "Lancer de rayons", "Niveau"),
+    "de": ("Labyrinth", "Plattform", "Match-3", "Ansichten", "Raycasting", "Level"),
+    "es": ("Laberinto", "Plataforma", "Match-3", "Vistas", "Raycasting", "Nivel"),
+    "it": ("Labirinto", "Piattaforma", "Match-3", "Viste", "Raycasting", "Livello"),
+    "ru": ("Лабиринт", "Платформа", "Три в ряд", "Виды", "Рейкастинг", "Уровень"),
+    "sl": ("Labirint", "Platforma", "Match-3", "Pogledi", "Raycasting", "Stopnja"),
+    "uk": ("Лабіринт", "Платформа", "Три в ряд", "Види", "Рейкастинг", "Рівень"),
 }
 
 
@@ -66,9 +71,9 @@ def en_label(kind: str, level: int) -> str:
 
 
 def translate(lang: str, kind: str, level: int) -> str:
-    maze, platform, match3, views, lvl = TERMS[lang]
-    word = {"Maze": maze, "Platform": platform,
-            "Match-3": match3, "Views": views}[kind]
+    maze, platform, match3, views, raycast, lvl = TERMS[lang]
+    word = {"Maze": maze, "Platform": platform, "Match-3": match3,
+            "Views": views, "Raycast": raycast}[kind]
     return f"{word} — {lvl} {level}"
 
 

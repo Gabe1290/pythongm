@@ -50,6 +50,7 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/match3_3", "Match-3 — Level 3"),
     ("samples/views_1", "Views — Level 1"),
     ("samples/views_2", "Views — Level 2"),
+    ("samples/raycast_1", "Raycast — Level 1"),
     ("samples/treasure", "Treasure"),
     # `treasure` and `maze_4` were dropped after rc.12 user testing, then
     # RE-ADDED 2026-07-16 once the GMK importer hardening closed the bugs
