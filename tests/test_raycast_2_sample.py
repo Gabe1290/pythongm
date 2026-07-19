@@ -287,6 +287,54 @@ def test_monster_collision_costs_a_life():
     assert runner.lives == 2, f"a monster hit should cost one life, got {runner.lives}"
 
 
+def _run_capturing_messages(runner, frames):
+    msgs = []
+    runner.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+    _run(runner, {}, frames)
+    return msgs
+
+
+def test_goal_is_gated_on_collecting_all_gems():
+    """Unit 4: reaching the goal shows a 'collect them all' prompt while gems
+    remain, and the win message only once every gem is gone."""
+    runner = _runner()
+    msgs = _run_capturing_messages(runner, 5)
+    goal = next(i for i in runner.current_room.instances
+                if i.object_name == "obj_goal")
+
+    # gems still present -> prompt, not a win
+    runner.action_executor.execute_event(
+        goal, "collision_with_obj_person", goal.object_data["events"])
+    assert msgs and "Ramasse toutes les gemmes" in msgs[-1]
+
+    # collect (destroy) every gem, then reach the goal -> win
+    for g in [i for i in runner.current_room.instances
+              if i.object_name == "obj_gem"]:
+        g._destroyed = True
+    runner.current_room.instances = [
+        i for i in runner.current_room.instances
+        if not getattr(i, "_destroyed", False)]
+    msgs.clear()
+    runner.action_executor.execute_event(
+        goal, "collision_with_obj_person", goal.object_data["events"])
+    assert msgs and "Bravo" in msgs[-1]
+
+
+def test_goal_messages_are_accented_french():
+    """French UI text must carry proper accents (project rule)."""
+    import json
+    acts = json.loads((REPO_ROOT / "samples" / "raycast_2" / "objects"
+                       / "obj_goal.json").read_text(encoding="utf-8")
+                      )["events"]["collision_with_obj_person"]["actions"]
+    messages = [a["parameters"]["message"] for a in acts
+                if a["action"] == "show_message"]
+    joined = " ".join(messages)
+    assert "trouvé" in joined            # é, not a stripped 'trouve'
+    # the gate uses test_instance_count(obj_gem == 0) + a start_block/end_block
+    assert any(a["action"] == "test_instance_count"
+               and a["parameters"]["object"] == "obj_gem" for a in acts)
+
+
 def test_raycast_2_room0_is_a_thin_wall_maze():
     """The generated room uses raycast_1's thin edge-wall objects, not
     full-cell blocks — a sanity check on the geometry conversion."""
