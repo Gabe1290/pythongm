@@ -283,16 +283,19 @@ draw events without matching UI metadata).
       added a `relative` boolean to the three actions and `aliases=["image"]`
       to `draw_lives`'s sprite param. `tests/test_draw_action_metadata_coverage.py`
       (8). Suite 1925→1933.
-      **Separate finding (NOT a metadata gap — logged for follow-up):**
-      `set_draw_font`'s registry (`halign`/`valign`) is correct, but the GMK
-      importer emits GM's `align` int (`gmk_mappings.py:493,725` → `["font",
-      "align"]`) which **neither the runtime nor the registry reads** — the
-      runtime wants `halign`/`valign` strings. `maze_4`'s `align:"0"` (GM
-      fa_left) coincidentally matches the runtime's `halign` default, so it's
-      latent, not breaking; but any GM center/right align is silently ignored on
-      import. This is an **importer/runtime param-name mismatch**, distinct from
-      UI metadata — fix belongs in `_convert_*` (map GM align 0/1/2 →
-      left/center/right into `halign`) or as a runtime `align` fallback.
+      **Separate finding — FIXED 2026-07-19 (follow-up commit):**
+      `set_draw_font`'s registry (`halign`/`valign`) was correct, but the GMK
+      importer emitted GM's `align` int (`gmk_mappings.py:493,725` → `["font",
+      "align"]`) which **neither the runtime nor the registry read** — the
+      runtime wants `halign`/`valign` strings, so any GM center/right align was
+      silently ignored on import (`maze_4`'s `align:"0"` coincidentally matched
+      the `halign` default, hiding it). Fixed at the root + defensively:
+      (1) `gmk_converter._convert_font_align` maps GM's 0/1/2 → left/center/
+      right and the converter emits canonical `halign` (dropping `align`);
+      (2) `execute_set_draw_font_action` reads a raw `align` as a `halign`
+      fallback for projects imported before the fix; (3) `maze_4`'s shipped data
+      normalised `align:"0"` → `halign:"left"`. `tests/test_gmk_font_align.py`
+      (6). Suite 1933→1939.
 - [x] Re-add `treasure` and `maze_4` to the bundled set — **DONE
       2026-07-16, verdict RE-ADD** (user played both through and approved).
       The playtest ran 15 findings; **12 were real bugs, all fixed** with

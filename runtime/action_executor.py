@@ -10,6 +10,13 @@ from typing import Dict, Any, List, Tuple
 from core.logger import get_logger
 logger = get_logger(__name__)
 
+# GM's Set Font action encodes horizontal align as a 0/1/2 menu; the converter
+# now translates it to `halign`, but pre-fix imported projects still carry the
+# raw GM key, so execute_set_draw_font_action reads this as a fallback.
+_GM_FONT_ALIGN_FALLBACK = {"0": "left", "1": "center", "2": "right",
+                           0: "left", 1: "center", 2: "right",
+                           "left": "left", "center": "center", "right": "right"}
+
 
 def detect_c_style_operators(expression: str) -> List[Tuple[str, str]]:
     """Find C/GML-style boolean operators that should be Python operators.
@@ -5692,7 +5699,15 @@ class ActionExecutor:
             valign: Vertical alignment (top, middle, bottom)
         """
         font_name = self._parse_value(parameters.get("font", ""), instance)
-        halign = self._parse_value(parameters.get("halign", "left"), instance)
+        # Accept GM's `align` menu (0/1/2) as a fallback for `halign` — projects
+        # imported before the converter translated it still carry the raw GM
+        # key. New imports emit `halign` directly (see gmk_converter).
+        halign_param = parameters.get("halign")
+        if halign_param is None and "align" in parameters:
+            halign_param = _GM_FONT_ALIGN_FALLBACK.get(
+                parameters.get("align"), "left")
+        halign = self._parse_value(
+            halign_param if halign_param is not None else "left", instance)
         valign = self._parse_value(parameters.get("valign", "top"), instance)
 
         # Store font settings on the instance
