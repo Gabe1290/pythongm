@@ -2061,9 +2061,21 @@ class GameRoom:
         wall_texture_name = cfg.get('wall_texture', '')
         wall_texture = (getattr(self, '_all_sprites', {}) or {}).get(wall_texture_name) \
             if wall_texture_name else None
+        # CAMERA-PLANE projection (not uniform-angle). Screen columns are evenly
+        # spaced, so the rays must be evenly spaced on the CAMERA PLANE, i.e.
+        # ray_dir = dir + plane * camera_x with camera_x in [-1, 1]. The angle
+        # off-centre is therefore atan(tan(fov/2) * camera_x), NOT a linear ramp
+        # over the FOV. Sampling uniformly in ANGLE while drawing at uniform
+        # screen x is not a perspective projection: it BENDS straight walls, so
+        # a flat wall rendered as you moved past it looked like it had a corner
+        # in it (user report 2026-07-19). The floor cast already used the
+        # camera-plane method -- the wall pass now matches it, so walls, floor
+        # and billboards finally share one projection.
+        plane_tan = math.tan(fov_rad / 2)
         col_wall_dist = [float('inf')] * num_columns  # for billboard occlusion, below
         for col in range(num_columns):
-            ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
+            camera_x = 2.0 * (col + 0.5) / num_columns - 1.0
+            ray_offset = math.atan(plane_tan * camera_x)
             ray_angle = facing_screen_rad + ray_offset
             dist, side, hit, tex_u, wall_sprite = self._cast_ray(
                 cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
@@ -2136,7 +2148,11 @@ class GameRoom:
             sprite_w = int(h * inst._cached_width / max(corrected, 1e-4))
             if sprite_w < 1 or sprite_h < 1:
                 continue
-            col_center = (rel_angle + fov_rad / 2) / fov_rad * num_columns
+            # Same camera-plane mapping the wall pass uses (inverse of
+            # ray_offset = atan(plane_tan * camera_x)), so billboards line up
+            # with the walls instead of drifting toward the screen edges.
+            camera_x = math.tan(rel_angle) / plane_tan if plane_tan else 0.0
+            col_center = (camera_x + 1.0) * 0.5 * num_columns
             x_center = col_center * col_width
             x_left = int(x_center - sprite_w / 2)
             frame = inst.sprite.get_frame(inst.image_index)

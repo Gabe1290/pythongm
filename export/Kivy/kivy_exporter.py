@@ -2012,12 +2012,20 @@ class {class_name}(Widget):
                 self._render_floor_plane(group, ceil_px, cast_res, facing_screen_rad,
                                          fov_rad, cam_cx, cam_cy, w, h, ceiling=True)
 
+        # CAMERA-PLANE projection (not uniform-angle) — screen columns are
+        # evenly spaced, so rays must be evenly spaced on the camera plane:
+        # ray_dir = dir + plane * camera_x, i.e. the off-centre angle is
+        # atan(tan(fov/2) * camera_x), NOT a linear ramp. Uniform-angle sampling
+        # drawn at uniform screen x isn't a perspective projection and BENDS
+        # straight walls. Matches game_runner and the floor cast.
+        plane_tan = math.tan(fov_rad / 2)
         # Fisheye-corrected wall distance per screen column, for billboard
         # occlusion below (Infinity where a column saw no wall).
         col_wall_dist = [float('inf')] * num_columns
 
         for col in range(num_columns):
-            ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
+            camera_x = 2.0 * (col + 0.5) / num_columns - 1.0
+            ray_offset = math.atan(plane_tan * camera_x)
             ray_angle = facing_screen_rad + ray_offset
             dist, side, hit, tex_u, wall_sprite = self._cast_ray(
                 cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
@@ -2090,7 +2098,10 @@ class {class_name}(Widget):
             sprite_w = h * iw / max(corrected_b, 1e-4)
             if sprite_w < 1 or sprite_h < 1:
                 continue
-            col_center = (rel_angle + fov_rad / 2) / fov_rad * num_columns
+            # Same camera-plane mapping as the wall pass, so billboards line up
+            # with the walls instead of drifting toward the screen edges.
+            b_camera_x = math.tan(rel_angle) / plane_tan if plane_tan else 0.0
+            col_center = (b_camera_x + 1.0) * 0.5 * num_columns
             x_center = col_center * col_width
             x_left = x_center - sprite_w / 2.0
             y_top = half_h - sprite_h / 2.0

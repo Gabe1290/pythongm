@@ -186,6 +186,60 @@ def test_html5_wall_shade_mirrors_the_same_constants():
     assert "rgba(0,0,0,0.5)" not in ENGINE
 
 
+def test_flat_wall_projects_perfectly_straight():
+    """THE load-bearing projection property: for a flat wall, 1/corrected_dist
+    must be exactly LINEAR across evenly-spaced screen columns. The renderer
+    used to sample rays at uniform ANGLES while drawing them at uniform screen
+    x, which is not a perspective projection — it bent straight walls so they
+    looked like they had a corner (user report 2026-07-19). Fixed by the
+    camera-plane mapping ray_offset = atan(tan(fov/2) * camera_x)."""
+    room = GameRoom.__new__(GameRoom)
+    room._raycast_h_walls = {(c, 4) for c in range(15)}   # one long flat wall
+    room._raycast_v_walls = set()
+    room._raycast_h_wall_sprites = {}
+    room._raycast_v_wall_sprites = {}
+
+    fov = math.radians(66)
+    plane_tan = math.tan(fov / 2)
+    N = 64
+    for facing_deg in (90, 75, 60, 110):
+        facing = math.radians(-facing_deg)
+        inv = []
+        for col in range(N):
+            camera_x = 2.0 * (col + 0.5) / N - 1.0
+            off = math.atan(plane_tan * camera_x)
+            d, side, hit, tu, spr = room._cast_ray(240, 240, facing + off, 32, 20)
+            if hit:
+                inv.append(1.0 / (d * math.cos(off)))
+        assert len(inv) > 20
+        # Linearity via second differences, normalised by the value range so it
+        # also holds when the wall is perpendicular (inv constant -> range 0).
+        sec = [inv[i + 2] - 2 * inv[i + 1] + inv[i] for i in range(len(inv) - 2)]
+        rng = max(inv) - min(inv)
+        metric = max(abs(s) for s in sec) / (rng if rng > 1e-12 else 1.0)
+        assert metric < 1e-9, (
+            f"flat wall not straight at facing {facing_deg}: curvature "
+            f"{metric:.2e} (uniform-angle sampling gives ~1e-2)")
+
+
+def test_camera_plane_projection_in_all_three_sources():
+    """All three renderers must use the camera-plane mapping (and the matching
+    inverse for billboards), not the old linear FOV ramp."""
+    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    for src, name in ((gr, "game_runner"), (kx, "kivy_exporter")):
+        assert "math.atan(plane_tan * camera_x)" in src, name
+        assert "-fov_rad / 2 + fov_rad * (col / num_columns)" not in src, \
+            f"{name} still uses the bent uniform-angle ramp"
+    assert "Math.atan(planeTan * cameraX)" in ENGINE
+    assert "-fovRad / 2 + fovRad * (col / numCols)" not in ENGINE, \
+        "engine.js still uses the bent uniform-angle ramp"
+    # billboards use the inverse mapping so they track the walls
+    assert "math.tan(rel_angle) / plane_tan" in gr
+    assert "math.tan(rel_angle) / plane_tan" in kx
+    assert "Math.tan(b.relAngle) / planeTan" in ENGINE
+
+
 def test_all_three_share_the_facing_angle_convention():
     """Turning maps to screen-space radians the same way on every target:
     -facing_angle (GM 0=right/90=up -> y-down screen)."""
