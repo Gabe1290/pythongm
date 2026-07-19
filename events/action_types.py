@@ -1708,6 +1708,12 @@ ACTION_TYPES = {
                 description="Text shown before the score value",
                 required=False,
             ),
+            ActionParameter(
+                name="relative", display_name="Relative",
+                param_type="boolean", default_value=False,
+                description="Draw relative to this instance's position instead of absolute screen coordinates",
+                required=False,
+            ),
         ],
     ),
 
@@ -1731,6 +1737,12 @@ ACTION_TYPES = {
             ActionParameter(
                 name="y", display_name="Y", param_type="number", default_value=0,
                 description="Y position",
+            ),
+            ActionParameter(
+                name="relative", display_name="Relative",
+                param_type="boolean", default_value=False,
+                description="Draw relative to this instance's position instead of absolute screen coordinates",
+                required=False,
             ),
         ],
     ),
@@ -1756,11 +1768,22 @@ ACTION_TYPES = {
                 param_type="sprite", default_value="",
                 description="Sprite drawn once per remaining life",
                 required=False,
+                # GM's action_draw_life_images (and the GMK importer) name the
+                # sprite argument "image"; the runtime accepts either, so alias
+                # it here too or editing a GMK-imported draw_lives in the panel
+                # would drop the icon.
+                aliases=["image"],
             ),
             ActionParameter(
                 name="scale", display_name="Scale",
                 param_type="float", default_value=1.0,
                 description="Uniform scale factor for the life icon (1.0 = native size)",
+                required=False,
+            ),
+            ActionParameter(
+                name="relative", display_name="Relative",
+                param_type="boolean", default_value=False,
+                description="Draw relative to this instance's position instead of absolute screen coordinates",
                 required=False,
             ),
         ],
