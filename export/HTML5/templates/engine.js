@@ -2921,9 +2921,18 @@ class GameRoom {
             this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true);
         }
 
+        // CAMERA-PLANE projection (not uniform-angle) — screen columns are
+        // evenly spaced, so rays must be evenly spaced on the camera plane:
+        // ray_dir = dir + plane * cameraX, i.e. the off-centre angle is
+        // atan(tan(fov/2) * cameraX), NOT a linear ramp. Uniform-angle sampling
+        // drawn at uniform screen x isn't a perspective projection and BENDS
+        // straight walls (they looked like they had a corner). Matches
+        // game_runner and the floor cast.
+        const planeTan = Math.tan(fovRad / 2);
         const colWallDist = new Array(numCols).fill(Infinity);  // for billboard occlusion
         for (let col = 0; col < numCols; col++) {
-            const rayOffset = -fovRad / 2 + fovRad * (col / numCols);
+            const cameraX = 2.0 * (col + 0.5) / numCols - 1.0;
+            const rayOffset = Math.atan(planeTan * cameraX);
             const r = this.castRay(camX, camY, facingScreenRad + rayOffset, cellSize, renderDist);
             if (!r.hit) continue;  // open sight-line: leave floor/ceiling/sky showing
             const corrected = r.dist * Math.cos(rayOffset);  // fisheye correction
@@ -2971,7 +2980,10 @@ class GameRoom {
             const spriteH = Math.min(h, Math.floor(h * b.inst.boxHeight() / Math.max(b.corr, 1e-4)));
             const spriteW = Math.floor(h * b.inst.boxWidth() / Math.max(b.corr, 1e-4));
             if (spriteW < 1 || spriteH < 1) continue;
-            const colCenter = (b.relAngle + fovRad / 2) / fovRad * numCols;
+            // Same camera-plane mapping as the wall pass, so billboards line up
+            // with the walls instead of drifting toward the screen edges.
+            const bCameraX = planeTan ? Math.tan(b.relAngle) / planeTan : 0;
+            const colCenter = (bCameraX + 1) * 0.5 * numCols;
             const xLeft = Math.floor(colCenter * colWidth - spriteW / 2);
             const yTop = Math.floor(halfH - spriteH / 2);
             const img = b.inst.sprite;
