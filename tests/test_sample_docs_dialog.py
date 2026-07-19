@@ -47,6 +47,9 @@ def test_lists_only_existing_samples(_qapp):
     # views_1 was added this cycle; it and the maze family must be present.
     assert "Views — Level 1" in labels
     assert "Maze — Level 1" in labels
+    # raycast_1 (the Doom-style first-person sample) was surfaced in the
+    # Welcome tab once its export parity was complete.
+    assert "Raycast — Level 1" in labels
     # A bogus entry that does not exist on disk is filtered out.
     dlg2 = _dialog(_qapp, samples=[("samples/does_not_exist", "Ghost")])
     assert dlg2.sample_labels() == []

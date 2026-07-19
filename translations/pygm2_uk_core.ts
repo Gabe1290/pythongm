@@ -2252,6 +2252,11 @@ Check the console for error details.</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 1</source>
+            <translation>Рейкастинг — Рівень 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 4</source>
             <translation>Лабіринт — Рівень 4</translation>
         </message>
