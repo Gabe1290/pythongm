@@ -126,5 +126,6 @@ Floor casting uses the same low-res-cast-then-upscale approach on every target
 budget (browser ~0.4 ms at res=2; Kivy/AMD 840M ~5 ms at res=4). A project can
 still clear `floor_texture` for a flat `floor_color` floor.
 
-Not yet in the IDE's Welcome tab sample list; open the project folder directly
-for now.
+Available from the IDE's Welcome tab — pick **"Raycast — Level 1"** from the
+*Choose a sample* dropdown (opening a sample copies it into your Documents so
+the bundled original stays pristine).
