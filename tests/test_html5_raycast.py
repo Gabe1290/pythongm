@@ -112,6 +112,64 @@ def test_build_walls_derives_edges_with_sprites():
     assert "_vWallSprites" in body and "_hWallSprites" in body
 
 
+def test_floor_casting_pass_invoked_before_walls():
+    """renderRaycastView casts the textured floor (and, sans sky, ceiling)
+    between the sky pass and the wall loop — matching the desktop order."""
+    m = re.search(r"renderRaycastView\(ctx\)\s*\{(.*?)\n    \}", ENGINE, re.S)
+    body = m.group(1)
+    # res from cfg.floor_cast_res, texture resolved to ImageData, camera in cells
+    assert "cfg.floor_cast_res || 4" in body
+    assert "this._textureData(sprites[cfg.floor_texture])" in body
+    assert "const camCx = camX / cellSize, camCy = camY / cellSize" in body
+    assert "this.castFloorPlane(ctx, floorTex" in body
+    # ceiling only when no sky claimed it
+    assert "cfg.ceiling_texture && !skyTex" in body
+    # the floor pass must precede the wall loop (so walls occlude it)
+    assert body.index("castFloorPlane(ctx, floorTex") < body.index("colWallDist[col] = corrected")
+
+
+def test_cast_floor_plane_mirrors_desktop():
+    """castFloorPlane ports _cast_floor_plane's camera-plane cast faithfully."""
+    m = re.search(r"castFloorPlane\(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling\)\s*\{(.*?)\n    \}",
+                  ENGINE, re.S)
+    assert m, "castFloorPlane not found"
+    body = m.group(1)
+    # row distance from the same projection the walls use
+    assert "const posZ = 0.5 * h" in body
+    assert "const rowd = posZ / p" in body
+    # the two FOV-edge rays interpolated across columns (camera-plane method)
+    assert "const rdx0 = dirX - planeX" in body and "const rdx1 = dirX + planeX" in body
+    # low-res ImageData fill + upscale
+    assert "sctx.createImageData(sw, sh)" in body
+    assert "ctx.drawImage(small, 0, 0, sw, sh, 0, halfH, w, regionH)" in body
+    # ceiling variant flips vertically
+    assert "ctx.scale(1, -1)" in body
+
+
+def test_texture_data_helper_caches_and_guards_taint():
+    m = re.search(r"_textureData\(sprite\)\s*\{(.*?)\n    \}", ENGINE, re.S)
+    assert m, "_textureData not found"
+    body = m.group(1)
+    assert "getImageData(0, 0, sprite.width, sprite.height)" in body
+    assert "this._texDataCache" in body            # cached per sprite
+    assert "catch" in body                          # tainted-canvas fallback -> null
+
+
+def test_raycast_1_export_includes_floor_texture():
+    """The floor sprite referenced by enable_raycast_view ships in the export."""
+    from export.HTML5.html5_exporter import HTML5Exporter
+    src = REPO_ROOT / "samples" / "raycast_1"
+    out = Path(tempfile.mkdtemp(prefix="raycast_html5_floor_")) / "out"
+    out.mkdir(parents=True)
+    assert HTML5Exporter().export(src, out)
+    html = next(out.glob("*.html")).read_text(encoding="utf-8")
+    m = re.search(r'const gameData = decompressData\("([A-Za-z0-9+/=]+)"\)', html)
+    data = json.loads(gzip.decompress(base64.b64decode(m.group(1))))
+    person = json.dumps(data["assets"]["objects"].get("obj_person", {}))
+    assert "spr_floor" in person                    # floor_texture param
+    assert "spr_floor" in data["assets"]["sprites"]  # the sprite itself
+
+
 def test_raycast_1_exports_with_camera_and_textures():
     """The real sample exports to a valid HTML whose embedded data carries the
     enable_raycast_view action and its texture sprites."""
