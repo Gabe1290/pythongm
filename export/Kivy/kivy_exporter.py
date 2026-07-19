@@ -1440,6 +1440,11 @@ from kivy.graphics import Fbo, ClearColor, ClearBuffers, InstructionGroup
 from kivy.core.window import Window
 from utils import load_image
 
+try:
+    from asset_paths import SPRITE_PATHS
+except ImportError:
+    SPRITE_PATHS = {{}}
+
 # Import object types
 {import_lines}
 
@@ -1468,6 +1473,10 @@ class {class_name}(Widget):
         # enable_raycast_view action; None = normal top-down rendering. The
         # scene draws the first-person view as an opaque overlay when enabled.
         self.raycast_camera = None
+        self._raycast_group = None       # opaque overlay InstructionGroup
+        self._raycast_v_walls = None     # derived wall edges (built lazily)
+        self._raycast_cell_size = None
+        self._raycast_tex_cache = {{}}
         # Displayed surface: for a views room it's the game WINDOW (a slice of
         # the larger room); otherwise it's the room itself. The exporter sizes
         # the OS window / Android fit-scale to this via scene.display_width/height.
@@ -1517,6 +1526,11 @@ class {class_name}(Widget):
         if self.views_enabled:
             self.update_views()
             self._render_views()
+
+        # First raycast frame (the create event may have enabled the camera
+        # during create_instances), so frame 0 already shows the 3D view.
+        if self.raycast_camera and self.raycast_camera.get('enabled'):
+            self._render_raycast()
 
     def _draw_background(self):
         """Draw the room background color + image under the camera transform.
@@ -1588,6 +1602,260 @@ class {class_name}(Widget):
         if 0 <= index < len(self.views):
             self.views[index].update(updates)
             self._render_views()
+
+    # ------------------------------------------------------------------
+    # Raycast (Doom-style first-person) rendering — a faithful port of
+    # runtime/game_runner.py's _build_raycast_walls / _cast_ray /
+    # _render_raycast_view (see docs/RAYCAST_2_5D_PLAN.md). The desktop
+    # renderer works in GameMaker y-DOWN room coordinates; Kivy instance
+    # positions are y-UP (self.x/self.y are the sprite's Kivy bottom-left).
+    # To reuse the desktop math verbatim (wall-key derivation, camera
+    # centering, tex_u, facing_angle) we convert each instance BACK to GM
+    # y-down space here, run the identical DDA, and only flip at the final
+    # screen draw — which is vertically SYMMETRIC for wall strips (centered
+    # on the horizon), so the sole visible difference is that the ceiling
+    # fill sits in the TOP (high-y) half in Kivy and the floor in the
+    # bottom half. This is unit 4b: walls only; sky/floor/billboards land
+    # in unit 5.
+    # ------------------------------------------------------------------
+    def _raycast_gm_xy(self, inst):
+        """(gm_x, gm_y) top-left of inst in GameMaker y-down room space —
+        the inverse of the y-up conversion done at instance creation."""
+        h = float(getattr(inst, 'image_height', 0) or 0)
+        return float(inst.x), self.room_height - float(inst.y) - h
+
+    def _build_raycast_walls(self, cell_size):
+        """Derive thin wall EDGES from every solid instance (port of the
+        desktop method of the same name). v_walls holds (line_x, row);
+        h_walls holds (col, line_y). Parallel *_sprites dicts remember which
+        instance's sprite made each edge (last writer wins)."""
+        v_walls = set()
+        h_walls = set()
+        v_sprites = {{}}
+        h_sprites = {{}}
+        for inst in self.instances:
+            if not getattr(inst, 'solid', False):
+                continue
+            width = float(getattr(inst, 'image_width', 0) or 0)
+            height = float(getattr(inst, 'image_height', 0) or 0)
+            if width <= 0 or height <= 0:
+                continue
+            gm_x, gm_y = self._raycast_gm_xy(inst)
+            spr = getattr(inst, 'sprite_name', None)
+            if width >= height * 1.5:
+                line_y = round((gm_y + height / 2) / cell_size)
+                col = int(gm_x // cell_size)
+                h_walls.add((col, line_y))
+                h_sprites[(col, line_y)] = spr
+            elif height >= width * 1.5:
+                line_x = round((gm_x + width / 2) / cell_size)
+                row = int(gm_y // cell_size)
+                v_walls.add((line_x, row))
+                v_sprites[(line_x, row)] = spr
+            else:
+                gx = int(gm_x // cell_size)
+                gy = int(gm_y // cell_size)
+                v_walls.add((gx, gy))
+                v_walls.add((gx + 1, gy))
+                h_walls.add((gx, gy))
+                h_walls.add((gx, gy + 1))
+                for key in ((gx, gy), (gx + 1, gy)):
+                    v_sprites[key] = spr
+                for key in ((gx, gy), (gx, gy + 1)):
+                    h_sprites[key] = spr
+        self._raycast_v_walls = v_walls
+        self._raycast_h_walls = h_walls
+        self._raycast_v_wall_sprites = v_sprites
+        self._raycast_h_wall_sprites = h_sprites
+        self._raycast_cell_size = cell_size
+
+    def _cast_ray(self, px, py, angle_rad, cell_size, max_cells):
+        """DDA raycast in GM y-down pixel space (port of the desktop
+        _cast_ray). Returns (distance_px, side, hit, tex_u, sprite_name)."""
+        import math
+        px_cell, py_cell = px / cell_size, py / cell_size
+        dx, dy = math.cos(angle_rad), math.sin(angle_rad)
+        map_x, map_y = int(px_cell), int(py_cell)
+        delta_x = abs(1 / dx) if dx != 0 else 1e30
+        delta_y = abs(1 / dy) if dy != 0 else 1e30
+        if dx < 0:
+            step_x = -1
+            side_x = (px_cell - map_x) * delta_x
+        else:
+            step_x = 1
+            side_x = (map_x + 1 - px_cell) * delta_x
+        if dy < 0:
+            step_y = -1
+            side_y = (py_cell - map_y) * delta_y
+        else:
+            step_y = 1
+            side_y = (map_y + 1 - py_cell) * delta_y
+        side = 0
+        dist_cells = float(max_cells)
+        for _ in range(max_cells):
+            if side_x < side_y:
+                side_x += delta_x
+                map_x += step_x
+                side = 0
+                line_x = map_x if step_x > 0 else map_x + 1
+                wall_key = (line_x, map_y)
+                hit = wall_key in self._raycast_v_walls
+            else:
+                side_y += delta_y
+                map_y += step_y
+                side = 1
+                line_y = map_y if step_y > 0 else map_y + 1
+                wall_key = (map_x, line_y)
+                hit = wall_key in self._raycast_h_walls
+            if hit:
+                dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
+                if side == 0:
+                    wall_coord = py_cell + dist_cells * dy
+                    if dx > 0:
+                        wall_coord = -wall_coord
+                    sprite = self._raycast_v_wall_sprites.get(wall_key)
+                else:
+                    wall_coord = px_cell + dist_cells * dx
+                    if dy < 0:
+                        wall_coord = -wall_coord
+                    sprite = self._raycast_h_wall_sprites.get(wall_key)
+                tex_u = wall_coord - math.floor(wall_coord)
+                return max(dist_cells, 1e-4) * cell_size, side, True, tex_u, sprite
+        return max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None
+
+    def _raycast_color(self, spec, default):
+        """Parse a '#rrggbb' color to an (r, g, b) float triple in 0..1."""
+        try:
+            s = str(spec or default).lstrip('#')
+            if len(s) == 3:
+                s = ''.join(c * 2 for c in s)
+            r = int(s[0:2], 16) / 255.0
+            g = int(s[2:4], 16) / 255.0
+            b = int(s[4:6], 16) / 255.0
+            return (r, g, b)
+        except Exception:
+            s = default.lstrip('#')
+            return (int(s[0:2], 16) / 255.0, int(s[2:4], 16) / 255.0,
+                    int(s[4:6], 16) / 255.0)
+
+    def _raycast_texture(self, sprite_name):
+        """Kivy texture for a sprite NAME (cached), via SPRITE_PATHS."""
+        if not sprite_name:
+            return None
+        cache = getattr(self, '_raycast_tex_cache', None)
+        if cache is None:
+            cache = {{}}
+            self._raycast_tex_cache = cache
+        if sprite_name in cache:
+            return cache[sprite_name]
+        tex = None
+        path = SPRITE_PATHS.get(sprite_name, '')
+        if path:
+            img = load_image(path)
+            if img is not None:
+                tex = img.texture
+        cache[sprite_name] = tex
+        return tex
+
+    def _find_raycast_camera(self, cfg):
+        """The camera instance: the one stored on the config
+        (camera_instance=self from enable_raycast_view with no named target)
+        if still alive, else the first live instance of camera_object."""
+        cam = cfg.get('camera_instance')
+        if cam is not None and cam in self.instances \\
+                and cam not in self.instances_to_destroy:
+            return cam
+        name = cfg.get('camera_object', '')
+        return self._find_view_target(name) if name else None
+
+    def _render_raycast(self):
+        """Draw the first-person view as an opaque overlay (walls only, 4b).
+        Runs each frame from _update_impl when raycast_camera is enabled."""
+        import math
+        cfg = self.raycast_camera
+        if not cfg or not cfg.get('enabled'):
+            if getattr(self, '_raycast_group', None) is not None:
+                self._raycast_group.clear()
+            return
+        # Lazy-build the overlay instruction group once, on canvas.after so it
+        # sits ON TOP of the normal top-down widgets (which we simply paint
+        # over — the raycast view is opaque edge to edge).
+        if getattr(self, '_raycast_group', None) is None:
+            self._raycast_group = InstructionGroup()
+            self.canvas.after.add(self._raycast_group)
+
+        cell_size = int(cfg.get('cell_size', 32))
+        if getattr(self, '_raycast_v_walls', None) is None \\
+                or getattr(self, '_raycast_cell_size', None) != cell_size:
+            self._build_raycast_walls(cell_size)
+
+        w = float(self.display_width)
+        h = float(self.display_height)
+        half_h = h / 2.0
+        group = self._raycast_group
+        group.clear()
+
+        ceiling_color = self._raycast_color(cfg.get('ceiling_color'), '87CEEB')
+        floor_color = self._raycast_color(cfg.get('floor_color'), '464632')
+        # Flat fills: Kivy is y-up, so the ceiling occupies the TOP half
+        # (y in [half_h, h]) and the floor the bottom half (y in [0, half_h]).
+        group.add(Color(*ceiling_color, 1))
+        group.add(Rectangle(pos=(0, half_h), size=(w, h - half_h)))
+        group.add(Color(*floor_color, 1))
+        group.add(Rectangle(pos=(0, 0), size=(w, half_h)))
+
+        camera = self._find_raycast_camera(cfg)
+        if camera is None:
+            return  # flat floor/ceiling only
+
+        gm_x, gm_y = self._raycast_gm_xy(camera)
+        cam_x = gm_x + float(getattr(camera, 'image_width', 0) or 0) / 2.0
+        cam_y = gm_y + float(getattr(camera, 'image_height', 0) or 0) / 2.0
+
+        wall_color = self._raycast_color(cfg.get('wall_color'), '993333')
+        wall_color_shaded = tuple(c / 2.0 for c in wall_color)
+        fov_deg = float(cfg.get('fov', 66))
+        fov_rad = math.radians(fov_deg)
+        render_distance_cells = int(cfg.get('render_distance', 20))
+        num_columns = int(cfg.get('columns', 0)) or int(min(w, 320))
+        num_columns = max(1, num_columns)
+        col_width = w / num_columns
+
+        facing_screen_rad = math.radians(-float(getattr(camera, 'facing_angle', 0)))
+
+        textured = bool(cfg.get('wall_textured', True))
+        wall_texture = self._raycast_texture(cfg.get('wall_texture', ''))
+
+        for col in range(num_columns):
+            ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
+            ray_angle = facing_screen_rad + ray_offset
+            dist, side, hit, tex_u, wall_sprite = self._cast_ray(
+                cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
+            if not hit:
+                continue
+            corrected = dist * math.cos(ray_offset)
+            strip_h = min(h, h * cell_size / max(corrected, 1e-4))
+            x0 = int(col * col_width)
+            x1 = int((col + 1) * col_width)
+            strip_w = max(1, x1 - x0)
+            # Vertically centered on the horizon — symmetric, so the same
+            # y0 works in both y-down (desktop) and y-up (Kivy) space.
+            y0 = half_h - strip_h / 2.0
+
+            tex = wall_texture if wall_texture is not None \\
+                else self._raycast_texture(wall_sprite)
+            if textured and tex is not None:
+                tw = tex.width
+                tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+                region = tex.get_region(tex_x, 0, 1, tex.height)
+                shade = 0.5 if side == 1 else 1.0
+                group.add(Color(shade, shade, shade, 1))
+                group.add(Rectangle(texture=region, pos=(x0, y0),
+                                    size=(strip_w, strip_h)))
+            else:
+                color = wall_color if side == 0 else wall_color_shaded
+                group.add(Color(*color, 1))
+                group.add(Rectangle(pos=(x0, y0), size=(strip_w, strip_h)))
 
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
@@ -1854,6 +2122,11 @@ class {class_name}(Widget):
         # room region into its screen port (the Fbo already holds the room).
         self.update_views()
         self._render_views()
+
+        # 7d. RAYCAST - first-person overlay (Doom-style), drawn opaque over
+        # the top-down widgets when a raycast camera is enabled.
+        if self.raycast_camera and self.raycast_camera.get('enabled'):
+            self._render_raycast()
 
         # 8. DRAW EVENTS - sprites render via each widget's canvas; the
         # GameMaker draw event renders through the per-instance draw queue

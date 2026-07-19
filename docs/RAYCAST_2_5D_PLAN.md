@@ -718,10 +718,26 @@ harness if one is available.)
    Kivy generator dropped it before], `set_facing_angle` [abs/relative],
    `enable_raycast_view` [builds the scene `raycast_camera` cfg; no named camera
    ⇒ `camera_instance=self`]. `tests/test_kivy_raycast.py`, 8 — codegen unit
-   asserts + real raycast_1 export compile check. Suite 1895→1903.) **4b — the
-   wall RENDERER** (scene `_render_raycast()`: DDA + wall `Rectangle`s via an
-   opaque overlay `InstructionGroup`, y-up flip; hook into `_update_impl`) is
-   the next unit.
+   asserts + real raycast_1 export compile check. Suite 1895→1903.)
+   — **4b the wall RENDERER DONE 2026-07-19** (`kivy_exporter.py` scene:
+   `_build_raycast_walls` / `_cast_ray` / `_render_raycast` ported faithfully
+   from the desktop `game_runner` copies; textured + flat-colour wall strips
+   drawn into an opaque overlay `InstructionGroup` on `canvas.after`, hooked
+   into `_update_impl` step 7d + an initial frame in `__init__`. **y-flip
+   handled by computing the whole DDA in GM y-down space** — each Kivy
+   instance's y-up `x/y` is converted back to a GM top-left via
+   `room_height - y - image_height`, so wall-key derivation / camera centering /
+   tex_u / facing_angle all match the desktop verbatim; only the final draw
+   flips, and wall strips are vertically symmetric so just the ceiling/floor
+   fills swap halves. Textured strips slice a 1-px column via
+   `texture.get_region(tex_x, 0, 1, h)` — the same frame-slice trick the sprite
+   animator uses, so orientation is right without hand-set `tex_coords`. Wall
+   textures resolve sprite-name→texture through `SPRITE_PATHS`/`load_image`
+   (cached). `tests/test_kivy_raycast.py` +4 headless tests vs stub-kivy:
+   `_cast_ray` hits a wall ahead at the exact 16-px distance; `_render_raycast`
+   draws the ceiling/floor fills in the right (y-up) halves + wall strips facing
+   a wall, none facing away, and clears the overlay when disabled. Suite
+   1903→1907.) **Unit 5** (sky + floor spike + billboards) is next.
 5. Kivy sky + floor (spike) + billboards (+ stub test). Medium.
 6. 3-target `_cast_ray` parity test. Small.
 
