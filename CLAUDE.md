@@ -560,3 +560,47 @@ collision.
   the billboard cut were both reactive (user-reported), not scheduled
   roadmap work, so the phase order in the plan doc is otherwise
   unchanged.
+
+**2026-07-19 — Raycast HTML5 + Kivy export parity: the first-person view
+now renders on all three targets.** Executed the `docs/RAYCAST_2_5D_PLAN.md`
+Phase 2/3 unit sequence, one commit+push per unit (session-limit
+discipline). The three renderers share NO code (three hand-written copies:
+desktop `runtime/game_runner.py`, HTML5 `export/HTML5/templates/engine.js`,
+Kivy `export/Kivy/kivy_exporter.py`), so a parity test locks the DDA core.
+- Unit 1 `d74ca33`: registered `set_facing_angle` + `enable_raycast_view`
+  actions (`events/action_types.py`, category "3D View").
+- Unit 2 `fed4894` + 3a `2180662`: HTML5 walls, then sky + billboards in
+  engine.js (`test_html5_raycast.py`).
+- Unit 4a `e4fa670`: Kivy movement/action parity — `facing_angle` on the base
+  object, `raycast_camera` on the scene; codegen for `set_direction_speed`
+  (the Kivy generator dropped it, so the FPS player never moved),
+  `set_facing_angle`, `enable_raycast_view`.
+- Unit 4b `9c37cfd`: Kivy wall renderer (`_build_raycast_walls`/`_cast_ray`/
+  `_render_raycast` ported into the scene, opaque `InstructionGroup` overlay
+  on `canvas.after`). **Key y-flip decision: run the ENTIRE DDA in GM y-down
+  space** — convert each Kivy y-up instance back via
+  `room_height - y - image_height` — so wall-keys/tex_u/facing_angle match
+  desktop verbatim; only the final draw flips, and wall strips are vertically
+  symmetric so just the ceiling/floor fills swap halves. Textured strips reuse
+  the sprite animator's `texture.get_region(tex_x,0,1,h)` column-slice (no
+  hand-set `tex_coords`).
+- Unit 5a `4a9493a`: Kivy sky panorama + billboards (per-ray-column occlusion
+  via a `col_wall_dist` array).
+- Unit 6 `b0d8da0`: `tests/test_raycast_export_parity.py` — desktop
+  `GameRoom._cast_ray` vs the Kivy scene `_cast_ray`, fed identical wall edges,
+  **exact** (<1e-9) over a 260-ray matrix; HTML5 gets structural parity (no JS
+  engine in CI); + a facing-angle-convention pin across all three sources.
+- README `293206d`: dropped the "desktop-only" caveat.
+- Suite 1864 → **1912 passed, 0 failed**. New tests: `test_kivy_raycast.py`
+  (14, incl. a stub-kivy headless harness that drives the real generated
+  renderer via `cls.__new__` + controlled geometry), `test_raycast_export_parity.py` (3).
+- **DEFERRED, both blocked on the same thing — a per-target GL/browser timing
+  spike for the low-res per-pixel floor cast, which can't be measured
+  headlessly:** unit 3b (HTML5 floor, JS `ImageData`) and 5b (Kivy floor,
+  `blit_buffer`). Until then HTML5/Kivy fall back to the flat `floor_color`
+  fill (walls, sky, billboards are all real there). Everything else in the plan
+  doc is closed; those two are the only open raycast items.
+- Landmine confirmed: the Kivy scene class is a `.format()` template
+  (`kivy_exporter.py` ~line 1430-1990) — every literal `{`/`}` in added code
+  must be doubled. Commit messages with double-quotes/parens must go through
+  `git commit -F <file>` (PowerShell 5.1 here-strings mangle them).
