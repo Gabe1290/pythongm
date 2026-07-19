@@ -737,8 +737,22 @@ harness if one is available.)
    `_cast_ray` hits a wall ahead at the exact 16-px distance; `_render_raycast`
    draws the ceiling/floor fills in the right (y-up) halves + wall strips facing
    a wall, none facing away, and clears the overlay when disabled. Suite
-   1903→1907.) **Unit 5** (sky + floor spike + billboards) is next.
+   1903→1907.)
 5. Kivy sky + floor (spike) + billboards (+ stub test). Medium.
+   — **5a sky + billboards DONE 2026-07-19** (`kivy_exporter.py`
+   `_render_raycast`: a panning sky panorama over the ceiling — `pano_w =
+   w*360/fov`, panned by `facing_angle`, wrap rect, drawn UNDER the walls in
+   the top (y-up) half so wall strips occlude it; a `col_wall_dist` array filled
+   during the wall pass; a billboard pass — every visible non-solid sprited
+   instance drawn camera-facing, farthest-first, with real per-ray-column
+   occlusion via textured `get_region` slices, plus `_billboard_texture`
+   [current animation frame]. `tests/test_kivy_raycast.py` +2 headless: sky
+   panorama sized `w*360/fov` in the ceiling half; a goal billboard drawn when
+   visible and fully suppressed when a solid wall sits between it and the
+   camera. Suite 1907→1909.) **Kivy floor casting DEFERRED to unit 5b**, same
+   reason as HTML5 3b — the low-res per-pixel cast (`blit_buffer`) is the risky
+   piece and its per-frame cost can't be measured without a real GL run; needs a
+   spike + a flat-floor fallback before committing.
 6. 3-target `_cast_ray` parity test. Small.
 
 Then fold the result into `raycast_1`'s README (drop the "desktop-only" caveat)

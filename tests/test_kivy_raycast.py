@@ -215,6 +215,17 @@ class _FakeInst:
         self.visible = True
 
 
+class _FakeTex:
+    """A stand-in Kivy texture; get_region records the requested slice."""
+    def __init__(self, w=16, h=16):
+        self.width, self.height = w, h
+        self.regions = []
+
+    def get_region(self, x, y, w, h):
+        self.regions.append((x, y, w, h))
+        return self
+
+
 def _scene_class(game_dir):
     scene_file = next(f for f in (game_dir / "scenes").glob("*.py")
                       if "_render_raycast" in f.read_text(encoding="utf-8"))
@@ -329,3 +340,64 @@ def test_render_raycast_noop_and_clears_when_disabled(exported):
         scene.raycast_camera["enabled"] = False
         scene._render_raycast()
         assert scene._raycast_group.children == []
+
+
+def _textured_rects(scene):
+    return [c for c in scene._raycast_group.children
+            if getattr(c, "kw", None) and "texture" in c.kw]
+
+
+def test_sky_panorama_drawn_over_ceiling(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        sky = _FakeTex(64, 32)
+        scene._raycast_tex_cache = {"spr_sky": sky}   # pre-seed the resolver
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)
+        scene.instances = [cam]
+        scene.raycast_camera = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+            "sky_texture": "spr_sky",
+        }
+        scene._render_raycast()
+        sky_rects = [c for c in _textured_rects(scene) if c.kw["texture"] is sky]
+        assert sky_rects, "sky panorama not drawn"
+        # panorama width = w*360/fov, and it lives in the ceiling (top) half.
+        expected_pano = int(320 * 360.0 / 66)
+        assert sky_rects[0].kw["size"] == (expected_pano, 100.0)
+        assert sky_rects[0].kw["pos"][1] == 100.0     # top half (Kivy y-up)
+
+
+def test_billboard_drawn_and_occluded_by_wall(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        # --- visible billboard: a goal one cell east, no wall between ---
+        scene = _blank_scene(cls)
+        goal_tex = _FakeTex(16, 16)
+        scene._raycast_tex_cache = {"spr_goal": goal_tex}
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)   # facing east
+        goal = _FakeInst(96, 32, 16, 16, solid=False, sprite="spr_goal")  # gm x=96
+        scene.instances = [cam, goal]
+        scene.raycast_camera = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+        }
+        scene._render_raycast()
+        billboard_rects = [c for c in _textured_rects(scene)
+                           if c.kw["texture"] is goal_tex]
+        assert billboard_rects, "billboard sprite not drawn when visible"
+
+        # --- same goal, now behind a solid wall one cell east -> occluded ---
+        scene2 = _blank_scene(cls)
+        goal_tex2 = _FakeTex(16, 16)
+        scene2._raycast_tex_cache = {"spr_goal": goal_tex2}
+        cam2 = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)
+        wall = _FakeInst(64, 32, 32, 32, solid=True)               # blocks the view
+        goal2 = _FakeInst(96, 32, 16, 16, solid=False, sprite="spr_goal")
+        scene2.instances = [cam2, wall, goal2]
+        scene2.raycast_camera = dict(scene.raycast_camera, camera_instance=cam2)
+        scene2._render_raycast()
+        occluded = [c for c in _textured_rects(scene2)
+                    if c.kw["texture"] is goal_tex2]
+        assert not occluded, "billboard should be fully occluded by the wall"

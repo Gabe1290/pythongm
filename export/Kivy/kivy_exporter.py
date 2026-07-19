@@ -1768,8 +1768,25 @@ class {class_name}(Widget):
         name = cfg.get('camera_object', '')
         return self._find_view_target(name) if name else None
 
+    def _billboard_texture(self, inst):
+        """Current-frame texture for a billboard instance (or None)."""
+        tex = getattr(inst, '_sprite_texture', None)
+        if tex is None:
+            return self._raycast_texture(getattr(inst, 'sprite_name', None))
+        frames = int(getattr(inst, '_sprite_frames', 1) or 1)
+        if frames > 1:
+            fw = int(getattr(inst, '_frame_w', 0) or tex.width)
+            fh = int(getattr(inst, '_frame_h', 0) or tex.height)
+            idx = int(getattr(inst, 'image_index', 0)) % frames
+            return tex.get_region(idx * fw, 0, fw, fh)
+        return tex
+
     def _render_raycast(self):
-        """Draw the first-person view as an opaque overlay (walls only, 4b).
+        """Draw the first-person view as an opaque overlay: flat ceiling/floor
+        fills, a panning sky panorama over the ceiling, textured/flat wall
+        strips, then camera-facing billboard sprites with per-column occlusion
+        (units 4b + 5). A faithful port of game_runner._render_raycast_view;
+        textured floor casting is deferred to unit 5b (needs a GL timing spike).
         Runs each frame from _update_impl when raycast_camera is enabled."""
         import math
         cfg = self.raycast_camera
@@ -1826,6 +1843,29 @@ class {class_name}(Widget):
         textured = bool(cfg.get('wall_textured', True))
         wall_texture = self._raycast_texture(cfg.get('wall_texture', ''))
 
+        # Sky panorama over the ceiling (drawn UNDER the walls, which occlude
+        # it for free). Treated as infinitely far: it pans with facing_angle
+        # rather than receding with distance (a 360deg turn pans the full
+        # panorama exactly once). Kivy y-up -> the ceiling band is the TOP half
+        # (y in [half_h, h]). Absent sky_texture -> the flat ceiling fill above
+        # stands. (Port of _render_raycast_view's Phase 5b sky.)
+        facing_angle = float(getattr(camera, 'facing_angle', 0))
+        sky_tex = self._raycast_texture(cfg.get('sky_texture', ''))
+        if sky_tex is not None and h > 0:
+            pano_w = max(1, int(w * 360.0 / max(1.0, fov_deg)))
+            ceil_h = h - half_h
+            pan = int((facing_angle % 360) / 360.0 * pano_w)
+            group.add(Color(1, 1, 1, 1))
+            group.add(Rectangle(texture=sky_tex, pos=(-pan, half_h),
+                                size=(pano_w, ceil_h)))
+            if pano_w - pan < w:
+                group.add(Rectangle(texture=sky_tex, pos=(pano_w - pan, half_h),
+                                    size=(pano_w, ceil_h)))
+
+        # Fisheye-corrected wall distance per screen column, for billboard
+        # occlusion below (Infinity where a column saw no wall).
+        col_wall_dist = [float('inf')] * num_columns
+
         for col in range(num_columns):
             ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
             ray_angle = facing_screen_rad + ray_offset
@@ -1834,6 +1874,7 @@ class {class_name}(Widget):
             if not hit:
                 continue
             corrected = dist * math.cos(ray_offset)
+            col_wall_dist[col] = corrected
             strip_h = min(h, h * cell_size / max(corrected, 1e-4))
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
@@ -1856,6 +1897,71 @@ class {class_name}(Widget):
                 color = wall_color if side == 0 else wall_color_shaded
                 group.add(Color(*color, 1))
                 group.add(Rectangle(pos=(x0, y0), size=(strip_w, strip_h)))
+
+        # Billboard sprites (port of the desktop Phase 6 pass): every visible,
+        # non-solid, sprited instance draws as a camera-facing sprite, scaled by
+        # distance and centered on the horizon like a wall strip, farthest-first
+        # (painter's algorithm). Real per-column occlusion against col_wall_dist
+        # hides a billboard behind a wall and clips one behind a corner.
+        billboards = []
+        for inst in self.instances:
+            if inst is camera or not getattr(inst, 'visible', True):
+                continue
+            if getattr(inst, 'solid', False):
+                continue
+            iw = float(getattr(inst, 'image_width', 0) or 0)
+            ih = float(getattr(inst, 'image_height', 0) or 0)
+            if iw <= 0 or ih <= 0:
+                continue
+            b_gm_x, b_gm_y = self._raycast_gm_xy(inst)
+            bx = b_gm_x + iw / 2.0
+            by = b_gm_y + ih / 2.0
+            dxb, dyb = bx - cam_x, by - cam_y
+            dist_b = math.hypot(dxb, dyb)
+            if dist_b < 1e-4:
+                continue
+            rel_angle = math.atan2(dyb, dxb) - facing_screen_rad
+            rel_angle = (rel_angle + math.pi) % (2 * math.pi) - math.pi
+            if abs(rel_angle) > fov_rad / 2 + 0.5:   # margin for sprite width
+                continue
+            corrected_b = dist_b * math.cos(rel_angle)
+            if corrected_b <= 1e-4:
+                continue
+            billboards.append((corrected_b, rel_angle, inst, iw, ih))
+
+        billboards.sort(key=lambda b: -b[0])
+        for corrected_b, rel_angle, inst, iw, ih in billboards:
+            tex = self._billboard_texture(inst)
+            if tex is None:
+                continue
+            sprite_h = min(h, h * ih / max(corrected_b, 1e-4))
+            sprite_w = h * iw / max(corrected_b, 1e-4)
+            if sprite_w < 1 or sprite_h < 1:
+                continue
+            col_center = (rel_angle + fov_rad / 2) / fov_rad * num_columns
+            x_center = col_center * col_width
+            x_left = x_center - sprite_w / 2.0
+            y_top = half_h - sprite_h / 2.0
+            tw, th = tex.width, tex.height
+            # Draw one textured slice per overlapped screen column, skipping
+            # columns where a nearer wall occludes this billboard.
+            col_start = max(0, int(x_left // col_width))
+            col_end = min(num_columns - 1, int((x_left + sprite_w) // col_width))
+            for col in range(col_start, col_end + 1):
+                if corrected_b >= col_wall_dist[col]:
+                    continue
+                seg_x0 = max(x_left, col * col_width)
+                seg_x1 = min(x_left + sprite_w, (col + 1) * col_width)
+                if seg_x1 <= seg_x0:
+                    continue
+                u0 = (seg_x0 - x_left) / sprite_w
+                u1 = (seg_x1 - x_left) / sprite_w
+                rx = min(tw - 1, max(0, int(u0 * tw)))
+                rw = max(1, int((u1 - u0) * tw))
+                region = tex.get_region(rx, 0, rw, th)
+                group.add(Color(1, 1, 1, 1))
+                group.add(Rectangle(texture=region, pos=(seg_x0, y_top),
+                                    size=(seg_x1 - seg_x0, sprite_h)))
 
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
