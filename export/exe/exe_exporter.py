@@ -243,9 +243,15 @@ if __name__ == "__main__":
 
                 datas.append((rel_path, dest_dir))
 
-        # Format datas for spec file
-        # Use forward slashes to avoid escape sequence issues on Windows
-        datas_str = ',\n        '.join([f"('{d[0].replace(chr(92), '/')}', '{d[1].replace(chr(92), '/')}')" for d in datas])
+        # Format datas for spec file. The .spec is a Python file PyInstaller
+        # exec()s, so each path must be a valid string literal: forward-slash
+        # the separators (a Windows '\U...' would be an invalid escape) AND use
+        # repr() so an asset filename with an apostrophe (French "épée d'or.png")
+        # can't close the literal early. See the game_name sanitisation above —
+        # same hazard class, previously only fixed for the app name.
+        datas_str = ',\n        '.join(
+            [f"({d[0].replace(chr(92), '/')!r}, {d[1].replace(chr(92), '/')!r})"
+             for d in datas])
 
         # Hidden imports for Kivy
         hidden_imports = [
@@ -266,7 +272,11 @@ if __name__ == "__main__":
         # Get icon path if specified
         icon_line = ""
         if self.export_settings.get('icon_path'):
-            icon_line = f"icon='{self.export_settings['icon_path']}',"
+            # Same literal-safety as datas: forward-slash + repr, or a Windows
+            # icon path like C:\Users\...\icon.ico injects an invalid '\U' escape
+            # into the exec()'d spec and fails the whole export.
+            icon_path = str(self.export_settings['icon_path']).replace(chr(92), '/')
+            icon_line = f"icon={icon_path!r},"
 
         # Create Windows manifest for DPI awareness
         manifest_content = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>

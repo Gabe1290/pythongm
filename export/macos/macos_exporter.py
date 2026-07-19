@@ -355,8 +355,13 @@ if __name__ == "__main__":
 
                 datas.append((rel_path, dest_dir))
 
-        # Format datas for spec file
-        datas_str = ',\n        '.join([f"('{d[0]}', '{d[1]}')" for d in datas])
+        # Format datas for spec file. The .spec is exec()'d by PyInstaller, so
+        # each path must be a valid Python literal: forward-slash separators and
+        # repr() so an asset filename with an apostrophe (French "épée d'or.png")
+        # or a Windows backslash can't break the literal.
+        datas_str = ',\n        '.join(
+            [f"({d[0].replace(chr(92), '/')!r}, {d[1].replace(chr(92), '/')!r})"
+             for d in datas])
 
         # Hidden imports for Kivy
         # NOTE: The launcher script imports the game at runtime, so
@@ -394,10 +399,13 @@ if __name__ == "__main__":
 
         hidden_imports_str = ',\n        '.join([f"'{imp}'" for imp in hidden_imports])
 
-        # Get icon path if specified (.icns for macOS)
+        # Get icon path if specified (.icns for macOS). repr() + forward-slash
+        # so the path is a valid literal in the exec()'d spec (a raw Windows
+        # path's backslashes would inject an invalid escape — see datas above).
         icon_line = "None"
         if self.export_settings.get('icon_path'):
-            icon_line = "'{}'".format(self.export_settings['icon_path'])
+            icon_path = str(self.export_settings['icon_path']).replace(chr(92), '/')
+            icon_line = repr(icon_path)
 
         is_debug = self.export_settings.get('include_debug', False)
         # Embed the human-readable name as a repr() literal so apostrophes in
