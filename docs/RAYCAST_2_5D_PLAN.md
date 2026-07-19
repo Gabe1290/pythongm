@@ -754,6 +754,17 @@ harness if one is available.)
    piece and its per-frame cost can't be measured without a real GL run; needs a
    spike + a flat-floor fallback before committing.
 6. 3-target `_cast_ray` parity test. Small.
+   — **DONE 2026-07-19** (`tests/test_raycast_export_parity.py`, 3 tests).
+   Desktop `GameRoom._cast_ray` and the Kivy generated scene `_cast_ray` are fed
+   IDENTICAL derived wall edges and asserted to return the same
+   (distance, side, hit, tex_u) across a 5-origin × 52-angle matrix (260 rays) —
+   **exact** numeric equality (< 1e-9), since the ports were transcribed
+   line-for-line. HTML5's `castRay` can't be executed here (no JS engine), so it
+   gets structural parity: its body must carry the same load-bearing DDA
+   statements (`Math.abs(1/dx)`, `sideX < sideY`, `_vWalls.has`/`_hWalls.has`,
+   `Math.floor(wallCoord)`, `hit: true`/`hit: false`). A third test pins the
+   shared facing-angle convention (`-facing_angle` → screen radians) across all
+   three sources. Suite 1909→1912.
 
 Then fold the result into `raycast_1`'s README (drop the "desktop-only" caveat)
 and, optionally, add `raycast_1` to `tools/smoke_run_samples.py`.
