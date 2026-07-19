@@ -12,11 +12,11 @@ See [`docs/RAYCAST_2_5D_PLAN.md`](../../docs/RAYCAST_2_5D_PLAN.md) for the engin
 and [`docs/RAYCAST_2_SAMPLE_PLAN.md`](../../docs/RAYCAST_2_SAMPLE_PLAN.md) for
 this sample's design and unit plan.
 
-> **Work in progress.** This is being built one commit-sized unit at a time.
-> **Landed:** Units 1–4 — maze + first-person baseline, collectible gems +
-> score, a patrolling monster, and a gem-gated exit; Unit 5 — a **second, cool
-> "crystal cavern" themed room** you reach through the first. **Coming:** the
-> ship pass (Unit 6 — Welcome-tab listing, thumbnails, per-target playtest).
+A complete two-level game: navigate each maze in first person, collect every
+gem while dodging patrolling monsters, and reach the gem-gated exit — the first
+(warm brick) room leads to a second (cool crystal-cavern) room, and clearing
+that wins. Available from the IDE's Welcome tab (*"Raycast — Level 2"*) and
+exports to all three targets (desktop, HTML5, native/Kivy).
 
 ## How to play
 

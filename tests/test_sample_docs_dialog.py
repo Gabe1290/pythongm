@@ -48,8 +48,9 @@ def test_lists_only_existing_samples(_qapp):
     assert "Views — Level 1" in labels
     assert "Maze — Level 1" in labels
     # raycast_1 (the Doom-style first-person sample) was surfaced in the
-    # Welcome tab once its export parity was complete.
+    # Welcome tab once its export parity was complete; raycast_2 is its Level 2.
     assert "Raycast — Level 1" in labels
+    assert "Raycast — Level 2" in labels
     # A bogus entry that does not exist on disk is filtered out.
     dlg2 = _dialog(_qapp, samples=[("samples/does_not_exist", "Ghost")])
     assert dlg2.sample_labels() == []
