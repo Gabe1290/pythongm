@@ -1,0 +1,386 @@
+{
+  "name": "raycast_2",
+  "version": "1.0.0",
+  "created": "2026-07-16T00:00:00.000000",
+  "modified": "2026-07-16T00:00:00.000000",
+  "settings": {
+    "window_title": "",
+    "window_width": 640,
+    "window_height": 480,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_wall_h": {
+        "name": "spr_wall_h",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_h.png",
+        "width": 32,
+        "height": 8,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 8,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "spr_wall_v": {
+        "name": "spr_wall_v",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_v.png",
+        "width": 8,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 8,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "spr_goal": {
+        "name": "spr_goal",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_goal.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-05-23T14:34:54.961536"
+      },
+      "spr_person": {
+        "name": "spr_person",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_person.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "bbox_left": 8,
+        "bbox_top": 8,
+        "bbox_right": 24,
+        "bbox_bottom": 24,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-07T18:52:32.258111"
+      },
+      "spr_wall_texture": {
+        "name": "spr_wall_texture",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_texture.png",
+        "width": 64,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 64,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_sky": {
+        "name": "spr_sky",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_sky.png",
+        "width": 256,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 256,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_floor": {
+        "name": "spr_floor",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_floor.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_wall_h": {
+        "name": "obj_wall_h",
+        "asset_type": "object",
+        "sprite": "spr_wall_h",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "obj_wall_v": {
+        "name": "obj_wall_v",
+        "asset_type": "object",
+        "sprite": "spr_wall_v",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "obj_goal": {
+        "name": "obj_goal",
+        "asset_type": "object",
+        "sprite": "spr_goal",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "if_next_room_exists",
+                "parameters": {}
+              },
+              {
+                "action": "next_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              },
+              {
+                "action": "set_health",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_person"
+          },
+          "keyboard_press": {
+            "p": {
+              "actions": [
+                {
+                  "action": "if_previous_room_exists",
+                  "parameters": {}
+                },
+                {
+                  "action": "next_room",
+                  "parameters": {
+                    "transition": "0"
+                  }
+                },
+                {
+                  "action": "set_health",
+                  "parameters": {}
+                },
+                {
+                  "action": "restart_game",
+                  "parameters": {}
+                }
+              ]
+            },
+            "n": {
+              "actions": [
+                {
+                  "action": "if_next_room_exists",
+                  "parameters": {}
+                },
+                {
+                  "action": "next_room",
+                  "parameters": {
+                    "transition": "0"
+                  }
+                },
+                {
+                  "action": "set_health",
+                  "parameters": {}
+                },
+                {
+                  "action": "restart_game",
+                  "parameters": {}
+                }
+              ]
+            }
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:54.997955",
+        "modified": "2026-05-24T10:32:34.419459",
+        "parent": ""
+      },
+      "obj_person": {
+        "name": "obj_person",
+        "asset_type": "object",
+        "sprite": "spr_person",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_wall_h": {
+            "actions": [],
+            "target_object": "obj_wall_h"
+          },
+          "collision_with_obj_wall_v": {
+            "actions": [],
+            "target_object": "obj_wall_v"
+          },
+          "create": {
+            "actions": [
+              {
+                "action": "enable_raycast_view",
+                "parameters": {
+                  "fov": "66",
+                  "cell_size": "32",
+                  "render_distance": "20",
+                  "wall_color": "#993333",
+                  "floor_color": "#464632",
+                  "ceiling_color": "#87CEEB",
+                  "wall_texture": "spr_wall_texture",
+                  "sky_texture": "spr_sky",
+                  "floor_texture": "spr_floor"
+                }
+              }
+            ]
+          },
+          "keyboard": {
+            "up": {
+              "actions": [
+                {
+                  "action": "set_direction_speed",
+                  "parameters": {
+                    "direction": "facing_angle",
+                    "speed": "3"
+                  }
+                }
+              ]
+            },
+            "down": {
+              "actions": [
+                {
+                  "action": "set_direction_speed",
+                  "parameters": {
+                    "direction": "facing_angle+180",
+                    "speed": "3"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "set_facing_angle",
+                  "parameters": {
+                    "angle": "3",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "set_facing_angle",
+                  "parameters": {
+                    "angle": "-3",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "nokey": {
+              "actions": [
+                {
+                  "action": "set_direction_speed",
+                  "parameters": {
+                    "direction": "0",
+                    "speed": "0"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "imported": false,
+        "created": "2026-07-16T00:00:00.000000",
+        "modified": "2026-07-16T00:00:00.000000",
+        "parent": "",
+        "remember_destroyed": false
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#e3e3e3",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 131,
+        "instances": [],
+        "created": "2026-07-16T00:00:00.000000",
+        "modified": "2026-07-16T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "room_order": [
+    "room0"
+  ]
+}

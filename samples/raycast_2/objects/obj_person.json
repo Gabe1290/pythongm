@@ -1,0 +1,99 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "spr_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_wall_h": {
+      "actions": [],
+      "target_object": "obj_wall_h"
+    },
+    "collision_with_obj_wall_v": {
+      "actions": [],
+      "target_object": "obj_wall_v"
+    },
+    "create": {
+      "actions": [
+        {
+          "action": "enable_raycast_view",
+          "parameters": {
+            "fov": "66",
+            "cell_size": "32",
+            "render_distance": "20",
+            "wall_color": "#993333",
+            "floor_color": "#464632",
+            "ceiling_color": "#87CEEB",
+            "wall_texture": "spr_wall_texture",
+            "sky_texture": "spr_sky",
+            "floor_texture": "spr_floor"
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "up": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "facing_angle",
+              "speed": "3"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "facing_angle+180",
+              "speed": "3"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "-3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "0",
+              "speed": "0"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": false,
+  "created": "2026-07-16T00:00:00.000000",
+  "modified": "2026-07-16T00:00:00.000000",
+  "parent": "",
+  "remember_destroyed": false
+}

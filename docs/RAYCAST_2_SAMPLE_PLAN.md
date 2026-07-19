@@ -80,12 +80,23 @@ hand-place gems, the monster spawn, and the goal.
 Work the queue one unit at a time; commit + push after each so a mid-session
 limit loses nothing and the next session resumes from clean `main`.
 
-- **Unit 0 — this plan doc.** Commit first (done with this file).
-- **Unit 1 — geometry + baseline.** Convert maze_2 topology to thin-wall
-  rooms; assemble `samples/raycast_2/` (project.json + reused objects/sprites +
-  `obj_person` create-event `enable_raycast_view`). Player can drive the FPS
-  view and reach a plain goal (raycast_1 parity baseline). Verify: runs headless
-  via a smoke harness (mirror `TestRaycast1SampleSmoke`).
+- **Unit 0 — this plan doc.** Commit first (done — `f914992`).
+- **Unit 1 — geometry + baseline. DONE 2026-07-19.** maze_2's wall system
+  (corner/horizontal/vertical segments) doesn't map cleanly to raycast_1's edge
+  model, so instead of converting maze_2 the geometry is a **hand-controlled
+  recursive-backtracker maze** (15×15 cells / 480×480, seed 42 for
+  reproducibility, +10 extra knocked-through walls for loops) run through
+  raycast_1's exact edge-wall placement (`obj_wall_h` at `(c*32, r*32-4)`,
+  `obj_wall_v` at `(c*32-4, r*32)`) — 80 h-walls + 116 v-walls + player + goal,
+  198 instances (same shape as raycast_1). `samples/raycast_2/` was seeded by
+  copying raycast_1's asset tree (objects/sprites reused verbatim, incl.
+  `obj_person`'s create-event `enable_raycast_view` and the empty
+  `collision_with_obj_wall_*` handlers that gate wall-blocking); `project.json`
+  renamed, single room0. README rewritten (honest WIP). Verified through the
+  real `GameRunner.run()` loop: renders the textured first-person camera, turns
+  on input, and the player is blocked by walls. `tests/test_raycast_2_sample.py`
+  (3). **The "derive from maze_2" note in the Concept/Level-design sections is
+  superseded by this hand-built approach.**
 - **Unit 2 — gems + score.** `obj_gem` (non-solid, sprited) + N room instances;
   `obj_gem`↔`obj_person` collision adds score and destroys the gem; `set_score`
   HUD on. Verify score increments and gems disappear from the billboard pass.
