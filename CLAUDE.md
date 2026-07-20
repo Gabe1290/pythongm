@@ -675,3 +675,66 @@ on the class silently pins every guide to English; pinned by a test).
   Budget accordingly before starting another; the English fallback means the
   other 6 IDE languages are safe to leave untranslated indefinitely, and
   translating only the languages students actually use is a legitimate choice.
+
+**2026-07-20 — In-view HUD (3 targets) + the `raycast_3` sample.** Plan:
+`docs/RAYCAST_HUD_PLAN.md`, Sessions A–D all closed; only **Session E (minimap)**
+is open, and it's gated on writing `docs/RAYCAST_MINIMAP_PLAN.md` first (it needs
+world-space projection, which the HUD work explicitly scoped out).
+- **Engine — HUD compositing.** Every target drew the first-person view then
+  returned before the per-instance draw pass, so raycast games showed score/lives
+  only in the desktop window caption. Desktop `341f5c4` (`run_draw_event` split
+  out of `GameInstance.render`; `_render_draw_events` after
+  `_render_raycast_view`), HTML5 `d11550b`, Kivy `fd2402f`, parity + sample
+  `7018e3a`. **Kivy had two traps, both real:** the HUD group must be
+  *scene-level* on `canvas.after` (a child widget's group can never rise above
+  the scene's opaque `_raycast_group`), and it must flip y against
+  **`display_height`**, not `room_height` as `_render_draw_queue` does.
+- **`380abd2` — two PRE-EXISTING export bugs found en route, both divergences
+  from the desktop runtime.** (1) **Draw depth order**: engine.js sorted
+  *ascending* (inverting sprite z-order) and the Kivy exporter **ignored `depth`
+  entirely** — the word appeared nowhere in `export/Kivy/`. Four samples rendered
+  wrong on those targets: `maze_3`, `maze_4`, `plateforme_3` (player depth −100
+  drew *behind* the exit at 100), `treasure`. Kivy needed depth plumbed end to
+  end; note widget order *is* z-order there and Kivy draws children in REVERSE,
+  so the child path keeps `children` ascending while the Fbo path inserts
+  descending. (2) **Draw-event visibility**: both targets ran an invisible
+  instance's draw event; GameMaker doesn't. Fixing this made
+  **`obj_hud` needing `visible: true` load-bearing** — a HUD on an invisible
+  camera controller silently draws nothing.
+- **`84707a4` — health was DISPLAY-ONLY on the exports.** `set_health` /
+  `draw_health_bar` exported fine, but `test_health` and `test_lives` had no Kivy
+  codegen and `no_more_health` existed on *neither* export target, so any
+  conditional on health silently vanished and a "you died" handler never fired.
+  The plan's "engine risk: none" claim was wrong because it only checked *draw*
+  actions. **Lesson, now in the plan: when a sample introduces a mechanic, verify
+  the conditionals and events it needs on every target, not just the actions that
+  draw it.**
+- **`raycast_3`** (`59cd8e6` `4dbe128` `f2c9967` `0587963`): two-level FPS where
+  monsters cost **health** (−25, with a 45-step `alarm_0` invulnerability window)
+  rather than a life; medkits +40; `no_more_health` → −1 life + refill + restart;
+  HUD = score top-left / lives top-right / health bar bottom-left (**opposite
+  corners** so a wide bar can't collide with a growing score). Room1 is the
+  harder half (5 monsters, 2 medkits) with the ice theme via `obj_cam1`.
+  **Its maze generator is committed** (`tools/gen_raycast_3_maze.py`) — unlike
+  `raycast_2`'s throwaway script, so these rooms can be regenerated; a test pins
+  room JSON against the generator. Seeds are *chosen*: `check_start()` asserts
+  the spawn cell opens east (the player spawns facing east — a walled start means
+  beginning nose-to-wall, which passed every structural test) and that all 225
+  cells are reachable.
+- **Runtime facts worth keeping:** collision events fire when instances **START**
+  overlapping (`_active_collisions`), so a continuous overlap deals exactly one
+  hit — pinning a player on a monster can never produce a second, which looked
+  like a bug and wasn't. Alarms/collisions dispatch via `execute_action_list` /
+  `execute_collision_event`, **not** `execute_event`, so a spy on the latter sees
+  neither.
+- **HUD layout decided (`f21dc80`): corner overlays, NOT a DOOM bottom bar.** The
+  renderer always fills the window and hardcodes the horizon at `h/2`;
+  `enable_raycast_view` has no viewport param. A bar either leaves the horizon at
+  true screen centre while the visible centre moves up (permanent upward-tilt
+  feel) or needs a viewport height threaded through every pass of three
+  hand-written renderers. A `viewport_height` param remains a legitimate later
+  feature, pairing naturally with the minimap.
+- Suite **1971 → 2028 passed, 0 failed**; smoke **16/16**.
+- **Open, needs human eyes:** nobody has *watched* `raycast_3` render in a
+  browser or on Android, nor `plateforme_3` after the depth fix. Structure and
+  codegen are verified; the visual playtest isn't.
