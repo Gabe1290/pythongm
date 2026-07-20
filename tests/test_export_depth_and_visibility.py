@@ -139,3 +139,57 @@ def test_kivy_generated_objects_carry_their_depth(exported_plateforme_3):
     assert -100 in seen.values(), "obj_pingus's depth -100 was not emitted"
     assert 100 in seen.values(), "obj_sortie's depth 100 was not emitted"
     assert set(seen.values()) <= set(expected.values())
+
+
+# --- Kivy raycast HUD compositing (RAYCAST_HUD_PLAN Unit 3) ----------------
+
+def _kivy_draw_step():
+    """The scene update loop's draw-event step (inside the .format template)."""
+    block = KIVY_SRC[KIVY_SRC.index("# 8. DRAW EVENTS"):]
+    return block[:block.index("# 9. CLEANUP")]
+
+
+def test_kivy_hud_group_is_scene_level_and_above_the_raycast_overlay():
+    """Trap 1 from the plan: _dq_group lives on each GameObject WIDGET's
+    canvas.after, while the opaque _raycast_group lives on the SCENE's — which
+    paints over every child. A HUD group must therefore be added to the
+    scene's canvas.after, and after _raycast_group."""
+    step = _kivy_draw_step()
+    assert "self._raycast_hud_group = InstructionGroup()" in step
+    assert "self.canvas.after.add(self._raycast_hud_group)" in step
+    # _raycast_group is built in step 7d, which runs before step 8 — so the
+    # HUD group is necessarily added later and paints on top.
+    assert KIVY_SRC.index("self._raycast_group = InstructionGroup()") \
+        < KIVY_SRC.index("self._raycast_hud_group = InstructionGroup()")
+    # Declared up front alongside the overlay group.
+    assert "self._raycast_hud_group = None" in KIVY_SRC
+
+
+def test_kivy_hud_flips_against_window_height_not_room_height():
+    """Trap 2 from the plan, and the one most likely to be got wrong:
+    _render_draw_queue flips y using room_height, but a screen-space HUD must
+    flip against the WINDOW height. Any raycast room taller/shorter than the
+    window would put the HUD at the wrong height."""
+    step = _kivy_draw_step()
+    assert "_dq_render_cmd(_hud, cmd," in step
+    assert "float(self.display_height)" in step, \
+        "HUD must flip against the window height"
+    hud_call = step[step.index("_dq_render_cmd(_hud, cmd,"):]
+    hud_call = hud_call[:hud_call.index(")") + 1]
+    assert "room_height" not in hud_call, \
+        "HUD is flipping against room height — wrong space for a HUD"
+
+
+def test_kivy_normal_path_still_uses_the_per_instance_draw_queue():
+    """Non-raycast rooms must be untouched by the HUD work."""
+    step = _kivy_draw_step()
+    assert "instance._render_draw_queue()" in step
+    assert "_hud is not None" in step, "the HUD path must be conditional"
+
+
+def test_kivy_hud_group_is_cleared_when_raycast_is_off():
+    """A room that turns raycast off must not leave a stale HUD painted over
+    the top-down view."""
+    step = _kivy_draw_step()
+    assert step.count("_raycast_hud_group.clear()") >= 1 or step.count("_hud.clear()") >= 1
+    assert "elif getattr(self, '_raycast_hud_group', None) is not None:" in step
