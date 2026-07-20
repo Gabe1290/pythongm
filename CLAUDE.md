@@ -738,3 +738,42 @@ world-space projection, which the HUD work explicitly scoped out).
 - **Open, needs human eyes:** nobody has *watched* `raycast_3` render in a
   browser or on Android, nor `plateforme_3` after the depth fix. Structure and
   codegen are verified; the visual playtest isn't.
+
+**2026-07-20 — Minimap (`draw_minimap`), Session E.** Plan
+`docs/RAYCAST_MINIMAP_PLAN.md`, **all 4 units closed**; the raycast HUD/minimap
+arc is complete. Commits `0ff7edb` (plan) `a1784fc`+`cadc341` (desktop)
+`71bbb99` (HTML5 + Kivy + parity + sample).
+- **The design finding that shrank the work:** the HUD plan assumed each target
+  needed a new minimap *renderer*. It didn't. All three already cache the same
+  derived wall-edge sets and already render `rectangle`/`line` draw commands, and
+  the action can reach the room at queue time. So `draw_minimap` is a **MACRO
+  action** — it emits ordinary primitives, **no renderer changes anywhere**, and
+  the parity surface is pure geometry (numerically comparable like `_cast_ray`).
+  `build_minimap_commands()` in `runtime/action_executor.py` is THE single source
+  the other two mirror.
+- Design: **north-up** (rotation would widen the parity surface for no teaching
+  value), **no fog of war** (needs per-room persisted state on 3 targets — scoped
+  out, not forgotten), **walls + player only** (showing pickups trivialises a
+  gem-gated maze), whole-map scale rather than a radar window.
+- **Kivy needed the M34 two-halves pattern:** codegen emits single-line
+  expressions, but a minimap needs loops — so the generator emits a CALL to
+  `GameObject._draw_minimap`, generated into `base_object.py`. Verified the
+  emitted call's arity matches the def (6/6) and both files compile.
+- **Two bugs I shipped in Unit 1 and caught in `cadc341`** — both invisible to a
+  test that only checked *that* walls were drawn: (1) **`_find_raycast_camera` is
+  KIVY-ONLY**; desktop resolves the camera via `_find_first_instance`, so
+  `getattr` returned None and no player marker was ever drawn; (2) the marker
+  used the camera's raw x/y (sprite corner) instead of the **origin-aware cell
+  centre the rays are cast from** (`game_runner.py:2053`), parking it half a
+  sprite off. **Lesson: assert WHERE a marker lands, not that something drew.**
+  Same shape as the room1-HUD test earlier the same day.
+- Wall sets are unordered → all three targets **sort** before emitting, or a
+  command-level parity diff flaps.
+- Landmine for future sample tests: `raycast_3`'s `obj_hud` now ships a
+  `draw_minimap`, so a test that *appends* another captures TWO minimaps and
+  asserts the union of two squares. Re-point the existing action instead.
+- Suite **2028 → 2046 passed, 0 failed**; smoke **16/16**.
+- **Still needs human eyes** (unchanged): nobody has *watched* `raycast_3` render
+  in a browser or on Android, nor `plateforme_3` after the depth fix. Also
+  untested on real hardware: Kivy rebuilding ~250 `Line` instructions per frame
+  for the minimap — the plan's `range` parameter is the escape hatch if it bites.
