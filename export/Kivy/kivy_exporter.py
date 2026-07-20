@@ -2112,9 +2112,12 @@ class {class_name}(Widget):
             tex = self._billboard_texture(inst)
             if tex is None:
                 continue
-            sprite_h = min(h, h * ih / max(corrected_b, 1e-4))
+            # Unclamped height + a float (sub-texel) vertical slice — same as
+            # the wall pass. Squeezing a walked-into sprite into a
+            # screen-clamped height distorted it.
+            full_h_b = h * ih / max(corrected_b, 1e-4)
             sprite_w = h * iw / max(corrected_b, 1e-4)
-            if sprite_w < 1 or sprite_h < 1:
+            if sprite_w < 1 or full_h_b < 1:
                 continue
             # Same camera-plane mapping as the wall pass, so billboards line up
             # with the walls instead of drifting toward the screen edges.
@@ -2122,7 +2125,14 @@ class {class_name}(Widget):
             col_center = (b_camera_x + 1.0) * 0.5 * num_columns
             x_center = col_center * col_width
             x_left = x_center - sprite_w / 2.0
-            y_top = half_h - sprite_h / 2.0
+            y_bot_b = half_h - full_h_b / 2.0     # y-up: bottom of the sprite
+            by0 = max(0.0, y_bot_b)
+            by1 = min(h, y_bot_b + full_h_b)
+            b_vis_h = by1 - by0
+            if b_vis_h <= 0:
+                continue
+            bv0 = (by0 - y_bot_b) / full_h_b
+            bv1 = (by1 - y_bot_b) / full_h_b
             tw, th = tex.width, tex.height
             # Draw one textured slice per overlapped screen column, skipping
             # columns where a nearer wall occludes this billboard.
@@ -2141,8 +2151,12 @@ class {class_name}(Widget):
                 rw = max(1, int((u1 - u0) * tw))
                 region = tex.get_region(rx, 0, rw, th)
                 group.add(Color(1, 1, 1, 1))
-                group.add(Rectangle(texture=region, pos=(seg_x0, y_top),
-                                    size=(seg_x1 - seg_x0, sprite_h)))
+                # Float tex_coords select the visible vertical slice sub-texel
+                # exactly (get_region would snap to whole texels).
+                group.add(Rectangle(texture=region, pos=(seg_x0, by0),
+                                    size=(seg_x1 - seg_x0, b_vis_h),
+                                    tex_coords=(0.0, bv0, 1.0, bv0,
+                                                1.0, bv1, 0.0, bv1)))
 
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
