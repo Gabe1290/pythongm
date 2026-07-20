@@ -555,11 +555,41 @@ class SampleDocsDialog(QDialog):
 
     # -- internal ----------------------------------------------------------
 
+    @staticmethod
+    def _guide_language() -> str:
+        """The IDE's current language code ('en' when unset/unknown)."""
+        try:
+            # the module-level singleton — get_current_language is an INSTANCE
+            # method, so calling it on the class would silently fall back to 'en'
+            from core.language_manager import get_language_manager
+            lang = get_language_manager().get_current_language()
+        except Exception:
+            lang = None
+        return (lang or "en").split("_")[0].lower()
+
+    def guide_path(self, relative_path: str) -> Path:
+        """The guide to show for `relative_path` in the current IDE language.
+
+        Guides are translated per language as ``README.<lang>.md`` next to the
+        English ``README.md``. The sample MESSAGES themselves stay in English
+        (students retype them in their own language via the normal action) —
+        it's the guide that carries the per-language explanation, so the guide
+        must follow the IDE language. Falls back to English whenever a
+        translation hasn't been written yet, so a partial rollout is safe.
+        """
+        base = self._repo_root / relative_path
+        lang = self._guide_language()
+        if lang and lang != "en":
+            localised = base / f"README.{lang}.md"
+            if localised.is_file():
+                return localised
+        return base / "README.md"
+
     def _show_row(self, row: int):
         if row < 0 or row >= len(self._samples):
             return
         relative_path, label = self._samples[row]
-        readme = self._repo_root / relative_path / "README.md"
+        readme = self.guide_path(relative_path)
         try:
             text = readme.read_text(encoding="utf-8")
         except OSError:
