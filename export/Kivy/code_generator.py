@@ -354,6 +354,26 @@ class ActionCodeGenerator:
                     f"if (_tsga().score if _tsga() else 0) {op} {value}:")
             return
 
+        elif action_type in ('test_health', 'test_lives'):
+            # Same shape as test_score above, against the app's health/lives.
+            # Missing until 2026-07-20, which made health and lives usable as
+            # DISPLAY only on this target: set_health and draw_health_bar were
+            # exported, but any conditional on them silently vanished, so a
+            # "you died" branch never fired on Android.
+            attr = 'health' if action_type == 'test_health' else 'lives'
+            default = 100 if attr == 'health' else 3
+            value = _num_code(params.get('value', 0))
+            op = _COMPARISON_OPS.get(str(params.get('operation', 'equal')))
+            if op is None:
+                self._open_guard(
+                    f"if False:  # {action_type}: unknown operation "
+                    f"{params.get('operation')!r}")
+            else:
+                self.add_line("from main import get_game_app as _tsga")
+                self._open_guard(
+                    f"if (_tsga().{attr} if _tsga() else {default}) {op} {value}:")
+            return
+
         elif action_type in ('if_collision', 'if_collision_at', 'check_collision'):
             obj_name = params.get('object', params.get('target', 'object'))
             # The pygame runtime treats x/y as OFFSETS from the instance

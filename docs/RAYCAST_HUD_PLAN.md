@@ -129,9 +129,31 @@ Mechanics, chosen so each one makes a HUD element necessary:
 Delta taught vs `raycast_2`: health as a resource, HUD authoring, and reading
 game state without leaving the first-person view.
 
-**Engine risk: none beyond the HUD compositing itself.** Health actions and all
-four HUD draw actions are already 3-target-complete (table above); everything
-else reuses `raycast_2`'s proven mechanics.
+**Engine risk — this claim was WRONG, corrected 2026-07-20 during Unit 6.**
+The original text read "none beyond the HUD compositing itself: health actions
+and all four HUD draw actions are already 3-target-complete". The *draw* actions
+were; the health **logic** was not. The check that produced the table above
+looked only at draw actions, so it missed that health was display-only on the
+exports:
+
+| | desktop | HTML5 | Kivy |
+|---|---|---|---|
+| `set_health`, `draw_health_bar` | y | y | y |
+| `test_health` | y | y | **no** |
+| `test_lives` | y | y | **no** |
+| `no_more_health` | y | **no** | **no** |
+| `no_more_lives` | y | y | y |
+
+So the bar would have moved on all three targets while every conditional
+branching on it silently vanished — a "you died" handler that never fires. That
+is precisely the failure this sample exists to prevent, and the class of gap
+CLAUDE.md's *"audits miss absent features"* note warns about: a static read sees
+the actions present and concludes it works. Closed in Unit 5b before Unit 6
+built on it; `tests/test_health_lives_export_parity.py` pins all six.
+
+**Lesson for the remaining units:** when a sample introduces a mechanic, check
+the *conditionals and events* it needs on every target, not just the actions
+that draw it.
 
 **Assets:** reuse `raycast_2`'s wall/sky/floor textures, `obj_person`,
 `obj_wall_h`/`_v`, monster and gem sprites. New: a medkit billboard sprite, a
