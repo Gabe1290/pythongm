@@ -218,15 +218,30 @@ Session B ships the HUD pass it depends on.
 **Total ≈ 2 sessions of engine work, 2 of sample work, plus the minimap.**
 Sessions A–B, C–D and E are independently shippable.
 
-## Open questions to settle before Session C
+## Questions settled before Session C (2026-07-20)
 
-- **Status-bar layout** — DOOM-style bottom bar vs. corner overlays. Affects
-  room height budget (a bottom bar eats vertical view space) and the sample's
-  look. Worth a mock before committing.
-- **Health damage model** — per-touch fixed damage vs. damage-over-time while
-  overlapping. Per-touch is simpler and matches `raycast_2`'s collision idiom;
-  damage-over-time reads better with a health bar. Recommend per-touch with a
-  short invulnerability alarm.
+- **Status-bar layout — CORNER OVERLAYS** (decided; DOOM bottom bar rejected).
+  The raycast renderer always fills the window (`w, h = screen.get_size()`) and
+  hardcodes the horizon at `h / 2`; `enable_raycast_view` has no viewport
+  parameter. So a bottom bar could only be done two ways, both bad:
+  *(a)* paint an opaque bar over the finished frame — zero engine change, but
+  the horizon stays at true screen centre while the visible centre moves up,
+  giving a permanent slight-upward-tilt feel (DOOM avoided this by shrinking
+  the 3D viewport, not covering it), and it floor-casts pixels it then hides;
+  *(b)* letterbox the view properly — needs a viewport height threaded through
+  horizon, wall-strip heights, floor casting, billboard scaling and sky panning
+  in all three hand-written renderers, i.e. an engine unit the size of Sessions
+  A–B for a cosmetic change.
+  Corner overlays cost nothing (it is exactly what `raycast_2`'s `obj_hud`
+  already does) and keep the full first-person view, which in a raycast game
+  *is* the game. **Layout rule:** score and health go in OPPOSITE corners, not
+  stacked, so a wide health bar can't collide with a growing score string.
+  A DOOM-style bar remains a legitimate standalone feature later — a
+  `viewport_height` parameter on `enable_raycast_view` — and would pair
+  naturally with the Session E minimap, which also wants screen real estate.
+- **Health damage model — per-touch, with a short invulnerability alarm.**
+  Simpler than damage-over-time and matches `raycast_2`'s collision idiom;
+  the alarm stops a single overlap draining the whole bar in a few frames.
 
 ## Out of scope
 
