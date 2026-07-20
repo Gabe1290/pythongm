@@ -493,6 +493,38 @@ ACTION_TYPES = {
         ]
     ),
 
+    # Minimap — see docs/RAYCAST_MINIMAP_PLAN.md. A MACRO action: it reads the
+    # room's derived wall edges and emits ordinary rectangle/line draw-queue
+    # commands, so no target needed a new renderer. Draw it from a HUD
+    # controller's draw event, like draw_score/draw_health_bar.
+    "draw_minimap": ActionType(
+        name="draw_minimap",
+        display_name="Draw Minimap",
+        description="Draw a north-up minimap of the raycast room's walls, with "
+                    "a marker showing where the camera is and which way it faces",
+        category="3D View",
+        icon="🗺️",
+        parameters=[
+            ActionParameter(name="x", display_name="X", param_type="number",
+                default_value=0,
+                description="Left edge of the minimap, in screen pixels"),
+            ActionParameter(name="y", display_name="Y", param_type="number",
+                default_value=0,
+                description="Top edge of the minimap, in screen pixels"),
+            ActionParameter(name="size", display_name="Size", param_type="number",
+                default_value=120, required=False,
+                description="Width and height of the minimap square, in pixels"),
+            ActionParameter(name="back_color", display_name="Background Color",
+                param_type="color", default_value="#101018", required=False,
+                description="Panel colour behind the map"),
+            ActionParameter(name="wall_color", display_name="Wall Color",
+                param_type="color", default_value="#8080a0", required=False,
+                description="Colour of the wall lines"),
+            ActionParameter(name="player_color", display_name="Player Color",
+                param_type="color", default_value="#ffd040", required=False,
+                description="Colour of the camera marker and its heading line"),
+        ],
+    ),
     "enable_raycast_view": ActionType(
         name="enable_raycast_view",
         display_name="Enable Raycast View",
