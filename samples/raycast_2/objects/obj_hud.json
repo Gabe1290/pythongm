@@ -1,0 +1,47 @@
+{
+ "name": "obj_hud",
+ "asset_type": "object",
+ "sprite": "",
+ "visible": true,
+ "solid": false,
+ "persistent": false,
+ "depth": -1000,
+ "events": {
+  "draw": {
+   "actions": [
+    {
+     "action": "set_draw_color",
+     "parameters": {
+      "color": "#ffffff"
+     }
+    },
+    {
+     "action": "draw_score",
+     "parameters": {
+      "x": "8",
+      "y": "8",
+      "caption": "Score: "
+     }
+    },
+    {
+     "action": "draw_text",
+     "parameters": {
+      "text": "Lives:",
+      "x": "500",
+      "y": "8"
+     }
+    },
+    {
+     "action": "draw_lives",
+     "parameters": {
+      "x": "556",
+      "y": "6",
+      "sprite": "spr_person",
+      "scale": "1.0"
+     }
+    }
+   ]
+  }
+ },
+ "parent": ""
+}

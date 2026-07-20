@@ -20,10 +20,12 @@ orientés vers la caméra.
 - **Gauche / Droite** — pivote sur place (modifie `facing_angle`, indépendant du
   déplacement : tu peux tourner à l'arrêt).
 - **Ramasse les gemmes** disséminées dans le labyrinthe — chacune ajoute 10 au
-  score, affiché dans la **barre de titre** de la fenêtre.
+  score, affiché dans l'**affichage à l'écran** (en haut à gauche), dessiné
+  par-dessus la vue à la première personne par `obj_hud`.
 - **Évite les monstres** — ils patrouillent les couloirs (et rebondissent sur les
   murs) et se dessinent comme des *billboards* face à la caméra. Les toucher
-  coûte une vie et relance la salle ; tu commences avec 3 vies.
+  coûte une vie et relance la salle ; tu commences avec 3 vies, affichées en haut
+  à droite de l'affichage.
 - **Objectif :** ramasse **toutes** les gemmes d'une salle, puis atteins sa
   sortie. Y arriver trop tôt affiche seulement un rappel — la sortie ne s'ouvre
   qu'une fois la dernière gemme prise.
@@ -70,6 +72,7 @@ l'action. C'est ce qui permet à la seconde salle d'avoir une autre ambiance.
 | `objects/obj_monster.json` | Monstre *billboard* qui patrouille et rebondit sur les murs |
 | `objects/obj_goal.json`, `obj_goal_final.json` | Sortie de room0 (→ salle suivante) et de room1 (→ victoire) ; les deux exigent toutes les gemmes |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segments de mur fins (32×8 et 8×32) |
+| `objects/obj_hud.json` | Affichage en espace écran, dessiné par-dessus la vue à la première personne — `draw_score` et `draw_lives`. À noter : il est **visible: true**, car GameMaker n'exécute pas l'événement `draw` d'une instance invisible — c'est pourquoi l'affichage ne peut pas simplement être porté par `obj_cam0`/`obj_cam1`, qui sont invisibles |
 | `sprites/` | Repris de `raycast_1` (joueur, sortie, mur, ciel, sol), plus `spr_gem`, `spr_monster` et le jeu de textures `*_ice` de la salle 2 |
 
 ## À retenir

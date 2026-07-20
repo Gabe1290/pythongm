@@ -800,27 +800,37 @@ the turn/move controls, so the first-person renderer incl. the floor cast runs
 headlessly; 14/14 samples clean). **The whole raycast 2.5D plan is now closed
 across all three targets.**
 
-### Open engine follow-up — in-view HUD compositing (surfaced by `raycast_2`, 2026-07-19)
+### CLOSED — in-view HUD compositing (surfaced by `raycast_2` 2026-07-19, landed 2026-07-20)
 
-The one *by-design v1 gap* that's still open and now actually wanted: **HUD
-draw-queue actions (`draw_score` / `draw_text` / `draw_lives` / draw primitives)
-do not render while raycast mode is active.** `_render_room` early-returns after
-`_render_raycast_view` (game_runner.py ~1670), so the per-instance draw-event
-pass that normally composites the HUD is skipped. `raycast_2`'s gems/score
-(and any future lives/health) therefore have **no in-view HUD** — score/lives
-show only in the desktop **window caption**, which isn't visible on the HTML5
-(browser tab) or Kivy (fullscreen) export targets. This makes it a real
-limitation for any scored/lives-based raycast game, not just cosmetic.
+The last *by-design v1 gap*: HUD draw actions (`draw_score` / `draw_text` /
+`draw_lives` / `draw_health_bar` / draw primitives) did not render while raycast
+mode was active, because every target drew the first-person view and then
+returned before the per-instance draw pass. Score and lives showed only in the
+desktop **window caption** — invisible on the HTML5 (browser tab) and Kivy
+(fullscreen) exports.
 
-**Scope of the fix (a 3-target engine feature, NOT part of the raycast_2 sample
-units):** after drawing the first-person view, run the HUD draw-queue on top —
-- Desktop: don't early-return; process the draw-event / `_process_draw_queue`
-  pass over the raycast frame (screen-space, no camera offset).
-- HTML5 (`engine.js`) and Kivy (`kivy_exporter.py`): the equivalent — composite
-  the draw-queue/HUD after `renderRaycastView` / `_render_raycast`.
-Then a parity test like the existing `test_raycast_export_parity.py`. Until this
-lands, raycast samples keep the window-caption HUD (desktop) and document it.
-**Full design + unit plan: [`docs/RAYCAST_HUD_PLAN.md`](RAYCAST_HUD_PLAN.md).**
+**Done on all three targets** (RAYCAST_HUD_PLAN Units 1-4):
+- Desktop `341f5c4` — `run_draw_event` split out of `GameInstance.render`;
+  `GameRoom._render_draw_events` runs after `_render_raycast_view`.
+- HTML5 `d11550b` — `runDrawEvent(ctx)` split out of `onDraw`, run after
+  `renderRaycastView`.
+- Kivy `fd2402f` — scene-level `_raycast_hud_group` on `canvas.after` ABOVE the
+  opaque `_raycast_group`, flipped against the WINDOW height (not room height,
+  which is what `_render_draw_queue` uses and would have been wrong here).
+- Parity + sample — `test_raycast_export_parity.py` pins that none of the three
+  regresses to a bare early-return; `raycast_2` ships `obj_hud`
+  (`draw_score` + `draw_lives`).
+
+Two PRE-EXISTING export bugs were found and fixed along the way (`380abd2`),
+both divergences from the desktop runtime rather than raycast issues:
+**draw depth order** (engine.js sorted ascending, inverting sprite z-order;
+the Kivy exporter ignored `depth` entirely) and **draw-event visibility**
+(both targets ran an invisible instance's draw event, which GameMaker does
+not). Four samples rendered wrong on those targets: `maze_3`, `maze_4`,
+`plateforme_3`, `treasure`.
+
+**Design + unit plan: [`docs/RAYCAST_HUD_PLAN.md`](RAYCAST_HUD_PLAN.md).**
+Still open there: the minimap, scheduled as Session E behind its own plan doc.
 
 #### Risks / open questions
 

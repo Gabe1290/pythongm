@@ -26,14 +26,12 @@ exports to all three targets (desktop, HTML5, native/Kivy).
 - **Left / Right** — turn in place (rotates `facing_angle`, independent of
   movement — you can turn while standing still).
 - **Collect the gems** scattered through the maze — each one adds 10 to the
-  score. The score shows in the **window caption** (title bar). *In-view HUD
-  compositing over the raycast view is a tracked engine follow-up — see
-  `docs/RAYCAST_2_5D_PLAN.md` — so on the HTML5/Kivy exports the score isn't yet
-  visible on-screen.*
+  score, shown in the **on-screen HUD** (top-left), drawn over the
+  first-person view by `obj_hud`.
 - **Avoid the monsters** — they patrol the corridors (bouncing off walls) and
   draw as camera-facing billboards. Touching one costs a life and restarts the
-  room; you start with 3 lives (shown in the caption). Run out and the game
-  restarts.
+  room; you start with 3 lives, shown at the top-right of the HUD. Run out and
+  the game restarts.
 - **Objective:** collect **all** the gems in a room, then reach its goal.
   Reaching the goal early just prompts you to *"Ramasse toutes les gemmes !"* —
   it only opens once every gem is gone. The first (warm brick) room's goal takes
@@ -74,6 +72,7 @@ player.
 | `objects/obj_monster.json` | Patrolling billboard enemy — moves, bounces off walls |
 | `objects/obj_goal.json`, `obj_goal_final.json` | room0's goal (→ next room) and room1's goal (→ win); both gem-gated |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Thin wall segments (32×8 and 8×32) |
+| `objects/obj_hud.json` | Screen-space HUD drawn over the first-person view — `draw_score` + `draw_lives`. Note it is **visible: true**: GameMaker doesn't run an invisible instance's draw event, which is why the HUD can't just live on `obj_cam0`/`obj_cam1` (those are invisible) |
 | `sprites/` | Reused from `raycast_1` (person/goal/wall/sky/floor + wall placeholders), plus `spr_gem` (match3 gem), `spr_monster` (maze_3 monster), and the `*_ice` blue-tinted room1 texture set |
 
 ## Reused engine, reused art

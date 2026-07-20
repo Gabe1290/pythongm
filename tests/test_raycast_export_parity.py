@@ -335,3 +335,122 @@ def test_all_three_share_the_facing_angle_convention():
     # HTML5: (-facing_angle) in radians
     assert re.search(r"-\s*camera\.facing_angle\s*\*\s*Math\.PI\s*/\s*180", ENGINE) \
         or "-camera.facing_angle * Math.PI / 180" in ENGINE
+
+
+# --- In-view HUD compositing (RAYCAST_HUD_PLAN Unit 4) ---------------------
+# All three renderers used to draw the first-person frame and then STOP before
+# the per-instance draw pass, so a raycast game's HUD (draw_score / draw_lives
+# / draw_text / draw_health_bar) never rendered. Each target composites it now;
+# these pin that none of them regresses back to a bare early-return.
+
+def test_all_three_composite_the_hud_after_the_raycast_render():
+    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+
+    # Desktop: _render_room runs the draw pass instead of returning bare.
+    branch = gr[gr.index("if self.raycast_camera.get('enabled'):"):]
+    branch = branch[:branch.index("return")]
+    assert "self._render_raycast_view(screen)" in branch
+    assert "self._render_draw_events(screen)" in branch, \
+        "desktop returns without compositing the HUD"
+
+    # HTML5: same shape, after renderRaycastView.
+    js = ENGINE[ENGINE.index("if (this.raycastCamera && this.raycastCamera.enabled) {"):]
+    js = js[:js.index("return;")]
+    assert "this.renderRaycastView(ctx);" in js
+    assert "runDrawEvent(ctx)" in js, "engine.js returns without compositing the HUD"
+
+    # Kivy: a scene-level HUD group above the opaque overlay.
+    assert "self._raycast_hud_group = InstructionGroup()" in kx
+    assert "self.canvas.after.add(self._raycast_hud_group)" in kx
+
+
+def test_all_three_draw_the_hud_in_screen_space():
+    """A HUD at (8, 8) must land 8px from the window's top-left on every
+    target — no camera/view offset, and (on Kivy) flipped against the WINDOW
+    height rather than the room height."""
+    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    # Desktop passes the bare screen (no view_offset).
+    helper = gr[gr.index("def _render_draw_events"):]
+    helper = helper[:helper.index("def update_views")]
+    assert "run_draw_event(screen)" in helper
+    assert "view_offset" not in helper
+    # Kivy flips against display_height, not room_height.
+    step = kx[kx.index("# 8. DRAW EVENTS"):]
+    step = step[:step.index("# 9. CLEANUP")]
+    assert "float(self.display_height)" in step
+
+
+def test_raycast_2_ships_a_hud_controller():
+    """The sample that surfaced the gap now demonstrates the fix. obj_hud must
+    be VISIBLE: an invisible instance does not run its draw event (GameMaker
+    semantics, enforced on all three targets since 380abd2) — which is exactly
+    why the HUD can't live on obj_cam0/obj_cam1."""
+    import json
+    hud = json.loads((REPO_ROOT / "samples" / "raycast_2" / "objects" /
+                      "obj_hud.json").read_text(encoding="utf-8"))
+    assert hud["visible"] is True, \
+        "an invisible controller would silently draw nothing"
+    actions = [a["action"] for a in hud["events"]["draw"]["actions"]]
+    assert "draw_score" in actions and "draw_lives" in actions
+    # Registered in the manifest and placed in both rooms.
+    proj = json.loads((REPO_ROOT / "samples" / "raycast_2" /
+                       "project.json").read_text(encoding="utf-8"))
+    assert "obj_hud" in proj["assets"]["objects"]
+    for room_name in ("room0", "room1"):
+        room = json.loads((REPO_ROOT / "samples" / "raycast_2" / "rooms" /
+                           f"{room_name}.json").read_text(encoding="utf-8"))
+        assert any(i.get("object_name") == "obj_hud" for i in room["instances"]), \
+            f"{room_name} has no HUD instance"
+
+
+def test_raycast_2_hud_actually_renders_through_the_real_game_loop():
+    """End-to-end on the desktop reference target: run the sample and confirm
+    the HUD's draw commands are flushed while the raycast camera is on."""
+    import os
+    os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+    import pygame
+    from runtime.game_runner import GameRunner, GameInstance
+
+    seen = []
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        for cmd in self._draw_queue:
+            seen.append((self.object_name, cmd.get("type")))
+        self._draw_queue = []          # record without rasterising
+
+    runner = GameRunner(str(REPO_ROOT / "samples" / "raycast_2" / "project.json"))
+    runner.language = "en"
+    runner.show_message_dialog = lambda *a, **k: None
+    runner.show_highscore_dialog = lambda *a, **k: None
+    runner._show_name_entry_dialog = lambda *a, **k: ""
+    runner.process_pending_messages = lambda *a, **k: None
+
+    state = {"f": 0}
+
+    class _Clock:
+        def tick(self, fps=0):
+            state["f"] += 1
+            if state["f"] >= 5:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    GameInstance._process_draw_queue = spy
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real
+
+    assert runner.current_room.raycast_camera["enabled"] is True
+    kinds = {k for name, k in seen if name == "obj_hud"}
+    assert "text" in kinds and "lives" in kinds, \
+        f"HUD did not render under raycast; saw {sorted(set(seen))!r}"
