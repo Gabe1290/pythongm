@@ -185,8 +185,23 @@ can then slip without leaving anything half-done — a deliberate cut line.
   ("Lancer de rayons — Niveau 3"), smoke runner, 3-target playtest, README.md +
   README.fr.md. (~30%)
 
-**Total ≈ 2 sessions of engine work, 2 of sample work.** Sessions A–B and C–D
-are independently shippable.
+### Session E — minimap (planned 2026-07-20, needs its own plan doc first)
+
+A minimap is **not** a HUD-compositing problem: it needs world-space→view
+projection, which Sessions A–D explicitly scope out. It rides on the HUD pass
+landing first (it's drawn in the same screen-space final pass), so it is
+correctly sequenced after D — but it needs its own design pass before any code,
+covering at minimum: what it projects (wall edges from `_build_raycast_walls`?
+instance positions?), whether it rotates with `facing_angle` or stays
+north-up, fog-of-war vs. fully revealed, and how it renders on all three
+targets given none of them has a world→minimap primitive today.
+
+**First action of Session E is writing `docs/RAYCAST_MINIMAP_PLAN.md`**, not
+writing code. Estimated 1–2 sessions once scoped; do not start it before
+Session B ships the HUD pass it depends on.
+
+**Total ≈ 2 sessions of engine work, 2 of sample work, plus the minimap.**
+Sessions A–B, C–D and E are independently shippable.
 
 ## Open questions to settle before Session C
 
@@ -205,6 +220,6 @@ are independently shippable.
 - No world-space→view projection of top-down draws (see Scope-out above).
 - No changes to the DDA / billboard / floor-cast passes — compositing order
   only.
-- No minimap. It's the obvious next ask and it is **not** a HUD-compositing
-  problem (it needs world-space projection, explicitly scoped out); it belongs
-  in its own plan if wanted.
+- No minimap **in Sessions A–D**. It is not a HUD-compositing problem (it needs
+  world-space projection, explicitly scoped out above). Now scheduled as
+  **Session E**, gated on its own plan doc — see the Session E entry.
