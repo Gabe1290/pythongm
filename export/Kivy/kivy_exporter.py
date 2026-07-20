@@ -54,6 +54,29 @@ def _exported_asset_filename(asset_name: str, file_path) -> str:
     return f"{asset_name}{Path(str(file_path)).suffix}"
 
 
+# Kivy/SDL key codes, keyed by the event sub-key names the IDE writes.
+#
+# Until 2026-07-20 this lived as THREE copies inside the code generator and
+# held ONLY the four arrows, so a keyboard event on any other key generated
+# `if key == 0:` and silently never fired on Android. Letter keys are common
+# in the samples (maze_3's R/N/P debug keys, raycast_3's map toggle), and the
+# desktop runtime and engine.js both support them, so this was a real
+# three-target divergence rather than a missing feature.
+_KIVY_KEY_MAP = {
+    'right': '275',
+    'left': '276',
+    'up': '273',
+    'down': '274',
+    'space': '32',
+    'enter': '13',
+    'escape': '27',
+}
+for _c in "abcdefghijklmnopqrstuvwxyz":
+    _KIVY_KEY_MAP[_c] = str(ord(_c))        # 'a' -> 97 ... 'z' -> 122
+for _d in "0123456789":
+    _KIVY_KEY_MAP[_d] = str(ord(_d))        # '0' -> 48 ... '9' -> 57
+
+
 class KivyExporter:
     """Export PyGameMaker projects to Kivy format"""
 
@@ -441,6 +464,7 @@ _game_app = None
 # input (e.g. touch/mouse-driven puzzles) gets no virtual D-pad overlay,
 # which would otherwise cover the corner and swallow taps there.
 NEEDS_DPAD = {needs_dpad}
+NEEDS_MAP_BUTTON = {needs_map_button}
 
 # Room configuration
 ROOM_ORDER = [{room_list_str}]
@@ -804,6 +828,7 @@ if IS_ANDROID:
         KEY_DOWN = 274
         KEY_RIGHT = 275
         KEY_LEFT = 276
+        KEY_MAP_TOGGLE = 109        # 'm' — only shown when the game uses it
 
         def __init__(self, scene_ref=None, **kwargs):
             super().__init__(**kwargs)
@@ -829,6 +854,12 @@ if IS_ANDROID:
                 self.KEY_LEFT:  (cx - s, cy, s, s),
                 self.KEY_RIGHT: (cx + s, cy, s, s),
             }}
+            # Optional map-toggle button, top-LEFT of the screen so it can't be
+            # confused with movement or sit under the thumb that drives it.
+            # Only present when the game actually binds 'm' (NEEDS_MAP_BUTTON),
+            # so ordinary keyboard games don't grow a mystery button.
+            if NEEDS_MAP_BUTTON:
+                self._buttons[self.KEY_MAP_TOGGLE] = (pad, Window.height - pad - s, s, s)
 
             self.canvas.clear()
             with self.canvas:
@@ -845,6 +876,13 @@ if IS_ANDROID:
                 Triangle(points=[bx+bw*0.2, by+bh/2, bx+bw*0.7, by+bh*0.8, bx+bw*0.7, by+bh*0.2])
                 bx, by, bw, bh = self._buttons[self.KEY_RIGHT]
                 Triangle(points=[bx+bw*0.8, by+bh/2, bx+bw*0.3, by+bh*0.8, bx+bw*0.3, by+bh*0.2])
+                if self.KEY_MAP_TOGGLE in self._buttons:
+                    # A little grid glyph, so the button reads as "map" rather
+                    # than as another movement control.
+                    bx, by, bw, bh = self._buttons[self.KEY_MAP_TOGGLE]
+                    Line(rectangle=(bx+bw*0.25, by+bh*0.25, bw*0.5, bh*0.5), width=1.5)
+                    Line(points=[bx+bw*0.5, by+bh*0.25, bx+bw*0.5, by+bh*0.75], width=1.2)
+                    Line(points=[bx+bw*0.25, by+bh*0.5, bx+bw*0.75, by+bh*0.5], width=1.2)
 
         def _hit_test(self, x, y):
             """Return key code if touch is inside a button, else None"""
@@ -1233,11 +1271,34 @@ if __name__ == '__main__':
             room_meta_str=room_meta_str,
             project_name=project_name_literal,
             first_room_class=first_room_class,
-            needs_dpad=self._project_uses_keyboard()
+            needs_dpad=self._project_uses_keyboard(),
+            needs_map_button=self._project_binds_key('m')
         )
 
         output_file = self.output_path / "game" / "main.py"
         output_file.write_text(code_formatted, encoding="utf-8")
+
+    def _project_binds_key(self, key_name: str) -> bool:
+        """True if any object has a keyboard-family event bound to key_name.
+
+        Drives whether the exported Android build shows the optional map
+        button, so an ordinary keyboard game doesn't grow a mystery control.
+        """
+        wanted = str(key_name).lower()
+        for obj_data in self.project_data.get('assets', {}).get('objects', {}).values():
+            if not isinstance(obj_data, dict):
+                continue
+            events = obj_data.get('events', {})
+            if not isinstance(events, dict):
+                continue
+            for name, data in events.items():
+                if not str(name).startswith('keyboard'):
+                    continue
+                if isinstance(data, dict):
+                    for sub in data.keys():
+                        if str(sub).lower() == wanted:
+                            return True
+        return False
 
     def _project_uses_keyboard(self) -> bool:
         """True if any object has a keyboard-family event (drives whether
@@ -4204,12 +4265,7 @@ class {class_name}(GameObject):
             return self._generate_grid_keyboard_handler(keyboard_events)
 
         # Otherwise, generate normal keyboard handler
-        key_map = {
-            'right': '275',
-            'left': '276',
-            'up': '273',
-            'down': '274',
-        }
+        key_map = _KIVY_KEY_MAP
 
         code_lines = []
         code_lines.append("    def on_keyboard(self, key, scancode, codepoint, modifier):")
@@ -4218,7 +4274,7 @@ class {class_name}(GameObject):
         for i, event in enumerate(keyboard_events):
             key_name = event.get('key_name', '')
             actions = event.get('actions', [])
-            key_code = key_map.get(key_name, '0')
+            key_code = key_map.get(str(key_name).lower(), '0')  # case-insensitive: samples write 'N'/'P' as well as 'r'
 
             if_keyword = "if" if i == 0 else "elif"
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
@@ -4393,12 +4449,7 @@ class {class_name}(GameObject):
         Unlike keyboard events which check continuously, keyboard_press fires once per key press.
         This is ideal for Sokoban-style grid movement where each press moves one cell.
         """
-        key_map = {
-            'right': '275',
-            'left': '276',
-            'up': '273',
-            'down': '274',
-        }
+        key_map = _KIVY_KEY_MAP
 
         code_lines = []
         code_lines.append("    def on_keyboard(self, key, scancode, codepoint, modifier):")
@@ -4407,7 +4458,7 @@ class {class_name}(GameObject):
         for i, event in enumerate(keyboard_press_events):
             key_name = event.get('key_name', '')
             actions = event.get('actions', [])
-            key_code = key_map.get(key_name, '0')
+            key_code = key_map.get(str(key_name).lower(), '0')  # case-insensitive: samples write 'N'/'P' as well as 'r'
 
             if_keyword = "if" if i == 0 else "elif"
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
@@ -4437,12 +4488,7 @@ class {class_name}(GameObject):
         The scene binds Window on_key_up -> on_keyboard_up(key, scancode) and
         dispatches it to each instance, so release actions land here.
         """
-        key_map = {
-            'right': '275',
-            'left': '276',
-            'up': '273',
-            'down': '274',
-        }
+        key_map = _KIVY_KEY_MAP
 
         code_lines = []
         code_lines.append("    def on_keyboard_up(self, key, scancode):")
@@ -4451,7 +4497,7 @@ class {class_name}(GameObject):
         for i, event in enumerate(keyboard_release_events):
             key_name = event.get('key_name', '')
             actions = event.get('actions', [])
-            key_code = key_map.get(key_name, '0')
+            key_code = key_map.get(str(key_name).lower(), '0')  # case-insensitive: samples write 'N'/'P' as well as 'r'
 
             if_keyword = "if" if i == 0 else "elif"
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")

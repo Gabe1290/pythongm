@@ -168,8 +168,13 @@ def test_minimap_renders_over_raycast_3():
 
     class _Clock:
         def tick(self, fps=0):
-            state["f"] += 1
-            if state["f"] >= 6:
+            f = state["f"] = state["f"] + 1
+            # The map is OFF by default now — press M to bring it up.
+            if f == 2:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+            if f == 3:
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_m))
+            if f >= 10:
                 runner.running = False
             return 0
 
@@ -249,8 +254,13 @@ def test_marker_lands_on_the_player_in_the_real_sample():
 
     class _Clock:
         def tick(self, fps=0):
-            state["f"] += 1
-            if state["f"] >= 6:
+            f = state["f"] = state["f"] + 1
+            # The map is OFF by default now — press M to bring it up.
+            if f == 2:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+            if f == 3:
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_m))
+            if f >= 10:
                 runner.running = False
             return 0
 
@@ -279,3 +289,97 @@ def test_marker_lands_on_the_player_in_the_real_sample():
     # size == room size, x=y=0, so minimap coords == world coords.
     assert abs(heading["x1"] - cx) < 1.0, (heading["x1"], cx)
     assert abs(heading["y1"] - cy) < 1.0, (heading["y1"], cy)
+
+
+# --- On-demand minimap (toggle) --------------------------------------------
+# The minimap is drawn only while toggled on. Two reasons, both concrete:
+# it cost ~250 line commands EVERY frame, and at its old bottom-right position
+# it overlapped the Kivy virtual D-pad by 117x47 px on a 640x480 Android build.
+
+def test_minimap_is_off_until_toggled_and_alternates():
+    """The toggle uses test_variable + exit_event rather than two bare
+    conditionals — the naive version sets the flag to 1 and then immediately
+    reads 1 and sets it back to 0, so the map never appears."""
+    from runtime.game_runner import GameRunner, GameInstance
+
+    runner = GameRunner(str(REPO_ROOT / "samples" / "raycast_3" / "project.json"))
+    runner.language = "en"
+    for attr in ("show_message_dialog", "show_highscore_dialog",
+                 "process_pending_messages"):
+        setattr(runner, attr, lambda *a, **k: None)
+    runner._show_name_entry_dialog = lambda *a, **k: ""
+
+    per_frame = {}
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        if self.object_name == "obj_hud":
+            per_frame[state["f"]] = sum(1 for c in self._draw_queue
+                                        if c.get("color") == "#8080a0")
+        self._draw_queue = []
+
+    PRESS = {10, 30, 50}
+    state = {"f": 0}
+
+    class _Clock:
+        def tick(self, fps=0):
+            f = state["f"] = state["f"] + 1
+            if f in PRESS:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+            if f - 1 in PRESS:
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_m))
+            if f >= 65:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    GameInstance._process_draw_queue = spy
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real
+
+    on = lambda f: per_frame.get(f, 0) > 0
+    assert not on(5), "map drawn before any toggle — it must default to off"
+    assert on(20), "first M press did not show the map"
+    assert not on(40), "second M press did not hide the map"
+    assert on(60), "third M press did not show it again"
+    # And while off it costs NOTHING, which is the point.
+    assert per_frame.get(5, 0) == 0
+
+
+def test_minimap_clears_the_android_dpad():
+    """Concrete regression: at (508,348,124) the map overlapped Kivy's virtual
+    D-pad by 117x47 px. The D-pad geometry is read from the exporter so this
+    can't drift from the real thing."""
+    import json as _json
+    import re as _re
+    src = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    btn = int(_re.search(r"self\._btn_size = (\d+)", src).group(1))
+    pad = int(_re.search(r"self\._padding = (\d+)", src).group(1))
+    W, H = 640, 480
+    cx, cy = W - pad - btn * 1.5, pad + btn * 1.5
+    corners = [(cx, cy + btn), (cx, cy - btn), (cx - btn, cy), (cx + btn, cy)]
+    dp_x1 = min(x for x, _ in corners)
+    dp_x2 = max(x for x, _ in corners) + btn
+    dp_y1 = H - (max(y for _, y in corners) + btn)
+    dp_y2 = H - min(y for _, y in corners)
+
+    hud = _json.loads((REPO_ROOT / "samples" / "raycast_3" / "objects" /
+                       "obj_hud.json").read_text(encoding="utf-8"))
+    mm = next(a for a in hud["events"]["draw"]["actions"]
+              if a["action"] == "draw_minimap")["parameters"]
+    mx, my, ms = float(mm["x"]), float(mm["y"]), float(mm["size"])
+
+    overlap_x = min(dp_x2, mx + ms) - max(dp_x1, mx)
+    overlap_y = min(dp_y2, my + ms) - max(dp_y1, my)
+    assert not (overlap_x > 0 and overlap_y > 0), (
+        f"minimap ({mx},{my},{ms}) overlaps the Android D-pad "
+        f"(x {dp_x1}..{dp_x2}, y {dp_y1}..{dp_y2}) by "
+        f"{overlap_x:.0f}x{overlap_y:.0f}px")
+    assert mx + ms <= W and my + ms <= H, "minimap runs off screen"
