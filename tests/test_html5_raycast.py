@@ -76,7 +76,9 @@ def test_wall_render_samples_texture_strip():
     assert "h * cellSize / Math.max(corrected" in body
     # 1px source-column drawImage scaled to the strip (Canvas equiv of pygame
     # subsurface+scale)
-    assert "ctx.drawImage(texSprite, texX, 0, 1, th, x0, y0, stripW, stripH)" in body
+    # the texture is CROPPED to the visible span (srcY/srcH), not the whole
+    # column squeezed into a screen-clamped strip
+    assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in body
     assert "if (!r.hit) continue" in body         # miss columns draw no wall
     # depth cue is now the shared shading model (subtle side hint + distance
     # falloff), not the old binary `r.side === 1` half-brightness overlay
