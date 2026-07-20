@@ -599,6 +599,7 @@ def get_health():
 def set_health(value, relative=False):
     """Set the health value"""
     if _game_app:
+        _old_health = _game_app.health
         if relative:
             _game_app.health += value
         else:
@@ -606,6 +607,16 @@ def set_health(value, relative=False):
         _game_app.health = max(0, min(100, _game_app.health))
         _game_app.show_health_in_caption = True
         _game_app.update_caption()
+        # IDE-runtime parity: when health crosses from >0 to <=0, fire
+        # no_more_health once on EVERY instance that defines it — mirrors
+        # set_lives/no_more_lives above. Missing until 2026-07-20.
+        if _old_health > 0 and _game_app.health <= 0 and _game_app.scene:
+            for _inst in list(_game_app.scene.instances):
+                if hasattr(_inst, 'on_no_more_health'):
+                    try:
+                        _inst.on_no_more_health()
+                    except Exception as _exc:
+                        print(f"[ERROR] on_no_more_health: {{_exc}}")
 
 
 def set_window_caption(caption="", show_score=True, show_lives=True, show_health=False):
@@ -4442,6 +4453,7 @@ class {class_name}(GameObject):
             'room_end': 'on_room_end',
             'animation_end': 'on_animation_end',
             'no_more_lives': 'on_no_more_lives',
+            'no_more_health': 'on_no_more_health',
             'game_start': 'on_game_start',
             'game_end': 'on_game_end',
             'outside_room': 'on_outside_room',

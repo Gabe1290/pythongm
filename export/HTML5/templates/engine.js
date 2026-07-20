@@ -1937,7 +1937,8 @@ class GameObject {
                 break;
             }
 
-            case 'set_health':
+            case 'set_health': {
+                const oldHealth = game.health;
                 if (params.relative) {
                     game.health += parseFloat(params.value) || 0;
                 } else {
@@ -1945,7 +1946,19 @@ class GameObject {
                 }
                 game.health = Math.max(0, Math.min(100, game.health));
                 console.log(`💚 Health: ${game.health}`);
+                // IDE-runtime semantics, mirroring set_lives above: when
+                // health crosses from >0 to <=0, fire no_more_health once on
+                // EVERY instance that defines it. Missing until 2026-07-20,
+                // so a health-based lose condition never fired on this target.
+                if (oldHealth > 0 && game.health <= 0 && game.currentRoom) {
+                    [...game.currentRoom.instances].forEach(inst => {
+                        if (!inst.toDestroy && inst.events && inst.events.no_more_health) {
+                            inst.executeActions(inst.events.no_more_health.actions || [], game);
+                        }
+                    });
+                }
                 break;
+            }
 
             case 'jump_to_start':
                 // Return to starting position
