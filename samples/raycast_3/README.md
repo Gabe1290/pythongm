@@ -52,12 +52,18 @@ wins. Available from the IDE's Welcome tab (*"Raycast — Level 3"*).
 | Score | top-left | `draw_score` |
 | Lives | top-right | `draw_text` + `draw_lives` |
 | Health bar | bottom-left | `draw_health_bar` |
-| Minimap | bottom-right | `draw_minimap` |
+| Minimap | centre, **on demand** | `draw_minimap` |
 
 Score and health sit in **opposite** corners on purpose: a health bar is wide
 and a score string grows as you play, so stacking them invites a collision.
 
 ### The minimap
+
+**Press `M` to show or hide it** — on Android, tap the map button at the
+top-left. It is *off* by default and drawn only while toggled on, for two
+reasons: a full map is ~250 line commands every frame, and permanently
+covering part of a first-person view is exactly the clutter a HUD should
+avoid. While it's off it costs nothing at all.
 
 `draw_minimap` draws a **north-up** map of the room's walls with a marker
 showing where you are and which way you're facing. It doesn't rotate — the map
@@ -122,7 +128,10 @@ beginning the game nose-to-wall) and that every cell is reachable.
   health in opposite corners.
 - **Minimap:** `size` on `draw_minimap` scales the whole room into that square,
   so a bigger value just means a more legible map; `wall_color` and
-  `player_color` set its look.
+  `player_color` set its look. The toggle lives in `obj_hud`'s
+  `keyboard_press` → `m` event; it uses `test_variable` + `exit_event` rather
+  than two bare conditionals, because the naive version sets the flag to 1 and
+  then immediately reads 1 and sets it straight back to 0.
 - **Themes:** the texture parameters on `obj_cam0`/`obj_cam1`.
 
 ## A note on collision timing

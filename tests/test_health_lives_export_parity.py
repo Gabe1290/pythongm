@@ -97,3 +97,47 @@ def test_no_more_health_fires_on_every_instance_that_defines_it():
     js = ENGINE[ENGINE.index("case 'set_health':"):]
     js = js[:js.index("case 'jump_to_start':")]
     assert "game.currentRoom.instances" in js
+
+
+# --- Kivy letter/number keys (2026-07-20) ----------------------------------
+# The Kivy code generator's key_map held ONLY the four arrows, in three
+# duplicated copies, so a keyboard event on any other key generated
+# `if key == 0:` and silently never fired on Android. Desktop and engine.js
+# both handle letter keys, so this was a real three-target divergence.
+# Found while adding raycast_3's 'm' map toggle; it also revives maze_3's
+# R / N / P debug keys on Android.
+
+def test_kivy_key_map_is_single_sourced():
+    assert "_KIVY_KEY_MAP = {" in KIVY_EXPORTER
+    # Three former inline copies now reference the one table.
+    assert KIVY_EXPORTER.count("key_map = _KIVY_KEY_MAP") == 3
+    assert "'right': '275',\n    'left': '276'," in KIVY_EXPORTER
+
+
+def test_kivy_key_map_covers_letters_and_digits():
+    from export.Kivy.kivy_exporter import _KIVY_KEY_MAP
+    assert _KIVY_KEY_MAP['m'] == '109'
+    assert _KIVY_KEY_MAP['r'] == '114'
+    assert _KIVY_KEY_MAP['a'] == '97' and _KIVY_KEY_MAP['z'] == '122'
+    assert _KIVY_KEY_MAP['0'] == '48' and _KIVY_KEY_MAP['9'] == '57'
+    assert _KIVY_KEY_MAP['space'] == '32'
+    # Arrows unchanged.
+    assert (_KIVY_KEY_MAP['up'], _KIVY_KEY_MAP['down'],
+            _KIVY_KEY_MAP['left'], _KIVY_KEY_MAP['right']) == \
+        ('273', '274', '276', '275')
+
+
+def test_kivy_key_lookup_is_case_insensitive():
+    """maze_3 writes its debug keys as 'N' and 'P' (uppercase) while others
+    are lowercase; a case-sensitive lookup left those dead on Android."""
+    assert KIVY_EXPORTER.count("key_map.get(str(key_name).lower(), '0')") == 3
+
+
+def test_map_button_is_opt_in():
+    """The extra D-pad button appears only when the game actually binds 'm',
+    so ordinary keyboard games don't grow a mystery control."""
+    assert "NEEDS_MAP_BUTTON = {needs_map_button}" in KIVY_EXPORTER
+    assert "needs_map_button=self._project_binds_key('m')" in KIVY_EXPORTER
+    assert "def _project_binds_key(" in KIVY_EXPORTER
+    assert "if NEEDS_MAP_BUTTON:" in KIVY_EXPORTER
+    assert "KEY_MAP_TOGGLE = 109" in KIVY_EXPORTER

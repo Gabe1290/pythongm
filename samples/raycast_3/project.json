@@ -492,6 +492,64 @@
         "persistent": false,
         "depth": -1000,
         "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "map_on",
+                  "value": "0",
+                  "scope": "instance",
+                  "relative": false
+                }
+              }
+            ]
+          },
+          "keyboard_press": {
+            "m": {
+              "actions": [
+                {
+                  "action": "test_variable",
+                  "parameters": {
+                    "variable": "map_on",
+                    "value": "0",
+                    "scope": "instance",
+                    "operation": "equal"
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "map_on",
+                    "value": "1",
+                    "scope": "instance",
+                    "relative": false
+                  }
+                },
+                {
+                  "action": "exit_event",
+                  "parameters": {}
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "map_on",
+                    "value": "0",
+                    "scope": "instance",
+                    "relative": false
+                  }
+                }
+              ]
+            }
+          },
           "draw": {
             "actions": [
               {
@@ -545,15 +603,40 @@
                 }
               },
               {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "M = map",
+                  "x": "8",
+                  "y": "406"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "map_on",
+                  "value": "1",
+                  "scope": "instance",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
                 "action": "draw_minimap",
                 "parameters": {
-                  "x": "508",
-                  "y": "348",
-                  "size": "124",
+                  "x": "100",
+                  "y": "90",
+                  "size": "300",
                   "back_color": "#101018",
                   "wall_color": "#8080a0",
                   "player_color": "#ffd040"
                 }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
               }
             ]
           }

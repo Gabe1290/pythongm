@@ -58,13 +58,21 @@ terminée :
 | Score | en haut à gauche | `draw_score` |
 | Vies | en haut à droite | `draw_text` et `draw_lives` |
 | Barre de vie | en bas à gauche | `draw_health_bar` |
-| Minicarte | en bas à droite | `draw_minimap` |
+| Minicarte | au centre, **à la demande** | `draw_minimap` |
 
 Le score et la barre de vie sont dans des coins **opposés**, volontairement :
 une barre de vie est large et un score s'allonge au fil de la partie, les
 empiler inviterait à une collision.
 
 ### La minicarte
+
+**Appuie sur `M` pour l'afficher ou la masquer** — sous Android, touche le
+bouton de carte en haut à gauche. Elle est *masquée* par défaut et n'est
+dessinée que lorsqu'elle est activée, pour deux raisons : une carte complète
+représente environ 250 commandes de ligne à chaque image, et masquer en
+permanence une partie d'une vue à la première personne est exactement
+l'encombrement qu'un affichage doit éviter. Tant qu'elle est masquée, elle ne
+coûte rien du tout.
 
 `draw_minimap` dessine une carte des murs de la salle **orientée au nord**, avec
 un repère indiquant où tu te trouves et dans quelle direction tu regardes. Elle
@@ -134,6 +142,10 @@ cases sont accessibles.
 - **Minicarte :** le paramètre `size` de `draw_minimap` met toute la salle à
   l'échelle dans ce carré — une valeur plus grande donne donc simplement une
   carte plus lisible ; `wall_color` et `player_color` en règlent l'apparence.
+  La bascule se trouve dans l'événement `keyboard_press` → `m` d'`obj_hud` ;
+  elle utilise `test_variable` et `exit_event` plutôt que deux conditions
+  simples, car la version naïve met l'indicateur à 1 puis relit aussitôt 1 et
+  le remet immédiatement à 0.
 - **Thèmes :** les paramètres de textures sur `obj_cam0`/`obj_cam1`.
 
 ## Une note sur le moment des collisions
