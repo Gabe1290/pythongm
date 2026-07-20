@@ -241,9 +241,16 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     # the crop signature: unclamped height + a texture sub-range
     for src, name in ((gr, "game_runner"), (kx, "kivy_exporter")):
         assert "full_h = h * cell_size / max(corrected, 1e-4)" in src, name
-        assert "src_y" in src and "src_h" in src, name
     assert "const fullH = h * cellSize / Math.max(corrected, 1e-4)" in ENGINE
     assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
+
+    # SUB-TEXEL accuracy: on a close wall one texel covers tens of screen px, so
+    # snapping the crop to whole texels per column produced jagged edges.
+    # Desktop carries the remainder as a blit offset; HTML5 passes float source
+    # rows to drawImage; Kivy selects the slice with float tex_coords.
+    assert "frac_px" in gr and "texels_per_px" in gr
+    assert "Math.floor(v0 * th)" not in ENGINE, "engine.js still snaps to texels"
+    assert "tex_coords=(0.0, v0, 1.0, v0," in kx, "kivy still snaps to texels"
 
 
 def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():

@@ -2057,16 +2057,20 @@ class {class_name}(Widget):
             if textured and tex is not None:
                 tw = tex.width; th = tex.height
                 tex_x = min(tw - 1, max(0, int(tex_u * tw)))
-                # Kivy textures are bottom-origin, and so is y0 here, so the
-                # visible fraction maps straight onto get_region's y.
+                # Take the FULL-height 1-px column and select the visible slice
+                # with FLOAT tex_coords instead of an integer get_region crop.
+                # get_region snaps to whole texels, and on a close wall one
+                # texel spans tens of screen px, so per-column snapping produced
+                # jagged edges. tex_coords are sub-texel exact. Kivy textures
+                # are bottom-origin and y0/y_bot are too, so v maps directly.
                 v0 = (y0 - y_bot) / full_h
                 v1 = (y1 - y_bot) / full_h
-                src_y = max(0, min(th - 1, int(v0 * th)))
-                src_h = max(1, min(th - src_y, int(round((v1 - v0) * th))))
-                region = tex.get_region(tex_x, src_y, 1, src_h)
+                region = tex.get_region(tex_x, 0, 1, th)
                 group.add(Color(shade, shade, shade, 1))
                 group.add(Rectangle(texture=region, pos=(x0, y0),
-                                    size=(strip_w, vis_h)))
+                                    size=(strip_w, vis_h),
+                                    tex_coords=(0.0, v0, 1.0, v0,
+                                                1.0, v1, 0.0, v1)))
             else:
                 color = tuple(c * shade for c in wall_color)
                 group.add(Color(*color, 1))

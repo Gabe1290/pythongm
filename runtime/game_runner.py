@@ -2115,17 +2115,28 @@ class GameRoom:
                 frame = tex_sprite.get_frame(0)
                 tw, th = frame.get_width(), frame.get_height()
                 tex_x = min(tw - 1, max(0, int(tex_u * tw)))
-                # Texture rows that map onto the visible screen span.
-                v0 = (y0 - y_top) / full_h
-                v1 = (y1 - y_top) / full_h
-                src_y = max(0, min(th - 1, int(v0 * th)))
-                src_h = max(1, min(th - src_y, int(round((v1 - v0) * th))))
+                # Texture rows that map onto the visible screen span. subsurface
+                # needs INTEGER rows, but on a close wall one texel covers tens
+                # of screen pixels, so rounding src_y per column made adjacent
+                # columns snap to different texels -- a jump of a whole texel
+                # (~30-60px), i.e. the jagged close-up edges. Crop to the floor
+                # texel (+ margin) and carry the SUB-TEXEL remainder as a
+                # blit offset instead, so the residual error is <=1px.
+                texels_per_px = th / full_h
+                src_y_f = (y0 - y_top) * texels_per_px
+                src_y = max(0, min(th - 1, int(math.floor(src_y_f))))
+                frac_px = (src_y_f - src_y) / texels_per_px   # in screen px
+                need = int(math.ceil(vis_h * texels_per_px)) + 2
+                src_h = max(1, min(th - src_y, need))
+                dest_h = max(1, int(round(src_h / texels_per_px)))
                 col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
-                strip = pygame.transform.scale(col_surf, (strip_w, vis_h))
+                strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
                 if shade < 1.0:
                     v = int(shade * 255)
                     strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
-                screen.blit(strip, (x0, y0))
+                off = max(0, min(dest_h - 1, int(round(frac_px))))
+                screen.blit(strip, (x0, y0),
+                            (0, off, strip_w, min(vis_h, dest_h - off)))
             else:
                 color = tuple(int(c * shade) for c in wall_color)
                 screen.fill(color, (x0, y0, strip_w, vis_h))
