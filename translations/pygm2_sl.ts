@@ -8392,6 +8392,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 3</source>
+            <translation>Raycasting — Stopnja 3</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 2</source>
             <translation>Raycasting — Stopnja 2</translation>
         </message>

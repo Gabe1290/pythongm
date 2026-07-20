@@ -1,8 +1,8 @@
 # Plan: in-view HUD compositing + the `raycast_3` sample
 
-Status: **Sessions A–B DONE (2026-07-20); C–D (the `raycast_3` sample) and E
-(minimap) open.** The engine feature is complete and shipped on all three
-targets — see the unit checklist below. Supersedes the 2026-07-19
+Status: **Sessions A–D DONE (2026-07-20); only E (minimap) open.** The engine
+feature is complete on all three targets and `raycast_3` ships as a two-level
+game demonstrating it — see the unit checklist below. Supersedes the 2026-07-19
 version, which scoped this as engine-only work ending in a `raycast_2` tweak.
 The HUD is now the **headline feature of a third raycast sample**, so the plan
 covers engine work (3 targets) *and* `raycast_3`, sequenced in session-size
@@ -202,25 +202,34 @@ the camera controller.
 *Engine feature is complete and shipped at the end of Session B.* `raycast_3`
 can then slip without leaving anything half-done — a deliberate cut line.
 
-### Session C — `raycast_3`, the game (~50%)
+### Session C — `raycast_3`, the game — **DONE**
 
-- **Unit 5 — maze + objects.** Generate the maze via `raycast_2`'s
-  recursive-backtracker + edge-wall conversion; place walls, player, camera
-  controller, gems, monsters. Smoke-run desktop. (~30%)
-- **Unit 6 — health loop + HUD controller.** Monster damage, medkit pickups,
-  the status-bar controller (`draw_health_bar` + `draw_score` + `draw_lives` +
-  key counter). **Landmine from `raycast_2`:** score/lives/health init belongs in
-  **`game_start`**, not `create` — `create` re-runs on `restart_room`.
-  `enable_raycast_view` must stay in `create`. (~20%)
+- [x] **Unit 5 — maze + objects.** `59cd8e6`. Generator COMMITTED
+  (`tools/gen_raycast_3_maze.py`), unlike `raycast_2`'s throwaway script; seeds
+  are chosen so the spawn cell opens east and every cell is reachable.
+- [x] **Unit 5b — export parity gap (unplanned).** `84707a4`. See the corrected
+  risk assessment above.
+- [x] **Unit 6 — health loop + HUD.** `4dbe128`. Per-touch damage + a 45-step
+  invulnerability alarm, medkits, `no_more_health` costing one life, and the
+  corner-overlay HUD. The `game_start` landmine held: score/lives/health init
+  there, not in `create`.
 
-### Session D — second room + ship it (~50%)
+### Session D — second room + ship — **DONE**
 
-- **Unit 7 — room 2 + gated exit.** Second themed room via a per-room camera
-  controller with `camera_object='obj_person'`; key-gated exit
-  (`test_instance_count`, param key is **`number`**, not `count`). (~20%)
-- **Unit 8 — ship.** Welcome-tab entry + `pygm2_fr.ts` translation
-  ("Lancer de rayons — Niveau 3"), smoke runner, 3-target playtest, README.md +
-  README.fr.md. (~30%)
+- [x] **Unit 7 — room 2 + gated exit.** `f2c9967`. Ice-themed `room1` via
+  `obj_cam1` (per-room camera controllers naming `obj_person`), gem-gated
+  `obj_goal` → `obj_goal_final`. Deliberately the harder half (5 monsters,
+  2 medkits) so the health bar matters.
+- [x] **Unit 8 — ship.** Welcome-tab entry + all 13 `.ts` regenerated and
+  `.qm` recompiled ("Lancer de rayons — Niveau 3"), added to
+  `tools/smoke_run_samples.py` (**16/16 samples clean**), README.md +
+  README.fr.md.
+
+**Still worth doing by eye:** a visual playtest of `raycast_3` in a browser and
+on Android. The exports were verified to *carry* the whole loop
+(`no_more_health`, `alarm_0`, `draw_health_bar`, `obj_hud`, `spr_medkit` all
+survive codegen) and the HUD-compositing tests pass per target, but no one has
+watched it render. Same for `plateforme_3` after the depth fix.
 
 ### Session E — minimap (planned 2026-07-20, needs its own plan doc first)
 

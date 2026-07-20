@@ -2388,6 +2388,11 @@ Check the console for error details.</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 3</source>
+            <translation>Рейкастинг — Уровень 3</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 2</source>
             <translation>Рейкастинг — Уровень 2</translation>
         </message>
