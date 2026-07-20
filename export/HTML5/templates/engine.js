@@ -762,6 +762,14 @@ class GameObject {
         // actions (draw_score / draw_lives / draw_text / draw_health_bar)
         // over the finished first-person frame without also drawing sprites.
         // See GameRoom.render and docs/RAYCAST_HUD_PLAN.md.
+        //
+        // GameMaker: an invisible instance does not run its draw event at all
+        // (the desktop runtime gets this via render()'s early return on
+        // `not self.visible`). Until 2026-07-20 this file ran the draw event
+        // regardless of visible — only the sprite blit was skipped — so a
+        // HUD/controller hidden with visible=false kept drawing on the web
+        // export while correctly drawing nothing on desktop.
+        if (!this.visible) return;
         if (!this.events || !this.events.draw) return;
         const game = this._gameRef;
         this._draw_queue = [];
@@ -3305,11 +3313,9 @@ class GameRoom {
             // early return. Depth order matches the normal path below.
             // World-space draws are NOT projected into the 3D view — see
             // docs/RAYCAST_HUD_PLAN.md Scope-out.
-            // NB: this sort matches THIS file's normal path below
-            // (ascending), which is the opposite of the desktop runtime's
-            // descending order. That divergence pre-dates this change and is
-            // deliberately not "fixed" here — see the plan's Unit 4.
-            const hudInstances = [...this.instances].sort((a, b) => a.depth - b.depth);
+            // Descending, matching this file's normal path and the desktop
+            // runtime: higher depth drawn first, so lower depth ends in front.
+            const hudInstances = [...this.instances].sort((a, b) => b.depth - a.depth);
             hudInstances.forEach(inst => inst.runDrawEvent(ctx));
             return;
         }
@@ -3368,7 +3374,14 @@ class GameRoom {
         }
 
         // GAMEMAKER 7.0: Draw events (sort by depth first)
-        const sortedInstances = [...this.instances].sort((a, b) => a.depth - b.depth);
+        // GameMaker depth: HIGHER depth is drawn FIRST (further back), so a
+        // LOWER depth ends up in front. That means descending order — matching
+        // the desktop runtime (GameRoom._render_room). This sorted ASCENDING
+        // until 2026-07-20, which inverted sprite z-order on every export whose
+        // objects use more than one depth (maze_3, maze_4, plateforme_3,
+        // treasure): plateforme_3's player (depth -100) drew BEHIND the exit
+        // (depth 100) instead of in front.
+        const sortedInstances = [...this.instances].sort((a, b) => b.depth - a.depth);
         sortedInstances.forEach(inst => inst.onDraw(ctx));
     }
 }

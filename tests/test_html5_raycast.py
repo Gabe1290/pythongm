@@ -231,12 +231,24 @@ def test_hud_pass_runs_after_the_raycast_render_and_before_the_return():
         < branch.index("return;"), "HUD must composite over the finished frame"
 
 
-def test_hud_pass_uses_this_files_own_depth_order():
-    """Ascending, matching engine.js's normal path (line ~3367). This is the
-    opposite of the desktop runtime's descending order; that divergence
-    pre-dates the HUD work and is deliberately not changed here — if it is
-    ever reconciled, both sites must move together."""
+def test_hud_pass_uses_gamemaker_depth_order():
+    """Descending — higher depth drawn first, so lower depth ends in front.
+    Both engine.js sites must agree with each other AND with the desktop
+    runtime's `reverse=True` sort."""
     branch = _raycast_branch()
-    assert "sort((a, b) => a.depth - b.depth)" in branch
+    assert "sort((a, b) => b.depth - a.depth)" in branch
     normal = ENGINE[ENGINE.index("const sortedInstances = "):]
-    assert "sort((a, b) => a.depth - b.depth)" in normal[:200]
+    assert "sort((a, b) => b.depth - a.depth)" in normal[:200]
+    assert "a.depth - b.depth" not in ENGINE, \
+        "an ascending depth sort is back — it inverts sprite z-order"
+
+
+def test_invisible_instances_do_not_run_their_draw_event():
+    """GameMaker semantics, matching the desktop runtime's early return on
+    `not self.visible`. Regression guard: engine.js used to run the draw event
+    for invisible instances, skipping only the sprite."""
+    run_draw = ENGINE[ENGINE.index("runDrawEvent(ctx) {"):]
+    run_draw = run_draw[:run_draw.index("\n    }")]
+    assert "if (!this.visible) return;" in run_draw
+    # ...and it must come before the draw event is executed.
+    assert run_draw.index("if (!this.visible) return;") < run_draw.index("executeActions")

@@ -129,8 +129,10 @@ class _Widget:
         self.pos = (0, 0)
         self.size_hint = (1, 1)
 
-    def add_widget(self, w):
-        self.children.insert(0, w)
+    def add_widget(self, w, index=0, canvas=None):
+        # Real Kivy signature: children[0] is drawn LAST (on top). The
+        # exporter passes index= to order instances by GameMaker depth.
+        self.children.insert(index, w)
 
     def remove_widget(self, w):
         if w in self.children:
