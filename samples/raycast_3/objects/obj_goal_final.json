@@ -1,0 +1,68 @@
+{
+  "name": "obj_goal_final",
+  "asset_type": "object",
+  "sprite": "spr_goal",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_gem",
+            "number": "0",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "Well done! You finished both levels with all the gems."
+          }
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_gem",
+            "number": "0",
+            "operation": "greater"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "Collect all the gems before you leave!"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:54.997955",
+  "modified": "2026-05-24T10:32:34.419459",
+  "parent": ""
+}

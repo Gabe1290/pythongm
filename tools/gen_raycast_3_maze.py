@@ -107,8 +107,12 @@ def inst(name, x, y):
             "scale_y": 1.0, "visible": True, "x": x, "y": y}
 
 
-def build_room(name, seed, camera_obj, counts):
-    """counts: dict of object_name -> how many to scatter at open cells."""
+def build_room(name, seed, camera_obj, counts, goal_obj="obj_goal"):
+    """counts: dict of object_name -> how many to scatter at open cells.
+
+    goal_obj: obj_goal (advances to the next room) or obj_goal_final (wins the
+    game). Both are gem-gated — they only fire when no obj_gem remains.
+    """
     h, v = carve(seed)
     check_start(h, v)
     instances = []
@@ -140,7 +144,7 @@ def build_room(name, seed, camera_obj, counts):
         used += n
 
     # Goal goes in the far corner, so the maze has to be crossed.
-    instances.append(inst("obj_goal", (GRID - 1) * CELL + 4, (GRID - 1) * CELL + 4))
+    instances.append(inst(goal_obj, (GRID - 1) * CELL + 4, (GRID - 1) * CELL + 4))
 
     return {
         "name": name,
@@ -162,8 +166,13 @@ def build_room(name, seed, camera_obj, counts):
 # and the maze must be fully connected so the goal is reachable. Verified for
 # every seed listed here; see check_start() below.
 ROOMS = {
-    # name          seed  camera      scattered contents
-    "room0": (5, "obj_cam0", {"obj_gem": 8, "obj_monster": 3, "obj_medkit": 3}),
+    # name     seed  camera       scattered contents                         goal
+    # room1 is the harder half: more monsters, fewer medkits, so the health
+    # bar the sample exists to show actually comes under pressure.
+    "room0": (5, "obj_cam0",
+              {"obj_gem": 8, "obj_monster": 3, "obj_medkit": 3}, "obj_goal"),
+    "room1": (7, "obj_cam1",
+              {"obj_gem": 10, "obj_monster": 5, "obj_medkit": 2}, "obj_goal_final"),
 }
 
 
@@ -186,8 +195,8 @@ def check_start(h, v):
 
 
 def main():
-    for name, (seed, cam, counts) in ROOMS.items():
-        room = build_room(name, seed, cam, counts)
+    for name, (seed, cam, counts, goal) in ROOMS.items():
+        room = build_room(name, seed, cam, counts, goal)
         path = SAMPLE / "rooms" / f"{name}.json"
         path.write_text(json.dumps(room, indent=2) + "\n", encoding="utf-8")
         kinds = {}
