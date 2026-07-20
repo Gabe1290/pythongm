@@ -150,3 +150,176 @@ def test_player_is_blocked_by_walls():
     player = next(i for i in room.instances if i.object_name == "obj_person")
     assert 0 <= player.x <= room.width, f"player left the room: x={player.x}"
     assert 0 <= player.y <= room.height, f"player left the room: y={player.y}"
+
+
+# --- Unit 6: health loop + in-view HUD -------------------------------------
+# raycast_3's reason to exist: health as a resource you can SEE while playing.
+# The engine side landed in RAYCAST_HUD_PLAN Sessions A-B (HUD compositing) and
+# Unit 5b (health conditionals + no_more_health on the export targets).
+
+def _pin_and_run(touch_frames, max_frames, extra=None):
+    """Run the sample, teleporting the player onto a monster on the given
+    frames and back home the frame after.
+
+    Touch-and-retreat, not a continuous overlap: the runtime fires a collision
+    event only when a pair STARTS overlapping (GameRoom keeps
+    instance._active_collisions), so pinning the player on a monster can only
+    ever deal one hit no matter how long it lasts.
+    """
+    from runtime.game_runner import GameInstance
+    real_dq = GameInstance._process_draw_queue
+    GameInstance._process_draw_queue = lambda self, screen: setattr(self, "_draw_queue", [])
+    runner = _runner()
+    state = {"f": 0, "home": None}
+
+    class _Clock:
+        def tick(self, fps=0):
+            f = state["f"] = state["f"] + 1
+            room = runner.current_room
+            if room:
+                p = next(i for i in room.instances if i.object_name == "obj_person")
+                ms = [i for i in room.instances if i.object_name == "obj_monster"]
+                if state["home"] is None:
+                    state["home"] = (p.x, p.y)
+                if ms and f in touch_frames:
+                    p.x, p.y = ms[0].x, ms[0].y
+                elif f - 1 in touch_frames:
+                    p.x, p.y = state["home"]
+                if extra:
+                    extra(f, runner, room, state)
+            if f >= max_frames:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real_dq
+    return runner
+
+
+def test_starting_stats_come_from_game_start():
+    """score/lives/health must init in game_start, NOT create — create re-runs
+    on restart_room, so a create-time set_lives would refund lives on death
+    (the raycast_2 landmine)."""
+    obj = json.loads((SAMPLE / "objects" / "obj_person.json").read_text(encoding="utf-8"))
+    gs = [a["action"] for a in obj["events"]["game_start"]["actions"]]
+    assert {"set_score", "set_lives", "set_health"} <= set(gs)
+    create = [a["action"] for a in obj["events"]["create"]["actions"]]
+    assert "set_lives" not in create and "set_health" not in create
+
+
+def test_monster_costs_health_not_a_life():
+    """The core difference from raycast_2, where a touch cost a life outright."""
+    runner = _pin_and_run({5}, 20)
+    assert runner.health == 75.0, f"expected one 25-point hit, got {runner.health}"
+    assert runner.lives == 3, "a single touch must not cost a life"
+
+
+def test_invulnerability_window_blocks_a_second_hit_that_arrives_too_soon():
+    """Per-touch damage plus a 45-step alarm (the model settled in the plan).
+    Without it, a monster patrolling through the player would drain the whole
+    bar in a handful of touches."""
+    runner = _pin_and_run({5, 30}, 45)      # re-touch inside the window
+    assert runner.health == 75.0, \
+        f"invulnerability did not block the second hit (health={runner.health})"
+
+
+def test_the_window_expires_so_damage_can_land_again():
+    """The other half: a permanent invulnerability would be just as broken."""
+    runner = _pin_and_run({5, 70}, 85)      # re-touch after the alarm cleared
+    assert runner.health == 50.0, \
+        f"second hit did not land after the window expired (health={runner.health})"
+
+
+def test_emptying_the_bar_costs_exactly_one_life_and_refills_health():
+    """no_more_health -> -1 life, health back to 100, room restarts. Exactly
+    one life: the event fires only on the downward 0-crossing."""
+    runner = _pin_and_run({5, 60, 115, 170}, 200)
+    assert runner.lives == 2, f"expected exactly one life lost, got {runner.lives}"
+    assert runner.health == 100, f"health not refilled after death: {runner.health}"
+
+
+def test_medkit_heals_and_is_consumed():
+    def touch_medkit(f, runner, room, state):
+        if f == 100:
+            ks = [i for i in room.instances if i.object_name == "obj_medkit"]
+            if ks:
+                p = next(i for i in room.instances if i.object_name == "obj_person")
+                p.x, p.y = ks[0].x, ks[0].y
+
+    runner = _pin_and_run({5, 60}, 120, extra=touch_medkit)
+    assert runner.health == 90.0, f"medkit did not heal 40 (health={runner.health})"
+    left = [i for i in runner.current_room.instances
+            if i.object_name == "obj_medkit"]
+    assert len(left) == 2, "medkit was not consumed"
+
+
+def test_health_never_exceeds_full():
+    """A medkit picked up at full health must not push the bar past 100 —
+    draw_health_bar would render past its own right edge."""
+    def touch_medkit(f, runner, room, state):
+        if f == 30:
+            ks = [i for i in room.instances if i.object_name == "obj_medkit"]
+            if ks:
+                p = next(i for i in room.instances if i.object_name == "obj_person")
+                p.x, p.y = ks[0].x, ks[0].y
+
+    runner = _pin_and_run(set(), 50, extra=touch_medkit)
+    assert runner.health == 100, f"health exceeded full: {runner.health}"
+
+
+# --- The HUD itself --------------------------------------------------------
+
+def test_hud_controller_is_visible():
+    """Load-bearing, not stylistic: GameMaker does not run an invisible
+    instance's draw event (enforced on all three targets since 380abd2), which
+    is why the HUD can't live on the invisible camera controller."""
+    hud = json.loads((SAMPLE / "objects" / "obj_hud.json").read_text(encoding="utf-8"))
+    assert hud["visible"] is True
+    cam = json.loads((SAMPLE / "objects" / "obj_cam0.json").read_text(encoding="utf-8"))
+    assert cam["visible"] is False, \
+        "if the camera became visible this test no longer explains anything"
+
+
+def test_hud_uses_opposite_corners():
+    """Layout rule from the plan: score and health in OPPOSITE corners, so a
+    wide health bar can't collide with a growing score string."""
+    hud = json.loads((SAMPLE / "objects" / "obj_hud.json").read_text(encoding="utf-8"))
+    by = {a["action"]: a["parameters"] for a in hud["events"]["draw"]["actions"]}
+    assert int(by["draw_score"]["y"]) < 100, "score should be at the top"
+    assert int(by["draw_health_bar"]["y1"]) > 380, "health bar should be at the bottom"
+    # Window is 640x480; the bar must fit inside it.
+    assert int(by["draw_health_bar"]["x2"]) <= 640
+    assert int(by["draw_health_bar"]["y2"]) <= 480
+
+
+def test_hud_renders_over_the_raycast_view():
+    """End-to-end: the whole point of the sample. Captures the draw queue while
+    the first-person camera is on."""
+    from runtime.game_runner import GameInstance
+    seen = []
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        for cmd in self._draw_queue:
+            seen.append((self.object_name, cmd.get("type")))
+        self._draw_queue = []
+
+    GameInstance._process_draw_queue = spy
+    try:
+        runner = _runner()
+        _run(runner, {}, 6)
+    finally:
+        GameInstance._process_draw_queue = real
+
+    assert runner.current_room.raycast_camera["enabled"] is True
+    kinds = {k for name, k in seen if name == "obj_hud"}
+    assert {"text", "lives", "health_bar"} <= kinds, \
+        f"HUD did not fully render under raycast; saw {sorted(kinds)}"

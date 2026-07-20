@@ -7,7 +7,7 @@
   "background_image": "",
   "tile_horizontal": false,
   "tile_vertical": false,
-  "instance_count": 262,
+  "instance_count": 266,
   "tiles": [],
   "instances": [
     {
@@ -2261,6 +2261,15 @@
       "y": 0
     },
     {
+      "object_name": "obj_hud",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
       "object_name": "obj_gem",
       "rotation": 0,
       "scale_x": 1.0,
@@ -2358,6 +2367,33 @@
       "visible": true,
       "x": 40,
       "y": 232
+    },
+    {
+      "object_name": "obj_medkit",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 360,
+      "y": 232
+    },
+    {
+      "object_name": "obj_medkit",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 392,
+      "y": 72
+    },
+    {
+      "object_name": "obj_medkit",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 232,
+      "y": 40
     },
     {
       "object_name": "obj_goal",
