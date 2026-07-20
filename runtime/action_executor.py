@@ -2785,13 +2785,32 @@ class ActionExecutor:
         if not hasattr(instance, '_draw_queue'):
             instance._draw_queue = []
 
+        # Resolve the camera exactly as _render_raycast_view does
+        # (game_runner.py:2029) — via _find_first_instance on the config's
+        # camera_object. NB _find_raycast_camera is a KIVY-only helper; looking
+        # for it here silently yields no camera and no player marker.
+        cfg = getattr(room, 'raycast_camera', None) or {}
         camera = None
-        finder = getattr(room, '_find_raycast_camera', None)
+        finder = getattr(room, '_find_first_instance', None)
         if callable(finder):
             try:
-                camera = finder(getattr(room, 'raycast_camera', None) or {})
+                camera = finder(cfg.get('camera_object', ''))
             except Exception:
                 camera = None
+
+        # Camera position must be the same point the rays are cast from — the
+        # origin-aware CENTRE of the camera's cell, not its raw x/y. Using the
+        # raw corner would park the marker half a sprite off the view's actual
+        # viewpoint (game_runner.py:2053, the 2026-07-17 exact-grid-line fix).
+        cam_x = cam_y = None
+        if camera is not None:
+            top_left = getattr(room, '_sprite_top_left', None)
+            if callable(top_left):
+                cam_x, cam_y = top_left(camera)
+            else:
+                cam_x, cam_y = getattr(camera, 'x', 0), getattr(camera, 'y', 0)
+            cam_x += (getattr(camera, '_cached_width', 0) or 0) / 2.0
+            cam_y += (getattr(camera, '_cached_height', 0) or 0) / 2.0
 
         cmds = build_minimap_commands(
             v_walls=getattr(room, '_raycast_v_walls', None),
@@ -2799,8 +2818,8 @@ class ActionExecutor:
             cell_size=getattr(room, '_raycast_cell_size', 32) or 32,
             room_width=getattr(room, 'width', 0),
             room_height=getattr(room, 'height', 0),
-            cam_x=getattr(camera, 'x', None) if camera is not None else None,
-            cam_y=getattr(camera, 'y', None) if camera is not None else None,
+            cam_x=cam_x,
+            cam_y=cam_y,
             facing_angle=getattr(camera, 'facing_angle', 0.0) if camera is not None else 0.0,
             x=float(parameters.get("x", 0)),
             y=float(parameters.get("y", 0)),
