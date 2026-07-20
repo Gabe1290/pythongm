@@ -194,3 +194,81 @@ def test_minimap_renders_over_raycast_3():
             assert 500 - 1 <= c[key] <= 500 + 130 + 1, c
         for key in ("y1", "y2"):
             assert 340 - 1 <= c[key] <= 340 + 130 + 1, c
+
+
+def test_marker_sits_at_the_ray_origin_not_the_sprite_corner():
+    """The camera position must be the SAME point the rays are cast from — the
+    origin-aware centre of the camera's cell (game_runner.py:2053). Using the
+    raw x/y corner parks the marker half a sprite off the actual viewpoint,
+    which is exactly the class of exact-grid-line error the 2026-07-17 bug hunt
+    fixed in the renderer."""
+    src = (REPO_ROOT / "runtime" / "action_executor.py").read_text(encoding="utf-8")
+    block = src[src.index("def execute_draw_minimap_action"):]
+    block = block[:block.index("def execute_draw_health_bar_action")]
+    assert "_sprite_top_left" in block, \
+        "minimap is not using the origin-aware top-left"
+    assert "_cached_width" in block and "_cached_height" in block, \
+        "minimap is not offsetting to the cell centre"
+
+
+def test_marker_lands_on_the_player_in_the_real_sample():
+    """Behavioural version of the above: the marker must sit where the player
+    actually is, within a pixel of the projected centre."""
+    from runtime.game_runner import GameRunner, GameInstance
+
+    project = str(REPO_ROOT / "samples" / "raycast_3" / "project.json")
+    runner = GameRunner(project)
+    runner.language = "en"
+    for attr in ("show_message_dialog", "show_highscore_dialog",
+                 "process_pending_messages"):
+        setattr(runner, attr, lambda *a, **k: None)
+    runner._show_name_entry_dialog = lambda *a, **k: ""
+
+    seen = []
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        if self.object_name == "obj_hud":
+            seen.clear()
+            seen.extend(self._draw_queue)
+        self._draw_queue = []
+
+    runner._objects_data["obj_hud"]["events"]["draw"]["actions"].append({
+        "action": "draw_minimap",
+        "parameters": {"x": "0", "y": "0", "size": "480"},   # 1:1 with the room
+    })
+
+    state = {"f": 0}
+
+    class _Clock:
+        def tick(self, fps=0):
+            state["f"] += 1
+            if state["f"] >= 6:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    GameInstance._process_draw_queue = spy
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real
+
+    player = next(i for i in runner.current_room.instances
+                  if i.object_name == "obj_person")
+    room = runner.current_room
+    cx, cy = room._sprite_top_left(player)
+    cx += player._cached_width / 2.0
+    cy += player._cached_height / 2.0
+
+    marks = [c for c in seen if c.get("color") == "#ffd040"]
+    assert marks, "no player marker drawn"
+    heading = [c for c in marks if c["x1"] == c["x2"] or True][-1]
+    # size == room size, x=y=0, so minimap coords == world coords.
+    assert abs(heading["x1"] - cx) < 1.0, (heading["x1"], cx)
+    assert abs(heading["y1"] - cy) < 1.0, (heading["y1"], cy)
