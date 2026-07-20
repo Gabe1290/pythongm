@@ -1,6 +1,8 @@
 # Plan: in-view HUD compositing + the `raycast_3` sample
 
-Status: **PLAN (revised 2026-07-20). Not started.** Supersedes the 2026-07-19
+Status: **Sessions A–B DONE (2026-07-20); C–D (the `raycast_3` sample) and E
+(minimap) open.** The engine feature is complete and shipped on all three
+targets — see the unit checklist below. Supersedes the 2026-07-19
 version, which scoped this as engine-only work ending in a `raycast_2` tweak.
 The HUD is now the **headline feature of a third raycast sample**, so the plan
 covers engine work (3 targets) *and* `raycast_3`, sequenced in session-size
@@ -142,25 +144,38 @@ Cost basis: the measured French-guide run (15 guides ≈ 40% of a session) and t
 each **unit is one commit**, pushed before the next starts, so a mid-session
 limit loses nothing and the next session resumes from clean `main`.
 
-### Session A — engine, the two easy targets (~50%)
+### Session A — engine, the two easy targets — **DONE**
 
-- **Unit 0 — this plan.** Commit first. (~5%)
-- **Unit 1 — desktop HUD pass.** Extract `run_draw_event`, add
-  `_render_draw_events`, call after `_render_raycast_view`; regression test
-  through real `run()`. (~20%)
-- **Unit 2 — HTML5 HUD pass.** Draw-queue pass after `renderRaycastView`;
-  structural test. Verify brace/paren balance against HEAD after the edit, as in
-  the earlier engine.js work. (~20%)
+- [x] **Unit 0 — this plan.** `a869f7a`, minimap scheduled `f90d586`.
+- [x] **Unit 1 — desktop HUD pass.** `341f5c4`. `run_draw_event` split out of
+  `GameInstance.render`; `_render_draw_events` after `_render_raycast_view`.
+- [x] **Unit 2 — HTML5 HUD pass.** `d11550b`. `runDrawEvent(ctx)` split out of
+  `onDraw`, run after `renderRaycastView`.
 
-### Session B — engine, Kivy + parity (~45%)
+### Session B — engine, Kivy + parity — **DONE**
 
-- **Unit 3 — Kivy HUD pass.** Screen-space `_raycast_hud_group` on the scene's
-  `canvas.after` above `_raycast_group`; window-height y-flip; stub-kivy test
-  that pins the flip. Budget generously — this is the unit with both traps.
-  (~30%)
-- **Unit 4 — parity + retire the caveat.** Parity test that all three composite
-  the HUD; add a HUD controller to `raycast_2`; drop the "caption-only" caveat
-  from `raycast_1`/`raycast_2` guides (EN **and** FR). (~15%)
+- [x] **Unit 3 — Kivy HUD pass.** `fd2402f`. Both traps were real: the HUD group
+  had to be scene-level (a child widget's group can never rise above the
+  scene's opaque overlay), and the y-flip had to use `display_height`, not
+  `room_height`.
+- [x] **Unit 4 — parity + retire the caveat.** Parity tests pin that none of the
+  three regresses to a bare early-return; `raycast_2` ships `obj_hud`; the
+  caption-only caveat is gone from its EN + FR guides.
+
+**Unscheduled work that came out of Session A** (`380abd2`): two PRE-EXISTING
+export bugs, both divergences from the desktop runtime rather than raycast
+issues — **draw depth order** (engine.js sorted ascending, inverting sprite
+z-order; the Kivy exporter ignored `depth` entirely) and **draw-event
+visibility** (both targets ran an invisible instance's draw event, which
+GameMaker does not). Four samples rendered wrong on those targets: `maze_3`,
+`maze_4`, `plateforme_3`, `treasure`. Worth a browser/Android playtest of
+`plateforme_3` (five distinct depths) before the next release — the tests prove
+the ordering logic but can't prove it *looks* right.
+
+**Consequence for authoring, now load-bearing:** a HUD controller must be
+`visible: true`. `raycast_2`'s `obj_cam0`/`obj_cam1` are invisible, which is
+exactly why `obj_hud` is a separate object rather than a draw event bolted onto
+the camera controller.
 
 *Engine feature is complete and shipped at the end of Session B.* `raycast_3`
 can then slip without leaving anything half-done — a deliberate cut line.
