@@ -90,13 +90,31 @@ def test_guide_language_reads_the_language_manager_singleton(_qapp):
     assert "_" not in lang          # normalised, e.g. 'fr' not 'fr_FR'
 
 
-def test_renders_selected_readme(_qapp):
+def test_renders_selected_readme(_qapp, monkeypatch):
+    from widgets.welcome_tab import SampleDocsDialog
+    # Pin English: every sample now ships a README.fr.md too, so on a
+    # French-configured box guide_path() would (correctly) resolve that one
+    # and the English assertions below would fail for the wrong reason.
+    monkeypatch.setattr(SampleDocsDialog, "_guide_language", staticmethod(lambda: "en"))
     dlg = _dialog(_qapp)
     assert dlg.select_sample("samples/views_1")
     text = dlg.rendered_text()
     # The README's H1 and a distinctive phrase survive markdown rendering.
     assert "Views — Level 1" in text
     assert "camera" in text.lower()
+
+
+def test_every_sample_ships_a_french_guide(_qapp, monkeypatch):
+    """All 15 bundled samples have a README.fr.md, and guide_path picks it
+    when the IDE language is French."""
+    from widgets.welcome_tab import SampleDocsDialog
+    monkeypatch.setattr(SampleDocsDialog, "_guide_language", staticmethod(lambda: "fr"))
+    dlg = _dialog(_qapp)
+    roots = sorted(p for p in (dlg._repo_root / "samples").iterdir()
+                   if (p / "README.md").is_file())
+    assert len(roots) == 15
+    for root in roots:
+        assert dlg.guide_path(f"samples/{root.name}").name == "README.fr.md", root.name
 
 
 def test_first_sample_selected_by_default(_qapp):
