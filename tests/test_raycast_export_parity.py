@@ -252,6 +252,17 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     assert "Math.floor(v0 * th)" not in ENGINE, "engine.js still snaps to texels"
     assert "tex_coords=(0.0, v0, 1.0, v0," in kx, "kivy still snaps to texels"
 
+    # BILLBOARDS get the same treatment — a sprite you walk into overflows the
+    # screen too, and the old min(h, ...) squeezed the whole sprite in.
+    assert "sprite_h = min(h, int(h * inst._cached_height" not in gr
+    assert "sprite_h = min(h, h * ih" not in kx
+    assert "Math.min(h, Math.floor(h * b.inst.boxHeight()" not in ENGINE
+    assert "full_h = h * inst._cached_height / max(corrected, 1e-4)" in gr
+    assert "full_h_b = h * ih / max(corrected_b, 1e-4)" in kx
+    assert "const fullH = h * b.inst.boxHeight() / Math.max(b.corr, 1e-4)" in ENGINE
+    assert "ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH)" in ENGINE
+    assert "tex_coords=(0.0, bv0, 1.0, bv0," in kx
+
 
 def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
     """Behavioural: render a flat wall close enough that some columns overflow

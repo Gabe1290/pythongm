@@ -2995,23 +2995,34 @@ class GameRoom {
         }
         billboards.sort((a, b) => b.corr - a.corr);  // farthest first (painter's)
         for (const b of billboards) {
-            const spriteH = Math.min(h, Math.floor(h * b.inst.boxHeight() / Math.max(b.corr, 1e-4)));
+            // Unclamped height + a CROPPED (float, sub-texel) source slice —
+            // same as the wall pass. Squeezing a walked-into sprite into a
+            // screen-clamped height distorted it.
+            const fullH = h * b.inst.boxHeight() / Math.max(b.corr, 1e-4);
             const spriteW = Math.floor(h * b.inst.boxWidth() / Math.max(b.corr, 1e-4));
-            if (spriteW < 1 || spriteH < 1) continue;
+            if (spriteW < 1 || fullH < 1) continue;
             // Same camera-plane mapping as the wall pass, so billboards line up
             // with the walls instead of drifting toward the screen edges.
             const bCameraX = planeTan ? Math.tan(b.relAngle) / planeTan : 0;
             const colCenter = (bCameraX + 1) * 0.5 * numCols;
             const xLeft = Math.floor(colCenter * colWidth - spriteW / 2);
-            const yTop = Math.floor(halfH - spriteH / 2);
+            const yTopF = halfH - fullH / 2;
+            const by0 = Math.max(0, Math.floor(yTopF));
+            const by1 = Math.min(h, Math.ceil(yTopF + fullH));
+            const bVisH = by1 - by0;
+            if (bVisH <= 0) continue;
             const img = b.inst.sprite;
+            const bv0 = (by0 - yTopF) / fullH, bv1 = (by1 - yTopF) / fullH;
+            const bSrcY = Math.max(0, Math.min(img.height, bv0 * img.height));
+            const bSrcH = Math.max(1e-3, Math.min(img.height - bSrcY,
+                                                  (bv1 - bv0) * img.height));
             for (let sx = 0; sx < spriteW; sx++) {
                 const screenX = xLeft + sx;
                 if (screenX < 0 || screenX >= w) continue;
                 const colIdx = Math.min(numCols - 1, Math.max(0, Math.floor(screenX / colWidth)));
                 if (b.corr < colWallDist[colIdx]) {  // unoccluded by a nearer wall
                     const srcX = Math.min(img.width - 1, Math.floor(sx / spriteW * img.width));
-                    ctx.drawImage(img, srcX, 0, 1, img.height, screenX, yTop, 1, spriteH);
+                    ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH);
                 }
             }
         }

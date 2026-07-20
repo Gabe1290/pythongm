@@ -2175,9 +2175,14 @@ class GameRoom:
         # over farther ones where sprites overlap.
         billboards.sort(key=lambda b: -b[0])
         for corrected, rel_angle, inst in billboards:
-            sprite_h = min(h, int(h * inst._cached_height / max(corrected, 1e-4)))
+            # Same unclamped-height + sub-texel crop the wall pass uses: a
+            # sprite you walk right up to overflows the screen, and squeezing
+            # the whole sprite into a screen-clamped height (the old
+            # min(h, ...)) both distorted it and jumped a whole texel between
+            # adjacent columns.
+            full_h = h * inst._cached_height / max(corrected, 1e-4)
             sprite_w = int(h * inst._cached_width / max(corrected, 1e-4))
-            if sprite_w < 1 or sprite_h < 1:
+            if sprite_w < 1 or full_h < 1:
                 continue
             # Same camera-plane mapping the wall pass uses (inverse of
             # ray_offset = atan(plane_tan * camera_x)), so billboards line up
@@ -2186,9 +2191,26 @@ class GameRoom:
             col_center = (camera_x + 1.0) * 0.5 * num_columns
             x_center = col_center * col_width
             x_left = int(x_center - sprite_w / 2)
+            y_top_f = half_h - full_h / 2.0
+            y0 = max(0, int(math.floor(y_top_f)))
+            y1 = min(h, int(math.ceil(y_top_f + full_h)))
+            vis_h = y1 - y0
+            if vis_h <= 0:
+                continue
             frame = inst.sprite.get_frame(inst.image_index)
-            scaled = pygame.transform.scale(frame, (sprite_w, sprite_h))
-            y_top = int(half_h - sprite_h / 2)
+            fh = frame.get_height()
+            rows_per_px = fh / full_h
+            src_y_f = (y0 - y_top_f) * rows_per_px
+            src_y = max(0, min(fh - 1, int(math.floor(src_y_f))))
+            frac_px = (src_y_f - src_y) / rows_per_px
+            need = int(math.ceil(vis_h * rows_per_px)) + 2
+            src_h = max(1, min(fh - src_y, need))
+            dest_h = max(1, int(round(src_h / rows_per_px)))
+            scaled = pygame.transform.scale(
+                frame.subsurface((0, src_y, frame.get_width(), src_h)),
+                (sprite_w, dest_h))
+            off = max(0, min(dest_h - 1, int(round(frac_px))))
+            blit_h = min(vis_h, dest_h - off)
             # Clip column-by-column against the wall distance already
             # cast for that screen column -- a sprite behind a wall (or
             # half-behind a corner) only shows the unoccluded slice.
@@ -2198,7 +2220,8 @@ class GameRoom:
                 if 0 <= screen_x < w:
                     col_idx = min(num_columns - 1, max(0, int(screen_x / col_width)))
                     if corrected < col_wall_dist[col_idx]:
-                        screen.blit(scaled, (screen_x, y_top), (slice_x, 0, 1, sprite_h))
+                        screen.blit(scaled, (screen_x, y0),
+                                    (slice_x, off, 1, blit_h))
                 slice_x += 1
 
     def _cast_floor_plane(self, screen, frame, cam_cx, cam_cy,
