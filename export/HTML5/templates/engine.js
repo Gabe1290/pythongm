@@ -2342,6 +2342,75 @@ class GameObject {
                 break;
             }
 
+            case 'draw_minimap': {
+                // North-up minimap of the raycast room's wall edges. A MACRO
+                // action: it emits ordinary rectangle/line commands, so this
+                // target needed no new renderer. Mirrors
+                // build_minimap_commands() in runtime/action_executor.py —
+                // tests/test_raycast_export_parity.py compares the two.
+                const room = game.currentRoom;
+                if (!room) break;
+                const mmX = parseNumParam(params.x, this, 0);
+                const mmY = parseNumParam(params.y, this, 0);
+                const mmSize = parseNumParam(params.size, this, 120);
+                const backColor = params.back_color || '#101018';
+                const wallColor = params.wall_color || '#8080a0';
+                const playerColor = params.player_color || '#ffd040';
+
+                this._draw_queue.push({
+                    type: 'rectangle',
+                    x1: mmX, y1: mmY, x2: mmX + mmSize, y2: mmY + mmSize,
+                    color: backColor, filled: true,
+                });
+
+                const mmSpan = Math.max(room.width || 0, room.height || 0);
+                const mmCS = room._raycastCellSize || 0;
+                if (mmSpan <= 0 || !mmCS) break;
+                const mmScale = mmSize / mmSpan;
+                const mmPx = (wx, wy) => [mmX + wx * mmScale, mmY + wy * mmScale];
+
+                // Wall sets are unordered; sort so all three targets emit the
+                // same picture in the same order (the parity test diffs it).
+                const mmKeys = (set) => [...(set || [])]
+                    .map(k => k.split(',').map(Number))
+                    .sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]));
+
+                for (const [lineX, row] of mmKeys(room._vWalls)) {
+                    const [x1, y1] = mmPx(lineX * mmCS, row * mmCS);
+                    const [x2, y2] = mmPx(lineX * mmCS, (row + 1) * mmCS);
+                    this._draw_queue.push({type: 'line', x1, y1, x2, y2, color: wallColor});
+                }
+                for (const [col, lineY] of mmKeys(room._hWalls)) {
+                    const [x1, y1] = mmPx(col * mmCS, lineY * mmCS);
+                    const [x2, y2] = mmPx((col + 1) * mmCS, lineY * mmCS);
+                    this._draw_queue.push({type: 'line', x1, y1, x2, y2, color: wallColor});
+                }
+
+                const mmCfg = room.raycastCamera || {};
+                const mmCam = room.findFirstInstance(mmCfg.camera_object || '');
+                if (!mmCam) break;
+                // The ray ORIGIN, not the sprite corner — same point
+                // renderRaycastView casts from.
+                const mmTL = GameRoom.spriteTopLeft(mmCam);
+                const [cx, cy] = mmPx(mmTL.x + mmCam.boxWidth() / 2,
+                                      mmTL.y + mmCam.boxHeight() / 2);
+                const MM_MARK = 2.0, MM_HEAD = 7.0;
+                this._draw_queue.push({
+                    type: 'line', x1: cx - MM_MARK, y1: cy, x2: cx + MM_MARK, y2: cy,
+                    color: playerColor,
+                });
+                // GM 0=right/90=up vs screen y DOWN -> negate, as the
+                // renderers do.
+                const mmRad = -(mmCam.facing_angle || 0) * Math.PI / 180;
+                this._draw_queue.push({
+                    type: 'line', x1: cx, y1: cy,
+                    x2: cx + Math.cos(mmRad) * MM_HEAD,
+                    y2: cy + Math.sin(mmRad) * MM_HEAD,
+                    color: playerColor,
+                });
+                break;
+            }
+
             case 'draw_variable': {
                 const value = gmExpressionValue(params.variable, this, game);
                 this._draw_queue.push({

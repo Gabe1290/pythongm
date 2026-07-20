@@ -154,12 +154,15 @@ def test_minimap_renders_over_raycast_3():
             seen.extend(self._draw_queue)
         self._draw_queue = []
 
-    # Inject the minimap into the HUD's draw event before run() resolves it.
+    # Use the sample's OWN minimap rather than injecting one — obj_hud ships
+    # with it now, and appending a second would capture both and assert the
+    # union of two squares.
     hud = runner._objects_data["obj_hud"]
-    hud["events"]["draw"]["actions"].append({
-        "action": "draw_minimap",
-        "parameters": {"x": "500", "y": "340", "size": "130"},
-    })
+    mm = next(a for a in hud["events"]["draw"]["actions"]
+              if a["action"] == "draw_minimap")
+    mm_x = float(mm["parameters"]["x"])
+    mm_y = float(mm["parameters"]["y"])
+    mm_size = float(mm["parameters"]["size"])
 
     state = {"f": 0}
 
@@ -188,12 +191,14 @@ def test_minimap_renders_over_raycast_3():
         f"minimap drew {len(walls)} lines — the room's wall edges are missing"
     panel = [c for c in seen if c.get("type") == "rectangle"]
     assert panel, "no minimap background panel"
-    # Everything must land inside the requested square.
+    # Everything must land inside the square the sample asked for.
     for c in walls:
         for key in ("x1", "x2"):
-            assert 500 - 1 <= c[key] <= 500 + 130 + 1, c
+            assert mm_x - 1 <= c[key] <= mm_x + mm_size + 1, c
         for key in ("y1", "y2"):
-            assert 340 - 1 <= c[key] <= 340 + 130 + 1, c
+            assert mm_y - 1 <= c[key] <= mm_y + mm_size + 1, c
+    # And inside the 640x480 window, i.e. actually on screen.
+    assert mm_x + mm_size <= 640 and mm_y + mm_size <= 480
 
 
 def test_marker_sits_at_the_ray_origin_not_the_sprite_corner():
@@ -233,10 +238,12 @@ def test_marker_lands_on_the_player_in_the_real_sample():
             seen.extend(self._draw_queue)
         self._draw_queue = []
 
-    runner._objects_data["obj_hud"]["events"]["draw"]["actions"].append({
-        "action": "draw_minimap",
-        "parameters": {"x": "0", "y": "0", "size": "480"},   # 1:1 with the room
-    })
+    # Re-point the sample's OWN minimap 1:1 over the room, so minimap
+    # coordinates equal world coordinates and the marker can be checked
+    # directly. Appending a second one would emit two markers.
+    mm = next(a for a in runner._objects_data["obj_hud"]["events"]["draw"]["actions"]
+              if a["action"] == "draw_minimap")
+    mm["parameters"] = {"x": "0", "y": "0", "size": "480"}
 
     state = {"f": 0}
 

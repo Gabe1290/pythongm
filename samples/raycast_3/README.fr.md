@@ -58,10 +58,28 @@ terminée :
 | Score | en haut à gauche | `draw_score` |
 | Vies | en haut à droite | `draw_text` et `draw_lives` |
 | Barre de vie | en bas à gauche | `draw_health_bar` |
+| Minicarte | en bas à droite | `draw_minimap` |
 
 Le score et la barre de vie sont dans des coins **opposés**, volontairement :
 une barre de vie est large et un score s'allonge au fil de la partie, les
 empiler inviterait à une collision.
+
+### La minicarte
+
+`draw_minimap` dessine une carte des murs de la salle **orientée au nord**, avec
+un repère indiquant où tu te trouves et dans quelle direction tu regardes. Elle
+ne tourne pas : la carte reste fixe et c'est le repère qui pivote, ce qui est
+plus facile à lire qu'une carte qui tournoie.
+
+Elle n'a besoin d'aucune donnée propre : elle lit les mêmes arêtes de murs que
+la vue à la première personne a déjà déduites des instances solides de la salle,
+elle reste donc juste si tu remanies le labyrinthe. Elle n'affiche **que les
+murs** — ni gemmes ni monstres — pour que le labyrinthe garde son intérêt.
+
+**Non implémenté (volontairement) :** le brouillard de guerre, un mode orienté
+selon le regard, et l'affichage des objets ou des ennemis. Voir
+[`docs/RAYCAST_MINIMAP_PLAN.md`](../../docs/RAYCAST_MINIMAP_PLAN.md) pour les
+raisons de chaque choix.
 
 **`obj_hud` est en `visible: true`, et ce détail compte.** GameMaker n'exécute
 pas l'événement `draw` d'une instance invisible — l'affichage ne peut donc pas
@@ -113,6 +131,9 @@ cases sont accessibles.
   monstres / trousses est le principal réglage.
 - **Disposition de l'affichage :** les coordonnées dans l'événement `draw`
   d'`obj_hud`. Garde le score et la barre de vie dans des coins opposés.
+- **Minicarte :** le paramètre `size` de `draw_minimap` met toute la salle à
+  l'échelle dans ce carré — une valeur plus grande donne donc simplement une
+  carte plus lisible ; `wall_color` et `player_color` en règlent l'apparence.
 - **Thèmes :** les paramètres de textures sur `obj_cam0`/`obj_cam1`.
 
 ## Une note sur le moment des collisions

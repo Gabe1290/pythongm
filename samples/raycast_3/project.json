@@ -543,6 +543,17 @@
                   "back_color": "#401010",
                   "bar_color": "#20c020"
                 }
+              },
+              {
+                "action": "draw_minimap",
+                "parameters": {
+                  "x": "508",
+                  "y": "348",
+                  "size": "124",
+                  "back_color": "#101018",
+                  "wall_color": "#8080a0",
+                  "player_color": "#ffd040"
+                }
               }
             ]
           }
