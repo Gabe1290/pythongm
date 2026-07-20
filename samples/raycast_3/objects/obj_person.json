@@ -1,0 +1,127 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "spr_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_wall_h": {
+      "actions": [],
+      "target_object": "obj_wall_h"
+    },
+    "collision_with_obj_wall_v": {
+      "actions": [],
+      "target_object": "obj_wall_v"
+    },
+    "create": {
+      "actions": []
+    },
+    "keyboard": {
+      "up": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "facing_angle",
+              "speed": "3"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "facing_angle+180",
+              "speed": "3"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "-3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "0",
+              "speed": "0"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_monster": {
+      "actions": [
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "obj_monster"
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ]
+    },
+    "game_start": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "3"
+          }
+        }
+      ]
+    }
+  },
+  "imported": false,
+  "created": "2026-07-16T00:00:00.000000",
+  "modified": "2026-07-16T00:00:00.000000",
+  "parent": "",
+  "remember_destroyed": false
+}
