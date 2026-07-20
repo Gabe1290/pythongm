@@ -125,6 +125,11 @@ def build_room(name, seed, camera_obj, counts):
     # exact-grid-line ray origins — see CLAUDE.md 2026-07-17).
     instances.append(inst("obj_person", 8, 8))
     instances.append(inst(camera_obj, 0, 0))
+    # The HUD controller. Its position is irrelevant (draw commands are
+    # screen-space), but it MUST be a visible object: GameMaker doesn't run an
+    # invisible instance's draw event, which is why this can't live on the
+    # invisible camera controller.
+    instances.append(inst("obj_hud", 0, 0))
 
     used = 0
     for obj_name, n in counts.items():
@@ -158,7 +163,7 @@ def build_room(name, seed, camera_obj, counts):
 # every seed listed here; see check_start() below.
 ROOMS = {
     # name          seed  camera      scattered contents
-    "room0": (5, "obj_cam0", {"obj_gem": 8, "obj_monster": 3}),
+    "room0": (5, "obj_cam0", {"obj_gem": 8, "obj_monster": 3, "obj_medkit": 3}),
 }
 
 

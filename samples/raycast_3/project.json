@@ -20,41 +20,56 @@
   },
   "assets": {
     "sprites": {
-      "spr_wall_h": {
-        "name": "spr_wall_h",
+      "spr_floor": {
+        "name": "spr_floor",
         "asset_type": "sprite",
-        "file_path": "sprites/spr_wall_h.png",
+        "file_path": "sprites/spr_floor.png",
         "width": 32,
-        "height": 8,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": false,
-        "frames": 1,
-        "frame_width": 32,
-        "frame_height": 8,
-        "animation_type": "single",
-        "speed": 10.0,
-        "imported": false,
-        "created": "2026-07-17T00:00:00.000000",
-        "modified": "2026-07-17T00:00:00.000000"
-      },
-      "spr_wall_v": {
-        "name": "spr_wall_v",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_wall_v.png",
-        "width": 8,
         "height": 32,
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
         "frames": 1,
-        "frame_width": 8,
+        "frame_width": 32,
         "frame_height": 32,
         "animation_type": "single",
         "speed": 10.0,
-        "imported": false,
-        "created": "2026-07-17T00:00:00.000000",
-        "modified": "2026-07-17T00:00:00.000000"
+        "imported": true
+      },
+      "spr_floor_ice": {
+        "name": "spr_floor_ice",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_floor_ice.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_gem": {
+        "name": "spr_gem",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_gem.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-16T15:12:34.811782",
+        "thumbnail": ""
       },
       "spr_goal": {
         "name": "spr_goal",
@@ -72,82 +87,13 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:54.961536",
-        "modified": "2026-05-23T14:34:54.961536"
+        "modified": "2026-06-16T15:12:34.811782",
+        "thumbnail": "thumbnails/spr_goal_thumb.png"
       },
-      "spr_person": {
-        "name": "spr_person",
+      "spr_medkit": {
+        "name": "spr_medkit",
         "asset_type": "sprite",
-        "file_path": "sprites/spr_person.png",
-        "width": 16,
-        "height": 16,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": true,
-        "frames": 1,
-        "frame_width": 16,
-        "frame_height": 16,
-        "animation_type": "single",
-        "speed": 10.0,
-        "bbox_left": 4,
-        "bbox_top": 4,
-        "bbox_right": 12,
-        "bbox_bottom": 12,
-        "imported": true,
-        "created": "2026-05-23T14:34:54.961536",
-        "modified": "2026-06-07T18:52:32.258111"
-      },
-      "spr_wall_texture": {
-        "name": "spr_wall_texture",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_wall_texture.png",
-        "width": 64,
-        "height": 64,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": false,
-        "frames": 1,
-        "frame_width": 64,
-        "frame_height": 64,
-        "animation_type": "single",
-        "speed": 10.0,
-        "imported": true
-      },
-      "spr_sky": {
-        "name": "spr_sky",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_sky.png",
-        "width": 256,
-        "height": 64,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": false,
-        "frames": 1,
-        "frame_width": 256,
-        "frame_height": 64,
-        "animation_type": "single",
-        "speed": 10.0,
-        "imported": true
-      },
-      "spr_floor": {
-        "name": "spr_floor",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_floor.png",
-        "width": 32,
-        "height": 32,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": false,
-        "frames": 1,
-        "frame_width": 32,
-        "frame_height": 32,
-        "animation_type": "single",
-        "speed": 10.0,
-        "imported": true
-      },
-      "spr_gem": {
-        "name": "spr_gem",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_gem.png",
+        "file_path": "sprites/spr_medkit.png",
         "width": 32,
         "height": 32,
         "origin_x": 0,
@@ -182,17 +128,40 @@
         "modified": "2026-06-16T15:12:34.811782",
         "thumbnail": ""
       },
-      "spr_wall_ice": {
-        "name": "spr_wall_ice",
+      "spr_person": {
+        "name": "spr_person",
         "asset_type": "sprite",
-        "file_path": "sprites/spr_wall_ice.png",
-        "width": 64,
+        "file_path": "sprites/spr_person.png",
+        "width": 16,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "bbox_left": 4,
+        "bbox_top": 4,
+        "bbox_right": 12,
+        "bbox_bottom": 12,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-07T18:52:32.258111",
+        "thumbnail": "thumbnails\\spr_person_thumb.png"
+      },
+      "spr_sky": {
+        "name": "spr_sky",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_sky.png",
+        "width": 256,
         "height": 64,
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
         "frames": 1,
-        "frame_width": 64,
+        "frame_width": 256,
         "frame_height": 64,
         "animation_type": "single",
         "speed": 10.0,
@@ -214,21 +183,73 @@
         "speed": 10.0,
         "imported": true
       },
-      "spr_floor_ice": {
-        "name": "spr_floor_ice",
+      "spr_wall_h": {
+        "name": "spr_wall_h",
         "asset_type": "sprite",
-        "file_path": "sprites/spr_floor_ice.png",
+        "file_path": "sprites/spr_wall_h.png",
         "width": 32,
-        "height": 32,
+        "height": 8,
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
         "frames": 1,
         "frame_width": 32,
-        "frame_height": 32,
+        "frame_height": 8,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "spr_wall_ice": {
+        "name": "spr_wall_ice",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_ice.png",
+        "width": 64,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 64,
+        "frame_height": 64,
         "animation_type": "single",
         "speed": 10.0,
         "imported": true
+      },
+      "spr_wall_texture": {
+        "name": "spr_wall_texture",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_texture.png",
+        "width": 64,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 64,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_wall_v": {
+        "name": "spr_wall_v",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_v.png",
+        "width": 8,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 8,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
       }
     },
     "sounds": {},
@@ -394,6 +415,106 @@
         "modified": "2026-05-24T10:32:34.419459",
         "parent": ""
       },
+      "obj_hud": {
+        "name": "obj_hud",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -1000,
+        "events": {
+          "draw": {
+            "actions": [
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_score",
+                "parameters": {
+                  "x": "8",
+                  "y": "8",
+                  "caption": "Score: "
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "Lives:",
+                  "x": "500",
+                  "y": "8"
+                }
+              },
+              {
+                "action": "draw_lives",
+                "parameters": {
+                  "x": "556",
+                  "y": "6",
+                  "sprite": "spr_person",
+                  "scale": "1.0"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "Health",
+                  "x": "8",
+                  "y": "430"
+                }
+              },
+              {
+                "action": "draw_health_bar",
+                "parameters": {
+                  "x1": "8",
+                  "y1": "450",
+                  "x2": "208",
+                  "y2": "468",
+                  "back_color": "#401010",
+                  "bar_color": "#20c020"
+                }
+              }
+            ]
+          }
+        },
+        "parent": ""
+      },
+      "obj_medkit": {
+        "name": "obj_medkit",
+        "asset_type": "object",
+        "sprite": "spr_medkit",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ],
+            "target_object": "obj_person"
+          },
+          "destroy": {
+            "actions": [
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": "40",
+                  "relative": true
+                }
+              }
+            ]
+          }
+        },
+        "parent": ""
+      },
       "obj_monster": {
         "name": "obj_monster",
         "asset_type": "object",
@@ -456,7 +577,17 @@
             "target_object": "obj_wall_v"
           },
           "create": {
-            "actions": []
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "hurt",
+                  "value": "0",
+                  "scope": "instance",
+                  "relative": false
+                }
+              }
+            ]
           },
           "keyboard": {
             "up": {
@@ -518,10 +649,75 @@
           "collision_with_obj_monster": {
             "actions": [
               {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "hurt",
+                  "value": "0",
+                  "scope": "instance",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": "-25",
+                  "relative": true
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "hurt",
+                  "value": "1",
+                  "scope": "instance",
+                  "relative": false
+                }
+              },
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "alarm_number": "0",
+                  "steps": "45"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_monster"
+          },
+          "alarm_0": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "hurt",
+                  "value": "0",
+                  "scope": "instance",
+                  "relative": false
+                }
+              }
+            ]
+          },
+          "no_more_health": {
+            "actions": [
+              {
                 "action": "set_lives",
                 "parameters": {
                   "value": "-1",
                   "relative": true
+                }
+              },
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": "100",
+                  "relative": false
                 }
               },
               {
@@ -530,8 +726,7 @@
                   "transition": "0"
                 }
               }
-            ],
-            "target_object": "obj_monster"
+            ]
           },
           "no_more_lives": {
             "actions": [
@@ -554,6 +749,13 @@
                 "action": "set_lives",
                 "parameters": {
                   "value": "3"
+                }
+              },
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": "100",
+                  "relative": false
                 }
               }
             ]
@@ -602,7 +804,7 @@
         "background_image": "",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 262,
+        "instance_count": 266,
         "tiles": [],
         "instances": [
           {
@@ -2856,6 +3058,15 @@
             "y": 0
           },
           {
+            "object_name": "obj_hud",
+            "rotation": 0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "visible": true,
+            "x": 0,
+            "y": 0
+          },
+          {
             "object_name": "obj_gem",
             "rotation": 0,
             "scale_x": 1.0,
@@ -2953,6 +3164,33 @@
             "visible": true,
             "x": 40,
             "y": 232
+          },
+          {
+            "object_name": "obj_medkit",
+            "rotation": 0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "visible": true,
+            "x": 360,
+            "y": 232
+          },
+          {
+            "object_name": "obj_medkit",
+            "rotation": 0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "visible": true,
+            "x": 392,
+            "y": 72
+          },
+          {
+            "object_name": "obj_medkit",
+            "rotation": 0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "visible": true,
+            "x": 232,
+            "y": 40
           },
           {
             "object_name": "obj_goal",

@@ -16,7 +16,17 @@
       "target_object": "obj_wall_v"
     },
     "create": {
-      "actions": []
+      "actions": [
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "hurt",
+            "value": "0",
+            "scope": "instance",
+            "relative": false
+          }
+        }
+      ]
     },
     "keyboard": {
       "up": {
@@ -78,10 +88,75 @@
     "collision_with_obj_monster": {
       "actions": [
         {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "hurt",
+            "value": "0",
+            "scope": "instance",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": "-25",
+            "relative": true
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "hurt",
+            "value": "1",
+            "scope": "instance",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm_number": "0",
+            "steps": "45"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_monster"
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "hurt",
+            "value": "0",
+            "scope": "instance",
+            "relative": false
+          }
+        }
+      ]
+    },
+    "no_more_health": {
+      "actions": [
+        {
           "action": "set_lives",
           "parameters": {
             "value": "-1",
             "relative": true
+          }
+        },
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": "100",
+            "relative": false
           }
         },
         {
@@ -90,8 +165,7 @@
             "transition": "0"
           }
         }
-      ],
-      "target_object": "obj_monster"
+      ]
     },
     "no_more_lives": {
       "actions": [
@@ -114,6 +188,13 @@
           "action": "set_lives",
           "parameters": {
             "value": "3"
+          }
+        },
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": "100",
+            "relative": false
           }
         }
       ]
