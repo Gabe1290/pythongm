@@ -643,3 +643,35 @@ Windows-box session, one commit per unit, all pushed.
   `_render_room` early-returns after `_render_raycast_view`, so raycast games
   show score/lives only in the desktop window caption (invisible on HTML5/Kivy
   exports). Plan: `docs/RAYCAST_HUD_PLAN.md`; tracked in `RAYCAST_2_5D_PLAN.md`.
+
+**2026-07-20 — Sample guides: French translations complete (15/15).** The
+decision behind this: sample *messages* stay **English** — they're written with
+ordinary `show_message` actions, so students author them in their own language;
+auto-translating them would be translating the student's own content. What gets
+translated is the **guides**, and the raycast samples' guides explain the
+messages. Infra (`b1ef0c2`): `SampleDocsDialog.guide_path()` resolves
+`README.<lang>.md` next to `README.md` with an **English fallback**, so a
+missing translation degrades gracefully — translations can land per-sample,
+per-language, with no partial-rollout risk. `_guide_language()` must go through
+the `get_language_manager()` **singleton** (it's an instance method — calling it
+on the class silently pins every guide to English; pinned by a test).
+- Commits: `b1ef0c2` (infra + raycast_2), `5b08ef9` (maze_1–4), plateforme_1,
+  `70812f9` (plateforme_2, treasure, views_1), `4b373a0` (views_2,
+  plateforme_3), `7cbb9dc` (raycast_1), `f056d3d` (match3_1/2), `792496e`
+  (match3_3 + test fix). Suite **1971 passed, 0 failed**.
+- **Landmine this exposed:** any test asserting English prose from a sample
+  guide is language-dependent once a `README.fr.md` exists — on a
+  French-configured box `guide_path()` correctly returns the French file and the
+  test fails for the wrong reason. `test_renders_selected_readme` hit exactly
+  this; fixed by monkeypatching `_guide_language` to `'en'`. Do the same for any
+  new guide-rendering test.
+- Convention used throughout: **technical identifiers stay in English**
+  (object/file/action/attribute names, JSON keys, test paths, embedded Python)
+  so the guide keeps matching what the IDE and repo actually show; only prose,
+  table headers and diagram labels are translated. Welcome-tab display names
+  match the existing `pygm2_fr.ts` strings.
+- **Cost measured** (the user's stated reason for doing French first): one
+  language ≈ **40% of a session** for all 15 guides (~13,500 English words).
+  Budget accordingly before starting another; the English fallback means the
+  other 6 IDE languages are safe to leave untranslated indefinitely, and
+  translating only the languages students actually use is a legitimate choice.
