@@ -2183,10 +2183,30 @@ class {class_name}(Widget):
         than added as a child widget. Non-views rooms use the child-widget path.
         """
         self.instances.append(instance)
+        depth = getattr(instance, 'depth', 0)
         if self.views_enabled and self._fbo is not None:
-            self._fbo.add(instance.canvas)
+            # Fbo children render in ADD order: first added is drawn first
+            # (furthest back). GameMaker wants highest depth first, so insert
+            # after every already-added instance with a greater depth.
+            idx = sum(1 for inst in self.instances
+                      if inst is not instance and getattr(inst, 'depth', 0) > depth)
+            try:
+                self._fbo.insert(idx, instance.canvas)
+            except Exception:
+                self._fbo.add(instance.canvas)   # older Kivy: no insert()
         else:
-            self.add_widget(instance)
+            # Kivy draws `children` in REVERSE: children[0] is drawn LAST, i.e.
+            # on top. GameMaker wants the LOWEST depth in front, so keep
+            # `children` sorted ASCENDING by depth and insert at the first
+            # child whose depth is >= ours. Equal depths: the newer instance
+            # lands in front of older ones, matching the desktop runtime's
+            # stable descending sort.
+            idx = len(self.children)
+            for i, child in enumerate(self.children):
+                if getattr(child, 'depth', 0) >= depth:
+                    idx = i
+                    break
+            self.add_widget(instance, index=idx)
 
     def remove_instance(self, instance):
         """Remove an instance from the room"""
@@ -2432,8 +2452,17 @@ class {class_name}(Widget):
         # 8. DRAW EVENTS - sprites render via each widget's canvas; the
         # GameMaker draw event renders through the per-instance draw queue
         # (room coordinates, y-down — see GameObject._render_draw_queue)
-        for instance in _live:
-            if hasattr(instance, 'on_draw'):
+        #
+        # Depth order: higher depth draws FIRST (further back), so a lower
+        # depth ends up in front — descending, matching the desktop runtime
+        # and engine.js. Until 2026-07-20 this ran in instance-creation order
+        # (the exporter ignored `depth` entirely).
+        #
+        # Visibility: GameMaker does not run an invisible instance's draw
+        # event at all. The desktop runtime gets this from render()'s early
+        # return; this loop used to run it regardless.
+        for instance in sorted(_live, key=lambda i: getattr(i, 'depth', 0), reverse=True):
+            if getattr(instance, 'visible', True) and hasattr(instance, 'on_draw'):
                 instance._draw_queue = []
                 instance.on_draw(dt)
                 instance._render_draw_queue()
@@ -2887,6 +2916,12 @@ class GameObject(Widget):
 
         # Visibility property - invisible objects can still collide, just don't render
         self.visible = True
+
+        # GameMaker draw depth. Higher depth is drawn FIRST (further back), so
+        # a lower depth ends up in front. Subclasses override from the object's
+        # own `depth`; the default keeps sort order stable for anything that
+        # doesn't set one.
+        self.depth = 0
 
         # Has sprite - objects without sprites have no collision mask
         self.has_sprite = False
@@ -3708,6 +3743,8 @@ class GameObject(Widget):
         sprite_name = obj_data.get('sprite', '')
         solid = obj_data.get('solid', False)
         visible = obj_data.get('visible', True)
+        # GameMaker draw depth: higher = drawn first (further back).
+        depth = obj_data.get('depth', 0)
         persistent = obj_data.get('persistent', False)
 
         # Get sprite file path if sprite is set
@@ -3838,6 +3875,7 @@ class {class_name}(GameObject):
         self.visible = {visible}
         self.persistent = {persistent}
         self.pushable = {pushable}
+        self.depth = {depth}
 
         # Set sprite
         {sprite_line}
@@ -3853,6 +3891,7 @@ class {class_name}(GameObject):
             visible=visible,
             persistent=persistent,
             pushable=pushable,
+            depth=depth,
             sprite_line=sprite_line,
             event_methods=event_methods
         )
