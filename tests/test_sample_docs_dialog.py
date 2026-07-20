@@ -56,6 +56,40 @@ def test_lists_only_existing_samples(_qapp):
     assert dlg2.sample_labels() == []
 
 
+def test_guide_follows_the_ide_language_with_english_fallback(_qapp, tmp_path, monkeypatch):
+    """Guides are translated per language as README.<lang>.md next to the
+    English README.md. The dialog must pick the IDE language's guide when it
+    exists and fall back to English when it doesn't, so a partial rollout of
+    translations is safe."""
+    from widgets.welcome_tab import SampleDocsDialog
+    sample = tmp_path / "samples" / "demo"
+    sample.mkdir(parents=True)
+    (sample / "README.md").write_text("# English guide", encoding="utf-8")
+    (sample / "README.fr.md").write_text("# Guide en français", encoding="utf-8")
+
+    dlg = SampleDocsDialog([("samples/demo", "Demo")], tmp_path)
+
+    monkeypatch.setattr(SampleDocsDialog, "_guide_language", staticmethod(lambda: "fr"))
+    assert dlg.guide_path("samples/demo").name == "README.fr.md"
+
+    # a language with no translation yet -> English
+    monkeypatch.setattr(SampleDocsDialog, "_guide_language", staticmethod(lambda: "de"))
+    assert dlg.guide_path("samples/demo").name == "README.md"
+
+    # English itself -> the base file
+    monkeypatch.setattr(SampleDocsDialog, "_guide_language", staticmethod(lambda: "en"))
+    assert dlg.guide_path("samples/demo").name == "README.md"
+
+
+def test_guide_language_reads_the_language_manager_singleton(_qapp):
+    """_guide_language must go through get_language_manager() — calling the
+    instance method on the class would silently always yield 'en'."""
+    from widgets.welcome_tab import SampleDocsDialog
+    lang = SampleDocsDialog._guide_language()
+    assert isinstance(lang, str) and lang and lang == lang.lower()
+    assert "_" not in lang          # normalised, e.g. 'fr' not 'fr_FR'
+
+
 def test_renders_selected_readme(_qapp):
     dlg = _dialog(_qapp)
     assert dlg.select_sample("samples/views_1")
