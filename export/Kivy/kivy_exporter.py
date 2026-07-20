@@ -2033,13 +2033,21 @@ class {class_name}(Widget):
                 continue
             corrected = dist * math.cos(ray_offset)
             col_wall_dist[col] = corrected
-            strip_h = min(h, h * cell_size / max(corrected, 1e-4))
+            # TRUE (unclamped) height; the TEXTURE is CROPPED to the visible
+            # span rather than the whole texture being squeezed into a
+            # screen-clamped strip — the real "bent wall" bug (close columns
+            # clamped and compressed the whole brick texture while farther ones
+            # didn't, breaking the courses across a flat wall).
+            full_h = h * cell_size / max(corrected, 1e-4)
+            y_bot = half_h - full_h / 2.0        # y-up: bottom of the full strip
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
-            # Vertically centered on the horizon — symmetric, so the same
-            # y0 works in both y-down (desktop) and y-up (Kivy) space.
-            y0 = half_h - strip_h / 2.0
+            y0 = max(0.0, y_bot)
+            y1 = min(h, y_bot + full_h)
+            vis_h = y1 - y0
+            if vis_h <= 0:
+                continue
 
             # Subtle side hint + distance falloff (see _wall_shade).
             shade = self._wall_shade(side, corrected,
@@ -2047,16 +2055,22 @@ class {class_name}(Widget):
             tex = wall_texture if wall_texture is not None \\
                 else self._raycast_texture(wall_sprite)
             if textured and tex is not None:
-                tw = tex.width
+                tw = tex.width; th = tex.height
                 tex_x = min(tw - 1, max(0, int(tex_u * tw)))
-                region = tex.get_region(tex_x, 0, 1, tex.height)
+                # Kivy textures are bottom-origin, and so is y0 here, so the
+                # visible fraction maps straight onto get_region's y.
+                v0 = (y0 - y_bot) / full_h
+                v1 = (y1 - y_bot) / full_h
+                src_y = max(0, min(th - 1, int(v0 * th)))
+                src_h = max(1, min(th - src_y, int(round((v1 - v0) * th))))
+                region = tex.get_region(tex_x, src_y, 1, src_h)
                 group.add(Color(shade, shade, shade, 1))
                 group.add(Rectangle(texture=region, pos=(x0, y0),
-                                    size=(strip_w, strip_h)))
+                                    size=(strip_w, vis_h)))
             else:
                 color = tuple(c * shade for c in wall_color)
                 group.add(Color(*color, 1))
-                group.add(Rectangle(pos=(x0, y0), size=(strip_w, strip_h)))
+                group.add(Rectangle(pos=(x0, y0), size=(strip_w, vis_h)))
 
         # Billboard sprites (port of the desktop Phase 6 pass): every visible,
         # non-solid, sprited instance draws as a camera-facing sprite, scaled by

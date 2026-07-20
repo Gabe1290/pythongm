@@ -2937,23 +2937,37 @@ class GameRoom {
             if (!r.hit) continue;  // open sight-line: leave floor/ceiling/sky showing
             const corrected = r.dist * Math.cos(rayOffset);  // fisheye correction
             colWallDist[col] = corrected;
-            const stripH = Math.min(h, Math.floor(h * cellSize / Math.max(corrected, 1e-4)));
+            // TRUE (unclamped) height; the TEXTURE is CROPPED to the visible
+            // span rather than the whole texture being squeezed into a
+            // screen-clamped strip. Squeezing was the real "bent wall" bug --
+            // close columns clamped and compressed the entire brick texture
+            // while farther columns didn't, breaking the courses across a flat
+            // wall, with the boundary marching along as you moved.
+            const fullH = h * cellSize / Math.max(corrected, 1e-4);
+            const yTop = halfH - fullH / 2;
             const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
-            const stripW = Math.max(1, x1 - x0), y0 = Math.floor(halfH - stripH / 2);
+            const stripW = Math.max(1, x1 - x0);
+            const y0 = Math.max(0, Math.floor(yTop));
+            const y1 = Math.min(h, Math.ceil(yTop + fullH));
+            const visH = y1 - y0;
+            if (visH <= 0) continue;
             // Subtle side hint + distance falloff (see wallShade).
             const shade = this.wallShade(r.side, corrected, renderDist * cellSize);
             const texSprite = wallTex || r.sprite;
             if (textured && texSprite && texSprite.complete && texSprite.width > 0) {
                 const tw = texSprite.width, th = texSprite.height;
                 const texX = Math.min(tw - 1, Math.max(0, Math.floor(r.texU * tw)));
-                ctx.drawImage(texSprite, texX, 0, 1, th, x0, y0, stripW, stripH);
+                const v0 = (y0 - yTop) / fullH, v1 = (y1 - yTop) / fullH;
+                const srcY = Math.max(0, Math.min(th - 1, Math.floor(v0 * th)));
+                const srcH = Math.max(1, Math.min(th - srcY, Math.round((v1 - v0) * th)));
+                ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH);
                 if (shade < 1.0) {
                     ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(3)})`;
-                    ctx.fillRect(x0, y0, stripW, stripH);
+                    ctx.fillRect(x0, y0, stripW, visH);
                 }
             } else {
                 ctx.fillStyle = this._shadeColor(wallColor, shade);
-                ctx.fillRect(x0, y0, stripW, stripH);
+                ctx.fillRect(x0, y0, stripW, visH);
             }
         }
 

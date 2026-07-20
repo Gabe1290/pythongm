@@ -222,7 +222,73 @@ def test_flat_wall_projects_perfectly_straight():
             f"{metric:.2e} (uniform-angle sampling gives ~1e-2)")
 
 
-def test_camera_plane_projection_in_all_three_sources():
+def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
+    """When a wall is close enough that its projected height overflows the
+    screen, the renderer must CROP the texture to the visible span — not squeeze
+    the whole texture into a screen-clamped strip. Squeezing was the real
+    "bent wall" bug: clamped (near) columns compressed the entire brick texture
+    while unclamped (far) columns didn't, breaking the courses across a FLAT
+    wall, with the boundary marching along it as you walked (user reports
+    2026-07-19). All three renderers must crop."""
+    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+
+    # the squeeze signature: a screen-clamped height fed straight to the scale
+    assert "strip_h = min(h, int(h * cell_size" not in gr
+    assert "strip_h = min(h, h * cell_size" not in kx
+    assert "Math.min(h, Math.floor(h * cellSize" not in ENGINE
+
+    # the crop signature: unclamped height + a texture sub-range
+    for src, name in ((gr, "game_runner"), (kx, "kivy_exporter")):
+        assert "full_h = h * cell_size / max(corrected, 1e-4)" in src, name
+        assert "src_y" in src and "src_h" in src, name
+    assert "const fullH = h * cellSize / Math.max(corrected, 1e-4)" in ENGINE
+    assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
+
+
+def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
+    """Behavioural: render a flat wall close enough that some columns overflow
+    the screen, and check the texture row landing at screen-centre is the SAME
+    across the clamp boundary (a squeezed strip would jump)."""
+    import pygame
+    room = GameRoom.__new__(GameRoom)
+    room._raycast_h_walls = {(c, 4) for c in range(15)}
+    room._raycast_v_walls = set()
+    room._raycast_h_wall_sprites = {}
+    room._raycast_v_wall_sprites = {}
+
+    h, cell = 480, 32
+    fov = math.radians(66)
+    plane_tan = math.tan(fov / 2)
+    N = 64
+    facing = math.radians(-80.0)   # near-parallel: distances vary a lot
+    # find a camera offset that straddles the clamp boundary (some columns
+    # overflow the screen, some don't)
+    centre_v, clamped, unclamped = [], 0, 0
+    for off_px in (14, 18, 22, 26, 30, 36, 44):
+        cam = (240.0, 4 * cell + off_px)
+        centre_v, clamped, unclamped = [], 0, 0
+        for col in range(N):
+            camera_x = 2.0 * (col + 0.5) / N - 1.0
+            off = math.atan(plane_tan * camera_x)
+            d, side, hit, tu, spr = room._cast_ray(cam[0], cam[1], facing + off, cell, 20)
+            if not hit:
+                continue
+            corrected = d * math.cos(off)
+            full_h = h * cell / max(corrected, 1e-4)
+            if full_h > h:
+                clamped += 1
+            else:
+                unclamped += 1
+            # texture v-coordinate that lands on the screen centre line
+            y_top = h / 2.0 - full_h / 2.0
+            centre_v.append((h / 2.0 - y_top) / full_h)
+        if clamped and unclamped:
+            break
+    assert clamped > 0 and unclamped > 0, "need both sides of the clamp boundary"
+    # the wall's centre line must map to the SAME texture row everywhere (0.5)
+    assert max(abs(v - 0.5) for v in centre_v) < 1e-9, (
+        "texture centre drifts across columns -- courses would break")
     """All three renderers must use the camera-plane mapping (and the matching
     inverse for billboards), not the old linear FOV ramp."""
     gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")

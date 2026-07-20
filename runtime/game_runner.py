@@ -2086,11 +2086,26 @@ class GameRoom:
                 continue
             corrected = dist * math.cos(ray_offset)  # fisheye correction
             col_wall_dist[col] = corrected
-            strip_h = min(h, int(h * cell_size / max(corrected, 1e-4)))
+            # TRUE (unclamped) projected height. The visible slice of the
+            # TEXTURE must be CROPPED to what's on screen -- NOT the whole
+            # texture squeezed into a screen-clamped strip. Squeezing was the
+            # real "bent wall" bug: once a wall got close enough to overflow the
+            # screen, its columns clamped and showed the entire brick texture
+            # compressed, while neighbouring (farther) columns still showed it
+            # correctly scaled. That discontinuity is a hard break in the brick
+            # courses across a FLAT wall, and the clamp boundary marches along
+            # the wall as you walk toward/away from it -- exactly the "corner
+            # that moves" users reported (2026-07-19).
+            full_h = h * cell_size / max(corrected, 1e-4)
+            y_top = half_h - full_h / 2.0
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
-            y0 = int(half_h - strip_h / 2)
+            y0 = max(0, int(math.floor(y_top)))
+            y1 = min(h, int(math.ceil(y_top + full_h)))
+            vis_h = y1 - y0
+            if vis_h <= 0:
+                continue
 
             # Subtle side hint + distance falloff (see _wall_shade).
             shade = self._wall_shade(side, corrected,
@@ -2100,15 +2115,20 @@ class GameRoom:
                 frame = tex_sprite.get_frame(0)
                 tw, th = frame.get_width(), frame.get_height()
                 tex_x = min(tw - 1, max(0, int(tex_u * tw)))
-                col_surf = frame.subsurface((tex_x, 0, 1, th))
-                strip = pygame.transform.scale(col_surf, (strip_w, strip_h))
+                # Texture rows that map onto the visible screen span.
+                v0 = (y0 - y_top) / full_h
+                v1 = (y1 - y_top) / full_h
+                src_y = max(0, min(th - 1, int(v0 * th)))
+                src_h = max(1, min(th - src_y, int(round((v1 - v0) * th))))
+                col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
+                strip = pygame.transform.scale(col_surf, (strip_w, vis_h))
                 if shade < 1.0:
                     v = int(shade * 255)
                     strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
                 screen.blit(strip, (x0, y0))
             else:
                 color = tuple(int(c * shade) for c in wall_color)
-                screen.fill(color, (x0, y0, strip_w, strip_h))
+                screen.fill(color, (x0, y0, strip_w, vis_h))
 
         # Billboard sprites (Phase 6 of the plan doc, scoped down to a
         # single first cut): any visible, sprited, non-solid instance
