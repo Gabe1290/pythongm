@@ -70,8 +70,8 @@ def test_shipped_room_matches_the_generator():
     """The committed room0.json is exactly what the generator produces, so the
     maze can be regenerated and tweaked rather than being opaque data."""
     import gen_raycast_3_maze as gen
-    seed, cam, counts = gen.ROOMS["room0"]
-    built = gen.build_room("room0", seed, cam, counts)
+    seed, cam, counts, goal = gen.ROOMS["room0"]
+    built = gen.build_room("room0", seed, cam, counts, goal)
     shipped = json.loads((SAMPLE / "rooms" / "room0.json").read_text(encoding="utf-8"))
     assert built["instances"] == shipped["instances"], \
         "room0.json has drifted from tools/gen_raycast_3_maze.py"
@@ -323,3 +323,179 @@ def test_hud_renders_over_the_raycast_view():
     kinds = {k for name, k in seen if name == "obj_hud"}
     assert {"text", "lives", "health_bar"} <= kinds, \
         f"HUD did not fully render under raycast; saw {sorted(kinds)}"
+
+
+# --- Unit 7: second room, per-room theme, gated exit -----------------------
+
+def _clear_gems_then_touch_goal(runner, room):
+    """Remove every gem, then put the player on the goal."""
+    for g in [i for i in room.instances if i.object_name == "obj_gem"]:
+        if g in room.instances:
+            room.instances.remove(g)
+    p = next(i for i in room.instances if i.object_name == "obj_person")
+    goal = next(i for i in room.instances
+                if i.object_name in ("obj_goal", "obj_goal_final"))
+    p.x, p.y = goal.x, goal.y
+
+
+def _play(steps, max_frames):
+    """steps: {frame -> callable(runner, room)}."""
+    from runtime.game_runner import GameInstance
+    real_dq = GameInstance._process_draw_queue
+    GameInstance._process_draw_queue = lambda self, screen: setattr(self, "_draw_queue", [])
+    runner = _runner()
+    msgs = []
+    runner.show_message_dialog = lambda *a, **k: msgs.append(a[0] if a else "")
+    state = {"f": 0}
+
+    class _Clock:
+        def tick(self, fps=0):
+            f = state["f"] = state["f"] + 1
+            room = runner.current_room
+            if room and f in steps:
+                steps[f](runner, room)
+            if f >= max_frames:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real_dq
+    return runner, msgs
+
+
+def test_both_rooms_are_registered_and_ordered():
+    proj = json.loads((SAMPLE / "project.json").read_text(encoding="utf-8"))
+    assert list(proj["assets"]["rooms"]) == ["room0", "room1"]
+    order = proj.get("room_order") or proj["settings"].get("room_order")
+    assert order == ["room0", "room1"]
+    assert proj["settings"]["starting_room"] == "room0"
+
+
+def test_room1_matches_the_generator_and_is_the_harder_half():
+    import gen_raycast_3_maze as gen
+    seed, cam, counts, goal = gen.ROOMS["room1"]
+    built = gen.build_room("room1", seed, cam, counts, goal)
+    shipped = json.loads((SAMPLE / "rooms" / "room1.json").read_text(encoding="utf-8"))
+    assert built["instances"] == shipped["instances"]
+    # More monsters and fewer medkits than room0, so the health bar matters.
+    r0 = gen.ROOMS["room0"][2]
+    assert counts["obj_monster"] > r0["obj_monster"]
+    assert counts["obj_medkit"] < r0["obj_medkit"]
+
+
+def test_each_room_carries_its_own_camera_controller():
+    """Per-room theming: the camera object differs, and each names obj_person
+    explicitly as the camera (the raycast_2 architecture)."""
+    for room_name, cam_name in (("room0", "obj_cam0"), ("room1", "obj_cam1")):
+        room = json.loads((SAMPLE / "rooms" / f"{room_name}.json").read_text(encoding="utf-8"))
+        cams = [i for i in room["instances"]
+                if i["object_name"].startswith("obj_cam")]
+        assert [c["object_name"] for c in cams] == [cam_name], room_name
+        cam = json.loads((SAMPLE / "objects" / f"{cam_name}.json").read_text(encoding="utf-8"))
+        params = cam["events"]["create"]["actions"][0]["parameters"]
+        assert params["camera_object"] == "obj_person", cam_name
+
+
+def test_room1_uses_the_ice_theme():
+    cam = json.loads((SAMPLE / "objects" / "obj_cam1.json").read_text(encoding="utf-8"))
+    params = cam["events"]["create"]["actions"][0]["parameters"]
+    assert params["wall_texture"] == "spr_wall_ice"
+    assert params["sky_texture"] == "spr_sky_ice"
+    assert params["floor_texture"] == "spr_floor_ice"
+
+
+def test_the_exit_is_gated_until_every_gem_is_collected():
+    runner, msgs = _play({
+        5: lambda r, room: _touch_goal_only(r, room),
+    }, 20)
+    assert runner.current_room.name == "room0", "goal opened while gems remained"
+    assert any("gem" in m.lower() for m in msgs), \
+        f"no 'collect the gems' prompt was shown; msgs={msgs}"
+
+
+def _touch_goal_only(runner, room):
+    p = next(i for i in room.instances if i.object_name == "obj_person")
+    goal = next(i for i in room.instances
+                if i.object_name in ("obj_goal", "obj_goal_final"))
+    p.x, p.y = goal.x, goal.y
+
+
+def test_collecting_every_gem_opens_the_exit_into_the_ice_room():
+    runner, _ = _play({5: _clear_gems_then_touch_goal}, 25)
+    assert runner.current_room.name == "room1"
+    cfg = runner.current_room.raycast_camera
+    assert cfg["enabled"] is True, "camera did not re-arm in the new room"
+    assert cfg["wall_texture"] == "spr_wall_ice", \
+        "room1 rendered with room0's theme — per-room camera controller broken"
+
+
+def test_the_hud_still_renders_in_room1():
+    """The camera re-arms per room entry; so must the HUD. A room change builds
+    a FRESH room with raycast_camera=None, so this is the case most likely to
+    regress — and it can only be caught by watching draws that happen AFTER the
+    transition, not by checking the room name."""
+    from runtime.game_runner import GameInstance
+    seen = []                       # (room_name, object_name, cmd type)
+    box = {"runner": None}
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        runner = box["runner"]
+        room = runner.current_room if runner else None
+        if room is not None:
+            for cmd in self._draw_queue:
+                seen.append((room.name, self.object_name, cmd.get("type")))
+        self._draw_queue = []
+
+    GameInstance._process_draw_queue = spy
+    try:
+        runner = _runner()
+        box["runner"] = runner       # set BEFORE run(), so the spy can see it
+        msgs = []
+        runner.show_message_dialog = lambda *a, **k: msgs.append(a[0] if a else "")
+        state = {"f": 0}
+
+        class _Clock:
+            def tick(self, fps=0):
+                f = state["f"] = state["f"] + 1
+                if f == 5 and runner.current_room:
+                    _clear_gems_then_touch_goal(runner, runner.current_room)
+                if f >= 30:
+                    runner.running = False
+                return 0
+
+            def get_fps(self):
+                return 60.0
+
+        real_clock = pygame.time.Clock
+        pygame.time.Clock = _Clock
+        try:
+            runner.run()
+        finally:
+            pygame.time.Clock = real_clock
+    finally:
+        GameInstance._process_draw_queue = real
+
+    assert runner.current_room.name == "room1", "never reached room1"
+    in_room1 = {kind for room, obj, kind in seen
+                if room == "room1" and obj == "obj_hud"}
+    assert {"text", "lives", "health_bar"} <= in_room1, \
+        f"HUD did not fully render in room1; saw {sorted(in_room1)}"
+
+
+def test_room1_goal_is_the_final_one():
+    room = json.loads((SAMPLE / "rooms" / "room1.json").read_text(encoding="utf-8"))
+    names = {i["object_name"] for i in room["instances"]}
+    assert "obj_goal_final" in names and "obj_goal" not in names
+    goal = json.loads((SAMPLE / "objects" / "obj_goal_final.json").read_text(encoding="utf-8"))
+    acts = [a["action"] for a in goal["events"]["collision_with_obj_person"]["actions"]]
+    assert "restart_game" in acts, "the final goal must end the game, not advance"
+    assert "test_instance_count" in acts, "the final goal must be gem-gated too"
