@@ -328,13 +328,15 @@ def test_goal_is_gated_on_collecting_all_gems():
     assert runner.current_room.name == "room0"
 
 
-def test_goal_messages_follow_the_ide_language():
-    """Messages carry an ENGLISH base plus message_translations, which is what
-    the runtime resolves against the IDE/game language (execute_show_message_action:
-    `message` for en, message_translations[lang] otherwise)."""
+def test_goal_messages_are_plain_english():
+    """Sample messages are plain ENGLISH, authored with the standard
+    show_message action — no message_translations. A student edits the text to
+    their own language exactly as they would in their own game; the per-language
+    explanation of what these messages do lives in the sample GUIDE (README),
+    which is what gets translated. Keeping the sample free of a translation dict
+    also means it behaves identically on every export target."""
     import json
     root = REPO_ROOT / "samples" / "raycast_2" / "objects"
-    langs = {"fr", "de", "es", "it", "ru", "sl", "uk"}
     seen_win = False
     for name in ("obj_goal", "obj_goal_final"):
         acts = json.loads((root / f"{name}.json").read_text(encoding="utf-8")
@@ -345,13 +347,11 @@ def test_goal_messages_follow_the_ide_language():
             if a["action"] != "show_message":
                 continue
             p = a["parameters"]
-            # base must be English (the runtime's en fallback), not French
-            assert p["message"].isascii(), f"{name}: base message must be English"
-            tr = p.get("message_translations", {})
-            assert langs <= set(tr), f"{name}: missing {langs - set(tr)}"
-            # French must carry proper accents (project rule)
-            if "Bravo" in tr["fr"]:
-                assert "terminé" in tr["fr"]     # é, not a stripped 'termine'
+            assert p["message"].isascii(), f"{name}: sample messages are English"
+            assert "message_translations" not in p, (
+                f"{name}: samples don't carry a translation dict — the guide is "
+                f"what gets translated")
+            if "Well done" in p["message"]:
                 seen_win = True
     assert seen_win, "the win message should exist on obj_goal_final"
 
