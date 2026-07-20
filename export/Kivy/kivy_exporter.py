@@ -1495,6 +1495,7 @@ class {class_name}(Widget):
         # scene draws the first-person view as an opaque overlay when enabled.
         self.raycast_camera = None
         self._raycast_group = None       # opaque overlay InstructionGroup
+        self._raycast_hud_group = None   # screen-space HUD, ABOVE the overlay
         self._raycast_v_walls = None     # derived wall edges (built lazily)
         self._raycast_cell_size = None
         self._raycast_tex_cache = {{}}
@@ -2461,11 +2462,42 @@ class {class_name}(Widget):
         # Visibility: GameMaker does not run an invisible instance's draw
         # event at all. The desktop runtime gets this from render()'s early
         # return; this loop used to run it regardless.
+        #
+        # Raycast: the first-person overlay above is OPAQUE and lives on the
+        # scene's canvas.after, which paints over every child widget — so a
+        # HUD rendered through the per-instance _dq_group (a child widget's
+        # canvas) would be invisible. Under raycast the draw queue is instead
+        # rendered into a scene-level group added AFTER _raycast_group, and
+        # flipped against the WINDOW height rather than the room height,
+        # because a HUD is screen-space. See docs/RAYCAST_HUD_PLAN.md.
+        _raycast_on = bool(self.raycast_camera
+                           and self.raycast_camera.get('enabled'))
+        _hud = None
+        if _raycast_on:
+            if getattr(self, '_raycast_hud_group', None) is None:
+                self._raycast_hud_group = InstructionGroup()
+                # Added after _raycast_group (built in step 7d above), so it
+                # paints on top of the opaque first-person frame.
+                self.canvas.after.add(self._raycast_hud_group)
+            _hud = self._raycast_hud_group
+            _hud.clear()
+        elif getattr(self, '_raycast_hud_group', None) is not None:
+            self._raycast_hud_group.clear()
+
         for instance in sorted(_live, key=lambda i: getattr(i, 'depth', 0), reverse=True):
             if getattr(instance, 'visible', True) and hasattr(instance, 'on_draw'):
                 instance._draw_queue = []
                 instance.on_draw(dt)
-                instance._render_draw_queue()
+                if _hud is not None:
+                    for cmd in instance._draw_queue:
+                        try:
+                            instance._dq_render_cmd(_hud, cmd,
+                                                    float(self.display_height))
+                        except Exception as exc:
+                            print(f"[ERROR] raycast HUD {{cmd.get('type')}}: {{exc}}")
+                    instance._draw_queue = []
+                else:
+                    instance._render_draw_queue()
 
         # 9. CLEANUP - Remove destroyed instances
         if self.instances_to_destroy:
