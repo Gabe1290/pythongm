@@ -46,7 +46,16 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "Ramasse toutes les gemmes avant de sortir !"
+            "message": "Collect all the gems before you leave!",
+            "message_translations": {
+              "fr": "Ramasse toutes les gemmes avant de sortir !",
+              "de": "Sammle alle Edelsteine, bevor du gehst!",
+              "es": "¡Recoge todas las gemas antes de salir!",
+              "it": "Raccogli tutte le gemme prima di uscire!",
+              "ru": "Собери все камни, прежде чем выйти!",
+              "sl": "Poberi vse dragulje, preden odideš!",
+              "uk": "Збери всі самоцвіти, перш ніж вийти!"
+            }
           }
         },
         {
