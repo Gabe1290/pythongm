@@ -1135,6 +1135,20 @@ if dist > 0:
                     f"x={x}, y={y}, "
                     "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
 
+        elif action_type == 'draw_minimap':
+            # Emits a CALL, not an inline expression: the minimap needs loops
+            # over the room's wall sets. GameObject._draw_minimap is generated
+            # into base_object.py — the two halves must stay in step (the M34
+            # lesson). See docs/RAYCAST_MINIMAP_PLAN.md.
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            size = _num_code(params.get('size', 120))
+            back = str(params.get('back_color', '#101018'))
+            wall = str(params.get('wall_color', '#8080a0'))
+            player = str(params.get('player_color', '#ffd040'))
+            return (f"self._draw_minimap({x}, {y}, {size}, "
+                    f"{back!r}, {wall!r}, {player!r})")
+
         elif action_type == 'draw_health_bar':
             x1 = _num_code(params.get('x1', 0))
             y1 = _num_code(params.get('y1', 0))

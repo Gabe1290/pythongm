@@ -52,9 +52,26 @@ wins. Available from the IDE's Welcome tab (*"Raycast — Level 3"*).
 | Score | top-left | `draw_score` |
 | Lives | top-right | `draw_text` + `draw_lives` |
 | Health bar | bottom-left | `draw_health_bar` |
+| Minimap | bottom-right | `draw_minimap` |
 
 Score and health sit in **opposite** corners on purpose: a health bar is wide
 and a score string grows as you play, so stacking them invites a collision.
+
+### The minimap
+
+`draw_minimap` draws a **north-up** map of the room's walls with a marker
+showing where you are and which way you're facing. It doesn't rotate — the map
+stays fixed and the marker turns, which is easier to read than a spinning map.
+
+It needs no data of its own: it reads the same wall edges the first-person view
+already derived from the room's solid instances, so it stays correct if you
+redesign the maze. It shows **walls only** — not gems or monsters — so the maze
+is still worth exploring.
+
+**Not implemented (deliberate):** fog of war, a rotating/heading-up mode, and
+showing items or enemies. See
+[`docs/RAYCAST_MINIMAP_PLAN.md`](../../docs/RAYCAST_MINIMAP_PLAN.md) for why
+each was left out.
 
 **`obj_hud` is `visible: true`, and that matters.** GameMaker does not run an
 invisible instance's draw event — so the HUD cannot simply live on the
@@ -103,6 +120,9 @@ beginning the game nose-to-wall) and that every cell is reachable.
   versus medkits is the main dial.
 - **HUD layout:** the coordinates in `obj_hud`'s draw event. Keep score and
   health in opposite corners.
+- **Minimap:** `size` on `draw_minimap` scales the whole room into that square,
+  so a bigger value just means a more legible map; `wall_color` and
+  `player_color` set its look.
 - **Themes:** the texture parameters on `obj_cam0`/`obj_cam1`.
 
 ## A note on collision timing

@@ -1,6 +1,7 @@
 # Plan: raycast minimap (`draw_minimap`)
 
-Status: **PLAN (2026-07-20).** Session E of `docs/RAYCAST_HUD_PLAN.md`, which
+Status: **DONE (2026-07-20)** — all four units landed; see the checklist.
+Originally: **PLAN (2026-07-20).** Session E of `docs/RAYCAST_HUD_PLAN.md`, which
 scheduled the minimap behind its own design pass because it is a *world-space
 projection* problem, not the screen-space compositing problem Sessions A–D
 solved. It depends on the HUD pass landing first (`341f5c4` / `d11550b` /
@@ -86,16 +87,27 @@ it bites.
 
 ## Units (one commit each)
 
-- **Unit 0 — this plan.** Commit first.
-- **Unit 1 — desktop `draw_minimap`** + action registration + tests
-  (projection maths, emitted command shapes, and an end-to-end run through the
-  real loop).
-- **Unit 2 — HTML5** `case 'draw_minimap'`, mirroring the desktop maths.
-- **Unit 3 — Kivy** codegen for `draw_minimap`.
-- **Unit 4 — parity + sample.** Extend `test_raycast_export_parity.py` to
-  compare the projected geometry across targets; add the minimap to
-  `raycast_3`'s `obj_hud` (bottom-right — the free corner, since score is
-  top-left, lives top-right, health bottom-left); update EN + FR guides.
+- [x] **Unit 0 — this plan.** `0ff7edb`.
+- [x] **Unit 1 — desktop `draw_minimap`.** `a1784fc`, plus `cadc341` fixing two
+  bugs the first pass shipped: the camera never resolved (the code looked for
+  `_find_raycast_camera`, which is **Kivy-only**; desktop uses
+  `_find_first_instance`), and the marker used the sprite corner rather than
+  the ray origin. Both were invisible to a test that only checked that walls
+  were drawn — the lesson being to assert *where* a marker lands.
+- [x] **Unit 2 — HTML5.** `case 'draw_minimap'` in engine.js.
+- [x] **Unit 3 — Kivy.** The generator emits a CALL to
+  `GameObject._draw_minimap` (generated into `base_object.py`) because the
+  minimap needs loops and Kivy codegen emits single-line expressions — the M34
+  two-halves pattern. Verified the emitted call's arity matches the definition
+  and both files compile.
+- [x] **Unit 4 — parity + sample.** Parity tests cover the shared constants,
+  the facing-angle negation, the wall-set sort, the ray-origin marker, and an
+  exact numeric comparison of the projected geometry. `raycast_3`'s `obj_hud`
+  draws it bottom-right; EN + FR guides updated.
+
+**Cost note resolved:** the ~250 lines/frame estimate held and caused no
+trouble on desktop; the Kivy per-frame `InstructionGroup` rebuild is still
+untested on real hardware, so the `range` escape hatch stays worth remembering.
 
 ## Out of scope
 
