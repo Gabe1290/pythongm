@@ -2957,9 +2957,13 @@ class GameRoom {
             if (textured && texSprite && texSprite.complete && texSprite.width > 0) {
                 const tw = texSprite.width, th = texSprite.height;
                 const texX = Math.min(tw - 1, Math.max(0, Math.floor(r.texU * tw)));
+                // FLOAT source rows — drawImage samples sub-texel, so no
+                // per-column snapping to whole texels (which on a close wall,
+                // where one texel spans tens of screen px, produced jagged
+                // edges). Canvas interpolates for us; nothing to round.
                 const v0 = (y0 - yTop) / fullH, v1 = (y1 - yTop) / fullH;
-                const srcY = Math.max(0, Math.min(th - 1, Math.floor(v0 * th)));
-                const srcH = Math.max(1, Math.min(th - srcY, Math.round((v1 - v0) * th)));
+                const srcY = Math.max(0, Math.min(th, v0 * th));
+                const srcH = Math.max(1e-3, Math.min(th - srcY, (v1 - v0) * th));
                 ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH);
                 if (shade < 1.0) {
                     ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(3)})`;
