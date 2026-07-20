@@ -34,7 +34,7 @@ SAMPLES = [
     ("Platform", 1), ("Platform", 2), ("Platform", 3),
     ("Match-3", 1), ("Match-3", 2), ("Match-3", 3),
     ("Views", 1), ("Views", 2),
-    ("Raycast", 1), ("Raycast", 2),
+    ("Raycast", 1), ("Raycast", 2), ("Raycast", 3),
 ]
 
 # Standalone sample names (no "— Level N" suffix). English label must

@@ -2388,6 +2388,11 @@ Preverite konzolo za podrobnosti o napaki.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 3</source>
+            <translation>Raycasting — Stopnja 3</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 2</source>
             <translation>Raycasting — Stopnja 2</translation>
         </message>

@@ -105,16 +105,23 @@ def test_renders_selected_readme(_qapp, monkeypatch):
 
 
 def test_every_sample_ships_a_french_guide(_qapp, monkeypatch):
-    """All 15 bundled samples have a README.fr.md, and guide_path picks it
-    when the IDE language is French."""
+    """Every bundled sample has a README.fr.md, and guide_path picks it when
+    the IDE language is French.
+
+    Deliberately NOT an exact count — the per-sample loop below is what has to
+    hold, and pinning a number just means bumping it each time a sample lands
+    (raycast_3 took this from 15 to 16). The floor guards against the glob
+    silently matching nothing.
+    """
     from widgets.welcome_tab import SampleDocsDialog
     monkeypatch.setattr(SampleDocsDialog, "_guide_language", staticmethod(lambda: "fr"))
     dlg = _dialog(_qapp)
     roots = sorted(p for p in (dlg._repo_root / "samples").iterdir()
                    if (p / "README.md").is_file())
-    assert len(roots) == 15
-    for root in roots:
-        assert dlg.guide_path(f"samples/{root.name}").name == "README.fr.md", root.name
+    assert len(roots) >= 15
+    missing = [r.name for r in roots
+               if dlg.guide_path(f"samples/{r.name}").name != "README.fr.md"]
+    assert not missing, f"samples without a French guide: {missing}"
 
 
 def test_first_sample_selected_by_default(_qapp):
