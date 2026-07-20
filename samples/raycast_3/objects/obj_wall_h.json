@@ -1,0 +1,13 @@
+{
+  "name": "obj_wall_h",
+  "asset_type": "object",
+  "sprite": "spr_wall_h",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": false,
+  "created": "2026-07-17T00:00:00.000000",
+  "modified": "2026-07-17T00:00:00.000000"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "spr_sky",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_sky.png",
+  "width": 256,
+  "height": 64,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 256,
+  "frame_height": 64,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true
+}
