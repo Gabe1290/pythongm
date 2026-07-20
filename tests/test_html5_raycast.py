@@ -194,3 +194,49 @@ def test_raycast_1_exports_with_camera_and_textures():
     assert "spr_wall_texture" in blob
     # the wall texture sprite made it into the export
     assert "spr_wall_texture" in data["assets"]["sprites"]
+
+
+# --- In-view HUD compositing (RAYCAST_HUD_PLAN Unit 2) ----------------------
+# Before this, GameRoom.render did `renderRaycastView(ctx); return;`, so the
+# per-instance draw pass never ran under raycast and a raycast game's HUD
+# (draw_score / draw_lives / draw_text / draw_health_bar) was invisible in the
+# browser. Source-level assertions only — no JS engine in CI.
+
+def _raycast_branch() -> str:
+    """The body of GameRoom.render's `raycastCamera.enabled` early-return."""
+    start = ENGINE.index("if (this.raycastCamera && this.raycastCamera.enabled) {")
+    end = ENGINE.index("return;", start) + len("return;")
+    return ENGINE[start:end]
+
+
+def test_run_draw_event_is_split_out_of_on_draw():
+    """The draw-queue pass is reusable without also drawing the sprite."""
+    assert "runDrawEvent(ctx) {" in ENGINE
+    # onDraw keeps its sprite-then-queue order by delegating.
+    on_draw = ENGINE[ENGINE.index("onDraw(ctx) {"):]
+    on_draw = on_draw[:on_draw.index("runDrawEvent(ctx) {")]
+    assert "this.render(ctx);" in on_draw
+    assert "this.runDrawEvent(ctx);" in on_draw
+    # The queue machinery moved wholesale, not duplicated.
+    assert on_draw.count("this._draw_queue = []") == 0
+    assert ENGINE.count("runDrawEvent(ctx) {") == 1
+
+
+def test_hud_pass_runs_after_the_raycast_render_and_before_the_return():
+    branch = _raycast_branch()
+    assert "this.renderRaycastView(ctx);" in branch
+    assert "runDrawEvent(ctx)" in branch, \
+        "raycast branch still returns without compositing the HUD"
+    assert branch.index("this.renderRaycastView(ctx);") < branch.index("runDrawEvent(ctx)") \
+        < branch.index("return;"), "HUD must composite over the finished frame"
+
+
+def test_hud_pass_uses_this_files_own_depth_order():
+    """Ascending, matching engine.js's normal path (line ~3367). This is the
+    opposite of the desktop runtime's descending order; that divergence
+    pre-dates the HUD work and is deliberately not changed here — if it is
+    ever reconciled, both sites must move together."""
+    branch = _raycast_branch()
+    assert "sort((a, b) => a.depth - b.depth)" in branch
+    normal = ENGINE[ENGINE.index("const sortedInstances = "):]
+    assert "sort((a, b) => a.depth - b.depth)" in normal[:200]

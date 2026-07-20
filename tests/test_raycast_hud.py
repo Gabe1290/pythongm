@@ -94,15 +94,24 @@ def _snapshot_last_frame():
     return shot, (lambda: setattr(GameRunner, "render", real))
 
 
-def _record_draw_queue():
-    """Capture every draw command flushed while the game runs."""
+def _record_draw_queue(execute=True):
+    """Capture every draw command flushed while the game runs.
+
+    execute=False records without rasterising. Use it when the assertion is
+    about *dispatch* — actually rendering text depends on ambient pygame font
+    state that other tests in the suite can leave in a bad way ("Text has zero
+    width"), which would fail for a reason unrelated to what's under test. The
+    pixel test below covers real rasterisation.
+    """
     from runtime.game_runner import GameInstance
     seen = []
     real = GameInstance._process_draw_queue
 
     def spy(self, screen):
         seen.extend(self._draw_queue)
-        return real(self, screen)
+        if execute:
+            return real(self, screen)
+        self._draw_queue = []
 
     GameInstance._process_draw_queue = spy
     return seen, (lambda: setattr(GameInstance, "_process_draw_queue", real))
@@ -176,15 +185,13 @@ def test_normal_mode_draw_events_are_unaffected():
     must behave exactly as before."""
     runner = _runner()
     _add_hud_draw_event(runner)
-    seen, restore = _record_draw_queue()
+    seen, restore = _record_draw_queue(execute=False)
     try:
         _run(runner, max_frames=3)
         # Disable raycast and render once more: the normal top-down path.
         # Its own surface — run() has already torn the display down.
         runner.current_room.raycast_camera["enabled"] = False
         seen.clear()
-        pygame.init()          # run() quits pygame on exit; _draw_text needs font
-        pygame.font.init()
         runner.current_room.render(pygame.Surface((800, 600)))
     finally:
         restore()

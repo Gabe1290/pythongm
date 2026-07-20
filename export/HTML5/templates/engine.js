@@ -754,6 +754,14 @@ class GameObject {
         // action executor (so conditionals like test_lives work inside it);
         // draw_* actions queue runtime-schema commands, rendered at the end.
         this.render(ctx);
+        this.runDrawEvent(ctx);
+    }
+
+    runDrawEvent(ctx) {
+        // Split out of onDraw so the raycast HUD pass can composite draw
+        // actions (draw_score / draw_lives / draw_text / draw_health_bar)
+        // over the finished first-person frame without also drawing sprites.
+        // See GameRoom.render and docs/RAYCAST_HUD_PLAN.md.
         if (!this.events || !this.events.draw) return;
         const game = this._gameRef;
         this._draw_queue = [];
@@ -3291,6 +3299,18 @@ class GameRoom {
         // game logic is unaffected, only the picture changes.
         if (this.raycastCamera && this.raycastCamera.enabled) {
             this.renderRaycastView(ctx);
+            // Composite the HUD on top, in screen space (no view offset), so
+            // draw_score / draw_lives / draw_text / draw_health_bar render
+            // over the first-person frame instead of being skipped by the
+            // early return. Depth order matches the normal path below.
+            // World-space draws are NOT projected into the 3D view — see
+            // docs/RAYCAST_HUD_PLAN.md Scope-out.
+            // NB: this sort matches THIS file's normal path below
+            // (ascending), which is the opposite of the desktop runtime's
+            // descending order. That divergence pre-dates this change and is
+            // deliberately not "fixed" here — see the plan's Unit 4.
+            const hudInstances = [...this.instances].sort((a, b) => a.depth - b.depth);
+            hudInstances.forEach(inst => inst.runDrawEvent(ctx));
             return;
         }
         // Fill the whole canvas with the bg color once; areas outside any
