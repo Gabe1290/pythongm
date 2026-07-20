@@ -849,6 +849,19 @@ class GameInstance:
                 screen.blit(current_frame, (render_x, render_y))
 
         # Execute draw event for this instance
+        self.run_draw_event(screen)
+
+    def run_draw_event(self, screen: pygame.Surface):
+        """Run this instance's draw event and flush its draw queue.
+
+        Split out of render() so the raycast HUD pass can composite draw
+        actions (draw_score / draw_lives / draw_text / draw_health_bar) over
+        the finished first-person frame without also blitting sprites — see
+        GameRoom._render_draw_events and docs/RAYCAST_HUD_PLAN.md.
+
+        Draw commands are emitted in screen space; callers that need a view
+        offset apply it inside _process_draw_queue as before.
+        """
         if self.object_data and "events" in self.object_data:
             events = self.object_data["events"]
             if "draw" in events:
@@ -1664,11 +1677,12 @@ class GameRoom:
         # entirely (background/tiles/instance sprites) — it's its own
         # camera, not compatible with the offset/multi-view system v1.
         # Game *logic* (movement, collision, events) is untouched; only
-        # this method's picture changes. Known v1 gap: HUD draw-queue
-        # actions (draw_score etc.) on other instances won't render while
-        # this is active — see docs/RAYCAST_2_5D_PLAN.md.
+        # this method's picture changes. HUD draw actions (draw_score,
+        # draw_lives, draw_text, draw_health_bar) ARE composited on top,
+        # in screen space — see docs/RAYCAST_HUD_PLAN.md.
         if self.raycast_camera.get('enabled'):
             self._render_raycast_view(screen)
+            self._render_draw_events(screen)
             return
 
         # Draw background layers (non-foreground) or legacy single background
@@ -1701,6 +1715,35 @@ class GameRoom:
                 # Get render data from simulator and pass to renderer
                 # Note: thymio_renderer is accessed from game_runner
                 pass  # Will be handled by game_runner's render method
+
+    def _render_draw_events(self, screen: pygame.Surface):
+        """Composite per-instance draw events over a finished raycast frame.
+
+        The raycast view is its own camera and replaces the normal top-down
+        render, which is where draw events would otherwise run (from
+        GameInstance.render). Without this pass a raycast game's HUD is
+        invisible on every target — see docs/RAYCAST_HUD_PLAN.md.
+
+        Deliberately mirrors the normal path's semantics so a HUD behaves the
+        same in both modes:
+          - depth order (higher depth first), same _sorted_instances list;
+          - invisible instances are skipped — render() returns early on
+            `not self.visible`, so an invisible instance's draw event does not
+            fire in normal mode either;
+          - Thymio instances are skipped, as in the normal loop.
+
+        Screen space: no view offset, so a HUD draw at (8, 8) lands 8 px from
+        the window's top-left. World-space draws (draw_self, draw_sprite at
+        room coords) have no meaningful place over a first-person view and are
+        NOT projected into it; they land at their raw screen coords.
+        """
+        if self._depth_dirty or self._sorted_instances is None:
+            self._sorted_instances = sorted(self.instances, key=lambda inst: inst.depth, reverse=True)
+            self._depth_dirty = False
+        for instance in self._sorted_instances:
+            if instance.is_thymio or not instance.visible:
+                continue
+            instance.run_draw_event(screen)
 
     def update_views(self):
         """Per-tick view update: follow targets, clamp to room bounds.
