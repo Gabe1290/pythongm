@@ -2769,6 +2769,18 @@ class GameRoom {
     // (runtime/game_runner.py). See docs/RAYCAST_2_5D_PLAN.md; kept faithful
     // to the desktop math so tests/test_raycast_export_parity.py holds. ----
 
+    // The instance's true sprite top-left. Rendering and collision both use
+    // x - origin_x, so raycast geometry must too -- a sprite with a centred
+    // origin was otherwise placed half a sprite off, putting billboards on the
+    // grid lines where walls sit (they got sliced in half by the occlusion
+    // test). Mirrors game_runner._sprite_top_left.
+    static spriteTopLeft(inst) {
+        const info = inst.spriteInfo;
+        const ox = info && info.origin_x ? info.origin_x : 0;
+        const oy = info && info.origin_y ? info.origin_y : 0;
+        return { x: inst.x - ox, y: inst.y - oy };
+    }
+
     buildRaycastWalls(cellSize) {
         // Thin wall EDGES from solid instances (wide -> horizontal segment,
         // tall -> vertical, square -> all 4 edges), plus each edge's sprite
@@ -2780,12 +2792,14 @@ class GameRoom {
             const width = inst.boxWidth(), height = inst.boxHeight();
             const spr = inst.sprite;
             if (width >= height * 1.5) {
-                const lineY = Math.round((inst.y + height / 2) / cellSize);
-                const col = Math.floor(inst.x / cellSize);
+                const tl = GameRoom.spriteTopLeft(inst);
+                const lineY = Math.round((tl.y + height / 2) / cellSize);
+                const col = Math.floor(tl.x / cellSize);
                 hWalls.add(col + ',' + lineY); hSprites.set(col + ',' + lineY, spr);
             } else if (height >= width * 1.5) {
-                const lineX = Math.round((inst.x + width / 2) / cellSize);
-                const row = Math.floor(inst.y / cellSize);
+                const tl2 = GameRoom.spriteTopLeft(inst);
+                const lineX = Math.round((tl2.x + width / 2) / cellSize);
+                const row = Math.floor(tl2.y / cellSize);
                 vWalls.add(lineX + ',' + row); vSprites.set(lineX + ',' + row, spr);
             } else {
                 const gx = Math.floor(inst.x / cellSize), gy = Math.floor(inst.y / cellSize);
@@ -2878,8 +2892,9 @@ class GameRoom {
 
         const camera = this.findFirstInstance(cfg.camera_object || '');
         if (!camera) return;
-        const camX = camera.x + camera.boxWidth() / 2;
-        const camY = camera.y + camera.boxHeight() / 2;
+        const camTL = GameRoom.spriteTopLeft(camera);
+        const camX = camTL.x + camera.boxWidth() / 2;
+        const camY = camTL.y + camera.boxHeight() / 2;
 
         const wallColor = cfg.wall_color || '#993333';
         const fovRad = (cfg.fov || 66) * Math.PI / 180;
@@ -2982,7 +2997,8 @@ class GameRoom {
         for (const inst of this.instances) {
             if (inst === camera || !inst.visible || !inst.sprite || inst.solid) continue;
             if (!inst.sprite.complete || inst.sprite.width <= 0) continue;
-            const bx = inst.x + inst.boxWidth() / 2, by = inst.y + inst.boxHeight() / 2;
+            const bTL = GameRoom.spriteTopLeft(inst);
+            const bx = bTL.x + inst.boxWidth() / 2, by = bTL.y + inst.boxHeight() / 2;
             const ddx = bx - camX, ddy = by - camY;
             const bdist = Math.hypot(ddx, ddy);
             if (bdist < 1e-4) continue;
