@@ -1774,6 +1774,23 @@ class GameRoom:
                 return inst
         return None
 
+    @staticmethod
+    def _sprite_top_left(inst):
+        """The instance's true sprite top-left in room coords.
+
+        Rendering and collision both place a sprite at ``x - origin_x``
+        (game_runner render_x, and the collision bbox maths), so anything doing
+        geometry off an instance MUST subtract the origin. The raycast pass used
+        raw ``inst.x``, so a sprite with a centred origin (e.g. 16,16 on a 32x32)
+        was placed half a sprite off -- billboards for such sprites landed on the
+        grid lines where walls sit and got sliced in half by the occlusion test
+        (user report 2026-07-19).
+        """
+        spr = getattr(inst, 'sprite', None)
+        ox = getattr(spr, 'origin_x', 0) or 0 if spr else 0
+        oy = getattr(spr, 'origin_y', 0) or 0 if spr else 0
+        return inst.x - ox, inst.y - oy
+
     def _build_raycast_walls(self, cell_size: int):
         """Derive thin wall EDGES from every solid instance in the room —
         not "which whole grid cells are occupied". This is what makes a
@@ -1813,19 +1830,20 @@ class GameRoom:
             width = inst._cached_width
             height = inst._cached_height
             spr = inst.sprite
+            ix, iy = self._sprite_top_left(inst)   # origin-aware
             if width >= height * 1.5:
-                line_y = round((inst.y + height / 2) / cell_size)
-                col = int(inst.x // cell_size)
+                line_y = round((iy + height / 2) / cell_size)
+                col = int(ix // cell_size)
                 h_walls.add((col, line_y))
                 h_sprites[(col, line_y)] = spr
             elif height >= width * 1.5:
-                line_x = round((inst.x + width / 2) / cell_size)
-                row = int(inst.y // cell_size)
+                line_x = round((ix + width / 2) / cell_size)
+                row = int(iy // cell_size)
                 v_walls.add((line_x, row))
                 v_sprites[(line_x, row)] = spr
             else:
-                gx = int(inst.x // cell_size)
-                gy = int(inst.y // cell_size)
+                gx = int(ix // cell_size)
+                gy = int(iy // cell_size)
                 v_walls.add((gx, gy))
                 v_walls.add((gx + 1, gy))
                 h_walls.add((gx, gy))
@@ -1989,8 +2007,9 @@ class GameRoom:
         # would see a wall filling the whole screen instead of the open
         # corridor actually ahead. Centering the origin in the occupied
         # cell removes the coincidence.
-        cam_x = camera.x + camera._cached_width / 2
-        cam_y = camera.y + camera._cached_height / 2
+        _cx, _cy = self._sprite_top_left(camera)   # origin-aware
+        cam_x = _cx + camera._cached_width / 2
+        cam_y = _cy + camera._cached_height / 2
 
         wall_color = self.parse_color(cfg.get('wall_color', '#993333'))
         fov_deg = cfg.get('fov', 66)
@@ -2156,8 +2175,9 @@ class GameRoom:
                 continue
             if (inst._cached_object_data or {}).get('solid', False):
                 continue
-            bx = inst.x + inst._cached_width / 2
-            by = inst.y + inst._cached_height / 2
+            _bx0, _by0 = self._sprite_top_left(inst)   # origin-aware
+            bx = _bx0 + inst._cached_width / 2
+            by = _by0 + inst._cached_height / 2
             dx, dy = bx - cam_x, by - cam_y
             dist = math.hypot(dx, dy)
             if dist < 1e-4:

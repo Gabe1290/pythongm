@@ -1806,8 +1806,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 112,
-      "y": 48
+      "x": 96,
+      "y": 32
     },
     {
       "object_name": "obj_gem",
@@ -1815,8 +1815,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 48,
-      "y": 80
+      "x": 32,
+      "y": 64
     },
     {
       "object_name": "obj_gem",
@@ -1824,8 +1824,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 368,
-      "y": 112
+      "x": 352,
+      "y": 96
     },
     {
       "object_name": "obj_gem",
@@ -1833,8 +1833,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 176,
-      "y": 176
+      "x": 160,
+      "y": 160
     },
     {
       "object_name": "obj_gem",
@@ -1842,8 +1842,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 112,
-      "y": 240
+      "x": 96,
+      "y": 224
     },
     {
       "object_name": "obj_gem",
@@ -1851,8 +1851,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 368,
-      "y": 272
+      "x": 352,
+      "y": 256
     },
     {
       "object_name": "obj_gem",
@@ -1860,8 +1860,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 48,
-      "y": 336
+      "x": 32,
+      "y": 320
     },
     {
       "object_name": "obj_gem",
@@ -1869,8 +1869,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 368,
-      "y": 368
+      "x": 352,
+      "y": 352
     },
     {
       "object_name": "obj_monster",
@@ -1878,8 +1878,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 240,
-      "y": 80
+      "x": 224,
+      "y": 64
     },
     {
       "object_name": "obj_monster",
@@ -1887,8 +1887,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 176,
-      "y": 272
+      "x": 160,
+      "y": 256
     }
   ],
   "created": "2026-05-23T14:34:55.001771",

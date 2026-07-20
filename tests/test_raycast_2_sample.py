@@ -187,13 +187,29 @@ def test_score_and_lives_init_in_game_start():
     assert runner.score == 0 and runner.lives == 3
 
 
-def test_gem_sprite_sized_for_billboard():
-    """The placeholder gem was resized to 32px so it reads in the raycast view."""
+def test_billboard_sprites_use_top_left_origin():
+    """The billboard sprites are 32px with a TOP-LEFT origin (0,0), matching
+    obj_person/obj_goal/obj_wall. A centred origin put their billboard centre
+    half a sprite off — right on the grid lines where walls sit — so gems and
+    monsters were sliced in half by the wall occlusion. Top-left origin also
+    keeps all three export targets in agreement (Kivy has no origin concept)."""
     import json
-    s = json.loads((REPO_ROOT / "samples" / "raycast_2" / "sprites"
-                    / "spr_gem.json").read_text(encoding="utf-8"))
-    assert s["width"] == 32 and s["height"] == 32
-    assert s["origin_x"] == 16 and s["origin_y"] == 16
+    root = REPO_ROOT / "samples" / "raycast_2" / "sprites"
+    for name in ("spr_gem", "spr_monster"):
+        s = json.loads((root / f"{name}.json").read_text(encoding="utf-8"))
+        assert s["width"] == 32 and s["height"] == 32, name
+        assert s["origin_x"] == 0 and s["origin_y"] == 0, name
+
+
+def test_billboards_are_not_centred_on_wall_lines():
+    """Every gem/monster must sit inside a cell, not on a 32px grid line."""
+    import json
+    room = json.loads((REPO_ROOT / "samples" / "raycast_2" / "rooms"
+                       / "room0.json").read_text(encoding="utf-8"))
+    for i in room["instances"]:
+        if i.get("object_name") in ("obj_gem", "obj_monster"):
+            cx, cy = i["x"] + 16, i["y"] + 16      # origin (0,0) -> centre
+            assert cx % 32 != 0 and cy % 32 != 0, (i["object_name"], cx, cy)
 
 
 def test_monster_wired_and_placed():
