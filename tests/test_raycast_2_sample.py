@@ -319,29 +319,41 @@ def test_goal_is_gated_on_collecting_all_gems():
     goal = next(i for i in runner.current_room.instances
                 if i.object_name == "obj_goal")
 
-    # gems still present -> prompt, and the room does not change
+    # gems still present -> prompt, and the room does not change. The runner is
+    # language "en", so the ENGLISH base message is what surfaces (the French
+    # etc. live in message_translations — see the IDE-language test below).
     runner.action_executor.execute_event(
         goal, "collision_with_obj_person", goal.object_data["events"])
-    assert msgs and "Ramasse toutes les gemmes" in msgs[-1]
+    assert msgs and "Collect all the gems" in msgs[-1]
     assert runner.current_room.name == "room0"
 
 
-def test_goal_messages_are_accented_french():
-    """French UI text must carry proper accents (project rule). The win message
-    lives on obj_goal_final (room1); both goals gate on test_instance_count."""
+def test_goal_messages_follow_the_ide_language():
+    """Messages carry an ENGLISH base plus message_translations, which is what
+    the runtime resolves against the IDE/game language (execute_show_message_action:
+    `message` for en, message_translations[lang] otherwise)."""
     import json
     root = REPO_ROOT / "samples" / "raycast_2" / "objects"
-    final = json.loads((root / "obj_goal_final.json").read_text(encoding="utf-8"))
-    win = " ".join(a["parameters"]["message"]
-                   for a in final["events"]["collision_with_obj_person"]["actions"]
-                   if a["action"] == "show_message")
-    assert "terminé" in win               # é, not a stripped 'termine'
-
+    langs = {"fr", "de", "es", "it", "ru", "sl", "uk"}
+    seen_win = False
     for name in ("obj_goal", "obj_goal_final"):
         acts = json.loads((root / f"{name}.json").read_text(encoding="utf-8")
                           )["events"]["collision_with_obj_person"]["actions"]
         assert any(a["action"] == "test_instance_count"
                    and a["parameters"]["object"] == "obj_gem" for a in acts)
+        for a in acts:
+            if a["action"] != "show_message":
+                continue
+            p = a["parameters"]
+            # base must be English (the runtime's en fallback), not French
+            assert p["message"].isascii(), f"{name}: base message must be English"
+            tr = p.get("message_translations", {})
+            assert langs <= set(tr), f"{name}: missing {langs - set(tr)}"
+            # French must carry proper accents (project rule)
+            if "Bravo" in tr["fr"]:
+                assert "terminé" in tr["fr"]     # é, not a stripped 'termine'
+                seen_win = True
+    assert seen_win, "the win message should exist on obj_goal_final"
 
 
 def test_two_rooms_with_per_room_camera_themes():

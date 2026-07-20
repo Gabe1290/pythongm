@@ -24,7 +24,16 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "Bravo ! Tu as terminé les deux niveaux avec toutes les gemmes."
+            "message": "Well done! You finished both levels with all the gems.",
+            "message_translations": {
+              "fr": "Bravo ! Tu as terminé les deux niveaux avec toutes les gemmes.",
+              "de": "Gut gemacht! Du hast beide Level mit allen Edelsteinen geschafft.",
+              "es": "¡Bien hecho! Has terminado los dos niveles con todas las gemas.",
+              "it": "Bravo! Hai completato entrambi i livelli con tutte le gemme.",
+              "ru": "Отлично! Ты прошёл оба уровня и собрал все камни.",
+              "sl": "Bravo! Končal si obe stopnji z vsemi dragulji.",
+              "uk": "Чудово! Ти пройшов обидва рівні та зібрав усі самоцвіти."
+            }
           }
         },
         {
@@ -50,7 +59,16 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "Ramasse toutes les gemmes avant de sortir !"
+            "message": "Collect all the gems before you leave!",
+            "message_translations": {
+              "fr": "Ramasse toutes les gemmes avant de sortir !",
+              "de": "Sammle alle Edelsteine, bevor du gehst!",
+              "es": "¡Recoge todas las gemas antes de salir!",
+              "it": "Raccogli tutte le gemme prima di uscire!",
+              "ru": "Собери все камни, прежде чем выйти!",
+              "sl": "Poberi vse dragulje, preden odideš!",
+              "uk": "Збери всі самоцвіти, перш ніж вийти!"
+            }
           }
         },
         {
