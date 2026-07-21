@@ -1,0 +1,19 @@
+{
+  "name": "spr_face",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_face.png",
+  "width": 136,
+  "height": 34,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 4,
+  "frame_width": 34,
+  "frame_height": 34,
+  "animation_type": "strip",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-23T14:34:54.961536",
+  "modified": "2026-06-16T15:12:34.811782",
+  "thumbnail": ""
+}

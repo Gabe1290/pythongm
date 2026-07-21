@@ -769,6 +769,10 @@ class ActionCodeGenerator:
                 'wall_textured': not (str(params.get('wall_textured', 'true')).strip().lower()
                                       in ('false', '0', 'no')),
                 'floor_cast_res': max(1, int(_tofloat(params.get('floor_cast_res'), 4))),
+                # DOOM-bar letterbox (0 = full height). The scene renderer
+                # reads this; without it here, an exported game would ignore a
+                # viewport_height the desktop runtime honours.
+                'viewport_height': int(_tofloat(params.get('viewport_height'), 0)),
             }
             if not cfg['camera_object']:
                 # No named camera object -> the acting instance IS the camera;
