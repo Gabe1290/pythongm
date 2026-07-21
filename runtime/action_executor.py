@@ -4605,6 +4605,10 @@ class ActionExecutor:
             'floor_texture': str(parameters.get('floor_texture', '')),
             'ceiling_texture': str(parameters.get('ceiling_texture', '')),
             'floor_cast_res': int(_num('floor_cast_res', 4)),
+            # DOOM-bar letterbox: shrink the 3D view to this many pixels tall
+            # and reserve the band below for a status bar. 0 = full window
+            # height, so every existing raycast game renders unchanged.
+            'viewport_height': int(_num('viewport_height', 0)),
         }
         # Force the wall edges to rebuild against the (possibly new)
         # cell_size next render instead of reusing a stale cache.

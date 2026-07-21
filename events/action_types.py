@@ -578,6 +578,11 @@ ACTION_TYPES = {
             ActionParameter(name="floor_cast_res", display_name="Floor Detail",
                 param_type="number", default_value=4, required=False,
                 description="Floor-cast downsample (higher = faster + chunkier)"),
+            ActionParameter(name="viewport_height", display_name="Viewport Height",
+                param_type="number", default_value=0, required=False,
+                description="Letterbox the 3D view into this many pixels tall, "
+                            "reserving the band below for a DOOM-style status bar "
+                            "(0 = full window height, unchanged)"),
         ]
     ),
 
