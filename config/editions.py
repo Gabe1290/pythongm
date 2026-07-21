@@ -95,17 +95,25 @@ def filter_tutorials_for_edition(tutorials_list, base_tutorials_path=None):
 def filter_samples_for_edition(sample_projects):
     """Filter the Welcome-tab sample list by the current edition.
 
-    Mirrors filter_tutorials_for_edition. ``sample_projects`` is the list of
-    (relative_path, label) tuples from widgets/welcome_tab.py's SAMPLE_PROJECTS;
-    the folder name is the basename of relative_path (e.g. "samples/maze_1"
-    -> "maze_1"). An edition whose ``sample_folders`` is None shows everything.
+    ``sample_projects`` is the list of (relative_path, label) tuples from
+    widgets/welcome_tab.py's SAMPLE_PROJECTS; the folder name is the basename
+    of relative_path (e.g. "samples/maze_1" -> "maze_1").
 
-    Unlike tutorials there is no localized-index recovery to do — the sample
-    list is a single in-code table — so this is a straight whitelist filter.
+    DELIBERATE ASYMMETRY vs filter_tutorials_for_edition: samples show ALL by
+    default and are curated ONLY when the user has EXPLICITLY selected an
+    edition whose sample_folders whitelist excludes some. An UNSET edition
+    (a fresh machine) shows every sample, even though tutorials default to
+    Beginner (DEFAULT_EDITION) — a developer's raycast samples must not vanish
+    just because they never opened Preferences. So this reads the raw config
+    key rather than get_current_edition(), which would apply the Beginner
+    default. Do NOT "simplify" it to get_current_edition() — that reintroduces
+    the disappear-by-default bug.
     """
-    edition = get_current_edition()
-    allowed = edition.get("sample_folders")
-    if allowed is None:
+    from utils.config import Config
+    edition_key = Config.get("edition", None)       # None = never chosen
+    edition = EDITIONS.get(edition_key) if edition_key else None
+    allowed = edition.get("sample_folders") if edition else None
+    if allowed is None:                             # unset / advanced / development
         return list(sample_projects)
     allowed_set = set(allowed)
     return [(path, label) for (path, label) in sample_projects
