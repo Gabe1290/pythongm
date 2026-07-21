@@ -308,12 +308,21 @@ call-site over-reach, reverted to absolute coords). Suite **1076 passed,
 per-subsystem commits `b6b27da`..`4d76181`. The 4 deferred-cross-file items
 (M31, M34, L5, L8) were then ALL closed in the same session with their
 coordinated second-file edits + tests. **The full 2026-06-11 audit is now
-111/111 closed** (suite 1091 passed, 0 failed). Untracked tracked-for-later
-remainder (not a registry item): M30 belt-and-braces runtime alias/'state'
-field in action_executor.py. (The other one, L4 WA_DeleteOnClose on
-PlaygroundRunnerWindow, was already fixed by commit `f389035` — both
-PlaygroundRunnerWindow and ThymioPlaygroundWindow set Qt.WA_DeleteOnClose;
-verified 2026-07-15, this note corrected.)
+111/111 closed** (suite 1091 passed, 0 failed). Two untracked (not registry
+items) remainders were noted here and both are now resolved: **L4**
+(`WA_DeleteOnClose` on `PlaygroundRunnerWindow`) was already fixed by commit
+`f389035` — both `PlaygroundRunnerWindow` and `ThymioPlaygroundWindow` set
+`Qt.WA_DeleteOnClose`; verified 2026-07-15. **M30** (belt-and-braces runtime
+alias/`'state'` field in `action_executor.py`) turned out to be
+`events/conditional_editor.py`'s `key_pressed` condition widget: a "Is:"
+dropdown (`self.key_state`) that offered exactly one always-selected choice
+("Pressed (held down)") and saved a `"state"` parameter the runtime's
+`key_pressed` handler (`action_executor.py`) never read — real dead weight,
+not a bug, since there was only ever one selectable value. Removed the
+dropdown and the `"state"` field entirely (2026-07-21); `key` is now the only
+`key_pressed` parameter. `tests/test_audit_regressions.py`'s
+`test_key_pressed_subfields_are_canonical` updated to assert `"state" not in
+out` instead of `out["state"] == "pressed"`.
 
 **2026-06-11 — Full-codebase audit (18 finders, adversarially verified):
 111 confirmed findings.** Unlike the earlier single-batch audits, every
