@@ -2388,6 +2388,11 @@ Controlla la console per i dettagli dell&apos;errore.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 4</source>
+            <translation>Raycasting — Livello 4</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 3</source>
             <translation>Raycasting — Livello 3</translation>
         </message>
