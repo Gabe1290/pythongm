@@ -223,3 +223,28 @@ def test_collecting_a_key_scores_and_counts():
     assert getattr(player, "keys", 0) == 1, "key count did not increment"
     assert runner.score == 25, "key pickup did not score"
     assert len(remaining) == 2, "collected key was not destroyed"
+
+
+# --- Indoor look: ceiling instead of sky, taller walls ---------------------
+
+def test_uses_a_ceiling_not_a_sky():
+    """raycast_4 is the "maze in a building" sample: it casts a ceiling texture
+    and has no panning sky, unlike raycast_1-3."""
+    person = json.loads((SAMPLE / "objects" / "obj_person.json").read_text(encoding="utf-8"))
+    erv = next(a for a in person["events"]["create"]["actions"]
+               if a["action"] == "enable_raycast_view")
+    assert erv["parameters"]["ceiling_texture"] == "spr_ceiling"
+    assert erv["parameters"]["sky_texture"] == "", "raycast_4 should not use a sky"
+    # the ceiling art ships and the sky art was dropped
+    assert (SAMPLE / "sprites" / "spr_ceiling.png").exists()
+    assert not (SAMPLE / "sprites" / "spr_sky.png").exists()
+    proj = json.loads((SAMPLE / "project.json").read_text(encoding="utf-8"))
+    assert "spr_ceiling" in proj["assets"]["sprites"]
+    assert "spr_sky" not in proj["assets"]["sprites"]
+
+
+def test_walls_render_taller_globally():
+    """The taller-wall look is a global engine default (RAYCAST_WALL_HEIGHT),
+    so it applies here too — a sanity tie to the constant."""
+    from runtime.game_runner import GameRoom
+    assert GameRoom.RAYCAST_WALL_HEIGHT == 1.5

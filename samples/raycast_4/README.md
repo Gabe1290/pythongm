@@ -18,6 +18,14 @@ See [`docs/RAYCAST_DOOM_HUD_PLAN.md`](../../docs/RAYCAST_DOOM_HUD_PLAN.md) for t
 engineering, and [`raycast_3`](../raycast_3/README.md) for the corner-HUD
 alternative it deliberately doesn't retrofit.
 
+**Indoor feel.** Two things make this read as a corridor inside a building
+rather than an open maze: it casts a **stone ceiling** (`spr_ceiling`) instead
+of the panning sky the other raycast samples use — set via `ceiling_texture`
+with `sky_texture` left blank — and the walls render **taller**. That wall
+height (`RAYCAST_WALL_HEIGHT`, 1.5× a cube) is a global engine default, so
+every raycast game gets the taller walls; the ceiling is this sample's own
+choice.
+
 **Sound & music:** none — no sound files are bundled with this sample.
 
 ## How to play
@@ -81,7 +89,7 @@ handles the inversion.)
 | `objects/obj_monster.json` | Patrolling billboard enemy |
 | `objects/obj_goal.json` | Key-gated exit (opens when no `obj_key` remains) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Thin wall segments |
-| `sprites/` | Reused wall/sky/floor/person/monster art, plus new `spr_face` (4-frame portrait) and `spr_key` |
+| `sprites/` | Reused wall/floor/person/monster art, a new **`spr_ceiling`** (indoor stone ceiling, replacing the sky), plus new `spr_face` (4-frame portrait) and `spr_key` |
 
 ## The maze is generated
 

@@ -20,6 +20,15 @@ Voir [`docs/RAYCAST_DOOM_HUD_PLAN.md`](../../docs/RAYCAST_DOOM_HUD_PLAN.md) pour
 la partie technique, et [`raycast_3`](../raycast_3/README.fr.md) pour l'affichage
 en coin que ce niveau ne réintègre volontairement pas.
 
+**Ambiance intérieure.** Deux choix donnent l'impression d'un couloir dans un
+bâtiment plutôt que d'un labyrinthe à ciel ouvert : le niveau projette un
+**plafond de pierre** (`spr_ceiling`) au lieu du ciel défilant qu'utilisent les
+autres exemples en lancer de rayons — réglé via `ceiling_texture`, `sky_texture`
+laissé vide — et les murs sont dessinés **plus hauts**. Cette hauteur de mur
+(`RAYCAST_WALL_HEIGHT`, 1,5× un cube) est un réglage global du moteur : tous les
+jeux en lancer de rayons ont donc des murs plus hauts ; le plafond, lui, est le
+choix propre à cet exemple.
+
 **Sons et musique :** aucun — aucun fichier sonore n'est fourni avec cet exemple.
 
 ## Comment jouer
@@ -85,7 +94,7 @@ est malgré tout en bas de la fenêtre ; le moteur gère l'inversion.)
 | `objects/obj_monster.json` | Ennemi en panneau, en patrouille |
 | `objects/obj_goal.json` | Sortie verrouillée (s'ouvre quand il ne reste aucune `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segments de murs fins |
-| `sprites/` | Graphismes de murs/ciel/sol/personnage/monstre réutilisés, plus les nouveaux `spr_face` (portrait de 4 images) et `spr_key` |
+| `sprites/` | Graphismes de murs/sol/personnage/monstre réutilisés, un nouveau **`spr_ceiling`** (plafond de pierre intérieur, en remplacement du ciel), plus les nouveaux `spr_face` (portrait de 4 images) et `spr_key` |
 
 ## Le labyrinthe est généré
 
