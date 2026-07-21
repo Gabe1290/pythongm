@@ -3234,8 +3234,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 168,
-            "y": 424
+            "x": 160,
+            "y": 416
           },
           {
             "object_name": "obj_gem",
@@ -3243,8 +3243,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 392,
-            "y": 200
+            "x": 384,
+            "y": 192
           },
           {
             "object_name": "obj_gem",
@@ -3252,8 +3252,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 328,
-            "y": 264
+            "x": 320,
+            "y": 256
           },
           {
             "object_name": "obj_gem",
@@ -3261,8 +3261,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 296,
-            "y": 104
+            "x": 288,
+            "y": 96
           },
           {
             "object_name": "obj_gem",
@@ -3270,8 +3270,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 136,
-            "y": 72
+            "x": 128,
+            "y": 64
           },
           {
             "object_name": "obj_gem",
@@ -3279,8 +3279,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 136,
-            "y": 136
+            "x": 128,
+            "y": 128
           },
           {
             "object_name": "obj_gem",
@@ -3288,8 +3288,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 424,
-            "y": 392
+            "x": 416,
+            "y": 384
           },
           {
             "object_name": "obj_gem",
@@ -3297,8 +3297,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 328,
-            "y": 296
+            "x": 320,
+            "y": 288
           },
           {
             "object_name": "obj_monster",
@@ -3306,8 +3306,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 8,
-            "y": 296
+            "x": 0,
+            "y": 288
           },
           {
             "object_name": "obj_monster",
@@ -3315,8 +3315,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 104,
-            "y": 328
+            "x": 96,
+            "y": 320
           },
           {
             "object_name": "obj_monster",
@@ -3324,8 +3324,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 40,
-            "y": 232
+            "x": 32,
+            "y": 224
           },
           {
             "object_name": "obj_medkit",
@@ -3333,8 +3333,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 360,
-            "y": 232
+            "x": 352,
+            "y": 224
           },
           {
             "object_name": "obj_medkit",
@@ -3342,8 +3342,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 392,
-            "y": 72
+            "x": 384,
+            "y": 64
           },
           {
             "object_name": "obj_medkit",
@@ -3351,8 +3351,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 232,
-            "y": 40
+            "x": 224,
+            "y": 32
           },
           {
             "object_name": "obj_goal",
@@ -3360,8 +3360,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 452,
-            "y": 452
+            "x": 448,
+            "y": 448
           }
         ]
       },
@@ -5660,8 +5660,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 456,
-            "y": 424
+            "x": 448,
+            "y": 416
           },
           {
             "object_name": "obj_gem",
@@ -5669,8 +5669,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 296,
-            "y": 264
+            "x": 288,
+            "y": 256
           },
           {
             "object_name": "obj_gem",
@@ -5678,8 +5678,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 8,
-            "y": 296
+            "x": 0,
+            "y": 288
           },
           {
             "object_name": "obj_gem",
@@ -5687,8 +5687,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 232,
-            "y": 40
+            "x": 224,
+            "y": 32
           },
           {
             "object_name": "obj_gem",
@@ -5696,8 +5696,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 104,
-            "y": 104
+            "x": 96,
+            "y": 96
           },
           {
             "object_name": "obj_gem",
@@ -5705,8 +5705,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 264,
-            "y": 264
+            "x": 256,
+            "y": 256
           },
           {
             "object_name": "obj_gem",
@@ -5714,8 +5714,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 168,
-            "y": 328
+            "x": 160,
+            "y": 320
           },
           {
             "object_name": "obj_gem",
@@ -5723,8 +5723,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 456,
-            "y": 40
+            "x": 448,
+            "y": 32
           },
           {
             "object_name": "obj_gem",
@@ -5732,8 +5732,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 200,
-            "y": 296
+            "x": 192,
+            "y": 288
           },
           {
             "object_name": "obj_gem",
@@ -5741,8 +5741,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 328,
-            "y": 104
+            "x": 320,
+            "y": 96
           },
           {
             "object_name": "obj_monster",
@@ -5750,8 +5750,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 200,
-            "y": 8
+            "x": 192,
+            "y": 0
           },
           {
             "object_name": "obj_monster",
@@ -5759,8 +5759,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 424,
-            "y": 264
+            "x": 416,
+            "y": 256
           },
           {
             "object_name": "obj_monster",
@@ -5768,8 +5768,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 232,
-            "y": 296
+            "x": 224,
+            "y": 288
           },
           {
             "object_name": "obj_monster",
@@ -5777,8 +5777,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 264,
-            "y": 456
+            "x": 256,
+            "y": 448
           },
           {
             "object_name": "obj_monster",
@@ -5786,8 +5786,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 200,
-            "y": 264
+            "x": 192,
+            "y": 256
           },
           {
             "object_name": "obj_medkit",
@@ -5795,8 +5795,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 200,
-            "y": 40
+            "x": 192,
+            "y": 32
           },
           {
             "object_name": "obj_medkit",
@@ -5804,8 +5804,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 296,
-            "y": 328
+            "x": 288,
+            "y": 320
           },
           {
             "object_name": "obj_goal_final",
@@ -5813,8 +5813,8 @@
             "scale_x": 1.0,
             "scale_y": 1.0,
             "visible": true,
-            "x": 452,
-            "y": 452
+            "x": 448,
+            "y": 448
           }
         ]
       }

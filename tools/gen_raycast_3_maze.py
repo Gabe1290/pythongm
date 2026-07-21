@@ -138,13 +138,19 @@ def build_room(name, seed, camera_obj, counts, goal_obj="obj_goal"):
     used = 0
     for obj_name, n in counts.items():
         for (c, r) in spots[used:used + n]:
-            # Billboard sprites are drawn from their instance position; centre
-            # them in the cell so they don't clip into a wall.
-            instances.append(inst(obj_name, c * CELL + 8, r * CELL + 8))
+            # obj_gem/obj_monster/obj_medkit sprites are 32x32 -- the same
+            # size as a cell -- so their top-left IS the cell's top-left; no
+            # offset needed (unlike obj_person's 16x16 sprite below, which
+            # needs +8 to centre in a 32px cell). raycast_2's rooms got this
+            # right (offset 0); this generator introduced the regression by
+            # reusing the player's +8 centering offset for 32x32 sprites too,
+            # shifting them 8px off their cell in both axes.
+            instances.append(inst(obj_name, c * CELL, r * CELL))
         used += n
 
-    # Goal goes in the far corner, so the maze has to be crossed.
-    instances.append(inst(goal_obj, (GRID - 1) * CELL + 4, (GRID - 1) * CELL + 4))
+    # Goal goes in the far corner, so the maze has to be crossed. spr_goal is
+    # also 32x32 -- no centering offset needed, same reasoning as above.
+    instances.append(inst(goal_obj, (GRID - 1) * CELL, (GRID - 1) * CELL))
 
     return {
         "name": name,
