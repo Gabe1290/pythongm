@@ -2005,6 +2005,12 @@ class GameRoom:
     RAYCAST_SIDE_SHADE = 0.85    # y-face brightness (was 0.5 -- too harsh)
     RAYCAST_FOG_STRENGTH = 0.55  # darkening at max render distance
     RAYCAST_MIN_SHADE = 0.35     # never fully black
+    # Wall strips project this many times taller than a cube would (1.0 =
+    # cube). 1.5 gives taller, more enclosed corridors -- a "maze in a
+    # building" look, especially with a ceiling instead of a sky. Applies to
+    # WALLS only, not billboards (which stay sprite-sized). HTML5 (engine.js)
+    # and Kivy mirror it -- pinned by tests/test_raycast_export_parity.py.
+    RAYCAST_WALL_HEIGHT = 1.5
 
     @classmethod
     def _wall_shade(cls, side: int, corrected: float, max_dist: float) -> float:
@@ -2168,7 +2174,7 @@ class GameRoom:
             # courses across a FLAT wall, and the clamp boundary marches along
             # the wall as you walk toward/away from it -- exactly the "corner
             # that moves" users reported (2026-07-19).
-            full_h = view_h * cell_size / max(corrected, 1e-4)
+            full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)
             y_top = half_h - full_h / 2.0
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)

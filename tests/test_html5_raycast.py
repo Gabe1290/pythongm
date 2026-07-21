@@ -74,7 +74,7 @@ def test_wall_render_samples_texture_strip():
     assert "buildRaycastWalls(cellSize)" in body
     assert "Math.cos(rayOffset)" in body          # fisheye correction
     # viewH (letterbox height, == h until a viewport_height is set), DOOM HUD Unit 2
-    assert "viewH * cellSize / Math.max(corrected" in body
+    assert "viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected" in body
     # 1px source-column drawImage scaled to the strip (Canvas equiv of pygame
     # subsurface+scale)
     # the texture is CROPPED to the visible span (srcY/srcH), not the whole
@@ -274,7 +274,7 @@ def test_html5_vertical_math_uses_viewH_not_h():
     # Horizon, fills, wall + billboard scale all key off viewH now.
     assert "const halfH = Math.floor(viewH / 2);" in rv
     assert "ctx.fillRect(0, halfH, w, viewH - halfH);" in rv
-    assert "const fullH = viewH * cellSize / Math.max(corrected, 1e-4);" in rv
+    assert "const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4);" in rv
     assert "const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4);" in rv
     assert "Math.floor(viewH * b.inst.boxWidth()" in rv
     # width is NEVER shrunk — strictly a vertical letterbox.

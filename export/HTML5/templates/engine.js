@@ -2892,6 +2892,9 @@ GameObject._nextInstanceId = 0;
 const RAYCAST_SIDE_SHADE = 0.85;    // y-face brightness (was a binary 0.5)
 const RAYCAST_FOG_STRENGTH = 0.55;  // darkening at max render distance
 const RAYCAST_MIN_SHADE = 0.35;     // never fully black
+const RAYCAST_WALL_HEIGHT = 1.5;    // walls project this many x taller than a
+                                    // cube (walls only, not billboards) -- see
+                                    // game_runner RAYCAST_WALL_HEIGHT
 
 class GameRoom {
     constructor(data) {
@@ -3139,7 +3142,7 @@ class GameRoom {
             // close columns clamped and compressed the entire brick texture
             // while farther columns didn't, breaking the courses across a flat
             // wall, with the boundary marching along as you moved.
-            const fullH = viewH * cellSize / Math.max(corrected, 1e-4);
+            const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4);
             const yTop = halfH - fullH / 2;
             const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
             const stripW = Math.max(1, x1 - x0);
