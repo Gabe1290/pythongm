@@ -248,3 +248,64 @@ def test_walls_render_taller_globally():
     so it applies here too — a sanity tie to the constant."""
     from runtime.game_runner import GameRoom
     assert GameRoom.RAYCAST_WALL_HEIGHT == 1.5
+
+
+# --- On-demand minimap (M toggle), placed inside the letterboxed view ------
+
+def test_minimap_toggles_and_stays_inside_the_view_band():
+    """M brings up a minimap, drawn inside the 400px 3D view so it never
+    overlaps the 80px DOOM bar below. Off by default (no per-frame cost)."""
+    from runtime.game_runner import GameInstance
+    per = {}
+    real = GameInstance._process_draw_queue
+
+    def spy(self, screen):
+        if self.object_name == "obj_person":
+            lines = [c for c in self._draw_queue if c.get("color") == "#8080a0"]
+            per[state["f"]] = (len(lines),
+                               max((max(c["y1"], c["y2"]) for c in lines), default=0))
+        self._draw_queue = []
+
+    runner = _runner()
+    PRESS = {8}
+    state = {"f": 0}
+
+    class _Clock:
+        def tick(self, fps=0):
+            f = state["f"] = state["f"] + 1
+            if f in PRESS:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+            if f - 1 in PRESS:
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_m))
+            if f >= 20:
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    GameInstance._process_draw_queue = spy
+    real_clock = pygame.time.Clock
+    pygame.time.Clock = _Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+        GameInstance._process_draw_queue = real
+
+    assert per.get(5, (0, 0))[0] == 0, "minimap must be OFF before the toggle"
+    lines, lowest = per.get(15, (0, 0))
+    assert lines > 50, f"minimap did not appear after M ({lines} wall lines)"
+    # viewport_height 400 -> the bar band is [400, win_h). Minimap must stay above it.
+    assert lowest < 400, f"minimap intrudes on the DOOM bar (lowest y={lowest})"
+
+
+def test_minimap_wiring_is_present():
+    person = json.loads((SAMPLE / "objects" / "obj_person.json").read_text(encoding="utf-8"))
+    assert "m" in person["events"]["keyboard_press"]
+    draw = [a["action"] for a in person["events"]["draw"]["actions"]]
+    assert "draw_minimap" in draw
+    # the map defaults off (map_on initialised to 0 in create)
+    create = person["events"]["create"]["actions"]
+    assert any(a["action"] == "set_variable" and a["parameters"].get("variable") == "map_on"
+               for a in create)
