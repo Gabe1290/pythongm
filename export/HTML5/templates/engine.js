@@ -2983,13 +2983,22 @@ class GameRoom {
         if (!this._vWalls || this._raycastCellSize !== cellSize) this.buildRaycastWalls(cellSize);
 
         const w = ctx.canvas.width, h = ctx.canvas.height;
-        const halfH = Math.floor(h / 2);
+        // DOOM-bar letterbox: the 3D view occupies only the top viewH px; the
+        // band from viewH down to h is filled black and reserved for a status
+        // bar. viewport_height 0 => full height, existing games unchanged.
+        // Mirrors the desktop _render_raycast_view (game_runner.py).
+        let viewH = cfg.viewport_height || h;
+        viewH = Math.max(1, Math.min(viewH, h));
+        const halfH = Math.floor(viewH / 2);
         // Flat floor/ceiling fills (sky + floor textures land in unit 3).
         ctx.fillStyle = cfg.ceiling_color || '#87CEEB'; ctx.fillRect(0, 0, w, halfH);
-        ctx.fillStyle = cfg.floor_color || '#464632'; ctx.fillRect(0, halfH, w, h - halfH);
+        ctx.fillStyle = cfg.floor_color || '#464632'; ctx.fillRect(0, halfH, w, viewH - halfH);
 
         const camera = this.findFirstInstance(cfg.camera_object || '');
-        if (!camera) return;
+        if (!camera) {
+            if (viewH < h) { ctx.fillStyle = '#000000'; ctx.fillRect(0, viewH, w, h - viewH); }
+            return;
+        }
         const camTL = GameRoom.spriteTopLeft(camera);
         const camX = camTL.x + camera.boxWidth() / 2;
         const camY = camTL.y + camera.boxHeight() / 2;
@@ -3026,12 +3035,12 @@ class GameRoom {
         const floorTex = cfg.floor_texture ? this._textureData(sprites[cfg.floor_texture]) : null;
         const camCx = camX / cellSize, camCy = camY / cellSize;
         if (floorTex) {
-            this.castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false);
+            this.castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false, viewH);
         }
         const ceilTex = (cfg.ceiling_texture && !skyTex)
             ? this._textureData(sprites[cfg.ceiling_texture]) : null;
         if (ceilTex) {
-            this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true);
+            this.castFloorPlane(ctx, ceilTex, camCx, camCy, facingScreenRad, fovRad, castRes, true, viewH);
         }
 
         // CAMERA-PLANE projection (not uniform-angle) — screen columns are
@@ -3056,12 +3065,12 @@ class GameRoom {
             // close columns clamped and compressed the entire brick texture
             // while farther columns didn't, breaking the courses across a flat
             // wall, with the boundary marching along as you moved.
-            const fullH = h * cellSize / Math.max(corrected, 1e-4);
+            const fullH = viewH * cellSize / Math.max(corrected, 1e-4);
             const yTop = halfH - fullH / 2;
             const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
             const stripW = Math.max(1, x1 - x0);
             const y0 = Math.max(0, Math.floor(yTop));
-            const y1 = Math.min(h, Math.ceil(yTop + fullH));
+            const y1 = Math.min(viewH, Math.ceil(yTop + fullH));
             const visH = y1 - y0;
             if (visH <= 0) continue;
             // Subtle side hint + distance falloff (see wallShade).
@@ -3112,8 +3121,8 @@ class GameRoom {
             // Unclamped height + a CROPPED (float, sub-texel) source slice —
             // same as the wall pass. Squeezing a walked-into sprite into a
             // screen-clamped height distorted it.
-            const fullH = h * b.inst.boxHeight() / Math.max(b.corr, 1e-4);
-            const spriteW = Math.floor(h * b.inst.boxWidth() / Math.max(b.corr, 1e-4));
+            const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4);
+            const spriteW = Math.floor(viewH * b.inst.boxWidth() / Math.max(b.corr, 1e-4));
             if (spriteW < 1 || fullH < 1) continue;
             // Same camera-plane mapping as the wall pass, so billboards line up
             // with the walls instead of drifting toward the screen edges.
@@ -3122,7 +3131,7 @@ class GameRoom {
             const xLeft = Math.floor(colCenter * colWidth - spriteW / 2);
             const yTopF = halfH - fullH / 2;
             const by0 = Math.max(0, Math.floor(yTopF));
-            const by1 = Math.min(h, Math.ceil(yTopF + fullH));
+            const by1 = Math.min(viewH, Math.ceil(yTopF + fullH));
             const bVisH = by1 - by0;
             if (bVisH <= 0) continue;
             const img = b.inst.sprite;
@@ -3140,6 +3149,11 @@ class GameRoom {
                 }
             }
         }
+
+        // DOOM-bar letterbox: fill the reserved band below the 3D view black,
+        // before the draw-event pass composites the status bar over it. No-op
+        // at full height (viewH === h).
+        if (viewH < h) { ctx.fillStyle = '#000000'; ctx.fillRect(0, viewH, w, h - viewH); }
     }
 
     // Cached ImageData for a loaded sprite, for per-pixel floor sampling.
@@ -3168,10 +3182,15 @@ class GameRoom {
     // by sampling `texData` in CELL units (so the texture tiles once per grid
     // cell and meets the wall bases), then upscales with drawImage. `ceiling`
     // mirrors the same cast into the top half via a vertical flip.
-    castFloorPlane(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling) {
+    castFloorPlane(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling, viewH) {
         const w = ctx.canvas.width, h = ctx.canvas.height;
-        const halfH = Math.floor(h / 2);
-        const regionH = h - halfH;
+        // Letterbox: cast into the shrunk 3D view's floor/ceiling, so the
+        // horizon and projection reference are viewH, not the true height.
+        // Undefined viewH keeps the legacy full-height behaviour.
+        if (viewH === undefined || viewH === null) viewH = h;
+        viewH = Math.max(1, Math.min(viewH, h));
+        const halfH = Math.floor(viewH / 2);
+        const regionH = viewH - halfH;
         if (regionH <= 0) return;
         const tw = texData.width, th = texData.height, src = texData.data;
         if (tw <= 0 || th <= 0) return;
@@ -3180,7 +3199,7 @@ class GameRoom {
         const planeX = -dirY * plane, planeY = dirX * plane;
         const rdx0 = dirX - planeX, rdy0 = dirY - planeY;
         const rdx1 = dirX + planeX, rdy1 = dirY + planeY;
-        const posZ = 0.5 * h;
+        const posZ = 0.5 * viewH;
         const sw = Math.max(1, Math.floor(w / res));
         const sh = Math.max(1, Math.floor(regionH / res));
         const stepScale = res / w;

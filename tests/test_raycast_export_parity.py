@@ -245,7 +245,7 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     # projected height, not a screen-clamped squeeze) are identical either way.
     assert "full_h = view_h * cell_size / max(corrected, 1e-4)" in gr, "game_runner"
     assert "full_h = h * cell_size / max(corrected, 1e-4)" in kx, "kivy_exporter"
-    assert "const fullH = h * cellSize / Math.max(corrected, 1e-4)" in ENGINE
+    assert "const fullH = viewH * cellSize / Math.max(corrected, 1e-4)" in ENGINE
     assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
 
     # SUB-TEXEL accuracy: on a close wall one texel covers tens of screen px, so
@@ -261,10 +261,11 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     assert "sprite_h = min(h, int(h * inst._cached_height" not in gr
     assert "sprite_h = min(h, h * ih" not in kx
     assert "Math.min(h, Math.floor(h * b.inst.boxHeight()" not in ENGINE
-    # Desktop billboards scale by view_h too (letterbox), Kivy by h until Unit 3.
+    # Desktop + HTML5 billboards scale by viewH too (letterbox), Kivy by h
+    # until Unit 3.
     assert "full_h = view_h * inst._cached_height / max(corrected, 1e-4)" in gr
     assert "full_h_b = h * ih / max(corrected_b, 1e-4)" in kx
-    assert "const fullH = h * b.inst.boxHeight() / Math.max(b.corr, 1e-4)" in ENGINE
+    assert "const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4)" in ENGINE
     assert "ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH)" in ENGINE
     assert "tex_coords=(0.0, bv0, 1.0, bv0," in kx
 

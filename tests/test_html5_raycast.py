@@ -73,7 +73,8 @@ def test_wall_render_samples_texture_strip():
     body = m.group(1)
     assert "buildRaycastWalls(cellSize)" in body
     assert "Math.cos(rayOffset)" in body          # fisheye correction
-    assert "h * cellSize / Math.max(corrected" in body
+    # viewH (letterbox height, == h until a viewport_height is set), DOOM HUD Unit 2
+    assert "viewH * cellSize / Math.max(corrected" in body
     # 1px source-column drawImage scaled to the strip (Canvas equiv of pygame
     # subsurface+scale)
     # the texture is CROPPED to the visible span (srcY/srcH), not the whole
@@ -134,12 +135,12 @@ def test_floor_casting_pass_invoked_before_walls():
 
 def test_cast_floor_plane_mirrors_desktop():
     """castFloorPlane ports _cast_floor_plane's camera-plane cast faithfully."""
-    m = re.search(r"castFloorPlane\(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling\)\s*\{(.*?)\n    \}",
+    m = re.search(r"castFloorPlane\(ctx, texData, camCx, camCy, facingScreenRad, fovRad, res, ceiling, viewH\)\s*\{(.*?)\n    \}",
                   ENGINE, re.S)
     assert m, "castFloorPlane not found"
     body = m.group(1)
-    # row distance from the same projection the walls use
-    assert "const posZ = 0.5 * h" in body
+    # row distance from the same projection the walls use (viewH: DOOM HUD Unit 2)
+    assert "const posZ = 0.5 * viewH" in body
     assert "const rowd = posZ / p" in body
     # the two FOV-edge rays interpolated across columns (camera-plane method)
     assert "const rdx0 = dirX - planeX" in body and "const rdx1 = dirX + planeX" in body
@@ -252,3 +253,48 @@ def test_invisible_instances_do_not_run_their_draw_event():
     assert "if (!this.visible) return;" in run_draw
     # ...and it must come before the draw event is executed.
     assert run_draw.index("if (!this.visible) return;") < run_draw.index("executeActions")
+
+
+# --- viewport_height letterbox (DOOM HUD Unit 2) ---------------------------
+# Mirrors the desktop change: the 3D view shrinks into the top viewH px so a
+# DOOM-style status bar can occupy the band below. No JS engine in CI, so these
+# are source-level (the behavioural proof is desktop's real-loop test plus a
+# dev browser run); the DDA parity is locked separately.
+
+def test_html5_render_derives_viewH_and_clamps_it():
+    rv = ENGINE[ENGINE.index("renderRaycastView(ctx) {"):]
+    rv = rv[:rv.index("\n    castFloorPlane")]
+    assert "let viewH = cfg.viewport_height || h;" in rv
+    assert "viewH = Math.max(1, Math.min(viewH, h));" in rv
+
+
+def test_html5_vertical_math_uses_viewH_not_h():
+    rv = ENGINE[ENGINE.index("renderRaycastView(ctx) {"):]
+    rv = rv[:rv.index("\n    castFloorPlane")]
+    # Horizon, fills, wall + billboard scale all key off viewH now.
+    assert "const halfH = Math.floor(viewH / 2);" in rv
+    assert "ctx.fillRect(0, halfH, w, viewH - halfH);" in rv
+    assert "const fullH = viewH * cellSize / Math.max(corrected, 1e-4);" in rv
+    assert "const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4);" in rv
+    assert "Math.floor(viewH * b.inst.boxWidth()" in rv
+    # width is NEVER shrunk — strictly a vertical letterbox.
+    assert "const colWidth = w / numCols;" in rv
+
+
+def test_html5_reserved_band_is_filled_black():
+    rv = ENGINE[ENGINE.index("renderRaycastView(ctx) {"):]
+    rv = rv[:rv.index("\n    castFloorPlane")]
+    # Once in the no-camera early return, once after the passes.
+    assert rv.count("ctx.fillRect(0, viewH, w, h - viewH);") == 2
+    assert "if (viewH < h)" in rv
+
+
+def test_html5_floor_cast_receives_viewH():
+    rv = ENGINE[ENGINE.index("renderRaycastView(ctx) {"):]
+    rv = rv[:rv.index("\n    castFloorPlane")]
+    assert "castFloorPlane(ctx, floorTex, camCx, camCy, facingScreenRad, fovRad, castRes, false, viewH)" in rv
+    cf = ENGINE[ENGINE.index("castFloorPlane(ctx, texData"):]
+    cf = cf[:cf.index("\n    render(ctx)")] if "\n    render(ctx)" in cf else cf[:4000]
+    assert "res, ceiling, viewH) {" in cf
+    assert "const posZ = 0.5 * viewH;" in cf
+    assert "const regionH = viewH - halfH;" in cf
