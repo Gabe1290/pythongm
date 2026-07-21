@@ -3841,6 +3841,17 @@ class GameObject(Widget):
             x = float(cmd.get('x', 0))
             y = float(cmd.get('y', 0))
             tex = img.texture
+            # Multi-frame sprite: crop the requested frame from the horizontal
+            # strip, mirroring _redraw_frame. Until 2026-07-21 this drew the
+            # whole spritesheet, ignoring subimage. Frame metadata is keyed by
+            # asset path in SPRITE_META (same as _redraw_frame reads it).
+            meta = SPRITE_META.get(path, {{}})
+            frames = max(1, int(meta.get('frames', 1) or 1))
+            if frames > 1:
+                fw = int(meta.get('frame_width') or 0) or int(tex.width // frames)
+                fh = int(meta.get('frame_height') or 0) or int(tex.height)
+                idx = int(cmd.get('subimage', 0)) % frames
+                tex = tex.get_region(idx * fw, 0, fw, fh)
             group.add(Color(1, 1, 1, 1))
             group.add(Rectangle(texture=tex,
                                 pos=(x, room_h - y - tex.height),
