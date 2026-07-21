@@ -15,18 +15,31 @@ EDITIONS = {
             "03_pong",
             "04_breakout",
         ],
+        # Welcome-tab sample games shown in this edition, by folder name under
+        # samples/ (None = show all). Beginner hides the raycast_* samples,
+        # which change the view shape and are the most advanced; everything
+        # else (maze / platform / match3 / views / treasure) stays.
+        "sample_folders": [
+            "maze_1", "maze_2", "maze_3", "maze_4",
+            "plateforme_1", "plateforme_2", "plateforme_3",
+            "match3_1", "match3_2", "match3_3",
+            "views_1", "views_2",
+            "treasure",
+        ],
     },
     "advanced": {
         "name": "Advanced",
         "description": "Full tutorial set with intermediate blocks",
         "default_blockly_preset": "intermediate",
         "tutorial_folders": None,  # None = show all
+        "sample_folders": None,    # show all samples
     },
     "development": {
         "name": "Development",
         "description": "All tutorials and full block access for testing",
         "default_blockly_preset": "full",
         "tutorial_folders": None,  # show all
+        "sample_folders": None,    # show all samples
     },
 }
 
@@ -77,6 +90,26 @@ def filter_tutorials_for_edition(tutorials_list, base_tutorials_path=None):
     if base_tutorials:
         return [t for t in base_tutorials if t.get("folder") in allowed_folders]
     return filtered
+
+
+def filter_samples_for_edition(sample_projects):
+    """Filter the Welcome-tab sample list by the current edition.
+
+    Mirrors filter_tutorials_for_edition. ``sample_projects`` is the list of
+    (relative_path, label) tuples from widgets/welcome_tab.py's SAMPLE_PROJECTS;
+    the folder name is the basename of relative_path (e.g. "samples/maze_1"
+    -> "maze_1"). An edition whose ``sample_folders`` is None shows everything.
+
+    Unlike tutorials there is no localized-index recovery to do — the sample
+    list is a single in-code table — so this is a straight whitelist filter.
+    """
+    edition = get_current_edition()
+    allowed = edition.get("sample_folders")
+    if allowed is None:
+        return list(sample_projects)
+    allowed_set = set(allowed)
+    return [(path, label) for (path, label) in sample_projects
+            if path.rstrip("/").rsplit("/", 1)[-1] in allowed_set]
 
 
 def _load_base_index_tutorials(base_tutorials_path):

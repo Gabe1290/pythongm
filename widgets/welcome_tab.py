@@ -182,8 +182,16 @@ class WelcomeTab(QWidget):
         # project.json inside it to confirm the folder is a usable project
         # (catches half-extracted releases too).
         repo_root = self._repo_root()
+        # The current IDE edition curates which samples appear (Beginner hides
+        # the advanced raycast_* ones; Advanced/Development show all). Mirrors
+        # how editions already gate tutorials — see config/editions.py.
+        try:
+            from config.editions import filter_samples_for_edition
+            visible_samples = filter_samples_for_edition(SAMPLE_PROJECTS)
+        except Exception:
+            visible_samples = SAMPLE_PROJECTS
         sample_items = []
-        for relative_path, label in SAMPLE_PROJECTS:
+        for relative_path, label in visible_samples:
             sample = repo_root / relative_path
             if not (sample.is_dir() and (sample / 'project.json').exists()):
                 continue  # missing or incomplete in this checkout — skip silently
@@ -457,7 +465,14 @@ class WelcomeTab(QWidget):
             self.main_window.show_tutorials()
 
     def _on_show_sample_docs(self):
-        dlg = SampleDocsDialog(SAMPLE_PROJECTS, self._repo_root(), self)
+        # Same edition curation as the Welcome-tab sample list, so the guide
+        # chooser and the sample grid stay in step.
+        try:
+            from config.editions import filter_samples_for_edition
+            samples = filter_samples_for_edition(SAMPLE_PROJECTS)
+        except Exception:
+            samples = SAMPLE_PROJECTS
+        dlg = SampleDocsDialog(samples, self._repo_root(), self)
         dlg.exec()
 
     def _on_show_about(self):
