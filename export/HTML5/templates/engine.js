@@ -467,12 +467,21 @@ function renderDrawCommands(ctx, cmds, game) {
                 break;
             }
             case 'sprite': {
-                // {'type':'sprite','sprite_name':...,'x':...,'y':...} — the
-                // runtime's _draw_sprite schema (subimage ignored: HTML5
-                // sprites are single-frame for now).
+                // {'type':'sprite','sprite_name':...,'x':...,'y':...,'subimage':N}
+                // — the runtime's _draw_sprite schema. A multi-frame sprite is a
+                // horizontal strip; crop the requested frame, mirroring instance
+                // rendering (~line 2728). Single-frame sprites draw whole.
                 const img = game && game.sprites ? game.sprites[cmd.sprite_name] : null;
                 if (img && img.complete) {
-                    ctx.drawImage(img, cmd.x || 0, cmd.y || 0);
+                    const info = game.makeSpriteInfo ? game.makeSpriteInfo(cmd.sprite_name) : null;
+                    const frames = info ? (info.frames || 1) : 1;
+                    if (frames > 1) {
+                        const fw = info.width, fh = info.height;
+                        const srcX = ((Math.floor(cmd.subimage || 0) % frames) + frames) % frames * fw;
+                        ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw, fh);
+                    } else {
+                        ctx.drawImage(img, cmd.x || 0, cmd.y || 0);
+                    }
                 }
                 break;
             }
