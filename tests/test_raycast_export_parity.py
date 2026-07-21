@@ -238,9 +238,13 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     assert "strip_h = min(h, h * cell_size" not in kx
     assert "Math.min(h, Math.floor(h * cellSize" not in ENGINE
 
-    # the crop signature: unclamped height + a texture sub-range
-    for src, name in ((gr, "game_runner"), (kx, "kivy_exporter")):
-        assert "full_h = h * cell_size / max(corrected, 1e-4)" in src, name
+    # the crop signature: unclamped height + a texture sub-range. Desktop's
+    # scale factor became `view_h` with the DOOM-bar letterbox (view_h == h
+    # until a viewport_height is set), so it reads view_h here; Kivy/HTML5 keep
+    # `h` until their own viewport units land. The crop semantics (unclamped
+    # projected height, not a screen-clamped squeeze) are identical either way.
+    assert "full_h = view_h * cell_size / max(corrected, 1e-4)" in gr, "game_runner"
+    assert "full_h = h * cell_size / max(corrected, 1e-4)" in kx, "kivy_exporter"
     assert "const fullH = h * cellSize / Math.max(corrected, 1e-4)" in ENGINE
     assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
 
@@ -257,7 +261,8 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     assert "sprite_h = min(h, int(h * inst._cached_height" not in gr
     assert "sprite_h = min(h, h * ih" not in kx
     assert "Math.min(h, Math.floor(h * b.inst.boxHeight()" not in ENGINE
-    assert "full_h = h * inst._cached_height / max(corrected, 1e-4)" in gr
+    # Desktop billboards scale by view_h too (letterbox), Kivy by h until Unit 3.
+    assert "full_h = view_h * inst._cached_height / max(corrected, 1e-4)" in gr
     assert "full_h_b = h * ih / max(corrected_b, 1e-4)" in kx
     assert "const fullH = h * b.inst.boxHeight() / Math.max(b.corr, 1e-4)" in ENGINE
     assert "ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH)" in ENGINE

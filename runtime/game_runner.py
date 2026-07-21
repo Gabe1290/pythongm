@@ -2028,14 +2028,24 @@ class GameRoom:
 
         camera = self._find_first_instance(cfg.get('camera_object', ''))
         w, h = screen.get_size()
-        half_h = h / 2
+        # DOOM-bar letterbox: the 3D view occupies only the top `view_h` px, so
+        # the horizon (view_h/2) and every vertical projection scale shrink with
+        # it while the width `w` is untouched. viewport_height 0 => full height,
+        # so every existing raycast game renders pixel-identical. The band
+        # [view_h, h) below is filled opaque black after the passes, reserved
+        # for a status bar the draw-event pass then paints over.
+        view_h = int(cfg.get('viewport_height', 0)) or h
+        view_h = max(1, min(view_h, h))
+        half_h = view_h / 2
 
         floor_color = self.parse_color(cfg.get('floor_color', '#464632'))
         ceiling_color = self.parse_color(cfg.get('ceiling_color', '#87CEEB'))
         screen.fill(ceiling_color, (0, 0, w, int(half_h)))
-        screen.fill(floor_color, (0, int(half_h), w, h - int(half_h)))
+        screen.fill(floor_color, (0, int(half_h), w, view_h - int(half_h)))
 
         if camera is None:
+            if view_h < h:
+                screen.fill((0, 0, 0), (0, view_h, w, h - view_h))
             return  # nothing to render from -- flat floor/ceiling only
 
         # Ray origin is the camera instance's sprite CENTER, not its raw
@@ -2107,11 +2117,11 @@ class GameRoom:
         if floor_sprite is not None:
             self._cast_floor_plane(screen, floor_sprite.get_frame(0),
                                    cam_cx, cam_cy, facing_screen_rad, fov_rad,
-                                   cast_res, ceiling=False)
+                                   cast_res, ceiling=False, view_h=view_h)
         if ceil_sprite is not None and sky_sprite is None:
             self._cast_floor_plane(screen, ceil_sprite.get_frame(0),
                                    cam_cx, cam_cy, facing_screen_rad, fov_rad,
-                                   cast_res, ceiling=True)
+                                   cast_res, ceiling=True, view_h=view_h)
 
         # Phase 5: sample a vertical texture strip per wall column (per the
         # plan). Off -> flat colour (the pre-Phase-5 look), also the automatic
@@ -2158,13 +2168,13 @@ class GameRoom:
             # courses across a FLAT wall, and the clamp boundary marches along
             # the wall as you walk toward/away from it -- exactly the "corner
             # that moves" users reported (2026-07-19).
-            full_h = h * cell_size / max(corrected, 1e-4)
+            full_h = view_h * cell_size / max(corrected, 1e-4)
             y_top = half_h - full_h / 2.0
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
             y0 = max(0, int(math.floor(y_top)))
-            y1 = min(h, int(math.ceil(y_top + full_h)))
+            y1 = min(view_h, int(math.ceil(y_top + full_h)))
             vis_h = y1 - y0
             if vis_h <= 0:
                 continue
@@ -2243,8 +2253,8 @@ class GameRoom:
             # the whole sprite into a screen-clamped height (the old
             # min(h, ...)) both distorted it and jumped a whole texel between
             # adjacent columns.
-            full_h = h * inst._cached_height / max(corrected, 1e-4)
-            sprite_w = int(h * inst._cached_width / max(corrected, 1e-4))
+            full_h = view_h * inst._cached_height / max(corrected, 1e-4)
+            sprite_w = int(view_h * inst._cached_width / max(corrected, 1e-4))
             if sprite_w < 1 or full_h < 1:
                 continue
             # Same camera-plane mapping the wall pass uses (inverse of
@@ -2256,7 +2266,7 @@ class GameRoom:
             x_left = int(x_center - sprite_w / 2)
             y_top_f = half_h - full_h / 2.0
             y0 = max(0, int(math.floor(y_top_f)))
-            y1 = min(h, int(math.ceil(y_top_f + full_h)))
+            y1 = min(view_h, int(math.ceil(y_top_f + full_h)))
             vis_h = y1 - y0
             if vis_h <= 0:
                 continue
@@ -2287,8 +2297,16 @@ class GameRoom:
                                     (slice_x, off, 1, blit_h))
                 slice_x += 1
 
+        # DOOM-bar letterbox: fill the reserved band below the 3D view opaque
+        # black, unconditionally (like the ceiling/floor fills) and BEFORE the
+        # draw-event pass, so draw_doom_hud paints over a clean backdrop. No-op
+        # when view_h == h (the default full-height case).
+        if view_h < h:
+            screen.fill((0, 0, 0), (0, view_h, w, h - view_h))
+
     def _cast_floor_plane(self, screen, frame, cam_cx, cam_cy,
-                          facing_screen_rad, fov_rad, res, ceiling=False):
+                          facing_screen_rad, fov_rad, res, ceiling=False,
+                          view_h=None):
         """Low-res floor/ceiling texture casting (Phase 5). Renders the ground
         (or ceiling) plane into a downsampled surface, then upscales — full-res
         per-pixel casting is ~13x too slow in pure Python (timing spike).
@@ -2303,8 +2321,14 @@ class GameRoom:
         pass). `ceiling` mirrors the same cast into the top half.
         """
         w, h = screen.get_size()
-        half_h = h // 2
-        region_h = h - half_h
+        # Letterbox: the cast fills the floor/ceiling of the shrunk 3D view, so
+        # the horizon and projection reference are view_h, not the true height.
+        # view_h=None keeps the legacy full-height behaviour.
+        if view_h is None:
+            view_h = h
+        view_h = max(1, min(int(view_h), h))
+        half_h = view_h // 2
+        region_h = view_h - half_h
         if region_h <= 0:
             return
         tw, th = frame.get_width(), frame.get_height()
@@ -2315,7 +2339,7 @@ class GameRoom:
         plane_x, plane_y = -dir_y * plane, dir_x * plane
         rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y   # leftmost column ray
         rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y   # rightmost column ray
-        pos_z = 0.5 * h
+        pos_z = 0.5 * view_h
 
         sw = max(1, w // res)
         sh = max(1, region_h // res)
