@@ -2351,6 +2351,67 @@ class GameObject {
                 break;
             }
 
+            case 'draw_doom_hud': {
+                // DOOM-style bottom status bar. A MACRO action: emits ordinary
+                // rectangle/line/text/sprite/lives commands, so this target
+                // needs no new renderer. Mirrors build_doom_hud_commands() in
+                // runtime/action_executor.py — parity-tested against it.
+                const dhHeight = parseNumParam(params.height, this, 42);
+                const winH = ctx.canvas ? ctx.canvas.height : 480;
+                const winW = ctx.canvas ? ctx.canvas.width : 640;
+                let dhY = parseNumParam(params.y, this, -1);
+                if (dhY < 0) dhY = winH - dhHeight;
+                const dhX = parseNumParam(params.x, this, 0);
+                const dhW = parseNumParam(params.width, this, 0) || winW;
+                const dhHealth = game ? game.health : 100;
+                const dhScore = game ? game.score : 0;
+                const dhLives = game ? game.lives : 0;
+                const backColor = params.back_color || '#101010';
+                const dividerColor = params.divider_color || '#505050';
+                const textColor = params.text_color || '#ffffff';
+                const barColor = params.bar_color || '#20c020';
+                const hbw = parseNumParam(params.health_bar_width, this, 90);
+                const hbh = parseNumParam(params.health_bar_height, this, 14);
+                const pad = 8;
+                // back panel + top divider
+                this._draw_queue.push({type: 'rectangle', x1: dhX, y1: dhY,
+                    x2: dhX + dhW, y2: dhY + dhHeight, color: backColor, filled: true});
+                this._draw_queue.push({type: 'line', x1: dhX, y1: dhY,
+                    x2: dhX + dhW, y2: dhY, color: dividerColor});
+                // health readout (left third)
+                const dhHx = dhX + pad, dhBarY = dhY + 22;
+                this._draw_queue.push({type: 'text', text: String(params.health_label || 'Health'),
+                    x: dhHx, y: dhY + 4, color: textColor});
+                this._draw_queue.push({type: 'rectangle', x1: dhHx, y1: dhBarY,
+                    x2: dhHx + hbw, y2: dhBarY + hbh, color: dividerColor, filled: true});
+                const dhFrac = Math.min(1, Math.max(0, dhHealth / 100));
+                this._draw_queue.push({type: 'rectangle', x1: dhHx, y1: dhBarY,
+                    x2: dhHx + hbw * dhFrac, y2: dhBarY + hbh, color: barColor, filled: true});
+                this._draw_queue.push({type: 'text', text: String(Math.floor(dhHealth)),
+                    x: dhHx + hbw + 6, y: dhBarY - 2, color: textColor});
+                // face icon (centre)
+                const faceSprite = params.face_sprite || '';
+                if (faceSprite) {
+                    const dhFrames = Math.max(1, parseNumParam(params.face_frames, this, 4));
+                    const dhFrame = Math.min(dhFrames - 1, Math.floor((1 - dhFrac) * dhFrames));
+                    this._draw_queue.push({type: 'sprite', sprite_name: faceSprite,
+                        x: dhX + dhW / 2 - dhHeight / 2, y: dhY + 2, subimage: dhFrame});
+                }
+                // score + lives (right third)
+                const dhRx = dhX + dhW * 2 / 3 + pad;
+                this._draw_queue.push({type: 'text',
+                    text: String(params.score_label || 'Score: ') + dhScore,
+                    x: dhRx, y: dhY + 4, color: textColor});
+                this._draw_queue.push({type: 'lives', count: dhLives, x: dhRx,
+                    y: dhY + dhHeight - 20, sprite: params.lives_sprite || '',
+                    scale: parseNumParam(params.lives_scale, this, 1)});
+                // objective (far-right edge)
+                this._draw_queue.push({type: 'text',
+                    text: String(params.objective_label || 'Keys: ') +
+                          gmExpressionValue(params.objective_value, this, game),
+                    x: dhX + dhW - 96, y: dhY + dhHeight / 2 - 8, color: textColor});
+                break;
+            }
             case 'draw_minimap': {
                 // North-up minimap of the raycast room's wall edges. A MACRO
                 // action: it emits ordinary rectangle/line commands, so this

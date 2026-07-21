@@ -582,3 +582,61 @@ def test_kivy_minimap_geometry_matches_the_desktop_reference_exactly():
         assert a['type'] == b['type']
         for key in ('x1', 'y1', 'x2', 'y2'):
             assert abs(a[key] - b[key]) < 1e-9, (a, b, key)
+
+
+# --- draw_doom_hud (DOOM HUD Unit 4b/5) ------------------------------------
+# A MACRO action like draw_minimap: build_doom_hud_commands() is the single
+# source, the HTML5 case and Kivy codegen mirror it. No new draw-queue type.
+
+def test_all_three_implement_draw_doom_hud():
+    from events.action_types import ACTION_TYPES
+    assert "draw_doom_hud" in ACTION_TYPES
+    assert "case 'draw_doom_hud'" in ENGINE
+    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
+    assert "action_type == 'draw_doom_hud'" in kg
+
+
+def test_doom_hud_face_frame_formula_matches_across_targets():
+    """The even-bucket face map must be identical everywhere, or the portrait
+    reacts differently per target."""
+    from runtime.action_executor import doom_face_frame
+    assert [doom_face_frame(h, 4) for h in (100, 60, 40, 10, 0)] == [0, 1, 2, 3, 3]
+    # HTML5 + Kivy use the same min(frames-1, int((1-frac)*frames)) shape.
+    hud = ENGINE[ENGINE.index("case 'draw_doom_hud'"):]
+    hud = hud[:hud.index("case 'draw_minimap'")]
+    assert "Math.min(dhFrames - 1, Math.floor((1 - dhFrac) * dhFrames))" in hud
+    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
+    assert "min(_dh_ff - 1, int((1.0 - _dh_frac) * _dh_ff))" in kg
+
+
+def test_doom_hud_emits_only_existing_draw_queue_types():
+    """The whole point of a macro action: nothing here needs a new renderer
+    dispatch entry on any target."""
+    from runtime.action_executor import build_doom_hud_commands
+    cmds = build_doom_hud_commands(
+        x=0, y=400, width=640, height=42, health=50, score=10, lives=2,
+        back_color="#101010", divider_color="#505050", text_color="#fff",
+        health_label="H", health_bar_width=90, health_bar_height=14,
+        bar_color="#20c020", face_sprite="f", face_frames=4,
+        score_label="S: ", lives_sprite="l", lives_scale=1.0,
+        objective_value="0", objective_label="K: ")
+    assert {c["type"] for c in cmds} <= {"rectangle", "line", "text", "sprite", "lives"}
+
+
+def test_kivy_doom_hud_codegen_compiles():
+    """The generated block is plain Python appended into an event handler —
+    it must parse."""
+    import ast
+    from export.Kivy.code_generator import ActionCodeGenerator
+    g = ActionCodeGenerator(base_indent=0,
+                            sprite_paths={"spr_face": "a/f.png", "spr_life": "a/l.png"})
+    g.process_action({"action": "draw_doom_hud", "parameters": {
+        "x": "0", "y": "-1", "face_sprite": "spr_face", "lives_sprite": "spr_life",
+        "objective_value": "keys"}}, "draw")
+    code = g.get_code()
+    ast.parse(code)
+    # objective expression resolved to an instance attribute
+    assert "str(self.keys)" in code
+    # face frame formula present, subimage plumbed to the sprite command
+    assert "int((1.0 - _dh_frac) * _dh_ff)" in code
+    assert "subimage=_dh_frame" in code

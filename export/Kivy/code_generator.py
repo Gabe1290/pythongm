@@ -1135,6 +1135,74 @@ if dist > 0:
                     f"x={x}, y={y}, "
                     "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
 
+        elif action_type == 'draw_doom_hud':
+            # DOOM-style status bar. A MACRO action emitting a FIXED, small set
+            # of draw-queue commands (unlike the minimap's unbounded wall loop),
+            # so it's inline appends, not a call-out — mirrors
+            # build_doom_hud_commands() in runtime/action_executor.py, which the
+            # parity test compares against. Coordinates are screen-space y-down;
+            # the shared draw-queue path flips once for Kivy.
+            def _s(key, default):
+                return str(params.get(key, default))
+            face_path = self.sprite_paths.get(_s('face_sprite', ''), '')
+            lives_path = self.sprite_paths.get(_s('lives_sprite', ''), '')
+            obj_expr = _resolve_instance_names(_s('objective_value', '0'))
+            lines = [
+                f"_dh_h = {_num_code(params.get('height', 42), 42)}",
+                "_dh_scene = getattr(self, 'scene', None)",
+                "_dh_win_h = float(getattr(_dh_scene, 'display_height', 0) or 480)",
+                "_dh_win_w = float(getattr(_dh_scene, 'display_width', 0) or 640)",
+                f"_dh_y = {_num_code(params.get('y', -1), -1)}",
+                "_dh_y = (_dh_win_h - _dh_h) if _dh_y < 0 else _dh_y",
+                f"_dh_x = {_num_code(params.get('x', 0))}",
+                f"_dh_w = {_num_code(params.get('width', 0))} or _dh_win_w",
+                "from main import get_game_app as _dh_ga",
+                "_dh_app = _dh_ga()",
+                "_dh_hp = float(_dh_app.health if _dh_app else 100)",
+                "_dh_sc = _dh_app.score if _dh_app else 0",
+                "_dh_lv = int(_dh_app.lives if _dh_app else 0)",
+                "_dh_pad = 8.0",
+                f"_dh_bc = {_s('back_color', '#101010')!r}",
+                f"_dh_dv = {_s('divider_color', '#505050')!r}",
+                f"_dh_tc = {_s('text_color', '#ffffff')!r}",
+                f"_dh_hbw = {_num_code(params.get('health_bar_width', 90), 90)}",
+                f"_dh_hbh = {_num_code(params.get('health_bar_height', 14), 14)}",
+                "self._draw_queue.append(dict(type='rectangle', x1=_dh_x, y1=_dh_y, "
+                "x2=_dh_x + _dh_w, y2=_dh_y + _dh_h, color=_dh_bc, filled=True))",
+                "self._draw_queue.append(dict(type='line', x1=_dh_x, y1=_dh_y, "
+                "x2=_dh_x + _dh_w, y2=_dh_y, color=_dh_dv))",
+                "_dh_hx = _dh_x + _dh_pad",
+                "_dh_by = _dh_y + 22",
+                f"self._draw_queue.append(dict(type='text', text={_s('health_label', 'Health')!r}, "
+                "x=_dh_hx, y=_dh_y + 4, color=_dh_tc))",
+                "self._draw_queue.append(dict(type='rectangle', x1=_dh_hx, y1=_dh_by, "
+                "x2=_dh_hx + _dh_hbw, y2=_dh_by + _dh_hbh, color=_dh_dv, filled=True))",
+                "_dh_frac = min(1.0, max(0.0, _dh_hp / 100.0))",
+                "self._draw_queue.append(dict(type='rectangle', x1=_dh_hx, y1=_dh_by, "
+                "x2=_dh_hx + _dh_hbw * _dh_frac, y2=_dh_by + _dh_hbh, color="
+                f"{_s('bar_color', '#20c020')!r}, filled=True))",
+                "self._draw_queue.append(dict(type='text', text=str(int(_dh_hp)), "
+                "x=_dh_hx + _dh_hbw + 6, y=_dh_by - 2, color=_dh_tc))",
+            ]
+            if face_path:
+                lines += [
+                    f"_dh_ff = max(1, {int(float(params.get('face_frames', 4) or 4))})",
+                    "_dh_frame = min(_dh_ff - 1, int((1.0 - _dh_frac) * _dh_ff))",
+                    f"self._draw_queue.append(dict(type='sprite', sprite_path={face_path!r}, "
+                    "x=_dh_x + _dh_w / 2.0 - _dh_h / 2.0, y=_dh_y + 2, subimage=_dh_frame))",
+                ]
+            lines += [
+                "_dh_rx = _dh_x + _dh_w * 2.0 / 3.0 + _dh_pad",
+                f"self._draw_queue.append(dict(type='text', text={_s('score_label', 'Score: ')!r} + str(_dh_sc), "
+                "x=_dh_rx, y=_dh_y + 4, color=_dh_tc))",
+                f"self._draw_queue.append(dict(type='lives', count=_dh_lv, x=_dh_rx, "
+                f"y=_dh_y + _dh_h - 20, sprite_path={lives_path!r}, "
+                f"scale={_num_code(params.get('lives_scale', 1.0), 1.0)}))",
+                f"self._draw_queue.append(dict(type='text', text={_s('objective_label', 'Keys: ')!r} + str({obj_expr}), "
+                "x=_dh_x + _dh_w - 96, y=_dh_y + _dh_h / 2.0 - 8, color=_dh_tc))",
+            ]
+            return "\n".join(lines)
+
         elif action_type == 'draw_minimap':
             # Emits a CALL, not an inline expression: the minimap needs loops
             # over the room's wall sets. GameObject._draw_minimap is generated
