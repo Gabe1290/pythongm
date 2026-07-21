@@ -20,6 +20,22 @@
   },
   "assets": {
     "sprites": {
+      "spr_ceiling": {
+        "name": "spr_ceiling",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_ceiling.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
       "spr_face": {
         "name": "spr_face",
         "asset_type": "sprite",
@@ -115,22 +131,6 @@
         "created": "2026-05-23T14:34:54.961536",
         "modified": "2026-06-07T18:52:32.258111",
         "thumbnail": "thumbnails\\spr_person_thumb.png"
-      },
-      "spr_sky": {
-        "name": "spr_sky",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_sky.png",
-        "width": 256,
-        "height": 64,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": false,
-        "frames": 1,
-        "frame_width": 256,
-        "frame_height": 64,
-        "animation_type": "single",
-        "speed": 10.0,
-        "imported": true
       },
       "spr_wall_h": {
         "name": "spr_wall_h",
@@ -335,12 +335,13 @@
                   "cell_size": "32",
                   "render_distance": "20",
                   "wall_texture": "spr_wall_texture",
-                  "sky_texture": "spr_sky",
+                  "sky_texture": "",
                   "floor_texture": "spr_floor",
                   "wall_color": "#993333",
                   "floor_color": "#464632",
                   "ceiling_color": "#87CEEB",
-                  "viewport_height": "400"
+                  "viewport_height": "400",
+                  "ceiling_texture": "spr_ceiling"
                 }
               },
               {

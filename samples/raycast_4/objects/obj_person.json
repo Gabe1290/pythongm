@@ -25,12 +25,13 @@
             "cell_size": "32",
             "render_distance": "20",
             "wall_texture": "spr_wall_texture",
-            "sky_texture": "spr_sky",
+            "sky_texture": "",
             "floor_texture": "spr_floor",
             "wall_color": "#993333",
             "floor_color": "#464632",
             "ceiling_color": "#87CEEB",
-            "viewport_height": "400"
+            "viewport_height": "400",
+            "ceiling_texture": "spr_ceiling"
           }
         },
         {
