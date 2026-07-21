@@ -1,8 +1,10 @@
 """Edition-based sample curation (filter_samples_for_edition).
 
-The IDE edition (Beginner / Advanced / Development) gates which Welcome-tab
-sample games appear, mirroring how it already gates tutorials. Beginner hides
-the raycast_* samples; Advanced/Development show all. Pure logic — no Qt.
+Explicitly choosing the Beginner edition hides the raycast_* samples on the
+Welcome tab. Everything else — an UNSET edition (fresh machine),
+Advanced, Development — shows all 17. The default is show-all so a
+developer's raycast samples never vanish just because Preferences was never
+opened; the curation is opt-IN. Pure logic — no Qt.
 """
 import sys
 from pathlib import Path
@@ -10,8 +12,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-import config.editions as editions  # noqa: E402
 from config.editions import filter_samples_for_edition, EDITIONS  # noqa: E402
+from utils.config import Config  # noqa: E402
 
 
 SAMPLES = [
@@ -24,44 +26,49 @@ SAMPLES = [
 ]
 
 
-def _pin(monkeypatch, edition_dict):
-    monkeypatch.setattr(editions, "get_current_edition", lambda: edition_dict)
+def _pin_edition(monkeypatch, edition_key):
+    """Set what Config.get('edition') returns — the filter reads it directly,
+    NOT get_current_edition(), so the Beginner default can't leak in."""
+    real = Config.get
+    monkeypatch.setattr(Config, "get",
+                        classmethod(lambda cls, key, default=None:
+                                    edition_key if key == "edition"
+                                    else real(key, default)))
 
 
-def test_beginner_hides_the_raycast_samples(monkeypatch):
-    _pin(monkeypatch, EDITIONS["beginner"])
+def test_unset_edition_shows_all_samples(monkeypatch):
+    """The whole point of the show-all-by-default fix: a fresh machine that
+    never picked an edition still shows raycast, even though tutorials default
+    to Beginner."""
+    _pin_edition(monkeypatch, None)
+    assert filter_samples_for_edition(SAMPLES) == SAMPLES
+
+
+def test_explicit_beginner_hides_the_raycast_samples(monkeypatch):
+    _pin_edition(monkeypatch, "beginner")
     out = filter_samples_for_edition(SAMPLES)
     paths = [p for p, _ in out]
-    assert "samples/maze_1" in paths
-    assert "samples/treasure" in paths
+    assert "samples/maze_1" in paths and "samples/treasure" in paths
     assert not any("raycast" in p for p in paths), "beginner must hide raycast_*"
 
 
 def test_advanced_and_development_show_everything(monkeypatch):
     for key in ("advanced", "development"):
-        _pin(monkeypatch, EDITIONS[key])
-        out = filter_samples_for_edition(SAMPLES)
-        assert out == SAMPLES, f"{key} must show all samples unchanged"
+        _pin_edition(monkeypatch, key)
+        assert filter_samples_for_edition(SAMPLES) == SAMPLES, key
 
 
-def test_none_whitelist_returns_a_copy(monkeypatch):
+def test_show_all_returns_a_copy(monkeypatch):
     """Show-all must not hand back the caller's own list to mutate."""
-    _pin(monkeypatch, {"sample_folders": None})
+    _pin_edition(monkeypatch, None)
     out = filter_samples_for_edition(SAMPLES)
     assert out == SAMPLES and out is not SAMPLES
 
 
-def test_missing_key_is_treated_as_show_all(monkeypatch):
-    """An edition dict without sample_folders (older config) shows everything
-    rather than hiding every sample."""
-    _pin(monkeypatch, {"name": "X"})       # no sample_folders key
+def test_unknown_edition_key_shows_all(monkeypatch):
+    """A stale/garbage edition value in config must not blank the samples."""
+    _pin_edition(monkeypatch, "no_such_edition")
     assert filter_samples_for_edition(SAMPLES) == SAMPLES
-
-
-def test_folder_name_is_the_basename(monkeypatch):
-    _pin(monkeypatch, {"sample_folders": ["maze_1"]})
-    out = filter_samples_for_edition(SAMPLES)
-    assert out == [("samples/maze_1", "Maze — Level 1")]
 
 
 def test_beginner_whitelist_matches_the_shipped_non_raycast_samples():
