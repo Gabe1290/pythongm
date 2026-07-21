@@ -1,16 +1,19 @@
 # Plan: DOOM-style status-bar HUD (`draw_doom_hud`) + viewport shrink + the `raycast_4` sample concept
 
-Status: **Units 1–5 DONE (2026-07-21); Unit 6 (`raycast_4` sample) open.** The
-engine capability — `viewport_height` letterbox on all three targets plus the
-`draw_doom_hud` macro action — is complete, tested and shipped. The sample that
-uses it is deferred to its own build pass (see the unit checklist). Commits:
+Status: **ALL SIX UNITS DONE (2026-07-21).** The engine capability
+(`viewport_height` letterbox + `draw_doom_hud`, all three targets) and the
+`raycast_4` sample that showcases it are complete, tested and shipped. Commits:
 `1d207db` (Unit 1 desktop) `dc90cc1` (Unit 2 HTML5) `896a228` (Unit 3 Kivy)
 `e3280e1` (Unit 4a sprite multi-frame) `25e94e9` (Units 4b+5 draw_doom_hud +
-parity). Suite 2052 → 2081 passed, 0 failed.
+parity) `62f04bf` (Unit 6 raycast_4 + the export-config gap fix). Suite 2052 →
+2090 passed, 0 failed; smoke 17/17.
 
-**Not yet watched render** — same standing caveat as every raycast plan:
-nobody has *seen* a shrunk viewport or the bar on any target. That visual check
-is folded into Unit 6 (the `raycast_4` sample), per the user's decision.
+**Still not watched render** — the one open item, now genuinely unblockable:
+open a `raycast_4` export or Test Game and look. It's the first raycast sample
+whose *view shape* changes, so it's the most worth eyeballing on each target.
+Unit 6 surfaced two real bugs (the export config-builders never set
+`viewport_height`; one-sided collision-event firing) — both fixed with tests,
+see `62f04bf`.
 
 ## Context
 
@@ -318,7 +321,7 @@ on it).
 - [x] **Unit 5 — parity extension.** `25e94e9` (folded with 4b). Face-frame
   formula pinned identical across targets; emitted-type set asserted to stay
   within the existing draw-queue types; Kivy codegen asserted to compile.
-- [ ] **Unit 6 — `raycast_4` sample sketch.** Concept below; actual maze/
+- [x] **Unit 6 — `raycast_4` sample.** `62f04bf`. Built and shipped (not just sketched): letterboxed view + draw_doom_hud bar, health-reactive face, key-gated exit, Welcome-tab entry + FR translation, EN + FR guides, smoke 17/17. Two bugs found + fixed (export config-builders never set viewport_height; one-sided collision firing). ORIGINAL SKETCH:** Concept below; actual maze/
   asset/session-breakdown build is a **separate, later** planning + build
   pass, gated behind Units 1-5 shipping — same as how the minimap got its own
   gated Session E plan doc.

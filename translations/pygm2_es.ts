@@ -8844,6 +8844,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 4</source>
+            <translation>Raycasting — Nivel 4</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 3</source>
             <translation>Raycasting — Nivel 3</translation>
         </message>

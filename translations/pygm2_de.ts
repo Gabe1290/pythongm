@@ -8392,6 +8392,11 @@ Möchten Sie trotzdem speichern?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 4</source>
+            <translation>Raycasting — Level 4</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 3</source>
             <translation>Raycasting — Level 3</translation>
         </message>
