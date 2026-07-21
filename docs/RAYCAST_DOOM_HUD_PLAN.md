@@ -1,6 +1,16 @@
 # Plan: DOOM-style status-bar HUD (`draw_doom_hud`) + viewport shrink + the `raycast_4` sample concept
 
-Status: **PLAN (2026-07-21), not started.**
+Status: **Units 1–5 DONE (2026-07-21); Unit 6 (`raycast_4` sample) open.** The
+engine capability — `viewport_height` letterbox on all three targets plus the
+`draw_doom_hud` macro action — is complete, tested and shipped. The sample that
+uses it is deferred to its own build pass (see the unit checklist). Commits:
+`1d207db` (Unit 1 desktop) `dc90cc1` (Unit 2 HTML5) `896a228` (Unit 3 Kivy)
+`e3280e1` (Unit 4a sprite multi-frame) `25e94e9` (Units 4b+5 draw_doom_hud +
+parity). Suite 2052 → 2081 passed, 0 failed.
+
+**Not yet watched render** — same standing caveat as every raycast plan:
+nobody has *seen* a shrunk viewport or the bar on any target. That visual check
+is folded into Unit 6 (the `raycast_4` sample), per the user's decision.
 
 ## Context
 
@@ -289,29 +299,25 @@ on it).
 
 ## Session-size units (one commit each)
 
-- [ ] **Unit 1 — `viewport_height` schema + plumbing + desktop renderer.**
-  `events/action_types.py` (`~:528-582`), `runtime/action_executor.py`
-  `execute_enable_raycast_view_action` (`~:4584-4608`), `engine.js`'s
-  `case 'enable_raycast_view':` (`~:2580-2597`), `code_generator.py`'s
-  `enable_raycast_view` codegen (`~:744-779`) — all four move together, plus
-  `game_runner.py`'s `_render_raycast_view`/`_cast_floor_plane` actually
-  consuming it. Test: shrunk-`view_h` render + a no-parameter call renders
-  pixel-identical to before (backward-compat, asserted not assumed).
-- [ ] **Unit 2 — HTML5 renderer.** `renderRaycastView`/`castFloorPlane`
-  consume `viewH`. Structural test + dev browser check.
-- [ ] **Unit 3 — Kivy renderer (hardest, own unit).** `_render_raycast`/
-  `_render_floor_plane`/`_floor_buffer` — mind the y-up inversion and the
-  `.format()` brace-doubling landmine. Stub-kivy test asserting the reserved
-  band lands at the bottom, not top.
-- [ ] **Unit 4a — fix HTML5 + Kivy `sprite` multi-frame support.** Standalone,
-  generically useful, own test. Precedes 4b.
-- [ ] **Unit 4b — `draw_doom_hud` action.** `build_doom_hud_commands` +
-  executor action + `action_types.py` registration + `engine.js` case +
-  `code_generator.py` codegen. No new renderer/dispatch-type work needed.
-  Test: emitted command shape + face-frame formula.
-- [ ] **Unit 5 — parity extension.** `viewport_height` geometry case +
-  `draw_doom_hud` three-way command comparison in
-  `tests/test_raycast_export_parity.py`.
+- [x] **Unit 1 — `viewport_height` schema + plumbing + desktop renderer.**
+  `1d207db`. Backward-compat asserted (no-param / explicit-0 / == height all
+  diff to zero).
+- [x] **Unit 2 — HTML5 renderer.** `dc90cc1`. Near line-for-line port; reserved
+  band filled black; `castFloorPlane` takes `viewH`.
+- [x] **Unit 3 — Kivy renderer (the hard one).** `896a228`. The y-UP inversion
+  was the crux: reserved band at the BOTTOM (`[0, view_bottom)`), horizon at
+  `h - view_h/2`, walls clamp to `view_bottom` not 0. `_render_floor_plane` and
+  `_floor_buffer` each take their own `view_h`. No literal braces added; the
+  generated scene compiles. Stub-kivy test pins the band at `(0,0)`.
+- [x] **Unit 4a — fix HTML5 + Kivy `sprite` multi-frame support.** `e3280e1`.
+  Both drew the whole spritesheet; now crop by `subimage`. A test compiles the
+  generated Kivy `base_object.py` to catch the brace-doubling.
+- [x] **Unit 4b — `draw_doom_hud` action.** `25e94e9`. `build_doom_hud_commands`
+  + executor action + registration + `engine.js` case + Kivy codegen (a bounded
+  inline append block, not a call-out). No new dispatch type anywhere.
+- [x] **Unit 5 — parity extension.** `25e94e9` (folded with 4b). Face-frame
+  formula pinned identical across targets; emitted-type set asserted to stay
+  within the existing draw-queue types; Kivy codegen asserted to compile.
 - [ ] **Unit 6 — `raycast_4` sample sketch.** Concept below; actual maze/
   asset/session-breakdown build is a **separate, later** planning + build
   pass, gated behind Units 1-5 shipping — same as how the minimap got its own
