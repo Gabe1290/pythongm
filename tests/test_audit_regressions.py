@@ -211,8 +211,11 @@ class TestConditionalEditorCanonicalValues:
         out = dialog.get_parameter_values()
         assert out["condition_type"] == "key_pressed"
         assert out["key"] == "space"
-        # Only the supported held/down state is offered now.
-        assert out["state"] == "pressed"
+        # The "state" field was removed (M30 follow-up): the runtime only
+        # ever checked whether a key is currently held, so a dropdown that
+        # offered exactly one always-selected choice conveyed no real
+        # configurability and the runtime never read the saved value anyway.
+        assert "state" not in out
 
     def test_key_pressed_arrow_is_runtime_name(self, qtbot):
         from events.conditional_editor import ConditionalActionEditor

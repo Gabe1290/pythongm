@@ -390,16 +390,6 @@ class ConditionalActionEditor(QDialog):
             ("shift", self.tr("Shift")), ("control", self.tr("Control")), ("alt", self.tr("Alt")),
         ])
         key_layout.addWidget(self.key_check)
-
-        key_layout.addWidget(QLabel(self.tr("Is:")))
-        self.key_state = QComboBox()
-        # The runtime only knows whether a key is currently down, so only the
-        # held/down state is offered. "Released" was actively misleading — it
-        # behaved identically to "held", the opposite of its label.
-        _add_canonical_items(self.key_state, [
-            ("pressed", self.tr("Pressed (held down)")),
-        ])
-        key_layout.addWidget(self.key_state)
         key_layout.addStretch()
         layout.addLayout(key_layout)
 
@@ -543,8 +533,6 @@ class ConditionalActionEditor(QDialog):
         # key_pressed
         if p.get("key"):
             _select_canonical(self.key_check, _normalize_legacy_key(p.get("key")))
-        if p.get("state"):
-            _select_canonical(self.key_state, p.get("state"))
 
         # mouse_check
         if p.get("check"):
@@ -754,8 +742,7 @@ class ConditionalActionEditor(QDialog):
             })
         elif condition_type == "key_pressed":
             params.update({
-                "key": _canonical_value(self.key_check),
-                "state": _canonical_value(self.key_state)
+                "key": _canonical_value(self.key_check)
             })
         elif condition_type == "mouse_check":
             params.update({
