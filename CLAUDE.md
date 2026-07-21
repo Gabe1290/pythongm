@@ -786,3 +786,44 @@ arc is complete. Commits `0ff7edb` (plan) `a1784fc`+`cadc341` (desktop)
   in a browser or on Android, nor `plateforme_3` after the depth fix. Also
   untested on real hardware: Kivy rebuilding ~250 `Line` instructions per frame
   for the minimap — the plan's `range` parameter is the escape hatch if it bites.
+
+**2026-07-21 — DOOM status bar (viewport_height + draw_doom_hud) + `raycast_4`.**
+Plan `docs/RAYCAST_DOOM_HUD_PLAN.md`, **all 6 units closed**. Reopened/reversed
+the corner-overlay decision `RAYCAST_HUD_PLAN.md` made for raycast_3 — a
+DOOM-style bottom bar for a NEW sample, raycast_1–3 untouched.
+- **`viewport_height` letterbox** on `enable_raycast_view` (default 0 = full
+  height, backward-compat asserted): shrinks the 3D view into the top band and
+  reserves a black band below for the bar. Desktop `1d207db`, HTML5 `dc90cc1`,
+  Kivy `896a228`. **Kivy is y-UP so the reserved band is at the BOTTOM
+  (`[0, h-view_h)`), horizon at `h - view_h/2`, walls clamp their bottom to
+  `view_bottom` not 0** — the mirror image of desktop/HTML5; `_floor_buffer`/
+  `_render_floor_plane` each take their own `view_h`.
+- **`draw_doom_hud`** `25e94e9`: a MACRO action like draw_minimap —
+  `build_doom_hud_commands()` emits rectangle/line/text/sprite/lives only, no
+  new draw-queue type. Health bar + number, health-reactive **face** portrait,
+  score, lives, objective counter. Face frame = `doom_face_frame()` even-bucket
+  map (0=healthiest), pinned identical across targets. Kivy codegen emits a
+  BOUNDED inline `dict(...)` append block (not the minimap's call-out — no loop).
+- **Unit 4a `e3280e1`:** the `sprite` draw-queue command ignored `subimage` on
+  HTML5 + Kivy (drew the whole spritesheet); fixed to crop the frame — needed
+  for the face icon, generically useful. A test compiles the generated Kivy
+  base_object.py to catch the `{{}}` brace-doubling.
+- **`raycast_4` `62f04bf`** (+ ship `527d7bd`): single-room FPS built AROUND the
+  bar. **obj_person is BOTH the camera AND the HUD drawer** so the key counter
+  is its own instance var (`keys`) — draw_doom_hud's objective expression then
+  resolves to `self.keys` identically on all 3 targets, sidestepping
+  global/cross-instance expression resolution. New art: 4-frame face strip
+  (spr_face), gold key (spr_key). Maze DELEGATES to gen_raycast_3_maze.
+- **Two real bugs Unit 6 surfaced, both fixed with tests:** (1) the export
+  config-BUILDERS (Kivy codegen + HTML5 `case 'enable_raycast_view'`) never SET
+  `viewport_height` in the camera dict, though Units 2/3 made the RENDERERS read
+  it — so exports ignored the letterbox entirely. (2) **The runtime fires only
+  ONE side of a collision pair's handlers** — obj_person.collision_with_obj_key
+  fired but obj_key.collision_with_obj_person didn't, so a key counted but never
+  destroyed/scored. Fix: put all pickup logic (count + score + destroy other) on
+  the ONE reliably-firing handler; the collectible is passive.
+- Suite **2052 → 2090 passed, 0 failed**; smoke **17/17**.
+- **Open, needs human eyes:** nobody has WATCHED a shrunk viewport or the bar
+  render on any target. raycast_4 is the first raycast sample whose *view shape*
+  changes — most worth eyeballing in a browser + on Android. (Same standing
+  caveat as raycast_3/plateforme_3, still unaddressed.)
