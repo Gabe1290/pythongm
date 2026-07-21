@@ -175,3 +175,25 @@ def test_camera_config_carries_viewport_height():
     finally:
         pygame.time.Clock = real_clock
     assert runner.current_room.raycast_camera["viewport_height"] == 280
+
+
+# --- viewport_height reaches the exported camera config (Units 2/3 gap fix) -
+# Units 2/3 made the export RENDERERS read cfg.viewport_height, but the config
+# BUILDERS (enable_raycast_view codegen) didn't set it — so an exported game
+# ignored viewport_height entirely. Caught while building raycast_4.
+
+def test_export_enable_raycast_view_carries_viewport_height():
+    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
+    eng = (REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js").read_text(encoding="utf-8")
+    assert "'viewport_height': int(_tofloat(params.get('viewport_height'), 0))" in kg
+    assert "viewport_height: Math.floor(rNum('viewport_height', 0))" in eng
+
+
+def test_kivy_export_camera_config_includes_viewport_height():
+    """End-to-end: a generated object's enable_raycast_view sets the letterbox
+    height in the camera dict the scene renderer reads."""
+    from export.Kivy.code_generator import ActionCodeGenerator
+    g = ActionCodeGenerator(base_indent=0)
+    g.process_action({"action": "enable_raycast_view",
+                      "parameters": {"viewport_height": "400"}}, "create")
+    assert "'viewport_height': 400" in g.get_code()

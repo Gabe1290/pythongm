@@ -1,0 +1,11 @@
+{
+  "name": "obj_key",
+  "asset_type": "object",
+  "sprite": "spr_key",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "parent": ""
+}

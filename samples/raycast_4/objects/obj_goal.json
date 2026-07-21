@@ -1,0 +1,65 @@
+{
+  "name": "obj_goal",
+  "asset_type": "object",
+  "sprite": "spr_key",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_key",
+            "number": "0",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "You found every key. The gate opens!"
+          }
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_key",
+            "number": "0",
+            "operation": "greater"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "The gate is locked. Find all the keys first!"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "parent": ""
+}

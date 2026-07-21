@@ -2664,6 +2664,10 @@ class GameObject {
                     floor_texture: params.floor_texture || '',
                     ceiling_texture: params.ceiling_texture || '',
                     floor_cast_res: Math.max(1, Math.floor(rNum('floor_cast_res', 4))),
+                    // DOOM-bar letterbox (0 = full height). renderRaycastView
+                    // reads this; without it here an exported game ignores a
+                    // viewport_height the desktop runtime honours.
+                    viewport_height: Math.floor(rNum('viewport_height', 0)),
                 };
                 game.currentRoom._vWalls = null;  // rebuild wall map next render
                 break;
