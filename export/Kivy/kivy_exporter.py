@@ -1825,6 +1825,8 @@ class {class_name}(Widget):
     RAYCAST_SIDE_SHADE = 0.85
     RAYCAST_FOG_STRENGTH = 0.55
     RAYCAST_MIN_SHADE = 0.35
+    RAYCAST_WALL_HEIGHT = 1.5    # walls project 1.5x taller than a cube (walls
+                                 # only, not billboards); see game_runner
 
     @classmethod
     def _wall_shade(cls, side, corrected, max_dist):
@@ -2139,7 +2141,7 @@ class {class_name}(Widget):
             # screen-clamped strip — the real "bent wall" bug (close columns
             # clamped and compressed the whole brick texture while farther ones
             # didn't, breaking the courses across a flat wall).
-            full_h = view_h * cell_size / max(corrected, 1e-4)
+            full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)
             y_bot = mid - full_h / 2.0           # y-up: bottom of the full strip
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)

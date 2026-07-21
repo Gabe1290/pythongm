@@ -155,6 +155,9 @@ def test_wall_shade_model_matches_desktop_and_kivy():
         assert GameRoom.RAYCAST_SIDE_SHADE == cls.RAYCAST_SIDE_SHADE
         assert GameRoom.RAYCAST_FOG_STRENGTH == cls.RAYCAST_FOG_STRENGTH
         assert GameRoom.RAYCAST_MIN_SHADE == cls.RAYCAST_MIN_SHADE
+        # wall height (taller, building-like walls) must match on all three
+        assert GameRoom.RAYCAST_WALL_HEIGHT == cls.RAYCAST_WALL_HEIGHT == 1.5
+        assert "const RAYCAST_WALL_HEIGHT = 1.5" in ENGINE
 
 
 def test_wall_shade_behaviour():
@@ -245,9 +248,11 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     # projected height, not a screen-clamped squeeze) are identical either way.
     # All three now scale by the letterbox height (view_h/viewH), == full
     # height until a viewport_height is set. Crop semantics unchanged.
-    assert "full_h = view_h * cell_size / max(corrected, 1e-4)" in gr, "game_runner"
-    assert "full_h = view_h * cell_size / max(corrected, 1e-4)" in kx, "kivy_exporter"
-    assert "const fullH = viewH * cellSize / Math.max(corrected, 1e-4)" in ENGINE
+    # Wall strips scale by view_h (letterbox) AND RAYCAST_WALL_HEIGHT (taller,
+    # building-like walls). Both == 1.0-equivalent until set; here 1.5.
+    assert "full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in gr, "game_runner"
+    assert "full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in kx, "kivy_exporter"
+    assert "const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4)" in ENGINE
     assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
 
     # SUB-TEXEL accuracy: on a close wall one texel covers tens of screen px, so

@@ -22,12 +22,18 @@ PROJECT = str(REPO_ROOT / "samples" / "raycast_3" / "project.json")
 WIN_W, WIN_H = 640, 480
 
 
-def _snapshot_with_viewport(viewport_height, flat=False):
+def _snapshot_with_viewport(viewport_height, flat=False, no_camera=False):
     """Run raycast_3 a few frames and return a copy of the last raycast frame,
     with viewport_height injected into obj_cam0's enable_raycast_view.
 
     flat=True clears the wall/sky/floor textures so the ceiling and floor are
-    flat colour fills split at the horizon — deterministic for horizon checks.
+    flat colour fills split at the horizon.
+
+    no_camera=True points camera_object at a name that doesn't resolve, so the
+    renderer draws ONLY the flat ceiling/floor/reserved-band fills and returns
+    before any wall pass. That makes the horizon exactly measurable — the dense
+    maze otherwise occludes the fills near the horizon (especially with the
+    taller RAYCAST_WALL_HEIGHT walls), defeating a pixel-sampled horizon check.
     """
     from runtime.game_runner import GameRunner, GameRoom
 
@@ -46,6 +52,8 @@ def _snapshot_with_viewport(viewport_height, flat=False):
     if flat:
         for k in ("wall_texture", "sky_texture", "floor_texture", "ceiling_texture"):
             act["parameters"][k] = ""
+    if no_camera:
+        act["parameters"]["camera_object"] = "__no_such_camera__"
 
     shot = {}
     real = GameRoom._render_raycast_view
@@ -117,30 +125,25 @@ def test_horizon_moves_up_with_the_viewport():
     textures) make the ceiling one solid colour above the horizon and the
     floor another below it, so the horizon is where the centre column's colour
     flips."""
-    full = _snapshot_with_viewport(0, flat=True)
-    short = _snapshot_with_viewport(300, flat=True)
-
-    # Use the KNOWN config colours (raycast_3's obj_cam0 defaults) rather than
-    # sampling a pixel — every corner of a dense maze is a wall, so a sampled
-    # "fill colour" is unreliable.
+    # No camera => only the flat ceiling/floor/band fills draw, so the horizon
+    # (view_h/2) is exact and unoccluded by walls.
+    full = _snapshot_with_viewport(0, flat=True, no_camera=True)
+    short = _snapshot_with_viewport(300, flat=True, no_camera=True)
     FLOOR = (0x46, 0x46, 0x32)      # floor_color #464632
     w = full.get_width()
 
-    def floor_cov(surf, y):
-        return sum(1 for x in range(0, w, 4) if surf.get_at((x, y))[:3] == FLOOR)
+    def floor_top(surf, view_h):
+        """First row (from the top) that is the floor fill = the horizon."""
+        for y in range(1, view_h):
+            if surf.get_at((w // 2, y))[:3] == FLOOR:
+                return y
+        return view_h
 
-    # Row 230 is ABOVE the full render's horizon (240 = h/2) — pure ceiling
-    # region, so no floor colour. With view_h=300 the horizon is 150, so 230
-    # is well BELOW it, and far enough down that near-horizon walls no longer
-    # occlude the floor fill. So the floor colour appears at 230 only when the
-    # viewport shrank. (Rows nearer the horizon are occluded by the tall walls
-    # that cluster there, so they don't discriminate.)
-    assert floor_cov(full, 230) == 0, \
-        "floor colour present above the full-height horizon — unexpected"
-    assert floor_cov(short, 230) > 5, \
-        "no floor colour at row 230 with a 300px viewport — horizon did not move up"
-    # Sanity: both renders DO show floor lower down, so FLOOR is the right colour.
-    assert floor_cov(full, 460) > 5 and floor_cov(short, 260) > 5
+    hf = floor_top(full, full.get_height())
+    hs = floor_top(short, 300)
+    assert abs(hf - full.get_height() / 2) <= 1, f"full horizon not centred: {hf}"
+    assert abs(hs - 150) <= 1, f"shrunk horizon not at 150: {hs}"
+    assert hs < hf - 40, "horizon did not move up when the viewport shrank"
 
 
 def test_camera_config_carries_viewport_height():
