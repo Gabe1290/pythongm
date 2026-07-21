@@ -463,3 +463,92 @@ def test_render_raycast_casts_floor_texture(exported):
                        and c.kw.get("tex_coords") == (0, 1, 1, 1, 1, 0, 0, 0)]
         assert floor_rects, "floor cast rectangle not drawn"
         assert floor_rects[0].kw["pos"] == (0, 0)     # bottom half (Kivy y-up)
+
+
+# --- viewport_height letterbox (DOOM HUD Unit 3) ---------------------------
+# The hard target: Kivy is y-UP, so the reserved DOOM-bar band is at the
+# BOTTOM (low y), the inverse of desktop/HTML5. This drives the real
+# _render_raycast on controlled geometry and asserts that inversion.
+
+def _all_rects(scene):
+    return [c for c in scene._raycast_group.children
+            if getattr(c, "kw", None) and "pos" in c.kw]
+
+
+def test_letterbox_reserves_the_band_at_the_bottom_in_y_up(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)                 # display 320x200
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)
+        wall = _FakeInst(64, 32, 32, 32, solid=True)
+        scene.instances = [cam, wall]
+        scene.raycast_camera = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+            "wall_color": "#993333", "floor_color": "#464632",
+            "ceiling_color": "#87CEEB", "viewport_height": 140,
+        }
+        scene._render_raycast()
+        rects = _all_rects(scene)
+        # view_h=140 => view_bottom=60, mid=130.
+        # Ceiling fill = top of the view: pos y == mid.
+        assert rects[0].kw["pos"] == (0, 130.0), rects[0].kw["pos"]
+        assert rects[0].kw["size"] == (320.0, 70.0)
+        # Floor fill = bottom of the VIEW (not the window): pos y == view_bottom.
+        assert rects[1].kw["pos"] == (0, 60.0), rects[1].kw["pos"]
+        assert rects[1].kw["size"] == (320.0, 70.0)
+        # Reserved band = the BOTTOM of the window (y-up low y): pos (0,0).
+        band = rects[2]
+        assert band.kw["pos"] == (0, 0), band.kw["pos"]
+        assert band.kw["size"] == (320.0, 60.0), band.kw["size"]
+        # ...and it's painted black — the Color instruction just before it.
+        kids = scene._raycast_group.children
+        band_idx = kids.index(band)
+        black = kids[band_idx - 1]
+        assert getattr(black, "args", None) == (0, 0, 0, 1), \
+            "reserved band is not filled black"
+
+
+def test_letterbox_walls_never_paint_into_the_reserved_band(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)
+        wall = _FakeInst(64, 32, 32, 32, solid=True)
+        scene.instances = [cam, wall]
+        scene.raycast_camera = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+            "viewport_height": 140,
+        }
+        scene._render_raycast()
+        # Wall strips come after the 3 fills (ceiling, floor, band).
+        strips = _all_rects(scene)[3:]
+        assert strips, "expected wall strips facing the east wall"
+        for r in strips:
+            y = r.kw["pos"][1]
+            assert y >= 60.0 - 1e-6, f"wall strip at y={y} intrudes on the band (<60)"
+
+
+def test_full_height_is_unchanged_no_band(exported):
+    """viewport_height 0 keeps the fills at the window midpoint and adds no
+    reserved band — the backward-compat guarantee, Kivy side."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)
+        wall = _FakeInst(64, 32, 32, 32, solid=True)
+        scene.instances = [cam, wall]
+        base = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+            "floor_color": "#464632", "ceiling_color": "#87CEEB",
+        }
+        scene.raycast_camera = dict(base, viewport_height=0)
+        scene._render_raycast()
+        rects = _all_rects(scene)
+        assert rects[0].kw["pos"] == (0, 100.0)      # ceiling, true half
+        assert rects[1].kw["pos"] == (0, 0)          # floor to window bottom
+        # No third fill spanning a reserved band (walls may follow, but the
+        # first wall strip is centred on the horizon, not a full-width band at 0).
+        assert rects[1].kw["size"] == (320.0, 100.0)

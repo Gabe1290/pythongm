@@ -1916,17 +1916,23 @@ class {class_name}(Widget):
         return result
 
     def _floor_buffer(self, pixels, tw, th, res, facing_screen_rad, fov_rad,
-                      cam_cx, cam_cy):
+                      cam_cx, cam_cy, view_h=None):
         """Faithful port of _cast_floor_plane's cast into an RGBA byte buffer
         (returns buf, sw, sh). Camera-plane FOV-edge rays interpolated across
-        columns; row distance 0.5h/(y-horizon); texture tiled per grid cell.
-        `pixels` is bottom-up (Kivy), so the source row is flipped to sample
-        the tile the same way the desktop's top-down get_at does."""
+        columns; row distance 0.5*view_h/(y-horizon); texture tiled per grid
+        cell. `pixels` is bottom-up (Kivy), so the source row is flipped to
+        sample the tile the same way the desktop's top-down get_at does.
+
+        view_h is the DOOM-bar letterbox height (the floor band is view_h/2
+        tall and the projection reference is 0.5*view_h); None = full height."""
         import math
         w = float(self.display_width)
         h = float(self.display_height)
-        half_h = int(h // 2)
-        region_h = int(h) - half_h
+        if view_h is None:
+            view_h = h
+        view_h = max(1.0, min(float(view_h), h))
+        half_h = int(view_h // 2)
+        region_h = int(view_h) - half_h
         sw = max(1, int(w) // res)
         sh = max(1, region_h // res)
         out = bytearray(sw * sh * 4)
@@ -1935,7 +1941,7 @@ class {class_name}(Widget):
         plane_x, plane_y = -dir_y * plane, dir_x * plane
         rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
         rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
-        pos_z = 0.5 * h
+        pos_z = 0.5 * view_h
         step_scale = res / w
         floor = math.floor
         for j in range(sh):
@@ -1965,26 +1971,35 @@ class {class_name}(Widget):
         return bytes(out), sw, sh
 
     def _render_floor_plane(self, group, px, res, facing_screen_rad, fov_rad,
-                            cam_cx, cam_cy, w, h, ceiling):
+                            cam_cx, cam_cy, w, h, ceiling, view_h=None):
         """Cast the floor (or, if `ceiling`, the top half) into a low-res
         Texture and add it to the overlay, GPU-upscaled to the region. Kivy is
-        y-up: the floor is the BOTTOM half and the cast buffer's horizon row
-        (row 0) must sit at the TOP of that region (adjacent to the centre), so
-        the tex_coords flip v; the ceiling mirrors it."""
+        y-up: the floor is the BOTTOM half of the view and the cast buffer's
+        horizon row (row 0) must sit at the TOP of that region (adjacent to the
+        centre), so the tex_coords flip v; the ceiling mirrors it.
+
+        view_h is the DOOM-bar letterbox height: the region is view_h/2 tall,
+        the floor sits just above the reserved band at y = h - view_h, and the
+        ceiling's top edge is the window top. None = full height."""
         from kivy.graphics.texture import Texture   # local import: keeps the
         # scene module importable under stubs that don't provide this submodule
+        if view_h is None:
+            view_h = h
+        view_h = max(1.0, min(float(view_h), h))
         buf, sw, sh = self._floor_buffer(px[0], px[1], px[2], res,
-                                         facing_screen_rad, fov_rad, cam_cx, cam_cy)
+                                         facing_screen_rad, fov_rad, cam_cx,
+                                         cam_cy, view_h)
         tex = Texture.create(size=(sw, sh), colorfmt='rgba')
         tex.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
-        region_h = h - h / 2.0
+        region_h = view_h / 2.0
         group.add(Color(1, 1, 1, 1))
         if ceiling:
             group.add(Rectangle(texture=tex, pos=(0, h - region_h),
                                 size=(w, region_h),
                                 tex_coords=(0, 0, 1, 0, 1, 1, 0, 1)))
         else:
-            group.add(Rectangle(texture=tex, pos=(0, 0), size=(w, region_h),
+            group.add(Rectangle(texture=tex, pos=(0, h - view_h),
+                                size=(w, region_h),
                                 tex_coords=(0, 1, 1, 1, 1, 0, 0, 0)))
 
     def _render_raycast(self):
@@ -2014,18 +2029,31 @@ class {class_name}(Widget):
 
         w = float(self.display_width)
         h = float(self.display_height)
-        half_h = h / 2.0
+        # DOOM-bar letterbox. Kivy is y-UP, so the 3D view occupies the TOP
+        # view_h px (y in [view_bottom, h]) and the reserved status-bar band is
+        # at the BOTTOM (y in [0, view_bottom)) — the inverse of desktop/HTML5.
+        # mid is the horizon; view_h 0 => full height, existing games unchanged.
+        # (game_runner.py _render_raycast_view is the reference.)
+        view_h = float(int(cfg.get('viewport_height', 0)) or h)
+        view_h = max(1.0, min(view_h, h))
+        view_bottom = h - view_h
+        mid = h - view_h / 2.0          # horizon (was h/2 at full height)
         group = self._raycast_group
         group.clear()
 
         ceiling_color = self._raycast_color(cfg.get('ceiling_color'), '87CEEB')
         floor_color = self._raycast_color(cfg.get('floor_color'), '464632')
-        # Flat fills: Kivy is y-up, so the ceiling occupies the TOP half
-        # (y in [half_h, h]) and the floor the bottom half (y in [0, half_h]).
+        # Flat fills: ceiling is the TOP half of the view (y in [mid, h]), floor
+        # the bottom half of the view (y in [view_bottom, mid]).
         group.add(Color(*ceiling_color, 1))
-        group.add(Rectangle(pos=(0, half_h), size=(w, h - half_h)))
+        group.add(Rectangle(pos=(0, mid), size=(w, h - mid)))
         group.add(Color(*floor_color, 1))
-        group.add(Rectangle(pos=(0, 0), size=(w, half_h)))
+        group.add(Rectangle(pos=(0, view_bottom), size=(w, mid - view_bottom)))
+        # Reserved DOOM-bar band at the bottom, opaque black, before the
+        # per-instance draw pass composites the bar over it. No-op at full height.
+        if view_bottom > 0:
+            group.add(Color(0, 0, 0, 1))
+            group.add(Rectangle(pos=(0, 0), size=(w, view_bottom)))
 
         camera = self._find_raycast_camera(cfg)
         if camera is None:
@@ -2058,13 +2086,13 @@ class {class_name}(Widget):
         sky_tex = self._raycast_texture(cfg.get('sky_texture', ''))
         if sky_tex is not None and h > 0:
             pano_w = max(1, int(w * 360.0 / max(1.0, fov_deg)))
-            ceil_h = h - half_h
+            ceil_h = h - mid
             pan = int((facing_angle % 360) / 360.0 * pano_w)
             group.add(Color(1, 1, 1, 1))
-            group.add(Rectangle(texture=sky_tex, pos=(-pan, half_h),
+            group.add(Rectangle(texture=sky_tex, pos=(-pan, mid),
                                 size=(pano_w, ceil_h)))
             if pano_w - pan < w:
-                group.add(Rectangle(texture=sky_tex, pos=(pano_w - pan, half_h),
+                group.add(Rectangle(texture=sky_tex, pos=(pano_w - pan, mid),
                                     size=(pano_w, ceil_h)))
 
         # Floor (and, when no sky claimed it, ceiling) texture casting — a
@@ -2077,13 +2105,13 @@ class {class_name}(Widget):
         floor_px = self._raycast_texture_pixels(cfg.get('floor_texture', ''))
         if floor_px is not None:
             self._render_floor_plane(group, floor_px, cast_res, facing_screen_rad,
-                                     fov_rad, cam_cx, cam_cy, w, h, ceiling=False)
+                                     fov_rad, cam_cx, cam_cy, w, h, False, view_h)
         ceil_name = cfg.get('ceiling_texture', '')
         if ceil_name and sky_tex is None:
             ceil_px = self._raycast_texture_pixels(ceil_name)
             if ceil_px is not None:
                 self._render_floor_plane(group, ceil_px, cast_res, facing_screen_rad,
-                                         fov_rad, cam_cx, cam_cy, w, h, ceiling=True)
+                                         fov_rad, cam_cx, cam_cy, w, h, True, view_h)
 
         # CAMERA-PLANE projection (not uniform-angle) — screen columns are
         # evenly spaced, so rays must be evenly spaced on the camera plane:
@@ -2111,12 +2139,14 @@ class {class_name}(Widget):
             # screen-clamped strip — the real "bent wall" bug (close columns
             # clamped and compressed the whole brick texture while farther ones
             # didn't, breaking the courses across a flat wall).
-            full_h = h * cell_size / max(corrected, 1e-4)
-            y_bot = half_h - full_h / 2.0        # y-up: bottom of the full strip
+            full_h = view_h * cell_size / max(corrected, 1e-4)
+            y_bot = mid - full_h / 2.0           # y-up: bottom of the full strip
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
-            y0 = max(0.0, y_bot)
+            # Clamp to the VIEW bottom, not the window bottom, so a close wall
+            # never paints down into the reserved status-bar band.
+            y0 = max(view_bottom, y_bot)
             y1 = min(h, y_bot + full_h)
             vis_h = y1 - y0
             if vis_h <= 0:
@@ -2188,8 +2218,8 @@ class {class_name}(Widget):
             # Unclamped height + a float (sub-texel) vertical slice — same as
             # the wall pass. Squeezing a walked-into sprite into a
             # screen-clamped height distorted it.
-            full_h_b = h * ih / max(corrected_b, 1e-4)
-            sprite_w = h * iw / max(corrected_b, 1e-4)
+            full_h_b = view_h * ih / max(corrected_b, 1e-4)
+            sprite_w = view_h * iw / max(corrected_b, 1e-4)
             if sprite_w < 1 or full_h_b < 1:
                 continue
             # Same camera-plane mapping as the wall pass, so billboards line up
@@ -2198,8 +2228,8 @@ class {class_name}(Widget):
             col_center = (b_camera_x + 1.0) * 0.5 * num_columns
             x_center = col_center * col_width
             x_left = x_center - sprite_w / 2.0
-            y_bot_b = half_h - full_h_b / 2.0     # y-up: bottom of the sprite
-            by0 = max(0.0, y_bot_b)
+            y_bot_b = mid - full_h_b / 2.0        # y-up: bottom of the sprite
+            by0 = max(view_bottom, y_bot_b)       # clamp to the view, not window
             by1 = min(h, y_bot_b + full_h_b)
             b_vis_h = by1 - by0
             if b_vis_h <= 0:
