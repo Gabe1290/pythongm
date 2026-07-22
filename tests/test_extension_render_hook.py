@@ -31,10 +31,16 @@ from runtime import extension_hooks  # noqa: E402
 @pytest.fixture(autouse=True)
 def clean_hooks():
     """Never leak a fixture renderer into other tests — it would repaint every
-    room in the suite."""
+    room in the suite. RESTORE (don't just clear) on the way out: real
+    extensions (raycast_2_5d) register once per process via load_all_plugins,
+    so leaving the registry empty would silently strip their rendering from
+    every later test in the same run."""
+    saved = extension_hooks.get_room_renderers()
     extension_hooks.clear_room_renderers()
     yield
     extension_hooks.clear_room_renderers()
+    for func in saved:
+        extension_hooks.register_room_renderer(func)
 
 
 # --- The registry itself ---------------------------------------------------

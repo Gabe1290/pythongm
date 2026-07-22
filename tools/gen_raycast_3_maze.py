@@ -13,7 +13,8 @@ Geometry follows raycast_1/raycast_2's thin edge-wall model exactly:
     (c*CELL - 4, r*CELL)
 Walls are 32x8 and 8x32, so the -4 centres the 8px thickness on the cell
 boundary. The raycast renderer derives its wall edges from these solid
-instances' sprite aspect ratios (GameRoom._build_raycast_walls).
+instances' sprite aspect ratios
+(extensions/raycast_2_5d/renderer.build_raycast_walls).
 
 Usage:  py -3.12 tools/gen_raycast_3_maze.py
 """

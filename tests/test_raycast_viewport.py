@@ -22,6 +22,24 @@ PROJECT = str(REPO_ROOT / "samples" / "raycast_3" / "project.json")
 WIN_W, WIN_H = 640, 480
 
 
+def _loaded_renderer():
+    """The renderer module the LOADED extension actually renders through.
+
+    The plugin loader imports a folder extension under a synthetic package name
+    (``pygm_extension_<folder>``), so its ``renderer`` submodule is a DIFFERENT
+    object from ``extensions.raycast_2_5d.renderer`` imported the normal way.
+    The run loop draws through the former, so a spy has to patch that one.
+    Requires an extension-loading GameRunner to have been constructed first.
+    """
+    import importlib
+    from runtime import extension_hooks
+    for func in extension_hooks.get_room_renderers():
+        if "raycast_2_5d" in func.__module__:
+            return importlib.import_module(func.__module__ + ".renderer")
+    from extensions.raycast_2_5d import renderer as rc   # single-copy fallback
+    return rc
+
+
 def _snapshot_with_viewport(viewport_height, flat=False, no_camera=False):
     """Run raycast_3 a few frames and return a copy of the last raycast frame,
     with viewport_height injected into obj_cam0's enable_raycast_view.
@@ -35,9 +53,10 @@ def _snapshot_with_viewport(viewport_height, flat=False, no_camera=False):
     maze otherwise occludes the fills near the horizon (especially with the
     taller RAYCAST_WALL_HEIGHT walls), defeating a pixel-sampled horizon check.
     """
-    from runtime.game_runner import GameRunner, GameRoom
+    from runtime.game_runner import GameRunner
 
-    runner = GameRunner(PROJECT)
+    runner = GameRunner(PROJECT)   # loads the raycast extension
+    _rc = _loaded_renderer()
     runner.language = "en"
     for attr in ("show_message_dialog", "show_highscore_dialog",
                  "process_pending_messages"):
@@ -56,13 +75,15 @@ def _snapshot_with_viewport(viewport_height, flat=False, no_camera=False):
         act["parameters"]["camera_object"] = "__no_such_camera__"
 
     shot = {}
-    real = GameRoom._render_raycast_view
+    # The renderer moved into the raycast extension (Stage B2); the room is
+    # drawn through the extension_hooks seam, so spy on the module function.
+    real = _rc.render_raycast_view
 
-    def spy(self, screen):
-        real(self, screen)
+    def spy(room, screen):
+        real(room, screen)
         shot["surface"] = screen.copy()
 
-    GameRoom._render_raycast_view = spy
+    _rc.render_raycast_view = spy
     state = {"f": 0}
 
     class _Clock:
@@ -81,7 +102,7 @@ def _snapshot_with_viewport(viewport_height, flat=False, no_camera=False):
         runner.run()
     finally:
         pygame.time.Clock = real_clock
-        GameRoom._render_raycast_view = real
+        _rc.render_raycast_view = real
     return shot["surface"]
 
 

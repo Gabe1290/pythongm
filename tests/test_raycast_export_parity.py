@@ -26,6 +26,17 @@ sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # for sibling test import
 
 from runtime.game_runner import GameRoom  # noqa: E402
+# The desktop raycast renderer moved into its extension (Stage B2,
+# docs/RAYCAST_EXTENSION_PLAN.md); it is the reference the HTML5/Kivy ports
+# must match. GameRoom.__new__ is still used below as a bare state bag holding
+# the wall-edge sets cast_ray reads.
+from extensions.raycast_2_5d.renderer import (  # noqa: E402
+    cast_ray, wall_shade,
+    RAYCAST_SIDE_SHADE, RAYCAST_FOG_STRENGTH, RAYCAST_MIN_SHADE,
+    RAYCAST_WALL_HEIGHT,
+)
+RENDERER = (REPO_ROOT / "extensions" / "raycast_2_5d" / "renderer.py").read_text(
+    encoding="utf-8")
 
 # Reuse the stub-kivy harness + raycast_1 export from the Kivy raycast tests.
 from test_kivy_raycast import (  # noqa: E402
@@ -94,7 +105,7 @@ def test_desktop_and_kivy_cast_ray_are_numerically_identical():
         for (ox, oy) in origins:
             px, py = ox * cell_size, oy * cell_size
             for ang in angles:
-                d = desktop._cast_ray(px, py, ang, cell_size, max_cells)
+                d = cast_ray(desktop, px, py, ang, cell_size, max_cells)
                 k = kivy._cast_ray(px, py, ang, cell_size, max_cells)
                 # Compare (distance, side, hit, tex_u) — the 5th return
                 # (sprite) is an engine-specific object vs a name, by design.
@@ -108,8 +119,8 @@ def test_desktop_and_kivy_cast_ray_are_numerically_identical():
         assert checked == len(origins) * len(angles)
         hits = sum(1 for ang in angles
                    for (ox, oy) in origins
-                   if desktop._cast_ray(ox * cell_size, oy * cell_size, ang,
-                                        cell_size, max_cells)[2])
+                   if cast_ray(desktop, ox * cell_size, oy * cell_size, ang,
+                               cell_size, max_cells)[2])
         assert hits > 0
 
 
@@ -148,15 +159,15 @@ def test_wall_shade_model_matches_desktop_and_kivy():
         cls = _scene_class(game)
         for side in (0, 1):
             for corrected in (0.0, 8.0, 64.0, 320.0, 640.0, 5000.0):
-                d = GameRoom._wall_shade(side, corrected, 640.0)
+                d = wall_shade(side, corrected, 640.0)
                 k = cls._wall_shade(side, corrected, 640.0)
                 assert abs(d - k) < 1e-12, (side, corrected, d, k)
         # constants agree too
-        assert GameRoom.RAYCAST_SIDE_SHADE == cls.RAYCAST_SIDE_SHADE
-        assert GameRoom.RAYCAST_FOG_STRENGTH == cls.RAYCAST_FOG_STRENGTH
-        assert GameRoom.RAYCAST_MIN_SHADE == cls.RAYCAST_MIN_SHADE
+        assert RAYCAST_SIDE_SHADE == cls.RAYCAST_SIDE_SHADE
+        assert RAYCAST_FOG_STRENGTH == cls.RAYCAST_FOG_STRENGTH
+        assert RAYCAST_MIN_SHADE == cls.RAYCAST_MIN_SHADE
         # wall height (taller, building-like walls) must match on all three
-        assert GameRoom.RAYCAST_WALL_HEIGHT == cls.RAYCAST_WALL_HEIGHT == 1.5
+        assert RAYCAST_WALL_HEIGHT == cls.RAYCAST_WALL_HEIGHT == 1.5
         assert "const RAYCAST_WALL_HEIGHT = 1.5" in ENGINE
 
 
@@ -164,13 +175,13 @@ def test_wall_shade_behaviour():
     """Sanity on the model itself: a y-face is only slightly darker than an
     x-face (no 2:1 break), and distance darkens both, floored at MIN_SHADE."""
     M = 640.0
-    near0 = GameRoom._wall_shade(0, 0.0, M)
-    near1 = GameRoom._wall_shade(1, 0.0, M)
-    far0 = GameRoom._wall_shade(0, M, M)
+    near0 = wall_shade(0, 0.0, M)
+    near1 = wall_shade(1, 0.0, M)
+    far0 = wall_shade(0, M, M)
     assert near0 == 1.0
     assert 0.8 < near1 < 1.0, "side hint must be subtle, not the old 0.5"
     assert far0 < near0, "distance must darken"
-    assert GameRoom._wall_shade(1, 10 * M, M) >= GameRoom.RAYCAST_MIN_SHADE
+    assert wall_shade(1, 10 * M, M) >= RAYCAST_MIN_SHADE
 
 
 def test_html5_wall_shade_mirrors_the_same_constants():
@@ -211,7 +222,7 @@ def test_flat_wall_projects_perfectly_straight():
         for col in range(N):
             camera_x = 2.0 * (col + 0.5) / N - 1.0
             off = math.atan(plane_tan * camera_x)
-            d, side, hit, tu, spr = room._cast_ray(240, 240, facing + off, 32, 20)
+            d, side, hit, tu, spr = cast_ray(room, 240, 240, facing + off, 32, 20)
             if hit:
                 inv.append(1.0 / (d * math.cos(off)))
         assert len(inv) > 20
@@ -233,11 +244,11 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     while unclamped (far) columns didn't, breaking the courses across a FLAT
     wall, with the boundary marching along it as you walked (user reports
     2026-07-19). All three renderers must crop."""
-    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
 
     # the squeeze signature: a screen-clamped height fed straight to the scale
-    assert "strip_h = min(h, int(h * cell_size" not in gr
+    # (desktop source is now the raycast extension's renderer, not game_runner)
+    assert "strip_h = min(h, int(h * cell_size" not in RENDERER
     assert "strip_h = min(h, h * cell_size" not in kx
     assert "Math.min(h, Math.floor(h * cellSize" not in ENGINE
 
@@ -250,7 +261,9 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     # height until a viewport_height is set. Crop semantics unchanged.
     # Wall strips scale by view_h (letterbox) AND RAYCAST_WALL_HEIGHT (taller,
     # building-like walls). Both == 1.0-equivalent until set; here 1.5.
-    assert "full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in gr, "game_runner"
+    # Desktop uses the bare RAYCAST_WALL_HEIGHT (module constant) now the code
+    # is a free function, not a GameRoom method; Kivy keeps self.RAYCAST_...
+    assert "full_h = view_h * cell_size * RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in RENDERER, "renderer"
     assert "full_h = view_h * cell_size * self.RAYCAST_WALL_HEIGHT / max(corrected, 1e-4)" in kx, "kivy_exporter"
     assert "const fullH = viewH * cellSize * RAYCAST_WALL_HEIGHT / Math.max(corrected, 1e-4)" in ENGINE
     assert "ctx.drawImage(texSprite, texX, srcY, 1, srcH, x0, y0, stripW, visH)" in ENGINE
@@ -259,17 +272,17 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     # snapping the crop to whole texels per column produced jagged edges.
     # Desktop carries the remainder as a blit offset; HTML5 passes float source
     # rows to drawImage; Kivy selects the slice with float tex_coords.
-    assert "frac_px" in gr and "texels_per_px" in gr
+    assert "frac_px" in RENDERER and "texels_per_px" in RENDERER
     assert "Math.floor(v0 * th)" not in ENGINE, "engine.js still snaps to texels"
     assert "tex_coords=(0.0, v0, 1.0, v0," in kx, "kivy still snaps to texels"
 
     # BILLBOARDS get the same treatment — a sprite you walk into overflows the
     # screen too, and the old min(h, ...) squeezed the whole sprite in.
-    assert "sprite_h = min(h, int(h * inst._cached_height" not in gr
+    assert "sprite_h = min(h, int(h * inst._cached_height" not in RENDERER
     assert "sprite_h = min(h, h * ih" not in kx
     assert "Math.min(h, Math.floor(h * b.inst.boxHeight()" not in ENGINE
     # All three billboards scale by the letterbox height too.
-    assert "full_h = view_h * inst._cached_height / max(corrected, 1e-4)" in gr
+    assert "full_h = view_h * inst._cached_height / max(corrected, 1e-4)" in RENDERER
     assert "full_h_b = view_h * ih / max(corrected_b, 1e-4)" in kx
     assert "const fullH = viewH * b.inst.boxHeight() / Math.max(b.corr, 1e-4)" in ENGINE
     assert "ctx.drawImage(img, srcX, bSrcY, 1, bSrcH, screenX, by0, 1, bVisH)" in ENGINE
@@ -301,7 +314,7 @@ def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
         for col in range(N):
             camera_x = 2.0 * (col + 0.5) / N - 1.0
             off = math.atan(plane_tan * camera_x)
-            d, side, hit, tu, spr = room._cast_ray(cam[0], cam[1], facing + off, cell, 20)
+            d, side, hit, tu, spr = cast_ray(room, cam[0], cam[1], facing + off, cell, 20)
             if not hit:
                 continue
             corrected = d * math.cos(off)
@@ -320,10 +333,10 @@ def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
     assert max(abs(v - 0.5) for v in centre_v) < 1e-9, (
         "texture centre drifts across columns -- courses would break")
     """All three renderers must use the camera-plane mapping (and the matching
-    inverse for billboards), not the old linear FOV ramp."""
-    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    inverse for billboards), not the old linear FOV ramp. Desktop source is the
+    raycast extension's renderer now (Stage B2)."""
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
-    for src, name in ((gr, "game_runner"), (kx, "kivy_exporter")):
+    for src, name in ((RENDERER, "renderer"), (kx, "kivy_exporter")):
         assert "math.atan(plane_tan * camera_x)" in src, name
         assert "-fov_rad / 2 + fov_rad * (col / num_columns)" not in src, \
             f"{name} still uses the bent uniform-angle ramp"
@@ -331,7 +344,7 @@ def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
     assert "-fovRad / 2 + fovRad * (col / numCols)" not in ENGINE, \
         "engine.js still uses the bent uniform-angle ramp"
     # billboards use the inverse mapping so they track the walls
-    assert "math.tan(rel_angle) / plane_tan" in gr
+    assert "math.tan(rel_angle) / plane_tan" in RENDERER
     assert "math.tan(rel_angle) / plane_tan" in kx
     assert "Math.tan(b.relAngle) / planeTan" in ENGINE
 
@@ -339,9 +352,8 @@ def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
 def test_all_three_share_the_facing_angle_convention():
     """Turning maps to screen-space radians the same way on every target:
     -facing_angle (GM 0=right/90=up -> y-down screen)."""
-    # Desktop + Kivy: radians(-camera.facing_angle)
-    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
-    assert "math.radians(-camera.facing_angle)" in gr
+    # Desktop (raycast extension) + Kivy: radians(-camera.facing_angle)
+    assert "math.radians(-camera.facing_angle)" in RENDERER
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
     assert "math.radians(-float(getattr(camera, 'facing_angle', 0)))" in kx
     # HTML5: (-facing_angle) in radians
@@ -359,10 +371,16 @@ def test_all_three_composite_the_hud_after_the_raycast_render():
     gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
 
-    # Desktop: _render_room runs the draw pass instead of returning bare.
-    branch = gr[gr.index("if self.raycast_camera.get('enabled'):"):]
+    # Desktop: the raycast view renders through the extension seam (Stage B2),
+    # and _render_room composites the HUD after any claimed render instead of
+    # returning bare. Two facts, two sources: the extension calls the renderer,
+    # and the extension-render branch runs the per-instance draw pass.
+    init = (REPO_ROOT / "extensions" / "raycast_2_5d" / "__init__.py").read_text(
+        encoding="utf-8")
+    assert "renderer.render_raycast_view(room, screen)" in init, \
+        "raycast extension no longer renders the first-person view"
+    branch = gr[gr.index("if extension_hooks.render_room(self, screen):"):]
     branch = branch[:branch.index("return")]
-    assert "self._render_raycast_view(screen)" in branch
     assert "self._render_draw_events(screen)" in branch, \
         "desktop returns without compositing the HUD"
 

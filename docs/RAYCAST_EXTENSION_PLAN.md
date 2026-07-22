@@ -1,6 +1,9 @@
 # Plan: move the 2.5D raycast feature into a PyGameMaker extension
 
-Status: **PLAN (2026-07-22), not started.**
+Status: **IN PROGRESS.** Stage A (A1–A3) and Stage B (B1, B2) are done; the
+2.5D raycast renderer now lives in `extensions/raycast_2_5d/` and draws through
+the extension seam. Next: B3 (move the four actions + their state), then B4
+(document `facing_angle`). Stage C (export contributions) remains optional.
 
 ## Why
 
@@ -166,8 +169,26 @@ moves.*
 
 - [ ] **B1 — render-override + extension-state hooks in core.** With a fixture
   extension proving the hook, before raycast depends on it.
-- [ ] **B2 — move the renderer.** `_render_raycast_view` and friends → the
-  extension. Core keeps `run_draw_event`/`_render_draw_events`/`_sprite_top_left`.
+- [x] **B2 — move the renderer.** `_render_raycast_view` and friends → the
+  extension (`extensions/raycast_2_5d/renderer.py`, done 2026-07-23). Core keeps
+  `run_draw_event`/`_render_draw_events`/`_sprite_top_left`. The renderer was
+  extracted behaviour-identical (`self` → an explicit `room` param, class
+  constants → module constants), proven pixel-for-pixel against pre-move HEAD
+  across a flat/textured/sky/floor/letterbox/no-camera matrix and a 480-ray DDA
+  matrix before the core copy was deleted. `GameRoom._render_room` now draws
+  raycast rooms through the Stage-B1 `extension_hooks` seam — the built-in
+  `if self.raycast_camera.get('enabled')` branch is gone. The four raycast
+  actions + the `raycast_camera`/wall-cache state they set stay in core (B3).
+  Two things worth carrying forward: (1) `load_all_plugins` now re-registers
+  room renderers on every call (idempotent), because the hook registry is
+  process-global state a test can clear — without it a later GameRunner in the
+  same process would silently lose extension rendering. (2) The loader imports a
+  folder extension under a synthetic package name (`pygm_extension_<folder>`),
+  so its `renderer` submodule is a DIFFERENT object from
+  `extensions.raycast_2_5d.renderer` imported the normal way. Harmless for the
+  renderer (no module-level mutable state), but a test that spies on the render
+  path must patch the *loaded* copy — see `_loaded_renderer()` in
+  `tests/test_raycast_viewport.py`.
 - [ ] **B3 — move the actions + builders.** The four actions out of static
   `ACTION_TYPES` into the extension.
 - [ ] **B4 — decide `facing_angle`.** Recommend leaving it core; document why.

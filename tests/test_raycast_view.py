@@ -36,6 +36,16 @@ pytestmark = skip_without_pygame
 import pygame
 pygame.init()
 from runtime.game_runner import GameRoom, GameInstance  # noqa: E402
+# The raycast renderer moved into its extension (Stage B2,
+# docs/RAYCAST_EXTENSION_PLAN.md). These tests exercise it directly, so they
+# call the moved module-level functions/constants; the enable_raycast_view /
+# set_facing_angle action tests below still target the core ActionExecutor
+# (those actions stay in core through Stage B3).
+from extensions.raycast_2_5d import renderer as _rc  # noqa: E402
+from extensions.raycast_2_5d.renderer import (  # noqa: E402
+    build_raycast_walls, cast_ray, render_raycast_view, wall_shade,
+    RAYCAST_MIN_SHADE, RAYCAST_SIDE_SHADE, RAYCAST_WALL_HEIGHT,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -208,7 +218,7 @@ class TestBuildRaycastWalls:
     def test_square_solid_instance_blocks_all_four_edges_of_its_cell(self):
         room = _room(128, 128)
         room.instances.append(_solid_instance("obj_wall", 64, 32))  # grid (2, 1)
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         assert room._raycast_v_walls == {(2, 1), (3, 1)}
         assert room._raycast_h_walls == {(2, 1), (2, 2)}
 
@@ -217,7 +227,7 @@ class TestBuildRaycastWalls:
         # top-left y = 32 - 4 = 28.
         room = _room(128, 128)
         room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         assert room._raycast_h_walls == {(0, 1)}
         assert room._raycast_v_walls == set()
 
@@ -226,14 +236,14 @@ class TestBuildRaycastWalls:
         # top-left x = 32 - 4 = 28.
         room = _room(128, 128)
         room.instances.append(_solid_instance("obj_wall_v", 28, 0, width=8, height=32))
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         assert room._raycast_v_walls == {(1, 0)}
         assert room._raycast_h_walls == set()
 
     def test_non_solid_instance_ignored(self):
         room = _room(128, 128)
         room.instances.append(_nonsolid_instance("obj_person", 64, 32))
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         assert room._raycast_v_walls == set()
         assert room._raycast_h_walls == set()
 
@@ -242,7 +252,7 @@ class TestBuildRaycastWalls:
         inst = GameInstance("obj_x", 0, 0, {}, action_executor=None)
         assert inst._cached_object_data is None
         room.instances.append(inst)
-        room._build_raycast_walls(32)  # must not raise
+        build_raycast_walls(room, 32)  # must not raise
         assert room._raycast_v_walls == set()
         assert room._raycast_h_walls == set()
 
@@ -255,10 +265,10 @@ class TestCastRay:
     def test_hits_solid_instance_at_expected_distance(self):
         room = _room(160, 160)
         room.instances.append(_solid_instance("obj_wall", 64, 0))  # grid (2, 0)
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         # Camera at grid (0.5, 0.5), i.e. (16, 16); ray along +x hits the
         # wall's west face at grid x=2 -> (2.5 - 1) = 1.5 cells = 48px.
-        dist, side, hit, *_ = room._cast_ray(16, 16, 0.0, 32, 20)
+        dist, side, hit, *_ = cast_ray(room, 16, 16, 0.0, 32, 20)
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 0
         assert hit is True
@@ -266,11 +276,11 @@ class TestCastRay:
     def test_perpendicular_ray_reports_the_other_side(self):
         room = _room(160, 160)
         room.instances.append(_solid_instance("obj_wall", 0, 64))  # grid (0, 2)
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         # Straight down (GM screen-space: angle pi/2 in this method's raw
         # math convention, since _cast_ray takes screen-space radians
         # directly -- see _render_raycast_view for the GM-angle mapping).
-        dist, side, hit, *_ = room._cast_ray(16, 16, math.pi / 2, 32, 20)
+        dist, side, hit, *_ = cast_ray(room, 16, 16, math.pi / 2, 32, 20)
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 1
         assert hit is True
@@ -283,15 +293,15 @@ class TestCastRay:
         room = _room(96, 96)
         # Horizontal segment across row 0's south edge only.
         room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
-        room._build_raycast_walls(32)
+        build_raycast_walls(room, 32)
         # Ray straight down through row 0 hits it...
-        dist, side, hit, *_ = room._cast_ray(16, 4, math.pi / 2, 32, 20)
+        dist, side, hit, *_ = cast_ray(room, 16, 4, math.pi / 2, 32, 20)
         assert dist == pytest.approx(28.0, abs=0.01)
         assert side == 1
         assert hit is True
         # ...but the same ray one row over (row 1, no wall registered
         # there) sails through to the render-distance cap instead.
-        dist2, side2, hit2, *_ = room._cast_ray(16, 36, math.pi / 2, 32, 3)
+        dist2, side2, hit2, *_ = cast_ray(room, 16, 36, math.pi / 2, 32, 3)
         assert dist2 == pytest.approx(3 * 32, abs=0.01)
         assert hit2 is False
 
@@ -302,8 +312,8 @@ class TestCastRay:
         # the raycaster itself guards against; here it should just march
         # to max_cells and stop cleanly, no crash / no infinite loop.
         room = _room(64, 64)
-        room._build_raycast_walls(32)
-        dist, side, hit, *_ = room._cast_ray(16, 16, 0.3, 32, 3)
+        build_raycast_walls(room, 32)
+        dist, side, hit, *_ = cast_ray(room, 16, 16, 0.3, 32, 3)
         assert dist == pytest.approx(3 * 32, abs=0.01)
         assert hit is False
 
@@ -334,19 +344,19 @@ class TestRenderRaycastView:
     def test_center_column_shows_wall_color(self):
         room = self._room_with_camera_and_wall()
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         px = screen.get_at((w // 2, h // 2))[:3]
         # The wall colour (#ff0000), darkened by the distance-falloff shading
-        # model (see GameRoom._wall_shade) -- still a pure red hue.
+        # model (see renderer.wall_shade) -- still a pure red hue.
         assert px[1] == 0 and px[2] == 0
-        assert int(255 * room.RAYCAST_MIN_SHADE) <= px[0] <= 255
+        assert int(255 * RAYCAST_MIN_SHADE) <= px[0] <= 255
         assert px[0] > 0
 
     def test_corners_show_floor_and_ceiling(self):
         room = self._room_with_camera_and_wall()
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         assert screen.get_at((2, 2))[:3] == (0, 0, 255)          # ceiling
         assert screen.get_at((2, h - 2))[:3] == (0, 255, 0)       # floor
@@ -371,7 +381,7 @@ class TestRenderRaycastView:
             'wall_color': '#993333', 'floor_color': '#000000', 'ceiling_color': '#000000',
         }
         screen = pygame.Surface((160, 120))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         shaded = screen.get_at((w // 2, h // 2))[:3]
         # base wall colour is (153, 51, 51); the old model rendered exactly
@@ -388,7 +398,7 @@ class TestRenderRaycastView:
             'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)  # must not raise
+        render_raycast_view(room, screen)  # must not raise
         w, h = screen.get_size()
         assert screen.get_at((2, 2))[:3] == (0, 0, 255)
         assert screen.get_at((2, h - 2))[:3] == (0, 255, 0)
@@ -414,7 +424,7 @@ class TestRenderRaycastView:
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         for x in range(0, w, 4):
             assert screen.get_at((x, h // 2 - 1))[:3] == (0, 0, 255), f"col {x} leaked wall color above horizon"
@@ -474,18 +484,21 @@ class TestRenderRaycastView:
                     # full screen once dist <= cell_size (32px), and both
                     # the pre-fix ~3px and post-fix ~29-35px near-wall
                     # readings fall under that cap, rendering identically.
-                    real_cast_ray = room._cast_ray
+                    # Patch the extension's module-level cast_ray (the render
+                    # calls it by bare name, so a module-attribute patch is what
+                    # intercepts it now that it's no longer a GameRoom method).
+                    real_cast_ray = _rc.cast_ray
                     seen = []
 
-                    def _spy(px, py, *a, **k):
+                    def _spy(room_arg, px, py, *a, **k):
                         seen.append((px, py))
-                        return real_cast_ray(px, py, *a, **k)
+                        return real_cast_ray(room_arg, px, py, *a, **k)
 
-                    room._cast_ray = _spy
+                    _rc.cast_ray = _spy
                     try:
-                        runner.current_room._render_raycast_view(runner.screen)
+                        render_raycast_view(runner.current_room, runner.screen)
                     finally:
-                        room._cast_ray = real_cast_ray
+                        _rc.cast_ray = real_cast_ray
                     state["origins"] = (seen, player.x, player.y, player._cached_width, player._cached_height)
                 if f >= MAX_FRAMES:
                     runner.running = False
@@ -553,7 +566,7 @@ class TestTexturedWalls:
     def test_solid_wall_is_textured_with_its_own_sprite(self):
         room = self._sprited_solid_wall(color=(255, 0, 255))
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # centre column shows the sprite's MAGENTA hue (darkened by the
         # distance-falloff shading), NOT the flat wall_color red
@@ -564,7 +577,7 @@ class TestTexturedWalls:
         room = self._sprited_solid_wall(color=(255, 0, 255))
         room.raycast_camera['wall_textured'] = False
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # flat wall_color red (#ff0000), scaled by the shading model
         r, g, b = screen.get_at((w // 2, h // 2))[:3]
@@ -593,7 +606,7 @@ class TestTexturedWalls:
             'wall_color': '#993333', 'floor_color': '#000000', 'ceiling_color': '#000000',
         }
         screen = pygame.Surface((160, 120))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # the 200-grey texture, multiplied by the shade factor. The old model
         # gave exactly 100 (half); the new one must be clearly brighter while
@@ -604,16 +617,16 @@ class TestTexturedWalls:
 
     def test_cast_ray_returns_tex_u_and_sprite_on_hit(self):
         room = self._sprited_solid_wall()
-        room._build_raycast_walls(32)
-        dist, side, hit, tex_u, sprite = room._cast_ray(16, 80, 0.0, 32, 20)
+        build_raycast_walls(room, 32)
+        dist, side, hit, tex_u, sprite = cast_ray(room, 16, 80, 0.0, 32, 20)
         assert hit is True
         assert 0.0 <= tex_u < 1.0
         assert sprite is room.instances[0].sprite
 
     def test_cast_ray_miss_returns_no_texture(self):
         room = _room(160, 160)
-        room._build_raycast_walls(32)                # no walls at all
-        dist, side, hit, tex_u, sprite = room._cast_ray(16, 16, 0.0, 32, 5)
+        build_raycast_walls(room, 32)                # no walls at all
+        dist, side, hit, tex_u, sprite = cast_ray(room, 16, 16, 0.0, 32, 5)
         assert hit is False
         assert tex_u == 0.0 and sprite is None
 
@@ -631,7 +644,7 @@ class TestTexturedWalls:
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # flat wall_color red, scaled by the shading model
         r, g, b = screen.get_at((w // 2, h // 2))[:3]
@@ -671,7 +684,7 @@ class TestSky:
     def test_sky_replaces_flat_ceiling(self):
         room = self._open_room_with_sky()
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         # a ceiling pixel is now sky (gradient R>0/G==0), not the flat blue fill
         px = screen.get_at((160, 8))[:3]
         assert px != (0, 0, 255), "sky did not replace the flat ceiling fill"
@@ -683,11 +696,11 @@ class TestSky:
         cam = next(i for i in room.instances if i.object_name == "obj_person")
 
         cam.facing_angle = 0.0
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         at0 = screen.get_at((160, 8))[:3]
 
         cam.facing_angle = 90.0
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         at90 = screen.get_at((160, 8))[:3]
 
         assert at0 != at90, "sky did not pan when the camera turned"
@@ -695,7 +708,7 @@ class TestSky:
     def test_floor_still_flat_below_horizon(self):
         room = self._open_room_with_sky()
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         assert screen.get_at((w // 2, h - 4))[:3] == (0, 255, 0)  # floor_color
 
@@ -703,7 +716,7 @@ class TestSky:
         room = self._open_room_with_sky()
         del room.raycast_camera['sky_texture']
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         assert screen.get_at((160, 8))[:3] == (0, 0, 255)  # flat ceiling_color
 
 
@@ -738,7 +751,7 @@ class TestFloorCasting:
         room._all_sprites = {'spr_floor': self._solid_tex((200, 40, 160))}
         room.raycast_camera['floor_texture'] = 'spr_floor'
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # a floor pixel near the bottom is now the texture colour, not flat green
         assert screen.get_at((w // 2, h - 4))[:3] == (200, 40, 160)
@@ -746,7 +759,7 @@ class TestFloorCasting:
     def test_no_floor_texture_keeps_flat_floor(self):
         room = self._open_room()
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         assert screen.get_at((w // 2, h - 4))[:3] == (0, 255, 0)
 
@@ -755,7 +768,7 @@ class TestFloorCasting:
         room._all_sprites = {'spr_ceil': self._solid_tex((40, 200, 160))}
         room.raycast_camera['ceiling_texture'] = 'spr_ceil'
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         assert screen.get_at((w // 2, 4))[:3] == (40, 200, 160)
 
@@ -768,7 +781,7 @@ class TestFloorCasting:
         room.raycast_camera['ceiling_texture'] = 'spr_ceil'
         room.raycast_camera['sky_texture'] = 'spr_sky'
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # sky claimed the ceiling; the ceiling_texture must not appear
         assert screen.get_at((w // 2, 4))[:3] == (10, 20, 30)
@@ -780,7 +793,7 @@ class TestFloorCasting:
         for res in (1, 2, 8):
             room.raycast_camera['floor_cast_res'] = res
             screen = pygame.Surface((320, 240))
-            room._render_raycast_view(screen)  # must not raise
+            render_raycast_view(room, screen)  # must not raise
             assert screen.get_at((160, 236))[:3] == (200, 40, 160)
 
     def test_full_textured_pipeline_under_budget(self):
@@ -812,7 +825,7 @@ class TestFloorCasting:
         start = time.perf_counter()
         for i in range(frames):
             camera.facing_angle = (i / frames) * 360.0
-            room._render_raycast_view(screen)
+            render_raycast_view(room, screen)
         ms = (time.perf_counter() - start) / frames * 1000
         assert ms < 25.0, f"full textured raycast took {ms:.1f}ms/frame (floor cast too slow?)"
 
@@ -837,7 +850,7 @@ class TestBillboardSprites:
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         found = any(screen.get_at((x, h // 2))[:3] == (255, 255, 0) for x in range(w))
         assert found, "billboard sprite never appeared on screen despite a clear line of sight"
@@ -857,7 +870,7 @@ class TestBillboardSprites:
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         found = any(screen.get_at((x, h // 2))[:3] == (255, 255, 0) for x in range(w))
         assert not found, "billboard sprite showed through a wall standing directly in front of it"
@@ -892,7 +905,7 @@ class TestBillboardSprites:
             'wall_textured': False,
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         # The wall strip itself (drawn as wall_color) is expected; the
         # sprite's own yellow must never appear anywhere.
@@ -912,7 +925,7 @@ class TestBillboardSprites:
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)  # must not raise, and not draw itself
+        render_raycast_view(room, screen)  # must not raise, and not draw itself
         w, h = screen.get_size()
         found_yellow = any(
             screen.get_at((x, y))[:3] == (255, 255, 0) for x in range(0, w, 4) for y in range(0, h, 4)
@@ -940,7 +953,7 @@ class TestBillboardSprites:
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
         screen = pygame.Surface((320, 240))
-        room._render_raycast_view(screen)
+        render_raycast_view(room, screen)
         w, h = screen.get_size()
         center = screen.get_at((w // 2, h // 2))[:3]
         assert center == (255, 0, 255), f"expected the nearer sprite's color at screen center, got {center}"
@@ -976,7 +989,7 @@ class TestRaycastPerformance:
         start = time.perf_counter()
         for i in range(frames):
             camera.facing_angle = (i / frames) * 360.0
-            room._render_raycast_view(screen)
+            render_raycast_view(room, screen)
         elapsed_ms_per_frame = (time.perf_counter() - start) / frames * 1000
 
         # Generous ceiling (Phase 0's spike measured ~1.6ms on this
@@ -1097,7 +1110,7 @@ class TestRaycast1SampleSmoke:
         """Regression covering the full "complete rethink" fix described
         in docs/RAYCAST_2_5D_PLAN.md: raycast_1's walls were converted
         from full-cell 32px blocks to thin (8px) edge segments (a real
-        engine change -- see GameRoom._build_raycast_walls/_cast_ray),
+        engine change -- see the raycast extension's build_raycast_walls/cast_ray),
         because the earlier fix (just shrinking the player's collision
         bbox within full-cell-block corridors) still weren't reliably
         enough clearance to turn every corner. This walks the player east

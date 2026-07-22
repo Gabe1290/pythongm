@@ -1,0 +1,7 @@
+{
+    "name": "2.5D Raycast View",
+    "version": "1.0.0",
+    "author": "PyGameMaker",
+    "description": "Doom/Wolfenstein-style first-person room renderer: DDA wall casting, textured walls, sky panorama, floor casting, billboard sprites. Used by the raycast_1-4 samples.",
+    "enabled": true
+}

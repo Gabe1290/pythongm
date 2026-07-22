@@ -244,10 +244,11 @@ def test_uses_a_ceiling_not_a_sky():
 
 
 def test_walls_render_taller_globally():
-    """The taller-wall look is a global engine default (RAYCAST_WALL_HEIGHT),
-    so it applies here too — a sanity tie to the constant."""
-    from runtime.game_runner import GameRoom
-    assert GameRoom.RAYCAST_WALL_HEIGHT == 1.5
+    """The taller-wall look is a global renderer default (RAYCAST_WALL_HEIGHT),
+    so it applies here too — a sanity tie to the constant. The renderer moved
+    into the raycast extension in Stage B2 (docs/RAYCAST_EXTENSION_PLAN.md)."""
+    from extensions.raycast_2_5d.renderer import RAYCAST_WALL_HEIGHT
+    assert RAYCAST_WALL_HEIGHT == 1.5
 
 
 # --- On-demand minimap (M toggle), placed inside the letterboxed view ------

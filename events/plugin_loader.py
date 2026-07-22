@@ -422,6 +422,15 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
         for module in _shared_loader.plugin_modules:
             if hasattr(module, 'PluginExecutor'):
                 _shared_loader._register_action_handlers(module.PluginExecutor)
+    # Re-register room renderers on every call. Registration is idempotent,
+    # and the hook registry (runtime/extension_hooks) is process-global state
+    # a test may legitimately clear — without this, the once-per-process load
+    # above would never restore it, and every later GameRunner in the process
+    # would silently lose extension rendering (raycast rooms falling back to
+    # top-down).
+    for module in _shared_loader.plugin_modules:
+        if hasattr(module, 'PLUGIN_ROOM_RENDERERS'):
+            _shared_loader._load_room_renderers(module.PLUGIN_ROOM_RENDERERS)
     return _shared_loader
 
 
