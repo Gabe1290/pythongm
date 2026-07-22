@@ -108,6 +108,10 @@ class PluginLoader:
             if hasattr(module, 'PluginExecutor'):
                 self._register_action_handlers(module.PluginExecutor)
 
+            # Room renderers (extension_hooks) — a plugin may draw rooms too
+            if hasattr(module, 'PLUGIN_ROOM_RENDERERS'):
+                self._load_room_renderers(module.PLUGIN_ROOM_RENDERERS)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -198,6 +202,8 @@ class PluginLoader:
                 info.actions_count = self._load_actions(module.PLUGIN_ACTIONS)
             if hasattr(module, 'PluginExecutor'):
                 self._register_action_handlers(module.PluginExecutor)
+            if hasattr(module, 'PLUGIN_ROOM_RENDERERS'):
+                self._load_room_renderers(module.PLUGIN_ROOM_RENDERERS)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -208,6 +214,17 @@ class PluginLoader:
             import traceback
             traceback.print_exc()
             return False
+
+    def _load_room_renderers(self, renderers) -> int:
+        """Register an extension's PLUGIN_ROOM_RENDERERS (see
+        runtime/extension_hooks). Lets an extension draw a room itself instead
+        of only adding actions — what the 2.5D raycast view needs."""
+        from runtime.extension_hooks import register_room_renderer
+        count = 0
+        for func in (renderers or []):
+            register_room_renderer(func)
+            count += 1
+        return count
 
     def _extract_plugin_info(self, module, plugin_file: Path) -> PluginInfo:
         """Extract plugin metadata from module"""

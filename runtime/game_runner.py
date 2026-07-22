@@ -29,6 +29,7 @@ from runtime.action_executor import ActionExecutor
 from runtime._keymap import pygame_key_name
 from utils.project_file_merge import merge_room_file, merge_object_file
 from events.plugin_loader import load_all_plugins
+from runtime import extension_hooks
 from config.blockly_translations import get_runtime_translation
 from runtime.thymio_simulator import ThymioSimulator
 from runtime.thymio_renderer import ThymioRenderer
@@ -1351,6 +1352,10 @@ class GameRoom:
         # segment sitting on a cell boundary — reads and collides
         # consistently: the ray only stops at the segment's actual
         # thickness, not the whole cell it happens to touch.
+        # Scratch space extensions can attach per-room state to, so they don't
+        # have to add attributes to engine classes. Namespace your own key —
+        # see runtime/extension_hooks.py.
+        self.extension_state: Dict[str, Any] = {}
         self.raycast_camera: Dict[str, Any] = {'enabled': False}
         self._raycast_v_walls: Optional[Set[Tuple[int, int]]] = None
         self._raycast_h_walls: Optional[Set[Tuple[int, int]]] = None
@@ -1673,6 +1678,14 @@ class GameRoom:
         offset: (dx, dy) added to every blit so room coords (0, 0) lands at
         (dx, dy) on screen. (0, 0) preserves the legacy no-view behavior.
         """
+        # Extensions get first refusal on drawing this room. One that claims it
+        # (returns True) replaces the top-down pass; the per-instance draw-event
+        # pass still runs afterwards, so HUD actions composite on top exactly as
+        # they do for the built-in raycast view. See runtime/extension_hooks.py.
+        if extension_hooks.render_room(self, screen):
+            self._render_draw_events(screen)
+            return
+
         # Raycast first-person mode replaces the normal top-down render
         # entirely (background/tiles/instance sprites) — it's its own
         # camera, not compatible with the offset/multi-view system v1.
