@@ -123,6 +123,91 @@ class PluginLoader:
             traceback.print_exc()
             return False
 
+    # ---------------- Folder extensions (extensions/<name>/) ----------------
+    #
+    # An EXTENSION is a folder with an extension.json manifest and a package
+    # __init__.py exposing the SAME contract as a single-file plugin
+    # (PLUGIN_ACTIONS / PLUGIN_EVENTS / PluginExecutor). Deliberately the same
+    # contract in two packagings: a one-file plugin for something small, a
+    # folder when a feature needs to split across modules. One thing to learn,
+    # not two.
+    #
+    # The folder is imported as a real PACKAGE (submodule_search_locations), so
+    # an extension can `from .renderer import ...` its own siblings without
+    # touching sys.path or risking name collisions with the host app.
+
+    def load_extensions_from_directory(self, extension_dir: Path) -> int:
+        """Load every extension folder under ``extension_dir``."""
+        if not extension_dir.exists():
+            logger.debug(f"Extension directory not found: {extension_dir}")
+            return 0
+
+        loaded = 0
+        for folder in sorted(p for p in extension_dir.iterdir() if p.is_dir()):
+            if folder.name.startswith(('.', '__')):
+                continue
+            if not (folder / "extension.json").exists():
+                continue          # not an extension folder — ignore quietly
+            if self.load_extension(folder):
+                loaded += 1
+        return loaded
+
+    def load_extension(self, folder: Path) -> bool:
+        """Load one ``extensions/<name>/`` folder. Returns True on success."""
+        manifest_file = folder / "extension.json"
+        try:
+            import json
+            manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        except Exception as exc:
+            logger.error(f"Extension {folder.name}: bad extension.json ({exc})")
+            return False
+
+        # A manifest may ship disabled; config can override later (Stage A3).
+        if manifest.get("enabled", True) is False:
+            logger.info(f"Extension '{manifest.get('name', folder.name)}' disabled by its manifest")
+            return False
+
+        init_file = folder / "__init__.py"
+        if not init_file.exists():
+            logger.error(f"Extension {folder.name}: no __init__.py")
+            return False
+
+        try:
+            module_name = f"pygm_extension_{folder.name}"
+            spec = importlib.util.spec_from_file_location(
+                module_name, init_file,
+                submodule_search_locations=[str(folder)])   # makes it a package
+            if spec is None or spec.loader is None:
+                logger.error(f"Extension {folder.name}: could not build import spec")
+                return False
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+
+            info = PluginInfo(
+                name=manifest.get("name", folder.name),
+                version=manifest.get("version", "1.0.0"),
+                author=manifest.get("author", "Unknown"),
+                description=manifest.get("description", ""),
+                file_path=folder,
+            )
+            if hasattr(module, 'PLUGIN_EVENTS'):
+                info.events_count = self._load_events(module.PLUGIN_EVENTS)
+            if hasattr(module, 'PLUGIN_ACTIONS'):
+                info.actions_count = self._load_actions(module.PLUGIN_ACTIONS)
+            if hasattr(module, 'PluginExecutor'):
+                self._register_action_handlers(module.PluginExecutor)
+
+            self.loaded_plugins.append(info)
+            self.plugin_modules.append(module)
+            logger.info(f"Loaded extension: {info.name} v{info.version}")
+            return True
+        except Exception as exc:
+            logger.error(f"Error loading extension {folder.name}: {exc}")
+            import traceback
+            traceback.print_exc()
+            return False
+
     def _extract_plugin_info(self, module, plugin_file: Path) -> PluginInfo:
         """Extract plugin metadata from module"""
         return PluginInfo(
@@ -194,6 +279,11 @@ def get_plugin_directory() -> Path:
     return plugin_dir
 
 
+def get_extension_directory() -> Path:
+    """Folder-based extensions live in extensions/ at the repo root."""
+    return Path(__file__).parent.parent / "extensions"
+
+
 # The one shared loader for this process. See load_all_plugins.
 _shared_loader: Optional[PluginLoader] = None
 
@@ -233,10 +323,16 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
         logger.info(f"Loading plugins from: {plugin_dir}")
         _shared_loader = PluginLoader(action_executor)
         count = _shared_loader.load_plugins_from_directory(plugin_dir)
+        # Folder extensions load after single-file plugins. Order matters:
+        # _load_actions skips names already present, so a plugin wins a name
+        # clash with an extension. Documented rather than "fixed" — silent
+        # shadowing is the existing landmine (CLAUDE.md), not something to
+        # extend to a new mechanism without a decision.
+        count += _shared_loader.load_extensions_from_directory(get_extension_directory())
         if count > 0:
-            logger.info(f"Loaded {count} plugin(s)")
+            logger.info(f"Loaded {count} plugin(s)/extension(s)")
         else:
-            logger.debug("No plugins loaded")
+            logger.debug("No plugins or extensions loaded")
         return _shared_loader
 
     if action_executor is not None and _shared_loader.action_executor is not action_executor:
