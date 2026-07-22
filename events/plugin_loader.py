@@ -164,7 +164,11 @@ class PluginLoader:
     def _register_action_handlers(self, executor_class):
         """Register action handlers from plugin executor"""
         if not self.action_executor:
-            logger.warning("No action executor available, handlers not registered")
+            # Expected on the IDE path: it loads plugins for their SCHEMAS only
+            # (to populate ACTION_TYPES for the action picker / Blockly) and has
+            # no ActionExecutor — the game process registers the handlers. Debug,
+            # not warning, so a normal IDE startup isn't noisy.
+            logger.debug("No action executor (schema-only load); handlers not registered")
             return
 
         # Create an instance of the plugin executor
@@ -190,25 +194,59 @@ def get_plugin_directory() -> Path:
     return plugin_dir
 
 
-# Convenience function for loading plugins at startup
+# The one shared loader for this process. See load_all_plugins.
+_shared_loader: Optional[PluginLoader] = None
+
+
 def load_all_plugins(action_executor=None) -> PluginLoader:
-    """Load all plugins from the default plugin directory
+    """Load every plugin ONCE per process; safe to call repeatedly.
 
-    Args:
-        action_executor: ActionExecutor instance to register handlers with
+    THE single load point. Both entry points call it:
 
-    Returns:
-        PluginLoader instance
+    * the **IDE** at startup (via the ``ensure_plugins_loaded`` alias) with NO
+      executor — plugin action/event SCHEMAS land in ACTION_TYPES /
+      EVENT_TYPES so the action-list editor and Blockly's auto-generated
+      blocks can see them;
+    * **GameRunner** with its executor — the same schemas plus the
+      ``execute_*_action`` handlers that actually run them.
+
+    Until 2026-07-22 this was called in exactly one place (GameRunner), so
+    plugin actions were invisible in the IDE: ``'play_sound' in ACTION_TYPES``
+    was False outside a running game. That silently contradicted the Blockly
+    toolbox's own comment ("audio actions ... auto-generate into a single Audio
+    category via registerCustomBlocks"), which reads ACTION_TYPES and so
+    produced nothing.
+
+    Re-calling with a *different* executor (a GameRunner created after the IDE,
+    or one per test) re-registers the handlers on it WITHOUT re-importing the
+    plugin modules — importing twice just creates duplicate module objects.
+    Re-registering schemas is already harmless: _load_actions skips names that
+    are present.
+
+    NB the name is load-bearing for the test suite: ~28 test files stub plugin
+    loading with ``patch('runtime.game_runner.load_all_plugins')``. Renaming it
+    breaks them all, so keep this symbol and let GameRunner call it by name.
     """
-    loader = PluginLoader(action_executor)
-    plugin_dir = get_plugin_directory()
+    global _shared_loader
+    if _shared_loader is None:
+        plugin_dir = get_plugin_directory()
+        logger.info(f"Loading plugins from: {plugin_dir}")
+        _shared_loader = PluginLoader(action_executor)
+        count = _shared_loader.load_plugins_from_directory(plugin_dir)
+        if count > 0:
+            logger.info(f"Loaded {count} plugin(s)")
+        else:
+            logger.debug("No plugins loaded")
+        return _shared_loader
 
-    logger.info(f"Loading plugins from: {plugin_dir}")
-    count = loader.load_plugins_from_directory(plugin_dir)
+    if action_executor is not None and _shared_loader.action_executor is not action_executor:
+        _shared_loader.action_executor = action_executor
+        for module in _shared_loader.plugin_modules:
+            if hasattr(module, 'PluginExecutor'):
+                _shared_loader._register_action_handlers(module.PluginExecutor)
+    return _shared_loader
 
-    if count > 0:
-        logger.info(f"Loaded {count} plugin(s)")
-    else:
-        logger.debug("No plugins loaded")
 
-    return loader
+# Clearer name for the IDE call site, where "ensure" reads better than "load
+# all" (the IDE may well not be the first caller). Same function.
+ensure_plugins_loaded = load_all_plugins
