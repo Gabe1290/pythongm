@@ -40,7 +40,36 @@ extensions/
 }
 ```
 
-`enabled: false` ships the extension switched off — it won't load.
+`enabled: false` ships the extension switched off — useful for something
+experimental that people opt into.
+
+## Turning extensions on and off
+
+The manifest sets the **default**; a user's config overrides it either way, so
+nobody has to edit files to switch a feature off (or to opt into one that ships
+disabled). The config key is `extensions`, a map of folder name → on/off:
+
+```json
+"extensions": { "my_feature": false }
+```
+
+An **absent** entry means "use the manifest". The config only records
+deliberate choices, so an extension can never vanish because a key was missing.
+
+From code:
+
+```python
+from events.plugin_loader import (
+    list_available_extensions, set_extension_enabled,
+)
+
+list_available_extensions()          # folder, name, version, description, enabled
+set_extension_enabled("my_feature", False)
+```
+
+`list_available_extensions()` reads manifests **without importing** any
+extension code, so a settings screen can list them safely. Changes take effect
+on the next restart, since actions register at startup.
 
 ### `__init__.py` — the contract
 
