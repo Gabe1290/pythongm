@@ -1,11 +1,13 @@
 # PyGameMaker extensions
 
-An **extension** adds features to PyGameMaker — new actions, and (from Stage B)
-new rendering — without those features living in the core engine. This folder
-is where they go, one subfolder each.
+An **extension** adds features to PyGameMaker — new actions, and new rendering —
+without those features living in the core engine. This folder is where they go,
+one subfolder each.
 
 If you want to see how someone extends an IDE, this is the place to look: an
-extension is ordinary Python, in a folder you can read top to bottom.
+extension is ordinary Python, in a folder you can read top to bottom. The
+[**2.5D raycast view**](raycast_2_5d/) is the worked example — a whole
+first-person renderer, hooked in through the same contract a tiny plugin uses.
 
 ## Two packagings, one contract
 
@@ -106,6 +108,30 @@ import your own modules relatively:
 from .schemas import PLUGIN_ACTIONS      # works
 ```
 
+### Drawing a room yourself (the render hook)
+
+Actions are enough for most extensions. A feature that *replaces how a room is
+drawn* — an isometric view, a shader pass, the 2.5D raycast view — declares a
+**room renderer** instead (see `runtime/extension_hooks.py`), the same
+declarative way it declares actions:
+
+```python
+def render_room(room, screen):
+    if not room.extension_state.get("my_view"):
+        return False           # not mine — let the engine draw it top-down
+    ...draw into screen...
+    return True                # I drew this room
+
+PLUGIN_ROOM_RENDERERS = [render_room]
+```
+
+Return `True` only if you actually drew it: core then skips its own top-down
+pass but **still runs the per-instance draw-event pass**, so HUD actions
+composite on top. Return `False` to decline. A renderer that raises is logged
+and skipped, never crashing the game. Store per-room state in
+`room.extension_state[<your key>]` rather than adding attributes to engine
+classes. [`raycast_2_5d/`](raycast_2_5d/) is a full worked example.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE
@@ -128,5 +154,6 @@ Two consequences worth knowing:
 2. Restart the IDE — extensions load at startup.
 3. Your actions appear in the action picker under the `category` you gave them.
 
-See `docs/RAYCAST_EXTENSION_PLAN.md` for the roadmap, including the render
-hooks that let an extension take over drawing (Stage B).
+See `docs/RAYCAST_EXTENSION_PLAN.md` for the roadmap, and
+[`raycast_2_5d/README.md`](raycast_2_5d/README.md) for a complete extension you
+can read end to end.

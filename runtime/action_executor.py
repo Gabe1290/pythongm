@@ -2872,10 +2872,11 @@ class ActionExecutor:
         if not hasattr(instance, '_draw_queue'):
             instance._draw_queue = []
 
-        # Resolve the camera exactly as _render_raycast_view does
-        # (game_runner.py:2029) — via _find_first_instance on the config's
-        # camera_object. NB _find_raycast_camera is a KIVY-only helper; looking
-        # for it here silently yields no camera and no player marker.
+        # Resolve the camera exactly as the raycast extension's renderer does
+        # (extensions/raycast_2_5d/renderer.render_raycast_view) — via
+        # _find_first_instance on the config's camera_object. NB
+        # _find_raycast_camera is a KIVY-only helper; looking for it here
+        # silently yields no camera and no player marker.
         cfg = getattr(room, 'raycast_camera', None) or {}
         camera = None
         finder = getattr(room, '_find_first_instance', None)
