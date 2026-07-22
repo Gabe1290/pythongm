@@ -352,6 +352,15 @@ def main():
 
         app_dir, projects_dir = setup_directories()
 
+        # Load plugins/extensions BEFORE the IDE is constructed: the action
+        # list editor and Blockly build their action lists from ACTION_TYPES at
+        # construction time, so anything registered later is invisible. No
+        # executor here — the IDE needs the schemas, not the runtime handlers
+        # (GameRunner registers those in the game process). See
+        # events/plugin_loader.ensure_plugins_loaded.
+        from events.plugin_loader import ensure_plugins_loaded
+        ensure_plugins_loaded()
+
         ide = PyGameMakerIDE()
         ide.show()
 
