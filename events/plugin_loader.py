@@ -162,9 +162,10 @@ class PluginLoader:
             logger.error(f"Extension {folder.name}: bad extension.json ({exc})")
             return False
 
-        # A manifest may ship disabled; config can override later (Stage A3).
-        if manifest.get("enabled", True) is False:
-            logger.info(f"Extension '{manifest.get('name', folder.name)}' disabled by its manifest")
+        # A manifest may ship disabled; a user's config override wins either
+        # way (off for something they don't want, on for an opt-in feature).
+        if not is_extension_enabled(folder.name, manifest.get("enabled", True)):
+            logger.info(f"Extension '{manifest.get('name', folder.name)}' is disabled")
             return False
 
         init_file = folder / "__init__.py"
@@ -282,6 +283,70 @@ def get_plugin_directory() -> Path:
 def get_extension_directory() -> Path:
     """Folder-based extensions live in extensions/ at the repo root."""
     return Path(__file__).parent.parent / "extensions"
+
+
+# Config key holding per-extension on/off overrides: {folder_name: bool}.
+# ABSENT means "use the manifest's own `enabled` value" — the config only
+# records deliberate user choices, so an extension never silently disappears
+# because a key was missing. (Same lesson as the sample-curation default: an
+# opt-OUT that defaults to hidden is the bug, not the feature.)
+EXTENSIONS_CONFIG_KEY = "extensions"
+
+
+def is_extension_enabled(folder_name: str, manifest_default: bool = True) -> bool:
+    """Should this extension load? Config override beats the manifest.
+
+    Lets a user switch an extension off without editing files, and equally
+    switch ON one that ships disabled (an experimental feature opting in).
+    """
+    try:
+        from utils.config import Config
+        overrides = Config.get(EXTENSIONS_CONFIG_KEY, {}) or {}
+        if isinstance(overrides, dict) and folder_name in overrides:
+            return bool(overrides[folder_name])
+    except Exception:
+        # Never let a config problem hide every extension.
+        logger.debug("Could not read extension overrides; using manifest defaults")
+    return manifest_default
+
+
+def set_extension_enabled(folder_name: str, enabled: bool) -> None:
+    """Persist an on/off choice for one extension (takes effect on restart —
+    actions register at startup)."""
+    from utils.config import Config
+    overrides = Config.get(EXTENSIONS_CONFIG_KEY, {}) or {}
+    if not isinstance(overrides, dict):
+        overrides = {}
+    overrides[folder_name] = bool(enabled)
+    Config.set(EXTENSIONS_CONFIG_KEY, overrides)
+
+
+def list_available_extensions() -> List[dict]:
+    """Every extension folder on disk with its manifest + effective on/off
+    state. For a settings UI — reads manifests without importing any code.
+    """
+    out = []
+    ext_dir = get_extension_directory()
+    if not ext_dir.exists():
+        return out
+    import json
+    for folder in sorted(p for p in ext_dir.iterdir() if p.is_dir()):
+        manifest_file = folder / "extension.json"
+        if not manifest_file.exists():
+            continue
+        try:
+            manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        out.append({
+            "folder": folder.name,
+            "name": manifest.get("name", folder.name),
+            "version": manifest.get("version", "1.0.0"),
+            "description": manifest.get("description", ""),
+            "enabled": is_extension_enabled(folder.name,
+                                            manifest.get("enabled", True)),
+        })
+    return out
 
 
 # The one shared loader for this process. See load_all_plugins.

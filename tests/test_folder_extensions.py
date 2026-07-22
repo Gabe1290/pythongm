@@ -156,3 +156,89 @@ def test_single_file_plugins_still_work():
 
 def test_extension_directory_is_repo_root_extensions():
     assert get_extension_directory() == REPO_ROOT / "extensions"
+
+
+# --- Stage A3: config-driven enable/disable --------------------------------
+# The manifest sets a default; a user's config override wins either way, so an
+# extension can be switched off (or an opt-in one switched on) without editing
+# files. An ABSENT config key means "use the manifest" — the config records
+# only deliberate choices, so nothing disappears because a key was missing.
+
+@pytest.fixture
+def config_overrides(monkeypatch):
+    """Drive the extensions override map without touching the real config."""
+    from utils.config import Config
+    from events import plugin_loader as pl
+    store = {}
+    real_get = Config.get
+
+    def fake_get(cls, key, default=None):
+        if key == pl.EXTENSIONS_CONFIG_KEY:
+            return store
+        return real_get(key, default)
+
+    monkeypatch.setattr(Config, "get", classmethod(fake_get))
+    return store
+
+
+def test_config_can_disable_an_enabled_extension(tmp_path, cleanup_actions,
+                                                 config_overrides):
+    _write_extension(tmp_path, "demo_cfgoff")          # manifest: enabled
+    config_overrides["demo_cfgoff"] = False
+    assert PluginLoader().load_extensions_from_directory(tmp_path) == 0
+    assert "demo_hop" not in ACTION_TYPES
+
+
+def test_config_can_enable_an_extension_that_ships_disabled(tmp_path, cleanup_actions,
+                                                            config_overrides):
+    """Opt-in for experimental features."""
+    _write_extension(tmp_path, "demo_optin", enabled=False)
+    config_overrides["demo_optin"] = True
+    assert PluginLoader().load_extensions_from_directory(tmp_path) == 1
+    assert "demo_hop" in ACTION_TYPES
+
+
+def test_absent_override_falls_back_to_the_manifest(tmp_path, cleanup_actions,
+                                                    config_overrides):
+    _write_extension(tmp_path, "demo_default")          # manifest: enabled
+    assert config_overrides == {}                       # nothing configured
+    assert PluginLoader().load_extensions_from_directory(tmp_path) == 1
+
+
+def test_unreadable_config_does_not_hide_extensions(tmp_path, cleanup_actions,
+                                                    monkeypatch):
+    """A config problem must never silently disable every extension."""
+    from utils.config import Config
+    from events import plugin_loader as pl
+
+    def boom(cls, key, default=None):
+        raise RuntimeError("config unavailable")
+
+    monkeypatch.setattr(Config, "get", classmethod(boom))
+    assert pl.is_extension_enabled("anything", manifest_default=True) is True
+    _write_extension(tmp_path, "demo_cfgboom")
+    assert PluginLoader().load_extensions_from_directory(tmp_path) == 1
+
+
+def test_list_available_extensions_reads_manifests_without_importing():
+    """A settings UI needs the list + state without executing extension code."""
+    from events.plugin_loader import list_available_extensions
+    rows = list_available_extensions()
+    assert isinstance(rows, list)
+    for r in rows:
+        assert {"folder", "name", "version", "description", "enabled"} <= set(r)
+
+
+def test_set_extension_enabled_round_trips(monkeypatch):
+    from utils.config import Config
+    from events import plugin_loader as pl
+    store = {"value": {}}
+    monkeypatch.setattr(Config, "get", classmethod(
+        lambda cls, key, default=None: store["value"] if key == pl.EXTENSIONS_CONFIG_KEY else default))
+    monkeypatch.setattr(Config, "set", classmethod(
+        lambda cls, key, value: store.update(value=value)))
+    pl.set_extension_enabled("demo_x", False)
+    assert store["value"]["demo_x"] is False
+    assert pl.is_extension_enabled("demo_x") is False
+    pl.set_extension_enabled("demo_x", True)
+    assert pl.is_extension_enabled("demo_x") is True
