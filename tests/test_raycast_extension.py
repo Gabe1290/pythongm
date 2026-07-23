@@ -47,6 +47,29 @@ def test_generic_helpers_stay_in_core():
         assert hasattr(GameRoom, kept), f"GameRoom lost the generic helper {kept}"
 
 
+def test_extension_contributes_the_setup_actions():
+    """Stage B3: set_facing_angle / enable_raycast_view are the extension's
+    actions now — schema in PLUGIN_ACTIONS, handler on its PluginExecutor,
+    and gone from core's ActionExecutor (a move, not a copy)."""
+    from extensions.raycast_2_5d import PLUGIN_ACTIONS, PluginExecutor
+    assert set(PLUGIN_ACTIONS) >= {"set_facing_angle", "enable_raycast_view"}
+    ex = PluginExecutor()
+    assert callable(getattr(ex, "execute_set_facing_angle_action", None))
+    assert callable(getattr(ex, "execute_enable_raycast_view_action", None))
+
+    from runtime.action_executor import ActionExecutor
+    for gone in ("execute_set_facing_angle_action",
+                 "execute_enable_raycast_view_action"):
+        assert not hasattr(ActionExecutor, gone), f"ActionExecutor still has {gone}"
+
+    from events.action_types import ACTION_TYPES
+    # Not baked into the static core dict (they arrive via the loader merge).
+    import events.action_types as at_mod
+    src = (Path(at_mod.__file__)).read_text(encoding="utf-8")
+    assert '"set_facing_angle": ActionType' not in src
+    assert '"enable_raycast_view": ActionType' not in src
+
+
 def test_extension_is_discovered_and_enabled_by_default():
     from events.plugin_loader import list_available_extensions
     found = {e["folder"]: e for e in list_available_extensions()}

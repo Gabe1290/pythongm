@@ -17,10 +17,22 @@ events/plugin_loader.load_all_plugins) and never renders a room, so it should
 not pay for -- or depend on -- a pygame import (same reason
 plugins/audio_actions.py keeps pygame out of module scope).
 
-Still in core for now (Stage B3 moves them): the four raycast actions
-(enable_raycast_view, set_facing_angle, draw_minimap, draw_doom_hud) and the
-``raycast_camera`` / wall-cache state they keep on the room.
+This extension contributes, through the same declarative contract a single-file
+plugin uses:
+
+* ``PLUGIN_ACTIONS`` (actions.py) + ``PluginExecutor`` (handlers.py) — the
+  raycast SETUP actions ``set_facing_angle`` and ``enable_raycast_view``, moved
+  out of core in Stage B3;
+* ``PLUGIN_ROOM_RENDERERS`` (below) — the room-render hook.
+
+Still in core for now: the ``draw_minimap`` / ``draw_doom_hud`` macro actions
+(later B3 units), the ``raycast_camera`` / wall-cache state the actions keep on
+the room (a separate refactor into ``room.extension_state``), and
+``facing_angle`` (a general instance property, left in core by design — B4).
 """
+
+from .actions import PLUGIN_ACTIONS
+from .handlers import PluginExecutor
 
 
 def render_room(room, screen):
