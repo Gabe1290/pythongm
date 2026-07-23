@@ -208,7 +208,8 @@ def test_camera_config_carries_viewport_height():
 # ignored viewport_height entirely. Caught while building raycast_4.
 
 def test_export_enable_raycast_view_carries_viewport_height():
-    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
+    # enable_raycast_view codegen moved into the extension (Stage C2c).
+    kg = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_kivy.py").read_text(encoding="utf-8")
     # HTML5's enable_raycast_view is a registered extension action now (Stage C1c),
     # so its camera-config builder lives in the extension's export_html5.js.
     eng = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_html5.js").read_text(encoding="utf-8")

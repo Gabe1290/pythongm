@@ -591,3 +591,155 @@ SCENE_CODE = '''\n    def _init_extensions(self):
                                     tex_coords=(0.0, bv0, 1.0, bv0,
                                                 1.0, bv1, 0.0, bv1)))
 '''
+
+
+# ---------------------------------------------------------------------------
+# Kivy action codegen (Stage C2c). code_generator._convert_simple_action's
+# DEFAULT branch consults ACTION_CODEGEN for actions it does not enumerate.
+# Each fn receives (gen, params, event_type); gen is the ActionCodeGenerator
+# (used for gen.sprite_paths). Mirrors the desktop handlers in handlers.py.
+# ---------------------------------------------------------------------------
+
+def _cg_set_facing_angle(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    angle = _num_code(params.get('angle', 0))
+    rel = params.get('relative', False)
+    if isinstance(rel, str):
+        rel = rel.strip().lower() in ('true', '1', 'yes')
+    if rel:
+        return f"self.facing_angle = (self.facing_angle + {angle}) % 360"
+    return f"self.facing_angle = ({angle}) % 360"
+
+def _cg_enable_raycast_view(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    # Configure the scene's Doom-style first-person raycast camera
+    # (rendered by the scene; see the raycast render methods). Mirrors
+    # execute_enable_raycast_view_action's defaults.
+    en = params.get('enable', True)
+    if isinstance(en, str):
+        en = en.strip().lower() not in ('false', '0', 'no')
+    if not en:
+        return "self.scene.raycast_camera = {'enabled': False}"
+    def _q(v):
+        return "''" if v is None else repr(str(v))
+    cfg = {
+        'enabled': True,
+        'camera_object': str(params.get('camera_object') or ''),
+        'fov': _tofloat(params.get('fov'), 66),
+        'render_distance': int(_tofloat(params.get('render_distance'), 20)),
+        'cell_size': int(_tofloat(params.get('cell_size'), 32)),
+        'columns': int(_tofloat(params.get('columns'), 320)),
+        'wall_color': str(params.get('wall_color') or '#993333'),
+        'floor_color': str(params.get('floor_color') or '#464632'),
+        'ceiling_color': str(params.get('ceiling_color') or '#87CEEB'),
+        'wall_texture': str(params.get('wall_texture') or ''),
+        'sky_texture': str(params.get('sky_texture') or ''),
+        'floor_texture': str(params.get('floor_texture') or ''),
+        'ceiling_texture': str(params.get('ceiling_texture') or ''),
+        'wall_textured': not (str(params.get('wall_textured', 'true')).strip().lower()
+                              in ('false', '0', 'no')),
+        'floor_cast_res': max(1, int(_tofloat(params.get('floor_cast_res'), 4))),
+        # DOOM-bar letterbox (0 = full height). The scene renderer
+        # reads this; without it here, an exported game would ignore a
+        # viewport_height the desktop runtime honours.
+        'viewport_height': int(_tofloat(params.get('viewport_height'), 0)),
+    }
+    if not cfg['camera_object']:
+        # No named camera object -> the acting instance IS the camera;
+        # store it directly (the generated Kivy object has no
+        # object_name attribute to look up by).
+        return (f"self.scene.raycast_camera = {cfg!r}; "
+                f"self.scene.raycast_camera['camera_instance'] = self")
+    return f"self.scene.raycast_camera = {cfg!r}"
+
+def _cg_draw_doom_hud(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    # DOOM-style status bar. A MACRO action emitting a FIXED, small set
+    # of draw-queue commands (unlike the minimap's unbounded wall loop),
+    # so it's inline appends, not a call-out — mirrors
+    # build_doom_hud_commands() in runtime/action_executor.py, which the
+    # parity test compares against. Coordinates are screen-space y-down;
+    # the shared draw-queue path flips once for Kivy.
+    def _s(key, default):
+        return str(params.get(key, default))
+    face_path = gen.sprite_paths.get(_s('face_sprite', ''), '')
+    lives_path = gen.sprite_paths.get(_s('lives_sprite', ''), '')
+    obj_expr = _resolve_instance_names(_s('objective_value', '0'))
+    lines = [
+        f"_dh_h = {_num_code(params.get('height', 42), 42)}",
+        "_dh_scene = getattr(self, 'scene', None)",
+        "_dh_win_h = float(getattr(_dh_scene, 'display_height', 0) or 480)",
+        "_dh_win_w = float(getattr(_dh_scene, 'display_width', 0) or 640)",
+        f"_dh_y = {_num_code(params.get('y', -1), -1)}",
+        "_dh_y = (_dh_win_h - _dh_h) if _dh_y < 0 else _dh_y",
+        f"_dh_x = {_num_code(params.get('x', 0))}",
+        f"_dh_w = {_num_code(params.get('width', 0))} or _dh_win_w",
+        "from main import get_game_app as _dh_ga",
+        "_dh_app = _dh_ga()",
+        "_dh_hp = float(_dh_app.health if _dh_app else 100)",
+        "_dh_sc = _dh_app.score if _dh_app else 0",
+        "_dh_lv = int(_dh_app.lives if _dh_app else 0)",
+        "_dh_pad = 8.0",
+        f"_dh_bc = {_s('back_color', '#101010')!r}",
+        f"_dh_dv = {_s('divider_color', '#505050')!r}",
+        f"_dh_tc = {_s('text_color', '#ffffff')!r}",
+        f"_dh_hbw = {_num_code(params.get('health_bar_width', 90), 90)}",
+        f"_dh_hbh = {_num_code(params.get('health_bar_height', 14), 14)}",
+        "self._draw_queue.append(dict(type='rectangle', x1=_dh_x, y1=_dh_y, "
+        "x2=_dh_x + _dh_w, y2=_dh_y + _dh_h, color=_dh_bc, filled=True))",
+        "self._draw_queue.append(dict(type='line', x1=_dh_x, y1=_dh_y, "
+        "x2=_dh_x + _dh_w, y2=_dh_y, color=_dh_dv))",
+        "_dh_hx = _dh_x + _dh_pad",
+        "_dh_by = _dh_y + 22",
+        f"self._draw_queue.append(dict(type='text', text={_s('health_label', 'Health')!r}, "
+        "x=_dh_hx, y=_dh_y + 4, color=_dh_tc))",
+        "self._draw_queue.append(dict(type='rectangle', x1=_dh_hx, y1=_dh_by, "
+        "x2=_dh_hx + _dh_hbw, y2=_dh_by + _dh_hbh, color=_dh_dv, filled=True))",
+        "_dh_frac = min(1.0, max(0.0, _dh_hp / 100.0))",
+        "self._draw_queue.append(dict(type='rectangle', x1=_dh_hx, y1=_dh_by, "
+        "x2=_dh_hx + _dh_hbw * _dh_frac, y2=_dh_by + _dh_hbh, color="
+        f"{_s('bar_color', '#20c020')!r}, filled=True))",
+        "self._draw_queue.append(dict(type='text', text=str(int(_dh_hp)), "
+        "x=_dh_hx + _dh_hbw + 6, y=_dh_by - 2, color=_dh_tc))",
+    ]
+    if face_path:
+        lines += [
+            f"_dh_ff = max(1, {int(float(params.get('face_frames', 4) or 4))})",
+            "_dh_frame = min(_dh_ff - 1, int((1.0 - _dh_frac) * _dh_ff))",
+            f"self._draw_queue.append(dict(type='sprite', sprite_path={face_path!r}, "
+            "x=_dh_x + _dh_w / 2.0 - _dh_h / 2.0, y=_dh_y + 2, subimage=_dh_frame))",
+        ]
+    lines += [
+        "_dh_rx = _dh_x + _dh_w * 2.0 / 3.0 + _dh_pad",
+        f"self._draw_queue.append(dict(type='text', text={_s('score_label', 'Score: ')!r} + str(_dh_sc), "
+        "x=_dh_rx, y=_dh_y + 4, color=_dh_tc))",
+        f"self._draw_queue.append(dict(type='lives', count=_dh_lv, x=_dh_rx, "
+        f"y=_dh_y + _dh_h - 20, sprite_path={lives_path!r}, "
+        f"scale={_num_code(params.get('lives_scale', 1.0), 1.0)}))",
+        f"self._draw_queue.append(dict(type='text', text={_s('objective_label', 'Keys: ')!r} + str({obj_expr}), "
+        "x=_dh_x + _dh_w - 96, y=_dh_y + _dh_h / 2.0 - 8, color=_dh_tc))",
+    ]
+    return "\n".join(lines)
+
+def _cg_draw_minimap(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code, _tofloat, _resolve_instance_names  # noqa
+    # Emits a CALL, not an inline expression: the minimap needs loops
+    # over the room's wall sets. GameObject._draw_minimap is generated
+    # into base_object.py — the two halves must stay in step (the M34
+    # lesson). See docs/RAYCAST_MINIMAP_PLAN.md.
+    x = _num_code(params.get('x', 0))
+    y = _num_code(params.get('y', 0))
+    size = _num_code(params.get('size', 120))
+    back = str(params.get('back_color', '#101018'))
+    wall = str(params.get('wall_color', '#8080a0'))
+    player = str(params.get('player_color', '#ffd040'))
+    return (f"self._draw_minimap({x}, {y}, {size}, "
+            f"{back!r}, {wall!r}, {player!r})")
+
+
+ACTION_CODEGEN = {
+    'set_facing_angle': _cg_set_facing_angle,
+    'enable_raycast_view': _cg_enable_raycast_view,
+    'draw_doom_hud': _cg_draw_doom_hud,
+    'draw_minimap': _cg_draw_minimap,
+}

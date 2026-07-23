@@ -70,6 +70,11 @@ KIVY_EXPORTER = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(
 KIVY_RAYCAST = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_kivy.py").read_text(
     encoding="utf-8")
 KIVY = KIVY_EXPORTER + "\n" + KIVY_RAYCAST
+# The Kivy action codegen moved from code_generator.py into export_kivy.py's
+# ACTION_CODEGEN (Stage C2c); the shipped codegen surface is the two together.
+KIVY_CODEGEN = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(
+    encoding="utf-8")
+KG = KIVY_CODEGEN + "\n" + KIVY_RAYCAST
 
 
 def _shared_walls():
@@ -522,7 +527,7 @@ def test_raycast_2_hud_actually_renders_through_the_real_game_loop():
 
 def test_all_three_implement_draw_minimap():
     kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
-    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
+    kg = KG   # code_generator.py + export_kivy.py (Stage C2c)
     from events.action_types import ACTION_TYPES
     assert "draw_minimap" in ACTION_TYPES
     assert "registerExtensionAction('draw_minimap'" in ENGINE   # extension action (Stage C1c)
@@ -640,8 +645,8 @@ def test_all_three_implement_draw_doom_hud():
     from events.action_types import ACTION_TYPES
     assert "draw_doom_hud" in ACTION_TYPES
     assert "registerExtensionAction('draw_doom_hud'" in ENGINE   # extension action (Stage C1c)
-    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
-    assert "action_type == 'draw_doom_hud'" in kg
+    kg = KG   # code_generator.py + export_kivy.py (Stage C2c)
+    assert "'draw_doom_hud': _cg_draw_doom_hud" in kg   # registered extension codegen (C2c)
 
 
 def test_doom_hud_face_frame_formula_matches_across_targets():
@@ -655,7 +660,7 @@ def test_doom_hud_face_frame_formula_matches_across_targets():
     hud = ENGINE[ENGINE.index("registerExtensionAction('draw_doom_hud'"):]
     hud = hud[:hud.index("registerExtensionAction('draw_minimap'")]
     assert "Math.min(dhFrames - 1, Math.floor((1 - dhFrac) * dhFrames))" in hud
-    kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
+    kg = KG   # code_generator.py + export_kivy.py (Stage C2c)
     assert "min(_dh_ff - 1, int((1.0 - _dh_frac) * _dh_ff))" in kg
 
 
