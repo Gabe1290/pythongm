@@ -743,3 +743,77 @@ ACTION_CODEGEN = {
     'draw_doom_hud': _cg_draw_doom_hud,
     'draw_minimap': _cg_draw_minimap,
 }
+
+
+# ---------------------------------------------------------------------------
+# Base-object class-body code (Stage C2c). Injected into base_object.py at its
+# __PYGM_EXTENSION_BASE_CODE__ marker (post-.format(), so { } are single). The
+# draw_minimap action codegen emits a call to this _draw_minimap method.
+# ---------------------------------------------------------------------------
+BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall_color, player_color):
+        """Queue a north-up minimap of the raycast room's wall edges.
+
+        A MACRO action: appends ordinary rectangle/line draw-queue commands, so
+        this target needed no new renderer. Mirrors build_minimap_commands() in
+        runtime/action_executor.py — tests/test_raycast_export_parity.py
+        compares the two. The code generator emits a call to this rather than
+        an inline expression, since it needs loops.
+
+        Coordinates are SCREEN space with y DOWN like every other draw command;
+        the y-flip happens once, later, in the shared draw-queue path.
+        """
+        self._draw_queue.append(dict(
+            type='rectangle', x1=x, y1=y, x2=x + size, y2=y + size,
+            color=back_color, filled=True))
+
+        scene = self.scene
+        if scene is None:
+            return
+        span = max(float(getattr(scene, 'room_width', 0) or 0),
+                   float(getattr(scene, 'room_height', 0) or 0))
+        cs = float(getattr(scene, '_raycast_cell_size', 0) or 0)
+        if span <= 0 or not cs:
+            return
+        scale = float(size) / span
+
+        def _px(wx, wy):
+            return x + wx * scale, y + wy * scale
+
+        # Wall sets are unordered; sort so every target emits the same picture
+        # in the same order (the parity test diffs it).
+        for (line_x, row) in sorted(getattr(scene, '_raycast_v_walls', None) or ()):
+            x1, y1 = _px(line_x * cs, row * cs)
+            x2, y2 = _px(line_x * cs, (row + 1) * cs)
+            self._draw_queue.append(dict(type='line', x1=x1, y1=y1, x2=x2,
+                                         y2=y2, color=wall_color))
+        for (col, line_y) in sorted(getattr(scene, '_raycast_h_walls', None) or ()):
+            x1, y1 = _px(col * cs, line_y * cs)
+            x2, y2 = _px((col + 1) * cs, line_y * cs)
+            self._draw_queue.append(dict(type='line', x1=x1, y1=y1, x2=x2,
+                                         y2=y2, color=wall_color))
+
+        cfg = getattr(scene, 'raycast_camera', None) or {}
+        camera = None
+        finder = getattr(scene, '_find_raycast_camera', None)
+        if callable(finder):
+            camera = finder(cfg)
+        if camera is None:
+            return
+        # The ray ORIGIN, not the sprite corner. _raycast_gm_xy converts Kivy's
+        # y-up instance position back to the GM y-down frame the whole raycast
+        # pipeline works in.
+        gm_x, gm_y = scene._raycast_gm_xy(camera)
+        cx, cy = _px(gm_x + float(getattr(camera, 'image_width', 0) or 0) / 2.0,
+                     gm_y + float(getattr(camera, 'image_height', 0) or 0) / 2.0)
+        _MM_MARK, _MM_HEAD = 2.0, 7.0
+        self._draw_queue.append(dict(
+            type='line', x1=cx - _MM_MARK, y1=cy, x2=cx + _MM_MARK, y2=cy,
+            color=player_color))
+        # GM 0=right/90=up vs screen y DOWN -> negate, as the renderers do.
+        rad = math.radians(-float(getattr(camera, 'facing_angle', 0) or 0))
+        self._draw_queue.append(dict(
+            type='line', x1=cx, y1=cy,
+            x2=cx + math.cos(rad) * _MM_HEAD,
+            y2=cy + math.sin(rad) * _MM_HEAD,
+            color=player_color))
+'''
