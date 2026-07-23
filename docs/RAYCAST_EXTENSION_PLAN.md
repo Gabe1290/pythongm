@@ -285,11 +285,22 @@ Structural map (measured):
   available to validate JS execution. HTML5 tests now read the shipped
   `engine.js + export_html5.js` (a combined `ENGINE`, with `ENGINE_CORE` /
   `RAYCAST_JS` kept separable for structural tests).
-- [ ] **C1c — move the raycast HTML5 ACTIONS.** The three `case`s →
-  `registerExtensionAction(...)` in `export_html5.js`; removed from the switch.
-- [ ] **C1d — HTML5 tests follow the code.** `test_html5_raycast` /
-  `test_raycast_export_parity` read `export_html5.js` for the moved strings; a
-  new test covers the injection mechanism.
+- [x] **C1c — move the raycast HTML5 ACTIONS.** Done. FOUR scattered `case`s —
+  `draw_doom_hud`, `draw_minimap`, `set_facing_angle`, `enable_raycast_view` (not
+  three; `set_facing_angle` is a raycast action too) — moved to
+  `registerExtensionAction(...)` in `export_html5.js` and deleted from the
+  switch, which dispatches unknown actions to `_extActions` (Stage C1a). Each
+  case body was transformed `this`→`obj`, case-level `break;`→`return;` (all
+  breaks here are case-level — none inside a loop), brace-count-verified.
+  **Found + fixed a pre-existing HTML5 bug in passing:** `draw_doom_hud`
+  referenced a bare `ctx` that is undefined in `executeAction`'s scope (only that
+  one case did), so a browser would `ReferenceError` — the untested-in-a-browser
+  gap the CLAUDE.md notes flag. The registered action receives `game`, so it now
+  reads `game.canvas`. `engine.js` now names no raycast action.
+- [x] **C1d — HTML5 tests follow the code.** Folded into C1b/C1c: the tests read
+  the shipped `engine.js + export_html5.js` (combined `ENGINE`), assert
+  `registerExtensionAction('…')` where they used to assert `case '…'`, and
+  `tests/test_html5_extension_mechanism.py` covers the injection seam.
 - [ ] **C2a — Kivy extension mechanism (inert).** Same shape in the `.format()`
   scene/base templates + `code_generator`; exporter injects each enabled
   extension's `export_kivy.py` fragments. Brace-doubling landmine applies.
