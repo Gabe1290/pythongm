@@ -329,8 +329,19 @@ Structural map (measured):
   execs the generated `_build_raycast_walls`/`_cast_ray`/`_render_raycast`) and
   the desktop↔Kivy numeric parity test both pass. Only the `_draw_minimap`
   base-object method still names raycast in `kivy_exporter.py` — that's C2c.
-- [ ] **C2c — move the raycast Kivy codegen (actions).** The raycast action
-  codegen in `export/Kivy/code_generator.py` → the extension, via a codegen hook.
+- [x] **C2c — move the raycast Kivy codegen (actions + base method).** Done in
+  two sub-units. **C2c-1** (`4d518ed`): a codegen-contribution hook —
+  `code_generator._convert_simple_action`'s DEFAULT branch consults an extension
+  `ACTION_CODEGEN` registry (loaded from each enabled `export_kivy.py`) before
+  warning "unknown action"; the four raycast codegens (`set_facing_angle`,
+  `enable_raycast_view`, `draw_doom_hud`, `draw_minimap`) moved verbatim into
+  `export_kivy.py` (proven byte-identical output before/after through the hook).
+  **C2c-2**: a base-object injection marker (`__PYGM_EXTENSION_BASE_CODE__`, same
+  post-`.format()` pattern as the scene marker, sharing `_collect_extension_code`)
+  moved the `_draw_minimap` base-object method into `export_kivy.py`'s
+  `BASE_OBJECT_CODE`, braces un-doubled. `kivy_exporter.py` and `code_generator.py`
+  now contain **no** raycast code — only `self.facing_angle = 0.0` (a core
+  instance property, kept by B4) and comments citing raycast as the example.
 - [ ] **C3 — parity tests consolidated; full suite + smoke green.**
 
 *Honest note (unchanged): Stage C is the risky, low-teaching-value part — it's

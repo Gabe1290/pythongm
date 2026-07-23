@@ -1350,11 +1350,30 @@ if __name__ == '__main__':
         return scene_code.replace(self.EXTENSION_SCENE_MARKER,
                                   self._collect_extension_scene_code())
 
+    EXTENSION_BASE_MARKER = "    # __PYGM_EXTENSION_BASE_CODE__"
+
+    def _inject_extension_base_code(self, base_code: str) -> str:
+        """Replace base_object.py's extension marker with each enabled
+        extension's contributed base-class methods (Stage C2c). Post-.format(),
+        so injected { } dict/set literals need no brace-doubling."""
+        return base_code.replace(self.EXTENSION_BASE_MARKER,
+                                 self._collect_extension_base_code())
+
+    def _collect_extension_base_code(self) -> str:
+        """The base-object class-body code every ENABLED extension contributes
+        via export_kivy.py's BASE_OBJECT_CODE string (Stage C2c)."""
+        return self._collect_extension_code("BASE_OBJECT_CODE")
+
     def _collect_extension_scene_code(self) -> str:
         """The scene class-body code every ENABLED extension contributes (Stage
         C). An extension ships an ``export_kivy.py`` exposing ``SCENE_CODE`` — a
-        string of 4-space-indented methods injected verbatim at the marker. The
-        loader's enable/disable config is honoured.
+        string of 4-space-indented methods injected verbatim at the marker."""
+        return self._collect_extension_code("SCENE_CODE")
+
+    def _collect_extension_code(self, symbol: str) -> str:
+        """Concatenate ``symbol`` (a class-body-code string) from every ENABLED
+        extension's ``export_kivy.py`` (Stage C). Shared by the scene and
+        base-object injectors; the loader's enable/disable config is honoured.
         """
         try:
             from events.plugin_loader import (
@@ -1368,12 +1387,12 @@ if __name__ == '__main__':
                 if py.exists():
                     ns = {}
                     exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
-                    code = ns.get("SCENE_CODE", "")
+                    code = ns.get(symbol, "")
                     if code:
                         parts.append(code)
             return "\n".join(parts)
         except Exception as exc:   # never let extension collection break export
-            logger.warning(f"Could not collect extension Kivy scene code: {exc}")
+            logger.warning(f"Could not collect extension Kivy {symbol}: {exc}")
             return ""
 
     def _generate_scene(self, room_name: str, room_data: Dict):
@@ -3118,73 +3137,7 @@ class GameObject(Widget):
         except Exception:
             return (1, 1, 1, 1)
 
-    def _draw_minimap(self, x, y, size, back_color, wall_color, player_color):
-        """Queue a north-up minimap of the raycast room's wall edges.
-
-        A MACRO action: appends ordinary rectangle/line draw-queue commands, so
-        this target needed no new renderer. Mirrors build_minimap_commands() in
-        runtime/action_executor.py — tests/test_raycast_export_parity.py
-        compares the two. The code generator emits a call to this rather than
-        an inline expression, since it needs loops.
-
-        Coordinates are SCREEN space with y DOWN like every other draw command;
-        the y-flip happens once, later, in the shared draw-queue path.
-        """
-        self._draw_queue.append(dict(
-            type='rectangle', x1=x, y1=y, x2=x + size, y2=y + size,
-            color=back_color, filled=True))
-
-        scene = self.scene
-        if scene is None:
-            return
-        span = max(float(getattr(scene, 'room_width', 0) or 0),
-                   float(getattr(scene, 'room_height', 0) or 0))
-        cs = float(getattr(scene, '_raycast_cell_size', 0) or 0)
-        if span <= 0 or not cs:
-            return
-        scale = float(size) / span
-
-        def _px(wx, wy):
-            return x + wx * scale, y + wy * scale
-
-        # Wall sets are unordered; sort so every target emits the same picture
-        # in the same order (the parity test diffs it).
-        for (line_x, row) in sorted(getattr(scene, '_raycast_v_walls', None) or ()):
-            x1, y1 = _px(line_x * cs, row * cs)
-            x2, y2 = _px(line_x * cs, (row + 1) * cs)
-            self._draw_queue.append(dict(type='line', x1=x1, y1=y1, x2=x2,
-                                         y2=y2, color=wall_color))
-        for (col, line_y) in sorted(getattr(scene, '_raycast_h_walls', None) or ()):
-            x1, y1 = _px(col * cs, line_y * cs)
-            x2, y2 = _px((col + 1) * cs, line_y * cs)
-            self._draw_queue.append(dict(type='line', x1=x1, y1=y1, x2=x2,
-                                         y2=y2, color=wall_color))
-
-        cfg = getattr(scene, 'raycast_camera', None) or {{}}
-        camera = None
-        finder = getattr(scene, '_find_raycast_camera', None)
-        if callable(finder):
-            camera = finder(cfg)
-        if camera is None:
-            return
-        # The ray ORIGIN, not the sprite corner. _raycast_gm_xy converts Kivy's
-        # y-up instance position back to the GM y-down frame the whole raycast
-        # pipeline works in.
-        gm_x, gm_y = scene._raycast_gm_xy(camera)
-        cx, cy = _px(gm_x + float(getattr(camera, 'image_width', 0) or 0) / 2.0,
-                     gm_y + float(getattr(camera, 'image_height', 0) or 0) / 2.0)
-        _MM_MARK, _MM_HEAD = 2.0, 7.0
-        self._draw_queue.append(dict(
-            type='line', x1=cx - _MM_MARK, y1=cy, x2=cx + _MM_MARK, y2=cy,
-            color=player_color))
-        # GM 0=right/90=up vs screen y DOWN -> negate, as the renderers do.
-        rad = math.radians(-float(getattr(camera, 'facing_angle', 0) or 0))
-        self._draw_queue.append(dict(
-            type='line', x1=cx, y1=cy,
-            x2=cx + math.cos(rad) * _MM_HEAD,
-            y2=cy + math.sin(rad) * _MM_HEAD,
-            color=player_color))
-
+    # __PYGM_EXTENSION_BASE_CODE__
     def _render_draw_queue(self):
         """Render queued draw commands as Kivy canvas instructions.
 
@@ -3425,6 +3378,7 @@ class GameObject(Widget):
 
         # Format the template with actual values
         code_formatted = code.format(grid_size=self.grid_size)
+        code_formatted = self._inject_extension_base_code(code_formatted)
 
         output_file = self.output_path / "game" / "objects" / "base_object.py"
         output_file.write_text(code_formatted, encoding="utf-8")
