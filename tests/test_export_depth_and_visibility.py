@@ -154,15 +154,18 @@ def test_kivy_hud_group_is_scene_level_and_above_the_raycast_overlay():
     canvas.after, while the opaque _raycast_group lives on the SCENE's — which
     paints over every child. A HUD group must therefore be added to the
     scene's canvas.after, and after _raycast_group."""
+    # The HUD group was genericised to _extension_hud_group (Stage C2b): the
+    # raycast render (and its opaque _raycast_group) moved into the extension,
+    # while this HUD-compositing glue stays generic in the template.
     step = _kivy_draw_step()
-    assert "self._raycast_hud_group = InstructionGroup()" in step
-    assert "self.canvas.after.add(self._raycast_hud_group)" in step
-    # _raycast_group is built in step 7d, which runs before step 8 — so the
-    # HUD group is necessarily added later and paints on top.
-    assert KIVY_SRC.index("self._raycast_group = InstructionGroup()") \
-        < KIVY_SRC.index("self._raycast_hud_group = InstructionGroup()")
-    # Declared up front alongside the overlay group.
-    assert "self._raycast_hud_group = None" in KIVY_SRC
+    assert "self._extension_hud_group = InstructionGroup()" in step
+    assert "self.canvas.after.add(self._extension_hud_group)" in step
+    # The extension overlay renders in step 7d, before the HUD group is built in
+    # step 8 — so the HUD is necessarily added later and paints on top.
+    assert KIVY_SRC.index("_overlay_on = self._render_extension_overlay()") \
+        < KIVY_SRC.index("self._extension_hud_group = InstructionGroup()")
+    # Declared up front in __init__.
+    assert "self._extension_hud_group = None" in KIVY_SRC
 
 
 def test_kivy_hud_flips_against_window_height_not_room_height():
@@ -191,5 +194,5 @@ def test_kivy_hud_group_is_cleared_when_raycast_is_off():
     """A room that turns raycast off must not leave a stale HUD painted over
     the top-down view."""
     step = _kivy_draw_step()
-    assert step.count("_raycast_hud_group.clear()") >= 1 or step.count("_hud.clear()") >= 1
-    assert "elif getattr(self, '_raycast_hud_group', None) is not None:" in step
+    assert step.count("_extension_hud_group.clear()") >= 1 or step.count("_hud.clear()") >= 1
+    assert "elif getattr(self, '_extension_hud_group', None) is not None:" in step
