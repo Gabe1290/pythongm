@@ -120,7 +120,12 @@ def test_person_movement_and_camera_generated(exported):
 
 
 def test_scene_has_raycast_camera_slot(exported):
-    scene = next((exported / "scenes").glob("*.py")).read_text(encoding="utf-8")
+    # scenes/ also holds a package __init__.py; glob("*.py") order is
+    # filesystem-dependent (CI/Linux returned __init__.py first, failing this),
+    # so pick a real scene module explicitly.
+    scene_file = next(p for p in sorted((exported / "scenes").glob("*.py"))
+                      if p.name != "__init__.py")
+    scene = scene_file.read_text(encoding="utf-8")
     assert "self.raycast_camera = None" in scene
     compile(scene, "scene.py", "exec")
 
