@@ -313,12 +313,22 @@ Structural map (measured):
   single `GameRoom` class, each Kivy room is its own scene class, so the code is
   injected into every scene (the extension methods are harmless on non-raycast
   scenes, matching the always-injected HTML5 JS).
-- [ ] **C2b — move the raycast Kivy RENDER + scene state.** The 12 raycast scene
-  methods (~560 lines), the `__init__` raycast state, and the two render-dispatch
-  sites (init + `update`, plus the HUD-compositing gate on `raycast_camera`) →
-  `export_kivy.py` `SCENE_CODE`, behind a generic render hook. The stub harness
-  in `tests/test_kivy_raycast.py` (which executes the generated methods) is the
-  behavioural safety net since Kivy can't run in CI.
+- [x] **C2b — move the raycast Kivy RENDER + scene state.** Done. The 12 raycast
+  scene methods (565 lines) → `extensions/raycast_2_5d/export_kivy.py` as
+  `SCENE_CODE`, **braces un-doubled** (`{{`→`{`; verified the block had zero
+  `.format()` fields first, so un-doubling is exact). The `__init__` raycast
+  state and both render-dispatch sites became generic hooks: the scene template
+  now calls `self._init_extensions()` / `self._render_extension_overlay()` (no-op
+  defaults defined in the template; the injected `SCENE_CODE` overrides them —
+  Python takes the LAST def, and the marker sits after the defaults, verified by
+  method resolution on the generated class). The HUD-compositing block stayed in
+  the template but was genericised: `_raycast_hud_group`→`_extension_hud_group`,
+  `_raycast_on`→`_overlay_on` (the overlay hook's return value). Verified the
+  generated raycast_1 scene compiles, carries the injected methods with single
+  braces, and the override wins; the stub harness (`test_kivy_raycast.py`, which
+  execs the generated `_build_raycast_walls`/`_cast_ray`/`_render_raycast`) and
+  the desktop↔Kivy numeric parity test both pass. Only the `_draw_minimap`
+  base-object method still names raycast in `kivy_exporter.py` — that's C2c.
 - [ ] **C2c — move the raycast Kivy codegen (actions).** The raycast action
   codegen in `export/Kivy/code_generator.py` → the extension, via a codegen hook.
 - [ ] **C3 — parity tests consolidated; full suite + smoke green.**

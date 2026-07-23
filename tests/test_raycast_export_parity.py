@@ -62,6 +62,15 @@ RAYCAST_JS = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_html5.js").rea
     encoding="utf-8")
 ENGINE = ENGINE_CORE + "\n" + RAYCAST_JS
 
+# Likewise for Kivy (Stage C2b): the raycast RENDER moved into the extension's
+# export_kivy.py SCENE_CODE, while the minimap builder + HUD-compositing glue
+# stay in kivy_exporter.py. The shipped Kivy source is the two together.
+KIVY_EXPORTER = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(
+    encoding="utf-8")
+KIVY_RAYCAST = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_kivy.py").read_text(
+    encoding="utf-8")
+KIVY = KIVY_EXPORTER + "\n" + KIVY_RAYCAST
+
 
 def _shared_walls():
     """A representative 6x6 map: a solid border ring plus two interior
@@ -260,7 +269,7 @@ def test_overflowing_walls_crop_the_texture_instead_of_squeezing_it():
     while unclamped (far) columns didn't, breaking the courses across a FLAT
     wall, with the boundary marching along it as you walked (user reports
     2026-07-19). All three renderers must crop."""
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
 
     # the squeeze signature: a screen-clamped height fed straight to the scale
     # (desktop source is now the raycast extension's renderer, not game_runner)
@@ -351,7 +360,7 @@ def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
     """All three renderers must use the camera-plane mapping (and the matching
     inverse for billboards), not the old linear FOV ramp. Desktop source is the
     raycast extension's renderer now (Stage B2)."""
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     for src, name in ((RENDERER, "renderer"), (kx, "kivy_exporter")):
         assert "math.atan(plane_tan * camera_x)" in src, name
         assert "-fov_rad / 2 + fov_rad * (col / num_columns)" not in src, \
@@ -370,7 +379,7 @@ def test_all_three_share_the_facing_angle_convention():
     -facing_angle (GM 0=right/90=up -> y-down screen)."""
     # Desktop (raycast extension) + Kivy: radians(-camera.facing_angle)
     assert "math.radians(-camera.facing_angle)" in RENDERER
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     assert "math.radians(-float(getattr(camera, 'facing_angle', 0)))" in kx
     # HTML5: (-facing_angle) in radians
     assert re.search(r"-\s*camera\.facing_angle\s*\*\s*Math\.PI\s*/\s*180", ENGINE) \
@@ -385,7 +394,7 @@ def test_all_three_share_the_facing_angle_convention():
 
 def test_all_three_composite_the_hud_after_the_raycast_render():
     gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
 
     # Desktop: the raycast view renders through the extension seam (Stage B2),
     # and _render_room composites the HUD after any claimed render instead of
@@ -410,8 +419,8 @@ def test_all_three_composite_the_hud_after_the_raycast_render():
         "raycast extension no longer renders the first-person view"
 
     # Kivy: a scene-level HUD group above the opaque overlay.
-    assert "self._raycast_hud_group = InstructionGroup()" in kx
-    assert "self.canvas.after.add(self._raycast_hud_group)" in kx
+    assert "self._extension_hud_group = InstructionGroup()" in kx
+    assert "self.canvas.after.add(self._extension_hud_group)" in kx
 
 
 def test_all_three_draw_the_hud_in_screen_space():
@@ -419,7 +428,7 @@ def test_all_three_draw_the_hud_in_screen_space():
     target — no camera/view offset, and (on Kivy) flipped against the WINDOW
     height rather than the room height."""
     gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     # Desktop passes the bare screen (no view_offset).
     helper = gr[gr.index("def _render_draw_events"):]
     helper = helper[:helper.index("def update_views")]
@@ -512,7 +521,7 @@ def test_raycast_2_hud_actually_renders_through_the_real_game_loop():
 # extensions/raycast_2_5d/hud.py is the single source the other two mirror.
 
 def test_all_three_implement_draw_minimap():
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
     from events.action_types import ACTION_TYPES
     assert "draw_minimap" in ACTION_TYPES
@@ -528,7 +537,7 @@ def test_all_three_share_the_marker_and_heading_constants():
     would look like a different game on each target."""
     from extensions.raycast_2_5d.hud import MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF
     assert (MINIMAP_MARKER_HALF, MINIMAP_HEADING_LEN) == (2.0, 7.0)
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     assert "_MM_MARK, _MM_HEAD = 2.0, 7.0" in kx
     assert "MM_MARK = 2.0, MM_HEAD = 7.0" in ENGINE
 
@@ -537,7 +546,7 @@ def test_all_three_negate_facing_angle_for_the_heading_line():
     """GM 0=right/90=up vs screen y DOWN. A missing negation mirrors the
     heading vertically and is invisible at angle 0 — so pin it in the source
     of all three, not just by testing one angle."""
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     assert "math.radians(-float(facing_angle or 0.0))" in HUD    # extension builder
     assert "math.radians(-float(getattr(camera, 'facing_angle', 0) or 0))" in kx
     assert "-(mmCam.facing_angle || 0) * Math.PI / 180" in ENGINE
@@ -547,7 +556,7 @@ def test_all_three_sort_the_wall_sets():
     """Wall sets are unordered. Without a sort the three targets can emit the
     same picture in a different order, which would make any command-level
     comparison flap."""
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     assert "for (line_x, row) in sorted(" in HUD    # extension builder
     assert "for (line_x, row) in sorted(" in kx
     assert ".sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]))" in ENGINE
@@ -556,7 +565,7 @@ def test_all_three_sort_the_wall_sets():
 def test_all_three_use_the_ray_origin_for_the_marker():
     """Not the sprite corner — the same centre the renderers cast rays from,
     or the 'you are here' dot sits half a sprite off the actual viewpoint."""
-    kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     block = HANDLERS[HANDLERS.index("def execute_draw_minimap_action"):]   # extension handler
     assert "_sprite_top_left" in block and "_cached_width" in block
     assert "_raycast_gm_xy(camera)" in kx and "image_width" in kx
