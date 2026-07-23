@@ -16,6 +16,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -128,7 +129,7 @@ def test_hud_draw_event_runs_under_raycast():
         restore()
 
     assert result is not False
-    assert runner.current_room.raycast_camera["enabled"] is True, \
+    assert raycast_state(runner.current_room)["camera"]["enabled"] is True, \
         "precondition: this test is meaningless unless raycast is active"
     texts = [c.get("text") for c in seen if c.get("type") == "text"]
     assert HUD_TEXT in texts, \
@@ -190,7 +191,7 @@ def test_normal_mode_draw_events_are_unaffected():
         _run(runner, max_frames=3)
         # Disable raycast and render once more: the normal top-down path.
         # Its own surface — run() has already torn the display down.
-        runner.current_room.raycast_camera["enabled"] = False
+        raycast_state(runner.current_room)["camera"]["enabled"] = False
         seen.clear()
         runner.current_room.render(pygame.Surface((800, 600)))
     finally:

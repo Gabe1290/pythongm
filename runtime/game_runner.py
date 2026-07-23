@@ -1344,26 +1344,11 @@ class GameRoom:
 
         # Scratch space extensions can attach per-room state to, so they don't
         # have to add attributes to engine classes. Namespace your own key —
-        # see runtime/extension_hooks.py.
+        # see runtime/extension_hooks.py. The 2.5D raycast feature keeps ALL of
+        # its per-room state (camera config + derived wall-edge caches) under
+        # extension_state['raycast'] (Stage B3b, docs/RAYCAST_EXTENSION_PLAN.md),
+        # so GameRoom carries nothing raycast-specific.
         self.extension_state: Dict[str, Any] = {}
-        # Raycast (Doom/Wolfenstein-style) first-person camera — see
-        # docs/RAYCAST_2_5D_PLAN.md. Off by default; enable_raycast_view
-        # replaces this dict. The RENDERER lives in the raycast extension
-        # (extensions/raycast_2_5d/renderer.py, Stage B2 of
-        # docs/RAYCAST_EXTENSION_PLAN.md) and claims the room through the
-        # extension_hooks seam; the derived wall-edge caches below stay here
-        # only because the still-core enable_raycast_view action and the
-        # draw_minimap macro read/reset them — Stage B3 moves the actions and
-        # this state (into extension_state) together.
-        self.raycast_camera: Dict[str, Any] = {'enabled': False}
-        self._raycast_v_walls: Optional[Set[Tuple[int, int]]] = None
-        self._raycast_h_walls: Optional[Set[Tuple[int, int]]] = None
-        # Parallel to the wall-edge sets: the sprite of the solid instance that
-        # created each edge, so a ray hit can sample a texture strip (Phase 5)
-        # instead of a flat colour. None entry / missing key -> flat colour.
-        self._raycast_v_wall_sprites: Dict[Tuple[int, int], Any] = {}
-        self._raycast_h_wall_sprites: Dict[Tuple[int, int], Any] = {}
-        self._raycast_cell_size: int = 32
 
         # Depth-sorted instance cache (invalidated when instances change)
         self._sorted_instances: Optional[List[GameInstance]] = None

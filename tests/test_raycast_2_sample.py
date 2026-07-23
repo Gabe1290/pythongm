@@ -19,6 +19,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -75,9 +76,9 @@ def test_raycast_2_runs_and_enables_first_person_camera():
     assert result is not False, "game loop reported a fatal crash"
     assert frames == 60
     assert runner.current_room.name == "room0"
-    assert runner.current_room.raycast_camera["enabled"] is True
+    assert raycast_state(runner.current_room)["camera"]["enabled"] is True
     # Textured raycast config carried over from raycast_1's create event.
-    cfg = runner.current_room.raycast_camera
+    cfg = raycast_state(runner.current_room)["camera"]
     assert cfg["wall_texture"] == "spr_wall_texture"
     assert cfg["sky_texture"] == "spr_sky"
     assert cfg["floor_texture"] == "spr_floor"
@@ -389,7 +390,7 @@ def test_room0_goal_advances_and_room1_goal_wins():
     runner = _runner()
     _run(runner, {}, 4)
     assert runner.current_room.name == "room0"
-    cfg0 = runner.current_room.raycast_camera
+    cfg0 = raycast_state(runner.current_room)["camera"]
     assert cfg0["wall_texture"] == "spr_wall_texture"
     assert runner.current_room._find_first_instance(cfg0["camera_object"]).object_name == "obj_person"
 
@@ -404,7 +405,7 @@ def test_room0_goal_advances_and_room1_goal_wins():
     runner.running = True
     _run(runner, {}, 4)
     assert runner.current_room.name == "room1"
-    assert runner.current_room.raycast_camera["wall_texture"] == "spr_wall_ice"
+    assert raycast_state(runner.current_room)["camera"]["wall_texture"] == "spr_wall_ice"
 
     # room1 has obj_goal_final (win), not obj_goal
     names = {i.object_name for i in runner.current_room.instances}

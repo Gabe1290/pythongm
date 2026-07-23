@@ -26,18 +26,26 @@ plugin uses:
   out of core in Stage B3;
 * ``PLUGIN_ROOM_RENDERERS`` (below) — the room-render hook.
 
-Still in core: the ``raycast_camera`` / wall-cache state the actions keep on the
-room (a separate refactor into ``room.extension_state``), and ``facing_angle``
-(a general instance property, left in core by design — B4).
+All raycast state (the camera config + the derived wall-edge caches) lives under
+``room.extension_state["raycast"]`` (state.py, Stage B3b), so ``GameRoom`` holds
+nothing raycast-specific. The one thing left in core by design is
+``facing_angle`` — a general ``GameInstance`` look-direction property, not
+inherently 3D (B4).
 """
 
 from .actions import PLUGIN_ACTIONS
 from .handlers import PluginExecutor
+from .state import peek_camera
 
 
 def render_room(room, screen):
-    """Room-renderer hook: claim the room iff its raycast camera is enabled."""
-    cfg = getattr(room, 'raycast_camera', None)
+    """Room-renderer hook: claim the room iff its raycast camera is enabled.
+
+    Uses a NON-creating peek at room.extension_state — this runs for every room
+    in the game, raycast or not, and must not stamp raycast state onto rooms
+    that never enabled the view.
+    """
+    cfg = peek_camera(room)
     if not cfg or not cfg.get('enabled'):
         return False                     # not a raycast room -- engine draws it
     from . import renderer
