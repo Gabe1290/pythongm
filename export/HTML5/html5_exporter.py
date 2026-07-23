@@ -31,11 +31,43 @@ def _sanitize_filename(name: str) -> str:
 class HTML5Exporter:
     """Export PyGameMaker projects to HTML5"""
 
+    EXTENSION_JS_MARKER = "// __PYGM_EXTENSION_JS__"
+
     def __init__(self):
         # Load templates from files
         template_dir = Path(__file__).parent / "templates"
         self.template_html = (template_dir / "game_template.html").read_text(encoding='utf-8')
-        self.engine_code = (template_dir / "engine.js").read_text(encoding='utf-8')
+        engine_code = (template_dir / "engine.js").read_text(encoding='utf-8')
+        # Stage C: concatenate each enabled extension's export_html5.js at the
+        # marker, so engine.js stays extension-agnostic (the raycast renderer
+        # and its actions ship from extensions/raycast_2_5d/export_html5.js).
+        self.engine_code = engine_code.replace(
+            self.EXTENSION_JS_MARKER, self._collect_extension_js())
+
+    def _collect_extension_js(self) -> str:
+        """The engine JS contributed by every ENABLED extension (Stage C).
+
+        An extension ships an ``export_html5.js`` alongside its manifest; the
+        loader's enable/disable config is honoured so a switched-off extension
+        contributes nothing. engine.js concatenates these at
+        ``EXTENSION_JS_MARKER`` — it never names a specific extension.
+        """
+        try:
+            from events.plugin_loader import (
+                list_available_extensions, get_extension_directory)
+            ext_dir = get_extension_directory()
+            parts = []
+            for info in list_available_extensions():
+                if not info.get("enabled", True):
+                    continue
+                js_file = ext_dir / info["folder"] / "export_html5.js"
+                if js_file.exists():
+                    parts.append(f"// --- extension: {info['folder']} ---\n"
+                                 + js_file.read_text(encoding="utf-8"))
+            return "\n".join(parts)
+        except Exception as exc:  # never let extension collection break export
+            logger.warning(f"Could not collect extension JS: {exc}")
+            return ""
 
     def export(self, project_path: Path, output_path: Path) -> bool:
             """Export project to HTML5"""

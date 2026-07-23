@@ -3,6 +3,41 @@
 // PyGameMaker HTML5 Engine - GAMEMAKER 7.0 COMPATIBLE
 // ============================================================================
 
+// ---------------------------------------------------------------------------
+// Extension mechanism (docs/RAYCAST_EXTENSION_PLAN.md Stage C). Mirrors the
+// desktop runtime/extension_hooks + plugin action registry: an extension ships
+// an export_html5.js that the exporter concatenates at the __PYGM_EXTENSION_JS__
+// marker near the end of this file, and that code registers room renderers
+// and/or action handlers here. engine.js itself names no specific extension.
+// ---------------------------------------------------------------------------
+
+// Room renderers: (room, ctx) -> true if the extension drew the room. The
+// engine then skips its top-down pass but still composites the HUD/draw events.
+const _extRoomRenderers = [];
+function registerRoomRenderer(fn) {
+    if (typeof fn === 'function' && !_extRoomRenderers.includes(fn)) {
+        _extRoomRenderers.push(fn);
+    }
+}
+function renderExtensionRoom(room, ctx) {
+    for (const fn of _extRoomRenderers) {
+        try {
+            if (fn(room, ctx)) return true;   // first claimer wins
+        } catch (e) {
+            console.error('Extension room renderer failed:', e);
+        }
+    }
+    return false;
+}
+
+// Action handlers: name -> (obj, params, game). Consulted by
+// GameObject.executeAction's default case, so an extension adds actions without
+// engine.js enumerating them.
+const _extActions = {};
+function registerExtensionAction(name, fn) {
+    if (typeof fn === 'function') _extActions[name] = fn;
+}
+
 // Translation strings for game messages (matches Python runtime translations)
 const ENGINE_TRANSLATIONS = {
     'en': {
@@ -2674,7 +2709,13 @@ class GameObject {
             }
 
             default:
-                console.warn(`Unknown action: ${actionType}`);
+                if (_extActions[actionType]) {
+                    // An extension-contributed action (Stage C). Same (obj,
+                    // params, game) shape a switch case had via this/params/game.
+                    _extActions[actionType](this, params, game);
+                } else {
+                    console.warn(`Unknown action: ${actionType}`);
+                }
         }
     }
 
@@ -3480,9 +3521,18 @@ class GameRoom {
     }
 
     render(ctx) {
+        // Extensions get first refusal on drawing this room (Stage C mechanism,
+        // mirrors the desktop extension_hooks seam). A claim replaces the
+        // top-down pass; the HUD/draw-event pass still composites on top.
+        if (renderExtensionRoom(this, ctx)) {
+            const hudInstances = [...this.instances].sort((a, b) => b.depth - a.depth);
+            hudInstances.forEach(inst => inst.runDrawEvent(ctx));
+            return;
+        }
         // Raycast (Doom-style) first-person view fully replaces the top-down
         // render for this room (mirrors the desktop _render_room early-return);
         // game logic is unaffected, only the picture changes.
+        // NB: still handled here in C1a; moves to export_html5.js in C1b.
         if (this.raycastCamera && this.raycastCamera.enabled) {
             this.renderRaycastView(ctx);
             // Composite the HUD on top, in screen space (no view offset), so
@@ -3995,6 +4045,12 @@ class Game {
         }
     }
 }
+
+// __PYGM_EXTENSION_JS__
+// (The exporter concatenates each enabled extension's export_html5.js above,
+// after all engine classes are defined, so it can augment prototypes and call
+// registerRoomRenderer / registerExtensionAction. Left as a comment when there
+// are no extensions, so engine.js stays valid on its own.)
 
 window.addEventListener('load', async () => {
     try {
