@@ -20,15 +20,15 @@ plugins/audio_actions.py keeps pygame out of module scope).
 This extension contributes, through the same declarative contract a single-file
 plugin uses:
 
-* ``PLUGIN_ACTIONS`` (actions.py) + ``PluginExecutor`` (handlers.py) — the
-  raycast SETUP actions ``set_facing_angle`` and ``enable_raycast_view``, moved
+* ``PLUGIN_ACTIONS`` (actions.py) + ``PluginExecutor`` (handlers.py) — all four
+  raycast actions (``set_facing_angle``, ``enable_raycast_view``,
+  ``draw_minimap``, ``draw_doom_hud``), plus their HUD builders (hud.py), moved
   out of core in Stage B3;
 * ``PLUGIN_ROOM_RENDERERS`` (below) — the room-render hook.
 
-Still in core for now: the ``draw_minimap`` / ``draw_doom_hud`` macro actions
-(later B3 units), the ``raycast_camera`` / wall-cache state the actions keep on
-the room (a separate refactor into ``room.extension_state``), and
-``facing_angle`` (a general instance property, left in core by design — B4).
+Still in core: the ``raycast_camera`` / wall-cache state the actions keep on the
+room (a separate refactor into ``room.extension_state``), and ``facing_angle``
+(a general instance property, left in core by design — B4).
 """
 
 from .actions import PLUGIN_ACTIONS

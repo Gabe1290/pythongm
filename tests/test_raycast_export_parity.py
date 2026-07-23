@@ -612,8 +612,9 @@ def test_kivy_minimap_geometry_matches_the_desktop_reference_exactly():
 
 
 # --- draw_doom_hud (DOOM HUD Unit 4b/5) ------------------------------------
-# A MACRO action like draw_minimap: build_doom_hud_commands() is the single
-# source, the HTML5 case and Kivy codegen mirror it. No new draw-queue type.
+# A MACRO action like draw_minimap: build_doom_hud_commands() (now in
+# extensions/raycast_2_5d/hud.py) is the single source, the HTML5 case and Kivy
+# codegen mirror it. No new draw-queue type.
 
 def test_all_three_implement_draw_doom_hud():
     from events.action_types import ACTION_TYPES
@@ -626,7 +627,7 @@ def test_all_three_implement_draw_doom_hud():
 def test_doom_hud_face_frame_formula_matches_across_targets():
     """The even-bucket face map must be identical everywhere, or the portrait
     reacts differently per target."""
-    from runtime.action_executor import doom_face_frame
+    from extensions.raycast_2_5d.hud import doom_face_frame
     assert [doom_face_frame(h, 4) for h in (100, 60, 40, 10, 0)] == [0, 1, 2, 3, 3]
     # HTML5 + Kivy use the same min(frames-1, int((1-frac)*frames)) shape.
     hud = ENGINE[ENGINE.index("case 'draw_doom_hud'"):]
@@ -639,7 +640,7 @@ def test_doom_hud_face_frame_formula_matches_across_targets():
 def test_doom_hud_emits_only_existing_draw_queue_types():
     """The whole point of a macro action: nothing here needs a new renderer
     dispatch entry on any target."""
-    from runtime.action_executor import build_doom_hud_commands
+    from extensions.raycast_2_5d.hud import build_doom_hud_commands
     cmds = build_doom_hud_commands(
         x=0, y=400, width=640, height=42, health=50, score=10, lives=2,
         back_color="#101010", divider_color="#505050", text_color="#fff",

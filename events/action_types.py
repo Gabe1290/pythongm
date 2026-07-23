@@ -471,83 +471,12 @@ ACTION_TYPES = {
         ]
     ),
 
-    # set_facing_angle, enable_raycast_view and draw_minimap MOVED to the
-    # raycast extension (extensions/raycast_2_5d/actions.py) in Stage B3 —
-    # docs/RAYCAST_EXTENSION_PLAN.md. The loader merges an extension's
-    # PLUGIN_ACTIONS into ACTION_TYPES at startup, so get_action_type() still
-    # finds them once plugins/extensions are loaded. draw_doom_hud below is the
-    # last raycast action queued to move.
-
-    # DOOM-style bottom status bar — see docs/RAYCAST_DOOM_HUD_PLAN.md. A MACRO
-    # action like draw_minimap: composes health/score/lives/objective + a
-    # health-reactive face from ordinary rectangle/line/text/sprite/lives draw
-    # commands, so no target needs a new renderer. Pairs with
-    # enable_raycast_view's viewport_height, which reserves the band it fills.
-    "draw_doom_hud": ActionType(
-        name="draw_doom_hud",
-        display_name="Draw DOOM HUD",
-        description="Draw a DOOM-style bottom status bar (health bar + number, "
-                    "score, lives, an objective counter, and a health-reactive "
-                    "face icon) over the raycast view",
-        category="3D View",
-        icon="🎯",
-        parameters=[
-            ActionParameter(name="x", display_name="X", param_type="number",
-                default_value=0, description="Bar's left edge, in screen pixels"),
-            ActionParameter(name="y", display_name="Y", param_type="number",
-                default_value=-1, required=False,
-                description="Bar's top edge; negative auto-aligns to the bottom "
-                            "of the window, under the shrunk viewport"),
-            ActionParameter(name="width", display_name="Width", param_type="number",
-                default_value=0, required=False,
-                description="Bar width (0 = full window width)"),
-            ActionParameter(name="height", display_name="Height", param_type="number",
-                default_value=42, required=False,
-                description="Bar height; keep it matched to the viewport_height "
-                            "band you reserved on enable_raycast_view"),
-            ActionParameter(name="back_color", display_name="Background Color",
-                param_type="color", default_value="#101010", required=False,
-                description="Bar background panel"),
-            ActionParameter(name="divider_color", display_name="Divider Color",
-                param_type="color", default_value="#505050", required=False,
-                description="Top border and the health-bar backing"),
-            ActionParameter(name="text_color", display_name="Text Color",
-                param_type="color", default_value="#ffffff", required=False,
-                description="Colour of all bar text"),
-            ActionParameter(name="health_label", display_name="Health Label",
-                param_type="string", default_value="Health", required=False),
-            ActionParameter(name="health_bar_width", display_name="Health Bar Width",
-                param_type="number", default_value=90, required=False),
-            ActionParameter(name="health_bar_height", display_name="Health Bar Height",
-                param_type="number", default_value=14, required=False),
-            ActionParameter(name="bar_color", display_name="Health Bar Color",
-                param_type="color", default_value="#20c020", required=False,
-                description="Fill colour of the health bar"),
-            ActionParameter(name="face_sprite", display_name="Face Sprite",
-                param_type="sprite", default_value="", required=False,
-                description="Horizontal strip of face frames, healthiest first "
-                            "(blank = no face icon)"),
-            ActionParameter(name="face_frames", display_name="Face Frames",
-                param_type="number", default_value=4, required=False,
-                description="How many frames the face strip has; health is "
-                            "bucketed evenly across them"),
-            ActionParameter(name="score_label", display_name="Score Label",
-                param_type="string", default_value="Score: ", required=False),
-            ActionParameter(name="lives_sprite", display_name="Lives Sprite",
-                param_type="sprite", default_value="", required=False,
-                description="Sprite drawn once per remaining life"),
-            ActionParameter(name="lives_scale", display_name="Lives Scale",
-                param_type="number", default_value=1.0, required=False),
-            ActionParameter(name="objective_value", display_name="Objective Value",
-                param_type="string", default_value="0", required=False,
-                description="Expression shown after the objective label (bind "
-                            "your own key/quest variable)"),
-            ActionParameter(name="objective_label", display_name="Objective Label",
-                param_type="string", default_value="Keys: ", required=False),
-        ],
-    ),
-    # draw_minimap and enable_raycast_view MOVED to
-    # extensions/raycast_2_5d/actions.py (Stage B3).
+    # All four raycast "3D View" actions (set_facing_angle, enable_raycast_view,
+    # draw_minimap, draw_doom_hud) now live in the raycast extension
+    # (extensions/raycast_2_5d/actions.py) — Stage B3, docs/
+    # RAYCAST_EXTENSION_PLAN.md. The loader merges an extension's PLUGIN_ACTIONS
+    # into ACTION_TYPES at startup, so get_action_type() finds them once
+    # plugins/extensions are loaded.
 
     "previous_room": ActionType(
         name="previous_room",

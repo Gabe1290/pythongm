@@ -16,7 +16,12 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame  # noqa: E402
 
-from runtime.action_executor import (  # noqa: E402
+# draw_doom_hud + its builders moved into the raycast extension (Stage B3,
+# docs/RAYCAST_EXTENSION_PLAN.md). Load plugins so the schema is merged into
+# ACTION_TYPES (the IDE does this at startup; a bare test import does not).
+from events.plugin_loader import load_all_plugins  # noqa: E402
+load_all_plugins()
+from extensions.raycast_2_5d.hud import (  # noqa: E402
     build_doom_hud_commands, doom_face_frame,
 )
 
@@ -109,12 +114,18 @@ def test_objective_and_score_text():
 
 # --- Action registration + desktop end-to-end ------------------------------
 
-def test_action_registered_and_handler_discovered():
+def test_action_registered_and_handler_from_the_extension():
+    """Schema merged into ACTION_TYPES from the extension; handler registered
+    onto the executor by load_all_plugins (Stage B3), not an ActionExecutor
+    method."""
     from events.action_types import ACTION_TYPES, get_action_type
     from runtime.action_executor import ActionExecutor
     assert "draw_doom_hud" in ACTION_TYPES
     assert get_action_type("draw_doom_hud").category == "3D View"
-    assert "draw_doom_hud" in ActionExecutor().action_handlers
+    ex = ActionExecutor()
+    load_all_plugins(ex)
+    assert "draw_doom_hud" in ex.action_handlers
+    assert not hasattr(ex, "execute_draw_doom_hud_action")
 
 
 def test_auto_y_aligns_to_the_window_bottom():

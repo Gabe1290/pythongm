@@ -91,6 +91,32 @@ def test_extension_owns_draw_minimap_and_its_builder():
     assert not hasattr(ActionExecutor, "execute_draw_minimap_action")
 
 
+def test_extension_owns_draw_doom_hud_and_its_builders():
+    """Stage B3.3: draw_doom_hud (schema + handler), build_doom_hud_commands and
+    doom_face_frame live in the extension; core no longer carries them. This is
+    the last raycast action to move — core's ACTION_TYPES now has no "3D View"
+    action baked in."""
+    from extensions.raycast_2_5d import PLUGIN_ACTIONS, PluginExecutor
+    from extensions.raycast_2_5d.hud import build_doom_hud_commands, doom_face_frame
+    assert "draw_doom_hud" in PLUGIN_ACTIONS
+    assert callable(getattr(PluginExecutor(), "execute_draw_doom_hud_action", None))
+    assert callable(build_doom_hud_commands) and callable(doom_face_frame)
+
+    import runtime.action_executor as ae
+    for gone in ("build_doom_hud_commands", "doom_face_frame"):
+        assert not hasattr(ae, gone), f"action_executor still exports {gone}"
+    from runtime.action_executor import ActionExecutor
+    assert not hasattr(ActionExecutor, "execute_draw_doom_hud_action")
+
+    # All four "3D View" actions are the extension's now — none baked into the
+    # static core dict source.
+    import events.action_types as at_mod
+    src = Path(at_mod.__file__).read_text(encoding="utf-8")
+    for name in ("set_facing_angle", "enable_raycast_view", "draw_minimap",
+                 "draw_doom_hud"):
+        assert f'"{name}": ActionType' not in src, f"{name} still in core ACTION_TYPES"
+
+
 def test_extension_is_discovered_and_enabled_by_default():
     from events.plugin_loader import list_available_extensions
     found = {e["folder"]: e for e in list_available_extensions()}
