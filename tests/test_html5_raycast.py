@@ -22,7 +22,13 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-ENGINE = (REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js").read_text(encoding="utf-8")
+# The raycast renderer moved into the raycast_2_5d extension (Stage C); the
+# exporter concatenates its export_html5.js at engine.js's marker, so the shipped
+# engine JS is the two together. ENGINE_CORE / RAYCAST_JS keep them separable for
+# the structural tests that assert WHERE a hook lives.
+ENGINE_CORE = (REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js").read_text(encoding="utf-8")
+RAYCAST_JS = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_html5.js").read_text(encoding="utf-8")
+ENGINE = ENGINE_CORE + "\n" + RAYCAST_JS
 
 
 def test_facing_angle_property_and_action():
@@ -43,13 +49,19 @@ def test_enable_raycast_view_action_builds_camera():
         assert field in ENGINE, field
 
 
-def test_render_has_raycast_early_return():
+def test_render_gives_extensions_first_refusal():
+    """GameRoom.render hands each room to the generic extension hook first (Stage
+    C); a claim composites the HUD and returns. The raycast dispatch used to be
+    inline here — it's now the raycast_2_5d extension's registered renderer."""
     m = re.search(r"    render\(ctx\)\s*\{(.*?)\n        // Fill the whole canvas",
-                  ENGINE, re.S)
+                  ENGINE_CORE, re.S)
     assert m, "GameRoom.render not found in expected shape"
     body = m.group(1)
-    assert "this.raycastCamera && this.raycastCamera.enabled" in body
-    assert "this.renderRaycastView(ctx)" in body
+    assert "renderExtensionRoom(this, ctx)" in body
+    assert "raycastCamera" not in body, "raycast dispatch should have moved out of core"
+    # the raycast renderer is registered by the extension and calls renderRaycastView
+    assert "registerRoomRenderer(function(room, ctx)" in RAYCAST_JS
+    assert "room.renderRaycastView(ctx)" in RAYCAST_JS
 
 
 def test_dda_ported_faithfully():
@@ -203,11 +215,13 @@ def test_raycast_1_exports_with_camera_and_textures():
 # (draw_score / draw_lives / draw_text / draw_health_bar) was invisible in the
 # browser. Source-level assertions only — no JS engine in CI.
 
-def _raycast_branch() -> str:
-    """The body of GameRoom.render's `raycastCamera.enabled` early-return."""
-    start = ENGINE.index("if (this.raycastCamera && this.raycastCamera.enabled) {")
-    end = ENGINE.index("return;", start) + len("return;")
-    return ENGINE[start:end]
+def _extension_render_hook() -> str:
+    """The body of GameRoom.render's generic extension hook (Stage C) — a claim
+    composites the HUD/draw-event pass and returns. Raycast rendering itself is
+    now the raycast_2_5d extension's registered renderer (export_html5.js)."""
+    start = ENGINE_CORE.index("if (renderExtensionRoom(this, ctx)) {")
+    end = ENGINE_CORE.index("return;", start) + len("return;")
+    return ENGINE_CORE[start:end]
 
 
 def test_run_draw_event_is_split_out_of_on_draw():
@@ -223,22 +237,23 @@ def test_run_draw_event_is_split_out_of_on_draw():
     assert ENGINE.count("runDrawEvent(ctx) {") == 1
 
 
-def test_hud_pass_runs_after_the_raycast_render_and_before_the_return():
-    branch = _raycast_branch()
-    assert "this.renderRaycastView(ctx);" in branch
-    assert "runDrawEvent(ctx)" in branch, \
-        "raycast branch still returns without compositing the HUD"
-    assert branch.index("this.renderRaycastView(ctx);") < branch.index("runDrawEvent(ctx)") \
-        < branch.index("return;"), "HUD must composite over the finished frame"
+def test_hud_pass_runs_after_an_extension_render_and_before_the_return():
+    hook = _extension_render_hook()
+    assert "runDrawEvent(ctx)" in hook, \
+        "extension render hook returns without compositing the HUD"
+    assert hook.index("runDrawEvent(ctx)") < hook.index("return;"), \
+        "HUD must composite over the finished frame"
+    # the raycast renderer paints the frame the HUD composites over
+    assert "room.renderRaycastView(ctx)" in RAYCAST_JS
 
 
 def test_hud_pass_uses_gamemaker_depth_order():
     """Descending — higher depth drawn first, so lower depth ends in front.
-    Both engine.js sites must agree with each other AND with the desktop
+    The extension render hook must agree with the normal path AND the desktop
     runtime's `reverse=True` sort."""
-    branch = _raycast_branch()
-    assert "sort((a, b) => b.depth - a.depth)" in branch
-    normal = ENGINE[ENGINE.index("const sortedInstances = "):]
+    hook = _extension_render_hook()
+    assert "sort((a, b) => b.depth - a.depth)" in hook
+    normal = ENGINE_CORE[ENGINE_CORE.index("const sortedInstances = "):]
     assert "sort((a, b) => b.depth - a.depth)" in normal[:200]
     assert "a.depth - b.depth" not in ENGINE, \
         "an ascending depth sort is back — it inverts sprite z-order"

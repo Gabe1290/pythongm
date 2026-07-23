@@ -31,7 +31,7 @@ def test_render_gives_extensions_first_refusal():
     """GameRoom.render calls the hook first; a claim runs the HUD/draw pass
     and returns (mirrors the desktop _render_room seam)."""
     render = ENGINE[ENGINE.index("    render(ctx) {"):]
-    render = render[:render.index("if (this.raycastCamera")]
+    render = render[:render.index("// Fill the whole canvas")]
     assert "if (renderExtensionRoom(this, ctx)) {" in render
     assert "runDrawEvent(ctx)" in render
     assert "return;" in render
