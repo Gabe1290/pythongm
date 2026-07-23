@@ -244,14 +244,57 @@ optional.*
 
 ### Stage C — move the export contributions (the hard half)
 
-- [ ] **C1 — HTML5 JS injection point** + move the raycast JS out of `engine.js`.
-- [ ] **C2 — Kivy scene/codegen contribution** + move the raycast Kivy code out.
-- [ ] **C3 — parity tests follow the code** into the extension's own test file.
+Decision (2026-07-23): do the **full clean mechanism**, not a partial relocation.
+The HTML5 (`engine.js`) and Kivy (`kivy_exporter.py`) engines have **no**
+extension system — unlike Stage B, which leaned on the existing plugin loader —
+so Stage C first *builds* one on each target (a render-hook registry **and** an
+action-dispatch registry, plus a code-injection point the exporter fills from
+each enabled extension), then moves the raycast code onto it. End state:
+`engine.js` and `kivy_exporter.py` know **nothing** about raycast. Mirrors the
+desktop `extension_hooks` + plugin-action split. Worked as a queue of small
+committed units (session-limit discipline); each keeps the full suite at 0
+failed and smoke 17/17.
 
-*Honest note: Stage C is the risky, low-teaching-value part — it's build-system
-plumbing, not a readable example. Stopping after Stage B is a legitimate,
-defensible end state, with the export renderers documented as "core supports
-raycast export; the runtime feature is an extension."*
+Structural map (measured):
+- `engine.js` (4010 lines): raycast render is 5 methods **inside** `class
+  GameRoom {}` (`buildRaycastWalls`/`castRay`/`wallShade`/`renderRaycastView`/
+  `castFloorPlane`) + `RAYCAST_*` module consts; the dispatch is in
+  `GameRoom.render` (`if (this.raycastCamera && ...enabled)`); the actions are
+  three `case`s in `GameObject.executeAction`'s `switch` (`draw_doom_hud`,
+  `draw_minimap`, `enable_raycast_view`) before its `default:`.
+- `HTML5Exporter` reads `engine.js` as one string and substitutes it into the
+  page — so an injection **marker** near EOF (after all classes, before the
+  `load` bootstrap) is where extension JS concatenates.
+
+- [ ] **C1a — HTML5 extension mechanism (inert; prove the seam first).**
+  `engine.js` gains `registerRoomRenderer`/`renderExtensionRoom` (called first
+  in `GameRoom.render`; a claim runs the draw-event/HUD pass and returns) and
+  `registerExtensionAction`/`_extActions` (consulted in `executeAction`'s
+  `default:`), plus a `// __PYGM_EXTENSION_JS__` marker. `HTML5Exporter`
+  concatenates each **enabled** extension's `export_html5.js` at the marker.
+  Raycast stays in `engine.js` this unit. Prove: a non-raycast export is
+  unchanged except the (empty) marker; a fixture extension's JS is injected and
+  its renderer/action run; parity + smoke green.
+- [ ] **C1b — move the raycast HTML5 RENDER.** `RAYCAST_*` consts + the 5 render
+  methods → `extensions/raycast_2_5d/export_html5.js` as `GameRoom.prototype.*`,
+  registered through `registerRoomRenderer`; the `raycastCamera.enabled`
+  dispatch in `GameRoom.render` is deleted (the generic hook replaces it).
+  Removed from `engine.js`.
+- [ ] **C1c — move the raycast HTML5 ACTIONS.** The three `case`s →
+  `registerExtensionAction(...)` in `export_html5.js`; removed from the switch.
+- [ ] **C1d — HTML5 tests follow the code.** `test_html5_raycast` /
+  `test_raycast_export_parity` read `export_html5.js` for the moved strings; a
+  new test covers the injection mechanism.
+- [ ] **C2a — Kivy extension mechanism (inert).** Same shape in the `.format()`
+  scene/base templates + `code_generator`; exporter injects each enabled
+  extension's `export_kivy.py` fragments. Brace-doubling landmine applies.
+- [ ] **C2b — move the raycast Kivy RENDER + scene state.**
+- [ ] **C2c — move the raycast Kivy codegen (actions).**
+- [ ] **C3 — parity tests consolidated; full suite + smoke green.**
+
+*Honest note (unchanged): Stage C is the risky, low-teaching-value part — it's
+build-system plumbing. Stage B was already a defensible end state; this stage is
+being done because the full clean move was explicitly chosen.*
 
 ## Testing / the regression bar
 
