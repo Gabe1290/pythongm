@@ -37,6 +37,14 @@ from extensions.raycast_2_5d.renderer import (  # noqa: E402
 )
 RENDERER = (REPO_ROOT / "extensions" / "raycast_2_5d" / "renderer.py").read_text(
     encoding="utf-8")
+# The raycast actions + their HUD builders moved into the extension (Stage B3):
+# hud.py holds build_minimap_commands / build_doom_hud_commands, handlers.py the
+# PluginExecutor. Load plugins so the schemas are merged into ACTION_TYPES.
+HUD = (REPO_ROOT / "extensions" / "raycast_2_5d" / "hud.py").read_text(encoding="utf-8")
+HANDLERS = (REPO_ROOT / "extensions" / "raycast_2_5d" / "handlers.py").read_text(
+    encoding="utf-8")
+from events.plugin_loader import load_all_plugins  # noqa: E402
+load_all_plugins()
 
 # Reuse the stub-kivy harness + raycast_1 export from the Kivy raycast tests.
 from test_kivy_raycast import (  # noqa: E402
@@ -490,7 +498,7 @@ def test_raycast_2_hud_actually_renders_through_the_real_game_loop():
 # draw_minimap is a MACRO action on all three targets: it emits ordinary
 # rectangle/line draw-queue commands rather than needing a bespoke renderer.
 # So the parity surface is pure geometry, and build_minimap_commands() in
-# runtime/action_executor.py is the single source the other two mirror.
+# extensions/raycast_2_5d/hud.py is the single source the other two mirror.
 
 def test_all_three_implement_draw_minimap():
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
@@ -507,7 +515,7 @@ def test_all_three_implement_draw_minimap():
 def test_all_three_share_the_marker_and_heading_constants():
     """A marker drawn at a different size or a heading of a different length
     would look like a different game on each target."""
-    from runtime.action_executor import MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF
+    from extensions.raycast_2_5d.hud import MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF
     assert (MINIMAP_MARKER_HALF, MINIMAP_HEADING_LEN) == (2.0, 7.0)
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
     assert "_MM_MARK, _MM_HEAD = 2.0, 7.0" in kx
@@ -519,8 +527,7 @@ def test_all_three_negate_facing_angle_for_the_heading_line():
     heading vertically and is invisible at angle 0 — so pin it in the source
     of all three, not just by testing one angle."""
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
-    ae = (REPO_ROOT / "runtime" / "action_executor.py").read_text(encoding="utf-8")
-    assert "math.radians(-float(facing_angle or 0.0))" in ae
+    assert "math.radians(-float(facing_angle or 0.0))" in HUD    # extension builder
     assert "math.radians(-float(getattr(camera, 'facing_angle', 0) or 0))" in kx
     assert "-(mmCam.facing_angle || 0) * Math.PI / 180" in ENGINE
 
@@ -530,8 +537,7 @@ def test_all_three_sort_the_wall_sets():
     same picture in a different order, which would make any command-level
     comparison flap."""
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
-    ae = (REPO_ROOT / "runtime" / "action_executor.py").read_text(encoding="utf-8")
-    assert "for (line_x, row) in sorted(" in ae
+    assert "for (line_x, row) in sorted(" in HUD    # extension builder
     assert "for (line_x, row) in sorted(" in kx
     assert ".sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]))" in ENGINE
 
@@ -540,9 +546,7 @@ def test_all_three_use_the_ray_origin_for_the_marker():
     """Not the sprite corner — the same centre the renderers cast rays from,
     or the 'you are here' dot sits half a sprite off the actual viewpoint."""
     kx = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
-    ae = (REPO_ROOT / "runtime" / "action_executor.py").read_text(encoding="utf-8")
-    block = ae[ae.index("def execute_draw_minimap_action"):]
-    block = block[:block.index("def execute_draw_health_bar_action")]
+    block = HANDLERS[HANDLERS.index("def execute_draw_minimap_action"):]   # extension handler
     assert "_sprite_top_left" in block and "_cached_width" in block
     assert "_raycast_gm_xy(camera)" in kx and "image_width" in kx
     assert "GameRoom.spriteTopLeft(mmCam)" in ENGINE and "boxWidth()" in ENGINE
@@ -558,7 +562,7 @@ def test_kivy_minimap_geometry_matches_the_desktop_reference_exactly():
     source-level assertions above are what catch the drift.
     """
     import math as _math
-    from runtime.action_executor import (
+    from extensions.raycast_2_5d.hud import (
         build_minimap_commands, MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF,
     )
     v_walls = {(1, 0), (3, 2), (0, 4)}

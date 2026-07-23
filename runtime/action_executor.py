@@ -11,74 +11,8 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 
-# Length of the camera's heading line on the minimap, in minimap pixels, and
-# the half-length of the position cross. Kept module-level so the HTML5 / Kivy
-# ports and tests/test_raycast_export_parity.py can pin the same numbers.
-MINIMAP_HEADING_LEN = 7.0
-MINIMAP_MARKER_HALF = 2.0
-
-
-def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
-                           cam_x, cam_y, facing_angle, x, y, size,
-                           back_color, wall_color, player_color):
-    """Project raycast wall edges to a north-up minimap; return draw commands.
-
-    THE single source for the minimap's geometry. The HTML5 (engine.js) and
-    Kivy (kivy_exporter.py) ports mirror this arithmetic, and
-    tests/test_raycast_export_parity.py compares them against it — the same
-    approach that keeps the three _cast_ray copies honest.
-
-    Returns a list of ordinary draw-queue commands ('rectangle' / 'line'), so
-    no target needs a bespoke minimap renderer.
-
-    Coordinates are SCREEN space with y DOWN, matching every other HUD draw
-    command; Kivy's y-flip happens once, later, in its shared draw-queue path.
-
-    v_walls: {(line_x, row)} vertical edges; h_walls: {(col, line_y)}.
-    """
-    cmds = [{
-        'type': 'rectangle',
-        'x1': x, 'y1': y, 'x2': x + size, 'y2': y + size,
-        'color': back_color, 'filled': True,
-    }]
-
-    span = max(float(room_width or 0), float(room_height or 0))
-    if span <= 0 or not cell_size:
-        return cmds                      # nothing sensible to project onto
-    scale = float(size) / span
-
-    def px(wx, wy):
-        return x + wx * scale, y + wy * scale
-
-    cs = float(cell_size)
-    for (line_x, row) in sorted(v_walls or ()):
-        x1, y1 = px(line_x * cs, row * cs)
-        x2, y2 = px(line_x * cs, (row + 1) * cs)
-        cmds.append({'type': 'line', 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2,
-                     'color': wall_color})
-    for (col, line_y) in sorted(h_walls or ()):
-        x1, y1 = px(col * cs, line_y * cs)
-        x2, y2 = px((col + 1) * cs, line_y * cs)
-        cmds.append({'type': 'line', 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2,
-                     'color': wall_color})
-
-    if cam_x is None or cam_y is None:
-        return cmds                      # no camera in this room yet
-
-    cx, cy = px(float(cam_x), float(cam_y))
-    m = MINIMAP_MARKER_HALF
-    cmds.append({'type': 'line', 'x1': cx - m, 'y1': cy, 'x2': cx + m, 'y2': cy,
-                 'color': player_color})
-    # Heading: GM angles are 0=right / 90=up, screen y is DOWN — hence the
-    # negation, the same convention the three raycast renderers use.
-    rad = math.radians(-float(facing_angle or 0.0))
-    cmds.append({
-        'type': 'line', 'x1': cx, 'y1': cy,
-        'x2': cx + math.cos(rad) * MINIMAP_HEADING_LEN,
-        'y2': cy + math.sin(rad) * MINIMAP_HEADING_LEN,
-        'color': player_color,
-    })
-    return cmds
+# build_minimap_commands + MINIMAP_HEADING_LEN / MINIMAP_MARKER_HALF MOVED to
+# extensions/raycast_2_5d/hud.py (Stage B3, docs/RAYCAST_EXTENSION_PLAN.md).
 
 
 def doom_face_frame(health, face_frames):
@@ -2851,72 +2785,9 @@ class ActionExecutor:
 
         return result
 
-    def execute_draw_minimap_action(self, instance, parameters: Dict[str, Any]):
-        """Draw a north-up minimap of the raycast room's wall edges.
-
-        A MACRO action: it reads the wall edges the raycast renderer already
-        derived for this room and emits ordinary 'rectangle' / 'line' draw-queue
-        commands, so no target needed a new renderer — see
-        docs/RAYCAST_MINIMAP_PLAN.md. The geometry lives in the module-level
-        build_minimap_commands() so the export targets and the parity test can
-        share exactly this maths.
-
-        No-ops silently when the room has no raycast camera (nothing to map).
-        """
-        if not self.game_runner:
-            return
-        room = getattr(self.game_runner, 'current_room', None)
-        if room is None:
-            return
-
-        if not hasattr(instance, '_draw_queue'):
-            instance._draw_queue = []
-
-        # Resolve the camera exactly as the raycast extension's renderer does
-        # (extensions/raycast_2_5d/renderer.render_raycast_view) — via
-        # _find_first_instance on the config's camera_object. NB
-        # _find_raycast_camera is a KIVY-only helper; looking for it here
-        # silently yields no camera and no player marker.
-        cfg = getattr(room, 'raycast_camera', None) or {}
-        camera = None
-        finder = getattr(room, '_find_first_instance', None)
-        if callable(finder):
-            try:
-                camera = finder(cfg.get('camera_object', ''))
-            except Exception:
-                camera = None
-
-        # Camera position must be the same point the rays are cast from — the
-        # origin-aware CENTRE of the camera's cell, not its raw x/y. Using the
-        # raw corner would park the marker half a sprite off the view's actual
-        # viewpoint (game_runner.py:2053, the 2026-07-17 exact-grid-line fix).
-        cam_x = cam_y = None
-        if camera is not None:
-            top_left = getattr(room, '_sprite_top_left', None)
-            if callable(top_left):
-                cam_x, cam_y = top_left(camera)
-            else:
-                cam_x, cam_y = getattr(camera, 'x', 0), getattr(camera, 'y', 0)
-            cam_x += (getattr(camera, '_cached_width', 0) or 0) / 2.0
-            cam_y += (getattr(camera, '_cached_height', 0) or 0) / 2.0
-
-        cmds = build_minimap_commands(
-            v_walls=getattr(room, '_raycast_v_walls', None),
-            h_walls=getattr(room, '_raycast_h_walls', None),
-            cell_size=getattr(room, '_raycast_cell_size', 32) or 32,
-            room_width=getattr(room, 'width', 0),
-            room_height=getattr(room, 'height', 0),
-            cam_x=cam_x,
-            cam_y=cam_y,
-            facing_angle=getattr(camera, 'facing_angle', 0.0) if camera is not None else 0.0,
-            x=float(parameters.get("x", 0)),
-            y=float(parameters.get("y", 0)),
-            size=float(parameters.get("size", 120)),
-            back_color=parameters.get("back_color", "#101018"),
-            wall_color=parameters.get("wall_color", "#8080a0"),
-            player_color=parameters.get("player_color", "#ffd040"),
-        )
-        instance._draw_queue.extend(cmds)
+    # execute_draw_minimap_action MOVED to extensions/raycast_2_5d/handlers.py
+    # (PluginExecutor) in Stage B3. It reads the room's derived wall edges via
+    # instance.action_executor and emits ordinary draw-queue commands.
 
     def execute_draw_doom_hud_action(self, instance, parameters: Dict[str, Any]):
         """Draw a DOOM-style bottom status bar over the raycast view.

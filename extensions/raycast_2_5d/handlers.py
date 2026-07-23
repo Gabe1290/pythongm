@@ -133,3 +133,72 @@ class PluginExecutor:
         # Force the wall edges to rebuild against the (possibly new) cell_size
         # next render instead of reusing a stale cache.
         room._raycast_v_walls = None
+
+    def execute_draw_minimap_action(self, instance, parameters):
+        """Draw a north-up minimap of the raycast room's wall edges.
+
+        A MACRO action: it reads the wall edges the raycast renderer already
+        derived for this room and emits ordinary 'rectangle' / 'line' draw-queue
+        commands, so no target needed a new renderer — see
+        docs/RAYCAST_MINIMAP_PLAN.md. The geometry lives in
+        extensions/raycast_2_5d/hud.build_minimap_commands so the export targets
+        and the parity test share exactly this maths.
+
+        No-ops silently when there's no current room (nothing to map).
+        """
+        from .hud import build_minimap_commands
+
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner:
+            return
+        room = getattr(ae.game_runner, "current_room", None)
+        if room is None:
+            return
+
+        if not hasattr(instance, "_draw_queue"):
+            instance._draw_queue = []
+
+        # Resolve the camera exactly as the renderer does (renderer.py:
+        # render_raycast_view) — via _find_first_instance on the config's
+        # camera_object. NB _find_raycast_camera is a KIVY-only helper; looking
+        # for it here silently yields no camera and no player marker.
+        cfg = getattr(room, "raycast_camera", None) or {}
+        camera = None
+        finder = getattr(room, "_find_first_instance", None)
+        if callable(finder):
+            try:
+                camera = finder(cfg.get("camera_object", ""))
+            except Exception:
+                camera = None
+
+        # Camera position must be the same point the rays are cast from — the
+        # origin-aware CENTRE of the camera's cell, not its raw x/y. Using the
+        # raw corner would park the marker half a sprite off the view's actual
+        # viewpoint (the 2026-07-17 exact-grid-line fix).
+        cam_x = cam_y = None
+        if camera is not None:
+            top_left = getattr(room, "_sprite_top_left", None)
+            if callable(top_left):
+                cam_x, cam_y = top_left(camera)
+            else:
+                cam_x, cam_y = getattr(camera, "x", 0), getattr(camera, "y", 0)
+            cam_x += (getattr(camera, "_cached_width", 0) or 0) / 2.0
+            cam_y += (getattr(camera, "_cached_height", 0) or 0) / 2.0
+
+        cmds = build_minimap_commands(
+            v_walls=getattr(room, "_raycast_v_walls", None),
+            h_walls=getattr(room, "_raycast_h_walls", None),
+            cell_size=getattr(room, "_raycast_cell_size", 32) or 32,
+            room_width=getattr(room, "width", 0),
+            room_height=getattr(room, "height", 0),
+            cam_x=cam_x,
+            cam_y=cam_y,
+            facing_angle=getattr(camera, "facing_angle", 0.0) if camera is not None else 0.0,
+            x=float(parameters.get("x", 0)),
+            y=float(parameters.get("y", 0)),
+            size=float(parameters.get("size", 120)),
+            back_color=parameters.get("back_color", "#101018"),
+            wall_color=parameters.get("wall_color", "#8080a0"),
+            player_color=parameters.get("player_color", "#ffd040"),
+        )
+        instance._draw_queue.extend(cmds)

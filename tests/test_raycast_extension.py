@@ -70,6 +70,27 @@ def test_extension_contributes_the_setup_actions():
     assert '"enable_raycast_view": ActionType' not in src
 
 
+def test_extension_owns_draw_minimap_and_its_builder():
+    """Stage B3.2: draw_minimap (schema + handler) and its geometry builder
+    live in the extension; core no longer carries them."""
+    from extensions.raycast_2_5d import PLUGIN_ACTIONS, PluginExecutor
+    from extensions.raycast_2_5d.hud import (
+        build_minimap_commands, MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF,
+    )
+    assert "draw_minimap" in PLUGIN_ACTIONS
+    assert callable(getattr(PluginExecutor(), "execute_draw_minimap_action", None))
+    assert callable(build_minimap_commands)
+    assert (MINIMAP_MARKER_HALF, MINIMAP_HEADING_LEN) == (2.0, 7.0)
+
+    # Gone from core: the builder, its constants, and the handler.
+    import runtime.action_executor as ae
+    for gone in ("build_minimap_commands", "MINIMAP_HEADING_LEN",
+                 "MINIMAP_MARKER_HALF"):
+        assert not hasattr(ae, gone), f"action_executor still exports {gone}"
+    from runtime.action_executor import ActionExecutor
+    assert not hasattr(ActionExecutor, "execute_draw_minimap_action")
+
+
 def test_extension_is_discovered_and_enabled_by_default():
     from events.plugin_loader import list_available_extensions
     found = {e["folder"]: e for e in list_available_extensions()}

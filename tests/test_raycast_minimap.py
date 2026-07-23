@@ -18,7 +18,12 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame  # noqa: E402
 
-from runtime.action_executor import (  # noqa: E402
+# draw_minimap + its geometry builder moved into the raycast extension (Stage
+# B3, docs/RAYCAST_EXTENSION_PLAN.md). Load plugins so the schema is merged into
+# ACTION_TYPES (the IDE does this at startup; a bare test import does not).
+from events.plugin_loader import load_all_plugins  # noqa: E402
+load_all_plugins()
+from extensions.raycast_2_5d.hud import (  # noqa: E402
     build_minimap_commands, MINIMAP_HEADING_LEN, MINIMAP_MARKER_HALF,
 )
 
@@ -42,11 +47,14 @@ def test_action_is_registered():
     assert names == ["x", "y", "size", "back_color", "wall_color", "player_color"]
 
 
-def test_handler_is_auto_discovered():
-    """The executor registers execute_*_action by naming convention."""
+def test_handler_is_registered_from_the_extension():
+    """The handler is the extension's PluginExecutor method now, registered onto
+    the executor by load_all_plugins (Stage B3), not an ActionExecutor method."""
     from runtime.action_executor import ActionExecutor
     ex = ActionExecutor()
+    load_all_plugins(ex)
     assert "draw_minimap" in ex.action_handlers
+    assert not hasattr(ex, "execute_draw_minimap_action")
 
 
 def test_background_panel_comes_first_and_covers_the_square():
@@ -212,9 +220,9 @@ def test_marker_sits_at_the_ray_origin_not_the_sprite_corner():
     raw x/y corner parks the marker half a sprite off the actual viewpoint,
     which is exactly the class of exact-grid-line error the 2026-07-17 bug hunt
     fixed in the renderer."""
-    src = (REPO_ROOT / "runtime" / "action_executor.py").read_text(encoding="utf-8")
+    src = (REPO_ROOT / "extensions" / "raycast_2_5d" / "handlers.py").read_text(
+        encoding="utf-8")
     block = src[src.index("def execute_draw_minimap_action"):]
-    block = block[:block.index("def execute_draw_health_bar_action")]
     assert "_sprite_top_left" in block, \
         "minimap is not using the origin-aware top-left"
     assert "_cached_width" in block and "_cached_height" in block, \
