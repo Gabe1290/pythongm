@@ -438,6 +438,23 @@ def missing_extensions_for_project(project_data) -> List[dict]:
     return out
 
 
+def required_extensions_for_project(project_data) -> List[str]:
+    """Folder names of every extension whose ``provides_actions`` the project
+    uses — enabled or not. This is the project's extension *dependency*, for
+    persisting into project.json (a durable record a sharing recipient can see
+    without running the game). Sorted + deduped; ``[]`` when the project uses no
+    extension action, so a project file simply omits the field in that case.
+    """
+    used = collect_project_action_names(project_data)
+    if not used:
+        return []
+    folders = set()
+    for info in list_available_extensions():
+        if set(info.get("provides_actions") or []) & used:
+            folders.add(info["folder"])
+    return sorted(folders)
+
+
 # The one shared loader for this process. See load_all_plugins.
 _shared_loader: Optional[PluginLoader] = None
 
