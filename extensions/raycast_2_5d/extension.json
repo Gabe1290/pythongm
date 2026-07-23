@@ -3,5 +3,11 @@
     "version": "1.0.0",
     "author": "PyGameMaker",
     "description": "Doom/Wolfenstein-style first-person room renderer: DDA wall casting, textured walls, sky panorama, floor casting, billboard sprites. Used by the raycast_1-4 samples.",
-    "enabled": true
+    "enabled": true,
+    "provides_actions": [
+        "enable_raycast_view",
+        "set_facing_angle",
+        "draw_minimap",
+        "draw_doom_hud"
+    ]
 }

@@ -1586,6 +1586,7 @@ class PyGameMakerIDE(QMainWindow):
                     self.asset_tree.project_manager = self.project_manager
                     Config.set("last_project_directory", str(project_path.parent))
                     self.add_to_recent_projects(str(project_path))
+                    self._warn_missing_extensions()
                 else:
                     QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project from zip"))
             else:
@@ -1597,9 +1598,36 @@ class PyGameMakerIDE(QMainWindow):
             self.asset_tree.project_manager = self.project_manager
             Config.set("last_project_directory", str(project_path.parent))
             self.add_to_recent_projects(str(project_path))
+            self._warn_missing_extensions()
         else:
             logger.warning(f"load_project: project_manager.load_project failed for {project_path}")
             QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
+
+    def _warn_missing_extensions(self):
+        """Warn if the just-loaded project uses actions from an extension that is
+        turned off, so its raycast/3D-View (or any other extension) features
+        don't silently do nothing. Purely advisory; a project that needs no
+        disabled extension (the common case) shows nothing."""
+        try:
+            from events.plugin_loader import missing_extensions_for_project
+            data = getattr(self.project_manager, "current_project_data", None)
+            missing = missing_extensions_for_project(data)
+        except Exception as e:
+            logger.debug(f"extension dependency check failed: {e}")
+            return
+        if not missing:
+            return
+        lines = "\n".join(
+            self.tr("• {name} — needed for: {actions}").format(
+                name=m["name"], actions=", ".join(m["actions"]))
+            for m in missing)
+        QMessageBox.warning(
+            self, self.tr("Disabled extensions"),
+            self.tr(
+                "This project uses features from extensions that are turned "
+                "off:\n\n{list}\n\nThose actions won't run and the project may "
+                "look or behave wrong. Enable the extensions in your config to "
+                "restore them.").format(list=lines))
 
     def save_project(self):
             """Save the current project
