@@ -52,8 +52,15 @@ from test_kivy_raycast import (  # noqa: E402
     _stub_kivy_env, _scene_class, _blank_scene, _export_raycast_1,
 )
 
-ENGINE = (REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js").read_text(
+# The raycast renderer moved into the raycast_2_5d extension (Stage C); the
+# exporter concatenates its export_html5.js at engine.js's marker. The shipped
+# engine JS is the two together — ENGINE_CORE / RAYCAST_JS stay separable for the
+# structural tests that assert which file a given hook lives in.
+ENGINE_CORE = (REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js").read_text(
     encoding="utf-8")
+RAYCAST_JS = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_html5.js").read_text(
+    encoding="utf-8")
+ENGINE = ENGINE_CORE + "\n" + RAYCAST_JS
 
 
 def _shared_walls():
@@ -393,11 +400,14 @@ def test_all_three_composite_the_hud_after_the_raycast_render():
     assert "self._render_draw_events(screen)" in branch, \
         "desktop returns without compositing the HUD"
 
-    # HTML5: same shape, after renderRaycastView.
-    js = ENGINE[ENGINE.index("if (this.raycastCamera && this.raycastCamera.enabled) {"):]
+    # HTML5: the raycast view renders through the generic extension hook (Stage
+    # C). engine.js composites the HUD after any claimed render; the raycast
+    # renderer (export_html5.js) paints the frame it composites over.
+    js = ENGINE_CORE[ENGINE_CORE.index("if (renderExtensionRoom(this, ctx)) {"):]
     js = js[:js.index("return;")]
-    assert "this.renderRaycastView(ctx);" in js
     assert "runDrawEvent(ctx)" in js, "engine.js returns without compositing the HUD"
+    assert "room.renderRaycastView(ctx)" in RAYCAST_JS, \
+        "raycast extension no longer renders the first-person view"
 
     # Kivy: a scene-level HUD group above the opaque overlay.
     assert "self._raycast_hud_group = InstructionGroup()" in kx

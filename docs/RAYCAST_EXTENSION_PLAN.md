@@ -266,20 +266,25 @@ Structural map (measured):
   page — so an injection **marker** near EOF (after all classes, before the
   `load` bootstrap) is where extension JS concatenates.
 
-- [ ] **C1a — HTML5 extension mechanism (inert; prove the seam first).**
-  `engine.js` gains `registerRoomRenderer`/`renderExtensionRoom` (called first
-  in `GameRoom.render`; a claim runs the draw-event/HUD pass and returns) and
-  `registerExtensionAction`/`_extActions` (consulted in `executeAction`'s
-  `default:`), plus a `// __PYGM_EXTENSION_JS__` marker. `HTML5Exporter`
-  concatenates each **enabled** extension's `export_html5.js` at the marker.
-  Raycast stays in `engine.js` this unit. Prove: a non-raycast export is
-  unchanged except the (empty) marker; a fixture extension's JS is injected and
-  its renderer/action run; parity + smoke green.
-- [ ] **C1b — move the raycast HTML5 RENDER.** `RAYCAST_*` consts + the 5 render
-  methods → `extensions/raycast_2_5d/export_html5.js` as `GameRoom.prototype.*`,
-  registered through `registerRoomRenderer`; the `raycastCamera.enabled`
-  dispatch in `GameRoom.render` is deleted (the generic hook replaces it).
-  Removed from `engine.js`.
+- [x] **C1a — HTML5 extension mechanism (inert; prove the seam first).** Done
+  (`d66fdea`). `engine.js` gained `registerRoomRenderer`/`renderExtensionRoom`
+  (called first in `GameRoom.render`; a claim runs the draw-event/HUD pass and
+  returns) and `registerExtensionAction`/`_extActions` (consulted in
+  `executeAction`'s `default:`), plus a `// __PYGM_EXTENSION_JS__` marker.
+  `HTML5Exporter._collect_extension_js` concatenates each **enabled** extension's
+  `export_html5.js` at the marker (raycast had none yet, so inert). Proven with a
+  fixture extension in `tests/test_html5_extension_mechanism.py`.
+- [x] **C1b — move the raycast HTML5 RENDER.** Done. `RAYCAST_*` consts + the 5
+  render methods → `extensions/raycast_2_5d/export_html5.js`, wrapped in
+  `Object.assign(GameRoom.prototype, {…})` (method signatures preserved verbatim
+  so the parity regexes still match) and registered through
+  `registerRoomRenderer`. The `raycastCamera.enabled` dispatch in
+  `GameRoom.render` is deleted — the generic hook replaces it. `GameRoom.
+  spriteTopLeft` (the generic origin helper) stays in `engine.js`. Extraction was
+  brace-count-verified (both files stay brace-balanced) since no `node` was
+  available to validate JS execution. HTML5 tests now read the shipped
+  `engine.js + export_html5.js` (a combined `ENGINE`, with `ENGINE_CORE` /
+  `RAYCAST_JS` kept separable for structural tests).
 - [ ] **C1c — move the raycast HTML5 ACTIONS.** The three `case`s →
   `registerExtensionAction(...)` in `export_html5.js`; removed from the switch.
 - [ ] **C1d — HTML5 tests follow the code.** `test_html5_raycast` /
