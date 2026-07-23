@@ -929,6 +929,20 @@ class ProjectManager(QObject):
                 pg_data.pop('colors', None)
                 pg_data['_external_file'] = f"playgrounds/{pg_name}.json"
 
+        # Record which extensions this project's actions depend on. Auto-derived
+        # from the used action names so it stays accurate; omitted when empty so
+        # a non-extension project.json isn't littered (a file without the line is
+        # fine — the load-time warning re-derives from the live actions anyway).
+        try:
+            from events.plugin_loader import required_extensions_for_project
+            reqs = required_extensions_for_project(data)
+            if reqs:
+                data['requires_extensions'] = reqs
+            else:
+                data.pop('requires_extensions', None)   # drop a now-stale record
+        except Exception as exc:
+            logger.debug(f"Could not derive requires_extensions: {exc}")
+
         return data
 
     def _save_to_zip(self) -> bool:

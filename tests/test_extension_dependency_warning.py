@@ -101,6 +101,40 @@ def test_empty_project_and_missing_field_are_fine(monkeypatch):
     assert pl.missing_extensions_for_project({"assets": {"objects": {}}}) == []
 
 
+# --- (c) requires_extensions persisted on save -------------------------------
+
+def test_required_extensions_derives_the_dependency():
+    proj = {"assets": {"objects": {
+        "obj_p": {"events": {"create": {"actions": [{"action": "enable_raycast_view"}]}}}}}}
+    assert pl.required_extensions_for_project(proj) == ["raycast_2_5d"]
+    # includes an ENABLED extension too — it's a dependency record, not a warning
+    plain = {"assets": {"objects": {
+        "o": {"events": {"create": {"actions": [{"action": "set_hspeed"}]}}}}}}
+    assert pl.required_extensions_for_project(plain) == []
+    assert pl.required_extensions_for_project({}) == []
+
+
+def test_save_writes_requires_extensions_and_drops_it_when_stale():
+    from core.project_manager import ProjectManager
+    pm = ProjectManager.__new__(ProjectManager)   # bypass __init__/Qt
+
+    # A project that uses a raycast action gets the field.
+    pm.current_project_data = {"name": "p", "assets": {"objects": {
+        "obj_p": {"events": {"create": {"actions": [{"action": "draw_minimap"}]}}}}, "rooms": {}}}
+    assert pm._prepare_project_data_for_save().get("requires_extensions") == ["raycast_2_5d"]
+
+    # A plain project omits it entirely (no littering).
+    pm.current_project_data = {"name": "p", "assets": {"objects": {
+        "o": {"events": {"create": {"actions": [{"action": "set_hspeed"}]}}}}, "rooms": {}}}
+    assert "requires_extensions" not in pm._prepare_project_data_for_save()
+
+    # A stale record (feature removed) is dropped on the next save.
+    pm.current_project_data = {"name": "p", "requires_extensions": ["raycast_2_5d"],
+                               "assets": {"objects": {
+        "o": {"events": {"create": {"actions": [{"action": "set_hspeed"}]}}}}, "rooms": {}}}
+    assert "requires_extensions" not in pm._prepare_project_data_for_save()
+
+
 def test_real_raycast_sample_needs_the_extension_when_disabled(monkeypatch):
     """End-to-end against a real sample: raycast_1 uses enable_raycast_view, so
     it flags the raycast extension when that extension is turned off."""
