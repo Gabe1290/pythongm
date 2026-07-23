@@ -18,6 +18,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 import os
@@ -122,7 +123,7 @@ def test_sample_runs_with_the_textured_first_person_camera():
     assert result is not False, "game loop reported a fatal crash"
     assert frames == 40
     assert runner.current_room.name == "room0"
-    cfg = runner.current_room.raycast_camera
+    cfg = raycast_state(runner.current_room)["camera"]
     assert cfg["enabled"] is True
     assert cfg["wall_texture"] == "spr_wall_texture"
     assert cfg["sky_texture"] == "spr_sky"
@@ -319,7 +320,7 @@ def test_hud_renders_over_the_raycast_view():
     finally:
         GameInstance._process_draw_queue = real
 
-    assert runner.current_room.raycast_camera["enabled"] is True
+    assert raycast_state(runner.current_room)["camera"]["enabled"] is True
     kinds = {k for name, k in seen if name == "obj_hud"}
     assert {"text", "lives", "health_bar"} <= kinds, \
         f"HUD did not fully render under raycast; saw {sorted(kinds)}"
@@ -431,7 +432,7 @@ def _touch_goal_only(runner, room):
 def test_collecting_every_gem_opens_the_exit_into_the_ice_room():
     runner, _ = _play({5: _clear_gems_then_touch_goal}, 25)
     assert runner.current_room.name == "room1"
-    cfg = runner.current_room.raycast_camera
+    cfg = raycast_state(runner.current_room)["camera"]
     assert cfg["enabled"] is True, "camera did not re-arm in the new room"
     assert cfg["wall_texture"] == "spr_wall_ice", \
         "room1 rendered with room0's theme — per-room camera controller broken"

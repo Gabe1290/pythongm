@@ -8,16 +8,14 @@ and the leading underscores dropped (they are this module's public API).
 Behaviour is identical -- the raycast tests kept their assertions and followed
 the code here.
 
-What ``room`` must provide -- all ordinary GameRoom API, none of it owned by
-this extension:
-
-* ``instances``, ``parse_color()``, ``_find_first_instance()``,
-  ``_sprite_top_left()``, ``_all_sprites`` (generic engine helpers/state);
-* the raycast camera state the still-core ``enable_raycast_view`` action sets:
-  ``raycast_camera`` plus the derived wall-edge caches ``_raycast_v_walls`` /
-  ``_raycast_h_walls`` / ``_raycast_v_wall_sprites`` /
-  ``_raycast_h_wall_sprites`` / ``_raycast_cell_size``. Stage B3 moves the
-  actions (and this state, into ``room.extension_state``) out of core too.
+What ``room`` must provide is all ordinary GameRoom API, none of it owned by
+this extension: ``instances``, ``parse_color()``, ``_find_first_instance()``,
+``_sprite_top_left()``, ``_all_sprites`` (generic engine helpers/state) and
+``extension_state`` (the per-room namespace). All raycast-specific state — the
+camera config the ``enable_raycast_view`` action sets and the derived wall-edge
+caches — lives under ``room.extension_state["raycast"]`` (Stage B3b), reached
+through ``state.raycast_state(room)``; core's ``GameRoom`` carries no raycast
+attributes.
 
 The HTML5 (export/HTML5/templates/engine.js) and Kivy
 (export/Kivy/kivy_exporter.py) exporters carry their own hand-written ports of
@@ -29,6 +27,8 @@ import math
 from typing import Any, Dict, Set, Tuple
 
 import pygame
+
+from .state import raycast_state
 
 
 def build_raycast_walls(room, cell_size: int):
@@ -92,11 +92,12 @@ def build_raycast_walls(room, cell_size: int):
                 v_sprites[key] = spr
             for key in ((gx, gy), (gx, gy + 1)):
                 h_sprites[key] = spr
-    room._raycast_v_walls = v_walls
-    room._raycast_h_walls = h_walls
-    room._raycast_v_wall_sprites = v_sprites
-    room._raycast_h_wall_sprites = h_sprites
-    room._raycast_cell_size = cell_size
+    st = raycast_state(room)
+    st["v_walls"] = v_walls
+    st["h_walls"] = h_walls
+    st["v_sprites"] = v_sprites
+    st["h_sprites"] = h_sprites
+    st["cell_size"] = cell_size
 
 
 def cast_ray(room, px: float, py: float, angle_rad: float, cell_size: int, max_cells: int):
@@ -119,6 +120,9 @@ def cast_ray(room, px: float, py: float, angle_rad: float, cell_size: int, max_c
         sprite is the wall's sprite (or None) — both for Phase 5 texturing;
         a flat-colour caller just ignores them.
     """
+    st = raycast_state(room)
+    v_walls, h_walls = st["v_walls"], st["h_walls"]
+    v_sprites, h_sprites = st["v_sprites"], st["h_sprites"]
     px_cell, py_cell = px / cell_size, py / cell_size
     dx, dy = math.cos(angle_rad), math.sin(angle_rad)
     map_x, map_y = int(px_cell), int(py_cell)
@@ -152,14 +156,14 @@ def cast_ray(room, px: float, py: float, angle_rad: float, cell_size: int, max_c
             # absolute line index.
             line_x = map_x if step_x > 0 else map_x + 1
             wall_key = (line_x, map_y)
-            hit = wall_key in room._raycast_v_walls
+            hit = wall_key in v_walls
         else:
             side_y += delta_y
             map_y += step_y
             side = 1
             line_y = map_y if step_y > 0 else map_y + 1
             wall_key = (map_x, line_y)
-            hit = wall_key in room._raycast_h_walls
+            hit = wall_key in h_walls
         if hit:
             dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
             # Texture-U: the fractional position along the wall's face
@@ -171,12 +175,12 @@ def cast_ray(room, px: float, py: float, angle_rad: float, cell_size: int, max_c
                 wall_coord = py_cell + dist_cells * dy
                 if dx > 0:
                     wall_coord = -wall_coord
-                sprite = room._raycast_v_wall_sprites.get(wall_key)
+                sprite = v_sprites.get(wall_key)
             else:
                 wall_coord = px_cell + dist_cells * dx
                 if dy < 0:
                     wall_coord = -wall_coord
-                sprite = room._raycast_h_wall_sprites.get(wall_key)
+                sprite = h_sprites.get(wall_key)
             tex_u = wall_coord - math.floor(wall_coord)
             return max(dist_cells, 1e-4) * cell_size, side, True, tex_u, sprite
     # Marched the full render distance without crossing a registered
@@ -227,9 +231,10 @@ def wall_shade(side: int, corrected: float, max_dist: float) -> float:
 def render_raycast_view(room, screen: pygame.Surface):
     """Render the room as a first-person raycast projection instead of
     the normal top-down view. See docs/RAYCAST_2_5D_PLAN.md."""
-    cfg = room.raycast_camera
+    st = raycast_state(room)
+    cfg = st["camera"]
     cell_size = int(cfg.get('cell_size', 32))
-    if room._raycast_v_walls is None or room._raycast_cell_size != cell_size:
+    if st["v_walls"] is None or st["cell_size"] != cell_size:
         build_raycast_walls(room, cell_size)
 
     camera = room._find_first_instance(cfg.get('camera_object', ''))

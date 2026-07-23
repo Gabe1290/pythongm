@@ -42,6 +42,7 @@ from runtime.game_runner import GameRoom, GameInstance  # noqa: E402
 # set_facing_angle action tests below still target the core ActionExecutor
 # (those actions stay in core through Stage B3).
 from extensions.raycast_2_5d import renderer as _rc  # noqa: E402
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 from extensions.raycast_2_5d.renderer import (  # noqa: E402
     build_raycast_walls, cast_ray, render_raycast_view, wall_shade,
     RAYCAST_MIN_SHADE, RAYCAST_SIDE_SHADE, RAYCAST_WALL_HEIGHT,
@@ -85,8 +86,7 @@ class MockInstance:
 
 class MockRoom:
     def __init__(self):
-        self.raycast_camera = {'enabled': False}
-        self._raycast_v_walls = None
+        self.extension_state = {}
 
 
 class MockGameRunner:
@@ -135,7 +135,7 @@ class TestEnableRaycastView:
         executor = _raycast_executor(game_runner=MockGameRunner())
         instance = MockInstance()
         _dispatch(executor, "enable_raycast_view", instance, {})
-        cfg = executor.game_runner.current_room.raycast_camera
+        cfg = raycast_state(executor.game_runner.current_room)["camera"]
         assert cfg['enabled'] is True
         assert cfg['camera_object'] == "obj_person"  # falls back to the caller
         assert cfg['fov'] == 66
@@ -148,7 +148,7 @@ class TestEnableRaycastView:
             "camera_object": "obj_camera", "fov": 90, "render_distance": 10,
             "cell_size": 16, "wall_color": "#123456",
         })
-        cfg = executor.game_runner.current_room.raycast_camera
+        cfg = raycast_state(executor.game_runner.current_room)["camera"]
         assert cfg['camera_object'] == "obj_camera"
         assert cfg['fov'] == 90
         assert cfg['render_distance'] == 10
@@ -157,11 +157,11 @@ class TestEnableRaycastView:
 
     def test_disable_clears_config(self):
         runner = MockGameRunner()
-        runner.current_room.raycast_camera = {'enabled': True, 'camera_object': 'x'}
+        raycast_state(runner.current_room)["camera"] = {'enabled': True, 'camera_object': 'x'}
         executor = _raycast_executor(game_runner=runner)
         instance = MockInstance()
         _dispatch(executor, "enable_raycast_view", instance, {"enable": False})
-        assert runner.current_room.raycast_camera == {'enabled': False}
+        assert raycast_state(runner.current_room)["camera"] == {'enabled': False}
 
     def test_no_current_room_is_a_noop(self):
         runner = MockGameRunner()
@@ -172,11 +172,11 @@ class TestEnableRaycastView:
 
     def test_cell_size_change_invalidates_grid_cache(self):
         runner = MockGameRunner()
-        runner.current_room._raycast_v_walls = {(0, 0)}
+        raycast_state(runner.current_room)["v_walls"] = {(0, 0)}
         executor = _raycast_executor(game_runner=runner)
         instance = MockInstance()
         _dispatch(executor, "enable_raycast_view", instance, {"cell_size": 16})
-        assert runner.current_room._raycast_v_walls is None
+        assert raycast_state(runner.current_room)["v_walls"] is None
 
 
 # ---------------------------------------------------------------------------
@@ -240,8 +240,8 @@ class TestBuildRaycastWalls:
         room = _room(128, 128)
         room.instances.append(_solid_instance("obj_wall", 64, 32))  # grid (2, 1)
         build_raycast_walls(room, 32)
-        assert room._raycast_v_walls == {(2, 1), (3, 1)}
-        assert room._raycast_h_walls == {(2, 1), (2, 2)}
+        assert raycast_state(room)["v_walls"] == {(2, 1), (3, 1)}
+        assert raycast_state(room)["h_walls"] == {(2, 1), (2, 2)}
 
     def test_wide_thin_instance_is_a_horizontal_edge_segment(self):
         # 32 wide x 8 tall, centered on the grid line at y=1*32=32 ->
@@ -249,8 +249,8 @@ class TestBuildRaycastWalls:
         room = _room(128, 128)
         room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
         build_raycast_walls(room, 32)
-        assert room._raycast_h_walls == {(0, 1)}
-        assert room._raycast_v_walls == set()
+        assert raycast_state(room)["h_walls"] == {(0, 1)}
+        assert raycast_state(room)["v_walls"] == set()
 
     def test_tall_thin_instance_is_a_vertical_edge_segment(self):
         # 8 wide x 32 tall, centered on the grid line at x=1*32=32 ->
@@ -258,15 +258,15 @@ class TestBuildRaycastWalls:
         room = _room(128, 128)
         room.instances.append(_solid_instance("obj_wall_v", 28, 0, width=8, height=32))
         build_raycast_walls(room, 32)
-        assert room._raycast_v_walls == {(1, 0)}
-        assert room._raycast_h_walls == set()
+        assert raycast_state(room)["v_walls"] == {(1, 0)}
+        assert raycast_state(room)["h_walls"] == set()
 
     def test_non_solid_instance_ignored(self):
         room = _room(128, 128)
         room.instances.append(_nonsolid_instance("obj_person", 64, 32))
         build_raycast_walls(room, 32)
-        assert room._raycast_v_walls == set()
-        assert room._raycast_h_walls == set()
+        assert raycast_state(room)["v_walls"] == set()
+        assert raycast_state(room)["h_walls"] == set()
 
     def test_instance_with_no_cached_object_data_ignored(self):
         room = _room(128, 128)
@@ -274,8 +274,8 @@ class TestBuildRaycastWalls:
         assert inst._cached_object_data is None
         room.instances.append(inst)
         build_raycast_walls(room, 32)  # must not raise
-        assert room._raycast_v_walls == set()
-        assert room._raycast_h_walls == set()
+        assert raycast_state(room)["v_walls"] == set()
+        assert raycast_state(room)["h_walls"] == set()
 
 
 # ---------------------------------------------------------------------------
@@ -355,7 +355,7 @@ class TestRenderRaycastView:
         camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
         camera.facing_angle = 0.0  # facing +x (right), toward the wall
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -396,7 +396,7 @@ class TestRenderRaycastView:
         camera = GameInstance("obj_person", 0, 0, {}, action_executor=None)
         camera.facing_angle = -90.0  # GM angle -90 -> screen-space +y (down)
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 10,
             'render_distance': 20, 'cell_size': 32, 'columns': 16,
             'wall_color': '#993333', 'floor_color': '#000000', 'ceiling_color': '#000000',
@@ -414,7 +414,7 @@ class TestRenderRaycastView:
 
     def test_missing_camera_still_renders_floor_and_ceiling(self):
         room = _room(160, 160)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'does_not_exist',
             'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
         }
@@ -439,7 +439,7 @@ class TestRenderRaycastView:
         camera = GameInstance("obj_person", 240, 240, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 5, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -548,7 +548,7 @@ class TestRenderRaycastView:
 
     def test_disabled_room_takes_the_normal_render_path(self):
         room = self._room_with_camera_and_wall()
-        room.raycast_camera['enabled'] = False
+        raycast_state(room)["camera"]['enabled'] = False
         screen = pygame.Surface((320, 240))
         screen.fill((10, 10, 10))
         room._render_room(screen, (0, 0))
@@ -577,7 +577,7 @@ class TestTexturedWalls:
         camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
         camera.facing_angle = 0.0                    # facing +x, toward the wall
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -596,7 +596,7 @@ class TestTexturedWalls:
 
     def test_wall_textured_false_forces_flat_colour(self):
         room = self._sprited_solid_wall(color=(255, 0, 255))
-        room.raycast_camera['wall_textured'] = False
+        raycast_state(room)["camera"]['wall_textured'] = False
         screen = pygame.Surface((320, 240))
         render_raycast_view(room, screen)
         w, h = screen.get_size()
@@ -621,7 +621,7 @@ class TestTexturedWalls:
         camera = GameInstance("obj_person", 0, 0, {}, action_executor=None)
         camera.facing_angle = -90.0                  # screen-space +y (down)
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 10,
             'render_distance': 20, 'cell_size': 32, 'columns': 16,
             'wall_color': '#993333', 'floor_color': '#000000', 'ceiling_color': '#000000',
@@ -659,7 +659,7 @@ class TestTexturedWalls:
         camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -694,7 +694,7 @@ class TestSky:
         sky = GameSprite.__new__(GameSprite)
         sky.frames = [frame]
         room._all_sprites = {'spr_sky': sky}
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00',
@@ -735,7 +735,7 @@ class TestSky:
 
     def test_no_sky_texture_keeps_flat_ceiling(self):
         room = self._open_room_with_sky()
-        del room.raycast_camera['sky_texture']
+        del raycast_state(room)["camera"]['sky_texture']
         screen = pygame.Surface((320, 240))
         render_raycast_view(room, screen)
         assert screen.get_at((160, 8))[:3] == (0, 0, 255)  # flat ceiling_color
@@ -751,7 +751,7 @@ class TestFloorCasting:
         camera = GameInstance("obj_person", 128, 128, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': floor_color,
@@ -770,7 +770,7 @@ class TestFloorCasting:
     def test_floor_texture_replaces_flat_floor(self):
         room = self._open_room()
         room._all_sprites = {'spr_floor': self._solid_tex((200, 40, 160))}
-        room.raycast_camera['floor_texture'] = 'spr_floor'
+        raycast_state(room)["camera"]['floor_texture'] = 'spr_floor'
         screen = pygame.Surface((320, 240))
         render_raycast_view(room, screen)
         w, h = screen.get_size()
@@ -787,7 +787,7 @@ class TestFloorCasting:
     def test_ceiling_texture_casts_when_no_sky(self):
         room = self._open_room()
         room._all_sprites = {'spr_ceil': self._solid_tex((40, 200, 160))}
-        room.raycast_camera['ceiling_texture'] = 'spr_ceil'
+        raycast_state(room)["camera"]['ceiling_texture'] = 'spr_ceil'
         screen = pygame.Surface((320, 240))
         render_raycast_view(room, screen)
         w, h = screen.get_size()
@@ -799,8 +799,8 @@ class TestFloorCasting:
             'spr_ceil': self._solid_tex((40, 200, 160)),
             'spr_sky': self._solid_tex((10, 20, 30)),
         }
-        room.raycast_camera['ceiling_texture'] = 'spr_ceil'
-        room.raycast_camera['sky_texture'] = 'spr_sky'
+        raycast_state(room)["camera"]['ceiling_texture'] = 'spr_ceil'
+        raycast_state(room)["camera"]['sky_texture'] = 'spr_sky'
         screen = pygame.Surface((320, 240))
         render_raycast_view(room, screen)
         w, h = screen.get_size()
@@ -810,9 +810,9 @@ class TestFloorCasting:
     def test_floor_cast_res_is_configurable_and_safe(self):
         room = self._open_room()
         room._all_sprites = {'spr_floor': self._solid_tex((200, 40, 160))}
-        room.raycast_camera['floor_texture'] = 'spr_floor'
+        raycast_state(room)["camera"]['floor_texture'] = 'spr_floor'
         for res in (1, 2, 8):
-            room.raycast_camera['floor_cast_res'] = res
+            raycast_state(room)["camera"]['floor_cast_res'] = res
             screen = pygame.Surface((320, 240))
             render_raycast_view(room, screen)  # must not raise
             assert screen.get_at((160, 236))[:3] == (200, 40, 160)
@@ -834,7 +834,7 @@ class TestFloorCasting:
             'spr_sky': self._solid_tex((90, 150, 210)),
             'spr_floor': self._solid_tex((100, 96, 80)),
         }
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 320,
             'wall_color': '#993333', 'floor_color': '#464632', 'ceiling_color': '#87CEEB',
@@ -865,7 +865,7 @@ class TestBillboardSprites:
         camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -885,7 +885,7 @@ class TestBillboardSprites:
         camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -914,7 +914,7 @@ class TestBillboardSprites:
         camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -940,7 +940,7 @@ class TestBillboardSprites:
         camera = _sprited_instance("obj_person", 16, 16, (255, 255, 0))
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -968,7 +968,7 @@ class TestBillboardSprites:
         camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
@@ -999,7 +999,7 @@ class TestRaycastPerformance:
         camera = GameInstance("obj_person", 32, 416, {}, action_executor=None)
         camera.facing_angle = 0.0
         room.instances.append(camera)
-        room.raycast_camera = {
+        raycast_state(room)["camera"] = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 320,
             'wall_color': '#993333', 'floor_color': '#464632', 'ceiling_color': '#87CEEB',
@@ -1068,7 +1068,7 @@ class TestRaycast1SampleSmoke:
         player = next(i for i in runner.current_room.instances if i.object_name == "obj_person")
         # 30 held frames * 3 deg/frame = 90 degrees turned left.
         assert player.facing_angle == pytest.approx(90.0, abs=0.01)
-        assert runner.current_room.raycast_camera['enabled'] is True
+        assert raycast_state(runner.current_room)["camera"]['enabled'] is True
 
     def test_player_is_blocked_by_walls_not_walking_through_them(self):
         """Regression: obj_person's continuous FPS-style movement (via

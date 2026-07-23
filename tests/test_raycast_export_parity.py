@@ -30,6 +30,7 @@ from runtime.game_runner import GameRoom  # noqa: E402
 # docs/RAYCAST_EXTENSION_PLAN.md); it is the reference the HTML5/Kivy ports
 # must match. GameRoom.__new__ is still used below as a bare state bag holding
 # the wall-edge sets cast_ray reads.
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 from extensions.raycast_2_5d.renderer import (  # noqa: E402
     cast_ray, wall_shade,
     RAYCAST_SIDE_SHADE, RAYCAST_FOG_STRENGTH, RAYCAST_MIN_SHADE,
@@ -80,10 +81,10 @@ def _shared_walls():
 def _desktop_engine():
     room = GameRoom.__new__(GameRoom)
     v, h = _shared_walls()
-    room._raycast_v_walls = v
-    room._raycast_h_walls = h
-    room._raycast_v_wall_sprites = {}
-    room._raycast_h_wall_sprites = {}
+    raycast_state(room)["v_walls"] = v
+    raycast_state(room)["h_walls"] = h
+    raycast_state(room)["v_sprites"] = {}
+    raycast_state(room)["h_sprites"] = {}
     return room
 
 
@@ -216,10 +217,10 @@ def test_flat_wall_projects_perfectly_straight():
     looked like they had a corner (user report 2026-07-19). Fixed by the
     camera-plane mapping ray_offset = atan(tan(fov/2) * camera_x)."""
     room = GameRoom.__new__(GameRoom)
-    room._raycast_h_walls = {(c, 4) for c in range(15)}   # one long flat wall
-    room._raycast_v_walls = set()
-    room._raycast_h_wall_sprites = {}
-    room._raycast_v_wall_sprites = {}
+    raycast_state(room)["h_walls"] = {(c, 4) for c in range(15)}   # one long flat wall
+    raycast_state(room)["v_walls"] = set()
+    raycast_state(room)["h_sprites"] = {}
+    raycast_state(room)["v_sprites"] = {}
 
     fov = math.radians(66)
     plane_tan = math.tan(fov / 2)
@@ -303,10 +304,10 @@ def test_close_wall_texture_stays_continuous_across_the_clamp_boundary():
     across the clamp boundary (a squeezed strip would jump)."""
     import pygame
     room = GameRoom.__new__(GameRoom)
-    room._raycast_h_walls = {(c, 4) for c in range(15)}
-    room._raycast_v_walls = set()
-    room._raycast_h_wall_sprites = {}
-    room._raycast_v_wall_sprites = {}
+    raycast_state(room)["h_walls"] = {(c, 4) for c in range(15)}
+    raycast_state(room)["v_walls"] = set()
+    raycast_state(room)["h_sprites"] = {}
+    raycast_state(room)["v_sprites"] = {}
 
     h, cell = 480, 32
     fov = math.radians(66)
@@ -488,7 +489,7 @@ def test_raycast_2_hud_actually_renders_through_the_real_game_loop():
         pygame.time.Clock = real_clock
         GameInstance._process_draw_queue = real
 
-    assert runner.current_room.raycast_camera["enabled"] is True
+    assert raycast_state(runner.current_room)["camera"]["enabled"] is True
     kinds = {k for name, k in seen if name == "obj_hud"}
     assert "text" in kinds and "lives" in kinds, \
         f"HUD did not render under raycast; saw {sorted(set(seen))!r}"

@@ -9,11 +9,13 @@ through ``instance.action_executor`` — the same handle ``plugins/audio_actions
 already uses for ``game_runner``. Everything else is unchanged, and the raycast
 samples are the behavioural proof.
 
-The ``raycast_camera`` state these set still lives on ``GameRoom`` (core
-initialises it); moving that state into ``room.extension_state`` is a separate,
-purely-internal refactor left for later (see docs/RAYCAST_EXTENSION_PLAN.md).
+All raycast state these read/write (the camera config + the derived wall-edge
+caches) lives under ``room.extension_state["raycast"]`` (Stage B3b), reached via
+``state.raycast_state(room)`` — ``GameRoom`` carries nothing raycast-specific.
 ``facing_angle`` stays a core ``GameInstance`` attribute by design (B4).
 """
+
+from .state import raycast_state
 
 
 class PluginExecutor:
@@ -83,7 +85,7 @@ class PluginExecutor:
 
         room = ae.game_runner.current_room
         if not enable:
-            room.raycast_camera = {"enabled": False}
+            raycast_state(room)["camera"] = {"enabled": False}
             return
 
         camera_object = ae._parse_value(parameters.get("camera_object", ""), instance)
@@ -101,7 +103,8 @@ class PluginExecutor:
                 return raw.strip().lower() in ("true", "1", "yes")
             return bool(raw)
 
-        room.raycast_camera = {
+        st = raycast_state(room)
+        st["camera"] = {
             "enabled": True,
             "camera_object": camera_object,
             "fov": _num("fov", 66),
@@ -132,7 +135,7 @@ class PluginExecutor:
         }
         # Force the wall edges to rebuild against the (possibly new) cell_size
         # next render instead of reusing a stale cache.
-        room._raycast_v_walls = None
+        st["v_walls"] = None
 
     def execute_draw_minimap_action(self, instance, parameters):
         """Draw a north-up minimap of the raycast room's wall edges.
@@ -162,7 +165,8 @@ class PluginExecutor:
         # render_raycast_view) — via _find_first_instance on the config's
         # camera_object. NB _find_raycast_camera is a KIVY-only helper; looking
         # for it here silently yields no camera and no player marker.
-        cfg = getattr(room, "raycast_camera", None) or {}
+        st = raycast_state(room)
+        cfg = st["camera"]
         camera = None
         finder = getattr(room, "_find_first_instance", None)
         if callable(finder):
@@ -186,9 +190,9 @@ class PluginExecutor:
             cam_y += (getattr(camera, "_cached_height", 0) or 0) / 2.0
 
         cmds = build_minimap_commands(
-            v_walls=getattr(room, "_raycast_v_walls", None),
-            h_walls=getattr(room, "_raycast_h_walls", None),
-            cell_size=getattr(room, "_raycast_cell_size", 32) or 32,
+            v_walls=st["v_walls"],
+            h_walls=st["h_walls"],
+            cell_size=st["cell_size"] or 32,
             room_width=getattr(room, "width", 0),
             room_height=getattr(room, "height", 0),
             cam_x=cam_x,

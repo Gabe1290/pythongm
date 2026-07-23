@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -198,7 +199,7 @@ def test_minimap_renders_over_raycast_3():
         pygame.time.Clock = real_clock
         GameInstance._process_draw_queue = real
 
-    assert runner.current_room.raycast_camera["enabled"] is True
+    assert raycast_state(runner.current_room)["camera"]["enabled"] is True
     walls = [c for c in seen if c.get("type") == "line"]
     assert len(walls) > 50, \
         f"minimap drew {len(walls)} lines — the room's wall edges are missing"

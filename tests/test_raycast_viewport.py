@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -198,7 +199,7 @@ def test_camera_config_carries_viewport_height():
         runner.run()
     finally:
         pygame.time.Clock = real_clock
-    assert runner.current_room.raycast_camera["viewport_height"] == 280
+    assert raycast_state(runner.current_room)["camera"]["viewport_height"] == 280
 
 
 # --- viewport_height reaches the exported camera config (Units 2/3 gap fix) -

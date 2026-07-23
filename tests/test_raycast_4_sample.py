@@ -14,6 +14,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+from extensions.raycast_2_5d.state import raycast_state  # noqa: E402
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 import os
@@ -112,7 +113,7 @@ def test_doom_bar_renders_over_the_shrunk_view():
     runner = _runner()
     result, seen = _run(runner)
     assert result is not False
-    cfg = runner.current_room.raycast_camera
+    cfg = raycast_state(runner.current_room)["camera"]
     assert cfg["enabled"] is True
     assert cfg["viewport_height"] == 400
     kinds = {c.get("type") for c in seen}

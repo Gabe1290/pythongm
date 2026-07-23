@@ -1,14 +1,14 @@
 # Plan: move the 2.5D raycast feature into a PyGameMaker extension
 
-Status: **STAGE B COMPLETE (2026-07-23).** Stage A (A1–A3) and Stage B (B1–B4)
-are done: the 2.5D raycast **renderer**, all four **actions**, their **handlers**
-and the HUD **builders** now live in `extensions/raycast_2_5d/`, drawing and
-dispatching through the extension seam. Desktop raycast is fully extension-owned.
-Two follow-ups remain, both optional: **B3b** — migrate the `raycast_camera` /
-wall-cache state off `GameRoom` into `room.extension_state` (purely internal);
-and **Stage C** — move the HTML5/Kivy export renderers into the extension (the
-risky, low-teaching-value build-system half). Stopping here is a defensible end
-state; the exports already work because they key off action names.
+Status: **STAGE B COMPLETE, INCLUDING B3b (2026-07-23).** Stage A (A1–A3) and
+Stage B (B1–B4 + B3b) are done: the 2.5D raycast **renderer**, all four
+**actions**, their **handlers**, the HUD **builders**, and now all per-room
+**state** (`room.extension_state["raycast"]`) live in `extensions/raycast_2_5d/`.
+Core's `GameRoom` carries **nothing** raycast-specific. Desktop raycast is fully
+extension-owned. The only remaining item is **Stage C** — move the HTML5/Kivy
+export renderers into the extension (the risky, low-teaching-value build-system
+half). Stopping here is a defensible end state; the exports already work because
+they key off action names.
 
 ## Why
 
@@ -214,12 +214,20 @@ moves.*
     used to call `executor.execute_*_action` directly now load the extension and
     dispatch through `action_handlers`, and registration tests call
     `load_all_plugins()` before querying `get_action_type` / `ACTION_TYPES`.
-  - **Deferred, not done (call it B3b):** the `raycast_camera` + wall-edge cache
-    **state** still lives on `GameRoom` (core initialises it, the handler mutates
-    it, the renderer reads it). Migrating it into `room.extension_state` would
-    touch every read site in the freshly-moved renderer for a purely-internal
-    gain, so it's split out. The 6 attribute inits in `GameRoom.__init__` and the
-    getattr reads in the extension are the only remaining coupling.
+- [x] **B3b — move the state into `room.extension_state`.** Done (2026-07-23,
+  commit after `fa9219f`). All raycast per-room state — the `camera` config the
+  action sets and the derived wall-edge caches — now lives under
+  `room.extension_state["raycast"]`, reached through
+  `extensions/raycast_2_5d/state.py`'s `raycast_state(room)` (get-or-create) and
+  `peek_camera(room)` (non-creating, for the render hook, which runs on every
+  room and must not stamp raycast state onto non-raycast ones). `GameRoom.__init__`
+  dropped all six raycast attributes and keeps only `extension_state = {}`; core
+  now carries **nothing** raycast-specific. Proven behaviour-identical by running
+  raycast_3 through the real loop (camera enabled, 123 wall edges built in
+  `extension_state`, no raycast attrs on `GameRoom`) and the full suite. The
+  Kivy/HTML5 ports are unaffected — their scene keeps its own `self._raycast_*`;
+  only the desktop extension's storage changed, so the parity test feeds each
+  side its own way (`raycast_state(room)[...]` vs `scene._raycast_*`).
 - [x] **B4 — decide `facing_angle`: leave it in core.** Recommendation (b)
   adopted. `facing_angle` stays a plain `GameInstance` attribute (initialised in
   `game_runner.py`), because a persistent look/facing direction isn't inherently

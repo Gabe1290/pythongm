@@ -47,6 +47,27 @@ def test_generic_helpers_stay_in_core():
         assert hasattr(GameRoom, kept), f"GameRoom lost the generic helper {kept}"
 
 
+def test_core_carries_no_raycast_state_attributes():
+    """Stage B3b: GameRoom no longer initialises raycast_camera or the wall
+    caches — all raycast state lives under room.extension_state['raycast']. A
+    fresh room has extension_state but no raycast namespace until the view is
+    enabled."""
+    from runtime.game_runner import GameRoom
+    room = GameRoom("r", {"width": 64, "height": 64}, action_executor=None)
+    assert room.extension_state == {}, "fresh room must not pre-stamp raycast state"
+    for gone in ("raycast_camera", "_raycast_v_walls", "_raycast_h_walls",
+                 "_raycast_v_wall_sprites", "_raycast_h_wall_sprites",
+                 "_raycast_cell_size"):
+        assert not hasattr(room, gone), f"GameRoom still carries {gone}"
+    # The extension's helper creates the namespace lazily, with sane defaults.
+    from extensions.raycast_2_5d.state import raycast_state, peek_camera
+    assert peek_camera(room) is None            # non-creating
+    st = raycast_state(room)                     # creating
+    assert st["camera"] == {"enabled": False}
+    assert st["v_walls"] is None and st["cell_size"] == 32
+    assert room.extension_state["raycast"] is st
+
+
 def test_extension_contributes_the_setup_actions():
     """Stage B3: set_facing_angle / enable_raycast_view are the extension's
     actions now — schema in PLUGIN_ACTIONS, handler on its PluginExecutor,
@@ -139,8 +160,10 @@ def test_render_room_claims_a_raycast_room_and_declines_others():
     import extensions.raycast_2_5d as ext
 
     class _Room:
+        # Raycast state lives in extension_state now (Stage B3b); render_room
+        # peeks there. cfg=None models a room that never enabled the view.
         def __init__(self, cfg):
-            self.raycast_camera = cfg
+            self.extension_state = {"raycast": {"camera": cfg}} if cfg is not None else {}
 
     # A raycast room is claimed; render is delegated to the renderer.
     drew = {"n": 0}

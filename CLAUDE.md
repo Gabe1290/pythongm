@@ -868,10 +868,20 @@ preserving with proof and a full-suite + smoke gate:
      `extensions.raycast_2_5d.*` imported the normal way. Harmless (no module-
      level mutable state), but a render-path spy must patch the LOADED copy — see
      `_loaded_renderer()` in `tests/test_raycast_viewport.py`.
-- **Still open, both optional:** **B3b** — migrate the `raycast_camera` /
-  wall-cache state off `GameRoom` into `room.extension_state` (purely internal;
-  would touch every renderer read site). **Stage C** — move the HTML5/Kivy export
-  renderers into the extension (build-system plumbing, low teaching value); the
-  exports work as-is because they key off action names, not this code.
-- Suite **2090 → 2146 passed, 0 failed** across the five commits; smoke **17/17**
+- **B3b (done, same day) — the STATE moved too.** All per-room raycast state
+  (the `camera` config + the derived wall-edge caches) now lives under
+  `room.extension_state["raycast"]`, reached via `extensions/raycast_2_5d/
+  state.py`'s `raycast_state(room)` (get-or-create) / `peek_camera(room)` (non-
+  creating — the render hook runs on EVERY room and must not stamp raycast state
+  onto non-raycast ones). `GameRoom.__init__` dropped all six raycast attributes;
+  core carries **nothing** raycast-specific. The Kivy/HTML5 ports keep their own
+  `self._raycast_*` scene attrs (unaffected — only desktop storage changed), so
+  the parity test feeds each side its own way. Test sweep was broad (~50 sites:
+  `room.raycast_camera` → `raycast_state(room)["camera"]`, `room._raycast_v_walls`
+  → `["v_walls"]`, etc.); done with word-boundary regex so `scene._raycast_*` and
+  `current_room` receivers weren't mangled.
+- **Still open — just Stage C (optional):** move the HTML5/Kivy export renderers
+  into the extension (build-system plumbing, low teaching value); the exports
+  work as-is because they key off action names, not this code.
+- Suite **2090 → 2147 passed, 0 failed** across the six commits; smoke **17/17**
   (all four raycast samples verified rendering *through the loaded extension*).
