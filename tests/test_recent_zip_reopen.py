@@ -34,6 +34,7 @@ def _stub():
         add_to_recent_projects=lambda p: recents.append(p),
         current_project_path=None,  # fresh IDE: no pre-switch editor flush
         _flush_open_editors=lambda: None,
+        _warn_missing_extensions=lambda: None,  # advisory post-load scan (no-op here)
         tr=lambda s: s,
         _recents=recents,
     )

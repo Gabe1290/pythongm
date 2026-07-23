@@ -355,6 +355,7 @@ def list_available_extensions() -> List[dict]:
             manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
         except Exception:
             continue
+        provides = manifest.get("provides_actions") or []
         out.append({
             "folder": folder.name,
             "name": manifest.get("name", folder.name),
@@ -362,7 +363,78 @@ def list_available_extensions() -> List[dict]:
             "description": manifest.get("description", ""),
             "enabled": is_extension_enabled(folder.name,
                                             manifest.get("enabled", True)),
+            # Action names this extension owns, declared in its manifest so they
+            # are readable WITHOUT importing (loading) the extension — needed to
+            # tell a user which DISABLED extension a project's action belongs to.
+            "provides_actions": list(provides) if isinstance(provides, list) else [],
         })
+    return out
+
+
+def collect_project_action_names(project_data) -> set:
+    """Every action name referenced anywhere in a project's object events,
+    walking nested then/else/sub action lists. Tolerant of partial/odd data.
+    """
+    names: set = set()
+
+    def walk(actions):
+        if not isinstance(actions, list):
+            return
+        for a in actions:
+            if not isinstance(a, dict):
+                continue
+            name = a.get("action")
+            if name:
+                names.add(name)
+            params = a.get("parameters") if isinstance(a.get("parameters"), dict) else {}
+            for key in ("then_actions", "else_actions", "sub_actions", "actions"):
+                if key in params:
+                    walk(params[key])
+                if key in a:
+                    walk(a[key])
+
+    objects = ((project_data or {}).get("assets") or {}).get("objects") or {}
+    if not isinstance(objects, dict):
+        return names
+    for obj in objects.values():
+        if not isinstance(obj, dict):
+            continue
+        events = obj.get("events") or {}
+        if isinstance(events, dict):
+            for ev in events.values():
+                if isinstance(ev, dict):
+                    walk(ev.get("actions"))
+                elif isinstance(ev, list):
+                    walk(ev)
+        elif isinstance(events, list):
+            for ev in events:
+                if isinstance(ev, dict):
+                    walk(ev.get("actions"))
+    return names
+
+
+def missing_extensions_for_project(project_data) -> List[dict]:
+    """Extensions a project's actions need that are currently DISABLED.
+
+    Returns ``[{folder, name, actions}]`` — for each disabled extension whose
+    manifest ``provides_actions`` overlaps the actions the project uses, the
+    extension's folder/name and the sorted list of action names it would supply.
+
+    Empty in the common case (everything the project uses is available). A
+    project.json that uses no such actions — or with no extensions installed —
+    yields ``[]``, so a project file that never mentions an extension is fine.
+    """
+    used = collect_project_action_names(project_data)
+    if not used:
+        return []
+    out = []
+    for info in list_available_extensions():
+        if info.get("enabled", True):
+            continue                      # loaded — its actions are available
+        needed = sorted(set(info.get("provides_actions") or []) & used)
+        if needed:
+            out.append({"folder": info["folder"], "name": info["name"],
+                        "actions": needed})
     return out
 
 
