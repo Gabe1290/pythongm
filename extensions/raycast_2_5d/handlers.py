@@ -202,3 +202,63 @@ class PluginExecutor:
             player_color=parameters.get("player_color", "#ffd040"),
         )
         instance._draw_queue.extend(cmds)
+
+    def execute_draw_doom_hud_action(self, instance, parameters):
+        """Draw a DOOM-style bottom status bar over the raycast view.
+
+        A MACRO action (see hud.build_doom_hud_commands): resolves game state
+        (health/score/lives) and the auto-aligned position, then emits ordinary
+        rectangle/line/text/sprite/lives commands — no target needs a new
+        draw-queue type. Pairs with enable_raycast_view's viewport_height, which
+        reserves the band this bar fills. See docs/RAYCAST_DOOM_HUD_PLAN.md.
+        """
+        from .hud import build_doom_hud_commands
+
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner:
+            return
+        gr = ae.game_runner
+        if not hasattr(instance, "_draw_queue"):
+            instance._draw_queue = []
+
+        def _num(key, default):
+            try:
+                return float(parameters.get(key, default))
+            except (TypeError, ValueError):
+                return float(default)
+
+        height = _num("height", 42)
+        # window height for auto-align: window_height is set at run start;
+        # fall back to the live surface, then a sane default.
+        win_h = getattr(gr, "window_height", 0) or 0
+        if not win_h:
+            screen = getattr(gr, "screen", None)
+            win_h = screen.get_height() if screen is not None else 480
+        win_w = getattr(gr, "window_width", 0) or 0
+
+        y = _num("y", -1)
+        if y < 0:                      # auto-align under the shrunk viewport
+            y = win_h - height
+        width = _num("width", 0) or float(win_w or 640)
+
+        cmds = build_doom_hud_commands(
+            x=_num("x", 0), y=y, width=width, height=height,
+            health=getattr(gr, "health", 100),
+            score=getattr(gr, "score", 0),
+            lives=getattr(gr, "lives", 0),
+            back_color=parameters.get("back_color", "#101010"),
+            divider_color=parameters.get("divider_color", "#505050"),
+            text_color=parameters.get("text_color", "#ffffff"),
+            health_label=parameters.get("health_label", "Health"),
+            health_bar_width=_num("health_bar_width", 90),
+            health_bar_height=_num("health_bar_height", 14),
+            bar_color=parameters.get("bar_color", "#20c020"),
+            face_sprite=parameters.get("face_sprite", ""),
+            face_frames=int(_num("face_frames", 4)),
+            score_label=parameters.get("score_label", "Score: "),
+            lives_sprite=parameters.get("lives_sprite", ""),
+            lives_scale=_num("lives_scale", 1.0),
+            objective_value=ae._parse_value(parameters.get("objective_value", "0"), instance),
+            objective_label=parameters.get("objective_label", "Keys: "),
+        )
+        instance._draw_queue.extend(cmds)

@@ -11,95 +11,10 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 
-# build_minimap_commands + MINIMAP_HEADING_LEN / MINIMAP_MARKER_HALF MOVED to
+# The raycast HUD builders (build_minimap_commands, build_doom_hud_commands,
+# doom_face_frame) + MINIMAP_HEADING_LEN / MINIMAP_MARKER_HALF MOVED to
 # extensions/raycast_2_5d/hud.py (Stage B3, docs/RAYCAST_EXTENSION_PLAN.md).
 
-
-def doom_face_frame(health, face_frames):
-    """Which face-strip frame to show for a given health, 0 = healthiest.
-
-    An even-bucket map over face_frames, NOT an authored threshold table —
-    one formula, portable to all three codegen targets. Frame 0 is the
-    healthiest face and the last frame the worst/dying.
-    """
-    frames = max(1, int(face_frames))
-    frac = min(1.0, max(0.0, float(health) / 100.0))
-    return min(frames - 1, int((1.0 - frac) * frames))
-
-
-def build_doom_hud_commands(x, y, width, height, health, score, lives,
-                            back_color, divider_color, text_color,
-                            health_label, health_bar_width, health_bar_height,
-                            bar_color, face_sprite, face_frames,
-                            score_label, lives_sprite, lives_scale,
-                            objective_value, objective_label):
-    """Compose a DOOM-style bottom status bar as ordinary draw-queue commands.
-
-    THE single source for the bar's geometry — the HTML5 (engine.js) and Kivy
-    (code_generator.py) ports mirror this, and tests/test_raycast_export_parity
-    compares against it, exactly as build_minimap_commands does. Emits only
-    'rectangle'/'line'/'text'/'sprite'/'lives' commands, so no target needs a
-    new draw-queue type — the reason this can be a macro action.
-
-    Screen space, y DOWN (Kivy's shared draw-queue path flips once, later). The
-    caller resolves auto-alignment and game state before calling; this is pure.
-
-    Layout, left to right (DOOM's face-centred arrangement): a health readout
-    (label + number + a two-rectangle bar) in the left third; the face icon
-    centred in the middle; score over lives in the right third; an objective
-    counter at the far-right edge.
-    """
-    pad = 8.0
-    cmds = [{
-        'type': 'rectangle',
-        'x1': x, 'y1': y, 'x2': x + width, 'y2': y + height,
-        'color': back_color, 'filled': True,
-    }, {
-        'type': 'line',                       # top border / divider
-        'x1': x, 'y1': y, 'x2': x + width, 'y2': y,
-        'color': divider_color,
-    }]
-
-    # --- Health readout (left third) ---
-    hx = x + pad
-    cmds.append({'type': 'text', 'text': str(health_label),
-                 'x': hx, 'y': y + 4, 'color': text_color})
-    bar_y = y + 22
-    cmds.append({'type': 'rectangle',         # bar background
-                 'x1': hx, 'y1': bar_y,
-                 'x2': hx + health_bar_width, 'y2': bar_y + health_bar_height,
-                 'color': divider_color, 'filled': True})
-    frac = min(1.0, max(0.0, float(health) / 100.0))
-    cmds.append({'type': 'rectangle',         # proportional fill
-                 'x1': hx, 'y1': bar_y,
-                 'x2': hx + health_bar_width * frac, 'y2': bar_y + health_bar_height,
-                 'color': bar_color, 'filled': True})
-    cmds.append({'type': 'text', 'text': str(int(health)),
-                 'x': hx + health_bar_width + 6, 'y': bar_y - 2,
-                 'color': text_color})
-
-    # --- Face icon (centre) ---
-    if face_sprite:
-        frame = doom_face_frame(health, face_frames)
-        # Centre a roughly bar-tall face; the art is authored to fit height.
-        cmds.append({'type': 'sprite', 'sprite_name': face_sprite,
-                     'x': x + width / 2.0 - height / 2.0, 'y': y + 2,
-                     'subimage': frame})
-
-    # --- Score + lives (right third) ---
-    rx = x + width * 2.0 / 3.0 + pad
-    cmds.append({'type': 'text', 'text': "{}{}".format(score_label, score),
-                 'x': rx, 'y': y + 4, 'color': text_color})
-    cmds.append({'type': 'lives', 'count': lives,
-                 'x': rx, 'y': y + height - 20,
-                 'sprite': lives_sprite, 'scale': lives_scale})
-
-    # --- Objective counter (far-right edge) ---
-    cmds.append({'type': 'text',
-                 'text': "{}{}".format(objective_label, objective_value),
-                 'x': x + width - 96, 'y': y + height / 2.0 - 8,
-                 'color': text_color})
-    return cmds
 
 # GM's Set Font action encodes horizontal align as a 0/1/2 menu; the converter
 # now translates it to `halign`, but pre-fix imported projects still carry the
@@ -2789,61 +2704,9 @@ class ActionExecutor:
     # (PluginExecutor) in Stage B3. It reads the room's derived wall edges via
     # instance.action_executor and emits ordinary draw-queue commands.
 
-    def execute_draw_doom_hud_action(self, instance, parameters: Dict[str, Any]):
-        """Draw a DOOM-style bottom status bar over the raycast view.
-
-        A MACRO action (see build_doom_hud_commands): resolves game state
-        (health/score/lives) and the auto-aligned position, then emits ordinary
-        rectangle/line/text/sprite/lives commands — no target needs a new
-        draw-queue type. Pairs with enable_raycast_view's viewport_height, which
-        reserves the band this bar fills. See docs/RAYCAST_DOOM_HUD_PLAN.md.
-        """
-        if not self.game_runner:
-            return
-        if not hasattr(instance, '_draw_queue'):
-            instance._draw_queue = []
-
-        def _num(key, default):
-            try:
-                return float(parameters.get(key, default))
-            except (TypeError, ValueError):
-                return float(default)
-
-        height = _num('height', 42)
-        # window height for auto-align: window_height is set at run start;
-        # fall back to the live surface, then a sane default.
-        win_h = getattr(self.game_runner, 'window_height', 0) or 0
-        if not win_h:
-            screen = getattr(self.game_runner, 'screen', None)
-            win_h = screen.get_height() if screen is not None else 480
-        win_w = getattr(self.game_runner, 'window_width', 0) or 0
-
-        y = _num('y', -1)
-        if y < 0:                      # auto-align under the shrunk viewport
-            y = win_h - height
-        width = _num('width', 0) or float(win_w or 640)
-
-        cmds = build_doom_hud_commands(
-            x=_num('x', 0), y=y, width=width, height=height,
-            health=getattr(self.game_runner, 'health', 100),
-            score=getattr(self.game_runner, 'score', 0),
-            lives=getattr(self.game_runner, 'lives', 0),
-            back_color=parameters.get('back_color', '#101010'),
-            divider_color=parameters.get('divider_color', '#505050'),
-            text_color=parameters.get('text_color', '#ffffff'),
-            health_label=parameters.get('health_label', 'Health'),
-            health_bar_width=_num('health_bar_width', 90),
-            health_bar_height=_num('health_bar_height', 14),
-            bar_color=parameters.get('bar_color', '#20c020'),
-            face_sprite=parameters.get('face_sprite', ''),
-            face_frames=int(_num('face_frames', 4)),
-            score_label=parameters.get('score_label', 'Score: '),
-            lives_sprite=parameters.get('lives_sprite', ''),
-            lives_scale=_num('lives_scale', 1.0),
-            objective_value=self._parse_value(parameters.get('objective_value', '0'), instance),
-            objective_label=parameters.get('objective_label', 'Keys: '),
-        )
-        instance._draw_queue.extend(cmds)
+    # execute_draw_doom_hud_action MOVED to extensions/raycast_2_5d/handlers.py
+    # (PluginExecutor) in Stage B3. It resolves game state via
+    # instance.action_executor and emits ordinary draw-queue commands.
 
     def execute_draw_health_bar_action(self, instance, parameters: Dict[str, Any]):
         """Draw health as a bar"""
