@@ -56,10 +56,31 @@ _action_executor_module = import_module_directly("runtime/action_executor.py")
 ActionExecutor = _action_executor_module.ActionExecutor
 
 
+# set_facing_angle / enable_raycast_view moved out of ActionExecutor into the
+# raycast extension's PluginExecutor (Stage B3, docs/RAYCAST_EXTENSION_PLAN.md).
+# They now run as registered plugin handlers that reach the executor via
+# instance.action_executor, so these tests load the extension onto a real
+# ActionExecutor and dispatch through its action_handlers — the same path the
+# game loop uses — instead of calling a GameRoom/ActionExecutor method directly.
+from events.plugin_loader import load_all_plugins  # noqa: E402
+
+
+def _raycast_executor(game_runner=None):
+    ex = ActionExecutor(game_runner=game_runner)
+    load_all_plugins(ex)          # registers the extension's moved handlers onto ex
+    return ex
+
+
+def _dispatch(executor, action_name, instance, params):
+    instance.action_executor = executor        # how the handler reaches _parse_value
+    return executor.action_handlers[action_name](instance, params)
+
+
 class MockInstance:
     def __init__(self, object_name="obj_person"):
         self.object_name = object_name
         self.facing_angle = 0.0
+        self.action_executor = None
 
 
 class MockRoom:
@@ -76,44 +97,44 @@ class MockGameRunner:
 
 class TestSetFacingAngle:
     def test_absolute(self):
-        executor = ActionExecutor()
+        executor = _raycast_executor()
         instance = MockInstance()
-        executor.execute_set_facing_angle_action(instance, {"angle": 90})
+        _dispatch(executor, "set_facing_angle", instance, {"angle": 90})
         assert instance.facing_angle == 90.0
 
     def test_relative_accumulates(self):
-        executor = ActionExecutor()
+        executor = _raycast_executor()
         instance = MockInstance()
         instance.facing_angle = 10.0
-        executor.execute_set_facing_angle_action(instance, {"angle": 5, "relative": True})
+        _dispatch(executor, "set_facing_angle", instance, {"angle": 5, "relative": True})
         assert instance.facing_angle == 15.0
 
     def test_wraps_to_0_360(self):
-        executor = ActionExecutor()
+        executor = _raycast_executor()
         instance = MockInstance()
         instance.facing_angle = 350.0
-        executor.execute_set_facing_angle_action(instance, {"angle": 20, "relative": True})
+        _dispatch(executor, "set_facing_angle", instance, {"angle": 20, "relative": True})
         assert instance.facing_angle == 10.0
 
     def test_negative_relative_wraps_backward(self):
-        executor = ActionExecutor()
+        executor = _raycast_executor()
         instance = MockInstance()
         instance.facing_angle = 10.0
-        executor.execute_set_facing_angle_action(instance, {"angle": -20, "relative": True})
+        _dispatch(executor, "set_facing_angle", instance, {"angle": -20, "relative": True})
         assert instance.facing_angle == 350.0
 
     def test_bad_value_defaults_to_zero(self):
-        executor = ActionExecutor()
+        executor = _raycast_executor()
         instance = MockInstance()
-        executor.execute_set_facing_angle_action(instance, {"angle": "not-a-number"})
+        _dispatch(executor, "set_facing_angle", instance, {"angle": "not-a-number"})
         assert instance.facing_angle == 0.0
 
 
 class TestEnableRaycastView:
     def test_enable_sets_config_with_defaults(self):
-        executor = ActionExecutor(game_runner=MockGameRunner())
+        executor = _raycast_executor(game_runner=MockGameRunner())
         instance = MockInstance()
-        executor.execute_enable_raycast_view_action(instance, {})
+        _dispatch(executor, "enable_raycast_view", instance, {})
         cfg = executor.game_runner.current_room.raycast_camera
         assert cfg['enabled'] is True
         assert cfg['camera_object'] == "obj_person"  # falls back to the caller
@@ -121,9 +142,9 @@ class TestEnableRaycastView:
         assert cfg['cell_size'] == 32
 
     def test_enable_honors_overrides(self):
-        executor = ActionExecutor(game_runner=MockGameRunner())
+        executor = _raycast_executor(game_runner=MockGameRunner())
         instance = MockInstance()
-        executor.execute_enable_raycast_view_action(instance, {
+        _dispatch(executor, "enable_raycast_view", instance, {
             "camera_object": "obj_camera", "fov": 90, "render_distance": 10,
             "cell_size": 16, "wall_color": "#123456",
         })
@@ -137,24 +158,24 @@ class TestEnableRaycastView:
     def test_disable_clears_config(self):
         runner = MockGameRunner()
         runner.current_room.raycast_camera = {'enabled': True, 'camera_object': 'x'}
-        executor = ActionExecutor(game_runner=runner)
+        executor = _raycast_executor(game_runner=runner)
         instance = MockInstance()
-        executor.execute_enable_raycast_view_action(instance, {"enable": False})
+        _dispatch(executor, "enable_raycast_view", instance, {"enable": False})
         assert runner.current_room.raycast_camera == {'enabled': False}
 
     def test_no_current_room_is_a_noop(self):
         runner = MockGameRunner()
         runner.current_room = None
-        executor = ActionExecutor(game_runner=runner)
+        executor = _raycast_executor(game_runner=runner)
         instance = MockInstance()
-        executor.execute_enable_raycast_view_action(instance, {})  # must not raise
+        _dispatch(executor, "enable_raycast_view", instance, {})  # must not raise
 
     def test_cell_size_change_invalidates_grid_cache(self):
         runner = MockGameRunner()
         runner.current_room._raycast_v_walls = {(0, 0)}
-        executor = ActionExecutor(game_runner=runner)
+        executor = _raycast_executor(game_runner=runner)
         instance = MockInstance()
-        executor.execute_enable_raycast_view_action(instance, {"cell_size": 16})
+        _dispatch(executor, "enable_raycast_view", instance, {"cell_size": 16})
         assert runner.current_room._raycast_v_walls is None
 
 
