@@ -1336,6 +1336,46 @@ if __name__ == '__main__':
                 import traceback
                 traceback.print_exc()
 
+    EXTENSION_SCENE_MARKER = "    # __PYGM_EXTENSION_SCENE_CODE__"
+
+    def _inject_extension_scene_code(self, scene_code: str) -> str:
+        """Replace the scene's extension marker with each enabled extension's
+        contributed class-body code (Stage C).
+
+        Done AFTER ``.format()`` so the injected Python — which contains its own
+        ``{ }`` dict literals — needs no brace-doubling. The raycast renderer
+        ships from ``extensions/raycast_2_5d/export_kivy.py``; the scene template
+        itself names no extension.
+        """
+        return scene_code.replace(self.EXTENSION_SCENE_MARKER,
+                                  self._collect_extension_scene_code())
+
+    def _collect_extension_scene_code(self) -> str:
+        """The scene class-body code every ENABLED extension contributes (Stage
+        C). An extension ships an ``export_kivy.py`` exposing ``SCENE_CODE`` — a
+        string of 4-space-indented methods injected verbatim at the marker. The
+        loader's enable/disable config is honoured.
+        """
+        try:
+            from events.plugin_loader import (
+                list_available_extensions, get_extension_directory)
+            ext_dir = get_extension_directory()
+            parts = []
+            for info in list_available_extensions():
+                if not info.get("enabled", True):
+                    continue
+                py = ext_dir / info["folder"] / "export_kivy.py"
+                if py.exists():
+                    ns = {}
+                    exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
+                    code = ns.get("SCENE_CODE", "")
+                    if code:
+                        parts.append(code)
+            return "\n".join(parts)
+        except Exception as exc:   # never let extension collection break export
+            logger.warning(f"Could not collect extension Kivy scene code: {exc}")
+            return ""
+
     def _generate_scene(self, room_name: str, room_data: Dict):
         """Generate a single scene file"""
         class_name = self._get_room_class_name(room_name)
@@ -2263,6 +2303,8 @@ class {class_name}(Widget):
                                     tex_coords=(0.0, bv0, 1.0, bv0,
                                                 1.0, bv1, 0.0, bv1)))
 
+    # __PYGM_EXTENSION_SCENE_CODE__
+
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
         # ObjWall -> obj_wall, ObjPlayer -> obj_player
@@ -2746,6 +2788,7 @@ class {class_name}(Widget):
             bg_b=b,
             bg_image_body=bg_image_body
         )
+        code_formatted = self._inject_extension_scene_code(code_formatted)
 
         output_file = (self.output_path / "game" / "scenes" /
                        f"{self._get_room_module_name(room_name)}.py")
