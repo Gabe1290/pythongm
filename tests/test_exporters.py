@@ -57,13 +57,18 @@ class TestHTML5ExporterBasics:
                 return exporter
 
     def test_init_loads_templates(self):
-        """HTML5Exporter should load templates on init"""
-        with patch.object(Path, 'read_text') as mock_read:
-            mock_read.return_value = "template"
-            from export.HTML5.html5_exporter import HTML5Exporter
-            HTML5Exporter()
+        """HTML5Exporter should load both templates on init.
 
-            assert mock_read.call_count == 2  # template_html and engine_code
+        Extension-JS collection (Stage C) reads extra files, so isolate it —
+        the injection mechanism has its own coverage in
+        tests/test_html5_extension_mechanism.py."""
+        from export.HTML5.html5_exporter import HTML5Exporter
+        with patch.object(HTML5Exporter, '_collect_extension_js', return_value=""):
+            with patch.object(Path, 'read_text') as mock_read:
+                mock_read.return_value = "template"
+                HTML5Exporter()
+
+                assert mock_read.call_count == 2  # template_html and engine_code
 
     def test_encode_sprites_returns_dict(self, html5_exporter, temp_project_dir):
         """encode_sprites should return a dictionary"""
