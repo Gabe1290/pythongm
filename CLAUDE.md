@@ -827,3 +827,51 @@ DOOM-style bottom bar for a NEW sample, raycast_1–3 untouched.
   render on any target. raycast_4 is the first raycast sample whose *view shape*
   changes — most worth eyeballing in a browser + on Android. (Same standing
   caveat as raycast_3/plateforme_3, still unaddressed.)
+
+**2026-07-23 — Raycast moved into an EXTENSION (RAYCAST_EXTENSION_PLAN Stage B
+complete).** The 2.5D raycast feature is now a self-contained folder extension
+(`extensions/raycast_2_5d/`) instead of being woven through core — the plan's
+worked teaching example of extending the IDE. Five commits, each behaviour-
+preserving with proof and a full-suite + smoke gate:
+- **B2 (`b30b15f`) — the renderer.** `_render_raycast_view` + `_cast_ray` +
+  `_build_raycast_walls` + `_cast_floor_plane` + `_wall_shade` + the RAYCAST_*
+  constants (~547 lines of GameRoom methods) → `renderer.py`. Mechanical extract
+  (`self` → an explicit `room` param, class consts → module consts), proven
+  pixel-for-pixel vs pre-move HEAD before deleting the core copy. `GameRoom.
+  _render_room`'s built-in raycast branch is GONE; raycast rooms draw through the
+  Stage-B1 `extension_hooks` seam. New guard: `tests/test_raycast_extension.py`.
+- **B3 (`8ca55c9`, `74e418b`, `fa9219f`) — the actions + builders.** All four
+  "3D View" actions (set_facing_angle, enable_raycast_view, draw_minimap,
+  draw_doom_hud): **schemas** → `actions.py` (`PLUGIN_ACTIONS`), **handlers** →
+  `handlers.py` (`PluginExecutor`), HUD **builders** (build_minimap_commands,
+  build_doom_hud_commands, doom_face_frame + MINIMAP consts) → `hud.py`. Core's
+  static `ACTION_TYPES` now has NO 3D-View entry and `action_executor.py` no
+  raycast handler/builder — only pointer comments.
+- **B4 — `facing_angle` stays in core** (a general instance property; the
+  expression parser references it by name). The action that writes it moved; the
+  attribute didn't.
+- **Landmines worth carrying forward** (also in the plan doc):
+  1. A plugin handler runs on a `PluginExecutor`, not the `ActionExecutor`, so it
+     reaches the engine via `instance.action_executor.game_runner` /
+     `._parse_value` (the audio_actions pattern). Tests that used to call
+     `executor.execute_*_action` directly now `load_all_plugins(ex)` and dispatch
+     through `ex.action_handlers[...]`.
+  2. Moved action **schemas** only appear in `ACTION_TYPES` AFTER
+     `load_all_plugins()` runs (the loader merges `PLUGIN_ACTIONS`). A bare test
+     import that queries `get_action_type("enable_raycast_view")` returns None
+     unless it loads plugins first — same class as the long-standing
+     `'play_sound' in ACTION_TYPES` gotcha.
+  3. `load_all_plugins` re-registers room renderers on EVERY call (idempotent) —
+     the hook registry is process-global state a test can clear.
+  4. The loader imports a folder extension under a SYNTHETIC package name
+     (`pygm_extension_<folder>`), so its submodules are DIFFERENT objects from
+     `extensions.raycast_2_5d.*` imported the normal way. Harmless (no module-
+     level mutable state), but a render-path spy must patch the LOADED copy — see
+     `_loaded_renderer()` in `tests/test_raycast_viewport.py`.
+- **Still open, both optional:** **B3b** — migrate the `raycast_camera` /
+  wall-cache state off `GameRoom` into `room.extension_state` (purely internal;
+  would touch every renderer read site). **Stage C** — move the HTML5/Kivy export
+  renderers into the extension (build-system plumbing, low teaching value); the
+  exports work as-is because they key off action names, not this code.
+- Suite **2090 → 2146 passed, 0 failed** across the five commits; smoke **17/17**
+  (all four raycast samples verified rendering *through the loaded extension*).

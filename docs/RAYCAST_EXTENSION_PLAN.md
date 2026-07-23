@@ -1,9 +1,14 @@
 # Plan: move the 2.5D raycast feature into a PyGameMaker extension
 
-Status: **IN PROGRESS.** Stage A (A1–A3) and Stage B (B1, B2) are done; the
-2.5D raycast renderer now lives in `extensions/raycast_2_5d/` and draws through
-the extension seam. Next: B3 (move the four actions + their state), then B4
-(document `facing_angle`). Stage C (export contributions) remains optional.
+Status: **STAGE B COMPLETE (2026-07-23).** Stage A (A1–A3) and Stage B (B1–B4)
+are done: the 2.5D raycast **renderer**, all four **actions**, their **handlers**
+and the HUD **builders** now live in `extensions/raycast_2_5d/`, drawing and
+dispatching through the extension seam. Desktop raycast is fully extension-owned.
+Two follow-ups remain, both optional: **B3b** — migrate the `raycast_camera` /
+wall-cache state off `GameRoom` into `room.extension_state` (purely internal);
+and **Stage C** — move the HTML5/Kivy export renderers into the extension (the
+risky, low-teaching-value build-system half). Stopping here is a defensible end
+state; the exports already work because they key off action names.
 
 ## Why
 
@@ -167,8 +172,12 @@ moves.*
 
 ### Stage B — move the raycast runtime into the extension
 
-- [ ] **B1 — render-override + extension-state hooks in core.** With a fixture
-  extension proving the hook, before raycast depends on it.
+- [x] **B1 — render-override + extension-state hooks in core.** Done (commit
+  `13e0650`). `runtime/extension_hooks.py` is a dependency-free registry both
+  `events/plugin_loader` (registers) and `runtime/game_runner` (invokes) import;
+  a room renderer is declared as `PLUGIN_ROOM_RENDERERS = [fn]` and returns True
+  to claim a room. `GameRoom.extension_state` is the per-room namespace.
+  Proven with a fixture extension before raycast depended on it.
 - [x] **B2 — move the renderer.** `_render_raycast_view` and friends → the
   extension (`extensions/raycast_2_5d/renderer.py`, done 2026-07-23). Core keeps
   `run_draw_event`/`_render_draw_events`/`_sprite_top_left`. The renderer was
@@ -189,12 +198,41 @@ moves.*
   renderer (no module-level mutable state), but a test that spies on the render
   path must patch the *loaded* copy — see `_loaded_renderer()` in
   `tests/test_raycast_viewport.py`.
-- [ ] **B3 — move the actions + builders.** The four actions out of static
-  `ACTION_TYPES` into the extension.
-- [ ] **B4 — decide `facing_angle`.** Recommend leaving it core; document why.
+- [x] **B3 — move the actions + builders.** Done in three commits (2026-07-23):
+  `8ca55c9` set_facing_angle + enable_raycast_view, `74e418b` draw_minimap +
+  build_minimap_commands, `fa9219f` draw_doom_hud + build_doom_hud_commands +
+  doom_face_frame. All four "3D View" action **schemas** are now in
+  `extensions/raycast_2_5d/actions.py` (`PLUGIN_ACTIONS`), the **handlers** in
+  `handlers.py` (`PluginExecutor`), and the HUD **builders** in `hud.py`. Core's
+  static `ACTION_TYPES` has no 3D-View entry and `action_executor.py` no raycast
+  handler/builder — only pointer comments. The loader merges the schemas back
+  into `ACTION_TYPES` at startup so the picker/Blockly still see them.
+  - **The one mechanical change:** a plugin handler runs as a `PluginExecutor`
+    method, not an `ActionExecutor` method, so `self.game_runner` /
+    `self._parse_value` became `instance.action_executor.game_runner` /
+    `._parse_value` — the same handle `plugins/audio_actions` uses. Tests that
+    used to call `executor.execute_*_action` directly now load the extension and
+    dispatch through `action_handlers`, and registration tests call
+    `load_all_plugins()` before querying `get_action_type` / `ACTION_TYPES`.
+  - **Deferred, not done (call it B3b):** the `raycast_camera` + wall-edge cache
+    **state** still lives on `GameRoom` (core initialises it, the handler mutates
+    it, the renderer reads it). Migrating it into `room.extension_state` would
+    touch every read site in the freshly-moved renderer for a purely-internal
+    gain, so it's split out. The 6 attribute inits in `GameRoom.__init__` and the
+    getattr reads in the extension are the only remaining coupling.
+- [x] **B4 — decide `facing_angle`: leave it in core.** Recommendation (b)
+  adopted. `facing_angle` stays a plain `GameInstance` attribute (initialised in
+  `game_runner.py`), because a persistent look/facing direction isn't inherently
+  3D and the expression parser references it by name
+  (`set_direction_speed(direction="facing_angle")`); extracting it would mean
+  building a generic "extensions register expression variables" hook for a single
+  case. Documented in the extension's `handlers.py` / `README.md`. `set_facing_angle`
+  (the action that writes it) moved to the extension in B3; the attribute it
+  writes did not.
 
 *Cut line: desktop raycast is fully extension-owned; exports still work
-unchanged because they match action names.*
+unchanged because they match action names. Reached — Stage C (below) is
+optional.*
 
 ### Stage C — move the export contributions (the hard half)
 
