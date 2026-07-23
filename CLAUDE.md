@@ -885,3 +885,57 @@ preserving with proof and a full-suite + smoke gate:
   work as-is because they key off action names, not this code.
 - Suite **2090 → 2147 passed, 0 failed** across the six commits; smoke **17/17**
   (all four raycast samples verified rendering *through the loaded extension*).
+
+**2026-07-23 — Raycast EXTENSION Stage C: the EXPORT engines are now
+extension-agnostic too (plan COMPLETE).** The HTML5 (`engine.js`) and Kivy
+(`kivy_exporter.py` + `code_generator.py`) engines had NO extension mechanism —
+so Stage C first BUILT a generic one on each, then moved the raycast port onto
+it. Nine commits, each behaviour-preserving with a full-suite + smoke gate. End
+state: `engine.js`, `kivy_exporter.py`, `code_generator.py` name **no** raycast
+code; the ports live in `extensions/raycast_2_5d/export_html5.js` +
+`export_kivy.py`, injected at export time.
+- **HTML5 (`d66fdea` C1a, `4633bda` C1b, `994bb21` C1c).** engine.js gained a
+  room-renderer registry (`renderExtensionRoom`, called first in `GameRoom.
+  render`), an action registry (`registerExtensionAction`, consulted in
+  `executeAction`'s `default`), and a `// __PYGM_EXTENSION_JS__` marker the
+  `HTML5Exporter` fills from each enabled extension's `export_html5.js`. Then the
+  RAYCAST_* consts + 5 render methods moved out as `Object.assign(GameRoom.
+  prototype, {…})` (method sigs verbatim so parity regexes match), and the 4
+  action `case`s became `registerExtensionAction(…)`. **Found + fixed a
+  pre-existing browser bug:** `draw_doom_hud` read a bare `ctx` undefined in
+  `executeAction` → now `game.canvas`.
+- **Kivy (`1b47bb8` C2a, `d1ff9da` C2b, `4d518ed` C2c-1, `6a03c54` C2c-2).**
+  Harder: each room is its OWN scene class in a `.format()` template. Added
+  post-`.format()` injection markers (`__PYGM_EXTENSION_SCENE_CODE__`,
+  `__PYGM_EXTENSION_BASE_CODE__`) so injected Python keeps single `{ }` (no
+  brace-doubling), plus an `ACTION_CODEGEN` codegen hook in `code_generator`'s
+  DEFAULT branch. Moved: the 565-line renderer → `export_kivy.py` `SCENE_CODE`
+  (braces un-doubled `{{`→`{`), the `_draw_minimap` base method → `BASE_OBJECT_CODE`,
+  the 4 action codegens → `ACTION_CODEGEN`. `__init__` state + dispatch became
+  generic hooks (`_init_extensions` / `_render_extension_overlay`, template no-op
+  defaults the injected `SCENE_CODE` overrides — LAST def wins, verified by method
+  resolution).
+- **Landmines worth carrying forward:**
+  1. **No `node` in CI** for JS, and Kivy can't execute at all — so JS surgery
+     was verified by **brace-balance counting** + real-export string checks, and
+     Kivy by the **stub harness** (`test_kivy_raycast.py` execs the generated
+     `_cast_ray`/`_render_raycast`) + generated-file compile. Un-doubling braces
+     is only safe after proving the block has ZERO `.format()` fields (a script
+     checks: strip `{{`/`}}`, assert no lone `{name}` remains).
+  2. **Behaviour-identical codegen** was proven by capturing each action's
+     generated string BEFORE the move and asserting byte-equality after through
+     the hook — the strongest check available without executing Kivy.
+  3. Tests read the **shipped** source (engine.js + export_html5.js as combined
+     `ENGINE`; kivy_exporter + export_kivy as `KIVY`/`KG`), with the CORE files
+     kept separable for the structural "which file owns this seam" assertions.
+  4. `tests/test_export_raycast_ownership.py` is the completeness guard — it trips
+     if raycast code ever re-inlines into an export engine.
+- **C3 (`test_export_raycast_ownership.py` + README/plan/CLAUDE docs).** Suite
+  **2147 → 2160 passed, 0 failed** across the nine commits; smoke **17/17**.
+  `docs/RAYCAST_EXTENSION_PLAN.md` records the full staging; the whole A→B→C arc
+  is the plan's worked teaching example — a folder that adds a new way to draw a
+  room AND export it to web + Android.
+- **Still needs human eyes** (unchanged standing caveat): nobody has WATCHED the
+  exported raycast games render in a real browser or on Android after this move.
+  Structure, codegen, parity numbers and generated-file compiles are all verified;
+  the visual playtest of an actual export isn't.

@@ -3,7 +3,8 @@
 This folder is a real PyGameMaker feature that lives **outside** the core
 engine: the Doom/Wolfenstein-style first-person view the `raycast_1`–`raycast_4`
 samples use. It is here to be read. If you want to see how someone adds a whole
-new way of drawing a room to an IDE, open the four files below top to bottom.
+new way of drawing a room to an IDE — and export it to the web and Android too —
+open the files below top to bottom.
 
 ## What it does
 
@@ -19,8 +20,14 @@ sky, and billboard sprites for pickups and monsters. The game's *logic*
 | File | What's in it |
 |---|---|
 | `extension.json` | The manifest. Name, version, and `enabled: true`. Its presence is what marks this folder as an extension. |
-| `__init__.py` | The entry point — ~30 lines. Declares the one hook this extension uses and decides, per room, whether to claim the drawing. |
-| `renderer.py` | The drawing itself: the DDA raycaster, wall/floor/sky/billboard passes, and the shared shading constants. This is the big file, and it is ordinary Python. |
+| `__init__.py` | The entry point. Declares the room-renderer hook and decides, per room, whether to claim the drawing. |
+| `renderer.py` | The drawing itself: the DDA raycaster, wall/floor/sky/billboard passes, and the shared shading constants. The big file, ordinary Python. |
+| `actions.py` | The four "3D View" action **schemas** (`PLUGIN_ACTIONS`). |
+| `handlers.py` | The action **handlers** — what `enable_raycast_view` / `set_facing_angle` / `draw_minimap` / `draw_doom_hud` do at runtime. |
+| `hud.py` | The minimap + DOOM-bar geometry builders (`build_minimap_commands`, `build_doom_hud_commands`), the single source the exports mirror. |
+| `state.py` | The per-room state helper — all raycast state lives under `room.extension_state["raycast"]`. |
+| `export_html5.js` | The **HTML5** port of the renderer + actions, injected into the exported `engine.js` (Stage C). |
+| `export_kivy.py` | The **Kivy** port: `SCENE_CODE` (renderer), `BASE_OBJECT_CODE` (`_draw_minimap`), and `ACTION_CODEGEN` (the action codegen), injected into the Kivy export. |
 | `README.md` | This file. |
 
 ## How it hooks in
@@ -32,7 +39,7 @@ extension declares one the same declarative way it declares actions:
 ```python
 # __init__.py
 def render_room(room, screen):
-    cfg = getattr(room, 'raycast_camera', None)
+    cfg = peek_camera(room)   # non-creating read of room.extension_state["raycast"]
     if not cfg or not cfg.get('enabled'):
         return False          # not a raycast room — let the engine draw it
     from . import renderer
@@ -61,23 +68,34 @@ ordinary `GameRoom` API — none of it is owned by this extension:
 
 - `room.instances`, `room.parse_color(...)`, `room._find_first_instance(...)`,
   `room._sprite_top_left(...)`, `room._all_sprites` — generic engine helpers;
-- `room.raycast_camera` plus the derived wall-edge caches
-  (`_raycast_v_walls` / `_raycast_h_walls` / the parallel sprite maps /
-  `_raycast_cell_size`). Those are still set by the four raycast **actions**,
-  which — for now — remain in core (`runtime/action_executor.py`):
-  `enable_raycast_view`, `set_facing_angle`, `draw_minimap`, `draw_doom_hud`.
-  A later stage moves the actions here too, with their state living in
-  `room.extension_state` instead.
+- `room.extension_state["raycast"]` — everything raycast-specific: the camera
+  config the actions set, plus the derived wall-edge caches. Reached through
+  `state.py`'s `raycast_state(room)` (get-or-create) / `peek_camera(room)`
+  (non-creating). Core's `GameRoom` carries **nothing** raycast-specific.
+
+## The whole feature is here now
+
+Later stages moved everything that used to be in core into this folder:
+
+- **The actions** — schemas (`actions.py`), handlers (`handlers.py`) and the HUD
+  builders (`hud.py`). They register through the ordinary plugin mechanism, so
+  core's `ACTION_TYPES` enumerates no raycast action.
+- **The per-room state** — under `room.extension_state["raycast"]` (`state.py`).
+- **The HTML5 and Kivy export renderers** — `export_html5.js` and
+  `export_kivy.py`. Each export engine grew a *generic* seam (a room-renderer
+  registry + an action registry/codegen hook + a code-injection marker), and the
+  raycast port lives here, injected at export time. `engine.js`,
+  `kivy_exporter.py` and `code_generator.py` now name no raycast code.
+  `tests/test_raycast_export_parity.py` still pins the three ports to the same
+  numbers; `tests/test_export_raycast_ownership.py` guards that none of it
+  leaks back into an export engine.
 
 ## What is deliberately NOT here
 
-- **The actions.** They are still core, so a game's saved JSON keeps working and
-  the exporters (which key off action *names*, not this code) are untouched.
-- **The HTML5 and Kivy renderers.** Each export target hand-writes its own copy
-  of this raycaster (`export/HTML5/templates/engine.js`,
-  `export/Kivy/kivy_exporter.py`). They are pinned to this file's numbers by
-  `tests/test_raycast_export_parity.py`. Moving them here is a possible later
-  step; it is build-system plumbing, not a readable example, so it was left out.
+- **`facing_angle`.** It stays a plain `GameInstance` attribute in core — a
+  persistent look direction isn't inherently 3D, and the expression parser
+  references it by name (`set_direction_speed(direction="facing_angle")`). The
+  *action* that writes it (`set_facing_angle`) moved here; the attribute did not.
 
 See `docs/RAYCAST_EXTENSION_PLAN.md` for the full staging and the rationale.
 

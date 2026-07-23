@@ -1,14 +1,16 @@
 # Plan: move the 2.5D raycast feature into a PyGameMaker extension
 
-Status: **STAGE B COMPLETE, INCLUDING B3b (2026-07-23).** Stage A (A1–A3) and
-Stage B (B1–B4 + B3b) are done: the 2.5D raycast **renderer**, all four
-**actions**, their **handlers**, the HUD **builders**, and now all per-room
-**state** (`room.extension_state["raycast"]`) live in `extensions/raycast_2_5d/`.
-Core's `GameRoom` carries **nothing** raycast-specific. Desktop raycast is fully
-extension-owned. The only remaining item is **Stage C** — move the HTML5/Kivy
-export renderers into the extension (the risky, low-teaching-value build-system
-half). Stopping here is a defensible end state; the exports already work because
-they key off action names.
+Status: **ALL STAGES COMPLETE (A, B, C — 2026-07-23).** The 2.5D raycast feature
+is fully extension-owned on all three targets. Stage A built the extension
+mechanism; Stage B moved the desktop renderer, all four actions + handlers, the
+HUD builders and all per-room state (`room.extension_state["raycast"]`) into
+`extensions/raycast_2_5d/`; Stage C grew a *generic* extension mechanism on each
+export engine and moved the HTML5 (`export_html5.js`) and Kivy (`export_kivy.py`)
+raycast ports there too. Core's `GameRoom`, `engine.js`, `kivy_exporter.py` and
+`code_generator.py` name **no** raycast code (only `facing_angle`, a general
+instance property, stays in core by B4). The whole arc is a worked teaching
+example of extending the IDE — a self-contained folder that adds a new way to
+draw a room *and* export it to web + Android.
 
 ## Why
 
@@ -342,11 +344,24 @@ Structural map (measured):
   `BASE_OBJECT_CODE`, braces un-doubled. `kivy_exporter.py` and `code_generator.py`
   now contain **no** raycast code — only `self.facing_angle = 0.0` (a core
   instance property, kept by B4) and comments citing raycast as the example.
-- [ ] **C3 — parity tests consolidated; full suite + smoke green.**
+- [x] **C3 — completeness guard + docs.** `tests/test_export_raycast_ownership.py`
+  pins that `engine.js` / `kivy_exporter.py` / `code_generator.py` carry only the
+  generic seams and none of the raycast render/action/minimap code, and that
+  `export_html5.js` / `export_kivy.py` own it. The extension `README.md` was
+  brought up to date (all files listed; actions/state/export contributions
+  documented as done; `facing_angle` noted as the one thing kept in core).
 
-*Honest note (unchanged): Stage C is the risky, low-teaching-value part — it's
-build-system plumbing. Stage B was already a defensible end state; this stage is
-being done because the full clean move was explicitly chosen.*
+**STAGE C COMPLETE (2026-07-23).** The 2.5D raycast feature is fully
+extension-owned on all three targets. Each export engine grew a *generic*
+extension mechanism (HTML5: a room-renderer registry + action registry +
+`__PYGM_EXTENSION_JS__` marker; Kivy: scene + base-object injection markers + an
+`ACTION_CODEGEN` codegen hook), and the raycast port lives in
+`extensions/raycast_2_5d/export_html5.js` + `export_kivy.py`. `engine.js`,
+`kivy_exporter.py` and `code_generator.py` name no raycast code.
+
+*Honest note (unchanged): Stage C was the risky, low-teaching-value part — it's
+build-system plumbing. Stage B was already a defensible end state; this stage was
+done because the full clean move was explicitly chosen.*
 
 ## Testing / the regression bar
 
