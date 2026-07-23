@@ -301,11 +301,26 @@ Structural map (measured):
   the shipped `engine.js + export_html5.js` (combined `ENGINE`), assert
   `registerExtensionAction('…')` where they used to assert `case '…'`, and
   `tests/test_html5_extension_mechanism.py` covers the injection seam.
-- [ ] **C2a — Kivy extension mechanism (inert).** Same shape in the `.format()`
-  scene/base templates + `code_generator`; exporter injects each enabled
-  extension's `export_kivy.py` fragments. Brace-doubling landmine applies.
-- [ ] **C2b — move the raycast Kivy RENDER + scene state.**
-- [ ] **C2c — move the raycast Kivy codegen (actions).**
+- [x] **C2a — Kivy extension mechanism (inert).** Done. The scene template gained
+  a `# __PYGM_EXTENSION_SCENE_CODE__` marker inside the class body;
+  `KivyExporter._inject_extension_scene_code` replaces it — **after** `.format()`
+  so the injected Python keeps its own `{ }` dict literals with no brace-doubling
+  — with each enabled extension's `export_kivy.py` `SCENE_CODE` (a string of
+  4-space-indented methods, read via `exec` in a fresh namespace).
+  `_collect_extension_scene_code` honours the loader's enable/disable config.
+  Raycast has no `export_kivy.py` yet, so the marker is removed (inert); proven
+  with a fixture in `tests/test_kivy_extension_mechanism.py`. NB unlike HTML5's
+  single `GameRoom` class, each Kivy room is its own scene class, so the code is
+  injected into every scene (the extension methods are harmless on non-raycast
+  scenes, matching the always-injected HTML5 JS).
+- [ ] **C2b — move the raycast Kivy RENDER + scene state.** The 12 raycast scene
+  methods (~560 lines), the `__init__` raycast state, and the two render-dispatch
+  sites (init + `update`, plus the HUD-compositing gate on `raycast_camera`) →
+  `export_kivy.py` `SCENE_CODE`, behind a generic render hook. The stub harness
+  in `tests/test_kivy_raycast.py` (which executes the generated methods) is the
+  behavioural safety net since Kivy can't run in CI.
+- [ ] **C2c — move the raycast Kivy codegen (actions).** The raycast action
+  codegen in `export/Kivy/code_generator.py` → the extension, via a codegen hook.
 - [ ] **C3 — parity tests consolidated; full suite + smoke green.**
 
 *Honest note (unchanged): Stage C is the risky, low-teaching-value part — it's
