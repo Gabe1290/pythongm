@@ -32,15 +32,17 @@ ENGINE = ENGINE_CORE + "\n" + RAYCAST_JS
 
 
 def test_facing_angle_property_and_action():
-    assert "this.facing_angle = 0;" in ENGINE
-    assert "case 'set_facing_angle'" in ENGINE
+    # facing_angle stays a core instance property (init in engine.js); the
+    # set_facing_angle ACTION is a registered extension action now (Stage C1c).
+    assert "this.facing_angle = 0;" in ENGINE_CORE
+    assert "registerExtensionAction('set_facing_angle'" in RAYCAST_JS
     # set_direction_speed(direction="facing_angle") must resolve — parseNumParam
-    # exposes facing_angle as a bare variable
-    assert "replace(/facing_angle/g" in ENGINE
+    # exposes facing_angle as a bare variable (stays in engine.js)
+    assert "replace(/facing_angle/g" in ENGINE_CORE
 
 
 def test_enable_raycast_view_action_builds_camera():
-    assert "case 'enable_raycast_view'" in ENGINE
+    assert "registerExtensionAction('enable_raycast_view'" in ENGINE   # Stage C1c
     assert "game.currentRoom.raycastCamera = {" in ENGINE
     # the camera carries the same fields the desktop handler sets
     for field in ("camera_object", "fov", "render_distance", "cell_size",

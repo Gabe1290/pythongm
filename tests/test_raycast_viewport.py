@@ -209,7 +209,9 @@ def test_camera_config_carries_viewport_height():
 
 def test_export_enable_raycast_view_carries_viewport_height():
     kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
-    eng = (REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js").read_text(encoding="utf-8")
+    # HTML5's enable_raycast_view is a registered extension action now (Stage C1c),
+    # so its camera-config builder lives in the extension's export_html5.js.
+    eng = (REPO_ROOT / "extensions" / "raycast_2_5d" / "export_html5.js").read_text(encoding="utf-8")
     assert "'viewport_height': int(_tofloat(params.get('viewport_height'), 0))" in kg
     assert "viewport_height: Math.floor(rNum('viewport_height', 0))" in eng
 

@@ -390,3 +390,195 @@ registerRoomRenderer(function(room, ctx) {
     }
     return false;
 });
+
+// ---------------------------------------------------------------------------
+// Raycast ACTIONS (Stage C1c). Registered into engine.js's action switch
+// via its default case (registerExtensionAction), so engine.js's
+// executeAction no longer enumerates any raycast action. Each mirrors the
+// desktop handler in extensions/raycast_2_5d/handlers.py; the (obj, params,
+// game) args are the acting instance / action params / the Game.
+// ---------------------------------------------------------------------------
+
+registerExtensionAction('draw_doom_hud', function(obj, params, game) {
+                // DOOM-style bottom status bar. A MACRO action: emits ordinary
+                // rectangle/line/text/sprite/lives commands, so obj target
+                // needs no new renderer. Mirrors build_doom_hud_commands() in
+                // runtime/action_executor.py — parity-tested against it.
+                const dhHeight = parseNumParam(params.height, obj, 42);
+                const winH = (game && game.canvas) ? game.canvas.height : 480;
+                const winW = (game && game.canvas) ? game.canvas.width : 640;
+                let dhY = parseNumParam(params.y, obj, -1);
+                if (dhY < 0) dhY = winH - dhHeight;
+                const dhX = parseNumParam(params.x, obj, 0);
+                const dhW = parseNumParam(params.width, obj, 0) || winW;
+                const dhHealth = game ? game.health : 100;
+                const dhScore = game ? game.score : 0;
+                const dhLives = game ? game.lives : 0;
+                const backColor = params.back_color || '#101010';
+                const dividerColor = params.divider_color || '#505050';
+                const textColor = params.text_color || '#ffffff';
+                const barColor = params.bar_color || '#20c020';
+                const hbw = parseNumParam(params.health_bar_width, obj, 90);
+                const hbh = parseNumParam(params.health_bar_height, obj, 14);
+                const pad = 8;
+                // back panel + top divider
+                obj._draw_queue.push({type: 'rectangle', x1: dhX, y1: dhY,
+                    x2: dhX + dhW, y2: dhY + dhHeight, color: backColor, filled: true});
+                obj._draw_queue.push({type: 'line', x1: dhX, y1: dhY,
+                    x2: dhX + dhW, y2: dhY, color: dividerColor});
+                // health readout (left third)
+                const dhHx = dhX + pad, dhBarY = dhY + 22;
+                obj._draw_queue.push({type: 'text', text: String(params.health_label || 'Health'),
+                    x: dhHx, y: dhY + 4, color: textColor});
+                obj._draw_queue.push({type: 'rectangle', x1: dhHx, y1: dhBarY,
+                    x2: dhHx + hbw, y2: dhBarY + hbh, color: dividerColor, filled: true});
+                const dhFrac = Math.min(1, Math.max(0, dhHealth / 100));
+                obj._draw_queue.push({type: 'rectangle', x1: dhHx, y1: dhBarY,
+                    x2: dhHx + hbw * dhFrac, y2: dhBarY + hbh, color: barColor, filled: true});
+                obj._draw_queue.push({type: 'text', text: String(Math.floor(dhHealth)),
+                    x: dhHx + hbw + 6, y: dhBarY - 2, color: textColor});
+                // face icon (centre)
+                const faceSprite = params.face_sprite || '';
+                if (faceSprite) {
+                    const dhFrames = Math.max(1, parseNumParam(params.face_frames, obj, 4));
+                    const dhFrame = Math.min(dhFrames - 1, Math.floor((1 - dhFrac) * dhFrames));
+                    obj._draw_queue.push({type: 'sprite', sprite_name: faceSprite,
+                        x: dhX + dhW / 2 - dhHeight / 2, y: dhY + 2, subimage: dhFrame});
+                }
+                // score + lives (right third)
+                const dhRx = dhX + dhW * 2 / 3 + pad;
+                obj._draw_queue.push({type: 'text',
+                    text: String(params.score_label || 'Score: ') + dhScore,
+                    x: dhRx, y: dhY + 4, color: textColor});
+                obj._draw_queue.push({type: 'lives', count: dhLives, x: dhRx,
+                    y: dhY + dhHeight - 20, sprite: params.lives_sprite || '',
+                    scale: parseNumParam(params.lives_scale, obj, 1)});
+                // objective (far-right edge)
+                obj._draw_queue.push({type: 'text',
+                    text: String(params.objective_label || 'Keys: ') +
+                          gmExpressionValue(params.objective_value, obj, game),
+                    x: dhX + dhW - 96, y: dhY + dhHeight / 2 - 8, color: textColor});
+                return;
+            });
+
+registerExtensionAction('draw_minimap', function(obj, params, game) {
+                // North-up minimap of the raycast room's wall edges. A MACRO
+                // action: it emits ordinary rectangle/line commands, so obj
+                // target needed no new renderer. Mirrors
+                // build_minimap_commands() in runtime/action_executor.py —
+                // tests/test_raycast_export_parity.py compares the two.
+                const room = game.currentRoom;
+                if (!room) return;
+                const mmX = parseNumParam(params.x, obj, 0);
+                const mmY = parseNumParam(params.y, obj, 0);
+                const mmSize = parseNumParam(params.size, obj, 120);
+                const backColor = params.back_color || '#101018';
+                const wallColor = params.wall_color || '#8080a0';
+                const playerColor = params.player_color || '#ffd040';
+
+                obj._draw_queue.push({
+                    type: 'rectangle',
+                    x1: mmX, y1: mmY, x2: mmX + mmSize, y2: mmY + mmSize,
+                    color: backColor, filled: true,
+                });
+
+                const mmSpan = Math.max(room.width || 0, room.height || 0);
+                const mmCS = room._raycastCellSize || 0;
+                if (mmSpan <= 0 || !mmCS) return;
+                const mmScale = mmSize / mmSpan;
+                const mmPx = (wx, wy) => [mmX + wx * mmScale, mmY + wy * mmScale];
+
+                // Wall sets are unordered; sort so all three targets emit the
+                // same picture in the same order (the parity test diffs it).
+                const mmKeys = (set) => [...(set || [])]
+                    .map(k => k.split(',').map(Number))
+                    .sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]));
+
+                for (const [lineX, row] of mmKeys(room._vWalls)) {
+                    const [x1, y1] = mmPx(lineX * mmCS, row * mmCS);
+                    const [x2, y2] = mmPx(lineX * mmCS, (row + 1) * mmCS);
+                    obj._draw_queue.push({type: 'line', x1, y1, x2, y2, color: wallColor});
+                }
+                for (const [col, lineY] of mmKeys(room._hWalls)) {
+                    const [x1, y1] = mmPx(col * mmCS, lineY * mmCS);
+                    const [x2, y2] = mmPx((col + 1) * mmCS, lineY * mmCS);
+                    obj._draw_queue.push({type: 'line', x1, y1, x2, y2, color: wallColor});
+                }
+
+                const mmCfg = room.raycastCamera || {};
+                const mmCam = room.findFirstInstance(mmCfg.camera_object || '');
+                if (!mmCam) return;
+                // The ray ORIGIN, not the sprite corner — same point
+                // renderRaycastView casts from.
+                const mmTL = GameRoom.spriteTopLeft(mmCam);
+                const [cx, cy] = mmPx(mmTL.x + mmCam.boxWidth() / 2,
+                                      mmTL.y + mmCam.boxHeight() / 2);
+                const MM_MARK = 2.0, MM_HEAD = 7.0;
+                obj._draw_queue.push({
+                    type: 'line', x1: cx - MM_MARK, y1: cy, x2: cx + MM_MARK, y2: cy,
+                    color: playerColor,
+                });
+                // GM 0=right/90=up vs screen y DOWN -> negate, as the
+                // renderers do.
+                const mmRad = -(mmCam.facing_angle || 0) * Math.PI / 180;
+                obj._draw_queue.push({
+                    type: 'line', x1: cx, y1: cy,
+                    x2: cx + Math.cos(mmRad) * MM_HEAD,
+                    y2: cy + Math.sin(mmRad) * MM_HEAD,
+                    color: playerColor,
+                });
+                return;
+            });
+
+registerExtensionAction('set_facing_angle', function(obj, params, game) {
+                // Raycast camera look direction (see execute_set_facing_angle_action).
+                const fa = parseNumParam(params.angle, obj, 0);
+                const rel = params.relative === true || params.relative === 'true' ||
+                            params.relative === 1 || params.relative === '1';
+                obj.facing_angle = rel
+                    ? ((obj.facing_angle + fa) % 360 + 360) % 360
+                    : ((fa % 360) + 360) % 360;
+                return;
+            });
+
+registerExtensionAction('enable_raycast_view', function(obj, params, game) {
+                // Switch the room to / from the Doom-style first-person raycast
+                // view (mirrors execute_enable_raycast_view_action). Config
+                // lives on the room, like views; the renderer is GameRoom
+                // .renderRaycastView.
+                if (!game || !game.currentRoom) return;
+                const rEnable = !(params.enable === false || params.enable === 'false' ||
+                                  params.enable === 0 || params.enable === '0');
+                if (!rEnable) {
+                    game.currentRoom.raycastCamera = { enabled: false };
+                    return;
+                }
+                const rNum = (k, d) => {
+                    const n = parseNumParam(params[k], obj, d);
+                    return (typeof n === 'number' && isFinite(n)) ? n : d;
+                };
+                game.currentRoom.raycastCamera = {
+                    enabled: true,
+                    camera_object: params.camera_object || obj.name,
+                    fov: rNum('fov', 66),
+                    render_distance: Math.floor(rNum('render_distance', 20)),
+                    cell_size: Math.floor(rNum('cell_size', 32)),
+                    columns: Math.floor(rNum('columns', 320)),
+                    wall_color: params.wall_color || '#993333',
+                    floor_color: params.floor_color || '#464632',
+                    ceiling_color: params.ceiling_color || '#87CEEB',
+                    wall_texture: params.wall_texture || '',
+                    wall_textured: !(params.wall_textured === false ||
+                                     params.wall_textured === 'false'),
+                    sky_texture: params.sky_texture || '',
+                    floor_texture: params.floor_texture || '',
+                    ceiling_texture: params.ceiling_texture || '',
+                    floor_cast_res: Math.max(1, Math.floor(rNum('floor_cast_res', 4))),
+                    // DOOM-bar letterbox (0 = full height). renderRaycastView
+                    // reads obj; without it here an exported game ignores a
+                    // viewport_height the desktop runtime honours.
+                    viewport_height: Math.floor(rNum('viewport_height', 0)),
+                };
+                game.currentRoom._vWalls = null;  // rebuild wall map next render
+                return;
+            });

@@ -516,7 +516,7 @@ def test_all_three_implement_draw_minimap():
     kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
     from events.action_types import ACTION_TYPES
     assert "draw_minimap" in ACTION_TYPES
-    assert "case 'draw_minimap'" in ENGINE
+    assert "registerExtensionAction('draw_minimap'" in ENGINE   # extension action (Stage C1c)
     # Kivy: the generator emits a CALL and the base object defines it. Both
     # halves must exist — the M34 lesson.
     assert "self._draw_minimap(" in kg, "Kivy codegen emits no minimap call"
@@ -630,7 +630,7 @@ def test_kivy_minimap_geometry_matches_the_desktop_reference_exactly():
 def test_all_three_implement_draw_doom_hud():
     from events.action_types import ACTION_TYPES
     assert "draw_doom_hud" in ACTION_TYPES
-    assert "case 'draw_doom_hud'" in ENGINE
+    assert "registerExtensionAction('draw_doom_hud'" in ENGINE   # extension action (Stage C1c)
     kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
     assert "action_type == 'draw_doom_hud'" in kg
 
@@ -641,8 +641,10 @@ def test_doom_hud_face_frame_formula_matches_across_targets():
     from extensions.raycast_2_5d.hud import doom_face_frame
     assert [doom_face_frame(h, 4) for h in (100, 60, 40, 10, 0)] == [0, 1, 2, 3, 3]
     # HTML5 + Kivy use the same min(frames-1, int((1-frac)*frames)) shape.
-    hud = ENGINE[ENGINE.index("case 'draw_doom_hud'"):]
-    hud = hud[:hud.index("case 'draw_minimap'")]
+    # draw_doom_hud / draw_minimap are registered extension actions now (C1c),
+    # in that order in export_html5.js.
+    hud = ENGINE[ENGINE.index("registerExtensionAction('draw_doom_hud'"):]
+    hud = hud[:hud.index("registerExtensionAction('draw_minimap'")]
     assert "Math.min(dhFrames - 1, Math.floor((1 - dhFrac) * dhFrames))" in hud
     kg = (REPO_ROOT / "export" / "Kivy" / "code_generator.py").read_text(encoding="utf-8")
     assert "min(_dh_ff - 1, int((1.0 - _dh_frac) * _dh_ff))" in kg
