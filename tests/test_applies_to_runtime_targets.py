@@ -16,6 +16,8 @@ user's re-test surfaced the runtime gaps behind two symptoms:
   object), so the death event resets all monsters and the power pill arms
   alarm 0 on every scared monster.
 """
+import json
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -24,6 +26,8 @@ import pytest
 from conftest import skip_without_pygame
 
 pytestmark = skip_without_pygame
+
+REPO_ROOT = Path(__file__).parent.parent
 
 
 def _instance(name, x=0, y=0):
@@ -283,3 +287,31 @@ def test_set_sprite_targets_every_instance_of_object():
     assert m1.image_speed == 0 and m2.image_speed == 0
     assert m1.image_index == 2.0 and m2.image_index == 2.0
     assert hero.image_speed != 0 or hero.image_index != 2.0  # caller untouched
+
+
+def test_plateforme_3_dead_monster_stops_moving():
+    """A live monster stomped into obj_monstre_mort keeps its leftover
+    hspeed/vspeed (change_instance preserves motion by design, for
+    treasure's monster->scared). obj_monstre_mort has no wall-collision
+    event (unlike the living obj_monstre, which reverses on
+    collision_with_obj_brique), so once its own create event actually
+    fires (the M53 _create_fired fix), the corpse must stop itself or it
+    glides through walls and out of the room. Its create event's
+    stop_movement action does that -- pinned against the real sample file
+    so this can't silently regress if the action list is edited later."""
+    obj_monstre_mort = json.loads(
+        (REPO_ROOT / "samples" / "plateforme_3" / "objects"
+         / "obj_monstre_mort.json").read_text(encoding="utf-8"))
+
+    monster = _instance("obj_monstre", 100, 100)
+    monster.hspeed = 4.0
+    monster.vspeed = -2.0
+    ex = _executor_with_room([monster])
+    ex.game_runner.project_data["assets"]["objects"]["obj_monstre_mort"] = obj_monstre_mort
+
+    ex.execute_change_instance_action(
+        monster, {"object": "obj_monstre_mort", "perform_events": True})
+
+    assert monster.object_name == "obj_monstre_mort"
+    assert monster.hspeed == 0
+    assert monster.vspeed == 0

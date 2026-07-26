@@ -1317,6 +1317,10 @@
           "create": {
             "actions": [
               {
+                "action": "stop_movement",
+                "parameters": {}
+              },
+              {
                 "action": "set_sprite",
                 "parameters": {
                   "sprite": "spr_monstre_mort",
