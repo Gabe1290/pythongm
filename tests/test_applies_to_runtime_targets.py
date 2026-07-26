@@ -84,6 +84,31 @@ def test_change_instance_still_zeroes_mid_grid_step():
     assert box.vspeed == 0
 
 
+def test_change_instance_runs_create_for_the_new_type():
+    """execute_event's M53 once-per-instance create guard (_create_fired) is
+    keyed on the Python instance object, not the object type. change_instance
+    reuses the same instance, so without resetting the flag the new type's
+    create event silently no-ops if the OLD type's create already fired --
+    exactly plateforme_3's obj_monstre -> obj_monstre_mort stomp: the
+    monster's own create had already set _create_fired, so obj_monstre_mort's
+    create (which sets its "dead" sprite) never ran."""
+    monster = _instance("monster", 100, 100)
+    monster._create_fired = True  # this instance's OWN create already ran
+    ex = _executor_with_room([monster])
+    ex.game_runner.project_data["assets"]["objects"]["dead"] = {
+        "name": "dead", "sprite": "", "events": {
+            "create": {"actions": [
+                {"action": "execute_code",
+                 "parameters": {"code": "self.spawned_dead = True"}},
+            ]},
+        },
+    }
+    ex.execute_change_instance_action(
+        monster, {"object": "dead", "perform_events": True})
+    assert monster.object_name == "dead"
+    assert getattr(monster, "spawned_dead", False) is True
+
+
 # ---------------------------------------------------------------------------
 # jump_to_start targeting
 # ---------------------------------------------------------------------------

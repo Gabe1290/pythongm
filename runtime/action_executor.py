@@ -3455,6 +3455,16 @@ class ActionExecutor:
         from runtime.game_runner import resolve_parent_inheritance
         merged_data = resolve_parent_inheritance(new_object_data, self.game_runner._objects_data)
         target_instance.set_object_data(merged_data)
+        # execute_event's M53 once-per-instance guard (_create_fired) is keyed
+        # on the Python instance object, not the object type — change_instance
+        # reuses the same instance, so without this reset the new type's create
+        # event silently no-ops if the OLD type's create already fired (e.g.
+        # plateforme_3's obj_monstre -> obj_monstre_mort stomp: the monster's
+        # own create had already set _create_fired, so obj_monstre_mort's
+        # create — which sets its "dead" sprite — never ran). The instance is
+        # now logically a fresh instance of the new type, so its create-fired
+        # state should start over.
+        target_instance._create_fired = False
         # The instance now has different collision_targets and a different
         # object_name, so the room's listened-types cache is stale.
         if self.game_runner.current_room:
