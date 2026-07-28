@@ -140,6 +140,24 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 
 ---
 
+### Keyboard (No Key)
+| Property | Value |
+|----------|-------|
+| **Name** | `keyboard_no_key` |
+| **Icon** | ⌨️ |
+| **Category** | Input |
+| **Preset** | Advanced |
+
+**Description:** Fires each frame while **no** key is being held.
+
+**When it fires:** Every frame that the keyboard is idle, *before* the Step event.
+
+**Common uses:**
+- Stop movement when the player releases all keys (grid/maze games)
+- Idle animations
+
+---
+
 ### Mouse
 | Property | Value |
 |----------|-------|
@@ -285,6 +303,20 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 
 ---
 
+### Draw GUI
+| Property | Value |
+|----------|-------|
+| **Name** | `draw_gui` |
+| **Icon** | 🖥️ |
+| **Category** | Drawing |
+| **Preset** | Advanced |
+
+**Description:** Draws in **screen (GUI) space**, on top of the room and unaffected by views/camera scrolling.
+
+**Difference from Draw:** the regular Draw event is in room coordinates (it scrolls with the view); Draw GUI stays fixed to the screen — use it for HUDs, scores, and menus.
+
+---
+
 ## Room Events
 
 ### Room Start
@@ -422,6 +454,23 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 - Lose a life
 - Respawn player
 - Trigger death animation
+
+---
+
+### Animation End
+| Property | Value |
+|----------|-------|
+| **Name** | `animation_end` |
+| **Icon** | 🎞️ |
+| **Category** | Other |
+| **Preset** | Advanced |
+
+**Description:** Fires when the instance's sprite animation completes a full cycle (wraps from the last frame back to the first).
+
+**Common uses:**
+- Destroy a one-shot effect (explosion) after it plays once
+- Switch to another animation when the current one finishes
+- Advance a state machine on animation completion
 
 ---
 
