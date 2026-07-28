@@ -124,8 +124,8 @@ The Intermediate preset includes everything from Beginner, plus:
 #### Move Towards Point
 | Property | Value |
 |----------|-------|
-| **Action Name** | `move_towards` |
-| **Block Name** | `move_towards` |
+| **Action Name** | `move_towards_point` |
+| **Block Name** | `move_towards_point` |
 | **Category** | Movement |
 
 **Description:** Move towards a specific position.

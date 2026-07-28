@@ -35,7 +35,7 @@ Create a standalone Windows executable that runs without Python installed.
 
 ### How to Export
 
-1. Go to **File > Export > Windows EXE**
+1. Open **File → Export Project…** (Ctrl+E) and choose **Windows**
 2. Choose an output folder
 3. Wait for the build process to complete
 4. Find the .exe file in the output folder
@@ -77,7 +77,7 @@ Create a native macOS `.app` bundle with PyInstaller.
 
 ### How to Export
 
-1. Go to **File > Export** and choose **macOS**
+1. Open **File → Export Project…** (Ctrl+E) and choose **macOS**
 2. Choose an output folder
 3. Wait for the build to complete
 4. Find `MyGame.app` in the output folder
@@ -101,7 +101,7 @@ Create a single HTML file that runs in web browsers.
 
 ### How to Export
 
-1. Go to **File > Export > HTML5**
+1. Go to **File → Export as HTML5…**
 2. Choose an output location
 3. Select options (compression, etc.)
 4. Click Export
@@ -153,7 +153,7 @@ Create a native Linux executable.
 
 ### How to Export
 
-1. Go to **File > Export > Linux**
+1. Open **File → Export Project…** (Ctrl+E) and choose **Linux**
 2. Choose an output folder
 3. Wait for the build process
 
@@ -186,7 +186,7 @@ Create mobile apps for iOS and Android using the Kivy framework.
 
 ### How to Export
 
-1. Go to **File > Export > Kivy**
+1. Go to **File → Export to Kivy…**
 2. Choose output folder
 3. Configure mobile settings
 4. Export the Kivy project
