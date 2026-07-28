@@ -1,457 +1,514 @@
-# Reference des Evenements
+# Référence des Événements
 
-*[Accueil](Home_fr) | [Guide des Presets](Preset-Guide_fr) | [Reference Complete des Actions](Full-Action-Reference_fr)*
+*[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
 
-Cette page documente tous les evenements disponibles dans PyGameMaker. Les evenements sont des declencheurs qui executent des actions lorsque des conditions specifiques se produisent dans votre jeu.
+Cette page documente tous les événements disponibles dans PyGameMaker. Les événements sont des déclencheurs qui exécutent des actions lorsque des conditions spécifiques se produisent dans votre jeu.
 
-## Categories d'Evenements
+## Catégories d'Événements
 
-- [Evenements d'Objet](#evenements-dobjet) - Create, Step, Destroy
-- [Evenements d'Entree](#evenements-dentree) - Clavier, Souris
-- [Evenements de Collision](#evenements-de-collision) - Collisions d'objets
-- [Evenements de Temps](#evenements-de-temps) - Alarmes, Variantes de Step
-- [Evenements de Dessin](#evenements-de-dessin) - Rendu personnalise
-- [Evenements de Salle](#evenements-de-salle) - Transitions de salles
-- [Evenements de Jeu](#evenements-de-jeu) - Debut/Fin de jeu
-- [Autres Evenements](#autres-evenements) - Limites, Vies, Sante
+- [Événements d'Objet](#evenements-dobjet) - Create, Step, Destroy
+- [Événements d'Entrée](#evenements-dentree) - Clavier, Souris
+- [Événements de Collision](#evenements-de-collision) - Collisions d'objets
+- [Événements de Temps](#evenements-de-temps) - Alarmes, Variantes de Step
+- [Événements de Dessin](#evenements-de-dessin) - Rendu personnalisé
+- [Événements de Salle](#evenements-de-salle) - Transitions de salles
+- [Événements de Jeu](#evenements-de-jeu) - Début/Fin de jeu
+- [Autres Événements](#autres-evenements) - Limites, Vies, Santé
 
 ---
 
-## Evenements d'Objet
+<a id="evenements-dobjet"></a>
+## Événements d'Objet
 
 ### Create
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `create` |
-| **Icone** | 🎯 |
-| **Categorie** | Objet |
-| **Preset** | Debutant |
+| **Icône** | 🎯 |
+| **Catégorie** | Objet |
+| **Préréglage** | Débutant |
 
-**Description:** Execute une fois lors de la premiere creation d'une instance.
+**Description :** S'exécute une fois lors de la première création d'une instance.
 
-**Quand il se declenche:**
-- Quand une instance est placee dans une salle au demarrage du jeu
-- Quand creee via l'action "Creer Instance"
-- Apres les transitions de salle pour les nouvelles instances
+**Quand il se déclenche :**
+- Quand une instance est placée dans une salle au démarrage du jeu
+- Quand elle est créée via l'action « Créer une instance »
+- Après les transitions de salle pour les nouvelles instances
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Initialiser les variables
-- Definir les valeurs de depart
-- Configurer l'etat initial
+- Définir les valeurs de départ
+- Configurer l'état initial
 
 ---
 
 ### Step
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `step` |
-| **Icone** | ⭐ |
-| **Categorie** | Objet |
-| **Preset** | Debutant |
+| **Icône** | ⭐ |
+| **Catégorie** | Objet |
+| **Préréglage** | Débutant |
 
-**Description:** Execute a chaque frame (generalement 60 fois par seconde).
+**Description :** S'exécute à chaque frame (généralement 60 fois par seconde).
 
-**Quand il se declenche:** En continu, a chaque frame du jeu.
+**Quand il se déclenche :** En continu, à chaque frame du jeu.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Mouvement continu
-- Verification des conditions
-- Mise a jour des positions
+- Vérification des conditions
+- Mise à jour des positions
 - Logique de jeu
 
-**Note:** Attention aux performances - le code ici s'execute constamment.
+**Note :** Attention aux performances — le code ici s'exécute constamment.
 
 ---
 
 ### Destroy
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `destroy` |
-| **Icone** | 💥 |
-| **Categorie** | Objet |
-| **Preset** | Intermediaire |
+| **Icône** | 💥 |
+| **Catégorie** | Objet |
+| **Préréglage** | Intermédiaire |
 
-**Description:** Execute lorsqu'une instance est detruite.
+**Description :** S'exécute lorsqu'une instance est détruite.
 
-**Quand il se declenche:** Juste avant que l'instance soit retiree du jeu.
+**Quand il se déclenche :** Juste avant que l'instance soit retirée du jeu.
 
-**Utilisations courantes:**
-- Generer des effets (explosions, particules)
-- Lacher des objets
-- Mettre a jour les scores
+**Utilisations courantes :**
+- Générer des effets (explosions, particules)
+- Lâcher des objets
+- Mettre à jour les scores
 - Jouer des sons
 
 ---
 
-## Evenements d'Entree
+<a id="evenements-dentree"></a>
+## Événements d'Entrée
 
 ### Clavier (Continu)
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `keyboard` |
-| **Icone** | ⌨️ |
-| **Categorie** | Entree |
-| **Preset** | Debutant |
+| **Icône** | ⌨️ |
+| **Catégorie** | Entrée |
+| **Préréglage** | Débutant |
 
-**Description:** Se declenche en continu tant qu'une touche est maintenue enfoncee.
+**Description :** Se déclenche en continu tant qu'une touche est maintenue enfoncée.
 
-**Ideal pour:** Mouvement fluide et continu
+**Idéal pour :** Mouvement fluide et continu
 
-**Touches Supportees:**
-- Touches flechees (haut, bas, gauche, droite)
+**Touches supportées :**
+- Touches fléchées (haut, bas, gauche, droite)
 - Lettres (A-Z)
 - Chiffres (0-9)
-- Espace, Entree, Echap
+- Espace, Entrée, Échap
 - Touches de fonction (F1-F12)
 - Touches de modification (Maj, Ctrl, Alt)
 
 ---
 
 ### Appui Clavier
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `keyboard_press` |
-| **Icone** | 🔘 |
-| **Categorie** | Entree |
-| **Preset** | Debutant |
+| **Icône** | 🔘 |
+| **Catégorie** | Entrée |
+| **Préréglage** | Débutant |
 
-**Description:** Se declenche une fois lorsqu'une touche est pressee pour la premiere fois.
+**Description :** Se déclenche une fois lorsqu'une touche est pressée pour la première fois.
 
-**Ideal pour:** Actions uniques (sauter, tirer, selectionner dans un menu)
+**Idéal pour :** Actions uniques (sauter, tirer, sélectionner dans un menu)
 
-**Difference avec Clavier:** Ne se declenche qu'une fois par appui, pas pendant le maintien.
+**Différence avec Clavier :** Ne se déclenche qu'une fois par appui, pas pendant le maintien.
 
 ---
 
-### Relachement Clavier
-| Propriete | Valeur |
+### Relâchement Clavier
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `keyboard_release` |
-| **Icone** | ⬆️ |
-| **Categorie** | Entree |
-| **Preset** | Avance |
+| **Icône** | ⬆️ |
+| **Catégorie** | Entrée |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche une fois lorsqu'une touche est relachee.
+**Description :** Se déclenche une fois lorsqu'une touche est relâchée.
 
-**Utilisations courantes:**
-- Arreter le mouvement quand la touche est relachee
-- Terminer les attaques chargees
-- Basculer les etats
+**Utilisations courantes :**
+- Arrêter le mouvement quand la touche est relâchée
+- Terminer les attaques chargées
+- Basculer les états
+
+---
+
+### Clavier (Aucune touche)
+| Propriété | Valeur |
+|-----------|--------|
+| **Nom** | `keyboard_no_key` |
+| **Icône** | ⌨️ |
+| **Catégorie** | Entrée |
+| **Préréglage** | Avancé |
+
+**Description :** Se déclenche à chaque frame tant qu'**aucune** touche n'est maintenue.
+
+**Quand il se déclenche :** À chaque frame où le clavier est inactif, *avant* l'événement Step.
+
+**Utilisations courantes :**
+- Arrêter le mouvement quand le joueur relâche toutes les touches (jeux de grille/labyrinthe)
+- Animations au repos
 
 ---
 
 ### Souris
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `mouse` |
-| **Icone** | 🖱️ |
-| **Categorie** | Entree |
-| **Preset** | Intermediaire |
+| **Icône** | 🖱️ |
+| **Catégorie** | Entrée |
+| **Préréglage** | Intermédiaire |
 
-**Description:** Evenements de bouton de souris et de mouvement.
+**Description :** Événements de bouton de souris et de mouvement.
 
-**Types d'Evenements:**
+**Types d'événements :**
 
 | Type | Description |
 |------|-------------|
 | Bouton Gauche | Clic avec le bouton gauche de la souris |
 | Bouton Droit | Clic avec le bouton droit de la souris |
 | Bouton du Milieu | Clic avec le bouton du milieu/molette |
-| Entree Souris | Le curseur entre dans les limites de l'instance |
+| Entrée Souris | Le curseur entre dans les limites de l'instance |
 | Sortie Souris | Le curseur quitte les limites de l'instance |
-| Bouton Gauche Global | Clic gauche n'importe ou |
-| Bouton Droit Global | Clic droit n'importe ou |
+| Bouton Gauche Global | Clic gauche n'importe où |
+| Bouton Droit Global | Clic droit n'importe où |
 
 ---
 
-## Evenements de Collision
+<a id="evenements-de-collision"></a>
+## Événements de Collision
 
 ### Collision
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `collision` |
-| **Icone** | 💥 |
-| **Categorie** | Collision |
-| **Preset** | Debutant |
+| **Icône** | 💥 |
+| **Catégorie** | Collision |
+| **Préréglage** | Débutant |
 
-**Description:** Se declenche lorsque cette instance chevauche un autre type d'objet.
+**Description :** Se déclenche lorsque cette instance chevauche un autre type d'objet.
 
-**Configuration:** Selectionnez quel type d'objet declenche cette collision.
+**Configuration :** Sélectionnez quel type d'objet déclenche cette collision.
 
-**Variable speciale:** `other` - Reference a l'instance en collision.
+**Variable spéciale :** `other` — Référence à l'instance en collision.
 
-**Quand il se declenche:** A chaque frame ou les instances se chevauchent.
+**Quand il se déclenche :** À chaque frame où les instances se chevauchent.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Collecter des objets
-- Subir des degats
+- Subir des dégâts
 - Heurter des murs
-- Declencher des evenements
+- Déclencher des événements
 
-**Exemples d'evenements de collision:**
-- `collision_with_obj_coin` - Le joueur touche une piece
-- `collision_with_obj_enemy` - Le joueur touche un ennemi
-- `collision_with_obj_wall` - L'instance heurte un mur
+**Exemples d'événements de collision :**
+- `collision_with_obj_coin` — Le joueur touche une pièce
+- `collision_with_obj_enemy` — Le joueur touche un ennemi
+- `collision_with_obj_wall` — L'instance heurte un mur
 
 ---
 
-## Evenements de Temps
+<a id="evenements-de-temps"></a>
+## Événements de Temps
 
 ### Alarme
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `alarm` |
-| **Icone** | ⏰ |
-| **Categorie** | Temps |
-| **Preset** | Intermediaire |
+| **Icône** | ⏰ |
+| **Catégorie** | Temps |
+| **Préréglage** | Intermédiaire |
 
-**Description:** Se declenche quand un compte a rebours d'alarme atteint zero.
+**Description :** Se déclenche quand un compte à rebours d'alarme atteint zéro.
 
-**Alarmes disponibles:** 12 alarmes independantes (alarm[0] a alarm[11])
+**Alarmes disponibles :** 12 alarmes indépendantes (alarm[0] à alarm[11])
 
-**Reglage des alarmes:** Utilisez l'action "Definir Alarme" avec des steps (60 steps ≈ 1 seconde a 60 FPS)
+**Réglage des alarmes :** Utilisez l'action « Régler une alarme » avec des steps (60 steps ≈ 1 seconde à 60 FPS)
 
-**Utilisations courantes:**
-- Generation programmee
+**Utilisations courantes :**
+- Génération programmée
 - Temps de recharge
-- Effets retardes
-- Actions repetitives (redefinir l'alarme dans l'evenement d'alarme)
+- Effets retardés
+- Actions répétitives (redéfinir l'alarme dans l'événement d'alarme)
 
 ---
 
 ### Begin Step
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `begin_step` |
-| **Icone** | ▶️ |
-| **Categorie** | Step |
-| **Preset** | Avance |
+| **Icône** | ▶️ |
+| **Catégorie** | Step |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche au debut de chaque frame, avant les evenements Step reguliers.
+**Description :** Se déclenche au début de chaque frame, avant les événements Step réguliers.
 
-**Ordre d'execution:** Begin Step → Step → End Step
+**Ordre d'exécution :** Begin Step → Step → End Step
 
-**Utilisations courantes:**
-- Traitement des entrees
-- Calculs pre-mouvement
+**Utilisations courantes :**
+- Traitement des entrées
+- Calculs pré-mouvement
 
 ---
 
 ### End Step
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `end_step` |
-| **Icone** | ⏹️ |
-| **Categorie** | Step |
-| **Preset** | Avance |
+| **Icône** | ⏹️ |
+| **Catégorie** | Step |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche a la fin de chaque frame, apres les collisions.
+**Description :** Se déclenche à la fin de chaque frame, après les collisions.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Ajustements finaux de position
-- Operations de nettoyage
-- Mises a jour d'etat apres les collisions
+- Opérations de nettoyage
+- Mises à jour d'état après les collisions
 
 ---
 
-## Evenements de Dessin
+<a id="evenements-de-dessin"></a>
+## Événements de Dessin
 
 ### Draw
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `draw` |
-| **Icone** | 🎨 |
-| **Categorie** | Dessin |
-| **Preset** | Intermediaire |
+| **Icône** | 🎨 |
+| **Catégorie** | Dessin |
+| **Préréglage** | Intermédiaire |
 
-**Description:** Se declenche pendant la phase de rendu.
+**Description :** Se déclenche pendant la phase de rendu.
 
-**Important:** Ajouter un evenement Draw desactive le dessin automatique du sprite. Vous devez dessiner le sprite manuellement si vous voulez qu'il soit visible.
+**Important :** Ajouter un événement Draw désactive le dessin automatique du sprite. Vous devez dessiner le sprite manuellement si vous voulez qu'il soit visible.
 
-**Utilisations courantes:**
-- Rendu personnalise
+**Utilisations courantes :**
+- Rendu personnalisé
 - Dessiner des formes
 - Afficher du texte
 - Barres de vie
-- Elements d'interface
+- Éléments d'interface
 
-**Actions de dessin disponibles:**
-- Dessiner Sprite
-- Dessiner Texte
-- Dessiner Rectangle
-- Dessiner Cercle
-- Dessiner Ligne
-- Dessiner Barre de Vie
+**Actions de dessin disponibles :**
+- Dessiner un sprite
+- Dessiner du texte
+- Dessiner un rectangle
+- Dessiner un cercle
+- Dessiner une ligne
+- Dessiner la barre de santé
 
 ---
 
-## Evenements de Salle
+### Draw GUI
+| Propriété | Valeur |
+|-----------|--------|
+| **Nom** | `draw_gui` |
+| **Icône** | 🖥️ |
+| **Catégorie** | Dessin |
+| **Préréglage** | Avancé |
+
+**Description :** Dessine dans l'**espace écran (GUI)**, par-dessus la salle et sans être affecté par le défilement des vues/de la caméra.
+
+**Différence avec Draw :** l'événement Draw habituel est en coordonnées de salle (il défile avec la vue) ; Draw GUI reste fixe à l'écran — à utiliser pour les ATH (HUD), les scores et les menus.
+
+---
+
+<a id="evenements-de-salle"></a>
+## Événements de Salle
 
 ### Room Start
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `room_start` |
-| **Icone** | 🚪 |
-| **Categorie** | Salle |
-| **Preset** | Avance |
+| **Icône** | 🚪 |
+| **Catégorie** | Salle |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche lors de l'entree dans une salle, apres tous les evenements Create.
+**Description :** Se déclenche lors de l'entrée dans une salle, après tous les événements Create.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Initialisation de la salle
 - Jouer la musique de la salle
-- Definir des variables specifiques a la salle
+- Définir des variables spécifiques à la salle
 
 ---
 
 ### Room End
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `room_end` |
-| **Icone** | 🚪 |
-| **Categorie** | Salle |
-| **Preset** | Avance |
+| **Icône** | 🚪 |
+| **Catégorie** | Salle |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche lors de la sortie d'une salle.
+**Description :** Se déclenche lors de la sortie d'une salle.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Sauvegarder la progression
-- Arreter la musique
+- Arrêter la musique
 - Nettoyage
 
 ---
 
-## Evenements de Jeu
+<a id="evenements-de-jeu"></a>
+## Événements de Jeu
 
 ### Game Start
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `game_start` |
-| **Icone** | 🎮 |
-| **Categorie** | Jeu |
-| **Preset** | Avance |
+| **Icône** | 🎮 |
+| **Catégorie** | Jeu |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche une fois au premier demarrage du jeu (dans la premiere salle uniquement).
+**Description :** Se déclenche une fois au premier démarrage du jeu (dans la première salle uniquement).
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Initialiser les variables globales
-- Charger les donnees sauvegardees
+- Charger les données sauvegardées
 - Jouer l'introduction
 
 ---
 
 ### Game End
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `game_end` |
-| **Icone** | 🎮 |
-| **Categorie** | Jeu |
-| **Preset** | Avance |
+| **Icône** | 🎮 |
+| **Catégorie** | Jeu |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche lorsque le jeu se termine.
+**Description :** Se déclenche lorsque le jeu se termine.
 
-**Utilisations courantes:**
-- Sauvegarder les donnees du jeu
-- Liberer les ressources
+**Utilisations courantes :**
+- Sauvegarder les données du jeu
+- Libérer les ressources
 
 ---
 
-## Autres Evenements
+<a id="autres-evenements"></a>
+## Autres Événements
 
 ### Outside Room
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `outside_room` |
-| **Icone** | 🚫 |
-| **Categorie** | Autre |
-| **Preset** | Avance |
+| **Icône** | 🚫 |
+| **Catégorie** | Autre |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche quand l'instance est completement en dehors des limites de la salle.
+**Description :** Se déclenche quand l'instance est complètement en dehors des limites de la salle.
 
-**Utilisations courantes:**
-- Detruire les projectiles hors ecran
-- Faire le tour de l'autre cote
-- Declencher le game over
+**Utilisations courantes :**
+- Détruire les projectiles hors écran
+- Faire le tour de l'autre côté
+- Déclencher le game over
 
 ---
 
 ### Intersect Boundary
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `intersect_boundary` |
-| **Icone** | ⚠️ |
-| **Categorie** | Autre |
-| **Preset** | Avance |
+| **Icône** | ⚠️ |
+| **Catégorie** | Autre |
+| **Préréglage** | Avancé |
 
-**Description:** Se declenche quand l'instance touche la limite de la salle.
+**Description :** Se déclenche quand l'instance touche la limite de la salle.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Garder le joueur dans les limites
 - Rebondir sur les bords
 
 ---
 
 ### No More Lives
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `no_more_lives` |
-| **Icone** | 💀 |
-| **Categorie** | Autre |
-| **Preset** | Intermediaire |
+| **Icône** | 💀 |
+| **Catégorie** | Autre |
+| **Préréglage** | Intermédiaire |
 
-**Description:** Se declenche quand les vies deviennent 0 ou moins.
+**Description :** Se déclenche quand les vies tombent à 0 ou moins.
 
-**Utilisations courantes:**
-- Ecran de game over
-- Redemarrer le jeu
+**Utilisations courantes :**
+- Écran de game over
+- Redémarrer le jeu
 - Afficher le score final
 
 ---
 
 ### No More Health
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom** | `no_more_health` |
-| **Icone** | 💔 |
-| **Categorie** | Autre |
-| **Preset** | Intermediaire |
+| **Icône** | 💔 |
+| **Catégorie** | Autre |
+| **Préréglage** | Intermédiaire |
 
-**Description:** Se declenche quand la sante devient 0 ou moins.
+**Description :** Se déclenche quand la santé tombe à 0 ou moins.
 
-**Utilisations courantes:**
+**Utilisations courantes :**
 - Perdre une vie
-- Reapparaitre le joueur
-- Declencher l'animation de mort
+- Faire réapparaître le joueur
+- Déclencher l'animation de mort
 
 ---
 
-## Ordre d'Execution des Evenements
+### Animation End
+| Propriété | Valeur |
+|-----------|--------|
+| **Nom** | `animation_end` |
+| **Icône** | 🎞️ |
+| **Catégorie** | Autre |
+| **Préréglage** | Avancé |
 
-Comprendre quand les evenements se declenchent aide a creer un comportement de jeu previsible:
+**Description :** Se déclenche lorsque l'animation du sprite de l'instance termine un cycle complet (repasse de la dernière image à la première).
 
-1. **Begin Step** - Debut de la frame
-2. **Alarm** - Toutes les alarmes declenchees
-3. **Keyboard/Mouse** - Evenements d'entree
-4. **Step** - Logique de jeu principale
-5. **Collision** - Apres le mouvement
-6. **End Step** - Apres les collisions
-7. **Draw** - Phase de rendu
+**Utilisations courantes :**
+- Détruire un effet à usage unique (explosion) après une seule lecture
+- Passer à une autre animation quand l'actuelle se termine
+- Faire avancer une machine à états à la fin de l'animation
 
 ---
 
-## Evenements par Preset
+## Ordre d'Exécution des Événements
 
-| Preset | Evenements Inclus |
-|--------|-------------------|
-| **Debutant** | Create, Step, Keyboard Press, Collision |
-| **Intermediaire** | + Draw, Destroy, Mouse, Alarm |
-| **Avance** | + Toutes les variantes de clavier, Begin/End Step, Evenements de salle, Evenements de jeu, Evenements de limite |
+Comprendre quand les événements se déclenchent aide à créer un comportement de jeu prévisible :
+
+1. **Begin Step** — Début de la frame
+2. **Alarm** — Toutes les alarmes déclenchées
+3. **Keyboard/Mouse** — Événements d'entrée
+4. **Step** — Logique de jeu principale
+5. **Collision** — Après le mouvement
+6. **End Step** — Après les collisions
+7. **Draw** — Phase de rendu
+
+---
+
+## Événements par Préréglage
+
+| Préréglage | Événements inclus |
+|------------|-------------------|
+| **Débutant** | Create, Step, Appui Clavier, Collision |
+| **Intermédiaire** | + Draw, Destroy, Souris, Alarme |
+| **Avancé** | + Toutes les variantes de clavier, Begin/End Step, Événements de salle, Événements de jeu, Événements de limite |
 
 ---
 
 ## Voir Aussi
 
-- [Reference Complete des Actions](Full-Action-Reference_fr) - Liste complete des actions
-- [Preset Debutant](Beginner-Preset_fr) - Evenements essentiels pour debutants
-- [Preset Intermediaire](Intermediate-Preset_fr) - Evenements supplementaires
-- [Evenements et Actions](Events-and-Actions_fr) - Apercu des concepts de base
+- [Référence Complète des Actions](Full-Action-Reference_fr) - Liste complète des actions
+- [Préréglage Débutant](Beginner-Preset_fr) - Événements essentiels pour débutants
+- [Préréglage Intermédiaire](Intermediate-Preset_fr) - Événements supplémentaires
+- [Événements et Actions](Evenements_Actions_fr) - Aperçu des concepts de base
