@@ -4,70 +4,70 @@
 
 ---
 
-[Zuruck zur Startseite](Home_de)
+[Zurück zur Startseite](Home_de)
 
-Der Raum-Editor ermoglicht das Erstellen und Gestalten von Spiellevels.
+Der Raum-Editor ermöglicht das Erstellen und Gestalten von Spiellevels.
 
-## Uberblick
+## Überblick
 
-Raume sind die Spielbereiche, in denen Objekte platziert und das Gameplay stattfindet.
+Räume sind die Spielbereiche, in denen Objekte platziert werden und das Gameplay stattfindet.
 
-## Editor-Oberflache
+## Editor-Oberfläche
 
 ### Werkzeugleiste
-- **Auswahl**: Objekte auswahlen und verschieben
-- **Hinzufugen**: Neue Instanzen platzieren
-- **Loschen**: Instanzen entfernen
-- **Zoomen**: Ansicht vergroern/verkleinern
+- **Auswahl**: Objekte auswählen und verschieben
+- **Hinzufügen**: Neue Instanzen platzieren
+- **Löschen**: Instanzen entfernen
+- **Zoomen**: Ansicht vergrößern/verkleinern
 
-### Arbeitsflache
+### Arbeitsfläche
 - Raster-Anzeige
 - Platzierte Instanzen
 - Hintergrund-Layer
 
 ### Eigenschaften
-- Raumgrosse
+- Raumgröße
 - Hintergrundfarbe
 - Ansicht-Einstellungen
 
 ## Raum erstellen
 
 ### Neuer Raum
-1. Rechtsklick auf "Raume" im Ressourcenbaum
-2. Wahlen Sie "Neuer Raum"
-3. Benennen Sie den Raum (z.B. rm_level1)
+1. Rechtsklick auf „Räume" im Ressourcenbaum
+2. Wählen Sie „Neuer Raum"
+3. Benennen Sie den Raum (z. B. rm_level1)
 
 ### Eigenschaften festlegen
-1. **Grosse**: Breite und Hohe in Pixeln
+1. **Größe**: Breite und Höhe in Pixeln
 2. **Geschwindigkeit**: Frames pro Sekunde
 3. **Hintergrund**: Farbe oder Bild
 
 ## Objekte platzieren
 
 ### Einzelne Instanz
-1. Wahlen Sie ein Objekt aus der Liste
+1. Wählen Sie ein Objekt aus der Liste
 2. Klicken Sie in den Raum
 3. Die Instanz wird platziert
 
 ### Mehrere Instanzen
-- Halten Sie Shift gedruckt zum Mehrfachplatzieren
-- Verwenden Sie Kopieren/Einfugen
+- Halten Sie Shift gedrückt zum Mehrfachplatzieren
+- Verwenden Sie Kopieren/Einfügen
 
 ### Instanzen bearbeiten
 - **Verschieben**: Ziehen mit der Maus
-- **Loschen**: Rechtsklick > Loschen
+- **Löschen**: Rechtsklick > Löschen
 - **Eigenschaften**: Doppelklick
 
 ## Layer-System
 
 ### Layer-Typen
-1. **Instanzen-Layer**: Fur Spielobjekte
-2. **Hintergrund-Layer**: Fur Hintergrundbilder
-3. **Tile-Layer**: Fur Kachel-basierte Level
+1. **Instanzen-Layer**: Für Spielobjekte
+2. **Hintergrund-Layer**: Für Hintergrundbilder
+3. **Tile-Layer**: Für kachelbasierte Level
 
 ### Layer verwalten
-- Layer hinzufugen/entfernen
-- Reihenfolge andern
+- Layer hinzufügen/entfernen
+- Reihenfolge ändern
 - Sichtbarkeit umschalten
 
 ## Ansichten (Views)
@@ -75,17 +75,17 @@ Raume sind die Spielbereiche, in denen Objekte platziert und das Gameplay stattf
 ### View einrichten
 1. Aktivieren Sie Views in den Raum-Eigenschaften
 2. Definieren Sie den sichtbaren Bereich
-3. Legen Sie die Port-Grosse fest
+3. Legen Sie die Port-Größe fest
 
 ### Kamera-Verfolgung
-- Objekt zum Verfolgen auswahlen
+- Objekt zum Verfolgen auswählen
 - Randbereich definieren
 
 ## Tipps
 
-1. **Raster verwenden**: Fur prazise Platzierung
-2. **Layer organisieren**: Ubersichtliche Struktur
-3. **Vorschau nutzen**: Regelmasig testen
+1. **Raster verwenden**: Für präzise Platzierung
+2. **Layer organisieren**: Übersichtliche Struktur
+3. **Vorschau nutzen**: Regelmäßig testen
 
 ## Siehe auch
 

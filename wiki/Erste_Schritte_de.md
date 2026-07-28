@@ -4,14 +4,14 @@
 
 ---
 
-[Zuruck zur Startseite](Home_de)
+[Zurück zur Startseite](Home_de)
 
 Willkommen bei pyGM! Diese Anleitung hilft Ihnen beim Einstieg in die Spieleentwicklung.
 
 ## Installation
 
 ### Voraussetzungen
-- Python 3.8 oder hoher
+- Python 3.10 oder höher
 - pip (Python-Paketmanager)
 
 ### Installationsschritte
@@ -21,35 +21,35 @@ Willkommen bei pyGM! Diese Anleitung hilft Ihnen beim Einstieg in die Spieleentw
    pip install pygm
    ```
 
-2. **Installation uberprufen**
+2. **Installation überprüfen**
    ```bash
    pygm --version
    ```
 
 ## pyGM starten
 
-Nach der Installation konnen Sie pyGM starten:
+Nach der Installation können Sie pyGM starten:
 
 ```bash
 pygm
 ```
 
-Dies offnet den visuellen Editor, in dem Sie mit der Erstellung Ihres Spiels beginnen konnen.
+Dies öffnet den visuellen Editor, in dem Sie mit der Erstellung Ihres Spiels beginnen können.
 
-## Benutzeroberflache
+## Benutzeroberfläche
 
 ### Hauptbereiche
-- **Linkes Panel**: Ressourcenverwaltung (Sprites, Objekte, Raume)
-- **Mittlerer Bereich**: Editor-Arbeitsflache
+- **Linkes Panel**: Ressourcenverwaltung (Sprites, Objekte, Räume)
+- **Mittlerer Bereich**: Editor-Arbeitsfläche
 - **Rechtes Panel**: Eigenschaften und Einstellungen
 
 ### Grundlegende Steuerung
 - **Mausrad**: Ansicht zoomen
 - **Mittlere Maustaste**: Ansicht verschieben
-- **Linksklick**: Elemente auswahlen/platzieren
-- **Rechtsklick**: Kontextmenu offnen
+- **Linksklick**: Elemente auswählen/platzieren
+- **Rechtsklick**: Kontextmenü öffnen
 
-## Nachste Schritte
+## Nächste Schritte
 
 - [Ihr erstes Spiel erstellen](Erstes_Spiel_de)
 - [Objekt-Editor kennenlernen](Objekt_Editor_de)
