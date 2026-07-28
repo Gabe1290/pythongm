@@ -152,18 +152,28 @@ def _extension_codegen():
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
             ext_dir = get_extension_directory()
-            for info in list_available_extensions():
-                if not info.get("enabled", True):
-                    continue
-                py = ext_dir / info["folder"] / "export_kivy.py"
-                if py.exists():
-                    ns = {}
-                    exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
-                    table = ns.get("ACTION_CODEGEN", {})
-                    if isinstance(table, dict):
-                        _EXTENSION_CODEGEN.update(table)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning(f"Could not enumerate extensions for codegen: {exc}")
+            return _EXTENSION_CODEGEN
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            py = ext_dir / info["folder"] / "export_kivy.py"
+            if not py.exists():
+                continue
+            # Per-extension guard: a broken extension must not silently zero out
+            # EVERY extension's action codegen (which would make their actions
+            # export as `pass # TODO` with no signal). Log loudly and skip it.
+            try:
+                ns = {}
+                exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
+                table = ns.get("ACTION_CODEGEN", {})
+                if isinstance(table, dict):
+                    _EXTENSION_CODEGEN.update(table)
+            except Exception as exc:
+                logger.error(
+                    f"Extension '{info['folder']}' export_kivy.py failed to load; "
+                    f"its actions will export as no-ops: {exc}")
     return _EXTENSION_CODEGEN
 
 class ActionCodeGenerator:

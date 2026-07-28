@@ -1379,21 +1379,30 @@ if __name__ == '__main__':
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
             ext_dir = get_extension_directory()
-            parts = []
-            for info in list_available_extensions():
-                if not info.get("enabled", True):
-                    continue
-                py = ext_dir / info["folder"] / "export_kivy.py"
-                if py.exists():
-                    ns = {}
-                    exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
-                    code = ns.get(symbol, "")
-                    if code:
-                        parts.append(code)
-            return "\n".join(parts)
         except Exception as exc:   # never let extension collection break export
-            logger.warning(f"Could not collect extension Kivy {symbol}: {exc}")
+            logger.warning(f"Could not enumerate extensions for {symbol}: {exc}")
             return ""
+        parts = []
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            py = ext_dir / info["folder"] / "export_kivy.py"
+            if not py.exists():
+                continue
+            # Per-extension guard: one broken extension must not silently drop
+            # EVERY extension's contribution (which would make the exported game
+            # lose e.g. the raycast view with no signal). Log loudly and skip it.
+            try:
+                ns = {}
+                exec(compile(py.read_text(encoding="utf-8"), str(py), "exec"), ns)
+                code = ns.get(symbol, "")
+                if code:
+                    parts.append(code)
+            except Exception as exc:
+                logger.error(
+                    f"Extension '{info['folder']}' export_kivy.py failed to load; "
+                    f"its {symbol} contribution is missing from the export: {exc}")
+        return "\n".join(parts)
 
     def _generate_scene(self, room_name: str, room_data: Dict):
         """Generate a single scene file"""
