@@ -15,9 +15,17 @@ PyGameMaker can export your game to multiple platforms. This guide covers each e
 | Platform | Format | Requirements |
 |----------|--------|--------------|
 | **Windows** | .exe | PyInstaller |
+| **macOS** | .app | PyInstaller (on a Mac) |
 | **HTML5** | .html | Modern browser |
-| **Linux** | Binary | Python 3.10+ |
-| **Kivy** | .apk/.ipa | Buildozer |
+| **Linux** | Binary | PyInstaller, Python 3.10+ |
+| **Kivy / Android** | Source / .apk | Buildozer |
+| **Project (.zip)** | .zip | — (share the editable project) |
+
+> **Nothing is dropped silently.** If your game uses an action a target can't
+> reproduce (for example a few actions aren't supported by the Kivy/Android
+> export), the export still succeeds but tells you exactly which actions were
+> **skipped** so you can adjust. If your project uses a disabled
+> [extension](Extensions) (e.g. the 3D View), the IDE warns you on load.
 
 ---
 
@@ -60,6 +68,30 @@ To share your game:
 **Antivirus flags:** Some antivirus programs flag PyInstaller executables. This is a false positive. You may need to sign your executable.
 
 **Large file size:** The _internal folder contains Python and all libraries. Consider using `--onefile` mode for a single larger executable.
+
+---
+
+## macOS App Export
+
+Create a native macOS `.app` bundle with PyInstaller.
+
+### How to Export
+
+1. Go to **File > Export** and choose **macOS**
+2. Choose an output folder
+3. Wait for the build to complete
+4. Find `MyGame.app` in the output folder
+
+### Requirements
+
+- A **Mac** to build on (cross-compilation from Windows/Linux is not supported)
+- PyInstaller and Kivy installed in the build Python
+
+### Distribution
+
+Zip the `.app` bundle to share it. Unsigned apps trigger Gatekeeper on other
+Macs — users right-click → **Open** the first time, or you sign/notarize the app
+with an Apple Developer account.
 
 ---
 

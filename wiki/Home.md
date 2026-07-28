@@ -18,9 +18,9 @@ PyGameMaker uses **presets** to control which events and actions are available. 
 
 | Preset | Best For | Features |
 |--------|----------|----------|
-| [**Beginner**](Beginner-Preset) | New to game development | 4 events, 17 actions - Movement, collisions, score, rooms |
-| [**Intermediate**](Intermediate-Preset) | Some experience | +4 events, +12 actions - Lives, health, sound, alarms, drawing |
-| **Advanced** | Experienced users | All 40+ events and actions available |
+| [**Beginner**](Beginner-Preset) | New to game development | Essentials — movement, collisions, score, rooms |
+| [**Intermediate**](Intermediate-Preset) | Some experience | Adds lives, health, sound, alarms, drawing |
+| **Advanced (Full)** | Experienced users | Everything — all 37 events and 109 actions |
 
 **New users:** Start with the [Beginner Preset](Beginner-Preset) to learn the fundamentals without being overwhelmed.
 
@@ -35,10 +35,11 @@ See the [Preset Guide](Preset-Guide) for a complete overview of the preset syste
 | **Visual Programming** | Drag-and-drop coding with Google Blockly 12.x |
 | **Event-Action System** | GameMaker 7.0 compatible event-driven logic |
 | **Skill-Based Presets** | Beginner, Intermediate, and Advanced feature sets |
-| **Multi-Platform Export** | Windows EXE, HTML5, Linux, Kivy (mobile/desktop) |
+| **2.5D / First-Person View** | Optional Doom/Wolfenstein-style raycast rendering — see [3D View](3D-View) |
+| **Multi-Platform Export** | Windows EXE, macOS app, HTML5, Linux, Kivy (mobile/desktop) |
 | **Asset Management** | Sprites, sounds, backgrounds, fonts, and rooms |
 | **Multi-Language UI** | English, French, German, Italian, Spanish, Portuguese, Slovenian, Ukrainian, Russian |
-| **Extensible** | Plugin system for custom events and actions |
+| **Extensible** | [Extension](Extensions) + plugin system for custom actions and renderers |
 
 ---
 
@@ -96,14 +97,15 @@ Triggers that execute actions when specific conditions occur:
 See the [Event Reference](Event-Reference) for complete documentation.
 
 ### Actions
-Operations performed when events trigger. 40+ built-in actions for:
+Operations performed when events trigger. **109** built-in actions for:
 - Movement and physics
 - Drawing and sprites
 - Score, lives, and health
 - Sound and music
 - Instance and room management
+- 3D View (first-person raycast rendering)
 
-See the [Full Action Reference](Full-Action-Reference) for complete documentation.
+See the [Full Action Reference](Full-Action-Reference) for the complete, always-current list.
 
 ### Rooms
 Game levels where you place object instances, set backgrounds, and define the play area.
@@ -132,6 +134,9 @@ PyGameMaker integrates Google Blockly for visual programming. Blocks are organiz
 ### Windows EXE
 Standalone Windows executables using PyInstaller. No Python required on the target machine.
 
+### macOS App
+Native macOS `.app` bundles via PyInstaller.
+
 ### HTML5
 Single-file web games that run in any modern browser. Compressed with gzip for fast loading.
 
@@ -140,6 +145,9 @@ Native Linux executables for Python 3.10+ environments.
 
 ### Kivy
 Cross-platform apps for mobile (iOS/Android) and desktop via Buildozer.
+
+See [Exporting Games](Exporting-Games) for details, and note that any action a
+target can't reproduce is reported after the export (never silently dropped).
 
 ---
 
@@ -169,6 +177,10 @@ project_name/
 - [Intermediate Preset](Intermediate-Preset) - Additional features for growing skills
 - [Event Reference](Event-Reference) - Complete event documentation
 - [Full Action Reference](Full-Action-Reference) - Complete action documentation
+
+### Advanced Features
+- [3D View](3D-View) - Doom-style first-person (raycast) rendering
+- [Extensions](Extensions) - Add-on actions and renderers (how 3D View ships)
 
 ### Tutorials & Guides
 - [**Tutorials**](Tutorials) - All tutorials in one place
