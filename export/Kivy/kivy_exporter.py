@@ -111,6 +111,12 @@ class KivyExporter:
             for name, data in project_data.get('assets', {}).get('backgrounds', {}).items()
             if data.get('file_path')
         }
+        # script_name -> {code}, so the execute_script action can inline a
+        # project script's body (mirrors the runtime resolving assets.scripts).
+        self.scripts_map = {
+            name: data
+            for name, data in project_data.get('assets', {}).get('scripts', {}).items()
+        }
         # exported sprite path -> frame metadata, so the runtime draws a single
         # frame of a multi-frame strip (and animates it) instead of blitting the
         # whole sheet. frame_width/height are per-frame; 'width' is the full
@@ -2534,6 +2540,9 @@ class GameObject(Widget):
         # Use float for sub-pixel precision (smooth movement)
         self._x = float(x)
         self._y = float(y)
+        # Spawn position, for jump_to_start (mirrors the runtime's xstart/ystart).
+        self.xstart = float(x)
+        self.ystart = float(y)
 
         # Movement properties (GameMaker style with bidirectional sync)
         self._hspeed = 0.0  # Horizontal speed (float for smooth movement)
@@ -3140,6 +3149,23 @@ class GameObject(Widget):
             if not blocked:
                 break
 
+    def _script_game(self):
+        """A minimal `game` API for execute_script bodies, mapping the runtime
+        GameRunner methods scripts commonly call onto the Kivy object model.
+        A method a script uses that isn't here raises AttributeError, which the
+        script wrapper catches and logs — visible, not a silent no-op."""
+        import types
+        return types.SimpleNamespace(
+            check_collision_at_position=lambda inst, x, y, obj=None:
+                inst.check_collision_at(x, y, obj),
+        )
+
+    def jump_to_start(self):
+        """Reset to the spawn position, mirroring execute_jump_to_start."""
+        self.x = self.xstart
+        self.y = self.ystart
+        self._update_position()
+
     def wrap_around_room(self, horizontal=True, vertical=True):
         """Wrap to the opposite edge when leaving the room, mirroring the IDE
         runtime's execute_wrap_around_room. self.x/self.y are GM room coords
@@ -3567,6 +3593,7 @@ class {class_name}(GameObject):
         self.persistent = {persistent}
         self.pushable = {pushable}
         self.depth = {depth}
+        self.object_name = "{obj_name}"
 
         # Set sprite
         {sprite_line}
@@ -3800,7 +3827,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard')
@@ -3985,7 +4012,7 @@ class {class_name}(GameObject):
 
             if actions:
                 # Generate action code for this key press
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_press')
@@ -4023,7 +4050,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_release')
@@ -4109,7 +4136,7 @@ class {class_name}(GameObject):
         logger.debug(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
 
         # Use the new ActionCodeGenerator for proper block/indentation handling
-        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
+        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
 
         for i, action in enumerate(actions):
             logger.debug(f"          Action {i}: {type(action).__name__}")
