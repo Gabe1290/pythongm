@@ -202,7 +202,8 @@ class ActionCodeGenerator:
     start_block, and else_action need to properly indent subsequent actions.
     """
 
-    def __init__(self, base_indent=2, sprite_paths=None, sound_paths=None, background_paths=None):
+    def __init__(self, base_indent=2, sprite_paths=None, sound_paths=None,
+                 background_paths=None, scripts=None):
         """
         Initialize the code generator.
 
@@ -222,6 +223,9 @@ class ActionCodeGenerator:
         self.sprite_paths = sprite_paths or {}
         self.sound_paths = sound_paths or {}
         self.background_paths = background_paths or {}
+        # {script_name: code} so execute_script can inline a project script's
+        # body (mirrors the runtime resolving it from assets.scripts).
+        self.scripts = scripts or {}
         self.indent_level = 0  # Additional indent beyond base
         self.lines = []
         self.block_stack = []  # Track open blocks for proper nesting
@@ -717,6 +721,42 @@ class ActionCodeGenerator:
             if 'random' in user_code:
                 self.add_line('import random')
             self.add_line(user_code)
+            self._complete_unit()
+            return
+
+        elif action_type in ('execute_script', 'script'):
+            # Inline a project script's body (mirrors execute_execute_script_action,
+            # which resolves it from assets.scripts). The body is bound the same
+            # way — instance/self/game/argument0-4, plus math/random — and wrapped
+            # so an unsupported `game.*` call fails LOUDLY (a logged message) rather
+            # than silently doing nothing (the whole point of surfacing this) or
+            # crashing the event. self.scripts is the {name: code} map.
+            script_name = str(params.get('script', '') or '')
+            sdata = self.scripts.get(script_name)
+            code = sdata.get('code', '') if isinstance(sdata, dict) else (sdata or '')
+            if not script_name or not str(code).strip():
+                self.add_line(
+                    f"print({('[script] ' + (script_name or '(unnamed)') + ' not found or empty')!r})")
+                self.add_line('pass')
+                self._complete_unit()
+                return
+            self.add_line('import random, math  # noqa: F401 (script may use them)')
+            for i in range(5):
+                argv = params.get(f'arg{i}', '')
+                if str(argv).strip() in ('', 'None'):
+                    self.add_line(f'argument{i} = None')
+                else:
+                    self.add_line(f'argument{i} = {_resolve_instance_names(str(argv))}')
+            self.add_line('instance = self')
+            self.add_line('game = self._script_game()')
+            self.add_line('try:')
+            self.push_indent()
+            self.add_line(str(code))
+            self.pop_indent()
+            self.add_line('except Exception as _script_err:')
+            self.push_indent()
+            self.add_line(f"print('[script:{script_name}] ' + str(_script_err))")
+            self.pop_indent()
             self._complete_unit()
             return
 
@@ -1235,6 +1275,20 @@ if dist > 0:
             def _flag(key):
                 return str(params.get(key, True)).strip().lower() not in ('false', '0', 'no')
             return f"self.wrap_around_room({_flag('horizontal')}, {_flag('vertical')})"
+
+        elif action_type == 'jump_to_start':
+            # Reset to spawn (mirrors execute_jump_to_start), honouring GM
+            # "Applies to": self, other (in a collision), or every instance of a
+            # named object type. Each object carries object_name + jump_to_start().
+            target = params.get('target', 'self')
+            if target == 'other' and 'collision' in event_type:
+                return "other.jump_to_start()"
+            if target == 'object':
+                obj = str(params.get('target_object', '') or '')
+                if obj:
+                    return (f"[_o.jump_to_start() for _o in list(self.scene.instances) "
+                            f"if getattr(_o, 'object_name', '') == {obj!r}]")
+            return "self.jump_to_start()"
 
         elif action_type == 'destroy_at_position':
             x = _num_code(params.get('x', 0))
