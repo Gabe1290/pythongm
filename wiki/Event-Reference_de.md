@@ -1,8 +1,8 @@
 # Ereignis-Referenz
 
-*[Startseite](Home_de) | [Preset-Leitfaden](Preset-Guide_de) | [Vollstaendige Aktionsreferenz](Full-Action-Reference_de)*
+*[Startseite](Home_de) | [Voreinstellungs-Leitfaden](Preset-Guide_de) | [Vollständige Aktionsreferenz](Full-Action-Reference_de)*
 
-Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse sind Ausloeser, die Aktionen ausfuehren, wenn bestimmte Bedingungen in Ihrem Spiel auftreten.
+Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse sind Auslöser, die Aktionen ausführen, wenn bestimmte Bedingungen in Ihrem Spiel auftreten.
 
 ## Ereigniskategorien
 
@@ -11,7 +11,7 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 - [Kollisions-Ereignisse](#kollisions-ereignisse) - Objektkollisionen
 - [Zeit-Ereignisse](#zeit-ereignisse) - Alarme, Step-Varianten
 - [Zeichen-Ereignisse](#zeichen-ereignisse) - Benutzerdefiniertes Rendern
-- [Raum-Ereignisse](#raum-ereignisse) - Raumuebergaenge
+- [Raum-Ereignisse](#raum-ereignisse) - Raumübergänge
 - [Spiel-Ereignisse](#spiel-ereignisse) - Spielstart/-ende
 - [Andere Ereignisse](#andere-ereignisse) - Grenzen, Leben, Gesundheit
 
@@ -25,16 +25,16 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `create` |
 | **Symbol** | 🎯 |
 | **Kategorie** | Objekt |
-| **Preset** | Anfaenger |
+| **Preset** | Anfänger |
 
-**Beschreibung:** Wird einmal ausgefuehrt, wenn eine Instanz erstmals erstellt wird.
+**Beschreibung:** Wird einmal ausgeführt, wenn eine Instanz erstmals erstellt wird.
 
-**Wann es ausloest:**
+**Wann es auslöst:**
 - Wenn eine Instanz beim Spielstart in einem Raum platziert wird
-- Wenn sie ueber die Aktion "Instanz erstellen" erstellt wird
-- Nach Raumuebergaengen fuer neue Instanzen
+- Wenn sie über die Aktion „Instanz erstellen" erstellt wird
+- Nach Raumübergängen für neue Instanzen
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Variablen initialisieren
 - Startwerte setzen
 - Anfangszustand konfigurieren
@@ -47,19 +47,19 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `step` |
 | **Symbol** | ⭐ |
 | **Kategorie** | Objekt |
-| **Preset** | Anfaenger |
+| **Preset** | Anfänger |
 
-**Beschreibung:** Wird jeden Frame ausgefuehrt (typischerweise 60 Mal pro Sekunde).
+**Beschreibung:** Wird jeden Frame ausgeführt (typischerweise 60 Mal pro Sekunde).
 
-**Wann es ausloest:** Kontinuierlich, jeden Spielframe.
+**Wann es auslöst:** Kontinuierlich, jeden Spielframe.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Kontinuierliche Bewegung
-- Bedingungen pruefen
+- Bedingungen prüfen
 - Positionen aktualisieren
 - Spiellogik
 
-**Hinweis:** Achten Sie auf die Leistung - Code hier laeuft staendig.
+**Hinweis:** Achten Sie auf die Leistung — Code hier läuft ständig.
 
 ---
 
@@ -71,14 +71,14 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Objekt |
 | **Preset** | Fortgeschritten |
 
-**Beschreibung:** Wird ausgefuehrt, wenn eine Instanz zerstoert wird.
+**Beschreibung:** Wird ausgeführt, wenn eine Instanz zerstört wird.
 
-**Wann es ausloest:** Kurz bevor die Instanz aus dem Spiel entfernt wird.
+**Wann es auslöst:** Kurz bevor die Instanz aus dem Spiel entfernt wird.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Effekte erzeugen (Explosionen, Partikel)
-- Gegenstaende fallen lassen
-- Punktestaende aktualisieren
+- Gegenstände fallen lassen
+- Punktestände aktualisieren
 - Sounds abspielen
 
 ---
@@ -91,13 +91,13 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `keyboard` |
 | **Symbol** | ⌨️ |
 | **Kategorie** | Eingabe |
-| **Preset** | Anfaenger |
+| **Preset** | Anfänger |
 
-**Beschreibung:** Loest kontinuierlich aus, waehrend eine Taste gedrueckt gehalten wird.
+**Beschreibung:** Löst kontinuierlich aus, während eine Taste gedrückt gehalten wird.
 
-**Am besten fuer:** Fluessige, kontinuierliche Bewegung
+**Am besten für:** Flüssige, kontinuierliche Bewegung
 
-**Unterstuetzte Tasten:**
+**Unterstützte Tasten:**
 - Pfeiltasten (hoch, runter, links, rechts)
 - Buchstaben (A-Z)
 - Zahlen (0-9)
@@ -113,13 +113,13 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `keyboard_press` |
 | **Symbol** | 🔘 |
 | **Kategorie** | Eingabe |
-| **Preset** | Anfaenger |
+| **Preset** | Anfänger |
 
-**Beschreibung:** Loest einmal aus, wenn eine Taste zum ersten Mal gedrueckt wird.
+**Beschreibung:** Löst einmal aus, wenn eine Taste zum ersten Mal gedrückt wird.
 
-**Am besten fuer:** Einzelaktionen (Springen, Schiessen, Menuauswahl)
+**Am besten für:** Einzelaktionen (Springen, Schießen, Menüauswahl)
 
-**Unterschied zu Tastatur:** Loest nur einmal pro Druck aus, nicht waehrend des Haltens.
+**Unterschied zu Tastatur:** Löst nur einmal pro Druck aus, nicht während des Haltens.
 
 ---
 
@@ -131,12 +131,30 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Eingabe |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest einmal aus, wenn eine Taste losgelassen wird.
+**Beschreibung:** Löst einmal aus, wenn eine Taste losgelassen wird.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Bewegung stoppen, wenn Taste losgelassen
 - Ladeattacken beenden
-- Zustaende umschalten
+- Zustände umschalten
+
+---
+
+### Tastatur (Keine Taste)
+| Eigenschaft | Wert |
+|-------------|------|
+| **Name** | `keyboard_no_key` |
+| **Symbol** | ⌨️ |
+| **Kategorie** | Eingabe |
+| **Preset** | Experte |
+
+**Beschreibung:** Löst jeden Frame aus, solange **keine** Taste gehalten wird.
+
+**Wann es auslöst:** Jeden Frame, in dem die Tastatur inaktiv ist, *vor* dem Step-Ereignis.
+
+**Häufige Verwendungen:**
+- Bewegung stoppen, wenn der Spieler alle Tasten loslässt (Gitter-/Labyrinthspiele)
+- Leerlaufanimationen
 
 ---
 
@@ -158,9 +176,9 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | Rechte Taste | Klick mit rechter Maustaste |
 | Mittlere Taste | Klick mit mittlerer/Scroll-Taste |
 | Maus Eintritt | Cursor betritt Instanzgrenzen |
-| Maus Austritt | Cursor verlaesst Instanzgrenzen |
-| Globale Linke Taste | Linksklick ueberall |
-| Globale Rechte Taste | Rechtsklick ueberall |
+| Maus Austritt | Cursor verlässt Instanzgrenzen |
+| Globale Linke Taste | Linksklick überall |
+| Globale Rechte Taste | Rechtsklick überall |
 
 ---
 
@@ -172,26 +190,26 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `collision` |
 | **Symbol** | 💥 |
 | **Kategorie** | Kollision |
-| **Preset** | Anfaenger |
+| **Preset** | Anfänger |
 
-**Beschreibung:** Loest aus, wenn diese Instanz mit einem anderen Objekttyp ueberlappt.
+**Beschreibung:** Löst aus, wenn diese Instanz mit einem anderen Objekttyp überlappt.
 
-**Konfiguration:** Waehlen Sie, welcher Objekttyp diese Kollision ausloest.
+**Konfiguration:** Wählen Sie, welcher Objekttyp diese Kollision auslöst.
 
-**Spezielle Variable:** `other` - Verweis auf die kollidierende Instanz.
+**Spezielle Variable:** `other` — Verweis auf die kollidierende Instanz.
 
-**Wann es ausloest:** Jeden Frame, in dem Instanzen ueberlappen.
+**Wann es auslöst:** Jeden Frame, in dem Instanzen überlappen.
 
-**Haeufige Verwendungen:**
-- Gegenstaende sammeln
+**Häufige Verwendungen:**
+- Gegenstände sammeln
 - Schaden nehmen
-- Waende treffen
-- Ereignisse ausloesen
+- Wände treffen
+- Ereignisse auslösen
 
 **Beispiel-Kollisionsereignisse:**
-- `collision_with_obj_coin` - Spieler beruehrt eine Muenze
-- `collision_with_obj_enemy` - Spieler beruehrt einen Gegner
-- `collision_with_obj_wall` - Instanz trifft eine Wand
+- `collision_with_obj_coin` — Spieler berührt eine Münze
+- `collision_with_obj_enemy` — Spieler berührt einen Gegner
+- `collision_with_obj_wall` — Instanz trifft eine Wand
 
 ---
 
@@ -205,16 +223,16 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Zeit |
 | **Preset** | Fortgeschritten |
 
-**Beschreibung:** Loest aus, wenn ein Alarm-Countdown null erreicht.
+**Beschreibung:** Löst aus, wenn ein Alarm-Countdown null erreicht.
 
-**Verfuegbare Alarme:** 12 unabhaengige Alarme (alarm[0] bis alarm[11])
+**Verfügbare Alarme:** 12 unabhängige Alarme (alarm[0] bis alarm[11])
 
-**Alarme einstellen:** Verwenden Sie die Aktion "Alarm setzen" mit Steps (60 Steps ≈ 1 Sekunde bei 60 FPS)
+**Alarme einstellen:** Verwenden Sie die Aktion „Alarm setzen" mit Steps (60 Steps ≈ 1 Sekunde bei 60 FPS)
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Zeitgesteuertes Spawnen
 - Abklingzeiten
-- Verzoegerte Effekte
+- Verzögerte Effekte
 - Wiederholende Aktionen (Alarm im Alarmereignis erneut setzen)
 
 ---
@@ -227,11 +245,11 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Step |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest am Anfang jedes Frames aus, vor regulaeren Step-Ereignissen.
+**Beschreibung:** Löst am Anfang jedes Frames aus, vor regulären Step-Ereignissen.
 
-**Ausfuehrungsreihenfolge:** Begin Step → Step → End Step
+**Ausführungsreihenfolge:** Begin Step → Step → End Step
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Eingabeverarbeitung
 - Vor-Bewegungs-Berechnungen
 
@@ -245,11 +263,11 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Step |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest am Ende jedes Frames aus, nach Kollisionen.
+**Beschreibung:** Löst am Ende jedes Frames aus, nach Kollisionen.
 
-**Haeufige Verwendungen:**
-- Endgueltige Positionsanpassungen
-- Aufraeumoperationen
+**Häufige Verwendungen:**
+- Endgültige Positionsanpassungen
+- Aufräumoperationen
 - Zustandsaktualisierungen nach Kollisionen
 
 ---
@@ -264,24 +282,38 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Zeichnen |
 | **Preset** | Fortgeschritten |
 
-**Beschreibung:** Loest waehrend der Renderphase aus.
+**Beschreibung:** Löst während der Renderphase aus.
 
-**Wichtig:** Das Hinzufuegen eines Draw-Ereignisses deaktiviert das automatische Sprite-Zeichnen. Sie muessen das Sprite manuell zeichnen, wenn es sichtbar sein soll.
+**Wichtig:** Das Hinzufügen eines Draw-Ereignisses deaktiviert das automatische Sprite-Zeichnen. Sie müssen das Sprite manuell zeichnen, wenn es sichtbar sein soll.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Benutzerdefiniertes Rendern
 - Formen zeichnen
 - Text anzeigen
 - Gesundheitsbalken
 - HUD-Elemente
 
-**Verfuegbare Zeichenaktionen:**
+**Verfügbare Zeichenaktionen:**
 - Sprite zeichnen
 - Text zeichnen
 - Rechteck zeichnen
 - Kreis zeichnen
 - Linie zeichnen
 - Gesundheitsbalken zeichnen
+
+---
+
+### Draw GUI
+| Eigenschaft | Wert |
+|-------------|------|
+| **Name** | `draw_gui` |
+| **Symbol** | 🖥️ |
+| **Kategorie** | Zeichnen |
+| **Preset** | Experte |
+
+**Beschreibung:** Zeichnet im **Bildschirm- (GUI-)Raum**, über dem Raum und unbeeinflusst vom Scrollen der Ansichten/Kamera.
+
+**Unterschied zu Draw:** Das reguläre Draw-Ereignis ist in Raumkoordinaten (es scrollt mit der Ansicht); Draw GUI bleibt fest am Bildschirm — für HUDs, Punktestände und Menüs.
 
 ---
 
@@ -295,9 +327,9 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Raum |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest beim Betreten eines Raums aus, nach allen Create-Ereignissen.
+**Beschreibung:** Löst beim Betreten eines Raums aus, nach allen Create-Ereignissen.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Raum-Initialisierung
 - Raum-Musik abspielen
 - Raumspezifische Variablen setzen
@@ -312,12 +344,12 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Raum |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest beim Verlassen eines Raums aus.
+**Beschreibung:** Löst beim Verlassen eines Raums aus.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Fortschritt speichern
 - Musik stoppen
-- Aufraeumen
+- Aufräumen
 
 ---
 
@@ -331,9 +363,9 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Spiel |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest einmal aus, wenn das Spiel zum ersten Mal startet (nur im ersten Raum).
+**Beschreibung:** Löst einmal aus, wenn das Spiel zum ersten Mal startet (nur im ersten Raum).
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Globale Variablen initialisieren
 - Gespeicherte Daten laden
 - Intro abspielen
@@ -348,11 +380,11 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Spiel |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest aus, wenn das Spiel endet.
+**Beschreibung:** Löst aus, wenn das Spiel endet.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Spieldaten speichern
-- Ressourcen aufraeumen
+- Ressourcen aufräumen
 
 ---
 
@@ -366,12 +398,12 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Andere |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest aus, wenn die Instanz vollstaendig ausserhalb der Raumgrenzen ist.
+**Beschreibung:** Löst aus, wenn die Instanz vollständig außerhalb der Raumgrenzen ist.
 
-**Haeufige Verwendungen:**
-- Kugeln ausserhalb des Bildschirms zerstoeren
+**Häufige Verwendungen:**
+- Kugeln außerhalb des Bildschirms zerstören
 - Auf die andere Seite wechseln
-- Game Over ausloesen
+- Game Over auslösen
 
 ---
 
@@ -383,11 +415,11 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Andere |
 | **Preset** | Experte |
 
-**Beschreibung:** Loest aus, wenn die Instanz die Raumgrenze beruehrt.
+**Beschreibung:** Löst aus, wenn die Instanz die Raumgrenze berührt.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Spieler in Grenzen halten
-- Von Raendern abprallen
+- Von Rändern abprallen
 
 ---
 
@@ -399,9 +431,9 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Andere |
 | **Preset** | Fortgeschritten |
 
-**Beschreibung:** Loest aus, wenn Leben 0 oder weniger werden.
+**Beschreibung:** Löst aus, wenn Leben 0 oder weniger werden.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Game-Over-Bildschirm
 - Spiel neu starten
 - Endpunktestand anzeigen
@@ -416,26 +448,43 @@ Diese Seite dokumentiert alle verfuegbaren Ereignisse in PyGameMaker. Ereignisse
 | **Kategorie** | Andere |
 | **Preset** | Fortgeschritten |
 
-**Beschreibung:** Loest aus, wenn Gesundheit 0 oder weniger wird.
+**Beschreibung:** Löst aus, wenn Gesundheit 0 oder weniger wird.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Ein Leben verlieren
 - Spieler respawnen
-- Todesanimation ausloesen
+- Todesanimation auslösen
 
 ---
 
-## Ereignis-Ausfuehrungsreihenfolge
+### Animation End
+| Eigenschaft | Wert |
+|-------------|------|
+| **Name** | `animation_end` |
+| **Symbol** | 🎞️ |
+| **Kategorie** | Andere |
+| **Preset** | Experte |
 
-Das Verstaendnis, wann Ereignisse ausloesen, hilft dabei, vorhersehbares Spielverhalten zu erstellen:
+**Beschreibung:** Löst aus, wenn die Sprite-Animation der Instanz einen vollständigen Zyklus abschließt (vom letzten Bild zurück zum ersten springt).
 
-1. **Begin Step** - Anfang des Frames
-2. **Alarm** - Alle ausgeloesten Alarme
-3. **Keyboard/Mouse** - Eingabeereignisse
-4. **Step** - Haupt-Spiellogik
-5. **Collision** - Nach Bewegung
-6. **End Step** - Nach Kollisionen
-7. **Draw** - Renderphase
+**Häufige Verwendungen:**
+- Einen einmaligen Effekt (Explosion) nach einmaligem Abspielen zerstören
+- Zu einer anderen Animation wechseln, wenn die aktuelle endet
+- Eine Zustandsmaschine bei Animationsende weiterschalten
+
+---
+
+## Ereignis-Ausführungsreihenfolge
+
+Das Verständnis, wann Ereignisse auslösen, hilft dabei, vorhersehbares Spielverhalten zu erstellen:
+
+1. **Begin Step** — Anfang des Frames
+2. **Alarm** — Alle ausgelösten Alarme
+3. **Keyboard/Mouse** — Eingabeereignisse
+4. **Step** — Haupt-Spiellogik
+5. **Collision** — Nach Bewegung
+6. **End Step** — Nach Kollisionen
+7. **Draw** — Renderphase
 
 ---
 
@@ -443,7 +492,7 @@ Das Verstaendnis, wann Ereignisse ausloesen, hilft dabei, vorhersehbares Spielve
 
 | Preset | Enthaltene Ereignisse |
 |--------|----------------------|
-| **Anfaenger** | Create, Step, Keyboard Press, Collision |
+| **Anfänger** | Create, Step, Keyboard Press, Collision |
 | **Fortgeschritten** | + Draw, Destroy, Mouse, Alarm |
 | **Experte** | + Alle Tastaturvarianten, Begin/End Step, Raum-Ereignisse, Spiel-Ereignisse, Grenzereignisse |
 
@@ -451,7 +500,7 @@ Das Verstaendnis, wann Ereignisse ausloesen, hilft dabei, vorhersehbares Spielve
 
 ## Siehe Auch
 
-- [Vollstaendige Aktionsreferenz](Full-Action-Reference_de) - Vollstaendige Aktionsliste
-- [Anfaenger-Preset](Beginner-Preset_de) - Wesentliche Ereignisse fuer Anfaenger
-- [Fortgeschrittenen-Preset](Intermediate-Preset_de) - Zusaetzliche Ereignisse
-- [Ereignisse und Aktionen](Events-and-Actions_de) - Ueberblick ueber Kernkonzepte
+- [Vollständige Aktionsreferenz](Full-Action-Reference_de) - Vollständige Aktionsliste
+- [Anfänger-Preset](Beginner-Preset_de) - Wesentliche Ereignisse für Anfänger
+- [Fortgeschrittenen-Preset](Intermediate-Preset_de) - Zusätzliche Ereignisse
+- [Ereignisse und Aktionen](Events_und_Aktionen_de) - Überblick über Kernkonzepte
