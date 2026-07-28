@@ -22,6 +22,7 @@ This page lists all **109** actions available in PyGameMaker, exactly as they ap
 
 ---
 
+<a id="movement"></a>
 ## Movement
 
 ### Bounce
@@ -306,6 +307,7 @@ Wrap to opposite side of the room
 
 ---
 
+<a id="instance"></a>
 ## Instance
 
 ### Change Instance
@@ -495,6 +497,7 @@ Conditional: compare the number of instances of an object
 
 ---
 
+<a id="score"></a>
 ## Score
 
 ### Clear High-Score Table
@@ -672,6 +675,7 @@ Conditional: compare the score against a value
 
 ---
 
+<a id="room"></a>
 ## Room
 
 ### Check Room
@@ -798,6 +802,7 @@ Set the game window's title caption
 
 ---
 
+<a id="timing"></a>
 ## Timing
 
 ### Set Alarm
@@ -831,6 +836,7 @@ Pause the game for a number of milliseconds, then continue. Sounds keep playing 
 
 ---
 
+<a id="audio"></a>
 ## Audio
 
 ### Check Sound Playing
@@ -921,6 +927,7 @@ Stop a playing sound
 
 ---
 
+<a id="game"></a>
 ## Game
 
 ### Draw Arrow
@@ -1240,6 +1247,7 @@ Display a message
 
 ---
 
+<a id="control"></a>
 ## Control
 
 ### Check Empty
@@ -1528,6 +1536,7 @@ Test an instance or global variable value
 
 ---
 
+<a id="grid"></a>
 ## Grid
 
 ### If On Grid
@@ -1591,6 +1600,7 @@ Conditional: true if the instance is aligned to a grid
 
 ---
 
+<a id="views"></a>
 ## Views
 
 ### Enable Views
@@ -1637,6 +1647,7 @@ Configure a camera view: which part of the room it shows, where on screen it dra
 
 ---
 
+<a id="3d-view"></a>
 ## 3D View
 
 ### Draw DOOM HUD
