@@ -56,18 +56,26 @@ class HTML5Exporter:
             from events.plugin_loader import (
                 list_available_extensions, get_extension_directory)
             ext_dir = get_extension_directory()
-            parts = []
-            for info in list_available_extensions():
-                if not info.get("enabled", True):
-                    continue
-                js_file = ext_dir / info["folder"] / "export_html5.js"
-                if js_file.exists():
-                    parts.append(f"// --- extension: {info['folder']} ---\n"
-                                 + js_file.read_text(encoding="utf-8"))
-            return "\n".join(parts)
         except Exception as exc:  # never let extension collection break export
-            logger.warning(f"Could not collect extension JS: {exc}")
+            logger.warning(f"Could not enumerate extensions for JS: {exc}")
             return ""
+        parts = []
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            js_file = ext_dir / info["folder"] / "export_html5.js"
+            if not js_file.exists():
+                continue
+            # Per-extension guard: one unreadable extension must not silently
+            # drop EVERY extension's JS from the exported engine.
+            try:
+                parts.append(f"// --- extension: {info['folder']} ---\n"
+                             + js_file.read_text(encoding="utf-8"))
+            except Exception as exc:
+                logger.error(
+                    f"Extension '{info['folder']}' export_html5.js could not be "
+                    f"read; it is missing from the export: {exc}")
+        return "\n".join(parts)
 
     def export(self, project_path: Path, output_path: Path) -> bool:
             """Export project to HTML5"""
