@@ -18,9 +18,9 @@ PyGameMaker verwendet **Voreinstellungen**, um zu steuern, welche Ereignisse und
 
 | Voreinstellung | Geeignet Für | Funktionen |
 |----------------|--------------|------------|
-| [**Anfänger**](Beginner-Preset_de) | Neu in der Spieleentwicklung | 4 Ereignisse, 17 Aktionen - Bewegung, Kollisionen, Punktzahl, Räume |
-| [**Fortgeschritten**](Intermediate-Preset_de) | Einige Erfahrung | +4 Ereignisse, +12 Aktionen - Leben, Gesundheit, Sound, Alarme, Zeichnen |
-| **Experte** | Erfahrene Benutzer | Alle 40+ Ereignisse und Aktionen verfügbar |
+| [**Anfänger**](Beginner-Preset_de) | Neu in der Spieleentwicklung | Grundlagen — Bewegung, Kollisionen, Punktzahl, Räume |
+| [**Fortgeschritten**](Intermediate-Preset_de) | Einige Erfahrung | Ergänzt Leben, Gesundheit, Sound, Alarme, Zeichnen |
+| **Experte (Vollständig)** | Erfahrene Benutzer | Alles — alle 37 Ereignisse und 109 Aktionen |
 
 **Neue Benutzer:** Beginnen Sie mit der [Anfänger-Voreinstellung](Beginner-Preset_de), um die Grundlagen zu lernen, ohne überfordert zu werden.
 
@@ -35,10 +35,11 @@ Siehe den [Voreinstellungs-Leitfaden](Preset-Guide_de) für einen vollständigen
 | **Visuelle Programmierung** | Drag-and-Drop-Codierung mit Google Blockly 12.x |
 | **Ereignis-Aktions-System** | GameMaker 7.0 kompatible ereignisgesteuerte Logik |
 | **Fähigkeitsbasierte Voreinstellungen** | Anfänger-, Fortgeschrittenen- und Experten-Funktionssets |
-| **Multi-Plattform-Export** | Windows EXE, HTML5, Linux, Kivy (mobil/Desktop) |
+| **2.5D- / First-Person-Ansicht** | Optionales Raycast-Rendering im Doom/Wolfenstein-Stil — siehe [3D-Ansicht](3D-View_de) |
+| **Multi-Plattform-Export** | Windows EXE, macOS-App, HTML5, Linux, Kivy (mobil/Desktop) |
 | **Asset-Verwaltung** | Sprites, Sounds, Hintergründe, Schriften und Räume |
 | **Mehrsprachige UI** | Englisch, Französisch, Deutsch, Italienisch, Spanisch, Portugiesisch, Slowenisch, Ukrainisch, Russisch |
-| **Erweiterbar** | Plugin-System für benutzerdefinierte Ereignisse und Aktionen |
+| **Erweiterbar** | [Erweiterungs-](Extensions_de) und Plugin-System für benutzerdefinierte Aktionen und Renderer |
 
 ---
 
@@ -96,14 +97,15 @@ Auslöser, die Aktionen ausführen, wenn bestimmte Bedingungen eintreten:
 Siehe die [Ereignis-Referenz](Event-Reference_de) für vollständige Dokumentation.
 
 ### Aktionen
-Operationen, die ausgeführt werden, wenn Ereignisse ausgelöst werden. 40+ eingebaute Aktionen für:
+Operationen, die ausgeführt werden, wenn Ereignisse ausgelöst werden. **109** eingebaute Aktionen für:
 - Bewegung und Physik
 - Zeichnen und Sprites
 - Punktzahl, Leben und Gesundheit
 - Sound und Musik
 - Instanz- und Raumverwaltung
+- 3D-Ansicht (First-Person-Raycast-Rendering)
 
-Siehe die [Vollständige Aktions-Referenz](Full-Action-Reference_de) für vollständige Dokumentation.
+Siehe die [Vollständige Aktions-Referenz](Full-Action-Reference_de) für die vollständige, stets aktuelle Liste.
 
 ### Räume
 Spiellevel, in denen Sie Objektinstanzen platzieren, Hintergründe festlegen und den Spielbereich definieren.
@@ -132,6 +134,9 @@ PyGameMaker integriert Google Blockly für visuelle Programmierung. Blöcke sind
 ### Windows EXE
 Eigenständige Windows-Executables mit PyInstaller. Kein Python auf dem Zielrechner erforderlich.
 
+### macOS-App
+Native `.app`-Bundles für macOS über PyInstaller.
+
 ### HTML5
 Einzeldatei-Webspiele, die in jedem modernen Browser laufen. Mit gzip komprimiert für schnelles Laden.
 
@@ -140,6 +145,10 @@ Native Linux-Executables für Python 3.10+ Umgebungen.
 
 ### Kivy
 Plattformübergreifende Apps für Mobil (iOS/Android) und Desktop über Buildozer.
+
+Siehe [Spiele Exportieren](Spiele_Exportieren_de) für Details, und beachten Sie,
+dass jede Aktion, die ein Ziel nicht reproduzieren kann, nach dem Export gemeldet
+wird (niemals stillschweigend verworfen).
 
 ---
 
@@ -170,12 +179,16 @@ projektname/
 - [Ereignis-Referenz](Event-Reference_de) - Vollständige Ereignisdokumentation
 - [Vollständige Aktions-Referenz](Full-Action-Reference_de) - Vollständige Aktionsdokumentation
 
+### Erweiterte Funktionen
+- [3D-Ansicht](3D-View_de) - First-Person-Rendering im Doom-Stil (Raycast)
+- [Erweiterungen](Extensions_de) - Zusätzliche Aktionen und Renderer (wie die 3D-Ansicht ausgeliefert wird)
+
 ### Tutorials & Anleitungen
 - [**Tutorials**](Tutorials_de) - Alle Tutorials an einem Ort
 - [Erste Schritte](Erste_Schritte_de) - Erste Schritte mit PyGameMaker
 - [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial-Durchgang
 - [Pong Tutorial](Tutorial-Pong_de) - Erstellen Sie ein klassisches Zwei-Spieler Pong-Spiel
-- [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Casse-Briques Spiel
+- [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Breakout-Spiel
 - [Sokoban Tutorial](Tutorial-Sokoban_de) - Erstellen Sie ein Kisten-Schiebe-Puzzlespiel
 - [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial
 - [Objekt-Editor](Objekt_Editor_de) - Arbeiten mit Spielobjekten

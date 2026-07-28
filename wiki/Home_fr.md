@@ -18,9 +18,9 @@ PyGameMaker utilise des **préréglages** pour contrôler quels événements et 
 
 | Préréglage | Idéal Pour | Fonctionnalités |
 |------------|------------|-----------------|
-| [**Débutant**](Beginner-Preset_fr) | Nouveaux en développement de jeux | 4 événements, 17 actions - Mouvement, collisions, score, salles |
-| [**Intermédiaire**](Intermediate-Preset_fr) | Quelques connaissances | +4 événements, +12 actions - Vies, santé, son, alarmes, dessin |
-| **Avancé** | Utilisateurs expérimentés | Tous les 40+ événements et actions disponibles |
+| [**Débutant**](Beginner-Preset_fr) | Nouveaux en développement de jeux | L'essentiel — mouvement, collisions, score, salles |
+| [**Intermédiaire**](Intermediate-Preset_fr) | Quelques connaissances | Ajoute vies, santé, son, alarmes, dessin |
+| **Avancé (Complet)** | Utilisateurs expérimentés | Tout — les 37 événements et 109 actions |
 
 **Nouveaux utilisateurs:** Commencez avec le [Préréglage Débutant](Beginner-Preset_fr) pour apprendre les bases sans être submergé.
 
@@ -35,10 +35,11 @@ Consultez le [Guide des Préréglages](Preset-Guide_fr) pour un aperçu complet 
 | **Programmation Visuelle** | Codage par glisser-déposer avec Google Blockly 12.x |
 | **Système Événements-Actions** | Logique événementielle compatible GameMaker 7.0 |
 | **Préréglages par Niveau** | Ensembles de fonctionnalités Débutant, Intermédiaire et Avancé |
-| **Export Multi-Plateforme** | Windows EXE, HTML5, Linux, Kivy (mobile/bureau) |
+| **Vue 2.5D / Première personne** | Rendu optionnel par lancer de rayons façon Doom/Wolfenstein — voir [Vue 3D](3D-View_fr) |
+| **Export Multi-Plateforme** | Windows EXE, application macOS, HTML5, Linux, Kivy (mobile/bureau) |
 | **Gestion des Ressources** | Sprites, sons, arrière-plans, polices et salles |
 | **Interface Multilingue** | Anglais, Français, Allemand, Italien, Espagnol, Portugais, Slovène, Ukrainien, Russe |
-| **Extensible** | Système de plugins pour événements et actions personnalisés |
+| **Extensible** | Système d'[extensions](Extensions_fr) et de plugins pour actions et moteurs de rendu personnalisés |
 
 ---
 
@@ -96,14 +97,15 @@ Déclencheurs qui exécutent des actions lorsque des conditions spécifiques se 
 Consultez la [Référence des Événements](Event-Reference_fr) pour la documentation complète.
 
 ### Actions
-Opérations effectuées quand les événements se déclenchent. 40+ actions intégrées pour:
+Opérations effectuées quand les événements se déclenchent. **109** actions intégrées pour:
 - Mouvement et physique
 - Dessin et sprites
 - Score, vies et santé
 - Son et musique
 - Gestion des instances et salles
+- Vue 3D (rendu à la première personne par lancer de rayons)
 
-Consultez la [Référence Complète des Actions](Full-Action-Reference_fr) pour la documentation complète.
+Consultez la [Référence Complète des Actions](Full-Action-Reference_fr) pour la liste complète et toujours à jour.
 
 ### Salles
 Niveaux de jeu où vous placez les instances d'objets, définissez les arrière-plans et la zone de jeu.
@@ -132,6 +134,9 @@ PyGameMaker intègre Google Blockly pour la programmation visuelle. Les blocs so
 ### Windows EXE
 Exécutables Windows autonomes utilisant PyInstaller. Aucun Python requis sur la machine cible.
 
+### Application macOS
+Paquets `.app` natifs pour macOS via PyInstaller.
+
 ### HTML5
 Jeux web mono-fichier qui fonctionnent dans tout navigateur moderne. Compressés avec gzip pour un chargement rapide.
 
@@ -140,6 +145,10 @@ Exécutables Linux natifs pour environnements Python 3.10+.
 
 ### Kivy
 Applications multiplateformes pour mobile (iOS/Android) et bureau via Buildozer.
+
+Consultez [Exporter des Jeux](Exportation_fr) pour les détails, et notez que toute
+action qu'une cible ne peut pas reproduire est signalée après l'export (jamais
+supprimée silencieusement).
 
 ---
 
@@ -169,6 +178,10 @@ nom_du_projet/
 - [Préréglage Intermédiaire](Intermediate-Preset_fr) - Fonctionnalités supplémentaires
 - [Référence des Événements](Event-Reference_fr) - Documentation complète des événements
 - [Référence des Actions](Full-Action-Reference_fr) - Documentation complète des actions
+
+### Fonctionnalités Avancées
+- [Vue 3D](3D-View_fr) - Rendu à la première personne façon Doom (lancer de rayons)
+- [Extensions](Extensions_fr) - Actions et moteurs de rendu additionnels (comment la Vue 3D est fournie)
 
 ### Tutoriels et Guides
 - [**Tutoriels**](Tutorials_fr) - Tous les tutoriels en un seul endroit
