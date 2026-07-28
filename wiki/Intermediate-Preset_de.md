@@ -1,19 +1,19 @@
 # Mittelstufen-Preset
 
-*[Startseite](Home_de) | [Preset-Leitfaden](Preset-Guide_de) | [Anfaenger-Preset](Beginner-Preset_de)*
+*[Startseite](Home_de) | [Voreinstellungs-Leitfaden](Preset-Guide_de) | [Anfänger-Preset](Beginner-Preset_de)*
 
-Das **Mittelstufen**-Preset baut auf dem [Anfaenger-Preset](Beginner-Preset_de) auf, indem es fortgeschrittenere Ereignisse und Aktionen hinzufuegt. Es ist fuer Benutzer konzipiert, die die Grundlagen beherrschen und komplexere Spiele mit Funktionen wie zeitgesteuerten Ereignissen, Sound, Leben und Gesundheitssystemen erstellen moechten.
+Das **Mittelstufen**-Preset baut auf dem [Anfänger-Preset](Beginner-Preset_de) auf, indem es fortgeschrittenere Ereignisse und Aktionen hinzufügt. Es ist für Benutzer konzipiert, die die Grundlagen beherrschen und komplexere Spiele mit Funktionen wie zeitgesteuerten Ereignissen, Sound, Leben und Gesundheitssystemen erstellen möchten.
 
-## Uebersicht
+## Übersicht
 
-Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
-- **4 Zusaetzliche Ereignistypen** - Zeichnen, Zerstoeren, Maus, Alarm
-- **12 Zusaetzliche Aktionstypen** - Leben, Gesundheit, Sound, Zeitsteuerung und mehr Bewegungsoptionen
-- **3 Zusaetzliche Kategorien** - Zeitsteuerung, Sound, Zeichnen
+Das Mittelstufen-Preset enthält alles vom Anfänger-Preset, plus:
+- **4 Zusätzliche Ereignistypen** - Zeichnen, Zerstören, Maus, Alarm
+- **12 Zusätzliche Aktionstypen** - Leben, Gesundheit, Sound, Zeitsteuerung und mehr Bewegungsoptionen
+- **3 Zusätzliche Kategorien** - Zeitsteuerung, Sound, Zeichnen
 
 ---
 
-## Zusaetzliche Ereignisse (Ueber Anfaenger hinaus)
+## Zusätzliche Ereignisse (Über Anfänger hinaus)
 
 ### Zeichen-Ereignis
 | Eigenschaft | Wert |
@@ -21,13 +21,13 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | **Blockname** | `event_draw` |
 | **Kategorie** | Zeichnen |
 | **Symbol** | 🎨 |
-| **Beschreibung** | Wird ausgeloest, wenn das Objekt gerendert werden muss |
+| **Beschreibung** | Wird ausgelöst, wenn das Objekt gerendert werden muss |
 
-**Wann es ausgeloest wird:** Jeden Frame waehrend der Zeichenphase, nach allen Step-Ereignissen.
+**Wann es ausgelöst wird:** Jeden Frame während der Zeichenphase, nach allen Step-Ereignissen.
 
-**Wichtig:** Wenn Sie ein Zeichen-Ereignis hinzufuegen, wird das standardmaessige Sprite-Zeichnen deaktiviert. Sie muessen das Sprite manuell zeichnen, wenn es sichtbar sein soll.
+**Wichtig:** Wenn Sie ein Zeichen-Ereignis hinzufügen, wird das standardmäßige Sprite-Zeichnen deaktiviert. Sie müssen das Sprite manuell zeichnen, wenn es sichtbar sein soll.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Benutzerdefiniertes Rendering
 - Gesundheitsbalken zeichnen
 - Text anzeigen
@@ -36,19 +36,19 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 
 ---
 
-### Zerstoeren-Ereignis
+### Zerstören-Ereignis
 | Eigenschaft | Wert |
 |-------------|------|
 | **Blockname** | `event_destroy` |
 | **Kategorie** | Objekt |
 | **Symbol** | 💥 |
-| **Beschreibung** | Wird ausgeloest, wenn die Instanz zerstoert wird |
+| **Beschreibung** | Wird ausgelöst, wenn die Instanz zerstört wird |
 
-**Wann es ausgeloest wird:** Kurz bevor die Instanz aus dem Spiel entfernt wird.
+**Wann es ausgelöst wird:** Kurz bevor die Instanz aus dem Spiel entfernt wird.
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Explosionseffekte erstellen
-- Gegenstaende fallen lassen
+- Gegenstände fallen lassen
 - Todes-Sound abspielen
 - Punktestand aktualisieren
 - Partikel erzeugen
@@ -61,21 +61,21 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | **Blockname** | `event_mouse` |
 | **Kategorie** | Eingabe |
 | **Symbol** | 🖱️ |
-| **Beschreibung** | Wird bei Mausinteraktionen ausgeloest |
+| **Beschreibung** | Wird bei Mausinteraktionen ausgelöst |
 
 **Arten von Maus-Ereignissen:**
-- Linke Taste (Druecken, Loslassen, Gehalten)
-- Rechte Taste (Druecken, Loslassen, Gehalten)
-- Mittlere Taste (Druecken, Loslassen, Gehalten)
+- Linke Taste (Drücken, Loslassen, Gehalten)
+- Rechte Taste (Drücken, Loslassen, Gehalten)
+- Mittlere Taste (Drücken, Loslassen, Gehalten)
 - Maus betreten (Cursor betritt Instanz)
-- Maus verlassen (Cursor verlaesst Instanz)
-- Globale Maus-Ereignisse (ueberall auf dem Bildschirm)
+- Maus verlassen (Cursor verlässt Instanz)
+- Globale Maus-Ereignisse (überall auf dem Bildschirm)
 
-**Haeufige Verwendungen:**
-- Klickbare Schaltflaechen
+**Häufige Verwendungen:**
+- Klickbare Schaltflächen
 - Drag and Drop
 - Hover-Effekte
-- Menuinteraktionen
+- Menüinteraktionen
 
 ---
 
@@ -85,22 +85,22 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | **Blockname** | `event_alarm` |
 | **Kategorie** | Zeitsteuerung |
 | **Symbol** | ⏰ |
-| **Beschreibung** | Wird ausgeloest, wenn ein Alarm-Timer null erreicht |
+| **Beschreibung** | Wird ausgelöst, wenn ein Alarm-Timer null erreicht |
 
-**Wann es ausgeloest wird:** Wenn der entsprechende Alarm-Countdown 0 erreicht.
+**Wann es ausgelöst wird:** Wenn der entsprechende Alarm-Countdown 0 erreicht.
 
-**Verfuegbare Alarme:** 12 unabhaengige Alarme (0-11)
+**Verfügbare Alarme:** 12 unabhängige Alarme (0-11)
 
-**Haeufige Verwendungen:**
+**Häufige Verwendungen:**
 - Zeitgesteuertes Spawnen
-- Verzoegerte Aktionen
+- Verzögerte Aktionen
 - Abklingzeiten
 - Animations-Timing
 - Periodische Ereignisse
 
 ---
 
-## Zusaetzliche Aktionen (Ueber Anfaenger hinaus)
+## Zusätzliche Aktionen (Über Anfänger hinaus)
 
 ### Bewegungsaktionen
 
@@ -124,8 +124,8 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 #### Auf Punkt zubewegen
 | Eigenschaft | Wert |
 |-------------|------|
-| **Aktionsname** | `move_towards` |
-| **Blockname** | `move_towards` |
+| **Aktionsname** | `move_towards_point` |
+| **Blockname** | `move_towards_point` |
 | **Kategorie** | Bewegung |
 
 **Beschreibung:** Auf eine bestimmte Position zubewegen.
@@ -149,15 +149,15 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | **Kategorie** | Zeitsteuerung |
 | **Symbol** | ⏰ |
 
-**Beschreibung:** Einen Alarm setzen, der nach einer Anzahl von Schritten ausgeloest wird.
+**Beschreibung:** Einen Alarm setzen, der nach einer Anzahl von Schritten ausgelöst wird.
 
 **Parameter:**
 | Parameter | Typ | Beschreibung |
 |-----------|-----|--------------|
 | `alarm` | Zahl | Alarmnummer (0-11) |
-| `steps` | Zahl | Schritte bis zum Ausloesen des Alarms (bei 60 FPS, 60 Schritte = 1 Sekunde) |
+| `steps` | Zahl | Schritte bis zum Auslösen des Alarms (bei 60 FPS, 60 Schritte = 1 Sekunde) |
 
-**Beispiel:** Alarm 0 auf 180 Schritte setzen fuer eine 3-Sekunden-Verzoegerung.
+**Beispiel:** Alarm 0 auf 180 Schritte setzen für eine 3-Sekunden-Verzögerung.
 
 ---
 
@@ -181,7 +181,7 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 
 ---
 
-#### Leben hinzufuegen
+#### Leben hinzufügen
 | Eigenschaft | Wert |
 |-------------|------|
 | **Aktionsname** | `add_lives` |
@@ -189,14 +189,14 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | **Kategorie** | Score/Leben/Gesundheit |
 | **Symbol** | ➕❤️ |
 
-**Beschreibung:** Leben hinzufuegen oder abziehen.
+**Beschreibung:** Leben hinzufügen oder abziehen.
 
 **Parameter:**
 | Parameter | Typ | Beschreibung |
 |-----------|-----|--------------|
-| `value` | Zahl | Menge zum Hinzufuegen (negativ zum Abziehen) |
+| `value` | Zahl | Menge zum Hinzufügen (negativ zum Abziehen) |
 
-**Hinweis:** Wenn die Leben 0 erreichen, wird das `no_more_lives`-Ereignis ausgeloest.
+**Hinweis:** Wenn die Leben 0 erreichen, wird das `no_more_lives`-Ereignis ausgelöst.
 
 ---
 
@@ -239,7 +239,7 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 
 ---
 
-#### Gesundheit hinzufuegen
+#### Gesundheit hinzufügen
 | Eigenschaft | Wert |
 |-------------|------|
 | **Aktionsname** | `add_health` |
@@ -247,14 +247,14 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | **Kategorie** | Score/Leben/Gesundheit |
 | **Symbol** | ➕💚 |
 
-**Beschreibung:** Gesundheit hinzufuegen oder abziehen.
+**Beschreibung:** Gesundheit hinzufügen oder abziehen.
 
 **Parameter:**
 | Parameter | Typ | Beschreibung |
 |-----------|-----|--------------|
-| `value` | Zahl | Menge zum Hinzufuegen (negativ fuer Schaden) |
+| `value` | Zahl | Menge zum Hinzufügen (negativ für Schaden) |
 
-**Hinweis:** Wenn die Gesundheit 0 erreicht, wird das `no_more_health`-Ereignis ausgeloest.
+**Hinweis:** Wenn die Gesundheit 0 erreicht, wird das `no_more_health`-Ereignis ausgelöst.
 
 ---
 
@@ -314,7 +314,7 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 | Parameter | Typ | Beschreibung |
 |-----------|-----|--------------|
 | `sound` | Sound | Abzuspielende Musik-Ressource |
-| `loop` | Boolean | Ob wiederholt werden soll (normalerweise wahr fuer Musik) |
+| `loop` | Boolean | Ob wiederholt werden soll (normalerweise wahr für Musik) |
 
 ---
 
@@ -332,7 +332,7 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 
 ---
 
-## Vollstaendige Funktionsliste
+## Vollständige Funktionsliste
 
 ### Ereignisse im Mittelstufen-Preset
 
@@ -340,18 +340,18 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 |----------|-----------|--------------|
 | Create | Objekt | Instanz erstellt |
 | Step | Objekt | Jeden Frame |
-| Destroy | Objekt | Instanz zerstoert |
+| Destroy | Objekt | Instanz zerstört |
 | Draw | Zeichnen | Renderphase |
-| Keyboard Press | Eingabe | Taste einmal gedrueckt |
+| Keyboard Press | Eingabe | Taste einmal gedrückt |
 | Mouse | Eingabe | Mausinteraktionen |
-| Collision | Kollision | Instanz-Ueberlappung |
+| Collision | Kollision | Instanz-Überlappung |
 | Alarm | Zeitsteuerung | Timer erreichte null |
 
 ### Aktionen im Mittelstufen-Preset
 
 | Kategorie | Aktionen |
 |-----------|----------|
-| **Bewegung** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Bewegung** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Instanz** | Create, Destroy |
 | **Score** | Set Score, Add Score, Draw Score |
 | **Leben** | Set Lives, Add Lives, Draw Lives |
@@ -401,15 +401,15 @@ Das Mittelstufen-Preset enthaelt alles vom Anfaenger-Preset, plus:
 
 ## Upgrade auf Fortgeschrittene Presets
 
-Wenn Sie mehr Funktionen benoetigen, erwaegen Sie:
+Wenn Sie mehr Funktionen benötigen, erwägen Sie:
 - **Platformer-Preset** - Schwerkraft, Springen, Plattform-Mechaniken
-- **Vollstaendiges Preset** - Alle verfuegbaren Ereignisse und Aktionen
+- **Vollständiges Preset** - Alle verfügbaren Ereignisse und Aktionen
 
 ---
 
 ## Siehe Auch
 
-- [Anfaenger-Preset](Beginner-Preset_de) - Beginnen Sie hier, wenn Sie neu sind
-- [Vollstaendige Aktionsreferenz](Full-Action-Reference_de) - Vollstaendige Aktionsliste
-- [Ereignisreferenz](Event-Reference_de) - Vollstaendige Ereignisliste
-- [Ereignisse und Aktionen](Events-and-Actions_de) - Kernkonzepte
+- [Anfänger-Preset](Beginner-Preset_de) - Beginnen Sie hier, wenn Sie neu sind
+- [Vollständige Aktionsreferenz](Full-Action-Reference_de) - Vollständige Aktionsliste
+- [Ereignisreferenz](Event-Reference_de) - Vollständige Ereignisliste
+- [Ereignisse und Aktionen](Events_und_Aktionen_de) - Kernkonzepte

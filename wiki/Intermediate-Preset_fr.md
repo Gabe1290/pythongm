@@ -1,361 +1,361 @@
-# Preset Intermediaire
+# Préréglage Intermédiaire
 
-*[Accueil](Home_fr) | [Guide des Presets](Preset-Guide_fr) | [Preset Debutant](Beginner-Preset_fr)*
+*[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | [Préréglage Débutant](Beginner-Preset_fr)*
 
-Le preset **Intermediaire** s'appuie sur le [Preset Debutant](Beginner-Preset_fr) en ajoutant des evenements et des actions plus avances. Il est concu pour les utilisateurs qui ont maitrise les bases et souhaitent creer des jeux plus complexes avec des fonctionnalites telles que des evenements programmes, du son, des vies et des systemes de sante.
+Le préréglage **Intermédiaire** s'appuie sur le [Préréglage Débutant](Beginner-Preset_fr) en ajoutant des événements et des actions plus avancés. Il est conçu pour les utilisateurs qui ont maîtrisé les bases et souhaitent créer des jeux plus complexes avec des fonctionnalités telles que des événements programmés, du son, des vies et des systèmes de santé.
 
-## Apercu
+## Aperçu
 
-Le preset Intermediaire inclut tout ce qui se trouve dans le preset Debutant, plus :
-- **4 Types d'Evenements Supplementaires** - Dessin, Destruction, Souris, Alarme
-- **12 Types d'Actions Supplementaires** - Vies, Sante, Son, Minuterie et plus d'options de mouvement
-- **3 Categories Supplementaires** - Minuterie, Son, Dessin
+Le préréglage Intermédiaire inclut tout ce qui se trouve dans le préréglage Débutant, plus :
+- **4 Types d'Événements Supplémentaires** - Dessin, Destruction, Souris, Alarme
+- **12 Types d'Actions Supplémentaires** - Vies, Santé, Son, Minuterie et plus d'options de mouvement
+- **3 Catégories Supplémentaires** - Minuterie, Son, Dessin
 
 ---
 
-## Evenements Supplementaires (Au-dela du Debutant)
+## Événements Supplémentaires (Au-delà du Débutant)
 
-### Evenement Dessin
-| Propriete | Valeur |
+### Événement Dessin
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_draw` |
-| **Categorie** | Dessin |
-| **Icone** | 🎨 |
-| **Description** | Declenche lorsque l'objet doit etre rendu |
+| **Catégorie** | Dessin |
+| **Icône** | 🎨 |
+| **Description** | Se déclenche lorsque l'objet doit être rendu |
 
-**Quand il se declenche :** A chaque image pendant la phase de dessin, apres tous les evenements step.
+**Quand il se déclenche :** À chaque image pendant la phase de dessin, après tous les événements step.
 
-**Important :** Lorsque vous ajoutez un evenement Dessin, le dessin par defaut du sprite est desactive. Vous devez dessiner manuellement le sprite si vous voulez qu'il soit visible.
+**Important :** Lorsque vous ajoutez un événement Dessin, le dessin par défaut du sprite est désactivé. Vous devez dessiner manuellement le sprite si vous voulez qu'il soit visible.
 
 **Utilisations courantes :**
-- Rendu personnalise
-- Dessiner des barres de sante
+- Rendu personnalisé
+- Dessiner des barres de santé
 - Afficher du texte
 - Dessiner des formes et des effets
-- Elements d'interface
+- Éléments d'interface
 
 ---
 
-### Evenement Destruction
-| Propriete | Valeur |
+### Événement Destruction
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_destroy` |
-| **Categorie** | Objet |
-| **Icone** | 💥 |
-| **Description** | Declenche lorsque l'instance est detruite |
+| **Catégorie** | Objet |
+| **Icône** | 💥 |
+| **Description** | Se déclenche lorsque l'instance est détruite |
 
-**Quand il se declenche :** Juste avant que l'instance soit retiree du jeu.
+**Quand il se déclenche :** Juste avant que l'instance soit retirée du jeu.
 
 **Utilisations courantes :**
-- Creer des effets d'explosion
-- Lacher des objets
+- Créer des effets d'explosion
+- Lâcher des objets
 - Jouer un son de mort
-- Mettre a jour le score
-- Generer des particules
+- Mettre à jour le score
+- Générer des particules
 
 ---
 
-### Evenement Souris
-| Propriete | Valeur |
+### Événement Souris
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_mouse` |
-| **Categorie** | Entree |
-| **Icone** | 🖱️ |
-| **Description** | Declenche lors des interactions avec la souris |
+| **Catégorie** | Entrée |
+| **Icône** | 🖱️ |
+| **Description** | Se déclenche lors des interactions avec la souris |
 
-**Types d'evenements souris :**
-- Bouton gauche (pression, relachement, maintenu)
-- Bouton droit (pression, relachement, maintenu)
-- Bouton du milieu (pression, relachement, maintenu)
-- Entree de souris (le curseur entre dans l'instance)
+**Types d'événements souris :**
+- Bouton gauche (pression, relâchement, maintenu)
+- Bouton droit (pression, relâchement, maintenu)
+- Bouton du milieu (pression, relâchement, maintenu)
+- Entrée de souris (le curseur entre dans l'instance)
 - Sortie de souris (le curseur quitte l'instance)
-- Evenements souris globaux (n'importe ou sur l'ecran)
+- Événements souris globaux (n'importe où sur l'écran)
 
 **Utilisations courantes :**
 - Boutons cliquables
-- Glisser-deposer
+- Glisser-déposer
 - Effets de survol
 - Interactions de menu
 
 ---
 
-### Evenement Alarme
-| Propriete | Valeur |
+### Événement Alarme
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_alarm` |
-| **Categorie** | Minuterie |
-| **Icone** | ⏰ |
-| **Description** | Declenche lorsqu'un minuteur d'alarme atteint zero |
+| **Catégorie** | Minuterie |
+| **Icône** | ⏰ |
+| **Description** | Se déclenche lorsqu'un minuteur d'alarme atteint zéro |
 
-**Quand il se declenche :** Lorsque le compte a rebours de l'alarme correspondante atteint 0.
+**Quand il se déclenche :** Lorsque le compte à rebours de l'alarme correspondante atteint 0.
 
-**Alarmes disponibles :** 12 alarmes independantes (0-11)
+**Alarmes disponibles :** 12 alarmes indépendantes (0-11)
 
 **Utilisations courantes :**
-- Generation programmee
-- Actions retardees
+- Génération programmée
+- Actions retardées
 - Temps de recharge
 - Minutage d'animation
-- Evenements periodiques
+- Événements périodiques
 
 ---
 
-## Actions Supplementaires (Au-dela du Debutant)
+## Actions Supplémentaires (Au-delà du Débutant)
 
 ### Actions de Mouvement
 
-#### Deplacer dans une Direction
-| Propriete | Valeur |
+#### Déplacer dans une Direction
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `move_direction` |
 | **Nom du Bloc** | `move_direction` |
-| **Categorie** | Mouvement |
+| **Catégorie** | Mouvement |
 
-**Description :** Definir le mouvement en utilisant la direction (0-360 degres) et la vitesse.
+**Description :** Définir le mouvement en utilisant la direction (0-360 degrés) et la vitesse.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `direction` | Nombre | Direction en degres (0=droite, 90=haut, 180=gauche, 270=bas) |
-| `speed` | Nombre | Vitesse de deplacement |
+| `direction` | Nombre | Direction en degrés (0=droite, 90=haut, 180=gauche, 270=bas) |
+| `speed` | Nombre | Vitesse de déplacement |
 
 ---
 
-#### Deplacer Vers un Point
-| Propriete | Valeur |
+#### Déplacer Vers un Point
+| Propriété | Valeur |
 |-----------|--------|
-| **Nom de l'Action** | `move_towards` |
-| **Nom du Bloc** | `move_towards` |
-| **Categorie** | Mouvement |
+| **Nom de l'Action** | `move_towards_point` |
+| **Nom du Bloc** | `move_towards_point` |
+| **Catégorie** | Mouvement |
 
-**Description :** Se deplacer vers une position specifique.
+**Description :** Se déplacer vers une position spécifique.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `x` | Nombre/Expression | Coordonnee X cible |
-| `y` | Nombre/Expression | Coordonnee Y cible |
-| `speed` | Nombre | Vitesse de deplacement |
+| `x` | Nombre/Expression | Coordonnée X cible |
+| `y` | Nombre/Expression | Coordonnée Y cible |
+| `speed` | Nombre | Vitesse de déplacement |
 
 ---
 
 ### Actions de Minuterie
 
-#### Definir l'Alarme
-| Propriete | Valeur |
+#### Définir l'Alarme
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `set_alarm` |
 | **Nom du Bloc** | `set_alarm` |
-| **Categorie** | Minuterie |
-| **Icone** | ⏰ |
+| **Catégorie** | Minuterie |
+| **Icône** | ⏰ |
 
-**Description :** Definir une alarme pour se declencher apres un nombre d'etapes.
+**Description :** Définir une alarme pour se déclencher après un nombre d'étapes.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `alarm` | Nombre | Numero d'alarme (0-11) |
-| `steps` | Nombre | Etapes avant le declenchement de l'alarme (a 60 FPS, 60 etapes = 1 seconde) |
+| `alarm` | Nombre | Numéro d'alarme (0-11) |
+| `steps` | Nombre | Étapes avant le déclenchement de l'alarme (à 60 FPS, 60 étapes = 1 seconde) |
 
-**Exemple :** Definir l'alarme 0 a 180 etapes pour un delai de 3 secondes.
+**Exemple :** Définir l'alarme 0 à 180 étapes pour un délai de 3 secondes.
 
 ---
 
 ### Actions de Vies
 
-#### Definir les Vies
-| Propriete | Valeur |
+#### Définir les Vies
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `set_lives` |
 | **Nom du Bloc** | `lives_set` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | ❤️ |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | ❤️ |
 
-**Description :** Definir le nombre de vies.
+**Description :** Définir le nombre de vies.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
 | `value` | Nombre | Valeur des vies |
-| `relative` | Booleen | Si vrai, ajoute aux vies actuelles |
+| `relative` | Booléen | Si vrai, ajoute aux vies actuelles |
 
 ---
 
 #### Ajouter des Vies
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `add_lives` |
 | **Nom du Bloc** | `lives_add` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | ➕❤️ |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | ➕❤️ |
 
 **Description :** Ajouter ou soustraire des vies.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `value` | Nombre | Quantite a ajouter (negatif pour soustraire) |
+| `value` | Nombre | Quantité à ajouter (négatif pour soustraire) |
 
-**Note :** Lorsque les vies atteignent 0, l'evenement `no_more_lives` est declenche.
+**Note :** Lorsque les vies atteignent 0, l'événement `no_more_lives` est déclenché.
 
 ---
 
 #### Dessiner les Vies
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `draw_lives` |
 | **Nom du Bloc** | `draw_lives` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | 🖼️❤️ |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | 🖼️❤️ |
 
-**Description :** Afficher les vies a l'ecran.
+**Description :** Afficher les vies à l'écran.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
 | `x` | Nombre | Position X |
 | `y` | Nombre | Position Y |
-| `sprite` | Sprite | Sprite optionnel a utiliser comme icone de vie |
+| `sprite` | Sprite | Sprite optionnel à utiliser comme icône de vie |
 
 ---
 
-### Actions de Sante
+### Actions de Santé
 
-#### Definir la Sante
-| Propriete | Valeur |
+#### Définir la Santé
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `set_health` |
 | **Nom du Bloc** | `health_set` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | 💚 |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | 💚 |
 
-**Description :** Definir la valeur de sante (0-100).
+**Description :** Définir la valeur de santé (0-100).
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `value` | Nombre | Valeur de sante (0-100) |
-| `relative` | Booleen | Si vrai, ajoute a la sante actuelle |
+| `value` | Nombre | Valeur de santé (0-100) |
+| `relative` | Booléen | Si vrai, ajoute à la santé actuelle |
 
 ---
 
-#### Ajouter de la Sante
-| Propriete | Valeur |
+#### Ajouter de la Santé
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `add_health` |
 | **Nom du Bloc** | `health_add` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | ➕💚 |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | ➕💚 |
 
-**Description :** Ajouter ou soustraire de la sante.
+**Description :** Ajouter ou soustraire de la santé.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `value` | Nombre | Quantite a ajouter (negatif pour les degats) |
+| `value` | Nombre | Quantité à ajouter (négatif pour les dégâts) |
 
-**Note :** Lorsque la sante atteint 0, l'evenement `no_more_health` est declenche.
+**Note :** Lorsque la santé atteint 0, l'événement `no_more_health` est déclenché.
 
 ---
 
-#### Dessiner la Barre de Sante
-| Propriete | Valeur |
+#### Dessiner la Barre de Santé
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `draw_health_bar` |
 | **Nom du Bloc** | `draw_health_bar` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | 📊💚 |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | 📊💚 |
 
-**Description :** Dessiner une barre de sante a l'ecran.
+**Description :** Dessiner une barre de santé à l'écran.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
 | `x1` | Nombre | Position X gauche |
 | `y1` | Nombre | Position Y haut |
 | `x2` | Nombre | Position X droite |
 | `y2` | Nombre | Position Y bas |
 | `back_color` | Couleur | Couleur de fond |
-| `bar_color` | Couleur | Couleur de la barre de sante |
+| `bar_color` | Couleur | Couleur de la barre de santé |
 
 ---
 
 ### Actions Sonores
 
 #### Jouer un Son
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `play_sound` |
 | **Nom du Bloc** | `sound_play` |
-| **Categorie** | Son |
-| **Icone** | 🔊 |
+| **Catégorie** | Son |
+| **Icône** | 🔊 |
 
 **Description :** Jouer un effet sonore.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `sound` | Son | Ressource sonore a jouer |
-| `loop` | Booleen | Si le son doit etre en boucle |
+| `sound` | Son | Ressource sonore à jouer |
+| `loop` | Booléen | Si le son doit être en boucle |
 
 ---
 
 #### Jouer de la Musique
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `play_music` |
 | **Nom du Bloc** | `music_play` |
-| **Categorie** | Son |
-| **Icone** | 🎵 |
+| **Catégorie** | Son |
+| **Icône** | 🎵 |
 
 **Description :** Jouer de la musique de fond.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `sound` | Son | Ressource musicale a jouer |
-| `loop` | Booleen | Si la musique doit etre en boucle (generalement vrai pour la musique) |
+| `sound` | Son | Ressource musicale à jouer |
+| `loop` | Booléen | Si la musique doit être en boucle (généralement vrai pour la musique) |
 
 ---
 
-#### Arreter la Musique
-| Propriete | Valeur |
+#### Arrêter la Musique
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `stop_music` |
 | **Nom du Bloc** | `music_stop` |
-| **Categorie** | Son |
-| **Icone** | 🔇 |
+| **Catégorie** | Son |
+| **Icône** | 🔇 |
 
-**Description :** Arreter toute la musique en cours de lecture.
+**Description :** Arrêter toute la musique en cours de lecture.
 
-**Parametres :** Aucun
+**Paramètres :** Aucun
 
 ---
 
-## Liste Complete des Fonctionnalites
+## Liste Complète des Fonctionnalités
 
-### Evenements dans le Preset Intermediaire
+### Événements dans le Préréglage Intermédiaire
 
-| Evenement | Categorie | Description |
+| Événement | Catégorie | Description |
 |-----------|-----------|-------------|
-| Create | Objet | Instance creee |
+| Create | Objet | Instance créée |
 | Step | Objet | Chaque image |
-| Destroy | Objet | Instance detruite |
+| Destroy | Objet | Instance détruite |
 | Draw | Dessin | Phase de rendu |
-| Keyboard Press | Entree | Touche pressee une fois |
-| Mouse | Entree | Interactions souris |
+| Keyboard Press | Entrée | Touche pressée une fois |
+| Mouse | Entrée | Interactions souris |
 | Collision | Collision | Chevauchement d'instances |
-| Alarm | Minuterie | Minuteur atteint zero |
+| Alarm | Minuterie | Minuteur atteint zéro |
 
-### Actions dans le Preset Intermediaire
+### Actions dans le Préréglage Intermédiaire
 
-| Categorie | Actions |
+| Catégorie | Actions |
 |-----------|---------|
-| **Mouvement** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Mouvement** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Instance** | Create, Destroy |
 | **Score** | Set Score, Add Score, Draw Score |
 | **Vies** | Set Lives, Add Lives, Draw Lives |
-| **Sante** | Set Health, Add Health, Draw Health Bar |
+| **Santé** | Set Health, Add Health, Draw Health Bar |
 | **Salle** | Next, Previous, Restart, Go To, If Next/Previous Exists |
 | **Minuterie** | Set Alarm |
 | **Son** | Play Sound, Play Music, Stop Music |
@@ -371,8 +371,8 @@ Le preset Intermediaire inclut tout ce qui se trouve dans le preset Debutant, pl
 - Set Lives : 3
 
 **Keyboard Press (Espace) :**
-- Create Instance : obj_bullet a (x, y-20)
-- Set Alarm : 0 a 15 (temps de recharge)
+- Create Instance : obj_bullet à (x, y-20)
+- Set Alarm : 0 à 15 (temps de recharge)
 
 **Collision avec obj_enemy :**
 - Add Lives : -1
@@ -386,11 +386,11 @@ Le preset Intermediaire inclut tout ce qui se trouve dans le preset Debutant, pl
 ### Objet Ennemi
 
 **Create :**
-- Set Alarm : 0 a 60
+- Set Alarm : 0 à 60
 
 **Alarm 0 :**
-- Create Instance : obj_enemy_bullet a (x, y+20)
-- Set Alarm : 0 a 60 (repetition)
+- Create Instance : obj_enemy_bullet à (x, y+20)
+- Set Alarm : 0 à 60 (répétition)
 
 **Collision avec obj_bullet :**
 - Add Score : 100
@@ -399,17 +399,17 @@ Le preset Intermediaire inclut tout ce qui se trouve dans le preset Debutant, pl
 
 ---
 
-## Passage aux Presets Avances
+## Passage aux Préréglages Avancés
 
-Lorsque vous avez besoin de plus de fonctionnalites, considerez :
-- **Preset Platformer** - Gravite, saut, mecaniques de plateforme
-- **Preset Complet** - Tous les evenements et actions disponibles
+Lorsque vous avez besoin de plus de fonctionnalités, envisagez :
+- **Préréglage Plateforme** - Gravité, saut, mécaniques de plateforme
+- **Préréglage Complet** - Tous les événements et actions disponibles
 
 ---
 
 ## Voir Aussi
 
-- [Preset Debutant](Beginner-Preset_fr) - Commencez ici si vous etes nouveau
-- [Reference Complete des Actions](Full-Action-Reference_fr) - Liste complete des actions
-- [Reference des Evenements](Event-Reference_fr) - Liste complete des evenements
-- [Evenements et Actions](Events-and-Actions_fr) - Concepts de base
+- [Préréglage Débutant](Beginner-Preset_fr) - Commencez ici si vous êtes nouveau
+- [Référence Complète des Actions](Full-Action-Reference_fr) - Liste complète des actions
+- [Référence des Événements](Event-Reference_fr) - Liste complète des événements
+- [Événements et Actions](Evenements_Actions_fr) - Concepts de base
