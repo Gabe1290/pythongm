@@ -4,14 +4,14 @@
 
 ---
 
-[Zuruck zur Startseite](Home_de)
+[Zurück zur Startseite](Home_de)
 
-Events und Aktionen bilden das Herzstuck der Spiellogik in pyGM.
+Events und Aktionen bilden das Herzstück der Spiellogik in pyGM.
 
 ## Konzept
 
 ### Events
-Events sind Ausloser, die auf bestimmte Situationen reagieren:
+Events sind Auslöser, die auf bestimmte Situationen reagieren:
 - Spielstart
 - Tastendruck
 - Kollision
@@ -20,69 +20,65 @@ Events sind Ausloser, die auf bestimmte Situationen reagieren:
 ### Aktionen
 Aktionen sind die Reaktionen auf Events:
 - Bewegen
-- Erstellen/Zerstoren
-- Werte andern
+- Erstellen/Zerstören
+- Werte ändern
 - Sounds abspielen
 
 ## Event-Kategorien
 
 ### Erstellungs-Events
 - **Create**: Einmalig bei Instanz-Erstellung
-- **Destroy**: Beim Loschen der Instanz
+- **Destroy**: Beim Löschen der Instanz
 - **Room Start**: Beim Betreten eines Raums
 
 ### Schritt-Events
 - **Step**: Jeden Frame
-- **Begin Step**: Vor Kollisionsprufung
-- **End Step**: Nach Kollisionsprufung
+- **Begin Step**: Vor der Kollisionsprüfung
+- **End Step**: Nach der Kollisionsprüfung
 
 ### Eingabe-Events
-- **Tastatur**: Tastendruck/Loslass
+- **Tastatur**: Tastendruck/Loslassen
 - **Maus**: Klicks und Bewegung
-- **Gamepad**: Controller-Eingaben
 
 ### Kollisions-Events
-- Beruhrung mit anderen Objekten
-- Beruhrung mit Wanden
-- Bereichsprufungen
+- Berührung mit anderen Objekten
+- Berührung mit Wänden
+- Bereichsprüfungen
 
 ### Zeichen-Events
 - **Draw**: Normale Zeichnung
-- **Draw GUI**: Oberflachenelemente
-- **Draw Begin/End**: Vor/Nach dem Zeichnen
+- **Draw GUI**: Oberflächenelemente
 
 ### Sonstige Events
 - **Alarm**: Timer-basierte Events
 - **Animation End**: Sprite-Animation beendet
-- **User Events**: Benutzerdefinierte Events
 
 ## Aktions-Bibliothek
 
 ### Bewegung
-- `move_towards`: Zu Punkt bewegen
+- `move_towards_point`: Zu Punkt bewegen
 - `set_speed`: Geschwindigkeit setzen
 - `set_direction`: Richtung setzen
 - `bounce`: Abprallen
 
 ### Instanzen
-- `instance_create`: Neue Instanz erstellen
-- `instance_destroy`: Instanz loschen
-- `change_sprite`: Sprite wechseln
+- `create_instance`: Neue Instanz erstellen
+- `destroy_instance`: Instanz löschen
+- `set_sprite`: Sprite wechseln
 
 ### Variablen
 - `set_variable`: Wert setzen
-- `add_to_variable`: Wert addieren
-- `if_variable`: Bedingte Prufung
+- `test_variable`: Bedingte Prüfung
 
 ### Audio
 - `play_sound`: Sound abspielen
 - `stop_sound`: Sound stoppen
-- `set_volume`: Lautstarke andern
+- `set_volume`: Lautstärke ändern
 
 ### Raum
 - `goto_room`: Raum wechseln
-- `restart_room`: Raum neustarten
-- `goto_next_room`: Nachster Raum
+- `restart_room`: Raum neu starten
+- `next_room`: Nächster Raum
 
 ### Zeichnen
 - `draw_sprite`: Sprite zeichnen
@@ -94,21 +90,21 @@ Aktionen sind die Reaktionen auf Events:
 ### Bedingte Aktionen
 ```
 Wenn Variable == Wert
-  Aktion ausfuhren
+  Aktion ausführen
 Sonst
   Alternative Aktion
 ```
 
 ### Schleifen
 - Aktionen wiederholen
-- Fur alle Instanzen
+- Für alle Instanzen
 
 ## Best Practices
 
-1. **Step-Events sparsam nutzen**: Nur wenn notig
+1. **Step-Events sparsam nutzen**: Nur wenn nötig
 2. **Kollisionen optimieren**: Solid-Eigenschaft beachten
-3. **Events gruppieren**: Zusammengehorige Logik bundeln
-4. **Alarme nutzen**: Fur zeitgesteuerte Aktionen
+3. **Events gruppieren**: Zusammengehörige Logik bündeln
+4. **Alarme nutzen**: Für zeitgesteuerte Aktionen
 
 ## Siehe auch
 

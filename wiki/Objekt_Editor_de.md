@@ -4,11 +4,11 @@
 
 ---
 
-[Zuruck zur Startseite](Home_de)
+[Zurück zur Startseite](Home_de)
 
 Der Objekt-Editor ist das zentrale Werkzeug zur Definition des Verhaltens von Spielelementen.
 
-## Uberblick
+## Überblick
 
 Objekte sind die Bausteine Ihres Spiels. Sie definieren:
 - Aussehen (Sprite)
@@ -16,21 +16,21 @@ Objekte sind die Bausteine Ihres Spiels. Sie definieren:
 - Physik-Eigenschaften
 - Interaktionen
 
-## Editor-Oberflache
+## Editor-Oberfläche
 
 ### Hauptbereiche
 1. **Objektliste**: Alle Objekte im Projekt
 2. **Eigenschaften-Panel**: Grundeinstellungen
 3. **Event-Liste**: Definierte Events
-4. **Aktions-Editor**: Aktionen fur Events
+4. **Aktions-Editor**: Aktionen für Events
 
 ## Objekt-Eigenschaften
 
 ### Allgemein
-- **Name**: Eindeutiger Bezeichner (z.B. obj_spieler)
+- **Name**: Eindeutiger Bezeichner (z. B. obj_spieler)
 - **Sprite**: Zugewiesene Grafik
 - **Sichtbar**: Ob das Objekt gerendert wird
-- **Persistent**: Uberlebt Raumwechsel
+- **Persistent**: Überlebt Raumwechsel
 
 ### Physik
 - **Solid**: Kollidiert mit anderen Objekten
@@ -39,10 +39,10 @@ Objekte sind die Bausteine Ihres Spiels. Sie definieren:
 
 ## Mit Events arbeiten
 
-### Event hinzufugen
-1. Klicken Sie auf "Event hinzufugen"
-2. Wahlen Sie den Event-Typ
-3. Fugen Sie Aktionen hinzu
+### Event hinzufügen
+1. Klicken Sie auf „Event hinzufügen"
+2. Wählen Sie den Event-Typ
+3. Fügen Sie Aktionen hinzu
 
 ### Event-Typen
 - **Create**: Beim Erstellen der Instanz
@@ -50,27 +50,27 @@ Objekte sind die Bausteine Ihres Spiels. Sie definieren:
 - **Draw**: Zum Zeichnen
 - **Tastatur**: Tasteneingaben
 - **Maus**: Mausinteraktionen
-- **Kollision**: Bei Beruhrung mit anderen Objekten
+- **Kollision**: Bei Berührung mit anderen Objekten
 
 ## Aktionen verwenden
 
-### Aktionen hinzufugen
-1. Wahlen Sie ein Event
+### Aktionen hinzufügen
+1. Wählen Sie ein Event
 2. Ziehen Sie Aktionen aus der Bibliothek
 3. Konfigurieren Sie Parameter
 
-### Haufige Aktionen
+### Häufige Aktionen
 - Bewegen in Richtung
 - Variable setzen
-- Instanz erstellen/zerstoren
+- Instanz erstellen/zerstören
 - Sound abspielen
 - Raum wechseln
 
 ## Best Practices
 
-1. **Klare Benennung**: Verwenden Sie Prafix wie "obj_"
-2. **Modularitat**: Kleine, wiederverwendbare Objekte
-3. **Vererbung nutzen**: Eltern-Objekte fur gemeinsames Verhalten
+1. **Klare Benennung**: Verwenden Sie ein Präfix wie „obj_"
+2. **Modularität**: Kleine, wiederverwendbare Objekte
+3. **Vererbung nutzen**: Eltern-Objekte für gemeinsames Verhalten
 4. **Dokumentation**: Kommentare in komplexen Events
 
 ## Siehe auch
