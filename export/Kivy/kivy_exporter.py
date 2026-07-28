@@ -133,6 +133,10 @@ class KivyExporter:
     def export(self) -> bool:
         """Export project to Kivy format"""
         try:
+            # Start each export with a clean unsupported-action tally so the
+            # caller can surface anything the codegen had to drop (Stage F1a).
+            from export.Kivy.code_generator import reset_unsupported_actions
+            reset_unsupported_actions()
 
             logger.info("=" * 60)
             logger.info("Starting Kivy Export")
@@ -213,6 +217,14 @@ class KivyExporter:
             # Generate README
             self._generate_readme()
             logger.info("README created")
+
+            from export.Kivy.code_generator import get_unsupported_actions
+            _unsupported = get_unsupported_actions()
+            if _unsupported:
+                logger.warning(
+                    "Kivy export: %d action(s) are not supported and were "
+                    "skipped (the exported game will not perform them): %s",
+                    len(_unsupported), ", ".join(_unsupported))
 
             logger.info("=" * 60)
             logger.info("Export completed successfully!")
@@ -3127,6 +3139,28 @@ class GameObject(Widget):
                     break
             if not blocked:
                 break
+
+    def wrap_around_room(self, horizontal=True, vertical=True):
+        """Wrap to the opposite edge when leaving the room, mirroring the IDE
+        runtime's execute_wrap_around_room. self.x/self.y are GM room coords
+        (y-down), so the runtime's edge tests port verbatim."""
+        if not self.scene:
+            return
+        rw = int(self.scene.room_width)
+        rh = int(self.scene.room_height)
+        w = int(self.image_width or self.grid_size)
+        h = int(self.image_height or self.grid_size)
+        if horizontal:
+            if self.x + w < 0:
+                self.x = float(rw)
+            elif self.x > rw:
+                self.x = float(-w)
+        if vertical:
+            if self.y + h < 0:
+                self.y = float(rh)
+            elif self.y > rh:
+                self.y = float(-h)
+        self._update_position()
 
     # ---- Draw-queue rendering (GameMaker draw event parity) ----
 

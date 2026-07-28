@@ -127,11 +127,13 @@ class IDEExporters:
         from export.Kivy.project_adapter import export_with_adapter
         self.ide.update_status(self.ide.tr("Exporting Kivy project..."))
         if export_with_adapter(self.ide.project_manager, output_dir):
+            note = self.ide._unsupported_actions_note()
             reply = QMessageBox.question(
                 self.ide,
                 self.ide.tr("Export Successful"),
-                self.ide.tr("Kivy project exported to:\n{0}\n\n"
-                            "Would you like to open the export directory?").format(output_dir),
+                self.ide.tr("Kivy project exported to:\n{0}").format(output_dir)
+                + note + "\n\n"
+                + self.ide.tr("Would you like to open the export directory?"),
                 QMessageBox.Yes | QMessageBox.No
             )
             if reply == QMessageBox.Yes:

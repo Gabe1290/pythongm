@@ -137,6 +137,24 @@ def _num_code(value, default=0):
 
 
 
+# --- Unsupported-action tracking --------------------------------------------
+# The DEFAULT branch of _convert_simple_action emits `pass # TODO` for any action
+# the generator (and no enabled extension) handles — the exported game silently
+# skips it. We accumulate those names so the exporter can SURFACE them to the
+# user ("N actions couldn't be exported and were skipped") instead of the export
+# looking fully successful. Reset at the start of each export.
+_UNSUPPORTED_ACTIONS: set = set()
+
+
+def reset_unsupported_actions() -> None:
+    _UNSUPPORTED_ACTIONS.clear()
+
+
+def get_unsupported_actions() -> list:
+    """Sorted action names dropped as no-ops since the last reset."""
+    return sorted(_UNSUPPORTED_ACTIONS)
+
+
 # --- Extension action codegen (Stage C2c) -----------------------------------
 # An extension ships an export_kivy.py exposing ACTION_CODEGEN: {name: fn}, where
 # fn(gen, params, event_type) -> code string. Loaded once per process; the
@@ -377,6 +395,18 @@ class ActionCodeGenerator:
         elif action_type == 'test_expression':
             expr = _resolve_instance_names(params.get('expression', 'False'))
             self._open_guard(f"if {expr}:")
+            return
+
+        elif action_type == 'test_chance':
+            # GM "with 1 in N chance" question (mirrors
+            # execute_test_chance_action). __import__ keeps the guard
+            # self-contained without a module-level `import random`.
+            try:
+                sides = max(1, int(float(params.get('sides', 6) or 6)))
+            except (TypeError, ValueError):
+                sides = 6
+            self._open_guard(
+                f"if __import__('random').randint(1, {sides}) == 1:")
             return
 
         elif action_type == 'test_score':
@@ -1199,6 +1229,13 @@ if dist > 0:
             snap_v = _num_code(params.get('snap_v', 1), 1)
             return f"self.jump_to_random({snap_h}, {snap_v})"
 
+        elif action_type == 'wrap_around_room':
+            # Wrap to the opposite edge on leaving the room (mirrors
+            # execute_wrap_around_room_action). Self-targeted, like the runtime.
+            def _flag(key):
+                return str(params.get(key, True)).strip().lower() not in ('false', '0', 'no')
+            return f"self.wrap_around_room({_flag('horizontal')}, {_flag('vertical')})"
+
         elif action_type == 'destroy_at_position':
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
@@ -1377,6 +1414,7 @@ if dist > 0:
             if _ext is not None:
                 return _ext(self, params, event_type)
             logger.warning(f"Unknown action type '{action_type}'")
+            _UNSUPPORTED_ACTIONS.add(action_type)   # surfaced to the user post-export
             return f"pass  # TODO: {action_type}"
 
 

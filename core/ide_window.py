@@ -1603,6 +1603,23 @@ class PyGameMakerIDE(QMainWindow):
             logger.warning(f"load_project: project_manager.load_project failed for {project_path}")
             QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
 
+    def _unsupported_actions_note(self):
+        """A user-facing note listing actions the Kivy codegen had to skip in
+        the just-finished export (empty string if none). Kivy exports emit
+        `pass # TODO` for actions they don't support; without this the export
+        looks fully successful while silently dropping behaviour (F1a)."""
+        try:
+            from export.Kivy.code_generator import get_unsupported_actions
+            skipped = get_unsupported_actions()
+        except Exception:
+            return ""
+        if not skipped:
+            return ""
+        return "\n\n" + self.tr(
+            "Note: {n} action(s) aren't supported by this export target and were "
+            "skipped — the exported game will not perform them:\n{actions}"
+        ).format(n=len(skipped), actions=", ".join(skipped))
+
     def _warn_missing_extensions(self):
         """Warn if the just-loaded project uses actions from an extension that is
         turned off, so its raycast/3D-View (or any other extension) features
@@ -2952,7 +2969,7 @@ class PyGameMakerIDE(QMainWindow):
                 result = QMessageBox.information(
                     self,
                     success_title,
-                    message + "\n\n" + open_folder_prompt,
+                    message + self._unsupported_actions_note() + "\n\n" + open_folder_prompt,
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
                 if result == QMessageBox.StandardButton.Yes:
