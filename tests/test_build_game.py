@@ -240,6 +240,7 @@ class TestOnSuccessHookWiring:
         # construction.
         stub = QWidget()
         stub.current_project_path = "/tmp/proj"
+        stub._unsupported_actions_note = lambda: ""  # advisory export note (F1a)
 
         exporter_class = self._fake_exporter_class(success)
 
