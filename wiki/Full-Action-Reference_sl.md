@@ -1,764 +1,1754 @@
-# Celotna Referenca Akcij
+# Popolna referenca dejanj
 
-*[Domov](Home_sl) | [Vodnik po Presetih](Preset-Guide_sl) | [Referenca Dogodkov](Event-Reference_sl)*
+*[Domov](Home_sl) | [Vodnik po prednastavitvah](Preset-Guide_sl) | [Referenca dogodkov](Event-Reference_sl)*
 
-Ta stran dokumentira vse razpoložljive akcije v PyGameMaker. Akcije so ukazi, ki se izvršijo, ko se sprožijo dogodki.
+> **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-## Kategorije Akcij
+Ta stran navaja vseh **109** dejanj, ki so na voljo v PyGameMaker, natanko tako, kot so prikazana v izbirniku dejanj IDE (vključno z vtičnikom Audio in razširitvijo Pogled 3D). Dejanja so ukazi, ki se izvedejo, ko se sproži dogodek.
 
-- [Akcije Gibanja](#akcije-gibanja)
-- [Akcije Instance](#akcije-instance)
-- [Akcije Točk, Življenj in Zdravja](#akcije-točk-življenj-in-zdravja)
-- [Akcije Sobe](#akcije-sobe)
-- [Akcije Časovnega Nadzora](#akcije-časovnega-nadzora)
-- [Zvočne Akcije](#zvočne-akcije)
-- [Akcije Risanja](#akcije-risanja)
-- [Akcije Nadzora Toka](#akcije-nadzora-toka)
-- [Izhodne Akcije](#izhodne-akcije)
+## Kategorije
 
----
-
-## Akcije Gibanja
-
-### Nastavi Horizontalno Hitrost
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_hspeed` |
-| **Ikona** | ↔️ |
-| **Preset** | Začetnik |
-
-**Opis:** Nastavi hitrost horizontalnega gibanja.
-
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 0 | Hitrost v pikslih/frame. Pozitivno=desno, Negativno=levo |
+- [Gibanje](#movement) (20)
+- [Instanca](#instance) (12)
+- [Rezultat](#score) (11)
+- [Soba](#room) (9)
+- [Čas](#timing) (2)
+- [Zvok](#audio) (6)
+- [Igra](#game) (20)
+- [Nadzor](#control) (19)
+- [Mreža](#grid) (4)
+- [Pogledi](#views) (2)
+- [Pogled 3D](#3d-view) (4)
 
 ---
 
-### Nastavi Vertikalno Hitrost
+<a id="movement"></a>
+## Gibanje
+
+### Odbij se
+
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_vspeed` |
-| **Ikona** | ↕️ |
-| **Preset** | Začetnik |
+|----------|-------|
+| **Ime** | `bounce` |
+| **Kategorija** | Gibanje |
 
-**Opis:** Nastavi hitrost vertikalnega gibanja.
+Odbij se od trdnih predmetov
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 0 | Hitrost v pikslih/frame. Pozitivno=dol, Negativno=gor |
+*Parametri:* brez
 
----
+### Skoči na položaj
 
-### Ustavi Gibanje
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `stop_movement` |
-| **Ikona** | 🛑 |
-| **Preset** | Začetnik |
-
-**Opis:** Ustavi vse gibanje (nastavi hspeed in vspeed na 0).
-
-**Parametri:** Brez
-
----
-
-### Skoči na Pozicijo
-| Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `jump_to_position` |
 | **Ikona** | 📍 |
-| **Preset** | Začetnik |
+| **Kategorija** | Gibanje |
 
-**Opis:** Takoj se premakne na določeno pozicijo.
+Takoj premakni na položaj
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x` | Število | 0 | Ciljna koordinata X |
-| `y` | Število | 0 | Ciljna koordinata Y |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `relative` | Da/Ne | Ne | Prištej trenutnemu položaju namesto nastavitve absolutnega |
 
----
+### Skoči na naključni položaj
 
-### Fiksno Gibanje
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `move_fixed` |
-| **Ikona** | ➡️ |
-| **Preset** | Napredni |
+|----------|-------|
+| **Ime** | `jump_to_random` |
+| **Ikona** | 🎲↪️ |
+| **Kategorija** | Gibanje |
 
-**Opis:** Premakne se v eno od 8 fiksnih smeri.
+Teleportiraj na naključni položaj (izbirno pripet na mrežo)
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `directions` | Izbira | right | Smer(i) gibanja |
-| `speed` | Število | 4 | Hitrost gibanja |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `snap_h` | Število | `1` | Vodoravno pripenjanje na mrežo (1 = brez pripenjanja) |
+| `snap_v` | Število | `1` | Navpično pripenjanje na mrežo (1 = brez pripenjanja) |
 
-**Možnosti smeri:** left, right, up, down, up-left, up-right, down-left, down-right, stop
+### Skoči na začetni položaj
 
----
-
-### Prosto Gibanje
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
+| **Ime** | `jump_to_start` |
+| **Ikona** | ↩️ |
+| **Kategorija** | Gibanje |
+
+Vrni instanco na njen položaj ustvarjanja
+
+*Parametri:* brez
+
+### Prosto gibanje
+
+| Lastnost | Vrednost |
+|----------|-------|
 | **Ime** | `move_free` |
 | **Ikona** | 🧭 |
-| **Preset** | Napredni |
+| **Kategorija** | Gibanje |
 
-**Opis:** Premakne se v katero koli smer (0-360 stopinj).
+Premakni v natančni smeri (0-360 stopinj)
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `direction` | Število | 0 | Smer v stopinjah (0=desno, 90=gor) |
-| `speed` | Število | 4 | Hitrost gibanja |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Število | `0` | Smer v stopinjah (0=desno, 90=gor, v nasprotni smeri urinega kazalca) |
+| `speed` | Število | `4.0` | Hitrost gibanja |
 
----
+### Premakni po mreži
 
-### Premakni se Proti
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `move_towards` |
+|----------|-------|
+| **Ime** | `move_grid` |
+| **Ikona** | ▦ |
+| **Kategorija** | Gibanje |
+
+Premakni za eno celico mreže v navedeni smeri
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Izbira | `right` | Smer gibanja; Izbire: `left`, `right`, `up`, `down` |
+| `grid_size` | Število | `32` | Velikost celice mreže v pikslih |
+
+### Premakni proti točki
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `move_towards_point` |
 | **Ikona** | 🎯 |
-| **Preset** | Srednji |
+| **Kategorija** | Gibanje |
 
-**Opis:** Premakne se proti ciljni poziciji.
+Premakni proti točki z dano hitrostjo
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x` | Izraz | 0 | Ciljni X (lahko uporablja izraze kot `other.x`) |
-| `y` | Izraz | 0 | Ciljni Y |
-| `speed` | Število | 4 | Hitrost gibanja |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Ciljni X |
+| `y` | Število | `0` | Ciljni Y |
+| `speed` | Število | `4.0` | Hitrost gibanja |
 
----
+### Premakni do stika
 
-### Nastavi Hitrost
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_speed` |
-| **Ikona** | ⚡ |
-| **Preset** | Napredni |
+|----------|-------|
+| **Ime** | `move_to_contact` |
+| **Ikona** | 🎯 |
+| **Kategorija** | Gibanje |
 
-**Opis:** Nastavi velikost hitrosti (ohrani smer).
+Premakni v smeri, dokler se ne dotakne predmeta (ali največje razdalje)
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `speed` | Število | 0 | Velikost hitrosti |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Besedilo | `direction` | Smer v stopinjah (0=desno, 90=gor, 180=levo, 270=dol) ali izraz. Privzeto »direction« = trenutna usmerjenost instance (pripenjanje ob trku). |
+| `max_distance` | Število | `1000` | Največja razdalja gibanja, v pikslih |
+| `object` | Predmet | `all` | Ustavi se ob stiku z: »all« vsemi instancami, »solid« samo trdnimi predmeti ali določenim imenom predmeta.; Izbire: `all`, `solid`; neobvezno |
 
----
+### Obrni vodoravno
 
-### Nastavi Smer
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_direction` |
-| **Ikona** | 🧭 |
-| **Preset** | Napredni |
-
-**Opis:** Nastavi smer gibanja (ohrani hitrost).
-
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `direction` | Število | 0 | Smer v stopinjah |
-
----
-
-### Obrni Horizontalno
-| Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `reverse_horizontal` |
 | **Ikona** | ↔️ |
-| **Preset** | Napredni |
+| **Kategorija** | Gibanje |
 
-**Opis:** Obrne horizontalno smer (pomnoži hspeed z -1).
+Obrni smer vodoravnega gibanja
 
-**Parametri:** Brez
+*Parametri:* brez
 
----
+### Obrni navpično
 
-### Obrni Vertikalno
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `reverse_vertical` |
 | **Ikona** | ↕️ |
-| **Preset** | Napredni |
+| **Kategorija** | Gibanje |
 
-**Opis:** Obrne vertikalno smer (pomnoži vspeed z -1).
+Obrni smer navpičnega gibanja
 
-**Parametri:** Brez
+*Parametri:* brez
 
----
+### Nastavi smer
 
-### Nastavi Gravitacijo
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_gravity` |
-| **Ikona** | ⬇️ |
-| **Preset** | Platformer |
+|----------|-------|
+| **Ime** | `set_direction` |
+| **Ikona** | 🧭 |
+| **Kategorija** | Gibanje |
 
-**Opis:** Uporabi gravitacijo na instanco.
+Nastavi smer gibanja
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `direction` | Število | 270 | Smer gravitacije (270=dol) |
-| `gravity` | Število | 0.5 | Moč gravitacije |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Število | `0` | Smer v stopinjah (0=desno, 90=gor) |
 
----
+### Nastavi smer in hitrost
 
-### Nastavi Trenje
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
+| **Ime** | `set_direction_speed` |
+| **Ikona** | 🧭 |
+| **Kategorija** | Gibanje |
+
+Nastavi smer (v stopinjah) in velikost hitrosti instance
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Število | `0` | Smer v stopinjah (0=desno, 90=gor) |
+| `speed` | Število | `4.0` | Hitrost v pikslih na sličico |
+
+### Nastavi trenje
+
+| Lastnost | Vrednost |
+|----------|-------|
 | **Ime** | `set_friction` |
 | **Ikona** | 🛑 |
-| **Preset** | Napredni |
+| **Kategorija** | Gibanje |
 
-**Opis:** Uporabi trenje (postopno upočasnjevanje).
+Nastavi trenje (upočasnitev)
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `friction` | Število | 0.1 | Količina trenja |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `friction` | Število | `0.1` | Količina trenja (odšteta od hitrosti ob vsakem koraku) |
+
+### Nastavi gravitacijo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_gravity` |
+| **Ikona** | ⬇️ |
+| **Kategorija** | Gibanje |
+
+Nastavi smer in jakost gravitacije
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Število | `270` | Smer gravitacije v stopinjah (270=dol) |
+| `gravity` | Število | `0.5` | Jakost gravitacije (dodana ob vsakem koraku) |
+
+### Nastavi vodoravno hitrost
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_hspeed` |
+| **Ikona** | ↔️ |
+| **Kategorija** | Gibanje |
+
+Nastavi vodoravno hitrost gibanja
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `speed` | Število | `0` | Hitrost v pikslih na sličico |
+
+### Nastavi hitrost
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_speed` |
+| **Ikona** | ⚡ |
+| **Kategorija** | Gibanje |
+
+Nastavi hitrost gibanja (velikost)
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `speed` | Število | `0` | Hitrost gibanja |
+
+### Nastavi navpično hitrost
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_vspeed` |
+| **Ikona** | ↕️ |
+| **Kategorija** | Gibanje |
+
+Nastavi navpično hitrost gibanja
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `speed` | Število | `0` | Hitrost v pikslih na sličico |
+
+### Začni se premikati (smer)
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `start_moving_direction` |
+| **Ikona** | ➡️ |
+| **Kategorija** | Gibanje |
+
+Začni se premikati v smeri z dano hitrostjo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `directions` | Večkratna izbira | right | Smer(i) gibanja — izberite eno ali več, da vsak korak izberete naključno. Sredinska celica je ustavitev.; Izbire: `up-left`, `up`, `up-right`, `left`, `stop`, `right`, `down-left`, `down`, `down-right` |
+| `direction_expr` | Besedilo | — | Alternativa: prosti izraz, ovrednoten kot stopinje; neobvezno |
+| `speed` | Število | `4.0` | Hitrost v pikslih na sličico |
+
+### Ustavi gibanje
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `stop_movement` |
+| **Ikona** | 🛑 |
+| **Kategorija** | Gibanje |
+
+Ponastavi obe hitrosti na nič
+
+*Parametri:* brez
+
+### Ovij okoli sobe
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `wrap_around_room` |
+| **Ikona** | 🔄 |
+| **Kategorija** | Gibanje |
+
+Znova se pojavi na nasprotni strani sobe
+
+*Parametri:* brez
 
 ---
 
-## Akcije Instance
+<a id="instance"></a>
+## Instanca
 
-### Uniči Instanco
+### Spremeni instanco
+
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `destroy_instance` |
-| **Ikona** | 💥 |
-| **Preset** | Začetnik |
+|----------|-------|
+| **Ime** | `change_instance` |
+| **Ikona** | 🔄 |
+| **Kategorija** | Instanca |
+| **Velja za** | self / other / object |
 
-**Opis:** Odstrani instanco iz igre.
+Preoblikuj v drugo vrsto predmeta
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `target` | Izbira | self | `self` ali `other` (v dogodkih trčenja) |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `object` | Predmet | — | Nova vrsta predmeta |
+| `perform_events` | Da/Ne | Da | Izvedi dogodke uniči/ustvari |
 
----
+### Ustvari instanco
 
-### Ustvari Instanco
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `create_instance` |
 | **Ikona** | ✨ |
-| **Preset** | Začetnik |
+| **Kategorija** | Instanca |
 
-**Opis:** Ustvari novo instanco objekta.
+Ustvari novo instanco
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `object` | Objekt | - | Tip objekta za ustvarjanje |
-| `x` | Število | 0 | Pozicija X |
-| `y` | Število | 0 | Pozicija Y |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `object` | Predmet | — | Predmet za ustvarjanje |
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `relative` | Da/Ne | Ne | Položaj glede na trenutno instanco |
 
----
+### Ustvari premikajočo se instanco
 
-### Nastavi Sprite
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
+| **Ime** | `create_moving_instance` |
+| **Ikona** | ✨➡️ |
+| **Kategorija** | Instanca |
+
+Ustvari instanco in jo zaženi v smeri
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `object` | Predmet | — | Predmet za ustvarjanje |
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `speed` | Število | `0` | Začetna velikost hitrosti |
+| `direction` | Število | `0` | Začetna smer v stopinjah |
+
+### Ustvari naključno instanco
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `create_random_instance` |
+| **Ikona** | 🎲 |
+| **Kategorija** | Instanca |
+
+Ustvari eno od več vrst predmetov, izbrano naključno
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `object1` | Predmet | — | Prvi kandidatni predmet; neobvezno |
+| `object2` | Predmet | — | Drugi kandidatni predmet; neobvezno |
+| `object3` | Predmet | — | Tretji kandidatni predmet; neobvezno |
+| `object4` | Predmet | — | Četrti kandidatni predmet; neobvezno |
+
+### Uniči instanco
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `destroy_instance` |
+| **Ikona** | 💥 |
+| **Kategorija** | Instanca |
+| **Velja za** | self / other / object |
+
+Uniči instanco
+
+*Parametri:* brez
+
+### Uniči na položaju
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `destroy_at_position` |
+| **Ikona** | 💣 |
+| **Kategorija** | Instanca |
+
+Uniči instance znotraj polmera od (x, y)
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `object` | Predmet | `all` | Katero vrsto predmeta uničiti. »all« uniči vsako instanco v dosegu; »solid« samo trdne (npr. stene); »non-solid« vse razen trdnih.; Izbire: `all`, `solid`, `non-solid` |
+| `x` | Besedilo | `self.x` | Položaj X (izraz dovoljen, npr. self.x) |
+| `y` | Besedilo | `self.y` | Položaj Y (izraz dovoljen, npr. self.y) |
+| `relative` | Da/Ne | Ne | Obravnavaj X/Y kot odmike od položaja te instance namesto absolutnih koordinat; neobvezno |
+| `radius` | Število | `32` | Polmer v pikslih okoli (x, y). Privzeto 32 = ~ena celica mreže. |
+
+### Nastavi indeks slike
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_image_index` |
+| **Ikona** | 🖼️ |
+| **Kategorija** | Instanca |
+
+Nastavi trenutno sličico animacije spritea instance
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `frame` | Število | `0` | Indeks sličice |
+
+### Nastavi hitrost slike
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_image_speed` |
+| **Ikona** | ⏩ |
+| **Kategorija** | Instanca |
+
+Nastavi hitrost predvajanja animacije spritea instance
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `speed` | Število | `1.0` | Sličice, napredovane na korak (0 = zaustavljeno) |
+
+### Nastavi sprite
+
+| Lastnost | Vrednost |
+|----------|-------|
 | **Ime** | `set_sprite` |
 | **Ikona** | 🖼️ |
-| **Preset** | Napredni |
+| **Kategorija** | Instanca |
 
-**Opis:** Spremeni sprite instance.
+Spremeni sprite in/ali sličico/hitrost animacije instance
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `sprite` | Sprite | - | Nov sprite |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `sprite` | Sprite | `<self>` | Sprite za uporabo (ali »<self>« za ohranitev trenutnega) |
+| `subimage` | Število | `-1` | Indeks sličice za nastavitev; -1 pusti nespremenjeno |
+| `speed` | Število | `-1` | Hitrost animacije; -1 pusti nespremenjeno |
+
+### Zaženi animacijo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `start_animation` |
+| **Ikona** | ▶️ |
+| **Kategorija** | Instanca |
+
+Nadaljuj animacijo spritea instance (image_speed = 1)
+
+*Parametri:* brez
+
+### Ustavi animacijo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `stop_animation` |
+| **Ikona** | ⏸️ |
+| **Kategorija** | Instanca |
+
+Zaustavi animacijo spritea instance (image_speed = 0)
+
+*Parametri:* brez
+
+### Preveri število instanc
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_instance_count` |
+| **Ikona** | ❓🔢 |
+| **Kategorija** | Instanca |
+
+Pogoj: primerjaj število instanc predmeta
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `object` | Predmet | — | Predmet za štetje |
+| `number` | Število | `0` | Vrednost za primerjavo |
+| `operation` | Izbira | `equal` | Primerjalni operator; Izbire: `equal`, `less`, `greater`, `less_equal`, `greater_equal`, `not_equal` |
 
 ---
 
-## Akcije Točk, Življenj in Zdravja
+<a id="score"></a>
+## Rezultat
 
-### Nastavi Točke
+### Počisti tabelo rekordov
+
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_score` |
-| **Ikona** | 🏆 |
-| **Preset** | Začetnik |
+|----------|-------|
+| **Ime** | `clear_highscore` |
+| **Ikona** | 🗑️🏆 |
+| **Kategorija** | Rezultat |
 
-**Opis:** Nastavi ali spremeni točke.
+Počisti vse vnose tabele rekordov
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 0 | Vrednost točk |
-| `relative` | Logično | false | Če je res, doda k trenutnim točkam |
+*Parametri:* brez
 
----
+### Nariši vrstico zdravja
 
-### Dodaj Točke (Bližnjica)
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `add_score` |
-| **Ikona** | ➕🏆 |
-| **Preset** | Začetnik |
+|----------|-------|
+| **Ime** | `draw_health_bar` |
+| **Ikona** | 🩺 |
+| **Kategorija** | Rezultat |
 
-**Opis:** Doda točke k rezultatu.
+Nariši trenutno zdravje kot dvobarvno vrstico
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 10 | Točke za dodajanje (negativno za odštevanje) |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x1` | Število | `0` | X levo |
+| `y1` | Število | `0` | Y zgoraj |
+| `x2` | Število | `100` | X desno |
+| `y2` | Število | `20` | Y spodaj |
+| `back_color` | Barva | `#FF0000` | Barva ozadja (prazno) |
+| `bar_color` | Barva | `#00FF00` | Barva polnila (zdravje) |
 
----
+### Nariši življenja
 
-### Nastavi Življenja
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `set_lives` |
-| **Ikona** | ❤️ |
-| **Preset** | Srednji |
+|----------|-------|
+| **Ime** | `draw_lives` |
+| **Ikona** | 🖍️❤️ |
+| **Kategorija** | Rezultat |
 
-**Opis:** Nastavi ali spremeni število življenj.
+Nariši trenutno število življenj kot ponovljene slike spritea
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 3 | Vrednost življenj |
-| `relative` | Logično | false | Če je res, doda k trenutnim življenjem |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `sprite` | Sprite | — | Sprite, narisan enkrat na vsako preostalo življenje; neobvezno |
+| `scale` | Število | `1.0` | Enakomeren faktor merila za ikono življenja (1.0 = izvirna velikost); neobvezno |
+| `relative` | Da/Ne | Ne | Nariši glede na položaj te instance namesto absolutnih zaslonskih koordinat; neobvezno |
 
-**Opomba:** Sproži dogodek `no_more_lives`, ko doseže 0.
+### Nariši rezultat
 
----
-
-### Dodaj Življenja (Bližnjica)
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `add_lives` |
-| **Ikona** | ➕❤️ |
-| **Preset** | Srednji |
+|----------|-------|
+| **Ime** | `draw_score` |
+| **Ikona** | 🖍️🏆 |
+| **Kategorija** | Rezultat |
 
-**Opis:** Doda ali odstrani življenja.
+Nariši trenutni rezultat na zaslonu
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 1 | Življenja za dodajanje (negativno za odštevanje) |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `caption` | Besedilo | `Score: ` | Besedilo, prikazano pred vrednostjo rezultata; neobvezno |
+| `relative` | Da/Ne | Ne | Nariši glede na položaj te instance namesto absolutnih zaslonskih koordinat; neobvezno |
 
----
+### Nastavi zdravje
 
-### Nastavi Zdravje
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `set_health` |
 | **Ikona** | 💚 |
-| **Preset** | Srednji |
+| **Kategorija** | Rezultat |
 
-**Opis:** Nastavi ali spremeni zdravje (0-100).
+Nastavi zdravje ali mu prištej z »Relativno«
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 100 | Vrednost zdravja |
-| `relative` | Logično | false | Če je res, doda k trenutnemu zdravju |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `value` | Število | `100` | Vrednost zdravja (0-100) |
+| `relative` | Da/Ne | Ne | Prištej trenutnemu zdravju namesto zamenjave |
 
-**Opomba:** Sproži dogodek `no_more_health`, ko doseže 0.
+### Nastavi življenja
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_lives` |
+| **Ikona** | ❤️ |
+| **Kategorija** | Rezultat |
+
+Nastavi življenja ali jim prištej z »Relativno«
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `value` | Število | `3` | Število življenj |
+| `relative` | Da/Ne | Ne | Prištej trenutnim življenjem namesto zamenjave |
+
+### Nastavi rezultat
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_score` |
+| **Ikona** | 🏆 |
+| **Kategorija** | Rezultat |
+
+Nastavi rezultat ali mu prištej z »Relativno«
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `value` | Število | `0` | Vrednost rezultata za nastavitev |
+| `relative` | Da/Ne | Ne | Prištej trenutnemu rezultatu namesto zamenjave |
+
+### Prikaži tabelo rekordov
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `show_highscore` |
+| **Ikona** | 🏆 |
+| **Kategorija** | Rezultat |
+
+Prikaži pogovorno okno tabele rekordov
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `background` | Barva | `#FFFFDD` | Barva ozadja pogovornega okna; neobvezno |
+| `new_color` | Barva | `#FF0000` | Barva za nov (kvalificiran) vnos; neobvezno |
+| `other_color` | Barva | `#000000` | Barva za druge vnose; neobvezno |
+| `allow_new_entry` | Da/Ne | Da | Vprašaj za ime, če se trenutni rezultat kvalificira |
+
+### Preveri zdravje
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_health` |
+| **Ikona** | ❓💚 |
+| **Kategorija** | Rezultat |
+
+Pogoj: primerjaj trenutno zdravje z vrednostjo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `operation` | Izbira | `equal` | Primerjalni operator; Izbire: `equal`, `less`, `greater`, `less_equal`, `greater_equal`, `not_equal` |
+| `value` | Število | `0` | Vrednost za primerjavo |
+
+### Preveri življenja
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_lives` |
+| **Ikona** | ❓❤️ |
+| **Kategorija** | Rezultat |
+
+Pogoj: primerjaj število življenj z vrednostjo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `value` | Število | `0` | Vrednost za primerjavo |
+| `operation` | Izbira | `equal` | Primerjalni operator; Izbire: `equal`, `less`, `greater`, `less_equal`, `greater_equal`, `not_equal` |
+
+### Preveri rezultat
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_score` |
+| **Ikona** | ❓🏆 |
+| **Kategorija** | Rezultat |
+
+Pogoj: primerjaj rezultat z vrednostjo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `value` | Število | `0` | Vrednost za primerjavo |
+| `operation` | Izbira | `equal` | Primerjalni operator; Izbire: `equal`, `less`, `greater`, `less_equal`, `greater_equal`, `not_equal` |
 
 ---
 
-### Dodaj Zdravje (Bližnjica)
+<a id="room"></a>
+## Soba
+
+### Preveri sobo
+
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `add_health` |
-| **Ikona** | ➕💚 |
-| **Preset** | Srednji |
+|----------|-------|
+| **Ime** | `check_room` |
+| **Ikona** | ❓🚪 |
+| **Kategorija** | Soba |
 
-**Opis:** Doda ali odstrani zdravje.
+Pogoj: resnično, če se trenutna soba ujema
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `value` | Število | 10 | Zdravje za dodajanje (negativno za škodo) |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `room` | Soba | — | Soba za primerjavo |
+| `not_flag` | Da/Ne | Ne | Obrni rezultat; neobvezno |
 
----
+### Končaj igro
 
-### Nariši Točke
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `draw_score` |
-| **Ikona** | 🖼️🏆 |
-| **Preset** | Začetnik |
+|----------|-------|
+| **Ime** | `game_end` |
+| **Ikona** | 🛑🎮 |
+| **Kategorija** | Soba |
 
-**Opis:** Prikaže točke na zaslonu.
+Končaj igro
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x` | Število | 10 | Pozicija X |
-| `y` | Število | 10 | Pozicija Y |
-| `caption` | Niz | "Score: " | Besedilo pred točkami |
+*Parametri:* brez
 
----
+### Pojdi v sobo
 
-### Nariši Življenja
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `draw_lives` |
-| **Ikona** | 🖼️❤️ |
-| **Preset** | Srednji |
-
-**Opis:** Prikaže življenja na zaslonu.
-
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x` | Število | 10 | Pozicija X |
-| `y` | Število | 30 | Pozicija Y |
-| `sprite` | Sprite | - | Neobvezen sprite ikone življenja |
-
----
-
-### Nariši Vrstico Zdravja
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `draw_health_bar` |
-| **Ikona** | 📊💚 |
-| **Preset** | Srednji |
-
-**Opis:** Nariše vrstico zdravja.
-
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x1` | Število | 10 | Levi X |
-| `y1` | Število | 50 | Zgornji Y |
-| `x2` | Število | 110 | Desni X |
-| `y2` | Število | 60 | Spodnji Y |
-| `back_color` | Barva | gray | Barva ozadja |
-| `bar_color` | Barva | green | Barva vrstice |
-
----
-
-## Akcije Sobe
-
-### Naslednja Soba
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `next_room` |
-| **Ikona** | ➡️ |
-| **Preset** | Začetnik |
-
-**Opis:** Pojdi v naslednjo sobo v vrstnem redu sob.
-
-**Parametri:** Brez
-
----
-
-### Prejšnja Soba
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `previous_room` |
-| **Ikona** | ⬅️ |
-| **Preset** | Začetnik |
-
-**Opis:** Pojdi v prejšnjo sobo v vrstnem redu sob.
-
-**Parametri:** Brez
-
----
-
-### Ponovno Zaženi Sobo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `restart_room` |
-| **Ikona** | 🔄 |
-| **Preset** | Začetnik |
-
-**Opis:** Ponovno zažene trenutno sobo.
-
-**Parametri:** Brez
-
----
-
-### Pojdi v Sobo
-| Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `goto_room` |
 | **Ikona** | 🚪 |
-| **Preset** | Začetnik |
+| **Kategorija** | Soba |
 
-**Opis:** Pojdi v določeno sobo.
+Preklopi na določeno sobo
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `room` | Soba | - | Ciljna soba |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `room` | Soba | — | Ime ciljne sobe |
+| `transition` | Izbira | `none` | Učinek prehoda (trenutno sprejet, a ne izrisan); Izbire: `none`; neobvezno |
 
----
+### Če obstaja naslednja soba
 
-### Če Naslednja Soba Obstaja
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `if_next_room_exists` |
 | **Ikona** | ❓➡️ |
-| **Preset** | Začetnik |
+| **Kategorija** | Soba |
 
-**Opis:** Pogojno - izvede akcije samo če obstaja naslednja soba.
+Preveri, ali obstaja naslednja soba za trenutno
 
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `then_actions` | Seznam Akcij | Akcije če naslednja soba obstaja |
-| `else_actions` | Seznam Akcij | Akcije če ni naslednje sobe |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `then_actions` | Seznam dejanj | — | Dejanja, če obstaja naslednja soba |
+| `else_actions` | Seznam dejanj | — | Dejanja, če naslednja soba ne obstaja |
 
----
+### Če obstaja prejšnja soba
 
-### Če Prejšnja Soba Obstaja
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `if_previous_room_exists` |
 | **Ikona** | ❓⬅️ |
-| **Preset** | Začetnik |
+| **Kategorija** | Soba |
 
-**Opis:** Pogojno - izvede akcije samo če obstaja prejšnja soba.
+Preveri, ali obstaja prejšnja soba pred trenutno
 
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `then_actions` | Seznam Akcij | Akcije če prejšnja soba obstaja |
-| `else_actions` | Seznam Akcij | Akcije če ni prejšnje sobe |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `then_actions` | Seznam dejanj | — | Dejanja, če obstaja prejšnja soba |
+| `else_actions` | Seznam dejanj | — | Dejanja, če prejšnja soba ne obstaja |
+
+### Naslednja soba
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `next_room` |
+| **Ikona** | ➡️ |
+| **Kategorija** | Soba |
+
+Pojdi v naslednjo sobo
+
+*Parametri:* brez
+
+### Prejšnja soba
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `previous_room` |
+| **Ikona** | ⬅️ |
+| **Kategorija** | Soba |
+
+Pojdi v prejšnjo sobo
+
+*Parametri:* brez
+
+### Znova zaženi sobo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `restart_room` |
+| **Ikona** | 🔄 |
+| **Kategorija** | Soba |
+
+Znova zaženi trenutno sobo
+
+*Parametri:* brez
+
+### Nastavi naslov sobe
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_room_caption` |
+| **Ikona** | 🏷️ |
+| **Kategorija** | Soba |
+
+Nastavi naslov okna igre
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `caption` | Besedilo | — | Besedilo naslova okna |
 
 ---
 
-## Akcije Časovnega Nadzora
+<a id="timing"></a>
+## Čas
 
-### Nastavi Alarm
+### Nastavi budilko
+
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `set_alarm` |
 | **Ikona** | ⏰ |
-| **Preset** | Srednji |
+| **Kategorija** | Čas |
 
-**Opis:** Nastavi alarm, ki se sproži po zamiku.
+Nastavi budilko
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `alarm` | Število | 0 | Številka alarma (0-11) |
-| `steps` | Število | 60 | Koraki do sprožitve alarma |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `alarm_number` | Število | `0` | Katera budilka (0-11) |
+| `steps` | Število | `30` | Število korakov do sprožitve budilke (30 = 0,5 s pri 60 FPS) |
 
-**Opomba:** Pri 60 FPS, 60 korakov = 1 sekunda.
+### Premor
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `sleep` |
+| **Ikona** | 💤 |
+| **Kategorija** | Čas |
+
+Zaustavi igro za določeno število milisekund, nato nadaljuj. Zvoki se med premorom še naprej predvajajo (na primer, da se zvok konča pred menjavo sobe). Opomba: izrisovanje in vnos sta med premorom zamrznjena, zato ohranjaj kratke dolžine
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `milliseconds` | Število | `1000` | Trajanje premora, v milisekundah (1000 = 1 sekunda) |
 
 ---
 
-## Zvočne Akcije
+<a id="audio"></a>
+## Zvok
 
-### Predvajaj Zvok
+### Preveri predvajanje zvoka
+
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `play_sound` |
-| **Ikona** | 🔊 |
-| **Preset** | Srednji |
+|----------|-------|
+| **Ime** | `check_sound` |
+| **Ikona** | ❓🔊 |
+| **Kategorija** | Zvok |
 
-**Opis:** Predvaja zvočni učinek.
+Pogoj: resnično, če se navedeni zvok trenutno predvaja
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `sound` | Zvok | - | Zvočni vir |
-| `loop` | Logično | false | Ponavljaj zvok v zanki |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `sound` | Zvok | — | Zvok za preverjanje |
+| `not_flag` | Da/Ne | Ne | Obrni rezultat; neobvezno |
 
----
+### Predvajaj glasbo
 
-### Predvajaj Glasbo
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `play_music` |
 | **Ikona** | 🎵 |
-| **Preset** | Srednji |
+| **Kategorija** | Zvok |
 
-**Opis:** Predvaja glasbo v ozadju.
+Predvajaj glasbo v ozadju (v zanki)
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `sound` | Zvok | - | Glasbeni vir |
-| `loop` | Logično | true | Ponavljaj glasbo v zanki |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `music` | Zvok | — | Glasbena datoteka za predvajanje |
+| `loop` | Da/Ne | Da | Predvajaj glasbo v zanki |
+| `volume` | Število | `0.7` | Glasnost (od 0.0 do 1.0) |
 
----
+### Predvajaj zvok
 
-### Ustavi Glasbo
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `stop_music` |
-| **Ikona** | 🔇 |
-| **Preset** | Srednji |
+|----------|-------|
+| **Ime** | `play_sound` |
+| **Ikona** | 🔊 |
+| **Kategorija** | Zvok |
 
-**Opis:** Ustavi vso predvajano glasbo.
+Predvajaj zvočni učinek enkrat
 
-**Parametri:** Brez
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `sound` | Zvok | — | Zvok za predvajanje |
+| `volume` | Število | `1.0` | Glasnost (od 0.0 do 1.0) |
 
----
+### Nastavi glasnost
 
-### Nastavi Glasnost
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `set_volume` |
 | **Ikona** | 🔉 |
-| **Preset** | Napredni |
+| **Kategorija** | Zvok |
 
-**Opis:** Nastavi glasnost zvoka.
+Nastavi splošno glasnost zvoka/glasbe
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `volume` | Število | 1.0 | Raven glasnosti (0.0 do 1.0) |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `volume` | Število | `1.0` | Glasnost (od 0.0 do 1.0) |
+
+### Ustavi glasbo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `stop_music` |
+| **Ikona** | 🔇 |
+| **Kategorija** | Zvok |
+
+Ustavi glasbo v ozadju
+
+*Parametri:* brez
+
+### Ustavi zvok
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `stop_sound` |
+| **Ikona** | 🔇 |
+| **Kategorija** | Zvok |
+
+Ustavi predvajani zvok
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `sound` | Zvok | — | Zvok za ustavitev |
 
 ---
 
-## Akcije Risanja
+<a id="game"></a>
+## Igra
 
-### Nariši Besedilo
+### Nariši puščico
+
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `draw_text` |
-| **Ikona** | 📝 |
-| **Preset** | Napredni |
+|----------|-------|
+| **Ime** | `draw_arrow` |
+| **Ikona** | ➡️ |
+| **Kategorija** | Igra |
 
-**Opis:** Nariše besedilo na zaslon.
+Nariši puščico od ene točke do druge
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x` | Število | 0 | Pozicija X |
-| `y` | Število | 0 | Pozicija Y |
-| `text` | Niz | "" | Besedilo za risanje |
-| `color` | Barva | white | Barva besedila |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x1` | Število | `0` | Začetni X |
+| `y1` | Število | `0` | Začetni Y |
+| `x2` | Število | `100` | X konice |
+| `y2` | Število | `100` | Y konice |
+| `tip_size` | Število | `10` | Velikost konice puščice v pikslih |
 
----
+### Nariši ozadje
 
-### Nariši Pravokotnik
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `draw_rectangle` |
-| **Ikona** | ⬛ |
-| **Preset** | Napredni |
+|----------|-------|
+| **Ime** | `draw_background` |
+| **Ikona** | 🌄 |
+| **Kategorija** | Igra |
 
-**Opis:** Nariše pravokotnik.
+Nariši sliko ozadja, izbirno tlakovano po vsem zaslonu
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x1` | Število | 0 | Levi X |
-| `y1` | Število | 0 | Zgornji Y |
-| `x2` | Število | 32 | Desni X |
-| `y2` | Število | 32 | Spodnji Y |
-| `color` | Barva | white | Barva polnila |
-| `outline` | Logično | false | Samo obroba |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `background` | Besedilo | — | Ime sredstva ozadja |
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `tiled` | Da/Ne | Ne | Tlakuj po vsem zaslonu; neobvezno |
 
----
+### Nariši krog
 
-### Nariši Krog
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
 | **Ime** | `draw_circle` |
-| **Ikona** | ⚪ |
-| **Preset** | Napredni |
+| **Ikona** | ⭕ |
+| **Kategorija** | Igra |
 
-**Opis:** Nariše krog.
+Nariši zapolnjen ali obrisan krog
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `x` | Število | 0 | Središče X |
-| `y` | Število | 0 | Središče Y |
-| `radius` | Število | 16 | Polmer |
-| `color` | Barva | white | Barva polnila |
-| `outline` | Logično | false | Samo obroba |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | X središče |
+| `y` | Število | `0` | Y središče |
+| `radius` | Število | `50` | Polmer kroga |
+| `filled` | Da/Ne | Da | Zapolnjeno ali samo obris; neobvezno |
 
----
+### Nariši elipso
 
-### Nastavi Alfo
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
+| **Ime** | `draw_ellipse` |
+| **Ikona** | 🥚 |
+| **Kategorija** | Igra |
+
+Nariši zapolnjeno ali obrisano elipso znotraj okvirja
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x1` | Število | `0` | X levo |
+| `y1` | Število | `0` | Y zgoraj |
+| `x2` | Število | `100` | X desno |
+| `y2` | Število | `100` | Y spodaj |
+| `filled` | Da/Ne | Da | Zapolnjeno ali samo obris; neobvezno |
+
+### Nariši črto
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_line` |
+| **Ikona** | 📏 |
+| **Kategorija** | Igra |
+
+Nariši črto med dvema točkama
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x1` | Število | `0` | Začetni X |
+| `y1` | Število | `0` | Začetni Y |
+| `x2` | Število | `100` | Končni X |
+| `y2` | Število | `100` | Končni Y |
+
+### Nariši pravokotnik
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_rectangle` |
+| **Ikona** | 🟥 |
+| **Kategorija** | Igra |
+
+Nariši zapolnjen ali obrisan pravokotnik
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x1` | Število | `0` | X levo |
+| `y1` | Število | `0` | Y zgoraj |
+| `x2` | Število | `100` | X desno |
+| `y2` | Število | `100` | Y spodaj |
+| `filled` | Da/Ne | Da | Zapolnjeno ali samo obris; neobvezno |
+
+### Nariši povečano besedilo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_scaled_text` |
+| **Ikona** | 🖍️ |
+| **Kategorija** | Igra |
+
+Nariši besedilo v poljubnem merilu
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `text` | Besedilo | — | Besedilo za risanje |
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `xscale` | Število | `1.0` | Faktor vodoravnega merila |
+| `yscale` | Število | `1.0` | Faktor navpičnega merila |
+
+### Nariši sprite
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_sprite` |
+| **Ikona** | 🖼️ |
+| **Kategorija** | Igra |
+
+Nariši sličico spritea na položaju
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `sprite` | Sprite | — | Sprite za risanje |
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `subimage` | Število | `0` | Indeks sličice za risanje |
+
+### Nariši besedilo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_text` |
+| **Ikona** | 🖍️ |
+| **Kategorija** | Igra |
+
+Nariši besedilni niz na položaju
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `text` | Besedilo | — | Besedilo za risanje (podpira izraze) |
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `relative` | Da/Ne | Ne | Nariši glede na položaj te instance namesto absolutnih zaslonskih koordinat; neobvezno |
+
+### Nariši spremenljivko
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_variable` |
+| **Ikona** | 🔢 |
+| **Kategorija** | Igra |
+
+Nariši vrednost spremenljivke na zaslonu
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Položaj X |
+| `y` | Število | `0` | Položaj Y |
+| `variable` | Besedilo | — | Ime spremenljivke (self.var, global.var ali preprosto ime) |
+
+### Zapolni zaslon z barvo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `fill_color` |
+| **Ikona** | 🪣 |
+| **Kategorija** | Igra |
+
+Zapolni celotno območje prikaza z enotno barvo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `color` | Barva | `#000000` | Šestnajstiška barva RGB |
+
+### Odpri spletno stran
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `open_webpage` |
+| **Ikona** | 🌐 |
+| **Kategorija** | Igra |
+
+Odpri URL v privzetem brskalniku
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `url` | Besedilo | — | Spletni naslov za odprtje |
+
+### Znova zaženi igro
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `restart_game` |
+| **Ikona** | 🔁🎮 |
+| **Kategorija** | Igra |
+
+Znova zaženi igro iz začetne sobe
+
+*Parametri:* brez
+
+### Nastavi prosojnost
+
+| Lastnost | Vrednost |
+|----------|-------|
 | **Ime** | `set_alpha` |
-| **Ikona** | 👻 |
-| **Preset** | Napredni |
+| **Ikona** | 🌫️ |
+| **Kategorija** | Igra |
 
-**Opis:** Nastavi prosojnost risanja.
+Nastavi prosojnost risanja za naslednja risanja
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `alpha` | Število | 1.0 | Prosojnost (0.0=nevidno, 1.0=neprosojno) |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `alpha` | Število | `1.0` | Prosojnost od 0.0 (prozorno) do 1.0 (neprozorno) |
 
----
+### Nastavi barvo
 
-## Akcije Nadzora Toka
-
-### Če Trčenje Pri
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `if_collision_at` |
-| **Ikona** | 🎯 |
-| **Preset** | Napredni |
+|----------|-------|
+| **Ime** | `set_color` |
+| **Ikona** | 🎨 |
+| **Kategorija** | Igra |
 
-**Opis:** Preveri trčenje na poziciji.
+Nastavi barvo in prosojnost risanja za naslednja risanja
 
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `x` | Izraz | Pozicija X za preverjanje |
-| `y` | Izraz | Pozicija Y za preverjanje |
-| `object_type` | Izbira | `any` ali `solid` |
-| `then_actions` | Seznam Akcij | Če je trčenje najdeno |
-| `else_actions` | Seznam Akcij | Če ni trčenja |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `color` | Barva | `#FFFFFF` | Šestnajstiška barva RGB |
+| `alpha` | Število | `1.0` | Prosojnost 0.0–1.0; neobvezno |
 
----
+### Nastavi barvo risanja
 
-## Izhodne Akcije
-
-### Prikaži Sporočilo
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
+| **Ime** | `set_draw_color` |
+| **Ikona** | 🎨 |
+| **Kategorija** | Igra |
+
+Nastavi barvo, ki jo uporabljajo naslednja dejanja draw_*
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `color` | Barva | `#000000` | Šestnajstiška barva RGB |
+
+### Nastavi pisavo risanja
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_draw_font` |
+| **Ikona** | 🔤 |
+| **Kategorija** | Igra |
+
+Nastavi pisavo in poravnavo za naslednje risanje besedila
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `font` | Besedilo | — | Ime sredstva pisave (prazno = privzeta pisava); neobvezno |
+| `halign` | Izbira | `left` | Vodoravna poravnava besedila; Izbire: `left`, `center`, `right` |
+| `valign` | Izbira | `top` | Navpična poravnava besedila; Izbire: `top`, `middle`, `bottom` |
+
+### Nastavi naslov okna
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_window_caption` |
+| **Ikona** | 🪟 |
+| **Kategorija** | Igra |
+
+Konfiguriraj prikaz rezultata/življenj/zdravja v naslovu okna
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `show_score` | Da/Ne | Da | Dodaj trenutni rezultat naslovu okna |
+| `show_lives` | Da/Ne | Da | Dodaj trenutno število življenj naslovu okna |
+| `show_health` | Da/Ne | Ne | Dodaj trenutno vrednost zdravja naslovu okna |
+| `caption` | Besedilo | — | Neobvezna predpona naslova, prikazana pred števci; neobvezno |
+
+### Prikaži informacije o igri
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `show_info` |
+| **Ikona** | ℹ️ |
+| **Kategorija** | Igra |
+
+Prikaži zaslon z informacijami o igri
+
+*Parametri:* brez
+
+### Prikaži sporočilo
+
+| Lastnost | Vrednost |
+|----------|-------|
 | **Ime** | `show_message` |
 | **Ikona** | 💬 |
-| **Preset** | Začetnik |
+| **Kategorija** | Igra |
 
-**Opis:** Prikaže pojavno sporočilo.
+Prikaži sporočilo
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `message` | Niz | "Hello!" | Besedilo sporočila |
-
-**Opomba:** Igra se zaustavi med prikazom sporočila.
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `message` | Besedilo | `Hello!` | Besedilo sporočila |
 
 ---
 
-### Izvedi Kodo
+<a id="control"></a>
+## Nadzor
+
+### Preveri, ali je prazno
+
 | Lastnost | Vrednost |
-|----------|----------|
+|----------|-------|
+| **Ime** | `check_empty` |
+| **Ikona** | 🔍 |
+| **Kategorija** | Nadzor |
+
+Resnično, ko je (x, y) brez trkov. Uporabi s start_block/end_block za pogojevanje naslednjega dejanja/dejanj, v slogu GM
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Besedilo | `self.x` | Položaj X za preverjanje (izraz dovoljen, npr. self.x + 32) |
+| `y` | Besedilo | `self.y` | Položaj Y za preverjanje (izraz dovoljen, npr. self.y + 32) |
+| `relative` | Da/Ne | Ne | Obravnavaj X/Y kot odmike od položaja te instance namesto absolutnih koordinat; neobvezno |
+| `objects` | Izbira | `solid` | Katere instance štejejo kot zasedajoče položaj; Izbire: `solid`, `all` |
+
+### Komentar
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `comment` |
+| **Ikona** | ⚠️ |
+| **Kategorija** | Nadzor |
+
+Komentar na seznamu dejanj (brez učinka med izvajanjem)
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `text` | Besedilo | — | Prosto oblikovano besedilo komentarja; neobvezno |
+
+### Sicer
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `else_action` |
+| **Ikona** | ⚡ |
+| **Kategorija** | Nadzor |
+
+Označuje vejo »sicer« pogoja
+
+*Parametri:* brez
+
+### Konec bloka
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `end_block` |
+| **Ikona** | 📁 |
+| **Kategorija** | Nadzor |
+
+Končaj blok dejanj
+
+*Parametri:* brez
+
+### Izvedi kodo
+
+| Lastnost | Vrednost |
+|----------|-------|
 | **Ime** | `execute_code` |
-| **Ikona** | 💻 |
-| **Preset** | Začetnik |
+| **Ikona** | 📜 |
+| **Kategorija** | Nadzor |
 
-**Opis:** Izvede prilagojeno Python kodo.
+Izvedi vgrajeni blok kode Python
 
-| Parameter | Tip | Privzeto | Opis |
-|-----------|-----|----------|------|
-| `code` | Koda | "" | Python koda za izvajanje |
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `code` | Koda | — | Koda Python za ovrednotenje glede na instanco |
 
-**Opozorilo:** Napredna funkcija. Uporabljajte previdno.
+### Izvedi skripto
 
----
-
-### Končaj Igro
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `end_game` |
+|----------|-------|
+| **Ime** | `execute_script` |
+| **Ikona** | 📜 |
+| **Kategorija** | Nadzor |
+
+Izvedi eno od skript projekta
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `script` | Skripta | — | Ime skripte projekta za zagon |
+| `arg0` | Besedilo | — | Na voljo v skripti kot argument0; neobvezno |
+| `arg1` | Besedilo | — | Na voljo v skripti kot argument1; neobvezno |
+| `arg2` | Besedilo | — | Na voljo v skripti kot argument2; neobvezno |
+| `arg3` | Besedilo | — | Na voljo v skripti kot argument3; neobvezno |
+| `arg4` | Besedilo | — | Na voljo v skripti kot argument4; neobvezno |
+
+### Zapusti dogodek
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `exit_event` |
 | **Ikona** | 🚪 |
-| **Preset** | Napredni |
+| **Kategorija** | Nadzor |
 
-**Opis:** Konča igro in zapre okno.
+Ustavi izvajanje preostalih dejanj v tem dogodku
 
-**Parametri:** Brez
+*Parametri:* brez
 
----
+### Če je mogoče potisniti
 
-### Ponovno Zaženi Igro
 | Lastnost | Vrednost |
-|----------|----------|
-| **Ime** | `restart_game` |
-| **Ikona** | 🔄 |
-| **Preset** | Napredni |
+|----------|-------|
+| **Ime** | `if_can_push` |
+| **Ikona** | 📦 |
+| **Kategorija** | Nadzor |
 
-**Opis:** Ponovno zažene igro od prve sobe.
+Preveri, ali je mogoče potisniti škatlo/predmet v trenutni smeri (v slogu Sokoban)
 
-**Parametri:** Brez
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `direction` | Izbira | `facing` | Smer za preverjanje potiska; Izbire: `facing` |
+| `object_type` | Besedilo | `box` | Vrsta potisnjenega predmeta |
+| `then_action` | Izbira | `push_and_move` | Dejanje, če je potisk mogoč; Izbire: `push_and_move`, `none` |
+| `else_action` | Izbira | `stop_movement` | Dejanje, če je potisk blokiran; Izbire: `stop_movement`, `none` |
+
+### Če trk
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `if_collision` |
+| **Ikona** | ❓💥 |
+| **Kategorija** | Nadzor |
+
+Pogoj: resnično, če bi instanca trčila pri odmiku (x, y)
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Vodoravni odmik za preverjanje |
+| `y` | Število | `0` | Navpični odmik za preverjanje |
+| `object` | Besedilo | `any` | »any«, »solid« ali ime predmeta; Izbire: `any`, `solid`; neobvezno |
+| `not_flag` | Da/Ne | Ne | Zanikaj rezultat; neobvezno |
+
+### Če trk pri
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `if_collision_at` |
+| **Ikona** | 🎯 |
+| **Kategorija** | Nadzor |
+
+Preveri trk na položaju
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Besedilo | `self.x + 32` | Izraz položaja X |
+| `y` | Besedilo | `self.y` | Izraz položaja Y |
+| `object_type` | Izbira | `any` | Vrsta predmeta za preverjanje; Izbire: `any`, `solid` |
+| `then_actions` | Seznam dejanj | — | Dejanja, če je najden trk |
+| `else_actions` | Seznam dejanj | — | Dejanja, če ni trka |
+
+### Če pogoj
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `if_condition` |
+| **Ikona** | ❓ |
+| **Kategorija** | Nadzor |
+
+Pogojno preverjanje z dejanji potem/sicer
+
+*Parametri:* brez
+
+### Če predmet obstaja
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `if_object_exists` |
+| **Ikona** | ❓ |
+| **Kategorija** | Nadzor |
+
+Pogoj: resnično, če obstaja vsaj ena instanca predmeta
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `object` | Predmet | — | Vrsta predmeta za preverjanje |
+| `not_flag` | Da/Ne | Ne | Zanikaj rezultat (ukrepaj, ko predmet NE obstaja); neobvezno |
+
+### Ponovi
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `repeat` |
+| **Ikona** | 🔁 |
+| **Kategorija** | Nadzor |
+
+Ponovi naslednje dejanje/blok N-krat
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `times` | Število | `10` | Število ponovitev |
+| `actions` | Seznam dejanj | — | Dejanja za ponovitev |
+
+### Nastavi spremenljivko
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_variable` |
+| **Ikona** | 📝 |
+| **Kategorija** | Nadzor |
+
+Nastavi spremenljivko instance ali globalno
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `variable` | Besedilo | — | Ime spremenljivke |
+| `value` | Besedilo | `0` | Vrednost (število, niz ali izraz) |
+| `scope` | Izbira | `self` | Obseg spremenljivke; Izbire: `self`, `other`, `global` |
+| `relative` | Da/Ne | Ne | Prištej trenutni vrednosti namesto zamenjave |
+
+### Začetek bloka
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `start_block` |
+| **Ikona** | 📂 |
+| **Kategorija** | Nadzor |
+
+Začni blok dejanj (za združevanje)
+
+*Parametri:* brez
+
+### Preveri verjetnost
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_chance` |
+| **Ikona** | 🎲❓ |
+| **Kategorija** | Nadzor |
+
+Pogoj: resnično z verjetnostjo 1 od »sides«
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `sides` | Število | `6` | Verjetnost 1 od N, da je resnično |
+
+### Preveri izraz
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_expression` |
+| **Ikona** | ❓ |
+| **Kategorija** | Nadzor |
+
+Preveri, ali je izraz resničen
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `expression` | Besedilo | — | Izraz za ovrednotenje (resnično, če >= 0.5) |
+| `then_actions` | Seznam dejanj | — | Dejanja, če resnično |
+| `else_actions` | Seznam dejanj | — | Dejanja, če neresnično |
+
+### Postavi vprašanje
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_question` |
+| **Ikona** | ❓💬 |
+| **Kategorija** | Nadzor |
+
+Pogoj: prikaži pogovorno okno da/ne; resnično, če uporabnik odgovori z da
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `question` | Besedilo | `Continue?` | Vprašanje, prikazano igralcu |
+
+### Preveri spremenljivko
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_variable` |
+| **Ikona** | ❓ |
+| **Kategorija** | Nadzor |
+
+Preveri vrednost spremenljivke instance ali globalne
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `variable` | Besedilo | — | Ime spremenljivke |
+| `value` | Besedilo | `0` | Vrednost za primerjavo |
+| `scope` | Izbira | `self` | Obseg spremenljivke; Izbire: `self`, `other`, `global` |
+| `operation` | Izbira | `equal` | Primerjalni operator; Izbire: `equal`, `less`, `greater`, `less_equal`, `greater_equal`, `not_equal` |
 
 ---
 
-## Akcije po Presetu
+<a id="grid"></a>
+## Mreža
 
-| Preset | Število Akcij | Kategorije |
-|--------|---------------|------------|
-| **Začetnik** | 17 | Gibanje, Instanca, Točke, Soba, Izhod |
-| **Srednji** | 29 | + Življenja, Zdravje, Zvok, Časovni Nadzor |
-| **Napredni** | 40+ | + Risanje, Nadzor Toka, Igra |
+### Če na mreži
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `if_on_grid` |
+| **Ikona** | ▦ |
+| **Kategorija** | Mreža |
+
+Preveri, ali je predmet poravnan na mrežo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `grid_size` | Število | `32` | Velikost celice mreže v pikslih |
+| `then_actions` | Seznam dejanj | — | Dejanja, če na mreži |
+| `else_actions` | Seznam dejanj | — | Dejanja, če ne na mreži |
+
+### Pripni na mrežo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `snap_to_grid` |
+| **Ikona** | ▦ |
+| **Kategorija** | Mreža |
+
+Poravnaj položaj instance na mrežo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `grid_size` | Število | `32` | Velikost celice mreže v pikslih |
+
+### Ustavi, če ni pritisnjenih tipk
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `stop_if_no_keys` |
+| **Ikona** | ▦ |
+| **Kategorija** | Mreža |
+
+Ustavi gibanje po mreži, ko ni pritisnjena nobena tipka za gibanje (odlično za gladko pripenjanje na mrežo)
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `grid_size` | Število | `32` | Velikost celice mreže v pikslih |
+
+### Preveri poravnavo na mrežo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `test_alignment` |
+| **Ikona** | ❓▦ |
+| **Kategorija** | Mreža |
+
+Pogoj: resnično, če je instanca poravnana na mrežo
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `hsnap` | Število | `32` | Vodoravni razmik mreže v pikslih |
+| `vsnap` | Število | `32` | Navpični razmik mreže v pikslih |
 
 ---
 
-## Glejte Tudi
+<a id="views"></a>
+## Pogledi
 
-- [Referenca Dogodkov](Event-Reference_sl) - Celoten seznam dogodkov
-- [Preset za Začetnike](Beginner-Preset_sl) - Osnovne akcije za začetnike
-- [Srednji Preset](Intermediate-Preset_sl) - Dodatne akcije
-- [Dogodki in Akcije](Events-and-Actions_sl) - Pregled osnovnih konceptov
+### Omogoči poglede
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `enable_views` |
+| **Ikona** | 🎥 |
+| **Kategorija** | Pogledi |
+
+Vklopi ali izklopi sistem kamere/pogleda sobe (omogoča drsenje ravni, ko je večja od okna)
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `enable` | Da/Ne | Da | Vklop = pogledi kamere; izklop = nariši celotno sobo naenkrat |
+
+### Nastavi pogled
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_view` |
+| **Ikona** | 🎥 |
+| **Kategorija** | Pogledi |
+
+Konfiguriraj pogled kamere: kateri del sobe prikazuje, kje se izriše na zaslonu in predmet za sledenje
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `view` | Izbira | `0` | Katerega od 8 pogledov konfigurirati; Izbire: `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7` |
+| `visible` | Da/Ne | Da | Nariši ta pogled |
+| `view_x` | Število | `0` | Levi rob prikazanega območja sobe |
+| `view_y` | Število | `0` | Zgornji rob prikazanega območja sobe |
+| `view_w` | Število | `800` | Širina prikazanega območja sobe |
+| `view_h` | Število | `600` | Višina prikazanega območja sobe |
+| `port_x` | Število | `0` | Levi rob na zaslonu |
+| `port_y` | Število | `0` | Zgornji rob na zaslonu |
+| `port_w` | Število | `800` | Širina, narisana na zaslonu |
+| `port_h` | Število | `600` | Višina, narisana na zaslonu |
+| `follow` | Predmet | — | Predmet, ki mu kamera sledi (prazno = fiksni pogled); neobvezno |
+| `hborder` | Število | `32` | Vodoravni rob, preden se kamera pomakne |
+| `vborder` | Število | `32` | Navpični rob, preden se kamera pomakne |
+| `hspeed` | Število | `-1` | Največja vodoravna hitrost drsenja (-1 = takoj) |
+| `vspeed` | Število | `-1` | Največja navpična hitrost drsenja (-1 = takoj) |
+
+---
+
+<a id="3d-view"></a>
+## Pogled 3D
+
+### Nariši HUD DOOM
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_doom_hud` |
+| **Ikona** | 🎯 |
+| **Kategorija** | Pogled 3D |
+
+Nariši spodnjo vrstico stanja v slogu DOOM (vrstica zdravja + število, rezultat, življenja, števec cilja in na zdravje odziven obraz) čez pogled raycast
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Levi rob vrstice, v zaslonskih pikslih |
+| `y` | Število | `-1` | Zgornji rob vrstice; negativna vrednost jo samodejno poravna na dno okna, pod pomanjšanim pogledom; neobvezno |
+| `width` | Število | `0` | Širina vrstice (0 = polna širina okna); neobvezno |
+| `height` | Število | `42` | Višina vrstice; ohranjajte jo usklajeno s pasom viewport_height, rezerviranim v enable_raycast_view; neobvezno |
+| `back_color` | Barva | `#101010` | Plošča ozadja vrstice; neobvezno |
+| `divider_color` | Barva | `#505050` | Zgornji rob in ozadje vrstice zdravja; neobvezno |
+| `text_color` | Barva | `#ffffff` | Barva vsega besedila vrstice; neobvezno |
+| `health_label` | Besedilo | `Health` | neobvezno |
+| `health_bar_width` | Število | `90` | neobvezno |
+| `health_bar_height` | Število | `14` | neobvezno |
+| `bar_color` | Barva | `#20c020` | Barva polnila vrstice zdravja; neobvezno |
+| `face_sprite` | Sprite | — | Vodoravni pas sličic obraza, najbolj zdrav prvi (prazno = brez ikone obraza); neobvezno |
+| `face_frames` | Število | `4` | Koliko sličic ima pas obraza; zdravje je enakomerno razporejeno mednje; neobvezno |
+| `score_label` | Besedilo | `Score: ` | neobvezno |
+| `lives_sprite` | Sprite | — | Sprite, narisan enkrat na vsako preostalo življenje; neobvezno |
+| `lives_scale` | Število | `1.0` | neobvezno |
+| `objective_value` | Besedilo | `0` | Izraz, prikazan za oznako cilja (povežite svojo spremenljivko ključa/naloge); neobvezno |
+| `objective_label` | Besedilo | `Keys: ` | neobvezno |
+
+### Nariši mini zemljevid
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `draw_minimap` |
+| **Ikona** | 🗺️ |
+| **Kategorija** | Pogled 3D |
+
+Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki prikazuje, kje je kamera in kam je usmerjena
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `x` | Število | `0` | Levi rob mini zemljevida, v zaslonskih pikslih |
+| `y` | Število | `0` | Zgornji rob mini zemljevida, v zaslonskih pikslih |
+| `size` | Število | `120` | Širina in višina kvadrata mini zemljevida, v pikslih; neobvezno |
+| `back_color` | Barva | `#101018` | Barva plošče za zemljevidom; neobvezno |
+| `wall_color` | Barva | `#8080a0` | Barva črt sten; neobvezno |
+| `player_color` | Barva | `#ffd040` | Barva oznake kamere in njene smerne črte; neobvezno |
+
+### Omogoči pogled Raycast
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `enable_raycast_view` |
+| **Ikona** | 🕹️ |
+| **Kategorija** | Pogled 3D |
+
+Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, tla) namesto pogleda od zgoraj
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `enable` | Da/Ne | Da | Vklop = pogled raycast iz prve osebe; izklop = običajni pogled od zgoraj |
+| `camera_object` | Predmet | — | Predmet, čigar položaj + kot pogleda je kamera (prazno = predmet, ki izvaja to dejanje); neobvezno |
+| `fov` | Število | `66` | Vodoravno vidno polje v stopinjah; neobvezno |
+| `render_distance` | Število | `20` | Največja dolžina žarka v celicah mreže; neobvezno |
+| `cell_size` | Število | `32` | Velikost celice mreže v pikslih (ujema se z mrežo postavitve sten); neobvezno |
+| `columns` | Število | `320` | Zaslonski stolpci za raycast (manj = hitreje/bolj grobo); neobvezno |
+| `wall_color` | Barva | `#993333` | Enotna barva sten, ko tekstura stene ni nastavljena; neobvezno |
+| `floor_color` | Barva | `#464632` | Enotna barva tal, ko tekstura tal ni nastavljena; neobvezno |
+| `ceiling_color` | Barva | `#87CEEB` | Enotna barva stropa, ko tekstura neba/stropa ni nastavljena; neobvezno |
+| `wall_texture` | Sprite | — | Sprite za teksturiranje vsake stene (prazno = enotna barva); neobvezno |
+| `sky_texture` | Sprite | — | Sprite za panoramsko nebo nad stropom (prazno = enotno); neobvezno |
+| `floor_texture` | Sprite | — | Sprite, projiciran na tla (prazno = enotna barva); neobvezno |
+| `ceiling_texture` | Sprite | — | Sprite, projiciran na strop, ko nebo ni nastavljeno; neobvezno |
+| `wall_textured` | Da/Ne | Da | Izklop vsili enotne barve sten, tudi ko je tekstura nastavljena; neobvezno |
+| `floor_cast_res` | Število | `4` | Podvzorčenje projiciranih tal (višje = hitreje + bolj grobo); neobvezno |
+| `viewport_height` | Število | `0` | Skrči 3D-pogled na to višino v pikslih (letterbox), pri čemer se pod njim rezervira pas za vrstico stanja v slogu DOOM (0 = polna višina okna, nespremenjeno); neobvezno |
+
+### Nastavi kot pogleda
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_facing_angle` |
+| **Ikona** | 🧭 |
+| **Kategorija** | Pogled 3D |
+
+Nastavi smer pogleda instance za kamero raycast (iz prve osebe) — neodvisno od hitrosti gibanja
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `angle` | Število | `0` | Stopinje (0=desno, 90=gor, 180=levo, 270=dol) |
+| `relative` | Da/Ne | Ne | Prištej trenutnemu kotu pogleda namesto zamenjave; neobvezno |
+
+---
+
+## Glejte tudi
+
+- [Referenca dogodkov](Event-Reference_sl) — dogodki, ki sprožijo dejanja
+- [Vodnik po prednastavitvah](Preset-Guide_sl) — katera dejanja izpostavlja vsaka prednastavitev/izdaja
+- [Pogled 3D](3D-View_sl) — dejanja pogleda iz prve osebe (raycast)
+- [Razširitve](Extensions_sl) — kako so zagotovljena dejanja Pogleda 3D
