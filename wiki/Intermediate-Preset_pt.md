@@ -124,8 +124,8 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 #### Mover Para um Ponto
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `move_towards` |
-| **Nome do Bloco** | `move_towards` |
+| **Nome da Acao** | `move_towards_point` |
+| **Nome do Bloco** | `move_towards_point` |
 | **Categoria** | Movimento |
 
 **Descricao:** Mover-se em direcao a uma posicao especifica.
@@ -351,7 +351,7 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 
 | Categoria | Acoes |
 |-----------|-------|
-| **Movimento** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Movimento** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Instancia** | Create, Destroy |
 | **Pontuacao** | Set Score, Add Score, Draw Score |
 | **Vidas** | Set Lives, Add Lives, Draw Lives |

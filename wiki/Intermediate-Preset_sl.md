@@ -124,8 +124,8 @@ Vmesna prednastavitev vkljucuje vse iz Zacetne, plus:
 #### Premik Proti Tocki
 | Lastnost | Vrednost |
 |----------|----------|
-| **Ime Akcije** | `move_towards` |
-| **Ime Bloka** | `move_towards` |
+| **Ime Akcije** | `move_towards_point` |
+| **Ime Bloka** | `move_towards_point` |
 | **Kategorija** | Gibanje |
 
 **Opis:** Premik proti doloceni poziciji.
@@ -351,7 +351,7 @@ Vmesna prednastavitev vkljucuje vse iz Zacetne, plus:
 
 | Kategorija | Akcije |
 |------------|--------|
-| **Gibanje** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Gibanje** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Instanca** | Create, Destroy |
 | **Rezultat** | Set Score, Add Score, Draw Score |
 | **Zivljenja** | Set Lives, Add Lives, Draw Lives |
