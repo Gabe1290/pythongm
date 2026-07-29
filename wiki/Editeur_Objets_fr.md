@@ -1,69 +1,69 @@
-# Editeur d'objets
+# Éditeur d'objets
 
 > [English](Object-Editor) | [Français](Editeur_Objets_fr) | [Deutsch](Objekt_Editor_de) | [Italiano](Editor_Oggetti_it) | [Español](Editor_Objetos_es) | [Português](Editor_Objetos_pt) | [Slovenščina](Urejevalnik_Objektov_sl) | [Українська](Redaktor_Obiektiv_uk) | [Русский](Redaktor_Obektov_ru)
 
 ---
 
-> [Retour a l'accueil](Home_fr)
+> [Retour à l'accueil](Home_fr)
 
-Les objets sont les elements de base de votre jeu. Ils representent tout, des joueurs aux ennemis, des collectibles aux elements d'interface.
+Les objets sont les éléments de base de votre jeu. Ils représentent tout, des joueurs aux ennemis, des objets à collecter aux éléments d'interface.
 
 ---
 
-## Ouvrir l'editeur d'objets
+## Ouvrir l'éditeur d'objets
 
 1. Double-cliquez sur un objet existant dans l'arbre des ressources, ou
-2. Clic droit sur **Objets** > **Creer un objet**
+2. Clic droit sur **Objets** > **Créer un objet**
 
 ---
 
-## Proprietes de l'objet
+## Propriétés de l'objet
 
-| Propriete | Description |
+| Propriété | Description |
 |-----------|-------------|
-| **Nom** | Identifiant unique de l'objet (ex: `obj_joueur`) |
-| **Sprite** | La representation visuelle de l'objet |
-| **Visible** | Si l'objet est dessine (par defaut: oui) |
-| **Solide** | Utilise pour la detection de collision |
-| **Profondeur** | Ordre de dessin (plus bas = dessine au-dessus) |
+| **Nom** | Identifiant unique de l'objet (ex : `obj_joueur`) |
+| **Sprite** | La représentation visuelle de l'objet |
+| **Visible** | Si l'objet est dessiné (par défaut : oui) |
+| **Solide** | Utilisé pour la détection de collision |
+| **Profondeur** | Ordre de dessin (plus bas = dessiné au-dessus) |
 | **Persistant** | L'objet survit aux changements de salle |
 
 ---
 
-## Evenements
+## Événements
 
-Les evenements sont des declencheurs qui provoquent l'execution d'actions.
+Les événements sont des déclencheurs qui provoquent l'exécution d'actions.
 
-### Evenements courants
+### Événements courants
 
-| Evenement | Quand il se declenche |
+| Événement | Quand il se déclenche |
 |-----------|----------------------|
-| **Create** | Une fois quand une instance est creee |
-| **Destroy** | Quand l'instance est detruite |
-| **Step** | A chaque frame du jeu (60 fois par seconde) |
+| **Create** | Une fois quand une instance est créée |
+| **Destroy** | Quand l'instance est détruite |
+| **Step** | À chaque frame du jeu (60 fois par seconde) |
 | **Draw** | Pendant la phase de dessin |
-| **Alarm [0-11]** | Quand un minuteur atteint zero |
+| **Alarm [0-11]** | Quand un minuteur atteint zéro |
 
-### Evenements clavier
+### Événements clavier
 
-| Evenement | Quand il se declenche |
+| Événement | Quand il se déclenche |
 |-----------|----------------------|
-| **Touche pressee** | Une fois quand une touche est enfoncee |
-| **Touche relachee** | Une fois quand une touche est relachee |
-| **Clavier** | A chaque frame tant qu'une touche est maintenue |
+| **Touche pressée** | Une fois quand une touche est enfoncée |
+| **Touche relâchée** | Une fois quand une touche est relâchée |
+| **Clavier** | À chaque frame tant qu'une touche est maintenue |
 
-### Evenements souris
+### Événements souris
 
-| Evenement | Quand il se declenche |
+| Événement | Quand il se déclenche |
 |-----------|----------------------|
 | **Bouton de souris** | Lors d'un clic sur l'instance |
-| **Souris globale** | Lors d'un clic n'importe ou |
-| **Entree souris** | Quand le curseur entre dans l'instance |
+| **Souris globale** | Lors d'un clic n'importe où |
+| **Entrée souris** | Quand le curseur entre dans l'instance |
 | **Sortie souris** | Quand le curseur quitte l'instance |
 
-### Evenements de collision
+### Événements de collision
 
-| Evenement | Quand il se declenche |
+| Événement | Quand il se déclenche |
 |-----------|----------------------|
 | **Collision avec [objet]** | Quand on touche un autre type d'objet |
 
@@ -71,44 +71,44 @@ Les evenements sont des declencheurs qui provoquent l'execution d'actions.
 
 ## Actions
 
-Les actions sont des operations effectuees lorsque les evenements se declenchent.
+Les actions sont des opérations effectuées lorsque les événements se déclenchent.
 
 ### Actions de mouvement
-- **Definir la vitesse** - Definir la vitesse de deplacement
-- **Definir la direction** - Definir la direction (0-360 degres)
-- **Sauter a une position** - Se teleporter aux coordonnees
-- **Sauter au depart** - Retourner a la position de depart
+- **Définir la vitesse** - Définir la vitesse de déplacement
+- **Définir la direction** - Définir la direction (0-360 degrés)
+- **Sauter à une position** - Se téléporter aux coordonnées
+- **Sauter au départ** - Retourner à la position de départ
 
 ### Actions d'instance
-- **Creer une instance** - Creer un nouvel objet
-- **Detruire l'instance** - Supprimer l'instance actuelle
+- **Créer une instance** - Créer un nouvel objet
+- **Détruire l'instance** - Supprimer l'instance actuelle
 
-### Actions de score/vies/sante
+### Actions de score/vies/santé
 - **Modifier le score** - Changer la valeur du score
 - **Modifier les vies** - Changer le nombre de vies
-- **Modifier la sante** - Changer la valeur de sante
+- **Modifier la santé** - Changer la valeur de santé
 
 ### Actions de salle
-- **Salle suivante** - Aller a la salle suivante
-- **Salle precedente** - Aller a la salle precedente
-- **Redemarrer la salle** - Reinitialiser la salle actuelle
+- **Salle suivante** - Aller à la salle suivante
+- **Salle précédente** - Aller à la salle précédente
+- **Redémarrer la salle** - Réinitialiser la salle actuelle
 
 ---
 
 ## Programmation visuelle avec Blockly
 
-Au lieu d'utiliser la liste d'actions, vous pouvez passer a l'onglet **Blockly** pour la programmation visuelle:
+Au lieu d'utiliser la liste d'actions, vous pouvez passer à l'onglet **Blockly** pour la programmation visuelle :
 
 1. Ouvrez un objet
 2. Cliquez sur l'onglet **Blockly**
-3. Glissez des blocs depuis la boite a outils pour creer la logique
+3. Glissez des blocs depuis la boîte à outils pour créer la logique
 
-Voir [[Programmation-Visuelle_fr]] pour plus de details.
+Voir [[Programmation_Visuelle_fr]] pour plus de détails.
 
 ---
 
-## Prochaines etapes
+## Prochaines étapes
 
-- [[Editeur-Salles_fr]] - Placer des objets dans vos niveaux
-- [[Evenements-Actions_fr]] - Reference complete des evenements et actions
-- [[Programmation-Visuelle_fr]] - Apprendre la programmation par blocs
+- [[Editeur_Salles_fr]] - Placer des objets dans vos niveaux
+- [[Evenements_Actions_fr]] - Référence complète des événements et actions
+- [[Programmation_Visuelle_fr]] - Apprendre la programmation par blocs

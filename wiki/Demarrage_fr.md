@@ -1,64 +1,64 @@
-# Demarrage
+# Démarrage
 
 > [English](Getting-Started) | [Français](Demarrage_fr) | [Deutsch](Erste_Schritte_de) | [Italiano](Iniziare_it) | [Español](Empezar_es) | [Português](Comecar_pt) | [Slovenščina](Zacetek_sl) | [Українська](Pochatok_uk) | [Русский](Nachalo_ru)
 
 ---
 
-> [Retour a l'accueil](Home_fr)
+> [Retour à l'accueil](Home_fr)
 
-Ce guide vous aidera a installer et lancer PyGameMaker sur votre systeme.
+Ce guide vous aidera à installer et lancer PyGameMaker sur votre système.
 
 ---
 
 ## Configuration requise
 
-- **Python** 3.10 ou superieur
-- **Systeme d'exploitation:** Windows, Linux ou macOS
-- **Espace disque:** ~500 Mo pour l'installation
-- **RAM:** 4 Go minimum, 8 Go recommande
+- **Python** 3.10 ou supérieur
+- **Système d'exploitation :** Windows, Linux ou macOS
+- **Espace disque :** ~500 Mo pour l'installation
+- **RAM :** 4 Go minimum, 8 Go recommandé
 
 ---
 
 ## Installation
 
-### Etape 1: Installer Python
+### Étape 1 : Installer Python
 
-Telechargez Python 3.10+ depuis [python.org](https://www.python.org/downloads/) et installez-le. Assurez-vous de cocher "Ajouter Python au PATH" lors de l'installation sur Windows.
+Téléchargez Python 3.10+ depuis [python.org](https://www.python.org/downloads/) et installez-le. Assurez-vous de cocher « Ajouter Python au PATH » lors de l'installation sur Windows.
 
-### Etape 2: Cloner le depot
+### Étape 2 : Cloner le dépôt
 
 ```bash
 git clone https://github.com/Gabe1290/pythongm.git
 cd pythongm
 ```
 
-Ou telechargez le fichier ZIP depuis la [page des releases](https://github.com/Gabe1290/pythongm/releases).
+Ou téléchargez le fichier ZIP depuis la [page des releases](https://github.com/Gabe1290/pythongm/releases).
 
-### Etape 3: Creer un environnement virtuel
+### Étape 3 : Créer un environnement virtuel
 
 ```bash
 python -m venv venv
 ```
 
-Activez l'environnement virtuel:
+Activez l'environnement virtuel :
 
-**Windows:**
+**Windows :**
 ```bash
 venv\Scripts\activate
 ```
 
-**Linux/macOS:**
+**Linux/macOS :**
 ```bash
 source venv/bin/activate
 ```
 
-### Etape 4: Installer les dependances
+### Étape 4 : Installer les dépendances
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Etape 5: Lancer PyGameMaker
+### Étape 5 : Lancer PyGameMaker
 
 ```bash
 python main.py
@@ -68,31 +68,31 @@ python main.py
 
 ## Premier lancement
 
-Au premier lancement de PyGameMaker, vous verrez:
+Au premier lancement de PyGameMaker, vous verrez :
 
-1. **Barre de menu** - Fichier, Edition, Ressources, Executer et Aide
+1. **Barre de menu** - Fichier, Édition, Ressources, Exécuter et Aide
 2. **Arbre des ressources** - Panneau gauche montrant les ressources du projet
-3. **Espace de travail** - Zone centrale pour editer les ressources
-4. **Panneau des proprietes** - Panneau droit pour les proprietes
+3. **Espace de travail** - Zone centrale pour éditer les ressources
+4. **Panneau des propriétés** - Panneau droit pour les propriétés
 
 ---
 
 ## Changer de langue
 
-PyGameMaker supporte plusieurs langues:
+PyGameMaker prend en charge plusieurs langues :
 
-1. Allez dans **Edition > Preferences**
-2. Selectionnez votre langue preferee
-3. Redemarrez PyGameMaker pour appliquer le changement
+1. Allez dans **Édition > Préférences**
+2. Sélectionnez votre langue préférée
+3. Redémarrez PyGameMaker pour appliquer le changement
 
-Langues disponibles: Anglais, francais, allemand, italien, espagnol, portugais, slovene, ukrainien, russe
+Langues disponibles : anglais, français, allemand, italien, espagnol, portugais, slovène, ukrainien, russe
 
 ---
 
-## Prochaines etapes
+## Prochaines étapes
 
-- [[Premier-Jeu_fr]] - Creez votre premier jeu etape par etape
-- [[Editeur-Objets_fr]] - Apprenez a creer des objets
-- [[Editeur-Salles_fr]] - Concevez vos niveaux
-- [[Evenements-Actions_fr]] - Comprenez la logique du jeu
-- [[FAQ_fr]] - Questions frequemment posees
+- [[Premier_Jeu_fr]] - Créez votre premier jeu étape par étape
+- [[Editeur_Objets_fr]] - Apprenez à créer des objets
+- [[Editeur_Salles_fr]] - Concevez vos niveaux
+- [[Evenements_Actions_fr]] - Comprenez la logique du jeu
+- [[FAQ_fr]] - Questions fréquemment posées
