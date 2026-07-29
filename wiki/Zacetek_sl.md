@@ -1,17 +1,17 @@
-# Zacetek
+# Začetek
 
 > [English](Getting-Started) | [Français](Demarrage_fr) | [Deutsch](Erste_Schritte_de) | [Italiano](Iniziare_it) | [Español](Empezar_es) | [Português](Comecar_pt) | [Slovenščina](Zacetek_sl) | [Українська](Pochatok_uk) | [Русский](Nachalo_ru)
 
 ---
 
-[Nazaj na zacetno stran](Home_sl)
+[Nazaj na začetno stran](Home_sl)
 
-Dobrodosli v pyGM! Ta vodic vam bo pomagal zaceti z razvojem iger.
+Dobrodošli v pyGM! Ta vodič vam bo pomagal začeti z razvojem iger.
 
 ## Namestitev
 
 ### Predpogoji
-- Python 3.8 ali visji
+- Python 3.10 ali višji
 - pip (upravitelj paketov Python)
 
 ### Koraki namestitve
@@ -28,24 +28,24 @@ Dobrodosli v pyGM! Ta vodic vam bo pomagal zaceti z razvojem iger.
 
 ## Zagon pyGM
 
-Po namestitvi lahko zazenete pyGM:
+Po namestitvi lahko zaženete pyGM:
 
 ```bash
 pygm
 ```
 
-To odpre vizualni urejevalnik, kjer lahko zacnete ustvarjati svojo igro.
+To odpre vizualni urejevalnik, kjer lahko začnete ustvarjati svojo igro.
 
-## Uporabniski vmesnik
+## Uporabniški vmesnik
 
-### Glavna podrocja
-- **Leva plosca**: Upravljanje virov (spriti, objekti, sobe)
-- **Srednje podrocje**: Delovno podrocje urejevalnika
-- **Desna plosca**: Lastnosti in nastavitve
+### Glavna področja
+- **Leva plošča**: Upravljanje virov (spriti, objekti, sobe)
+- **Srednje področje**: Delovno področje urejevalnika
+- **Desna plošča**: Lastnosti in nastavitve
 
 ### Osnovni nadzori
-- **Kolescek miske**: Povecava pogleda
-- **Srednji gumb miske**: Premikanje pogleda
+- **Kolešček miške**: Povečava pogleda
+- **Srednji gumb miške**: Premikanje pogleda
 - **Levi klik**: Izbira/postavljanje elementov
 - **Desni klik**: Kontekstni meni
 
@@ -53,11 +53,11 @@ To odpre vizualni urejevalnik, kjer lahko zacnete ustvarjati svojo igro.
 
 - [Ustvarite svojo prvo igro](Prva_Igra_sl)
 - [Spoznajte urejevalnik objektov](Urejevalnik_Objektov_sl)
-- [Razisite urejevalnik sob](Urejevalnik_Sob_sl)
+- [Raziščite urejevalnik sob](Urejevalnik_Sob_sl)
 
-## Pomoc
+## Pomoč
 
-Ce imate tezave:
+Če imate težave:
 - Preberite [FAQ](FAQ_sl)
-- Obisite nase forume skupnosti
+- Obiščite naše forume skupnosti
 - Prijavite napake na GitHub
