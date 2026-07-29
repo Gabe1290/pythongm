@@ -1,19 +1,19 @@
-# Referencia de Eventos
+# Referência de Eventos
 
-*[Inicio](Home_pt) | [Guia de Presets](Preset-Guide_pt) | [Referencia Completa de Acoes](Full-Action-Reference_pt)*
+*[Início](Home_pt) | [Guia de Presets](Preset-Guide_pt) | [Referência Completa de Ações](Full-Action-Reference_pt)*
 
-Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao gatilhos que executam acoes quando condicoes especificas ocorrem no seu jogo.
+Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos são gatilhos que executam ações quando condições específicas ocorrem no seu jogo.
 
 ## Categorias de Eventos
 
 - [Eventos de Objeto](#eventos-de-objeto) - Create, Step, Destroy
 - [Eventos de Entrada](#eventos-de-entrada) - Teclado, Mouse
-- [Eventos de Colisao](#eventos-de-colisao) - Colisoes de objetos
+- [Eventos de Colisão](#eventos-de-colisão) - Colisões de objetos
 - [Eventos de Tempo](#eventos-de-tempo) - Alarmes, Variantes de Step
-- [Eventos de Desenho](#eventos-de-desenho) - Renderizacao personalizada
-- [Eventos de Sala](#eventos-de-sala) - Transicoes de sala
-- [Eventos de Jogo](#eventos-de-jogo) - Inicio/Fim do jogo
-- [Outros Eventos](#outros-eventos) - Limites, Vidas, Saude
+- [Eventos de Desenho](#eventos-de-desenho) - Renderização personalizada
+- [Eventos de Sala](#eventos-de-sala) - Transições de sala
+- [Eventos de Jogo](#eventos-de-jogo) - Início/Fim do jogo
+- [Outros Eventos](#outros-eventos) - Limites, Vidas, Saúde
 
 ---
 
@@ -23,19 +23,19 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `create` |
-| **Icone** | 🎯 |
+| **Ícone** | 🎯 |
 | **Categoria** | Objeto |
 | **Preset** | Iniciante |
 
-**Descricao:** Executado uma vez quando uma instancia e criada pela primeira vez.
+**Descrição:** Executado uma vez quando uma instância é criada pela primeira vez.
 
 **Quando dispara:**
-- Quando uma instancia e colocada em uma sala no inicio do jogo
-- Quando criada via acao "Criar Instancia"
-- Apos transicoes de sala para novas instancias
+- Quando uma instância é colocada em uma sala no início do jogo
+- Quando criada via ação "Criar Instancia"
+- Após transições de sala para novas instâncias
 
 **Usos comuns:**
-- Inicializar variaveis
+- Inicializar variáveis
 - Definir valores iniciais
 - Configurar estado inicial
 
@@ -45,21 +45,21 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `step` |
-| **Icone** | ⭐ |
+| **Ícone** | ⭐ |
 | **Categoria** | Objeto |
 | **Preset** | Iniciante |
 
-**Descricao:** Executado a cada quadro (tipicamente 60 vezes por segundo).
+**Descrição:** Executado a cada quadro (tipicamente 60 vezes por segundo).
 
 **Quando dispara:** Continuamente, a cada quadro do jogo.
 
 **Usos comuns:**
-- Movimento continuo
-- Verificar condicoes
-- Atualizar posicoes
-- Logica do jogo
+- Movimento contínuo
+- Verificar condições
+- Atualizar posições
+- Lógica do jogo
 
-**Nota:** Cuidado com o desempenho - o codigo aqui executa constantemente.
+**Nota:** Cuidado com o desempenho - o código aqui executa constantemente.
 
 ---
 
@@ -67,42 +67,42 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `destroy` |
-| **Icone** | 💥 |
+| **Ícone** | 💥 |
 | **Categoria** | Objeto |
-| **Preset** | Intermediario |
+| **Preset** | Intermediário |
 
-**Descricao:** Executado quando uma instancia e destruida.
+**Descrição:** Executado quando uma instância é destruida.
 
-**Quando dispara:** Logo antes da instancia ser removida do jogo.
+**Quando dispara:** Logo antes da instância ser removida do jogo.
 
 **Usos comuns:**
 - Gerar efeitos (explosoes, particulas)
 - Soltar itens
-- Atualizar pontuacoes
+- Atualizar pontuações
 - Tocar sons
 
 ---
 
 ## Eventos de Entrada
 
-### Teclado (Continuo)
+### Teclado (Contínuo)
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `keyboard` |
-| **Icone** | ⌨️ |
+| **Ícone** | ⌨️ |
 | **Categoria** | Entrada |
 | **Preset** | Iniciante |
 
-**Descricao:** Dispara continuamente enquanto uma tecla esta pressionada.
+**Descrição:** Dispara continuamente enquanto uma tecla está pressionada.
 
-**Ideal para:** Movimento suave e continuo
+**Ideal para:** Movimento suave e contínuo
 
 **Teclas Suportadas:**
 - Teclas de seta (cima, baixo, esquerda, direita)
 - Letras (A-Z)
-- Numeros (0-9)
-- Espaco, Enter, Escape
-- Teclas de funcao (F1-F12)
+- Números (0-9)
+- Espaço, Enter, Escape
+- Teclas de função (F1-F12)
 - Teclas modificadoras (Shift, Ctrl, Alt)
 
 ---
@@ -111,15 +111,15 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `keyboard_press` |
-| **Icone** | 🔘 |
+| **Ícone** | 🔘 |
 | **Categoria** | Entrada |
 | **Preset** | Iniciante |
 
-**Descricao:** Dispara uma vez quando uma tecla e pressionada pela primeira vez.
+**Descrição:** Dispara uma vez quando uma tecla é pressionada pela primeira vez.
 
-**Ideal para:** Acoes unicas (pular, atirar, selecionar no menu)
+**Ideal para:** Ações únicas (pular, atirar, selecionar no menu)
 
-**Diferenca do Teclado:** So dispara uma vez por pressionamento, nao enquanto mantido.
+**Diferença do Teclado:** Só dispara uma vez por pressionamento, não enquanto mantido.
 
 ---
 
@@ -127,14 +127,14 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `keyboard_release` |
-| **Icone** | ⬆️ |
+| **Ícone** | ⬆️ |
 | **Categoria** | Entrada |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara uma vez quando uma tecla e solta.
+**Descrição:** Dispara uma vez quando uma tecla é solta.
 
 **Usos comuns:**
-- Parar movimento quando tecla e solta
+- Parar movimento quando tecla é solta
 - Terminar ataques carregados
 - Alternar estados
 
@@ -162,43 +162,43 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `mouse` |
-| **Icone** | 🖱️ |
+| **Ícone** | 🖱️ |
 | **Categoria** | Entrada |
-| **Preset** | Intermediario |
+| **Preset** | Intermediário |
 
-**Descricao:** Eventos de botao do mouse e movimento.
+**Descrição:** Eventos de botão do mouse e movimento.
 
 **Tipos de Eventos:**
 
-| Tipo | Descricao |
+| Tipo | Descrição |
 |------|-----------|
-| Botao Esquerdo | Clique com botao esquerdo do mouse |
-| Botao Direito | Clique com botao direito do mouse |
-| Botao do Meio | Clique com botao do meio/scroll |
-| Entrada do Mouse | Cursor entra nos limites da instancia |
-| Saida do Mouse | Cursor sai dos limites da instancia |
-| Botao Esquerdo Global | Clique esquerdo em qualquer lugar |
-| Botao Direito Global | Clique direito em qualquer lugar |
+| Botão Esquerdo | Clique com botão esquerdo do mouse |
+| Botão Direito | Clique com botão direito do mouse |
+| Botão do Meio | Clique com botão do meio/scroll |
+| Entrada do Mouse | Cursor entra nos limites da instância |
+| Saída do Mouse | Cursor sai dos limites da instância |
+| Botão Esquerdo Global | Clique esquerdo em qualquer lugar |
+| Botão Direito Global | Clique direito em qualquer lugar |
 
 ---
 
-## Eventos de Colisao
+## Eventos de Colisão
 
-### Colisao
+### Colisão
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `collision` |
-| **Icone** | 💥 |
-| **Categoria** | Colisao |
+| **Ícone** | 💥 |
+| **Categoria** | Colisão |
 | **Preset** | Iniciante |
 
-**Descricao:** Dispara quando esta instancia se sobrepoe com outro tipo de objeto.
+**Descrição:** Dispara quando esta instância se sobrepõe com outro tipo de objeto.
 
-**Configuracao:** Selecione qual tipo de objeto dispara esta colisao.
+**Configuração:** Selecione qual tipo de objeto dispara esta colisão.
 
-**Variavel especial:** `other` - Referencia a instancia em colisao.
+**Variável especial:** `other` - Referência a instância em colisão.
 
-**Quando dispara:** A cada quadro em que as instancias se sobrepoem.
+**Quando dispara:** A cada quadro em que as instâncias se sobrepõem.
 
 **Usos comuns:**
 - Coletar itens
@@ -206,7 +206,7 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 - Bater em paredes
 - Disparar eventos
 
-**Exemplos de eventos de colisao:**
+**Exemplos de eventos de colisão:**
 - `collision_with_obj_coin` - Jogador toca uma moeda
 - `collision_with_obj_enemy` - Jogador toca um inimigo
 - `collision_with_obj_wall` - Instancia bate em uma parede
@@ -219,21 +219,21 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `alarm` |
-| **Icone** | ⏰ |
+| **Ícone** | ⏰ |
 | **Categoria** | Tempo |
-| **Preset** | Intermediario |
+| **Preset** | Intermediário |
 
-**Descricao:** Dispara quando uma contagem regressiva de alarme chega a zero.
+**Descrição:** Dispara quando uma contagem regressiva de alarme chega a zero.
 
-**Alarmes disponiveis:** 12 alarmes independentes (alarm[0] ate alarm[11])
+**Alarmes disponíveis:** 12 alarmes independentes (alarm[0] ate alarm[11])
 
-**Configurar alarmes:** Use a acao "Definir Alarme" com passos (60 passos ≈ 1 segundo a 60 FPS)
+**Configurar alarmes:** Use a ação "Definir Alarme" com passos (60 passos ≈ 1 segundo a 60 FPS)
 
 **Usos comuns:**
-- Geracao temporizada
+- Geração temporizada
 - Tempos de recarga
 - Efeitos atrasados
-- Acoes repetitivas (redefinir alarme no evento de alarme)
+- Ações repetitivas (redefinir alarme no evento de alarme)
 
 ---
 
@@ -241,17 +241,17 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `begin_step` |
-| **Icone** | ▶️ |
+| **Ícone** | ▶️ |
 | **Categoria** | Step |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara no inicio de cada quadro, antes dos eventos Step regulares.
+**Descrição:** Dispara no início de cada quadro, antes dos eventos Step regulares.
 
-**Ordem de execucao:** Begin Step → Step → End Step
+**Ordem de execução:** Begin Step → Step → End Step
 
 **Usos comuns:**
 - Processamento de entrada
-- Calculos pre-movimento
+- Cálculos pré-movimento
 
 ---
 
@@ -259,16 +259,16 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `end_step` |
-| **Icone** | ⏹️ |
+| **Ícone** | ⏹️ |
 | **Categoria** | Step |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara no final de cada quadro, apos as colisoes.
+**Descrição:** Dispara no final de cada quadro, após as colisões.
 
 **Usos comuns:**
-- Ajustes finais de posicao
-- Operacoes de limpeza
-- Atualizacoes de estado apos colisoes
+- Ajustes finais de posição
+- Operações de limpeza
+- Atualizações de estado após colisões
 
 ---
 
@@ -278,28 +278,28 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `draw` |
-| **Icone** | 🎨 |
+| **Ícone** | 🎨 |
 | **Categoria** | Desenho |
-| **Preset** | Intermediario |
+| **Preset** | Intermediário |
 
-**Descricao:** Dispara durante a fase de renderizacao.
+**Descrição:** Dispara durante a fase de renderização.
 
 **Importante:** Adicionar um evento Draw desabilita o desenho automatico do sprite. Voce deve desenhar o sprite manualmente se quiser que ele seja visivel.
 
 **Usos comuns:**
-- Renderizacao personalizada
+- Renderização personalizada
 - Desenhar formas
 - Exibir texto
 - Barras de saude
 - Elementos de HUD
 
-**Acoes de desenho disponiveis:**
+**Ações de desenho disponíveis:**
 - Desenhar Sprite
 - Desenhar Texto
 - Desenhar Retangulo
 - Desenhar Circulo
 - Desenhar Linha
-- Desenhar Barra de Saude
+- Desenhar Barra de Saúde
 
 ---
 
@@ -323,16 +323,16 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `room_start` |
-| **Icone** | 🚪 |
+| **Ícone** | 🚪 |
 | **Categoria** | Sala |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara ao entrar em uma sala, apos todos os eventos Create.
+**Descrição:** Dispara ao entrar em uma sala, após todos os eventos Create.
 
 **Usos comuns:**
-- Inicializacao da sala
+- Inicialização da sala
 - Tocar musica da sala
-- Definir variaveis especificas da sala
+- Definir variáveis específicas da sala
 
 ---
 
@@ -340,11 +340,11 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `room_end` |
-| **Icone** | 🚪 |
+| **Ícone** | 🚪 |
 | **Categoria** | Sala |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara ao sair de uma sala.
+**Descrição:** Dispara ao sair de uma sala.
 
 **Usos comuns:**
 - Salvar progresso
@@ -359,16 +359,16 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `game_start` |
-| **Icone** | 🎮 |
+| **Ícone** | 🎮 |
 | **Categoria** | Jogo |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara uma vez quando o jogo inicia pela primeira vez (apenas na primeira sala).
+**Descrição:** Dispara uma vez quando o jogo inicia pela primeira vez (apenas na primeira sala).
 
 **Usos comuns:**
-- Inicializar variaveis globais
+- Inicializar variáveis globais
 - Carregar dados salvos
-- Tocar introducao
+- Tocar introdução
 
 ---
 
@@ -376,11 +376,11 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `game_end` |
-| **Icone** | 🎮 |
+| **Ícone** | 🎮 |
 | **Categoria** | Jogo |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara quando o jogo esta terminando.
+**Descrição:** Dispara quando o jogo esta terminando.
 
 **Usos comuns:**
 - Salvar dados do jogo
@@ -394,11 +394,11 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `outside_room` |
-| **Icone** | 🚫 |
+| **Ícone** | 🚫 |
 | **Categoria** | Outro |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara quando a instancia esta completamente fora dos limites da sala.
+**Descrição:** Dispara quando a instância esta completamente fora dos limites da sala.
 
 **Usos comuns:**
 - Destruir projeteis fora da tela
@@ -411,11 +411,11 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `intersect_boundary` |
-| **Icone** | ⚠️ |
+| **Ícone** | ⚠️ |
 | **Categoria** | Outro |
-| **Preset** | Avancado |
+| **Preset** | Avançado |
 
-**Descricao:** Dispara quando a instancia toca o limite da sala.
+**Descrição:** Dispara quando a instância toca o limite da sala.
 
 **Usos comuns:**
 - Manter o jogador nos limites
@@ -427,16 +427,16 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `no_more_lives` |
-| **Icone** | 💀 |
+| **Ícone** | 💀 |
 | **Categoria** | Outro |
-| **Preset** | Intermediario |
+| **Preset** | Intermediário |
 
-**Descricao:** Dispara quando as vidas chegam a 0 ou menos.
+**Descrição:** Dispara quando as vidas chegam a 0 ou menos.
 
 **Usos comuns:**
 - Tela de game over
 - Reiniciar jogo
-- Mostrar pontuacao final
+- Mostrar pontuação final
 
 ---
 
@@ -444,16 +444,16 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome** | `no_more_health` |
-| **Icone** | 💔 |
+| **Ícone** | 💔 |
 | **Categoria** | Outro |
-| **Preset** | Intermediario |
+| **Preset** | Intermediário |
 
-**Descricao:** Dispara quando a saude chega a 0 ou menos.
+**Descrição:** Dispara quando a saude chega a 0 ou menos.
 
 **Usos comuns:**
 - Perder uma vida
 - Reaparecer jogador
-- Disparar animacao de morte
+- Disparar animação de morte
 
 ---
 
@@ -474,17 +474,17 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 
 ---
 
-## Ordem de Execucao de Eventos
+## Ordem de Execução de Eventos
 
 Entender quando os eventos disparam ajuda a criar um comportamento de jogo previsivel:
 
-1. **Begin Step** - Inicio do quadro
+1. **Begin Step** - Início do quadro
 2. **Alarm** - Qualquer alarme disparado
 3. **Keyboard/Mouse** - Eventos de entrada
-4. **Step** - Logica principal do jogo
-5. **Collision** - Apos o movimento
-6. **End Step** - Apos colisoes
-7. **Draw** - Fase de renderizacao
+4. **Step** - Lógica principal do jogo
+5. **Collision** - Após o movimento
+6. **End Step** - Após colisões
+7. **Draw** - Fase de renderização
 
 ---
 
@@ -493,14 +493,14 @@ Entender quando os eventos disparam ajuda a criar um comportamento de jogo previ
 | Preset | Eventos Incluidos |
 |--------|-------------------|
 | **Iniciante** | Create, Step, Keyboard Press, Collision |
-| **Intermediario** | + Draw, Destroy, Mouse, Alarm |
-| **Avancado** | + Todas as variantes de teclado, Begin/End Step, Eventos de sala, Eventos de jogo, Eventos de limite |
+| **Intermediário** | + Draw, Destroy, Mouse, Alarm |
+| **Avançado** | + Todas as variantes de teclado, Begin/End Step, Eventos de sala, Eventos de jogo, Eventos de limite |
 
 ---
 
 ## Veja Tambem
 
-- [Referencia Completa de Acoes](Full-Action-Reference_pt) - Lista completa de acoes
+- [Referência Completa de Ações](Full-Action-Reference_pt) - Lista completa de ações
 - [Preset Iniciante](Beginner-Preset_pt) - Eventos essenciais para iniciantes
-- [Preset Intermediario](Intermediate-Preset_pt) - Eventos adicionais
-- [Eventos e Acoes](Events-and-Actions_pt) - Visao geral dos conceitos basicos
+- [Preset Intermediário](Intermediate-Preset_pt) - Eventos adicionais
+- [Eventos e Ações](Eventos_e_Acoes_pt) - Visao geral dos conceitos basicos
