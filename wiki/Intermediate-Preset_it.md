@@ -2,13 +2,13 @@
 
 *[Home](Home_it) | [Guida ai Preset](Preset-Guide_it) | [Preset Principiante](Beginner-Preset_it)*
 
-Il preset **Intermedio** si basa sul [Preset Principiante](Beginner-Preset_it) aggiungendo eventi e azioni piu avanzati. E progettato per utenti che hanno padroneggiato le basi e vogliono creare giochi piu complessi con funzionalita come eventi temporizzati, suono, vite e sistemi di salute.
+Il preset **Intermedio** si basa sul [Preset Principiante](Beginner-Preset_it) aggiungendo eventi e azioni più avanzati. È progettato per utenti che hanno padroneggiato le basi e vogliono creare giochi più complessi con funzionalità come eventi temporizzati, suono, vite e sistemi di salute.
 
 ## Panoramica
 
-Il preset Intermedio include tutto dal Principiante, piu:
+Il preset Intermedio include tutto dal Principiante, più:
 - **4 Tipi di Eventi Aggiuntivi** - Disegno, Distruzione, Mouse, Allarme
-- **12 Tipi di Azioni Aggiuntive** - Vite, Salute, Suono, Temporizzazione e piu opzioni di movimento
+- **12 Tipi di Azioni Aggiuntive** - Vite, Salute, Suono, Temporizzazione e più opzioni di movimento
 - **3 Categorie Aggiuntive** - Temporizzazione, Suono, Disegno
 
 ---
@@ -16,7 +16,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ## Eventi Aggiuntivi (Oltre il Principiante)
 
 ### Evento Disegno
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_draw` |
 | **Categoria** | Disegno |
@@ -37,7 +37,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 ### Evento Distruzione
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_destroy` |
 | **Categoria** | Oggetto |
@@ -56,7 +56,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 ### Evento Mouse
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_mouse` |
 | **Categoria** | Input |
@@ -80,7 +80,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 ### Evento Allarme
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_alarm` |
 | **Categoria** | Temporizzazione |
@@ -105,24 +105,24 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ### Azioni di Movimento
 
 #### Muovi in Direzione
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `move_direction` |
 | **Nome Blocco** | `move_direction` |
 | **Categoria** | Movimento |
 
-**Descrizione:** Imposta il movimento usando direzione (0-360 gradi) e velocita.
+**Descrizione:** Imposta il movimento usando direzione (0-360 gradi) e velocità.
 
 **Parametri:**
 | Parametro | Tipo | Descrizione |
 |-----------|------|-------------|
-| `direction` | Numero | Direzione in gradi (0=destra, 90=su, 180=sinistra, 270=giu) |
-| `speed` | Numero | Velocita di movimento |
+| `direction` | Numero | Direzione in gradi (0=destra, 90=su, 180=sinistra, 270=giù) |
+| `speed` | Numero | Velocità di movimento |
 
 ---
 
 #### Muovi Verso un Punto
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `move_towards_point` |
 | **Nome Blocco** | `move_towards_point` |
@@ -135,14 +135,14 @@ Il preset Intermedio include tutto dal Principiante, piu:
 |-----------|------|-------------|
 | `x` | Numero/Espressione | Coordinata X obiettivo |
 | `y` | Numero/Espressione | Coordinata Y obiettivo |
-| `speed` | Numero | Velocita di movimento |
+| `speed` | Numero | Velocità di movimento |
 
 ---
 
 ### Azioni di Temporizzazione
 
 #### Imposta Allarme
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `set_alarm` |
 | **Nome Blocco** | `set_alarm` |
@@ -164,7 +164,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ### Azioni Vite
 
 #### Imposta Vite
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `set_lives` |
 | **Nome Blocco** | `lives_set` |
@@ -182,7 +182,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 #### Aggiungi Vite
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `add_lives` |
 | **Nome Blocco** | `lives_add` |
@@ -194,14 +194,14 @@ Il preset Intermedio include tutto dal Principiante, piu:
 **Parametri:**
 | Parametro | Tipo | Descrizione |
 |-----------|------|-------------|
-| `value` | Numero | Quantita da aggiungere (negativo per sottrarre) |
+| `value` | Numero | Quantità da aggiungere (negativo per sottrarre) |
 
 **Nota:** Quando le vite raggiungono 0, viene attivato l'evento `no_more_lives`.
 
 ---
 
 #### Disegna Vite
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `draw_lives` |
 | **Nome Blocco** | `draw_lives` |
@@ -222,7 +222,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ### Azioni Salute
 
 #### Imposta Salute
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `set_health` |
 | **Nome Blocco** | `health_set` |
@@ -240,7 +240,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 #### Aggiungi Salute
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `add_health` |
 | **Nome Blocco** | `health_add` |
@@ -252,14 +252,14 @@ Il preset Intermedio include tutto dal Principiante, piu:
 **Parametri:**
 | Parametro | Tipo | Descrizione |
 |-----------|------|-------------|
-| `value` | Numero | Quantita da aggiungere (negativo per danni) |
+| `value` | Numero | Quantità da aggiungere (negativo per danni) |
 
 **Nota:** Quando la salute raggiunge 0, viene attivato l'evento `no_more_health`.
 
 ---
 
 #### Disegna Barra della Salute
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `draw_health_bar` |
 | **Nome Blocco** | `draw_health_bar` |
@@ -283,7 +283,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ### Azioni Audio
 
 #### Riproduci Suono
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `play_sound` |
 | **Nome Blocco** | `sound_play` |
@@ -301,7 +301,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 #### Riproduci Musica
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `play_music` |
 | **Nome Blocco** | `music_play` |
@@ -319,7 +319,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 ---
 
 #### Ferma Musica
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `stop_music` |
 | **Nome Blocco** | `music_stop` |
@@ -332,7 +332,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 
 ---
 
-## Lista Completa delle Funzionalita
+## Lista Completa delle Funzionalità
 
 ### Eventi nel Preset Intermedio
 
@@ -401,8 +401,8 @@ Il preset Intermedio include tutto dal Principiante, piu:
 
 ## Aggiornamento ai Preset Avanzati
 
-Quando hai bisogno di piu funzionalita, considera:
-- **Preset Piattaforma** - Gravita, salto, meccaniche platform
+Quando hai bisogno di più funzionalità, considera:
+- **Preset Piattaforma** - Gravità, salto, meccaniche platform
 - **Preset Completo** - Tutti gli eventi e le azioni disponibili
 
 ---
@@ -412,4 +412,4 @@ Quando hai bisogno di piu funzionalita, considera:
 - [Preset Principiante](Beginner-Preset_it) - Inizia qui se sei nuovo
 - [Riferimento Completo Azioni](Full-Action-Reference_it) - Lista completa delle azioni
 - [Riferimento Eventi](Event-Reference_it) - Lista completa degli eventi
-- [Eventi e Azioni](Events-and-Actions_it) - Concetti fondamentali
+- [Eventi e Azioni](Eventi_e_Azioni_it) - Concetti fondamentali
