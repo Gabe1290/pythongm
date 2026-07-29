@@ -2,7 +2,7 @@
 
 *[Home](Home_it) | [Guida ai Preset](Preset-Guide_it) | [Preset Intermedio](Intermediate-Preset_it)*
 
-Il preset **Principiante** e progettato per gli utenti che sono nuovi allo sviluppo di giochi. Fornisce un insieme selezionato di eventi e azioni essenziali che coprono i fondamenti della creazione di semplici giochi 2D senza sopraffare i principianti con troppe opzioni.
+Il preset **Principiante** è progettato per gli utenti che sono nuovi allo sviluppo di giochi. Fornisce un insieme selezionato di eventi e azioni essenziali che coprono i fondamenti della creazione di semplici giochi 2D senza sopraffare i principianti con troppe opzioni.
 
 ## Panoramica
 
@@ -19,7 +19,7 @@ Gli eventi sono trigger che rispondono a situazioni specifiche nel tuo gioco. Qu
 
 ### Evento Create
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_create` |
 | **Categoria** | Eventi |
@@ -30,14 +30,14 @@ Gli eventi sono trigger che rispondono a situazioni specifiche nel tuo gioco. Qu
 **Usi comuni:**
 - Inizializzare variabili
 - Impostare la posizione iniziale
-- Impostare velocita o direzione iniziale
+- Impostare velocità o direzione iniziale
 - Resettare il punteggio all'inizio del gioco
 
 ---
 
 ### Evento Step
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_step` |
 | **Categoria** | Eventi |
@@ -55,15 +55,15 @@ Gli eventi sono trigger che rispondono a situazioni specifiche nel tuo gioco. Qu
 
 ### Evento Tasto Premuto
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_keyboard_press` |
 | **Categoria** | Eventi |
 | **Descrizione** | Attivato una volta quando viene premuto un tasto specifico |
 
-**Quando si attiva:** Una volta nel momento in cui un tasto viene premuto (non mentre e tenuto premuto).
+**Quando si attiva:** Una volta nel momento in cui un tasto viene premuto (non mentre è tenuto premuto).
 
-**Tasti supportati:** Tasti freccia (su, giu, sinistra, destra), Spazio, Invio, lettere (A-Z), numeri (0-9)
+**Tasti supportati:** Tasti freccia (su, giù, sinistra, destra), Spazio, Invio, lettere (A-Z), numeri (0-9)
 
 **Usi comuni:**
 - Controlli di movimento del giocatore
@@ -75,7 +75,7 @@ Gli eventi sono trigger che rispondono a situazioni specifiche nel tuo gioco. Qu
 
 ### Evento Collisione
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Blocco** | `event_collision` |
 | **Categoria** | Eventi |
@@ -95,47 +95,47 @@ Gli eventi sono trigger che rispondono a situazioni specifiche nel tuo gioco. Qu
 
 ## Azioni
 
-Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azioni possono essere aggiunte a un singolo evento e verranno eseguite in ordine.
+Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Più azioni possono essere aggiunte a un singolo evento e verranno eseguite in ordine.
 
 ---
 
 ## Azioni di Movimento
 
-### Imposta Velocita Orizzontale
+### Imposta Velocità Orizzontale
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `set_hspeed` |
 | **Nome Blocco** | `move_set_hspeed` |
 | **Categoria** | Movimento |
 | **Icona** | ↔️ |
 
-**Descrizione:** Imposta la velocita di movimento orizzontale dell'istanza.
+**Descrizione:** Imposta la velocità di movimento orizzontale dell'istanza.
 
 **Parametri:**
 | Parametro | Tipo | Descrizione |
 |-----------|------|-------------|
-| `value` | Numero | Velocita in pixel per fotogramma. Positivo = destra, Negativo = sinistra |
+| `value` | Numero | Velocità in pixel per fotogramma. Positivo = destra, Negativo = sinistra |
 
 **Esempio:** Imposta `value` a `4` per muoversi a destra a 4 pixel per fotogramma, o `-4` per muoversi a sinistra.
 
 ---
 
-### Imposta Velocita Verticale
+### Imposta Velocità Verticale
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `set_vspeed` |
 | **Nome Blocco** | `move_set_vspeed` |
 | **Categoria** | Movimento |
 | **Icona** | ↕️ |
 
-**Descrizione:** Imposta la velocita di movimento verticale dell'istanza.
+**Descrizione:** Imposta la velocità di movimento verticale dell'istanza.
 
 **Parametri:**
 | Parametro | Tipo | Descrizione |
 |-----------|------|-------------|
-| `value` | Numero | Velocita in pixel per fotogramma. Positivo = giu, Negativo = su |
+| `value` | Numero | Velocità in pixel per fotogramma. Positivo = giù, Negativo = su |
 
 **Esempio:** Imposta `value` a `-4` per muoversi verso l'alto a 4 pixel per fotogramma, o `4` per muoversi verso il basso.
 
@@ -143,14 +143,14 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Ferma Movimento
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `stop_movement` |
 | **Nome Blocco** | `move_stop` |
 | **Categoria** | Movimento |
 | **Icona** | 🛑 |
 
-**Descrizione:** Ferma tutto il movimento impostando sia la velocita orizzontale che verticale a zero.
+**Descrizione:** Ferma tutto il movimento impostando sia la velocità orizzontale che verticale a zero.
 
 **Parametri:** Nessuno
 
@@ -163,7 +163,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Salta alla Posizione
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `jump_to_position` |
 | **Nome Blocco** | `move_jump_to` |
@@ -186,7 +186,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Distruggi Istanza
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `destroy_instance` |
 | **Nome Blocco** | `instance_destroy` |
@@ -209,7 +209,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Crea Istanza
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `create_instance` |
 | **Nome Blocco** | `instance_create` |
@@ -233,7 +233,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Imposta Punteggio
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `set_score` |
 | **Nome Blocco** | `score_set` |
@@ -257,7 +257,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Aggiungi al Punteggio
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `add_score` |
 | **Nome Blocco** | `score_add` |
@@ -269,13 +269,13 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 **Parametri:**
 | Parametro | Tipo | Descrizione |
 |-----------|------|-------------|
-| `value` | Numero | Punti da aggiungere (puo essere negativo per sottrarre) |
+| `value` | Numero | Punti da aggiungere (può essere negativo per sottrarre) |
 
 ---
 
 ### Disegna Punteggio
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `draw_score` |
 | **Nome Blocco** | `draw_score` |
@@ -299,7 +299,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Vai alla Stanza Successiva
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `next_room` |
 | **Nome Blocco** | `room_goto_next` |
@@ -310,13 +310,13 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 **Parametri:** Nessuno
 
-**Nota:** Se sei gia nell'ultima stanza, questa azione non ha effetto (usa "Se Esiste Stanza Successiva" per verificare prima).
+**Nota:** Se sei già nell'ultima stanza, questa azione non ha effetto (usa "Se Esiste Stanza Successiva" per verificare prima).
 
 ---
 
 ### Vai alla Stanza Precedente
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `previous_room` |
 | **Nome Blocco** | `room_goto_previous` |
@@ -327,13 +327,13 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 **Parametri:** Nessuno
 
-**Nota:** Se sei gia nella prima stanza, questa azione non ha effetto.
+**Nota:** Se sei già nella prima stanza, questa azione non ha effetto.
 
 ---
 
 ### Riavvia Stanza
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `restart_room` |
 | **Nome Blocco** | `room_restart` |
@@ -353,7 +353,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Vai alla Stanza
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `goto_room` |
 | **Nome Blocco** | `room_goto` |
@@ -371,7 +371,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Se Esiste Stanza Successiva
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `if_next_room_exists` |
 | **Nome Blocco** | `room_if_next_exists` |
@@ -390,7 +390,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Se Esiste Stanza Precedente
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `if_previous_room_exists` |
 | **Nome Blocco** | `room_if_previous_exists` |
@@ -407,7 +407,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Mostra Messaggio
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `show_message` |
 | **Nome Blocco** | `output_message` |
@@ -421,7 +421,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 |-----------|------|-------------|
 | `message` | Stringa | Il testo da visualizzare |
 
-**Nota:** Il gioco si mette in pausa mentre il messaggio e visualizzato. Il giocatore deve cliccare OK per continuare.
+**Nota:** Il gioco si mette in pausa mentre il messaggio è visualizzato. Il giocatore deve cliccare OK per continuare.
 
 **Usi comuni:**
 - Istruzioni del gioco
@@ -433,7 +433,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ### Esegui Codice
 
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome Azione** | `execute_code` |
 | **Nome Blocco** | `execute_code` |
@@ -447,7 +447,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 |-----------|------|-------------|
 | `code` | Stringa | Codice Python da eseguire |
 
-**Nota:** Questa e una funzionalita avanzata. Usare con cautela poiche codice errato puo causare errori.
+**Nota:** Questa è una funzionalità avanzata. Usare con cautela poiché codice errato può causare errori.
 
 ---
 
@@ -456,7 +456,7 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 | Categoria | Eventi | Azioni |
 |-----------|--------|--------|
 | **Eventi** | Create, Step, Tasto Premuto, Collisione | - |
-| **Movimento** | - | Imposta Velocita Orizzontale, Imposta Velocita Verticale, Ferma Movimento, Salta alla Posizione |
+| **Movimento** | - | Imposta Velocità Orizzontale, Imposta Velocità Verticale, Ferma Movimento, Salta alla Posizione |
 | **Istanza** | - | Distruggi Istanza, Crea Istanza |
 | **Punteggio/Vite/Salute** | - | Imposta Punteggio, Aggiungi Punteggio, Disegna Punteggio |
 | **Stanza** | - | Stanza Successiva, Stanza Precedente, Riavvia Stanza, Vai alla Stanza, Se Esiste Stanza Successiva, Se Esiste Stanza Precedente |
@@ -466,21 +466,21 @@ Le azioni sono comandi che vengono eseguiti quando si attiva un evento. Piu azio
 
 ## Esempio: Semplice Gioco di Raccolta Monete
 
-Ecco come configurare un gioco base di raccolta monete usando solo le funzionalita del preset Principiante:
+Ecco come configurare un gioco base di raccolta monete usando solo le funzionalità del preset Principiante:
 
 ### Oggetto Giocatore (obj_player)
 
 **Tasto Premuto (Freccia Sinistra):**
-- Imposta Velocita Orizzontale: -4
+- Imposta Velocità Orizzontale: -4
 
 **Tasto Premuto (Freccia Destra):**
-- Imposta Velocita Orizzontale: 4
+- Imposta Velocità Orizzontale: 4
 
 **Tasto Premuto (Freccia Su):**
-- Imposta Velocita Verticale: -4
+- Imposta Velocità Verticale: -4
 
-**Tasto Premuto (Freccia Giu):**
-- Imposta Velocita Verticale: 4
+**Tasto Premuto (Freccia Giù):**
+- Imposta Velocità Verticale: 4
 
 **Collisione con obj_coin:**
 - Imposta Punteggio: 10 (relative: true)
@@ -513,18 +513,18 @@ Quando ti senti a tuo agio con il preset Principiante, considera di passare all'
 - Eventi Allarme (azioni temporizzate)
 - Sistemi di Vite e Salute
 - Azioni Audio e Musica
-- Piu opzioni di movimento (direzione, muovi verso)
+- Più opzioni di movimento (direzione, muovi verso)
 
 ---
 
 ## Vedi Anche
 
 - [Tutorial](Tutorials_it) - Tutti i tutorial in un unico posto
-- [Preset Intermedio](Intermediate-Preset_it) - Funzionalita del livello successivo
+- [Preset Intermedio](Intermediate-Preset_it) - Funzionalità del livello successivo
 - [Riferimento Completo Azioni](Full-Action-Reference_it) - Lista completa delle azioni
 - [Riferimento Eventi](Event-Reference_it) - Lista completa degli eventi
-- [Eventi e Azioni](Events-and-Actions_it) - Concetti fondamentali
-- [Creare il Tuo Primo Gioco](Creating-Your-First-Game_it) - Tutorial passo-passo
+- [Eventi e Azioni](Eventi_e_Azioni_it) - Concetti fondamentali
+- [Creare il Tuo Primo Gioco](Primo_Gioco_it) - Tutorial passo-passo
 - [Tutorial Pong](Tutorial-Pong_it) - Crea un classico gioco Pong a due giocatori
 - [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
 - [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti
