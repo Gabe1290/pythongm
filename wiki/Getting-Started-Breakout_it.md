@@ -22,7 +22,7 @@ Bene, iniziamo a progettare il nostro gioco!
 
 Inizia aprendo PyGameMaker. Dovresti vedere l'interfaccia principale con il pannello **Risorse** sul lato sinistro, che elenca le diverse categorie di risorse: Sprite, Suoni, Sfondi, Font, Oggetti e Stanze.
 
-Prima di tutto, in un videogioco, la prima cosa che il giocatore nota e cio che vede sullo schermo. Questa e in realta la base di un gioco: un gioco senza grafica non esiste (o e un caso molto speciale). Inizieremo quindi inserendo immagini nel nostro gioco, che saranno la rappresentazione grafica degli oggetti che il giocatore vedra sullo schermo. Nella terminologia dello sviluppo di videogiochi, queste immagini sono chiamate **Sprite**.
+Prima di tutto, in un videogioco, la prima cosa che il giocatore nota è ciò che vede sullo schermo. Questa è in realtà la base di un gioco: un gioco senza grafica non esiste (o è un caso molto speciale). Inizieremo quindi inserendo immagini nel nostro gioco, che saranno la rappresentazione grafica degli oggetti che il giocatore vedrà sullo schermo. Nella terminologia dello sviluppo di videogiochi, queste immagini sono chiamate **Sprite**.
 
 ---
 
@@ -32,15 +32,15 @@ Prima di tutto, in un videogioco, la prima cosa che il giocatore nota e cio che 
 
 1. Fai clic destro sulla cartella **Sprites** in cima alla colonna sinistra
 2. Clicca su **Crea Sprite**
-3. Si aprira una finestra chiamata **Proprieta Sprite** - qui definirai tutte le caratteristiche del tuo sprite
+3. Si aprira una finestra chiamata **Proprietà Sprite** - qui definirai tutte le caratteristiche del tuo sprite
 4. Usa l'editor integrato per disegnare un rettangolo orizzontale (circa 64x16 pixel) nel colore che preferisci
 5. **Importante:** Clicca **Centra** per impostare l'origine al centro del tuo sprite
-   > L'origine di uno sprite e il suo punto centrale, le sue coordinate X:0 e Y:0. Queste sono le sue coordinate di base.
+   > L'origine di uno sprite è il suo punto centrale, le sue coordinate X:0 e Y:0. Queste sono le sue coordinate di base.
 6. Cambia il nome del tuo sprite usando il campo di testo in alto, e inserisci `spr_paddle`
-   > Questo non ha impatto tecnico - serve solo per aiutarti a navigare meglio tra i tuoi file una volta che ne avrai di piu. Puoi scegliere qualsiasi nome tu voglia; questo e solo un esempio.
+   > Questo non ha impatto tecnico - serve solo per aiutarti a navigare meglio tra i tuoi file una volta che ne avrai di più. Puoi scegliere qualsiasi nome tu voglia; questo è solo un esempio.
 7. Clicca **OK**
 
-Hai appena creato il tuo primo sprite! Questa e la tua racchetta, l'oggetto che il giocatore controllera per colpire la palla.
+Hai appena creato il tuo primo sprite! Questa è la tua racchetta, l'oggetto che il giocatore controllerà per colpire la palla.
 
 ### 2.2 Creazione dello Sprite della Palla
 
@@ -70,7 +70,7 @@ Abbiamo bisogno di tre tipi di mattoni. Creali uno alla volta:
 
 **Terzo Mattone (Muro Indistruttibile):**
 1. Crea un nuovo sprite
-2. Disegna un rettangolo (stesse dimensioni) - usa un colore piu scuro come il grigio
+2. Disegna un rettangolo (stesse dimensioni) - usa un colore più scuro come il grigio
 3. Clicca **Centra**, chiamalo `spr_brick_3`
 4. Clicca **OK**
 
@@ -81,15 +81,15 @@ Ora dovresti avere tutti gli sprite per il nostro gioco:
 - `spr_brick_2` - Secondo mattone distruttibile
 - `spr_brick_3` - Mattone muro indistruttibile
 
-> **Nota:** Nei giochi, ci sono generalmente due fonti principali di rendering grafico: **Sprite** e **Sfondi**. E tutto cio che compone quello che vedi sullo schermo. Uno Sfondo e, come suggerisce il nome, un'immagine di sfondo.
+> **Nota:** Nei giochi, ci sono generalmente due fonti principali di rendering grafico: **Sprite** e **Sfondi**. E tutto ciò che compone quello che vedi sullo schermo. Uno Sfondo e, come suggerisce il nome, un'immagine di sfondo.
 
 ---
 
 ## Passo 3: Comprendere Oggetti ed Eventi
 
-Cosa abbiamo detto all'inizio? La prima cosa che il giocatore nota e cio che vede sullo schermo. Ce ne siamo occupati con i nostri sprite. Ma un gioco fatto solo di immagini non e un gioco - e un dipinto! Passeremo ora alla fase successiva: gli **Oggetti**.
+Cosa abbiamo detto all'inizio? La prima cosa che il giocatore nota è ciò che vede sullo schermo. Ce ne siamo occupati con i nostri sprite. Ma un gioco fatto solo di immagini non è un gioco - è un dipinto! Passeremo ora alla fase successiva: gli **Oggetti**.
 
-Un Oggetto e un'entita nel tuo gioco che puo avere comportamenti, rispondere a eventi e interagire con altri oggetti. Lo sprite e solo la rappresentazione visiva; l'oggetto e cio che gli da vita.
+Un Oggetto è un'entità nel tuo gioco che può avere comportamenti, rispondere a eventi e interagire con altri oggetti. Lo sprite è solo la rappresentazione visiva; l'oggetto è ciò che gli dà vita.
 
 ### Come Funziona la Logica di Gioco
 
@@ -99,7 +99,7 @@ Tutto nella programmazione di giochi segue questo schema: **Se accade questo, al
 - Se questa variabile equivale a questo valore, allora faccio quello
 - Se due oggetti collidono, allora succede qualcosa
 
-Questo e cio che chiamiamo **Eventi** e **Azioni** in PyGameMaker:
+Questo è ciò che chiamiamo **Eventi** e **Azioni** in PyGameMaker:
 - **Eventi** = Cose che possono accadere (pressione di tasto, collisione, timer, ecc.)
 - **Azioni** = Cose che vuoi fare quando gli eventi si verificano (muovere, distruggere, cambiare punteggio, ecc.)
 
@@ -107,7 +107,7 @@ Questo e cio che chiamiamo **Eventi** e **Azioni** in PyGameMaker:
 
 ## Passo 4: Creazione dell'Oggetto Racchetta
 
-Creiamo l'oggetto che il giocatore controllera: la racchetta.
+Creiamo l'oggetto che il giocatore controllerà: la racchetta.
 
 ### 4.1 Crea l'Oggetto
 
@@ -126,7 +126,7 @@ In un gioco Breakout, dobbiamo muovere la racchetta per impedire alla palla di s
 3. Imposta il **valore** a `5`
 4. Clicca **OK**
 
-Questo significa: "Quando il tasto Freccia Destra viene premuto, imposta la velocita orizzontale a 5 (movimento verso destra)."
+Questo significa: "Quando il tasto Freccia Destra viene premuto, imposta la velocità orizzontale a 5 (movimento verso destra)."
 
 **Movimento a Sinistra:**
 1. Clicca **Aggiungi Evento** -> **Tastiera** -> **Freccia Sinistra**
@@ -158,7 +158,7 @@ Creiamo un mattone muro indistruttibile - questo formera i confini della nostra 
 2. Assegna lo sprite `spr_brick_3`
 3. Spunta la casella **Solido**
 
-La palla rimbalzera su questo mattone. Dato che e solo un muro, non abbiamo bisogno di eventi - deve solo essere solido. Clicca **OK** per salvare.
+La palla rimbalzerà su questo mattone. Dato che è solo un muro, non abbiamo bisogno di eventi - deve solo essere solido. Clicca **OK** per salvare.
 
 ---
 
@@ -174,7 +174,7 @@ Ora creiamo la palla, l'elemento essenziale del nostro gioco.
 
 ### 6.2 Movimento Iniziale
 
-Vogliamo che la palla si muova da sola dall'inizio. Diamole una velocita e una direzione iniziali.
+Vogliamo che la palla si muova da sola dall'inizio. Diamole una velocità e una direzione iniziali.
 
 1. Clicca **Aggiungi Evento** -> **Creazione**
    > L'evento Creazione esegue azioni quando l'oggetto appare nel gioco, cioe quando entra nella scena.
@@ -201,14 +201,14 @@ Stessa operazione per i mattoni muro:
 1. Clicca **Aggiungi Evento** -> **Collisione** -> seleziona `obj_brick_3`
 2. Aggiungi l'azione **Inverti Verticale**
 3. Aggiungi l'azione **Inverti Orizzontale**
-   > Aggiungiamo entrambi perche la palla potrebbe colpire il muro da angoli diversi.
+   > Aggiungiamo entrambi perché la palla potrebbe colpire il muro da angoli diversi.
 4. Clicca **OK**
 
 ---
 
 ## Passo 7: Testare i Nostri Progressi - Creazione di una Stanza
 
-Dopo Sprite e Oggetti, ecco le **Stanze**. Una stanza e dove si svolge il gioco: e una mappa, un livello. Qui e dove posizioni tutti gli elementi del tuo gioco, dove organizzi cio che apparira sullo schermo.
+Dopo Sprite e Oggetti, ecco le **Stanze**. Una stanza è dove si svolge il gioco: è una mappa, un livello. Qui è dove posizioni tutti gli elementi del tuo gioco, dove organizzi ciò che apparirà sullo schermo.
 
 ### 7.1 Crea la Stanza
 
@@ -232,15 +232,15 @@ Seleziona l'oggetto da posizionare dal menu a tendina nell'editor della stanza.
 
 Clicca il pulsante **Gioca** (freccia verde) nella barra degli strumenti. Questo ti permette di testare il tuo gioco in qualsiasi momento.
 
-Puoi gia divertirti a far rimbalzare la palla sui muri e sulla racchetta!
+Puoi già divertirti a far rimbalzare la palla sui muri e sulla racchetta!
 
-E minimo, ma gia un buon inizio - hai le fondamenta del tuo gioco!
+E minimo, ma già un buon inizio - hai le fondamenta del tuo gioco!
 
 ---
 
 ## Passo 8: Aggiunta dei Mattoni Distruttibili
 
-Aggiungiamo dei mattoni da rompere, per rendere il nostro gioco piu divertente.
+Aggiungiamo dei mattoni da rompere, per rendere il nostro gioco più divertente.
 
 ### 8.1 Primo Mattone Distruttibile
 
@@ -255,7 +255,7 @@ Aggiungeremo il comportamento per distruggersi quando colpito dalla palla:
    > Questa azione rimuove un oggetto durante il gioco - qui, il mattone stesso.
 3. Clicca **OK**
 
-E cosi, hai il tuo nuovo mattone distruttibile!
+E così, hai il tuo nuovo mattone distruttibile!
 
 ### 8.2 Secondo Mattone Distruttibile (Usando il Genitore)
 
@@ -266,7 +266,7 @@ Ora creeremo un secondo mattone distruttibile, ma senza doverlo riprogrammare. L
 3. Spunta **Solido**
 4. Nel menu a tendina **Genitore**, seleziona `obj_brick_1`
 
-Cosa significa questo? Semplicemente che cio che abbiamo programmato in `obj_brick_1` sara ereditato da `obj_brick_2`, senza doverlo riprodurre noi stessi. La relazione genitore-figlio permette agli oggetti di condividere comportamenti!
+Cosa significa questo? Semplicemente che ciò che abbiamo programmato in `obj_brick_1` sarà ereditato da `obj_brick_2`, senza doverlo riprodurre noi stessi. La relazione genitore-figlio permette agli oggetti di condividere comportamenti!
 
 Clicca **OK** per salvare.
 
@@ -324,7 +324,7 @@ Ora posiziona tutto nella tua stanza per creare il tuo livello Breakout finale:
 
 ## Congratulazioni!
 
-Il tuo gioco Breakout e completo! Ora puoi goderti il tuo lavoro giocando al gioco che hai appena creato!
+Il tuo gioco Breakout è completo! Ora puoi goderti il tuo lavoro giocando al gioco che hai appena creato!
 
 Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 - **Effetti sonori** per rimbalzi e distruzione dei mattoni
@@ -342,7 +342,7 @@ Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 | **Oggetti** | Entita di gioco con comportamenti, che combinano sprite con eventi e azioni |
 | **Eventi** | Trigger che eseguono azioni (Creazione, Tastiera, Collisione, ecc.) |
 | **Azioni** | Operazioni da eseguire (Muovi, Distruggi, Rimbalza, ecc.) |
-| **Solido** | Proprieta che abilita il rilevamento delle collisioni |
+| **Solido** | Proprietà che abilita il rilevamento delle collisioni |
 | **Genitore** | Permette agli oggetti di ereditare comportamenti da altri oggetti |
 | **Stanze** | Livelli di gioco dove posizioni le istanze degli oggetti |
 
@@ -365,7 +365,7 @@ Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 - [Preset per Principianti](Beginner-Preset_it) - Eventi e azioni disponibili per principianti
 - [Riferimento Eventi](Event-Reference_it) - Lista completa di tutti gli eventi
 - [Riferimento Completo Azioni](Full-Action-Reference_it) - Lista completa di tutte le azioni
-- [Tutorial: Breakout](Tutorial-Breakout_it) - Versione piu breve di questo tutorial
+- [Tutorial: Breakout](Tutorial-Breakout_it) - Versione più breve di questo tutorial
 
 ---
 
