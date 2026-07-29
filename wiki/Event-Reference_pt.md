@@ -140,6 +140,24 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 
 ---
 
+### Teclado (Nenhuma tecla)
+| Propriedade | Valor |
+|-------------|-------|
+| **Nome** | `keyboard_no_key` |
+| **Ícone** | ⌨️ |
+| **Categoria** | Entrada |
+| **Preset** | Avançado |
+
+**Descrição:** Dispara a cada quadro enquanto **nenhuma** tecla está sendo mantida.
+
+**Quando dispara:** A cada quadro em que o teclado está inativo, *antes* do evento Step.
+
+**Usos comuns:**
+- Parar o movimento quando o jogador solta todas as teclas (jogos de grade/labirintos)
+- Animações em repouso
+
+---
+
 ### Mouse
 | Propriedade | Valor |
 |-------------|-------|
@@ -285,6 +303,20 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 
 ---
 
+### Draw GUI
+| Propriedade | Valor |
+|-------------|-------|
+| **Nome** | `draw_gui` |
+| **Ícone** | 🖥️ |
+| **Categoria** | Desenho |
+| **Preset** | Avançado |
+
+**Descrição:** Desenha no **espaço de tela (GUI)**, por cima da sala e sem ser afetado pela rolagem de vistas/câmera.
+
+**Diferença do Draw:** o evento Draw normal está em coordenadas de sala (rola com a vista); Draw GUI permanece fixo à tela — use-o para HUD, pontuações e menus.
+
+---
+
 ## Eventos de Sala
 
 ### Room Start
@@ -422,6 +454,23 @@ Esta pagina documenta todos os eventos disponiveis no PyGameMaker. Eventos sao g
 - Perder uma vida
 - Reaparecer jogador
 - Disparar animacao de morte
+
+---
+
+### Animation End
+| Propriedade | Valor |
+|-------------|-------|
+| **Nome** | `animation_end` |
+| **Ícone** | 🎞️ |
+| **Categoria** | Outro |
+| **Preset** | Avançado |
+
+**Descrição:** Dispara quando a animação do sprite da instância completa um ciclo inteiro (volta do último quadro ao primeiro).
+
+**Usos comuns:**
+- Destruir um efeito único (explosão) após uma única reprodução
+- Mudar para outra animação quando a atual termina
+- Avançar uma máquina de estados ao terminar a animação
 
 ---
 

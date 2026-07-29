@@ -140,6 +140,24 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 
 ---
 
+### Tastiera (Nessun tasto)
+| Proprietà | Valore |
+|-----------|--------|
+| **Nome** | `keyboard_no_key` |
+| **Icona** | ⌨️ |
+| **Categoria** | Input |
+| **Preset** | Avanzato |
+
+**Descrizione:** Si attiva a ogni fotogramma mentre **nessun** tasto è premuto.
+
+**Quando si attiva:** A ogni fotogramma in cui la tastiera è inattiva, *prima* dell'evento Step.
+
+**Usi comuni:**
+- Fermare il movimento quando il giocatore rilascia tutti i tasti (giochi a griglia/labirinti)
+- Animazioni di riposo
+
+---
+
 ### Mouse
 | Proprieta | Valore |
 |-----------|--------|
@@ -285,6 +303,20 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 
 ---
 
+### Draw GUI
+| Proprietà | Valore |
+|-----------|--------|
+| **Nome** | `draw_gui` |
+| **Icona** | 🖥️ |
+| **Categoria** | Disegno |
+| **Preset** | Avanzato |
+
+**Descrizione:** Disegna nello **spazio schermo (GUI)**, sopra la stanza e non influenzato dallo scorrimento delle viste/camera.
+
+**Differenza da Draw:** l'evento Draw normale è in coordinate della stanza (scorre con la vista); Draw GUI resta fisso allo schermo — usalo per HUD, punteggi e menu.
+
+---
+
 ## Eventi di Stanza
 
 ### Room Start
@@ -422,6 +454,23 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 - Perdere una vita
 - Far riapparire il giocatore
 - Attivare l'animazione di morte
+
+---
+
+### Animation End
+| Proprietà | Valore |
+|-----------|--------|
+| **Nome** | `animation_end` |
+| **Icona** | 🎞️ |
+| **Categoria** | Altro |
+| **Preset** | Avanzato |
+
+**Descrizione:** Si attiva quando l'animazione dello sprite dell'istanza completa un ciclo intero (torna dall'ultimo fotogramma al primo).
+
+**Usi comuni:**
+- Distruggere un effetto una tantum (esplosione) dopo una singola riproduzione
+- Passare a un'altra animazione quando quella corrente finisce
+- Far avanzare una macchina a stati al termine dell'animazione
 
 ---
 
