@@ -41,7 +41,7 @@ Con la programmazione visuale puoi:
 ### Connettere blocchi
 - I blocchi si agganciano automaticamente
 - Fai attenzione alle forme corrispondenti
-- E possibile annidare blocchi
+- È possibile annidare blocchi
 
 ### Configurare un blocco
 - Compila i campi di input
@@ -73,7 +73,7 @@ Ripeti [10] volte
 
 ### Movimento
 - **Muovi a**: Muovi alla posizione
-- **Imposta velocita**: Velocita di movimento
+- **Imposta velocità**: Velocità di movimento
 - **Imposta direzione**: Direzione di movimento
 
 ### Istanze
@@ -100,7 +100,7 @@ Ripeti [10] volte
 
 ## Dai blocchi al codice
 
-L'editor Blockly puo anche generare codice:
+L'editor Blockly può anche generare codice:
 1. Impara i concetti di programmazione visualmente
 2. Guarda il codice generato
 3. Passa a Python in seguito

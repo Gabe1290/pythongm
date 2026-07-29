@@ -6,25 +6,25 @@
 
 [Torna alla Home](Home_it)
 
-L'Editor Oggetti e lo strumento centrale per definire il comportamento degli elementi di gioco.
+L'Editor Oggetti è lo strumento centrale per definire il comportamento degli elementi di gioco.
 
 ## Panoramica
 
 Gli oggetti sono i mattoni del tuo gioco. Definiscono:
 - Aspetto (Sprite)
 - Comportamento (Eventi e Azioni)
-- Proprieta fisiche
+- Proprietà fisiche
 - Interazioni
 
 ## Interfaccia dell'Editor
 
 ### Aree principali
 1. **Lista oggetti**: Tutti gli oggetti nel progetto
-2. **Pannello proprieta**: Impostazioni di base
+2. **Pannello proprietà**: Impostazioni di base
 3. **Lista eventi**: Eventi definiti
 4. **Editor azioni**: Azioni per gli eventi
 
-## Proprieta dell'oggetto
+## Proprietà dell'oggetto
 
 ### Generali
 - **Nome**: Identificatore univoco (es. obj_giocatore)
@@ -34,8 +34,8 @@ Gli oggetti sono i mattoni del tuo gioco. Definiscono:
 
 ### Fisica
 - **Solido**: Collide con altri oggetti
-- **Profondita**: Ordine di disegno
-- **Oggetto genitore**: Ereditarieta delle proprieta
+- **Profondità**: Ordine di disegno
+- **Oggetto genitore**: Ereditarietà delle proprietà
 
 ## Lavorare con gli eventi
 
@@ -69,8 +69,8 @@ Gli oggetti sono i mattoni del tuo gioco. Definiscono:
 ## Best Practice
 
 1. **Nomi chiari**: Usa prefissi come "obj_"
-2. **Modularita**: Oggetti piccoli e riutilizzabili
-3. **Usa l'ereditarieta**: Oggetti genitori per comportamenti comuni
+2. **Modularità**: Oggetti piccoli e riutilizzabili
+3. **Usa l'ereditarietà**: Oggetti genitori per comportamenti comuni
 4. **Documentazione**: Commenti negli eventi complessi
 
 ## Vedi anche
