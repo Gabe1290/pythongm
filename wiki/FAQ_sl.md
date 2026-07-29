@@ -1,29 +1,30 @@
-# Pogosto zastavljena vprasanja (FAQ)
+# Pogosto zastavljena vprašanja (FAQ)
 
 > [English](FAQ) | [Français](FAQ_fr) | [Deutsch](FAQ_de) | [Italiano](FAQ_it) | [Español](FAQ_es) | [Português](FAQ_pt) | [Slovenščina](FAQ_sl) | [Українська](FAQ_uk) | [Русский](FAQ_ru)
 
 ---
 
-[Nazaj na zacetno stran](Home_sl)
+[Nazaj na začetno stran](Home_sl)
 
-Odgovori na pogosta vprasanja o pyGM.
+Odgovori na pogosta vprašanja o pyGM.
 
-## Splosna vprasanja
+## Splošna vprašanja
 
 ### Kaj je pyGM?
-pyGM je vizualni urejevalnik za razvoj iger v Pythonu. Omogoca ustvarjanje 2D iger brez obseznega znanja programiranja.
+pyGM je vizualni urejevalnik za razvoj iger v Pythonu. Omogoča ustvarjanje 2D iger brez obsežnega znanja programiranja.
 
-### Ali je pyGM brezplacen?
-Da, pyGM je odprtokoden in popolnoma brezplacen.
+### Ali je pyGM brezplačen?
+Da, pyGM je odprtokoden in popolnoma brezplačen.
 
 ### Kateri programski jezik se uporablja?
-pyGM temelji na Pythonu. Lahko uporabite vizualno programiranje ali neposredno pisete Python kodo.
+pyGM temelji na Pythonu. Lahko uporabite vizualno programiranje ali neposredno pišete Python kodo.
 
 ### Za katere platforme lahko razvijam?
 - Windows
 - macOS
 - Linux
 - Splet (HTML5)
+- Mobilne naprave (Kivy/Android)
 
 ## Namestitev
 
@@ -33,17 +34,17 @@ pip install pygm
 ```
 
 ### Katero verzijo Pythona potrebujem?
-Python 3.8 ali visji.
+Python 3.10 ali višji.
 
-### pyGM se ne zazene. Kaj naj storim?
+### pyGM se ne zažene. Kaj naj storim?
 1. Preverite verzijo Pythona
 2. Ponovno namestite odvisnosti
-3. Zazenite iz ukazne vrstice za ogled napak
+3. Zaženite iz ukazne vrstice za ogled napak
 
 ## Razvoj
 
 ### Kako ustvarim nov projekt?
-Zazenite pyGM in izberite "Nov projekt" ali uporabite Datoteka > Novo.
+Zaženite pyGM in izberite "Nov projekt" ali uporabite Datoteka > Novo.
 
 ### Kako dodam sprite?
 1. Desni klik na "Spriti" v drevesu virov
@@ -52,10 +53,10 @@ Zazenite pyGM in izberite "Nov projekt" ali uporabite Datoteka > Novo.
 
 ### Kako ustvarim animacije?
 1. Odprite sprite
-2. Dodajte vec okvirjev
+2. Dodajte več okvirjev
 3. Nastavite hitrost animacije
 
-### Kako programiram obnasanje objektov?
+### Kako programiram obnašanje objektov?
 1. Odprite objekt
 2. Dodajte dogodke (npr. Create, Step)
 3. Dodajte akcije dogodkom
@@ -64,19 +65,19 @@ Zazenite pyGM in izberite "Nov projekt" ali uporabite Datoteka > Novo.
 ## Viri
 
 ### Kateri formati slik so podprti?
-- PNG (priporoceno)
+- PNG (priporočeno)
 - JPG
 - GIF
 - BMP
 
-### Kateri zvocni formati so podprti?
+### Kateri zvočni formati so podprti?
 - WAV
 - MP3
 - OGG
 
 ### Kako optimiziram svoje vire?
 - Uporabite primerne velikosti slik
-- Stisnite zvocne datoteke
+- Stisnite zvočne datoteke
 - Odstranite neuporabljene vire
 
 ## Igranje
@@ -86,63 +87,63 @@ Zazenite pyGM in izberite "Nov projekt" ali uporabite Datoteka > Novo.
 2. Izberite drugi objekt
 3. Dodajte akcije za odziv
 
-### Kako ustvarim vec nivojev?
-1. Ustvarite vec sob
+### Kako ustvarim več nivojev?
+1. Ustvarite več sob
 2. Uporabite akcijo "Pojdi v sobo"
 3. Ali "Pojdi v naslednjo sobo"
 
 ### Kako shranim napredek igre?
 Uporabite vgrajene funkcije shranjevanja:
 - `save_game()`: Shrani igro
-- `load_game()`: Nalozi igro
+- `load_game()`: Naloži igro
 
 ## Izvoz
 
 ### Kako izvozim svojo igro?
-1. Pojdite na Datoteka > Izvozi
+1. Pojdite na Datoteka → Izvozi projekt…
 2. Izberite ciljno platformo
-3. Nastavite moznosti
+3. Nastavite možnosti
 4. Kliknite "Izvozi"
 
-### Zakaj je izvozena datoteka tako velika?
-- Vkljucuje Python runtime
-- Vsi viri vgrajeni
+### Zakaj je izvožena datoteka tako velika?
+- Vključuje Python runtime
+- Vsi viri so vgrajeni
 - Nasvet: Optimizirajte vire
 
 ### Ali lahko izvozim za mobilne naprave?
-Trenutno ni neposredno podprto. Spletni izvoz deluje na mobilnih brskalnikih.
+Da, prek izvoza Kivy/Android. Spletni izvoz deluje tudi na mobilnih brskalnikih.
 
-## Odpravljanje tezav
+## Odpravljanje težav
 
-### Moja igra je pocasna
-- Zmanjsajte kodo v dogodkih Step
+### Moja igra je počasna
+- Zmanjšajte kodo v dogodkih Step
 - Optimizirajte velikosti spritov
-- Izogibajte se prevec instancam
+- Izogibajte se preveč instancam
 
 ### Spriti se ne prikazujejo
 - Preverite pot do sprita
-- Prepricajte se, da je Viden=true
+- Prepričajte se, da je Viden=true
 - Preverite vrstni red risanja (globina)
 
 ### Trki ne delujejo
 - Preverite maske trkov
-- Prepricajte se, da so objekti trdni (ce je potrebno)
+- Prepričajte se, da so objekti trdni (če je potrebno)
 - Preverite nastavitve dogodkov
 
 ## Skupnost
 
-### Kje najdem pomoc?
+### Kje najdem pomoč?
 - Uradna dokumentacija
 - GitHub Issues
 - Forumi skupnosti
 
 ### Kako lahko prispevam?
 - Prijavite napake na GitHub
-- Posljite Pull Requeste
-- Izboljsajte dokumentacijo
+- Pošljite Pull Requeste
+- Izboljšajte dokumentacijo
 
 ## Glej tudi
 
-- [Zacetek](Zacetek_sl)
+- [Začetek](Zacetek_sl)
 - [Ustvarite svojo prvo igro](Prva_Igra_sl)
 - [Dogodki in akcije](Dogodki_in_Akcije_sl)
