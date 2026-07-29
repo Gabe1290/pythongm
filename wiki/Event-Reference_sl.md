@@ -1,19 +1,19 @@
 # Referenca Dogodkov
 
-*[Domov](Home_sl) | [Vodic po Presetih](Preset-Guide_sl) | [Popolna Referenca Akcij](Full-Action-Reference_sl)*
+*[Domov](Home_sl) | [Vodič po Presetih](Preset-Guide_sl) | [Popolna Referenca Akcij](Full-Action-Reference_sl)*
 
-Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozilci, ki izvrsijo akcije, ko se v vasi igri pojavijo dolocene pogoji.
+Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprožilci, ki izvršijo akcije, ko se v vaši igri pojavijo določene pogoji.
 
 ## Kategorije Dogodkov
 
 - [Dogodki Objekta](#dogodki-objekta) - Create, Step, Destroy
-- [Dogodki Vnosa](#dogodki-vnosa) - Tipkovnica, Miska
+- [Dogodki Vnosa](#dogodki-vnosa) - Tipkovnica, Miška
 - [Dogodki Trkov](#dogodki-trkov) - Trki objektov
-- [Casovni Dogodki](#casovni-dogodki) - Alarmi, Variante Step
+- [Časovni Dogodki](#časovni-dogodki) - Alarmi, Variante Step
 - [Dogodki Risanja](#dogodki-risanja) - Prilagojeno izrisovanje
 - [Dogodki Sobe](#dogodki-sobe) - Prehodi med sobami
-- [Dogodki Igre](#dogodki-igre) - Zacetek/Konec igre
-- [Drugi Dogodki](#drugi-dogodki) - Meje, Zivljenja, Zdravje
+- [Dogodki Igre](#dogodki-igre) - Začetek/Konec igre
+- [Drugi Dogodki](#drugi-dogodki) - Meje, Življenja, Zdravje
 
 ---
 
@@ -25,19 +25,19 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Ime** | `create` |
 | **Ikona** | 🎯 |
 | **Kategorija** | Objekt |
-| **Preset** | Zacetnik |
+| **Preset** | Začetnik |
 
-**Opis:** Izvrseno enkrat, ko je instanca prvic ustvarjena.
+**Opis:** Izvršeno enkrat, ko je instanca prvič ustvarjena.
 
-**Kdaj se sprozi:**
+**Kdaj se sproži:**
 - Ko je instanca postavljena v sobo ob zagonu igre
 - Ko je ustvarjena preko akcije "Ustvari Instanco"
 - Po prehodih sobe za nove instance
 
 **Pogoste uporabe:**
 - Inicializacija spremenljivk
-- Nastavitev zacetnih vrednosti
-- Konfiguracija zacetnega stanja
+- Nastavitev začetnih vrednosti
+- Konfiguracija začetnega stanja
 
 ---
 
@@ -47,19 +47,19 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Ime** | `step` |
 | **Ikona** | ⭐ |
 | **Kategorija** | Objekt |
-| **Preset** | Zacetnik |
+| **Preset** | Začetnik |
 
-**Opis:** Izvrseno vsak okvir (tipicno 60-krat na sekundo).
+**Opis:** Izvršeno vsak okvir (tipično 60-krat na sekundo).
 
-**Kdaj se sprozi:** Neprekinjeno, vsak okvir igre.
+**Kdaj se sproži:** Neprekinjeno, vsak okvir igre.
 
 **Pogoste uporabe:**
 - Neprekinjeno gibanje
 - Preverjanje pogojev
-- Posodabljanje polozajev
+- Posodabljanje položajev
 - Logika igre
 
-**Opomba:** Bodite previdni z zmogljivostjo - koda tu tece nenehno.
+**Opomba:** Bodite previdni z zmogljivostjo - koda tu teče nenehno.
 
 ---
 
@@ -71,13 +71,13 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Objekt |
 | **Preset** | Srednji |
 
-**Opis:** Izvrseno, ko je instanca unicena.
+**Opis:** Izvršeno, ko je instanca uničena.
 
-**Kdaj se sprozi:** Tik preden je instanca odstranjena iz igre.
+**Kdaj se sproži:** Tik preden je instanca odstranjena iz igre.
 
 **Pogoste uporabe:**
-- Generiranje ucinkov (eksplozije, delci)
-- Spuscanje predmetov
+- Generiranje učinkov (eksplozije, delci)
+- Spuščanje predmetov
 - Posodabljanje rezultatov
 - Predvajanje zvokov
 
@@ -91,16 +91,16 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Ime** | `keyboard` |
 | **Ikona** | ⌨️ |
 | **Kategorija** | Vnos |
-| **Preset** | Zacetnik |
+| **Preset** | Začetnik |
 
-**Opis:** Sprozi se neprekinjeno, medtem ko je tipka pritisnjena.
+**Opis:** Sproži se neprekinjeno, medtem ko je tipka pritisnjena.
 
-**Najboljse za:** Gladko, neprekinjeno gibanje
+**Najboljše za:** Gladko, neprekinjeno gibanje
 
 **Podprte Tipke:**
-- Puscicne tipke (gor, dol, levo, desno)
-- Crke (A-Z)
-- Stevilke (0-9)
+- Puščične tipke (gor, dol, levo, desno)
+- Črke (A-Z)
+- Številke (0-9)
 - Presledek, Enter, Escape
 - Funkcijske tipke (F1-F12)
 - Modifikacijske tipke (Shift, Ctrl, Alt)
@@ -113,13 +113,13 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Ime** | `keyboard_press` |
 | **Ikona** | 🔘 |
 | **Kategorija** | Vnos |
-| **Preset** | Zacetnik |
+| **Preset** | Začetnik |
 
-**Opis:** Sprozi se enkrat, ko je tipka prvic pritisnjena.
+**Opis:** Sproži se enkrat, ko je tipka prvič pritisnjena.
 
-**Najboljse za:** Posamezne akcije (skok, strel, izbira v meniju)
+**Najboljše za:** Posamezne akcije (skok, strel, izbira v meniju)
 
-**Razlika od Tipkovnice:** Sprozi se samo enkrat na pritisk, ne med drzanjem.
+**Razlika od Tipkovnice:** Sproži se samo enkrat na pritisk, ne med drzanjem.
 
 ---
 
@@ -131,11 +131,11 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Vnos |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se enkrat, ko je tipka sproascena.
+**Opis:** Sproži se enkrat, ko je tipka sproščena.
 
 **Pogoste uporabe:**
 - Ustavitev gibanja ob sprostitvi tipke
-- Zakljucek polnilnih napadov
+- Zaključek polnilnih napadov
 - Preklop stanj
 
 ---
@@ -158,7 +158,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 
 ---
 
-### Miska
+### Miška
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `mouse` |
@@ -166,17 +166,17 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Vnos |
 | **Preset** | Srednji |
 
-**Opis:** Dogodki gumbov miske in gibanja.
+**Opis:** Dogodki gumbov miške in gibanja.
 
 **Vrste Dogodkov:**
 
 | Vrsta | Opis |
 |-------|------|
-| Levi Gumb | Klik z levim gumbom miske |
-| Desni Gumb | Klik z desnim gumbom miske |
-| Srednji Gumb | Klik s srednjim/kolesckom |
-| Vstop Miske | Kazalec vstopi v meje instance |
-| Izstop Miske | Kazalec izstopi iz mej instance |
+| Levi Gumb | Klik z levim gumbom miške |
+| Desni Gumb | Klik z desnim gumbom miške |
+| Srednji Gumb | Klik s srednjim/koleščkom |
+| Vstop Miške | Kazalec vstopi v meje instance |
+| Izstop Miške | Kazalec izstopi iz mej instance |
 | Globalni Levi Gumb | Levi klik kjerkoli |
 | Globalni Desni Gumb | Desni klik kjerkoli |
 
@@ -190,50 +190,50 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Ime** | `collision` |
 | **Ikona** | 💥 |
 | **Kategorija** | Trk |
-| **Preset** | Zacetnik |
+| **Preset** | Začetnik |
 
-**Opis:** Sprozi se, ko se ta instanca prekriva z drugo vrsto objekta.
+**Opis:** Sproži se, ko se ta instanca prekriva z drugo vrsto objekta.
 
-**Konfiguracija:** Izberite, katera vrsta objekta sprozi ta trk.
+**Konfiguracija:** Izberite, katera vrsta objekta sproži ta trk.
 
-**Posebna spremenljivka:** `other` - Referenca na trkajoco instanco.
+**Posebna spremenljivka:** `other` - Referenca na trkajočo instanco.
 
-**Kdaj se sprozi:** Vsak okvir, ko se instance prekrivajo.
+**Kdaj se sproži:** Vsak okvir, ko se instance prekrivajo.
 
 **Pogoste uporabe:**
 - Zbiranje predmetov
-- Prejemanje poskodbe
+- Prejemanje poškodbe
 - Zadevanje sten
-- Sprozitev dogodkov
+- Sprožitev dogodkov
 
 **Primeri dogodkov trkov:**
 - `collision_with_obj_coin` - Igralec se dotakne kovanca
-- `collision_with_obj_enemy` - Igralec se dotakne sovraznika
+- `collision_with_obj_enemy` - Igralec se dotakne sovražnika
 - `collision_with_obj_wall` - Instanca zadene steno
 
 ---
 
-## Casovni Dogodki
+## Časovni Dogodki
 
 ### Alarm
 | Lastnost | Vrednost |
 |----------|----------|
 | **Ime** | `alarm` |
 | **Ikona** | ⏰ |
-| **Kategorija** | Casovni |
+| **Kategorija** | Časovni |
 | **Preset** | Srednji |
 
-**Opis:** Sprozi se, ko odstevanje alarma doseze nic.
+**Opis:** Sproži se, ko odštevanje alarma doseže nic.
 
-**Razpolozljivi alarmi:** 12 neodvisnih alarmov (alarm[0] do alarm[11])
+**Razpoložljivi alarmi:** 12 neodvisnih alarmov (alarm[0] do alarm[11])
 
 **Nastavitev alarmov:** Uporabite akcijo "Nastavi Alarm" s koraki (60 korakov ≈ 1 sekunda pri 60 FPS)
 
 **Pogoste uporabe:**
-- Casovno generiranje
-- Casi ohlajanja
-- Zakasneli ucinki
-- Ponavljajoce akcije (ponovno nastavite alarm v dogodku alarma)
+- Časovno generiranje
+- Časi ohlajanja
+- Zakasneli učinki
+- Ponavljajoče akcije (ponovno nastavite alarm v dogodku alarma)
 
 ---
 
@@ -245,13 +245,13 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Step |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se na zacetku vsakega okvirja, pred rednimi dogodki Step.
+**Opis:** Sproži se na začetku vsakega okvirja, pred rednimi dogodki Step.
 
 **Vrstni red izvajanja:** Begin Step → Step → End Step
 
 **Pogoste uporabe:**
 - Obdelava vnosa
-- Pred-gibalni izracuni
+- Pred-gibalni izračuni
 
 ---
 
@@ -263,11 +263,11 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Step |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se na koncu vsakega okvirja, po trkih.
+**Opis:** Sproži se na koncu vsakega okvirja, po trkih.
 
 **Pogoste uporabe:**
-- Koncne prilagoditve polozaja
-- Operacije ciscenja
+- Končne prilagoditve položaja
+- Operacije čiščenja
 - Posodobitve stanja po trkih
 
 ---
@@ -282,9 +282,9 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Risanje |
 | **Preset** | Srednji |
 
-**Opis:** Sprozi se med fazo izrisovanja.
+**Opis:** Sproži se med fazo izrisovanja.
 
-**Pomembno:** Dodajanje dogodka Draw onemogocia samodejno risanje sprite-a. Ce zelite, da je viden, morate sprite narisati rocno.
+**Pomembno:** Dodajanje dogodka Draw onemogoča samodejno risanje sprite-a. Če želite, da je viden, morate sprite narisati ročno.
 
 **Pogoste uporabe:**
 - Prilagojeno izrisovanje
@@ -293,13 +293,13 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 - Vrstice zdravja
 - Elementi HUD
 
-**Razpolozljive akcije risanja:**
-- Narisi Sprite
-- Narisi Besedilo
-- Narisi Pravokotnik
-- Narisi Krog
-- Narisi Crto
-- Narisi Vrstico Zdravja
+**Razpoložljive akcije risanja:**
+- Nariši Sprite
+- Nariši Besedilo
+- Nariši Pravokotnik
+- Nariši Krog
+- Nariši Črto
+- Nariši Vrstico Zdravja
 
 ---
 
@@ -327,7 +327,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Soba |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se ob vstopu v sobo, po vseh dogodkih Create.
+**Opis:** Sproži se ob vstopu v sobo, po vseh dogodkih Create.
 
 **Pogoste uporabe:**
 - Inicializacija sobe
@@ -344,7 +344,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Soba |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se ob odhodu iz sobe.
+**Opis:** Sproži se ob odhodu iz sobe.
 
 **Pogoste uporabe:**
 - Shranjevanje napredka
@@ -363,7 +363,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Igra |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se enkrat, ko se igra prvic zazene (samo v prvi sobi).
+**Opis:** Sproži se enkrat, ko se igra prvič zazene (samo v prvi sobi).
 
 **Pogoste uporabe:**
 - Inicializacija globalnih spremenljivk
@@ -380,7 +380,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Igra |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se, ko se igra koncuje.
+**Opis:** Sproži se, ko se igra koncuje.
 
 **Pogoste uporabe:**
 - Shranjevanje podatkov igre
@@ -398,12 +398,12 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Drugo |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se, ko je instanca popolnoma zunaj meja sobe.
+**Opis:** Sproži se, ko je instanca popolnoma zunaj meja sobe.
 
 **Pogoste uporabe:**
-- Unicenje izstrelkov zunaj zaslona
+- Uničenje izstrelkov zunaj zaslona
 - Ovijanje na drugo stran
-- Sprozitev konca igre
+- Sprožitev konca igre
 
 ---
 
@@ -415,7 +415,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Drugo |
 | **Preset** | Napreden |
 
-**Opis:** Sprozi se, ko instanca dotakne mejo sobe.
+**Opis:** Sproži se, ko instanca dotakne mejo sobe.
 
 **Pogoste uporabe:**
 - Ohranitev igralca znotraj meja
@@ -431,7 +431,7 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Drugo |
 | **Preset** | Srednji |
 
-**Opis:** Sprozi se, ko zivljenja padejo na 0 ali manj.
+**Opis:** Sproži se, ko življenja padejo na 0 ali manj.
 
 **Pogoste uporabe:**
 - Zaslon konca igre
@@ -448,12 +448,12 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 | **Kategorija** | Drugo |
 | **Preset** | Srednji |
 
-**Opis:** Sprozi se, ko zdravje pade na 0 ali manj.
+**Opis:** Sproži se, ko zdravje pade na 0 ali manj.
 
 **Pogoste uporabe:**
-- Izguba zivljenja
+- Izguba življenja
 - Ponovno pojavitev igralca
-- Sprozitev animacije smrti
+- Sprožitev animacije smrti
 
 ---
 
@@ -476,10 +476,10 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 
 ## Vrstni Red Izvajanja Dogodkov
 
-Razumevanje, kdaj se dogodki sprozijo, pomaga ustvariti predvidljivo obnasanje igre:
+Razumevanje, kdaj se dogodki sprožijo, pomaga ustvariti predvidljivo obnašanje igre:
 
-1. **Begin Step** - Zacetek okvirja
-2. **Alarm** - Vsi sprozeni alarmi
+1. **Begin Step** - Začetek okvirja
+2. **Alarm** - Vsi sproženi alarmi
 3. **Keyboard/Mouse** - Dogodki vnosa
 4. **Step** - Glavna logika igre
 5. **Collision** - Po gibanju
@@ -492,7 +492,7 @@ Razumevanje, kdaj se dogodki sprozijo, pomaga ustvariti predvidljivo obnasanje i
 
 | Preset | Vkljuceni Dogodki |
 |--------|-------------------|
-| **Zacetnik** | Create, Step, Keyboard Press, Collision |
+| **Začetnik** | Create, Step, Keyboard Press, Collision |
 | **Srednji** | + Draw, Destroy, Mouse, Alarm |
 | **Napreden** | + Vse variante tipkovnice, Begin/End Step, Dogodki sobe, Dogodki igre, Dogodki meje |
 
@@ -501,6 +501,6 @@ Razumevanje, kdaj se dogodki sprozijo, pomaga ustvariti predvidljivo obnasanje i
 ## Glejte Tudi
 
 - [Popolna Referenca Akcij](Full-Action-Reference_sl) - Popoln seznam akcij
-- [Preset za Zacetnike](Beginner-Preset_sl) - Bistveni dogodki za zacetnike
+- [Preset za Začetnike](Beginner-Preset_sl) - Bistveni dogodki za začetnike
 - [Srednji Preset](Intermediate-Preset_sl) - Dodatni dogodki
-- [Dogodki in Akcije](Events-and-Actions_sl) - Pregled osnovnih konceptov
+- [Dogodki in Akcije](Dogodki_in_Akcije_sl) - Pregled osnovnih konceptov
