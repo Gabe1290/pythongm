@@ -124,8 +124,8 @@ Il preset Intermedio include tutto dal Principiante, piu:
 #### Muovi Verso un Punto
 | Proprieta | Valore |
 |-----------|--------|
-| **Nome Azione** | `move_towards` |
-| **Nome Blocco** | `move_towards` |
+| **Nome Azione** | `move_towards_point` |
+| **Nome Blocco** | `move_towards_point` |
 | **Categoria** | Movimento |
 
 **Descrizione:** Muoviti verso una posizione specifica.
@@ -351,7 +351,7 @@ Il preset Intermedio include tutto dal Principiante, piu:
 
 | Categoria | Azioni |
 |-----------|--------|
-| **Movimento** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Movimento** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Istanza** | Create, Destroy |
 | **Punteggio** | Set Score, Add Score, Draw Score |
 | **Vite** | Set Lives, Add Lives, Draw Lives |
