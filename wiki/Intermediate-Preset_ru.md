@@ -124,8 +124,8 @@
 #### Движение К Точке
 | Свойство | Значение |
 |----------|----------|
-| **Имя Действия** | `move_towards` |
-| **Имя Блока** | `move_towards` |
+| **Имя Действия** | `move_towards_point` |
+| **Имя Блока** | `move_towards_point` |
 | **Категория** | Движение |
 
 **Описание:** Двигаться к определенной позиции.
@@ -351,7 +351,7 @@
 
 | Категория | Действия |
 |-----------|----------|
-| **Движение** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Движение** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Экземпляр** | Create, Destroy |
 | **Счет** | Set Score, Add Score, Draw Score |
 | **Жизни** | Set Lives, Add Lives, Draw Lives |
