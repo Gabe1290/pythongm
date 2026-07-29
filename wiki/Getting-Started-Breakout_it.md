@@ -339,7 +339,7 @@ Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 | Concetto | Descrizione |
 |----------|-------------|
 | **Sprite** | Immagini visive che rappresentano gli oggetti nel tuo gioco |
-| **Oggetti** | Entita di gioco con comportamenti, che combinano sprite con eventi e azioni |
+| **Oggetti** | Entità di gioco con comportamenti, che combinano sprite con eventi e azioni |
 | **Eventi** | Trigger che eseguono azioni (Creazione, Tastiera, Collisione, ecc.) |
 | **Azioni** | Operazioni da eseguire (Muovi, Distruggi, Rimbalza, ecc.) |
 | **Solido** | Proprietà che abilita il rilevamento delle collisioni |
@@ -352,11 +352,11 @@ Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 
 | Oggetto | Sprite | Solido | Eventi |
 |---------|--------|--------|--------|
-| `obj_paddle` | `spr_paddle` | Si | Tastiera (Sinistra/Destra), Rilascio Tasto |
-| `obj_ball` | `spr_ball` | Si | Creazione, Collisione (racchetta, mattoni), Fuori dalla Stanza |
-| `obj_brick_1` | `spr_brick_1` | Si | Collisione (palla) - Distruggi se stesso |
-| `obj_brick_2` | `spr_brick_2` | Si | Eredita da `obj_brick_1` |
-| `obj_brick_3` | `spr_brick_3` | Si | Nessuno (solo un muro) |
+| `obj_paddle` | `spr_paddle` | Sì | Tastiera (Sinistra/Destra), Rilascio Tasto |
+| `obj_ball` | `spr_ball` | Sì | Creazione, Collisione (racchetta, mattoni), Fuori dalla Stanza |
+| `obj_brick_1` | `spr_brick_1` | Sì | Collisione (palla) - Distruggi se stesso |
+| `obj_brick_2` | `spr_brick_2` | Sì | Eredita da `obj_brick_1` |
+| `obj_brick_3` | `spr_brick_3` | Sì | Nessuno (solo un muro) |
 
 ---
 
