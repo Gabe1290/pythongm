@@ -6,15 +6,15 @@
 
 [Volver al Inicio](Home_es)
 
-Los Eventos y Acciones forman el corazon de la logica del juego en pyGM.
+Los Eventos y Acciones forman el corazón de la lógica del juego en pyGM.
 
 ## Concepto
 
 ### Eventos
-Los eventos son disparadores que reaccionan a situaciones especificas:
+Los eventos son disparadores que reaccionan a situaciones específicas:
 - Inicio del juego
-- Presion de teclas
-- Colision
+- Presión de teclas
+- Colisión
 - Temporizador
 
 ### Acciones
@@ -24,55 +24,51 @@ Las acciones son las respuestas a los eventos:
 - Cambiar valores
 - Reproducir sonidos
 
-## Categorias de eventos
+## Categorías de eventos
 
-### Eventos de creacion
+### Eventos de creación
 - **Create**: Una vez al crear la instancia
 - **Destroy**: Al eliminar la instancia
 - **Room Start**: Al entrar en una sala
 
 ### Eventos Step
 - **Step**: Cada frame
-- **Begin Step**: Antes de la verificacion de colisiones
-- **End Step**: Despues de la verificacion de colisiones
+- **Begin Step**: Antes de la verificación de colisiones
+- **End Step**: Después de la verificación de colisiones
 
 ### Eventos de entrada
-- **Teclado**: Presion/liberacion de teclas
-- **Raton**: Clics y movimiento
-- **Gamepad**: Entrada del controlador
+- **Teclado**: Presión/liberación de teclas
+- **Ratón**: Clics y movimiento
 
-### Eventos de colision
+### Eventos de colisión
 - Contacto con otros objetos
 - Contacto con paredes
-- Verificaciones de area
+- Verificaciones de área
 
 ### Eventos de dibujo
 - **Draw**: Dibujo normal
 - **Draw GUI**: Elementos de interfaz
-- **Draw Begin/End**: Antes/Despues del dibujo
 
 ### Otros eventos
 - **Alarm**: Eventos basados en temporizador
-- **Animation End**: Animacion de sprite terminada
-- **User Events**: Eventos personalizados
+- **Animation End**: Animación de sprite terminada
 
 ## Biblioteca de acciones
 
 ### Movimiento
-- `move_towards`: Mover hacia un punto
+- `move_towards_point`: Mover hacia un punto
 - `set_speed`: Establecer velocidad
-- `set_direction`: Establecer direccion
+- `set_direction`: Establecer dirección
 - `bounce`: Rebotar
 
 ### Instancias
-- `instance_create`: Crear nueva instancia
-- `instance_destroy`: Eliminar instancia
-- `change_sprite`: Cambiar sprite
+- `create_instance`: Crear nueva instancia
+- `destroy_instance`: Eliminar instancia
+- `set_sprite`: Cambiar sprite
 
 ### Variables
 - `set_variable`: Establecer valor
-- `add_to_variable`: Agregar valor
-- `if_variable`: Verificacion condicional
+- `test_variable`: Verificación condicional
 
 ### Audio
 - `play_sound`: Reproducir sonido
@@ -82,36 +78,36 @@ Las acciones son las respuestas a los eventos:
 ### Sala
 - `goto_room`: Cambiar de sala
 - `restart_room`: Reiniciar sala
-- `goto_next_room`: Siguiente sala
+- `next_room`: Siguiente sala
 
 ### Dibujo
 - `draw_sprite`: Dibujar sprite
 - `draw_text`: Mostrar texto
-- `draw_rectangle`: Dibujar rectangulo
+- `draw_rectangle`: Dibujar rectángulo
 
 ## Condiciones y control de flujo
 
 ### Acciones condicionales
 ```
 Si Variable == Valor
-  Ejecutar accion
+  Ejecutar acción
 Si no
-  Accion alternativa
+  Acción alternativa
 ```
 
 ### Bucles
 - Repetir acciones
 - Para todas las instancias
 
-## Mejores practicas
+## Mejores prácticas
 
-1. **Usa Step con moderacion**: Solo cuando sea necesario
+1. **Usa Step con moderación**: Solo cuando sea necesario
 2. **Optimiza las colisiones**: Considera la propiedad Solid
-3. **Agrupa los eventos**: Logica relacionada junta
+3. **Agrupa los eventos**: Lógica relacionada junta
 4. **Usa alarmas**: Para acciones temporizadas
 
-## Ver tambien
+## Ver también
 
 - [Editor de Objetos](Editor_Objetos_es)
-- [Programacion Visual](Programacion_Visual_es)
+- [Programación Visual](Programacion_Visual_es)
 - [FAQ](FAQ_es)
