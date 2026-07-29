@@ -5,3 +5,7 @@
 *.py text eol=lf
 *.ts text eol=lf
 *.qm binary
+
+# Force Markdown (incl. wiki/ sources) to LF so wiki sync doesn't report
+# spurious CRLF-vs-LF drift on Windows checkouts
+*.md text eol=lf
