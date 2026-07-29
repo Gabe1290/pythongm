@@ -1,4 +1,4 @@
-# Programacion Visual
+# Programación Visual
 
 > [English](Visual-Programming) | [Français](Programmation_Visuelle_fr) | [Deutsch](Visuelle_Programmierung_de) | [Italiano](Programmazione_Visuale_it) | [Español](Programacion_Visual_es) | [Português](Programacao_Visual_pt) | [Slovenščina](Vizualno_Programiranje_sl) | [Українська](Vizualne_Prohramuvannya_uk) | [Русский](Vizualnoe_Programmirovanie_ru)
 
@@ -6,46 +6,46 @@
 
 [Volver al Inicio](Home_es)
 
-pyGM ofrece un sistema de programacion visual para el desarrollo de juegos facil sin codigo.
+pyGM ofrece un sistema de programación visual para el desarrollo de juegos fácil sin código.
 
 ## Resumen
 
-Con la programacion visual puedes:
-- Crear logica de juego con arrastrar y soltar
+Con la programación visual puedes:
+- Crear lógica de juego con arrastrar y soltar
 - Conectar bloques para comportamientos complejos
-- Desarrollar sin conocimientos de programacion
+- Desarrollar sin conocimientos de programación
 
 ## El Editor Blockly
 
 ### Interfaz
-1. **Paleta de bloques**: Bloques disponibles por categoria
-2. **Area de trabajo**: Aqui conectas los bloques
+1. **Paleta de bloques**: Bloques disponibles por categoría
+2. **Área de trabajo**: Aquí conectas los bloques
 3. **Barra de herramientas**: Guardar, Cargar, Eliminar
 
-### Categorias de bloques
-- **Logica**: Si/Entonces, comparaciones, valores booleanos
+### Categorías de bloques
+- **Lógica**: Si/Entonces, comparaciones, valores booleanos
 - **Bucles**: Repeticiones
-- **Matematicas**: Calculos
+- **Matemáticas**: Cálculos
 - **Texto**: Operaciones de texto
 - **Variables**: Almacenar valores
 - **Funciones**: Bloques reutilizables
-- **Juego**: Acciones especificas de pyGM
+- **Juego**: Acciones específicas de pyGM
 
 ## Usar bloques
 
 ### Agregar un bloque
-1. Haz clic en una categoria
-2. Arrastra un bloque al area de trabajo
-3. Conectalo con otros bloques
+1. Haz clic en una categoría
+2. Arrastra un bloque al área de trabajo
+3. Conéctalo con otros bloques
 
 ### Conectar bloques
-- Los bloques encajan automaticamente
-- Presta atencion a las formas coincidentes
+- Los bloques encajan automáticamente
+- Presta atención a las formas coincidentes
 - Es posible anidar bloques
 
 ### Configurar un bloque
 - Completa los campos de entrada
-- Elige opciones del menu desplegable
+- Elige opciones del menú desplegable
 - Inserta subbloques
 
 ## Ejemplos
@@ -56,7 +56,7 @@ Cuando [flecha derecha] presionada
   Establecer x a (x + 5)
 ```
 
-### Logica condicional
+### Lógica condicional
 ```
 Si <Vidas <= 0> entonces
   Mostrar mensaje "Game Over"
@@ -66,15 +66,15 @@ Si <Vidas <= 0> entonces
 ### Bucle
 ```
 Repetir [10] veces
-  Crear instancia [obj_moneda] en posicion (Aleatorio 0-800, Aleatorio 0-600)
+  Crear instancia [obj_moneda] en posición (Aleatorio 0-800, Aleatorio 0-600)
 ```
 
 ## Bloques de juego
 
 ### Movimiento
-- **Mover a**: Mover a posicion
+- **Mover a**: Mover a posición
 - **Establecer velocidad**: Velocidad de movimiento
-- **Establecer direccion**: Direccion de movimiento
+- **Establecer dirección**: Dirección de movimiento
 
 ### Instancias
 - **Crear instancia**: Generar nuevo objeto
@@ -88,24 +88,24 @@ Repetir [10] veces
 
 ### Eventos
 - **Cuando tecla**: Entrada de teclado
-- **Cuando colision**: Contacto de objetos
+- **Cuando colisión**: Contacto de objetos
 - **Cuando temporizador**: Basado en tiempo
 
 ## Consejos
 
-1. **Empieza pequeno**: Primero proyectos simples
+1. **Empieza pequeño**: Primero proyectos simples
 2. **Prueba**: Ejecuta regularmente
-3. **Organiza**: Agrupa los bloques logicamente
+3. **Organiza**: Agrupa los bloques lógicamente
 4. **Comentarios**: Agrega notas
 
-## De bloques a codigo
+## De bloques a código
 
-El editor Blockly tambien puede generar codigo:
-1. Aprende conceptos de programacion visualmente
-2. Ve el codigo generado
-3. Cambia a Python despues
+El editor Blockly también puede generar código:
+1. Aprende conceptos de programación visualmente
+2. Ve el código generado
+3. Cambia a Python después
 
-## Ver tambien
+## Ver también
 
 - [Crear tu primer juego](Primer_Juego_es)
 - [Eventos y Acciones](Eventos_y_Acciones_es)
