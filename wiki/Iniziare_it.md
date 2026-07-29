@@ -6,12 +6,12 @@
 
 [Torna alla Home](Home_it)
 
-Benvenuto in pyGM! Questa guida ti aiutera a iniziare con lo sviluppo di giochi.
+Benvenuto in pyGM! Questa guida ti aiuterà a iniziare con lo sviluppo di giochi.
 
 ## Installazione
 
 ### Prerequisiti
-- Python 3.8 o superiore
+- Python 3.10 o superiore
 - pip (gestore pacchetti Python)
 
 ### Passaggi di installazione
@@ -41,7 +41,7 @@ Questo apre l'editor visuale dove puoi iniziare a creare il tuo gioco.
 ### Aree principali
 - **Pannello sinistro**: Gestione risorse (sprite, oggetti, stanze)
 - **Area centrale**: Area di lavoro dell'editor
-- **Pannello destro**: Proprieta e impostazioni
+- **Pannello destro**: Proprietà e impostazioni
 
 ### Controlli di base
 - **Rotella del mouse**: Zoom della vista
