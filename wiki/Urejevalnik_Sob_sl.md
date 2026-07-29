@@ -4,24 +4,24 @@
 
 ---
 
-[Nazaj na zacetno stran](Home_sl)
+[Nazaj na začetno stran](Home_sl)
 
-Urejevalnik sob omogoca ustvarjanje in oblikovanje igralnih nivojev.
+Urejevalnik sob omogoča ustvarjanje in oblikovanje igralnih nivojev.
 
 ## Pregled
 
-Sobe so igralna podrocja, kjer se postavljajo objekti in poteka igranje.
+Sobe so igralna področja, kjer se postavljajo objekti in poteka igranje.
 
 ## Vmesnik urejevalnika
 
 ### Orodna vrstica
 - **Izbira**: Izbira in premikanje objektov
 - **Dodaj**: Postavitev novih instanc
-- **Izbrisi**: Odstranitev instanc
-- **Povecava**: Povecanje/pomanjsanje pogleda
+- **Izbriši**: Odstranitev instanc
+- **Povečava**: Povečanje/pomanjšanje pogleda
 
-### Delovno podrocje
-- Prikaz mreze
+### Delovno področje
+- Prikaz mreže
 - Postavljene instance
 - Plasti ozadja
 
@@ -38,7 +38,7 @@ Sobe so igralna podrocja, kjer se postavljajo objekti in poteka igranje.
 3. Poimenujte sobo (npr. rm_nivo1)
 
 ### Nastavitev lastnosti
-1. **Velikost**: Sirina in visina v pikslih
+1. **Velikost**: Širina in višina v pikslih
 2. **Hitrost**: Okvirjev na sekundo
 3. **Ozadje**: Barva ali slika
 
@@ -49,13 +49,13 @@ Sobe so igralna podrocja, kjer se postavljajo objekti in poteka igranje.
 2. Kliknite v sobo
 3. Instanca je postavljena
 
-### Vec instanc
-- Drzite Shift za veckratno postavljanje
+### Več instanc
+- Držite Shift za večkratno postavljanje
 - Uporabite kopiraj/prilepi
 
 ### Urejanje instanc
-- **Premik**: Vlecenje z misko
-- **Brisanje**: Desni klik > Izbrisi
+- **Premik**: Vlečenje z miško
+- **Brisanje**: Desni klik > Izbriši
 - **Lastnosti**: Dvojni klik
 
 ## Sistem plasti
@@ -63,7 +63,7 @@ Sobe so igralna podrocja, kjer se postavljajo objekti in poteka igranje.
 ### Vrste plasti
 1. **Plast instanc**: Za igralne objekte
 2. **Plast ozadja**: Za slike ozadja
-3. **Plast plostic**: Za nivoje na osnovi plosic
+3. **Plast ploščic**: Za nivoje na osnovi ploščic
 
 ### Upravljanje plasti
 - Dodajanje/odstranjevanje plasti
@@ -74,16 +74,16 @@ Sobe so igralna podrocja, kjer se postavljajo objekti in poteka igranje.
 
 ### Nastavitev pogleda
 1. Aktivirajte poglede v lastnostih sobe
-2. Dolocite vidno podrocje
+2. Določite vidno področje
 3. Nastavite velikost vrat
 
 ### Sledenje kamere
 - Izberite objekt za sledenje
-- Dolocite obmocje roba
+- Določite območje roba
 
 ## Nasveti
 
-1. **Uporabite mrezo**: Za natancno postavljanje
+1. **Uporabite mrežo**: Za natančno postavljanje
 2. **Organizirajte plasti**: Urejena struktura
 3. **Uporabite predogled**: Redno testirajte
 

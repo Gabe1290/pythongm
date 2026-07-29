@@ -4,23 +4,23 @@
 
 ---
 
-[Nazaj na zacetno stran](Home_sl)
+[Nazaj na začetno stran](Home_sl)
 
 Dogodki in akcije tvorijo srce igralne logike v pyGM.
 
 ## Koncept
 
 ### Dogodki
-Dogodki so prozilci, ki se odzivajo na dolocene situacije:
+Dogodki so prožilci, ki se odzivajo na določene situacije:
 - Zagon igre
 - Pritisk tipke
 - Trk
-- Casovnik
+- Časovnik
 
 ### Akcije
 Akcije so odzivi na dogodke:
 - Premik
-- Ustvarjanje/Unicenje
+- Ustvarjanje/Uničenje
 - Spreminjanje vrednosti
 - Predvajanje zvokov
 
@@ -38,41 +38,37 @@ Akcije so odzivi na dogodke:
 
 ### Dogodki vnosa
 - **Tipkovnica**: Pritisk/spust tipk
-- **Miska**: Kliki in premikanje
-- **Gamepad**: Vnos krmilnika
+- **Miška**: Kliki in premikanje
 
 ### Dogodki trkov
 - Stik z drugimi objekti
 - Stik s stenami
-- Preverjanja obmocij
+- Preverjanja območij
 
 ### Dogodki risanja
 - **Draw**: Normalno risanje
 - **Draw GUI**: Elementi vmesnika
-- **Draw Begin/End**: Pred/Po risanju
 
 ### Ostali dogodki
-- **Alarm**: Dogodki na osnovi casovnika
-- **Animation End**: Animacija sprita koncana
-- **User Events**: Uporabnisko definirani dogodki
+- **Alarm**: Dogodki na osnovi časovnika
+- **Animation End**: Animacija sprita končana
 
-## Knjiznica akcij
+## Knjižnica akcij
 
 ### Premikanje
-- `move_towards`: Premik proti tocki
+- `move_towards_point`: Premik proti točki
 - `set_speed`: Nastavi hitrost
 - `set_direction`: Nastavi smer
 - `bounce`: Odbij se
 
 ### Instance
-- `instance_create`: Ustvari novo instanco
-- `instance_destroy`: Izbrisi instanco
-- `change_sprite`: Spremeni sprite
+- `create_instance`: Ustvari novo instanco
+- `destroy_instance`: Izbriši instanco
+- `set_sprite`: Spremeni sprite
 
 ### Spremenljivke
 - `set_variable`: Nastavi vrednost
-- `add_to_variable`: Dodaj vrednost
-- `if_variable`: Pogojno preverjanje
+- `test_variable`: Pogojno preverjanje
 
 ### Zvok
 - `play_sound`: Predvajaj zvok
@@ -81,19 +77,19 @@ Akcije so odzivi na dogodke:
 
 ### Soba
 - `goto_room`: Spremeni sobo
-- `restart_room`: Ponovno zazeni sobo
-- `goto_next_room`: Naslednja soba
+- `restart_room`: Ponovno zaženi sobo
+- `next_room`: Naslednja soba
 
 ### Risanje
-- `draw_sprite`: Narisi sprite
-- `draw_text`: Prikazi besedilo
-- `draw_rectangle`: Narisi pravokotnik
+- `draw_sprite`: Nariši sprite
+- `draw_text`: Prikaži besedilo
+- `draw_rectangle`: Nariši pravokotnik
 
 ## Pogoji in nadzor toka
 
 ### Pogojne akcije
 ```
-Ce Spremenljivka == Vrednost
+Če Spremenljivka == Vrednost
   Izvedi akcijo
 Sicer
   Alternativna akcija
@@ -103,12 +99,12 @@ Sicer
 - Ponovi akcije
 - Za vse instance
 
-## Najboljse prakse
+## Najboljše prakse
 
 1. **Uporabite Step zmerno**: Samo ko je potrebno
-2. **Optimizirajte trke**: Upostevajte lastnost Solid
+2. **Optimizirajte trke**: Upoštevajte lastnost Solid
 3. **Grupirajte dogodke**: Povezana logika skupaj
-4. **Uporabite alarme**: Za casovno dolocene akcije
+4. **Uporabite alarme**: Za časovno določene akcije
 
 ## Glej tudi
 

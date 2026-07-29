@@ -4,36 +4,36 @@
 
 ---
 
-[Nazaj na zacetno stran](Home_sl)
+[Nazaj na začetno stran](Home_sl)
 
-Urejevalnik objektov je osrednje orodje za dolocanje obnasanja igralnih elementov.
+Urejevalnik objektov je osrednje orodje za določanje obnašanja igralnih elementov.
 
 ## Pregled
 
-Objekti so gradniki vase igre. Dolocajo:
+Objekti so gradniki vaše igre. Določajo:
 - Videz (Sprite)
-- Obnasanje (Dogodki in akcije)
+- Obnašanje (Dogodki in akcije)
 - Fizikalne lastnosti
 - Interakcije
 
 ## Vmesnik urejevalnika
 
-### Glavna podrocja
+### Glavna področja
 1. **Seznam objektov**: Vsi objekti v projektu
-2. **Plosca lastnosti**: Osnovne nastavitve
+2. **Plošča lastnosti**: Osnovne nastavitve
 3. **Seznam dogodkov**: Definirani dogodki
 4. **Urejevalnik akcij**: Akcije za dogodke
 
 ## Lastnosti objekta
 
-### Splosne
+### Splošne
 - **Ime**: Edinstveni identifikator (npr. obj_igralec)
 - **Sprite**: Dodeljena grafika
 - **Viden**: Ali se objekt izrisuje
-- **Trajen**: Prezivi menjave sob
+- **Trajen**: Preživi menjave sob
 
 ### Fizika
-- **Trden**: Trci z drugimi objekti
+- **Trden**: Trči z drugimi objekti
 - **Globina**: Vrstni red risanja
 - **Nadrejeni objekt**: Dedovanje lastnosti
 
@@ -49,28 +49,28 @@ Objekti so gradniki vase igre. Dolocajo:
 - **Step**: Vsak okvir
 - **Draw**: Za risanje
 - **Tipkovnica**: Vnos s tipkovnice
-- **Miska**: Interakcije z misko
+- **Miška**: Interakcije z miško
 - **Trk**: Ob dotiku z drugimi objekti
 
 ## Uporaba akcij
 
 ### Dodajanje akcij
 1. Izberite dogodek
-2. Povlecite akcije iz knjiznice
+2. Povlecite akcije iz knjižnice
 3. Nastavite parametre
 
 ### Pogoste akcije
 - Premik v smeri
 - Nastavi spremenljivko
-- Ustvari/unici instanco
+- Ustvari/uniči instanco
 - Predvajaj zvok
 - Menjaj sobo
 
-## Najboljse prakse
+## Najboljše prakse
 
 1. **Jasna poimenovanja**: Uporabite predpone kot "obj_"
 2. **Modularnost**: Majhni, ponovno uporabni objekti
-3. **Uporabite dedovanje**: Nadrejeni objekti za skupno obnasanje
+3. **Uporabite dedovanje**: Nadrejeni objekti za skupno obnašanje
 4. **Dokumentacija**: Komentarji v kompleksnih dogodkih
 
 ## Glej tudi
