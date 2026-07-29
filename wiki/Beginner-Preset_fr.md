@@ -1,255 +1,255 @@
-# Preset Debutant
+# Préréglage Débutant
 
-*[Accueil](Home_fr) | [Guide des Presets](Preset-Guide_fr) | [Preset Intermediaire](Intermediate-Preset_fr)*
+*[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | [Préréglage Intermédiaire](Intermediate-Preset_fr)*
 
-Le preset **Debutant** est concu pour les utilisateurs qui decouvrent le developpement de jeux. Il fournit un ensemble selectionne d'evenements et d'actions essentiels qui couvrent les bases de la creation de jeux 2D simples sans submerger les debutants avec trop d'options.
+Le préréglage **Débutant** est conçu pour les utilisateurs qui découvrent le développement de jeux. Il fournit un ensemble sélectionné d'événements et d'actions essentiels qui couvrent les bases de la création de jeux 2D simples sans submerger les débutants avec trop d'options.
 
-## Apercu
+## Aperçu
 
-Le preset Debutant comprend :
-- **4 Types d'Evenements** - Pour reagir aux situations du jeu
-- **17 Types d'Actions** - Pour controler le comportement du jeu
-- **6 Categories** - Evenements, Mouvement, Score/Vies/Sante, Instance, Salle, Sortie
+Le préréglage Débutant comprend :
+- **4 Types d'Événements** - Pour réagir aux situations du jeu
+- **17 Types d'Actions** - Pour contrôler le comportement du jeu
+- **6 Catégories** - Événements, Mouvement, Score/Vies/Santé, Instance, Salle, Sortie
 
 ---
 
-## Evenements
+## Événements
 
-Les evenements sont des declencheurs qui reagissent a des situations specifiques dans votre jeu. Lorsqu'un evenement se produit, les actions que vous avez definies pour cet evenement s'executent.
+Les événements sont des déclencheurs qui réagissent à des situations spécifiques dans votre jeu. Lorsqu'un événement se produit, les actions que vous avez définies pour cet événement s'exécutent.
 
-### Evenement Create
+### Événement Create
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_create` |
-| **Categorie** | Evenements |
-| **Description** | Declenche une fois lorsqu'une instance est creee pour la premiere fois |
+| **Catégorie** | Événements |
+| **Description** | Se déclenche une fois lorsqu'une instance est créée pour la première fois |
 
-**Quand il se declenche :** Immediatement lorsqu'une instance d'objet est placee dans une salle ou creee avec l'action "Creer une Instance".
+**Quand il se déclenche :** Immédiatement lorsqu'une instance d'objet est placée dans une salle ou créée avec l'action « Créer une instance ».
 
 **Utilisations courantes :**
 - Initialiser des variables
-- Definir la position de depart
-- Definir la vitesse ou la direction initiale
-- Reinitialiser le score au debut du jeu
+- Définir la position de départ
+- Définir la vitesse ou la direction initiale
+- Réinitialiser le score au début du jeu
 
 ---
 
-### Evenement Step
+### Événement Step
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_step` |
-| **Categorie** | Evenements |
-| **Description** | Declenche a chaque image (generalement 60 fois par seconde) |
+| **Catégorie** | Événements |
+| **Description** | Se déclenche à chaque image (généralement 60 fois par seconde) |
 
-**Quand il se declenche :** En continu, a chaque image du jeu.
+**Quand il se déclenche :** En continu, à chaque image du jeu.
 
 **Utilisations courantes :**
 - Mouvement continu
-- Verification des conditions
-- Mise a jour de l'etat du jeu
-- Controle de l'animation
+- Vérification des conditions
+- Mise à jour de l'état du jeu
+- Contrôle de l'animation
 
 ---
 
-### Evenement Touche Pressee
+### Événement Touche Pressée
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_keyboard_press` |
-| **Categorie** | Evenements |
-| **Description** | Declenche une fois lorsqu'une touche specifique est enfoncee |
+| **Catégorie** | Événements |
+| **Description** | Se déclenche une fois lorsqu'une touche spécifique est enfoncée |
 
-**Quand il se declenche :** Une fois au moment ou une touche est pressee (pas pendant qu'elle est maintenue).
+**Quand il se déclenche :** Une fois au moment où une touche est pressée (pas pendant qu'elle est maintenue).
 
-**Touches supportees :** Touches flechees (haut, bas, gauche, droite), Espace, Entree, lettres (A-Z), chiffres (0-9)
+**Touches supportées :** Touches fléchées (haut, bas, gauche, droite), Espace, Entrée, lettres (A-Z), chiffres (0-9)
 
 **Utilisations courantes :**
-- Controles de mouvement du joueur
+- Contrôles de mouvement du joueur
 - Saut
 - Tir
 - Navigation dans les menus
 
 ---
 
-### Evenement Collision
+### Événement Collision
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom du Bloc** | `event_collision` |
-| **Categorie** | Evenements |
-| **Description** | Declenche lorsque cette instance entre en collision avec un autre objet |
+| **Catégorie** | Événements |
+| **Description** | Se déclenche lorsque cette instance entre en collision avec un autre objet |
 
-**Quand il se declenche :** A chaque image ou deux instances se chevauchent.
+**Quand il se déclenche :** À chaque image où deux instances se chevauchent.
 
-**Variable speciale :** Dans un evenement de collision, `other` fait reference a l'instance avec laquelle il y a collision.
+**Variable spéciale :** Dans un événement de collision, `other` fait référence à l'instance avec laquelle il y a collision.
 
 **Utilisations courantes :**
-- Collecter des objets (pieces, bonus)
-- Subir des degats des ennemis
+- Collecter des objets (pièces, bonus)
+- Subir des dégâts des ennemis
 - Heurter des murs ou des obstacles
-- Atteindre des objectifs ou des points de controle
+- Atteindre des objectifs ou des points de contrôle
 
 ---
 
 ## Actions
 
-Les actions sont des commandes qui s'executent lorsqu'un evenement est declenche. Plusieurs actions peuvent etre ajoutees a un seul evenement et s'executeront dans l'ordre.
+Les actions sont des commandes qui s'exécutent lorsqu'un événement est déclenché. Plusieurs actions peuvent être ajoutées à un seul événement et s'exécuteront dans l'ordre.
 
 ---
 
 ## Actions de Mouvement
 
-### Definir la Vitesse Horizontale
+### Définir la Vitesse Horizontale
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `set_hspeed` |
 | **Nom du Bloc** | `move_set_hspeed` |
-| **Categorie** | Mouvement |
-| **Icone** | ↔️ |
+| **Catégorie** | Mouvement |
+| **Icône** | ↔️ |
 
-**Description :** Definit la vitesse de mouvement horizontal de l'instance.
+**Description :** Définit la vitesse de mouvement horizontal de l'instance.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `value` | Nombre | Vitesse en pixels par image. Positif = droite, Negatif = gauche |
+| `value` | Nombre | Vitesse en pixels par image. Positif = droite, Négatif = gauche |
 
-**Exemple :** Definissez `value` a `4` pour se deplacer vers la droite a 4 pixels par image, ou `-4` pour aller vers la gauche.
+**Exemple :** Définissez `value` à `4` pour se déplacer vers la droite à 4 pixels par image, ou `-4` pour aller vers la gauche.
 
 ---
 
-### Definir la Vitesse Verticale
+### Définir la Vitesse Verticale
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `set_vspeed` |
 | **Nom du Bloc** | `move_set_vspeed` |
-| **Categorie** | Mouvement |
-| **Icone** | ↕️ |
+| **Catégorie** | Mouvement |
+| **Icône** | ↕️ |
 
-**Description :** Definit la vitesse de mouvement vertical de l'instance.
+**Description :** Définit la vitesse de mouvement vertical de l'instance.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `value` | Nombre | Vitesse en pixels par image. Positif = bas, Negatif = haut |
+| `value` | Nombre | Vitesse en pixels par image. Positif = bas, Négatif = haut |
 
-**Exemple :** Definissez `value` a `-4` pour monter a 4 pixels par image, ou `4` pour descendre.
+**Exemple :** Définissez `value` à `-4` pour monter à 4 pixels par image, ou `4` pour descendre.
 
 ---
 
-### Arreter le Mouvement
+### Arrêter le Mouvement
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `stop_movement` |
 | **Nom du Bloc** | `move_stop` |
-| **Categorie** | Mouvement |
-| **Icone** | 🛑 |
+| **Catégorie** | Mouvement |
+| **Icône** | 🛑 |
 
-**Description :** Arrete tout mouvement en mettant la vitesse horizontale et verticale a zero.
+**Description :** Arrête tout mouvement en mettant la vitesse horizontale et verticale à zéro.
 
-**Parametres :** Aucun
+**Paramètres :** Aucun
 
 **Utilisations courantes :**
-- Arreter le joueur lorsqu'il heurte un mur
-- Arreter les ennemis lorsqu'ils atteignent une destination
+- Arrêter le joueur lorsqu'il heurte un mur
+- Arrêter les ennemis lorsqu'ils atteignent une destination
 - Mettre le mouvement en pause temporairement
 
 ---
 
-### Sauter a une Position
+### Sauter à une Position
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `jump_to_position` |
 | **Nom du Bloc** | `move_jump_to` |
-| **Categorie** | Mouvement |
-| **Icone** | 📍 |
+| **Catégorie** | Mouvement |
+| **Icône** | 📍 |
 
-**Description :** Deplace instantanement l'instance a une position specifique (pas de mouvement fluide).
+**Description :** Déplace instantanément l'instance à une position spécifique (pas de mouvement fluide).
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `x` | Nombre | Coordonnee X cible |
-| `y` | Nombre | Coordonnee Y cible |
+| `x` | Nombre | Coordonnée X cible |
+| `y` | Nombre | Coordonnée Y cible |
 
-**Exemple :** Sauter a la position (100, 200) pour teleporter le joueur a cet emplacement.
+**Exemple :** Sauter à la position (100, 200) pour téléporter le joueur à cet emplacement.
 
 ---
 
 ## Actions d'Instance
 
-### Detruire une Instance
+### Détruire une Instance
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `destroy_instance` |
 | **Nom du Bloc** | `instance_destroy` |
-| **Categorie** | Instance |
-| **Icone** | 💥 |
+| **Catégorie** | Instance |
+| **Icône** | 💥 |
 
 **Description :** Supprime une instance du jeu.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `target` | Choix | `self` = detruire cette instance, `other` = detruire l'instance en collision |
+| `target` | Choix | `self` = détruire cette instance, `other` = détruire l'instance en collision |
 
 **Utilisations courantes :**
-- Supprimer les pieces collectees (`target: other` dans l'evenement de collision)
-- Detruire les balles lorsqu'elles touchent quelque chose
+- Supprimer les pièces collectées (`target: other` dans l'événement de collision)
+- Détruire les balles lorsqu'elles touchent quelque chose
 - Supprimer les ennemis lorsqu'ils sont vaincus
 
 ---
 
-### Creer une Instance
+### Créer une Instance
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `create_instance` |
 | **Nom du Bloc** | `instance_create` |
-| **Categorie** | Instance |
-| **Icone** | ✨ |
+| **Catégorie** | Instance |
+| **Icône** | ✨ |
 
-**Description :** Cree une nouvelle instance d'un objet a une position specifiee.
+**Description :** Crée une nouvelle instance d'un objet à une position spécifiée.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `object` | Objet | Le type d'objet a creer |
-| `x` | Nombre | Coordonnee X pour la nouvelle instance |
-| `y` | Nombre | Coordonnee Y pour la nouvelle instance |
+| `object` | Objet | Le type d'objet à créer |
+| `x` | Nombre | Coordonnée X pour la nouvelle instance |
+| `y` | Nombre | Coordonnée Y pour la nouvelle instance |
 
-**Exemple :** Creer une balle a la position du joueur lorsque Espace est presse.
+**Exemple :** Créer une balle à la position du joueur lorsque Espace est pressé.
 
 ---
 
 ## Actions de Score
 
-### Definir le Score
+### Définir le Score
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `set_score` |
 | **Nom du Bloc** | `score_set` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | 🏆 |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | 🏆 |
 
-**Description :** Definit le score a une valeur specifique, ou ajoute/soustrait du score actuel.
+**Description :** Définit le score à une valeur spécifique, ou ajoute/soustrait au score actuel.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
 | `value` | Nombre | La valeur du score |
-| `relative` | Booleen | Si vrai, ajoute la valeur au score actuel. Si faux, definit le score a la valeur |
+| `relative` | Booléen | Si vrai, ajoute la valeur au score actuel. Si faux, définit le score à la valeur |
 
 **Exemples :**
-- Reinitialiser le score : `value: 0`, `relative: false`
+- Réinitialiser le score : `value: 0`, `relative: false`
 - Ajouter 10 points : `value: 10`, `relative: true`
 - Soustraire 5 points : `value: -5`, `relative: true`
 
@@ -257,149 +257,149 @@ Les actions sont des commandes qui s'executent lorsqu'un evenement est declenche
 
 ### Ajouter au Score
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `add_score` |
 | **Nom du Bloc** | `score_add` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | ➕🏆 |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | ➕🏆 |
 
 **Description :** Ajoute une valeur au score actuel (raccourci pour set_score avec relative=true).
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `value` | Nombre | Points a ajouter (peut etre negatif pour soustraire) |
+| `value` | Nombre | Points à ajouter (peut être négatif pour soustraire) |
 
 ---
 
 ### Afficher le Score
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `draw_score` |
 | **Nom du Bloc** | `draw_score` |
-| **Categorie** | Score/Vies/Sante |
-| **Icone** | 🖼️🏆 |
+| **Catégorie** | Score/Vies/Santé |
+| **Icône** | 🖼️🏆 |
 
-**Description :** Affiche le score actuel a l'ecran.
+**Description :** Affiche le score actuel à l'écran.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
 | `x` | Nombre | Position X pour afficher le score |
 | `y` | Nombre | Position Y pour afficher le score |
-| `caption` | Chaine | Texte a afficher avant le score (ex: "Score: ") |
+| `caption` | Chaîne | Texte à afficher avant le score (ex : « Score : ») |
 
-**Note :** Ceci devrait etre utilise dans un evenement Draw (disponible dans le preset Intermediaire).
+**Note :** Ceci devrait être utilisé dans un événement Draw (disponible dans le préréglage Intermédiaire).
 
 ---
 
 ## Actions de Salle
 
-### Aller a la Salle Suivante
+### Aller à la Salle Suivante
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `next_room` |
 | **Nom du Bloc** | `room_goto_next` |
-| **Categorie** | Salle |
-| **Icone** | ➡️ |
+| **Catégorie** | Salle |
+| **Icône** | ➡️ |
 
-**Description :** Passe a la salle suivante dans l'ordre des salles.
+**Description :** Passe à la salle suivante dans l'ordre des salles.
 
-**Parametres :** Aucun
+**Paramètres :** Aucun
 
-**Note :** Si vous etes deja dans la derniere salle, cette action n'a aucun effet (utilisez "Si la Salle Suivante Existe" pour verifier d'abord).
+**Note :** Si vous êtes déjà dans la dernière salle, cette action n'a aucun effet (utilisez « Si la Salle Suivante Existe » pour vérifier d'abord).
 
 ---
 
-### Aller a la Salle Precedente
+### Aller à la Salle Précédente
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `previous_room` |
 | **Nom du Bloc** | `room_goto_previous` |
-| **Categorie** | Salle |
-| **Icone** | ⬅️ |
+| **Catégorie** | Salle |
+| **Icône** | ⬅️ |
 
-**Description :** Passe a la salle precedente dans l'ordre des salles.
+**Description :** Passe à la salle précédente dans l'ordre des salles.
 
-**Parametres :** Aucun
+**Paramètres :** Aucun
 
-**Note :** Si vous etes deja dans la premiere salle, cette action n'a aucun effet.
+**Note :** Si vous êtes déjà dans la première salle, cette action n'a aucun effet.
 
 ---
 
-### Redemarrer la Salle
+### Redémarrer la Salle
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `restart_room` |
 | **Nom du Bloc** | `room_restart` |
-| **Categorie** | Salle |
-| **Icone** | 🔄 |
+| **Catégorie** | Salle |
+| **Icône** | 🔄 |
 
-**Description :** Redemarrer la salle actuelle, reinitialisant toutes les instances a leur etat initial.
+**Description :** Redémarre la salle actuelle, réinitialisant toutes les instances à leur état initial.
 
-**Parametres :** Aucun
+**Paramètres :** Aucun
 
 **Utilisations courantes :**
-- Redemarrer le niveau apres la mort du joueur
-- Reinitialiser le puzzle apres un echec
+- Redémarrer le niveau après la mort du joueur
+- Réinitialiser le puzzle après un échec
 - Rejouer un mini-jeu
 
 ---
 
-### Aller a une Salle
+### Aller à une Salle
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `goto_room` |
 | **Nom du Bloc** | `room_goto` |
-| **Categorie** | Salle |
-| **Icone** | 🚪 |
+| **Catégorie** | Salle |
+| **Icône** | 🚪 |
 
-**Description :** Passe a une salle specifique par son nom.
+**Description :** Passe à une salle spécifique par son nom.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `room` | Salle | La salle ou aller |
+| `room` | Salle | La salle où aller |
 
 ---
 
 ### Si la Salle Suivante Existe
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `if_next_room_exists` |
 | **Nom du Bloc** | `room_if_next_exists` |
-| **Categorie** | Salle |
-| **Icone** | ❓➡️ |
+| **Catégorie** | Salle |
+| **Icône** | ❓➡️ |
 
-**Description :** Bloc conditionnel qui n'execute les actions contenues que s'il existe une salle suivante.
+**Description :** Bloc conditionnel qui n'exécute les actions contenues que s'il existe une salle suivante.
 
-**Parametres :** Aucun (les actions sont placees a l'interieur du bloc)
+**Paramètres :** Aucun (les actions sont placées à l'intérieur du bloc)
 
 **Utilisations courantes :**
-- Verifier avant d'aller a la salle suivante
-- Afficher un message "Vous avez gagne !" s'il n'y a plus de salles
+- Vérifier avant d'aller à la salle suivante
+- Afficher un message « Vous avez gagné ! » s'il n'y a plus de salles
 
 ---
 
-### Si la Salle Precedente Existe
+### Si la Salle Précédente Existe
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `if_previous_room_exists` |
 | **Nom du Bloc** | `room_if_previous_exists` |
-| **Categorie** | Salle |
-| **Icone** | ❓⬅️ |
+| **Catégorie** | Salle |
+| **Icône** | ❓⬅️ |
 
-**Description :** Bloc conditionnel qui n'execute les actions contenues que s'il existe une salle precedente.
+**Description :** Bloc conditionnel qui n'exécute les actions contenues que s'il existe une salle précédente.
 
-**Parametres :** Aucun (les actions sont placees a l'interieur du bloc)
+**Paramètres :** Aucun (les actions sont placées à l'intérieur du bloc)
 
 ---
 
@@ -407,124 +407,124 @@ Les actions sont des commandes qui s'executent lorsqu'un evenement est declenche
 
 ### Afficher un Message
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `show_message` |
 | **Nom du Bloc** | `output_message` |
-| **Categorie** | Sortie |
-| **Icone** | 💬 |
+| **Catégorie** | Sortie |
+| **Icône** | 💬 |
 
-**Description :** Affiche une boite de dialogue popup au joueur.
+**Description :** Affiche une boîte de dialogue popup au joueur.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `message` | Chaine | Le texte a afficher |
+| `message` | Chaîne | Le texte à afficher |
 
-**Note :** Le jeu se met en pause pendant que le message est affiche. Le joueur doit cliquer sur OK pour continuer.
+**Note :** Le jeu se met en pause pendant que le message est affiché. Le joueur doit cliquer sur OK pour continuer.
 
 **Utilisations courantes :**
 - Instructions du jeu
 - Dialogues de l'histoire
-- Messages de victoire/defaite
-- Informations de debogage
+- Messages de victoire/défaite
+- Informations de débogage
 
 ---
 
-### Executer du Code
+### Exécuter du Code
 
-| Propriete | Valeur |
+| Propriété | Valeur |
 |-----------|--------|
 | **Nom de l'Action** | `execute_code` |
 | **Nom du Bloc** | `execute_code` |
-| **Categorie** | Sortie |
-| **Icone** | 💻 |
+| **Catégorie** | Sortie |
+| **Icône** | 💻 |
 
-**Description :** Execute du code Python personnalise.
+**Description :** Exécute du code Python personnalisé.
 
-**Parametres :**
-| Parametre | Type | Description |
+**Paramètres :**
+| Paramètre | Type | Description |
 |-----------|------|-------------|
-| `code` | Chaine | Code Python a executer |
+| `code` | Chaîne | Code Python à exécuter |
 
-**Note :** Ceci est une fonctionnalite avancee. Utilisez avec precaution car un code incorrect peut causer des erreurs.
+**Note :** Ceci est une fonctionnalité avancée. Utilisez-la avec précaution car un code incorrect peut causer des erreurs.
 
 ---
 
-## Resume des Categories
+## Résumé des Catégories
 
-| Categorie | Evenements | Actions |
+| Catégorie | Événements | Actions |
 |-----------|------------|---------|
-| **Evenements** | Create, Step, Touche Pressee, Collision | - |
-| **Mouvement** | - | Definir Vitesse Horizontale, Definir Vitesse Verticale, Arreter Mouvement, Sauter a Position |
-| **Instance** | - | Detruire Instance, Creer Instance |
-| **Score/Vies/Sante** | - | Definir Score, Ajouter Score, Afficher Score |
-| **Salle** | - | Salle Suivante, Salle Precedente, Redemarrer Salle, Aller a Salle, Si Salle Suivante Existe, Si Salle Precedente Existe |
-| **Sortie** | - | Afficher Message, Executer Code |
+| **Événements** | Create, Step, Touche Pressée, Collision | - |
+| **Mouvement** | - | Définir la Vitesse Horizontale, Définir la Vitesse Verticale, Arrêter le Mouvement, Sauter à une Position |
+| **Instance** | - | Détruire une Instance, Créer une Instance |
+| **Score/Vies/Santé** | - | Définir le Score, Ajouter au Score, Afficher le Score |
+| **Salle** | - | Salle Suivante, Salle Précédente, Redémarrer la Salle, Aller à une Salle, Si la Salle Suivante Existe, Si la Salle Précédente Existe |
+| **Sortie** | - | Afficher un Message, Exécuter du Code |
 
 ---
 
-## Exemple : Jeu Simple de Collecte de Pieces
+## Exemple : Jeu Simple de Collecte de Pièces
 
-Voici comment configurer un jeu basique de collecte de pieces en utilisant uniquement les fonctionnalites du preset Debutant :
+Voici comment configurer un jeu basique de collecte de pièces en utilisant uniquement les fonctionnalités du préréglage Débutant :
 
 ### Objet Joueur (obj_player)
 
-**Touche Pressee (Fleche Gauche) :**
-- Definir Vitesse Horizontale : -4
+**Touche Pressée (Flèche Gauche) :**
+- Définir la Vitesse Horizontale : -4
 
-**Touche Pressee (Fleche Droite) :**
-- Definir Vitesse Horizontale : 4
+**Touche Pressée (Flèche Droite) :**
+- Définir la Vitesse Horizontale : 4
 
-**Touche Pressee (Fleche Haut) :**
-- Definir Vitesse Verticale : -4
+**Touche Pressée (Flèche Haut) :**
+- Définir la Vitesse Verticale : -4
 
-**Touche Pressee (Fleche Bas) :**
-- Definir Vitesse Verticale : 4
+**Touche Pressée (Flèche Bas) :**
+- Définir la Vitesse Verticale : 4
 
 **Collision avec obj_coin :**
-- Definir Score : 10 (relative: true)
-- Detruire Instance : other
+- Définir le Score : 10 (relative: true)
+- Détruire une Instance : other
 
 **Collision avec obj_wall :**
-- Arreter Mouvement
+- Arrêter le Mouvement
 
 **Collision avec obj_goal :**
-- Definir Score : 100 (relative: true)
+- Définir le Score : 100 (relative: true)
 - Salle Suivante
 
-### Objet Piece (obj_coin)
-Aucun evenement necessaire - juste un objet a collecter.
+### Objet Pièce (obj_coin)
+Aucun événement nécessaire - juste un objet à collecter.
 
 ### Objet Mur (obj_wall)
-Aucun evenement necessaire - juste un obstacle solide.
+Aucun événement nécessaire - juste un obstacle solide.
 
 ### Objet Objectif (obj_goal)
-Aucun evenement necessaire - declenche la fin du niveau lorsque le joueur entre en collision.
+Aucun événement nécessaire - déclenche la fin du niveau lorsque le joueur entre en collision.
 
 ---
 
-## Passer au Niveau Intermediaire
+## Passer au Niveau Intermédiaire
 
-Lorsque vous etes a l'aise avec le preset Debutant, envisagez de passer au **Intermediaire** pour acceder a :
-- Evenement Draw (pour le rendu personnalise)
-- Evenement Destroy (nettoyage lorsqu'une instance est detruite)
-- Evenements Souris (detection des clics)
-- Evenements Alarme (actions minutees)
-- Systemes de Vies et de Sante
+Lorsque vous êtes à l'aise avec le préréglage Débutant, envisagez de passer à l'**Intermédiaire** pour accéder à :
+- Événement Draw (pour le rendu personnalisé)
+- Événement Destroy (nettoyage lorsqu'une instance est détruite)
+- Événements Souris (détection des clics)
+- Événements Alarme (actions minutées)
+- Systèmes de Vies et de Santé
 - Actions de Son et de Musique
-- Plus d'options de mouvement (direction, se deplacer vers)
+- Plus d'options de mouvement (direction, se déplacer vers)
 
 ---
 
 ## Voir Aussi
 
 - [Tutoriels](Tutorials_fr) - Tous les tutoriels en un seul endroit
-- [Preset Intermediaire](Intermediate-Preset_fr) - Fonctionnalites du niveau suivant
-- [Reference Complete des Actions](Full-Action-Reference_fr) - Liste complete des actions
-- [Reference des Evenements](Event-Reference_fr) - Liste complete des evenements
-- [Evenements et Actions](Events-and-Actions_fr) - Concepts fondamentaux
-- [Creer Votre Premier Jeu](Creating-Your-First-Game_fr) - Tutoriel etape par etape
-- [Tutoriel Pong](Tutorial-Pong_fr) - Creez un jeu Pong classique pour deux joueurs
-- [Tutoriel Casse-Briques](Tutorial-Breakout_fr) - Creez un jeu de casse-briques classique
-- [Initiation a la Creation de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour debutants
+- [Préréglage Intermédiaire](Intermediate-Preset_fr) - Fonctionnalités du niveau suivant
+- [Référence Complète des Actions](Full-Action-Reference_fr) - Liste complète des actions
+- [Référence des Événements](Event-Reference_fr) - Liste complète des événements
+- [Événements et Actions](Evenements_Actions_fr) - Concepts fondamentaux
+- [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel étape par étape
+- [Tutoriel Pong](Tutorial-Pong_fr) - Créez un jeu Pong classique pour deux joueurs
+- [Tutoriel Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
+- [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
