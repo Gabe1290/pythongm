@@ -8,32 +8,32 @@
 
 O Editor de Objetos e a ferramenta central para definir o comportamento dos elementos do jogo.
 
-## Visao geral
+## Visão geral
 
-Os objetos sao os blocos de construcao do seu jogo. Eles definem:
+Os objetos são os blocos de construção do seu jogo. Eles definem:
 - Aparencia (Sprite)
-- Comportamento (Eventos e Acoes)
-- Propriedades fisicas
-- Interacoes
+- Comportamento (Eventos e Ações)
+- Propriedades físicas
+- Interações
 
 ## Interface do Editor
 
 ### Areas principais
 1. **Lista de objetos**: Todos os objetos no projeto
-2. **Painel de propriedades**: Configuracoes basicas
+2. **Painel de propriedades**: Configurações básicas
 3. **Lista de eventos**: Eventos definidos
-4. **Editor de acoes**: Acoes para eventos
+4. **Editor de ações**: Ações para eventos
 
 ## Propriedades do objeto
 
 ### Gerais
-- **Nome**: Identificador unico (ex. obj_jogador)
+- **Nome**: Identificador único (ex. obj_jogador)
 - **Sprite**: Grafico atribuido
-- **Visivel**: Se o objeto e renderizado
+- **Visivel**: Se o objeto é renderizado
 - **Persistente**: Sobrevive a mudancas de sala
 
-### Fisica
-- **Solido**: Colide com outros objetos
+### Física
+- **Sólido**: Colide com outros objetos
 - **Profundidade**: Ordem de desenho
 - **Objeto pai**: Heranca de propriedades
 
@@ -42,39 +42,39 @@ Os objetos sao os blocos de construcao do seu jogo. Eles definem:
 ### Adicionar um evento
 1. Clique em "Adicionar Evento"
 2. Selecione o tipo de evento
-3. Adicione acoes
+3. Adicione ações
 
 ### Tipos de eventos
-- **Create**: Ao criar a instancia
+- **Create**: Ao criar a instância
 - **Step**: Cada frame
 - **Draw**: Para desenhar
 - **Teclado**: Entrada de teclado
-- **Rato**: Interacoes com o rato
-- **Colisao**: Ao tocar outros objetos
+- **Rato**: Interações com o rato
+- **Colisão**: Ao tocar outros objetos
 
-## Usar acoes
+## Usar ações
 
-### Adicionar acoes
+### Adicionar ações
 1. Selecione um evento
-2. Arraste acoes da biblioteca
+2. Arraste ações da biblioteca
 3. Configure os parametros
 
-### Acoes comuns
-- Mover numa direcao
-- Definir variavel
-- Criar/destruir instancia
+### Ações comuns
+- Mover numa direção
+- Definir variável
+- Criar/destruir instância
 - Reproduzir som
 - Mudar de sala
 
-## Melhores praticas
+## Melhores práticas
 
 1. **Nomes claros**: Use prefixos como "obj_"
 2. **Modularidade**: Objetos pequenos e reutilizaveis
-3. **Use a heranca**: Objetos pai para comportamento comum
-4. **Documentacao**: Comentarios em eventos complexos
+3. **Use a herança**: Objetos pai para comportamento comum
+4. **Documentação**: Comentarios em eventos complexos
 
-## Ver tambem
+## Ver também
 
-- [Eventos e Acoes](Eventos_e_Acoes_pt)
-- [Programacao Visual](Programacao_Visual_pt)
+- [Eventos e Ações](Eventos_e_Acoes_pt)
+- [Programação Visual](Programacao_Visual_pt)
 - [Editor de Salas](Editor_Salas_pt)

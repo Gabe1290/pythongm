@@ -10,98 +10,99 @@ Respostas a perguntas comuns sobre o pyGM.
 
 ## Perguntas gerais
 
-### O que e o pyGM?
-O pyGM e um editor visual de desenvolvimento de jogos para Python. Permite criar jogos 2D sem conhecimentos extensos de programacao.
+### O que é o pyGM?
+O pyGM é um editor visual de desenvolvimento de jogos para Python. Permite criar jogos 2D sem conhecimentos extensos de programação.
 
-### O pyGM e gratuito?
-Sim, o pyGM e de codigo aberto e completamente gratuito.
+### O pyGM é gratuito?
+Sim, o pyGM é de código aberto e completamente gratuito.
 
-### Que linguagem de programacao e usada?
-O pyGM e baseado em Python. Pode usar programacao visual ou escrever codigo Python diretamente.
+### Que linguagem de programação é usada?
+O pyGM é baseado em Python. Pode usar programação visual ou escrever código Python diretamente.
 
 ### Para que plataformas posso desenvolver?
 - Windows
 - macOS
 - Linux
 - Web (HTML5)
+- Móvel (Kivy/Android)
 
-## Instalacao
+## Instalação
 
 ### Como instalo o pyGM?
 ```bash
 pip install pygm
 ```
 
-### Que versao de Python preciso?
-Python 3.8 ou superior.
+### Que versão de Python preciso?
+Python 3.10 ou superior.
 
-### O pyGM nao inicia. O que faco?
-1. Verifique a versao de Python
+### O pyGM não inicia. O que faco?
+1. Verifique a versão de Python
 2. Reinstale as dependencias
 3. Inicie a partir da linha de comandos para ver erros
 
 ## Desenvolvimento
 
 ### Como crio um novo projeto?
-Inicie o pyGM e selecione "Novo Projeto" ou use Ficheiro > Novo.
+Inicie o pyGM é selecione "Novo Projeto" ou use Ficheiro > Novo.
 
 ### Como adiciono sprites?
 1. Clique direito em "Sprites" na arvore de recursos
 2. Selecione "Novo Sprite"
 3. Importe uma imagem ou crie uma
 
-### Como crio animacoes?
+### Como crio animações?
 1. Abra um sprite
-2. Adicione varios frames
-3. Configure a velocidade da animacao
+2. Adicione vários frames
+3. Configure a velocidade da animação
 
 ### Como programo o comportamento dos objetos?
 1. Abra um objeto
 2. Adicione eventos (ex. Create, Step)
-3. Adicione acoes aos eventos
+3. Adicione ações aos eventos
 4. Ou use o editor visual Blockly
 
 ## Recursos
 
-### Que formatos de imagem sao suportados?
+### Que formatos de imagem são suportados?
 - PNG (recomendado)
 - JPG
 - GIF
 - BMP
 
-### Que formatos de audio sao suportados?
+### Que formatos de áudio são suportados?
 - WAV
 - MP3
 - OGG
 
 ### Como otimizo os meus recursos?
 - Use tamanhos de imagem apropriados
-- Comprima ficheiros de audio
-- Remova recursos nao utilizados
+- Comprima ficheiros de áudio
+- Remova recursos não utilizados
 
 ## Gameplay
 
-### Como implemento a detecao de colisoes?
-1. Crie um evento de colisao no objeto
+### Como implemento a deteção de colisões?
+1. Crie um evento de colisão no objeto
 2. Selecione o outro objeto
-3. Adicione acoes para a reacao
+3. Adicione ações para a reação
 
-### Como crio multiplos niveis?
-1. Crie varias salas
+### Como crio multiplos níveis?
+1. Crie várias salas
 2. Use a acao "Ir para sala"
 3. Ou "Ir para a proxima sala"
 
 ### Como guardo o progresso do jogo?
-Use as funcoes de gravacao integradas:
+Use as funções de gravação integradas:
 - `save_game()`: Guardar jogo
 - `load_game()`: Carregar jogo
 
-## Exportacao
+## Exportação
 
 ### Como exporto o meu jogo?
-1. Va a Ficheiro > Exportar
+1. Vá a Ficheiro → Exportar projeto…
 2. Selecione a plataforma de destino
-3. Configure as opcoes
+3. Configure as opções
 4. Clique em "Exportar"
 
 ### Porque e que o ficheiro exportado e tao grande?
@@ -109,40 +110,40 @@ Use as funcoes de gravacao integradas:
 - Todos os recursos incorporados
 - Dica: Otimize os recursos
 
-### Posso exportar para dispositivos moveis?
-Atualmente nao e suportado diretamente. A exportacao web funciona em navegadores moveis.
+### Posso exportar para dispositivos móveis?
+Sim, através da exportação Kivy/Android. A exportação web também funciona em navegadores móveis.
 
-## Resolucao de problemas
+## Resolução de problemas
 
 ### O meu jogo esta lento
-- Reduza o codigo nos eventos Step
+- Reduza o código nos eventos Step
 - Otimize os tamanhos dos sprites
-- Evite demasiadas instancias
+- Evite demasiadas instâncias
 
-### Os sprites nao sao apresentados
+### Os sprites não são apresentados
 - Verifique o caminho do sprite
 - Certifique-se de que Visivel=true
 - Verifique a ordem de desenho (profundidade)
 
-### As colisoes nao funcionam
-- Verifique as mascaras de colisao
-- Certifique-se de que os objetos sao solidos (se necessario)
-- Verifique a configuracao dos eventos
+### As colisões não funcionam
+- Verifique as mascaras de colisão
+- Certifique-se de que os objetos são sólidos (se necessario)
+- Verifique a configuração dos eventos
 
 ## Comunidade
 
 ### Onde encontro ajuda?
-- Documentacao oficial
+- Documentação oficial
 - GitHub Issues
 - Foruns da comunidade
 
 ### Como posso contribuir?
 - Reporte bugs no GitHub
 - Envie Pull Requests
-- Melhore a documentacao
+- Melhore a documentação
 
-## Ver tambem
+## Ver também
 
-- [Comecar](Comecar_pt)
+- [Começar](Comecar_pt)
 - [Criar o seu primeiro jogo](Primeiro_Jogo_pt)
-- [Eventos e Acoes](Eventos_e_Acoes_pt)
+- [Eventos e Ações](Eventos_e_Acoes_pt)

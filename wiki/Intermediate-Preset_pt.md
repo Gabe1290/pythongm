@@ -1,57 +1,57 @@
-# Preset Intermediario
+# Preset Intermediário
 
 *[Inicio](Home_pt) | [Guia de Presets](Preset-Guide_pt) | [Preset Iniciante](Beginner-Preset_pt)*
 
-O preset **Intermediario** se baseia no [Preset Iniciante](Beginner-Preset_pt) adicionando eventos e acoes mais avancados. E projetado para usuarios que dominaram o basico e querem criar jogos mais complexos com recursos como eventos temporizados, som, vidas e sistemas de saude.
+O preset **Intermediário** se baseia no [Preset Iniciante](Beginner-Preset_pt) adicionando eventos e ações mais avançados. É projetado para usuários que dominaram o básico e querem criar jogos mais complexos com recursos como eventos temporizados, som, vidas e sistemas de saúde.
 
-## Visao Geral
+## Visão Geral
 
-O preset Intermediario inclui tudo do Iniciante, mais:
-- **4 Tipos de Eventos Adicionais** - Desenho, Destruicao, Mouse, Alarme
-- **12 Tipos de Acoes Adicionais** - Vidas, Saude, Som, Temporizacao e mais opcoes de movimento
-- **3 Categorias Adicionais** - Temporizacao, Som, Desenho
+O preset Intermediário inclui tudo do Iniciante, mais:
+- **4 Tipos de Eventos Adicionais** - Desenho, Destruição, Mouse, Alarme
+- **12 Tipos de Ações Adicionais** - Vidas, Saúde, Som, Temporização e mais opções de movimento
+- **3 Categorias Adicionais** - Temporização, Som, Desenho
 
 ---
 
-## Eventos Adicionais (Alem do Iniciante)
+## Eventos Adicionais (Além do Iniciante)
 
 ### Evento de Desenho
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome do Bloco** | `event_draw` |
 | **Categoria** | Desenho |
-| **Icone** | 🎨 |
-| **Descricao** | Acionado quando o objeto precisa ser renderizado |
+| **Ícone** | 🎨 |
+| **Descrição** | Acionado quando o objeto precisa ser renderizado |
 
-**Quando e acionado:** A cada quadro durante a fase de desenho, apos todos os eventos step.
+**Quando é acionado:** A cada quadro durante a fase de desenho, após todos os eventos step.
 
-**Importante:** Quando voce adiciona um evento de Desenho, o desenho padrao do sprite e desabilitado. Voce deve desenhar manualmente o sprite se quiser que ele seja visivel.
+**Importante:** Quando você adiciona um evento de Desenho, o desenho padrão do sprite é desabilitado. Você deve desenhar manualmente o sprite se quiser que ele seja visível.
 
 **Usos comuns:**
-- Renderizacao personalizada
-- Desenhar barras de saude
+- Renderização personalizada
+- Desenhar barras de saúde
 - Exibir texto
 - Desenhar formas e efeitos
 - Elementos de interface
 
 ---
 
-### Evento de Destruicao
+### Evento de Destruição
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome do Bloco** | `event_destroy` |
 | **Categoria** | Objeto |
-| **Icone** | 💥 |
-| **Descricao** | Acionado quando a instancia e destruida |
+| **Ícone** | 💥 |
+| **Descrição** | Acionado quando a instância é destruída |
 
-**Quando e acionado:** Logo antes da instancia ser removida do jogo.
+**Quando é acionado:** Logo antes da instância ser removida do jogo.
 
 **Usos comuns:**
-- Criar efeitos de explosao
+- Criar efeitos de explosão
 - Soltar itens
 - Tocar som de morte
-- Atualizar pontuacao
-- Gerar particulas
+- Atualizar pontuação
+- Gerar partículas
 
 ---
 
@@ -60,22 +60,22 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 |-------------|-------|
 | **Nome do Bloco** | `event_mouse` |
 | **Categoria** | Entrada |
-| **Icone** | 🖱️ |
-| **Descricao** | Acionado em interacoes com o mouse |
+| **Ícone** | 🖱️ |
+| **Descrição** | Acionado em interações com o mouse |
 
 **Tipos de eventos de mouse:**
-- Botao esquerdo (pressionar, soltar, mantido)
-- Botao direito (pressionar, soltar, mantido)
-- Botao do meio (pressionar, soltar, mantido)
-- Mouse entra (cursor entra na instancia)
-- Mouse sai (cursor sai da instancia)
+- Botão esquerdo (pressionar, soltar, mantido)
+- Botão direito (pressionar, soltar, mantido)
+- Botão do meio (pressionar, soltar, mantido)
+- Mouse entra (cursor entra na instância)
+- Mouse sai (cursor sai da instância)
 - Eventos de mouse globais (em qualquer lugar da tela)
 
 **Usos comuns:**
-- Botoes clicaveis
+- Botões clicáveis
 - Arrastar e soltar
 - Efeitos de hover
-- Interacoes de menu
+- Interações de menu
 
 ---
 
@@ -83,100 +83,100 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome do Bloco** | `event_alarm` |
-| **Categoria** | Temporizacao |
-| **Icone** | ⏰ |
-| **Descricao** | Acionado quando um temporizador de alarme chega a zero |
+| **Categoria** | Temporização |
+| **Ícone** | ⏰ |
+| **Descrição** | Acionado quando um temporizador de alarme chega a zero |
 
-**Quando e acionado:** Quando a contagem regressiva do alarme correspondente chega a 0.
+**Quando é acionado:** Quando a contagem regressiva do alarme correspondente chega a 0.
 
-**Alarmes disponiveis:** 12 alarmes independentes (0-11)
+**Alarmes disponíveis:** 12 alarmes independentes (0-11)
 
 **Usos comuns:**
-- Geracao temporizada
-- Acoes atrasadas
+- Geração temporizada
+- Ações atrasadas
 - Tempos de recarga
-- Temporizacao de animacao
-- Eventos periodicos
+- Temporização de animação
+- Eventos periódicos
 
 ---
 
-## Acoes Adicionais (Alem do Iniciante)
+## Ações Adicionais (Além do Iniciante)
 
-### Acoes de Movimento
+### Ações de Movimento
 
-#### Mover em Direcao
+#### Mover em Direção
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `move_direction` |
+| **Nome da Ação** | `move_direction` |
 | **Nome do Bloco** | `move_direction` |
 | **Categoria** | Movimento |
 
-**Descricao:** Definir movimento usando direcao (0-360 graus) e velocidade.
+**Descrição:** Definir movimento usando direção (0-360 graus) e velocidade.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `direction` | Numero | Direcao em graus (0=direita, 90=cima, 180=esquerda, 270=baixo) |
-| `speed` | Numero | Velocidade de movimento |
+| `direction` | Número | Direção em graus (0=direita, 90=cima, 180=esquerda, 270=baixo) |
+| `speed` | Número | Velocidade de movimento |
 
 ---
 
 #### Mover Para um Ponto
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `move_towards_point` |
+| **Nome da Ação** | `move_towards_point` |
 | **Nome do Bloco** | `move_towards_point` |
 | **Categoria** | Movimento |
 
-**Descricao:** Mover-se em direcao a uma posicao especifica.
+**Descrição:** Mover-se em direção a uma posição específica.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `x` | Numero/Expressao | Coordenada X alvo |
-| `y` | Numero/Expressao | Coordenada Y alvo |
-| `speed` | Numero | Velocidade de movimento |
+| `x` | Número/Expressão | Coordenada X alvo |
+| `y` | Número/Expressão | Coordenada Y alvo |
+| `speed` | Número | Velocidade de movimento |
 
 ---
 
-### Acoes de Temporizacao
+### Ações de Temporização
 
 #### Definir Alarme
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `set_alarm` |
+| **Nome da Ação** | `set_alarm` |
 | **Nome do Bloco** | `set_alarm` |
-| **Categoria** | Temporizacao |
-| **Icone** | ⏰ |
+| **Categoria** | Temporização |
+| **Ícone** | ⏰ |
 
-**Descricao:** Definir um alarme para disparar apos um numero de passos.
+**Descrição:** Definir um alarme para disparar após um número de passos.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `alarm` | Numero | Numero do alarme (0-11) |
-| `steps` | Numero | Passos ate o alarme disparar (a 60 FPS, 60 passos = 1 segundo) |
+| `alarm` | Número | Número do alarme (0-11) |
+| `steps` | Número | Passos até o alarme disparar (a 60 FPS, 60 passos = 1 segundo) |
 
 **Exemplo:** Definir alarme 0 para 180 passos para um atraso de 3 segundos.
 
 ---
 
-### Acoes de Vidas
+### Ações de Vidas
 
 #### Definir Vidas
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `set_lives` |
+| **Nome da Ação** | `set_lives` |
 | **Nome do Bloco** | `lives_set` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | ❤️ |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | ❤️ |
 
-**Descricao:** Definir o numero de vidas.
+**Descrição:** Definir o número de vidas.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Valor das vidas |
+| `value` | Número | Valor das vidas |
 | `relative` | Booleano | Se verdadeiro, adiciona as vidas atuais |
 
 ---
@@ -184,180 +184,180 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 #### Adicionar Vidas
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `add_lives` |
+| **Nome da Ação** | `add_lives` |
 | **Nome do Bloco** | `lives_add` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | ➕❤️ |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | ➕❤️ |
 
-**Descricao:** Adicionar ou subtrair vidas.
+**Descrição:** Adicionar ou subtrair vidas.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Quantidade a adicionar (negativo para subtrair) |
+| `value` | Número | Quantidade a adicionar (negativo para subtrair) |
 
-**Nota:** Quando as vidas chegam a 0, o evento `no_more_lives` e acionado.
+**Nota:** Quando as vidas chegam a 0, o evento `no_more_lives` é acionado.
 
 ---
 
 #### Desenhar Vidas
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `draw_lives` |
+| **Nome da Ação** | `draw_lives` |
 | **Nome do Bloco** | `draw_lives` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | 🖼️❤️ |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | 🖼️❤️ |
 
-**Descricao:** Exibir vidas na tela.
+**Descrição:** Exibir vidas na tela.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `x` | Numero | Posicao X |
-| `y` | Numero | Posicao Y |
-| `sprite` | Sprite | Sprite opcional para usar como icone de vida |
+| `x` | Número | Posição X |
+| `y` | Número | Posição Y |
+| `sprite` | Sprite | Sprite opcional para usar como ícone de vida |
 
 ---
 
-### Acoes de Saude
+### Ações de Saúde
 
-#### Definir Saude
+#### Definir Saúde
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `set_health` |
+| **Nome da Ação** | `set_health` |
 | **Nome do Bloco** | `health_set` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | 💚 |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | 💚 |
 
-**Descricao:** Definir o valor da saude (0-100).
+**Descrição:** Definir o valor da saúde (0-100).
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Valor da saude (0-100) |
-| `relative` | Booleano | Se verdadeiro, adiciona a saude atual |
+| `value` | Número | Valor da saúde (0-100) |
+| `relative` | Booleano | Se verdadeiro, adiciona a saúde atual |
 
 ---
 
-#### Adicionar Saude
+#### Adicionar Saúde
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `add_health` |
+| **Nome da Ação** | `add_health` |
 | **Nome do Bloco** | `health_add` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | ➕💚 |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | ➕💚 |
 
-**Descricao:** Adicionar ou subtrair saude.
+**Descrição:** Adicionar ou subtrair saúde.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Quantidade a adicionar (negativo para dano) |
+| `value` | Número | Quantidade a adicionar (negativo para dano) |
 
-**Nota:** Quando a saude chega a 0, o evento `no_more_health` e acionado.
+**Nota:** Quando a saúde chega a 0, o evento `no_more_health` é acionado.
 
 ---
 
-#### Desenhar Barra de Saude
+#### Desenhar Barra de Saúde
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `draw_health_bar` |
+| **Nome da Ação** | `draw_health_bar` |
 | **Nome do Bloco** | `draw_health_bar` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | 📊💚 |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | 📊💚 |
 
-**Descricao:** Desenhar uma barra de saude na tela.
+**Descrição:** Desenhar uma barra de saúde na tela.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `x1` | Numero | Posicao X esquerda |
-| `y1` | Numero | Posicao Y superior |
-| `x2` | Numero | Posicao X direita |
-| `y2` | Numero | Posicao Y inferior |
+| `x1` | Número | Posição X esquerda |
+| `y1` | Número | Posição Y superior |
+| `x2` | Número | Posição X direita |
+| `y2` | Número | Posição Y inferior |
 | `back_color` | Cor | Cor de fundo |
-| `bar_color` | Cor | Cor da barra de saude |
+| `bar_color` | Cor | Cor da barra de saúde |
 
 ---
 
-### Acoes de Som
+### Ações de Som
 
 #### Reproduzir Som
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `play_sound` |
+| **Nome da Ação** | `play_sound` |
 | **Nome do Bloco** | `sound_play` |
 | **Categoria** | Som |
-| **Icone** | 🔊 |
+| **Ícone** | 🔊 |
 
-**Descricao:** Reproduzir um efeito sonoro.
+**Descrição:** Reproduzir um efeito sonoro.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
 | `sound` | Som | Recurso de som a reproduzir |
 | `loop` | Booleano | Se o som deve repetir em loop |
 
 ---
 
-#### Reproduzir Musica
+#### Reproduzir Música
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `play_music` |
+| **Nome da Ação** | `play_music` |
 | **Nome do Bloco** | `music_play` |
 | **Categoria** | Som |
-| **Icone** | 🎵 |
+| **Ícone** | 🎵 |
 
-**Descricao:** Reproduzir musica de fundo.
+**Descrição:** Reproduzir música de fundo.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `sound` | Som | Recurso de musica a reproduzir |
-| `loop` | Booleano | Se deve repetir (geralmente verdadeiro para musica) |
+| `sound` | Som | Recurso de música a reproduzir |
+| `loop` | Booleano | Se deve repetir (geralmente verdadeiro para música) |
 
 ---
 
-#### Parar Musica
+#### Parar Música
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `stop_music` |
+| **Nome da Ação** | `stop_music` |
 | **Nome do Bloco** | `music_stop` |
 | **Categoria** | Som |
-| **Icone** | 🔇 |
+| **Ícone** | 🔇 |
 
-**Descricao:** Parar toda a musica em reproducao.
+**Descrição:** Parar toda a música em reprodução.
 
-**Parametros:** Nenhum
+**Parâmetros:** Nenhum
 
 ---
 
 ## Lista Completa de Recursos
 
-### Eventos no Preset Intermediario
+### Eventos no Preset Intermediário
 
-| Evento | Categoria | Descricao |
+| Evento | Categoria | Descrição |
 |--------|-----------|-----------|
 | Create | Objeto | Instancia criada |
 | Step | Objeto | Cada quadro |
-| Destroy | Objeto | Instancia destruida |
-| Draw | Desenho | Fase de renderizacao |
+| Destroy | Objeto | Instancia destruída |
+| Draw | Desenho | Fase de renderização |
 | Keyboard Press | Entrada | Tecla pressionada uma vez |
-| Mouse | Entrada | Interacoes de mouse |
-| Collision | Colisao | Sobreposicao de instancias |
-| Alarm | Temporizacao | Temporizador chegou a zero |
+| Mouse | Entrada | Interações de mouse |
+| Collision | Colisão | Sobreposição de instâncias |
+| Alarm | Temporização | Temporizador chegou a zero |
 
-### Acoes no Preset Intermediario
+### Ações no Preset Intermediário
 
-| Categoria | Acoes |
+| Categoria | Ações |
 |-----------|-------|
 | **Movimento** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Instancia** | Create, Destroy |
-| **Pontuacao** | Set Score, Add Score, Draw Score |
+| **Pontuação** | Set Score, Add Score, Draw Score |
 | **Vidas** | Set Lives, Add Lives, Draw Lives |
-| **Saude** | Set Health, Add Health, Draw Health Bar |
+| **Saúde** | Set Health, Add Health, Draw Health Bar |
 | **Sala** | Next, Previous, Restart, Go To, If Next/Previous Exists |
-| **Temporizacao** | Set Alarm |
+| **Temporização** | Set Alarm |
 | **Som** | Play Sound, Play Music, Stop Music |
 | **Saida** | Show Message, Execute Code |
 
@@ -374,7 +374,7 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 - Create Instance: obj_bullet em (x, y-20)
 - Set Alarm: 0 para 15 (tempo de recarga)
 
-**Colisao com obj_enemy:**
+**Colisão com obj_enemy:**
 - Add Lives: -1
 - Play Sound: snd_hurt
 - Jump to Position: (320, 400)
@@ -392,7 +392,7 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 - Create Instance: obj_enemy_bullet em (x, y+20)
 - Set Alarm: 0 para 60 (repetir)
 
-**Colisao com obj_bullet:**
+**Colisão com obj_bullet:**
 - Add Score: 100
 - Play Sound: snd_explosion
 - Destroy Instance: self
@@ -403,13 +403,13 @@ O preset Intermediario inclui tudo do Iniciante, mais:
 
 Quando precisar de mais recursos, considere:
 - **Preset Plataforma** - Gravidade, pulo, mecanicas de plataforma
-- **Preset Completo** - Todos os eventos e acoes disponiveis
+- **Preset Completo** - Todos os eventos e ações disponíveis
 
 ---
 
 ## Veja Tambem
 
 - [Preset Iniciante](Beginner-Preset_pt) - Comece aqui se for novo
-- [Referencia Completa de Acoes](Full-Action-Reference_pt) - Lista completa de acoes
+- [Referencia Completa de Ações](Full-Action-Reference_pt) - Lista completa de ações
 - [Referencia de Eventos](Event-Reference_pt) - Lista completa de eventos
-- [Eventos e Acoes](Events-and-Actions_pt) - Conceitos basicos
+- [Eventos e Ações](Eventos_e_Acoes_pt) - Conceitos básicos
