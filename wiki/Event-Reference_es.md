@@ -140,6 +140,24 @@ Esta pagina documenta todos los eventos disponibles en PyGameMaker. Los eventos 
 
 ---
 
+### Teclado (Ninguna tecla)
+| Propiedad | Valor |
+|-----------|-------|
+| **Nombre** | `keyboard_no_key` |
+| **Icono** | ⌨️ |
+| **Categoría** | Entrada |
+| **Preset** | Avanzado |
+
+**Descripción:** Se dispara en cada fotograma mientras **no** se mantiene ninguna tecla.
+
+**Cuándo se dispara:** En cada fotograma en que el teclado está inactivo, *antes* del evento Step.
+
+**Usos comunes:**
+- Detener el movimiento cuando el jugador suelta todas las teclas (juegos de cuadrícula/laberintos)
+- Animaciones en reposo
+
+---
+
 ### Raton
 | Propiedad | Valor |
 |-----------|-------|
@@ -285,6 +303,20 @@ Esta pagina documenta todos los eventos disponibles en PyGameMaker. Los eventos 
 
 ---
 
+### Draw GUI
+| Propiedad | Valor |
+|-----------|-------|
+| **Nombre** | `draw_gui` |
+| **Icono** | 🖥️ |
+| **Categoría** | Dibujo |
+| **Preset** | Avanzado |
+
+**Descripción:** Dibuja en el **espacio de pantalla (GUI)**, encima de la sala y sin verse afectado por el desplazamiento de vistas/cámara.
+
+**Diferencia con Draw:** el evento Draw normal está en coordenadas de sala (se desplaza con la vista); Draw GUI permanece fijo a la pantalla — úsalo para HUD, puntuaciones y menús.
+
+---
+
 ## Eventos de Sala
 
 ### Room Start
@@ -422,6 +454,23 @@ Esta pagina documenta todos los eventos disponibles en PyGameMaker. Los eventos 
 - Perder una vida
 - Reaparecer jugador
 - Activar animacion de muerte
+
+---
+
+### Animation End
+| Propiedad | Valor |
+|-----------|-------|
+| **Nombre** | `animation_end` |
+| **Icono** | 🎞️ |
+| **Categoría** | Otro |
+| **Preset** | Avanzado |
+
+**Descripción:** Se dispara cuando la animación del sprite de la instancia completa un ciclo entero (vuelve del último fotograma al primero).
+
+**Usos comunes:**
+- Destruir un efecto único (explosión) tras una sola reproducción
+- Cambiar a otra animación cuando la actual termina
+- Avanzar una máquina de estados al terminar la animación
 
 ---
 

@@ -140,6 +140,24 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 
 ---
 
+### Tipkovnica (Nobene tipke)
+| Lastnost | Vrednost |
+|----------|----------|
+| **Ime** | `keyboard_no_key` |
+| **Ikona** | ⌨️ |
+| **Kategorija** | Vnos |
+| **Preset** | Napreden |
+
+**Opis:** Sproži se ob vsakem sličici, medtem ko **nobena** tipka ni pritisnjena.
+
+**Kdaj se sproži:** Ob vsaki sličici, ko je tipkovnica nedejavna, *pred* dogodkom Step.
+
+**Pogoste uporabe:**
+- Ustavitev gibanja, ko igralec sprosti vse tipke (igre na mreži/labirinti)
+- Animacije mirovanja
+
+---
+
 ### Miska
 | Lastnost | Vrednost |
 |----------|----------|
@@ -285,6 +303,20 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 
 ---
 
+### Draw GUI
+| Lastnost | Vrednost |
+|----------|----------|
+| **Ime** | `draw_gui` |
+| **Ikona** | 🖥️ |
+| **Kategorija** | Risanje |
+| **Preset** | Napreden |
+
+**Opis:** Riše v **zaslonskem prostoru (GUI)**, čez sobo in neodvisno od drsenja pogledov/kamere.
+
+**Razlika od Draw:** navadni dogodek Draw je v koordinatah sobe (drsi s pogledom); Draw GUI ostane pritrjen na zaslon — uporabite ga za HUD, rezultate in menije.
+
+---
+
 ## Dogodki Sobe
 
 ### Room Start
@@ -422,6 +454,23 @@ Ta stran dokumentira vse razpolozljive dogodke v PyGameMaker. Dogodki so sprozil
 - Izguba zivljenja
 - Ponovno pojavitev igralca
 - Sprozitev animacije smrti
+
+---
+
+### Animation End
+| Lastnost | Vrednost |
+|----------|----------|
+| **Ime** | `animation_end` |
+| **Ikona** | 🎞️ |
+| **Kategorija** | Drugo |
+| **Preset** | Napreden |
+
+**Opis:** Sproži se, ko animacija spritea instance dokonča celoten cikel (se vrne z zadnje sličice na prvo).
+
+**Pogoste uporabe:**
+- Uničenje enkratnega učinka (eksplozija) po enkratnem predvajanju
+- Preklop na drugo animacijo, ko se trenutna konča
+- Napredovanje stanjskega avtomata ob koncu animacije
 
 ---
 
