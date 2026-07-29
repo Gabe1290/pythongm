@@ -4,7 +4,7 @@
 
 ---
 
-[Nazaj na zacetno stran](Home_sl)
+[Nazaj na začetno stran](Home_sl)
 
 pyGM ponuja sistem vizualnega programiranja za enostaven razvoj iger brez kode.
 
@@ -12,73 +12,73 @@ pyGM ponuja sistem vizualnega programiranja za enostaven razvoj iger brez kode.
 
 Z vizualnim programiranjem lahko:
 - Ustvarjate igralno logiko s povleci in spusti
-- Povezujete bloke za kompleksna obnasanja
+- Povezujete bloke za kompleksna obnašanja
 - Razvijate brez znanja programiranja
 
 ## Urejevalnik Blockly
 
 ### Vmesnik
-1. **Paleta blokov**: Razpolozljivi bloki po kategorijah
-2. **Delovno podrocje**: Tukaj povezujete bloke
-3. **Orodna vrstica**: Shrani, Nalozi, Izbrisi
+1. **Paleta blokov**: Razpoložljivi bloki po kategorijah
+2. **Delovno področje**: Tukaj povezujete bloke
+3. **Orodna vrstica**: Shrani, Naloži, Izbriši
 
 ### Kategorije blokov
-- **Logika**: Ce/Potem, primerjave, logicne vrednosti
+- **Logika**: Če/Potem, primerjave, logične vrednosti
 - **Zanke**: Ponavljanja
-- **Matematika**: Izracuni
+- **Matematika**: Izračuni
 - **Besedilo**: Operacije z besedilom
 - **Spremenljivke**: Shranjevanje vrednosti
 - **Funkcije**: Ponovno uporabni bloki
-- **Igra**: Akcije specificne za pyGM
+- **Igra**: Akcije specifične za pyGM
 
 ## Uporaba blokov
 
 ### Dodajanje bloka
 1. Kliknite na kategorijo
-2. Povlecite blok na delovno podrocje
-3. Povezite ga z drugimi bloki
+2. Povlecite blok na delovno področje
+3. Povežite ga z drugimi bloki
 
 ### Povezovanje blokov
-- Bloki se samodejno zaskocijo
-- Pazite na ujemajocse oblike
-- Gnezdenje blokov je mogoce
+- Bloki se samodejno zaskočijo
+- Pazite na ujemajoče oblike
+- Gnezdenje blokov je mogoče
 
 ### Nastavitev bloka
 - Izpolnite vnosna polja
-- Izberite moznosti iz spustnega menija
+- Izberite možnosti iz spustnega menija
 - Vstavite podbloke
 
 ## Primeri
 
 ### Preprosto premikanje
 ```
-Ko [puscica desno] pritisnjena
+Ko [puščica desno] pritisnjena
   Nastavi x na (x + 5)
 ```
 
 ### Pogojna logika
 ```
-Ce <Zivljenja <= 0> potem
-  Prikazi sporocilo "Game Over"
+Če <Življenja <= 0> potem
+  Prikaži sporočilo "Game Over"
   Pojdi v sobo [rm_gameover]
 ```
 
 ### Zanka
 ```
 Ponovi [10] krat
-  Ustvari instanco [obj_kovanec] na polozaju (Nakljucno 0-800, Nakljucno 0-600)
+  Ustvari instanco [obj_kovanec] na položaju (Naključno 0-800, Naključno 0-600)
 ```
 
 ## Igralni bloki
 
 ### Premikanje
-- **Premakni na**: Premik na polozaj
+- **Premakni na**: Premik na položaj
 - **Nastavi hitrost**: Hitrost premikanja
 - **Nastavi smer**: Smer premikanja
 
 ### Instance
 - **Ustvari instanco**: Generiraj nov objekt
-- **Unici**: Izbrisi objekt
+- **Uniči**: Izbriši objekt
 - **Za vse**: Vse instance vrste
 
 ### Spremenljivke
@@ -89,19 +89,19 @@ Ponovi [10] krat
 ### Dogodki
 - **Ko tipka**: Vnos s tipkovnice
 - **Ko trk**: Stik objektov
-- **Ko casovnik**: Na osnovi casa
+- **Ko časovnik**: Na osnovi časa
 
 ## Nasveti
 
-1. **Zacnite majhno**: Najprej preprosti projekti
+1. **Začnite majhno**: Najprej preprosti projekti
 2. **Testirajte**: Redno zaganjajte
-3. **Organizirajte**: Logicno grupirajte bloke
+3. **Organizirajte**: Logično grupirajte bloke
 4. **Komentarji**: Dodajajte opombe
 
 ## Od blokov do kode
 
 Urejevalnik Blockly lahko tudi generira kodo:
-1. Vizualno se naucite konceptov programiranja
+1. Vizualno se naučite konceptov programiranja
 2. Oglejte si generirano kodo
 3. Kasneje preklopite na Python
 
