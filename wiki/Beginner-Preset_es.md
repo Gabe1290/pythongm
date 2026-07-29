@@ -2,36 +2,36 @@
 
 *[Inicio](Home_es) | [Guia de Presets](Preset-Guide_es) | [Preset Intermedio](Intermediate-Preset_es)*
 
-El preset **Principiante** esta disenado para usuarios que son nuevos en el desarrollo de juegos. Proporciona un conjunto seleccionado de eventos y acciones esenciales que cubren los fundamentos de la creacion de juegos 2D simples sin abrumar a los principiantes con demasiadas opciones.
+El preset **Principiante** esta diseñado para usuarios que son nuevos en el desarrollo de juegos. Proporciona un conjunto seleccionado de eventos y acciones esenciales que cubren los fundamentos de la creación de juegos 2D simples sin abrumar a los principiantes con demasiadas opciones.
 
-## Descripcion General
+## Descripción General
 
 El preset Principiante incluye:
 - **4 Tipos de Eventos** - Para responder a situaciones del juego
 - **17 Tipos de Acciones** - Para controlar el comportamiento del juego
-- **6 Categorias** - Eventos, Movimiento, Puntuacion/Vidas/Salud, Instancia, Sala, Salida
+- **6 Categorías** - Eventos, Movimiento, Puntuación/Vidas/Salud, Instancia, Sala, Salida
 
 ---
 
 ## Eventos
 
-Los eventos son disparadores que responden a situaciones especificas en tu juego. Cuando ocurre un evento, las acciones que has definido para ese evento se ejecutaran.
+Los eventos son disparadores que responden a situaciones específicas en tu juego. Cuando ocurre un evento, las acciones que has definido para ese evento se ejecutaran.
 
 ### Evento Create
 
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre del Bloque** | `event_create` |
-| **Categoria** | Eventos |
-| **Descripcion** | Se activa una vez cuando una instancia es creada por primera vez |
+| **Categoría** | Eventos |
+| **Descripción** | Se activa una vez cuando una instancia es creada por primera vez |
 
-**Cuando se activa:** Inmediatamente cuando una instancia de objeto se coloca en una sala o se crea con la accion "Crear Instancia".
+**Cuándo se activa:** Inmediatamente cuando una instancia de objeto se coloca en una sala o se crea con la acción "Crear Instancia".
 
 **Usos comunes:**
 - Inicializar variables
-- Establecer posicion inicial
-- Establecer velocidad o direccion inicial
-- Reiniciar puntuacion al inicio del juego
+- Establecer posición inicial
+- Establecer velocidad o dirección inicial
+- Reiniciar puntuación al inicio del juego
 
 ---
 
@@ -40,16 +40,16 @@ Los eventos son disparadores que responden a situaciones especificas en tu juego
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre del Bloque** | `event_step` |
-| **Categoria** | Eventos |
-| **Descripcion** | Se activa cada fotograma (tipicamente 60 veces por segundo) |
+| **Categoría** | Eventos |
+| **Descripción** | Se activa cada fotograma (típicamente 60 veces por segundo) |
 
-**Cuando se activa:** Continuamente, cada fotograma del juego.
+**Cuándo se activa:** Continuamente, cada fotograma del juego.
 
 **Usos comunes:**
 - Movimiento continuo
 - Verificar condiciones
 - Actualizar estado del juego
-- Control de animacion
+- Control de animación
 
 ---
 
@@ -58,10 +58,10 @@ Los eventos son disparadores que responden a situaciones especificas en tu juego
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre del Bloque** | `event_keyboard_press` |
-| **Categoria** | Eventos |
-| **Descripcion** | Se activa una vez cuando una tecla especifica es presionada |
+| **Categoría** | Eventos |
+| **Descripción** | Se activa una vez cuando una tecla específica es presionada |
 
-**Cuando se activa:** Una vez en el momento en que se presiona una tecla (no mientras se mantiene presionada).
+**Cuándo se activa:** Una vez en el momento en que se presiona una tecla (no mientras se mantiene presionada).
 
 **Teclas soportadas:** Teclas de flecha (arriba, abajo, izquierda, derecha), Espacio, Enter, letras (A-Z), numeros (0-9)
 
@@ -69,25 +69,25 @@ Los eventos son disparadores que responden a situaciones especificas en tu juego
 - Controles de movimiento del jugador
 - Saltar
 - Disparar
-- Navegacion de menu
+- Navegación de menú
 
 ---
 
-### Evento Colision
+### Evento Colisión
 
 | Propiedad | Valor |
 |-----------|-------|
 | **Nombre del Bloque** | `event_collision` |
-| **Categoria** | Eventos |
-| **Descripcion** | Se activa cuando esta instancia colisiona con otro objeto |
+| **Categoría** | Eventos |
+| **Descripción** | Se activa cuando esta instancia colisiona con otro objeto |
 
-**Cuando se activa:** Cada fotograma en que dos instancias se superponen.
+**Cuándo se activa:** Cada fotograma en que dos instancias se superponen.
 
-**Variable especial:** En un evento de colision, `other` se refiere a la instancia con la que se colisiona.
+**Variable especial:** En un evento de colisión, `other` se refiere a la instancia con la que se colisiona.
 
 **Usos comunes:**
 - Recolectar objetos (monedas, potenciadores)
-- Recibir dano de enemigos
+- Recibir daño de enemigos
 - Golpear paredes u obstaculos
 - Alcanzar metas o puntos de control
 
@@ -105,17 +105,17 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `set_hspeed` |
+| **Nombre de Acción** | `set_hspeed` |
 | **Nombre del Bloque** | `move_set_hspeed` |
-| **Categoria** | Movimiento |
+| **Categoría** | Movimiento |
 | **Icono** | ↔️ |
 
-**Descripcion:** Establece la velocidad de movimiento horizontal de la instancia.
+**Descripción:** Establece la velocidad de movimiento horizontal de la instancia.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `value` | Numero | Velocidad en pixeles por fotograma. Positivo = derecha, Negativo = izquierda |
+| `value` | Número | Velocidad en pixeles por fotograma. Positivo = derecha, Negativo = izquierda |
 
 **Ejemplo:** Establece `value` a `4` para moverse a la derecha a 4 pixeles por fotograma, o `-4` para moverse a la izquierda.
 
@@ -125,17 +125,17 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `set_vspeed` |
+| **Nombre de Acción** | `set_vspeed` |
 | **Nombre del Bloque** | `move_set_vspeed` |
-| **Categoria** | Movimiento |
+| **Categoría** | Movimiento |
 | **Icono** | ↕️ |
 
-**Descripcion:** Establece la velocidad de movimiento vertical de la instancia.
+**Descripción:** Establece la velocidad de movimiento vertical de la instancia.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `value` | Numero | Velocidad en pixeles por fotograma. Positivo = abajo, Negativo = arriba |
+| `value` | Número | Velocidad en pixeles por fotograma. Positivo = abajo, Negativo = arriba |
 
 **Ejemplo:** Establece `value` a `-4` para moverse hacia arriba a 4 pixeles por fotograma, o `4` para moverse hacia abajo.
 
@@ -145,14 +145,14 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `stop_movement` |
+| **Nombre de Acción** | `stop_movement` |
 | **Nombre del Bloque** | `move_stop` |
-| **Categoria** | Movimiento |
+| **Categoría** | Movimiento |
 | **Icono** | 🛑 |
 
-**Descripcion:** Detiene todo el movimiento estableciendo tanto la velocidad horizontal como vertical a cero.
+**Descripción:** Detiene todo el movimiento estableciendo tanto la velocidad horizontal como vertical a cero.
 
-**Parametros:** Ninguno
+**Parámetros:** Ninguno
 
 **Usos comunes:**
 - Detener al jugador cuando golpea una pared
@@ -161,24 +161,24 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 ---
 
-### Saltar a Posicion
+### Saltar a Posición
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `jump_to_position` |
+| **Nombre de Acción** | `jump_to_position` |
 | **Nombre del Bloque** | `move_jump_to` |
-| **Categoria** | Movimiento |
+| **Categoría** | Movimiento |
 | **Icono** | 📍 |
 
-**Descripcion:** Mueve instantaneamente la instancia a una posicion especifica (sin movimiento suave).
+**Descripción:** Mueve instantaneamente la instancia a una posición específica (sin movimiento suave).
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `x` | Numero | Coordenada X objetivo |
-| `y` | Numero | Coordenada Y objetivo |
+| `x` | Número | Coordenada X objetivo |
+| `y` | Número | Coordenada Y objetivo |
 
-**Ejemplo:** Salta a la posicion (100, 200) para teletransportar al jugador a esa ubicacion.
+**Ejemplo:** Salta a la posición (100, 200) para teletransportar al jugador a esa ubicación.
 
 ---
 
@@ -188,20 +188,20 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `destroy_instance` |
+| **Nombre de Acción** | `destroy_instance` |
 | **Nombre del Bloque** | `instance_destroy` |
-| **Categoria** | Instancia |
+| **Categoría** | Instancia |
 | **Icono** | 💥 |
 
-**Descripcion:** Elimina una instancia del juego.
+**Descripción:** Elimina una instancia del juego.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `target` | Eleccion | `self` = destruir esta instancia, `other` = destruir la instancia que colisiona |
+| `target` | Elección | `self` = destruir esta instancia, `other` = destruir la instancia que colisiona |
 
 **Usos comunes:**
-- Eliminar monedas recolectadas (`target: other` en evento de colision)
+- Eliminar monedas recolectadas (`target: other` en evento de colisión)
 - Destruir balas cuando golpean algo
 - Eliminar enemigos cuando son derrotados
 
@@ -211,85 +211,85 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `create_instance` |
+| **Nombre de Acción** | `create_instance` |
 | **Nombre del Bloque** | `instance_create` |
-| **Categoria** | Instancia |
+| **Categoría** | Instancia |
 | **Icono** | ✨ |
 
-**Descripcion:** Crea una nueva instancia de un objeto en una posicion especificada.
+**Descripción:** Crea una nueva instancia de un objeto en una posición especificada.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
 | `object` | Objeto | El tipo de objeto a crear |
-| `x` | Numero | Coordenada X para la nueva instancia |
-| `y` | Numero | Coordenada Y para la nueva instancia |
+| `x` | Número | Coordenada X para la nueva instancia |
+| `y` | Número | Coordenada Y para la nueva instancia |
 
-**Ejemplo:** Crear una bala en la posicion del jugador cuando se presiona Espacio.
+**Ejemplo:** Crear una bala en la posición del jugador cuando se presiona Espacio.
 
 ---
 
-## Acciones de Puntuacion
+## Acciones de Puntuación
 
-### Establecer Puntuacion
+### Establecer Puntuación
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `set_score` |
+| **Nombre de Acción** | `set_score` |
 | **Nombre del Bloque** | `score_set` |
-| **Categoria** | Puntuacion/Vidas/Salud |
+| **Categoría** | Puntuación/Vidas/Salud |
 | **Icono** | 🏆 |
 
-**Descripcion:** Establece la puntuacion a un valor especifico, o suma/resta de la puntuacion actual.
+**Descripción:** Establece la puntuación a un valor específico, o suma/resta de la puntuación actual.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `value` | Numero | El valor de puntuacion |
-| `relative` | Booleano | Si es verdadero, suma el valor a la puntuacion actual. Si es falso, establece la puntuacion al valor |
+| `value` | Número | El valor de puntuación |
+| `relative` | Booleano | Si es verdadero, suma el valor a la puntuación actual. Si es falso, establece la puntuación al valor |
 
 **Ejemplos:**
-- Reiniciar puntuacion: `value: 0`, `relative: false`
+- Reiniciar puntuación: `value: 0`, `relative: false`
 - Agregar 10 puntos: `value: 10`, `relative: true`
 - Restar 5 puntos: `value: -5`, `relative: true`
 
 ---
 
-### Agregar a Puntuacion
+### Agregar a Puntuación
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `add_score` |
+| **Nombre de Acción** | `add_score` |
 | **Nombre del Bloque** | `score_add` |
-| **Categoria** | Puntuacion/Vidas/Salud |
+| **Categoría** | Puntuación/Vidas/Salud |
 | **Icono** | ➕🏆 |
 
-**Descripcion:** Agrega un valor a la puntuacion actual (atajo para set_score con relative=true).
+**Descripción:** Agrega un valor a la puntuación actual (atajo para set_score con relative=true).
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `value` | Numero | Puntos a agregar (puede ser negativo para restar) |
+| `value` | Número | Puntos a agregar (puede ser negativo para restar) |
 
 ---
 
-### Dibujar Puntuacion
+### Dibujar Puntuación
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `draw_score` |
+| **Nombre de Acción** | `draw_score` |
 | **Nombre del Bloque** | `draw_score` |
-| **Categoria** | Puntuacion/Vidas/Salud |
+| **Categoría** | Puntuación/Vidas/Salud |
 | **Icono** | 🖼️🏆 |
 
-**Descripcion:** Muestra la puntuacion actual en pantalla.
+**Descripción:** Muestra la puntuación actual en pantalla.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `x` | Numero | Posicion X para dibujar la puntuacion |
-| `y` | Numero | Posicion Y para dibujar la puntuacion |
-| `caption` | Cadena | Texto a mostrar antes de la puntuacion (ej: "Puntos: ") |
+| `x` | Número | Posición X para dibujar la puntuación |
+| `y` | Número | Posición Y para dibujar la puntuación |
+| `caption` | Cadena | Texto a mostrar antes de la puntuación (ej: "Puntos: ") |
 
 **Nota:** Esto debe usarse en un evento Draw (disponible en el preset Intermedio).
 
@@ -301,16 +301,16 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `next_room` |
+| **Nombre de Acción** | `next_room` |
 | **Nombre del Bloque** | `room_goto_next` |
-| **Categoria** | Sala |
+| **Categoría** | Sala |
 | **Icono** | ➡️ |
 
-**Descripcion:** Transiciona a la siguiente sala en el orden de salas.
+**Descripción:** Transiciona a la siguiente sala en el orden de salas.
 
-**Parametros:** Ninguno
+**Parámetros:** Ninguno
 
-**Nota:** Si ya esta en la ultima sala, esta accion no tiene efecto (use "Si Existe Siguiente Sala" para verificar primero).
+**Nota:** Si ya esta en la ultima sala, esta acción no tiene efecto (use "Si Existe Siguiente Sala" para verificar primero).
 
 ---
 
@@ -318,16 +318,16 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `previous_room` |
+| **Nombre de Acción** | `previous_room` |
 | **Nombre del Bloque** | `room_goto_previous` |
-| **Categoria** | Sala |
+| **Categoría** | Sala |
 | **Icono** | ⬅️ |
 
-**Descripcion:** Transiciona a la sala anterior en el orden de salas.
+**Descripción:** Transiciona a la sala anterior en el orden de salas.
 
-**Parametros:** Ninguno
+**Parámetros:** Ninguno
 
-**Nota:** Si ya esta en la primera sala, esta accion no tiene efecto.
+**Nota:** Si ya esta en la primera sala, esta acción no tiene efecto.
 
 ---
 
@@ -335,18 +335,18 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `restart_room` |
+| **Nombre de Acción** | `restart_room` |
 | **Nombre del Bloque** | `room_restart` |
-| **Categoria** | Sala |
+| **Categoría** | Sala |
 | **Icono** | 🔄 |
 
-**Descripcion:** Reinicia la sala actual, restableciendo todas las instancias a su estado inicial.
+**Descripción:** Reinicia la sala actual, restableciendo todas las instancias a su estado inicial.
 
-**Parametros:** Ninguno
+**Parámetros:** Ninguno
 
 **Usos comunes:**
-- Reiniciar nivel despues de que el jugador muere
-- Restablecer puzzle despues de fallar
+- Reiniciar nivel después de que el jugador muere
+- Restablecer puzzle después de fallar
 - Repetir minijuego
 
 ---
@@ -355,15 +355,15 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `goto_room` |
+| **Nombre de Acción** | `goto_room` |
 | **Nombre del Bloque** | `room_goto` |
-| **Categoria** | Sala |
+| **Categoría** | Sala |
 | **Icono** | 🚪 |
 
-**Descripcion:** Transiciona a una sala especifica por nombre.
+**Descripción:** Transiciona a una sala específica por nombre.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
 | `room` | Sala | La sala a la que ir |
 
@@ -373,18 +373,18 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `if_next_room_exists` |
+| **Nombre de Acción** | `if_next_room_exists` |
 | **Nombre del Bloque** | `room_if_next_exists` |
-| **Categoria** | Sala |
+| **Categoría** | Sala |
 | **Icono** | ❓➡️ |
 
-**Descripcion:** Bloque condicional que solo ejecuta las acciones contenidas si existe una siguiente sala.
+**Descripción:** Bloque condicional que solo ejecuta las acciones contenidas si existe una siguiente sala.
 
-**Parametros:** Ninguno (las acciones se colocan dentro del bloque)
+**Parámetros:** Ninguno (las acciones se colocan dentro del bloque)
 
 **Usos comunes:**
 - Verificar antes de ir a la siguiente sala
-- Mostrar mensaje "Has Ganado!" si no hay mas salas
+- Mostrar mensaje "Has Ganado!" si no hay más salas
 
 ---
 
@@ -392,14 +392,14 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `if_previous_room_exists` |
+| **Nombre de Acción** | `if_previous_room_exists` |
 | **Nombre del Bloque** | `room_if_previous_exists` |
-| **Categoria** | Sala |
+| **Categoría** | Sala |
 | **Icono** | ❓⬅️ |
 
-**Descripcion:** Bloque condicional que solo ejecuta las acciones contenidas si existe una sala anterior.
+**Descripción:** Bloque condicional que solo ejecuta las acciones contenidas si existe una sala anterior.
 
-**Parametros:** Ninguno (las acciones se colocan dentro del bloque)
+**Parámetros:** Ninguno (las acciones se colocan dentro del bloque)
 
 ---
 
@@ -409,15 +409,15 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `show_message` |
+| **Nombre de Acción** | `show_message` |
 | **Nombre del Bloque** | `output_message` |
-| **Categoria** | Salida |
+| **Categoría** | Salida |
 | **Icono** | 💬 |
 
-**Descripcion:** Muestra un dialogo emergente de mensaje al jugador.
+**Descripción:** Muestra un dialogo emergente de mensaje al jugador.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
 | `message` | Cadena | El texto a mostrar |
 
@@ -427,46 +427,46 @@ Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden 
 - Instrucciones del juego
 - Dialogos de historia
 - Mensajes de victoria/derrota
-- Informacion de depuracion
+- Información de depuración
 
 ---
 
-### Ejecutar Codigo
+### Ejecutar Código
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Nombre de Accion** | `execute_code` |
+| **Nombre de Acción** | `execute_code` |
 | **Nombre del Bloque** | `execute_code` |
-| **Categoria** | Salida |
+| **Categoría** | Salida |
 | **Icono** | 💻 |
 
-**Descripcion:** Ejecuta codigo Python personalizado.
+**Descripción:** Ejecuta código Python personalizado.
 
-**Parametros:**
-| Parametro | Tipo | Descripcion |
+**Parámetros:**
+| Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `code` | Cadena | Codigo Python a ejecutar |
+| `code` | Cadena | Código Python a ejecutar |
 
-**Nota:** Esta es una funcion avanzada. Use con precaucion ya que codigo incorrecto puede causar errores.
+**Nota:** Esta es una función avanzada. Use con precaución ya que código incorrecto puede causar errores.
 
 ---
 
-## Resumen de Categorias
+## Resumen de Categorías
 
-| Categoria | Eventos | Acciones |
+| Categoría | Eventos | Acciones |
 |-----------|---------|----------|
-| **Eventos** | Create, Step, Tecla Presionada, Colision | - |
-| **Movimiento** | - | Establecer Velocidad Horizontal, Establecer Velocidad Vertical, Detener Movimiento, Saltar a Posicion |
+| **Eventos** | Create, Step, Tecla Presionada, Colisión | - |
+| **Movimiento** | - | Establecer Velocidad Horizontal, Establecer Velocidad Vertical, Detener Movimiento, Saltar a Posición |
 | **Instancia** | - | Destruir Instancia, Crear Instancia |
-| **Puntuacion/Vidas/Salud** | - | Establecer Puntuacion, Agregar Puntuacion, Dibujar Puntuacion |
+| **Puntuación/Vidas/Salud** | - | Establecer Puntuación, Agregar Puntuación, Dibujar Puntuación |
 | **Sala** | - | Siguiente Sala, Sala Anterior, Reiniciar Sala, Ir a Sala, Si Existe Siguiente Sala, Si Existe Sala Anterior |
-| **Salida** | - | Mostrar Mensaje, Ejecutar Codigo |
+| **Salida** | - | Mostrar Mensaje, Ejecutar Código |
 
 ---
 
-## Ejemplo: Juego Simple de Recoleccion de Monedas
+## Ejemplo: Juego Simple de Recolección de Monedas
 
-Aqui se muestra como configurar un juego basico de recoleccion de monedas usando solo las caracteristicas del preset Principiante:
+Aqui se muestra como configurar un juego básico de recolección de monedas usando solo las características del preset Principiante:
 
 ### Objeto Jugador (obj_player)
 
@@ -482,25 +482,25 @@ Aqui se muestra como configurar un juego basico de recoleccion de monedas usando
 **Tecla Presionada (Flecha Abajo):**
 - Establecer Velocidad Vertical: 4
 
-**Colision con obj_coin:**
-- Establecer Puntuacion: 10 (relative: true)
+**Colisión con obj_coin:**
+- Establecer Puntuación: 10 (relative: true)
 - Destruir Instancia: other
 
-**Colision con obj_wall:**
+**Colisión con obj_wall:**
 - Detener Movimiento
 
-**Colision con obj_goal:**
-- Establecer Puntuacion: 100 (relative: true)
+**Colisión con obj_goal:**
+- Establecer Puntuación: 100 (relative: true)
 - Siguiente Sala
 
 ### Objeto Moneda (obj_coin)
 No se necesitan eventos - solo un objeto recolectable.
 
 ### Objeto Pared (obj_wall)
-No se necesitan eventos - solo un obstaculo solido.
+No se necesitan eventos - solo un obstaculo sólido.
 
 ### Objeto Meta (obj_goal)
-No se necesitan eventos - activa la finalizacion del nivel cuando el jugador colisiona.
+No se necesitan eventos - activa la finalización del nivel cuando el jugador colisiona.
 
 ---
 
@@ -509,11 +509,11 @@ No se necesitan eventos - activa la finalizacion del nivel cuando el jugador col
 Cuando te sientas comodo con el preset Principiante, considera actualizar a **Intermedio** para acceder a:
 - Evento Draw (para renderizado personalizado)
 - Evento Destroy (limpieza cuando una instancia es destruida)
-- Eventos de Raton (deteccion de clics)
+- Eventos de Ratón (detección de clics)
 - Eventos de Alarma (acciones temporizadas)
 - Sistemas de Vidas y Salud
-- Acciones de Sonido y Musica
-- Mas opciones de movimiento (direccion, mover hacia)
+- Acciones de Sonido y Música
+- Más opciones de movimiento (dirección, mover hacia)
 
 ---
 
@@ -527,4 +527,4 @@ Cuando te sientas comodo con el preset Principiante, considera actualizar a **In
 - [Creando Tu Primer Juego](Creating-Your-First-Game_es) - Tutorial paso a paso
 - [Tutorial Pong](Tutorial-Pong_es) - Crea un juego Pong clasico para dos jugadores
 - [Tutorial Breakout](Tutorial-Breakout_es) - Crea un juego Breakout clasico
-- [Introduccion a la Creacion de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
+- [Introducción a la Creación de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
