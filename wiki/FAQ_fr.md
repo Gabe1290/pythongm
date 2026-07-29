@@ -1,55 +1,56 @@
-# Questions frequemment posees
+# Questions fréquemment posées
 
 > [English](FAQ) | [Français](FAQ_fr) | [Deutsch](FAQ_de) | [Italiano](FAQ_it) | [Español](FAQ_es) | [Português](FAQ_pt) | [Slovenščina](FAQ_sl) | [Українська](FAQ_uk) | [Русский](FAQ_ru)
 
 ---
 
-> [Retour a l'accueil](Home_fr)
+> [Retour à l'accueil](Home_fr)
 
 ---
 
-## Questions generales
+## Questions générales
 
-### Qu'est-ce que PyGameMaker?
+### Qu'est-ce que PyGameMaker ?
 
-PyGameMaker est un IDE de developpement de jeux open-source inspire de GameMaker 7.0. Il vous permet de creer des jeux 2D en utilisant la programmation visuelle (Google Blockly) ou un systeme evenement-action, sans avoir besoin d'ecrire du code.
+PyGameMaker est un IDE de développement de jeux open-source inspiré de GameMaker 7.0. Il vous permet de créer des jeux 2D en utilisant la programmation visuelle (Google Blockly) ou un système événement-action, sans avoir besoin d'écrire du code.
 
-### PyGameMaker est-il gratuit?
+### PyGameMaker est-il gratuit ?
 
-Oui! PyGameMaker est completement gratuit et open-source — le code source est sous licence MIT, et la documentation sous licence CC BY 4.0.
+Oui ! PyGameMaker est complètement gratuit et open-source — le code source est sous licence MIT, et la documentation sous licence CC BY 4.0.
 
-### Vers quelles plateformes puis-je exporter?
+### Vers quelles plateformes puis-je exporter ?
 
-- Windows (executable .exe autonome)
+- Windows (exécutable .exe autonome)
+- macOS (paquet .app)
 - HTML5 (navigateurs web)
 - Linux (binaire natif)
 - Mobile (iOS/Android via Kivy)
 
-### Ai-je besoin d'experience en programmation?
+### Ai-je besoin d'expérience en programmation ?
 
-Non! PyGameMaker est concu pour les debutants. Vous pouvez creer des jeux en utilisant:
-- Les blocs Blockly par glisser-deposer
-- Le systeme evenement/action par pointer-cliquer
+Non ! PyGameMaker est conçu pour les débutants. Vous pouvez créer des jeux en utilisant :
+- Les blocs Blockly par glisser-déposer
+- Le système événement/action par pointer-cliquer
 - Aucun codage requis
 
-### Est-il compatible avec les fichiers GameMaker?
+### Est-il compatible avec les fichiers GameMaker ?
 
-PyGameMaker est inspire de GameMaker 7.0 mais utilise son propre format de projet. Vous ne pouvez pas importer directement des fichiers GameMaker, mais les concepts et le flux de travail sont similaires.
+PyGameMaker est inspiré de GameMaker 7.0 mais utilise son propre format de projet. Vous ne pouvez pas importer directement des fichiers GameMaker, mais les concepts et le flux de travail sont similaires.
 
 ---
 
 ## Installation
 
-### Quelles sont les exigences systeme?
+### Quelles sont les exigences système ?
 
-- Python 3.10 ou superieur
+- Python 3.10 ou supérieur
 - Windows, Linux ou macOS
-- 4 Go de RAM minimum (8 Go recommande)
+- 4 Go de RAM minimum (8 Go recommandé)
 - ~500 Mo d'espace disque
 
-### Comment installer PyGameMaker?
+### Comment installer PyGameMaker ?
 
-Voir [[Demarrage_fr]] pour des instructions d'installation detaillees. La version courte:
+Voir [[Demarrage_fr]] pour des instructions d'installation détaillées. La version courte :
 
 ```bash
 git clone https://github.com/Gabe1290/pythongm.git
@@ -60,19 +61,19 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### Python n'est pas reconnu / non trouve
+### Python n'est pas reconnu / non trouvé
 
-Assurez-vous que Python est installe et ajoute au PATH de votre systeme. Vous pouvez verifier en executant:
+Assurez-vous que Python est installé et ajouté au PATH de votre système. Vous pouvez vérifier en exécutant :
 
 ```bash
 python --version
 ```
 
-Si cela echoue, reinstallez Python et cochez "Ajouter Python au PATH" lors de l'installation.
+Si cela échoue, réinstallez Python et cochez « Ajouter Python au PATH » lors de l'installation.
 
-### J'obtiens des erreurs d'importation au demarrage
+### J'obtiens des erreurs d'importation au démarrage
 
-Essayez de reinstaller les dependances:
+Essayez de réinstaller les dépendances :
 
 ```bash
 pip install -r requirements.txt --force-reinstall
@@ -82,19 +83,19 @@ pip install -r requirements.txt --force-reinstall
 
 ## Projets
 
-### Ou sont sauvegardes mes projets?
+### Où sont sauvegardés mes projets ?
 
-Les projets sont sauvegardes dans des dossiers que vous choisissez. Chaque projet contient:
+Les projets sont sauvegardés dans des dossiers que vous choisissez. Chaque projet contient :
 - `project.json` - Fichier de projet principal
-- Dossiers pour les sprites, sons, objets, salles, etc.
+- Des dossiers pour les sprites, sons, objets, salles, etc.
 
-### Puis-je avoir plusieurs projets ouverts?
+### Puis-je avoir plusieurs projets ouverts ?
 
-Actuellement, PyGameMaker ouvre un projet a la fois. Utilisez **Fichier > Ouvrir un projet** pour basculer entre les projets.
+Actuellement, PyGameMaker ouvre un projet à la fois. Utilisez **Fichier > Ouvrir un projet** pour basculer entre les projets.
 
-### Comment sauvegarder mon projet?
+### Comment sauvegarder mon projet ?
 
-Copiez simplement le dossier entier du projet. Toutes les ressources et parametres sont contenus a l'interieur. Considerez l'utilisation de git pour le controle de version:
+Copiez simplement le dossier entier du projet. Toutes les ressources et tous les paramètres sont contenus à l'intérieur. Envisagez l'utilisation de git pour le contrôle de version :
 
 ```bash
 cd mon_projet
@@ -105,162 +106,162 @@ git commit -m "Sauvegarde initiale"
 
 ### Mon projet ne s'ouvre pas / est corrompu
 
-Essayez ces etapes:
-1. Verifiez si `project.json` existe et n'est pas vide
-2. Ouvrez `project.json` dans un editeur de texte pour verifier les erreurs JSON
+Essayez ces étapes :
+1. Vérifiez si `project.json` existe et n'est pas vide
+2. Ouvrez `project.json` dans un éditeur de texte pour vérifier les erreurs JSON
 3. Restaurez depuis une sauvegarde si disponible
-4. Verifiez la sortie console pour des messages d'erreur specifiques
+4. Vérifiez la sortie console pour des messages d'erreur spécifiques
 
 ---
 
-## Objets et evenements
+## Objets et événements
 
-### Quelle est la difference entre un objet et une instance?
+### Quelle est la différence entre un objet et une instance ?
 
-- **Objet**: Un modele/plan definissant un comportement
-- **Instance**: Une copie specifique d'un objet placee dans une salle
+- **Objet** : Un modèle/plan définissant un comportement
+- **Instance** : Une copie spécifique d'un objet placée dans une salle
 
-Par exemple, `obj_ennemi` est un objet. Placer 5 ennemis dans une salle cree 5 instances de `obj_ennemi`.
+Par exemple, `obj_ennemi` est un objet. Placer 5 ennemis dans une salle crée 5 instances de `obj_ennemi`.
 
-### Pourquoi mon evenement ne se declenche-t-il pas?
+### Pourquoi mon événement ne se déclenche-t-il pas ?
 
-Causes courantes:
-1. **Mauvais type d'evenement**: Assurez-vous d'utiliser le bon evenement (ex: "Touche pressee" vs "Clavier")
-2. **Pas d'instances**: L'objet doit avoir des instances dans la salle
-3. **Objet non visible**: Verifiez la propriete visible
-4. **Ordre d'execution**: Certains evenements s'executent avant d'autres
+Causes courantes :
+1. **Mauvais type d'événement** : Assurez-vous d'utiliser le bon événement (ex : « Touche pressée » vs « Clavier »)
+2. **Pas d'instances** : L'objet doit avoir des instances dans la salle
+3. **Objet non visible** : Vérifiez la propriété visible
+4. **Ordre d'exécution** : Certains événements s'exécutent avant d'autres
 
-### Comment faire interagir les objets?
+### Comment faire interagir les objets ?
 
-Utilisez les evenements de collision:
-1. Ouvrez l'objet qui doit detecter la collision
-2. Ajoutez l'evenement **Collision avec [autre_objet]**
+Utilisez les événements de collision :
+1. Ouvrez l'objet qui doit détecter la collision
+2. Ajoutez l'événement **Collision avec [autre_objet]**
 3. Ajoutez des actions pour ce qui se passe lors de la collision
 
-### Quelle est la difference entre les evenements "Clavier" et "Touche pressee"?
+### Quelle est la différence entre les événements « Clavier » et « Touche pressée » ?
 
-- **Clavier [touche]**: Se declenche a chaque frame tant que la touche est maintenue
-- **Touche pressee [touche]**: Se declenche une fois quand la touche est d'abord enfoncee
-- **Touche relachee [touche]**: Se declenche une fois quand la touche est relachee
+- **Clavier [touche]** : Se déclenche à chaque frame tant que la touche est maintenue
+- **Touche pressée [touche]** : Se déclenche une fois quand la touche est d'abord enfoncée
+- **Touche relâchée [touche]** : Se déclenche une fois quand la touche est relâchée
 
 ---
 
 ## Salles
 
-### Quelle salle se charge en premier?
+### Quelle salle se charge en premier ?
 
-La premiere salle dans l'arbre des ressources (en haut de la liste) se charge au demarrage du jeu. Faites glisser les salles pour les reordonner.
+La première salle dans l'arbre des ressources (en haut de la liste) se charge au démarrage du jeu. Faites glisser les salles pour les réordonner.
 
-### Comment changer de salle?
+### Comment changer de salle ?
 
-Utilisez les actions de salle:
-- **Salle suivante**: Aller a la salle suivante dans l'ordre
-- **Salle precedente**: Aller a la salle precedente
-- **Aller a la salle**: Aller a une salle specifique
+Utilisez les actions de salle :
+- **Salle suivante** : Aller à la salle suivante dans l'ordre
+- **Salle précédente** : Aller à la salle précédente
+- **Aller à la salle** : Aller à une salle spécifique
 
 ### Les objets disparaissent quand je change de salle
 
-Les objets sont detruits en quittant une salle sauf s'ils sont marques comme **Persistants** dans leurs proprietes.
+Les objets sont détruits en quittant une salle sauf s'ils sont marqués comme **Persistants** dans leurs propriétés.
 
-### Ma salle est trop grande/petite a l'ecran
+### Ma salle est trop grande/petite à l'écran
 
-La taille de la fenetre de jeu correspond aux dimensions de la premiere salle. Vous pouvez:
-- Changer la taille de la salle pour correspondre a la taille de fenetre desiree
+La taille de la fenêtre de jeu correspond aux dimensions de la première salle. Vous pouvez :
+- Changer la taille de la salle pour correspondre à la taille de fenêtre désirée
 - Utiliser les Vues pour n'afficher qu'une partie de la salle
 
 ---
 
 ## Graphiques et sprites
 
-### Quels formats d'image sont supportes?
+### Quels formats d'image sont supportés ?
 
-- PNG (recommande, supporte la transparence)
+- PNG (recommandé, prend en charge la transparence)
 - JPEG/JPG
 - BMP
-- GIF (premiere image seulement)
+- GIF (première image seulement)
 
-### Mon sprite apparait a la mauvaise position
+### Mon sprite apparaît à la mauvaise position
 
-Verifiez le parametre **Origine** dans l'editeur de sprite. L'origine est le point d'ancrage pour le positionnement. Parametres courants:
-- Haut-gauche (0, 0): Par defaut
-- Centre: Bon pour les objets en rotation
-- Bas-centre: Bon pour les personnages
+Vérifiez le paramètre **Origine** dans l'éditeur de sprite. L'origine est le point d'ancrage pour le positionnement. Paramètres courants :
+- Haut-gauche (0, 0) : Par défaut
+- Centre : Bon pour les objets en rotation
+- Bas-centre : Bon pour les personnages
 
-### Comment animer un sprite?
+### Comment animer un sprite ?
 
-1. Creez un sprite avec plusieurs frames (bande horizontale)
-2. Definissez le **Nombre de frames** dans les proprietes du sprite
+1. Créez un sprite avec plusieurs frames (bande horizontale)
+2. Définissez le **Nombre de frames** dans les propriétés du sprite
 3. Ajustez la **Vitesse d'animation** (frames par seconde)
 
 ### Les sprites sont flous
 
-Cela arrive lors de la mise a l'echelle des sprites. Pour le pixel art, desactivez l'interpolation/lissage dans les parametres du jeu si disponible.
+Cela arrive lors de la mise à l'échelle des sprites. Pour le pixel art, désactivez l'interpolation/le lissage dans les paramètres du jeu si disponible.
 
 ---
 
 ## Son et musique
 
-### Quels formats audio sont supportes?
+### Quels formats audio sont supportés ?
 
-- WAV (non compresse)
-- OGG (recommande pour la musique)
+- WAV (non compressé)
+- OGG (recommandé pour la musique)
 - MP3
 
 ### Le son ne joue pas
 
-Verifiez:
+Vérifiez :
 1. Le fichier audio existe dans le dossier des sons
-2. Le format de fichier est supporte
+2. Le format de fichier est supporté
 3. Vous utilisez le bon nom de son dans les actions
-4. Le navigateur peut necessiter une interaction utilisateur (pour HTML5)
+4. Le navigateur peut nécessiter une interaction utilisateur (pour HTML5)
 
-### Comment mettre en boucle la musique de fond?
+### Comment mettre en boucle la musique de fond ?
 
-Utilisez l'action **Jouer musique** avec l'option boucle activee, ou utilisez **Jouer son** avec le parametre boucle defini sur vrai.
+Utilisez l'action **Jouer une musique** avec l'option boucle activée, ou utilisez **Jouer un son** avec le paramètre boucle défini sur vrai.
 
 ---
 
 ## Exportation
 
-### Mon jeu exporte ne fonctionne pas
+### Mon jeu exporté ne fonctionne pas
 
-Problemes courants:
-- **Windows**: DLLs manquantes - assurez-vous que tout le dossier de sortie est inclus
-- **HTML5**: Navigateur bloquant les fichiers locaux - hebergez sur un serveur
-- **Ressources manquantes**: Verifiez que tous les fichiers sont inclus
+Problèmes courants :
+- **Windows** : DLL manquantes - assurez-vous que tout le dossier de sortie est inclus
+- **HTML5** : Navigateur bloquant les fichiers locaux - hébergez sur un serveur
+- **Ressources manquantes** : Vérifiez que tous les fichiers sont inclus
 
-### Le fichier exporte est enorme
+### Le fichier exporté est énorme
 
-La taille du jeu inclut Python et toutes les bibliotheques. Pour reduire la taille:
-- Supprimez les ressources inutilisees
+La taille du jeu inclut Python et toutes les bibliothèques. Pour réduire la taille :
+- Supprimez les ressources inutilisées
 - Compressez les images et l'audio
-- Utilisez des formats appropries (OGG au lieu de WAV)
+- Utilisez des formats appropriés (OGG au lieu de WAV)
 - Activez la compression UPX pour les builds Windows
 
-### Puis-je vendre des jeux crees avec PyGameMaker?
+### Puis-je vendre des jeux créés avec PyGameMaker ?
 
-Oui! Les jeux que vous creez vous appartiennent entierement et vous pouvez les vendre. Le code source de PyGameMaker est sous licence MIT permissive, vous pouvez donc l'utiliser librement dans des projets commerciaux — et contrairement aux licences copyleft, vous n'etes pas oblige de publier vos propres modifications en open-source (meme si les contributions sont toujours les bienvenues).
+Oui ! Les jeux que vous créez vous appartiennent entièrement et vous pouvez les vendre. Le code source de PyGameMaker est sous licence MIT permissive, vous pouvez donc l'utiliser librement dans des projets commerciaux — et contrairement aux licences copyleft, vous n'êtes pas obligé de publier vos propres modifications en open-source (même si les contributions sont toujours les bienvenues).
 
 ---
 
 ## Blockly / Programmation visuelle
 
-### Ou trouver l'editeur Blockly?
+### Où trouver l'éditeur Blockly ?
 
 1. Ouvrez un objet
-2. Cliquez sur l'onglet **Blockly** dans l'editeur d'objets
-3. L'espace de travail de programmation visuelle apparait
+2. Cliquez sur l'onglet **Blockly** dans l'éditeur d'objets
+3. L'espace de travail de programmation visuelle apparaît
 
-### Comment basculer entre Blockly et les evenements?
+### Comment basculer entre Blockly et les événements ?
 
-Les deux systemes fonctionnent sur le meme objet. L'onglet Blockly et l'onglet Evenements montrent des vues differentes de la meme logique. Les changements dans l'un sont refletes dans l'autre.
+Les deux systèmes fonctionnent sur le même objet. L'onglet Blockly et l'onglet Événements montrent des vues différentes de la même logique. Les changements dans l'un sont reflétés dans l'autre.
 
 ### Mes blocs Blockly ont disparu
 
-Verifiez:
+Vérifiez :
 1. Vous visualisez le bon objet
-2. Faites defiler l'espace de travail (les blocs pourraient etre hors ecran)
-3. Verifiez le niveau de zoom
+2. Faites défiler l'espace de travail (les blocs pourraient être hors écran)
+3. Vérifiez le niveau de zoom
 
 ---
 
@@ -268,44 +269,44 @@ Verifiez:
 
 ### Mon jeu tourne lentement
 
-Conseils pour de meilleures performances:
-1. Reduisez le nombre d'instances
-2. Evitez les calculs lourds dans les evenements Step
+Conseils pour de meilleures performances :
+1. Réduisez le nombre d'instances
+2. Évitez les calculs lourds dans les événements Step
 3. Utilisez des alarmes au lieu de compter les frames
 4. Optimisez les tailles des sprites
-5. Detruisez les instances qui quittent la salle
+5. Détruisez les instances qui quittent la salle
 
-### L'evenement Step s'execute trop souvent
+### L'événement Step s'exécute trop souvent
 
-L'evenement Step s'execute a chaque frame (60 fois/seconde par defaut). Utilisez:
-- Des alarmes pour les actions differees
-- Des conditions pour verifier avant les operations lourdes
-- Une vitesse de salle plus basse si approprie
+L'événement Step s'exécute à chaque frame (60 fois/seconde par défaut). Utilisez :
+- Des alarmes pour les actions différées
+- Des conditions pour vérifier avant les opérations lourdes
+- Une vitesse de salle plus basse si approprié
 
 ---
 
 ## Obtenir de l'aide
 
-### Ou puis-je signaler des bugs?
+### Où puis-je signaler des bugs ?
 
-Signalez les bugs sur la page [GitHub Issues](https://github.com/Gabe1290/pythongm/issues). Incluez:
+Signalez les bugs sur la page [GitHub Issues](https://github.com/Gabe1290/pythongm/issues). Incluez :
 - Ce que vous attendiez
-- Ce qui s'est reellement passe
-- Les etapes pour reproduire
-- Votre systeme d'exploitation et version de Python
+- Ce qui s'est réellement passé
+- Les étapes pour reproduire
+- Votre système d'exploitation et votre version de Python
 
-### Comment puis-je contribuer?
+### Comment puis-je contribuer ?
 
-Les contributions sont les bienvenues! Consultez le depot GitHub pour:
+Les contributions sont les bienvenues ! Consultez le dépôt GitHub pour :
 - Contributions au code
 - Rapports de bugs
-- Demandes de fonctionnalites
+- Demandes de fonctionnalités
 - Traductions
-- Ameliorations de documentation
+- Améliorations de la documentation
 
-### Ou puis-je en apprendre plus?
+### Où puis-je en apprendre plus ?
 
 - [[Demarrage_fr]] - Installation et bases
-- [[Premier-Jeu_fr]] - Tutoriel etape par etape
-- [[Evenements-Actions_fr]] - Reference complete
-- [[Programmation-Visuelle_fr]] - Guide Blockly
+- [[Premier_Jeu_fr]] - Tutoriel étape par étape
+- [[Evenements_Actions_fr]] - Référence complète
+- [[Programmation_Visuelle_fr]] - Guide Blockly

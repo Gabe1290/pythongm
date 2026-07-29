@@ -4,52 +4,52 @@
 
 ---
 
-> [Retour a l'accueil](Home_fr)
+> [Retour à l'accueil](Home_fr)
 
-PyGameMaker inclut Google Blockly pour la programmation visuelle par glisser-deposer. Construisez la logique du jeu en connectant des blocs au lieu d'ecrire du code.
+PyGameMaker inclut Google Blockly pour la programmation visuelle par glisser-déposer. Construisez la logique du jeu en connectant des blocs au lieu d'écrire du code.
 
 ---
 
-## Acceder a Blockly
+## Accéder à Blockly
 
-1. Ouvrez un objet dans l'editeur d'objets
-2. Cliquez sur l'onglet **Blockly** (a cote de l'onglet Evenements)
-3. L'espace de travail Blockly apparait avec une boite a outils a gauche
+1. Ouvrez un objet dans l'éditeur d'objets
+2. Cliquez sur l'onglet **Blockly** (à côté de l'onglet Événements)
+3. L'espace de travail Blockly apparaît avec une boîte à outils à gauche
 
 ---
 
 ## L'espace de travail Blockly
 
-### Boite a outils
-Le panneau gauche contient les categories de blocs:
-- **Evenements** - Blocs declencheurs d'evenements
+### Boîte à outils
+Le panneau gauche contient les catégories de blocs :
+- **Événements** - Blocs déclencheurs d'événements
 - **Mouvement** - Blocs de mouvement et de position
-- **Timing** - Alarmes et delais
+- **Timing** - Alarmes et délais
 - **Dessin** - Blocs de rendu visuel
-- **Score/Vies/Sante** - Blocs d'etat du jeu
-- **Instance** - Creation/destruction d'objets
+- **Score/Vies/Santé** - Blocs d'état du jeu
+- **Instance** - Création/destruction d'objets
 - **Salle** - Navigation entre salles
 - **Valeurs** - Variables et expressions
 - **Son** - Lecture audio
 - **Logique** - Si/sinon et boucles
-- **Math** - Operations mathematiques
-- **Texte** - Manipulation de chaines
+- **Math** - Opérations mathématiques
+- **Texte** - Manipulation de chaînes
 
 ### Espace de travail
-La zone centrale ou vous construisez votre programme en:
-- Glissant des blocs depuis la boite a outils
+La zone centrale où vous construisez votre programme en :
+- Glissant des blocs depuis la boîte à outils
 - Connectant les blocs ensemble
-- Configurant les parametres des blocs
+- Configurant les paramètres des blocs
 
 ### Corbeille
-Faites glisser les blocs non desires ici pour les supprimer, ou appuyez sur la touche Supprimer.
+Faites glisser les blocs non désirés ici pour les supprimer, ou appuyez sur la touche Supprimer.
 
 ---
 
 ## Types de blocs
 
-### Blocs chapeau (Evenements)
-Les blocs chapeau ont un sommet arrondi et demarrent une sequence. Ils representent des evenements:
+### Blocs chapeau (Événements)
+Les blocs chapeau ont un sommet arrondi et démarrent une séquence. Ils représentent des événements :
 
 ```
 +---------------------+
@@ -58,30 +58,30 @@ Les blocs chapeau ont un sommet arrondi et demarrent une sequence. Ils represent
 ```
 
 ### Blocs empilables (Actions)
-Les blocs empilables ont des encoches qui se connectent a d'autres blocs:
+Les blocs empilables ont des encoches qui se connectent à d'autres blocs :
 
 ```
 |---------------------|
-| Definir vitesse a 5 |
+| Définir vitesse à 5 |
 |---------------------|
 ```
 
 ### Blocs valeur (Valeurs)
-Les blocs valeur sont arrondis et retournent des valeurs:
+Les blocs valeur sont arrondis et retournent des valeurs :
 
 ```
 ( position x )    ( score )    ( 100 )
 ```
 
-### Blocs booleens (Conditions)
-Les blocs booleens sont hexagonaux et retournent vrai/faux:
+### Blocs booléens (Conditions)
+Les blocs booléens sont hexagonaux et retournent vrai/faux :
 
 ```
-< touche obj_mur >    < touche pressee: espace >
+< touche obj_mur >    < touche pressée : espace >
 ```
 
 ### Blocs C (Conteneurs)
-Les blocs C enveloppent d'autres blocs:
+Les blocs C enveloppent d'autres blocs :
 
 ```
 +---------------------+
@@ -94,9 +94,9 @@ Les blocs C enveloppent d'autres blocs:
 
 ---
 
-## Blocs d'evenements
+## Blocs d'événements
 
-### Evenement Create
+### Événement Create
 ```
 +---------------------+
 | Quand Create        |
@@ -105,7 +105,7 @@ Les blocs C enveloppent d'autres blocs:
 +---------------------+
 ```
 
-### Evenement Step
+### Événement Step
 ```
 +---------------------+
 | Quand Step          |
@@ -114,7 +114,7 @@ Les blocs C enveloppent d'autres blocs:
 +---------------------+
 ```
 
-### Evenements clavier
+### Événements clavier
 ```
 +-------------------------+
 | Quand touche [gauche] v |
@@ -123,7 +123,7 @@ Les blocs C enveloppent d'autres blocs:
 +-------------------------+
 ```
 
-### Evenements collision
+### Événements collision
 ```
 +----------------------------+
 | Quand collision avec [obj] v|
@@ -138,14 +138,14 @@ Les blocs C enveloppent d'autres blocs:
 
 | Bloc | Description |
 |------|-------------|
-| `definir vitesse a [5]` | Definir la vitesse de deplacement |
-| `definir direction a [90]` | Definir la direction de deplacement |
-| `definir hspeed a [4]` | Definir la velocite horizontale |
-| `definir vspeed a [-5]` | Definir la velocite verticale |
-| `aller a x: [100] y: [200]` | Sauter a une position |
-| `aller vers x: [100] y: [200] a vitesse [3]` | Se deplacer vers un point |
-| `sauter a la position de depart` | Retourner au point de creation |
-| `sauter a une position aleatoire` | Se deplacer aleatoirement |
+| `définir vitesse à [5]` | Définir la vitesse de déplacement |
+| `définir direction à [90]` | Définir la direction de déplacement |
+| `définir hspeed à [4]` | Définir la vélocité horizontale |
+| `définir vspeed à [-5]` | Définir la vélocité verticale |
+| `aller à x : [100] y : [200]` | Sauter à une position |
+| `aller vers x : [100] y : [200] à vitesse [3]` | Se déplacer vers un point |
+| `sauter à la position de départ` | Retourner au point de création |
+| `sauter à une position aléatoire` | Se déplacer aléatoirement |
 | `rebondir sur les objets solides` | Inverser lors d'une collision |
 
 ---
@@ -154,24 +154,24 @@ Les blocs C enveloppent d'autres blocs:
 
 | Bloc | Description |
 |------|-------------|
-| `dessiner sprite [spr] a x: [0] y: [0]` | Dessiner un sprite |
-| `dessiner texte [Bonjour] a x: [10] y: [10]` | Afficher du texte |
-| `dessiner score a x: [10] y: [10]` | Montrer le score |
-| `dessiner rectangle de [x1,y1] a [x2,y2]` | Dessiner un rectangle |
-| `definir couleur de dessin a [couleur]` | Changer la couleur de dessin |
+| `dessiner sprite [spr] à x : [0] y : [0]` | Dessiner un sprite |
+| `dessiner texte [Bonjour] à x : [10] y : [10]` | Afficher du texte |
+| `dessiner score à x : [10] y : [10]` | Montrer le score |
+| `dessiner rectangle de [x1,y1] à [x2,y2]` | Dessiner un rectangle |
+| `définir couleur de dessin à [couleur]` | Changer la couleur de dessin |
 
 ---
 
-## Blocs Score/Vies/Sante
+## Blocs Score/Vies/Santé
 
 | Bloc | Description |
 |------|-------------|
-| `definir score a [100]` | Definir le score exact |
+| `définir score à [100]` | Définir le score exact |
 | `modifier score de [10]` | Ajouter/soustraire au score |
-| `definir vies a [3]` | Definir les vies exactes |
+| `définir vies à [3]` | Définir les vies exactes |
 | `modifier vies de [-1]` | Ajouter/soustraire aux vies |
-| `definir sante a [100]` | Definir la sante exacte |
-| `modifier sante de [-25]` | Ajouter/soustraire a la sante |
+| `définir santé à [100]` | Définir la santé exacte |
+| `modifier santé de [-25]` | Ajouter/soustraire à la santé |
 
 ---
 
@@ -179,10 +179,10 @@ Les blocs C enveloppent d'autres blocs:
 
 | Bloc | Description |
 |------|-------------|
-| `creer [obj] a x: [100] y: [200]` | Faire apparaitre une nouvelle instance |
-| `creer [obj] a cette position` | Faire apparaitre a sa propre position |
-| `detruire cette instance` | Se supprimer |
-| `detruire tous les [obj]` | Supprimer tous d'un type |
+| `créer [obj] à x : [100] y : [200]` | Faire apparaître une nouvelle instance |
+| `créer [obj] à cette position` | Faire apparaître à sa propre position |
+| `détruire cette instance` | Se supprimer |
+| `détruire tous les [obj]` | Supprimer tous d'un type |
 
 ---
 
@@ -190,10 +190,10 @@ Les blocs C enveloppent d'autres blocs:
 
 | Bloc | Description |
 |------|-------------|
-| `aller a la salle suivante` | Avancer a la salle suivante |
-| `aller a la salle precedente` | Retourner d'une salle |
-| `redemarrer la salle actuelle` | Reinitialiser la salle |
-| `aller a la salle [nom_salle]` | Aller a une salle specifique |
+| `aller à la salle suivante` | Avancer à la salle suivante |
+| `aller à la salle précédente` | Retourner d'une salle |
+| `redémarrer la salle actuelle` | Réinitialiser la salle |
+| `aller à la salle [nom_salle]` | Aller à une salle spécifique |
 
 ---
 
@@ -202,9 +202,9 @@ Les blocs C enveloppent d'autres blocs:
 | Bloc | Description |
 |------|-------------|
 | `jouer son [snd]` | Jouer le son une fois |
-| `jouer son [snd] en boucle` | Repeter le son |
-| `arreter son [snd]` | Arreter un son specifique |
-| `arreter tous les sons` | Tout mettre en silence |
+| `jouer son [snd] en boucle` | Répéter le son |
+| `arrêter son [snd]` | Arrêter un son spécifique |
+| `arrêter tous les sons` | Tout mettre en silence |
 
 ---
 
@@ -224,10 +224,10 @@ Les blocs C enveloppent d'autres blocs:
 +-------------------------+
 ```
 
-### Repeter
+### Répéter
 ```
 +-------------------------+
-| repeter [10] fois       |
+| répéter [10] fois       |
 |  |---------------------|+
 |  | [faire ceci]        ||
 |  |---------------------|+
@@ -239,7 +239,7 @@ Les blocs C enveloppent d'autres blocs:
 - `< [score] > [100] >`
 - `< [vies] < [1] >`
 
-### Logique booleenne
+### Logique booléenne
 - `< [condition1] et [condition2] >`
 - `< [condition1] ou [condition2] >`
 - `< non [condition] >`
@@ -251,46 +251,46 @@ Les blocs C enveloppent d'autres blocs:
 ### Variables
 - `( x )` - Position X
 - `( y )` - Position Y
-- `( speed )` - Vitesse de deplacement
+- `( speed )` - Vitesse de déplacement
 - `( direction )` - Direction du mouvement
 - `( score )` - Score actuel
 - `( lives )` - Vies actuelles
-- `( health )` - Sante actuelle
+- `( health )` - Santé actuelle
 
 ### Math
 - `( [5] + [3] )` - Addition
 - `( [10] - [2] )` - Soustraction
 - `( [4] x [3] )` - Multiplication
 - `( [20] / [4] )` - Division
-- `( aleatoire 1 a [100] )` - Nombre aleatoire
+- `( aléatoire 1 à [100] )` - Nombre aléatoire
 
 ---
 
-## Exemple: Mouvement du joueur
+## Exemple : Mouvement du joueur
 
 ```
 +----------------------------+
 | Quand touche [fleche_gauche]|
 |----------------------------|
-| definir hspeed a [-4]      |
+| définir hspeed à [-4]      |
 +----------------------------+
 
 +----------------------------+
 | Quand touche [fleche_droite]|
 |----------------------------|
-| definir hspeed a [4]       |
+| définir hspeed à [4]       |
 +----------------------------+
 
 +----------------------------+
 | Quand touche [aucune touche]|
 |----------------------------|
-| definir hspeed a [0]       |
+| définir hspeed à [0]       |
 +----------------------------+
 ```
 
 ---
 
-## Exemple: Collecter des pieces
+## Exemple : Collecter des pièces
 
 ```
 +-------------------------------+
@@ -300,7 +300,7 @@ Les blocs C enveloppent d'autres blocs:
 |-------------------------------|
 | jouer son [snd_piece]         |
 |-------------------------------|
-| detruire autre instance       |
+| détruire autre instance       |
 +-------------------------------+
 ```
 
@@ -308,16 +308,16 @@ Les blocs C enveloppent d'autres blocs:
 
 ## Conseils
 
-1. **Commencez par les evenements** - Toujours commencer avec un bloc evenement (bloc chapeau)
+1. **Commencez par les événements** - Toujours commencer avec un bloc événement (bloc chapeau)
 2. **Connectez verticalement** - Les blocs empilables se connectent de haut en bas
-3. **Utilisez les couleurs** - Les couleurs des blocs indiquent leur categorie
-4. **Clic droit** - Accedez aux options de duplication, suppression et aide
-5. **Zoom** - Utilisez la molette ou les controles de zoom pour les grands programmes
+3. **Utilisez les couleurs** - Les couleurs des blocs indiquent leur catégorie
+4. **Clic droit** - Accédez aux options de duplication, suppression et aide
+5. **Zoom** - Utilisez la molette ou les contrôles de zoom pour les grands programmes
 
 ---
 
-## Prochaines etapes
+## Prochaines étapes
 
-- [[Evenements-Actions_fr]] - Voir l'equivalent en liste d'actions
-- [[Premier-Jeu_fr]] - Construire un jeu complet
-- [[Editeur-Objets_fr]] - Ou Blockly s'integre
+- [[Evenements_Actions_fr]] - Voir l'équivalent en liste d'actions
+- [[Premier_Jeu_fr]] - Construire un jeu complet
+- [[Editeur_Objets_fr]] - Où Blockly s'intègre

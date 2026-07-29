@@ -1,227 +1,227 @@
-# Evenements et actions
+# Événements et actions
 
 > [English](Events-and-Actions) | [Français](Evenements_Actions_fr) | [Deutsch](Events_und_Aktionen_de) | [Italiano](Eventi_e_Azioni_it) | [Español](Eventos_y_Acciones_es) | [Português](Eventos_e_Acoes_pt) | [Slovenščina](Dogodki_in_Akcije_sl) | [Українська](Podii_ta_Dii_uk) | [Русский](Sobytiya_i_Deystviya_ru)
 
 ---
 
-> [Retour a l'accueil](Home_fr)
+> [Retour à l'accueil](Home_fr)
 
-Ceci est une reference complete de tous les evenements et actions disponibles dans PyGameMaker.
+Ceci est une référence complète de tous les événements et actions disponibles dans PyGameMaker.
 
 ---
 
-## Reference des evenements
+## Référence des événements
 
-### Evenement Create
-**Quand:** Une fois quand une instance est creee
-**Utilisation:** Initialisation, definition de variables, demarrage de minuteurs
+### Événement Create
+**Quand :** Une fois quand une instance est créée
+**Utilisation :** Initialisation, définition de variables, démarrage de minuteurs
 
-### Evenement Destroy
-**Quand:** Quand l'instance est detruite
-**Utilisation:** Nettoyage, creation d'effets, attribution de points
+### Événement Destroy
+**Quand :** Quand l'instance est détruite
+**Utilisation :** Nettoyage, création d'effets, attribution de points
 
-### Evenements Step
+### Événements Step
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
-| **Step** | A chaque frame (60 fois/seconde) |
-| **Begin Step** | Avant les verifications de collision |
-| **End Step** | Apres tous les autres evenements |
+| **Step** | À chaque frame (60 fois/seconde) |
+| **Begin Step** | Avant les vérifications de collision |
+| **End Step** | Après tous les autres événements |
 
-### Evenements Alarm
+### Événements Alarm
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
 | **Alarm[0-11]** | Quand le compteur atteint 0 |
 
-Utilisez l'action `Definir Alarm` pour demarrer un compte a rebours. Les valeurs d'alarme sont en frames (60 = 1 seconde a 60 FPS).
+Utilisez l'action `Régler une alarme` pour démarrer un compte à rebours. Les valeurs d'alarme sont en frames (60 = 1 seconde à 60 FPS).
 
-### Evenements clavier
+### Événements clavier
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
-| **Clavier [touche]** | Tant que la touche est maintenue (repete) |
-| **Touche pressee [touche]** | Une fois quand la touche est enfoncee |
-| **Touche relachee [touche]** | Une fois quand la touche est relachee |
-| **Aucune touche** | Quand aucune touche n'est pressee |
+| **Clavier [touche]** | Tant que la touche est maintenue (répété) |
+| **Touche pressée [touche]** | Une fois quand la touche est enfoncée |
+| **Touche relâchée [touche]** | Une fois quand la touche est relâchée |
+| **Aucune touche** | Quand aucune touche n'est pressée |
 
-Touches disponibles: Lettres (A-Z), Chiffres (0-9), Fleches, Espace, Entree, Maj, Ctrl, Alt, Touches de fonction (F1-F12)
+Touches disponibles : Lettres (A-Z), Chiffres (0-9), Flèches, Espace, Entrée, Maj, Ctrl, Alt, Touches de fonction (F1-F12)
 
-### Evenements souris
+### Événements souris
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
 | **Bouton gauche** | Clic gauche sur l'instance |
 | **Bouton droit** | Clic droit sur l'instance |
 | **Bouton central** | Clic central sur l'instance |
-| **Pression gauche** | Bouton gauche presse (une fois) |
-| **Relachement gauche** | Bouton gauche relache (une fois) |
-| **Entree souris** | Le curseur entre dans l'instance |
+| **Pression gauche** | Bouton gauche pressé (une fois) |
+| **Relâchement gauche** | Bouton gauche relâché (une fois) |
+| **Entrée souris** | Le curseur entre dans l'instance |
 | **Sortie souris** | Le curseur quitte l'instance |
-| **Bouton gauche global** | Clic gauche n'importe ou |
-| **Bouton droit global** | Clic droit n'importe ou |
+| **Bouton gauche global** | Clic gauche n'importe où |
+| **Bouton droit global** | Clic droit n'importe où |
 
-### Evenements de collision
+### Événements de collision
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
-| **Collision avec [objet]** | Quand on touche l'objet specifie |
+| **Collision avec [objet]** | Quand on touche l'objet spécifié |
 
-Les verifications de collision ont lieu entre les evenements Step et Draw.
+Les vérifications de collision ont lieu entre les événements Step et Draw.
 
-### Autres evenements
+### Autres événements
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
-| **Hors de la salle** | L'instance est completement hors de la salle |
+| **Hors de la salle** | L'instance est complètement hors de la salle |
 | **Intersection limite** | L'instance touche le bord de la salle |
-| **Debut du jeu** | Le jeu commence (premiere salle chargee) |
+| **Début du jeu** | Le jeu commence (première salle chargée) |
 | **Fin du jeu** | Le jeu se ferme |
-| **Debut de salle** | En entrant dans une salle |
+| **Début de salle** | En entrant dans une salle |
 | **Fin de salle** | En quittant une salle |
 | **Plus de vies** | Les vies atteignent 0 |
-| **Plus de sante** | La sante atteint 0 |
-| **Fin d'animation** | L'animation du sprite est terminee |
+| **Plus de santé** | La santé atteint 0 |
+| **Fin d'animation** | L'animation du sprite est terminée |
 
-### Evenements Draw
+### Événements Draw
 
-| Evenement | Quand |
+| Événement | Quand |
 |-----------|-------|
 | **Draw** | Pendant la phase de rendu |
-| **Draw GUI** | Apres le dessin de la salle (espace ecran) |
+| **Draw GUI** | Après le dessin de la salle (espace écran) |
 
 ---
 
-## Reference des actions
+## Référence des actions
 
 ### Actions de mouvement
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Definir vitesse** | Definir la vitesse de deplacement | vitesse, relatif |
-| **Definir direction** | Definir la direction | direction (0-360), relatif |
-| **Definir vitesse horizontale** | Definir hspeed | hspeed, relatif |
-| **Definir vitesse verticale** | Definir vspeed | vspeed, relatif |
-| **Definir gravite** | Definir la force de gravite | gravite, direction |
-| **Definir friction** | Definir la friction | friction |
-| **Aller vers un point** | Se deplacer vers des coordonnees | x, y, vitesse |
-| **Sauter a une position** | Teleportation aux coordonnees | x, y |
-| **Sauter au depart** | Retour a la position de creation | - |
-| **Sauter aleatoirement** | Deplacement aleatoire | - |
-| **Rebondir** | Rebondir sur les objets solides | precis |
+| **Définir la vitesse** | Définir la vitesse de déplacement | vitesse, relatif |
+| **Définir la direction** | Définir la direction | direction (0-360), relatif |
+| **Définir la vitesse horizontale** | Définir hspeed | hspeed, relatif |
+| **Définir la vitesse verticale** | Définir vspeed | vspeed, relatif |
+| **Définir la gravité** | Définir la force de gravité | gravité, direction |
+| **Définir le frottement** | Définir la friction | friction |
+| **Aller vers un point** | Se déplacer vers des coordonnées | x, y, vitesse |
+| **Sauter à une position** | Téléportation aux coordonnées | x, y |
+| **Sauter au départ** | Retour à la position de création | - |
+| **Sauter aléatoirement** | Déplacement aléatoire | - |
+| **Rebondir** | Rebondir sur les objets solides | précis |
 
 ### Actions d'instance
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Creer une instance** | Faire apparaitre un nouvel objet | objet, x, y, relatif |
-| **Creer en mouvement** | Faire apparaitre avec velocite | objet, x, y, vitesse, direction |
-| **Detruire l'instance** | Supprimer l'instance | - |
-| **Changer d'instance** | Transformer en un autre objet | objet, executer_evenements |
+| **Créer une instance** | Faire apparaître un nouvel objet | objet, x, y, relatif |
+| **Créer en mouvement** | Faire apparaître avec une vélocité | objet, x, y, vitesse, direction |
+| **Détruire l'instance** | Supprimer l'instance | - |
+| **Changer d'instance** | Transformer en un autre objet | objet, exécuter_événements |
 
 ### Actions de timing
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Definir Alarm** | Demarrer un compte a rebours | alarm_id (0-11), steps |
-| **Pause** | Mettre en pause l'execution | millisecondes |
+| **Régler une alarme** | Démarrer un compte à rebours | alarm_id (0-11), steps |
+| **Pause** | Mettre en pause l'exécution | millisecondes |
 
-### Actions Score/Vies/Sante
+### Actions Score/Vies/Santé
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Definir score** | Changer le score | valeur, relatif |
-| **Definir vies** | Changer les vies | valeur, relatif |
-| **Definir sante** | Changer la sante | valeur, relatif |
-| **Dessiner score** | Afficher le score | x, y, legende |
-| **Dessiner vies** | Afficher les vies | x, y, legende |
-| **Dessiner sante** | Afficher la barre de sante | x, y, largeur, hauteur |
+| **Définir le score** | Changer le score | valeur, relatif |
+| **Définir les vies** | Changer les vies | valeur, relatif |
+| **Définir la santé** | Changer la santé | valeur, relatif |
+| **Dessiner le score** | Afficher le score | x, y, légende |
+| **Dessiner les vies** | Afficher les vies | x, y, légende |
+| **Dessiner la barre de santé** | Afficher la barre de santé | x, y, largeur, hauteur |
 
 ### Actions de dessin
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Dessiner sprite** | Dessiner un sprite | sprite, x, y, sous-image |
-| **Dessiner texte** | Afficher du texte | x, y, texte |
-| **Dessiner rectangle** | Dessiner un rectangle | x1, y1, x2, y2, rempli |
-| **Dessiner cercle** | Dessiner un cercle | x, y, rayon, rempli |
-| **Dessiner ligne** | Dessiner une ligne | x1, y1, x2, y2 |
-| **Definir couleur** | Definir la couleur de dessin | couleur |
-| **Definir police** | Definir la police de texte | police |
+| **Dessiner un sprite** | Dessiner un sprite | sprite, x, y, sous-image |
+| **Dessiner du texte** | Afficher du texte | x, y, texte |
+| **Dessiner un rectangle** | Dessiner un rectangle | x1, y1, x2, y2, rempli |
+| **Dessiner un cercle** | Dessiner un cercle | x, y, rayon, rempli |
+| **Dessiner une ligne** | Dessiner une ligne | x1, y1, x2, y2 |
+| **Définir la couleur** | Définir la couleur de dessin | couleur |
+| **Définir la police** | Définir la police de texte | police |
 
 ### Actions de salle
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Salle suivante** | Aller a la salle suivante | transition |
-| **Salle precedente** | Aller a la salle precedente | transition |
-| **Redemarrer la salle** | Reinitialiser la salle | - |
-| **Aller a la salle** | Aller a une salle specifique | salle, transition |
-| **Si salle suivante existe** | Verifier s'il y a une salle suivante | - |
-| **Si salle precedente existe** | Verifier s'il y a une salle precedente | - |
+| **Salle suivante** | Aller à la salle suivante | transition |
+| **Salle précédente** | Aller à la salle précédente | transition |
+| **Redémarrer la salle** | Réinitialiser la salle | - |
+| **Aller à la salle** | Aller à une salle spécifique | salle, transition |
+| **Si salle suivante existe** | Vérifier s'il y a une salle suivante | - |
+| **Si salle précédente existe** | Vérifier s'il y a une salle précédente | - |
 
 ### Actions de son
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
 | **Jouer un son** | Jouer un effet sonore | son, boucle |
-| **Arreter un son** | Arreter un son | son |
-| **Si son en cours** | Verifier si un son est en cours | son |
-| **Jouer musique** | Jouer une musique de fond | son, boucle |
-| **Arreter musique** | Arreter toute musique | - |
+| **Arrêter un son** | Arrêter un son | son |
+| **Si son en cours** | Vérifier si un son est en cours | son |
+| **Jouer une musique** | Jouer une musique de fond | son, boucle |
+| **Arrêter la musique** | Arrêter toute musique | - |
 
 ### Actions de variable
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Definir variable** | Assigner une valeur | variable, valeur, relatif |
-| **Si variable** | Verifier une valeur | variable, valeur, operation |
-| **Dessiner variable** | Afficher une variable | x, y, variable, legende |
+| **Définir une variable** | Assigner une valeur | variable, valeur, relatif |
+| **Si variable** | Vérifier une valeur | variable, valeur, opération |
+| **Dessiner une variable** | Afficher une variable | x, y, variable, légende |
 
-### Actions de controle de flux
+### Actions de contrôle de flux
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Si expression** | Verification conditionnelle | expression |
+| **Si expression** | Vérification conditionnelle | expression |
 | **Sinon** | Branche alternative | - |
-| **Debut bloc** | Commencer un groupe d'actions | - |
-| **Fin bloc** | Terminer un groupe d'actions | - |
-| **Repeter** | Boucle N fois | nombre |
-| **Quitter evenement** | Arreter l'evenement actuel | - |
+| **Début de bloc** | Commencer un groupe d'actions | - |
+| **Fin de bloc** | Terminer un groupe d'actions | - |
+| **Répéter** | Boucle N fois | nombre |
+| **Quitter l'événement** | Arrêter l'événement actuel | - |
 
 ### Actions diverses
 
-| Action | Description | Parametres |
+| Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Afficher message** | Afficher un message popup | message |
-| **Redemarrer jeu** | Redemarrer le jeu | - |
-| **Terminer jeu** | Fermer le jeu | - |
+| **Afficher un message** | Afficher un message popup | message |
+| **Redémarrer le jeu** | Redémarrer le jeu | - |
+| **Terminer le jeu** | Fermer le jeu | - |
 
 ---
 
-## Variables integrees
+## Variables intégrées
 
-Ces variables sont disponibles pour toutes les instances:
+Ces variables sont disponibles pour toutes les instances :
 
 | Variable | Description |
 |----------|-------------|
 | `x` | Position horizontale |
 | `y` | Position verticale |
-| `xstart` | Position x de depart |
-| `ystart` | Position y de depart |
+| `xstart` | Position x de départ |
+| `ystart` | Position y de départ |
 | `hspeed` | Vitesse horizontale |
 | `vspeed` | Vitesse verticale |
-| `speed` | Vitesse de deplacement totale |
+| `speed` | Vitesse de déplacement totale |
 | `direction` | Direction du mouvement (0-360) |
-| `gravity` | Force de gravite |
-| `gravity_direction` | Direction de la gravite |
+| `gravity` | Force de gravité |
+| `gravity_direction` | Direction de la gravité |
 | `friction` | Friction du mouvement |
 | `image_index` | Frame d'animation actuelle |
 | `image_speed` | Vitesse d'animation |
-| `image_xscale` | Echelle horizontale |
-| `image_yscale` | Echelle verticale |
+| `image_xscale` | Échelle horizontale |
+| `image_yscale` | Échelle verticale |
 | `image_angle` | Angle de rotation |
-| `visible` | Si dessine |
+| `visible` | Si dessiné |
 | `solid` | Si solide pour les collisions |
 | `depth` | Profondeur de dessin |
 | `sprite_index` | Sprite actuel |
@@ -233,7 +233,7 @@ Ces variables sont disponibles pour toutes les instances:
 |----------|-------------|
 | `score` | Score du jeu |
 | `lives` | Vies du joueur |
-| `health` | Sante du joueur (0-100) |
+| `health` | Santé du joueur (0-100) |
 | `room` | Salle actuelle |
 | `room_width` | Largeur de la salle actuelle |
 | `room_height` | Hauteur de la salle actuelle |
@@ -242,8 +242,8 @@ Ces variables sont disponibles pour toutes les instances:
 
 ---
 
-## Prochaines etapes
+## Prochaines étapes
 
-- [[Programmation-Visuelle_fr]] - Utilisez les blocs Blockly pour la meme logique
-- [[Editeur-Objets_fr]] - Appliquez les evenements et actions aux objets
-- [[Premier-Jeu_fr]] - Voyez les evenements en action
+- [[Programmation_Visuelle_fr]] - Utilisez les blocs Blockly pour la même logique
+- [[Editeur_Objets_fr]] - Appliquez les événements et actions aux objets
+- [[Premier_Jeu_fr]] - Voyez les événements en action
