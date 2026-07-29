@@ -1,8 +1,8 @@
 # Tutorial: Crear un Juego Breakout
 
-*[Home](Home_es) | [Beginner Preset](Beginner-Preset_es) | [English](Tutorial-Breakout) | [Espanol](Tutorial-Breakout_es)*
+*[Home](Home_es) | [Beginner Preset](Beginner-Preset_es) | [English](Tutorial-Breakout) | [Español](Tutorial-Breakout_es)*
 
-Este tutorial te guiara a traves de la creacion de un juego clasico de Breakout. Es un primer proyecto perfecto para aprender PyGameMaker!
+Este tutorial te guiara a traves de la creación de un juego clasico de Breakout. Es un primer proyecto perfecto para aprender PyGameMaker!
 
 ![Breakout Game Concept](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Breakout2600.svg/220px-Breakout2600.svg.png)
 
@@ -13,8 +13,8 @@ Este tutorial te guiara a traves de la creacion de un juego clasico de Breakout.
 - Crear y usar sprites
 - Configurar objetos de juego con eventos y acciones
 - Controles de teclado para el movimiento del jugador
-- Deteccion de colisiones y rebotes
-- Destruir objetos en colision
+- Detección de colisiones y rebotes
+- Destruir objetos en colisión
 - Construir una sala de juego
 
 ---
@@ -31,7 +31,7 @@ Primero, necesitamos crear los elementos visuales para nuestro juego.
 
 ### 1.2 Crear el Sprite de la Pelota
 1. Crea otro sprite llamado `spr_ball`
-2. Dibuja un circulo pequeno (aproximadamente 16x16 pixeles)
+2. Dibuja un circulo pequeño (aproximadamente 16x16 pixeles)
 3. Haz clic en **Center** para establecer el origen
 
 ### 1.3 Crear el Sprite del Ladrillo
@@ -41,7 +41,7 @@ Primero, necesitamos crear los elementos visuales para nuestro juego.
 
 ### 1.4 Crear el Sprite de la Pared
 1. Crea un sprite llamado `spr_wall`
-2. Dibuja un cuadrado (aproximadamente 32x32 pixeles) - este sera el limite
+2. Dibuja un cuadrado (aproximadamente 32x32 pixeles) - este será el limite
 3. Haz clic en **Center** para establecer el origen
 
 ### 1.5 Crear un Fondo (Opcional)
@@ -63,23 +63,23 @@ Ahora programemos el paddle que el jugador controla.
 
 ### 2.2 Agregar Movimiento con Flecha Derecha
 1. Haz clic en **Add Event** -> **Keyboard** -> selecciona **Right Arrow**
-2. Agrega la accion **Set Horizontal Speed**
+2. Agrega la acción **Set Horizontal Speed**
 3. Establece **value** en `5` (o cualquier velocidad que prefieras)
 
 ### 2.3 Agregar Movimiento con Flecha Izquierda
 1. Haz clic en **Add Event** -> **Keyboard** -> selecciona **Left Arrow**
-2. Agrega la accion **Set Horizontal Speed**
+2. Agrega la acción **Set Horizontal Speed**
 3. Establece **value** en `-5`
 
 ### 2.4 Detenerse Cuando se Sueltan las Teclas
-El paddle sigue moviendose incluso despues de soltar la tecla! Arreglemos eso.
+El paddle sigue moviendose incluso después de soltar la tecla! Arreglemos eso.
 
 1. Haz clic en **Add Event** -> **Keyboard Release** -> selecciona **Right Arrow**
-2. Agrega la accion **Set Horizontal Speed**
+2. Agrega la acción **Set Horizontal Speed**
 3. Establece **value** en `0`
 
 4. Haz clic en **Add Event** -> **Keyboard Release** -> selecciona **Left Arrow**
-5. Agrega la accion **Set Horizontal Speed**
+5. Agrega la acción **Set Horizontal Speed**
 6. Establece **value** en `0`
 
 Ahora el paddle se detiene cuando sueltas las teclas de flecha.
@@ -95,19 +95,19 @@ Ahora el paddle se detiene cuando sueltas las teclas de flecha.
 
 ### 3.2 Establecer Movimiento Inicial
 1. Haz clic en **Add Event** -> **Create**
-2. Agrega la accion **Move in Direction** (o **Set Horizontal/Vertical Speed**)
-3. Establece una direccion diagonal con velocidad `5`
+2. Agrega la acción **Move in Direction** (o **Set Horizontal/Vertical Speed**)
+3. Establece una dirección diagonal con velocidad `5`
    - Por ejemplo: **hspeed** = `4`, **vspeed** = `-4`
 
 Esto hace que la pelota comience a moverse cuando el juego inicia.
 
 ### 3.3 Rebotar en el Paddle
 1. Haz clic en **Add Event** -> **Collision** -> selecciona `obj_paddle`
-2. Agrega la accion **Reverse Vertical** (para rebotar)
+2. Agrega la acción **Reverse Vertical** (para rebotar)
 
 ### 3.4 Rebotar en las Paredes
 1. Haz clic en **Add Event** -> **Collision** -> selecciona `obj_wall`
-2. Agrega la accion **Reverse Horizontal** o **Reverse Vertical** segun sea necesario
+2. Agrega la acción **Reverse Horizontal** o **Reverse Vertical** segun sea necesario
    - O usa ambas para manejar rebotes en esquinas
 
 ---
@@ -119,19 +119,19 @@ Esto hace que la pelota comience a moverse cuando el juego inicia.
 2. Establece el **Sprite** como `spr_brick`
 3. Marca la casilla **Solid**
 
-### 4.2 Destruir en Colision con la Pelota
+### 4.2 Destruir en Colisión con la Pelota
 1. Haz clic en **Add Event** -> **Collision** -> selecciona `obj_ball`
-2. Agrega la accion **Destroy Instance** con objetivo **self**
+2. Agrega la acción **Destroy Instance** con objetivo **self**
 
 Esto destruye el ladrillo cuando la pelota lo golpea!
 
 ### 4.3 Hacer Rebotar la Pelota
-En el mismo evento de colision, tambien agrega:
-1. Agrega la accion **Reverse Vertical** (aplicada a **other** - la pelota)
+En el mismo evento de colisión, también agrega:
+1. Agrega la acción **Reverse Vertical** (aplicada a **other** - la pelota)
 
 O regresa a `obj_ball` y agrega:
 1. **Add Event** -> **Collision** -> selecciona `obj_brick`
-2. Agrega la accion **Reverse Vertical**
+2. Agrega la acción **Reverse Vertical**
 
 ---
 
@@ -153,7 +153,7 @@ Eso es todo - la pared solo necesita ser solida para que la pelota rebote.
 2. Nombrala `room_game`
 
 ### 6.2 Establecer el Fondo (Opcional)
-1. En la configuracion de la sala, encuentra **Background**
+1. En la configuración de la sala, encuentra **Background**
 2. Selecciona tu fondo `bg_game`
 3. Marca **Stretch** si quieres que llene la sala
 
@@ -167,7 +167,7 @@ Ahora coloca tus objetos en la sala:
    - A lo largo de la parte superior
    - A lo largo del lado izquierdo
    - A lo largo del lado derecho
-   - Deja la parte inferior abierta (aqui es donde la pelota puede escapar!)
+   - Deja la parte inferior abierta (aquí es donde la pelota puede escapar!)
 
 3. **Coloca la Pelota:** Pon `obj_ball` en algun lugar del centro
 
@@ -177,7 +177,7 @@ Ahora coloca tus objetos en la sala:
 
 ## Paso 7: Prueba tu Juego!
 
-1. Haz clic en el boton **Play** (flecha verde)
+1. Haz clic en el botón **Play** (flecha verde)
 2. Usa las teclas de flecha **Izquierda** y **Derecha** para mover el paddle
 3. Intenta rebotar la pelota para destruir todos los ladrillos!
 4. Presiona **Escape** para salir
@@ -192,17 +192,17 @@ Tu juego basico de Breakout esta completo! Aqui hay algunas mejoras para probar:
 - Agrega un evento **No More Lives** para mostrar "Game Over"
 - Pierde una vida cuando la pelota sale por abajo
 
-### Agregar Puntuacion
-- Usa la accion **Add Score** al destruir ladrillos
-- Muestra la puntuacion con **Draw Score**
+### Agregar Puntuación
+- Usa la acción **Add Score** al destruir ladrillos
+- Muestra la puntuación con **Draw Score**
 
 ### Agregar Multiples Niveles
-- Crea mas salas con diferentes disposiciones de ladrillos
+- Crea más salas con diferentes disposiciones de ladrillos
 - Usa **Next Room** cuando todos los ladrillos sean destruidos
 
 ### Agregar Efectos de Sonido
-- Agrega sonidos para rebotes y destruccion de ladrillos
-- Usa la accion **Play Sound**
+- Agrega sonidos para rebotes y destrucción de ladrillos
+- Usa la acción **Play Sound**
 
 ---
 
