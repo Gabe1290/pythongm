@@ -31,7 +31,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 
 **Quando dispara:**
 - Quando uma instância é colocada em uma sala no início do jogo
-- Quando criada via ação "Criar Instancia"
+- Quando criada via ação "Criar Instância"
 - Após transições de sala para novas instâncias
 
 **Usos comuns:**
@@ -76,7 +76,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 **Quando dispara:** Logo antes da instância ser removida do jogo.
 
 **Usos comuns:**
-- Gerar efeitos (explosoes, particulas)
+- Gerar efeitos (explosões, partículas)
 - Soltar itens
 - Atualizar pontuações
 - Tocar sons
@@ -209,7 +209,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 **Exemplos de eventos de colisão:**
 - `collision_with_obj_coin` - Jogador toca uma moeda
 - `collision_with_obj_enemy` - Jogador toca um inimigo
-- `collision_with_obj_wall` - Instancia bate em uma parede
+- `collision_with_obj_wall` - Instância bate em uma parede
 
 ---
 
@@ -225,7 +225,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 
 **Descrição:** Dispara quando uma contagem regressiva de alarme chega a zero.
 
-**Alarmes disponíveis:** 12 alarmes independentes (alarm[0] ate alarm[11])
+**Alarmes disponíveis:** 12 alarmes independentes (alarm[0] até alarm[11])
 
 **Configurar alarmes:** Use a ação "Definir Alarme" com passos (60 passos ≈ 1 segundo a 60 FPS)
 
