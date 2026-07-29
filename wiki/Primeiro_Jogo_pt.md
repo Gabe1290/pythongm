@@ -6,21 +6,21 @@
 
 [Voltar ao Inicio](Home_pt)
 
-Neste guia vai criar um jogo simples para aprender os conceitos basicos do pyGM.
+Neste guia vai criar um jogo simples para aprender os conceitos básicos do pyGM.
 
-## Visao geral
+## Visão geral
 
 Vamos criar um jogo simples com:
 - Uma personagem jogador que se pode mover
 - Um objeto colecionavel
-- Um sistema de pontuacao
+- Um sistema de pontuação
 
 ## Passo 1: Criar um novo projeto
 
 1. Inicie o pyGM
 2. Selecione "Novo Projeto"
 3. Introduza um nome para o projeto
-4. Escolha uma localizacao para guardar
+4. Escolha uma localização para guardar
 
 ## Passo 2: Criar sprites
 
@@ -43,8 +43,8 @@ Vamos criar um jogo simples com:
 4. Atribua "spr_jogador" como sprite
 
 ### Adicionar movimento
-1. Adicione o evento "Pressao de tecla"
-2. Use acoes para o movimento:
+1. Adicione o evento "Pressão de tecla"
+2. Use ações para o movimento:
    - Seta para cima: Mover para cima
    - Seta para baixo: Mover para baixo
    - Seta para a esquerda: Mover para a esquerda
@@ -53,8 +53,8 @@ Vamos criar um jogo simples com:
 ### Objeto moeda
 1. Crie "obj_moeda"
 2. Atribua "spr_moeda"
-3. Adicione evento de colisao com o jogador
-4. Acao: Destruir instancia e adicionar pontos
+3. Adicione evento de colisão com o jogador
+4. Ação: Destruir instância e adicionar pontos
 
 ## Passo 4: Criar uma sala
 
@@ -71,15 +71,15 @@ Vamos criar um jogo simples com:
 2. Teste o movimento
 3. Recolha as moedas
 
-## Ideias de expansao
+## Ideias de expansão
 
 - Adicionar obstaculos
 - Implementar um sistema de tempo
-- Criar diferentes niveis
+- Criar diferentes níveis
 - Adicionar efeitos sonoros
 
 ## Proximos passos
 
-- [Aprofundar Eventos e Acoes](Eventos_e_Acoes_pt)
-- [Aprender Programacao Visual](Programacao_Visual_pt)
+- [Aprofundar Eventos e Ações](Eventos_e_Acoes_pt)
+- [Aprender Programação Visual](Programacao_Visual_pt)
 - [Exportar Jogos](Exportar_Jogos_pt)

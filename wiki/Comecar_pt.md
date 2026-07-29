@@ -1,4 +1,4 @@
-# Comecar
+# Começar
 
 > [English](Getting-Started) | [Français](Demarrage_fr) | [Deutsch](Erste_Schritte_de) | [Italiano](Iniziare_it) | [Español](Empezar_es) | [Português](Comecar_pt) | [Slovenščina](Zacetek_sl) | [Українська](Pochatok_uk) | [Русский](Nachalo_ru)
 
@@ -6,46 +6,46 @@
 
 [Voltar ao Inicio](Home_pt)
 
-Bem-vindo ao pyGM! Este guia vai ajuda-lo a comecar com o desenvolvimento de jogos.
+Bem-vindo ao pyGM! Este guia vai ajuda-lo a começar com o desenvolvimento de jogos.
 
-## Instalacao
+## Instalação
 
 ### Pre-requisitos
-- Python 3.8 ou superior
+- Python 3.10 ou superior
 - pip (gestor de pacotes Python)
 
-### Passos de instalacao
+### Passos de instalação
 
 1. **Instalar pyGM**
    ```bash
    pip install pygm
    ```
 
-2. **Verificar a instalacao**
+2. **Verificar a instalação**
    ```bash
    pygm --version
    ```
 
 ## Iniciar o pyGM
 
-Apos a instalacao, pode iniciar o pyGM:
+Apos a instalação, pode iniciar o pyGM:
 
 ```bash
 pygm
 ```
 
-Isto abre o editor visual onde pode comecar a criar o seu jogo.
+Isto abre o editor visual onde pode começar a criar o seu jogo.
 
 ## Interface do utilizador
 
 ### Areas principais
 - **Painel esquerdo**: Gestao de recursos (sprites, objetos, salas)
-- **Area central**: Area de trabalho do editor
-- **Painel direito**: Propriedades e configuracoes
+- **Área central**: Área de trabalho do editor
+- **Painel direito**: Propriedades e configurações
 
-### Controlos basicos
+### Controlos básicos
 - **Roda do rato**: Zoom da vista
-- **Botao do meio do rato**: Deslocar a vista
+- **Botão do meio do rato**: Deslocar a vista
 - **Clique esquerdo**: Selecionar/colocar elementos
 - **Clique direito**: Menu de contexto
 

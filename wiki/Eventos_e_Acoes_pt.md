@@ -1,4 +1,4 @@
-# Eventos e Acoes
+# Eventos e Ações
 
 > [English](Events-and-Actions) | [Français](Evenements_Actions_fr) | [Deutsch](Events_und_Aktionen_de) | [Italiano](Eventi_e_Azioni_it) | [Español](Eventos_y_Acciones_es) | [Português](Eventos_e_Acoes_pt) | [Slovenščina](Dogodki_in_Akcije_sl) | [Українська](Podii_ta_Dii_uk) | [Русский](Sobytiya_i_Deystviya_ru)
 
@@ -6,19 +6,19 @@
 
 [Voltar ao Inicio](Home_pt)
 
-Os Eventos e Acoes formam o coracao da logica do jogo no pyGM.
+Os Eventos e Ações formam o coração da lógica do jogo no pyGM.
 
 ## Conceito
 
 ### Eventos
-Os eventos sao gatilhos que reagem a situacoes especificas:
+Os eventos são gatilhos que reagem a situações específicas:
 - Inicio do jogo
-- Pressao de teclas
-- Colisao
+- Pressão de teclas
+- Colisão
 - Temporizador
 
-### Acoes
-As acoes sao as respostas aos eventos:
+### Ações
+As ações são as respostas aos eventos:
 - Mover
 - Criar/Destruir
 - Alterar valores
@@ -26,53 +26,49 @@ As acoes sao as respostas aos eventos:
 
 ## Categorias de eventos
 
-### Eventos de criacao
-- **Create**: Uma vez ao criar a instancia
-- **Destroy**: Ao eliminar a instancia
+### Eventos de criação
+- **Create**: Uma vez ao criar a instância
+- **Destroy**: Ao eliminar a instância
 - **Room Start**: Ao entrar numa sala
 
 ### Eventos Step
 - **Step**: Cada frame
-- **Begin Step**: Antes da verificacao de colisoes
-- **End Step**: Apos a verificacao de colisoes
+- **Begin Step**: Antes da verificação de colisões
+- **End Step**: Apos a verificação de colisões
 
 ### Eventos de entrada
-- **Teclado**: Pressao/libertacao de teclas
+- **Teclado**: Pressão/libertação de teclas
 - **Rato**: Cliques e movimento
-- **Gamepad**: Entrada do controlador
 
-### Eventos de colisao
+### Eventos de colisão
 - Contacto com outros objetos
 - Contacto com paredes
-- Verificacoes de area
+- Verificações de área
 
 ### Eventos de desenho
 - **Draw**: Desenho normal
 - **Draw GUI**: Elementos de interface
-- **Draw Begin/End**: Antes/Apos o desenho
 
 ### Outros eventos
 - **Alarm**: Eventos baseados em temporizador
-- **Animation End**: Animacao de sprite terminada
-- **User Events**: Eventos personalizados
+- **Animation End**: Animação de sprite terminada
 
-## Biblioteca de acoes
+## Biblioteca de ações
 
 ### Movimento
-- `move_towards`: Mover para um ponto
+- `move_towards_point`: Mover para um ponto
 - `set_speed`: Definir velocidade
-- `set_direction`: Definir direcao
+- `set_direction`: Definir direção
 - `bounce`: Ressaltar
 
 ### Instancias
-- `instance_create`: Criar nova instancia
-- `instance_destroy`: Eliminar instancia
-- `change_sprite`: Mudar sprite
+- `create_instance`: Criar nova instância
+- `destroy_instance`: Eliminar instância
+- `set_sprite`: Mudar sprite
 
-### Variaveis
+### Variáveis
 - `set_variable`: Definir valor
-- `add_to_variable`: Adicionar valor
-- `if_variable`: Verificacao condicional
+- `test_variable`: Verificação condicional
 
 ### Audio
 - `play_sound`: Reproduzir som
@@ -82,36 +78,36 @@ As acoes sao as respostas aos eventos:
 ### Sala
 - `goto_room`: Mudar de sala
 - `restart_room`: Reiniciar sala
-- `goto_next_room`: Proxima sala
+- `next_room`: Próxima sala
 
 ### Desenho
 - `draw_sprite`: Desenhar sprite
 - `draw_text`: Mostrar texto
 - `draw_rectangle`: Desenhar retangulo
 
-## Condicoes e controlo de fluxo
+## Condições e controlo de fluxo
 
-### Acoes condicionais
+### Ações condicionais
 ```
 Se Variavel == Valor
   Executar acao
 Senao
-  Acao alternativa
+  Ação alternativa
 ```
 
 ### Ciclos
-- Repetir acoes
-- Para todas as instancias
+- Repetir ações
+- Para todas as instâncias
 
-## Melhores praticas
+## Melhores práticas
 
-1. **Use Step com moderacao**: So quando necessario
-2. **Otimize as colisoes**: Considere a propriedade Solid
-3. **Agrupe os eventos**: Logica relacionada junta
-4. **Use alarmes**: Para acoes temporizadas
+1. **Use Step com moderação**: So quando necessario
+2. **Otimize as colisões**: Considere a propriedade Solid
+3. **Agrupe os eventos**: Lógica relacionada junta
+4. **Use alarmes**: Para ações temporizadas
 
-## Ver tambem
+## Ver também
 
 - [Editor de Objetos](Editor_Objetos_pt)
-- [Programacao Visual](Programacao_Visual_pt)
+- [Programação Visual](Programacao_Visual_pt)
 - [FAQ](FAQ_pt)

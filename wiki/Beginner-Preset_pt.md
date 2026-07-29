@@ -1,36 +1,36 @@
 # Preset para Iniciantes
 
-*[Home](Home_pt) | [Guia de Presets](Preset-Guide_pt) | [Preset Intermediario](Intermediate-Preset_pt)*
+*[Home](Home_pt) | [Guia de Presets](Preset-Guide_pt) | [Preset Intermediário](Intermediate-Preset_pt)*
 
-O preset **Iniciante** foi projetado para usuarios que sao novos no desenvolvimento de jogos. Ele fornece um conjunto selecionado de eventos e acoes essenciais que cobrem os fundamentos da criacao de jogos 2D simples sem sobrecarregar iniciantes com muitas opcoes.
+O preset **Iniciante** foi projetado para usuários que são novos no desenvolvimento de jogos. Ele fornece um conjunto selecionado de eventos e ações essenciais que cobrem os fundamentos da criação de jogos 2D simples sem sobrecarregar iniciantes com muitas opções.
 
-## Visao Geral
+## Visão Geral
 
 O preset Iniciante inclui:
-- **4 Tipos de Eventos** - Para responder a situacoes do jogo
-- **17 Tipos de Acoes** - Para controlar o comportamento do jogo
-- **6 Categorias** - Eventos, Movimento, Pontuacao/Vidas/Saude, Instancia, Sala, Saida
+- **4 Tipos de Eventos** - Para responder a situações do jogo
+- **17 Tipos de Ações** - Para controlar o comportamento do jogo
+- **6 Categorias** - Eventos, Movimento, Pontuação/Vidas/Saúde, Instancia, Sala, Saida
 
 ---
 
 ## Eventos
 
-Eventos sao gatilhos que respondem a situacoes especificas no seu jogo. Quando um evento ocorre, as acoes que voce definiu para esse evento serao executadas.
+Eventos são gatilhos que respondem a situações específicas no seu jogo. Quando um evento ocorre, as ações que você definiu para esse evento serao executadas.
 
 ### Evento Create
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome do Bloco** | `event_create` |
 | **Categoria** | Eventos |
-| **Descricao** | Disparado uma vez quando uma instancia e criada pela primeira vez |
+| **Descrição** | Disparado uma vez quando uma instância é criada pela primeira vez |
 
-**Quando e disparado:** Imediatamente quando uma instancia de objeto e colocada em uma sala ou criada com a acao "Criar Instancia".
+**Quando é disparado:** Imediatamente quando uma instância de objeto é colocada em uma sala ou criada com a acao "Criar Instancia".
 
 **Usos comuns:**
-- Inicializar variaveis
-- Definir posicao inicial
-- Definir velocidade ou direcao inicial
-- Resetar pontuacao no inicio do jogo
+- Inicializar variáveis
+- Definir posição inicial
+- Definir velocidade ou direção inicial
+- Resetar pontuação no inicio do jogo
 
 ---
 
@@ -39,15 +39,15 @@ Eventos sao gatilhos que respondem a situacoes especificas no seu jogo. Quando u
 |-------------|-------|
 | **Nome do Bloco** | `event_step` |
 | **Categoria** | Eventos |
-| **Descricao** | Disparado a cada quadro (tipicamente 60 vezes por segundo) |
+| **Descrição** | Disparado a cada quadro (tipicamente 60 vezes por segundo) |
 
-**Quando e disparado:** Continuamente, a cada quadro do jogo.
+**Quando é disparado:** Continuamente, a cada quadro do jogo.
 
 **Usos comuns:**
 - Movimento continuo
-- Verificar condicoes
+- Verificar condições
 - Atualizar estado do jogo
-- Controle de animacao
+- Controle de animação
 
 ---
 
@@ -56,9 +56,9 @@ Eventos sao gatilhos que respondem a situacoes especificas no seu jogo. Quando u
 |-------------|-------|
 | **Nome do Bloco** | `event_keyboard_press` |
 | **Categoria** | Eventos |
-| **Descricao** | Disparado uma vez quando uma tecla especifica e pressionada |
+| **Descrição** | Disparado uma vez quando uma tecla específica é pressionada |
 
-**Quando e disparado:** Uma vez no momento em que uma tecla e pressionada (nao enquanto mantida).
+**Quando é disparado:** Uma vez no momento em que uma tecla é pressionada (não enquanto mantida).
 
 **Teclas suportadas:** Teclas de seta (cima, baixo, esquerda, direita), Espaco, Enter, letras (A-Z), numeros (0-9)
 
@@ -66,20 +66,20 @@ Eventos sao gatilhos que respondem a situacoes especificas no seu jogo. Quando u
 - Controles de movimento do jogador
 - Pular
 - Atirar
-- Navegacao de menu
+- Navegação de menu
 
 ---
 
-### Evento de Colisao
+### Evento de Colisão
 | Propriedade | Valor |
 |-------------|-------|
 | **Nome do Bloco** | `event_collision` |
 | **Categoria** | Eventos |
-| **Descricao** | Disparado quando esta instancia colide com outro objeto |
+| **Descrição** | Disparado quando esta instância colide com outro objeto |
 
-**Quando e disparado:** A cada quadro em que duas instancias estao sobrepostas.
+**Quando é disparado:** A cada quadro em que duas instâncias estao sobrepostas.
 
-**Variavel especial:** Em um evento de colisao, `other` refere-se a instancia com a qual esta colidindo.
+**Variavel especial:** Em um evento de colisão, `other` refere-se a instância com a qual esta colidindo.
 
 **Usos comuns:**
 - Coletar itens (moedas, power-ups)
@@ -89,28 +89,28 @@ Eventos sao gatilhos que respondem a situacoes especificas no seu jogo. Quando u
 
 ---
 
-## Acoes
+## Ações
 
-Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes podem ser adicionadas a um unico evento e serao executadas em ordem.
+Ações são comandos que executam quando um evento é disparado. Multiplas ações podem ser adicionadas a um único evento e serao executadas em ordem.
 
 ---
 
-## Acoes de Movimento
+## Ações de Movimento
 
 ### Definir Velocidade Horizontal
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `set_hspeed` |
+| **Nome da Ação** | `set_hspeed` |
 | **Nome do Bloco** | `move_set_hspeed` |
 | **Categoria** | Movimento |
-| **Icone** | ↔️ |
+| **Ícone** | ↔️ |
 
-**Descricao:** Define a velocidade de movimento horizontal da instancia.
+**Descrição:** Define a velocidade de movimento horizontal da instância.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Velocidade em pixels por quadro. Positivo = direita, Negativo = esquerda |
+| `value` | Número | Velocidade em pixels por quadro. Positivo = direita, Negativo = esquerda |
 
 **Exemplo:** Defina `value` como `4` para mover para a direita a 4 pixels por quadro, ou `-4` para mover para a esquerda.
 
@@ -119,17 +119,17 @@ Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes po
 ### Definir Velocidade Vertical
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `set_vspeed` |
+| **Nome da Ação** | `set_vspeed` |
 | **Nome do Bloco** | `move_set_vspeed` |
 | **Categoria** | Movimento |
-| **Icone** | ↕️ |
+| **Ícone** | ↕️ |
 
-**Descricao:** Define a velocidade de movimento vertical da instancia.
+**Descrição:** Define a velocidade de movimento vertical da instância.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Velocidade em pixels por quadro. Positivo = baixo, Negativo = cima |
+| `value` | Número | Velocidade em pixels por quadro. Positivo = baixo, Negativo = cima |
 
 **Exemplo:** Defina `value` como `-4` para mover para cima a 4 pixels por quadro, ou `4` para mover para baixo.
 
@@ -138,14 +138,14 @@ Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes po
 ### Parar Movimento
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `stop_movement` |
+| **Nome da Ação** | `stop_movement` |
 | **Nome do Bloco** | `move_stop` |
 | **Categoria** | Movimento |
-| **Icone** | 🛑 |
+| **Ícone** | 🛑 |
 
-**Descricao:** Para todo movimento definindo velocidade horizontal e vertical como zero.
+**Descrição:** Para todo movimento definindo velocidade horizontal e vertical como zero.
 
-**Parametros:** Nenhum
+**Parâmetros:** Nenhum
 
 **Usos comuns:**
 - Parar jogador ao bater em uma parede
@@ -154,45 +154,45 @@ Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes po
 
 ---
 
-### Saltar para Posicao
+### Saltar para Posição
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `jump_to_position` |
+| **Nome da Ação** | `jump_to_position` |
 | **Nome do Bloco** | `move_jump_to` |
 | **Categoria** | Movimento |
-| **Icone** | 📍 |
+| **Ícone** | 📍 |
 
-**Descricao:** Move a instancia instantaneamente para uma posicao especifica (sem movimento suave).
+**Descrição:** Move a instância instantaneamente para uma posição específica (sem movimento suave).
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `x` | Numero | Coordenada X de destino |
-| `y` | Numero | Coordenada Y de destino |
+| `x` | Número | Coordenada X de destino |
+| `y` | Número | Coordenada Y de destino |
 
-**Exemplo:** Saltar para posicao (100, 200) para teletransportar o jogador para aquela localizacao.
+**Exemplo:** Saltar para posição (100, 200) para teletransportar o jogador para aquela localização.
 
 ---
 
-## Acoes de Instancia
+## Ações de Instancia
 
 ### Destruir Instancia
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `destroy_instance` |
+| **Nome da Ação** | `destroy_instance` |
 | **Nome do Bloco** | `instance_destroy` |
 | **Categoria** | Instancia |
-| **Icone** | 💥 |
+| **Ícone** | 💥 |
 
-**Descricao:** Remove uma instancia do jogo.
+**Descrição:** Remove uma instância do jogo.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `target` | Escolha | `self` = destruir esta instancia, `other` = destruir a instancia colidida |
+| `target` | Escolha | `self` = destruir esta instância, `other` = destruir a instância colidida |
 
 **Usos comuns:**
-- Remover moedas coletadas (`target: other` no evento de colisao)
+- Remover moedas coletadas (`target: other` no evento de colisão)
 - Destruir balas ao atingir algo
 - Remover inimigos quando derrotados
 
@@ -201,136 +201,136 @@ Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes po
 ### Criar Instancia
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `create_instance` |
+| **Nome da Ação** | `create_instance` |
 | **Nome do Bloco** | `instance_create` |
 | **Categoria** | Instancia |
-| **Icone** | ✨ |
+| **Ícone** | ✨ |
 
-**Descricao:** Cria uma nova instancia de um objeto em uma posicao especificada.
+**Descrição:** Cria uma nova instância de um objeto em uma posição especificada.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
 | `object` | Objeto | O tipo de objeto a criar |
-| `x` | Numero | Coordenada X para a nova instancia |
-| `y` | Numero | Coordenada Y para a nova instancia |
+| `x` | Número | Coordenada X para a nova instância |
+| `y` | Número | Coordenada Y para a nova instância |
 
-**Exemplo:** Criar uma bala na posicao do jogador quando Espaco e pressionado.
+**Exemplo:** Criar uma bala na posição do jogador quando Espaco é pressionado.
 
 ---
 
-## Acoes de Pontuacao
+## Ações de Pontuação
 
-### Definir Pontuacao
+### Definir Pontuação
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `set_score` |
+| **Nome da Ação** | `set_score` |
 | **Nome do Bloco** | `score_set` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | 🏆 |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | 🏆 |
 
-**Descricao:** Define a pontuacao para um valor especifico, ou adiciona/subtrai da pontuacao atual.
+**Descrição:** Define a pontuação para um valor específico, ou adiciona/subtrai da pontuação atual.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | O valor da pontuacao |
-| `relative` | Booleano | Se verdadeiro, adiciona valor a pontuacao atual. Se falso, define pontuacao como valor |
+| `value` | Número | O valor da pontuação |
+| `relative` | Booleano | Se verdadeiro, adiciona valor a pontuação atual. Se falso, define pontuação como valor |
 
 **Exemplos:**
-- Resetar pontuacao: `value: 0`, `relative: false`
+- Resetar pontuação: `value: 0`, `relative: false`
 - Adicionar 10 pontos: `value: 10`, `relative: true`
 - Subtrair 5 pontos: `value: -5`, `relative: true`
 
 ---
 
-### Adicionar a Pontuacao
+### Adicionar a Pontuação
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `add_score` |
+| **Nome da Ação** | `add_score` |
 | **Nome do Bloco** | `score_add` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | ➕🏆 |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | ➕🏆 |
 
-**Descricao:** Adiciona um valor a pontuacao atual (atalho para set_score com relative=true).
+**Descrição:** Adiciona um valor a pontuação atual (atalho para set_score com relative=true).
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `value` | Numero | Pontos a adicionar (pode ser negativo para subtrair) |
+| `value` | Número | Pontos a adicionar (pode ser negativo para subtrair) |
 
 ---
 
-### Desenhar Pontuacao
+### Desenhar Pontuação
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `draw_score` |
+| **Nome da Ação** | `draw_score` |
 | **Nome do Bloco** | `draw_score` |
-| **Categoria** | Pontuacao/Vidas/Saude |
-| **Icone** | 🖼️🏆 |
+| **Categoria** | Pontuação/Vidas/Saúde |
+| **Ícone** | 🖼️🏆 |
 
-**Descricao:** Exibe a pontuacao atual na tela.
+**Descrição:** Exibe a pontuação atual na tela.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `x` | Numero | Posicao X para desenhar a pontuacao |
-| `y` | Numero | Posicao Y para desenhar a pontuacao |
-| `caption` | String | Texto a exibir antes da pontuacao (ex: "Pontuacao: ") |
+| `x` | Número | Posição X para desenhar a pontuação |
+| `y` | Número | Posição Y para desenhar a pontuação |
+| `caption` | String | Texto a exibir antes da pontuação (ex: "Pontuação: ") |
 
-**Nota:** Isso deve ser usado em um evento Draw (disponivel no preset Intermediario).
+**Nota:** Isso deve ser usado em um evento Draw (disponível no preset Intermediário).
 
 ---
 
-## Acoes de Sala
+## Ações de Sala
 
 ### Ir para Proxima Sala
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `next_room` |
+| **Nome da Ação** | `next_room` |
 | **Nome do Bloco** | `room_goto_next` |
 | **Categoria** | Sala |
-| **Icone** | ➡️ |
+| **Ícone** | ➡️ |
 
-**Descricao:** Transiciona para a proxima sala na ordem das salas.
+**Descrição:** Transiciona para a proxima sala na ordem das salas.
 
-**Parametros:** Nenhum
+**Parâmetros:** Nenhum
 
-**Nota:** Se ja estiver na ultima sala, esta acao nao tem efeito (use "Se Proxima Sala Existe" para verificar primeiro).
+**Nota:** Se ja estiver na última sala, esta acao não tem efeito (use "Se Proxima Sala Existe" para verificar primeiro).
 
 ---
 
 ### Ir para Sala Anterior
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `previous_room` |
+| **Nome da Ação** | `previous_room` |
 | **Nome do Bloco** | `room_goto_previous` |
 | **Categoria** | Sala |
-| **Icone** | ⬅️ |
+| **Ícone** | ⬅️ |
 
-**Descricao:** Transiciona para a sala anterior na ordem das salas.
+**Descrição:** Transiciona para a sala anterior na ordem das salas.
 
-**Parametros:** Nenhum
+**Parâmetros:** Nenhum
 
-**Nota:** Se ja estiver na primeira sala, esta acao nao tem efeito.
+**Nota:** Se ja estiver na primeira sala, esta acao não tem efeito.
 
 ---
 
 ### Reiniciar Sala
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `restart_room` |
+| **Nome da Ação** | `restart_room` |
 | **Nome do Bloco** | `room_restart` |
 | **Categoria** | Sala |
-| **Icone** | 🔄 |
+| **Ícone** | 🔄 |
 
-**Descricao:** Reinicia a sala atual, resetando todas as instancias para seu estado inicial.
+**Descrição:** Reinicia a sala atual, resetando todas as instâncias para seu estado inicial.
 
-**Parametros:** Nenhum
+**Parâmetros:** Nenhum
 
 **Usos comuns:**
-- Reiniciar nivel apos jogador morrer
-- Resetar quebra-cabeca apos falha
+- Reiniciar nível após jogador morrer
+- Resetar quebra-cabeça após falha
 - Repetir mini-jogo
 
 ---
@@ -338,15 +338,15 @@ Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes po
 ### Ir para Sala
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `goto_room` |
+| **Nome da Ação** | `goto_room` |
 | **Nome do Bloco** | `room_goto` |
 | **Categoria** | Sala |
-| **Icone** | 🚪 |
+| **Ícone** | 🚪 |
 
-**Descricao:** Transiciona para uma sala especifica pelo nome.
+**Descrição:** Transiciona para uma sala específica pelo nome.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
 | `room` | Sala | A sala para onde ir |
 
@@ -355,97 +355,97 @@ Acoes sao comandos que executam quando um evento e disparado. Multiplas acoes po
 ### Se Proxima Sala Existe
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `if_next_room_exists` |
+| **Nome da Ação** | `if_next_room_exists` |
 | **Nome do Bloco** | `room_if_next_exists` |
 | **Categoria** | Sala |
-| **Icone** | ❓➡️ |
+| **Ícone** | ❓➡️ |
 
-**Descricao:** Bloco condicional que so executa acoes contidas se houver uma proxima sala.
+**Descrição:** Bloco condicional que so executa ações contidas se houver uma proxima sala.
 
-**Parametros:** Nenhum (acoes sao colocadas dentro do bloco)
+**Parâmetros:** Nenhum (ações são colocadas dentro do bloco)
 
 **Usos comuns:**
 - Verificar antes de ir para proxima sala
-- Mostrar mensagem "Voce Venceu!" se nao houver mais salas
+- Mostrar mensagem "Você Venceu!" se não houver mais salas
 
 ---
 
 ### Se Sala Anterior Existe
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `if_previous_room_exists` |
+| **Nome da Ação** | `if_previous_room_exists` |
 | **Nome do Bloco** | `room_if_previous_exists` |
 | **Categoria** | Sala |
-| **Icone** | ❓⬅️ |
+| **Ícone** | ❓⬅️ |
 
-**Descricao:** Bloco condicional que so executa acoes contidas se houver uma sala anterior.
+**Descrição:** Bloco condicional que so executa ações contidas se houver uma sala anterior.
 
-**Parametros:** Nenhum (acoes sao colocadas dentro do bloco)
+**Parâmetros:** Nenhum (ações são colocadas dentro do bloco)
 
 ---
 
-## Acoes de Saida
+## Ações de Saida
 
 ### Mostrar Mensagem
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `show_message` |
+| **Nome da Ação** | `show_message` |
 | **Nome do Bloco** | `output_message` |
 | **Categoria** | Saida |
-| **Icone** | 💬 |
+| **Ícone** | 💬 |
 
-**Descricao:** Exibe uma caixa de dialogo popup para o jogador.
+**Descrição:** Exibe uma caixa de dialogo popup para o jogador.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
 | `message` | String | O texto a exibir |
 
-**Nota:** O jogo pausa enquanto a mensagem e exibida. O jogador deve clicar OK para continuar.
+**Nota:** O jogo pausa enquanto a mensagem é exibida. O jogador deve clicar OK para continuar.
 
 **Usos comuns:**
-- Instrucoes do jogo
-- Dialogo da historia
+- Instruções do jogo
+- Dialogo da história
 - Mensagens de vitoria/derrota
-- Informacoes de debug
+- Informações de debug
 
 ---
 
-### Executar Codigo
+### Executar Código
 | Propriedade | Valor |
 |-------------|-------|
-| **Nome da Acao** | `execute_code` |
+| **Nome da Ação** | `execute_code` |
 | **Nome do Bloco** | `execute_code` |
 | **Categoria** | Saida |
-| **Icone** | 💻 |
+| **Ícone** | 💻 |
 
-**Descricao:** Executa codigo Python personalizado.
+**Descrição:** Executa código Python personalizado.
 
-**Parametros:**
-| Parametro | Tipo | Descricao |
+**Parâmetros:**
+| Parâmetro | Tipo | Descrição |
 |-----------|------|-----------|
-| `code` | String | Codigo Python a executar |
+| `code` | String | Código Python a executar |
 
-**Nota:** Este e um recurso avancado. Use com cautela pois codigo incorreto pode causar erros.
+**Nota:** Este é um recurso avançado. Use com cautela pois código incorreto pode causar erros.
 
 ---
 
 ## Resumo das Categorias
 
-| Categoria | Eventos | Acoes |
+| Categoria | Eventos | Ações |
 |-----------|---------|-------|
-| **Eventos** | Create, Step, Tecla Pressionada, Colisao | - |
-| **Movimento** | - | Definir Velocidade Horizontal, Definir Velocidade Vertical, Parar Movimento, Saltar para Posicao |
+| **Eventos** | Create, Step, Tecla Pressionada, Colisão | - |
+| **Movimento** | - | Definir Velocidade Horizontal, Definir Velocidade Vertical, Parar Movimento, Saltar para Posição |
 | **Instancia** | - | Destruir Instancia, Criar Instancia |
-| **Pontuacao/Vidas/Saude** | - | Definir Pontuacao, Adicionar Pontuacao, Desenhar Pontuacao |
+| **Pontuação/Vidas/Saúde** | - | Definir Pontuação, Adicionar Pontuação, Desenhar Pontuação |
 | **Sala** | - | Proxima Sala, Sala Anterior, Reiniciar Sala, Ir para Sala, Se Proxima Sala Existe, Se Sala Anterior Existe |
-| **Saida** | - | Mostrar Mensagem, Executar Codigo |
+| **Saida** | - | Mostrar Mensagem, Executar Código |
 
 ---
 
 ## Exemplo: Jogo Simples de Coletar Moedas
 
-Veja como configurar um jogo basico de coleta de moedas usando apenas recursos do preset Iniciante:
+Veja como configurar um jogo básico de coleta de moedas usando apenas recursos do preset Iniciante:
 
 ### Objeto do Jogador (obj_player)
 
@@ -461,49 +461,49 @@ Veja como configurar um jogo basico de coleta de moedas usando apenas recursos d
 **Tecla Pressionada (Seta Baixo):**
 - Definir Velocidade Vertical: 4
 
-**Colisao com obj_coin:**
-- Definir Pontuacao: 10 (relative: true)
+**Colisão com obj_coin:**
+- Definir Pontuação: 10 (relative: true)
 - Destruir Instancia: other
 
-**Colisao com obj_wall:**
+**Colisão com obj_wall:**
 - Parar Movimento
 
-**Colisao com obj_goal:**
-- Definir Pontuacao: 100 (relative: true)
+**Colisão com obj_goal:**
+- Definir Pontuação: 100 (relative: true)
 - Proxima Sala
 
 ### Objeto Moeda (obj_coin)
 Nenhum evento necessario - apenas um item coletavel.
 
 ### Objeto Parede (obj_wall)
-Nenhum evento necessario - apenas um obstaculo solido.
+Nenhum evento necessario - apenas um obstaculo sólido.
 
 ### Objeto Objetivo (obj_goal)
-Nenhum evento necessario - dispara conclusao do nivel quando jogador colide.
+Nenhum evento necessario - dispara conclusão do nível quando jogador colide.
 
 ---
 
-## Atualizando para Intermediario
+## Atualizando para Intermediário
 
-Quando estiver confortavel com o preset Iniciante, considere atualizar para **Intermediario** para acessar:
-- Evento Draw (para renderizacao personalizada)
-- Evento Destroy (limpeza quando instancia e destruida)
-- Eventos de Mouse (deteccao de clique)
-- Eventos de Alarme (acoes temporizadas)
-- Sistemas de Vidas e Saude
-- Acoes de Som e Musica
-- Mais opcoes de movimento (direcao, mover em direcao)
+Quando estiver confortavel com o preset Iniciante, considere atualizar para **Intermediário** para acessar:
+- Evento Draw (para renderização personalizada)
+- Evento Destroy (limpeza quando instância é destruída)
+- Eventos de Mouse (detecção de clique)
+- Eventos de Alarme (ações temporizadas)
+- Sistemas de Vidas e Saúde
+- Ações de Som e Música
+- Mais opções de movimento (direção, mover em direção)
 
 ---
 
 ## Veja Tambem
 
 - [Tutoriais](Tutorials_pt) - Todos os tutoriais em um so lugar
-- [Preset Intermediario](Intermediate-Preset_pt) - Recursos do proximo nivel
-- [Referencia Completa de Acoes](Full-Action-Reference_pt) - Lista completa de acoes
+- [Preset Intermediário](Intermediate-Preset_pt) - Recursos do próximo nível
+- [Referencia Completa de Ações](Full-Action-Reference_pt) - Lista completa de ações
 - [Referencia de Eventos](Event-Reference_pt) - Lista completa de eventos
-- [Eventos e Acoes](Events-and-Actions_pt) - Conceitos fundamentais
-- [Criando Seu Primeiro Jogo](Creating-Your-First-Game_pt) - Tutorial passo a passo
+- [Eventos e Ações](Eventos_e_Acoes_pt) - Conceitos fundamentais
+- [Criando Seu Primeiro Jogo](Primeiro_Jogo_pt) - Tutorial passo a passo
 - [Tutorial Pong](Tutorial-Pong_pt) - Crie um jogo Pong classico para dois jogadores
 - [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout classico
-- [Introducao a Criacao de Jogos](Getting-Started-Breakout_pt) - Tutorial completo para iniciantes
+- [Introdução a Criação de Jogos](Getting-Started-Breakout_pt) - Tutorial completo para iniciantes

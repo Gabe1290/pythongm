@@ -2,7 +2,7 @@
 
 *[Home](Home_pt) | [Beginner Preset](Beginner-Preset_pt) | [English](Tutorial-Breakout)*
 
-Este tutorial vai guia-lo na criacao de um jogo classico de Breakout. E um primeiro projeto perfeito para aprender PyGameMaker!
+Este tutorial vai guia-lo na criação de um jogo classico de Breakout. E um primeiro projeto perfeito para aprender PyGameMaker!
 
 ![Conceito do Jogo Breakout](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Breakout2600.svg/220px-Breakout2600.svg.png)
 
@@ -11,10 +11,10 @@ Este tutorial vai guia-lo na criacao de um jogo classico de Breakout. E um prime
 ## O Que Vai Aprender
 
 - Criar e usar sprites
-- Configurar objetos de jogo com eventos e acoes
+- Configurar objetos de jogo com eventos e ações
 - Controlos de teclado para movimento do jogador
-- Detecao de colisoes e ricochete
-- Destruir objetos em colisao
+- Deteção de colisões e ricochete
+- Destruir objetos em colisão
 - Construir uma sala de jogo
 
 ---
@@ -24,7 +24,7 @@ Este tutorial vai guia-lo na criacao de um jogo classico de Breakout. E um prime
 Primeiro, precisamos criar os elementos visuais para o nosso jogo.
 
 ### 1.1 Criar o Sprite da Raquete
-1. No painel **Assets**, clique com o botao direito em **Sprites** → **Create Sprite**
+1. No painel **Assets**, clique com o botão direito em **Sprites** → **Create Sprite**
 2. Nomeie-o `spr_paddle`
 3. Desenhe um retangulo horizontal (cerca de 64x16 pixels)
 4. **Importante:** Clique em **Center** para definir a origem no centro
@@ -45,7 +45,7 @@ Primeiro, precisamos criar os elementos visuais para o nosso jogo.
 3. Clique em **Center** para definir a origem
 
 ### 1.5 Criar um Fundo (Opcional)
-1. Clique com o botao direito em **Backgrounds** → **Create Background**
+1. Clique com o botão direito em **Backgrounds** → **Create Background**
 2. Nomeie-o `bg_game`
 3. Desenhe ou carregue uma imagem de fundo
 
@@ -56,7 +56,7 @@ Primeiro, precisamos criar os elementos visuais para o nosso jogo.
 Agora vamos programar a raquete que o jogador controla.
 
 ### 2.1 Criar o Objeto
-1. Clique com o botao direito em **Objects** → **Create Object**
+1. Clique com o botão direito em **Objects** → **Create Object**
 2. Nomeie-o `obj_paddle`
 3. Defina o **Sprite** como `spr_paddle`
 4. Marque a caixa **Solid**
@@ -71,8 +71,8 @@ Agora vamos programar a raquete que o jogador controla.
 2. Adicione a acao **Set Horizontal Speed**
 3. Defina **value** como `-5`
 
-### 2.4 Parar Quando as Teclas Sao Libertadas
-A raquete continua a mover-se mesmo apos libertar a tecla! Vamos corrigir isso.
+### 2.4 Parar Quando as Teclas São Libertadas
+A raquete continua a mover-se mesmo após libertar a tecla! Vamos corrigir isso.
 
 1. Clique em **Add Event** → **Keyboard Release** → selecione **Right Arrow**
 2. Adicione a acao **Set Horizontal Speed**
@@ -96,10 +96,10 @@ Agora a raquete para quando liberta as teclas de seta.
 ### 3.2 Definir Movimento Inicial
 1. Clique em **Add Event** → **Create**
 2. Adicione a acao **Move in Direction** (ou **Set Horizontal/Vertical Speed**)
-3. Defina uma direcao diagonal com velocidade `5`
+3. Defina uma direção diagonal com velocidade `5`
    - Por exemplo: **hspeed** = `4`, **vspeed** = `-4`
 
-Isto faz a bola comecar a mover-se quando o jogo comeca.
+Isto faz a bola começar a mover-se quando o jogo começa.
 
 ### 3.3 Ricochete na Raquete
 1. Clique em **Add Event** → **Collision** → selecione `obj_paddle`
@@ -119,14 +119,14 @@ Isto faz a bola comecar a mover-se quando o jogo comeca.
 2. Defina o **Sprite** como `spr_brick`
 3. Marque a caixa **Solid**
 
-### 4.2 Destruir na Colisao com a Bola
+### 4.2 Destruir na Colisão com a Bola
 1. Clique em **Add Event** → **Collision** → selecione `obj_ball`
 2. Adicione a acao **Destroy Instance** com alvo **self**
 
 Isto destroi o tijolo quando a bola o atinge!
 
 ### 4.3 Fazer a Bola Ricochete
-No mesmo evento de colisao, adicione tambem:
+No mesmo evento de colisão, adicione também:
 1. Adicione a acao **Reverse Vertical** (aplicada a **other** - a bola)
 
 Ou volte a `obj_ball` e adicione:
@@ -149,11 +149,11 @@ E so isso - a parede so precisa de ser solida para a bola ricochete.
 ## Passo 6: Criar a Sala de Jogo
 
 ### 6.1 Criar a Sala
-1. Clique com o botao direito em **Rooms** → **Create Room**
+1. Clique com o botão direito em **Rooms** → **Create Room**
 2. Nomeie-a `room_game`
 
 ### 6.2 Definir o Fundo (Opcional)
-1. Nas definicoes da sala, encontre **Background**
+1. Nas definições da sala, encontre **Background**
 2. Selecione o seu fundo `bg_game`
 3. Marque **Stretch** se quiser que preencha a sala
 
@@ -163,7 +163,7 @@ Agora coloque os seus objetos na sala:
 
 1. **Colocar a Raquete:** Ponha `obj_paddle` no centro inferior da sala
 
-2. **Colocar as Paredes:** Ponha instancias de `obj_wall` a volta das bordas:
+2. **Colocar as Paredes:** Ponha instâncias de `obj_wall` a volta das bordas:
    - Ao longo do topo
    - Ao longo do lado esquerdo
    - Ao longo do lado direito
@@ -171,13 +171,13 @@ Agora coloque os seus objetos na sala:
 
 3. **Colocar a Bola:** Ponha `obj_ball` algures no meio
 
-4. **Colocar os Tijolos:** Arranje instancias de `obj_brick` em filas no topo da sala
+4. **Colocar os Tijolos:** Arranje instâncias de `obj_brick` em filas no topo da sala
 
 ---
 
 ## Passo 7: Testar o Seu Jogo!
 
-1. Clique no botao **Play** (seta verde)
+1. Clique no botão **Play** (seta verde)
 2. Use as teclas de seta **Esquerda** e **Direita** para mover a raquete
 3. Tente fazer a bola ricochete para destruir todos os tijolos!
 4. Pressione **Escape** para sair
@@ -186,29 +186,29 @@ Agora coloque os seus objetos na sala:
 
 ## O Que Vem a Seguir?
 
-O seu jogo basico de Breakout esta completo! Aqui estao algumas melhorias para tentar:
+O seu jogo básico de Breakout esta completo! Aqui estao algumas melhorias para tentar:
 
 ### Adicionar um Sistema de Vidas
 - Adicione um evento **No More Lives** para mostrar "Game Over"
 - Perca uma vida quando a bola sai pelo fundo
 
-### Adicionar Pontuacao
+### Adicionar Pontuação
 - Use a acao **Add Score** ao destruir tijolos
-- Mostre a pontuacao com **Draw Score**
+- Mostre a pontuação com **Draw Score**
 
 ### Adicionar Multiplos Niveis
-- Crie mais salas com diferentes disposicoes de tijolos
+- Crie mais salas com diferentes disposições de tijolos
 - Use **Next Room** quando todos os tijolos forem destruidos
 
 ### Adicionar Efeitos Sonoros
-- Adicione sons para ricochete e destruicao de tijolos
+- Adicione sons para ricochete e destruição de tijolos
 - Use a acao **Play Sound**
 
 ---
 
 ## Resumo dos Objetos
 
-| Objeto | Sprite | Solido | Eventos |
+| Objeto | Sprite | Sólido | Eventos |
 |--------|--------|--------|---------|
 | `obj_paddle` | `spr_paddle` | Sim | Keyboard (Left/Right), Keyboard Release |
 | `obj_ball` | `spr_ball` | Sim | Create, Collision (paddle, wall, brick) |
@@ -219,6 +219,6 @@ O seu jogo basico de Breakout esta completo! Aqui estao algumas melhorias para t
 
 ## Ver Tambem
 
-- [Beginner Preset](Beginner-Preset_pt) - Eventos e acoes usados neste tutorial
-- [Event Reference](Event-Reference_pt) - Todos os eventos disponiveis
-- [Full Action Reference](Full-Action-Reference_pt) - Todas as acoes disponiveis
+- [Beginner Preset](Beginner-Preset_pt) - Eventos e ações usados neste tutorial
+- [Event Reference](Event-Reference_pt) - Todos os eventos disponíveis
+- [Full Action Reference](Full-Action-Reference_pt) - Todas as ações disponíveis
