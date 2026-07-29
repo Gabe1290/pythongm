@@ -290,7 +290,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 - Renderização personalizada
 - Desenhar formas
 - Exibir texto
-- Barras de saude
+- Barras de saúde
 - Elementos de HUD
 
 **Ações de desenho disponíveis:**
@@ -448,7 +448,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Categoria** | Outro |
 | **Preset** | Intermediário |
 
-**Descrição:** Dispara quando a saude chega a 0 ou menos.
+**Descrição:** Dispara quando a saúde chega a 0 ou menos.
 
 **Usos comuns:**
 - Perder uma vida

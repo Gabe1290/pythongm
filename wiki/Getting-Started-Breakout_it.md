@@ -6,7 +6,7 @@
 
 ---
 
-In questo tutorial, impareremo le basi della creazione di videogiochi con PyGameMaker. Trattandosi di un software relativamente completo con molte funzionalita, ci concentreremo solo su quelle che ci saranno utili durante questo tutorial.
+In questo tutorial, impareremo le basi della creazione di videogiochi con PyGameMaker. Trattandosi di un software relativamente completo con molte funzionalità, ci concentreremo solo su quelle che ci saranno utili durante questo tutorial.
 
 Creeremo un semplice gioco in stile Breakout che assomigliera a questo:
 
