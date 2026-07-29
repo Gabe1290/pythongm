@@ -124,8 +124,8 @@
 #### Рух До Точки
 | Властивість | Значення |
 |-------------|----------|
-| **Назва Дії** | `move_towards` |
-| **Назва Блоку** | `move_towards` |
+| **Назва Дії** | `move_towards_point` |
+| **Назва Блоку** | `move_towards_point` |
 | **Категорія** | Рух |
 
 **Опис:** Рухатися до певної позиції.
@@ -351,7 +351,7 @@
 
 | Категорія | Дії |
 |-----------|-----|
-| **Рух** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
+| **Рух** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
 | **Екземпляр** | Create, Destroy |
 | **Рахунок** | Set Score, Add Score, Draw Score |
 | **Життя** | Set Lives, Add Lives, Draw Lives |
