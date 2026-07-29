@@ -18,9 +18,9 @@ PyGameMaker uporablja **prednastavitve** za nadzor, kateri dogodki in akcije so 
 
 | Prednastavitev | Primerno Za | Funkcije |
 |----------------|-------------|----------|
-| [**Začetnik**](Beginner-Preset_sl) | Novi v razvoju iger | 4 dogodki, 17 akcij - Gibanje, trki, rezultat, sobe |
-| [**Srednji**](Intermediate-Preset_sl) | Nekaj izkušenj | +4 dogodki, +12 akcij - Življenja, zdravje, zvok, alarmi, risanje |
-| **Napreden** | Izkušeni uporabniki | Vsi 40+ dogodki in akcije na voljo |
+| [**Začetnik**](Beginner-Preset_sl) | Novi v razvoju iger | Osnovno — gibanje, trki, rezultat, sobe |
+| [**Srednji**](Intermediate-Preset_sl) | Nekaj izkušenj | Doda življenja, zdravje, zvok, alarme, risanje |
+| **Napreden (Poln)** | Izkušeni uporabniki | Vse — vseh 37 dogodkov in 109 dejanj |
 
 **Novi uporabniki:** Začnite s [Prednastavitvijo za Začetnike](Beginner-Preset_sl), da se naučite osnov brez preobremenjenosti.
 
@@ -35,10 +35,11 @@ Glejte [Vodnik po Prednastavitvah](Preset-Guide_sl) za popoln pregled sistema pr
 | **Vizualno Programiranje** | Povleci-in-spusti kodiranje z Google Blockly 12.x |
 | **Sistem Dogodkov-Akcij** | Logika, ki temelji na dogodkih, združljiva z GameMaker 7.0 |
 | **Prednastavitve po Ravneh** | Nabori funkcij za Začetnike, Srednje in Napredne |
-| **Večplatformni Izvoz** | Windows EXE, HTML5, Linux, Kivy (mobilno/namizno) |
+| **Pogled 2.5D / Prva oseba** | Izbirno izrisovanje raycast v slogu Doom/Wolfenstein — glejte [Pogled 3D](3D-View_sl) |
+| **Večplatformni Izvoz** | Windows EXE, aplikacija macOS, HTML5, Linux, Kivy (mobilno/namizno) |
 | **Upravljanje Virov** | Sprite-i, zvoki, ozadja, pisave in sobe |
 | **Večjezični Vmesnik** | Angleščina, Francoščina, Nemščina, Italijanščina, Španščina, Portugalščina, Slovenščina, Ukrajinščina, Ruščina |
-| **Razširljivo** | Sistem vtičnikov za prilagojene dogodke in akcije |
+| **Razširljivo** | Sistem [razširitev](Extensions_sl) in vtičnikov za prilagojena dejanja in izrisovalnike |
 
 ---
 
@@ -96,12 +97,13 @@ Sprožilci, ki izvršijo akcije, ko se pojavijo določeni pogoji:
 Glejte [Referenco Dogodkov](Event-Reference_sl) za popolno dokumentacijo.
 
 ### Akcije
-Operacije, ki se izvedejo, ko se dogodki sprožijo. 40+ vgrajenih akcij za:
+Operacije, ki se izvedejo, ko se dogodki sprožijo. **109** vgrajenih dejanj za:
 - Gibanje in fiziko
 - Risanje in sprite-e
 - Rezultat, življenja in zdravje
 - Zvok in glasbo
 - Upravljanje instanc in sob
+- Pogled 3D (prvoosebno izrisovanje z raycast)
 
 Glejte [Popolno Referenco Akcij](Full-Action-Reference_sl) za popolno dokumentacijo.
 
@@ -131,6 +133,9 @@ PyGameMaker vključuje Google Blockly za vizualno programiranje. Bloki so organi
 
 ### Windows EXE
 Samostojne Windows izvedljive datoteke z uporabo PyInstaller. Na ciljnem računalniku ni potreben Python.
+
+### Aplikacija macOS
+Izvorni paketi `.app` za macOS prek PyInstaller.
 
 ### HTML5
 Spletne igre v eni datoteki, ki delujejo v kateremkoli sodobnem brskalniku. Stisnjene z gzip za hitro nalaganje.

@@ -18,9 +18,9 @@ PyGameMaker usa **preset** per controllare quali eventi e azioni sono disponibil
 
 | Preset | Ideale Per | Funzionalità |
 |--------|------------|--------------|
-| [**Principiante**](Beginner-Preset_it) | Nuovi allo sviluppo giochi | 4 eventi, 17 azioni - Movimento, collisioni, punteggio, stanze |
-| [**Intermedio**](Intermediate-Preset_it) | Qualche esperienza | +4 eventi, +12 azioni - Vite, salute, suono, allarmi, disegno |
-| **Avanzato** | Utenti esperti | Tutti i 40+ eventi e azioni disponibili |
+| [**Principiante**](Beginner-Preset_it) | Nuovi allo sviluppo giochi | L'essenziale — movimento, collisioni, punteggio, stanze |
+| [**Intermedio**](Intermediate-Preset_it) | Qualche esperienza | Aggiunge vite, salute, suono, allarmi, disegno |
+| **Avanzato (Completo)** | Utenti esperti | Tutto — tutti i 37 eventi e 109 azioni |
 
 **Nuovi utenti:** Inizia con il [Preset Principiante](Beginner-Preset_it) per imparare i fondamentali senza essere sopraffatto.
 
@@ -35,10 +35,11 @@ Vedi la [Guida ai Preset](Preset-Guide_it) per una panoramica completa del siste
 | **Programmazione Visuale** | Codifica drag-and-drop con Google Blockly 12.x |
 | **Sistema Eventi-Azioni** | Logica event-driven compatibile con GameMaker 7.0 |
 | **Preset per Livello** | Set di funzionalità Principiante, Intermedio e Avanzato |
-| **Esportazione Multi-Piattaforma** | Windows EXE, HTML5, Linux, Kivy (mobile/desktop) |
+| **Vista 2.5D / Prima persona** | Rendering raycast opzionale in stile Doom/Wolfenstein — vedi [Vista 3D](3D-View_it) |
+| **Esportazione Multi-Piattaforma** | Windows EXE, app macOS, HTML5, Linux, Kivy (mobile/desktop) |
 | **Gestione Asset** | Sprite, suoni, sfondi, font e stanze |
 | **UI Multilingue** | Inglese, Francese, Tedesco, Italiano, Spagnolo, Portoghese, Sloveno, Ucraino, Russo |
-| **Estensibile** | Sistema plugin per eventi e azioni personalizzati |
+| **Estensibile** | Sistema di [estensioni](Extensions_it) e plugin per azioni e renderer personalizzati |
 
 ---
 
@@ -96,12 +97,13 @@ Trigger che eseguono azioni quando si verificano condizioni specifiche:
 Vedi il [Riferimento Eventi](Event-Reference_it) per la documentazione completa.
 
 ### Azioni
-Operazioni eseguite quando gli eventi si attivano. 40+ azioni integrate per:
+Operazioni eseguite quando gli eventi si attivano. **109** azioni integrate per:
 - Movimento e fisica
 - Disegno e sprite
 - Punteggio, vite e salute
 - Suono e musica
 - Gestione istanze e stanze
+- Vista 3D (rendering in prima persona con raycast)
 
 Vedi il [Riferimento Completo Azioni](Full-Action-Reference_it) per la documentazione completa.
 
@@ -131,6 +133,9 @@ PyGameMaker integra Google Blockly per la programmazione visuale. I blocchi sono
 
 ### Windows EXE
 Eseguibili Windows standalone usando PyInstaller. Nessun Python richiesto sulla macchina target.
+
+### App macOS
+Bundle `.app` nativi per macOS tramite PyInstaller.
 
 ### HTML5
 Giochi web a file singolo che funzionano in qualsiasi browser moderno. Compressi con gzip per caricamento veloce.
