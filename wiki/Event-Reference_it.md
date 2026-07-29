@@ -20,7 +20,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi Oggetto
 
 ### Create
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `create` |
 | **Icona** | 🎯 |
@@ -42,7 +42,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Step
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `step` |
 | **Icona** | ⭐ |
@@ -64,7 +64,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Destroy
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `destroy` |
 | **Icona** | 💥 |
@@ -86,14 +86,14 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi di Input
 
 ### Tastiera (Continuo)
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `keyboard` |
 | **Icona** | ⌨️ |
 | **Categoria** | Input |
 | **Preset** | Principiante |
 
-**Descrizione:** Si attiva continuamente mentre un tasto e tenuto premuto.
+**Descrizione:** Si attiva continuamente mentre un tasto è tenuto premuto.
 
 **Ideale per:** Movimento fluido e continuo
 
@@ -108,7 +108,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Pressione Tastiera
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `keyboard_press` |
 | **Icona** | 🔘 |
@@ -119,12 +119,12 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 
 **Ideale per:** Azioni singole (saltare, sparare, selezionare nel menu)
 
-**Differenza da Tastiera:** Si attiva solo una volta per pressione, non mentre e tenuto premuto.
+**Differenza da Tastiera:** Si attiva solo una volta per pressione, non mentre è tenuto premuto.
 
 ---
 
 ### Rilascio Tastiera
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `keyboard_release` |
 | **Icona** | ⬆️ |
@@ -159,7 +159,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Mouse
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `mouse` |
 | **Icona** | 🖱️ |
@@ -185,7 +185,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi di Collisione
 
 ### Collisione
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `collision` |
 | **Icona** | 💥 |
@@ -216,7 +216,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi di Temporizzazione
 
 ### Allarme
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `alarm` |
 | **Icona** | ⏰ |
@@ -238,7 +238,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Begin Step
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `begin_step` |
 | **Icona** | ▶️ |
@@ -256,7 +256,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### End Step
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `end_step` |
 | **Icona** | ⏹️ |
@@ -275,7 +275,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi di Disegno
 
 ### Draw
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `draw` |
 | **Icona** | 🎨 |
@@ -320,7 +320,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi di Stanza
 
 ### Room Start
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `room_start` |
 | **Icona** | 🚪 |
@@ -337,7 +337,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Room End
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `room_end` |
 | **Icona** | 🚪 |
@@ -356,7 +356,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Eventi di Gioco
 
 ### Game Start
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `game_start` |
 | **Icona** | 🎮 |
@@ -373,7 +373,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Game End
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `game_end` |
 | **Icona** | 🎮 |
@@ -391,7 +391,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ## Altri Eventi
 
 ### Outside Room
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `outside_room` |
 | **Icona** | 🚫 |
@@ -408,7 +408,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### Intersect Boundary
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `intersect_boundary` |
 | **Icona** | ⚠️ |
@@ -424,7 +424,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### No More Lives
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `no_more_lives` |
 | **Icona** | 💀 |
@@ -441,7 +441,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 ---
 
 ### No More Health
-| Proprieta | Valore |
+| Proprietà | Valore |
 |-----------|--------|
 | **Nome** | `no_more_health` |
 | **Icona** | 💔 |
@@ -503,4 +503,4 @@ Capire quando gli eventi si attivano aiuta a creare un comportamento di gioco pr
 - [Riferimento Completo delle Azioni](Full-Action-Reference_it) - Lista completa delle azioni
 - [Preset Principiante](Beginner-Preset_it) - Eventi essenziali per principianti
 - [Preset Intermedio](Intermediate-Preset_it) - Eventi aggiuntivi
-- [Eventi e Azioni](Events-and-Actions_it) - Panoramica dei concetti base
+- [Eventi e Azioni](Eventi_e_Azioni_it) - Panoramica dei concetti base
