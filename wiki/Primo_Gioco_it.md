@@ -11,7 +11,7 @@ In questa guida creerai un gioco semplice per imparare le basi di pyGM.
 ## Panoramica
 
 Creeremo un gioco semplice con:
-- Un personaggio giocatore che puo muoversi
+- Un personaggio giocatore che può muoversi
 - Un oggetto collezionabile
 - Un sistema di punteggio
 
@@ -46,7 +46,7 @@ Creeremo un gioco semplice con:
 1. Aggiungi l'evento "Pressione tasto"
 2. Usa azioni per il movimento:
    - Freccia su: Muovi in alto
-   - Freccia giu: Muovi in basso
+   - Freccia giù: Muovi in basso
    - Freccia sinistra: Muovi a sinistra
    - Freccia destra: Muovi a destra
 

@@ -39,7 +39,6 @@ Le azioni sono le risposte agli eventi:
 ### Eventi di input
 - **Tastiera**: Pressione/rilascio tasti
 - **Mouse**: Click e movimento
-- **Gamepad**: Input del controller
 
 ### Eventi di collisione
 - Contatto con altri oggetti
@@ -49,30 +48,27 @@ Le azioni sono le risposte agli eventi:
 ### Eventi di disegno
 - **Draw**: Disegno normale
 - **Draw GUI**: Elementi dell'interfaccia
-- **Draw Begin/End**: Prima/Dopo il disegno
 
 ### Altri eventi
 - **Alarm**: Eventi basati su timer
 - **Animation End**: Animazione sprite terminata
-- **User Events**: Eventi personalizzati
 
 ## Libreria delle azioni
 
 ### Movimento
-- `move_towards`: Muovi verso un punto
-- `set_speed`: Imposta velocita
+- `move_towards_point`: Muovi verso un punto
+- `set_speed`: Imposta velocità
 - `set_direction`: Imposta direzione
 - `bounce`: Rimbalza
 
 ### Istanze
-- `instance_create`: Crea nuova istanza
-- `instance_destroy`: Elimina istanza
-- `change_sprite`: Cambia sprite
+- `create_instance`: Crea nuova istanza
+- `destroy_instance`: Elimina istanza
+- `set_sprite`: Cambia sprite
 
 ### Variabili
 - `set_variable`: Imposta valore
-- `add_to_variable`: Aggiungi valore
-- `if_variable`: Controllo condizionale
+- `test_variable`: Controllo condizionale
 
 ### Audio
 - `play_sound`: Riproduci suono
@@ -82,7 +78,7 @@ Le azioni sono le risposte agli eventi:
 ### Stanza
 - `goto_room`: Cambia stanza
 - `restart_room`: Riavvia stanza
-- `goto_next_room`: Stanza successiva
+- `next_room`: Stanza successiva
 
 ### Disegno
 - `draw_sprite`: Disegna sprite
@@ -106,7 +102,7 @@ Altrimenti
 ## Best Practice
 
 1. **Usa Step con parsimonia**: Solo quando necessario
-2. **Ottimizza le collisioni**: Considera la proprieta Solid
+2. **Ottimizza le collisioni**: Considera la proprietà Solid
 3. **Raggruppa gli eventi**: Logica correlata insieme
 4. **Usa gli alarm**: Per azioni temporizzate
 

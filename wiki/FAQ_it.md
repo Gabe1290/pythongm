@@ -10,20 +10,21 @@ Risposte alle domande comuni su pyGM.
 
 ## Domande generali
 
-### Cos'e pyGM?
-pyGM e un editor visuale per lo sviluppo di giochi in Python. Permette di creare giochi 2D senza conoscenze di programmazione approfondite.
+### Cos'è pyGM?
+pyGM è un editor visuale per lo sviluppo di giochi in Python. Permette di creare giochi 2D senza conoscenze di programmazione approfondite.
 
-### pyGM e gratuito?
-Si, pyGM e open source e completamente gratuito.
+### pyGM è gratuito?
+Sì, pyGM è open source e completamente gratuito.
 
 ### Quale linguaggio di programmazione viene usato?
-pyGM e basato su Python. Puoi usare la programmazione visuale o scrivere direttamente codice Python.
+pyGM è basato su Python. Puoi usare la programmazione visuale o scrivere direttamente codice Python.
 
 ### Per quali piattaforme posso sviluppare?
 - Windows
 - macOS
 - Linux
 - Web (HTML5)
+- Mobile (Kivy/Android)
 
 ## Installazione
 
@@ -33,7 +34,7 @@ pip install pygm
 ```
 
 ### Quale versione di Python serve?
-Python 3.8 o superiore.
+Python 3.10 o superiore.
 
 ### pyGM non si avvia. Cosa faccio?
 1. Verifica la versione di Python
@@ -52,8 +53,8 @@ Avvia pyGM e seleziona "Nuovo Progetto" o usa File > Nuovo.
 
 ### Come creo animazioni?
 1. Apri uno sprite
-2. Aggiungi piu frame
-3. Imposta la velocita dell'animazione
+2. Aggiungi più frame
+3. Imposta la velocità dell'animazione
 
 ### Come programmo il comportamento degli oggetti?
 1. Apri un oggetto
@@ -86,8 +87,8 @@ Avvia pyGM e seleziona "Nuovo Progetto" o usa File > Nuovo.
 2. Seleziona l'altro oggetto
 3. Aggiungi azioni per la reazione
 
-### Come creo piu livelli?
-1. Crea piu stanze
+### Come creo più livelli?
+1. Crea più stanze
 2. Usa l'azione "Vai alla stanza"
 3. Oppure "Vai alla stanza successiva"
 
@@ -99,22 +100,22 @@ Usa le funzioni di salvataggio integrate:
 ## Esportazione
 
 ### Come esporto il mio gioco?
-1. Vai su File > Esporta
+1. Vai su File > Esporta progetto…
 2. Seleziona la piattaforma di destinazione
 3. Configura le opzioni
 4. Clicca su "Esporta"
 
-### Perche il file esportato e cosi grande?
+### Perché il file esportato è così grande?
 - Include il runtime Python
-- Tutte le risorse incorporate
+- Tutte le risorse sono incorporate
 - Suggerimento: Ottimizza le risorse
 
 ### Posso esportare per dispositivi mobili?
-Attualmente non supportato direttamente. L'esportazione web funziona sui browser mobili.
+Sì, tramite l'esportazione Kivy/Android. Anche l'esportazione web funziona sui browser mobili.
 
 ## Risoluzione problemi
 
-### Il mio gioco e lento
+### Il mio gioco è lento
 - Riduci il codice negli eventi Step
 - Ottimizza le dimensioni degli sprite
 - Evita troppe istanze
@@ -122,7 +123,7 @@ Attualmente non supportato direttamente. L'esportazione web funziona sui browser
 ### Gli sprite non vengono visualizzati
 - Verifica il percorso dello sprite
 - Assicurati che Visibile=true
-- Controlla l'ordine di disegno (profondita)
+- Controlla l'ordine di disegno (profondità)
 
 ### Le collisioni non funzionano
 - Verifica le maschere di collisione

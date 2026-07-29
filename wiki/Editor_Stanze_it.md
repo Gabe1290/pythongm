@@ -25,7 +25,7 @@ Le stanze sono le aree di gioco dove gli oggetti vengono posizionati e il gamepl
 - Istanze posizionate
 - Layer di sfondo
 
-### Proprieta
+### Proprietà
 - Dimensioni stanza
 - Colore di sfondo
 - Impostazioni vista
@@ -37,9 +37,9 @@ Le stanze sono le aree di gioco dove gli oggetti vengono posizionati e il gamepl
 2. Seleziona "Nuova Stanza"
 3. Dai un nome alla stanza (es. rm_livello1)
 
-### Impostare le proprieta
+### Impostare le proprietà
 1. **Dimensioni**: Larghezza e altezza in pixel
-2. **Velocita**: Frame al secondo
+2. **Velocità**: Frame al secondo
 3. **Sfondo**: Colore o immagine
 
 ## Posizionare oggetti
@@ -56,7 +56,7 @@ Le stanze sono le aree di gioco dove gli oggetti vengono posizionati e il gamepl
 ### Modificare istanze
 - **Spostare**: Trascinare con il mouse
 - **Eliminare**: Click destro > Elimina
-- **Proprieta**: Doppio click
+- **Proprietà**: Doppio click
 
 ## Sistema di layer
 
@@ -68,12 +68,12 @@ Le stanze sono le aree di gioco dove gli oggetti vengono posizionati e il gamepl
 ### Gestire i layer
 - Aggiungere/rimuovere layer
 - Cambiare ordine
-- Attivare/disattivare visibilita
+- Attivare/disattivare visibilità
 
 ## Viste (Views)
 
 ### Configurare una vista
-1. Attiva le viste nelle proprieta della stanza
+1. Attiva le viste nelle proprietà della stanza
 2. Definisci l'area visibile
 3. Imposta la dimensione del port
 
