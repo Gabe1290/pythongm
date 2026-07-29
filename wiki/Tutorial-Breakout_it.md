@@ -2,7 +2,7 @@
 
 *[Home](Home_it) | [Beginner Preset](Beginner-Preset_it) | [English](Tutorial-Breakout) | [Italiano](Tutorial-Breakout_it)*
 
-Questo tutorial ti guidera nella creazione di un classico gioco Breakout. E' un primo progetto perfetto per imparare PyGameMaker!
+Questo tutorial ti guiderà nella creazione di un classico gioco Breakout. È un primo progetto perfetto per imparare PyGameMaker!
 
 ![Breakout Game Concept](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Breakout2600.svg/220px-Breakout2600.svg.png)
 
@@ -41,7 +41,7 @@ Prima di tutto, dobbiamo creare gli elementi visivi per il nostro gioco.
 
 ### 1.4 Creare lo Sprite del Muro
 1. Crea uno sprite chiamato `spr_wall`
-2. Disegna un quadrato (circa 32x32 pixel) - questo sara' il confine
+2. Disegna un quadrato (circa 32x32 pixel) - questo sarà il confine
 3. Clicca su **Center** per impostare l'origine
 
 ### 1.5 Creare uno Sfondo (Opzionale)
@@ -64,7 +64,7 @@ Ora programmiamo il paddle che il giocatore controlla.
 ### 2.2 Aggiungere il Movimento con Freccia Destra
 1. Clicca su **Add Event** -> **Keyboard** -> seleziona **Right Arrow**
 2. Aggiungi l'azione **Set Horizontal Speed**
-3. Imposta **value** su `5` (o qualsiasi velocita' tu preferisca)
+3. Imposta **value** su `5` (o qualsiasi velocità tu preferisca)
 
 ### 2.3 Aggiungere il Movimento con Freccia Sinistra
 1. Clicca su **Add Event** -> **Keyboard** -> seleziona **Left Arrow**
@@ -96,7 +96,7 @@ Ora il paddle si ferma quando rilasci i tasti freccia.
 ### 3.2 Impostare il Movimento Iniziale
 1. Clicca su **Add Event** -> **Create**
 2. Aggiungi l'azione **Move in Direction** (o **Set Horizontal/Vertical Speed**)
-3. Imposta una direzione diagonale con velocita' `5`
+3. Imposta una direzione diagonale con velocità `5`
    - Per esempio: **hspeed** = `4`, **vspeed** = `-4`
 
 Questo fa partire la palla quando il gioco inizia.
@@ -107,7 +107,7 @@ Questo fa partire la palla quando il gioco inizia.
 
 ### 3.4 Rimbalzare sui Muri
 1. Clicca su **Add Event** -> **Collision** -> seleziona `obj_wall`
-2. Aggiungi l'azione **Reverse Horizontal** o **Reverse Vertical** secondo necessita'
+2. Aggiungi l'azione **Reverse Horizontal** o **Reverse Vertical** secondo necessità
    - Oppure usa entrambe per gestire i rimbalzi negli angoli
 
 ---
@@ -142,7 +142,7 @@ Oppure torna a `obj_ball` e aggiungi:
 2. Imposta lo **Sprite** su `spr_wall`
 3. Spunta la casella **Solid**
 
-Questo e' tutto - il muro deve solo essere solido perche' la palla rimbalzi.
+Questo è tutto - il muro deve solo essere solido perché la palla rimbalzi.
 
 ---
 
@@ -167,7 +167,7 @@ Ora posiziona i tuoi oggetti nella stanza:
    - Lungo la parte superiore
    - Lungo il lato sinistro
    - Lungo il lato destro
-   - Lascia la parte inferiore aperta (e' da qui che la palla puo' scappare!)
+   - Lascia la parte inferiore aperta (è da qui che la palla può scappare!)
 
 3. **Posiziona la Palla:** Metti `obj_ball` da qualche parte al centro
 
@@ -186,7 +186,7 @@ Ora posiziona i tuoi oggetti nella stanza:
 
 ## Cosa Viene Dopo?
 
-Il tuo gioco Breakout di base e' completo! Ecco alcuni miglioramenti da provare:
+Il tuo gioco Breakout di base è completo! Ecco alcuni miglioramenti da provare:
 
 ### Aggiungere un Sistema di Vite
 - Aggiungi un evento **No More Lives** per mostrare "Game Over"
@@ -197,7 +197,7 @@ Il tuo gioco Breakout di base e' completo! Ecco alcuni miglioramenti da provare:
 - Mostra il punteggio con **Draw Score**
 
 ### Aggiungere Livelli Multipli
-- Crea piu' stanze con diverse disposizioni di mattoni
+- Crea più stanze con diverse disposizioni di mattoni
 - Usa **Next Room** quando tutti i mattoni sono distrutti
 
 ### Aggiungere Effetti Sonori
@@ -210,10 +210,10 @@ Il tuo gioco Breakout di base e' completo! Ecco alcuni miglioramenti da provare:
 
 | Oggetto | Sprite | Solid | Eventi |
 |---------|--------|-------|--------|
-| `obj_paddle` | `spr_paddle` | Si | Keyboard (Left/Right), Keyboard Release |
-| `obj_ball` | `spr_ball` | Si | Create, Collision (paddle, wall, brick) |
-| `obj_brick` | `spr_brick` | Si | Collision (ball) - Destroy self |
-| `obj_wall` | `spr_wall` | Si | Nessuno necessario |
+| `obj_paddle` | `spr_paddle` | Sì | Keyboard (Left/Right), Keyboard Release |
+| `obj_ball` | `spr_ball` | Sì | Create, Collision (paddle, wall, brick) |
+| `obj_brick` | `spr_brick` | Sì | Collision (ball) - Destroy self |
+| `obj_wall` | `spr_wall` | Sì | Nessuno necessario |
 
 ---
 
