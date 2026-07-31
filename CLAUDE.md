@@ -939,3 +939,75 @@ code; the ports live in `extensions/raycast_2_5d/export_html5.js` +
   exported raycast games render in a real browser or on Android after this move.
   Structure, codegen, parity numbers and generated-file compiles are all verified;
   the visual playtest of an actual export isn't.
+
+**2026-07-29 — Full wiki accuracy + translation review across all 9 languages,
+published to the live GitHub wiki.** A sweep of `wiki/` (en, fr, de, uk, ru, it,
+es, pt, sl) for accuracy AND correct diacritics, ~52 `docs(wiki)` commits, all on
+`main`, then published. 216 `wiki/*.md` pages total.
+- **The localized action reference is GENERATED, not hand-maintained — don't edit
+  `wiki/Full-Action-Reference*.md` by hand.** `tools/gen_action_reference.py`
+  reads the live `ACTION_TYPES` (after `load_all_plugins()`, so it includes plugin
+  + extension actions — 109 actions / 207 param notes) and merges per-language
+  tables from `tools/action_ref_i18n.py` (`LANGS` dict: 8 translated langs keyed
+  `fr/de/uk/ru/it/es/pt/sl`; `en` is pass-through). Run:
+  `PYTHONUTF8=1 py -3.12 tools/gen_action_reference.py fr de uk ru it es pt sl`
+  (bare = `en`; `PYTHONUTF8=1` is REQUIRED on the Windows console for emoji/Cyrillic
+  or it dies on cp1252). Emits English fallback for any missing string + a
+  missing-string report, and explicit `<a id="…">` anchors before each category
+  header so `#3d-view`-style deep links survive translated headings. To fix a
+  localized action string, edit the `ACTIONS_XX`/`NOTES_XX` table in
+  `action_ref_i18n.py` and regenerate — never touch the output.
+  **`.ts` files are useless for this** — all action strings are `type="vanished"`
+  (repo runs `lrelease` only, never `lupdate`).
+- **Diacritic-stripping bug fixed across every accented language.** Older
+  translated pages had been saved with accents stripped (é→e, č→c, ã→a…) —
+  unacceptable for this French/Latin/Slovenian educational content. Restored fr/de
+  earlier, then it/es/pt/sl this pass. Strategy: hand-rewrite where a verb/word
+  is ambiguous without the accent (Italian `e`/`é`, Portuguese), word-boundary
+  regex for unambiguous cases (Spanish, Slovenian) — **always protect code
+  identifiers** (`collision`, `--version`) via a placeholder swap before running a
+  broad accent regex (a `-sión` rule once mangled `--version`→`--versión` inside a
+  code block). Keep accented section headers in sync with ToC anchors: **GitHub's
+  auto-slug KEEPS accented chars** (`## Časovni Dogodki` → `#časovni-dogodki`), so
+  DON'T add an ASCII `<a id>` for an accented header — let the auto-slug match an
+  accented ToC link.
+- **New/updated pages:** added `3D-View` + `Extensions` pages (all langs); Home
+  accuracy (109 actions not "40+", macOS export, 2.5D/3D + Extensions rows, honest
+  preset counts, fixed broken internal links); Event-Reference +3 events
+  (keyboard_no_key, draw_gui, animation_end); Intermediate-Preset
+  `move_towards`→`move_towards_point`; export guides rewritten for accuracy (real
+  menu paths, macOS `.app`, `.zip` project export; dropped fabricated
+  py2app/AppImage/WebGL/Windows-cross-compile claims).
+- **Publishing mechanics — `scripts/sync_wiki.sh {check|pull|push}`.** The live
+  wiki is a SEPARATE repo (`Gabe1290/pythongm.wiki.git`, branch **`master`**).
+  `push` clones it, `cp wiki/*.md` in, commits (inheriting `user.name/email` from
+  the main repo), pushes. **It is additive/overwrite ONLY — copies `*.md`, never
+  deletes or renames.** So a page renamed/obsoleted in `wiki/` leaves its stale
+  copy live; reconcile those by hand. It also won't carry non-`.md` files (see the
+  `.gitattributes` note below). Publishing is outward-facing — get explicit
+  approval first.
+- **Line-ending landmine (cost a long detour — READ THIS before touching wiki
+  line endings).** `sync_wiki.sh check` does a byte-level `diff -rq`, so on a
+  Windows box it perpetually reported "DRIFT" that was **pure CRLF-vs-LF, content
+  byte-identical**. Fix: added `*.md text eol=lf` to `.gitattributes` in the main
+  repo (`09a6ceb`) AND pushed a matching `.gitattributes` into the live wiki repo
+  (its blobs were already LF; without the attribute a Windows checkout renders
+  CRLF and always "drifts"). Both stores keep LF blobs; the attribute just fixes
+  Windows checkout rendering. **The measurement gotcha that wasted the time: in the
+  Bash tool, `grep -c $'\r'` is BROKEN** (the tool strips CR from the command
+  string, so `$'\r'` collapses to an empty pattern that matches every line →
+  false "95 CR" on LF files), and **Windows `py` can't read git-bash `/tmp/…`
+  paths** (a Python byte-compare silently `os.path.exists`-skipped every cloned
+  file and reported "0 differences" — comparing nothing). Trustworthy CR checks:
+  git-bash-native `cmp` / `wc -c` / `diff <(tr -d '\r' a) <(tr -d '\r' b)`, or a
+  Python one-liner reading the file with a **Windows** path.
+- **Session-notes consolidation (`6b14f7f`).** The two uncommitted session-note
+  transcripts were consecutive halves of the raycast-extension arc (884fd424 ended
+  at Stage B2's "Want me to continue?"; 6753ac1a opened with "Continue with B2");
+  merged 6753ac1a into `2026-07-03-884fd424.md` under a divider, deleted the
+  standalone file, and added a `<!-- curated -->` marker so the auto-extractor
+  won't overwrite the merge.
+- **Still needs human eyes:** nobody has viewed the published pages rendered on
+  github.com — worth spot-checking that accents render (not mojibake), the
+  language-switcher banners resolve (no 404s), and accented-header ToC anchors +
+  the `Full-Action-Reference#3d-view` deep links land correctly.
