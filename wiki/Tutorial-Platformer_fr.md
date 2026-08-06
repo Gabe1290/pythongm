@@ -121,68 +121,39 @@ Le joueur est l'objet le plus complexe avec la gravité, le saut et le mouvement
 1. Créez un nouvel objet nommé `obj_player`
 2. Définissez le sprite sur `spr_player`
 
-### 5.1 Événement Create - Initialiser les Variables
+### 5.1 Gravité
 
-**Événement : Create**
-1. Ajouter Événement → Create
-2. Ajouter Action : **Contrôle** → **Exécuter Code**
+**Événement : Create** — Ajouter Action : **Move** → **Set Gravity**
+(Direction : `270`, Gravity : `0.5`) — 270° correspond à vers le bas ; la
+valeur est ajoutée à la vitesse verticale du joueur à chaque image, donc le
+joueur accélère vers le bas tout seul à partir de maintenant.
 
-```gml
-// Variables de mouvement
-hspeed_max = 4;      // Vitesse horizontale maximale
-vspeed_max = 10;     // Vitesse de chute maximale
-jump_force = -10;    // Force de saut (négatif = haut)
-gravity_force = 0.5; // Vitesse de chute
+### 5.2 Mouvement, Saut et Collision avec le Sol
 
-// Vitesses actuelles
-hsp = 0;
-vsp = 0;
+Ajoutez ces événements, selon le même modèle que les tutoriels précédents
+de ce wiki :
 
-// État
-on_ground = false;
-```
+| Événement | Action |
+|---|---|
+| Keyboard (maintenue) → Left Arrow | Set Horizontal Speed à `-4` |
+| Keyboard (maintenue) → Right Arrow | Set Horizontal Speed à `4` |
+| Keyboard: No Key | Set Horizontal Speed à `0` |
+| Key Press → Up Arrow | Set Vertical Speed à `-10` |
+| Collision avec obj_ground | Stop Movement |
 
-### 5.2 Événement Step - Mouvement et Physique
+Deux détails qui rendent la sensation correcte :
 
-**Événement : Step**
-1. Ajouter Événement → Step → Step
-2. Ajouter Action : **Contrôle** → **Exécuter Code**
-
-```gml
-// === MOUVEMENT HORIZONTAL ===
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-hsp = move_input * hspeed_max;
-
-// === GRAVITÉ ===
-vsp += gravity_force;
-if (vsp > vspeed_max) vsp = vspeed_max;
-
-// === VÉRIFICATION DU SOL ===
-on_ground = place_meeting(x, y + 1, obj_ground);
-
-// === SAUT ===
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
-
-// === COLLISION HORIZONTALE ===
-if (place_meeting(x + hsp, y, obj_ground)) {
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) {
-        x += sign(hsp);
-    }
-    hsp = 0;
-}
-x += hsp;
-
-// === COLLISION VERTICALE ===
-if (place_meeting(x, y + vsp, obj_ground)) {
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) {
-        y += sign(vsp);
-    }
-    vsp = 0;
-}
-y += vsp;
-```
+- **No Key ne règle QUE la vitesse horizontale à 0** — n'utilisez jamais
+  Stop Movement ici, car Stop Movement remet aussi la vitesse verticale à
+  zéro, ce qui annulerait la gravité à chaque fois que le joueur relâche
+  une touche de direction.
+- **Key Press (pas maintenue)** est ce qui fait de Up une seule impulsion
+  de saut au lieu de propulser le joueur vers le haut à chaque image où la
+  touche est maintenue. **Stop Movement** à l'atterrissage annule ensuite
+  cette impulsion, pour que le joueur ne continue pas à monter une fois
+  posé — la collision solide intégrée du moteur (l'étape 3 a déjà rendu
+  `obj_ground` Solid) empêche déjà le joueur de s'enfoncer dans le sol ;
+  l'événement ici se contente d'effacer la vitesse de chute restante.
 
 ---
 
@@ -223,8 +194,11 @@ Le drapeau termine le niveau quand le joueur l'atteint.
 
 **Événement : Collision avec obj_player**
 1. Ajouter Événement → Collision → obj_player
-2. Ajouter Action : **Main2** → **Afficher Message** (Message : `Niveau terminé ! Score : ` + string(score))
-3. Ajouter Action : **Main1** → **Room Suivante**
+2. Ajouter Action : **Output** → **Show Message** (Message : `Niveau terminé !`)
+3. Ajouter Action : **Room** → **Next Room**
+
+Le texte de Show Message est une chaîne fixe — il ne peut pas afficher une
+valeur en direct comme le score.
 
 ---
 
@@ -262,10 +236,9 @@ Le drapeau termine le niveau quand le joueur l'atteint.
 
 Félicitations ! Vous avez créé un jeu de plateforme ! Vous avez appris :
 
-- **La physique de gravité** - Appliquer une force vers le bas constante
-- **Les mécaniques de saut** - Définir une vitesse verticale négative quand on est au sol
-- **La détection du sol** - Utiliser `place_meeting` pour vérifier ce qui est en dessous
-- **La gestion des collisions** - Se déplacer pixel par pixel vers les murs
+- **La physique de gravité** - Set Gravity applique une force vers le bas constante à chaque image
+- **Les mécaniques de saut** - Un événement Key Press (pas maintenue) donne une seule impulsion de vitesse vers le haut
+- **La collision solide intégrée** - Le sol bloque le joueur automatiquement une fois marqué Solid, sans code de vérification manuelle
 - **Les dangers** - Créer des objets qui redémarrent le niveau
 
 ---
