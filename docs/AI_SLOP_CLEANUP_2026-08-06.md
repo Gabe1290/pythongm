@@ -581,7 +581,10 @@ lower-priority read). Exceptions already touched:
   correctly derive movement magnitude from hspeed/vspeed rather than the
   animation-rate `speed` attribute — not a bug, false alarm caught before
   writing it down as one.)*
-- [ ] Object-Editor.md
+- [x] Object-Editor.md *(4 wrong action names fixed: Draw Health -> Draw
+  Health Bar; If Score/If Lives/If Health -> Test Score/Test Lives/Test
+  Health; If Variable -> Test Variable; Move Toward Point -> Move Towards
+  Point. Depth/Persistent claims verified accurate against game_runner.py)*
 - [ ] Room-Editor.md
 - [ ] 3D-View.md
 - [ ] Extensions.md
@@ -632,7 +635,8 @@ with section E.
 - [x] Event-Reference_fr.md *(same fixes as Event-Reference.md, see Update 12)*
 - [ ] Full-Action-Reference_fr.md *(generated — same caveat as E)*
 - [x] Programmation_Visuelle_fr.md *(same fixes as Visual-Programming.md, see Update 13)*
-- [ ] Editeur_Objets_fr.md
+- [x] Editeur_Objets_fr.md *(shorter than English — none of the wrong-name
+  issues fixed in Object-Editor.md are present here; no changes needed)*
 - [ ] Editeur_Salles_fr.md
 - [ ] 3D-View_fr.md
 - [ ] Extensions_fr.md
