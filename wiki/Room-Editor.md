@@ -119,7 +119,8 @@ Common grid sizes:
 
 ### Background Layers
 
-You can have multiple background layers:
+A room supports up to **8 background layers**, each with its own scroll
+speed for parallax effects. Example layout:
 - Layer 0: Sky (farthest back)
 - Layer 1: Mountains (slower scroll)
 - Layer 2: Trees (medium scroll)
@@ -129,7 +130,10 @@ You can have multiple background layers:
 
 ## Views (Camera)
 
-Views control what portion of the room is visible on screen.
+Views control what portion of the room is visible on screen. Up to **8
+views** (View 0 through View 7) can be configured per room — View 0 is
+visible by default; enable additional views for split-screen or picture-
+in-picture setups.
 
 ### Enable Views
 
