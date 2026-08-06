@@ -1,43 +1,72 @@
 # Reader-facing docs: AI-slop cleanup registry
 
-**Update 12 — MAJOR, STOP AND READ BEFORE TOUCHING Preset-Guide.md,
-Beginner-Preset.md, Intermediate-Preset.md, or the "Preset" column in
-Event-Reference.md/Full-Action-Reference.md: the "preset restricts which
-events/actions are available" framing does NOT apply to the structured
-(non-Blockly) Actions/Events panel every tutorial on this wiki teaches
-with.** Found while fixing Event-Reference.md's per-event "Preset:
-Beginner/Intermediate/Advanced" rows and its "Events by Preset" summary
-table — checked where those three-tier labels actually come from and they
-don't match anything real: `config/blockly_config.py`'s `PRESETS` registry
-has no "Advanced" preset at all (real names: `full`, `beginner`,
-`intermediate`, `platformer`, `grid_rpg`, `sokoban`, `thymio`, `testing`,
-`code_editor`, `blockly_editor`), and — more importantly — confirmed via
-`editors/object_editor/object_events_panel.py`'s `apply_config()` (docstring:
-*"Apply a Blockly configuration (for compatibility with object editor)"*)
-that a preset is stored but **never consulted anywhere** to filter the
-structured "Add Event"/"Add Action" menus. Presets only gate the **Blockly**
-visual-block palette (`config.enable_block(...)` in `get_beginner()`/
-`get_intermediate()`). Every event and action is always available in the
-structured editor regardless of preset — which is what
-Sokoban/Maze/Platformer/LunarLander/Pong/Breakout/Creating-Your-First-Game
-all teach through exclusively (none use Blockly).
+**Update 12 — MAJOR, RESOLVED (with a self-correction along the way — read
+this before touching Preset-Guide/Beginner-Preset/Intermediate-Preset/
+Event-Reference's Preset material again).** Found while fixing
+Event-Reference.md's per-event "Preset: Beginner/Intermediate/Advanced"
+rows: `config/blockly_config.py`'s `PRESETS` registry has no "Advanced"
+preset at all (real names: `full`, `beginner`, `intermediate`,
+`platformer`, `grid_rpg`, `sokoban`, `thymio`, `testing`, `code_editor`,
+`blockly_editor`), and the per-event tier assignments turned out to be
+almost entirely fabricated — cross-checked all 23 non-Thymio events against
+`get_available_events()` fed the real `beginner`/`intermediate` presets and
+**18 of 23 were wrong** (e.g. Alarm/Draw/Draw GUI/Begin Step/End Step/all
+Room+Game+boundary events were labeled "Advanced" but are actually in
+`beginner`; Keyboard Press was labeled "Beginner" but is `intermediate`-only).
 
-Preset-Guide.md states outright: *"PyGameMaker offers different presets
-that control which events and actions are available."* That's the specific
-claim that's wrong for the structured editor a beginner tutorial reader is
-actually using — they'd read this as "I need to pick a preset to unlock
-features," which isn't true outside Blockly.
+**First pass got the *scope* of the problem wrong, too — caught and
+corrected in the same session.** Initially concluded from
+`object_events_panel.py`'s `apply_config()` docstring ("for compatibility")
+that presets only gate the Blockly block palette and never filter the
+structured Actions/Events panel every tutorial teaches with. **That was
+false** — a fuller grep for `self.blockly_config` (not just the string
+"preset") in the same file found `show_add_event_menu()` and 4 call sites
+of `get_actions_by_category(self.blockly_config)` that genuinely DO filter
+the structured "Add Event"/"Add Action" menus, and
+`editors/object_editor/object_editor_main.py` loads a project's real
+`settings.blockly_preset` from `project.json` and calls
+`events_panel.apply_config()` with it. Worse: **`config/editions.py`'s
+`DEFAULT_EDITION = "beginner"`** — a fresh install's new projects default to
+exactly the restricted `beginner` preset in *both* editors, not "full". The
+lesson: a docstring plus one narrow grep is not verification — trace every
+call site of the thing you're citing as evidence before asserting "never
+consulted." An AskUserQuestion had already gone out on the wrong premise;
+told the user directly and proceeded with the corrected facts rather than
+letting the wrong framing stand.
 
-**Not fixing this without checking in first** — same reasoning as the GML
-crisis (Update 10/11): this touches the premise of 3+ wiki pages (plus
-French counterparts) and a summary table on 2 more, so it needs a scope
-decision (reframe as "Blockly preset" specifically vs. cut the framing
-entirely vs. something else) rather than a unilateral rewrite. The
-Event-Reference.md fix already applied in this update (Event Execution
-Order — a separate, independently-verified correction, see below) is
-unaffected and already committed; the per-event "Preset" property rows and
-the "Events by Preset" table in that same file are LEFT AS-IS pending this
-decision.
+**What's actually true, now verified end-to-end:** a project's preset comes
+from two places — `Preferences > IDE Edition` sets the default for *new*
+projects (Beginner edition -> `beginner` preset; existing projects
+untouched by switching edition), and `Tools > Configure Action Blocks...`
+changes the *current* project's preset at any time — and that preset
+genuinely filters both the Blockly palette and the structured panel.
+
+**Fixed, this update:**
+- `tools/gen_preset_docs.py` (new) regenerates
+  `Beginner-Preset.md`/`Intermediate-Preset.md` (+ `_fr`) straight from
+  `get_available_events()`/`get_actions_by_category()` fed the real preset
+  configs — the same functions the app itself calls — so these pages can't
+  silently drift again the way the hand-written ones did (they were stuck
+  at "4 events, 17 actions" while `get_beginner()` had grown to 19
+  events/83 actions across tutorial additions). Usage:
+  `py -3.12 tools/gen_preset_docs.py fr` (bare = English only). French
+  strings live in `tools/action_ref_i18n.py`'s new `EVENTS_FR` table +
+  `CATEGORIES_FR`'s 6 new event-category entries (Object/Input/Collision/
+  Step/Drawing/Other) — reuses the same `LANGS` table
+  `gen_action_reference.py` already established.
+- `Preset-Guide.md`/`_fr` hand-fixed: corrected framing (both editors are
+  filtered), explained the Edition-vs-Configure-Action-Blocks distinction,
+  replaced the fake "Advanced preset" row with the real Edition -> preset
+  mapping, and stopped hardcoding drift-prone counts (links to the now-generated
+  pages instead).
+- `Event-Reference.md`/`_fr`: all 18 wrong per-event Preset rows corrected
+  by line-targeted script (verified against the same real data), plus the
+  "Events by Preset" summary table rebuilt with accurate counts and a link
+  to Preset Guide instead of restating the framing.
+- Full-Action-Reference.md's generator (`tools/gen_action_reference.py`)
+  still has an imprecise "which actions each preset/edition exposes"
+  see-also line — not yet touched; low-risk (just a see-also blurb, not
+  a data table), left for a future pass.
 
 **Update 11 — Update 10's GML-fabrication crisis is RESOLVED for all 4
 pages, English + French.** User chose "rewrite English + French now" over
@@ -512,19 +541,23 @@ lower-priority read). Exceptions already touched:
   (confirmed: game_runner.py's `self.speed = 10.0  # Animation FPS`) —
   there is no built-in movement-magnitude variable, a real landmine also
   documented in the LunarLander tutorial fix)*
-- [ ] Event-Reference.md
+- [x] Event-Reference.md *(see Update 12: execution-order fix + 18/23
+  wrong per-event Preset rows corrected + Events-by-Preset table rebuilt)*
 - [ ] Full-Action-Reference.md *(generated — see CLAUDE.md: edit
   `tools/action_ref_i18n.py`, not this file directly, if wording needs to
-  change; a slop pass here means fixing the generator template strings)*
+  change; a slop pass here means fixing the generator template strings.
+  Update 12 left one known imprecise see-also line untouched, low-risk)*
 - [ ] Visual-Programming.md
 - [ ] Object-Editor.md
 - [ ] Room-Editor.md
 - [ ] 3D-View.md
 - [ ] Extensions.md
 - [ ] Exporting-Games.md
-- [ ] Preset-Guide.md
-- [ ] Beginner-Preset.md
-- [ ] Intermediate-Preset.md
+- [x] Preset-Guide.md *(see Update 12: corrected framing + Edition-vs-preset
+  mapping, dropped hardcoded drift-prone counts)*
+- [x] Beginner-Preset.md *(see Update 12: now generated by
+  tools/gen_preset_docs.py — never edit by hand)*
+- [x] Intermediate-Preset.md *(see Update 12: same, generated)*
 - [x] FAQ.md *(same contributing-boilerplate pattern as Home.md, plus a
   redundant "How can I contribute?" Q&A duplicating the bug-report entry
   above it; also trimmed a non-sequitur "contributions welcome" aside
@@ -563,7 +596,7 @@ with section E.
   this is a known, accepted state (CLAUDE.md's ".ts files are useless for
   this" note), not a new bug, and translating wiki action names anyway
   matches the project's own generated Full-Action-Reference convention)*
-- [ ] Event-Reference_fr.md
+- [x] Event-Reference_fr.md *(same fixes as Event-Reference.md, see Update 12)*
 - [ ] Full-Action-Reference_fr.md *(generated — same caveat as E)*
 - [ ] Programmation_Visuelle_fr.md
 - [ ] Editeur_Objets_fr.md
@@ -571,9 +604,9 @@ with section E.
 - [ ] 3D-View_fr.md
 - [ ] Extensions_fr.md
 - [ ] Exportation_fr.md
-- [ ] Preset-Guide_fr.md
-- [ ] Beginner-Preset_fr.md
-- [ ] Intermediate-Preset_fr.md
+- [x] Preset-Guide_fr.md *(same fixes as Preset-Guide.md, see Update 12)*
+- [x] Beginner-Preset_fr.md *(generated by tools/gen_preset_docs.py, see Update 12)*
+- [x] Intermediate-Preset_fr.md *(same, generated)*
 - [x] FAQ_fr.md *(same fix as FAQ.md)*
 - [ ] Tutorials_fr.md
 - [ ] Tutorial-Pong_fr.md

@@ -78,6 +78,10 @@ CATEGORIES_FR = {
     "Movement": "Mouvement", "Instance": "Instance", "Score": "Score", "Room": "Salle",
     "Timing": "Minuterie", "Audio": "Audio", "Game": "Jeu", "Control": "Contrôle",
     "Grid": "Grille", "Views": "Vues", "3D View": "Vue 3D",
+    # Event categories (events.event_types.EventType.category) — distinct
+    # from the action categories above, shared with tools/gen_preset_docs.py.
+    "Object": "Objet", "Input": "Entrée", "Collision": "Collision",
+    "Step": "Étape", "Drawing": "Dessin", "Other": "Autre",
 }
 CATEGORIES_DE = {
     "Movement": "Bewegung", "Instance": "Instanz", "Score": "Punkte", "Room": "Raum",
@@ -538,6 +542,36 @@ NOTES_FR = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Bande horizontale d'images de visage, du plus sain au moins sain (vide = pas d'icône de visage)",
     "How many frames the face strip has; health is bucketed evenly across them": "Nombre d'images de la bande de visage ; la santé y est répartie uniformément",
     "Expression shown after the objective label (bind your own key/quest variable)": "Expression affichée après l'étiquette d'objectif (associez votre propre variable de clé/quête)",
+}
+
+# --------------------------------------------------------------------------- #
+# Events (non-Thymio), keyed by events.event_types.EVENT_TYPES's stable name
+# --------------------------------------------------------------------------- #
+
+EVENTS_FR = {
+    "create": {"desc": "Exécuté une fois quand l'objet est créé pour la première fois"},
+    "step": {"desc": "Exécuté à chaque image (utilisez-le pour des vérifications continues)"},
+    "destroy": {"desc": "Exécuté quand l'objet est détruit"},
+    "collision": {"desc": "Exécuté lors d'une collision avec un autre objet"},
+    "keyboard": {"desc": "Exécuté en continu tant qu'une touche est maintenue (pour un mouvement fluide)"},
+    "keyboard_press": {"desc": "Exécuté une fois quand une touche est enfoncée pour la première fois (pour un déplacement sur grille)"},
+    "keyboard_release": {"desc": "Exécuté une fois quand une touche est relâchée"},
+    "keyboard_no_key": {"desc": "Exécuté quand aucune touche du clavier n'est actuellement enfoncée"},
+    "mouse": {"desc": "Événements de bouton et de mouvement de la souris"},
+    "begin_step": {"desc": "Exécuté au début de chaque image, avant les autres événements"},
+    "end_step": {"desc": "Exécuté à la fin de chaque image, après les collisions mais avant le dessin"},
+    "draw": {"desc": "Exécuté lors du dessin de l'objet (remplace le dessin automatique du sprite)"},
+    "draw_gui": {"desc": "Dessiné par-dessus tout le reste (non affecté par la caméra/vue). À utiliser pour le HUD, le score, les vies."},
+    "alarm": {"desc": "Exécuté quand un compte à rebours d'alarme atteint zéro"},
+    "room_start": {"desc": "Exécuté quand la salle démarre (après les événements Create)"},
+    "room_end": {"desc": "Exécuté quand la salle se termine"},
+    "game_start": {"desc": "Exécuté quand le jeu démarre (dans la première salle uniquement)"},
+    "game_end": {"desc": "Exécuté quand le jeu se termine"},
+    "outside_room": {"desc": "Exécuté quand l'instance est entièrement hors de la salle"},
+    "intersect_boundary": {"desc": "Exécuté quand l'instance touche le bord de la salle"},
+    "no_more_lives": {"desc": "Exécuté quand les vies atteignent 0 ou moins"},
+    "no_more_health": {"desc": "Exécuté quand la santé atteint 0 ou moins"},
+    "animation_end": {"desc": "Se déclenche quand l'animation du sprite atteint sa dernière image et recommence"},
 }
 
 NOTES_DE = {
@@ -2914,7 +2948,7 @@ NOTES_SL = {
 
 LANGS = {
     "fr": {"chrome": CHROME_FR, "categories": CATEGORIES_FR, "types": TYPES_FR,
-           "actions": ACTIONS_FR, "notes": NOTES_FR},
+           "actions": ACTIONS_FR, "notes": NOTES_FR, "events": EVENTS_FR},
     "de": {"chrome": CHROME_DE, "categories": CATEGORIES_DE, "types": TYPES_DE,
            "actions": ACTIONS_DE, "notes": NOTES_DE},
     "uk": {"chrome": CHROME_UK, "categories": CATEGORIES_UK, "types": TYPES_UK,

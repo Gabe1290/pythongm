@@ -1,0 +1,268 @@
+#!/usr/bin/env python3
+"""Generate wiki/Beginner-Preset[_<lang>].md and Intermediate-Preset[_<lang>].md
+from the live Blockly preset configs (config/blockly_config.py's PRESETS registry).
+
+The hand-written pages had drifted badly from the code — they described a
+"Beginner: 4 events, 17 actions" preset that hadn't matched
+BlocklyConfig.get_beginner() in a long time (missing whole events like Draw/
+Alarm/No More Lives and a dozen-plus actions like set_gravity/bounce/
+reverse_horizontal/test_variable). The preset genuinely restricts BOTH the
+Blockly visual-block palette AND the structured Events/Actions panel's "Add
+Event"/"Add Action" menus (editors/object_editor/object_events_panel.py's
+show_add_event_menu()/get_actions_by_category() calls both take the current
+project's blockly_config and filter on it) — every wiki tutorial is written
+for the structured panel, so this list is exactly what a project on this
+preset shows there too, not a Blockly-only concern. Which preset a project
+uses: `Preferences > IDE Edition` sets the default for *new* projects
+(default edition is Beginner -> this preset), `Tools > Configure Action
+Blocks...` changes the *current* project's preset at any time.
+
+This regenerates both pages straight from get_available_events()/
+get_actions_by_category() — the SAME functions the app itself calls to
+filter both the Blockly picker and the structured panel — so they can never
+silently drift again: re-run this whenever a preset's enable_block() calls
+change.
+
+    py -3.12 tools/gen_preset_docs.py            # English
+    py -3.12 tools/gen_preset_docs.py fr         # + French
+
+Localized editions reuse tools/action_ref_i18n.py's LANGS table (the same
+one Full-Action-Reference.md's generator uses) for action/category names,
+plus its "events" sub-table for event names. Anything missing falls back to
+English and is reported at the end of the run.
+"""
+import io
+import sys
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO))
+
+from events.plugin_loader import load_all_plugins  # noqa: E402
+
+load_all_plugins()
+from config.blockly_config import PRESETS  # noqa: E402
+from events.event_types import get_available_events  # noqa: E402
+from events.action_types import get_actions_by_category  # noqa: E402
+from tools.action_ref_i18n import LANGS  # noqa: E402
+
+ACTION_CATEGORY_ORDER = [
+    "Movement", "Grid", "Instance", "Score", "Timing", "Room", "Audio",
+    "Game", "Control", "Views", "3D View",
+]
+EVENT_CATEGORY_ORDER = ["Object", "Input", "Collision", "Step", "Timing", "Drawing", "Room", "Game", "Other"]
+
+PAGE_CHROME = {
+    "en": {
+        "beginner_title": "Beginner Preset",
+        "intermediate_title": "Intermediate Preset",
+        "nav": "*[Home](Home) | [Preset Guide](Preset-Guide) | {other_link}*",
+        "autogen": "> **Auto-generated** from `config/blockly_config.py`'s "
+                   "`get_{preset}()` by `tools/gen_preset_docs.py` — do not edit by "
+                   "hand; re-run the generator after changing the preset.",
+        "scope_note": "> **What this actually restricts:** this preset filters BOTH "
+                       "the Blockly visual-block palette *and* the structured "
+                       "Events/Actions panel's \"Add Event\"/\"Add Action\" menus — "
+                       "whichever editor you use, only the events/actions listed "
+                       "below appear. Which preset a *project* uses is set two ways: "
+                       "**`Preferences > IDE Edition`** picks the default for *new* "
+                       "projects (Beginner edition -> this preset; existing projects "
+                       "are never changed by switching edition), and "
+                       "**`Tools > Configure Action Blocks...`** changes the preset "
+                       "for the *currently open* project at any time. The IDE's "
+                       "default edition is Beginner, so a fresh install's new "
+                       "projects start on this exact list.",
+        "overview": "Overview",
+        "overview_text": "This preset enables **{n_events}** event types and "
+                          "**{n_actions}** action types.",
+        "events_h": "Events",
+        "actions_h": "Actions",
+        "c_event": "Event", "c_block": "Block Name", "c_category": "Category", "c_desc": "Description",
+        "c_action": "Action", "c_params": "Parameters",
+        "none": "—",
+        "see_also": "See Also",
+        "sa_preset": "- [Preset Guide](Preset-Guide) — what presets are and how to change one",
+        "sa_events": "- [Event Reference](Event-Reference) — full description of every event",
+        "sa_actions": "- [Full Action Reference](Full-Action-Reference) — full parameter details for every action",
+        "sa_other": "- [{other_title}]({other_link}) — {other_desc}",
+        "intermediate_desc": "the next tier up",
+        "beginner_desc": "the tier below this one",
+    },
+    "fr": {
+        "beginner_title": "Préréglage Débutant",
+        "intermediate_title": "Préréglage Intermédiaire",
+        "nav": "*[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | {other_link}*",
+        "autogen": "> **Généré automatiquement** à partir de `get_{preset}()` dans "
+                   "`config/blockly_config.py` par `tools/gen_preset_docs.py` — ne "
+                   "pas modifier à la main ; relancez le générateur après avoir changé "
+                   "le préréglage.",
+        "scope_note": "> **Ce que ce préréglage restreint réellement :** ce préréglage "
+                       "filtre À LA FOIS la palette de blocs visuels Blockly ET les "
+                       "menus « Ajouter un événement »/« Ajouter une action » du "
+                       "panneau structuré — quel que soit l'éditeur utilisé, seuls "
+                       "les événements/actions listés ci-dessous apparaissent. Le "
+                       "préréglage d'un *projet* se règle de deux façons : "
+                       "**`Préférences > Édition de l'IDE`** choisit le préréglage "
+                       "par défaut des *nouveaux* projets (édition Débutant -> ce "
+                       "préréglage ; les projets existants ne sont jamais modifiés en "
+                       "changeant l'édition), et **`Outils > Configurer les blocs "
+                       "d'action...`** change le préréglage du projet *actuellement "
+                       "ouvert* à tout moment. L'édition par défaut de l'IDE est "
+                       "Débutant, donc les nouveaux projets d'une installation "
+                       "fraîche démarrent exactement sur cette liste.",
+        "overview": "Aperçu",
+        "overview_text": "Ce préréglage active **{n_events}** types d'événements et "
+                          "**{n_actions}** types d'actions.",
+        "events_h": "Événements",
+        "actions_h": "Actions",
+        "c_event": "Événement", "c_block": "Nom du bloc", "c_category": "Catégorie", "c_desc": "Description",
+        "c_action": "Action", "c_params": "Paramètres",
+        "none": "—",
+        "see_also": "Voir aussi",
+        "sa_preset": "- [Guide des Préréglages](Preset-Guide_fr) — ce que sont les préréglages et comment en changer",
+        "sa_events": "- [Référence des Événements](Event-Reference_fr) — description complète de chaque événement",
+        "sa_actions": "- [Référence Complète des Actions](Full-Action-Reference_fr) — détails complets des paramètres de chaque action",
+        "sa_other": "- [{other_title}]({other_link}) — {other_desc}",
+        "intermediate_desc": "le niveau supérieur",
+        "beginner_desc": "le niveau en dessous de celui-ci",
+    },
+}
+
+
+def event_desc(ev, lang: str, missing: set) -> str:
+    en = ev.description or ""
+    if lang == "en" or not en:
+        return en
+    entry = LANGS.get(lang, {}).get("events", {}).get(ev.name)
+    if not entry or not entry.get("desc"):
+        missing.add(f"event.desc:{ev.name}")
+        return en
+    return entry["desc"]
+
+
+def category_label(cat: str, lang: str, missing: set) -> str:
+    if lang == "en":
+        return cat
+    t = LANGS.get(lang, {}).get("categories", {}).get(cat)
+    if t is None:
+        missing.add(f"category:{cat}")
+        return cat
+    return t
+
+
+def action_display(a, lang: str, missing: set) -> str:
+    en = a.display_name or a.name
+    if lang == "en":
+        return en
+    entry = LANGS.get(lang, {}).get("actions", {}).get(a.name)
+    if not entry or not entry.get("display"):
+        missing.add(f"action.display:{a.name}")
+        return en
+    return entry["display"]
+
+
+def param_summary(a) -> str:
+    params = list(getattr(a, "parameters", []) or [])
+    if not params:
+        return "—"
+    return ", ".join(f"`{p.name}`" for p in params)
+
+
+def build(preset_key: str, lang: str) -> tuple[str, set]:
+    chrome = PAGE_CHROME.get(lang, PAGE_CHROME["en"])
+    missing = set()
+    config = PRESETS[preset_key]
+
+    events = get_available_events(config)
+    events = [e for e in events if not e.name.startswith("thymio_")]
+    actions_by_cat = get_actions_by_category(config)
+    n_actions = sum(len(v) for v in actions_by_cat.values())
+
+    other_key = "intermediate" if preset_key == "beginner" else "beginner"
+    other_link = "Intermediate-Preset" if preset_key == "beginner" else "Beginner-Preset"
+    if lang != "en":
+        other_link += f"_{lang}"
+    other_title = chrome[f"{other_key}_title"]
+    other_desc = chrome[f"{other_key}_desc"]
+
+    out = [
+        f"# {chrome[f'{preset_key}_title']}",
+        "",
+        chrome["nav"].format(other_link=f"[{other_title}]({other_link})"),
+        "",
+        chrome["autogen"].format(preset=preset_key),
+        "",
+        chrome["scope_note"],
+        "",
+        f"## {chrome['overview']}",
+        "",
+        chrome["overview_text"].format(n_events=len(events), n_actions=n_actions),
+        "",
+        "---",
+        "",
+        f"## {chrome['events_h']}",
+        "",
+        f"| {chrome['c_event']} | {chrome['c_block']} | {chrome['c_category']} | {chrome['c_desc']} |",
+        "|-------|------------|----------|-------------|",
+    ]
+    ev_by_cat: dict[str, list] = {}
+    for e in events:
+        ev_by_cat.setdefault(e.category, []).append(e)
+    ev_ordered = [c for c in EVENT_CATEGORY_ORDER if c in ev_by_cat]
+    ev_ordered += sorted(c for c in ev_by_cat if c not in EVENT_CATEGORY_ORDER)
+    for cat in ev_ordered:
+        for e in sorted(ev_by_cat[cat], key=lambda x: x.display_name or x.name):
+            cat_label = category_label(cat, lang, missing)
+            out.append(f"| {e.display_name} | `{e.name}` | {cat_label} | {event_desc(e, lang, missing)} |")
+    out.append("")
+    out.append("---")
+    out.append("")
+    out.append(f"## {chrome['actions_h']}")
+    out.append("")
+    ordered_cats = [c for c in ACTION_CATEGORY_ORDER if c in actions_by_cat]
+    ordered_cats += sorted(c for c in actions_by_cat if c not in ACTION_CATEGORY_ORDER)
+    for cat in ordered_cats:
+        cat_label = category_label(cat, lang, missing)
+        out.append(f"### {cat_label}")
+        out.append("")
+        out.append(f"| {chrome['c_action']} | {chrome['c_block']} | {chrome['c_params']} |")
+        out.append("|--------|------------|------------|")
+        for a in sorted(actions_by_cat[cat], key=lambda x: x.display_name or x.name):
+            out.append(f"| {action_display(a, lang, missing)} | `{a.name}` | {param_summary(a)} |")
+        out.append("")
+    out.append("---")
+    out.append("")
+    out += [
+        f"## {chrome['see_also']}",
+        "",
+        chrome["sa_preset"],
+        chrome["sa_events"],
+        chrome["sa_actions"],
+        chrome["sa_other"].format(other_title=other_title, other_link=other_link, other_desc=other_desc),
+        "",
+    ]
+    return "\n".join(out), missing
+
+
+def out_name(preset_key: str, lang: str) -> str:
+    base = "Beginner-Preset" if preset_key == "beginner" else "Intermediate-Preset"
+    return f"{base}.md" if lang == "en" else f"{base}_{lang}.md"
+
+
+def main():
+    langs = sys.argv[1:] or ["en"]
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    for lang in langs:
+        for preset_key in ("beginner", "intermediate"):
+            md, missing = build(preset_key, lang)
+            target = REPO / "wiki" / out_name(preset_key, lang)
+            target.write_text(md, encoding="utf-8")
+            print(f"Wrote {target} ({len(md.splitlines())} lines)")
+            if missing:
+                print(f"  [{lang}] {len(missing)} untranslated strings fell back to English:")
+                for k in sorted(missing):
+                    print(f"    - {k}")
+
+
+if __name__ == "__main__":
+    main()

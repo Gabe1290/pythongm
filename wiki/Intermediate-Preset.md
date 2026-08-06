@@ -2,414 +2,200 @@
 
 *[Home](Home) | [Preset Guide](Preset-Guide) | [Beginner Preset](Beginner-Preset)*
 
-The **Intermediate** preset builds upon the [Beginner Preset](Beginner-Preset) by adding more advanced events and actions. It's designed for users who have mastered the basics and want to create more complex games with features like timed events, sound, lives, and health systems.
+> **Auto-generated** from `config/blockly_config.py`'s `get_intermediate()` by `tools/gen_preset_docs.py` — do not edit by hand; re-run the generator after changing the preset.
+
+> **What this actually restricts:** this preset filters BOTH the Blockly visual-block palette *and* the structured Events/Actions panel's "Add Event"/"Add Action" menus — whichever editor you use, only the events/actions listed below appear. Which preset a *project* uses is set two ways: **`Preferences > IDE Edition`** picks the default for *new* projects (Beginner edition -> this preset; existing projects are never changed by switching edition), and **`Tools > Configure Action Blocks...`** changes the preset for the *currently open* project at any time. The IDE's default edition is Beginner, so a fresh install's new projects start on this exact list.
 
 ## Overview
 
-The Intermediate preset includes everything from Beginner, plus:
-- **4 Additional Event Types** - Draw, Destroy, Mouse, Alarm
-- **12 Additional Action Types** - Lives, Health, Sound, Timing, and more movement options
-- **3 Additional Categories** - Timing, Sound, Drawing
+This preset enables **21** event types and **94** action types.
 
 ---
 
-## Additional Events (Beyond Beginner)
+## Events
 
-### Draw Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_draw` |
-| **Category** | Drawing |
-| **Icon** | 🎨 |
-| **Description** | Triggered when the object needs to be rendered |
-
-**When it fires:** Every frame during the drawing phase, after all step events.
-
-**Important:** When you add a Draw event, the default sprite drawing is disabled. You must manually draw the sprite if you want it visible.
-
-**Common uses:**
-- Custom rendering
-- Drawing health bars
-- Displaying text
-- Drawing shapes and effects
-- HUD elements
-
----
-
-### Destroy Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_destroy` |
-| **Category** | Object |
-| **Icon** | 💥 |
-| **Description** | Triggered when the instance is destroyed |
-
-**When it fires:** Just before the instance is removed from the game.
-
-**Common uses:**
-- Create explosion effects
-- Drop items
-- Play death sound
-- Update score
-- Spawn particles
+| Event | Block Name | Category | Description |
+|-------|------------|----------|-------------|
+| Create | `create` | Object | Executed when the object is first created |
+| Destroy | `destroy` | Object | Executed when the object is destroyed |
+| Step | `step` | Object | Executed every frame (use for continuous checks) |
+| Keyboard (held) | `keyboard` | Input | Executed continuously while a key is held down (for smooth movement) |
+| Keyboard <No Key> | `keyboard_no_key` | Input | Executed when no keyboard key is currently pressed |
+| Keyboard Press | `keyboard_press` | Input | Executed once when a key is first pressed (for grid-based movement) |
+| Collision With... | `collision` | Collision | Executed when colliding with another object |
+| Begin Step | `begin_step` | Step | Executed at the beginning of each step, before other events |
+| End Step | `end_step` | Step | Executed at the end of each step, after collisions but before drawing |
+| Alarm | `alarm` | Timing | Executed when an alarm clock reaches zero |
+| Draw | `draw` | Drawing | Executed when the object is drawn (replaces default sprite drawing) |
+| Draw GUI | `draw_gui` | Drawing | Drawn on top of everything (not affected by camera/view). Use for HUD, score, lives. |
+| Room End | `room_end` | Room | Executed when the room ends |
+| Room Start | `room_start` | Room | Executed when the room starts (after create events) |
+| Game End | `game_end` | Game | Executed when the game ends |
+| Game Start | `game_start` | Game | Executed when the game starts (in first room only) |
+| Animation End | `animation_end` | Other | Fires when the sprite's animation reaches its last frame and wraps |
+| Intersect Boundary | `intersect_boundary` | Other | Executed when instance intersects the room boundary |
+| No More Health | `no_more_health` | Other | Executed when health becomes 0 or less |
+| No More Lives | `no_more_lives` | Other | Executed when lives become 0 or less |
+| Outside Room | `outside_room` | Other | Executed when instance is completely outside the room |
 
 ---
 
-### Mouse Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_mouse` |
-| **Category** | Input |
-| **Icon** | 🖱️ |
-| **Description** | Triggered on mouse interactions |
-
-**Types of mouse events:**
-- Left button (press, release, held)
-- Right button (press, release, held)
-- Middle button (press, release, held)
-- Mouse enter (cursor enters instance)
-- Mouse leave (cursor leaves instance)
-- Global mouse events (anywhere on screen)
-
-**Common uses:**
-- Clickable buttons
-- Drag and drop
-- Hover effects
-- Menu interactions
-
----
-
-### Alarm Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_alarm` |
-| **Category** | Timing |
-| **Icon** | ⏰ |
-| **Description** | Triggered when an alarm timer reaches zero |
-
-**When it fires:** When the corresponding alarm countdown reaches 0.
-
-**Available alarms:** 12 independent alarms (0-11)
-
-**Common uses:**
-- Timed spawning
-- Delayed actions
-- Cooldowns
-- Animation timing
-- Periodic events
-
----
-
-## Additional Actions (Beyond Beginner)
-
-### Movement Actions
-
-#### Move in Direction
-| Property | Value |
-|----------|-------|
-| **Action Name** | `move_direction` |
-| **Block Name** | `move_direction` |
-| **Category** | Movement |
-
-**Description:** Set movement using direction (0-360 degrees) and speed.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `direction` | Number | Direction in degrees (0=right, 90=up, 180=left, 270=down) |
-| `speed` | Number | Movement speed |
-
----
-
-#### Move Towards Point
-| Property | Value |
-|----------|-------|
-| **Action Name** | `move_towards_point` |
-| **Block Name** | `move_towards_point` |
-| **Category** | Movement |
-
-**Description:** Move towards a specific position.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `x` | Number/Expression | Target X coordinate |
-| `y` | Number/Expression | Target Y coordinate |
-| `speed` | Number | Movement speed |
-
----
-
-### Timing Actions
-
-#### Set Alarm
-| Property | Value |
-|----------|-------|
-| **Action Name** | `set_alarm` |
-| **Block Name** | `set_alarm` |
-| **Category** | Timing |
-| **Icon** | ⏰ |
-
-**Description:** Set an alarm to trigger after a number of steps.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `alarm` | Number | Alarm number (0-11) |
-| `steps` | Number | Steps until alarm fires (at 60 FPS, 60 steps = 1 second) |
-
-**Example:** Set alarm 0 to 180 steps for a 3-second delay.
-
----
-
-### Lives Actions
-
-#### Set Lives
-| Property | Value |
-|----------|-------|
-| **Action Name** | `set_lives` |
-| **Block Name** | `lives_set` |
-| **Category** | Score/Lives/Health |
-| **Icon** | ❤️ |
-
-**Description:** Set the number of lives.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Lives value |
-| `relative` | Boolean | If true, adds to current lives |
-
----
-
-#### Add Lives
-| Property | Value |
-|----------|-------|
-| **Action Name** | `add_lives` |
-| **Block Name** | `lives_add` |
-| **Category** | Score/Lives/Health |
-| **Icon** | ➕❤️ |
-
-**Description:** Add to or subtract from lives.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Amount to add (negative to subtract) |
-
-**Note:** When lives reach 0, the `no_more_lives` event is triggered.
-
----
-
-#### Draw Lives
-| Property | Value |
-|----------|-------|
-| **Action Name** | `draw_lives` |
-| **Block Name** | `draw_lives` |
-| **Category** | Score/Lives/Health |
-| **Icon** | 🖼️❤️ |
-
-**Description:** Display lives on screen.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `x` | Number | X position |
-| `y` | Number | Y position |
-| `sprite` | Sprite | Optional sprite to use as life icon |
-
----
-
-### Health Actions
-
-#### Set Health
-| Property | Value |
-|----------|-------|
-| **Action Name** | `set_health` |
-| **Block Name** | `health_set` |
-| **Category** | Score/Lives/Health |
-| **Icon** | 💚 |
-
-**Description:** Set the health value (0-100).
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Health value (0-100) |
-| `relative` | Boolean | If true, adds to current health |
-
----
-
-#### Add Health
-| Property | Value |
-|----------|-------|
-| **Action Name** | `add_health` |
-| **Block Name** | `health_add` |
-| **Category** | Score/Lives/Health |
-| **Icon** | ➕💚 |
-
-**Description:** Add to or subtract from health.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Amount to add (negative for damage) |
-
-**Note:** When health reaches 0, the `no_more_health` event is triggered.
-
----
-
-#### Draw Health Bar
-| Property | Value |
-|----------|-------|
-| **Action Name** | `draw_health_bar` |
-| **Block Name** | `draw_health_bar` |
-| **Category** | Score/Lives/Health |
-| **Icon** | 📊💚 |
-
-**Description:** Draw a health bar on screen.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `x1` | Number | Left X position |
-| `y1` | Number | Top Y position |
-| `x2` | Number | Right X position |
-| `y2` | Number | Bottom Y position |
-| `back_color` | Color | Background color |
-| `bar_color` | Color | Health bar color |
-
----
-
-### Sound Actions
-
-#### Play Sound
-| Property | Value |
-|----------|-------|
-| **Action Name** | `play_sound` |
-| **Block Name** | `sound_play` |
-| **Category** | Sound |
-| **Icon** | 🔊 |
-
-**Description:** Play a sound effect.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `sound` | Sound | Sound resource to play |
-| `loop` | Boolean | Whether to loop the sound |
-
----
-
-#### Play Music
-| Property | Value |
-|----------|-------|
-| **Action Name** | `play_music` |
-| **Block Name** | `music_play` |
-| **Category** | Sound |
-| **Icon** | 🎵 |
-
-**Description:** Play background music.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `sound` | Sound | Music resource to play |
-| `loop` | Boolean | Whether to loop (usually true for music) |
-
----
-
-#### Stop Music
-| Property | Value |
-|----------|-------|
-| **Action Name** | `stop_music` |
-| **Block Name** | `music_stop` |
-| **Category** | Sound |
-| **Icon** | 🔇 |
-
-**Description:** Stop all currently playing music.
-
-**Parameters:** None
-
----
-
-## Complete Feature List
-
-### Events in Intermediate Preset
-
-| Event | Category | Description |
-|-------|----------|-------------|
-| Create | Object | Instance created |
-| Step | Object | Every frame |
-| Destroy | Object | Instance destroyed |
-| Draw | Drawing | Rendering phase |
-| Keyboard Press | Input | Key pressed once |
-| Mouse | Input | Mouse interactions |
-| Collision | Collision | Instance overlap |
-| Alarm | Timing | Timer reached zero |
-
-### Actions in Intermediate Preset
-
-| Category | Actions |
-|----------|---------|
-| **Movement** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards |
-| **Instance** | Create, Destroy |
-| **Score** | Set Score, Add Score, Draw Score |
-| **Lives** | Set Lives, Add Lives, Draw Lives |
-| **Health** | Set Health, Add Health, Draw Health Bar |
-| **Room** | Next, Previous, Restart, Go To, If Next/Previous Exists |
-| **Timing** | Set Alarm |
-| **Sound** | Play Sound, Play Music, Stop Music |
-| **Output** | Show Message, Execute Code |
-
----
-
-## Example: Shooter Game with Lives
-
-### Player Object
-
-**Create:**
-- Set Lives: 3
-
-**Keyboard Press (Space):**
-- Create Instance: obj_bullet at (x, y-20)
-- Set Alarm: 0 to 15 (cooldown)
-
-**Collision with obj_enemy:**
-- Add Lives: -1
-- Play Sound: snd_hurt
-- Jump to Position: (320, 400)
-
-**No More Lives:**
-- Show Message: "Game Over!"
-- Restart Room
-
-### Enemy Object
-
-**Create:**
-- Set Alarm: 0 to 60
-
-**Alarm 0:**
-- Create Instance: obj_enemy_bullet at (x, y+20)
-- Set Alarm: 0 to 60 (repeat)
-
-**Collision with obj_bullet:**
-- Add Score: 100
-- Play Sound: snd_explosion
-- Destroy Instance: self
-
----
-
-## Upgrading to Advanced Presets
-
-When you need more features, consider:
-- **Platformer Preset** - Gravity, jumping, platform mechanics
-- **Full Preset** - All available events and actions
+## Actions
+
+### Movement
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Bounce | `bounce` | — |
+| Jump To Position | `jump_to_position` | `x`, `y`, `relative` |
+| Jump to Random Position | `jump_to_random` | `snap_h`, `snap_v` |
+| Jump to Start Position | `jump_to_start` | — |
+| Move Towards Point | `move_towards_point` | `x`, `y`, `speed` |
+| Reverse Horizontal | `reverse_horizontal` | — |
+| Reverse Vertical | `reverse_vertical` | — |
+| Set Direction & Speed | `set_direction_speed` | `direction`, `speed` |
+| Set Friction | `set_friction` | `friction` |
+| Set Gravity | `set_gravity` | `direction`, `gravity` |
+| Set Horizontal Speed | `set_hspeed` | `speed` |
+| Set Vertical Speed | `set_vspeed` | `speed` |
+| Start Moving (Direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
+| Stop Movement | `stop_movement` | — |
+
+### Grid
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| If On Grid | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
+| Snap to Grid | `snap_to_grid` | `grid_size` |
+| Test Grid Alignment | `test_alignment` | `hsnap`, `vsnap` |
+
+### Instance
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Change Instance | `change_instance` | `object`, `perform_events` |
+| Create Instance | `create_instance` | `object`, `x`, `y`, `relative` |
+| Create Moving Instance | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
+| Create Random Instance | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
+| Destroy Instance | `destroy_instance` | — |
+| Destroy at Position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Set Image Index | `set_image_index` | `frame` |
+| Set Image Speed | `set_image_speed` | `speed` |
+| Set Sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
+| Start Animation | `start_animation` | — |
+| Stop Animation | `stop_animation` | — |
+| Test Instance Count | `test_instance_count` | `object`, `number`, `operation` |
+
+### Score
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Clear High-Score Table | `clear_highscore` | — |
+| Draw Health Bar | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
+| Draw Lives | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
+| Draw Score | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Set Health | `set_health` | `value`, `relative` |
+| Set Lives | `set_lives` | `value`, `relative` |
+| Set Score | `set_score` | `value`, `relative` |
+| Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Test Health | `test_health` | `operation`, `value` |
+| Test Lives | `test_lives` | `value`, `operation` |
+| Test Score | `test_score` | `value`, `operation` |
+
+### Timing
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Set Alarm | `set_alarm` | `alarm_number`, `steps` |
+| Sleep | `sleep` | `milliseconds` |
+
+### Room
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Check Room | `check_room` | `room`, `not_flag` |
+| End Game | `game_end` | — |
+| Go to Room | `goto_room` | `room`, `transition` |
+| If Next Room Exists | `if_next_room_exists` | `then_actions`, `else_actions` |
+| If Previous Room Exists | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Next Room | `next_room` | — |
+| Previous Room | `previous_room` | — |
+| Restart Room | `restart_room` | — |
+| Set Room Caption | `set_room_caption` | `caption` |
+
+### Audio
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Check Sound Playing | `check_sound` | `sound`, `not_flag` |
+| Play Music | `play_music` | `music`, `loop`, `volume` |
+| Play Sound | `play_sound` | `sound`, `volume` |
+| Set Volume | `set_volume` | `volume` |
+| Stop Music | `stop_music` | — |
+| Stop Sound | `stop_sound` | `sound` |
+
+### Game
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Draw Arrow | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Draw Background | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Draw Ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Draw Line | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Draw Scaled Text | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Draw Text | `draw_text` | `text`, `x`, `y`, `relative` |
+| Draw Variable | `draw_variable` | `x`, `y`, `variable` |
+| Fill Screen Color | `fill_color` | `color` |
+| Open Webpage | `open_webpage` | `url` |
+| Restart Game | `restart_game` | — |
+| Set Color | `set_color` | `color`, `alpha` |
+| Set Draw Color | `set_draw_color` | `color` |
+| Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
+| Set Window Caption | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
+| Show Game Info | `show_info` | — |
+| Show Message | `show_message` | `message` |
+
+### Control
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Check Empty | `check_empty` | `x`, `y`, `relative`, `objects` |
+| Comment | `comment` | `text` |
+| Else | `else_action` | — |
+| End Block | `end_block` | — |
+| Execute Code | `execute_code` | `code` |
+| Execute Script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
+| Exit Event | `exit_event` | — |
+| If Can Push | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
+| If Collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| If Object Exists | `if_object_exists` | `object`, `not_flag` |
+| Start Block | `start_block` | — |
+| Test Chance | `test_chance` | `sides` |
+| Test Question | `test_question` | `question` |
+| Test Variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Views
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Enable Views | `enable_views` | `enable` |
+| Set View | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### 3D View
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Draw DOOM HUD | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
+| Draw Minimap | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
+| Enable Raycast View | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
+| Set Facing Angle | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
 ## See Also
 
-- [Beginner Preset](Beginner-Preset) - Start here if new
-- [Full Action Reference](Full-Action-Reference) - Complete action list
-- [Event Reference](Event-Reference) - Complete event list
-- [Events and Actions](Events-and-Actions) - Core concepts
+- [Preset Guide](Preset-Guide) — what presets are and how to change one
+- [Event Reference](Event-Reference) — full description of every event
+- [Full Action Reference](Full-Action-Reference) — full parameter details for every action
+- [Beginner Preset](Beginner-Preset) — the tier below this one

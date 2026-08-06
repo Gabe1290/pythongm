@@ -2,15 +2,19 @@
 
 *[Français](Preset-Guide_fr) | [Retour à l'Accueil](Home_fr)*
 
-PyGameMaker propose différents préréglages qui contrôlent quels événements et actions sont disponibles. Cela aide les débutants à se concentrer sur les fonctionnalités essentielles tout en permettant aux utilisateurs expérimentés d'accéder à l'ensemble des outils.
+PyGameMaker propose différents préréglages qui contrôlent quels événements et actions sont disponibles — à la fois dans le sélecteur de blocs visuels Blockly et dans le panneau structuré Événements/Actions (« Ajouter un événement »/« Ajouter une action ») que tous les tutoriels de ce wiki utilisent. Cela aide les débutants à se concentrer sur les fonctionnalités essentielles tout en permettant aux utilisateurs expérimentés d'accéder à l'ensemble des outils.
+
+Le préréglage d'un projet se règle de deux façons : **`Préférences > Édition de l'IDE`** choisit le préréglage par défaut des *nouveaux* projets (les projets existants ne sont jamais modifiés en changeant l'édition), et **`Outils > Configurer les blocs d'action...`** change le préréglage du projet *actuellement ouvert* à tout moment. L'édition par défaut de l'IDE est Débutant, donc les nouveaux projets d'une installation fraîche démarrent déjà sur le préréglage Débutant.
 
 ## Choisissez Votre Niveau
 
-| Préréglage | Idéal Pour | Fonctionnalités |
+| Édition de l'IDE | Idéal Pour | Préréglage utilisé |
 |------------|------------|-----------------|
-| [**Débutant**](Beginner-Preset_fr) | Nouveaux en développement de jeux | 4 événements, 17 actions - Mouvement, collisions, score, salles |
-| [**Intermédiaire**](Intermediate-Preset_fr) | Quelques connaissances | +4 événements, +12 actions - Vies, santé, son, alarmes, dessin |
-| **Avancé** | Utilisateurs expérimentés | Tous les 40+ événements et actions disponibles |
+| **Débutant** (par défaut) | Nouveaux en développement de jeux | [Préréglage Débutant](Beginner-Preset_fr) — mouvement de base, collisions, score, salles |
+| **Avancé** | Quelques connaissances | [Préréglage Intermédiaire](Intermediate-Preset_fr) — + vies, santé, son, alarmes, mouvement sur grille |
+| **Développement** | Utilisateurs expérimentés | Le préréglage `full` — tous les événements et actions disponibles |
+
+Les noms ne correspondent pas exactement : l'édition « Avancé » utilise le préréglage `intermediate` (il n'existe pas de préréglage « avancé » séparé) — voir [Préréglage Débutant](Beginner-Preset_fr)/[Préréglage Intermédiaire](Intermediate-Preset_fr) pour les décomptes exacts et toujours à jour d'événements et d'actions de chacun.
 
 ---
 
@@ -19,8 +23,8 @@ PyGameMaker propose différents préréglages qui contrôlent quels événements
 ### Préréglages
 | Page | Description |
 |------|-------------|
-| [Préréglage Débutant](Beginner-Preset_fr) | 4 événements, 17 actions - Fonctionnalités essentielles |
-| [Préréglage Intermédiaire](Intermediate-Preset_fr) | +4 événements, +12 actions - Vies, santé, son |
+| [Préréglage Débutant](Beginner-Preset_fr) | Fonctionnalités essentielles — décomptes exacts sur cette page |
+| [Préréglage Intermédiaire](Intermediate-Preset_fr) | Ajoute vies, santé, son, alarmes, mouvement sur grille — décomptes exacts sur cette page |
 
 ### Référence
 | Page | Description |

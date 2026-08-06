@@ -2,508 +2,187 @@
 
 *[Home](Home) | [Preset Guide](Preset-Guide) | [Intermediate Preset](Intermediate-Preset)*
 
-The **Beginner** preset is designed for users who are new to game development. It provides a curated set of essential events and actions that cover the fundamentals of creating simple 2D games without overwhelming beginners with too many options.
+> **Auto-generated** from `config/blockly_config.py`'s `get_beginner()` by `tools/gen_preset_docs.py` — do not edit by hand; re-run the generator after changing the preset.
+
+> **What this actually restricts:** this preset filters BOTH the Blockly visual-block palette *and* the structured Events/Actions panel's "Add Event"/"Add Action" menus — whichever editor you use, only the events/actions listed below appear. Which preset a *project* uses is set two ways: **`Preferences > IDE Edition`** picks the default for *new* projects (Beginner edition -> this preset; existing projects are never changed by switching edition), and **`Tools > Configure Action Blocks...`** changes the preset for the *currently open* project at any time. The IDE's default edition is Beginner, so a fresh install's new projects start on this exact list.
 
 ## Overview
 
-The Beginner preset includes:
-- **4 Event Types** - For responding to game situations
-- **17 Action Types** - For controlling game behavior
-- **6 Categories** - Events, Movement, Score/Lives/Health, Instance, Room, Output
+This preset enables **19** event types and **83** action types.
 
 ---
 
 ## Events
 
-Events are triggers that respond to specific situations in your game. When an event occurs, the actions you've defined for that event will execute.
-
-### Create Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_create` |
-| **Category** | Events |
-| **Description** | Triggered once when an instance is first created |
-
-**When it fires:** Immediately when an object instance is placed in a room or created with the "Create Instance" action.
-
-**Common uses:**
-- Initialize variables
-- Set starting position
-- Set initial speed or direction
-- Reset score at game start
-
----
-
-### Step Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_step` |
-| **Category** | Events |
-| **Description** | Triggered every frame (typically 60 times per second) |
-
-**When it fires:** Continuously, every game frame.
-
-**Common uses:**
-- Continuous movement
-- Checking conditions
-- Updating game state
-- Animation control
-
----
-
-### Keyboard Press Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_keyboard_press` |
-| **Category** | Events |
-| **Description** | Triggered once when a specific key is pressed down |
-
-**When it fires:** Once at the moment a key is pressed (not while held).
-
-**Supported keys:** Arrow keys (up, down, left, right), Space, Enter, letters (A-Z), numbers (0-9)
-
-**Common uses:**
-- Player movement controls
-- Jumping
-- Shooting
-- Menu navigation
-
----
-
-### Collision Event
-| Property | Value |
-|----------|-------|
-| **Block Name** | `event_collision` |
-| **Category** | Events |
-| **Description** | Triggered when this instance collides with another object |
-
-**When it fires:** Each frame that two instances are overlapping.
-
-**Special variable:** In a collision event, `other` refers to the instance being collided with.
-
-**Common uses:**
-- Collecting items (coins, power-ups)
-- Taking damage from enemies
-- Hitting walls or obstacles
-- Reaching goals or checkpoints
+| Event | Block Name | Category | Description |
+|-------|------------|----------|-------------|
+| Create | `create` | Object | Executed when the object is first created |
+| Step | `step` | Object | Executed every frame (use for continuous checks) |
+| Keyboard (held) | `keyboard` | Input | Executed continuously while a key is held down (for smooth movement) |
+| Keyboard <No Key> | `keyboard_no_key` | Input | Executed when no keyboard key is currently pressed |
+| Collision With... | `collision` | Collision | Executed when colliding with another object |
+| Begin Step | `begin_step` | Step | Executed at the beginning of each step, before other events |
+| End Step | `end_step` | Step | Executed at the end of each step, after collisions but before drawing |
+| Alarm | `alarm` | Timing | Executed when an alarm clock reaches zero |
+| Draw | `draw` | Drawing | Executed when the object is drawn (replaces default sprite drawing) |
+| Draw GUI | `draw_gui` | Drawing | Drawn on top of everything (not affected by camera/view). Use for HUD, score, lives. |
+| Room End | `room_end` | Room | Executed when the room ends |
+| Room Start | `room_start` | Room | Executed when the room starts (after create events) |
+| Game End | `game_end` | Game | Executed when the game ends |
+| Game Start | `game_start` | Game | Executed when the game starts (in first room only) |
+| Animation End | `animation_end` | Other | Fires when the sprite's animation reaches its last frame and wraps |
+| Intersect Boundary | `intersect_boundary` | Other | Executed when instance intersects the room boundary |
+| No More Health | `no_more_health` | Other | Executed when health becomes 0 or less |
+| No More Lives | `no_more_lives` | Other | Executed when lives become 0 or less |
+| Outside Room | `outside_room` | Other | Executed when instance is completely outside the room |
 
 ---
 
 ## Actions
 
-Actions are commands that execute when an event is triggered. Multiple actions can be added to a single event and will execute in order.
-
----
-
-## Movement Actions
-
-### Set Horizontal Speed
-| Property | Value |
-|----------|-------|
-| **Action Name** | `set_hspeed` |
-| **Block Name** | `move_set_hspeed` |
-| **Category** | Movement |
-| **Icon** | ↔️ |
-
-**Description:** Sets the horizontal movement speed of the instance.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Speed in pixels per frame. Positive = right, Negative = left |
-
-**Example:** Set `value` to `4` to move right at 4 pixels per frame, or `-4` to move left.
-
----
-
-### Set Vertical Speed
-| Property | Value |
-|----------|-------|
-| **Action Name** | `set_vspeed` |
-| **Block Name** | `move_set_vspeed` |
-| **Category** | Movement |
-| **Icon** | ↕️ |
-
-**Description:** Sets the vertical movement speed of the instance.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Speed in pixels per frame. Positive = down, Negative = up |
-
-**Example:** Set `value` to `-4` to move up at 4 pixels per frame, or `4` to move down.
-
----
-
-### Stop Movement
-| Property | Value |
-|----------|-------|
-| **Action Name** | `stop_movement` |
-| **Block Name** | `move_stop` |
-| **Category** | Movement |
-| **Icon** | 🛑 |
-
-**Description:** Stops all movement by setting both horizontal and vertical speed to zero.
-
-**Parameters:** None
-
-**Common uses:**
-- Stop player when hitting a wall
-- Stop enemies when reaching a destination
-- Pause movement temporarily
-
----
-
-### Jump to Position
-| Property | Value |
-|----------|-------|
-| **Action Name** | `jump_to_position` |
-| **Block Name** | `move_jump_to` |
-| **Category** | Movement |
-| **Icon** | 📍 |
-
-**Description:** Instantly moves the instance to a specific position (no smooth movement).
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `x` | Number | Target X coordinate |
-| `y` | Number | Target Y coordinate |
-
-**Example:** Jump to position (100, 200) to teleport the player to that location.
-
----
-
-## Instance Actions
-
-### Destroy Instance
-| Property | Value |
-|----------|-------|
-| **Action Name** | `destroy_instance` |
-| **Block Name** | `instance_destroy` |
-| **Category** | Instance |
-| **Icon** | 💥 |
-
-**Description:** Removes an instance from the game.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `target` | Choice | `self` = destroy this instance, `other` = destroy the colliding instance |
-
-**Common uses:**
-- Remove collected coins (`target: other` in collision event)
-- Destroy bullets when hitting something
-- Remove enemies when defeated
-
----
-
-### Create Instance
-| Property | Value |
-|----------|-------|
-| **Action Name** | `create_instance` |
-| **Block Name** | `instance_create` |
-| **Category** | Instance |
-| **Icon** | ✨ |
-
-**Description:** Creates a new instance of an object at a specified position.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `object` | Object | The object type to create |
-| `x` | Number | X coordinate for the new instance |
-| `y` | Number | Y coordinate for the new instance |
-
-**Example:** Create a bullet at the player's position when Space is pressed.
-
----
-
-## Score Actions
-
-### Set Score
-| Property | Value |
-|----------|-------|
-| **Action Name** | `set_score` |
-| **Block Name** | `score_set` |
-| **Category** | Score/Lives/Health |
-| **Icon** | 🏆 |
-
-**Description:** Sets the score to a specific value, or adds/subtracts from the current score.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | The score value |
-| `relative` | Boolean | If true, adds value to current score. If false, sets score to value |
-
-**Examples:**
-- Reset score: `value: 0`, `relative: false`
-- Add 10 points: `value: 10`, `relative: true`
-- Subtract 5 points: `value: -5`, `relative: true`
-
----
-
-### Add to Score
-| Property | Value |
-|----------|-------|
-| **Action Name** | `add_score` |
-| **Block Name** | `score_add` |
-| **Category** | Score/Lives/Health |
-| **Icon** | ➕🏆 |
-
-**Description:** Adds a value to the current score (shortcut for set_score with relative=true).
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `value` | Number | Points to add (can be negative to subtract) |
-
----
-
-### Draw Score
-| Property | Value |
-|----------|-------|
-| **Action Name** | `draw_score` |
-| **Block Name** | `draw_score` |
-| **Category** | Score/Lives/Health |
-| **Icon** | 🖼️🏆 |
-
-**Description:** Displays the current score on screen.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `x` | Number | X position to draw the score |
-| `y` | Number | Y position to draw the score |
-| `caption` | String | Text to display before the score (e.g., "Score: ") |
-
-**Note:** This should be used in a Draw event (available in Intermediate preset).
-
----
-
-## Room Actions
-
-### Go to Next Room
-| Property | Value |
-|----------|-------|
-| **Action Name** | `next_room` |
-| **Block Name** | `room_goto_next` |
-| **Category** | Room |
-| **Icon** | ➡️ |
-
-**Description:** Transitions to the next room in the room order.
-
-**Parameters:** None
-
-**Note:** If already in the last room, this action has no effect (use "If Next Room Exists" to check first).
-
----
-
-### Go to Previous Room
-| Property | Value |
-|----------|-------|
-| **Action Name** | `previous_room` |
-| **Block Name** | `room_goto_previous` |
-| **Category** | Room |
-| **Icon** | ⬅️ |
-
-**Description:** Transitions to the previous room in the room order.
-
-**Parameters:** None
-
-**Note:** If already in the first room, this action has no effect.
-
----
-
-### Restart Room
-| Property | Value |
-|----------|-------|
-| **Action Name** | `restart_room` |
-| **Block Name** | `room_restart` |
-| **Category** | Room |
-| **Icon** | 🔄 |
-
-**Description:** Restarts the current room, resetting all instances to their initial state.
-
-**Parameters:** None
-
-**Common uses:**
-- Restart level after player dies
-- Reset puzzle after failure
-- Replay mini-game
-
----
-
-### Go to Room
-| Property | Value |
-|----------|-------|
-| **Action Name** | `goto_room` |
-| **Block Name** | `room_goto` |
-| **Category** | Room |
-| **Icon** | 🚪 |
-
-**Description:** Transitions to a specific room by name.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `room` | Room | The room to go to |
-
----
-
-### If Next Room Exists
-| Property | Value |
-|----------|-------|
-| **Action Name** | `if_next_room_exists` |
-| **Block Name** | `room_if_next_exists` |
-| **Category** | Room |
-| **Icon** | ❓➡️ |
-
-**Description:** Conditional block that only executes contained actions if there is a next room.
-
-**Parameters:** None (actions are placed inside the block)
-
-**Common uses:**
-- Check before going to next room
-- Show "You Win!" message if no more rooms
-
----
-
-### If Previous Room Exists
-| Property | Value |
-|----------|-------|
-| **Action Name** | `if_previous_room_exists` |
-| **Block Name** | `room_if_previous_exists` |
-| **Category** | Room |
-| **Icon** | ❓⬅️ |
-
-**Description:** Conditional block that only executes contained actions if there is a previous room.
-
-**Parameters:** None (actions are placed inside the block)
-
----
-
-## Output Actions
-
-### Show Message
-| Property | Value |
-|----------|-------|
-| **Action Name** | `show_message` |
-| **Block Name** | `output_message` |
-| **Category** | Output |
-| **Icon** | 💬 |
-
-**Description:** Displays a popup message dialog to the player.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `message` | String | The text to display |
-
-**Note:** The game pauses while the message is displayed. Player must click OK to continue.
-
-**Common uses:**
-- Game instructions
-- Story dialogue
-- Win/lose messages
-- Debug information
-
----
-
-### Execute Code
-| Property | Value |
-|----------|-------|
-| **Action Name** | `execute_code` |
-| **Block Name** | `execute_code` |
-| **Category** | Output |
-| **Icon** | 💻 |
-
-**Description:** Execute custom Python code.
-
-**Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `code` | String | Python code to execute |
-
-**Note:** This is an advanced feature. Use with caution as incorrect code can cause errors.
-
----
-
-## Categories Summary
-
-| Category | Events | Actions |
-|----------|--------|---------|
-| **Events** | Create, Step, Keyboard Press, Collision | - |
-| **Movement** | - | Set Horizontal Speed, Set Vertical Speed, Stop Movement, Jump to Position |
-| **Instance** | - | Destroy Instance, Create Instance |
-| **Score/Lives/Health** | - | Set Score, Add Score, Draw Score |
-| **Room** | - | Next Room, Previous Room, Restart Room, Go to Room, If Next Room Exists, If Previous Room Exists |
-| **Output** | - | Show Message, Execute Code |
-
----
-
-## Example: Simple Coin Collector Game
-
-Here's how to set up a basic coin collecting game using only Beginner preset features:
-
-### Player Object (obj_player)
-
-**Keyboard Press (Left Arrow):**
-- Set Horizontal Speed: -4
-
-**Keyboard Press (Right Arrow):**
-- Set Horizontal Speed: 4
-
-**Keyboard Press (Up Arrow):**
-- Set Vertical Speed: -4
-
-**Keyboard Press (Down Arrow):**
-- Set Vertical Speed: 4
-
-**Collision with obj_coin:**
-- Set Score: 10 (relative: true)
-- Destroy Instance: other
-
-**Collision with obj_wall:**
-- Stop Movement
-
-**Collision with obj_goal:**
-- Set Score: 100 (relative: true)
-- Next Room
-
-### Coin Object (obj_coin)
-No events needed - just a collectible item.
-
-### Wall Object (obj_wall)
-No events needed - just a solid obstacle.
-
-### Goal Object (obj_goal)
-No events needed - triggers level complete when player collides.
-
----
-
-## Upgrading to Intermediate
-
-When you're comfortable with the Beginner preset, consider upgrading to **Intermediate** to access:
-- Draw Event (for custom rendering)
-- Destroy Event (cleanup when instance is destroyed)
-- Mouse Events (click detection)
-- Alarm Events (timed actions)
-- Lives and Health systems
-- Sound and Music actions
-- More movement options (direction, move towards)
+### Movement
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Bounce | `bounce` | — |
+| Jump To Position | `jump_to_position` | `x`, `y`, `relative` |
+| Jump to Random Position | `jump_to_random` | `snap_h`, `snap_v` |
+| Jump to Start Position | `jump_to_start` | — |
+| Move Towards Point | `move_towards_point` | `x`, `y`, `speed` |
+| Reverse Horizontal | `reverse_horizontal` | — |
+| Reverse Vertical | `reverse_vertical` | — |
+| Set Direction & Speed | `set_direction_speed` | `direction`, `speed` |
+| Set Gravity | `set_gravity` | `direction`, `gravity` |
+| Set Horizontal Speed | `set_hspeed` | `speed` |
+| Set Vertical Speed | `set_vspeed` | `speed` |
+| Start Moving (Direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
+| Stop Movement | `stop_movement` | — |
+
+### Grid
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Test Grid Alignment | `test_alignment` | `hsnap`, `vsnap` |
+
+### Instance
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Change Instance | `change_instance` | `object`, `perform_events` |
+| Create Instance | `create_instance` | `object`, `x`, `y`, `relative` |
+| Create Moving Instance | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
+| Create Random Instance | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
+| Destroy Instance | `destroy_instance` | — |
+| Destroy at Position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Set Image Index | `set_image_index` | `frame` |
+| Set Image Speed | `set_image_speed` | `speed` |
+| Start Animation | `start_animation` | — |
+| Stop Animation | `stop_animation` | — |
+| Test Instance Count | `test_instance_count` | `object`, `number`, `operation` |
+
+### Score
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Clear High-Score Table | `clear_highscore` | — |
+| Draw Lives | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
+| Draw Score | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Set Lives | `set_lives` | `value`, `relative` |
+| Set Score | `set_score` | `value`, `relative` |
+| Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Test Health | `test_health` | `operation`, `value` |
+| Test Lives | `test_lives` | `value`, `operation` |
+| Test Score | `test_score` | `value`, `operation` |
+
+### Timing
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Set Alarm | `set_alarm` | `alarm_number`, `steps` |
+| Sleep | `sleep` | `milliseconds` |
+
+### Room
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Check Room | `check_room` | `room`, `not_flag` |
+| End Game | `game_end` | — |
+| If Next Room Exists | `if_next_room_exists` | `then_actions`, `else_actions` |
+| If Previous Room Exists | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Restart Room | `restart_room` | — |
+| Set Room Caption | `set_room_caption` | `caption` |
+
+### Audio
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Check Sound Playing | `check_sound` | `sound`, `not_flag` |
+| Play Music | `play_music` | `music`, `loop`, `volume` |
+| Play Sound | `play_sound` | `sound`, `volume` |
+| Set Volume | `set_volume` | `volume` |
+| Stop Music | `stop_music` | — |
+| Stop Sound | `stop_sound` | `sound` |
+
+### Game
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Draw Arrow | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Draw Background | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Draw Ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Draw Line | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Draw Scaled Text | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Draw Text | `draw_text` | `text`, `x`, `y`, `relative` |
+| Draw Variable | `draw_variable` | `x`, `y`, `variable` |
+| Fill Screen Color | `fill_color` | `color` |
+| Open Webpage | `open_webpage` | `url` |
+| Restart Game | `restart_game` | — |
+| Set Color | `set_color` | `color`, `alpha` |
+| Set Draw Color | `set_draw_color` | `color` |
+| Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
+| Set Window Caption | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
+| Show Game Info | `show_info` | — |
+| Show Message | `show_message` | `message` |
+
+### Control
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Comment | `comment` | `text` |
+| Else | `else_action` | — |
+| End Block | `end_block` | — |
+| Execute Code | `execute_code` | `code` |
+| Execute Script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
+| Exit Event | `exit_event` | — |
+| If Collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| If Object Exists | `if_object_exists` | `object`, `not_flag` |
+| Start Block | `start_block` | — |
+| Test Chance | `test_chance` | `sides` |
+| Test Question | `test_question` | `question` |
+| Test Variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Views
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Enable Views | `enable_views` | `enable` |
+| Set View | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### 3D View
+
+| Action | Block Name | Parameters |
+|--------|------------|------------|
+| Draw DOOM HUD | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
+| Draw Minimap | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
+| Enable Raycast View | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
+| Set Facing Angle | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
 ## See Also
 
-- [Tutorials](Tutorials) - All tutorials in one place
-- [Intermediate Preset](Intermediate-Preset) - Next level features
-- [Full Action Reference](Full-Action-Reference) - Complete action list
-- [Event Reference](Event-Reference) - Complete event list
-- [Events and Actions](Events-and-Actions) - Core concepts
-- [Creating Your First Game](Creating-Your-First-Game) - Step-by-step tutorial
-- [Pong Tutorial](Tutorial-Pong) - Create a classic two-player Pong game
-- [Breakout Tutorial](Tutorial-Breakout) - Create a classic brick breaker game
-- [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
+- [Preset Guide](Preset-Guide) — what presets are and how to change one
+- [Event Reference](Event-Reference) — full description of every event
+- [Full Action Reference](Full-Action-Reference) — full parameter details for every action
+- [Intermediate Preset](Intermediate-Preset) — the next tier up
