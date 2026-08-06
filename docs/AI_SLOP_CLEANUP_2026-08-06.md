@@ -589,7 +589,11 @@ lower-priority read). Exceptions already touched:
   layers capped at 8 (widgets/enhanced_properties_panel.py), views capped
   at 8 (game_runner.py `for i in range(8)`) — both verified against code.
   Depth/room-order/persistent claims spot-checked and already accurate)*
-- [ ] 3D-View.md
+- [x] 3D-View.md *(reviewed, no changes — spot-checked the highest-risk
+  claims (facing_angle 0=right/90=up convention, cell_size default 32)
+  against extensions/raycast_2_5d/actions.py and both matched exactly;
+  this page was clearly written with direct engineering knowledge of the
+  feature, consistent with the extensive raycast session-notes history)*
 - [ ] Extensions.md
 - [ ] Exporting-Games.md
 - [x] Preset-Guide.md *(see Update 12: corrected framing + Edition-vs-preset
@@ -642,7 +646,7 @@ with section E.
   issues fixed in Object-Editor.md are present here; no changes needed)*
 - [x] Editeur_Salles_fr.md *(shorter than English — no Background Layers or
   Views sections exist here to need the same fix; no changes needed)*
-- [ ] 3D-View_fr.md
+- [x] 3D-View_fr.md *(reviewed, no changes — accurate mirror of 3D-View.md)*
 - [ ] Extensions_fr.md
 - [ ] Exportation_fr.md
 - [x] Preset-Guide_fr.md *(same fixes as Preset-Guide.md, see Update 12)*
