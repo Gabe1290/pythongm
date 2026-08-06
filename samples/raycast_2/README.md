@@ -33,8 +33,8 @@ exports to all three targets (desktop, HTML5, native/Kivy).
   room; you start with 3 lives, shown at the top-right of the HUD. Run out and
   the game restarts.
 - **Objective:** collect **all** the gems in a room, then reach its goal.
-  Reaching the goal early just prompts you to *"Ramasse toutes les gemmes !"* —
-  it only opens once every gem is gone. The first (warm brick) room's goal takes
+  Reaching the goal early just prompts you to *"Collect all the gems before
+  you leave!"* — it only opens once every gem is gone. The first (warm brick) room's goal takes
   you to a second, cool **crystal-cavern** room; clearing that one wins the game.
 
 ## Level geometry

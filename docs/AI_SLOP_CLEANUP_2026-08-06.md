@@ -1,5 +1,26 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 9: Section C (all 18 English sample READMEs) is 100% read.**
+`samples/README.md` + match3_1/2/3 + maze_1/2/3/4 + plateforme_1/2/3 +
+raycast_1/2/3/4 + treasure + views_1/2. Verdict holds from the first
+batch: this is exceptionally good documentation — dense, specific,
+technical, with real instance counts, hardcoded values, honest
+"undocumented licensing" caveats, and no AI-slop patterns anywhere.
+**One real fix**: `raycast_2/README.md` quoted the in-game exit-gate
+message as *"Ramasse toutes les gemmes !"* (French) when the actual
+`show_message` action in `project.json` says *"Collect all the gems
+before you leave!"* (English — sample games stay English by convention,
+only guides get translated). The French README already had this right
+(quoted the correct English message) — only the English README had the
+mixed-up quote. Fixed to match reality.
+
+Sections A + C are now fully done (59/59 files). Section B (French
+Tutorials) has structural parity fully verified for all 41 pairs but not
+a full prose read of files that structurally matched (lower priority per
+the earlier finding that translation quality is solid where content
+exists — no accent-stripping found). Remaining: Section D (17 French
+sample READMEs), Sections E/F (47 wiki pages, ~2 read so far).
+
 **Update 8: the fr/04_breakout/07_game_controller.html gap from Update 7
 is FIXED.** Translated the missing "Fin de partie et meilleurs scores"
 section (Plus de vies event, Afficher un message/Afficher le tableau des
@@ -325,14 +346,15 @@ lower-priority read). Exceptions already touched:
 - [x] samples/README.md (top-level index) *(reviewed, no changes — dense,
   specific, already reads like a careful human wrote it: real numbers,
   named commits, honest caveats about what was dropped and why)*
-- [ ] match3_1, match3_2, match3_3
-- [ ] maze_1, maze_2, maze_3, maze_4
-- [ ] plateforme_1, plateforme_2, plateforme_3
-- [ ] raycast_1, raycast_2, raycast_3, raycast_4
-- [ ] treasure
-- [ ] views_1, views_2
+- [x] match3_1, match3_2, match3_3
+- [x] maze_1, maze_2, maze_3, maze_4
+- [x] plateforme_1, plateforme_2, plateforme_3
+- [x] raycast_1, raycast_2 *(fixed a wrong quoted in-game message —
+  French text where the actual message is English)*, raycast_3, raycast_4
+- [x] treasure
+- [x] views_1, views_2
 
-(18 files.)
+(18 files. Section C: 18/18 done.)
 
 ## D. Sample guides — French (`samples/*/README.fr.md`)
 
