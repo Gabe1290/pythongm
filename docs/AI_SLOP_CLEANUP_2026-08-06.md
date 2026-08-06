@@ -442,7 +442,12 @@ lower-priority read). Exceptions already touched:
 
 - [x] Home.md *(fixed generic "contributing guidelines" boilerplate that
   pointed at a nonexistent doc)*
-- [ ] Getting-Started.md
+- [x] Getting-Started.md *(3 accuracy fixes, not wording: the real menu
+  bar is File/Edit/Assets/Build/Tools/Help — not "Resources, Run"; language
+  switching is Tools > Language, not a Preferences dropdown (Preferences
+  has no language option at all); the Linux troubleshooting apt line named
+  `python3-pyqt6` for a PySide6 project and was missing several of the
+  actually-required xcb libs — replaced with docs/BUILDING.md's real list)*
 - [x] Getting-Started-Breakout.md *(dropped a redundant "you are now
   initiated..." closing sentence restating the See Also section above it)*
 - [ ] Creating-Your-First-Game.md
@@ -482,7 +487,8 @@ Creating-Your-First-Game) — match by content, not filename, when pairing
 with section E.
 
 - [x] Home_fr.md *(same fix as Home.md)*
-- [ ] Demarrage_fr.md
+- [x] Demarrage_fr.md *(same 2 menu-accuracy fixes as Getting-Started.md;
+  no Linux troubleshooting section in this shorter French version)*
 - [x] Getting-Started-Breakout_fr.md *(same fix as Getting-Started-Breakout.md)*
 - [ ] Premier_Jeu_fr.md
 - [ ] Evenements_Actions_fr.md
