@@ -107,9 +107,13 @@ La sortie termine le niveau quand le joueur l'atteint.
 
 **Événement : Collision avec obj_player**
 1. Ajouter Événement → Collision → obj_player
-2. Ajouter Action : **Main2** → **Afficher Message**
-   - Message : `Vous avez gagné ! Temps : ` + string(floor(global.timer)) + ` secondes`
-3. Ajouter Action : **Main1** → **Room Suivante** (ou **Redémarrer Room** pour un seul niveau)
+2. Ajouter Action : **Output** → **Show Message**
+   - Message : `Vous avez gagné !`
+3. Ajouter Action : **Room** → **Next Room** (ou **Restart Room** pour un seul niveau)
+
+Le texte de Show Message est une chaîne fixe — il ne peut pas afficher une
+valeur en direct comme le temps écoulé. Le chronomètre reste visible dans le
+HUD (Étape 7) jusqu'à la victoire, le joueur a donc déjà vu son temps.
 
 ---
 
@@ -137,69 +141,32 @@ Le joueur se déplace de manière fluide avec les touches fléchées.
 1. Créez un nouvel objet nommé `obj_player`
 2. Définissez le sprite sur `spr_player`
 
-### 6.1 Événement Create - Initialiser les Variables
+### 6.1 Mouvement
 
-**Événement : Create**
-1. Ajouter Événement → Create
-2. Ajouter Action : **Contrôle** → **Définir Variable**
-   - Variable : `move_speed`
-   - Valeur : `4`
+Ajoutez quatre événements **Keyboard** (maintenue) plus un événement **No
+Key**, chacun avec une action **Move** → **Set Horizontal/Vertical Speed** :
 
-### 6.2 Mouvement avec Collision
+| Événement | Action |
+|---|---|
+| Keyboard (maintenue) → Right Arrow | Set Horizontal Speed à `4` |
+| Keyboard (maintenue) → Left Arrow | Set Horizontal Speed à `-4` |
+| Keyboard (maintenue) → Down Arrow | Set Vertical Speed à `4` |
+| Keyboard (maintenue) → Up Arrow | Set Vertical Speed à `-4` |
+| Keyboard: No Key | Set Horizontal Speed à `0` **et** Set Vertical Speed à `0` |
 
-**Événement : Step**
-1. Ajouter Événement → Step → Step
-2. Ajouter Action : **Contrôle** → **Exécuter Code**
+### 6.2 S'arrêter aux Murs
 
-```gml
-// Mouvement horizontal
-var hspd = 0;
-if (keyboard_check(vk_right)) hspd = move_speed;
-if (keyboard_check(vk_left)) hspd = -move_speed;
+**Événement : Collision avec obj_wall**
+1. Ajouter Événement → Collision → `obj_wall`
+2. Ajouter Action : **Move** → **Stop Movement**
 
-// Mouvement vertical
-var vspd = 0;
-if (keyboard_check(vk_down)) vspd = move_speed;
-if (keyboard_check(vk_up)) vspd = -move_speed;
-
-// Vérification collision horizontale
-if (!place_meeting(x + hspd, y, obj_wall)) {
-    x += hspd;
-} else {
-    // Se rapprocher du mur autant que possible
-    while (!place_meeting(x + sign(hspd), y, obj_wall)) {
-        x += sign(hspd);
-    }
-}
-
-// Vérification collision verticale
-if (!place_meeting(x, y + vspd, obj_wall)) {
-    y += vspd;
-} else {
-    // Se rapprocher du mur autant que possible
-    while (!place_meeting(x, y + sign(vspd), obj_wall)) {
-        y += sign(vspd);
-    }
-}
-```
-
-### 6.3 Alternative : Mouvement Simple par Blocs
-
-Si vous préférez utiliser des blocs d'action au lieu du code :
-
-**Événement : Touche Enfoncée - Flèche Droite**
-1. Ajouter Événement → Clavier → \<Droite\>
-2. Ajouter Action : **Contrôle** → **Tester Collision**
-   - Objet : `obj_wall`
-   - X : `4`
-   - Y : `0`
-   - Cocher : NOT
-3. Ajouter Action : **Mouvement** → **Sauter à Position**
-   - X : `4`
-   - Y : `0`
-   - Cochez "Relatif"
-
-Répétez pour Gauche (-4, 0), Haut (0, -4), et Bas (0, 4).
+Aucun code de vérification manuelle de position n'est nécessaire ici. La
+boucle de mouvement de ce moteur refuse déjà de déplacer une instance dans
+un objet solide avant même que l'image ne soit dessinée (`obj_wall` est
+Solid), donc le joueur ne peut jamais réellement chevaucher un mur —
+l'événement de collision ci-dessus se contente de remettre à zéro toute
+vitesse restante pour que le joueur n'essaie pas de continuer à "pousser"
+contre le mur.
 
 ---
 
@@ -210,35 +177,52 @@ Le contrôleur de jeu gère le chronomètre et affiche les informations.
 1. Créez un nouvel objet nommé `obj_game_controller`
 2. Pas de sprite nécessaire
 
-**Événement : Create**
-1. Ajouter Événement → Create
-2. Ajouter Action : **Contrôle** → **Définir Variable**
-   - Variable : `global.timer`
-   - Valeur : `0`
+**Événement : Create** — démarrez le chronomètre avec **Control** →
+**Execute Code** (l'action Execute Code de ce projet exécute du vrai Python,
+pas le langage GameMaker) :
 
-**Événement : Step**
-1. Ajouter Événement → Step → Step
-2. Ajouter Action : **Contrôle** → **Définir Variable**
-   - Variable : `global.timer`
-   - Valeur : `1/room_speed`
-   - Cochez "Relatif"
-
-**Événement : Draw**
-1. Ajouter Événement → Draw → Draw
-2. Ajouter Action : **Contrôle** → **Exécuter Code**
-
-```gml
-// Afficher le score
-draw_set_color(c_white);
-draw_text(10, 10, "Score : " + string(score));
-
-// Afficher le chronomètre
-draw_text(10, 30, "Temps : " + string(floor(global.timer)) + "s");
-
-// Afficher les pièces restantes
-var coins_left = instance_number(obj_coin);
-draw_text(10, 50, "Pièces : " + string(coins_left));
+```python
+self.timer = 0.0
 ```
+
+**Événement : Step** — faites-le avancer à chaque image :
+
+```python
+self.timer += 1.0 / game.fps
+```
+
+**Événement : Draw** — construisez le HUD avec de vraies commandes de la
+file de dessin. Ajoutez trois actions **Draw** → **Draw Text** :
+
+| Action Draw Text | Texte | Position |
+|---|---|---|
+| 1ère | `Score :` | X `10`, Y `10` |
+| 2ème | `Temps :` | X `10`, Y `30` |
+| 3ème | `Pièces :` | X `10`, Y `50` |
+
+puis trois actions **Draw** → **Draw Variable** juste après, pour afficher
+les valeurs en direct à côté de chaque étiquette :
+
+| Action Draw Variable | Variable | Position |
+|---|---|---|
+| 1ère | `score` | X `70`, Y `10` |
+| 2ème | `self.timer` | X `70`, Y `30` |
+| 3ème | *(voir ci-dessous)* | X `70`, Y `50` |
+
+Il n'existe pas de compteur intégré "pièces restantes" — ajoutez une action
+**Control** → **Execute Code** de plus, juste avant les actions Draw
+Variable, pour le calculer dans une variable d'instance que Draw Variable
+pourra ensuite lire :
+
+```python
+self.coins_left = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_coin'
+)
+```
+
+(puis réglez le champ Variable de la 3ème Draw Variable sur
+`self.coins_left`).
 
 ---
 
@@ -302,50 +286,49 @@ Créez un ennemi qui patrouille simplement :
 1. Créez `spr_enemy` (couleur rouge, 24x24)
 2. Créez `obj_enemy` avec le sprite `spr_enemy`
 
-**Événement : Create**
-```gml
-hspeed = 2;  // Se déplace horizontalement
-```
+**Événement : Create** — Ajouter Action : **Move** → **Start Moving
+Direction** (Directions : `right`, Speed : `2`)
 
-**Événement : Collision avec obj_wall**
-```gml
-hspeed = -hspeed;  // Inverse la direction
-```
+**Événement : Collision avec obj_wall** — Ajouter Action : **Move** →
+**Reverse Horizontal** (fait demi-tour à l'ennemi quand il touche un mur —
+aucun code nécessaire ; combiné à la collision solide intégrée de l'étape
+6.2, l'ennemi ne peut de toute façon jamais traverser un mur)
 
-**Événement : Collision avec obj_player**
-```gml
-room_restart();  // Le joueur perd
-```
+**Événement : Collision avec obj_player** — Ajouter Action : **Room** →
+**Restart Room**
 
 ### Ajouter un Système de Vies
 
-Dans l'événement Create de `obj_game_controller` :
-```gml
-global.lives = 3;
-```
+Dans l'événement **Create** de `obj_game_controller`, ajoutez **Score** →
+**Set Lives** (Value : `3`).
 
-Quand le joueur touche un ennemi (au lieu de redémarrer) :
-```gml
-global.lives -= 1;
-if (global.lives <= 0) {
-    show_message("Game Over !");
-    game_restart();
-} else {
-    // Faire réapparaître le joueur au départ
-    obj_player.x = start_x;
-    obj_player.y = start_y;
-}
-```
+Dans l'événement **Collision avec obj_player** de `obj_enemy`, remplacez
+**Restart Room** par deux actions : **Score** → **Set Lives** (Value : `-1`,
+case **Relative** cochée), puis **Move** → **Jump to Start Position** (sur
+le joueur, via **Applies to: Other**) pour faire réapparaître le joueur au
+lieu de redémarrer tout le labyrinthe.
+
+Ajoutez un événement de plus à `obj_game_controller` : **Other Events** →
+**No More Lives** — il se déclenche automatiquement dès que les vies
+atteignent 0, inutile de le vérifier vous-même. Ajoutez **Output** → **Show
+Message** (`Game Over !`) puis **Room** → **Restart Game**.
 
 ### Ajouter des Clés et des Portes Verrouillées
 
-1. Créez `obj_key` - disparaît quand collectée, définit `global.has_key = true`
-2. Créez `obj_locked_door` - s'ouvre seulement quand `global.has_key == true`
+1. Créez `obj_key` — en collision avec `obj_player`, **Set Variable**
+   (Variable : `global.has_key`, Value : `true`, Scope : `global`), puis
+   **Destroy Instance** (self).
+2. Créez `obj_locked_door`, case Solid cochée. Donnez-lui un événement
+   **Step** avec **Control** → **Test Variable** (Variable :
+   `global.has_key`, Value : `true`, Scope : `global`) → **Instance** →
+   **Destroy Instance** (self) — la porte disparaît (et arrête de bloquer)
+   dès que la clé est ramassée.
 
 ### Ajouter Plusieurs Niveaux
 
 1. Créez des rooms supplémentaires (`room_maze2`, `room_maze3`)
-2. Dans `obj_exit`, utilisez `room_goto_next()` au lieu de `room_restart()`
+2. Dans `obj_exit`, utilisez l'action **Next Room** au lieu de **Restart
+   Room**
 
 ### Ajouter des Effets Sonores
 
@@ -374,10 +357,9 @@ Ajoutez des sons pour :
 Félicitations ! Vous avez créé un jeu de labyrinthe ! Vous avez appris :
 
 - **Mouvement fluide** - Vérifier l'état des touches enfoncées pour un mouvement continu
-- **Détection de collision** - Utiliser `place_meeting` pour vérifier avant de se déplacer
-- **Collision pixel-perfect** - Se rapprocher des murs autant que possible
+- **Collision solide intégrée** - Les murs bloquent le mouvement automatiquement une fois marqués Solid, sans code de vérification manuelle
 - **Objets à collecter** - Créer des objets qui augmentent le score et disparaissent
-- **Système de chronomètre** - Suivre le temps écoulé avec des variables
+- **Système de chronomètre** - Suivre le temps écoulé avec des variables d'instance
 - **Conception de niveau** - Créer des dispositions de labyrinthe navigables
 
 ---
