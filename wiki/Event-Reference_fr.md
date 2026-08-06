@@ -115,7 +115,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `keyboard_press` |
 | **Icône** | 🔘 |
 | **Catégorie** | Entrée |
-| **Préréglage** | Débutant |
+| **Préréglage** | Intermédiaire |
 
 **Description :** Se déclenche une fois lorsqu'une touche est pressée pour la première fois.
 
@@ -131,7 +131,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `keyboard_release` |
 | **Icône** | ⬆️ |
 | **Catégorie** | Entrée |
-| **Préréglage** | Avancé |
+| **Préréglage** | Full (édition Développement) |
 
 **Description :** Se déclenche une fois lorsqu'une touche est relâchée.
 
@@ -148,7 +148,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `keyboard_no_key` |
 | **Icône** | ⌨️ |
 | **Catégorie** | Entrée |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche à chaque frame tant qu'**aucune** touche n'est maintenue.
 
@@ -166,7 +166,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `mouse` |
 | **Icône** | 🖱️ |
 | **Catégorie** | Entrée |
-| **Préréglage** | Intermédiaire |
+| **Préréglage** | Full (édition Développement) |
 
 **Description :** Événements de bouton de souris et de mouvement.
 
@@ -225,7 +225,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `alarm` |
 | **Icône** | ⏰ |
 | **Catégorie** | Temps |
-| **Préréglage** | Intermédiaire |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche quand un compte à rebours d'alarme atteint zéro.
 
@@ -247,7 +247,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `begin_step` |
 | **Icône** | ▶️ |
 | **Catégorie** | Step |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche au début de chaque frame, avant les événements Step réguliers.
 
@@ -265,7 +265,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `end_step` |
 | **Icône** | ⏹️ |
 | **Catégorie** | Step |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche à la fin de chaque frame, après les collisions.
 
@@ -285,7 +285,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `draw` |
 | **Icône** | 🎨 |
 | **Catégorie** | Dessin |
-| **Préréglage** | Intermédiaire |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche pendant la phase de rendu.
 
@@ -314,7 +314,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `draw_gui` |
 | **Icône** | 🖥️ |
 | **Catégorie** | Dessin |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Dessine dans l'**espace écran (GUI)**, par-dessus la salle et sans être affecté par le défilement des vues/de la caméra.
 
@@ -331,7 +331,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `room_start` |
 | **Icône** | 🚪 |
 | **Catégorie** | Salle |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche lors de l'entrée dans une salle, après tous les événements Create.
 
@@ -348,7 +348,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `room_end` |
 | **Icône** | 🚪 |
 | **Catégorie** | Salle |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche lors de la sortie d'une salle.
 
@@ -368,7 +368,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `game_start` |
 | **Icône** | 🎮 |
 | **Catégorie** | Jeu |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche une fois au premier démarrage du jeu (dans la première salle uniquement).
 
@@ -385,7 +385,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `game_end` |
 | **Icône** | 🎮 |
 | **Catégorie** | Jeu |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche lorsque le jeu se termine.
 
@@ -404,7 +404,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `outside_room` |
 | **Icône** | 🚫 |
 | **Catégorie** | Autre |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche quand l'instance est complètement en dehors des limites de la salle.
 
@@ -421,7 +421,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `intersect_boundary` |
 | **Icône** | ⚠️ |
 | **Catégorie** | Autre |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche quand l'instance touche la limite de la salle.
 
@@ -437,7 +437,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `no_more_lives` |
 | **Icône** | 💀 |
 | **Catégorie** | Autre |
-| **Préréglage** | Intermédiaire |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche quand les vies tombent à 0 ou moins.
 
@@ -454,7 +454,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `no_more_health` |
 | **Icône** | 💔 |
 | **Catégorie** | Autre |
-| **Préréglage** | Intermédiaire |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche quand la santé tombe à 0 ou moins.
 
@@ -471,7 +471,7 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 | **Nom** | `animation_end` |
 | **Icône** | 🎞️ |
 | **Catégorie** | Autre |
-| **Préréglage** | Avancé |
+| **Préréglage** | Débutant |
 
 **Description :** Se déclenche lorsque l'animation du sprite de l'instance termine un cycle complet (repasse de la dernière image à la première).
 
@@ -484,25 +484,38 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ## Ordre d'Exécution des Événements
 
-Comprendre quand les événements se déclenchent aide à créer un comportement de jeu prévisible :
+Comprendre quand les événements se déclenchent aide à créer un comportement
+de jeu prévisible (confirmé dans la boucle principale de
+`runtime/game_runner.py`) :
 
 1. **Begin Step** — Début de la frame
-2. **Alarm** — Toutes les alarmes déclenchées
-3. **Keyboard/Mouse** — Événements d'entrée
-4. **Step** — Logique de jeu principale
-5. **Collision** — Après le mouvement
-6. **End Step** — Après les collisions
+2. **Alarm** — Toutes les alarmes déclenchées comptent à rebours et se déclenchent
+3. **Step** (et **Keyboard (maintenue)**) — Logique de jeu principale, puis
+   vérification continue des touches maintenues pour la même instance
+4. **Keyboard Press/Release, Mouse** — Les événements d'entrée en file
+   d'attente pour la frame sont distribués (cela se produit *après* Step,
+   pas avant — le code de Step réagit aux touches déjà maintenues au
+   *début* de la frame, pas à celles pressées pendant celle-ci)
+5. **Movement, puis Collision** — La physique (gravité/friction/hspeed/vspeed)
+   est appliquée, puis les collisions sont détectées et leurs événements se déclenchent
+6. **End Step** (et **Destroy**) — Après les collisions
 7. **Draw** — Phase de rendu
 
 ---
 
 ## Événements par Préréglage
 
+Confirmé via `events.event_types.get_available_events()` alimenté par
+chaque préréglage réel de `config/blockly_config.py` — voir le
+[Guide des Préréglages](Preset-Guide_fr) pour ce qu'un « préréglage »
+restreint réellement (à la fois le sélecteur Blockly et le panneau
+structuré Événements/Actions) et comment le préréglage d'un projet est défini.
+
 | Préréglage | Événements inclus |
 |------------|-------------------|
-| **Débutant** | Create, Step, Appui Clavier, Collision |
-| **Intermédiaire** | + Draw, Destroy, Souris, Alarme |
-| **Avancé** | + Toutes les variantes de clavier, Begin/End Step, Événements de salle, Événements de jeu, Événements de limite |
+| **Débutant** (19 événements) | Create, Step, Keyboard (maintenue), Keyboard \<No Key\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
+| **Intermédiaire** (21 événements) | + Destroy, Keyboard Press |
+| **Full** (édition Développement uniquement, 23 événements) | + Keyboard Release, Mouse |
 
 ---
 

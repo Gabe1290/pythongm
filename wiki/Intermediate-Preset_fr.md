@@ -2,414 +2,200 @@
 
 *[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | [Préréglage Débutant](Beginner-Preset_fr)*
 
-Le préréglage **Intermédiaire** s'appuie sur le [Préréglage Débutant](Beginner-Preset_fr) en ajoutant des événements et des actions plus avancés. Il est conçu pour les utilisateurs qui ont maîtrisé les bases et souhaitent créer des jeux plus complexes avec des fonctionnalités telles que des événements programmés, du son, des vies et des systèmes de santé.
+> **Généré automatiquement** à partir de `get_intermediate()` dans `config/blockly_config.py` par `tools/gen_preset_docs.py` — ne pas modifier à la main ; relancez le générateur après avoir changé le préréglage.
+
+> **Ce que ce préréglage restreint réellement :** ce préréglage filtre À LA FOIS la palette de blocs visuels Blockly ET les menus « Ajouter un événement »/« Ajouter une action » du panneau structuré — quel que soit l'éditeur utilisé, seuls les événements/actions listés ci-dessous apparaissent. Le préréglage d'un *projet* se règle de deux façons : **`Préférences > Édition de l'IDE`** choisit le préréglage par défaut des *nouveaux* projets (édition Débutant -> ce préréglage ; les projets existants ne sont jamais modifiés en changeant l'édition), et **`Outils > Configurer les blocs d'action...`** change le préréglage du projet *actuellement ouvert* à tout moment. L'édition par défaut de l'IDE est Débutant, donc les nouveaux projets d'une installation fraîche démarrent exactement sur cette liste.
 
 ## Aperçu
 
-Le préréglage Intermédiaire inclut tout ce qui se trouve dans le préréglage Débutant, plus :
-- **4 Types d'Événements Supplémentaires** - Dessin, Destruction, Souris, Alarme
-- **12 Types d'Actions Supplémentaires** - Vies, Santé, Son, Minuterie et plus d'options de mouvement
-- **3 Catégories Supplémentaires** - Minuterie, Son, Dessin
+Ce préréglage active **21** types d'événements et **94** types d'actions.
 
 ---
 
-## Événements Supplémentaires (Au-delà du Débutant)
+## Événements
 
-### Événement Dessin
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom du Bloc** | `event_draw` |
-| **Catégorie** | Dessin |
-| **Icône** | 🎨 |
-| **Description** | Se déclenche lorsque l'objet doit être rendu |
-
-**Quand il se déclenche :** À chaque image pendant la phase de dessin, après tous les événements step.
-
-**Important :** Lorsque vous ajoutez un événement Dessin, le dessin par défaut du sprite est désactivé. Vous devez dessiner manuellement le sprite si vous voulez qu'il soit visible.
-
-**Utilisations courantes :**
-- Rendu personnalisé
-- Dessiner des barres de santé
-- Afficher du texte
-- Dessiner des formes et des effets
-- Éléments d'interface
-
----
-
-### Événement Destruction
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom du Bloc** | `event_destroy` |
-| **Catégorie** | Objet |
-| **Icône** | 💥 |
-| **Description** | Se déclenche lorsque l'instance est détruite |
-
-**Quand il se déclenche :** Juste avant que l'instance soit retirée du jeu.
-
-**Utilisations courantes :**
-- Créer des effets d'explosion
-- Lâcher des objets
-- Jouer un son de mort
-- Mettre à jour le score
-- Générer des particules
+| Événement | Nom du bloc | Catégorie | Description |
+|-------|------------|----------|-------------|
+| Create | `create` | Objet | Exécuté une fois quand l'objet est créé pour la première fois |
+| Destroy | `destroy` | Objet | Exécuté quand l'objet est détruit |
+| Step | `step` | Objet | Exécuté à chaque image (utilisez-le pour des vérifications continues) |
+| Keyboard (held) | `keyboard` | Entrée | Exécuté en continu tant qu'une touche est maintenue (pour un mouvement fluide) |
+| Keyboard <No Key> | `keyboard_no_key` | Entrée | Exécuté quand aucune touche du clavier n'est actuellement enfoncée |
+| Keyboard Press | `keyboard_press` | Entrée | Exécuté une fois quand une touche est enfoncée pour la première fois (pour un déplacement sur grille) |
+| Collision With... | `collision` | Collision | Exécuté lors d'une collision avec un autre objet |
+| Begin Step | `begin_step` | Étape | Exécuté au début de chaque image, avant les autres événements |
+| End Step | `end_step` | Étape | Exécuté à la fin de chaque image, après les collisions mais avant le dessin |
+| Alarm | `alarm` | Minuterie | Exécuté quand un compte à rebours d'alarme atteint zéro |
+| Draw | `draw` | Dessin | Exécuté lors du dessin de l'objet (remplace le dessin automatique du sprite) |
+| Draw GUI | `draw_gui` | Dessin | Dessiné par-dessus tout le reste (non affecté par la caméra/vue). À utiliser pour le HUD, le score, les vies. |
+| Room End | `room_end` | Salle | Exécuté quand la salle se termine |
+| Room Start | `room_start` | Salle | Exécuté quand la salle démarre (après les événements Create) |
+| Game End | `game_end` | Jeu | Exécuté quand le jeu se termine |
+| Game Start | `game_start` | Jeu | Exécuté quand le jeu démarre (dans la première salle uniquement) |
+| Animation End | `animation_end` | Autre | Se déclenche quand l'animation du sprite atteint sa dernière image et recommence |
+| Intersect Boundary | `intersect_boundary` | Autre | Exécuté quand l'instance touche le bord de la salle |
+| No More Health | `no_more_health` | Autre | Exécuté quand la santé atteint 0 ou moins |
+| No More Lives | `no_more_lives` | Autre | Exécuté quand les vies atteignent 0 ou moins |
+| Outside Room | `outside_room` | Autre | Exécuté quand l'instance est entièrement hors de la salle |
 
 ---
 
-### Événement Souris
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom du Bloc** | `event_mouse` |
-| **Catégorie** | Entrée |
-| **Icône** | 🖱️ |
-| **Description** | Se déclenche lors des interactions avec la souris |
+## Actions
 
-**Types d'événements souris :**
-- Bouton gauche (pression, relâchement, maintenu)
-- Bouton droit (pression, relâchement, maintenu)
-- Bouton du milieu (pression, relâchement, maintenu)
-- Entrée de souris (le curseur entre dans l'instance)
-- Sortie de souris (le curseur quitte l'instance)
-- Événements souris globaux (n'importe où sur l'écran)
+### Mouvement
 
-**Utilisations courantes :**
-- Boutons cliquables
-- Glisser-déposer
-- Effets de survol
-- Interactions de menu
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Rebondir | `bounce` | — |
+| Sauter à une position | `jump_to_position` | `x`, `y`, `relative` |
+| Sauter à une position aléatoire | `jump_to_random` | `snap_h`, `snap_v` |
+| Sauter à la position de départ | `jump_to_start` | — |
+| Se déplacer vers un point | `move_towards_point` | `x`, `y`, `speed` |
+| Inverser horizontalement | `reverse_horizontal` | — |
+| Inverser verticalement | `reverse_vertical` | — |
+| Définir direction et vitesse | `set_direction_speed` | `direction`, `speed` |
+| Définir le frottement | `set_friction` | `friction` |
+| Définir la gravité | `set_gravity` | `direction`, `gravity` |
+| Définir la vitesse horizontale | `set_hspeed` | `speed` |
+| Définir la vitesse verticale | `set_vspeed` | `speed` |
+| Commencer à bouger (direction) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
+| Arrêter le mouvement | `stop_movement` | — |
 
----
+### Grille
 
-### Événement Alarme
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom du Bloc** | `event_alarm` |
-| **Catégorie** | Minuterie |
-| **Icône** | ⏰ |
-| **Description** | Se déclenche lorsqu'un minuteur d'alarme atteint zéro |
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Si aligné sur la grille | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
+| Aligner sur la grille | `snap_to_grid` | `grid_size` |
+| Tester l'alignement sur la grille | `test_alignment` | `hsnap`, `vsnap` |
 
-**Quand il se déclenche :** Lorsque le compte à rebours de l'alarme correspondante atteint 0.
+### Instance
 
-**Alarmes disponibles :** 12 alarmes indépendantes (0-11)
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Changer d'instance | `change_instance` | `object`, `perform_events` |
+| Créer une instance | `create_instance` | `object`, `x`, `y`, `relative` |
+| Créer une instance en mouvement | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
+| Créer une instance aléatoire | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
+| Détruire une instance | `destroy_instance` | — |
+| Détruire à une position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Définir l'image d'animation | `set_image_index` | `frame` |
+| Définir la vitesse d'animation | `set_image_speed` | `speed` |
+| Définir le sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
+| Démarrer l'animation | `start_animation` | — |
+| Arrêter l'animation | `stop_animation` | — |
+| Tester le nombre d'instances | `test_instance_count` | `object`, `number`, `operation` |
 
-**Utilisations courantes :**
-- Génération programmée
-- Actions retardées
-- Temps de recharge
-- Minutage d'animation
-- Événements périodiques
+### Score
 
----
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Effacer le tableau des scores | `clear_highscore` | — |
+| Dessiner la barre de santé | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
+| Dessiner les vies | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
+| Dessiner le score | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Définir la santé | `set_health` | `value`, `relative` |
+| Définir les vies | `set_lives` | `value`, `relative` |
+| Définir le score | `set_score` | `value`, `relative` |
+| Afficher le tableau des scores | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Tester la santé | `test_health` | `operation`, `value` |
+| Tester les vies | `test_lives` | `value`, `operation` |
+| Tester le score | `test_score` | `value`, `operation` |
 
-## Actions Supplémentaires (Au-delà du Débutant)
+### Minuterie
 
-### Actions de Mouvement
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Régler une alarme | `set_alarm` | `alarm_number`, `steps` |
+| Attendre | `sleep` | `milliseconds` |
 
-#### Déplacer dans une Direction
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `move_direction` |
-| **Nom du Bloc** | `move_direction` |
-| **Catégorie** | Mouvement |
+### Salle
 
-**Description :** Définir le mouvement en utilisant la direction (0-360 degrés) et la vitesse.
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Vérifier la salle | `check_room` | `room`, `not_flag` |
+| Terminer le jeu | `game_end` | — |
+| Aller à la salle | `goto_room` | `room`, `transition` |
+| Si salle suivante existe | `if_next_room_exists` | `then_actions`, `else_actions` |
+| Si salle précédente existe | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Salle suivante | `next_room` | — |
+| Salle précédente | `previous_room` | — |
+| Redémarrer la salle | `restart_room` | — |
+| Définir le titre de la salle | `set_room_caption` | `caption` |
 
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `direction` | Nombre | Direction en degrés (0=droite, 90=haut, 180=gauche, 270=bas) |
-| `speed` | Nombre | Vitesse de déplacement |
+### Audio
 
----
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Vérifier si un son joue | `check_sound` | `sound`, `not_flag` |
+| Jouer une musique | `play_music` | `music`, `loop`, `volume` |
+| Jouer un son | `play_sound` | `sound`, `volume` |
+| Définir le volume | `set_volume` | `volume` |
+| Arrêter la musique | `stop_music` | — |
+| Arrêter un son | `stop_sound` | `sound` |
 
-#### Déplacer Vers un Point
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `move_towards_point` |
-| **Nom du Bloc** | `move_towards_point` |
-| **Catégorie** | Mouvement |
+### Jeu
 
-**Description :** Se déplacer vers une position spécifique.
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Dessiner une flèche | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Dessiner un arrière-plan | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Dessiner une ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Dessiner une ligne | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Dessiner du texte mis à l'échelle | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Dessiner un sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative` |
+| Dessiner une variable | `draw_variable` | `x`, `y`, `variable` |
+| Remplir l'écran d'une couleur | `fill_color` | `color` |
+| Ouvrir une page web | `open_webpage` | `url` |
+| Redémarrer le jeu | `restart_game` | — |
+| Définir la couleur | `set_color` | `color`, `alpha` |
+| Définir la couleur de dessin | `set_draw_color` | `color` |
+| Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
+| Définir le titre de la fenêtre | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
+| Afficher les infos du jeu | `show_info` | — |
+| Afficher un message | `show_message` | `message` |
 
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `x` | Nombre/Expression | Coordonnée X cible |
-| `y` | Nombre/Expression | Coordonnée Y cible |
-| `speed` | Nombre | Vitesse de déplacement |
+### Contrôle
 
----
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Vérifier si vide | `check_empty` | `x`, `y`, `relative`, `objects` |
+| Commentaire | `comment` | `text` |
+| Sinon | `else_action` | — |
+| Fin de bloc | `end_block` | — |
+| Exécuter du code | `execute_code` | `code` |
+| Exécuter un script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
+| Quitter l'événement | `exit_event` | — |
+| Si poussée possible | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
+| Si collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si l'objet existe | `if_object_exists` | `object`, `not_flag` |
+| Début de bloc | `start_block` | — |
+| Tester la chance | `test_chance` | `sides` |
+| Poser une question | `test_question` | `question` |
+| Tester une variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
-### Actions de Minuterie
+### Vues
 
-#### Définir l'Alarme
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `set_alarm` |
-| **Nom du Bloc** | `set_alarm` |
-| **Catégorie** | Minuterie |
-| **Icône** | ⏰ |
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Activer les vues | `enable_views` | `enable` |
+| Définir une vue | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-**Description :** Définir une alarme pour se déclencher après un nombre d'étapes.
+### Vue 3D
 
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `alarm` | Nombre | Numéro d'alarme (0-11) |
-| `steps` | Nombre | Étapes avant le déclenchement de l'alarme (à 60 FPS, 60 étapes = 1 seconde) |
-
-**Exemple :** Définir l'alarme 0 à 180 étapes pour un délai de 3 secondes.
-
----
-
-### Actions de Vies
-
-#### Définir les Vies
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `set_lives` |
-| **Nom du Bloc** | `lives_set` |
-| **Catégorie** | Score/Vies/Santé |
-| **Icône** | ❤️ |
-
-**Description :** Définir le nombre de vies.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `value` | Nombre | Valeur des vies |
-| `relative` | Booléen | Si vrai, ajoute aux vies actuelles |
-
----
-
-#### Ajouter des Vies
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `add_lives` |
-| **Nom du Bloc** | `lives_add` |
-| **Catégorie** | Score/Vies/Santé |
-| **Icône** | ➕❤️ |
-
-**Description :** Ajouter ou soustraire des vies.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `value` | Nombre | Quantité à ajouter (négatif pour soustraire) |
-
-**Note :** Lorsque les vies atteignent 0, l'événement `no_more_lives` est déclenché.
-
----
-
-#### Dessiner les Vies
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `draw_lives` |
-| **Nom du Bloc** | `draw_lives` |
-| **Catégorie** | Score/Vies/Santé |
-| **Icône** | 🖼️❤️ |
-
-**Description :** Afficher les vies à l'écran.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `x` | Nombre | Position X |
-| `y` | Nombre | Position Y |
-| `sprite` | Sprite | Sprite optionnel à utiliser comme icône de vie |
+| Action | Nom du bloc | Paramètres |
+|--------|------------|------------|
+| Dessiner l'ATH DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
+| Dessiner la mini-carte | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
+| Activer la vue Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
+| Définir l'angle de vue | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
-### Actions de Santé
+## Voir aussi
 
-#### Définir la Santé
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `set_health` |
-| **Nom du Bloc** | `health_set` |
-| **Catégorie** | Score/Vies/Santé |
-| **Icône** | 💚 |
-
-**Description :** Définir la valeur de santé (0-100).
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `value` | Nombre | Valeur de santé (0-100) |
-| `relative` | Booléen | Si vrai, ajoute à la santé actuelle |
-
----
-
-#### Ajouter de la Santé
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `add_health` |
-| **Nom du Bloc** | `health_add` |
-| **Catégorie** | Score/Vies/Santé |
-| **Icône** | ➕💚 |
-
-**Description :** Ajouter ou soustraire de la santé.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `value` | Nombre | Quantité à ajouter (négatif pour les dégâts) |
-
-**Note :** Lorsque la santé atteint 0, l'événement `no_more_health` est déclenché.
-
----
-
-#### Dessiner la Barre de Santé
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `draw_health_bar` |
-| **Nom du Bloc** | `draw_health_bar` |
-| **Catégorie** | Score/Vies/Santé |
-| **Icône** | 📊💚 |
-
-**Description :** Dessiner une barre de santé à l'écran.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `x1` | Nombre | Position X gauche |
-| `y1` | Nombre | Position Y haut |
-| `x2` | Nombre | Position X droite |
-| `y2` | Nombre | Position Y bas |
-| `back_color` | Couleur | Couleur de fond |
-| `bar_color` | Couleur | Couleur de la barre de santé |
-
----
-
-### Actions Sonores
-
-#### Jouer un Son
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `play_sound` |
-| **Nom du Bloc** | `sound_play` |
-| **Catégorie** | Son |
-| **Icône** | 🔊 |
-
-**Description :** Jouer un effet sonore.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `sound` | Son | Ressource sonore à jouer |
-| `loop` | Booléen | Si le son doit être en boucle |
-
----
-
-#### Jouer de la Musique
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `play_music` |
-| **Nom du Bloc** | `music_play` |
-| **Catégorie** | Son |
-| **Icône** | 🎵 |
-
-**Description :** Jouer de la musique de fond.
-
-**Paramètres :**
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| `sound` | Son | Ressource musicale à jouer |
-| `loop` | Booléen | Si la musique doit être en boucle (généralement vrai pour la musique) |
-
----
-
-#### Arrêter la Musique
-| Propriété | Valeur |
-|-----------|--------|
-| **Nom de l'Action** | `stop_music` |
-| **Nom du Bloc** | `music_stop` |
-| **Catégorie** | Son |
-| **Icône** | 🔇 |
-
-**Description :** Arrêter toute la musique en cours de lecture.
-
-**Paramètres :** Aucun
-
----
-
-## Liste Complète des Fonctionnalités
-
-### Événements dans le Préréglage Intermédiaire
-
-| Événement | Catégorie | Description |
-|-----------|-----------|-------------|
-| Create | Objet | Instance créée |
-| Step | Objet | Chaque image |
-| Destroy | Objet | Instance détruite |
-| Draw | Dessin | Phase de rendu |
-| Keyboard Press | Entrée | Touche pressée une fois |
-| Mouse | Entrée | Interactions souris |
-| Collision | Collision | Chevauchement d'instances |
-| Alarm | Minuterie | Minuteur atteint zéro |
-
-### Actions dans le Préréglage Intermédiaire
-
-| Catégorie | Actions |
-|-----------|---------|
-| **Mouvement** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
-| **Instance** | Create, Destroy |
-| **Score** | Set Score, Add Score, Draw Score |
-| **Vies** | Set Lives, Add Lives, Draw Lives |
-| **Santé** | Set Health, Add Health, Draw Health Bar |
-| **Salle** | Next, Previous, Restart, Go To, If Next/Previous Exists |
-| **Minuterie** | Set Alarm |
-| **Son** | Play Sound, Play Music, Stop Music |
-| **Sortie** | Show Message, Execute Code |
-
----
-
-## Exemple : Jeu de Tir avec des Vies
-
-### Objet Joueur
-
-**Create :**
-- Set Lives : 3
-
-**Keyboard Press (Espace) :**
-- Create Instance : obj_bullet à (x, y-20)
-- Set Alarm : 0 à 15 (temps de recharge)
-
-**Collision avec obj_enemy :**
-- Add Lives : -1
-- Play Sound : snd_hurt
-- Jump to Position : (320, 400)
-
-**No More Lives :**
-- Show Message : "Game Over!"
-- Restart Room
-
-### Objet Ennemi
-
-**Create :**
-- Set Alarm : 0 à 60
-
-**Alarm 0 :**
-- Create Instance : obj_enemy_bullet à (x, y+20)
-- Set Alarm : 0 à 60 (répétition)
-
-**Collision avec obj_bullet :**
-- Add Score : 100
-- Play Sound : snd_explosion
-- Destroy Instance : self
-
----
-
-## Passage aux Préréglages Avancés
-
-Lorsque vous avez besoin de plus de fonctionnalités, envisagez :
-- **Préréglage Plateforme** - Gravité, saut, mécaniques de plateforme
-- **Préréglage Complet** - Tous les événements et actions disponibles
-
----
-
-## Voir Aussi
-
-- [Préréglage Débutant](Beginner-Preset_fr) - Commencez ici si vous êtes nouveau
-- [Référence Complète des Actions](Full-Action-Reference_fr) - Liste complète des actions
-- [Référence des Événements](Event-Reference_fr) - Liste complète des événements
-- [Événements et Actions](Evenements_Actions_fr) - Concepts de base
+- [Guide des Préréglages](Preset-Guide_fr) — ce que sont les préréglages et comment en changer
+- [Référence des Événements](Event-Reference_fr) — description complète de chaque événement
+- [Référence Complète des Actions](Full-Action-Reference_fr) — détails complets des paramètres de chaque action
+- [Préréglage Débutant](Beginner-Preset_fr) — le niveau en dessous de celui-ci

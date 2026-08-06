@@ -113,7 +113,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `keyboard_press` |
 | **Icon** | 🔘 |
 | **Category** | Input |
-| **Preset** | Beginner |
+| **Preset** | Intermediate |
 
 **Description:** Fires once when a key is first pressed.
 
@@ -129,7 +129,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `keyboard_release` |
 | **Icon** | ⬆️ |
 | **Category** | Input |
-| **Preset** | Advanced |
+| **Preset** | Full (Development edition) |
 
 **Description:** Fires once when a key is released.
 
@@ -146,7 +146,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `keyboard_no_key` |
 | **Icon** | ⌨️ |
 | **Category** | Input |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires each frame while **no** key is being held.
 
@@ -164,7 +164,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `mouse` |
 | **Icon** | 🖱️ |
 | **Category** | Input |
-| **Preset** | Intermediate |
+| **Preset** | Full (Development edition) |
 
 **Description:** Mouse button and movement events.
 
@@ -221,7 +221,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `alarm` |
 | **Icon** | ⏰ |
 | **Category** | Timing |
-| **Preset** | Intermediate |
+| **Preset** | Beginner |
 
 **Description:** Fires when an alarm countdown reaches zero.
 
@@ -243,7 +243,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `begin_step` |
 | **Icon** | ▶️ |
 | **Category** | Step |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires at the beginning of each frame, before regular Step events.
 
@@ -261,7 +261,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `end_step` |
 | **Icon** | ⏹️ |
 | **Category** | Step |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires at the end of each frame, after collisions.
 
@@ -280,7 +280,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `draw` |
 | **Icon** | 🎨 |
 | **Category** | Drawing |
-| **Preset** | Intermediate |
+| **Preset** | Beginner |
 
 **Description:** Fires during the rendering phase.
 
@@ -309,7 +309,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `draw_gui` |
 | **Icon** | 🖥️ |
 | **Category** | Drawing |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Draws in **screen (GUI) space**, on top of the room and unaffected by views/camera scrolling.
 
@@ -325,7 +325,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `room_start` |
 | **Icon** | 🚪 |
 | **Category** | Room |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires when entering a room, after all Create events.
 
@@ -342,7 +342,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `room_end` |
 | **Icon** | 🚪 |
 | **Category** | Room |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires when leaving a room.
 
@@ -361,7 +361,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `game_start` |
 | **Icon** | 🎮 |
 | **Category** | Game |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires once when the game first starts (in first room only).
 
@@ -378,7 +378,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `game_end` |
 | **Icon** | 🎮 |
 | **Category** | Game |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires when the game is ending.
 
@@ -396,7 +396,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `outside_room` |
 | **Icon** | 🚫 |
 | **Category** | Other |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires when instance is completely outside room boundaries.
 
@@ -413,7 +413,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `intersect_boundary` |
 | **Icon** | ⚠️ |
 | **Category** | Other |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires when instance touches the room boundary.
 
@@ -429,7 +429,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `no_more_lives` |
 | **Icon** | 💀 |
 | **Category** | Other |
-| **Preset** | Intermediate |
+| **Preset** | Beginner |
 
 **Description:** Fires when lives become 0 or less.
 
@@ -446,7 +446,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `no_more_health` |
 | **Icon** | 💔 |
 | **Category** | Other |
-| **Preset** | Intermediate |
+| **Preset** | Beginner |
 
 **Description:** Fires when health becomes 0 or less.
 
@@ -463,7 +463,7 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 | **Name** | `animation_end` |
 | **Icon** | 🎞️ |
 | **Category** | Other |
-| **Preset** | Advanced |
+| **Preset** | Beginner |
 
 **Description:** Fires when the instance's sprite animation completes a full cycle (wraps from the last frame back to the first).
 
@@ -496,11 +496,16 @@ Understanding when events fire helps create predictable game behavior
 
 ## Events by Preset
 
-| Preset | Events Included |
+Confirmed against `events.event_types.get_available_events()` fed each real
+preset from `config/blockly_config.py` — see [Preset Guide](Preset-Guide)
+for what a "preset" actually restricts (both the Blockly picker and the
+structured Events/Actions panel) and how a project's preset is set.
+
+| Preset | Events included |
 |--------|-----------------|
-| **Beginner** | Create, Step, Keyboard Press, Collision |
-| **Intermediate** | + Draw, Destroy, Mouse, Alarm |
-| **Advanced** | + All keyboard variants, Begin/End Step, Room events, Game events, Boundary events |
+| **Beginner** (19 events) | Create, Step, Keyboard (held), Keyboard \<No Key\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
+| **Intermediate** (21 events) | + Destroy, Keyboard Press |
+| **Full** (Development edition only, 23 events) | + Keyboard Release, Mouse |
 
 ---
 
