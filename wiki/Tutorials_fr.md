@@ -12,7 +12,11 @@ Bienvenue sur la page des tutoriels de PyGameMaker ! Ici, vous trouverez des gui
 
 ## Tutoriels pour Débutants
 
-Ces tutoriels sont conçus pour les utilisateurs novices en développement de jeux. Ils utilisent le **Preset Débutant** et couvrent les concepts fondamentaux.
+Ces tutoriels sont conçus pour les utilisateurs novices en développement de
+jeux, en n'utilisant que les événements et actions du
+[Preset Débutant](Beginner-Preset_fr) (confirmé dans
+`config/blockly_config.py`'s `get_beginner()`, qui nomme précisément ces
+deux tutoriels).
 
 ### Jeux Classiques
 
@@ -20,6 +24,21 @@ Ces tutoriels sont conçus pour les utilisateurs novices en développement de je
 |----------|-------------|----------------|
 | [**Pong**](Tutorial-Pong_fr) | Créez un jeu Pong classique à deux joueurs | Entrée au clavier, détection de collision, suivi des points, variables globales |
 | [**Breakout**](Tutorial-Breakout_fr) | Construisez un jeu de casse-briques | Destruction d'objets, mécanique de rebond, système de vies |
+
+## Tutoriels Intermédiaires
+
+Ces quatre tutoriels nécessitent le
+[Preset Intermédiaire](Intermediate-Preset_fr) — la mécanique de poussée de
+Sokoban (`if_can_push`) et le mouvement en grille de Sokoban/Labyrinthe
+(`move_snap_to_grid`/`move_grid`) ne font pas partie du Preset Débutant. Si
+votre projet est encore sur le Preset Débutant par défaut (les nouveaux
+projets démarrent dessus — voir le
+[Guide des Préréglages](Preset-Guide_fr)), changez-le d'abord via
+`Outils > Configurer les blocs d'action...`, sinon les actions de ces
+tutoriels n'apparaîtront dans aucun des deux éditeurs.
+
+| Tutoriel | Description | Compétences Acquises |
+|----------|-------------|----------------|
 | [**Sokoban**](Tutorial-Sokoban_fr) | Créez un jeu de puzzle pousse-caisses | Mouvement en grille, mécanique de poussée, conditions de victoire |
 | [**Labyrinthe**](Tutorial-Maze_fr) | Naviguez à travers les couloirs jusqu'à la sortie | Mouvement fluide, collision avec les murs, objets à collecter, chronomètre |
 | [**Platformer**](Tutorial-Platformer_fr) | Courez, sautez et collectez des pièces | Gravité, mécanique de saut, collision avec plateformes |
@@ -72,7 +91,9 @@ Chaque tutoriel enseigne des concepts importants du développement de jeux :
 
 1. **Installez PyGameMaker** - Suivez les [instructions d'installation](Home_fr#installation)
 2. **Choisissez un Tutoriel** - Commencez avec [Pong](Tutorial-Pong_fr) ou [Breakout](Tutorial-Breakout_fr)
-3. **Définissez Votre Preset** - Utilisez le Preset Débutant pour ces tutoriels
+3. **Définissez Votre Preset** - Débutant pour Pong/Breakout, Intermédiaire
+   pour Sokoban/Labyrinthe/Platformer/Atterrissage Lunaire (voir les
+   tableaux ci-dessus)
 4. **Suivez Attentivement** - Travaillez à travers chaque étape avec soin
 5. **Expérimentez** - Essayez les suggestions d'amélioration à la fin !
 
