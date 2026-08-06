@@ -443,7 +443,8 @@ lower-priority read). Exceptions already touched:
 - [x] Home.md *(fixed generic "contributing guidelines" boilerplate that
   pointed at a nonexistent doc)*
 - [ ] Getting-Started.md
-- [ ] Getting-Started-Breakout.md
+- [x] Getting-Started-Breakout.md *(dropped a redundant "you are now
+  initiated..." closing sentence restating the See Also section above it)*
 - [ ] Creating-Your-First-Game.md
 - [ ] Events-and-Actions.md
 - [ ] Event-Reference.md
@@ -482,7 +483,7 @@ with section E.
 
 - [x] Home_fr.md *(same fix as Home.md)*
 - [ ] Demarrage_fr.md
-- [ ] Getting-Started-Breakout_fr.md
+- [x] Getting-Started-Breakout_fr.md *(same fix as Getting-Started-Breakout.md)*
 - [ ] Premier_Jeu_fr.md
 - [ ] Evenements_Actions_fr.md
 - [ ] Event-Reference_fr.md

@@ -368,7 +368,3 @@ Vous pouvez aussi le fignoler, comme par exemple rajouter :
 - [Référence des Événements](Event-Reference_fr) - Liste complète de tous les événements
 - [Référence des Actions](Full-Action-Reference_fr) - Liste complète de toutes les actions
 - [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Version plus courte de ce tutoriel
-
----
-
-Vous êtes maintenant initié aux bases de la création de jeux vidéo avec PyGameMaker. À vous de jouer pour créer vos propres jeux à présent !
