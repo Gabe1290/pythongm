@@ -88,6 +88,45 @@ PAGE_CHROME = {
         "intermediate_desc": "the next tier up",
         "beginner_desc": "the tier below this one",
     },
+    "de": {
+        "beginner_title": "Anfänger-Preset",
+        "intermediate_title": "Fortgeschrittenen-Preset",
+        "nav": "*[Startseite](Home_de) | [Preset-Leitfaden](Preset-Guide_de) | {other_link}*",
+        "autogen": "> **Automatisch generiert** aus `get_{preset}()` in "
+                   "`config/blockly_config.py` von `tools/gen_preset_docs.py` — "
+                   "nicht von Hand bearbeiten; nach Änderungen am Preset den "
+                   "Generator erneut ausführen.",
+        "scope_note": "> **Was dieses Preset tatsächlich einschränkt:** Dieses "
+                       "Preset filtert SOWOHL die visuelle Blockly-Blockpalette "
+                       "ALS AUCH die Menüs „Ereignis hinzufügen“/„Aktion "
+                       "hinzufügen“ des strukturierten "
+                       "Ereignisse/Aktionen-Panels — unabhängig vom verwendeten "
+                       "Editor erscheinen nur die unten aufgeführten Ereignisse/"
+                       "Aktionen. Das Preset eines *Projekts* wird auf zwei Arten "
+                       "festgelegt: **`Einstellungen > IDE Edition`** legt den "
+                       "Standard für *neue* Projekte fest (Edition Anfänger -> "
+                       "dieses Preset; bestehende Projekte werden durch einen "
+                       "Editionswechsel nie verändert), und **`Werkzeuge > "
+                       "Aktionsblöcke konfigurieren...`** ändert das Preset des "
+                       "*aktuell geöffneten* Projekts jederzeit. Die "
+                       "Standard-Edition der IDE ist Anfänger, daher starten "
+                       "neue Projekte einer Neuinstallation genau auf dieser Liste.",
+        "overview": "Übersicht",
+        "overview_text": "Dieses Preset aktiviert **{n_events}** Ereignistypen und "
+                          "**{n_actions}** Aktionstypen.",
+        "events_h": "Ereignisse",
+        "actions_h": "Aktionen",
+        "c_event": "Ereignis", "c_block": "Blockname", "c_category": "Kategorie", "c_desc": "Beschreibung",
+        "c_action": "Aktion", "c_params": "Parameter",
+        "none": "—",
+        "see_also": "Siehe auch",
+        "sa_preset": "- [Preset-Leitfaden](Preset-Guide_de) — was Presets sind und wie man sie ändert",
+        "sa_events": "- [Ereignisreferenz](Event-Reference_de) — vollständige Beschreibung jedes Ereignisses",
+        "sa_actions": "- [Vollständige Aktionsreferenz](Full-Action-Reference_de) — vollständige Parameterdetails für jede Aktion",
+        "sa_other": "- [{other_title}]({other_link}) — {other_desc}",
+        "intermediate_desc": "die nächsthöhere Stufe",
+        "beginner_desc": "die Stufe darunter",
+    },
     "fr": {
         "beginner_title": "Préréglage Débutant",
         "intermediate_title": "Préréglage Intermédiaire",
