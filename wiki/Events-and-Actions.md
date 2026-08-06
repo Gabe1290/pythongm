@@ -110,11 +110,11 @@ Actions are operations that execute when events trigger.
 | **Set Vertical Speed** | Set vspeed | vspeed, relative |
 | **Set Gravity** | Set gravity force | gravity, direction |
 | **Set Friction** | Set friction | friction |
-| **Move to Point** | Move toward coordinates | x, y, speed |
-| **Move in Direction** | Move in a direction | direction, speed |
-| **Jump to Position** | Teleport to coordinates | x, y |
-| **Jump to Start** | Return to creation position | - |
-| **Jump to Random** | Move to random position | - |
+| **Move Towards Point** | Move toward coordinates | x, y, speed |
+| **Start Moving (Direction)** | Move in a direction | direction, speed |
+| **Jump To Position** | Teleport to coordinates | x, y, relative |
+| **Jump to Start Position** | Return to creation position | - |
+| **Jump to Random Position** | Move to a fully random position (both axes; grid-snappable) | snap_h, snap_v |
 | **Wrap Around Room** | Wrap at room edges | horizontal, vertical |
 | **Reverse Horizontal** | Flip hspeed | - |
 | **Reverse Vertical** | Flip vspeed | - |
@@ -147,8 +147,8 @@ Actions are operations that execute when events trigger.
 | **Set Lives** | Change lives | value, relative |
 | **Set Health** | Change health | value, relative |
 | **Draw Score** | Display score | x, y, caption |
-| **Draw Lives** | Display lives | x, y, caption |
-| **Draw Health** | Display health bar | x, y, width, height |
+| **Draw Lives** | Display lives as repeated sprite icons | x, y, sprite, scale, tiled |
+| **Draw Health Bar** | Display health as a two-colour bar | x1, y1, x2, y2, back_color, bar_color |
 
 ### Drawing Actions
 
@@ -160,9 +160,9 @@ Actions are operations that execute when events trigger.
 | **Draw Circle** | Draw circle | x, y, radius, filled |
 | **Draw Line** | Draw line | x1, y1, x2, y2 |
 | **Draw Arrow** | Draw arrow | x1, y1, x2, y2 |
-| **Set Color** | Set drawing color | color |
-| **Set Font** | Set text font | font |
-| **Set Alignment** | Set text alignment | halign, valign |
+| **Set Draw Color** | Set the colour used by Draw Text/Draw Rectangle/etc. | color |
+| **Set Color** | Set a sprite's blend tint and transparency (not the text/shape colour above) | color, alpha |
+| **Set Draw Font** | Set the font and text alignment for subsequent Draw Text calls | font, halign, valign |
 
 ### Room Actions
 
@@ -181,7 +181,7 @@ Actions are operations that execute when events trigger.
 |--------|-------------|------------|
 | **Play Sound** | Play sound effect | sound, loop |
 | **Stop Sound** | Stop a sound | sound |
-| **If Sound Playing** | Check if sound is playing | sound |
+| **Check Sound Playing** | Check if sound is playing | sound |
 | **Play Music** | Play background music | sound, loop |
 | **Stop Music** | Stop all music | - |
 
@@ -190,15 +190,15 @@ Actions are operations that execute when events trigger.
 | Action | Description | Parameters |
 |--------|-------------|------------|
 | **Set Variable** | Assign value | variable, value, relative |
-| **If Variable** | Check value | variable, value, operation |
-| **Draw Variable** | Display variable | x, y, variable, caption |
+| **Test Variable** | Check value | variable, value, operation |
+| **Draw Variable** | Display variable | x, y, variable |
 
 ### Control Flow Actions
 
 | Action | Description | Parameters |
 |--------|-------------|------------|
-| **If Expression** | Conditional check | expression |
-| **Else** | Alternative branch | - |
+| **Test Expression** | Conditional check (a Python boolean expression) | expression |
+| **Else Action** | Alternative branch | - |
 | **Start Block** | Begin action group | - |
 | **End Block** | End action group | - |
 | **Repeat** | Loop N times | count |
@@ -209,7 +209,7 @@ Actions are operations that execute when events trigger.
 | Action | Description | Parameters |
 |--------|-------------|------------|
 | **Show Message** | Display popup message | message |
-| **Show Info** | Show information window | - |
+| **Show Game Info** | Show information window | - |
 | **Restart Game** | Restart the game | - |
 | **End Game** | Close the game | - |
 
@@ -227,7 +227,7 @@ These variables are available for all instances:
 | `ystart` | Starting y position |
 | `hspeed` | Horizontal speed |
 | `vspeed` | Vertical speed |
-| `speed` | Total movement speed |
+| `speed` | Sprite animation rate (frames per second) — **not** movement speed. There's no built-in "total movement speed" variable; compute it yourself from `hspeed`/`vspeed` if you need it, e.g. `(hspeed**2 + vspeed**2)**0.5` |
 | `direction` | Movement direction (0-360) |
 | `gravity` | Gravity force |
 | `gravity_direction` | Direction of gravity |

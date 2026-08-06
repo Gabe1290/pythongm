@@ -457,7 +457,22 @@ lower-priority read). Exceptions already touched:
   X `irandom(600)`, Y `20`, which actually does what the tutorial wants;
   and "Run > Run Game" doesn't exist as a menu — real path is Build > Test
   Game)*
-- [ ] Events-and-Actions.md
+- [x] Events-and-Actions.md *(this hand-written action reference had never
+  been cross-checked against events/action_types.py: fixed wrong/nonexistent
+  action names — "If Variable"/"If Expression" don't exist (real: Test
+  Variable/Test Expression), "Show Info" (real: Show Game Info), "If Sound
+  Playing" (real: Check Sound Playing); merged the fabricated separate "Set
+  Font"/"Set Alignment" actions into the one real action that covers both
+  (Set Draw Font), and disambiguated "Set Color" (real: two DIFFERENT
+  actions — Set Draw Color for text/shapes, Set Color for sprite tint —
+  the table conflated them into one); fixed Draw Lives/Draw Health Bar's
+  wrong parameter lists; fixed "Jump to Random" to note it randomizes BOTH
+  axes (same misconception that broke Creating-Your-First-Game.md, see that
+  commit); most importantly fixed the `speed` built-in variable — the table
+  claimed "Total movement speed" but it's the sprite's *animation* rate
+  (confirmed: game_runner.py's `self.speed = 10.0  # Animation FPS`) —
+  there is no built-in movement-magnitude variable, a real landmine also
+  documented in the LunarLander tutorial fix)*
 - [ ] Event-Reference.md
 - [ ] Full-Action-Reference.md *(generated — see CLAUDE.md: edit
   `tools/action_ref_i18n.py`, not this file directly, if wording needs to
@@ -499,7 +514,16 @@ with section E.
 - [x] Premier_Jeu_fr.md *(shorter than English — no Jump to Random Position
   step exists here to fix; just the "Exécuter > Lancer le jeu" menu fix,
   same as English's Run > Run Game issue)*
-- [ ] Evenements_Actions_fr.md
+- [x] Evenements_Actions_fr.md *(same accuracy fixes as Events-and-Actions.md;
+  French display names sourced from tools/action_ref_i18n.py's ACTIONS_FR
+  table — the project's one authoritative French action-name catalog,
+  confirmed the ONLY one that actually ships: pygm2_fr_actions.ts's
+  translations are all `type="vanished"` and there is no compiled
+  pygm2_fr_actions.qm at all, so the in-app Actions panel shows English
+  action names in every language regardless of the selected UI language —
+  this is a known, accepted state (CLAUDE.md's ".ts files are useless for
+  this" note), not a new bug, and translating wiki action names anyway
+  matches the project's own generated Full-Action-Reference convention)*
 - [ ] Event-Reference_fr.md
 - [ ] Full-Action-Reference_fr.md *(generated — same caveat as E)*
 - [ ] Programmation_Visuelle_fr.md

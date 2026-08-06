@@ -104,10 +104,11 @@ Les vérifications de collision ont lieu entre les événements Step et Draw.
 | **Définir la vitesse verticale** | Définir vspeed | vspeed, relatif |
 | **Définir la gravité** | Définir la force de gravité | gravité, direction |
 | **Définir le frottement** | Définir la friction | friction |
-| **Aller vers un point** | Se déplacer vers des coordonnées | x, y, vitesse |
-| **Sauter à une position** | Téléportation aux coordonnées | x, y |
-| **Sauter au départ** | Retour à la position de création | - |
-| **Sauter aléatoirement** | Déplacement aléatoire | - |
+| **Se déplacer vers un point** | Se déplacer vers des coordonnées | x, y, vitesse |
+| **Commencer à bouger (direction)** | Se déplacer dans une direction | direction, vitesse |
+| **Sauter à une position** | Téléportation aux coordonnées | x, y, relatif |
+| **Sauter à la position de départ** | Retour à la position de création | - |
+| **Sauter à une position aléatoire** | Téléportation à une position entièrement aléatoire (les deux axes ; alignable sur la grille) | snap_h, snap_v |
 | **Rebondir** | Rebondir sur les objets solides | précis |
 
 ### Actions d'instance
@@ -134,8 +135,8 @@ Les vérifications de collision ont lieu entre les événements Step et Draw.
 | **Définir les vies** | Changer les vies | valeur, relatif |
 | **Définir la santé** | Changer la santé | valeur, relatif |
 | **Dessiner le score** | Afficher le score | x, y, légende |
-| **Dessiner les vies** | Afficher les vies | x, y, légende |
-| **Dessiner la barre de santé** | Afficher la barre de santé | x, y, largeur, hauteur |
+| **Dessiner les vies** | Afficher les vies sous forme d'icônes de sprite répétées | x, y, sprite, échelle, tuilé |
+| **Dessiner la barre de santé** | Afficher la santé sous forme de barre à deux couleurs | x1, y1, x2, y2, couleur_fond, couleur_barre |
 
 ### Actions de dessin
 
@@ -146,8 +147,9 @@ Les vérifications de collision ont lieu entre les événements Step et Draw.
 | **Dessiner un rectangle** | Dessiner un rectangle | x1, y1, x2, y2, rempli |
 | **Dessiner un cercle** | Dessiner un cercle | x, y, rayon, rempli |
 | **Dessiner une ligne** | Dessiner une ligne | x1, y1, x2, y2 |
-| **Définir la couleur** | Définir la couleur de dessin | couleur |
-| **Définir la police** | Définir la police de texte | police |
+| **Définir la couleur de dessin** | Définir la couleur utilisée par Dessiner du texte/Dessiner un rectangle/etc. | couleur |
+| **Définir la couleur** | Définir la teinte et la transparence d'un sprite (pas la couleur de dessin ci-dessus) | couleur, alpha |
+| **Définir la police de dessin** | Définir la police et l'alignement pour le prochain dessin de texte | police, alignement_h, alignement_v |
 
 ### Actions de salle
 
@@ -166,7 +168,7 @@ Les vérifications de collision ont lieu entre les événements Step et Draw.
 |--------|-------------|------------|
 | **Jouer un son** | Jouer un effet sonore | son, boucle |
 | **Arrêter un son** | Arrêter un son | son |
-| **Si son en cours** | Vérifier si un son est en cours | son |
+| **Vérifier si un son est en cours** | Vérifier si un son est en cours de lecture | son |
 | **Jouer une musique** | Jouer une musique de fond | son, boucle |
 | **Arrêter la musique** | Arrêter toute musique | - |
 
@@ -175,14 +177,14 @@ Les vérifications de collision ont lieu entre les événements Step et Draw.
 | Action | Description | Paramètres |
 |--------|-------------|------------|
 | **Définir une variable** | Assigner une valeur | variable, valeur, relatif |
-| **Si variable** | Vérifier une valeur | variable, valeur, opération |
-| **Dessiner une variable** | Afficher une variable | x, y, variable, légende |
+| **Tester une variable** | Vérifier une valeur | variable, valeur, opération |
+| **Dessiner une variable** | Afficher une variable | x, y, variable |
 
 ### Actions de contrôle de flux
 
 | Action | Description | Paramètres |
 |--------|-------------|------------|
-| **Si expression** | Vérification conditionnelle | expression |
+| **Tester une expression** | Vérification conditionnelle (une expression booléenne Python) | expression |
 | **Sinon** | Branche alternative | - |
 | **Début de bloc** | Commencer un groupe d'actions | - |
 | **Fin de bloc** | Terminer un groupe d'actions | - |
@@ -211,7 +213,7 @@ Ces variables sont disponibles pour toutes les instances :
 | `ystart` | Position y de départ |
 | `hspeed` | Vitesse horizontale |
 | `vspeed` | Vitesse verticale |
-| `speed` | Vitesse de déplacement totale |
+| `speed` | Vitesse d'animation du sprite (images par seconde) — **pas** la vitesse de déplacement. Il n'existe pas de variable intégrée pour la « vitesse totale » ; calculez-la vous-même à partir de `hspeed`/`vspeed`, ex. `(hspeed**2 + vspeed**2)**0.5` |
 | `direction` | Direction du mouvement (0-360) |
 | `gravity` | Force de gravité |
 | `gravity_direction` | Direction de la gravité |
