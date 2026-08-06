@@ -1,5 +1,49 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 10 — MAJOR, STOP AND READ BEFORE TOUCHING Tutorial-{Maze,
+Platformer,LunarLander,Sokoban}.md: these wiki pages teach fabricated
+GameMaker Language (GML) code that does not run in this engine at all.**
+Found while reading `wiki/Tutorial-Sokoban.md`'s "Execute Code" steps —
+they use `place_meeting()`, `instance_place()`, C-style `if (...) { }`,
+semicolons. Checked the other Tutorial-*.md pages: `Tutorial-Maze.md` (7
+fenced ```gml blocks), `Tutorial-Platformer.md` (13), `Tutorial-
+LunarLander.md` (8) are FULL of extensive GML — `keyboard_check(vk_up)`,
+`place_meeting`, `instance_place`, `draw_set_color`/`c_white`/`c_red` (GM
+color constants), `room_restart()`/`room_goto_next()`, `show_message()`,
+`instance_destroy()`, `with (other) { }`, `lengthdir_x/y()`, `clamp()`,
+`variable_global_exists()`, `noone`, `vk_left`/`vk_right` — **none of
+which exist in this engine.** This project's `execute_code` action runs
+**real Python** (confirmed: `runtime/action_executor.py:3089`
+`execute_execute_code_action`; the actual collision-check equivalent is
+`game.check_collision_at_position(instance, x, y, object_name)` —
+`runtime/game_runner.py:4118`, already used correctly in
+`samples/treasure/README.md`). A student pasting any of these ```gml
+blocks into the IDE's Execute Code action gets an immediate Python
+`SyntaxError` (C-style `{ }`/`;`/`!`, `vk_up`, undefined functions) —
+this is not a wording problem, the tutorials are **teaching code that
+cannot work**, likely drafted from generic "how to make X in GameMaker"
+knowledge and never adapted to this project's actual Python-based
+scripting.
+
+**Scope, checked before flagging:** confirmed via `grep -c gml` that this
+is systemic, not a one-off — `Tutorial-Maze.md` has the identical 7 GML
+blocks in **all 9 languages** (en/fr/de/es/it/pt/ru/sl/uk), and
+`Tutorial-Platformer_fr.md`/`Tutorial-LunarLander_fr.md` have their own
+(smaller) subsets, meaning this was propagated by translation, not
+independently authored per language. `Tutorial-Pong.md` and `Tutorial-
+Breakout.md` are unaffected (they never drop into raw code, staying
+entirely in the Actions-panel instruction style) — only the 4
+Sokoban/Maze/Platformer/LunarLander pages are affected, but across up to
+9 languages each.
+
+**Not fixing this without checking in first** — a real fix needs each
+GML block individually rewritten against the verified real API (`self`/
+`game`/`game.check_collision_at_position`/the `keyboard.check()` shim
+noted elsewhere in this doc's CLAUDE.md context), which is a substantial,
+technically-precise rewrite, not a wording pass, and doing it wrong would
+plant new bugs instead of fixing old ones. Flagging for the user before
+investing in it.
+
 **Update 9: Section C (all 18 English sample READMEs) is 100% read.**
 `samples/README.md` + match3_1/2/3 + maze_1/2/3/4 + plateforme_1/2/3 +
 raycast_1/2/3/4 + treasure + views_1/2. Verdict holds from the first
