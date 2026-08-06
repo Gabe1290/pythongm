@@ -2749,6 +2749,10 @@ CATEGORIES_SL = {
     "Movement": "Gibanje", "Instance": "Instanca", "Score": "Rezultat", "Room": "Soba",
     "Timing": "Čas", "Audio": "Zvok", "Game": "Igra", "Control": "Nadzor",
     "Grid": "Mreža", "Views": "Pogledi", "3D View": "Pogled 3D",
+    # Event categories (events.event_types.EventType.category) — distinct
+    # from the action categories above, shared with tools/gen_preset_docs.py.
+    "Object": "Objekt", "Input": "Vnos", "Collision": "Trk",
+    "Step": "Korak", "Drawing": "Risanje", "Other": "Drugo",
 }
 
 TYPES_SL = {
@@ -3080,6 +3084,36 @@ NOTES_SL = {
     "Expression shown after the objective label (bind your own key/quest variable)": "Izraz, prikazan za oznako cilja (povežite svojo spremenljivko ključa/naloge)",
 }
 
+# --------------------------------------------------------------------------- #
+# Events (non-Thymio), keyed by events.event_types.EVENT_TYPES's stable name
+# --------------------------------------------------------------------------- #
+
+EVENTS_SL = {
+    "create": {"desc": "Izvede se enkrat, ko je instanca prvič ustvarjena"},
+    "step": {"desc": "Izvede se pri vsaki sličici (uporabite za neprekinjena preverjanja)"},
+    "destroy": {"desc": "Izvede se, ko je instanca uničena"},
+    "collision": {"desc": "Izvede se ob trku z drugim objektom"},
+    "keyboard": {"desc": "Izvaja se neprekinjeno, dokler je tipka pritisnjena (za gladko gibanje)"},
+    "keyboard_press": {"desc": "Izvede se enkrat, ko je tipka prvič pritisnjena (za gibanje po mreži)"},
+    "keyboard_release": {"desc": "Izvede se enkrat, ko je tipka spuščena"},
+    "keyboard_no_key": {"desc": "Izvede se, ko trenutno ni pritisnjena nobena tipka"},
+    "mouse": {"desc": "Dogodki gumbov in premikanja miške"},
+    "begin_step": {"desc": "Izvede se na začetku vsakega koraka, pred drugimi dogodki"},
+    "end_step": {"desc": "Izvede se na koncu vsakega koraka, po trkih, a pred risanjem"},
+    "draw": {"desc": "Izvede se ob risanju objekta (nadomesti privzeto risanje sličice)"},
+    "draw_gui": {"desc": "Nariše se čez vse ostalo (nanj ne vpliva kamera/pogled). Uporabite za HUD, rezultat, življenja."},
+    "alarm": {"desc": "Izvede se, ko alarm doseže nič"},
+    "room_start": {"desc": "Izvede se, ko se soba zažene (po dogodkih Create)"},
+    "room_end": {"desc": "Izvede se, ko se soba konča"},
+    "game_start": {"desc": "Izvede se, ko se igra zažene (samo v prvi sobi)"},
+    "game_end": {"desc": "Izvede se, ko se igra konča"},
+    "outside_room": {"desc": "Izvede se, ko je instanca popolnoma zunaj sobe"},
+    "intersect_boundary": {"desc": "Izvede se, ko se instanca dotakne roba sobe"},
+    "no_more_lives": {"desc": "Izvede se, ko življenja dosežejo 0 ali manj"},
+    "no_more_health": {"desc": "Izvede se, ko zdravje doseže 0 ali manj"},
+    "animation_end": {"desc": "Sproži se, ko animacija sličice doseže zadnjo sličico in se ponovi"},
+}
+
 LANGS = {
     "fr": {"chrome": CHROME_FR, "categories": CATEGORIES_FR, "types": TYPES_FR,
            "actions": ACTIONS_FR, "notes": NOTES_FR, "events": EVENTS_FR},
@@ -3096,5 +3130,5 @@ LANGS = {
     "pt": {"chrome": CHROME_PT, "categories": CATEGORIES_PT, "types": TYPES_PT,
            "actions": ACTIONS_PT, "notes": NOTES_PT, "events": EVENTS_PT},
     "sl": {"chrome": CHROME_SL, "categories": CATEGORIES_SL, "types": TYPES_SL,
-           "actions": ACTIONS_SL, "notes": NOTES_SL},
+           "actions": ACTIONS_SL, "notes": NOTES_SL, "events": EVENTS_SL},
 }
