@@ -127,6 +127,46 @@ PAGE_CHROME = {
         "intermediate_desc": "die nächsthöhere Stufe",
         "beginner_desc": "die Stufe darunter",
     },
+    "it": {
+        "beginner_title": "Preset Principiante",
+        "intermediate_title": "Preset Intermedio",
+        "nav": "*[Home](Home_it) | [Guida ai Preset](Preset-Guide_it) | {other_link}*",
+        "autogen": "> **Generato automaticamente** da `get_{preset}()` in "
+                   "`config/blockly_config.py` da `tools/gen_preset_docs.py` — "
+                   "non modificare a mano; rilancia il generatore dopo aver "
+                   "cambiato il preset.",
+        "scope_note": "> **Cosa restringe davvero questo preset:** questo "
+                       "preset filtra SIA la tavolozza di blocchi visivi "
+                       "Blockly SIA i menu \"Aggiungi Evento\"/\"Aggiungi "
+                       "Azione\" del pannello strutturato Eventi/Azioni — "
+                       "qualunque editor tu usi, appaiono solo gli eventi/le "
+                       "azioni elencati qui sotto. Il preset di un *progetto* "
+                       "si imposta in due modi: **`Preferenze > IDE Edition`** "
+                       "sceglie il predefinito per i *nuovi* progetti "
+                       "(edizione Principiante -> questo preset; i progetti "
+                       "esistenti non vengono mai modificati cambiando "
+                       "edizione), e **`Strumenti > Configura blocchi "
+                       "azione...`** cambia il preset del progetto "
+                       "*attualmente aperto* in qualsiasi momento. L'edizione "
+                       "predefinita dell'IDE è Principiante, quindi i nuovi "
+                       "progetti di un'installazione pulita partono esattamente "
+                       "su questa lista.",
+        "overview": "Panoramica",
+        "overview_text": "Questo preset abilita **{n_events}** tipi di eventi e "
+                          "**{n_actions}** tipi di azioni.",
+        "events_h": "Eventi",
+        "actions_h": "Azioni",
+        "c_event": "Evento", "c_block": "Nome Blocco", "c_category": "Categoria", "c_desc": "Descrizione",
+        "c_action": "Azione", "c_params": "Parametri",
+        "none": "—",
+        "see_also": "Vedi Anche",
+        "sa_preset": "- [Guida ai Preset](Preset-Guide_it) — cosa sono i preset e come cambiarli",
+        "sa_events": "- [Riferimento Eventi](Event-Reference_it) — descrizione completa di ogni evento",
+        "sa_actions": "- [Riferimento Completo delle Azioni](Full-Action-Reference_it) — dettagli completi dei parametri per ogni azione",
+        "sa_other": "- [{other_title}]({other_link}) — {other_desc}",
+        "intermediate_desc": "il livello superiore",
+        "beginner_desc": "il livello sotto questo",
+    },
     "fr": {
         "beginner_title": "Préréglage Débutant",
         "intermediate_title": "Préréglage Intermédiaire",
