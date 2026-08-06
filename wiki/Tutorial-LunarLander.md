@@ -18,7 +18,8 @@ In this tutorial, you'll create a **Lunar Lander Game** - a classic arcade game 
 - Safe landing zones
 
 **Difficulty:** Beginner
-**Preset:** Beginner Preset
+**Preset:** Intermediate Preset (the thrust/fuel physics rely on Execute
+Code throughout, which isn't in the Beginner preset)
 
 ---
 
@@ -431,7 +432,7 @@ Congratulations! You've created a Lunar Lander game! You learned:
 ## See Also
 
 - [Tutorials](Tutorials) - More game tutorials
-- [Beginner Preset](Beginner-Preset) - Overview of beginner features
+- [Intermediate Preset](Intermediate-Preset) - Overview of the preset this tutorial needs
 - [Tutorial: Platformer](Tutorial-Platformer) - Create a platform jumping game
 - [Tutorial: Maze](Tutorial-Maze) - Create a maze navigation game
 - [Event Reference](Event-Reference) - Complete event documentation

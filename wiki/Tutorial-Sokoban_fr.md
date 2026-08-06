@@ -18,7 +18,8 @@ Dans ce tutoriel, vous allez créer un jeu de puzzle **Sokoban** - un classique 
 - La conception de niveaux pour les jeux de puzzle
 
 **Difficulté :** Débutant
-**Préréglage :** Beginner Preset
+**Préréglage :** Preset Intermédiaire (la mécanique de poussée et le
+mouvement en grille utilisés ici ne font pas partie du Preset Débutant)
 
 ---
 
@@ -369,7 +370,7 @@ Souvenez-vous : Un bon puzzle Sokoban devrait être difficile mais juste !
 ## Voir Aussi
 
 - [Tutorials](Tutorials_fr) - Plus de tutoriels de jeux
-- [Beginner Preset](Beginner-Preset_fr) - Aperçu des fonctionnalités pour débutants
+- [Preset Intermédiaire](Intermediate-Preset_fr) - Aperçu du préréglage nécessaire pour ce tutoriel
 - [Tutorial: Pong](Tutorial-Pong_fr) - Créer un jeu à deux joueurs
 - [Tutorial: Breakout](Tutorial-Breakout_fr) - Créer un jeu de casse-briques
 - [Event Reference](Event-Reference_fr) - Documentation complète des événements
