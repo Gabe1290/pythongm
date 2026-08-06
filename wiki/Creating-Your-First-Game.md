@@ -80,7 +80,9 @@ In this tutorial, we'll create a simple "Catch the Stars" game where a player mo
 ### Add Create Event
 1. Click **Add Event** > **Create**
 2. Add action: **Set Vertical Speed** with value `3`
-3. Add action: **Jump to Random Position** (horizontal only)
+3. Add action: **Jump To Position** with X `irandom(600)`, Y `20` — `irandom(n)`
+   picks a random whole number from 0 to `n`, so this scatters the star
+   somewhere near the top of a 640-wide room each time it (re)spawns
 
 ### Add Outside Room Event
 1. Click **Add Event** > **Other** > **Outside Room**
@@ -119,7 +121,7 @@ In this tutorial, we'll create a simple "Catch the Stars" game where a player mo
 
 ## Step 8: Run Your Game!
 
-1. Press **F5** or go to **Run > Run Game**
+1. Press **F5** or go to **Build > Test Game**
 2. Use the left and right arrow keys to move
 3. Catch the falling stars to increase your score!
 

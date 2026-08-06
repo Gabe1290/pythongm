@@ -450,7 +450,13 @@ lower-priority read). Exceptions already touched:
   actually-required xcb libs — replaced with docs/BUILDING.md's real list)*
 - [x] Getting-Started-Breakout.md *(dropped a redundant "you are now
   initiated..." closing sentence restating the See Also section above it)*
-- [ ] Creating-Your-First-Game.md
+- [x] Creating-Your-First-Game.md *(2 accuracy fixes: "Jump to Random
+  Position (horizontal only)" isn't a real mode of that action — it always
+  randomizes both X and Y across the whole room (checked
+  execute_jump_to_random_action) — swapped for Jump To Position with
+  X `irandom(600)`, Y `20`, which actually does what the tutorial wants;
+  and "Run > Run Game" doesn't exist as a menu — real path is Build > Test
+  Game)*
 - [ ] Events-and-Actions.md
 - [ ] Event-Reference.md
 - [ ] Full-Action-Reference.md *(generated — see CLAUDE.md: edit
@@ -490,7 +496,9 @@ with section E.
 - [x] Demarrage_fr.md *(same 2 menu-accuracy fixes as Getting-Started.md;
   no Linux troubleshooting section in this shorter French version)*
 - [x] Getting-Started-Breakout_fr.md *(same fix as Getting-Started-Breakout.md)*
-- [ ] Premier_Jeu_fr.md
+- [x] Premier_Jeu_fr.md *(shorter than English — no Jump to Random Position
+  step exists here to fix; just the "Exécuter > Lancer le jeu" menu fix,
+  same as English's Run > Run Game issue)*
 - [ ] Evenements_Actions_fr.md
 - [ ] Event-Reference_fr.md
 - [ ] Full-Action-Reference_fr.md *(generated — same caveat as E)*
