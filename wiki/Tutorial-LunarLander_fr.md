@@ -18,7 +18,8 @@ Dans ce tutoriel, vous créerez un **Jeu d'Atterrissage Lunaire** - un jeu d'arc
 - Zones d'atterrissage sécurisées
 
 **Difficulté :** Débutant
-**Preset :** Preset Débutant
+**Preset :** Preset Intermédiaire (la physique de poussée/carburant repose
+sur Exécuter du Code tout au long, qui ne fait pas partie du Preset Débutant)
 
 ---
 

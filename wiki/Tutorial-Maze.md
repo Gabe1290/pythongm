@@ -18,7 +18,8 @@ In this tutorial, you'll create a **Maze Game** where the player navigates throu
 - Simple timer system
 
 **Difficulty:** Beginner
-**Preset:** Beginner Preset
+**Preset:** Intermediate Preset (the Execute Code action used for the timer
+isn't in the Beginner preset)
 
 ---
 
@@ -372,7 +373,7 @@ Congratulations! You've created a maze game! You learned:
 ## See Also
 
 - [Tutorials](Tutorials) - More game tutorials
-- [Beginner Preset](Beginner-Preset) - Overview of beginner features
+- [Intermediate Preset](Intermediate-Preset) - Overview of the preset this tutorial needs
 - [Tutorial: Pong](Tutorial-Pong) - Create a two-player game
 - [Tutorial: Breakout](Tutorial-Breakout) - Create a brick breaker game
 - [Tutorial: Sokoban](Tutorial-Sokoban) - Create a box-pushing puzzle

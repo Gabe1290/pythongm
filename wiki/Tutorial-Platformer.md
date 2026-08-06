@@ -18,7 +18,9 @@ In this tutorial, you'll create a **Platformer Game** - a side-scrolling action 
 - Collectibles and hazards
 
 **Difficulty:** Beginner
-**Preset:** Beginner Preset
+**Preset:** Intermediate Preset (the Enhancements section's Execute Code
+actions aren't in the Beginner preset; the base tutorial through Step 10
+only needs Beginner-preset actions)
 
 ---
 
@@ -420,7 +422,7 @@ Congratulations! You've created a platformer game! You learned:
 ## See Also
 
 - [Tutorials](Tutorials) - More game tutorials
-- [Beginner Preset](Beginner-Preset) - Overview of beginner features
+- [Intermediate Preset](Intermediate-Preset) - Overview of the preset the Enhancements section needs
 - [Tutorial: Maze](Tutorial-Maze) - Create a maze navigation game
 - [Tutorial: Breakout](Tutorial-Breakout) - Create a brick breaker game
 - [Event Reference](Event-Reference) - Complete event documentation

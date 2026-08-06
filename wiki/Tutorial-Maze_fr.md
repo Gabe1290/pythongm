@@ -18,7 +18,8 @@ Dans ce tutoriel, vous allez créer un **Jeu de Labyrinthe** où le joueur navig
 - Système de chronomètre simple
 
 **Difficulté :** Débutant
-**Preset :** Preset Débutant
+**Preset :** Preset Intermédiaire (l'action Exécuter du Code utilisée pour
+le chronomètre ne fait pas partie du Preset Débutant)
 
 ---
 
@@ -377,7 +378,7 @@ Félicitations ! Vous avez créé un jeu de labyrinthe ! Vous avez appris :
 ## Voir Aussi
 
 - [Tutoriels](Tutorials_fr) - Plus de tutoriels de jeux
-- [Preset Débutant](Beginner-Preset_fr) - Aperçu des fonctionnalités débutant
+- [Preset Intermédiaire](Intermediate-Preset_fr) - Aperçu du préréglage nécessaire pour ce tutoriel
 - [Tutoriel : Pong](Tutorial-Pong_fr) - Créer un jeu à deux joueurs
 - [Tutoriel : Breakout](Tutorial-Breakout_fr) - Créer un jeu de casse-briques
 - [Tutoriel : Sokoban](Tutorial-Sokoban_fr) - Créer un jeu de puzzle

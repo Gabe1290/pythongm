@@ -18,7 +18,8 @@ In this tutorial, you'll create a **Sokoban** puzzle game - a classic box-pushin
 - Level design for puzzle games
 
 **Difficulty:** Beginner
-**Preset:** Beginner Preset
+**Preset:** Intermediate Preset (the push mechanic and grid movement used
+here aren't in the Beginner preset)
 
 ---
 
@@ -361,7 +362,7 @@ Remember: A good Sokoban puzzle should be challenging but fair!
 ## See Also
 
 - [Tutorials](Tutorials) - More game tutorials
-- [Beginner Preset](Beginner-Preset) - Overview of beginner features
+- [Intermediate Preset](Intermediate-Preset) - Overview of the preset this tutorial needs
 - [Tutorial: Pong](Tutorial-Pong) - Create a two-player game
 - [Tutorial: Breakout](Tutorial-Breakout) - Create a brick breaker game
 - [Event Reference](Event-Reference) - Complete event documentation

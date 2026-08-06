@@ -1,5 +1,26 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 14 — follow-through from Update 12/Tutorials.md: the 4 individual
+tutorial pages (Sokoban/Maze/Platformer/LunarLander) had the same wrong
+"Preset: Beginner Preset" header the Tutorials.md fix caught at the index
+level.** These were rewritten earlier in this same session (the GML
+fixes, Update 10/11) *before* the preset system was understood — the GML
+rewrite never touched the Preset line, and at the time nobody knew it was
+wrong. Fixed all 4 English pages to Intermediate with a specific reason
+each (Sokoban: push mechanic + grid movement; Maze: Execute Code for the
+timer; Platformer: the Enhancements section's Execute Code, base tutorial
+through Step 10 is genuinely Beginner-compatible; LunarLander: Execute
+Code throughout). **Caught a real mistake mid-fix**: initially copied the
+same "Intermediate" verdict onto Tutorial-Platformer_fr.md by analogy with
+English, but that French page is a shorter variant with NO Enhancements
+section and NO Execute Code at all — checked its actual content before
+committing and reverted it to Beginner, which is what it genuinely needs.
+Sokoban_fr/Maze_fr/LunarLander_fr were checked the same way and do contain
+the Intermediate-requiring content, so those three got the real fix.
+**Lesson: a French tutorial page derived from an English one is not
+guaranteed to need the same preset — check what's actually IN the page,
+not what its English counterpart needs.**
+
 **Update 13 — MAJOR, RESOLVED: Visual-Programming.md/`_fr` were mostly
 fabricated.** Full details on the checklist entries below (Section E/F).
 Short version: cross-checked every block table against the real, complete
