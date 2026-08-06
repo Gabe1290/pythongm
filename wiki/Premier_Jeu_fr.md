@@ -104,7 +104,7 @@ Dans ce tutoriel, nous allons créer un jeu simple « Attrape les étoiles » o�
 
 ## Étape 7 : Testez votre jeu !
 
-1. Appuyez sur **F5** ou allez dans **Exécuter > Lancer le jeu**
+1. Appuyez sur **F5** ou allez dans **Compiler > Tester le jeu**
 2. Utilisez les flèches gauche et droite pour vous déplacer
 3. Attrapez les étoiles pour augmenter votre score !
 
