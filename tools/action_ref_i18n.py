@@ -1240,6 +1240,10 @@ CATEGORIES_RU = {
     "Movement": "Движение", "Instance": "Экземпляр", "Score": "Счёт", "Room": "Комната",
     "Timing": "Время", "Audio": "Аудио", "Game": "Игра", "Control": "Управление",
     "Grid": "Сетка", "Views": "Виды", "3D View": "3D-вид",
+    # Event categories (events.event_types.EventType.category) — distinct
+    # from the action categories above, shared with tools/gen_preset_docs.py.
+    "Object": "Объект", "Input": "Ввод", "Collision": "Столкновение",
+    "Step": "Шаг", "Drawing": "Рисование", "Other": "Другое",
 }
 
 TYPES_RU = {
@@ -1569,6 +1573,36 @@ NOTES_RU = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Горизонтальная полоса кадров лица, самый здоровый первым (пусто = без иконки лица)",
     "How many frames the face strip has; health is bucketed evenly across them": "Сколько кадров имеет полоса лица; здоровье равномерно распределяется между ними",
     "Expression shown after the objective label (bind your own key/quest variable)": "Выражение, показываемое после метки цели (привяжите свою переменную ключа/квеста)",
+}
+
+# --------------------------------------------------------------------------- #
+# Events (non-Thymio), keyed by events.event_types.EVENT_TYPES's stable name
+# --------------------------------------------------------------------------- #
+
+EVENTS_RU = {
+    "create": {"desc": "Выполняется один раз при первом создании экземпляра"},
+    "step": {"desc": "Выполняется на каждом кадре (используйте для непрерывных проверок)"},
+    "destroy": {"desc": "Выполняется при уничтожении экземпляра"},
+    "collision": {"desc": "Выполняется при столкновении с другим объектом"},
+    "keyboard": {"desc": "Выполняется непрерывно, пока клавиша удерживается (для плавного движения)"},
+    "keyboard_press": {"desc": "Выполняется один раз при первом нажатии клавиши (для движения по сетке)"},
+    "keyboard_release": {"desc": "Выполняется один раз при отпускании клавиши"},
+    "keyboard_no_key": {"desc": "Выполняется, когда в данный момент не нажата ни одна клавиша"},
+    "mouse": {"desc": "События кнопок и движения мыши"},
+    "begin_step": {"desc": "Выполняется в начале каждого шага, перед другими событиями"},
+    "end_step": {"desc": "Выполняется в конце каждого шага, после столкновений, но перед отрисовкой"},
+    "draw": {"desc": "Выполняется при отрисовке объекта (заменяет стандартную отрисовку спрайта)"},
+    "draw_gui": {"desc": "Рисуется поверх всего остального (не зависит от камеры/вида). Используйте для HUD, счёта, жизней."},
+    "alarm": {"desc": "Выполняется, когда таймер будильника достигает нуля"},
+    "room_start": {"desc": "Выполняется при запуске комнаты (после событий Create)"},
+    "room_end": {"desc": "Выполняется при завершении комнаты"},
+    "game_start": {"desc": "Выполняется при запуске игры (только в первой комнате)"},
+    "game_end": {"desc": "Выполняется при завершении игры"},
+    "outside_room": {"desc": "Выполняется, когда экземпляр полностью за пределами комнаты"},
+    "intersect_boundary": {"desc": "Выполняется, когда экземпляр касается границы комнаты"},
+    "no_more_lives": {"desc": "Выполняется, когда жизни достигают 0 или меньше"},
+    "no_more_health": {"desc": "Выполняется, когда здоровье достигает 0 или меньше"},
+    "animation_end": {"desc": "Срабатывает, когда анимация спрайта достигает последнего кадра и начинается заново"},
 }
 
 CHROME_IT = {
@@ -3156,7 +3190,7 @@ LANGS = {
     "uk": {"chrome": CHROME_UK, "categories": CATEGORIES_UK, "types": TYPES_UK,
            "actions": ACTIONS_UK, "notes": NOTES_UK, "events": EVENTS_UK},
     "ru": {"chrome": CHROME_RU, "categories": CATEGORIES_RU, "types": TYPES_RU,
-           "actions": ACTIONS_RU, "notes": NOTES_RU},
+           "actions": ACTIONS_RU, "notes": NOTES_RU, "events": EVENTS_RU},
     "it": {"chrome": CHROME_IT, "categories": CATEGORIES_IT, "types": TYPES_IT,
            "actions": ACTIONS_IT, "notes": NOTES_IT, "events": EVENTS_IT},
     "es": {"chrome": CHROME_ES, "categories": CATEGORIES_ES, "types": TYPES_ES,
