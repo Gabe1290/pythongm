@@ -1,5 +1,39 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 7 (Section B start) — found a real content gap, not a slop issue.**
+Structural diff of all 41 EN/FR pairs (tag+class structure, ignoring text)
+found 9 mismatches. Investigated each:
+- **`04_breakout/07_game_controller.html` (fr): missing the entire "Game
+  Over and Highscore" section** — the `No More Lives` event, the Show
+  message/Show Highscore/End Game block sequence, and the "Order
+  matters!" warning. French learners following this tutorial never learn
+  to add a working game-over screen; the French "Challenge Ideas" list
+  even still references "Terminez le jeu quand les vies atteignent zéro"
+  (end the game at 0 lives) as a *challenge*, even though ending the game
+  was supposed to already be taught content. **Needs a real fix (translate
+  the missing section), not a polish edit — flagging for the user rather
+  than unilaterally drafting French teaching prose.**
+- The other 8 mismatches (`01_getting_started/03_first_project`,
+  `05_sokoban/02_player_and_walls`, `05_sokoban/04_targets_and_controller`,
+  `06_maze/02_player_and_maze`, `07_platformer/01_introduction`,
+  `07_platformer/02_jumping_player`, `08_lunar_lander/01_introduction`,
+  `08_lunar_lander/02_flying_lander`) checked and are **not content gaps**:
+  either a single extra/missing `<strong>` tag (cosmetic), or the French
+  file restructures one `<p>` into a `<h2>` + list covering the same
+  content (verified via full tail-to-tail diff on the sokoban case —
+  identical ending content, just organized differently). Lower-priority
+  note: `07_platformer/01_introduction` and `08_lunar_lander/01_introduction`
+  (fr) use an older bullet-list "What We'll Create" layout instead of the
+  numbered `.phase` boxes every other intro (EN and FR) uses — content is
+  complete, just an inconsistent template/format, and
+  `07_platformer/01_introduction`'s French time estimate ("30-40 minutes")
+  doesn't match English's ("25-30 minutes"). Neither blocks learning like
+  the breakout gap does.
+
+No accent-stripping found in any French Tutorials file (checked ~25 common
+words that would be conspicuously wrong unaccented, e.g. "deplacer" vs
+"déplacer") — translation quality itself is solid where content exists.
+
 **Update 6: Section A (all 41 live English Tutorials files) is 100% read.**
 Every lesson across all 9 tutorials read in full for paragraph-level
 polish, not just grep. Overall verdict holds from the earlier updates:
