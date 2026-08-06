@@ -12,7 +12,10 @@ Welcome to the PyGameMaker Tutorials page! Here you'll find step-by-step guides 
 
 ## Beginner Tutorials
 
-These tutorials are designed for users new to game development. They use the **Beginner Preset** and cover fundamental concepts.
+These tutorials are designed for users new to game development, using only
+the [Beginner Preset](Beginner-Preset)'s events and actions (confirmed
+against `config/blockly_config.py`'s `get_beginner()`, which names these
+two tutorials specifically).
 
 ### Classic Games
 
@@ -20,6 +23,19 @@ These tutorials are designed for users new to game development. They use the **B
 |----------|-------------|----------------|
 | [**Pong**](Tutorial-Pong) | Create a classic two-player Pong game | Keyboard input, collision detection, score tracking, global variables |
 | [**Breakout**](Tutorial-Breakout) | Build a brick breaker game | Object destruction, bounce mechanics, lives system |
+
+## Intermediate Tutorials
+
+These four need the [Intermediate Preset](Intermediate-Preset) — Sokoban's
+push mechanic (`if_can_push`), and Sokoban/Maze's grid movement
+(`move_snap_to_grid`/`move_grid`), aren't in the Beginner preset. If your
+project is still on the default Beginner preset (new projects start there —
+see the [Preset Guide](Preset-Guide)), switch it first via
+`Tools > Configure Action Blocks...` or these tutorials' actions won't
+appear in either editor.
+
+| Tutorial | Description | Skills Learned |
+|----------|-------------|----------------|
 | [**Sokoban**](Tutorial-Sokoban) | Create a box-pushing puzzle game | Grid-based movement, push mechanics, win conditions |
 | [**Maze**](Tutorial-Maze) | Navigate through corridors to the exit | Smooth movement, wall collision, collectibles, timer |
 | [**Platformer**](Tutorial-Platformer) | Run, jump, and collect coins | Gravity, jumping mechanics, platform collision |
@@ -72,7 +88,8 @@ Each tutorial teaches important game development concepts:
 
 1. **Install PyGameMaker** - Follow the [installation instructions](Home#installation)
 2. **Choose a Tutorial** - Start with [Pong](Tutorial-Pong) or [Breakout](Tutorial-Breakout)
-3. **Set Your Preset** - Use the Beginner Preset for these tutorials
+3. **Set Your Preset** - Beginner for Pong/Breakout, Intermediate for
+   Sokoban/Maze/Platformer/Lunar Lander (see the tables above)
 4. **Follow Along** - Work through each step carefully
 5. **Experiment** - Try the enhancement suggestions at the end!
 
