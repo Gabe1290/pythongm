@@ -204,7 +204,7 @@ def build(lang: str = "en") -> tuple[str, set]:
         f"## {tr.chrome('see_also', 'See Also')}",
         "",
         tr.chrome("sa_events", "- [Event Reference](Event-Reference) — the events that trigger actions"),
-        tr.chrome("sa_preset", "- [Preset Guide](Preset-Guide) — which actions each preset/edition exposes"),
+        tr.chrome("sa_preset", "- [Preset Guide](Preset-Guide) — which of these actions your project's preset actually shows in the Blockly picker and the structured Actions panel"),
         tr.chrome("sa_3d", "- [3D View](3D-View) — the raycast first-person actions"),
         tr.chrome("sa_ext", "- [Extensions](Extensions) — how the 3D View actions are provided"),
         "",

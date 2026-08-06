@@ -39,7 +39,7 @@ CHROME_FR = {
     "c_property": "Propriété", "c_value": "Valeur",
     "see_also": "Voir aussi",
     "sa_events": "- [Référence des Événements](Event-Reference_fr) — les événements qui déclenchent les actions",
-    "sa_preset": "- [Guide des Préréglages](Preset-Guide_fr) — quelles actions chaque préréglage/édition expose",
+    "sa_preset": "- [Guide des Préréglages](Preset-Guide_fr) — quelles de ces actions le préréglage de votre projet affiche réellement dans le sélecteur Blockly et le panneau structuré Actions",
     "sa_3d": "- [Vue 3D](3D-View_fr) — les actions de vue à la première personne (raycast)",
     "sa_ext": "- [Extensions](Extensions_fr) — comment les actions de la Vue 3D sont fournies",
 }
