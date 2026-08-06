@@ -19,6 +19,8 @@
         .block-event { background-color: #FFD500; color: #333; }
         .block-move { background-color: #5C81A6; }
         .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A65CA6; }
+        .block-output { background-color: #A6745C; }
         .block-indent { margin-left: 20px; }
         .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
@@ -116,6 +118,51 @@
         Même s'il est invisible, il doit exister dans la salle.
     </div>
 
+    <!-- ============= GAME OVER ============= -->
+    <h2>Fin de partie et meilleurs scores</h2>
+    <p>Pour l'instant, quand le joueur n'a plus de vies, la balle continue simplement à
+    réapparaître indéfiniment. Faisons en sorte que le jeu affiche un message
+    <strong>Game Over</strong>, montre le tableau des meilleurs scores, puis se ferme.</p>
+
+    <div class="info">
+        <strong>L'événement <code>Plus de vies</code></strong> se déclenche automatiquement
+        dès que les vies du joueur tombent à zéro. Vous n'avez pas besoin de le vérifier
+        vous-même &mdash; il suffit d'ajouter l'événement, le moteur s'en charge.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>obj_game_controller</code> dans l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Ajoutez un troisième bloc d'événement. Dans <em>Événements</em>, choisissez
+                <strong>Autres événements</strong> puis <strong>Plus de vies</strong></li>
+            <li>Emboîtez ces trois blocs à l'intérieur, dans cet ordre :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand plus de vies</span><br>
+            <span class="block block-output block-indent">Afficher un message "Game Over !"</span><br>
+            <span class="block block-game block-indent">Afficher le tableau des meilleurs scores</span><br>
+            <span class="block block-game block-indent">Terminer le jeu</span>
+        </div>
+        <ul>
+            <li><strong>Afficher un message</strong> (depuis <em>Sortie</em>) &mdash; fait apparaître une fenêtre "Game Over !"</li>
+            <li><strong>Afficher le tableau des meilleurs scores</strong> (depuis <em>Jeu</em>) &mdash; affiche le tableau
+                des meilleurs scores et, si le joueur figure dans le classement, demande son nom</li>
+            <li><strong>Terminer le jeu</strong> (depuis <em>Jeu</em>) &mdash; ferme la fenêtre du jeu</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>L'ordre compte !</strong> Placez <em>Afficher le tableau des meilleurs scores</em>
+        <strong>avant</strong> <em>Terminer le jeu</em>. Si vous terminez le jeu en premier,
+        la fenêtre des meilleurs scores n'a jamais l'occasion de s'afficher.
+    </div>
+
+    <div class="step">
+        <p>Vous devriez maintenant avoir <strong>3 blocs d'événements</strong> sur le
+        contrôleur de jeu (Créer, Dessiner, Plus de vies).</p>
+    </div>
+
     <!-- ============= FINAL TEST ============= -->
     <h1 style="color: #28a745; border-bottom-color: #28a745;">Félicitations ! Testez votre jeu final !</h1>
     <div class="success">
@@ -134,7 +181,7 @@
             <li>Donnez des valeurs de points différentes aux briques de couleurs différentes (rouge = 40, orange = 30, jaune = 20, vert = 10)</li>
             <li>Faites accélérer la balle à mesure que les briques sont détruites</li>
             <li>Ajoutez un deuxième niveau avec une disposition de briques différente</li>
-            <li>Terminez le jeu quand les vies atteignent zéro</li>
+            <li>Jouez un son quand la partie se termine (ajoutez-le à l'événement <em>Plus de vies</em>)</li>
         </ul>
     </div>
 </body>
