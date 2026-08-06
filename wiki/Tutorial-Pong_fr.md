@@ -119,8 +119,7 @@ L'objet mur crée des limites en haut et en bas de la zone de jeu.
 
 **Événement : Collision avec obj_wall**
 1. Ajouter un événement → Collision → obj_wall
-2. Ajouter une action : **Mouvement** → **Rebondir contre les objets**
-3. Sélectionnez « Contre les objets solides »
+2. Ajouter une action : **Mouvement** → **Rebondir** (aucune configuration nécessaire — rebondit toujours sur les objets solides)
 
 ### 4.2 Raquette droite (Joueur 2)
 
@@ -152,8 +151,7 @@ L'objet mur crée des limites en haut et en bas de la zone de jeu.
 
 **Événement : Collision avec obj_wall**
 1. Ajouter un événement → Collision → obj_wall
-2. Ajouter une action : **Mouvement** → **Rebondir contre les objets**
-3. Sélectionnez « Contre les objets solides »
+2. Ajouter une action : **Mouvement** → **Rebondir** (aucune configuration nécessaire — rebondit toujours sur les objets solides)
 
 ---
 
@@ -164,24 +162,21 @@ L'objet mur crée des limites en haut et en bas de la zone de jeu.
 
 **Événement : Créer**
 1. Ajouter un événement → Créer
-2. Ajouter une action : **Mouvement** → **Commencer à se déplacer dans une direction**
-3. Choisissez une direction diagonale (pas tout à fait vers le haut ou vers le bas)
+2. Ajouter une action : **Mouvement** → **Commencer à Bouger (Direction)**
+3. Cochez une case diagonale dans le sélecteur de direction 3x3 (pas tout à fait vers le haut ou vers le bas)
 4. Définissez la vitesse sur `6`
 
 **Événement : Collision avec obj_paddle_left**
 1. Ajouter un événement → Collision → obj_paddle_left
-2. Ajouter une action : **Mouvement** → **Rebondir contre les objets**
-3. Sélectionnez « Contre les objets solides »
+2. Ajouter une action : **Mouvement** → **Rebondir** (aucune configuration nécessaire — rebondit toujours sur les objets solides)
 
 **Événement : Collision avec obj_paddle_right**
 1. Ajouter un événement → Collision → obj_paddle_right
-2. Ajouter une action : **Mouvement** → **Rebondir contre les objets**
-3. Sélectionnez « Contre les objets solides »
+2. Ajouter une action : **Mouvement** → **Rebondir** (aucune configuration nécessaire — rebondit toujours sur les objets solides)
 
 **Événement : Collision avec obj_wall**
 1. Ajouter un événement → Collision → obj_wall
-2. Ajouter une action : **Mouvement** → **Rebondir contre les objets**
-3. Sélectionnez « Contre les objets solides »
+2. Ajouter une action : **Mouvement** → **Rebondir** (aucune configuration nécessaire — rebondit toujours sur les objets solides)
 
 ---
 
@@ -207,20 +202,29 @@ Les zones de but sont des zones invisibles derrière chaque raquette. Quand le b
 
 Retournez à `obj_ball` et ajoutez ces événements :
 
+`global.p1score`/`global.p2score` sont des variables nommées
+personnalisées, une par joueur — l'action intégrée **Définir le score** ne
+convient pas ici, car elle écrit toujours dans le score intégré unique,
+sans possibilité de la pointer vers un nom de variable. **Définir une
+Variable** est la vraie action pour une variable nommée personnalisée et
+prend en charge une portée `global` :
+
 **Événement : Collision avec obj_goal_left**
 1. Ajouter un événement → Collision → obj_goal_left
 2. Ajouter une action : **Mouvement** → **Sauter à la position de départ** (réinitialise le ballon)
-3. Ajouter une action : **Score** → **Définir le score**
-   - Variable : `global.p2score`
+3. Ajouter une action : **Contrôle** → **Définir une Variable**
+   - Variable : `p2score`
    - Valeur : `1`
+   - Portée : `global`
    - Cochez « Relatif » (ajoute 1 au score actuel)
 
 **Événement : Collision avec obj_goal_right**
 1. Ajouter un événement → Collision → obj_goal_right
 2. Ajouter une action : **Mouvement** → **Sauter à la position de départ**
-3. Ajouter une action : **Score** → **Définir le score**
-   - Variable : `global.p1score`
+3. Ajouter une action : **Contrôle** → **Définir une Variable**
+   - Variable : `p1score`
    - Valeur : `1`
+   - Portée : `global`
    - Cochez « Relatif »
 
 ---
@@ -232,12 +236,10 @@ Retournez à `obj_ball` et ajoutez ces événements :
 
 **Événement : Créer**
 1. Ajouter un événement → Créer
-2. Ajouter une action : **Score** → **Définir le score**
-   - Variable : `global.p1score`
-   - Valeur : `0`
-3. Ajouter une action : **Score** → **Définir le score**
-   - Variable : `global.p2score`
-   - Valeur : `0`
+2. Ajouter une action : **Contrôle** → **Définir une Variable**
+   - Variable : `p1score`, Valeur : `0`, Portée : `global`
+3. Ajouter une action : **Contrôle** → **Définir une Variable**
+   - Variable : `p2score`, Valeur : `0`, Portée : `global`
 
 **Événement : Dessiner**
 1. Ajouter un événement → Dessiner
@@ -300,9 +302,20 @@ Retournez à `obj_ball` et ajoutez ces événements :
 ## Améliorations (Optionnel)
 
 ### Augmentation de la vitesse
-Augmentez la vitesse du ballon à chaque fois qu'il frappe une raquette en ajoutant aux événements de collision :
-- Après l'action de rebondissement, ajoutez **Mouvement** → **Définir la vitesse**
-- Définissez la vitesse sur `vitesse + 0,5` avec « Relatif » coché
+Augmentez la vitesse du ballon à chaque fois qu'il frappe une raquette.
+`speed` n'est pas utilisable directement ici — sur ce moteur, c'est le
+taux d'*animation* du sprite, pas la vitesse de déplacement — donc suivez
+la vitesse du ballon dans une variable personnalisée à la place :
+
+1. Dans l'événement **Créer** de `obj_ball`, ajoutez **Contrôle** →
+   **Définir une Variable** (Variable : `ball_speed`, Valeur : `6`) juste
+   après l'action Commencer à Bouger.
+2. Dans chaque événement de collision avec une raquette, après l'action
+   **Rebondir**, ajoutez **Contrôle** → **Définir une Variable**
+   (Variable : `ball_speed`, Valeur : `0.5`, **Relatif** coché), puis
+   **Mouvement** → **Définir la vitesse** avec Valeur : `self.ball_speed`
+   pour appliquer la nouvelle vitesse tout en gardant la direction actuelle
+   (Rebondir l'a déjà inversée).
 
 ### Effets sonores
 Ajoutez des sons quand :

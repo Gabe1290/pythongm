@@ -119,8 +119,8 @@ The wall object creates boundaries at the top and bottom of the play area.
 
 **Event: Collision with obj_wall**
 1. Add Event → Collision → obj_wall
-2. Add Action: **Move** → **Bounce Against Objects**
-3. Select "Against solid objects"
+2. Add Action: **Move** → **Bounce** (no configuration needed — it always
+   bounces off solid objects)
 
 ### 4.2 Right Paddle (Player 2)
 
@@ -152,8 +152,8 @@ The wall object creates boundaries at the top and bottom of the play area.
 
 **Event: Collision with obj_wall**
 1. Add Event → Collision → obj_wall
-2. Add Action: **Move** → **Bounce Against Objects**
-3. Select "Against solid objects"
+2. Add Action: **Move** → **Bounce** (no configuration needed — it always
+   bounces off solid objects)
 
 ---
 
@@ -164,24 +164,24 @@ The wall object creates boundaries at the top and bottom of the play area.
 
 **Event: Create**
 1. Add Event → Create
-2. Add Action: **Move** → **Start Moving in Direction**
-3. Choose a diagonal direction (not straight up or down)
+2. Add Action: **Move** → **Start Moving (Direction)**
+3. Check one diagonal box in the 3x3 direction picker (not straight up or down)
 4. Set speed to `6`
 
 **Event: Collision with obj_paddle_left**
 1. Add Event → Collision → obj_paddle_left
-2. Add Action: **Move** → **Bounce Against Objects**
-3. Select "Against solid objects"
+2. Add Action: **Move** → **Bounce** (no configuration needed — it always
+   bounces off solid objects)
 
 **Event: Collision with obj_paddle_right**
 1. Add Event → Collision → obj_paddle_right
-2. Add Action: **Move** → **Bounce Against Objects**
-3. Select "Against solid objects"
+2. Add Action: **Move** → **Bounce** (no configuration needed — it always
+   bounces off solid objects)
 
 **Event: Collision with obj_wall**
 1. Add Event → Collision → obj_wall
-2. Add Action: **Move** → **Bounce Against Objects**
-3. Select "Against solid objects"
+2. Add Action: **Move** → **Bounce** (no configuration needed — it always
+   bounces off solid objects)
 
 ---
 
@@ -207,20 +207,28 @@ Goals are invisible areas behind each paddle. When the ball enters a goal, the o
 
 Go back to `obj_ball` and add these events:
 
+`global.p1score`/`global.p2score` are custom named variables, one per
+player — the built-in **Set Score** action doesn't fit here, since it
+always writes to the single built-in score, with no way to point it at a
+variable name. **Set Variable** is the real action for a custom named
+variable and supports a `global` scope:
+
 **Event: Collision with obj_goal_left**
 1. Add Event → Collision → obj_goal_left
 2. Add Action: **Move** → **Jump to Start Position** (resets the ball)
-3. Add Action: **Score** → **Set Score**
-   - Variable: `global.p2score`
+3. Add Action: **Control** → **Set Variable**
+   - Variable: `p2score`
    - Value: `1`
+   - Scope: `global`
    - Check "Relative" (adds 1 to current score)
 
 **Event: Collision with obj_goal_right**
 1. Add Event → Collision → obj_goal_right
 2. Add Action: **Move** → **Jump to Start Position**
-3. Add Action: **Score** → **Set Score**
-   - Variable: `global.p1score`
+3. Add Action: **Control** → **Set Variable**
+   - Variable: `p1score`
    - Value: `1`
+   - Scope: `global`
    - Check "Relative"
 
 ---
@@ -232,12 +240,10 @@ Go back to `obj_ball` and add these events:
 
 **Event: Create**
 1. Add Event → Create
-2. Add Action: **Score** → **Set Score**
-   - Variable: `global.p1score`
-   - Value: `0`
-3. Add Action: **Score** → **Set Score**
-   - Variable: `global.p2score`
-   - Value: `0`
+2. Add Action: **Control** → **Set Variable**
+   - Variable: `p1score`, Value: `0`, Scope: `global`
+3. Add Action: **Control** → **Set Variable**
+   - Variable: `p2score`, Value: `0`, Scope: `global`
 
 **Event: Draw**
 1. Add Event → Draw
@@ -300,9 +306,17 @@ Go back to `obj_ball` and add these events:
 ## Enhancements (Optional)
 
 ### Speed Increase
-Make the ball faster each time it hits a paddle by adding to the collision events:
-- After the bounce action, add **Move** → **Set Speed**
-- Set speed to `speed + 0.5` with "Relative" checked
+Make the ball faster each time it hits a paddle. `speed` isn't usable here
+directly — on this engine it's the sprite's *animation* rate, not movement
+speed — so track the ball's own speed in a custom variable instead:
+
+1. In `obj_ball`'s **Create** event, add **Control** → **Set Variable**
+   (Variable: `ball_speed`, Value: `6`) right after the Start Moving action.
+2. In each paddle-collision event, after the **Bounce** action, add
+   **Control** → **Set Variable** (Variable: `ball_speed`, Value: `0.5`,
+   **Relative** checked), then **Move** → **Set Speed** with Value:
+   `self.ball_speed` to apply the new speed while keeping the current
+   direction (Bounce already flipped it).
 
 ### Sound Effects
 Add sounds when:

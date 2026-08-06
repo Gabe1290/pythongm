@@ -641,7 +641,19 @@ lower-priority read). Exceptions already touched:
   Update 12, this was actively misleading: new projects default to
   Beginner, so a reader following this page's old advice into Sokoban
   would find Move Grid/If Can Push missing from both editors)*
-- [ ] Tutorial-Pong.md
+- [x] Tutorial-Pong.md *(real finding: the whole scoring system was built
+  on a fabricated capability — "Set Score" with a "Variable:" field
+  pointing at global.p1score/p2score. The real Set Score action
+  (events/action_types.py) has only value/relative params; it always
+  writes the single built-in score, no variable selector. Replaced with
+  the real Set Variable action (variable/value/scope/relative) in all 4
+  places. Also fixed "Bounce Against Objects... Select 'Against solid
+  objects'" (real Bounce action has zero parameters, no selection step),
+  "Start Moving in Direction" -> "Start Moving (Direction)" (real display
+  name), and the Speed Increase enhancement's `speed + 0.5` expression —
+  same `speed`-is-animation-rate landmine as Events-and-Actions.md/
+  LunarLander, would have silently used the wrong baseline; replaced with
+  a tracked `ball_speed` custom variable)*
 - [ ] Tutorial-Breakout.md
 - [x] Tutorial-Sokoban.md *(GML-fabrication rewrite, see Update 11 — `6c825d9`)*
 - [x] Tutorial-Maze.md *(GML-fabrication rewrite, see Update 11 — `90db80b`)*
@@ -689,7 +701,7 @@ with section E.
 - [x] Intermediate-Preset_fr.md *(same, generated)*
 - [x] FAQ_fr.md *(same fix as FAQ.md)*
 - [x] Tutorials_fr.md *(same fix as Tutorials.md)*
-- [ ] Tutorial-Pong_fr.md
+- [x] Tutorial-Pong_fr.md *(same fixes as Tutorial-Pong.md)*
 - [ ] Tutorial-Breakout_fr.md
 - [x] Tutorial-Sokoban_fr.md *(GML-fabrication rewrite, see Update 11 — `6c825d9`)*
 - [x] Tutorial-Maze_fr.md *(GML-fabrication rewrite, see Update 11 — `90db80b`)*
