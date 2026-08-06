@@ -70,7 +70,7 @@ python main.py
 
 Au premier lancement de PyGameMaker, vous verrez :
 
-1. **Barre de menu** - Fichier, Édition, Ressources, Exécuter et Aide
+1. **Barre de menu** - Fichier, Édition, Ressources, Compiler, Outils et Aide
 2. **Arbre des ressources** - Panneau gauche montrant les ressources du projet
 3. **Espace de travail** - Zone centrale pour éditer les ressources
 4. **Panneau des propriétés** - Panneau droit pour les propriétés
@@ -81,8 +81,8 @@ Au premier lancement de PyGameMaker, vous verrez :
 
 PyGameMaker prend en charge plusieurs langues :
 
-1. Allez dans **Édition > Préférences**
-2. Sélectionnez votre langue préférée
+1. Allez dans **Outils > Langue**
+2. Sélectionnez votre langue préférée dans le menu
 3. Redémarrez PyGameMaker pour appliquer le changement
 
 Langues disponibles : anglais, français, allemand, italien, espagnol, portugais, slovène, ukrainien, russe

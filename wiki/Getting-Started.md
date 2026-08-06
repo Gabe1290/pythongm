@@ -72,7 +72,7 @@ python main.py
 
 When you first launch PyGameMaker, you'll see:
 
-1. **Menu Bar** - File, Edit, Resources, Run, and Help menus
+1. **Menu Bar** - File, Edit, Assets, Build, Tools, and Help menus
 2. **Resource Tree** - Left panel showing project assets (Sprites, Sounds, Backgrounds, Objects, Rooms)
 3. **Workspace** - Central area for editing assets
 4. **Properties Panel** - Right panel for asset properties
@@ -110,8 +110,8 @@ my_project/
 
 PyGameMaker supports multiple languages:
 
-1. Go to **Edit > Preferences** (or **File > Settings**)
-2. Select your preferred language from the dropdown
+1. Go to **Tools > Language**
+2. Select your preferred language from the menu
 3. Restart PyGameMaker to apply the change
 
 Available languages: English, French, German, Italian, Spanish, Portuguese, Slovenian, Ukrainian, Russian
@@ -139,9 +139,11 @@ pip install -r requirements.txt --force-reinstall
 ```
 
 ### Display issues
-On Linux, you may need to install additional packages:
+On Linux, Qt (the GUI framework PyGameMaker is built on) needs a few
+system libraries that aren't pulled in by `pip`:
 ```bash
-sudo apt install python3-pyqt6 libxcb-cursor0
+sudo apt-get install -y libegl1 libxkbcommon0 libxcb-cursor0 \
+    libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libasound2-dev libgl1-mesa-dev
 ```
 
 ---
