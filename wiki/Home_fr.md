@@ -202,11 +202,9 @@ nom_du_projet/
 
 ## Contribuer
 
-Les contributions sont les bienvenues! Consultez nos directives de contribution pour:
-- Rapports de bugs et demandes de fonctionnalités
-- Contributions au code
-- Traductions
-- Améliorations de la documentation
+Les rapports de bugs, les demandes de fonctionnalités et les pull requests
+sont les bienvenus sur le
+[suivi des problèmes](https://github.com/Gabe1290/pythongm/issues).
 
 ---
 

@@ -239,7 +239,7 @@ Game size includes Python and all libraries. To reduce size:
 
 ### Can I sell games made with PyGameMaker?
 
-Yes! Games you create are entirely yours to sell. PyGameMaker's source code is under the permissive MIT License, so you can use it freely in commercial projects — and unlike copyleft licenses, you are not required to open-source your own modifications (though contributions back are always welcome).
+Yes! Games you create are entirely yours to sell. PyGameMaker's source code is under the permissive MIT License, so you can use it freely in commercial projects — and unlike copyleft licenses, you are not required to open-source your own modifications.
 
 ---
 
@@ -293,15 +293,6 @@ Report bugs on the [GitHub Issues](https://github.com/Gabe1290/pythongm/issues) 
 - What actually happened
 - Steps to reproduce
 - Your operating system and Python version
-
-### How can I contribute?
-
-Contributions are welcome! See the GitHub repository for:
-- Code contributions
-- Bug reports
-- Feature requests
-- Translations
-- Documentation improvements
 
 ### Where can I learn more?
 

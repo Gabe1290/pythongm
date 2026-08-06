@@ -201,11 +201,8 @@ project_name/
 
 ## Contributing
 
-Contributions are welcome! See our contributing guidelines for:
-- Bug reports and feature requests
-- Code contributions
-- Translations
-- Documentation improvements
+Bug reports, feature requests, and pull requests are welcome on the
+[issue tracker](https://github.com/Gabe1290/pythongm/issues).
 
 ---
 
