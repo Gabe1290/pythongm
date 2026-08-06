@@ -1,5 +1,44 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 12 — MAJOR, STOP AND READ BEFORE TOUCHING Preset-Guide.md,
+Beginner-Preset.md, Intermediate-Preset.md, or the "Preset" column in
+Event-Reference.md/Full-Action-Reference.md: the "preset restricts which
+events/actions are available" framing does NOT apply to the structured
+(non-Blockly) Actions/Events panel every tutorial on this wiki teaches
+with.** Found while fixing Event-Reference.md's per-event "Preset:
+Beginner/Intermediate/Advanced" rows and its "Events by Preset" summary
+table — checked where those three-tier labels actually come from and they
+don't match anything real: `config/blockly_config.py`'s `PRESETS` registry
+has no "Advanced" preset at all (real names: `full`, `beginner`,
+`intermediate`, `platformer`, `grid_rpg`, `sokoban`, `thymio`, `testing`,
+`code_editor`, `blockly_editor`), and — more importantly — confirmed via
+`editors/object_editor/object_events_panel.py`'s `apply_config()` (docstring:
+*"Apply a Blockly configuration (for compatibility with object editor)"*)
+that a preset is stored but **never consulted anywhere** to filter the
+structured "Add Event"/"Add Action" menus. Presets only gate the **Blockly**
+visual-block palette (`config.enable_block(...)` in `get_beginner()`/
+`get_intermediate()`). Every event and action is always available in the
+structured editor regardless of preset — which is what
+Sokoban/Maze/Platformer/LunarLander/Pong/Breakout/Creating-Your-First-Game
+all teach through exclusively (none use Blockly).
+
+Preset-Guide.md states outright: *"PyGameMaker offers different presets
+that control which events and actions are available."* That's the specific
+claim that's wrong for the structured editor a beginner tutorial reader is
+actually using — they'd read this as "I need to pick a preset to unlock
+features," which isn't true outside Blockly.
+
+**Not fixing this without checking in first** — same reasoning as the GML
+crisis (Update 10/11): this touches the premise of 3+ wiki pages (plus
+French counterparts) and a summary table on 2 more, so it needs a scope
+decision (reframe as "Blockly preset" specifically vs. cut the framing
+entirely vs. something else) rather than a unilateral rewrite. The
+Event-Reference.md fix already applied in this update (Event Execution
+Order — a separate, independently-verified correction, see below) is
+unaffected and already committed; the per-event "Preset" property rows and
+the "Events by Preset" table in that same file are LEFT AS-IS pending this
+decision.
+
 **Update 11 — Update 10's GML-fabrication crisis is RESOLVED for all 4
 pages, English + French.** User chose "rewrite English + French now" over
 deferring or just flagging. Each page's ```gml blocks were replaced with

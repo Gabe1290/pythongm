@@ -476,14 +476,20 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 
 ## Event Execution Order
 
-Understanding when events fire helps create predictable game behavior:
+Understanding when events fire helps create predictable game behavior
+(confirmed against the main loop in `runtime/game_runner.py`):
 
 1. **Begin Step** - Start of frame
-2. **Alarm** - Any triggered alarms
-3. **Keyboard/Mouse** - Input events
-4. **Step** - Main game logic
-5. **Collision** - After movement
-6. **End Step** - After collisions
+2. **Alarm** - Any triggered alarms count down and fire
+3. **Step** (and **Keyboard (held)**) - Main game logic, then continuous
+   key-held checks for the same instance
+4. **Keyboard Press/Release, Mouse** - Queued input events for the frame are
+   dispatched (this happens *after* Step, not before it — code in Step
+   reacts to keys that were already held at the *start* of the frame, not
+   ones pressed during it)
+5. **Movement, then Collision** - Physics (gravity/friction/hspeed/vspeed)
+   is applied, then collisions are detected and their events fire
+6. **End Step** (and **Destroy**) - After collisions
 7. **Draw** - Rendering phase
 
 ---
