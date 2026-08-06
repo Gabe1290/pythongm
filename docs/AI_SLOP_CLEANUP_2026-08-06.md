@@ -1,6 +1,47 @@
 # Reader-facing docs: AI-slop cleanup registry
 
-**Update (same day):** ran a targeted grep sweep across the ENTIRE English
+**Update 3 (same day, follow-up sweep):** the H1-only entity grep in
+Update 2 missed emoji in `<h2>` and inline body text. A broader sweep
+(raw Unicode ranges + all HTML numeric entities, whole `Tutorials/` tree,
+both languages) found two more isolated spots, both confirmed
+inconsistent by comparing against sibling files that cover the same
+content: `06_maze/02_create_sprites.html` had emoji on all 4 of its `<h2>`
+sprite headings plus inline on "Create New Sprite"/"Import Image..."/
+"Tip:" — no other `create_sprites.html` (checked `04_breakout`,
+`05_sokoban`) uses any; and `08_lunar_lander/04_game_controller.html`
+(+ its French pair) bookended its final "Congratulations!" with 🚀/🌕 —
+the only 1 of 14 "Congratulations!" messages across all English tutorials
+to have emoji at all. Fixed both (6 files total this update). The
+`.game-preview` box's one big themed emoji per game (🏓 Pong, 🧱 Breakout,
+etc.) is untouched — that one IS consistent across all 9 tutorials and all
+9 languages, so it's a deliberate design element, not slop.
+
+Confirmed via repo-wide sweep (Unicode ranges + entities, all of
+`Tutorials/`) that no more emoji exist outside the `.game-preview` boxes.
+**This closes out the emoji-consistency thread** — future work on this
+registry should focus on the paragraph-level read-through, not more emoji
+hunting.
+
+**Update 2 (same day, deeper read pass):** read 9 more Tutorials HTML
+files in full (intro pages across `03_pong`/`04_breakout`/`06_maze`/
+`07_platformer`, plus `07_platformer/04_game_controller.html` end to
+end) and one full French sample README (`raycast_1/README.fr.md` —
+exceptionally dense, precise technical writing, real benchmark numbers,
+nothing to fix). Found what the earlier grep sweep missed: it only
+checked literal Unicode emoji characters in `wiki/*.md`, not HTML numeric
+entities (`&#128640;` etc.) in `Tutorials/*.html`. A follow-up grep for
+`<h1>...&#N;...</h1>` across the whole `Tutorials/` tree found exactly 3
+hits — `08_lunar_lander/01_introduction.html` (🚀) and
+`06_maze/01_introduction.html` + `fr/06_maze/01_introduction.html` (🧭) —
+inconsistent with the other 6 of 8 intro pages, which have plain-text H1s
+(the big emoji in the `.game-preview` box below already carries that
+decoration). Removed all 3 for consistency; confirmed via repo-wide grep
+that no more `<h1>`/`<h2>`/`<h3>` + entity combinations exist anywhere in
+`Tutorials/`. Otherwise all 9 files read clean — consistent template,
+varied and appropriately-placed encouragement ("Press F5 to play!" far
+outnumbers "Congratulations!", not repetitive), no rhetorical padding.
+
+**Update 1 (same day):** ran a targeted grep sweep across the ENTIRE English
 wiki (all 23 files) plus every `samples/*/README*.md` and every
 `Tutorials/**/*.html` (EN+FR) for: the full banned-word list, empty
 filler phrases, emoji headings, "not X, it's Y" binary contrasts, and
