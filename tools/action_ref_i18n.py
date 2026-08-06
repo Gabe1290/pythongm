@@ -2356,6 +2356,10 @@ CATEGORIES_PT = {
     "Movement": "Movimento", "Instance": "Instância", "Score": "Pontuação", "Room": "Sala",
     "Timing": "Tempo", "Audio": "Áudio", "Game": "Jogo", "Control": "Controle",
     "Grid": "Grade", "Views": "Vistas", "3D View": "Vista 3D",
+    # Event categories (events.event_types.EventType.category) — distinct
+    # from the action categories above, shared with tools/gen_preset_docs.py.
+    "Object": "Objeto", "Input": "Entrada", "Collision": "Colisão",
+    "Step": "Passo", "Drawing": "Desenho", "Other": "Outro",
 }
 
 TYPES_PT = {
@@ -2685,6 +2689,36 @@ NOTES_PT = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Faixa horizontal de quadros de rosto, o mais saudável primeiro (vazio = sem ícone de rosto)",
     "How many frames the face strip has; health is bucketed evenly across them": "Quantos quadros a faixa de rosto tem; a saúde é distribuída uniformemente entre eles",
     "Expression shown after the objective label (bind your own key/quest variable)": "Expressão mostrada após o rótulo de objetivo (associe sua própria variável de chave/missão)",
+}
+
+# --------------------------------------------------------------------------- #
+# Events (non-Thymio), keyed by events.event_types.EVENT_TYPES's stable name
+# --------------------------------------------------------------------------- #
+
+EVENTS_PT = {
+    "create": {"desc": "Executado uma vez quando a instância é criada pela primeira vez"},
+    "step": {"desc": "Executado a cada quadro (use para verificações contínuas)"},
+    "destroy": {"desc": "Executado quando a instância é destruída"},
+    "collision": {"desc": "Executado ao colidir com outro objeto"},
+    "keyboard": {"desc": "Executado continuamente enquanto uma tecla é mantida pressionada (para movimento suave)"},
+    "keyboard_press": {"desc": "Executado uma vez quando uma tecla é pressionada pela primeira vez (para movimento baseado em grade)"},
+    "keyboard_release": {"desc": "Executado uma vez quando uma tecla é solta"},
+    "keyboard_no_key": {"desc": "Executado quando nenhuma tecla está pressionada no momento"},
+    "mouse": {"desc": "Eventos de botão e movimento do mouse"},
+    "begin_step": {"desc": "Executado no início de cada passo, antes dos outros eventos"},
+    "end_step": {"desc": "Executado no final de cada passo, após as colisões mas antes do desenho"},
+    "draw": {"desc": "Executado ao desenhar o objeto (substitui o desenho automático do sprite)"},
+    "draw_gui": {"desc": "Desenhado por cima de tudo o resto (não afetado pela câmera/vista). Use para HUD, pontuação, vidas."},
+    "alarm": {"desc": "Executado quando um alarme chega a zero"},
+    "room_start": {"desc": "Executado quando a sala começa (após os eventos Create)"},
+    "room_end": {"desc": "Executado quando a sala termina"},
+    "game_start": {"desc": "Executado quando o jogo começa (apenas na primeira sala)"},
+    "game_end": {"desc": "Executado quando o jogo termina"},
+    "outside_room": {"desc": "Executado quando a instância está completamente fora da sala"},
+    "intersect_boundary": {"desc": "Executado quando a instância toca a borda da sala"},
+    "no_more_lives": {"desc": "Executado quando as vidas chegam a 0 ou menos"},
+    "no_more_health": {"desc": "Executado quando a saúde chega a 0 ou menos"},
+    "animation_end": {"desc": "Disparado quando a animação do sprite chega ao último quadro e reinicia"},
 }
 
 CHROME_SL = {
@@ -3060,7 +3094,7 @@ LANGS = {
     "es": {"chrome": CHROME_ES, "categories": CATEGORIES_ES, "types": TYPES_ES,
            "actions": ACTIONS_ES, "notes": NOTES_ES, "events": EVENTS_ES},
     "pt": {"chrome": CHROME_PT, "categories": CATEGORIES_PT, "types": TYPES_PT,
-           "actions": ACTIONS_PT, "notes": NOTES_PT},
+           "actions": ACTIONS_PT, "notes": NOTES_PT, "events": EVENTS_PT},
     "sl": {"chrome": CHROME_SL, "categories": CATEGORIES_SL, "types": TYPES_SL,
            "actions": ACTIONS_SL, "notes": NOTES_SL},
 }
