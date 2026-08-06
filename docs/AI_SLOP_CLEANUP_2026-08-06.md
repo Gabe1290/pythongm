@@ -1,5 +1,23 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 8: the fr/04_breakout/07_game_controller.html gap from Update 7
+is FIXED.** Translated the missing "Fin de partie et meilleurs scores"
+section (Plus de vies event, Afficher un message/Afficher le tableau des
+meilleurs scores/Terminer le jeu blocks, the ordering warning) and added
+it in the same position English has it. Terms verified against the
+actual shipped IDE translations rather than invented (grepped
+`translations/pygm2_fr_editors.ts`/`pygm2_fr_actions.ts` for the exact
+strings the French UI uses): "No More Lives" → "Plus de vies", "Show
+Message" → "Afficher un message", "Show Highscore Table" → "Afficher le
+tableau des meilleurs scores", "End Game" → "Terminer le jeu", "Game" →
+"Jeu". Added the missing `.block-game`/`.block-output` CSS rules
+(matching English's colors). Also fixed the "Challenge Ideas" list's last
+item, which had stood in a workaround challenge ("end the game at 0
+lives") for the missing feature — replaced with the real translation of
+English's actual 4th challenge ("play a sound when the game ends").
+Verified: structural diff against English is now byte-for-byte identical
+(tag/class structure), tutorial-related tests pass.
+
 **Update 7 (Section B start) — found a real content gap, not a slop issue.**
 Structural diff of all 41 EN/FR pairs (tag+class structure, ignoring text)
 found 9 mismatches. Investigated each:
