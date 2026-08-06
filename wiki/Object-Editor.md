@@ -101,7 +101,7 @@ Actions are operations performed when events trigger. Each event can have multip
 - **Set Direction** - Set movement direction (0-360 degrees)
 - **Set Horizontal Speed** - Set left/right velocity
 - **Set Vertical Speed** - Set up/down velocity
-- **Move Toward Point** - Move toward coordinates
+- **Move Towards Point** - Move toward coordinates
 - **Jump to Position** - Instantly move to coordinates
 - **Jump to Start** - Return to starting position
 - **Jump to Random** - Move to random position
@@ -124,16 +124,16 @@ Actions are operations performed when events trigger. Each event can have multip
 - **Draw Rectangle** - Draw a filled or outlined rectangle
 - **Draw Score** - Display the current score
 - **Draw Lives** - Display remaining lives
-- **Draw Health** - Display health bar
+- **Draw Health Bar** - Display health bar
 
 ### Score/Lives/Health
 
 - **Set Score** - Change the score value
 - **Set Lives** - Change lives count
 - **Set Health** - Change health value
-- **If Score** - Check score condition
-- **If Lives** - Check lives condition
-- **If Health** - Check health condition
+- **Test Score** - Check score condition
+- **Test Lives** - Check lives condition
+- **Test Health** - Check health condition
 
 ### Room Actions
 
@@ -152,7 +152,7 @@ Actions are operations performed when events trigger. Each event can have multip
 ### Variable Actions
 
 - **Set Variable** - Assign a value to a variable
-- **If Variable** - Check a variable condition
+- **Test Variable** - Check a variable condition
 
 ---
 
