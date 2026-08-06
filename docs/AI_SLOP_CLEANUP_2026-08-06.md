@@ -1,5 +1,24 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 5 (same day): the 78 orphans from Update 4 are DELETED.**
+Investigated git history before asking the user: `f1c8d42` ("Rewrite all
+tutorials with progressive play-early approach", 2026-03-26) replaced the
+old step-by-step tutorial format — it correctly deleted the old English
+files for `07_platformer`/`08_lunar_lander` but missed it for
+`02_first_game`/`03_pong`/`04_breakout`/`05_sokoban`/`06_maze`. The French
+translations (added earlier, on the old format) were properly migrated to
+the new content in later commits (`a701c9d`, `c2e2641`) but the old French
+files were never removed either. Confirmed genuine completed-migration
+leftovers, not an in-progress or intentional dual-track state — user
+approved deletion. All 78 removed via `git rm`; tutorial-related tests
+(`test_audit_tutorial_panel_links.py`, `test_tutorial_empty_placeholder.py`,
+`test_audit_editions_tutorial_fallback.py`) and the full suite (2191
+passed, 0 failed) confirm nothing referenced them. **`Tutorials/` is now
+160 → 82 files, all of them live.** Sections A/B below are stale (list the
+pre-deletion folder file counts) — the live-file lists per folder now
+exactly match each `index.json`'s `pages` array; use that as the
+authoritative list going forward instead of re-deriving it.
+
 **Update 4 (same day, MAJOR — read this before touching any more
 `Tutorials/` files): 78 of the 160 Tutorials HTML files are dead,
 unreferenced orphans (32 English + 46 French).** Found while reading
