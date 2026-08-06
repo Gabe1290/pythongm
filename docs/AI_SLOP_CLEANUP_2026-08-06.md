@@ -194,36 +194,38 @@ Post-deletion (Update 5): 41 live files, exactly matching `index.json`'s
 already committed); `[ ]` = not yet read for paragraph-level polish.
 
 - [x] 01_getting_started/01_welcome
-- [ ] 01_getting_started/02_interface
-- [ ] 01_getting_started/03_first_project
-- [ ] 01_getting_started/04_next_steps
+- [x] 01_getting_started/02_interface
+- [x] 01_getting_started/03_first_project
+- [x] 01_getting_started/04_next_steps
 - [x] 02_first_game/01_introduction
 - [x] 02_first_game/02_moving_player
 - [x] 02_first_game/03_falling_stars
-- [ ] 02_first_game/04_scoring
-- [ ] 02_first_game/05_finishing
+- [x] 02_first_game/04_scoring
+- [x] 02_first_game/05_finishing
 - [x] 03_pong/01_introduction
-- [ ] 03_pong/02_paddles_and_ball
-- [ ] 03_pong/03_goals_and_scoring
-- [ ] 03_pong/04_score_display
+- [x] 03_pong/02_paddles_and_ball
+- [x] 03_pong/03_goals_and_scoring
+- [x] 03_pong/04_score_display
 - [x] 04_breakout/01_introduction
-- [ ] 04_breakout/02_sprites_basic
-- [ ] 04_breakout/03_paddle_and_ball
-- [ ] 04_breakout/04_first_room
-- [ ] 04_breakout/05_first_bricks
-- [ ] 04_breakout/06_more_bricks
-- [ ] 04_breakout/07_game_controller
-- [ ] 05_sokoban/01_introduction
-- [ ] 05_sokoban/02_player_and_walls
-- [ ] 05_sokoban/03_pushing_crates
-- [ ] 05_sokoban/04_targets_and_controller
+- [x] 04_breakout/02_sprites_basic
+- [x] 04_breakout/03_paddle_and_ball
+- [x] 04_breakout/04_first_room
+- [x] 04_breakout/05_first_bricks
+- [x] 04_breakout/06_more_bricks
+- [x] 04_breakout/07_game_controller
+- [x] 05_sokoban/01_introduction
+- [x] 05_sokoban/02_player_and_walls
+- [x] 05_sokoban/03_pushing_crates
+- [x] 05_sokoban/04_targets_and_controller
 - [x] 06_maze/01_introduction
-- [ ] 06_maze/02_player_and_maze
-- [ ] 06_maze/03_coins_and_exit
-- [ ] 06_maze/04_game_controller
+- [x] 06_maze/02_player_and_maze
+- [x] 06_maze/03_coins_and_exit
+- [x] 06_maze/04_game_controller
 - [x] 07_platformer/01_introduction
-- [ ] 07_platformer/02_jumping_player
-- [ ] 07_platformer/03_coins_and_hazards
+- [x] 07_platformer/02_jumping_player
+- [~] 07_platformer/03_coins_and_hazards *(fixed a Show-message block's
+  category color/class — labeled block-room, should be block-output per
+  its own explanatory text; same fix applied to the French pair)*
 - [x] 07_platformer/04_game_controller
 - [~] 08_lunar_lander/01_introduction *(emoji removed from H1)*
 - [ ] 08_lunar_lander/02_flying_lander
