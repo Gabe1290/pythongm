@@ -107,9 +107,13 @@ The exit ends the level when the player reaches it.
 
 **Event: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Main2** → **Show Message**
-   - Message: `You Win! Time: ` + string(floor(global.timer)) + ` seconds`
-3. Add Action: **Main1** → **Next Room** (or **Restart Room** for single level)
+2. Add Action: **Output** → **Show Message**
+   - Message: `You Win!`
+3. Add Action: **Room** → **Next Room** (or **Restart Room** for single level)
+
+Show Message's text is a plain, static string — it can't embed a live value
+like the elapsed time. The timer stays visible in the HUD (Step 7) right up
+to the win, so the player has already seen their time.
 
 ---
 
@@ -137,69 +141,30 @@ The player moves smoothly using arrow keys.
 1. Create a new object named `obj_player`
 2. Set the sprite to `spr_player`
 
-### 6.1 Create Event - Initialize Variables
+### 6.1 Movement
 
-**Event: Create**
-1. Add Event → Create
-2. Add Action: **Control** → **Set Variable**
-   - Variable: `move_speed`
-   - Value: `4`
+Add four **Keyboard** (held) events plus a **No Key** event, each with a
+**Move** → **Set Horizontal/Vertical Speed** action:
 
-### 6.2 Movement with Collision
+| Event | Action |
+|---|---|
+| Keyboard (held) → Right Arrow | Set Horizontal Speed to `4` |
+| Keyboard (held) → Left Arrow | Set Horizontal Speed to `-4` |
+| Keyboard (held) → Down Arrow | Set Vertical Speed to `4` |
+| Keyboard (held) → Up Arrow | Set Vertical Speed to `-4` |
+| Keyboard: No Key | Set Horizontal Speed to `0` **and** Set Vertical Speed to `0` |
 
-**Event: Step**
-1. Add Event → Step → Step
-2. Add Action: **Control** → **Execute Code**
+### 6.2 Stop at Walls
 
-```gml
-// Horizontal movement
-var hspd = 0;
-if (keyboard_check(vk_right)) hspd = move_speed;
-if (keyboard_check(vk_left)) hspd = -move_speed;
+**Event: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-// Vertical movement
-var vspd = 0;
-if (keyboard_check(vk_down)) vspd = move_speed;
-if (keyboard_check(vk_up)) vspd = -move_speed;
-
-// Horizontal collision check
-if (!place_meeting(x + hspd, y, obj_wall)) {
-    x += hspd;
-} else {
-    // Move as close to wall as possible
-    while (!place_meeting(x + sign(hspd), y, obj_wall)) {
-        x += sign(hspd);
-    }
-}
-
-// Vertical collision check
-if (!place_meeting(x, y + vspd, obj_wall)) {
-    y += vspd;
-} else {
-    // Move as close to wall as possible
-    while (!place_meeting(x, y + sign(vspd), obj_wall)) {
-        y += sign(vspd);
-    }
-}
-```
-
-### 6.3 Alternative: Simple Block Movement
-
-If you prefer using action blocks instead of code:
-
-**Event: Keyboard Down - Right Arrow**
-1. Add Event → Keyboard → \<Right\>
-2. Add Action: **Control** → **Test Collision**
-   - Object: `obj_wall`
-   - X: `4`
-   - Y: `0`
-   - Check: NOT
-3. Add Action: **Move** → **Jump to Position**
-   - X: `4`
-   - Y: `0`
-   - Check "Relative"
-
-Repeat for Left (-4, 0), Up (0, -4), and Down (0, 4).
+No manual position-checking code is needed here. This engine's movement
+loop already refuses to move an instance into a solid object before the
+frame is drawn (`obj_wall` is Solid), so the player can never actually
+overlap a wall — the collision event above just zeroes any leftover
+speed so the player doesn't keep "pushing" against it.
 
 ---
 
@@ -210,35 +175,51 @@ The game controller manages the timer and displays information.
 1. Create a new object named `obj_game_controller`
 2. No sprite needed
 
-**Event: Create**
-1. Add Event → Create
-2. Add Action: **Control** → **Set Variable**
-   - Variable: `global.timer`
-   - Value: `0`
+**Event: Create** — start the timer, using **Control** → **Execute Code**
+(this project's Execute Code action runs real Python, not GameMaker
+Language):
 
-**Event: Step**
-1. Add Event → Step → Step
-2. Add Action: **Control** → **Set Variable**
-   - Variable: `global.timer`
-   - Value: `1/room_speed`
-   - Check "Relative"
-
-**Event: Draw**
-1. Add Event → Draw → Draw
-2. Add Action: **Control** → **Execute Code**
-
-```gml
-// Draw score
-draw_set_color(c_white);
-draw_text(10, 10, "Score: " + string(score));
-
-// Draw timer
-draw_text(10, 30, "Time: " + string(floor(global.timer)) + "s");
-
-// Draw coins remaining
-var coins_left = instance_number(obj_coin);
-draw_text(10, 50, "Coins: " + string(coins_left));
+```python
+self.timer = 0.0
 ```
+
+**Event: Step** — advance it every frame:
+
+```python
+self.timer += 1.0 / game.fps
+```
+
+**Event: Draw** — build the HUD from real draw-queue commands. Add three
+**Draw** → **Draw Text** actions:
+
+| Draw Text action | Text | Position |
+|---|---|---|
+| 1st | `Score:` | X `10`, Y `10` |
+| 2nd | `Time:` | X `10`, Y `30` |
+| 3rd | `Coins:` | X `10`, Y `50` |
+
+then three **Draw** → **Draw Variable** actions right after them to show the
+live numbers next to each label:
+
+| Draw Variable action | Variable | Position |
+|---|---|---|
+| 1st | `score` | X `70`, Y `10` |
+| 2nd | `self.timer` | X `70`, Y `30` |
+| 3rd | *(see below)* | X `70`, Y `50` |
+
+There's no built-in "coins remaining" counter to point Draw Variable at —
+add one more **Control** → **Execute Code** action, right before the Draw
+Variable actions, to compute it into an instance variable Draw Variable can
+then read:
+
+```python
+self.coins_left = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_coin'
+)
+```
+
+(then set the 3rd Draw Variable's Variable field to `self.coins_left`).
 
 ---
 
@@ -302,50 +283,47 @@ Create a simple patrolling enemy:
 1. Create `spr_enemy` (red colored, 24x24)
 2. Create `obj_enemy` with sprite `spr_enemy`
 
-**Event: Create**
-```gml
-hspeed = 2;  // Moves horizontally
-```
+**Event: Create** — Add Action: **Move** → **Start Moving Direction**
+(Directions: `right`, Speed: `2`)
 
-**Event: Collision with obj_wall**
-```gml
-hspeed = -hspeed;  // Reverse direction
-```
+**Event: Collision with obj_wall** — Add Action: **Move** → **Reverse
+Horizontal** (turns the enemy around when it hits a wall — no code needed;
+combined with the built-in solid collision from Step 6.2, the enemy can
+never walk through a wall in the first place)
 
-**Event: Collision with obj_player**
-```gml
-room_restart();  // Player loses
-```
+**Event: Collision with obj_player** — Add Action: **Room** → **Restart
+Room**
 
 ### Add a Lives System
 
-In `obj_game_controller` Create event:
-```gml
-global.lives = 3;
-```
+In `obj_game_controller`'s **Create** event, add **Score** → **Set Lives**
+(Value: `3`).
 
-When player hits enemy (instead of restarting):
-```gml
-global.lives -= 1;
-if (global.lives <= 0) {
-    show_message("Game Over!");
-    game_restart();
-} else {
-    // Respawn player at start
-    obj_player.x = start_x;
-    obj_player.y = start_y;
-}
-```
+In `obj_enemy`'s **Collision with obj_player** event, replace **Restart
+Room** with two actions: **Score** → **Set Lives** (Value: `-1`, **Relative**
+checked), then **Move** → **Jump to Start Position** (on the player, via
+**Applies to: Other**) to respawn the player instead of restarting the whole
+maze.
+
+Add one more event to `obj_game_controller`: **Other Events** → **No More
+Lives** — this fires automatically the moment lives reach 0, so you don't
+poll it yourself. Add **Output** → **Show Message** (`Game Over!`) followed
+by **Room** → **Restart Game**.
 
 ### Add Keys and Locked Doors
 
-1. Create `obj_key` - disappears when collected, sets `global.has_key = true`
-2. Create `obj_locked_door` - only opens when `global.has_key == true`
+1. Create `obj_key` — on collision with `obj_player`, **Set Variable**
+   (Variable: `global.has_key`, Value: `true`, Scope: `global`), then
+   **Destroy Instance** (self).
+2. Create `obj_locked_door`, Solid checked. Give it a **Step** event with
+   **Control** → **Test Variable** (Variable: `global.has_key`, Value:
+   `true`, Scope: `global`) → **Instance** → **Destroy Instance** (self) —
+   the door disappears (and stops blocking) as soon as the key is picked up.
 
 ### Add Multiple Levels
 
 1. Create additional rooms (`room_maze2`, `room_maze3`)
-2. In `obj_exit`, use `room_goto_next()` instead of `room_restart()`
+2. In `obj_exit`, use the **Next Room** action instead of **Restart Room**
 
 ### Add Sound Effects
 
@@ -374,10 +352,9 @@ Add sounds for:
 Congratulations! You've created a maze game! You learned:
 
 - **Smooth movement** - Checking keyboard held state for continuous movement
-- **Collision detection** - Using `place_meeting` to check before moving
-- **Pixel-perfect collision** - Moving as close to walls as possible
+- **Built-in solid collision** - Walls block movement automatically once marked Solid, no manual position-checking code needed
 - **Collectibles** - Creating items that increase score and disappear
-- **Timer system** - Tracking elapsed time with variables
+- **Timer system** - Tracking elapsed time with instance variables
 - **Level design** - Creating navigable maze layouts
 
 ---
