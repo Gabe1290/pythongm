@@ -62,74 +62,120 @@ Dans ce tutoriel, vous créerez un **Jeu d'Atterrissage Lunaire** - un jeu d'arc
 
 ## Étape 5 : Créer l'Objet Atterrisseur
 
-### Événement Create
-```gml
-gravity_force = 0.05;
-thrust_force = 0.1;
-max_speed = 5;
-hsp = 0;
-vsp = 0;
-fuel = 100;
-fuel_use = 0.5;
-landed = false;
-crashed = false;
-safe_speed = 2;
+L'atterrisseur est l'objet le plus complexe : ses commandes doivent
+accumuler de la vitesse progressivement et suivre une ressource de
+carburant. Cet objet utilise donc davantage **Control** → **Execute Code**
+(du vrai Python — `self` est l'instance courante, `game` est le moteur de
+jeu, `keyboard.check(nom)` indique si une touche est maintenue) que les
+tutoriels de mouvement précédents de ce wiki, tout en gardant une action
+structurée partout où c'est possible.
+
+### 5.1 Gravité et Variables de Départ
+
+**Événement Create**
+1. Action : **Move** → **Set Gravity** (Direction : `270`, Gravity : `0.05`)
+   — une légère attraction vers le bas ; le moteur l'ajoute automatiquement
+   à la vitesse verticale à chaque image, comme dans le tutoriel Plateforme,
+   en plus faible.
+2. Action : **Control** → **Execute Code** :
+
+```python
+self.thrust_force = 0.1
+self.max_speed = 5
+self.fuel = 100
+self.fuel_use = 0.5
+self.landed = False
+self.crashed = False
+self.safe_speed = 2
 ```
 
-### Événement Step
-```gml
-if (landed || crashed) exit;
+Le système de mouvement de ce moteur suit déjà la vélocité via
+`self.hspeed`/`self.vspeed` et déplace l'instance de cette quantité à
+chaque image (avec la collision solide intégrée) — inutile de créer des
+variables `hsp`/`vsp` séparées comme le ferait une simulation physique
+manuelle.
 
-vsp += gravity_force;
+### 5.2 Événement Step — Poussée et Contrôles
 
-if (keyboard_check(vk_up) && fuel > 0) {
-    vsp -= thrust_force;
-    fuel -= fuel_use;
-    if (fuel < 0) fuel = 0;
-}
+**Événement Step** — Action : **Control** → **Execute Code** :
 
-if (keyboard_check(vk_left)) hsp -= 0.05;
-if (keyboard_check(vk_right)) hsp += 0.05;
+```python
+if not self.landed and not self.crashed:
+    if keyboard.check('up') and self.fuel > 0:
+        self.vspeed -= self.thrust_force
+        self.fuel -= self.fuel_use
+        if self.fuel < 0:
+            self.fuel = 0
 
-hsp = clamp(hsp, -max_speed, max_speed);
-vsp = clamp(vsp, -max_speed, max_speed);
+    if keyboard.check('left'):
+        self.hspeed -= 0.05
+    if keyboard.check('right'):
+        self.hspeed += 0.05
 
-x += hsp;
-y += vsp;
+    # Limite la vitesse maximale
+    self.hspeed = max(-self.max_speed, min(self.max_speed, self.hspeed))
+    self.vspeed = max(-self.max_speed, min(self.max_speed, self.vspeed))
 
-if (x < 16) { x = 16; hsp = 0; }
-if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
-if (y < 16) { y = 16; vsp = 0; }
+    # Empêche l'atterrisseur de dériver hors des bords ou au-dessus de la room
+    room = game.current_room
+    if self.x < 16:
+        self.x = 16
+        self.hspeed = 0
+    if self.x > room.width - 16:
+        self.x = room.width - 16
+        self.hspeed = 0
+    if self.y < 16:
+        self.y = 16
+        self.vspeed = 0
 ```
 
-### Collision avec obj_pad
-```gml
-var total_speed = sqrt(hsp*hsp + vsp*vsp);
+Tout le bloc est entouré de `if not self.landed and not self.crashed:` pour
+que la poussée et le pilotage s'arrêtent dès la fin de la partie — l'objet
+n'a pas de moyen d'interrompre un événement en cours de route (pas de
+`exit` façon GML) ; un `if` autour du reste du code fait l'équivalent.
 
-if (total_speed <= safe_speed) {
-    landed = true;
-    hsp = 0;
-    vsp = 0;
-    show_message("Atterrissage Parfait ! Vous Gagnez !");
-} else {
-    crashed = true;
-    show_message("Crash ! Trop rapide !");
-    room_restart();
-}
-```
+### 5.3 Collision avec la Plateforme
 
-### Collision avec obj_ground
-```gml
-crashed = true;
-show_message("Crash dans le terrain !");
-room_restart();
-```
+**Événement : Collision avec obj_pad**
+1. Action : **Control** → **Test Expression**
+   - Expression : `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
+     — la vitesse d'atterrissage est la longueur du vecteur vélocité
+     (Pythagore), pas une variable `speed` (dans ce moteur, `speed` désigne
+     la *vitesse d'animation du sprite*, pas la magnitude du mouvement — un
+     vrai piège pour qui vient de GameMaker).
+   - Then Actions :
+     1. **Control** → **Set Variable** (Variable : `landed`, Value : `true`, Scope : `self`)
+     2. **Move** → **Stop Movement**
+     3. **Move** → **Set Gravity** (Direction : `270`, Gravity : `0`) — empêche
+        la gravité de faire remonter discrètement la vitesse verticale d'un
+        atterrisseur déjà posé
+     4. **Output** → **Show Message** (Message : `Atterrissage Parfait ! Vous Gagnez !`)
+   - Else Actions :
+     1. **Control** → **Set Variable** (Variable : `crashed`, Value : `true`, Scope : `self`)
+     2. **Output** → **Show Message** (Message : `Crash ! Trop rapide !`)
+     3. **Room** → **Restart Room**
+
+Le texte de Show Message est une chaîne fixe — il ne peut pas afficher la
+vitesse réelle d'atterrissage. Le HUD (Étape 7) affiche déjà la vitesse en
+direct jusqu'au moment du contact, donc le joueur a déjà vu le chiffre.
+
+### 5.4 Collision avec le Sol
+
+**Événement : Collision avec obj_ground**
+1. Action : **Control** → **Set Variable** (Variable : `crashed`, Value : `true`, Scope : `self`)
+2. Action : **Output** → **Show Message** (Message : `Crash dans le terrain !`)
+3. Action : **Room** → **Restart Room**
 
 ---
 
 ## Étape 6-7 : Contrôleur de Jeu
 
-**obj_game_controller** - Événement Draw : Afficher carburant, vitesse, instructions
+**obj_game_controller** — Événement Draw : trouve l'atterrisseur via une
+boucle sur `game.current_room.instances` (même schéma que le compteur de
+pièces du tutoriel Labyrinthe), calcule le carburant/la vitesse arrondis
+dans une **Execute Code**, puis les affiche avec **Draw Text**/**Draw
+Variable** ; voir la [version anglaise](Tutorial-LunarLander) pour le détail
+complet action par action.
 
 ---
 
@@ -146,10 +192,10 @@ room_restart();
 
 ## Ce Que Vous Avez Appris
 
-- **Physique de poussée** - Contrer la gravité
-- **Gestion de vélocité** - Contrôler la vitesse
-- **Système de carburant** - Gestion des ressources
-- **Détection de collision** - Différents résultats
+- **Physique de poussée** - Ajuster `self.vspeed` contre une gravité continue (Set Gravity)
+- **Gestion de vélocité** - Calculer la vitesse à partir de `hspeed`/`vspeed` avec Pythagore
+- **Système de carburant** - Gestion de ressources avec une simple variable d'instance
+- **Détection de collision** - Résultats différents pour la plateforme et le sol, choisis avec Test Expression
 
 ---
 
@@ -157,4 +203,3 @@ room_restart();
 
 - [Tutoriels](Tutorials_fr) - Plus de tutoriels
 - [Tutoriel : Platformer](Tutorial-Platformer_fr) - Créer un jeu de plateforme
-

@@ -1,5 +1,32 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 11 — Update 10's GML-fabrication crisis is RESOLVED for all 4
+pages, English + French.** User chose "rewrite English + French now" over
+deferring or just flagging. Each page's ```gml blocks were replaced with
+verified real API calls (checked against `events/action_types.py` +
+`runtime/action_executor.py` for every action name/param, and every Python
+snippet compiled via `compile()` before commit):
+- `Tutorial-Sokoban.md`/`_fr.md` — `6c825d9`
+- `Tutorial-Maze.md`/`_fr.md` — `90db80b`
+- `Tutorial-Platformer.md`/`_fr.md` — `cde99fd`
+- `Tutorial-LunarLander.md`/`_fr.md` — this commit. The hardest of the
+  four: fuel/thrust/velocity-landing physics isn't covered by any other
+  tutorial's precedent, so this one leans on `execute_code` more than the
+  others do (real Python, wrapped in `if not self.landed and not
+  self.crashed:` since there's no GML-style `exit` mid-event). Two
+  landmines worth remembering for future engine work: (1) `self.speed` on
+  an instance is the **sprite animation rate**, not movement magnitude —
+  velocity magnitude has to be computed by hand from
+  `hspeed`/`vspeed` (Pythagoras); (2) `Set Gravity` applies every frame
+  unconditionally once set, independent of any per-frame Step-event
+  gating, so a "landed" instance needs an explicit `Set Gravity`
+  (`gravity=0`) or its stored vertical speed keeps climbing even though a
+  Solid landing pad visibly holds it in place.
+- Only the German/Italian/Spanish/Portuguese/Slovenian/Ukrainian/Russian
+  translations of these 4 pages still carry the fabricated GML (out of
+  scope for this pass — English + French only, per standing project
+  convention).
+
 **Update 10 — MAJOR, STOP AND READ BEFORE TOUCHING Tutorial-{Maze,
 Platformer,LunarLander,Sokoban}.md: these wiki pages teach fabricated
 GameMaker Language (GML) code that does not run in this engine at all.**
@@ -439,10 +466,10 @@ lower-priority read). Exceptions already touched:
 - [ ] Tutorials.md
 - [ ] Tutorial-Pong.md
 - [ ] Tutorial-Breakout.md
-- [ ] Tutorial-Sokoban.md
-- [ ] Tutorial-Maze.md
-- [ ] Tutorial-Platformer.md
-- [ ] Tutorial-LunarLander.md
+- [x] Tutorial-Sokoban.md *(GML-fabrication rewrite, see Update 11 — `6c825d9`)*
+- [x] Tutorial-Maze.md *(GML-fabrication rewrite, see Update 11 — `90db80b`)*
+- [x] Tutorial-Platformer.md *(GML-fabrication rewrite, see Update 11 — `cde99fd`)*
+- [x] Tutorial-LunarLander.md *(GML-fabrication rewrite, see Update 11)*
 
 (23 files.)
 
@@ -473,10 +500,10 @@ with section E.
 - [ ] Tutorials_fr.md
 - [ ] Tutorial-Pong_fr.md
 - [ ] Tutorial-Breakout_fr.md
-- [ ] Tutorial-Sokoban_fr.md
-- [ ] Tutorial-Maze_fr.md
-- [ ] Tutorial-Platformer_fr.md
-- [ ] Tutorial-LunarLander_fr.md
+- [x] Tutorial-Sokoban_fr.md *(GML-fabrication rewrite, see Update 11 — `6c825d9`)*
+- [x] Tutorial-Maze_fr.md *(GML-fabrication rewrite, see Update 11 — `90db80b`)*
+- [x] Tutorial-Platformer_fr.md *(GML-fabrication rewrite, see Update 11 — `cde99fd`)*
+- [x] Tutorial-LunarLander_fr.md *(GML-fabrication rewrite, see Update 11)*
 
 (24 files.)
 
