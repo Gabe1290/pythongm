@@ -103,116 +103,110 @@ The landing pad is where the player must land safely.
 
 ## Step 5: Create the Lander Object
 
-The lander is the main player-controlled object with physics.
+The lander is the main player-controlled object with physics. Unlike the
+other movement tutorials on this wiki, the lander's controls need to
+accumulate speed gradually and track a fuel resource, so this object leans
+more on **Control** → **Execute Code** (real Python — `self` is the current
+instance, `game` is the game runner, `keyboard.check(name)` reports a held
+key) than on structured actions alone. Everywhere a structured action does
+the job, this tutorial still uses one.
 
 1. Create a new object named `obj_lander`
 2. Set the sprite to `spr_lander`
 
-### 5.1 Create Event - Initialize Variables
+### 5.1 Gravity and Starting Variables
 
 **Event: Create**
-1. Add Event → Create
-2. Add Action: **Control** → **Execute Code**
+1. Add Action: **Move** → **Set Gravity** (Direction: `270`, Gravity: `0.05`)
+   — a gentle downward pull; the engine adds this to the lander's vertical
+   speed automatically every step, same as the Platformer tutorial's gravity,
+   just weaker.
+2. Add Action: **Control** → **Execute Code**:
 
-```gml
-// Physics variables
-gravity_force = 0.05;  // Gentle gravity
-thrust_force = 0.1;    // Thrust power
-max_speed = 5;         // Maximum velocity
-
-// Current velocity
-hsp = 0;  // Horizontal speed
-vsp = 0;  // Vertical speed
-
-// Fuel system
-fuel = 100;
-fuel_use = 0.5;  // Fuel used per frame when thrusting
-
-// Game state
-landed = false;
-crashed = false;
-
-// Safe landing speed
-safe_speed = 2;
+```python
+self.thrust_force = 0.1
+self.max_speed = 5
+self.fuel = 100
+self.fuel_use = 0.5
+self.landed = False
+self.crashed = False
+self.safe_speed = 2
 ```
 
-### 5.2 Step Event - Physics and Controls
+This project's movement system already tracks velocity as `self.hspeed`/
+`self.vspeed` and moves the instance by that amount every frame (with solid
+collision built in) — there's no need for separate `hsp`/`vsp` variables the
+way a raw physics simulation would track them.
 
-**Event: Step**
-1. Add Event → Step → Step
-2. Add Action: **Control** → **Execute Code**
+### 5.2 Step Event — Thrust and Controls
 
-```gml
-// Don't update if game is over
-if (landed || crashed) exit;
+**Event: Step** — Add Action: **Control** → **Execute Code**:
 
-// === GRAVITY ===
-vsp += gravity_force;
+```python
+if not self.landed and not self.crashed:
+    if keyboard.check('up') and self.fuel > 0:
+        self.vspeed -= self.thrust_force
+        self.fuel -= self.fuel_use
+        if self.fuel < 0:
+            self.fuel = 0
 
-// === THRUST (Up Arrow) ===
-if (keyboard_check(vk_up) && fuel > 0) {
-    vsp -= thrust_force;
-    fuel -= fuel_use;
-    if (fuel < 0) fuel = 0;
-}
+    if keyboard.check('left'):
+        self.hspeed -= 0.05
+    if keyboard.check('right'):
+        self.hspeed += 0.05
 
-// === HORIZONTAL CONTROL ===
-if (keyboard_check(vk_left)) {
-    hsp -= 0.05;
-}
-if (keyboard_check(vk_right)) {
-    hsp += 0.05;
-}
+    # Limit top speed
+    self.hspeed = max(-self.max_speed, min(self.max_speed, self.hspeed))
+    self.vspeed = max(-self.max_speed, min(self.max_speed, self.vspeed))
 
-// === LIMIT SPEED ===
-hsp = clamp(hsp, -max_speed, max_speed);
-vsp = clamp(vsp, -max_speed, max_speed);
-
-// === APPLY MOVEMENT ===
-x += hsp;
-y += vsp;
-
-// === SCREEN BOUNDARIES ===
-if (x < 16) { x = 16; hsp = 0; }
-if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
-if (y < 16) { y = 16; vsp = 0; }
+    # Keep the lander from drifting off the sides or above the room
+    room = game.current_room
+    if self.x < 16:
+        self.x = 16
+        self.hspeed = 0
+    if self.x > room.width - 16:
+        self.x = room.width - 16
+        self.hspeed = 0
+    if self.y < 16:
+        self.y = 16
+        self.vspeed = 0
 ```
+
+The whole block is wrapped in `if not self.landed and not self.crashed:` so
+thrust and steering stop the instant the game ends — the `self` object
+doesn't have a way to bail out of an event partway through (no GML-style
+`exit`), so an `if` around the rest of the code is the equivalent.
 
 ### 5.3 Collision with Landing Pad
 
 **Event: Collision with obj_pad**
-1. Add Event → Collision → obj_pad
-2. Add Action: **Control** → **Execute Code**
+1. Add Action: **Control** → **Test Expression**
+   - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed`
+     — the landing speed is the length of the velocity vector; Pythagoras,
+     not a `speed` variable (in this engine `speed` is the *sprite animation*
+     rate, not movement magnitude — a genuine gotcha coming from GameMaker).
+   - Then Actions:
+     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Stop Movement**
+     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) — stops
+        gravity from quietly building up vertical speed again on a lander
+        that's already landed
+     4. **Output** → **Show Message** (Message: `Perfect Landing! You Win!`)
+   - Else Actions:
+     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Show Message** (Message: `Crashed! Too fast!`)
+     3. **Room** → **Restart Room**
 
-```gml
-// Check landing speed
-var total_speed = sqrt(hsp*hsp + vsp*vsp);
-
-if (total_speed <= safe_speed) {
-    // Safe landing!
-    landed = true;
-    hsp = 0;
-    vsp = 0;
-    show_message("Perfect Landing! You Win!");
-} else {
-    // Too fast - crash!
-    crashed = true;
-    show_message("Crashed! Too fast! Speed: " + string(total_speed));
-    room_restart();
-}
-```
+Show Message's text is a fixed string — it can't embed the actual landing
+speed. The HUD (Step 7) already displays the live speed right up to the
+moment of touchdown, so the player has already seen the number.
 
 ### 5.4 Collision with Ground
 
 **Event: Collision with obj_ground**
-1. Add Event → Collision → obj_ground
-2. Add Action: **Control** → **Execute Code**
-
-```gml
-crashed = true;
-show_message("Crashed into terrain!");
-room_restart();
-```
+1. Add Action: **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Add Action: **Output** → **Show Message** (Message: `Crashed into terrain!`)
+3. Add Action: **Room** → **Restart Room**
 
 ---
 
@@ -231,48 +225,59 @@ For a simpler approach, you can draw the flame in the lander's Draw event.
 
 ## Step 7: Create the Game Controller
 
-The game controller displays fuel, velocity, and instructions.
+The game controller displays fuel, velocity, and instructions by reading
+them off the lander instance each frame.
 
 1. Create a new object named `obj_game_controller`
 2. No sprite needed
 
 **Event: Draw**
-1. Add Event → Draw → Draw
-2. Add Action: **Control** → **Execute Code**
+1. Add Action: **Control** → **Execute Code** — find the lander and compute
+   the values the Draw actions below will display:
 
-```gml
-draw_set_color(c_white);
+```python
+lander = None
+for inst in game.current_room.instances:
+    if inst.object_name == 'obj_lander':
+        lander = inst
+        break
 
-// Get lander info
-var lander = instance_find(obj_lander, 0);
-if (lander != noone) {
-    var spd = sqrt(lander.hsp*lander.hsp + lander.vsp*lander.vsp);
-
-    // Draw HUD
-    draw_text(10, 10, "LUNAR LANDER");
-    draw_text(10, 30, "Fuel: " + string(floor(lander.fuel)) + "%");
-    draw_text(10, 50, "Speed: " + string_format(spd, 1, 2));
-    draw_text(10, 70, "Safe Speed: < " + string(lander.safe_speed));
-
-    // Speed warning
-    if (spd > lander.safe_speed) {
-        draw_set_color(c_red);
-        draw_text(10, 90, "TOO FAST!");
-    } else {
-        draw_set_color(c_lime);
-        draw_text(10, 90, "Speed OK");
-    }
-
-    // Fuel warning
-    if (lander.fuel <= 0) {
-        draw_set_color(c_red);
-        draw_text(10, 110, "NO FUEL!");
-    }
-}
-
-draw_set_color(c_gray);
-draw_text(10, room_height - 20, "UP: Thrust | LEFT/RIGHT: Move");
+if lander is not None:
+    self.fuel_display = round(lander.fuel)
+    self.speed_display = round((lander.hspeed ** 2 + lander.vspeed ** 2) ** 0.5, 2)
+    self.too_fast = self.speed_display > lander.safe_speed
+    self.no_fuel = lander.fuel <= 0
+else:
+    self.fuel_display = 0
+    self.speed_display = 0.0
+    self.too_fast = False
+    self.no_fuel = False
 ```
+
+2. Add Action: **Game** → **Set Draw Color** (Color: `#FFFFFF`)
+3. Add Action: **Game** → **Draw Text** (Text: `LUNAR LANDER`, X: `10`, Y: `10`)
+4. Add Action: **Game** → **Draw Text** (Text: `Fuel:`, X: `10`, Y: `30`)
+5. Add Action: **Game** → **Draw Variable** (Variable: `self.fuel_display`, X: `70`, Y: `30`)
+6. Add Action: **Game** → **Draw Text** (Text: `Speed:`, X: `10`, Y: `50`)
+7. Add Action: **Game** → **Draw Variable** (Variable: `self.speed_display`, X: `70`, Y: `50`)
+8. Add Action: **Game** → **Draw Text** (Text: `Safe Speed: < 2`, X: `10`, Y: `70`)
+
+Then the two warning lines, each gated by **Control** → **Test Expression**
+(no Else needed — nothing draws when the condition is false):
+
+9. **Control** → **Test Expression** (Expression: `self.too_fast`)
+   - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
+     **Draw Text** (`TOO FAST!`, X `10`, Y `90`)
+   - Else Actions: **Game** → **Set Draw Color** (`#00FF00`), **Game** →
+     **Draw Text** (`Speed OK`, X `10`, Y `90`)
+10. **Control** → **Test Expression** (Expression: `self.no_fuel`)
+    - Then Actions: **Game** → **Set Draw Color** (`#FF0000`), **Game** →
+      **Draw Text** (`NO FUEL!`, X `10`, Y `110`)
+
+11. Add Action: **Game** → **Set Draw Color** (Color: `#808080`)
+12. Add Action: **Game** → **Draw Text** (Text: `UP: Thrust | LEFT/RIGHT: Move`,
+    X: `10`, Y: `440`) — pick a Y near the bottom of whatever room size you
+    use in Step 8.
 
 ---
 
@@ -300,7 +305,6 @@ Build your level following these guidelines:
 
 
 
-
 GGG    GGG    PPPP    GGG    GGG
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 
@@ -323,29 +327,46 @@ G = Ground    L = Lander    P = Landing Pad
 
 ### Add Rotation Control
 
-Instead of left/right movement, rotate the lander:
+Instead of left/right movement, rotate the lander and thrust in the
+direction it's facing. This engine's instances have a real `rotation`
+attribute (degrees, 0 = right, increasing counter-clockwise) used to spin
+the sprite — no `image_angle`/`lengthdir_x`/`lengthdir_y` needed, since
+`math` is already available in Execute Code:
 
-In Create event:
-```gml
-rotation = 90;  // Pointing up
-rotation_speed = 3;
+Replace 5.1's Create-event code with:
+```python
+self.thrust_force = 0.1
+self.max_speed = 5
+self.fuel = 100
+self.fuel_use = 0.5
+self.landed = False
+self.crashed = False
+self.safe_speed = 2
+self.rotation = 90  # pointing up
+self.rotation_speed = 3
 ```
 
-In Step event:
-```gml
-// Rotation
-if (keyboard_check(vk_left)) rotation -= rotation_speed;
-if (keyboard_check(vk_right)) rotation += rotation_speed;
-
-// Thrust in direction of rotation
-if (keyboard_check(vk_up) && fuel > 0) {
-    hsp += lengthdir_x(thrust_force, rotation);
-    vsp += lengthdir_y(thrust_force, rotation);
-    fuel -= fuel_use;
-}
-
-image_angle = rotation - 90;  // Adjust sprite angle
+Replace 5.2's steering lines (the `left`/`right` → `hspeed` block) with:
+```python
+if keyboard.check('left'):
+    self.rotation -= self.rotation_speed
+if keyboard.check('right'):
+    self.rotation += self.rotation_speed
 ```
+
+And replace the thrust lines with:
+```python
+if keyboard.check('up') and self.fuel > 0:
+    rad = math.radians(self.rotation)
+    self.hspeed += self.thrust_force * math.cos(rad)
+    self.vspeed -= self.thrust_force * math.sin(rad)
+    self.fuel -= self.fuel_use
+    if self.fuel < 0:
+        self.fuel = 0
+```
+
+(the `-=` on `vspeed` matches the engine's own gravity code — screen Y
+increases downward, so "up" is negative vertical speed).
 
 ### Add Multiple Landing Pads
 
@@ -364,10 +385,11 @@ Create multiple rooms with increasingly difficult terrain and smaller landing pa
 
 ### Add Wind
 
-Add a random horizontal force that pushes the lander:
-```gml
-// In Step event
-hsp += wind_force;  // Set wind_force in Create event
+Add a small constant horizontal push. In `obj_lander`'s Create event code,
+add `self.wind_force = 0.02`; then at the top of the Step event's `if not
+self.landed and not self.crashed:` block, add:
+```python
+self.hspeed += self.wind_force
 ```
 
 ---
@@ -376,11 +398,11 @@ hsp += wind_force;  // Set wind_force in Create event
 
 | Problem | Solution |
 |---------|----------|
-| Lander falls too fast | Decrease `gravity_force` or increase `thrust_force` |
-| Can't slow down enough | Increase `thrust_force` or `safe_speed` |
-| Fuel runs out too fast | Decrease `fuel_use` or increase starting `fuel` |
-| Lander goes off screen | Add boundary checks in Step event |
-| Landing doesn't register | Make sure landing pad has "Solid" checked |
+| Lander falls too fast | Decrease Set Gravity's `Gravity` value, or increase `thrust_force` in the Create event code |
+| Can't slow down enough | Increase `thrust_force`, or increase `safe_speed` |
+| Fuel runs out too fast | Decrease `fuel_use`, or increase the starting `fuel` |
+| Lander goes off screen | Check the boundary block at the end of the Step event code |
+| Landing doesn't register | Make sure `obj_pad` has "Solid" checked |
 
 ---
 
@@ -388,11 +410,11 @@ hsp += wind_force;  // Set wind_force in Create event
 
 Congratulations! You've created a Lunar Lander game! You learned:
 
-- **Thrust physics** - Counteracting gravity with upward force
-- **Velocity management** - Controlling speed for safe landing
-- **Fuel system** - Resource management gameplay
-- **Collision detection** - Different outcomes for pad vs ground
-- **HUD display** - Showing game state to the player
+- **Thrust physics** - Nudging `self.vspeed` against a continuous Set Gravity pull
+- **Velocity management** - Computing speed from `hspeed`/`vspeed` with the Pythagorean theorem
+- **Fuel system** - Resource management gameplay with a plain instance variable
+- **Collision detection** - Different outcomes for pad vs ground, chosen with Test Expression
+- **HUD display** - Computing display values in Execute Code, then showing them with Draw Text/Draw Variable
 
 ---
 
@@ -413,4 +435,3 @@ Congratulations! You've created a Lunar Lander game! You learned:
 - [Tutorial: Platformer](Tutorial-Platformer) - Create a platform jumping game
 - [Tutorial: Maze](Tutorial-Maze) - Create a maze navigation game
 - [Event Reference](Event-Reference) - Complete event documentation
-
