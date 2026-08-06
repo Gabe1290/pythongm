@@ -531,12 +531,31 @@ lower-priority read). Exceptions already touched:
 
 ## D. Sample guides — French (`samples/*/README.fr.md`)
 
-- [ ] match3_1, match3_2, match3_3
-- [ ] maze_1, maze_2, maze_3, maze_4
-- [ ] plateforme_1, plateforme_2, plateforme_3
-- [ ] raycast_1, raycast_2, raycast_3, raycast_4
-- [ ] treasure
-- [ ] views_1, views_2
+- [x] match3_1, match3_2, match3_3
+- [x] maze_1, maze_2, maze_3, maze_4
+- [x] plateforme_1, plateforme_2, plateforme_3
+- [x] raycast_1, raycast_2, raycast_3, raycast_4
+- [x] treasure
+- [x] views_1, views_2
+
+**Review method note (lighter-touch than Sections E/F):** given Section
+C's finding that the English originals are exceptionally accurate
+already, this pass checked (a) an accent-completeness heuristic grep
+across all 17 files for common unaccented-word patterns — clean, (b) every
+quoted string (« ... » and "...") across all 17 for language-mismatch bugs
+like the one already fixed in raycast_2 — found 2 English-in-French
+quotes, both verified legitimate (match3_3's in-game message, which stays
+English per the established "sample messages aren't auto-translated"
+convention; maze_2/maze_3's literal cross-reference to
+`docs/ASSET_LICENSES.md`'s English-only "### Remaining maze assets"
+heading, confirmed to exist verbatim), and (c) one full spot-check
+(match3_1) with its Android/HTML5 support dates cross-checked against the
+English README.md — exact match. This did **not** re-derive every
+technical claim against source code the way the wiki pages in Sections
+E/F got (that would mean re-verifying ~17 files' worth of engine/export
+internals already covered once for their English originals) — if a future
+session has reason to distrust a specific French sample guide's technical
+claim, verify that claim specifically rather than assuming this pass covered it.
 
 (17 files — no top-level `samples/README.fr.md` exists.)
 
