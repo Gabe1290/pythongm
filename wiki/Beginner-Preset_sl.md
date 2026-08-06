@@ -1,509 +1,188 @@
-# Začetniški Preset
+# Preset za Začetnike
 
-*[Domov](Home_sl) | [Vodnik po Presetih](Preset-Guide_sl) | [Srednji Preset](Intermediate-Preset_sl)*
+*[Domov](Home_sl) | [Vodnik po Prednastavitvah](Preset-Guide_sl) | [Vmesni Preset](Intermediate-Preset_sl)*
 
-**Začetniški** preset je zasnovan za uporabnike, ki so novi v razvoju iger. Ponuja skrbno izbran nabor bistvenih dogodkov in akcij, ki pokrivajo osnove ustvarjanja preprostih 2D iger, ne da bi začetnike preobremenili s prevec možnostmi.
+> **Samodejno ustvarjeno** iz `get_beginner()` v `config/blockly_config.py` s `tools/gen_preset_docs.py` — ne urejajte ročno; po spremembi presetov znova zaženite generator.
+
+> **Kaj ta preset dejansko omejuje:** ta preset filtrira TAKO vizualno paleto blokov Blockly KOT menija "Dodaj dogodek"/"Dodaj dejanje" v strukturirani plošči Dogodki/Dejanja — ne glede na to, kateri urejevalnik uporabljate, se prikažejo samo spodaj navedeni dogodki/dejanja. Preset *projekta* je nastavljen na dva načina: **`Nastavitve > IDE Edition`** izbere privzeto vrednost za *nove* projekte (izdaja Začetnik -> ta preset; obstoječi projekti se z zamenjavo izdaje nikoli ne spremenijo), in **`Orodja > Nastavi akcijske bloke...`** kadar koli spremeni preset *trenutno odprtega* projekta. Privzeta izdaja IDE-ja je Začetnik, zato se novi projekti sveže namestitve začnejo prav na tem seznamu.
 
 ## Pregled
 
-Začetniški preset vključuje:
-- **4 vrste dogodkov** - Za odzivanje na situacije v igri
-- **17 vrst akcij** - Za nadzor obnašanja igre
-- **6 kategorij** - Dogodki, Gibanje, Točke/Življenja/Zdravje, Instanca, Soba, Izhod
+Ta preset omogoča **19** vrst dogodkov in **83** vrst dejanj.
 
 ---
 
 ## Dogodki
 
-Dogodki so prozilci, ki se odzivajo na določene situacije v vaši igri. Ko se dogodek zgodi, se bodo izvedle akcije, ki ste jih definirali za ta dogodek.
-
-### Dogodek Create
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime bloka** | `event_create` |
-| **Kategorija** | Dogodki |
-| **Opis** | Sproži se enkrat, ko je instanca prvič ustvarjena |
-
-**Kdaj se sproži:** Takoj, ko je instanca objekta postavljena v sobo ali ustvarjena z akcijo "Ustvari Instanco".
-
-**Pogoste uporabe:**
-- Inicializacija spremenljivk
-- Nastavitev začetnega položaja
-- Nastavitev začetne hitrosti ali smeri
-- Ponastavitev točk ob začetku igre
-
----
-
-### Dogodek Step
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime bloka** | `event_step` |
-| **Kategorija** | Dogodki |
-| **Opis** | Sproži se vsak okvir (običajno 60-krat na sekundo) |
-
-**Kdaj se sproži:** Neprekinjeno, vsak okvir igre.
-
-**Pogoste uporabe:**
-- Neprekinjeno gibanje
-- Preverjanje pogojev
-- Posodabljanje stanja igre
-- Nadzor animacije
+| Dogodek | Ime Bloka | Kategorija | Opis |
+|-------|------------|----------|-------------|
+| Create | `create` | Objekt | Izvede se enkrat, ko je instanca prvič ustvarjena |
+| Step | `step` | Objekt | Izvede se pri vsaki sličici (uporabite za neprekinjena preverjanja) |
+| Keyboard (held) | `keyboard` | Vnos | Izvaja se neprekinjeno, dokler je tipka pritisnjena (za gladko gibanje) |
+| Keyboard <No Key> | `keyboard_no_key` | Vnos | Izvede se, ko trenutno ni pritisnjena nobena tipka |
+| Collision With... | `collision` | Trk | Izvede se ob trku z drugim objektom |
+| Begin Step | `begin_step` | Korak | Izvede se na začetku vsakega koraka, pred drugimi dogodki |
+| End Step | `end_step` | Korak | Izvede se na koncu vsakega koraka, po trkih, a pred risanjem |
+| Alarm | `alarm` | Čas | Izvede se, ko alarm doseže nič |
+| Draw | `draw` | Risanje | Izvede se ob risanju objekta (nadomesti privzeto risanje sličice) |
+| Draw GUI | `draw_gui` | Risanje | Nariše se čez vse ostalo (nanj ne vpliva kamera/pogled). Uporabite za HUD, rezultat, življenja. |
+| Room End | `room_end` | Soba | Izvede se, ko se soba konča |
+| Room Start | `room_start` | Soba | Izvede se, ko se soba zažene (po dogodkih Create) |
+| Game End | `game_end` | Igra | Izvede se, ko se igra konča |
+| Game Start | `game_start` | Igra | Izvede se, ko se igra zažene (samo v prvi sobi) |
+| Animation End | `animation_end` | Drugo | Sproži se, ko animacija sličice doseže zadnjo sličico in se ponovi |
+| Intersect Boundary | `intersect_boundary` | Drugo | Izvede se, ko se instanca dotakne roba sobe |
+| No More Health | `no_more_health` | Drugo | Izvede se, ko zdravje doseže 0 ali manj |
+| No More Lives | `no_more_lives` | Drugo | Izvede se, ko življenja dosežejo 0 ali manj |
+| Outside Room | `outside_room` | Drugo | Izvede se, ko je instanca popolnoma zunaj sobe |
 
 ---
 
-### Dogodek Pritiska Tipke
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime bloka** | `event_keyboard_press` |
-| **Kategorija** | Dogodki |
-| **Opis** | Sproži se enkrat, ko je določena tipka pritisnjena |
+## Dejanja
 
-**Kdaj se sproži:** Enkrat v trenutku, ko je tipka pritisnjena (ne medtem ko je drzana).
+### Gibanje
 
-**Podprte tipke:** Puščične tipke (gor, dol, levo, desno), Preslednica, Enter, črke (A-Z), številke (0-9)
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Odbij se | `bounce` | — |
+| Skoči na položaj | `jump_to_position` | `x`, `y`, `relative` |
+| Skoči na naključni položaj | `jump_to_random` | `snap_h`, `snap_v` |
+| Skoči na začetni položaj | `jump_to_start` | — |
+| Premakni proti točki | `move_towards_point` | `x`, `y`, `speed` |
+| Obrni vodoravno | `reverse_horizontal` | — |
+| Obrni navpično | `reverse_vertical` | — |
+| Nastavi smer in hitrost | `set_direction_speed` | `direction`, `speed` |
+| Nastavi gravitacijo | `set_gravity` | `direction`, `gravity` |
+| Nastavi vodoravno hitrost | `set_hspeed` | `speed` |
+| Nastavi navpično hitrost | `set_vspeed` | `speed` |
+| Začni se premikati (smer) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
+| Ustavi gibanje | `stop_movement` | — |
 
-**Pogoste uporabe:**
-- Kontrole premikanja igralca
-- Skakanje
-- Streljanje
-- Navigacija po meniju
+### Mreža
 
----
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Preveri poravnavo na mrežo | `test_alignment` | `hsnap`, `vsnap` |
 
-### Dogodek Trka
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime bloka** | `event_collision` |
-| **Kategorija** | Dogodki |
-| **Opis** | Sproži se, ko ta instanca trči v drug objekt |
+### Instanca
 
-**Kdaj se sproži:** Vsak okvir, ko se dve instanci prekrivata.
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Spremeni instanco | `change_instance` | `object`, `perform_events` |
+| Ustvari instanco | `create_instance` | `object`, `x`, `y`, `relative` |
+| Ustvari premikajočo se instanco | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
+| Ustvari naključno instanco | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
+| Uniči instanco | `destroy_instance` | — |
+| Uniči na položaju | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Nastavi indeks slike | `set_image_index` | `frame` |
+| Nastavi hitrost slike | `set_image_speed` | `speed` |
+| Zaženi animacijo | `start_animation` | — |
+| Ustavi animacijo | `stop_animation` | — |
+| Preveri število instanc | `test_instance_count` | `object`, `number`, `operation` |
 
-**Posebna spremenljivka:** V dogodku trka se `other` nanasa na instanco, s katero je prislo do trka.
+### Rezultat
 
-**Pogoste uporabe:**
-- Zbiranje predmetov (kovanci, ojacitve)
-- Prejemanje skode od sovražnikov
-- Zadevanje sten ali ovir
-- Doseganje ciljev ali kontrolnih točk
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Počisti tabelo rekordov | `clear_highscore` | — |
+| Nariši življenja | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
+| Nariši rezultat | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Nastavi življenja | `set_lives` | `value`, `relative` |
+| Nastavi rezultat | `set_score` | `value`, `relative` |
+| Prikaži tabelo rekordov | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Preveri zdravje | `test_health` | `operation`, `value` |
+| Preveri življenja | `test_lives` | `value`, `operation` |
+| Preveri rezultat | `test_score` | `value`, `operation` |
 
----
+### Čas
 
-## Akcije
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Nastavi budilko | `set_alarm` | `alarm_number`, `steps` |
+| Premor | `sleep` | `milliseconds` |
 
-Akcije so ukazi, ki se izvršijo, ko je dogodek sprožen. Enemu dogodku je mogoce dodati več akcij in se bodo izvršile po vrstnem redu.
+### Soba
 
----
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Preveri sobo | `check_room` | `room`, `not_flag` |
+| Končaj igro | `game_end` | — |
+| Če obstaja naslednja soba | `if_next_room_exists` | `then_actions`, `else_actions` |
+| Če obstaja prejšnja soba | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Znova zaženi sobo | `restart_room` | — |
+| Nastavi naslov sobe | `set_room_caption` | `caption` |
 
-## Akcije Gibanja
+### Zvok
 
-### Nastavi Horizontalno Hitrost
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `set_hspeed` |
-| **Ime bloka** | `move_set_hspeed` |
-| **Kategorija** | Gibanje |
-| **Ikona** | ↔️ |
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Preveri predvajanje zvoka | `check_sound` | `sound`, `not_flag` |
+| Predvajaj glasbo | `play_music` | `music`, `loop`, `volume` |
+| Predvajaj zvok | `play_sound` | `sound`, `volume` |
+| Nastavi glasnost | `set_volume` | `volume` |
+| Ustavi glasbo | `stop_music` | — |
+| Ustavi zvok | `stop_sound` | `sound` |
 
-**Opis:** Nastavi horizontalno hitrost gibanja instance.
+### Igra
 
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `value` | Številka | Hitrost v pikslih na okvir. Pozitivno = desno, Negativno = levo |
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Nariši puščico | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Nariši ozadje | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Nariši elipso | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Nariši črto | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Nariši povečano besedilo | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Nariši sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Nariši besedilo | `draw_text` | `text`, `x`, `y`, `relative` |
+| Nariši spremenljivko | `draw_variable` | `x`, `y`, `variable` |
+| Zapolni zaslon z barvo | `fill_color` | `color` |
+| Odpri spletno stran | `open_webpage` | `url` |
+| Znova zaženi igro | `restart_game` | — |
+| Nastavi barvo | `set_color` | `color`, `alpha` |
+| Nastavi barvo risanja | `set_draw_color` | `color` |
+| Nastavi pisavo risanja | `set_draw_font` | `font`, `halign`, `valign` |
+| Nastavi naslov okna | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
+| Prikaži informacije o igri | `show_info` | — |
+| Prikaži sporočilo | `show_message` | `message` |
 
-**Primer:** Nastavite `value` na `4` za premikanje desno s 4 piksli na okvir, ali `-4` za premikanje levo.
+### Nadzor
 
----
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Komentar | `comment` | `text` |
+| Sicer | `else_action` | — |
+| Konec bloka | `end_block` | — |
+| Izvedi kodo | `execute_code` | `code` |
+| Izvedi skripto | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
+| Zapusti dogodek | `exit_event` | — |
+| Če trk | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Če predmet obstaja | `if_object_exists` | `object`, `not_flag` |
+| Začetek bloka | `start_block` | — |
+| Preveri verjetnost | `test_chance` | `sides` |
+| Postavi vprašanje | `test_question` | `question` |
+| Preveri spremenljivko | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
-### Nastavi Vertikalno Hitrost
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `set_vspeed` |
-| **Ime bloka** | `move_set_vspeed` |
-| **Kategorija** | Gibanje |
-| **Ikona** | ↕️ |
+### Pogledi
 
-**Opis:** Nastavi vertikalno hitrost gibanja instance.
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Omogoči poglede | `enable_views` | `enable` |
+| Nastavi pogled | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `value` | Številka | Hitrost v pikslih na okvir. Pozitivno = dol, Negativno = gor |
+### Pogled 3D
 
-**Primer:** Nastavite `value` na `-4` za premikanje gor s 4 piksli na okvir, ali `4` za premikanje dol.
-
----
-
-### Ustavi Gibanje
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `stop_movement` |
-| **Ime bloka** | `move_stop` |
-| **Kategorija** | Gibanje |
-| **Ikona** | 🛑 |
-
-**Opis:** Ustavi vse gibanje z nastavitvijo horizontalne in vertikalne hitrosti na nic.
-
-**Parametri:** Brez
-
-**Pogoste uporabe:**
-- Ustavitev igralca ob zadetku stene
-- Ustavitev sovražnikov ob dosegu cilja
-- Zacasna prekinitev gibanja
-
----
-
-### Skoci na Polozaj
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `jump_to_position` |
-| **Ime bloka** | `move_jump_to` |
-| **Kategorija** | Gibanje |
-| **Ikona** | 📍 |
-
-**Opis:** Takoj premakne instanco na določen položaj (brez gladkega gibanja).
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `x` | Številka | Ciljna X koordinata |
-| `y` | Številka | Ciljna Y koordinata |
-
-**Primer:** Skocite na položaj (100, 200) za teleportacijo igralca na to lokacijo.
-
----
-
-## Akcije Instance
-
-### Unisti Instanco
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `destroy_instance` |
-| **Ime bloka** | `instance_destroy` |
-| **Kategorija** | Instanca |
-| **Ikona** | 💥 |
-
-**Opis:** Odstrani instanco iz igre.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `target` | Izbira | `self` = unisti to instanco, `other` = unisti trkajočo instanco |
-
-**Pogoste uporabe:**
-- Odstranitev zbranih kovancev (`target: other` v dogodku trka)
-- Uničenje nabojev ob zadetku necesa
-- Odstranitev sovražnikov ob porazu
+| Dejanje | Ime Bloka | Parametri |
+|--------|------------|------------|
+| Nariši HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
+| Nariši mini zemljevid | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
+| Omogoči pogled Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
+| Nastavi kot pogleda | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
-### Ustvari Instanco
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `create_instance` |
-| **Ime bloka** | `instance_create` |
-| **Kategorija** | Instanca |
-| **Ikona** | ✨ |
-
-**Opis:** Ustvari novo instanco objekta na določenem položaju.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `object` | Objekt | Vrsta objekta za ustvarjanje |
-| `x` | Številka | X koordinata za novo instanco |
-| `y` | Številka | Y koordinata za novo instanco |
-
-**Primer:** Ustvarite naboj na položaju igralca, ko je pritisnjena Preslednica.
-
----
-
-## Akcije Točk
-
-### Nastavi Točke
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `set_score` |
-| **Ime bloka** | `score_set` |
-| **Kategorija** | Točke/Življenja/Zdravje |
-| **Ikona** | 🏆 |
-
-**Opis:** Nastavi točke na določeno vrednost ali prišteje/odsteje od trenutnih točk.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `value` | Številka | Vrednost točk |
-| `relative` | Logična | Če je true, prišteje vrednost k trenutnim točkam. Če je false, nastavi točke na vrednost |
-
-**Primeri:**
-- Ponastavitev točk: `value: 0`, `relative: false`
-- Dodaj 10 točk: `value: 10`, `relative: true`
-- Odstej 5 točk: `value: -5`, `relative: true`
-
----
-
-### Dodaj k Točkam
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `add_score` |
-| **Ime bloka** | `score_add` |
-| **Kategorija** | Točke/Življenja/Zdravje |
-| **Ikona** | ➕🏆 |
-
-**Opis:** Doda vrednost k trenutnim točkam (bliznjica za set_score z relative=true).
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `value` | Številka | Točke za dodajanje (lahko negativno za odštevanje) |
-
----
-
-### Nariši Točke
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `draw_score` |
-| **Ime bloka** | `draw_score` |
-| **Kategorija** | Točke/Življenja/Zdravje |
-| **Ikona** | 🖼️🏆 |
-
-**Opis:** Prikaze trenutne točke na zaslonu.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `x` | Številka | X položaj za risanje točk |
-| `y` | Številka | Y položaj za risanje točk |
-| `caption` | Niz | Besedilo za prikaz pred točkami (npr. "Točke: ") |
-
-**Opomba:** To je treba uporabiti v dogodku Draw (na voljo v Srednjem presetu).
-
----
-
-## Akcije Sobe
-
-### Pojdi v Naslednjo Sobo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `next_room` |
-| **Ime bloka** | `room_goto_next` |
-| **Kategorija** | Soba |
-| **Ikona** | ➡️ |
-
-**Opis:** Preide v naslednjo sobo v vrstnem redu sob.
-
-**Parametri:** Brez
-
-**Opomba:** Če ste ze v zadnji sobi, ta akcija nima učinka (uporabite "Če Naslednja Soba Obstaja" za preverjanje najprej).
-
----
-
-### Pojdi v Prejsnjo Sobo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `previous_room` |
-| **Ime bloka** | `room_goto_previous` |
-| **Kategorija** | Soba |
-| **Ikona** | ⬅️ |
-
-**Opis:** Preide v prejsnjo sobo v vrstnem redu sob.
-
-**Parametri:** Brez
-
-**Opomba:** Če ste ze v prvi sobi, ta akcija nima učinka.
-
----
-
-### Ponovno Zazeni Sobo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `restart_room` |
-| **Ime bloka** | `room_restart` |
-| **Kategorija** | Soba |
-| **Ikona** | 🔄 |
-
-**Opis:** Ponovno zazene trenutno sobo in ponastavi vse instance v začetno stanje.
-
-**Parametri:** Brez
-
-**Pogoste uporabe:**
-- Ponovni zagon nivoja po smrti igralca
-- Ponastavitev uganke po neuspehu
-- Ponovitev mini-igre
-
----
-
-### Pojdi v Sobo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `goto_room` |
-| **Ime bloka** | `room_goto` |
-| **Kategorija** | Soba |
-| **Ikona** | 🚪 |
-
-**Opis:** Preide v določeno sobo po imenu.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `room` | Soba | Soba, v katero želite iti |
-
----
-
-### Če Naslednja Soba Obstaja
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `if_next_room_exists` |
-| **Ime bloka** | `room_if_next_exists` |
-| **Kategorija** | Soba |
-| **Ikona** | ❓➡️ |
-
-**Opis:** Pogojni blok, ki izvede vsebovane akcije samo če obstaja naslednja soba.
-
-**Parametri:** Brez (akcije so postavljene znotraj bloka)
-
-**Pogoste uporabe:**
-- Preverjanje pred prehodom v naslednjo sobo
-- Prikaz sporocila "Zmagali ste!" če ni več sob
-
----
-
-### Če Prejsnja Soba Obstaja
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `if_previous_room_exists` |
-| **Ime bloka** | `room_if_previous_exists` |
-| **Kategorija** | Soba |
-| **Ikona** | ❓⬅️ |
-
-**Opis:** Pogojni blok, ki izvede vsebovane akcije samo če obstaja prejsnja soba.
-
-**Parametri:** Brez (akcije so postavljene znotraj bloka)
-
----
-
-## Akcije Izhoda
-
-### Prikaži Sporocilo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `show_message` |
-| **Ime bloka** | `output_message` |
-| **Kategorija** | Izhod |
-| **Ikona** | 💬 |
-
-**Opis:** Prikaze pojavno okno s sporocilom igralcu.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `message` | Niz | Besedilo za prikaz |
-
-**Opomba:** Igra se zaustavi, medtem ko je sporocilo prikazano. Igralec mora klikniti V redu za nadaljevanje.
-
-**Pogoste uporabe:**
-- Navodila za igro
-- Zgodbeni dialog
-- Sporocila o zmagi/porazu
-- Informacije za razhroscevanje
-
----
-
-### Izvedi Kodo
-| Lastnost | Vrednost |
-|----------|----------|
-| **Ime akcije** | `execute_code` |
-| **Ime bloka** | `execute_code` |
-| **Kategorija** | Izhod |
-| **Ikona** | 💻 |
-
-**Opis:** Izvede poljubno Python kodo.
-
-**Parametri:**
-| Parameter | Tip | Opis |
-|-----------|-----|------|
-| `code` | Niz | Python koda za izvedbo |
-
-**Opomba:** To je napredna funkcija. Uporabljajte previdno, saj lahko nepravilna koda povzroci napake.
-
----
-
-## Povzetek Kategorij
-
-| Kategorija | Dogodki | Akcije |
-|------------|---------|--------|
-| **Dogodki** | Create, Step, Pritisk Tipke, Trk | - |
-| **Gibanje** | - | Nastavi Horizontalno Hitrost, Nastavi Vertikalno Hitrost, Ustavi Gibanje, Skoci na Polozaj |
-| **Instanca** | - | Unisti Instanco, Ustvari Instanco |
-| **Točke/Življenja/Zdravje** | - | Nastavi Točke, Dodaj Točke, Nariši Točke |
-| **Soba** | - | Naslednja Soba, Prejsnja Soba, Ponovno Zazeni Sobo, Pojdi v Sobo, Če Naslednja Soba Obstaja, Če Prejsnja Soba Obstaja |
-| **Izhod** | - | Prikaži Sporocilo, Izvedi Kodo |
-
----
-
-## Primer: Preprosta Igra Zbiranja Kovancev
-
-Tukaj je opisano, kako nastaviti osnovno igro zbiranja kovancev z uporabo samo funkcij Začetniškega preseta:
-
-### Objekt Igralca (obj_player)
-
-**Pritisk Tipke (Leva Puščica):**
-- Nastavi Horizontalno Hitrost: -4
-
-**Pritisk Tipke (Desna Puščica):**
-- Nastavi Horizontalno Hitrost: 4
-
-**Pritisk Tipke (Puščica Gor):**
-- Nastavi Vertikalno Hitrost: -4
-
-**Pritisk Tipke (Puščica Dol):**
-- Nastavi Vertikalno Hitrost: 4
-
-**Trk z obj_coin:**
-- Nastavi Točke: 10 (relative: true)
-- Unisti Instanco: other
-
-**Trk z obj_wall:**
-- Ustavi Gibanje
-
-**Trk z obj_goal:**
-- Nastavi Točke: 100 (relative: true)
-- Naslednja Soba
-
-### Objekt Kovanec (obj_coin)
-Dogodki niso potrebni - samo zbiralni predmet.
-
-### Objekt Stena (obj_wall)
-Dogodki niso potrebni - samo trdna ovira.
-
-### Objekt Cilj (obj_goal)
-Dogodki niso potrebni - sproži zakljucek nivoja, ko igralec trči.
-
----
-
-## Nadgradnja na Srednji
-
-Ko boste zadovoljni z Začetniškim presetom, razmislite o nadgradnji na **Srednji** za dostop do:
-- Dogodek Draw (za prilagojeno upodabljanje)
-- Dogodek Destroy (čiščenje ob uničenju instance)
-- Dogodkov Miške (zaznavanje klikov)
-- Dogodkov Alarma (časovno določene akcije)
-- Sistemov Življenj in Zdravja
-- Akcij Zvoka in Glasbe
-- Več možnosti gibanja (smer, premikanje proti)
-
----
-
-## Oglejte si Tudi
-
-- [Vadnice](Tutorials_sl) - Vse vadnice na enem mestu
-- [Srednji Preset](Intermediate-Preset_sl) - Funkcije naslednje stopnje
-- [Popolna Referenca Akcij](Full-Action-Reference_sl) - Celoten seznam akcij
-- [Referenca Dogodkov](Event-Reference_sl) - Celoten seznam dogodkov
-- [Dogodki in Akcije](Dogodki_in_Akcije_sl) - Temeljni koncepti
-- [Ustvarjanje Vase Prve Igre](Prva_Igra_sl) - Vodnik po korakih
-- [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasicno igro Pong za dva igralca
-- [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasicno igro Breakout
-- [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
+## Glej Tudi
+
+- [Vodnik po Prednastavitvah](Preset-Guide_sl) — kaj so preseti in kako jih spremeniti
+- [Referenca Dogodkov](Event-Reference_sl) — popoln opis vsakega dogodka
+- [Popolna Referenca Dejanj](Full-Action-Reference_sl) — popolni podatki parametrov za vsako dejanje
+- [Vmesni Preset](Intermediate-Preset_sl) — naslednja stopnja

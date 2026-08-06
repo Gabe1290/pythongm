@@ -246,6 +246,44 @@ PAGE_CHROME = {
         "intermediate_desc": "o próximo nível",
         "beginner_desc": "o nível abaixo deste",
     },
+    "sl": {
+        "beginner_title": "Preset za Začetnike",
+        "intermediate_title": "Vmesni Preset",
+        "nav": "*[Domov](Home_sl) | [Vodnik po Prednastavitvah](Preset-Guide_sl) | {other_link}*",
+        "autogen": "> **Samodejno ustvarjeno** iz `get_{preset}()` v "
+                   "`config/blockly_config.py` s `tools/gen_preset_docs.py` — "
+                   "ne urejajte ročno; po spremembi presetov znova zaženite "
+                   "generator.",
+        "scope_note": "> **Kaj ta preset dejansko omejuje:** ta preset filtrira "
+                       "TAKO vizualno paleto blokov Blockly KOT menija "
+                       "\"Dodaj dogodek\"/\"Dodaj dejanje\" v strukturirani "
+                       "plošči Dogodki/Dejanja — ne glede na to, kateri "
+                       "urejevalnik uporabljate, se prikažejo samo spodaj "
+                       "navedeni dogodki/dejanja. Preset *projekta* je "
+                       "nastavljen na dva načina: **`Nastavitve > IDE "
+                       "Edition`** izbere privzeto vrednost za *nove* "
+                       "projekte (izdaja Začetnik -> ta preset; obstoječi "
+                       "projekti se z zamenjavo izdaje nikoli ne spremenijo), "
+                       "in **`Orodja > Nastavi akcijske bloke...`** kadar "
+                       "koli spremeni preset *trenutno odprtega* projekta. "
+                       "Privzeta izdaja IDE-ja je Začetnik, zato se novi "
+                       "projekti sveže namestitve začnejo prav na tem seznamu.",
+        "overview": "Pregled",
+        "overview_text": "Ta preset omogoča **{n_events}** vrst dogodkov in "
+                          "**{n_actions}** vrst dejanj.",
+        "events_h": "Dogodki",
+        "actions_h": "Dejanja",
+        "c_event": "Dogodek", "c_block": "Ime Bloka", "c_category": "Kategorija", "c_desc": "Opis",
+        "c_action": "Dejanje", "c_params": "Parametri",
+        "none": "—",
+        "see_also": "Glej Tudi",
+        "sa_preset": "- [Vodnik po Prednastavitvah](Preset-Guide_sl) — kaj so preseti in kako jih spremeniti",
+        "sa_events": "- [Referenca Dogodkov](Event-Reference_sl) — popoln opis vsakega dogodka",
+        "sa_actions": "- [Popolna Referenca Dejanj](Full-Action-Reference_sl) — popolni podatki parametrov za vsako dejanje",
+        "sa_other": "- [{other_title}]({other_link}) — {other_desc}",
+        "intermediate_desc": "naslednja stopnja",
+        "beginner_desc": "stopnja pod to",
+    },
     "fr": {
         "beginner_title": "Préréglage Débutant",
         "intermediate_title": "Préréglage Intermédiaire",
