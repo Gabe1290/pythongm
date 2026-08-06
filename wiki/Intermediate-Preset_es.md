@@ -1,415 +1,201 @@
-# Preset Intermedio
+# Preajuste Intermedio
 
-*[Inicio](Home_es) | [Guia de Presets](Preset-Guide_es) | [Preset Principiante](Beginner-Preset_es)*
+*[Inicio](Home_es) | [Guía de Preajustes](Preset-Guide_es) | [Preajuste Principiante](Beginner-Preset_es)*
 
-El preset **Intermedio** se basa en el [Preset Principiante](Beginner-Preset_es) añadiendo eventos y acciones más avanzados. Está diseñado para usuarios que han dominado lo básico y quieren crear juegos más complejos con características como eventos temporizados, sonido, vidas y sistemas de salud.
+> **Generado automáticamente** a partir de `get_intermediate()` en `config/blockly_config.py` por `tools/gen_preset_docs.py` — no editar a mano; vuelve a ejecutar el generador después de cambiar el preajuste.
 
-## Visión General
+> **Qué restringe realmente este preajuste:** este preajuste filtra TANTO la paleta de bloques visuales Blockly COMO los menús "Añadir Evento"/"Añadir Acción" del panel estructurado Eventos/Acciones — sea cual sea el editor que uses, solo aparecen los eventos/acciones listados abajo. El preajuste de un *proyecto* se define de dos formas: **`Preferencias > IDE Edition`** elige el predeterminado para los proyectos *nuevos* (edición Principiante -> este preajuste; los proyectos existentes nunca cambian al cambiar de edición), y **`Herramientas > Configurar bloques de acción...`** cambia el preajuste del proyecto *actualmente abierto* en cualquier momento. La edición predeterminada del IDE es Principiante, así que los proyectos nuevos de una instalación limpia empiezan exactamente en esta lista.
 
-El preset Intermedio incluye todo lo del Principiante, más:
-- **4 Tipos de Eventos Adicionales** - Dibujo, Destrucción, Ratón, Alarma
-- **12 Tipos de Acciones Adicionales** - Vidas, Salud, Sonido, Temporización y más opciones de movimiento
-- **3 Categorías Adicionales** - Temporización, Sonido, Dibujo
+## Resumen
 
----
-
-## Eventos Adicionales (Más allá del Principiante)
-
-### Evento de Dibujo
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_draw` |
-| **Categoría** | Dibujo |
-| **Icono** | 🎨 |
-| **Descripción** | Se activa cuando el objeto necesita ser renderizado |
-
-**Cuándo se activa:** Cada fotograma durante la fase de dibujo, después de todos los eventos step.
-
-**Importante:** Cuando agregas un evento de Dibujo, el dibujo predeterminado del sprite se desactiva. Debes dibujar manualmente el sprite si quieres que sea visible.
-
-**Usos comunes:**
-- Renderizado personalizado
-- Dibujar barras de salud
-- Mostrar texto
-- Dibujar formas y efectos
-- Elementos de interfaz
+Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 
 ---
 
-### Evento de Destrucción
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_destroy` |
-| **Categoría** | Objeto |
-| **Icono** | 💥 |
-| **Descripción** | Se activa cuando la instancia es destruida |
+## Eventos
 
-**Cuándo se activa:** Justo antes de que la instancia sea removida del juego.
-
-**Usos comunes:**
-- Crear efectos de explosión
-- Soltar objetos
-- Reproducir sonido de muerte
-- Actualizar puntuación
-- Generar partículas
-
----
-
-### Evento de Ratón
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_mouse` |
-| **Categoría** | Entrada |
-| **Icono** | 🖱️ |
-| **Descripción** | Se activa en interacciones con el ratón |
-
-**Tipos de eventos de ratón:**
-- Botón izquierdo (presionar, soltar, mantenido)
-- Botón derecho (presionar, soltar, mantenido)
-- Botón central (presionar, soltar, mantenido)
-- Ratón entra (cursor entra en la instancia)
-- Ratón sale (cursor sale de la instancia)
-- Eventos de ratón globales (en cualquier lugar de la pantalla)
-
-**Usos comunes:**
-- Botones clicables
-- Arrastrar y soltar
-- Efectos de hover
-- Interacciones de menú
+| Evento | Nombre del Bloque | Categoría | Descripción |
+|-------|------------|----------|-------------|
+| Create | `create` | Objeto | Se ejecuta una vez cuando la instancia se crea por primera vez |
+| Destroy | `destroy` | Objeto | Se ejecuta cuando la instancia es destruida |
+| Step | `step` | Objeto | Se ejecuta en cada fotograma (úsalo para comprobaciones continuas) |
+| Keyboard (held) | `keyboard` | Entrada | Se ejecuta continuamente mientras se mantiene pulsada una tecla (para movimiento suave) |
+| Keyboard <No Key> | `keyboard_no_key` | Entrada | Se ejecuta cuando no hay ninguna tecla pulsada actualmente |
+| Keyboard Press | `keyboard_press` | Entrada | Se ejecuta una vez cuando se pulsa una tecla por primera vez (para movimiento basado en cuadrícula) |
+| Collision With... | `collision` | Colisión | Se ejecuta al colisionar con otro objeto |
+| Begin Step | `begin_step` | Paso | Se ejecuta al principio de cada paso, antes que los demás eventos |
+| End Step | `end_step` | Paso | Se ejecuta al final de cada paso, después de las colisiones pero antes de dibujar |
+| Alarm | `alarm` | Tiempo | Se ejecuta cuando una alarma llega a cero |
+| Draw | `draw` | Dibujo | Se ejecuta al dibujar el objeto (reemplaza el dibujo automático del sprite) |
+| Draw GUI | `draw_gui` | Dibujo | Se dibuja por encima de todo lo demás (no afectado por la cámara/vista). Úsalo para el HUD, puntuación, vidas. |
+| Room End | `room_end` | Sala | Se ejecuta cuando termina la sala |
+| Room Start | `room_start` | Sala | Se ejecuta cuando comienza la sala (después de los eventos Create) |
+| Game End | `game_end` | Juego | Se ejecuta cuando termina el juego |
+| Game Start | `game_start` | Juego | Se ejecuta cuando comienza el juego (solo en la primera sala) |
+| Animation End | `animation_end` | Otro | Se activa cuando la animación del sprite llega al último fotograma y reinicia |
+| Intersect Boundary | `intersect_boundary` | Otro | Se ejecuta cuando la instancia toca el borde de la sala |
+| No More Health | `no_more_health` | Otro | Se ejecuta cuando la salud llega a 0 o menos |
+| No More Lives | `no_more_lives` | Otro | Se ejecuta cuando las vidas llegan a 0 o menos |
+| Outside Room | `outside_room` | Otro | Se ejecuta cuando la instancia está completamente fuera de la sala |
 
 ---
 
-### Evento de Alarma
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_alarm` |
-| **Categoría** | Temporización |
-| **Icono** | ⏰ |
-| **Descripción** | Se activa cuando un temporizador de alarma llega a cero |
+## Acciones
 
-**Cuándo se activa:** Cuando la cuenta regresiva de la alarma correspondiente llega a 0.
+### Movimiento
 
-**Alarmas disponibles:** 12 alarmas independientes (0-11)
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Rebotar | `bounce` | — |
+| Saltar a posición | `jump_to_position` | `x`, `y`, `relative` |
+| Saltar a posición aleatoria | `jump_to_random` | `snap_h`, `snap_v` |
+| Saltar a la posición inicial | `jump_to_start` | — |
+| Mover hacia un punto | `move_towards_point` | `x`, `y`, `speed` |
+| Invertir horizontal | `reverse_horizontal` | — |
+| Invertir vertical | `reverse_vertical` | — |
+| Establecer dirección y velocidad | `set_direction_speed` | `direction`, `speed` |
+| Establecer fricción | `set_friction` | `friction` |
+| Establecer gravedad | `set_gravity` | `direction`, `gravity` |
+| Establecer velocidad horizontal | `set_hspeed` | `speed` |
+| Establecer velocidad vertical | `set_vspeed` | `speed` |
+| Empezar a moverse (dirección) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
+| Detener movimiento | `stop_movement` | — |
 
-**Usos comunes:**
-- Generación temporizada
-- Acciones retrasadas
-- Tiempos de recarga
-- Temporización de animación
-- Eventos periódicos
+### Cuadrícula
 
----
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Si en la cuadrícula | `if_on_grid` | `grid_size`, `then_actions`, `else_actions` |
+| Ajustar a la cuadrícula | `snap_to_grid` | `grid_size` |
+| Comprobar alineación a la cuadrícula | `test_alignment` | `hsnap`, `vsnap` |
 
-## Acciones Adicionales (Más allá del Principiante)
+### Instancia
 
-### Acciones de Movimiento
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Cambiar instancia | `change_instance` | `object`, `perform_events` |
+| Crear instancia | `create_instance` | `object`, `x`, `y`, `relative` |
+| Crear instancia en movimiento | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
+| Crear instancia aleatoria | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
+| Destruir instancia | `destroy_instance` | — |
+| Destruir en posición | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Establecer índice de imagen | `set_image_index` | `frame` |
+| Establecer velocidad de imagen | `set_image_speed` | `speed` |
+| Establecer sprite | `set_sprite` | `sprite`, `subimage`, `speed` |
+| Iniciar animación | `start_animation` | — |
+| Detener animación | `stop_animation` | — |
+| Comprobar número de instancias | `test_instance_count` | `object`, `number`, `operation` |
 
-#### Mover en Dirección
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `move_direction` |
-| **Nombre del Bloque** | `move_direction` |
-| **Categoría** | Movimiento |
+### Puntuación
 
-**Descripción:** Establecer movimiento usando dirección (0-360 grados) y velocidad.
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Borrar tabla de récords | `clear_highscore` | — |
+| Dibujar barra de salud | `draw_health_bar` | `x1`, `y1`, `x2`, `y2`, `back_color`, `bar_color` |
+| Dibujar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
+| Dibujar puntuación | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Establecer salud | `set_health` | `value`, `relative` |
+| Establecer vidas | `set_lives` | `value`, `relative` |
+| Establecer puntuación | `set_score` | `value`, `relative` |
+| Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Comprobar salud | `test_health` | `operation`, `value` |
+| Comprobar vidas | `test_lives` | `value`, `operation` |
+| Comprobar puntuación | `test_score` | `value`, `operation` |
 
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `direction` | Número | Dirección en grados (0=derecha, 90=arriba, 180=izquierda, 270=abajo) |
-| `speed` | Número | Velocidad de movimiento |
+### Tiempo
 
----
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Establecer alarma | `set_alarm` | `alarm_number`, `steps` |
+| Pausa | `sleep` | `milliseconds` |
 
-#### Mover Hacia un Punto
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `move_towards_point` |
-| **Nombre del Bloque** | `move_towards_point` |
-| **Categoría** | Movimiento |
+### Sala
 
-**Descripción:** Moverse hacia una posición específica.
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comprobar sala | `check_room` | `room`, `not_flag` |
+| Finalizar juego | `game_end` | — |
+| Ir a la sala | `goto_room` | `room`, `transition` |
+| Si existe sala siguiente | `if_next_room_exists` | `then_actions`, `else_actions` |
+| Si existe sala anterior | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Sala siguiente | `next_room` | — |
+| Sala anterior | `previous_room` | — |
+| Reiniciar sala | `restart_room` | — |
+| Establecer título de sala | `set_room_caption` | `caption` |
 
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `x` | Número/Expresión | Coordenada X objetivo |
-| `y` | Número/Expresión | Coordenada Y objetivo |
-| `speed` | Número | Velocidad de movimiento |
+### Audio
 
----
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comprobar reproducción de sonido | `check_sound` | `sound`, `not_flag` |
+| Reproducir música | `play_music` | `music`, `loop`, `volume` |
+| Reproducir sonido | `play_sound` | `sound`, `volume` |
+| Establecer volumen | `set_volume` | `volume` |
+| Detener música | `stop_music` | — |
+| Detener sonido | `stop_sound` | `sound` |
 
-### Acciones de Temporización
+### Juego
 
-#### Establecer Alarma
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `set_alarm` |
-| **Nombre del Bloque** | `set_alarm` |
-| **Categoría** | Temporización |
-| **Icono** | ⏰ |
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Dibujar flecha | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Dibujar fondo | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Dibujar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Dibujar línea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Dibujar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative` |
+| Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
+| Rellenar pantalla con color | `fill_color` | `color` |
+| Abrir página web | `open_webpage` | `url` |
+| Reiniciar juego | `restart_game` | — |
+| Establecer color | `set_color` | `color`, `alpha` |
+| Establecer color de dibujo | `set_draw_color` | `color` |
+| Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
+| Establecer título de ventana | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
+| Mostrar información del juego | `show_info` | — |
+| Mostrar mensaje | `show_message` | `message` |
 
-**Descripción:** Establecer una alarma para activarse después de un número de pasos.
+### Control
 
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `alarm` | Número | Número de alarma (0-11) |
-| `steps` | Número | Pasos hasta que se active la alarma (a 60 FPS, 60 pasos = 1 segundo) |
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comprobar si vacío | `check_empty` | `x`, `y`, `relative`, `objects` |
+| Comentario | `comment` | `text` |
+| Si no | `else_action` | — |
+| Fin de bloque | `end_block` | — |
+| Ejecutar código | `execute_code` | `code` |
+| Ejecutar script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
+| Salir del evento | `exit_event` | — |
+| Si se puede empujar | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
+| Si colisión | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si el objeto existe | `if_object_exists` | `object`, `not_flag` |
+| Inicio de bloque | `start_block` | — |
+| Comprobar probabilidad | `test_chance` | `sides` |
+| Hacer una pregunta | `test_question` | `question` |
+| Comprobar variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
-**Ejemplo:** Establecer alarma 0 a 180 pasos para un retraso de 3 segundos.
+### Vistas
 
----
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Habilitar vistas | `enable_views` | `enable` |
+| Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### Acciones de Vidas
+### Vista 3D
 
-#### Establecer Vidas
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `set_lives` |
-| **Nombre del Bloque** | `lives_set` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | ❤️ |
-
-**Descripción:** Establecer el número de vidas.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Valor de vidas |
-| `relative` | Booleano | Si es verdadero, suma a las vidas actuales |
-
----
-
-#### Agregar Vidas
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `add_lives` |
-| **Nombre del Bloque** | `lives_add` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | ➕❤️ |
-
-**Descripción:** Agregar o restar vidas.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Cantidad a agregar (negativo para restar) |
-
-**Nota:** Cuando las vidas llegan a 0, se activa el evento `no_more_lives`.
-
----
-
-#### Dibujar Vidas
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `draw_lives` |
-| **Nombre del Bloque** | `draw_lives` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | 🖼️❤️ |
-
-**Descripción:** Mostrar vidas en pantalla.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `x` | Número | Posición X |
-| `y` | Número | Posición Y |
-| `sprite` | Sprite | Sprite opcional para usar como icono de vida |
-
----
-
-### Acciones de Salud
-
-#### Establecer Salud
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `set_health` |
-| **Nombre del Bloque** | `health_set` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | 💚 |
-
-**Descripción:** Establecer el valor de salud (0-100).
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Valor de salud (0-100) |
-| `relative` | Booleano | Si es verdadero, suma a la salud actual |
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Dibujar HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
+| Dibujar minimapa | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
+| Habilitar vista Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
+| Establecer ángulo de mirada | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
-#### Agregar Salud
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `add_health` |
-| **Nombre del Bloque** | `health_add` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | ➕💚 |
+## Ver También
 
-**Descripción:** Agregar o restar salud.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Cantidad a agregar (negativo para daño) |
-
-**Nota:** Cuando la salud llega a 0, se activa el evento `no_more_health`.
-
----
-
-#### Dibujar Barra de Salud
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `draw_health_bar` |
-| **Nombre del Bloque** | `draw_health_bar` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | 📊💚 |
-
-**Descripción:** Dibujar una barra de salud en pantalla.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `x1` | Número | Posición X izquierda |
-| `y1` | Número | Posición Y superior |
-| `x2` | Número | Posición X derecha |
-| `y2` | Número | Posición Y inferior |
-| `back_color` | Color | Color de fondo |
-| `bar_color` | Color | Color de la barra de salud |
-
----
-
-### Acciones de Sonido
-
-#### Reproducir Sonido
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `play_sound` |
-| **Nombre del Bloque** | `sound_play` |
-| **Categoría** | Sonido |
-| **Icono** | 🔊 |
-
-**Descripción:** Reproducir un efecto de sonido.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `sound` | Sonido | Recurso de sonido a reproducir |
-| `loop` | Booleano | Si el sonido debe repetirse en bucle |
-
----
-
-#### Reproducir Música
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `play_music` |
-| **Nombre del Bloque** | `music_play` |
-| **Categoría** | Sonido |
-| **Icono** | 🎵 |
-
-**Descripción:** Reproducir música de fondo.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `sound` | Sonido | Recurso de música a reproducir |
-| `loop` | Booleano | Si debe repetirse (usualmente verdadero para música) |
-
----
-
-#### Detener Música
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `stop_music` |
-| **Nombre del Bloque** | `music_stop` |
-| **Categoría** | Sonido |
-| **Icono** | 🔇 |
-
-**Descripción:** Detener toda la música en reproducción.
-
-**Parámetros:** Ninguno
-
----
-
-## Lista Completa de Caracteristicas
-
-### Eventos en el Preset Intermedio
-
-| Evento | Categoría | Descripción |
-|--------|-----------|-------------|
-| Create | Objeto | Instancia creada |
-| Step | Objeto | Cada fotograma |
-| Destroy | Objeto | Instancia destruida |
-| Draw | Dibujo | Fase de renderizado |
-| Keyboard Press | Entrada | Tecla presionada una vez |
-| Mouse | Entrada | Interacciones de ratón |
-| Collision | Colisión | Superposición de instancias |
-| Alarm | Temporización | Temporizador llego a cero |
-
-### Acciones en el Preset Intermedio
-
-| Categoría | Acciones |
-|-----------|----------|
-| **Movimiento** | Set H/V Speed, Stop, Jump To, Move Direction, Move Towards Point |
-| **Instancia** | Create, Destroy |
-| **Puntuación** | Set Score, Add Score, Draw Score |
-| **Vidas** | Set Lives, Add Lives, Draw Lives |
-| **Salud** | Set Health, Add Health, Draw Health Bar |
-| **Sala** | Next, Previous, Restart, Go To, If Next/Previous Exists |
-| **Temporización** | Set Alarm |
-| **Sonido** | Play Sound, Play Music, Stop Music |
-| **Salida** | Show Message, Execute Code |
-
----
-
-## Ejemplo: Juego de Disparos con Vidas
-
-### Objeto Jugador
-
-**Create:**
-- Set Lives: 3
-
-**Keyboard Press (Espacio):**
-- Create Instance: obj_bullet en (x, y-20)
-- Set Alarm: 0 a 15 (tiempo de recarga)
-
-**Colisión con obj_enemy:**
-- Add Lives: -1
-- Play Sound: snd_hurt
-- Jump to Position: (320, 400)
-
-**No More Lives:**
-- Show Message: "Game Over!"
-- Restart Room
-
-### Objeto Enemigo
-
-**Create:**
-- Set Alarm: 0 a 60
-
-**Alarm 0:**
-- Create Instance: obj_enemy_bullet en (x, y+20)
-- Set Alarm: 0 a 60 (repetir)
-
-**Colisión con obj_bullet:**
-- Add Score: 100
-- Play Sound: snd_explosion
-- Destroy Instance: self
-
----
-
-## Actualización a Presets Avanzados
-
-Cuando necesites más características, considera:
-- **Preset Plataformas** - Gravedad, salto, mecanicas de plataforma
-- **Preset Completo** - Todos los eventos y acciones disponibles
-
----
-
-## Ver Tambien
-
-- [Preset Principiante](Beginner-Preset_es) - Comienza aquí si eres nuevo
-- [Referencia Completa de Acciones](Full-Action-Reference_es) - Lista completa de acciones
-- [Referencia de Eventos](Event-Reference_es) - Lista completa de eventos
-- [Eventos y Acciones](Events-and-Actions_es) - Conceptos básicos
+- [Guía de Preajustes](Preset-Guide_es) — qué son los preajustes y cómo cambiarlos
+- [Referencia de Eventos](Event-Reference_es) — descripción completa de cada evento
+- [Referencia Completa de Acciones](Full-Action-Reference_es) — detalles completos de los parámetros de cada acción
+- [Preajuste Principiante](Beginner-Preset_es) — el nivel por debajo de este
