@@ -126,171 +126,103 @@ The crate is pushed by the player and changes appearance when on a target.
 
 **Event: Step**
 1. Add Event → Step → Step
-2. Add Action: **Control** → **Test Variable**
-   - Variable: `place_meeting(x, y, obj_target)`
-   - Value: `1`
-   - Operation: Equal to
-3. Add Action: **Main1** → **Change Sprite**
+2. Add Action: **Control** → **If Collision**
+   - X Offset: `0`
+   - Y Offset: `0`
+   - Against: `obj_target`
+3. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate_ok`
-   - Subimage: `0`
-   - Speed: `1`
 4. Add Action: **Control** → **Else**
-5. Add Action: **Main1** → **Change Sprite**
+5. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate`
-   - Subimage: `0`
-   - Speed: `1`
 
-This makes the crate turn green when it's on a target spot.
+This makes the crate turn green when it's on a target spot — **If Collision**
+with both offsets at `0` checks whether the crate's *current* position
+overlaps an `obj_target`.
 
 ---
 
 ## Step 6: Create the Player Object
 
-The player is the most complex object with grid-based movement and push mechanics.
+The player moves one grid cell at a time and pushes crates it walks into.
 
 1. Create a new object named `obj_player`
 2. Set the sprite to `spr_player`
 
-### 6.1 Moving Right
+### 6.1 Grid Movement
 
-**Event: Keyboard Press Right Arrow**
-1. Add Event → Keyboard → Press Right
+Add one **Key Press** event per direction, each with a **Move** → **Move Grid** action:
 
-First, check if there's a wall in the way:
-2. Add Action: **Control** → **Test Collision**
-   - Object: `obj_wall`
-   - X: `32`
-   - Y: `0`
-   - Check: NOT (meaning "if there's NO wall")
+| Event | Move Grid action |
+|---|---|
+| Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
+| Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
+| Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
+| Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-If no wall, check if there's a crate:
-3. Add Action: **Control** → **Test Collision**
-   - Object: `obj_crate`
-   - X: `32`
-   - Y: `0`
+**Move Grid** steps the instance exactly one grid cell and is collision-aware on its
+own — it won't move the player into a solid `obj_wall`, so no extra wall check is
+needed here.
 
-If there's a crate, we need to check if we can push it:
-4. Add Action: **Control** → **Test Collision** (for the crate's destination)
-   - Object: `obj_wall`
-   - X: `64`
-   - Y: `0`
-   - Check: NOT
+### 6.2 Stop at Walls
 
-5. Add Action: **Control** → **Test Collision**
-   - Object: `obj_crate`
-   - X: `64`
-   - Y: `0`
-   - Check: NOT
+**Event: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-If both checks pass, push the crate:
-6. Add Action: **Control** → **Code Block**
-```
-var crate = instance_place(x + 32, y, obj_crate);
-if (crate != noone) {
-    crate.x += 32;
-}
-```
+### 6.3 Push Crates
 
-Now move the player:
-7. Add Action: **Move** → **Jump to Position**
-   - X: `32`
-   - Y: `0`
-   - Check "Relative"
+**Event: Collision with obj_crate**
+1. Add Event → Collision → `obj_crate`
+2. Add Action: **Control** → **If Can Push**
+   - Direction: `facing`
+   - Object Type: `obj_crate`
+   - Then Action: `push_and_move`
 
-### 6.2 Moving Left
-
-**Event: Keyboard Press Left Arrow**
-Follow the same pattern as moving right, but use:
-- X offset: `-32` for checking wall/crate
-- X offset: `-64` for checking if crate can be pushed
-- Move crate by `-32`
-- Jump to position X: `-32`
-
-### 6.3 Moving Up
-
-**Event: Keyboard Press Up Arrow**
-Follow the same pattern, but use Y values:
-- Y offset: `-32` for checking
-- Y offset: `-64` for crate destination
-- Move crate by Y: `-32`
-- Jump to position Y: `-32`
-
-### 6.4 Moving Down
-
-**Event: Keyboard Press Down Arrow**
-Use:
-- Y offset: `32` for checking
-- Y offset: `64` for crate destination
-- Move crate by Y: `32`
-- Jump to position Y: `32`
+**If Can Push** checks whether the space behind the crate (in the direction the
+player is moving) is free, and — if so — pushes the crate one cell and moves the
+player into its place, all in a single action. If the space behind the crate is
+blocked by a wall or another crate, nothing moves.
 
 ---
 
-## Step 7: Simplified Player Movement (Alternative)
+## Step 7: Create the Win Condition Checker
 
-If the block-based approach above seems complex, here's a simpler code-based approach for each direction:
-
-**Event: Keyboard Press Right Arrow**
-Add Action: **Control** → **Execute Code**
-```
-// Check if we can move right
-if (!place_meeting(x + 32, y, obj_wall)) {
-    // Check if there's a crate
-    var crate = instance_place(x + 32, y, obj_crate);
-    if (crate != noone) {
-        // There's a crate - can we push it?
-        if (!place_meeting(x + 64, y, obj_wall) && !place_meeting(x + 64, y, obj_crate)) {
-            crate.x += 32;
-            x += 32;
-        }
-    } else {
-        // No crate, just move
-        x += 32;
-    }
-}
-```
-
-Repeat for other directions with appropriate coordinate changes.
-
----
-
-## Step 8: Create the Win Condition Checker
-
-We need an object to check if all crates are on targets.
+We need an invisible controller that watches whether every crate is on a target.
 
 1. Create a new object named `obj_game_controller`
 2. No sprite needed
 
-**Event: Create**
-1. Add Event → Create
-2. Add Action: **Score** → **Set Variable**
-   - Variable: `global.total_targets`
-   - Value: `0`
-3. Add Action: **Control** → **Execute Code**
-```
-// Count how many targets exist
-global.total_targets = instance_number(obj_target);
+**Event: Create** — set up the target count once, using **Control** → **Execute
+Code** (this project's Execute Code action runs real Python, not GameMaker
+Language — `self` is the current instance, `game` is the game runner):
+
+```python
+# Count how many target spots exist in the room
+self.total_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_target'
+)
 ```
 
-**Event: Step**
-1. Add Event → Step → Step
-2. Add Action: **Control** → **Execute Code**
-```
-// Count crates that are on targets
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
+**Event: Step** — check every frame whether all crates are on a target:
 
-// Check if all targets have crates
-if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
-    // Level complete!
-    show_message("Level Complete!");
-    room_restart();
-}
+```python
+# Count crates currently overlapping a target
+crates_on_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_crate'
+    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')
+)
+
+if self.total_targets > 0 and crates_on_targets >= self.total_targets:
+    self.restart_room_flag = True
 ```
+
+`self.restart_room_flag = True` is how a raw Execute Code block triggers the same
+room restart the **Restart Room** action performs — the main loop checks it every
+frame. Add a **Show Message** action (from **Output**, message `Level Complete!`)
+right after the Execute Code block if you want a popup before the restart.
 
 **Event: Draw**
 1. Add Event → Draw
@@ -356,22 +288,17 @@ T = Target
 
 ### Add a Move Counter
 
-In `obj_game_controller`:
+In `obj_game_controller`'s **Create** event, add **Control** → **Set Variable**
+(Variable: `global.moves`, Value: `0`, Scope: `global`).
 
-**Event: Create** - Add:
-```
-global.moves = 0;
-```
+In each of `obj_player`'s four **Move Grid** key-press events, add a second
+action right after Move Grid: **Control** → **Set Variable** (Variable:
+`global.moves`, Value: `1`, Scope: `global`, **Relative** checked) — this adds
+1 to the counter every key press, whether or not the move was actually blocked
+by a wall.
 
-In `obj_player`, after each successful move, add:
-```
-global.moves += 1;
-```
-
-In `obj_game_controller` **Event: Draw** - Add:
-```
-draw_text(10, 30, "Moves: " + string(global.moves));
-```
+In `obj_game_controller`'s **Draw** event, add **Draw** → **Draw Variable**
+(Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Add Undo Feature
 
@@ -379,11 +306,10 @@ Store previous positions and allow pressing Z to undo the last move.
 
 ### Add Multiple Levels
 
-Create more rooms (`room_level2`, `room_level3`, etc.) and use:
-```
-room_goto_next();
-```
-instead of `room_restart()` when completing a level.
+Create more rooms (`room_level2`, `room_level3`, etc.) and use the **Next
+Room** action (Room category) instead of **Restart Room** in the win-check
+Execute Code block (`self.next_room_flag = True` instead of
+`self.restart_room_flag = True`) when completing a level.
 
 ### Add Sound Effects
 
@@ -400,7 +326,7 @@ Add sounds for:
 | Problem | Solution |
 |---------|----------|
 | Player moves through walls | Check that `obj_wall` has "Solid" checked |
-| Crate doesn't change color | Verify the Step event checks `place_meeting` correctly |
+| Crate doesn't change color | Verify the Step event's **If Collision** action targets `obj_target` |
 | Can push crate through wall | Check collision detection before moving crate |
 | Win message appears immediately | Make sure targets are placed separately from crates |
 | Player moves multiple squares | Use Keyboard Press event, not Keyboard event |
