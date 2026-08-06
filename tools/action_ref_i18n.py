@@ -1962,6 +1962,10 @@ CATEGORIES_ES = {
     "Movement": "Movimiento", "Instance": "Instancia", "Score": "Puntuación", "Room": "Sala",
     "Timing": "Tiempo", "Audio": "Audio", "Game": "Juego", "Control": "Control",
     "Grid": "Cuadrícula", "Views": "Vistas", "3D View": "Vista 3D",
+    # Event categories (events.event_types.EventType.category) — distinct
+    # from the action categories above, shared with tools/gen_preset_docs.py.
+    "Object": "Objeto", "Input": "Entrada", "Collision": "Colisión",
+    "Step": "Paso", "Drawing": "Dibujo", "Other": "Otro",
 }
 
 TYPES_ES = {
@@ -2291,6 +2295,36 @@ NOTES_ES = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Tira horizontal de fotogramas de rostro, el más sano primero (vacío = sin icono de rostro)",
     "How many frames the face strip has; health is bucketed evenly across them": "Cuántos fotogramas tiene la tira de rostro; la salud se distribuye uniformemente entre ellos",
     "Expression shown after the objective label (bind your own key/quest variable)": "Expresión mostrada después de la etiqueta de objetivo (asocia tu propia variable de llave/misión)",
+}
+
+# --------------------------------------------------------------------------- #
+# Events (non-Thymio), keyed by events.event_types.EVENT_TYPES's stable name
+# --------------------------------------------------------------------------- #
+
+EVENTS_ES = {
+    "create": {"desc": "Se ejecuta una vez cuando la instancia se crea por primera vez"},
+    "step": {"desc": "Se ejecuta en cada fotograma (úsalo para comprobaciones continuas)"},
+    "destroy": {"desc": "Se ejecuta cuando la instancia es destruida"},
+    "collision": {"desc": "Se ejecuta al colisionar con otro objeto"},
+    "keyboard": {"desc": "Se ejecuta continuamente mientras se mantiene pulsada una tecla (para movimiento suave)"},
+    "keyboard_press": {"desc": "Se ejecuta una vez cuando se pulsa una tecla por primera vez (para movimiento basado en cuadrícula)"},
+    "keyboard_release": {"desc": "Se ejecuta una vez cuando se suelta una tecla"},
+    "keyboard_no_key": {"desc": "Se ejecuta cuando no hay ninguna tecla pulsada actualmente"},
+    "mouse": {"desc": "Eventos de botones y movimiento del ratón"},
+    "begin_step": {"desc": "Se ejecuta al principio de cada paso, antes que los demás eventos"},
+    "end_step": {"desc": "Se ejecuta al final de cada paso, después de las colisiones pero antes de dibujar"},
+    "draw": {"desc": "Se ejecuta al dibujar el objeto (reemplaza el dibujo automático del sprite)"},
+    "draw_gui": {"desc": "Se dibuja por encima de todo lo demás (no afectado por la cámara/vista). Úsalo para el HUD, puntuación, vidas."},
+    "alarm": {"desc": "Se ejecuta cuando una alarma llega a cero"},
+    "room_start": {"desc": "Se ejecuta cuando comienza la sala (después de los eventos Create)"},
+    "room_end": {"desc": "Se ejecuta cuando termina la sala"},
+    "game_start": {"desc": "Se ejecuta cuando comienza el juego (solo en la primera sala)"},
+    "game_end": {"desc": "Se ejecuta cuando termina el juego"},
+    "outside_room": {"desc": "Se ejecuta cuando la instancia está completamente fuera de la sala"},
+    "intersect_boundary": {"desc": "Se ejecuta cuando la instancia toca el borde de la sala"},
+    "no_more_lives": {"desc": "Se ejecuta cuando las vidas llegan a 0 o menos"},
+    "no_more_health": {"desc": "Se ejecuta cuando la salud llega a 0 o menos"},
+    "animation_end": {"desc": "Se activa cuando la animación del sprite llega al último fotograma y reinicia"},
 }
 
 CHROME_PT = {
@@ -3024,7 +3058,7 @@ LANGS = {
     "it": {"chrome": CHROME_IT, "categories": CATEGORIES_IT, "types": TYPES_IT,
            "actions": ACTIONS_IT, "notes": NOTES_IT, "events": EVENTS_IT},
     "es": {"chrome": CHROME_ES, "categories": CATEGORIES_ES, "types": TYPES_ES,
-           "actions": ACTIONS_ES, "notes": NOTES_ES},
+           "actions": ACTIONS_ES, "notes": NOTES_ES, "events": EVENTS_ES},
     "pt": {"chrome": CHROME_PT, "categories": CATEGORIES_PT, "types": TYPES_PT,
            "actions": ACTIONS_PT, "notes": NOTES_PT},
     "sl": {"chrome": CHROME_SL, "categories": CATEGORIES_SL, "types": TYPES_SL,

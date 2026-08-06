@@ -1,530 +1,188 @@
-# Preset Principiante
+# Preajuste Principiante
 
-*[Inicio](Home_es) | [Guia de Presets](Preset-Guide_es) | [Preset Intermedio](Intermediate-Preset_es)*
+*[Inicio](Home_es) | [Guía de Preajustes](Preset-Guide_es) | [Preajuste Intermedio](Intermediate-Preset_es)*
 
-El preset **Principiante** esta diseñado para usuarios que son nuevos en el desarrollo de juegos. Proporciona un conjunto seleccionado de eventos y acciones esenciales que cubren los fundamentos de la creación de juegos 2D simples sin abrumar a los principiantes con demasiadas opciones.
+> **Generado automáticamente** a partir de `get_beginner()` en `config/blockly_config.py` por `tools/gen_preset_docs.py` — no editar a mano; vuelve a ejecutar el generador después de cambiar el preajuste.
 
-## Descripción General
+> **Qué restringe realmente este preajuste:** este preajuste filtra TANTO la paleta de bloques visuales Blockly COMO los menús "Añadir Evento"/"Añadir Acción" del panel estructurado Eventos/Acciones — sea cual sea el editor que uses, solo aparecen los eventos/acciones listados abajo. El preajuste de un *proyecto* se define de dos formas: **`Preferencias > IDE Edition`** elige el predeterminado para los proyectos *nuevos* (edición Principiante -> este preajuste; los proyectos existentes nunca cambian al cambiar de edición), y **`Herramientas > Configurar bloques de acción...`** cambia el preajuste del proyecto *actualmente abierto* en cualquier momento. La edición predeterminada del IDE es Principiante, así que los proyectos nuevos de una instalación limpia empiezan exactamente en esta lista.
 
-El preset Principiante incluye:
-- **4 Tipos de Eventos** - Para responder a situaciones del juego
-- **17 Tipos de Acciones** - Para controlar el comportamiento del juego
-- **6 Categorías** - Eventos, Movimiento, Puntuación/Vidas/Salud, Instancia, Sala, Salida
+## Resumen
+
+Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
 
 ---
 
 ## Eventos
 
-Los eventos son disparadores que responden a situaciones específicas en tu juego. Cuando ocurre un evento, las acciones que has definido para ese evento se ejecutaran.
-
-### Evento Create
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_create` |
-| **Categoría** | Eventos |
-| **Descripción** | Se activa una vez cuando una instancia es creada por primera vez |
-
-**Cuándo se activa:** Inmediatamente cuando una instancia de objeto se coloca en una sala o se crea con la acción "Crear Instancia".
-
-**Usos comunes:**
-- Inicializar variables
-- Establecer posición inicial
-- Establecer velocidad o dirección inicial
-- Reiniciar puntuación al inicio del juego
-
----
-
-### Evento Step
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_step` |
-| **Categoría** | Eventos |
-| **Descripción** | Se activa cada fotograma (típicamente 60 veces por segundo) |
-
-**Cuándo se activa:** Continuamente, cada fotograma del juego.
-
-**Usos comunes:**
-- Movimiento continuo
-- Verificar condiciones
-- Actualizar estado del juego
-- Control de animación
-
----
-
-### Evento Tecla Presionada
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_keyboard_press` |
-| **Categoría** | Eventos |
-| **Descripción** | Se activa una vez cuando una tecla específica es presionada |
-
-**Cuándo se activa:** Una vez en el momento en que se presiona una tecla (no mientras se mantiene presionada).
-
-**Teclas soportadas:** Teclas de flecha (arriba, abajo, izquierda, derecha), Espacio, Enter, letras (A-Z), numeros (0-9)
-
-**Usos comunes:**
-- Controles de movimiento del jugador
-- Saltar
-- Disparar
-- Navegación de menú
-
----
-
-### Evento Colisión
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre del Bloque** | `event_collision` |
-| **Categoría** | Eventos |
-| **Descripción** | Se activa cuando esta instancia colisiona con otro objeto |
-
-**Cuándo se activa:** Cada fotograma en que dos instancias se superponen.
-
-**Variable especial:** En un evento de colisión, `other` se refiere a la instancia con la que se colisiona.
-
-**Usos comunes:**
-- Recolectar objetos (monedas, potenciadores)
-- Recibir daño de enemigos
-- Golpear paredes u obstaculos
-- Alcanzar metas o puntos de control
+| Evento | Nombre del Bloque | Categoría | Descripción |
+|-------|------------|----------|-------------|
+| Create | `create` | Objeto | Se ejecuta una vez cuando la instancia se crea por primera vez |
+| Step | `step` | Objeto | Se ejecuta en cada fotograma (úsalo para comprobaciones continuas) |
+| Keyboard (held) | `keyboard` | Entrada | Se ejecuta continuamente mientras se mantiene pulsada una tecla (para movimiento suave) |
+| Keyboard <No Key> | `keyboard_no_key` | Entrada | Se ejecuta cuando no hay ninguna tecla pulsada actualmente |
+| Collision With... | `collision` | Colisión | Se ejecuta al colisionar con otro objeto |
+| Begin Step | `begin_step` | Paso | Se ejecuta al principio de cada paso, antes que los demás eventos |
+| End Step | `end_step` | Paso | Se ejecuta al final de cada paso, después de las colisiones pero antes de dibujar |
+| Alarm | `alarm` | Tiempo | Se ejecuta cuando una alarma llega a cero |
+| Draw | `draw` | Dibujo | Se ejecuta al dibujar el objeto (reemplaza el dibujo automático del sprite) |
+| Draw GUI | `draw_gui` | Dibujo | Se dibuja por encima de todo lo demás (no afectado por la cámara/vista). Úsalo para el HUD, puntuación, vidas. |
+| Room End | `room_end` | Sala | Se ejecuta cuando termina la sala |
+| Room Start | `room_start` | Sala | Se ejecuta cuando comienza la sala (después de los eventos Create) |
+| Game End | `game_end` | Juego | Se ejecuta cuando termina el juego |
+| Game Start | `game_start` | Juego | Se ejecuta cuando comienza el juego (solo en la primera sala) |
+| Animation End | `animation_end` | Otro | Se activa cuando la animación del sprite llega al último fotograma y reinicia |
+| Intersect Boundary | `intersect_boundary` | Otro | Se ejecuta cuando la instancia toca el borde de la sala |
+| No More Health | `no_more_health` | Otro | Se ejecuta cuando la salud llega a 0 o menos |
+| No More Lives | `no_more_lives` | Otro | Se ejecuta cuando las vidas llegan a 0 o menos |
+| Outside Room | `outside_room` | Otro | Se ejecuta cuando la instancia está completamente fuera de la sala |
 
 ---
 
 ## Acciones
 
-Las acciones son comandos que se ejecutan cuando se activa un evento. Se pueden agregar multiples acciones a un solo evento y se ejecutaran en orden.
+### Movimiento
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Rebotar | `bounce` | — |
+| Saltar a posición | `jump_to_position` | `x`, `y`, `relative` |
+| Saltar a posición aleatoria | `jump_to_random` | `snap_h`, `snap_v` |
+| Saltar a la posición inicial | `jump_to_start` | — |
+| Mover hacia un punto | `move_towards_point` | `x`, `y`, `speed` |
+| Invertir horizontal | `reverse_horizontal` | — |
+| Invertir vertical | `reverse_vertical` | — |
+| Establecer dirección y velocidad | `set_direction_speed` | `direction`, `speed` |
+| Establecer gravedad | `set_gravity` | `direction`, `gravity` |
+| Establecer velocidad horizontal | `set_hspeed` | `speed` |
+| Establecer velocidad vertical | `set_vspeed` | `speed` |
+| Empezar a moverse (dirección) | `start_moving_direction` | `directions`, `direction_expr`, `speed` |
+| Detener movimiento | `stop_movement` | — |
+
+### Cuadrícula
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comprobar alineación a la cuadrícula | `test_alignment` | `hsnap`, `vsnap` |
+
+### Instancia
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Cambiar instancia | `change_instance` | `object`, `perform_events` |
+| Crear instancia | `create_instance` | `object`, `x`, `y`, `relative` |
+| Crear instancia en movimiento | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
+| Crear instancia aleatoria | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
+| Destruir instancia | `destroy_instance` | — |
+| Destruir en posición | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
+| Establecer índice de imagen | `set_image_index` | `frame` |
+| Establecer velocidad de imagen | `set_image_speed` | `speed` |
+| Iniciar animación | `start_animation` | — |
+| Detener animación | `stop_animation` | — |
+| Comprobar número de instancias | `test_instance_count` | `object`, `number`, `operation` |
+
+### Puntuación
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Borrar tabla de récords | `clear_highscore` | — |
+| Dibujar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
+| Dibujar puntuación | `draw_score` | `x`, `y`, `caption`, `relative` |
+| Establecer vidas | `set_lives` | `value`, `relative` |
+| Establecer puntuación | `set_score` | `value`, `relative` |
+| Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
+| Comprobar salud | `test_health` | `operation`, `value` |
+| Comprobar vidas | `test_lives` | `value`, `operation` |
+| Comprobar puntuación | `test_score` | `value`, `operation` |
+
+### Tiempo
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Establecer alarma | `set_alarm` | `alarm_number`, `steps` |
+| Pausa | `sleep` | `milliseconds` |
+
+### Sala
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comprobar sala | `check_room` | `room`, `not_flag` |
+| Finalizar juego | `game_end` | — |
+| Si existe sala siguiente | `if_next_room_exists` | `then_actions`, `else_actions` |
+| Si existe sala anterior | `if_previous_room_exists` | `then_actions`, `else_actions` |
+| Reiniciar sala | `restart_room` | — |
+| Establecer título de sala | `set_room_caption` | `caption` |
+
+### Audio
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comprobar reproducción de sonido | `check_sound` | `sound`, `not_flag` |
+| Reproducir música | `play_music` | `music`, `loop`, `volume` |
+| Reproducir sonido | `play_sound` | `sound`, `volume` |
+| Establecer volumen | `set_volume` | `volume` |
+| Detener música | `stop_music` | — |
+| Detener sonido | `stop_sound` | `sound` |
+
+### Juego
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Dibujar flecha | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
+| Dibujar fondo | `draw_background` | `background`, `x`, `y`, `tiled` |
+| Dibujar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
+| Dibujar línea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
+| Dibujar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
+| Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
+| Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative` |
+| Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
+| Rellenar pantalla con color | `fill_color` | `color` |
+| Abrir página web | `open_webpage` | `url` |
+| Reiniciar juego | `restart_game` | — |
+| Establecer color | `set_color` | `color`, `alpha` |
+| Establecer color de dibujo | `set_draw_color` | `color` |
+| Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
+| Establecer título de ventana | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
+| Mostrar información del juego | `show_info` | — |
+| Mostrar mensaje | `show_message` | `message` |
+
+### Control
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Comentario | `comment` | `text` |
+| Si no | `else_action` | — |
+| Fin de bloque | `end_block` | — |
+| Ejecutar código | `execute_code` | `code` |
+| Ejecutar script | `execute_script` | `script`, `arg0`, `arg1`, `arg2`, `arg3`, `arg4` |
+| Salir del evento | `exit_event` | — |
+| Si colisión | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si el objeto existe | `if_object_exists` | `object`, `not_flag` |
+| Inicio de bloque | `start_block` | — |
+| Comprobar probabilidad | `test_chance` | `sides` |
+| Hacer una pregunta | `test_question` | `question` |
+| Comprobar variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
+
+### Vistas
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Habilitar vistas | `enable_views` | `enable` |
+| Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
+
+### Vista 3D
+
+| Acción | Nombre del Bloque | Parámetros |
+|--------|------------|------------|
+| Dibujar HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
+| Dibujar minimapa | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
+| Habilitar vista Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
+| Establecer ángulo de mirada | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
-## Acciones de Movimiento
-
-### Establecer Velocidad Horizontal
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `set_hspeed` |
-| **Nombre del Bloque** | `move_set_hspeed` |
-| **Categoría** | Movimiento |
-| **Icono** | ↔️ |
-
-**Descripción:** Establece la velocidad de movimiento horizontal de la instancia.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Velocidad en pixeles por fotograma. Positivo = derecha, Negativo = izquierda |
-
-**Ejemplo:** Establece `value` a `4` para moverse a la derecha a 4 pixeles por fotograma, o `-4` para moverse a la izquierda.
-
----
-
-### Establecer Velocidad Vertical
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `set_vspeed` |
-| **Nombre del Bloque** | `move_set_vspeed` |
-| **Categoría** | Movimiento |
-| **Icono** | ↕️ |
-
-**Descripción:** Establece la velocidad de movimiento vertical de la instancia.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Velocidad en pixeles por fotograma. Positivo = abajo, Negativo = arriba |
-
-**Ejemplo:** Establece `value` a `-4` para moverse hacia arriba a 4 pixeles por fotograma, o `4` para moverse hacia abajo.
-
----
-
-### Detener Movimiento
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `stop_movement` |
-| **Nombre del Bloque** | `move_stop` |
-| **Categoría** | Movimiento |
-| **Icono** | 🛑 |
-
-**Descripción:** Detiene todo el movimiento estableciendo tanto la velocidad horizontal como vertical a cero.
-
-**Parámetros:** Ninguno
-
-**Usos comunes:**
-- Detener al jugador cuando golpea una pared
-- Detener a los enemigos cuando alcanzan un destino
-- Pausar el movimiento temporalmente
-
----
-
-### Saltar a Posición
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `jump_to_position` |
-| **Nombre del Bloque** | `move_jump_to` |
-| **Categoría** | Movimiento |
-| **Icono** | 📍 |
-
-**Descripción:** Mueve instantaneamente la instancia a una posición específica (sin movimiento suave).
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `x` | Número | Coordenada X objetivo |
-| `y` | Número | Coordenada Y objetivo |
-
-**Ejemplo:** Salta a la posición (100, 200) para teletransportar al jugador a esa ubicación.
-
----
-
-## Acciones de Instancia
-
-### Destruir Instancia
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `destroy_instance` |
-| **Nombre del Bloque** | `instance_destroy` |
-| **Categoría** | Instancia |
-| **Icono** | 💥 |
-
-**Descripción:** Elimina una instancia del juego.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `target` | Elección | `self` = destruir esta instancia, `other` = destruir la instancia que colisiona |
-
-**Usos comunes:**
-- Eliminar monedas recolectadas (`target: other` en evento de colisión)
-- Destruir balas cuando golpean algo
-- Eliminar enemigos cuando son derrotados
-
----
-
-### Crear Instancia
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `create_instance` |
-| **Nombre del Bloque** | `instance_create` |
-| **Categoría** | Instancia |
-| **Icono** | ✨ |
-
-**Descripción:** Crea una nueva instancia de un objeto en una posición especificada.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `object` | Objeto | El tipo de objeto a crear |
-| `x` | Número | Coordenada X para la nueva instancia |
-| `y` | Número | Coordenada Y para la nueva instancia |
-
-**Ejemplo:** Crear una bala en la posición del jugador cuando se presiona Espacio.
-
----
-
-## Acciones de Puntuación
-
-### Establecer Puntuación
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `set_score` |
-| **Nombre del Bloque** | `score_set` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | 🏆 |
-
-**Descripción:** Establece la puntuación a un valor específico, o suma/resta de la puntuación actual.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | El valor de puntuación |
-| `relative` | Booleano | Si es verdadero, suma el valor a la puntuación actual. Si es falso, establece la puntuación al valor |
-
-**Ejemplos:**
-- Reiniciar puntuación: `value: 0`, `relative: false`
-- Agregar 10 puntos: `value: 10`, `relative: true`
-- Restar 5 puntos: `value: -5`, `relative: true`
-
----
-
-### Agregar a Puntuación
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `add_score` |
-| **Nombre del Bloque** | `score_add` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | ➕🏆 |
-
-**Descripción:** Agrega un valor a la puntuación actual (atajo para set_score con relative=true).
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `value` | Número | Puntos a agregar (puede ser negativo para restar) |
-
----
-
-### Dibujar Puntuación
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `draw_score` |
-| **Nombre del Bloque** | `draw_score` |
-| **Categoría** | Puntuación/Vidas/Salud |
-| **Icono** | 🖼️🏆 |
-
-**Descripción:** Muestra la puntuación actual en pantalla.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `x` | Número | Posición X para dibujar la puntuación |
-| `y` | Número | Posición Y para dibujar la puntuación |
-| `caption` | Cadena | Texto a mostrar antes de la puntuación (ej: "Puntos: ") |
-
-**Nota:** Esto debe usarse en un evento Draw (disponible en el preset Intermedio).
-
----
-
-## Acciones de Sala
-
-### Ir a la Siguiente Sala
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `next_room` |
-| **Nombre del Bloque** | `room_goto_next` |
-| **Categoría** | Sala |
-| **Icono** | ➡️ |
-
-**Descripción:** Transiciona a la siguiente sala en el orden de salas.
-
-**Parámetros:** Ninguno
-
-**Nota:** Si ya esta en la ultima sala, esta acción no tiene efecto (use "Si Existe Siguiente Sala" para verificar primero).
-
----
-
-### Ir a la Sala Anterior
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `previous_room` |
-| **Nombre del Bloque** | `room_goto_previous` |
-| **Categoría** | Sala |
-| **Icono** | ⬅️ |
-
-**Descripción:** Transiciona a la sala anterior en el orden de salas.
-
-**Parámetros:** Ninguno
-
-**Nota:** Si ya esta en la primera sala, esta acción no tiene efecto.
-
----
-
-### Reiniciar Sala
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `restart_room` |
-| **Nombre del Bloque** | `room_restart` |
-| **Categoría** | Sala |
-| **Icono** | 🔄 |
-
-**Descripción:** Reinicia la sala actual, restableciendo todas las instancias a su estado inicial.
-
-**Parámetros:** Ninguno
-
-**Usos comunes:**
-- Reiniciar nivel después de que el jugador muere
-- Restablecer puzzle después de fallar
-- Repetir minijuego
-
----
-
-### Ir a Sala
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `goto_room` |
-| **Nombre del Bloque** | `room_goto` |
-| **Categoría** | Sala |
-| **Icono** | 🚪 |
-
-**Descripción:** Transiciona a una sala específica por nombre.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `room` | Sala | La sala a la que ir |
-
----
-
-### Si Existe Siguiente Sala
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `if_next_room_exists` |
-| **Nombre del Bloque** | `room_if_next_exists` |
-| **Categoría** | Sala |
-| **Icono** | ❓➡️ |
-
-**Descripción:** Bloque condicional que solo ejecuta las acciones contenidas si existe una siguiente sala.
-
-**Parámetros:** Ninguno (las acciones se colocan dentro del bloque)
-
-**Usos comunes:**
-- Verificar antes de ir a la siguiente sala
-- Mostrar mensaje "Has Ganado!" si no hay más salas
-
----
-
-### Si Existe Sala Anterior
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `if_previous_room_exists` |
-| **Nombre del Bloque** | `room_if_previous_exists` |
-| **Categoría** | Sala |
-| **Icono** | ❓⬅️ |
-
-**Descripción:** Bloque condicional que solo ejecuta las acciones contenidas si existe una sala anterior.
-
-**Parámetros:** Ninguno (las acciones se colocan dentro del bloque)
-
----
-
-## Acciones de Salida
-
-### Mostrar Mensaje
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `show_message` |
-| **Nombre del Bloque** | `output_message` |
-| **Categoría** | Salida |
-| **Icono** | 💬 |
-
-**Descripción:** Muestra un dialogo emergente de mensaje al jugador.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `message` | Cadena | El texto a mostrar |
-
-**Nota:** El juego se pausa mientras se muestra el mensaje. El jugador debe hacer clic en OK para continuar.
-
-**Usos comunes:**
-- Instrucciones del juego
-- Dialogos de historia
-- Mensajes de victoria/derrota
-- Información de depuración
-
----
-
-### Ejecutar Código
-
-| Propiedad | Valor |
-|-----------|-------|
-| **Nombre de Acción** | `execute_code` |
-| **Nombre del Bloque** | `execute_code` |
-| **Categoría** | Salida |
-| **Icono** | 💻 |
-
-**Descripción:** Ejecuta código Python personalizado.
-
-**Parámetros:**
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| `code` | Cadena | Código Python a ejecutar |
-
-**Nota:** Esta es una función avanzada. Use con precaución ya que código incorrecto puede causar errores.
-
----
-
-## Resumen de Categorías
-
-| Categoría | Eventos | Acciones |
-|-----------|---------|----------|
-| **Eventos** | Create, Step, Tecla Presionada, Colisión | - |
-| **Movimiento** | - | Establecer Velocidad Horizontal, Establecer Velocidad Vertical, Detener Movimiento, Saltar a Posición |
-| **Instancia** | - | Destruir Instancia, Crear Instancia |
-| **Puntuación/Vidas/Salud** | - | Establecer Puntuación, Agregar Puntuación, Dibujar Puntuación |
-| **Sala** | - | Siguiente Sala, Sala Anterior, Reiniciar Sala, Ir a Sala, Si Existe Siguiente Sala, Si Existe Sala Anterior |
-| **Salida** | - | Mostrar Mensaje, Ejecutar Código |
-
----
-
-## Ejemplo: Juego Simple de Recolección de Monedas
-
-Aqui se muestra como configurar un juego básico de recolección de monedas usando solo las características del preset Principiante:
-
-### Objeto Jugador (obj_player)
-
-**Tecla Presionada (Flecha Izquierda):**
-- Establecer Velocidad Horizontal: -4
-
-**Tecla Presionada (Flecha Derecha):**
-- Establecer Velocidad Horizontal: 4
-
-**Tecla Presionada (Flecha Arriba):**
-- Establecer Velocidad Vertical: -4
-
-**Tecla Presionada (Flecha Abajo):**
-- Establecer Velocidad Vertical: 4
-
-**Colisión con obj_coin:**
-- Establecer Puntuación: 10 (relative: true)
-- Destruir Instancia: other
-
-**Colisión con obj_wall:**
-- Detener Movimiento
-
-**Colisión con obj_goal:**
-- Establecer Puntuación: 100 (relative: true)
-- Siguiente Sala
-
-### Objeto Moneda (obj_coin)
-No se necesitan eventos - solo un objeto recolectable.
-
-### Objeto Pared (obj_wall)
-No se necesitan eventos - solo un obstaculo sólido.
-
-### Objeto Meta (obj_goal)
-No se necesitan eventos - activa la finalización del nivel cuando el jugador colisiona.
-
----
-
-## Actualizar a Intermedio
-
-Cuando te sientas comodo con el preset Principiante, considera actualizar a **Intermedio** para acceder a:
-- Evento Draw (para renderizado personalizado)
-- Evento Destroy (limpieza cuando una instancia es destruida)
-- Eventos de Ratón (detección de clics)
-- Eventos de Alarma (acciones temporizadas)
-- Sistemas de Vidas y Salud
-- Acciones de Sonido y Música
-- Más opciones de movimiento (dirección, mover hacia)
-
----
-
-## Ver Tambien
-
-- [Tutoriales](Tutorials_es) - Todos los tutoriales en un solo lugar
-- [Preset Intermedio](Intermediate-Preset_es) - Caracteristicas del siguiente nivel
-- [Referencia Completa de Acciones](Full-Action-Reference_es) - Lista completa de acciones
-- [Referencia de Eventos](Event-Reference_es) - Lista completa de eventos
-- [Eventos y Acciones](Events-and-Actions_es) - Conceptos fundamentales
-- [Creando Tu Primer Juego](Creating-Your-First-Game_es) - Tutorial paso a paso
-- [Tutorial Pong](Tutorial-Pong_es) - Crea un juego Pong clasico para dos jugadores
-- [Tutorial Breakout](Tutorial-Breakout_es) - Crea un juego Breakout clasico
-- [Introducción a la Creación de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
+## Ver También
+
+- [Guía de Preajustes](Preset-Guide_es) — qué son los preajustes y cómo cambiarlos
+- [Referencia de Eventos](Event-Reference_es) — descripción completa de cada evento
+- [Referencia Completa de Acciones](Full-Action-Reference_es) — detalles completos de los parámetros de cada acción
+- [Preajuste Intermedio](Intermediate-Preset_es) — el siguiente nivel

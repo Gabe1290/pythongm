@@ -167,6 +167,47 @@ PAGE_CHROME = {
         "intermediate_desc": "il livello superiore",
         "beginner_desc": "il livello sotto questo",
     },
+    "es": {
+        "beginner_title": "Preajuste Principiante",
+        "intermediate_title": "Preajuste Intermedio",
+        "nav": "*[Inicio](Home_es) | [Guía de Preajustes](Preset-Guide_es) | {other_link}*",
+        "autogen": "> **Generado automáticamente** a partir de `get_{preset}()` en "
+                   "`config/blockly_config.py` por `tools/gen_preset_docs.py` — "
+                   "no editar a mano; vuelve a ejecutar el generador después de "
+                   "cambiar el preajuste.",
+        "scope_note": "> **Qué restringe realmente este preajuste:** este "
+                       "preajuste filtra TANTO la paleta de bloques visuales "
+                       "Blockly COMO los menús \"Añadir Evento\"/\"Añadir "
+                       "Acción\" del panel estructurado Eventos/Acciones — "
+                       "sea cual sea el editor que uses, solo aparecen los "
+                       "eventos/acciones listados abajo. El preajuste de un "
+                       "*proyecto* se define de dos formas: "
+                       "**`Preferencias > IDE Edition`** elige el "
+                       "predeterminado para los proyectos *nuevos* (edición "
+                       "Principiante -> este preajuste; los proyectos "
+                       "existentes nunca cambian al cambiar de edición), y "
+                       "**`Herramientas > Configurar bloques de acción...`** "
+                       "cambia el preajuste del proyecto *actualmente "
+                       "abierto* en cualquier momento. La edición "
+                       "predeterminada del IDE es Principiante, así que los "
+                       "proyectos nuevos de una instalación limpia empiezan "
+                       "exactamente en esta lista.",
+        "overview": "Resumen",
+        "overview_text": "Este preajuste habilita **{n_events}** tipos de eventos y "
+                          "**{n_actions}** tipos de acciones.",
+        "events_h": "Eventos",
+        "actions_h": "Acciones",
+        "c_event": "Evento", "c_block": "Nombre del Bloque", "c_category": "Categoría", "c_desc": "Descripción",
+        "c_action": "Acción", "c_params": "Parámetros",
+        "none": "—",
+        "see_also": "Ver También",
+        "sa_preset": "- [Guía de Preajustes](Preset-Guide_es) — qué son los preajustes y cómo cambiarlos",
+        "sa_events": "- [Referencia de Eventos](Event-Reference_es) — descripción completa de cada evento",
+        "sa_actions": "- [Referencia Completa de Acciones](Full-Action-Reference_es) — detalles completos de los parámetros de cada acción",
+        "sa_other": "- [{other_title}]({other_link}) — {other_desc}",
+        "intermediate_desc": "el siguiente nivel",
+        "beginner_desc": "el nivel por debajo de este",
+    },
     "fr": {
         "beginner_title": "Préréglage Débutant",
         "intermediate_title": "Préréglage Intermédiaire",
