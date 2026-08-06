@@ -87,6 +87,10 @@ CATEGORIES_DE = {
     "Movement": "Bewegung", "Instance": "Instanz", "Score": "Punkte", "Room": "Raum",
     "Timing": "Zeitsteuerung", "Audio": "Audio", "Game": "Spiel", "Control": "Steuerung",
     "Grid": "Gitter", "Views": "Ansichten", "3D View": "3D-Ansicht",
+    # Event categories (events.event_types.EventType.category) — distinct
+    # from the action categories above, shared with tools/gen_preset_docs.py.
+    "Object": "Objekt", "Input": "Eingabe", "Collision": "Kollision",
+    "Step": "Schritt", "Drawing": "Zeichnen", "Other": "Sonstiges",
 }
 
 TYPES_FR = {
@@ -785,6 +789,34 @@ NOTES_DE = {
 }
 
 # --------------------------------------------------------------------------- #
+# Events (non-Thymio), keyed by events.event_types.EVENT_TYPES's stable name
+# --------------------------------------------------------------------------- #
+
+EVENTS_DE = {
+    "create": {"desc": "Wird einmal ausgeführt, wenn die Instanz zum ersten Mal erstellt wird"},
+    "step": {"desc": "Wird bei jedem Bild ausgeführt (für fortlaufende Prüfungen)"},
+    "destroy": {"desc": "Wird ausgeführt, wenn die Instanz zerstört wird"},
+    "collision": {"desc": "Wird bei einer Kollision mit einem anderen Objekt ausgeführt"},
+    "keyboard": {"desc": "Wird fortlaufend ausgeführt, solange eine Taste gedrückt gehalten wird (für flüssige Bewegung)"},
+    "keyboard_press": {"desc": "Wird einmal ausgeführt, wenn eine Taste erstmals gedrückt wird (für gitterbasierte Bewegung)"},
+    "keyboard_release": {"desc": "Wird einmal ausgeführt, wenn eine Taste losgelassen wird"},
+    "keyboard_no_key": {"desc": "Wird ausgeführt, wenn aktuell keine Taste gedrückt ist"},
+    "mouse": {"desc": "Maustasten- und Mausbewegungsereignisse"},
+    "begin_step": {"desc": "Wird am Anfang jedes Schritts ausgeführt, vor anderen Ereignissen"},
+    "end_step": {"desc": "Wird am Ende jedes Schritts ausgeführt, nach Kollisionen, aber vor dem Zeichnen"},
+    "draw": {"desc": "Wird beim Zeichnen des Objekts ausgeführt (ersetzt das Standard-Sprite-Zeichnen)"},
+    "draw_gui": {"desc": "Wird über allem anderen gezeichnet (nicht von Kamera/Ansicht betroffen). Für HUD, Punktestand, Leben verwenden."},
+    "alarm": {"desc": "Wird ausgeführt, wenn ein Alarm-Timer null erreicht"},
+    "room_start": {"desc": "Wird ausgeführt, wenn der Raum startet (nach den Create-Ereignissen)"},
+    "room_end": {"desc": "Wird ausgeführt, wenn der Raum endet"},
+    "game_start": {"desc": "Wird ausgeführt, wenn das Spiel startet (nur im ersten Raum)"},
+    "game_end": {"desc": "Wird ausgeführt, wenn das Spiel endet"},
+    "outside_room": {"desc": "Wird ausgeführt, wenn die Instanz vollständig außerhalb des Raums ist"},
+    "intersect_boundary": {"desc": "Wird ausgeführt, wenn die Instanz den Raumrand berührt"},
+    "no_more_lives": {"desc": "Wird ausgeführt, wenn die Leben 0 oder weniger erreichen"},
+    "no_more_health": {"desc": "Wird ausgeführt, wenn die Gesundheit 0 oder weniger erreicht"},
+    "animation_end": {"desc": "Wird ausgelöst, wenn die Sprite-Animation das letzte Bild erreicht und neu beginnt"},
+}
 
 CHROME_UK = {
     "title": "Повний довідник дій",
@@ -2950,7 +2982,7 @@ LANGS = {
     "fr": {"chrome": CHROME_FR, "categories": CATEGORIES_FR, "types": TYPES_FR,
            "actions": ACTIONS_FR, "notes": NOTES_FR, "events": EVENTS_FR},
     "de": {"chrome": CHROME_DE, "categories": CATEGORIES_DE, "types": TYPES_DE,
-           "actions": ACTIONS_DE, "notes": NOTES_DE},
+           "actions": ACTIONS_DE, "notes": NOTES_DE, "events": EVENTS_DE},
     "uk": {"chrome": CHROME_UK, "categories": CATEGORIES_UK, "types": TYPES_UK,
            "actions": ACTIONS_UK, "notes": NOTES_UK},
     "ru": {"chrome": CHROME_RU, "categories": CATEGORIES_RU, "types": TYPES_RU,
