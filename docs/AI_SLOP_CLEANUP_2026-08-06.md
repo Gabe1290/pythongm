@@ -585,7 +585,10 @@ lower-priority read). Exceptions already touched:
   Health Bar; If Score/If Lives/If Health -> Test Score/Test Lives/Test
   Health; If Variable -> Test Variable; Move Toward Point -> Move Towards
   Point. Depth/Persistent claims verified accurate against game_runner.py)*
-- [ ] Room-Editor.md
+- [x] Room-Editor.md *(2 incomplete-not-wrong claims filled in: background
+  layers capped at 8 (widgets/enhanced_properties_panel.py), views capped
+  at 8 (game_runner.py `for i in range(8)`) — both verified against code.
+  Depth/room-order/persistent claims spot-checked and already accurate)*
 - [ ] 3D-View.md
 - [ ] Extensions.md
 - [ ] Exporting-Games.md
@@ -637,7 +640,8 @@ with section E.
 - [x] Programmation_Visuelle_fr.md *(same fixes as Visual-Programming.md, see Update 13)*
 - [x] Editeur_Objets_fr.md *(shorter than English — none of the wrong-name
   issues fixed in Object-Editor.md are present here; no changes needed)*
-- [ ] Editeur_Salles_fr.md
+- [x] Editeur_Salles_fr.md *(shorter than English — no Background Layers or
+  Views sections exist here to need the same fix; no changes needed)*
 - [ ] 3D-View_fr.md
 - [ ] Extensions_fr.md
 - [ ] Exportation_fr.md
