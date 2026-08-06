@@ -126,171 +126,110 @@ La caisse est poussée par le joueur et change d'apparence quand elle est sur un
 
 **Événement : Step**
 1. Ajoutez Event → Step → Step
-2. Ajoutez Action : **Control** → **Test Variable**
-   - Variable: `place_meeting(x, y, obj_target)`
-   - Value: `1`
-   - Operation: Equal to
-3. Ajoutez Action : **Main1** → **Change Sprite**
+2. Ajoutez Action : **Control** → **If Collision**
+   - X Offset: `0`
+   - Y Offset: `0`
+   - Against: `obj_target`
+3. Ajoutez Action : **Instance** → **Set Sprite**
    - Sprite: `spr_crate_ok`
-   - Subimage: `0`
-   - Speed: `1`
 4. Ajoutez Action : **Control** → **Else**
-5. Ajoutez Action : **Main1** → **Change Sprite**
+5. Ajoutez Action : **Instance** → **Set Sprite**
    - Sprite: `spr_crate`
-   - Subimage: `0`
-   - Speed: `1`
 
-Cela rend la caisse verte quand elle est sur un emplacement cible.
+Cela rend la caisse verte quand elle est sur un emplacement cible — **If
+Collision** avec les deux décalages à `0` vérifie si la position *actuelle*
+de la caisse chevauche un `obj_target`.
 
 ---
 
 ## Étape 6 : Créer l'Objet Joueur
 
-Le joueur est l'objet le plus complexe avec des mouvements basés sur une grille et une mécanique de poussée.
+Le joueur se déplace d'une case de grille à la fois et pousse les caisses qu'il rencontre.
 
 1. Créez un nouvel objet nommé `obj_player`
 2. Définissez le sprite sur `spr_player`
 
-### 6.1 Se Déplacer vers la Droite
+### 6.1 Déplacement sur la Grille
 
-**Événement : Keyboard Press Right Arrow**
-1. Ajoutez Event → Keyboard → Press Right
+Ajoutez un événement **Key Press** par direction, chacun avec une action
+**Move** → **Move Grid** :
 
-Tout d'abord, vérifiez s'il y a un mur sur le chemin :
-2. Ajoutez Action : **Control** → **Test Collision**
-   - Object: `obj_wall`
-   - X: `32`
-   - Y: `0`
-   - Check: NOT (signifiant « s'il n'y a PAS de mur »)
+| Événement | Action Move Grid |
+|---|---|
+| Key Press → Right Arrow | Direction : `right`, Grid Size : `32` |
+| Key Press → Left Arrow | Direction : `left`, Grid Size : `32` |
+| Key Press → Up Arrow | Direction : `up`, Grid Size : `32` |
+| Key Press → Down Arrow | Direction : `down`, Grid Size : `32` |
 
-S'il n'y a pas de mur, vérifiez s'il y a une caisse :
-3. Ajoutez Action : **Control** → **Test Collision**
-   - Object: `obj_crate`
-   - X: `32`
-   - Y: `0`
+**Move Grid** déplace l'instance d'exactement une case de grille et gère
+elle-même les collisions — elle ne fera pas entrer le joueur dans un
+`obj_wall` solide, donc aucune vérification de mur supplémentaire n'est
+nécessaire ici.
 
-S'il y a une caisse, nous devons vérifier si nous pouvons la pousser :
-4. Ajoutez Action : **Control** → **Test Collision** (pour la destination de la caisse)
-   - Object: `obj_wall`
-   - X: `64`
-   - Y: `0`
-   - Check: NOT
+### 6.2 S'arrêter aux Murs
 
-5. Ajoutez Action : **Control** → **Test Collision**
-   - Object: `obj_crate`
-   - X: `64`
-   - Y: `0`
-   - Check: NOT
+**Événement : Collision avec obj_wall**
+1. Ajoutez Event → Collision → `obj_wall`
+2. Ajoutez Action : **Move** → **Stop Movement**
 
-Si les deux vérifications réussissent, poussez la caisse :
-6. Ajoutez Action : **Control** → **Code Block**
-```
-var crate = instance_place(x + 32, y, obj_crate);
-if (crate != noone) {
-    crate.x += 32;
-}
-```
+### 6.3 Pousser les Caisses
 
-Maintenant, déplacez le joueur :
-7. Ajoutez Action : **Move** → **Jump to Position**
-   - X: `32`
-   - Y: `0`
-   - Cochez "Relative"
+**Événement : Collision avec obj_crate**
+1. Ajoutez Event → Collision → `obj_crate`
+2. Ajoutez Action : **Control** → **If Can Push**
+   - Direction : `facing`
+   - Object Type : `obj_crate`
+   - Then Action : `push_and_move`
 
-### 6.2 Se Déplacer vers la Gauche
-
-**Événement : Keyboard Press Left Arrow**
-Suivez le même modèle qu'en se déplaçant vers la droite, mais utilisez :
-- X offset: `-32` pour vérifier le mur/la caisse
-- X offset: `-64` pour vérifier si la caisse peut être poussée
-- Déplacer la caisse de `-32`
-- Sauter à la position X: `-32`
-
-### 6.3 Se Déplacer vers le Haut
-
-**Événement : Keyboard Press Up Arrow**
-Suivez le même modèle, mais utilisez les valeurs Y :
-- Y offset: `-32` pour la vérification
-- Y offset: `-64` pour la destination de la caisse
-- Déplacer la caisse de Y: `-32`
-- Sauter à la position Y: `-32`
-
-### 6.4 Se Déplacer vers le Bas
-
-**Événement : Keyboard Press Down Arrow**
-Utilisez :
-- Y offset: `32` pour la vérification
-- Y offset: `64` pour la destination de la caisse
-- Déplacer la caisse de Y: `32`
-- Sauter à la position Y: `32`
+**If Can Push** vérifie si l'espace derrière la caisse (dans la direction où
+se déplace le joueur) est libre et, si oui, pousse la caisse d'une case et
+déplace le joueur à sa place, le tout en une seule action. Si l'espace
+derrière la caisse est bloqué par un mur ou une autre caisse, rien ne bouge.
 
 ---
 
-## Étape 7 : Mouvement du Joueur Simplifié (Alternative)
+## Étape 7 : Créer le Vérificateur de Condition de Victoire
 
-Si l'approche basée sur les blocs ci-dessus semble complexe, voici une approche plus simple basée sur le code pour chaque direction :
-
-**Événement : Keyboard Press Right Arrow**
-Ajoutez Action : **Control** → **Execute Code**
-```
-// Check if we can move right
-if (!place_meeting(x + 32, y, obj_wall)) {
-    // Check if there's a crate
-    var crate = instance_place(x + 32, y, obj_crate);
-    if (crate != noone) {
-        // There's a crate - can we push it?
-        if (!place_meeting(x + 64, y, obj_wall) && !place_meeting(x + 64, y, obj_crate)) {
-            crate.x += 32;
-            x += 32;
-        }
-    } else {
-        // No crate, just move
-        x += 32;
-    }
-}
-```
-
-Répétez pour les autres directions avec des changements de coordonnées appropriés.
-
----
-
-## Étape 8 : Créer le Vérificateur de Condition de Victoire
-
-Nous avons besoin d'un objet pour vérifier si toutes les caisses sont sur les cibles.
+Il nous faut un contrôleur invisible qui surveille si toutes les caisses
+sont sur une cible.
 
 1. Créez un nouvel objet nommé `obj_game_controller`
 2. Aucun sprite nécessaire
 
-**Événement : Create**
-1. Ajoutez Event → Create
-2. Ajoutez Action : **Score** → **Set Variable**
-   - Variable: `global.total_targets`
-   - Value: `0`
-3. Ajoutez Action : **Control** → **Execute Code**
-```
-// Count how many targets exist
-global.total_targets = instance_number(obj_target);
+**Événement : Create** — configurez le nombre de cibles une seule fois, avec
+**Control** → **Execute Code** (l'action Execute Code de ce projet exécute
+du vrai Python, pas le langage GameMaker — `self` est l'instance courante,
+`game` est le moteur de jeu) :
+
+```python
+# Compte le nombre d'emplacements cibles dans la salle
+self.total_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_target'
+)
 ```
 
-**Événement : Step**
-1. Ajoutez Event → Step → Step
-2. Ajoutez Action : **Control** → **Execute Code**
-```
-// Count crates that are on targets
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
+**Événement : Step** — vérifie à chaque image si toutes les caisses sont
+sur une cible :
 
-// Check if all targets have crates
-if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
-    // Level complete!
-    show_message("Level Complete!");
-    room_restart();
-}
+```python
+# Compte les caisses actuellement sur une cible
+crates_on_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_crate'
+    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')
+)
+
+if self.total_targets > 0 and crates_on_targets >= self.total_targets:
+    self.restart_room_flag = True
 ```
+
+`self.restart_room_flag = True` permet à un bloc Execute Code brut de
+déclencher le même redémarrage de salle que l'action **Restart Room** — la
+boucle principale vérifie cette valeur à chaque image. Ajoutez une action
+**Show Message** (depuis **Output**, message `Level Complete!`) juste après
+le bloc Execute Code si vous voulez une fenêtre de dialogue avant le
+redémarrage.
 
 **Événement : Draw**
 1. Ajoutez Event → Draw
@@ -356,22 +295,17 @@ T = Target
 
 ### Ajouter un Compteur de Mouvements
 
-Dans `obj_game_controller` :
+Dans l'événement **Create** de `obj_game_controller`, ajoutez **Control** →
+**Set Variable** (Variable : `global.moves`, Value : `0`, Scope : `global`).
 
-**Événement : Create** - Ajoutez :
-```
-global.moves = 0;
-```
+Dans chacun des quatre événements Key Press à Move Grid de `obj_player`,
+ajoutez une seconde action juste après Move Grid : **Control** → **Set
+Variable** (Variable : `global.moves`, Value : `1`, Scope : `global`, case
+**Relative** cochée) — cela ajoute 1 au compteur à chaque appui de touche,
+que le mouvement ait été bloqué par un mur ou non.
 
-Dans `obj_player`, après chaque mouvement réussi, ajoutez :
-```
-global.moves += 1;
-```
-
-Dans `obj_game_controller` **Événement : Draw** - Ajoutez :
-```
-draw_text(10, 30, "Moves: " + string(global.moves));
-```
+Dans l'événement **Draw** de `obj_game_controller`, ajoutez **Draw** →
+**Draw Variable** (Variable : `global.moves`, X : `10`, Y : `30`).
 
 ### Ajouter une Fonction Annuler
 
@@ -379,11 +313,11 @@ Stockez les positions précédentes et permettez d'appuyer sur Z pour annuler le
 
 ### Ajouter Plusieurs Niveaux
 
-Créez plus de salles (`room_level2`, `room_level3`, etc.) et utilisez :
-```
-room_goto_next();
-```
-au lieu de `room_restart()` quand vous terminez un niveau.
+Créez plus de salles (`room_level2`, `room_level3`, etc.) et utilisez
+l'action **Next Room** (catégorie Room) à la place de **Restart Room** dans
+le bloc Execute Code de vérification de victoire (`self.next_room_flag =
+True` au lieu de `self.restart_room_flag = True`) quand un niveau est
+terminé.
 
 ### Ajouter des Effets Sonores
 
@@ -400,7 +334,7 @@ Ajoutez des sons pour :
 | Problème | Solution |
 |---------|----------|
 | Le joueur se déplace à travers les murs | Vérifiez que `obj_wall` a "Solid" coché |
-| La caisse ne change pas de couleur | Vérifiez que l'événement Step vérifie `place_meeting` correctement |
+| La caisse ne change pas de couleur | Vérifiez que l'action **If Collision** de l'événement Step cible bien `obj_target` |
 | Peut pousser la caisse à travers le mur | Vérifiez la détection de collision avant de déplacer la caisse |
 | Le message de victoire apparaît immédiatement | Assurez-vous que les cibles sont placées séparément des caisses |
 | Le joueur se déplace sur plusieurs carrés | Utilisez l'événement Keyboard Press, pas l'événement Keyboard |
