@@ -654,7 +654,16 @@ lower-priority read). Exceptions already touched:
   same `speed`-is-animation-rate landmine as Events-and-Actions.md/
   LunarLander, would have silently used the wrong baseline; replaced with
   a tracked `ball_speed` custom variable)*
-- [ ] Tutorial-Breakout.md
+- [x] Tutorial-Breakout.md *(2 fixes: "Reverse Vertical (applied to
+  other)" for the brick-bounces-ball step doesn't work — Reverse Vertical
+  takes zero parameters, no applies-to option (confirmed against
+  events/action_types.py, same class of bug as the Object-Editor/Pong
+  finds) — the tutorial's own fallback alternative (put it on the ball's
+  own collision event) was already correct, kept that and dropped the
+  broken option; "Move in Direction" -> "Start Moving (Direction)" (real
+  display name). "Add Score"/"Add Lives"/"Add Health" verified as real
+  legacy aliases for set_score/set_lives/set_health(relative=True) — not
+  a bug, left as-is)*
 - [x] Tutorial-Sokoban.md *(GML-fabrication rewrite, see Update 11 — `6c825d9`)*
 - [x] Tutorial-Maze.md *(GML-fabrication rewrite, see Update 11 — `90db80b`)*
 - [x] Tutorial-Platformer.md *(GML-fabrication rewrite, see Update 11 — `cde99fd`)*
@@ -702,7 +711,7 @@ with section E.
 - [x] FAQ_fr.md *(same fix as FAQ.md)*
 - [x] Tutorials_fr.md *(same fix as Tutorials.md)*
 - [x] Tutorial-Pong_fr.md *(same fixes as Tutorial-Pong.md)*
-- [ ] Tutorial-Breakout_fr.md
+- [x] Tutorial-Breakout_fr.md *(same fixes as Tutorial-Breakout.md)*
 - [x] Tutorial-Sokoban_fr.md *(GML-fabrication rewrite, see Update 11 — `6c825d9`)*
 - [x] Tutorial-Maze_fr.md *(GML-fabrication rewrite, see Update 11 — `90db80b`)*
 - [x] Tutorial-Platformer_fr.md *(GML-fabrication rewrite, see Update 11 — `cde99fd`)*
