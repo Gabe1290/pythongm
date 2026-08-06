@@ -8,6 +8,25 @@ only for now (the skill's word/pattern list is English-specific; the other
 separate follow-up once this pass proves out the process — same reasoning
 `docs/I18N_SAMPLE_GUIDES_2026-07-15.md` used for scoping languages).
 
+**Finding from the first batch (6 files: `Home`/`Home_fr`, `FAQ`/`FAQ_fr`,
+`samples/README.md`, two Tutorials HTML files) — recalibrate expectations
+before working the rest of the queue.** Most of this content is already
+clean: `samples/README.md` and the Tutorials HTML checked so far are dense,
+specific, and direct, with none of the classic AI-slop rhetorical patterns
+(no banned words, no binary contrasts, no fake-profound kickers, no
+summary-recap endings). Expect most files to need **no changes** — don't
+force edits to hit a quota. The one real, *recurring* issue found so far: a
+generic "Contributions are welcome! See our contributing guidelines
+for: / bug reports / code / translations / docs" boilerplate block,
+templated near-verbatim across at least `Home.md`, `Home_fr.md`, `FAQ.md`,
+and `FAQ_fr.md` — pointing at a `CONTRIBUTING.md` that doesn't exist and
+listing categories generically instead of just linking the issue tracker.
+Fixed in all four; **grep for this pattern in any new file before reading
+it in full** (`Contributions are welcome`, `contributions sont les
+bienvenues`, `Consultez.*contribution`) — it may recur in files not yet
+checked (Getting-Started.md, Tutorials.md, and their `_fr` counterparts are
+plausible next hits since they're similarly high-traffic entry pages).
+
 **Process per file:** Read → identify the core point + 3–5 voice signals to
 preserve (per SKILL.md step 2) → make the minimum effective edit → check
 against `eval.md` → commit. Batch related files (e.g. one sample's EN+FR
@@ -55,7 +74,9 @@ registry only tracks *prose quality* of whatever exists in each file.
 
 ## C. Sample guides — English (`samples/*/README.md`)
 
-- [ ] samples/README.md (top-level index)
+- [x] samples/README.md (top-level index) *(reviewed, no changes — dense,
+  specific, already reads like a careful human wrote it: real numbers,
+  named commits, honest caveats about what was dropped and why)*
 - [ ] match3_1, match3_2, match3_3
 - [ ] maze_1, maze_2, maze_3, maze_4
 - [ ] plateforme_1, plateforme_2, plateforme_3
@@ -78,7 +99,8 @@ registry only tracks *prose quality* of whatever exists in each file.
 
 ## E. Wiki — English (`wiki/*.md`, no language suffix)
 
-- [ ] Home.md
+- [x] Home.md *(fixed generic "contributing guidelines" boilerplate that
+  pointed at a nonexistent doc)*
 - [ ] Getting-Started.md
 - [ ] Getting-Started-Breakout.md
 - [ ] Creating-Your-First-Game.md
@@ -96,7 +118,10 @@ registry only tracks *prose quality* of whatever exists in each file.
 - [ ] Preset-Guide.md
 - [ ] Beginner-Preset.md
 - [ ] Intermediate-Preset.md
-- [ ] FAQ.md
+- [x] FAQ.md *(same contributing-boilerplate pattern as Home.md, plus a
+  redundant "How can I contribute?" Q&A duplicating the bug-report entry
+  above it; also trimmed a non-sequitur "contributions welcome" aside
+  tacked onto the licensing answer)*
 - [ ] Tutorials.md
 - [ ] Tutorial-Pong.md
 - [ ] Tutorial-Breakout.md
@@ -114,7 +139,7 @@ slugs, e.g. `Demarrage_fr.md` = Getting-Started, `Premier_Jeu_fr.md` =
 Creating-Your-First-Game) — match by content, not filename, when pairing
 with section E.
 
-- [ ] Home_fr.md
+- [x] Home_fr.md *(same fix as Home.md)*
 - [ ] Demarrage_fr.md
 - [ ] Getting-Started-Breakout_fr.md
 - [ ] Premier_Jeu_fr.md
@@ -130,7 +155,7 @@ with section E.
 - [ ] Preset-Guide_fr.md
 - [ ] Beginner-Preset_fr.md
 - [ ] Intermediate-Preset_fr.md
-- [ ] FAQ_fr.md
+- [x] FAQ_fr.md *(same fix as FAQ.md)*
 - [ ] Tutorials_fr.md
 - [ ] Tutorial-Pong_fr.md
 - [ ] Tutorial-Breakout_fr.md
