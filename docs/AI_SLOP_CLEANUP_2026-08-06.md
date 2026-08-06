@@ -556,10 +556,10 @@ lower-priority read). Exceptions already touched:
   documented in the LunarLander tutorial fix)*
 - [x] Event-Reference.md *(see Update 12: execution-order fix + 18/23
   wrong per-event Preset rows corrected + Events-by-Preset table rebuilt)*
-- [ ] Full-Action-Reference.md *(generated — see CLAUDE.md: edit
-  `tools/action_ref_i18n.py`, not this file directly, if wording needs to
-  change; a slop pass here means fixing the generator template strings.
-  Update 12 left one known imprecise see-also line untouched, low-risk)*
+- [x] Full-Action-Reference.md *(generated — see CLAUDE.md: edit
+  `tools/action_ref_i18n.py`/`tools/gen_action_reference.py`, not this file
+  directly. The see-also line Update 12 left imprecise is now fixed
+  (`gen_action_reference.py`'s `sa_preset` chrome string) and regenerated)*
 - [x] Visual-Programming.md *(MAJOR: cross-checked every block table against
   the real, complete `config/blockly_config.py` BLOCK_REGISTRY — most of the
   page was fabricated. No Math/Logic/Text toolbox category exists at all;
@@ -646,7 +646,7 @@ with section E.
   this" note), not a new bug, and translating wiki action names anyway
   matches the project's own generated Full-Action-Reference convention)*
 - [x] Event-Reference_fr.md *(same fixes as Event-Reference.md, see Update 12)*
-- [ ] Full-Action-Reference_fr.md *(generated — same caveat as E)*
+- [x] Full-Action-Reference_fr.md *(generated — same fix as Full-Action-Reference.md, regenerated)*
 - [x] Programmation_Visuelle_fr.md *(same fixes as Visual-Programming.md, see Update 13)*
 - [x] Editeur_Objets_fr.md *(shorter than English — none of the wrong-name
   issues fixed in Object-Editor.md are present here; no changes needed)*

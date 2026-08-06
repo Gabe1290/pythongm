@@ -1749,6 +1749,6 @@ Set the instance's look direction for a raycast (first-person) camera — indepe
 ## See Also
 
 - [Event Reference](Event-Reference) — the events that trigger actions
-- [Preset Guide](Preset-Guide) — which actions each preset/edition exposes
+- [Preset Guide](Preset-Guide) — which of these actions your project's preset actually shows in the Blockly picker and the structured Actions panel
 - [3D View](3D-View) — the raycast first-person actions
 - [Extensions](Extensions) — how the 3D View actions are provided

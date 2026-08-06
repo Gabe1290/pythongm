@@ -1749,6 +1749,6 @@ Définir la direction du regard de l'instance pour une caméra à lancer de rayo
 ## Voir aussi
 
 - [Référence des Événements](Event-Reference_fr) — les événements qui déclenchent les actions
-- [Guide des Préréglages](Preset-Guide_fr) — quelles actions chaque préréglage/édition expose
+- [Guide des Préréglages](Preset-Guide_fr) — quelles de ces actions le préréglage de votre projet affiche réellement dans le sélecteur Blockly et le panneau structuré Actions
 - [Vue 3D](3D-View_fr) — les actions de vue à la première personne (raycast)
 - [Extensions](Extensions_fr) — comment les actions de la Vue 3D sont fournies
