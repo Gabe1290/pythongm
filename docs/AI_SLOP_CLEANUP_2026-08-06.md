@@ -189,32 +189,64 @@ registry only tracks *prose quality* of whatever exists in each file.
 
 ## A. In-app Tutorials (English) — `Tutorials/<NN_name>/*.html`
 
-- [ ] 01_getting_started/ (4 files: 01_welcome, 02_interface, 03_first_project, 04_next_steps)
-- [ ] 02_first_game/ (11 files: 01_introduction … 07_finishing)
-- [ ] 03_pong/ (10 files: 01_introduction … 08_room_setup)
-- [ ] 04_breakout/ (10 files: 01_introduction … 08_room_setup)
-- [ ] 05_sokoban/ (9 files: 01_introduction … 07_room_setup)
-- [ ] 06_maze/ (9 files: 01_introduction … 07_room_setup)
-- [ ] 07_platformer/ (4 files: 01_introduction … 04_game_controller)
-- [ ] 08_lunar_lander/ (4 files: 01_introduction … 04_game_controller)
-- [ ] 09_catch_the_coins/ (5 files: 01_introduction … 05_winning)
+Post-deletion (Update 5): 41 live files, exactly matching `index.json`'s
+`pages` arrays. `[x]` = read in full; `[~]` = edited (emoji/boilerplate,
+already committed); `[ ]` = not yet read for paragraph-level polish.
 
-(73 files total; `find Tutorials -maxdepth 2 -iname "*.html" -not -path
-"*/fr/*"` reproduces the exact list.)
+- [x] 01_getting_started/01_welcome
+- [ ] 01_getting_started/02_interface
+- [ ] 01_getting_started/03_first_project
+- [ ] 01_getting_started/04_next_steps
+- [x] 02_first_game/01_introduction
+- [x] 02_first_game/02_moving_player
+- [x] 02_first_game/03_falling_stars
+- [ ] 02_first_game/04_scoring
+- [ ] 02_first_game/05_finishing
+- [x] 03_pong/01_introduction
+- [ ] 03_pong/02_paddles_and_ball
+- [ ] 03_pong/03_goals_and_scoring
+- [ ] 03_pong/04_score_display
+- [x] 04_breakout/01_introduction
+- [ ] 04_breakout/02_sprites_basic
+- [ ] 04_breakout/03_paddle_and_ball
+- [ ] 04_breakout/04_first_room
+- [ ] 04_breakout/05_first_bricks
+- [ ] 04_breakout/06_more_bricks
+- [ ] 04_breakout/07_game_controller
+- [ ] 05_sokoban/01_introduction
+- [ ] 05_sokoban/02_player_and_walls
+- [ ] 05_sokoban/03_pushing_crates
+- [ ] 05_sokoban/04_targets_and_controller
+- [x] 06_maze/01_introduction
+- [ ] 06_maze/02_player_and_maze
+- [ ] 06_maze/03_coins_and_exit
+- [ ] 06_maze/04_game_controller
+- [x] 07_platformer/01_introduction
+- [ ] 07_platformer/02_jumping_player
+- [ ] 07_platformer/03_coins_and_hazards
+- [x] 07_platformer/04_game_controller
+- [~] 08_lunar_lander/01_introduction *(emoji removed from H1)*
+- [ ] 08_lunar_lander/02_flying_lander
+- [ ] 08_lunar_lander/03_landing_and_crashing
+- [~] 08_lunar_lander/04_game_controller *(emoji removed from congrats)*
+- [ ] 09_catch_the_coins/01_introduction
+- [ ] 09_catch_the_coins/02_moving_player
+- [ ] 09_catch_the_coins/03_coins_and_enemy
+- [ ] 09_catch_the_coins/04_catching_and_crashing
+- [ ] 09_catch_the_coins/05_winning
 
 ## B. In-app Tutorials (French) — `Tutorials/fr/<NN_name>/*.html`
 
-- [ ] fr/01_getting_started/ (4 files)
-- [ ] fr/02_first_game/ (11 files)
-- [ ] fr/03_pong/ (10 files)
-- [ ] fr/04_breakout/ (10 files)
-- [ ] fr/05_sokoban/ (9 files)
-- [ ] fr/06_maze/ (9 files)
-- [ ] fr/07_platformer/ (10 files — see anomaly note above)
-- [ ] fr/08_lunar_lander/ (10 files — see anomaly note above)
-- [ ] fr/09_catch_the_coins/ (5 files)
-
-(87 files total; `find Tutorials/fr -iname "*.html"` reproduces the list.)
+Same 41-file list as section A (post-deletion, both languages match
+exactly). Not tracking per-file here to avoid duplicating the whole list —
+once an English file's paragraph-level content is confirmed clean/fixed,
+diff its French counterpart against it for the same issue rather than
+re-reading French cold each time (translations of already-fixed English
+should inherit the fix; translations of already-clean English are a
+lower-priority read). Exceptions already touched:
+- [~] fr/06_maze/01_introduction *(emoji removed from H1)*
+- [~] fr/06_maze/02_create_sprites *(deleted — was an orphan)*
+- [~] fr/08_lunar_lander/04_game_controller *(emoji removed from congrats)*
 
 ## C. Sample guides — English (`samples/*/README.md`)
 
