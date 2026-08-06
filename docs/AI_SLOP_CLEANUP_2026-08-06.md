@@ -748,6 +748,20 @@ without asking first.
 
 ## Progress
 
-Total: 242 files across 6 categories. Work top to bottom within each
-category, batching a few files per commit. Nothing fixed yet — this is the
-starting registry.
+Total: 242 files across 6 categories. **All 6 sections (A–F) are now
+closed** — every file read at least once, with the level of scrutiny noted
+per-section above (D's note documents a deliberately lighter-touch review
+than E/F). This was a long pass across many sessions/turns: it started as
+a prose-quality read-through (the original framing above), then
+uncovered — and fixed — several genuine technical-accuracy crises along
+the way that went well beyond wording: fabricated GameMaker Language code
+in 4 wiki tutorials (Update 10/11), a wrong understanding of what the
+preset system restricts that required its own self-correction mid-fix
+(Update 12), a mostly-fabricated Blockly block reference (Update 13), and
+a wrong "Beginner Preset" claim on 5 tutorial pages (Update 14) — plus
+many smaller wrong-action-name/wrong-menu-path fixes across the
+individual file checkboxes. If reopening this registry for a future pass,
+start from a fresh audit rather than assuming everything above stays
+correct forever — the codebase keeps changing, and (per Update 12's own
+lesson) verify claims about *what restricts what* by tracing every call
+site, not by reading one docstring.
