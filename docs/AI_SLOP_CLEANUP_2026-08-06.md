@@ -1,5 +1,35 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update (same day):** ran a targeted grep sweep across the ENTIRE English
+wiki (all 23 files) plus every `samples/*/README*.md` and every
+`Tutorials/**/*.html` (EN+FR) for: the full banned-word list, empty
+filler phrases, emoji headings, "not X, it's Y" binary contrasts, and
+summary-recap endings ("In conclusion"/"Overall"/"Ultimately"). Result:
+**zero real hits** beyond the contributing-boilerplate template already
+fixed in batch 1 (the 4 `harness` matches in sample READMEs are the
+"test harness" noun, not the AI-slop verb — checked in context). Combined
+with 4 full manual reads (`samples/README.md`, two Tutorials HTML files,
+plus `Getting-Started`/`Creating-Your-First-Game`/`Visual-Programming`/
+`Events-and-Actions`' closing sections all spot-checked and clean), this
+is strong evidence the corpus is **already largely free of classic
+AI-slop patterns** — dense, specific, technical writing throughout, with
+navigation-link endings rather than fake-profound kickers.
+
+**Conclusion: don't grind through all 242 files expecting to find more of
+what batch 1 found.** The recurring boilerplate template is fixed
+everywhere it appeared (confirmed via repo-wide grep, zero remaining
+hits). What's left in the queue below is genuinely optional deeper
+reading — plausible remaining candidates, in priority order: (1) the
+`Tutorials/` lesson bodies not yet individually read (only 2 of 160 files
+were actually opened; the grep sweep covers vocabulary/pattern-level slop
+but not paragraph-level awkwardness, wordiness, or voice inconsistency a
+human read would catch), (2) sample READMEs beyond the ones spot-checked,
+(3) remaining wiki pages' body prose (headers/nav were checked, full
+bodies of Room-Editor/Object-Editor/3D-View/Extensions/Exporting-Games/
+Preset-Guide/Beginner-Preset/Intermediate-Preset weren't individually
+read). Treat the registry below as a "read if you have budget, not
+because slop is expected" list rather than a confirmed backlog.
+
 Started 2026-08-06, using the `no-ai-slop` skill (edit workflow —
 `~/.claude/skills/no-ai-slop/SKILL.md` + `eval.md`). Scope decided with the
 user: **Tutorials/ + samples/*/README.md + wiki/**, **English + French**
