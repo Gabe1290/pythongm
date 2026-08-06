@@ -95,7 +95,7 @@ Maintenant la barre s'arrête quand vous relâchez les touches.
 
 ### 3.2 Définir le Mouvement Initial
 1. Cliquez sur **Add Event** → **Create**
-2. Ajoutez l'action **Move in Direction** (ou **Set Horizontal/Vertical Speed**)
+2. Ajoutez l'action **Start Moving (Direction)** (ou **Set Horizontal/Vertical Speed**)
 3. Définissez une direction diagonale avec vitesse `5`
    - Par exemple : **hspeed** = `4`, **vspeed** = `-4`
 
@@ -126,12 +126,13 @@ Cela fait bouger la balle dès le début du jeu.
 Cela détruit la brique quand la balle la touche !
 
 ### 4.3 Faire Rebondir la Balle
-Dans le même événement de collision, ajoutez aussi :
-1. Ajoutez l'action **Reverse Vertical** (appliquée à **other** - la balle)
+**Reverse Vertical** s'applique toujours à l'instance dont c'est
+l'événement — il n'y a pas d'option « appliquer à other » — donc ceci doit
+aller sur la balle, pas sur la brique :
 
-Ou retournez à `obj_balle` et ajoutez :
-1. **Add Event** → **Collision** → sélectionnez `obj_brique`
-2. Ajoutez l'action **Reverse Vertical**
+1. Retournez à `obj_balle` et ajoutez :
+2. **Add Event** → **Collision** → sélectionnez `obj_brique`
+3. Ajoutez l'action **Reverse Vertical**
 
 ---
 

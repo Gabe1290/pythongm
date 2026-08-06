@@ -95,7 +95,7 @@ Now the paddle stops when you release the arrow keys.
 
 ### 3.2 Set Initial Movement
 1. Click **Add Event** → **Create**
-2. Add the action **Move in Direction** (or **Set Horizontal/Vertical Speed**)
+2. Add the action **Start Moving (Direction)** (or **Set Horizontal/Vertical Speed**)
 3. Set a diagonal direction with speed `5`
    - For example: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -126,12 +126,13 @@ This makes the ball start moving when the game begins.
 This destroys the brick when the ball hits it!
 
 ### 4.3 Bounce the Ball
-In the same collision event, also add:
-1. Add action **Reverse Vertical** (applied to **other** - the ball)
+**Reverse Vertical** always applies to the instance whose event it's in —
+it has no "applies to other" option — so this needs to go on the ball, not
+the brick:
 
-Or go back to `obj_ball` and add:
-1. **Add Event** → **Collision** → select `obj_brick`
-2. Add action **Reverse Vertical**
+1. Go back to `obj_ball` and add:
+2. **Add Event** → **Collision** → select `obj_brick`
+3. Add action **Reverse Vertical**
 
 ---
 
