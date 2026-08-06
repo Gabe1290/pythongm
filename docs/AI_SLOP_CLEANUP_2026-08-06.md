@@ -1,5 +1,21 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 6: Section A (all 41 live English Tutorials files) is 100% read.**
+Every lesson across all 9 tutorials read in full for paragraph-level
+polish, not just grep. Overall verdict holds from the earlier updates:
+this is genuinely good, human-written teaching content — clear
+cause/effect explanations ("why Solid", "why two wall types", "why 0.05
+gravity", parent-object payoff), consistent ASCII room-layout diagrams,
+sensible non-generic challenge ideas per tutorial, appropriately-varied
+encouragement, and closing summaries that recap *specific* things built
+rather than generic "in conclusion" filler. Two small real fixes found
+along the way (both already committed): the 07_platformer block-output/
+block-room class mismatch, and the emoji-consistency batch from Update
+3. Nothing else needed changing across all 41 files.
+Next: Section B (French Tutorials, 41 files) — diff against the
+now-confirmed-clean English rather than reading cold, per the "diff, not
+duplicate" note already in Section B below.
+
 **Update 5 (same day): the 78 orphans from Update 4 are DELETED.**
 Investigated git history before asking the user: `f1c8d42` ("Rewrite all
 tutorials with progressive play-early approach", 2026-03-26) replaced the
@@ -228,14 +244,16 @@ already committed); `[ ]` = not yet read for paragraph-level polish.
   its own explanatory text; same fix applied to the French pair)*
 - [x] 07_platformer/04_game_controller
 - [~] 08_lunar_lander/01_introduction *(emoji removed from H1)*
-- [ ] 08_lunar_lander/02_flying_lander
-- [ ] 08_lunar_lander/03_landing_and_crashing
+- [x] 08_lunar_lander/02_flying_lander
+- [x] 08_lunar_lander/03_landing_and_crashing
 - [~] 08_lunar_lander/04_game_controller *(emoji removed from congrats)*
-- [ ] 09_catch_the_coins/01_introduction
-- [ ] 09_catch_the_coins/02_moving_player
-- [ ] 09_catch_the_coins/03_coins_and_enemy
-- [ ] 09_catch_the_coins/04_catching_and_crashing
-- [ ] 09_catch_the_coins/05_winning
+- [x] 09_catch_the_coins/01_introduction
+- [x] 09_catch_the_coins/02_moving_player
+- [x] 09_catch_the_coins/03_coins_and_enemy
+- [x] 09_catch_the_coins/04_catching_and_crashing
+- [x] 09_catch_the_coins/05_winning
+
+**Section A: 41/41 done.**
 
 ## B. In-app Tutorials (French) — `Tutorials/fr/<NN_name>/*.html`
 
