@@ -1,5 +1,18 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 13 — MAJOR, RESOLVED: Visual-Programming.md/`_fr` were mostly
+fabricated.** Full details on the checklist entries below (Section E/F).
+Short version: cross-checked every block table against the real, complete
+`config/blockly_config.py` BLOCK_REGISTRY. No Math/Logic/Text toolbox
+category exists (real category: "Control"); no boolean/hexagon reporter
+blocks or Repeat block; conditionals are flat GM80-style stack blocks
+(If Condition/Test Variable have one "then" slot, paired with separate
+Else/Start Block/End Block), not Scratch-style if/else containers —
+confirmed against the actual block JS in `blockly_blocks.js`.
+`( speed )`/`( direction )` reporter blocks don't exist. Jump to
+Start/Random Position, Draw Sprite, Set Drawing Color, per-sound Stop
+Sound have no Blockly block at all. Full rewrite, both languages.
+
 **Update 12 — MAJOR, RESOLVED (with a self-correction along the way — read
 this before touching Preset-Guide/Beginner-Preset/Intermediate-Preset/
 Event-Reference's Preset material again).** Found while fixing
@@ -547,7 +560,27 @@ lower-priority read). Exceptions already touched:
   `tools/action_ref_i18n.py`, not this file directly, if wording needs to
   change; a slop pass here means fixing the generator template strings.
   Update 12 left one known imprecise see-also line untouched, low-risk)*
-- [ ] Visual-Programming.md
+- [x] Visual-Programming.md *(MAJOR: cross-checked every block table against
+  the real, complete `config/blockly_config.py` BLOCK_REGISTRY — most of the
+  page was fabricated. No Math/Logic/Text toolbox category exists at all;
+  the real category is "Control". No boolean/hexagon reporter blocks, no
+  Repeat block, no comparison/and-or-not blocks — conditionals are flat
+  GM80-style stack blocks (If Condition/Test Variable have ONE "then" slot,
+  paired with separate Else/Start Block/End Block blocks), not Scratch-style
+  if/else containers, confirmed against the actual block JS in
+  `blockly_blocks.js`. `( speed )`/`( direction )` reporter blocks don't
+  exist (only 9 real Values reporters: X/Y Position, H/V Speed, Score,
+  Lives, Health, Mouse X/Y). Jump to Start/Random Position, Draw Sprite,
+  Set Drawing Color, per-sound Stop Sound have no Blockly block at all
+  (structured-panel-only actions). Full rewrite from the verified block
+  list; also links to Preset-Guide.md now that Update 12 established
+  presets gate the Blockly palette too. En route, verified `set_speed`/
+  `set_direction` (initially suspected dead — no `execute_set_speed_action`
+  method) are real, implemented via the modular
+  `runtime/action_handlers/movement_handlers.py` registration path, and
+  correctly derive movement magnitude from hspeed/vspeed rather than the
+  animation-rate `speed` attribute — not a bug, false alarm caught before
+  writing it down as one.)*
 - [ ] Object-Editor.md
 - [ ] Room-Editor.md
 - [ ] 3D-View.md
@@ -598,7 +631,7 @@ with section E.
   matches the project's own generated Full-Action-Reference convention)*
 - [x] Event-Reference_fr.md *(same fixes as Event-Reference.md, see Update 12)*
 - [ ] Full-Action-Reference_fr.md *(generated — same caveat as E)*
-- [ ] Programmation_Visuelle_fr.md
+- [x] Programmation_Visuelle_fr.md *(same fixes as Visual-Programming.md, see Update 13)*
 - [ ] Editeur_Objets_fr.md
 - [ ] Editeur_Salles_fr.md
 - [ ] 3D-View_fr.md
