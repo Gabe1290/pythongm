@@ -123,80 +123,38 @@ The player is the most complex object with gravity, jumping, and movement.
 1. Create a new object named `obj_player`
 2. Set the sprite to `spr_player`
 
-### 5.1 Create Event - Initialize Variables
+### 5.1 Gravity
 
-**Event: Create**
-1. Add Event → Create
-2. Add Action: **Control** → **Execute Code**
+**Event: Create** — Add Action: **Move** → **Set Gravity**
+(Direction: `270`, Gravity: `0.5`) — 270° is straight down; the value is
+added to the player's vertical speed every step, so the player accelerates
+downward on its own from here on.
 
-```gml
-// Movement variables
-hspeed_max = 4;      // Maximum horizontal speed
-vspeed_max = 10;     // Maximum fall speed
-jump_force = -10;    // Jump strength (negative = up)
-gravity_force = 0.5; // How fast we fall
+### 5.2 Movement, Jumping, and Ground Collision
 
-// Current speeds
-hsp = 0;
-vsp = 0;
+Add these events, matching the pattern the earlier tutorials in this wiki
+already use:
 
-// State
-on_ground = false;
-```
+| Event | Action |
+|---|---|
+| Keyboard (held) → Left Arrow | Set Horizontal Speed to `-4` |
+| Keyboard (held) → Right Arrow | Set Horizontal Speed to `4` |
+| Keyboard: No Key | Set Horizontal Speed to `0` |
+| Key Press → Up Arrow | Set Vertical Speed to `-10` |
+| Collision with obj_ground | Stop Movement |
 
-### 5.2 Step Event - Movement and Physics
+Two details that make this feel right:
 
-**Event: Step**
-1. Add Event → Step → Step
-2. Add Action: **Control** → **Execute Code**
-
-```gml
-// === HORIZONTAL MOVEMENT ===
-// Get input
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-
-// Set horizontal speed
-hsp = move_input * hspeed_max;
-
-// === GRAVITY ===
-// Apply gravity
-vsp += gravity_force;
-
-// Cap fall speed
-if (vsp > vspeed_max) {
-    vsp = vspeed_max;
-}
-
-// === GROUND CHECK ===
-// Check if we're on ground (1 pixel below us)
-on_ground = place_meeting(x, y + 1, obj_ground);
-
-// === JUMPING ===
-// Jump if on ground and pressing up/space
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
-
-// === HORIZONTAL COLLISION ===
-if (place_meeting(x + hsp, y, obj_ground)) {
-    // Move as close as possible
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) {
-        x += sign(hsp);
-    }
-    hsp = 0;
-}
-x += hsp;
-
-// === VERTICAL COLLISION ===
-if (place_meeting(x, y + vsp, obj_ground)) {
-    // Move as close as possible
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) {
-        y += sign(vsp);
-    }
-    vsp = 0;
-}
-y += vsp;
-```
+- **No Key sets only horizontal speed to 0** — never use Stop Movement
+  there, because Stop Movement zeroes vertical speed too, and that would
+  cancel gravity every time the player lets go of a direction key.
+- **Key Press (not held)** is what makes Up a single jump impulse instead
+  of launching the player upward every frame it's held. **Stop Movement**
+  on landing then zeroes that impulse, so the player doesn't keep
+  climbing once it lands — the engine's own solid collision (Step 3
+  already made `obj_ground` Solid) stops the player from ever sinking into
+  the ground in the first place; the event here just clears the leftover
+  fall speed.
 
 ---
 
@@ -241,9 +199,13 @@ The flag ends the level when the player reaches it.
 
 **Event: Collision with obj_player**
 1. Add Event → Collision → obj_player
-2. Add Action: **Main2** → **Show Message**
-   - Message: `Level Complete! Score: ` + string(score)
-3. Add Action: **Main1** → **Next Room** (or **Restart Room** for single level)
+2. Add Action: **Output** → **Show Message**
+   - Message: `Level Complete!`
+3. Add Action: **Room** → **Next Room** (or **Restart Room** for single level)
+
+Show Message's text is a fixed string — it can't embed a live value like the
+score. The game controller's HUD (Step 9) already shows the score on
+screen throughout the level, so the player has already seen it.
 
 ---
 
@@ -256,15 +218,12 @@ The game controller displays the score.
 
 **Event: Draw**
 1. Add Event → Draw → Draw
-2. Add Action: **Control** → **Execute Code**
+2. Add Action: **Draw** → **Draw Text** (Text: `Score:`, X: `10`, Y: `10`)
+3. Add Action: **Draw** → **Draw Variable** (Variable: `score`, X: `70`, Y: `10`)
 
-```gml
-draw_set_color(c_white);
-draw_text(10, 10, "Score: " + string(score));
-
-// Optional: Draw lives
-// draw_text(10, 30, "Lives: " + string(global.lives));
-```
+Optional: add a **Draw Text** (`Lives:`, X `10`, Y `30`) + **Draw Variable**
+(`lives`, X `70`, Y `30`) pair the same way, once the Lives System
+enhancement below is in place.
 
 ---
 
@@ -322,96 +281,105 @@ X = Spike     === = Platform
 
 ### Add Variable Jump Height
 
-In the Step event, add this after jump code:
-```gml
-// Variable jump - release early for short jump
-if (vsp < 0 && !keyboard_check(vk_up) && !keyboard_check(vk_space)) {
-    vsp = max(vsp, jump_force / 2);
-}
+Add a **Step** event to `obj_player` with **Control** → **Execute Code**
+(real Python — `self` is the current instance, `keyboard` lets you check a
+held key by name):
+
+```python
+# Cut the jump short if Up is released while still rising
+if self.vspeed < 0 and not keyboard.check('up'):
+    self.vspeed = max(self.vspeed, -5)  # half of the -10 jump impulse
 ```
 
 ### Add Double Jump
 
-In Create event:
-```gml
-can_double_jump = true;
-```
+This can be done entirely with structured actions — no code needed.
 
-In Step event (modify jump section):
-```gml
-if (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space)) {
-    if (on_ground) {
-        vsp = jump_force;
-        can_double_jump = true;
-    } else if (can_double_jump) {
-        vsp = jump_force;
-        can_double_jump = false;
-    }
-}
-```
+**Event: Create** — Add Action: **Control** → **Set Variable** (Variable:
+`jumps_left`, Value: `2`)
+
+**Event: Collision with obj_ground** — after **Stop Movement**, add
+**Control** → **Set Variable** (Variable: `jumps_left`, Value: `2`) to
+refill both jumps on landing.
+
+Replace the existing **Key Press → Up Arrow** event's single action with
+three, in order:
+1. **Control** → **Test Variable** (Variable: `jumps_left`, Value: `0`,
+   Operation: `greater`)
+2. **Control** → **Start Block**
+3. **Move** → **Set Vertical Speed** (`-10`)
+4. **Control** → **Set Variable** (Variable: `jumps_left`, Value: `-1`,
+   **Relative** checked)
+5. **Control** → **End Block**
+
+The Start/End Block pair means both actions inside only run when the Test
+Variable above them is true — the same guarded-block pattern the Sokoban
+and Maze tutorials use for their own conditionals.
 
 ### Add Moving Platforms
 
 1. Create `obj_moving_platform` as a child of `obj_platform`
 
-**Event: Create**
-```gml
-move_distance = 100;
-start_x = x;
-hspeed = 2;
+**Event: Create** — Add Action: **Control** → **Execute Code**:
+
+```python
+self.start_x = self.x
+self.hspeed = 2
 ```
 
-**Event: Step**
-```gml
-if (x > start_x + move_distance) hspeed = -2;
-if (x < start_x) hspeed = 2;
+**Event: Step** — Add Action: **Control** → **Execute Code**:
+
+```python
+if self.x > self.start_x + 100:
+    self.hspeed = -2
+elif self.x < self.start_x:
+    self.hspeed = 2
 ```
 
 ### Add Enemy
 
 1. Create `obj_enemy` with a simple AI
 
-**Event: Create**
-```gml
-hspeed = 2;
-```
+**Event: Create** — Add Action: **Move** → **Start Moving Direction**
+(Directions: `right`, Speed: `2`)
 
-**Event: Collision with obj_ground (horizontal)**
-```gml
-hspeed = -hspeed;  // Reverse at walls
-```
+**Event: Collision with obj_ground** — Add Action: **Move** → **Reverse
+Horizontal** (turns around at walls; combined with `obj_ground` being
+Solid, the enemy can never walk off a platform's edge into the ground
+below or through a wall)
 
-**Event: Collision with obj_player**
-```gml
-// Check if player is above (stomping)
-if (other.y < y - 16) {
-    instance_destroy();
-    with (other) { vsp = jump_force / 2; }
-} else {
-    room_restart();  // Player dies
-}
-```
+**Event: Collision with obj_player** — this event fires on `obj_enemy`, so
+`self` is the enemy and `other` is the player. Add Action: **Control** →
+**Test Expression**, with nested Then/Else actions (the same pattern
+`plateforme_3`'s bundled sample uses for exactly this "stomp" check, just
+mirrored since the check lives on the enemy here instead of the player):
+   - Expression: `other.vspeed > 0 and other.y - other.vspeed < y - 16`
+   - Then Actions: **Control** → **Execute Code** with `other.vspeed = -5`
+     (a small bounce for the player — `set_vspeed` has no "applies to
+     other" option, so this is the one spot that needs a line of real
+     Python instead of a structured action), then **Instance** → **Destroy
+     Instance** (self)
+   - Else Actions: **Room** → **Restart Room** (the player dies)
+
+`other.vspeed > 0 and other.y - other.vspeed < y - 16` checks the
+*player's* position from before this frame's fall movement (using the
+player's own `vspeed`, since the player is the one falling), so a fast
+fall can't tunnel past the 16px stomp window in one step — see
+`plateforme_3`'s README for the full story of why the naive
+`other.y < y - 16` version is fragile.
 
 ### Add Lives System
 
-In `obj_game_controller` Create event:
-```gml
-if (!variable_global_exists("lives")) {
-    global.lives = 3;
-}
-```
+In `obj_game_controller`'s **Create** event, add **Score** → **Set Lives**
+(Value: `3`).
 
-When player dies:
-```gml
-global.lives -= 1;
-if (global.lives <= 0) {
-    show_message("Game Over!");
-    global.lives = 3;
-    room_goto_first();
-} else {
-    room_restart();
-}
-```
+When the player dies (the spike collision, and the enemy's Else branch
+above), replace **Restart Room** with **Score** → **Set Lives** (Value:
+`-1`, **Relative** checked) — the room restarts automatically because the
+**No More Lives** event only fires once lives actually reach 0. Add that
+event to `obj_game_controller`: **Other Events** → **No More Lives** →
+**Output** → **Show Message** (`Game Over!`) → **Room** → **Restart
+Game**.
 
 ---
 
@@ -420,10 +388,10 @@ if (global.lives <= 0) {
 | Problem | Solution |
 |---------|----------|
 | Player falls through ground | Check that `obj_ground` has "Solid" checked |
-| Player can't jump | Verify `on_ground` check is working; ground must be solid |
-| Player gets stuck in walls | Make sure collision code moves pixel by pixel |
-| Jump feels floaty | Increase `gravity_force` or make `jump_force` more negative |
-| Jump feels too weak | Decrease `gravity_force` or make `jump_force` more negative |
+| Player can't jump | Verify the Key Press → Up Arrow event exists and Set Vertical Speed is negative |
+| Player keeps rising after landing | Make sure Collision with obj_ground has a Stop Movement action |
+| Jump feels floaty | Increase Set Gravity's Gravity value, or make Set Vertical Speed's jump value more negative |
+| Jump feels too weak | Decrease Set Gravity's Gravity value, or make Set Vertical Speed's jump value more negative |
 
 ---
 
@@ -431,10 +399,9 @@ if (global.lives <= 0) {
 
 Congratulations! You've created a platformer game! You learned:
 
-- **Gravity physics** - Applying constant downward force
-- **Jump mechanics** - Setting negative vertical speed when on ground
-- **Ground detection** - Using `place_meeting` to check what's below
-- **Collision handling** - Moving pixel by pixel to walls
+- **Gravity physics** - Set Gravity applies a constant downward force every step
+- **Jump mechanics** - A Key Press (not held) event gives a single upward speed impulse
+- **Built-in solid collision** - The ground blocks the player automatically once marked Solid, no manual position-checking code needed
 - **Hazards** - Creating objects that restart the level
 - **Level design** - Building platforming challenges
 
