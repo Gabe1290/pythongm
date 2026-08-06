@@ -1,5 +1,59 @@
 # Reader-facing docs: AI-slop cleanup registry
 
+**Update 4 (same day, MAJOR — read this before touching any more
+`Tutorials/` files): 78 of the 160 Tutorials HTML files are dead,
+unreferenced orphans (32 English + 46 French).** Found while reading
+through `02_first_game/`: the folder has two parallel, differently-named
+sets of lesson files covering the same content — an older numbered-circle
+`.step` style (`02_create_sprites.html`, `03_create_objects.html`, ...)
+and a newer Blockly-block-diagram `.phase` style (`02_moving_player.html`,
+`03_falling_stars.html`, ...). Checked `Tutorials/index.json` and
+`Tutorials/fr/index.json` (the actual manifests the app reads) against
+what's on disk in every folder: **every tutorial entry in both index.json
+files has an explicit `pages` list naming only the newer set.** Verified
+against the loader code itself
+(`widgets/tutorial_panel.py:260-269` and `widgets/tutorial_dialog.py`'s
+equivalent): `open_tutorial_by_data` reads `tutorial_data.get('pages',
+[])`; the `folder.glob("*.html")` fallback only runs when a tutorial has
+**no** `pages` key at all, which never happens here — so the older-style
+files are **structurally unreachable through the IDE's tutorial UI**, in
+both languages. This is a repo-hygiene finding, not a prose-quality one:
+I nearly kept "polishing" some of these (spent one earlier edit today,
+the emoji fix on `06_maze/02_create_sprites.html`, on a file that turns
+out to be orphaned — harmless since it's still correct if the file is
+ever revived, but wasted effort).
+
+**Full orphan list, by folder** (English; the `fr/` folders have the same
+list plus `07_platformer`/`08_lunar_lander` each add their extra 6-7 files
+— matches the anomaly noted at the top of this doc originally, now
+explained: those aren't "more complete French lessons," they're orphans
+too):
+- `02_first_game/`: 02_create_sprites, 03_create_objects, 04_add_movement, 05_add_star, 06_scoring, 07_finishing
+- `03_pong/`: 02_create_sprites, 03_create_objects, 04_paddle_movement, 05_ball_movement, 06_scoring, 07_score_display, 08_room_setup
+- `04_breakout/`: 02_create_sprites, 03_create_objects, 04_paddle_movement, 05_ball_movement, 06_lives_system, 07_score_display, 08_room_setup
+- `05_sokoban/`: 02_create_sprites, 03_create_objects, 04_crate_behavior, 05_player_movement, 06_win_condition, 07_room_setup
+- `06_maze/`: 02_create_sprites, 03_create_objects, 04_player_movement, 05_collectibles, 06_game_controller, 07_room_setup
+- `fr/07_platformer/` + `fr/08_lunar_lander/` also each have 7 additional orphans beyond the above pattern (see the anomaly note, now superseded by this finding)
+
+**STOP reading/editing prose in any file not listed in the relevant
+`index.json`'s `pages` array before checking this section — verify
+against index.json first.** Live files needing further paragraph-level
+read-through: `01_getting_started/` (4, all read/clean), `02_first_game/`
+(5 live pages: 01_introduction✓read, 02_moving_player✓read,
+03_falling_stars✓read, 04_scoring — not yet read, 05_finishing — not yet
+read), and all of 03_pong/04_breakout/05_sokoban/06_maze/07_platformer/
+08_lunar_lander/09_catch_the_coins's live pages per their `pages` lists
+(most not yet individually read — only intro pages and a couple of
+game_controller pages checked so far).
+
+**Decision needed from the user before any deletion:** this doc doesn't
+delete the 78 orphans — that's a real, if easily-reversible (git history),
+destructive action affecting the repo's file count, and I don't know
+whether they're intentionally kept (e.g. as source material for a planned
+rework, or a deliberate "detailed alternate track" someone might wire up
+later) or just forgotten leftovers from restructuring the tutorial format.
+Flagging for the user to decide.
+
 **Update 3 (same day, follow-up sweep):** the H1-only entity grep in
 Update 2 missed emoji in `<h2>` and inline body text. A broader sweep
 (raw Unicode ranges + all HTML numeric entities, whole `Tutorials/` tree,
