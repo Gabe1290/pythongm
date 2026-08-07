@@ -4,82 +4,164 @@
 
 ---
 
-[Zurück zur Startseite](Home_de)
+> [Zurück zur Startseite](Home_de)
 
-In dieser Anleitung erstellen Sie ein einfaches Spiel, um die Grundlagen von pyGM zu erlernen.
+In diesem Tutorial erstellen wir ein einfaches Spiel „Sterne fangen", bei dem der Spieler sich bewegt, um fallende Sterne einzusammeln.
 
-## Überblick
+---
 
-Wir erstellen ein einfaches Spiel mit:
-- Einem Spieler-Charakter, der sich bewegen kann
-- Einem Sammelobjekt
-- Einem Punktesystem
+## Was Sie lernen werden
 
-## Schritt 1: Neues Projekt erstellen
+- Sprites erstellen
+- Objekte mit Events und Aktionen erstellen
+- Den Raum-Editor verwenden
+- Ihr Spiel ausführen und testen
 
-1. Starten Sie pyGM
-2. Wählen Sie „Neues Projekt"
-3. Geben Sie einen Projektnamen ein
-4. Wählen Sie einen Speicherort
+---
 
-## Schritt 2: Sprites erstellen
+## Schritt 1: Ein neues Projekt erstellen
 
-### Spieler-Sprite
-1. Rechtsklick auf „Sprites" im Ressourcenbaum
-2. Wählen Sie „Neues Sprite"
-3. Verwenden Sie den integrierten Editor oder importieren Sie ein Bild
-4. Benennen Sie es „spr_spieler"
+1. Starten Sie PyGameMaker
+2. Gehen Sie zu **Datei > Neues Projekt**
+3. Nennen Sie Ihr Projekt „CatchTheStars"
+4. Klicken Sie auf **Erstellen**
 
-### Sammelobjekt-Sprite
-1. Erstellen Sie ein weiteres Sprite
-2. Benennen Sie es „spr_muenze"
+---
 
-## Schritt 3: Objekte erstellen
+## Schritt 2: Das Spieler-Sprite erstellen
 
-### Spieler-Objekt
-1. Rechtsklick auf „Objekte"
-2. Wählen Sie „Neues Objekt"
-3. Benennen Sie es „obj_spieler"
-4. Weisen Sie „spr_spieler" als Sprite zu
+1. Rechtsklick auf **Sprites** im Ressourcenbaum
+2. Wählen Sie **Sprite erstellen**
+3. Nennen Sie es `spr_player`
+4. Klicken Sie auf **Sprite bearbeiten**, um den Sprite-Editor zu öffnen
+5. Zeichnen Sie eine einfache Figur (oder verwenden Sie ein farbiges 32×32-Rechteck)
+6. Klicken Sie auf **Speichern**
 
-### Bewegung hinzufügen
-1. Fügen Sie das Event „Tastendruck" hinzu
-2. Verwenden Sie Aktionen für Bewegung:
-   - Pfeiltaste hoch: Nach oben bewegen
-   - Pfeiltaste unten: Nach unten bewegen
-   - Pfeiltaste links: Nach links bewegen
-   - Pfeiltaste rechts: Nach rechts bewegen
+---
 
-### Münz-Objekt
-1. Erstellen Sie „obj_muenze"
-2. Weisen Sie „spr_muenze" zu
-3. Fügen Sie ein Kollisions-Event mit dem Spieler hinzu
-4. Aktion: Instanz zerstören und Punkte hinzufügen
+## Schritt 3: Das Stern-Sprite erstellen
 
-## Schritt 4: Raum erstellen
+1. Rechtsklick auf **Sprites** > **Sprite erstellen**
+2. Nennen Sie es `spr_star`
+3. Zeichnen Sie eine Sternform (oder verwenden Sie einen gelben Kreis)
+4. Klicken Sie auf **Speichern**
 
-1. Rechtsklick auf „Räume"
-2. Wählen Sie „Neuer Raum"
-3. Benennen Sie ihn „rm_level1"
-4. Platzieren Sie Objekte:
-   - Einen Spieler
-   - Mehrere Münzen
+---
 
-## Schritt 5: Spiel testen
+## Schritt 4: Das Spieler-Objekt erstellen
 
-1. Klicken Sie auf „Spiel ausführen" oder drücken Sie F5
-2. Testen Sie die Bewegung
-3. Sammeln Sie Münzen
+1. Rechtsklick auf **Objects** im Ressourcenbaum
+2. Wählen Sie **Objekt erstellen**
+3. Nennen Sie es `obj_player`
+4. Setzen Sie das **Sprite** auf `spr_player`
 
-## Erweiterungsideen
+### Tastaturereignisse hinzufügen
 
-- Hindernisse hinzufügen
-- Zeitsystem implementieren
-- Verschiedene Levels erstellen
-- Soundeffekte einbauen
+**Pfeiltaste links:**
+1. Klicken Sie auf **Add Event** > **Keyboard** > **Left**
+2. Aktion hinzufügen: **Set Horizontal Speed** mit Wert `-4`
+
+**Pfeiltaste rechts:**
+1. Klicken Sie auf **Add Event** > **Keyboard** > **Right**
+2. Aktion hinzufügen: **Set Horizontal Speed** mit Wert `4`
+
+**Keine Taste gedrückt:**
+1. Klicken Sie auf **Add Event** > **Keyboard** > **No Key**
+2. Aktion hinzufügen: **Set Horizontal Speed** mit Wert `0`
+
+---
+
+## Schritt 5: Das Stern-Objekt erstellen
+
+1. Rechtsklick auf **Objects** > **Objekt erstellen**
+2. Nennen Sie es `obj_star`
+3. Setzen Sie das **Sprite** auf `spr_star`
+
+### Create-Event hinzufügen
+1. Klicken Sie auf **Add Event** > **Create**
+2. Aktion hinzufügen: **Set Vertical Speed** mit Wert `3`
+3. Aktion hinzufügen: **Jump To Position** mit X `irandom(600)`, Y `20` —
+   `irandom(n)` wählt eine zufällige ganze Zahl von 0 bis `n`, sodass der
+   Stern bei jedem (Wieder-)Erscheinen an einer zufälligen Stelle nahe dem
+   oberen Rand eines 640 Pixel breiten Raums platziert wird
+
+### Outside-Room-Event hinzufügen
+1. Klicken Sie auf **Add Event** > **Other** > **Outside Room**
+2. Aktion hinzufügen: **Jump to Start Position**
+3. Aktion hinzufügen: **Set Score** mit Wert `1` und aktiviertem **Relative**
+
+### Kollision mit dem Spieler hinzufügen
+1. Klicken Sie auf **Add Event** > **Collision** > wählen Sie `obj_player`
+2. Aktion hinzufügen: **Set Score** mit Wert `10` und aktiviertem **Relative**
+3. Aktion hinzufügen: **Play Sound** (optional, falls Sie einen Sound haben)
+4. Aktion hinzufügen: **Jump to Random Position**
+
+---
+
+## Schritt 6: Den Raum erstellen
+
+1. Rechtsklick auf **Rooms** im Ressourcenbaum
+2. Wählen Sie **Raum erstellen**
+3. Nennen Sie ihn `room_game`
+4. Setzen Sie die Raumgröße auf **640 × 480**
+
+### Objekte platzieren
+1. Wählen Sie den **Objects**-Tab im Raum-Editor
+2. Klicken Sie auf `obj_player` und platzieren Sie ihn unten mittig im Raum
+3. Klicken Sie auf `obj_star` und platzieren Sie 5-10 Sterne oben verteilt
+
+---
+
+## Schritt 7: Den Punktestand anzeigen
+
+1. Öffnen Sie `obj_player`
+2. Klicken Sie auf **Add Event** > **Draw**
+3. Aktion hinzufügen: **Draw Score** an Position (10, 10)
+
+---
+
+## Schritt 8: Starten Sie Ihr Spiel!
+
+1. Drücken Sie **F5** oder gehen Sie zu **Build > Test Game**
+2. Verwenden Sie die linke und rechte Pfeiltaste zur Bewegung
+3. Fangen Sie die fallenden Sterne, um Ihren Punktestand zu erhöhen!
+
+---
+
+## Erweiterungen zum Ausprobieren
+
+### Leben hinzufügen
+1. Erstellen Sie ein „Game Over"-Objekt, das erscheint, wenn die Leben 0 erreichen
+2. Fügen Sie ein Kollisions-Event mit einem „schlechten" Objekt hinzu, das Leben abzieht
+
+### Levels hinzufügen
+1. Erstellen Sie mehrere Räume
+2. Verwenden Sie die Aktion **Next Room**, wenn der Punktestand einen Schwellenwert erreicht
+
+### Sound hinzufügen
+1. Importieren Sie Audiodateien in die Sounds-Ressource
+2. Fügen Sie Events die Aktion **Play Sound** hinzu
+
+### Visuelle Programmierung verwenden
+1. Öffnen Sie ein Objekt
+2. Klicken Sie auf den **Blockly**-Tab für Drag-and-Drop-Programmierung
+3. Bauen Sie dieselbe Logik visuell mit Blöcken
+
+---
+
+## Vollständige Projektstruktur
+
+Nach Abschluss dieses Tutorials sollte Ihr Projekt enthalten:
+
+- **Sprites:** spr_player, spr_star
+- **Objekte:** obj_player, obj_star
+- **Rooms:** room_game
+
+---
 
 ## Nächste Schritte
 
-- [Events und Aktionen vertiefen](Events_und_Aktionen_de)
-- [Visuelle Programmierung lernen](Visuelle_Programmierung_de)
-- [Spiele exportieren](Spiele_Exportieren_de)
+- [[Objekt_Editor_de]] - Erfahren Sie mehr über Objekt-Eigenschaften
+- [[Events_und_Aktionen_de]] - Erkunden Sie alle verfügbaren Events und Aktionen
+- [[Visuelle_Programmierung_de]] - Probieren Sie das Bauen mit Blockly-Blöcken
+- [[Spiele_Exportieren_de]] - Teilen Sie Ihr Spiel mit anderen

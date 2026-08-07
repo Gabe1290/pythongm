@@ -4,60 +4,151 @@
 
 ---
 
-[Zurück zur Startseite](Home_de)
+> [Zurück zur Startseite](Home_de)
 
-Willkommen bei pyGM! Diese Anleitung hilft Ihnen beim Einstieg in die Spieleentwicklung.
+Dieser Leitfaden hilft Ihnen, PyGameMaker auf Ihrem System zum Laufen zu bringen.
+
+---
+
+## Systemanforderungen
+
+- **Python** 3.10 oder höher
+- **Betriebssystem:** Windows, Linux oder macOS
+- **Festplattenspeicher:** ~500 MB für die Installation
+- **RAM:** mindestens 4 GB, 8 GB empfohlen
+
+---
 
 ## Installation
 
-### Voraussetzungen
-- Python 3.10 oder höher
-- pip (Python-Paketmanager)
+### Schritt 1: Python installieren
 
-### Installationsschritte
+Laden Sie Python 3.10+ von [python.org](https://www.python.org/downloads/) herunter und installieren Sie es. Aktivieren Sie unter Windows während der Installation „Add Python to PATH".
 
-1. **pyGM installieren**
-   ```bash
-   pip install pygm
-   ```
-
-2. **Installation überprüfen**
-   ```bash
-   pygm --version
-   ```
-
-## pyGM starten
-
-Nach der Installation können Sie pyGM starten:
+### Schritt 2: Das Repository klonen
 
 ```bash
-pygm
+git clone https://github.com/Gabe1290/pythongm.git
+cd pythongm
 ```
 
-Dies öffnet den visuellen Editor, in dem Sie mit der Erstellung Ihres Spiels beginnen können.
+Oder laden Sie die ZIP-Datei von der [Releases-Seite](https://github.com/Gabe1290/pythongm/releases) herunter.
 
-## Benutzeroberfläche
+### Schritt 3: Eine virtuelle Umgebung erstellen
 
-### Hauptbereiche
-- **Linkes Panel**: Ressourcenverwaltung (Sprites, Objekte, Räume)
-- **Mittlerer Bereich**: Editor-Arbeitsfläche
-- **Rechtes Panel**: Eigenschaften und Einstellungen
+Eine virtuelle Umgebung hält die Abhängigkeiten von PyGameMaker isoliert:
 
-### Grundlegende Steuerung
-- **Mausrad**: Ansicht zoomen
-- **Mittlere Maustaste**: Ansicht verschieben
-- **Linksklick**: Elemente auswählen/platzieren
-- **Rechtsklick**: Kontextmenü öffnen
+```bash
+python -m venv venv
+```
+
+Aktivieren Sie die virtuelle Umgebung:
+
+**Windows:**
+```bash
+venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+source venv/bin/activate
+```
+
+### Schritt 4: Abhängigkeiten installieren
+
+```bash
+pip install -r requirements.txt
+```
+
+### Schritt 5: PyGameMaker starten
+
+```bash
+python main.py
+```
+
+---
+
+## Erster Start
+
+Beim ersten Start von PyGameMaker sehen Sie:
+
+1. **Menüleiste** — die Menüs Datei, Bearbeiten, Assets, Build, Werkzeuge und Hilfe
+2. **Ressourcenbaum** — linkes Panel mit den Projekt-Assets (Sprites, Sounds, Hintergründe, Objekte, Räume)
+3. **Arbeitsbereich** — zentraler Bereich zum Bearbeiten von Assets
+4. **Eigenschaften-Panel** — rechtes Panel für Asset-Eigenschaften
+
+---
+
+## Ihr erstes Projekt erstellen
+
+1. Gehen Sie zu **Datei > Neues Projekt**
+2. Wählen Sie einen Speicherort und einen Namen für Ihr Projekt
+3. Ein neuer Projektordner wird mit der Standardstruktur erstellt
+
+---
+
+## Projektstruktur
+
+Jedes PyGameMaker-Projekt enthält:
+
+```
+mein_projekt/
+├── project.json      # Projekteinstellungen
+├── sprites/          # Sprite-Bilder
+├── sounds/           # Audiodateien
+├── backgrounds/      # Hintergrundbilder
+├── objects/          # Spielobjekt-Definitionen
+├── rooms/            # Level-Layouts
+├── fonts/            # Schriftdateien
+├── scripts/          # Benutzerdefinierte Skripte
+└── data/             # Benutzerdefinierte Datendateien
+```
+
+---
+
+## Sprache ändern
+
+PyGameMaker unterstützt mehrere Sprachen:
+
+1. Gehen Sie zu **Werkzeuge > Sprache**
+2. Wählen Sie Ihre bevorzugte Sprache aus dem Menü
+3. Starten Sie PyGameMaker neu, um die Änderung zu übernehmen
+
+Verfügbare Sprachen: Englisch, Französisch, Deutsch, Italienisch, Spanisch, Portugiesisch, Slowenisch, Ukrainisch, Russisch
+
+---
 
 ## Nächste Schritte
 
-- [Ihr erstes Spiel erstellen](Erstes_Spiel_de)
-- [Objekt-Editor kennenlernen](Objekt_Editor_de)
-- [Raum-Editor erkunden](Raum_Editor_de)
+- [[Erstes_Spiel_de]] - Bauen Sie Schritt für Schritt ein einfaches Spiel
+- [[Objekt_Editor_de]] - Lernen Sie, wie man Spielobjekte erstellt
+- [[Raum_Editor_de]] - Gestalten Sie Ihre Spiellevel
+- [[Events_und_Aktionen_de]] - Verstehen Sie die Spiellogik
+
+---
+
+## Fehlerbehebung
+
+### Python wird nicht gefunden
+Stellen Sie sicher, dass Python installiert und zum PATH hinzugefügt ist. Prüfen Sie dies mit `python --version`.
+
+### Fehlende Abhängigkeiten
+Bei Importfehlern versuchen Sie, die Abhängigkeiten neu zu installieren:
+```bash
+pip install -r requirements.txt --force-reinstall
+```
+
+### Anzeigeprobleme
+Unter Linux benötigt Qt (das GUI-Framework, auf dem PyGameMaker aufbaut) einige
+Systembibliotheken, die von `pip` nicht mitinstalliert werden:
+```bash
+sudo apt-get install -y libegl1 libxkbcommon0 libxcb-cursor0 \
+    libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libasound2-dev libgl1-mesa-dev
+```
+
+---
 
 ## Hilfe erhalten
 
-Wenn Sie Probleme haben:
-- Lesen Sie die [FAQ](FAQ_de)
-- Besuchen Sie unsere Community-Foren
-- Melden Sie Fehler auf GitHub
+- [GitHub Issues](https://github.com/Gabe1290/pythongm/issues) - Fehler melden oder Funktionen anfragen
+- [[FAQ_de]] - Häufige Fragen und Antworten

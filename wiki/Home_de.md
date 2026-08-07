@@ -202,11 +202,8 @@ projektname/
 
 ## Beitragen
 
-Beiträge sind willkommen! Siehe unsere Beitragsrichtlinien für:
-- Fehlerberichte und Funktionsanfragen
-- Code-Beiträge
-- Übersetzungen
-- Dokumentationsverbesserungen
+Fehlerberichte, Funktionsanfragen und Pull Requests sind im
+[Issue-Tracker](https://github.com/Gabe1290/pythongm/issues) willkommen.
 
 ---
 
