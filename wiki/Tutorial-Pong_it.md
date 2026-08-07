@@ -119,8 +119,8 @@ L'oggetto muro crea confini nella parte superiore e inferiore dell'area di gioco
 
 **Evento: Collisione con obj_wall**
 1. Aggiungi Evento → Collisione → obj_wall
-2. Aggiungi Azione: **Movimento** → **Rimbalza Contro Oggetti**
-3. Seleziona "Contro oggetti solidi"
+2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
+   necessaria — rimbalza sempre dagli oggetti solidi)
 
 ### 4.2 Racchetta Destra (Giocatore 2)
 
@@ -152,8 +152,8 @@ L'oggetto muro crea confini nella parte superiore e inferiore dell'area di gioco
 
 **Evento: Collisione con obj_wall**
 1. Aggiungi Evento → Collisione → obj_wall
-2. Aggiungi Azione: **Movimento** → **Rimbalza Contro Oggetti**
-3. Seleziona "Contro oggetti solidi"
+2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
+   necessaria — rimbalza sempre dagli oggetti solidi)
 
 ---
 
@@ -164,24 +164,25 @@ L'oggetto muro crea confini nella parte superiore e inferiore dell'area di gioco
 
 **Evento: Creazione**
 1. Aggiungi Evento → Creazione
-2. Aggiungi Azione: **Movimento** → **Inizia a Muoverti in Direzione**
-3. Scegli una direzione diagonale (non dritta verso l'alto o il basso)
+2. Aggiungi Azione: **Movimento** → **Inizia a muoverti (direzione)**
+3. Scegli una casella diagonale nel selettore di direzione 3x3 (non
+   dritta verso l'alto o il basso)
 4. Imposta la velocità su `6`
 
 **Evento: Collisione con obj_paddle_left**
 1. Aggiungi Evento → Collisione → obj_paddle_left
-2. Aggiungi Azione: **Movimento** → **Rimbalza Contro Oggetti**
-3. Seleziona "Contro oggetti solidi"
+2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
+   necessaria — rimbalza sempre dagli oggetti solidi)
 
 **Evento: Collisione con obj_paddle_right**
 1. Aggiungi Evento → Collisione → obj_paddle_right
-2. Aggiungi Azione: **Movimento** → **Rimbalza Contro Oggetti**
-3. Seleziona "Contro oggetti solidi"
+2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
+   necessaria — rimbalza sempre dagli oggetti solidi)
 
 **Evento: Collisione con obj_wall**
 1. Aggiungi Evento → Collisione → obj_wall
-2. Aggiungi Azione: **Movimento** → **Rimbalza Contro Oggetti**
-3. Seleziona "Contro oggetti solidi"
+2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
+   necessaria — rimbalza sempre dagli oggetti solidi)
 
 ---
 
@@ -205,22 +206,30 @@ I goal sono aree invisibili dietro ogni racchetta. Quando la palla entra in un g
 
 ### 6.3 Aggiungi gli Eventi di Collisione Goal alla Palla
 
+`global.p1score`/`global.p2score` sono variabili con nome personalizzato,
+una per giocatore — l'azione integrata **Imposta Punteggio** non va bene
+qui, perché scrive sempre il punteggio unico integrato, senza modo di
+puntare a un nome di variabile. **Imposta Variabile** è l'azione reale
+per una variabile con nome personalizzato e supporta un ambito `global`:
+
 Torna a `obj_ball` e aggiungi questi eventi:
 
 **Evento: Collisione con obj_goal_left**
 1. Aggiungi Evento → Collisione → obj_goal_left
 2. Aggiungi Azione: **Movimento** → **Salta alla Posizione di Inizio** (ripristina la palla)
-3. Aggiungi Azione: **Punteggio** → **Imposta Punteggio**
-   - Variabile: `global.p2score`
+3. Aggiungi Azione: **Controllo** → **Imposta Variabile**
+   - Variabile: `p2score`
    - Valore: `1`
+   - Ambito: `global`
    - Spunta "Relativo" (aggiunge 1 al punteggio attuale)
 
 **Evento: Collisione con obj_goal_right**
 1. Aggiungi Evento → Collisione → obj_goal_right
 2. Aggiungi Azione: **Movimento** → **Salta alla Posizione di Inizio**
-3. Aggiungi Azione: **Punteggio** → **Imposta Punteggio**
-   - Variabile: `global.p1score`
+3. Aggiungi Azione: **Controllo** → **Imposta Variabile**
+   - Variabile: `p1score`
    - Valore: `1`
+   - Ambito: `global`
    - Spunta "Relativo"
 
 ---
@@ -232,12 +241,10 @@ Torna a `obj_ball` e aggiungi questi eventi:
 
 **Evento: Creazione**
 1. Aggiungi Evento → Creazione
-2. Aggiungi Azione: **Punteggio** → **Imposta Punteggio**
-   - Variabile: `global.p1score`
-   - Valore: `0`
-3. Aggiungi Azione: **Punteggio** → **Imposta Punteggio**
-   - Variabile: `global.p2score`
-   - Valore: `0`
+2. Aggiungi Azione: **Controllo** → **Imposta Variabile**
+   - Variabile: `p1score`, Valore: `0`, Ambito: `global`
+3. Aggiungi Azione: **Controllo** → **Imposta Variabile**
+   - Variabile: `p2score`, Valore: `0`, Ambito: `global`
 
 **Evento: Disegna**
 1. Aggiungi Evento → Disegna
@@ -300,9 +307,20 @@ Torna a `obj_ball` e aggiungi questi eventi:
 ## Miglioramenti (Opzionali)
 
 ### Aumento della Velocità
-Rendi la palla più veloce ogni volta che colpisce una racchetta aggiungendo agli eventi di collisione:
-- Dopo l'azione di rimbalzo, aggiungi **Movimento** → **Imposta Velocità**
-- Imposta la velocità su `speed + 0.5` con "Relativo" spuntato
+Rendi la palla più veloce ogni volta che colpisce una racchetta. `speed`
+non è utilizzabile direttamente qui — in questo motore è la velocità di
+*animazione* dello sprite, non la velocità di movimento — quindi
+tieni traccia della velocità della palla in una variabile personalizzata:
+
+1. Nell'evento **Creazione** di `obj_ball`, aggiungi **Controllo** →
+   **Imposta Variabile** (Variabile: `ball_speed`, Valore: `6`) subito
+   dopo l'azione Inizia a muoverti.
+2. In ciascun evento di collisione con una racchetta, dopo l'azione
+   **Rimbalza**, aggiungi **Controllo** → **Imposta Variabile**
+   (Variabile: `ball_speed`, Valore: `0.5`, "Relativo" spuntato), poi
+   **Movimento** → **Imposta Velocità** con Valore `self.ball_speed` per
+   applicare la nuova velocità mantenendo la direzione attuale (Rimbalza
+   l'ha già invertita).
 
 ### Effetti Sonori
 Aggiungi suoni quando:
@@ -342,7 +360,7 @@ Complimenti! Hai creato un gioco Pong completo per due giocatori! Hai imparato:
 
 ## Vedi Anche
 
-- [Beginner Preset](Beginner-Preset) - Panoramica delle funzionalità per principianti
+- [Beginner Preset](Beginner-Preset_it) - Panoramica delle funzionalità per principianti
 - [Tutorial: Breakout](Tutorial-Breakout_it) - Crea un gioco brick breaker
 - [Event Reference](Event-Reference_it) - Documentazione completa degli eventi
 - [Full Action Reference](Full-Action-Reference_it) - Tutte le azioni disponibili
