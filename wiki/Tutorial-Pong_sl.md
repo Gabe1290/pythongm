@@ -45,7 +45,7 @@ Preden začnemo, razumejmo, kaj potrebujemo:
 2. Poimenuj ga `spr_ball`
 3. Klikni **Uredi lik** da odpreš urejevalnik likov
 4. Nariši majhen bel krog (približno 16x16 pikslov)
-5. Klikni **V redu** da shranišs
+5. Klikni **V redu** da shraniš
 
 ### 2.2 Liki vesla
 
@@ -53,25 +53,25 @@ Ustvarili bomo dve vesli - eno za vsakega igralca:
 
 **Levo veslo (Igralec 1):**
 1. Ustvari nov lik imenovan `spr_paddle_left`
-2. Nariši dolgo, tanko pravokotnik upognjeno kot oklepaj ")" - priporočena modra barva
+2. Nariši dolg, tanek pravokotnik, upognjen kot oklepaj ")" - priporočena modra barva
 3. Velikost: približno 16x64 pikslov
 
 **Desno veslo (Igralec 2):**
 1. Ustvari nov lik imenovan `spr_paddle_right`
-2. Nariši dolgo, tanko pravokotnik upognjeno kot oklepaj "(" - priporočena rdeča barva
+2. Nariši dolg, tanek pravokotnik, upognjen kot oklepaj "(" - priporočena rdeča barva
 3. Velikost: približno 16x64 pikslov
 
 ### 2.3 Lik stene
 
 1. Ustvari nov lik imenovan `spr_wall`
 2. Nariši trdno pravokotnik (siva ali bela barva)
-3. Velikost: 32x32 pikslov (raztiegnili ga bomo v sobi)
+3. Velikost: 32x32 pikslov (raztegnili ga bomo v sobi)
 
 ### 2.4 Lik cilja (Nevidno)
 
 1. Ustvari nov lik imenovan `spr_goal`
 2. Naredi ga 32x32 pikslov
-3. Pusti ga previden ali naredi trdno barvo (v igri bo nevidna)
+3. Pusti ga prosojnega ali naredi trdno barvo (v igri bo nevidna)
 
 ---
 
@@ -119,8 +119,8 @@ Objekt stene ustvari meje na vrhu in dnu igrišča.
 
 **Dogodek: Trčenje z obj_wall**
 1. Dodaj dogodek → Trčenje → obj_wall
-2. Dodaj akcijo: **Gibanje** → **Odbij od predmetov**
-3. Izberi "Proti trdnim predmetom"
+2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
+   potrebna — vedno se odbije od trdnih predmetov)
 
 ### 4.2 Desno veslo (Igralec 2)
 
@@ -152,8 +152,8 @@ Objekt stene ustvari meje na vrhu in dnu igrišča.
 
 **Dogodek: Trčenje z obj_wall**
 1. Dodaj dogodek → Trčenje → obj_wall
-2. Dodaj akcijo: **Gibanje** → **Odbij od predmetov**
-3. Izberi "Proti trdnim predmetom"
+2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
+   potrebna — vedno se odbije od trdnih predmetov)
 
 ---
 
@@ -164,24 +164,24 @@ Objekt stene ustvari meje na vrhu in dnu igrišča.
 
 **Dogodek: Ustvari**
 1. Dodaj dogodek → Ustvari
-2. Dodaj akcijo: **Gibanje** → **Začni se premikati v smeri**
-3. Izberi diagonalno smer (ne ravno navzgor ali navzdol)
+2. Dodaj akcijo: **Gibanje** → **Začni se premikati (smer)**
+3. Izberi diagonalno polje v 3x3 izbirniku smeri (ne ravno navzgor ali navzdol)
 4. Nastavi hitrost na `6`
 
 **Dogodek: Trčenje z obj_paddle_left**
 1. Dodaj dogodek → Trčenje → obj_paddle_left
-2. Dodaj akcijo: **Gibanje** → **Odbij od predmetov**
-3. Izberi "Proti trdnim predmetom"
+2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
+   potrebna — vedno se odbije od trdnih predmetov)
 
 **Dogodek: Trčenje z obj_paddle_right**
 1. Dodaj dogodek → Trčenje → obj_paddle_right
-2. Dodaj akcijo: **Gibanje** → **Odbij od predmetov**
-3. Izberi "Proti trdnim predmetom"
+2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
+   potrebna — vedno se odbije od trdnih predmetov)
 
 **Dogodek: Trčenje z obj_wall**
 1. Dodaj dogodek → Trčenje → obj_wall
-2. Dodaj akcijo: **Gibanje** → **Odbij od predmetov**
-3. Izberi "Proti trdnim predmetom"
+2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
+   potrebna — vedno se odbije od trdnih predmetov)
 
 ---
 
@@ -193,7 +193,7 @@ Cilji so nevidni predeli za vsakim veslom. Ko žoga vstopi v cilj, nasprotnik zb
 
 1. Ustvari nov predmet imenovan `obj_goal_left`
 2. Nastavi lik na `spr_goal`
-3. **Odkljukaj "Vidna"** - cilj bi moral biti nevidna
+3. **Odkljukaj "Vidna"** - cilj bi moral biti neviden
 4. **Označite okence "Trdna"**
 
 ### 6.2 Desni cilj
@@ -205,23 +205,31 @@ Cilji so nevidni predeli za vsakim veslom. Ko žoga vstopi v cilj, nasprotnik zb
 
 ### 6.3 Dodaj dogodke trčenja ciljev v žogo
 
+`global.p1score`/`global.p2score` sta spremenljivki po meri, ena za
+vsakega igralca — vgrajena akcija **Set Score** tukaj ne ustreza, saj
+vedno zapiše enotni vgrajeni rezultat, brez možnosti, da bi kazala na
+ime spremenljivke. **Set Variable** je prava akcija za spremenljivko
+po meri in podpira obseg `global`:
+
 Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 
 **Dogodek: Trčenje z obj_goal_left**
 1. Dodaj dogodek → Trčenje → obj_goal_left
 2. Dodaj akcijo: **Gibanje** → **Skoči na začetni položaj** (ponastavi žogo)
-3. Dodaj akcijo: **Točke** → **Nastavi točke**
-   - Spremenljivka: `global.p2score`
+3. Dodaj akcijo: **Nadzor** → **Set Variable**
+   - Spremenljivka: `p2score`
    - Vrednost: `1`
-   - Označite "Relativna" (dodaja 1 trenutnim točkam)
+   - Obseg: `global`
+   - Označite "Relative" (dodaja 1 trenutnim točkam)
 
 **Dogodek: Trčenje z obj_goal_right**
 1. Dodaj dogodek → Trčenje → obj_goal_right
 2. Dodaj akcijo: **Gibanje** → **Skoči na začetni položaj**
-3. Dodaj akcijo: **Točke** → **Nastavi točke**
-   - Spremenljivka: `global.p1score`
+3. Dodaj akcijo: **Nadzor** → **Set Variable**
+   - Spremenljivka: `p1score`
    - Vrednost: `1`
-   - Označite "Relativna"
+   - Obseg: `global`
+   - Označite "Relative"
 
 ---
 
@@ -232,12 +240,10 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 
 **Dogodek: Ustvari**
 1. Dodaj dogodek → Ustvari
-2. Dodaj akcijo: **Točke** → **Nastavi točke**
-   - Spremenljivka: `global.p1score`
-   - Vrednost: `0`
-3. Dodaj akcijo: **Točke** → **Nastavi točke**
-   - Spremenljivka: `global.p2score`
-   - Vrednost: `0`
+2. Dodaj akcijo: **Nadzor** → **Set Variable**
+   - Spremenljivka: `p1score`, Vrednost: `0`, Obseg: `global`
+3. Dodaj akcijo: **Nadzor** → **Set Variable**
+   - Spremenljivka: `p2score`, Vrednost: `0`, Obseg: `global`
 
 **Dogodek: Risanje**
 1. Dodaj dogodek → Risanje
@@ -268,14 +274,14 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 
 **Postavi predmete:**
 
-1. **Stene**: Postavi `obj_wall` naprave vzdolž zgornjih in spodnjih robov sobe
+1. **Stene**: Postavi instance `obj_wall` vzdolž zgornjih in spodnjih robov sobe
 2. **Levo veslo**: Postavi `obj_paddle_left` blizu levega roba, naravnano navpično
 3. **Desno veslo**: Postavi `obj_paddle_right` blizu desnega roba, naravnano navpično
 4. **Žoga**: Postavi `obj_ball` v sredino sobe
 5. **Cilji**:
-   - Postavi `obj_goal_left` naprave vzdolž levega roba (za veslom)
-   - Postavi `obj_goal_right` naprave vzdolž desnega roba
-6. **Prikaz točk**: Postavi `obj_score` kjerkoli (nima lika, samo narisuje besedilo)
+   - Postavi instance `obj_goal_left` vzdolž levega roba (za veslom)
+   - Postavi instance `obj_goal_right` vzdolž desnega roba
+6. **Prikaz točk**: Postavi `obj_score` kjerkoli (nima lika, samo izrisuje besedilo)
 
 **Primer razporeditve sobe:**
 ```
@@ -290,9 +296,9 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 
 ## Korak 9: Testiraj svojo igro!
 
-1. Klikni **Zaženi** ali pritisni **F5** da testirate svojo igro
+1. Klikni **Zaženi** ali pritisni **F5** da testiraš svojo igro
 2. Igralec 1 uporablja **W** (gor) in **S** (dol)
-3. Igralec 2 uporablja **Gornji puščico** in **Spodnji puščico**
+3. Igralec 2 uporablja **Gornjo puščico** in **Spodnjo puščico**
 4. Poskusi zadeti žogo čez veslo nasprotnika!
 
 ---
@@ -300,9 +306,18 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 ## Izboljšave (Izbirne)
 
 ### Povečanje hitrosti
-Naredi žogo hitrejšo vsak put, ko zadene veslo z dodajanjem v dogodke trčenja:
-- Po akciji odbijanja, dodaj **Gibanje** → **Nastavi hitrost**
-- Nastavi hitrost na `speed + 0.5` z označenim "Relativna"
+Naredi žogo hitrejšo vsakič, ko zadene veslo. `speed` tukaj ni
+neposredno uporabna — v tem pogonu je to hitrost *animacije* spritea,
+ne hitrost gibanja — zato hitrost žoge sledi v spremenljivki po meri:
+
+1. V dogodku **Ustvari** za `obj_ball` dodaj **Nadzor** → **Set
+   Variable** (Spremenljivka: `ball_speed`, Vrednost: `6`) takoj za
+   akcijo Začni se premikati.
+2. V vsakem dogodku trčenja z veslom, po akciji **Odbij se**, dodaj
+   **Nadzor** → **Set Variable** (Spremenljivka: `ball_speed`,
+   Vrednost: `0.5`, označeno "Relative"), nato **Gibanje** → **Nastavi
+   hitrost** z vrednostjo `self.ball_speed`, da uveljaviš novo hitrost
+   ob ohranitvi trenutne smeri (Odbij se jo je že obrnil).
 
 ### Zvočni efekti
 Dodaj zvoke kadar:
@@ -340,9 +355,9 @@ Dodaj preverjanje v dogodek risanja:
 
 ---
 
-## Vidi tudi
+## Glej tudi
 
 - [Prednastavka za začetnike](Beginner-Preset_sl) - Pregled začetniških lastnosti
-- [Vadnica: Breakout](Tutorial-Breakout_sl) - Ustvari igro s preslikanim opekam
-- [Odporedilo dogodkov](Event-Reference_sl) - Popolna dokumentacija dogodkov
-- [Popolno opredilo akcij](Full-Action-Reference_sl) - Vse razpoložljive akcije
+- [Vadnica: Breakout](Tutorial-Breakout_sl) - Ustvari igro razbijanja opek
+- [Referenca Dogodkov](Event-Reference_sl) - Popolna dokumentacija dogodkov
+- [Popolna Referenca Akcij](Full-Action-Reference_sl) - Vse razpoložljive akcije
