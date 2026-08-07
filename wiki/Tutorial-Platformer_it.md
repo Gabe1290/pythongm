@@ -32,7 +32,7 @@ In questo tutorial, creerai un **Gioco Platform** - un gioco d'azione a scorrime
 5. Raccogli monete per punti
 6. Raggiungi la bandiera per completare il livello
 
-### Cosa Ci Serve
+### Quello che ci serve
 
 | Elemento | Scopo |
 |----------|-------|
@@ -78,51 +78,70 @@ In questo tutorial, creerai un **Gioco Platform** - un gioco d'azione a scorrime
 
 ---
 
-## Passo 3-4: Creare Oggetti Terreno e Piattaforma
+## Passo 3: Creare l'Oggetto Terreno
 
-**obj_ground** e **obj_platform**: Imposta sprite, spunta "Solido"
+Il terreno è una piattaforma solida che impedisce al giocatore di cadere.
+
+1. Fai clic destro su **Objects** e seleziona **Create Object**
+2. Nominalo `obj_ground`
+3. Imposta lo sprite su `spr_ground`
+4. **Seleziona la casella "Solid"**
+5. Non servono eventi
+
+---
+
+## Passo 4: Creare l'Oggetto Piattaforma
+
+Le piattaforme funzionano come il terreno ma possono essere posizionate in aria.
+
+1. Crea un nuovo oggetto chiamato `obj_platform`
+2. Imposta lo sprite su `spr_platform`
+3. **Seleziona la casella "Solid"**
 
 ---
 
 ## Passo 5: Creare l'Oggetto Giocatore
 
-### Evento Create
-```gml
-hspeed_max = 4;
-vspeed_max = 10;
-jump_force = -10;
-gravity_force = 0.5;
-hsp = 0;
-vsp = 0;
-on_ground = false;
-```
+Il giocatore è l'oggetto più complesso, con gravità, salto e movimento.
 
-### Evento Step
-```gml
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-hsp = move_input * hspeed_max;
+1. Crea un nuovo oggetto chiamato `obj_player`
+2. Imposta lo sprite su `spr_player`
 
-vsp += gravity_force;
-if (vsp > vspeed_max) vsp = vspeed_max;
+### 5.1 Gravità
 
-on_ground = place_meeting(x, y + 1, obj_ground);
+**Event: Create** — Add Action: **Move** → **Set Gravity**
+(Direction: `270`, Gravity: `0.5`) — 270° significa dritto verso il
+basso; il valore viene aggiunto alla velocità verticale del giocatore ad
+ogni frame, quindi il giocatore accelera verso il basso da solo a
+partire da qui.
 
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
+### 5.2 Movimento, Salto e Collisione col Terreno
 
-if (place_meeting(x + hsp, y, obj_ground)) {
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) x += sign(hsp);
-    hsp = 0;
-}
-x += hsp;
+Aggiungi questi eventi, seguendo lo stesso schema già usato dai tutorial
+precedenti di questo wiki:
 
-if (place_meeting(x, y + vsp, obj_ground)) {
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) y += sign(vsp);
-    vsp = 0;
-}
-y += vsp;
-```
+| Evento | Azione |
+|---|---|
+| Keyboard (held) → Left Arrow | Set Horizontal Speed a `-4` |
+| Keyboard (held) → Right Arrow | Set Horizontal Speed a `4` |
+| Keyboard: No Key | Set Horizontal Speed a `0` |
+| Key Press → Up Arrow | Set Vertical Speed a `-10` |
+| Collision with obj_ground | Stop Movement |
+
+Due dettagli che rendono tutto naturale:
+
+- **No Key imposta SOLO la velocità orizzontale a 0** — non usare mai
+  Stop Movement qui, perché Stop Movement azzera anche la velocità
+  verticale, il che annullerebbe la gravità ogni volta che il giocatore
+  rilascia un tasto direzionale.
+- **Key Press (non held)** è ciò che rende Up un singolo impulso di
+  salto, invece di spingere il giocatore verso l'alto ad ogni frame in
+  cui è tenuto premuto. **Stop Movement** all'atterraggio annulla poi
+  quell'impulso, così il giocatore non continua a salire dopo essere
+  atterrato — la collisione solida integrata del motore (il Passo 3 ha
+  già reso `obj_ground` Solid) impedisce già che il giocatore sprofondi
+  nel terreno; l'evento qui si limita ad azzerare la velocità di caduta
+  residua.
 
 ---
 
@@ -130,32 +149,31 @@ y += vsp;
 
 **obj_coin** - Collisione con obj_player: Punteggio +10, distruggi Self
 
-**obj_spike** - Collisione con obj_player: Mostra messaggio, riavvia room
+**obj_spike** - Collisione con obj_player: Mostra messaggio, riavvia la stanza
 
-**obj_flag** - Collisione con obj_player: Mostra messaggio, prossima room
+**obj_flag** - Collisione con obj_player: Mostra messaggio, stanza successiva
 
 ---
 
 ## Passo 9: Progetta il Tuo Livello
 
 1. Crea `room_level1` (800x480)
-2. Abilita snap alla griglia (32x32)
-3. Posiziona terreno in basso, piattaforme in aria
+2. Abilita lo snap alla griglia (32x32)
+3. Posiziona il terreno in basso, le piattaforme in aria
 4. Aggiungi monete, spuntoni
-5. Metti bandiera alla fine, giocatore all'inizio
+5. Metti la bandiera alla fine, il giocatore all'inizio
 
 ---
 
 ## Cosa Hai Imparato
 
-- **Fisica della gravità** - Forza costante verso il basso
-- **Meccaniche di salto** - Velocità verticale negativa
-- **Rilevamento del terreno** - Usare `place_meeting`
-- **Gestione delle collisioni** - Muoversi pixel per pixel
+- **Fisica della gravità** - Set Gravity applica una forza costante verso il basso ad ogni frame
+- **Meccaniche di salto** - Un evento Key Press (non held) dà un singolo impulso di velocità verso l'alto
+- **Collisione solida integrata** - Il terreno blocca il giocatore automaticamente una volta marcato Solid, senza codice manuale di controllo posizione
 
 ---
 
 ## Vedi Anche
 
-- [Tutorial](Tutorials_it) - Altri tutorial di giochi
+- [Tutorials](Tutorials_it) - Altri tutorial di giochi
 - [Tutorial: Labirinto](Tutorial-Maze_it) - Creare un gioco del labirinto

@@ -18,7 +18,8 @@ In questo tutorial, creerai un gioco di puzzle **Sokoban** - un classico rompica
 - Progettazione di livelli per giochi di puzzle
 
 **Difficoltà:** Principiante
-**Preset:** Beginner Preset
+**Preset:** Preset Intermedio (la meccanica di spinta e il movimento su
+griglia usati qui non sono inclusi nel preset Principiante)
 
 ---
 
@@ -31,7 +32,7 @@ In questo tutorial, creerai un gioco di puzzle **Sokoban** - un classico rompica
 4. Le casse non possono essere spinte attraverso muri o altre casse
 5. Il livello è completato quando tutte le casse si trovano nei punti bersaglio
 
-### Quello che abbiamo bisogno
+### Quello che ci serve
 
 | Elemento | Scopo |
 |---------|---------|
@@ -49,9 +50,9 @@ Tutti gli sprite devono avere la stessa dimensione (32x32 pixel funziona bene) p
 
 ### 2.1 Sprite del giocatore
 
-1. Nell'**Albero delle risorse**, fai clic destro su **Sprite** e seleziona **Crea sprite**
+1. Nell'**Albero delle risorse**, fai clic destro su **Sprites** e seleziona **Create Sprite**
 2. Nominalo `spr_player`
-3. Fai clic su **Modifica sprite** per aprire l'editor degli sprite
+3. Fai clic su **Edit Sprite** per aprire l'editor degli sprite
 4. Disegna un personaggio semplice (forma di una persona o di un robot)
 5. Usa un colore distinto come blu o verde
 6. Dimensione: 32x32 pixel
@@ -97,10 +98,10 @@ Tutti gli sprite devono avere la stessa dimensione (32x32 pixel funziona bene) p
 
 Il muro è l'oggetto più semplice - blocca semplicemente il movimento.
 
-1. Fai clic destro su **Oggetti** e seleziona **Crea oggetto**
+1. Fai clic destro su **Objects** e seleziona **Create Object**
 2. Nominalo `obj_wall`
 3. Imposta lo sprite su `spr_wall`
-4. **Seleziona la casella "Solido"**
+4. **Seleziona la casella "Solid"**
 5. Non sono necessari eventi
 
 ---
@@ -112,7 +113,7 @@ I bersagli indicano dove devono essere posizionate le casse.
 1. Crea un nuovo oggetto denominato `obj_target`
 2. Imposta lo sprite su `spr_target`
 3. Non sono necessari eventi - è solo un marcatore
-4. Lascia "Solido" deselezionato (il giocatore e le casse possono stare sopra)
+4. Lascia "Solid" deselezionato (il giocatore e le casse possono stare sopra)
 
 ---
 
@@ -122,180 +123,117 @@ La cassa viene spinta dal giocatore e cambia aspetto quando si trova su un bersa
 
 1. Crea un nuovo oggetto denominato `obj_crate`
 2. Imposta lo sprite su `spr_crate`
-3. **Seleziona la casella "Solido"**
+3. **Seleziona la casella "Solid"**
 
-**Event: Step**
-1. Aggiungi evento → Step → Step
-2. Aggiungi azione: **Control** → **Test Variable**
-   - Variabile: `place_meeting(x, y, obj_target)`
-   - Valore: `1`
-   - Operazione: Uguale a
-3. Aggiungi azione: **Main1** → **Change Sprite**
+**Evento: Step**
+1. Add Event → Step → Step
+2. Add Action: **Control** → **If Collision**
+   - X Offset: `0`
+   - Y Offset: `0`
+   - Against: `obj_target`
+3. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate_ok`
-   - Subimage: `0`
-   - Speed: `1`
-4. Aggiungi azione: **Control** → **Else**
-5. Aggiungi azione: **Main1** → **Change Sprite**
+4. Add Action: **Control** → **Else**
+5. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate`
-   - Subimage: `0`
-   - Speed: `1`
 
-Ciò fa sì che la cassa diventi verde quando si trova su un punto bersaglio.
+Questo fa diventare la cassa verde quando si trova su un punto bersaglio —
+**If Collision** con entrambi gli offset a `0` verifica se la posizione
+*attuale* della cassa sovrappone un `obj_target`.
 
 ---
 
 ## Step 6: Crea l'oggetto giocatore
 
-L'oggetto giocatore è il più complesso con movimento basato su griglia e meccanica di spinta.
+Il giocatore si muove esattamente di una cella della griglia alla volta e spinge le casse in cui si imbatte.
 
 1. Crea un nuovo oggetto denominato `obj_player`
 2. Imposta lo sprite su `spr_player`
 
-### 6.1 Spostamento a destra
+### 6.1 Movimento su griglia
 
-**Event: Keyboard Press Right Arrow**
-1. Aggiungi evento → Keyboard → Press Right
+Aggiungi un evento **Key Press** per ogni direzione, ciascuno con un'azione **Move** → **Move Grid**:
 
-Per prima cosa, controlla se c'è un muro nel modo:
-2. Aggiungi azione: **Control** → **Test Collision**
-   - Oggetto: `obj_wall`
-   - X: `32`
-   - Y: `0`
-   - Controllo: NOT (il che significa "se NON c'è un muro")
+| Evento | Azione Move Grid |
+|---|---|
+| Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
+| Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
+| Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
+| Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-Se non c'è un muro, controlla se c'è una cassa:
-3. Aggiungi azione: **Control** → **Test Collision**
-   - Oggetto: `obj_crate`
-   - X: `32`
-   - Y: `0`
+**Move Grid** sposta l'istanza esattamente di una cella della griglia ed è
+già consapevole delle collisioni per conto proprio — non farà muovere il
+giocatore dentro un `obj_wall` solido, quindi non serve un controllo
+aggiuntivo sui muri qui.
 
-Se c'è una cassa, abbiamo bisogno di controllare se possiamo spingere:
-4. Aggiungi azione: **Control** → **Test Collision** (per la destinazione della cassa)
-   - Oggetto: `obj_wall`
-   - X: `64`
-   - Y: `0`
-   - Controllo: NOT
+### 6.2 Fermarsi ai muri
 
-5. Aggiungi azione: **Control** → **Test Collision**
-   - Oggetto: `obj_crate`
-   - X: `64`
-   - Y: `0`
-   - Controllo: NOT
+**Evento: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-Se entrambi i controlli passano, spingi la cassa:
-6. Aggiungi azione: **Control** → **Code Block**
-```
-var crate = instance_place(x + 32, y, obj_crate);
-if (crate != noone) {
-    crate.x += 32;
-}
-```
+### 6.3 Spingere le casse
 
-Ora sposta il giocatore:
-7. Aggiungi azione: **Move** → **Jump to Position**
-   - X: `32`
-   - Y: `0`
-   - Seleziona "Relative"
+**Evento: Collision with obj_crate**
+1. Add Event → Collision → `obj_crate`
+2. Add Action: **Control** → **If Can Push**
+   - Direction: `facing`
+   - Object Type: `obj_crate`
+   - Then Action: `push_and_move`
 
-### 6.2 Spostamento a sinistra
-
-**Event: Keyboard Press Left Arrow**
-Segui lo stesso modello dello spostamento a destra, ma usa:
-- Offset X: `-32` per il controllo muro/cassa
-- Offset X: `-64` per il controllo se la cassa può essere spinta
-- Muovi la cassa di `-32`
-- Salta alla posizione X: `-32`
-
-### 6.3 Spostamento verso l'alto
-
-**Event: Keyboard Press Up Arrow**
-Segui lo stesso modello, ma usa i valori Y:
-- Offset Y: `-32` per il controllo
-- Offset Y: `-64` per la destinazione della cassa
-- Muovi la cassa di Y: `-32`
-- Salta alla posizione Y: `-32`
-
-### 6.4 Spostamento verso il basso
-
-**Event: Keyboard Press Down Arrow**
-Usa:
-- Offset Y: `32` per il controllo
-- Offset Y: `64` per la destinazione della cassa
-- Muovi la cassa di Y: `32`
-- Salta alla posizione Y: `32`
+**If Can Push** verifica se lo spazio dietro la cassa (nella direzione in
+cui si muove il giocatore) è libero e, in tal caso, spinge la cassa di una
+cella e sposta il giocatore al suo posto, tutto in un'unica azione. Se lo
+spazio dietro la cassa è bloccato da un muro o da un'altra cassa, nulla si
+muove.
 
 ---
 
-## Step 7: Movimento del giocatore semplificato (alternativa)
+## Step 7: Crea il controllo della condizione di vittoria
 
-Se l'approccio basato su blocchi qui sopra sembra complesso, ecco un approccio più semplice basato su codice per ogni direzione:
-
-**Event: Keyboard Press Right Arrow**
-Aggiungi azione: **Control** → **Execute Code**
-```
-// Check if we can move right
-if (!place_meeting(x + 32, y, obj_wall)) {
-    // Check if there's a crate
-    var crate = instance_place(x + 32, y, obj_crate);
-    if (crate != noone) {
-        // There's a crate - can we push it?
-        if (!place_meeting(x + 64, y, obj_wall) && !place_meeting(x + 64, y, obj_crate)) {
-            crate.x += 32;
-            x += 32;
-        }
-    } else {
-        // No crate, just move
-        x += 32;
-    }
-}
-```
-
-Ripeti per le altre direzioni con i relativi cambiamenti di coordinate.
-
----
-
-## Step 8: Crea il controllore della condizione di vittoria
-
-Abbiamo bisogno di un oggetto per controllare se tutte le casse si trovano sui bersagli.
+Ci serve un controllore invisibile che osservi se ogni cassa si trova su un bersaglio.
 
 1. Crea un nuovo oggetto denominato `obj_game_controller`
 2. Non è necessario uno sprite
 
-**Event: Create**
-1. Aggiungi evento → Create
-2. Aggiungi azione: **Score** → **Set Variable**
-   - Variabile: `global.total_targets`
-   - Valore: `0`
-3. Aggiungi azione: **Control** → **Execute Code**
-```
-// Count how many targets exist
-global.total_targets = instance_number(obj_target);
+**Evento: Create** — imposta il conteggio dei bersagli una sola volta,
+usando **Control** → **Execute Code** (l'azione Execute Code di questo
+progetto esegue vero Python, non GameMaker Language — `self` è l'istanza
+corrente, `game` è il game runner):
+
+```python
+# Conta quanti bersagli esistono nella stanza
+self.total_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_target'
+)
 ```
 
-**Event: Step**
-1. Aggiungi evento → Step → Step
-2. Aggiungi azione: **Control** → **Execute Code**
-```
-// Count crates that are on targets
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
+**Evento: Step** — controlla ad ogni frame se tutte le casse si trovano su un bersaglio:
 
-// Check if all targets have crates
-if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
-    // Level complete!
-    show_message("Level Complete!");
-    room_restart();
-}
+```python
+# Conta le casse che attualmente sovrappongono un bersaglio
+crates_on_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_crate'
+    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')
+)
+
+if self.total_targets > 0 and crates_on_targets >= self.total_targets:
+    self.restart_room_flag = True
 ```
 
-**Event: Draw**
-1. Aggiungi evento → Draw
-2. Aggiungi azione: **Draw** → **Draw Text**
-   - Testo: `Sokoban - Push all crates to targets!`
+`self.restart_room_flag = True` è il modo in cui un blocco Execute Code
+grezzo attiva lo stesso riavvio della stanza eseguito dall'azione
+**Restart Room** — il ciclo principale lo controlla ad ogni frame.
+Aggiungi un'azione **Show Message** (da **Output**, messaggio `Level
+Complete!`) subito dopo il blocco Execute Code se vuoi mostrare un popup
+prima del riavvio.
+
+**Evento: Draw**
+1. Add Event → Draw
+2. Add Action: **Draw** → **Draw Text**
+   - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
 
@@ -303,10 +241,10 @@ if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
 
 ## Step 9: Progetta il tuo livello
 
-1. Fai clic destro su **Stanze** e seleziona **Crea stanza**
+1. Fai clic destro su **Rooms** e seleziona **Create Room**
 2. Nominalo `room_level1`
 3. Imposta la dimensione della stanza su un multiplo di 32 (ad es. 640x480)
-4. Abilita "Aggancia alla griglia" e imposta la griglia su 32x32
+4. Abilita "Snap to Grid" e imposta la griglia su 32x32
 
 ### Posizionamento di oggetti
 
@@ -317,7 +255,7 @@ Costruisci il tuo livello seguendo queste linee guida:
 3. **Posiziona i bersagli** - Dove le casse devono andare
 4. **Posiziona le casse** - Lo stesso numero dei bersagli!
 5. **Posiziona il giocatore** - Posizione iniziale
-6. **Posiziona il controllore di gioco** - Ovunque (è invisibile)
+6. **Posiziona il game controller** - Ovunque (è invisibile)
 
 ### Esempio di layout del livello
 
@@ -332,11 +270,11 @@ W . T . . . . . . W
 W . . . . . . . . W
 W W W W W W W W W W
 
-W = Wall
-P = Player
-C = Crate
-T = Target
-. = Empty floor
+W = Muro
+P = Giocatore
+C = Cassa
+T = Bersaglio
+. = Pavimento vuoto
 ```
 
 **Importante:** Avere sempre lo stesso numero di casse e bersagli!
@@ -356,22 +294,18 @@ T = Target
 
 ### Aggiungi un contatore di mosse
 
-In `obj_game_controller`:
+Nell'evento **Create** di `obj_game_controller`, aggiungi **Control** →
+**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
-**Event: Create** - Aggiungi:
-```
-global.moves = 0;
-```
+In ciascuno dei quattro eventi Key Press di `obj_player`, aggiungi una
+seconda azione subito dopo Move Grid: **Control** → **Set Variable**
+(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relative**
+selezionato) — questo aggiunge 1 al contatore ad ogni pressione di tasto,
+indipendentemente dal fatto che il movimento sia stato effettivamente
+bloccato da un muro.
 
-In `obj_player`, dopo ogni movimento riuscito, aggiungi:
-```
-global.moves += 1;
-```
-
-In `obj_game_controller` **Event: Draw** - Aggiungi:
-```
-draw_text(10, 30, "Moves: " + string(global.moves));
-```
+Nell'evento **Draw** di `obj_game_controller`, aggiungi **Draw** →
+**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Aggiungi funzione di annullamento
 
@@ -379,11 +313,10 @@ Archivia le posizioni precedenti e consenti di premere Z per annullare l'ultima 
 
 ### Aggiungi più livelli
 
-Crea più stanze (`room_level2`, `room_level3`, ecc.) e usa:
-```
-room_goto_next();
-```
-invece di `room_restart()` quando completi un livello.
+Crea più stanze (`room_level2`, `room_level3`, ecc.) e usa l'azione
+**Next Room** (categoria Room) al posto di **Restart Room** nel blocco
+Execute Code di controllo vittoria (`self.next_room_flag = True` invece di
+`self.restart_room_flag = True`) quando un livello viene completato.
 
 ### Aggiungi effetti sonori
 
@@ -399,11 +332,11 @@ Aggiungi suoni per:
 
 | Problema | Soluzione |
 |---------|----------|
-| Il giocatore si muove attraverso i muri | Verifica che `obj_wall` abbia "Solido" selezionato |
-| La cassa non cambia colore | Verifica che l'evento Step controlli `place_meeting` correttamente |
+| Il giocatore si muove attraverso i muri | Verifica che `obj_wall` abbia "Solid" selezionato |
+| La cassa non cambia colore | Verifica che l'azione **If Collision** nell'evento Step punti a `obj_target` |
 | Puoi spingere la cassa attraverso il muro | Verifica il rilevamento delle collisioni prima di spostare la cassa |
 | Il messaggio di vittoria viene visualizzato immediatamente | Assicurati che i bersagli siano posizionati separatamente dalle casse |
-| Il giocatore si muove di più quadrati | Usa l'evento Keyboard Press, non l'evento Keyboard |
+| Il giocatore si muove di più caselle | Usa l'evento Keyboard Press, non l'evento Keyboard |
 
 ---
 
@@ -435,7 +368,7 @@ Ricorda: un buon puzzle di Sokoban dovrebbe essere impegnativo ma equo!
 ## Vedi anche
 
 - [Tutorials](Tutorials_it) - Altri tutorial di gioco
-- [Beginner Preset](Beginner-Preset_it) - Panoramica delle funzioni per principianti
+- [Intermediate Preset](Intermediate-Preset_it) - Panoramica del preset necessario per questo tutorial
 - [Tutorial: Pong](Tutorial-Pong_it) - Crea un gioco per due giocatori
 - [Tutorial: Breakout](Tutorial-Breakout_it) - Crea un gioco di rompimuri
 - [Event Reference](Event-Reference_it) - Documentazione di riferimento dell'evento completa
