@@ -95,7 +95,7 @@ Jetzt stoppt das Paddle, wenn du die Pfeiltasten loslässt.
 
 ### 3.2 Anfangsbewegung setzen
 1. Klicke auf **Add Event** -> **Create**
-2. Füge die Aktion **Move in Direction** hinzu (oder **Set Horizontal/Vertical Speed**)
+2. Füge die Aktion **Start Moving (Direction)** hinzu (oder **Set Horizontal/Vertical Speed**)
 3. Setze eine diagonale Richtung mit Geschwindigkeit `5`
    - Zum Beispiel: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -126,12 +126,13 @@ Dies lässt den Ball starten, wenn das Spiel beginnt.
 Dies zerstört den Brick, wenn der Ball ihn trifft!
 
 ### 4.3 Den Ball abprallen lassen
-Im selben Kollisions-Event, füge auch hinzu:
-1. Füge die Aktion **Reverse Vertical** hinzu (angewendet auf **other** - den Ball)
+**Reverse Vertical** wirkt immer auf die Instanz, in deren Event sie steht
+— es gibt keine Option „auf other anwenden" — daher muss diese Aktion beim
+Ball stehen, nicht beim Brick:
 
-Oder gehe zurück zu `obj_ball` und füge hinzu:
-1. **Add Event** -> **Collision** -> wähle `obj_brick`
-2. Füge die Aktion **Reverse Vertical** hinzu
+1. Gehe zurück zu `obj_ball` und füge hinzu:
+2. **Add Event** -> **Collision** -> wähle `obj_brick`
+3. Füge die Aktion **Reverse Vertical** hinzu
 
 ---
 

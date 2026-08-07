@@ -119,8 +119,8 @@ Das Wand-Objekt erzeugt Grenzen am oberen und unteren Rand des Spielbereichs.
 
 **Ereignis: Kollision mit obj_wall**
 1. Ereignis hinzufügen → Kollision → obj_wall
-2. Aktion hinzufügen: **Bewegen** → **Von Objekten abprallen**
-3. Wählen Sie "Von festen Objekten abprallen"
+2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
+   — es prallt immer von soliden Objekten ab)
 
 ### 4.2 Rechter Schläger (Spieler 2)
 
@@ -152,8 +152,8 @@ Das Wand-Objekt erzeugt Grenzen am oberen und unteren Rand des Spielbereichs.
 
 **Ereignis: Kollision mit obj_wall**
 1. Ereignis hinzufügen → Kollision → obj_wall
-2. Aktion hinzufügen: **Bewegen** → **Von Objekten abprallen**
-3. Wählen Sie "Von festen Objekten abprallen"
+2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
+   — es prallt immer von soliden Objekten ab)
 
 ---
 
@@ -164,24 +164,25 @@ Das Wand-Objekt erzeugt Grenzen am oberen und unteren Rand des Spielbereichs.
 
 **Ereignis: Erstellen**
 1. Ereignis hinzufügen → Erstellen
-2. Aktion hinzufügen: **Bewegen** → **In Richtung zu bewegen beginnen**
-3. Wählen Sie eine diagonale Richtung (nicht gerade oben oder unten)
+2. Aktion hinzufügen: **Bewegen** → **Losbewegen (Richtung)**
+3. Wählen Sie im 3×3-Richtungsraster ein diagonales Feld (nicht gerade oben
+   oder unten)
 4. Setzen Sie die Geschwindigkeit auf `6`
 
 **Ereignis: Kollision mit obj_paddle_left**
 1. Ereignis hinzufügen → Kollision → obj_paddle_left
-2. Aktion hinzufügen: **Bewegen** → **Von Objekten abprallen**
-3. Wählen Sie "Von festen Objekten abprallen"
+2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
+   — es prallt immer von soliden Objekten ab)
 
 **Ereignis: Kollision mit obj_paddle_right**
 1. Ereignis hinzufügen → Kollision → obj_paddle_right
-2. Aktion hinzufügen: **Bewegen** → **Von Objekten abprallen**
-3. Wählen Sie "Von festen Objekten abprallen"
+2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
+   — es prallt immer von soliden Objekten ab)
 
 **Ereignis: Kollision mit obj_wall**
 1. Ereignis hinzufügen → Kollision → obj_wall
-2. Aktion hinzufügen: **Bewegen** → **Von Objekten abprallen**
-3. Wählen Sie "Von festen Objekten abprallen"
+2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
+   — es prallt immer von soliden Objekten ab)
 
 ---
 
@@ -205,22 +206,31 @@ Tore sind unsichtbare Bereiche hinter jedem Schläger. Wenn der Ball ein Tor err
 
 ### 6.3 Tor-Kollisionsereignisse zum Ball hinzufügen
 
+`global.p1score`/`global.p2score` sind benutzerdefinierte, benannte
+Variablen, eine pro Spieler — die eingebaute Aktion **Punkte setzen** passt
+hier nicht, da sie immer den einen eingebauten Punktestand schreibt und
+keine Möglichkeit bietet, einen Variablennamen anzugeben. **Variable
+setzen** ist die richtige Aktion für eine benutzerdefinierte benannte
+Variable und unterstützt einen `global`-Gültigkeitsbereich:
+
 Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
 
 **Ereignis: Kollision mit obj_goal_left**
 1. Ereignis hinzufügen → Kollision → obj_goal_left
 2. Aktion hinzufügen: **Bewegen** → **Zu Startposition springen** (setzt den Ball zurück)
-3. Aktion hinzufügen: **Punkte** → **Punkte setzen**
-   - Variable: `global.p2score`
+3. Aktion hinzufügen: **Steuerung** → **Variable setzen**
+   - Variable: `p2score`
    - Wert: `1`
+   - Gültigkeitsbereich: `global`
    - Aktivieren Sie "Relativ" (addiert 1 zur aktuellen Punktzahl)
 
 **Ereignis: Kollision mit obj_goal_right**
 1. Ereignis hinzufügen → Kollision → obj_goal_right
 2. Aktion hinzufügen: **Bewegen** → **Zu Startposition springen**
-3. Aktion hinzufügen: **Punkte** → **Punkte setzen**
-   - Variable: `global.p1score`
+3. Aktion hinzufügen: **Steuerung** → **Variable setzen**
+   - Variable: `p1score`
    - Wert: `1`
+   - Gültigkeitsbereich: `global`
    - Aktivieren Sie "Relativ"
 
 ---
@@ -232,12 +242,10 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
 
 **Ereignis: Erstellen**
 1. Ereignis hinzufügen → Erstellen
-2. Aktion hinzufügen: **Punkte** → **Punkte setzen**
-   - Variable: `global.p1score`
-   - Wert: `0`
-3. Aktion hinzufügen: **Punkte** → **Punkte setzen**
-   - Variable: `global.p2score`
-   - Wert: `0`
+2. Aktion hinzufügen: **Steuerung** → **Variable setzen**
+   - Variable: `p1score`, Wert: `0`, Gültigkeitsbereich: `global`
+3. Aktion hinzufügen: **Steuerung** → **Variable setzen**
+   - Variable: `p2score`, Wert: `0`, Gültigkeitsbereich: `global`
 
 **Ereignis: Zeichnen**
 1. Ereignis hinzufügen → Zeichnen
@@ -300,9 +308,21 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
 ## Verbesserungen (Optional)
 
 ### Geschwindigkeitserhöhung
-Machen Sie den Ball schneller, jedes Mal wenn er einen Schläger trifft, indem Sie zu den Kollisionsereignissen folgende Aktion hinzufügen:
-- Nach der Abprall-Aktion fügen Sie **Bewegen** → **Geschwindigkeit setzen** hinzu
-- Setzen Sie die Geschwindigkeit auf `speed + 0.5` mit "Relativ" aktiviert
+Machen Sie den Ball bei jedem Schlägertreffer schneller. `speed` lässt sich
+hierfür nicht direkt verwenden — in dieser Engine ist das die
+*Animationsrate* des Sprites, nicht die Bewegungsgeschwindigkeit — verfolgen
+Sie die Ballgeschwindigkeit stattdessen in einer benutzerdefinierten
+Variable:
+
+1. Fügen Sie im **Erstellen**-Ereignis von `obj_ball` direkt nach der
+   Aktion Losbewegen (Richtung) **Steuerung** → **Variable setzen** hinzu
+   (Variable: `ball_speed`, Wert: `6`).
+2. Fügen Sie in jedem Schläger-Kollisionsereignis nach der Abprallen-Aktion
+   **Steuerung** → **Variable setzen** hinzu (Variable: `ball_speed`, Wert:
+   `0.5`, "Relativ" aktiviert), dann **Bewegen** → **Geschwindigkeit
+   setzen** mit Wert `self.ball_speed`, um die neue Geschwindigkeit bei
+   gleichbleibender Richtung anzuwenden (Abprallen hat sie bereits
+   umgekehrt).
 
 ### Soundeffekte
 Fügen Sie Sounds hinzu, wenn:
