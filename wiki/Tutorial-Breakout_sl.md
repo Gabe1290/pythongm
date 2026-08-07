@@ -95,7 +95,7 @@ Zdaj se lopar ustavi, ko sprostite puščične tipke.
 
 ### 3.2 Nastavi začetno gibanje
 1. Kliknite **Add Event** → **Create**
-2. Dodajte akcijo **Move in Direction** (ali **Set Horizontal/Vertical Speed**)
+2. Dodajte akcijo **Start Moving (Direction)** (ali **Set Horizontal/Vertical Speed**)
 3. Nastavite diagonalno smer s hitrostjo `5`
    - Na primer: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -126,12 +126,13 @@ To povzroči, da se žogica začne premikati ob začetku igre.
 To uniči opeko, ko jo žogica zadene!
 
 ### 4.3 Odbij žogico
-V istem dogodku trka dodajte tudi:
-1. Dodajte akcijo **Reverse Vertical** (uporabite na **other** - žogico)
+**Reverse Vertical** se vedno uporabi na instanci, v čigar dogodku je
+— nima možnosti "uporabi na other" — zato mora ta akcija biti na
+žogici, ne na opeki:
 
-Ali se vrnite na `obj_ball` in dodajte:
-1. **Add Event** → **Collision** → izberite `obj_brick`
-2. Dodajte akcijo **Reverse Vertical**
+1. Vrnite se na `obj_ball` in dodajte:
+2. **Add Event** → **Collision** → izberite `obj_brick`
+3. Dodajte akcijo **Reverse Vertical**
 
 ---
 
