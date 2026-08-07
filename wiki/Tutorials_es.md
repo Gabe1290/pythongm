@@ -12,7 +12,11 @@
 
 ## Tutoriales para Principiantes
 
-Estos tutoriales están diseñados para usuarios nuevos en el desarrollo de juegos. Utilizan el **Preset para Principiantes** y cubren conceptos fundamentales.
+Estos tutoriales están pensados para usuarios nuevos en el desarrollo
+de juegos y usan exclusivamente los eventos y acciones del
+[Preajuste Principiante](Beginner-Preset_es) (verificado contra
+`config/blockly_config.py`'s `get_beginner()`, que enumera exactamente
+estos dos tutoriales por nombre).
 
 ### Juegos Clásicos
 
@@ -20,6 +24,21 @@ Estos tutoriales están diseñados para usuarios nuevos en el desarrollo de jueg
 |----------|-------------|------------------------|
 | [**Pong**](Tutorial-Pong_es) | Crea un clásico juego Pong para dos jugadores | Entrada de teclado, detección de colisiones, seguimiento de puntuación, variables globales |
 | [**Breakout**](Tutorial-Breakout_es) | Construye un juego tipo rompeladrillos | Destrucción de objetos, mecánicas de rebote, sistema de vidas |
+
+## Tutoriales Intermedios
+
+Estos cuatro tutoriales requieren el
+[Preajuste Intermedio](Intermediate-Preset_es) — la mecánica de empuje
+de Sokoban (`if_can_push`) y el movimiento en cuadrícula de Sokoban/
+Laberinto (`move_snap_to_grid`/`move_grid`) no están en el preajuste
+Principiante. Si tu proyecto todavía usa el preajuste Principiante
+predeterminado (los proyectos nuevos empiezan ahí — consulta la
+[Guía de Preajustes](Preset-Guide_es)), cámbialo primero mediante
+`Tools > Configure Action Blocks...`, de lo contrario las acciones de
+estos tutoriales no aparecerán en ninguno de los dos editores.
+
+| Tutorial | Descripción | Habilidades Aprendidas |
+|----------|-------------|------------------------|
 | [**Sokoban**](Tutorial-Sokoban_es) | Crea un juego de puzzle de empujar cajas | Movimiento en cuadrícula, mecánicas de empuje, condiciones de victoria |
 | [**Laberinto**](Tutorial-Maze_es) | Navega por los pasillos hasta la salida | Movimiento fluido, colisión con paredes, coleccionables, temporizador |
 | [**Platformer**](Tutorial-Platformer_es) | Corre, salta y colecciona monedas | Gravedad, mecánicas de salto, colisión con plataformas |
@@ -72,7 +91,9 @@ Cada tutorial enseña conceptos importantes del desarrollo de juegos:
 
 1. **Instala PyGameMaker** - Sigue las [instrucciones de instalación](Home_es#installation)
 2. **Elige un Tutorial** - Comienza con [Pong](Tutorial-Pong_es) o [Breakout](Tutorial-Breakout_es)
-3. **Establece tu Preset** - Usa el Preset para Principiantes para estos tutoriales
+3. **Establece tu Preset** - Principiante para Pong/Breakout, Intermedio
+   para Sokoban/Laberinto/Platformer/Aterrizaje Lunar (consulta las
+   tablas anteriores)
 4. **Sigue Adelante** - Trabaja cuidadosamente en cada paso
 5. **Experimenta** - ¡Prueba las sugerencias de mejora al final!
 
