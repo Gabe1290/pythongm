@@ -18,7 +18,8 @@ En este tutorial, crearás un juego de rompecabezas **Sokoban** - un clásico ju
 - Diseño de niveles para juegos de rompecabezas
 
 **Dificultad:** Principiante
-**Preset:** Preset para Principiantes
+**Preset:** Preset Intermedio (la mecánica de empuje y el movimiento
+basado en cuadrículas usados aquí no están en el preset Principiante)
 
 ---
 
@@ -49,13 +50,13 @@ Todos los sprites deben tener el mismo tamaño (32x32 píxeles funciona bien) pa
 
 ### 2.1 Sprite del Jugador
 
-1. En el **Árbol de Recursos**, haz clic derecho en **Sprites** y selecciona **Crear Sprite**
+1. En el **Árbol de Recursos**, haz clic derecho en **Sprites** y selecciona **Create Sprite**
 2. Nómbralo `spr_player`
-3. Haz clic en **Editar Sprite** para abrir el editor de sprites
+3. Haz clic en **Edit Sprite** para abrir el editor de sprites
 4. Dibuja un personaje simple (una forma de persona o robot)
 5. Usa un color distintivo como azul o verde
 6. Tamaño: 32x32 píxeles
-7. Haz clic en **Aceptar** para guardar
+7. Haz clic en **OK** para guardar
 
 ### 2.2 Sprite de Caja
 
@@ -97,10 +98,10 @@ Todos los sprites deben tener el mismo tamaño (32x32 píxeles funciona bien) pa
 
 La pared es el objeto más simple - simplemente bloquea el movimiento.
 
-1. Haz clic derecho en **Objetos** y selecciona **Crear Objeto**
+1. Haz clic derecho en **Objects** y selecciona **Create Object**
 2. Nómbralo `obj_wall`
 3. Establece el sprite en `spr_wall`
-4. **Marca la casilla "Sólido"**
+4. **Marca la casilla "Solid"**
 5. No se necesitan eventos
 
 ---
@@ -112,7 +113,7 @@ Los objetivos marcan dónde deben colocarse las cajas.
 1. Crea un nuevo objeto llamado `obj_target`
 2. Establece el sprite en `spr_target`
 3. No se necesitan eventos - es solo un marcador
-4. Deja "Sólido" sin marcar (el jugador y las cajas pueden estar encima)
+4. Deja "Solid" sin marcar (el jugador y las cajas pueden estar encima)
 
 ---
 
@@ -122,180 +123,117 @@ La caja es empujada por el jugador y cambia de apariencia cuando está en un obj
 
 1. Crea un nuevo objeto llamado `obj_crate`
 2. Establece el sprite en `spr_crate`
-3. **Marca la casilla "Sólido"**
+3. **Marca la casilla "Solid"**
 
 **Evento: Step**
-1. Agregar Evento → Step → Step
-2. Agregar Acción: **Control** → **Prueba Variable**
-   - Variable: `place_meeting(x, y, obj_target)`
-   - Valor: `1`
-   - Operación: Igual a
-3. Agregar Acción: **Main1** → **Cambiar Sprite**
+1. Add Event → Step → Step
+2. Add Action: **Control** → **If Collision**
+   - X Offset: `0`
+   - Y Offset: `0`
+   - Against: `obj_target`
+3. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate_ok`
-   - Subimagen: `0`
-   - Velocidad: `1`
-4. Agregar Acción: **Control** → **Si No**
-5. Agregar Acción: **Main1** → **Cambiar Sprite**
+4. Add Action: **Control** → **Else**
+5. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate`
-   - Subimagen: `0`
-   - Velocidad: `1`
 
-Esto hace que la caja se vuelva verde cuando está en un lugar objetivo.
+Esto hace que la caja se vuelva verde cuando está en un lugar objetivo —
+**If Collision** con ambos desplazamientos en `0` comprueba si la
+posición *actual* de la caja se superpone con un `obj_target`.
 
 ---
 
 ## Paso 6: Crear el Objeto Jugador
 
-El jugador es el objeto más complejo con movimiento basado en cuadrículas y mecánicas de empuje.
+El jugador se mueve exactamente una celda de la cuadrícula a la vez y empuja las cajas contra las que se topa.
 
 1. Crea un nuevo objeto llamado `obj_player`
 2. Establece el sprite en `spr_player`
 
-### 6.1 Movimiento a la Derecha
+### 6.1 Movimiento en Cuadrícula
 
-**Evento: Teclado Presionar Flecha Derecha**
-1. Agregar Evento → Teclado → Presionar Derecha
+Agrega un evento **Key Press** por dirección, cada uno con una acción **Move** → **Move Grid**:
 
-Primero, comprueba si hay una pared en el camino:
-2. Agregar Acción: **Control** → **Prueba Colisión**
-   - Objeto: `obj_wall`
-   - X: `32`
-   - Y: `0`
-   - Verificar: NO (significa "si NO hay pared")
+| Evento | Acción Move Grid |
+|---|---|
+| Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
+| Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
+| Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
+| Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-Si no hay pared, comprueba si hay una caja:
-3. Agregar Acción: **Control** → **Prueba Colisión**
-   - Objeto: `obj_crate`
-   - X: `32`
-   - Y: `0`
+**Move Grid** mueve la instancia exactamente una celda de la cuadrícula
+y ya detecta colisiones por sí sola — no moverá al jugador hacia un
+`obj_wall` sólido, por lo que no hace falta una comprobación de pared
+adicional aquí.
 
-Si hay una caja, necesitamos comprobar si podemos empujarla:
-4. Agregar Acción: **Control** → **Prueba Colisión** (para el destino de la caja)
-   - Objeto: `obj_wall`
-   - X: `64`
-   - Y: `0`
-   - Verificar: NO
+### 6.2 Detenerse en las Paredes
 
-5. Agregar Acción: **Control** → **Prueba Colisión**
-   - Objeto: `obj_crate`
-   - X: `64`
-   - Y: `0`
-   - Verificar: NO
+**Evento: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-Si ambas comprobaciones pasan, empuja la caja:
-6. Agregar Acción: **Control** → **Bloque de Código**
-```
-var crate = instance_place(x + 32, y, obj_crate);
-if (crate != noone) {
-    crate.x += 32;
-}
-```
+### 6.3 Empujar Cajas
 
-Ahora mueve el jugador:
-7. Agregar Acción: **Mover** → **Saltar a Posición**
-   - X: `32`
-   - Y: `0`
-   - Marca "Relativo"
+**Evento: Collision with obj_crate**
+1. Add Event → Collision → `obj_crate`
+2. Add Action: **Control** → **If Can Push**
+   - Direction: `facing`
+   - Object Type: `obj_crate`
+   - Then Action: `push_and_move`
 
-### 6.2 Movimiento a la Izquierda
-
-**Evento: Teclado Presionar Flecha Izquierda**
-Sigue el mismo patrón que el movimiento a la derecha, pero usa:
-- Desplazamiento X: `-32` para verificar pared/caja
-- Desplazamiento X: `-64` para verificar si la caja puede ser empujada
-- Mover caja por `-32`
-- Saltar a posición X: `-32`
-
-### 6.3 Movimiento Hacia Arriba
-
-**Evento: Teclado Presionar Flecha Arriba**
-Sigue el mismo patrón, pero usa valores Y:
-- Desplazamiento Y: `-32` para verificar
-- Desplazamiento Y: `-64` para destino de caja
-- Mover caja por Y: `-32`
-- Saltar a posición Y: `-32`
-
-### 6.4 Movimiento Hacia Abajo
-
-**Evento: Teclado Presionar Flecha Abajo**
-Usa:
-- Desplazamiento Y: `32` para verificar
-- Desplazamiento Y: `64` para destino de caja
-- Mover caja por Y: `32`
-- Saltar a posición Y: `32`
+**If Can Push** comprueba si el espacio detrás de la caja (en la
+dirección en la que se mueve el jugador) está libre y, si es así,
+empuja la caja una celda y mueve al jugador a su lugar, todo en una
+sola acción. Si el espacio detrás de la caja está bloqueado por una
+pared u otra caja, nada se mueve.
 
 ---
 
-## Paso 7: Movimiento de Jugador Simplificado (Alternativa)
+## Paso 7: Crear el Verificador de Condición de Victoria
 
-Si el enfoque basado en bloques anterior parece complejo, aquí hay un enfoque más simple basado en código para cada dirección:
-
-**Evento: Teclado Presionar Flecha Derecha**
-Agregar Acción: **Control** → **Ejecutar Código**
-```
-// Check if we can move right
-if (!place_meeting(x + 32, y, obj_wall)) {
-    // Check if there's a crate
-    var crate = instance_place(x + 32, y, obj_crate);
-    if (crate != noone) {
-        // There's a crate - can we push it?
-        if (!place_meeting(x + 64, y, obj_wall) && !place_meeting(x + 64, y, obj_crate)) {
-            crate.x += 32;
-            x += 32;
-        }
-    } else {
-        // No crate, just move
-        x += 32;
-    }
-}
-```
-
-Repite para otras direcciones con cambios de coordenadas apropiados.
-
----
-
-## Paso 8: Crear el Verificador de Condición de Victoria
-
-Necesitamos un objeto para comprobar si todas las cajas están en objetivos.
+Necesitamos un controlador invisible que observe si cada caja está en un objetivo.
 
 1. Crea un nuevo objeto llamado `obj_game_controller`
 2. No se necesita sprite
 
-**Evento: Crear**
-1. Agregar Evento → Crear
-2. Agregar Acción: **Puntuación** → **Establecer Variable**
-   - Variable: `global.total_targets`
-   - Valor: `0`
-3. Agregar Acción: **Control** → **Ejecutar Código**
-```
-// Count how many targets exist
-global.total_targets = instance_number(obj_target);
+**Evento: Create** — establece el conteo de objetivos una sola vez,
+usando **Control** → **Execute Code** (la acción Execute Code de este
+proyecto ejecuta Python real, no GameMaker Language — `self` es la
+instancia actual, `game` es el gestor del juego):
+
+```python
+# Cuenta cuántos objetivos existen en la sala
+self.total_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_target'
+)
 ```
 
-**Evento: Step**
-1. Agregar Evento → Step → Step
-2. Agregar Acción: **Control** → **Ejecutar Código**
-```
-// Count crates that are on targets
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
+**Evento: Step** — comprueba cada fotograma si todas las cajas están en un objetivo:
 
-// Check if all targets have crates
-if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
-    // Level complete!
-    show_message("Level Complete!");
-    room_restart();
-}
+```python
+# Cuenta las cajas que actualmente se superponen con un objetivo
+crates_on_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_crate'
+    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')
+)
+
+if self.total_targets > 0 and crates_on_targets >= self.total_targets:
+    self.restart_room_flag = True
 ```
 
-**Evento: Dibujar**
-1. Agregar Evento → Dibujar
-2. Agregar Acción: **Dibujar** → **Dibujar Texto**
-   - Texto: `Sokoban - ¡Empuja todas las cajas a los objetivos!`
+`self.restart_room_flag = True` es la forma en que un bloque Execute
+Code crudo activa el mismo reinicio de sala que realiza la acción
+**Restart Room** — el bucle principal lo comprueba cada fotograma.
+Agrega una acción **Show Message** (de **Output**, mensaje `Level
+Complete!`) justo después del bloque Execute Code si quieres mostrar un
+popup antes del reinicio.
+
+**Evento: Draw**
+1. Add Event → Draw
+2. Add Action: **Draw** → **Draw Text**
+   - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
 
@@ -303,10 +241,10 @@ if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
 
 ## Paso 9: Diseña Tu Nivel
 
-1. Haz clic derecho en **Habitaciones** y selecciona **Crear Habitación**
+1. Haz clic derecho en **Rooms** y selecciona **Create Room**
 2. Nómbrala `room_level1`
-3. Establece el tamaño de la habitación en un múltiplo de 32 (por ejemplo, 640x480)
-4. Habilita "Ajustar a Cuadrícula" y establece la cuadrícula en 32x32
+3. Establece el tamaño de la sala en un múltiplo de 32 (por ejemplo, 640x480)
+4. Habilita "Snap to Grid" y establece la cuadrícula en 32x32
 
 ### Colocación de Objetos
 
@@ -317,7 +255,7 @@ Construye tu nivel siguiendo estas directrices:
 3. **Coloca objetivos** - Dónde las cajas necesitan ir
 4. **Coloca cajas** - ¡El mismo número que objetivos!
 5. **Coloca el jugador** - Posición inicial
-6. **Coloca el controlador del juego** - En cualquier lugar (es invisible)
+6. **Coloca el game controller** - En cualquier lugar (es invisible)
 
 ### Ejemplo de Diseño de Nivel
 
@@ -345,10 +283,10 @@ T = Objetivo
 
 ## Paso 10: ¡Prueba Tu Juego!
 
-1. Haz clic en **Ejecutar** o presiona **F5** para probar
+1. Haz clic en **Run** o presiona **F5** para probar
 2. Usa las flechas del teclado para moverte
 3. Empuja las cajas hacia los objetivos rojo X
-4. ¡Cuando todas las cajas están en objetivos, ¡ganas!
+4. ¡Cuando todas las cajas están en objetivos, ganas!
 
 ---
 
@@ -356,22 +294,18 @@ T = Objetivo
 
 ### Agregar un Contador de Movimientos
 
-En `obj_game_controller`:
+En el evento **Create** de `obj_game_controller`, agrega **Control** →
+**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
-**Evento: Crear** - Agrega:
-```
-global.moves = 0;
-```
+En cada uno de los cuatro eventos Key Press de `obj_player`, agrega una
+segunda acción justo después de Move Grid: **Control** → **Set
+Variable** (Variable: `global.moves`, Value: `1`, Scope: `global`,
+**Relative** marcado) — esto suma 1 al contador en cada pulsación de
+tecla, sin importar si el movimiento fue realmente bloqueado por una
+pared.
 
-En `obj_player`, después de cada movimiento exitoso, agrega:
-```
-global.moves += 1;
-```
-
-En `obj_game_controller` **Evento: Dibujar** - Agrega:
-```
-draw_text(10, 30, "Moves: " + string(global.moves));
-```
+En el evento **Draw** de `obj_game_controller`, agrega **Draw** →
+**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Agregar Función Deshacer
 
@@ -379,11 +313,11 @@ Almacena posiciones anteriores y permite presionar Z para deshacer el último mo
 
 ### Agregar Múltiples Niveles
 
-Crea más habitaciones (`room_level2`, `room_level3`, etc.) y usa:
-```
-room_goto_next();
-```
-en lugar de `room_restart()` al completar un nivel.
+Crea más salas (`room_level2`, `room_level3`, etc.) y usa la acción
+**Next Room** (categoría Room) en lugar de **Restart Room** en el
+bloque Execute Code de comprobación de victoria (`self.next_room_flag =
+True` en lugar de `self.restart_room_flag = True`) al completar un
+nivel.
 
 ### Agregar Efectos de Sonido
 
@@ -399,11 +333,11 @@ Agrega sonidos para:
 
 | Problema | Solución |
 |---------|----------|
-| El jugador se mueve a través de paredes | Verifica que `obj_wall` tenga "Sólido" marcado |
-| La caja no cambia de color | Verifica que el evento Step compruebe `place_meeting` correctamente |
+| El jugador se mueve a través de paredes | Verifica que `obj_wall` tenga "Solid" marcado |
+| La caja no cambia de color | Verifica que la acción **If Collision** del evento Step apunte a `obj_target` |
 | Puedes empujar una caja a través de la pared | Verifica la detección de colisiones antes de mover la caja |
 | El mensaje de victoria aparece inmediatamente | Asegúrate de que los objetivos se coloquen separados de las cajas |
-| El jugador se mueve múltiples cuadrados | Usa evento Teclado Presionar, no evento Teclado |
+| El jugador se mueve varias casillas | Usa el evento Keyboard Press, no el evento Keyboard |
 
 ---
 
@@ -434,8 +368,8 @@ Recuerda: ¡Un buen rompecabezas de Sokoban debe ser desafiante pero justo!
 
 ## Ver También
 
-- [Tutoriales](Tutorials) - Más tutoriales de juegos
-- [Preset para Principiantes](Beginner-Preset) - Descripción general de características para principiantes
+- [Tutoriales](Tutorials_es) - Más tutoriales de juegos
+- [Preset Intermedio](Intermediate-Preset_es) - Descripción general del preset que necesita este tutorial
 - [Tutorial: Pong](Tutorial-Pong_es) - Crear un juego multijugador
 - [Tutorial: Breakout](Tutorial-Breakout_es) - Crear un juego de rompimiento de ladrillos
-- [Referencia de Eventos](Event-Reference) - Documentación completa de eventos
+- [Referencia de Eventos](Event-Reference_es) - Documentación completa de eventos

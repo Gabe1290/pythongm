@@ -78,51 +78,68 @@ En este tutorial, crearás un **Juego de Plataformas** - un juego de acción de 
 
 ---
 
-## Paso 3-4: Crear Objetos de Suelo y Plataforma
+## Paso 3: Crear el Objeto Suelo
 
-**obj_ground** y **obj_platform**: Establece sprite, marca "Sólido"
+El suelo es una plataforma sólida que impide que el jugador caiga.
+
+1. Haz clic derecho en **Objects** y selecciona **Create Object**
+2. Nómbralo `obj_ground`
+3. Establece el sprite en `spr_ground`
+4. **Marca la casilla "Solid"**
+5. No se necesitan eventos
+
+---
+
+## Paso 4: Crear el Objeto Plataforma
+
+Las plataformas funcionan como el suelo pero pueden colocarse en el aire.
+
+1. Crea un nuevo objeto llamado `obj_platform`
+2. Establece el sprite en `spr_platform`
+3. **Marca la casilla "Solid"**
 
 ---
 
 ## Paso 5: Crear el Objeto Jugador
 
-### Evento Create
-```gml
-hspeed_max = 4;
-vspeed_max = 10;
-jump_force = -10;
-gravity_force = 0.5;
-hsp = 0;
-vsp = 0;
-on_ground = false;
-```
+El jugador es el objeto más complejo, con gravedad, salto y movimiento.
 
-### Evento Step
-```gml
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-hsp = move_input * hspeed_max;
+1. Crea un nuevo objeto llamado `obj_player`
+2. Establece el sprite en `spr_player`
 
-vsp += gravity_force;
-if (vsp > vspeed_max) vsp = vspeed_max;
+### 5.1 Gravedad
 
-on_ground = place_meeting(x, y + 1, obj_ground);
+**Evento: Create** — Add Action: **Move** → **Set Gravity**
+(Direction: `270`, Gravity: `0.5`) — 270° es directamente hacia abajo;
+el valor se suma a la velocidad vertical del jugador en cada fotograma,
+así que el jugador acelera hacia abajo por sí solo a partir de aquí.
 
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
+### 5.2 Movimiento, Salto y Colisión con el Suelo
 
-if (place_meeting(x + hsp, y, obj_ground)) {
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) x += sign(hsp);
-    hsp = 0;
-}
-x += hsp;
+Agrega estos eventos, siguiendo el mismo patrón que ya usan los
+tutoriales anteriores de este wiki:
 
-if (place_meeting(x, y + vsp, obj_ground)) {
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) y += sign(vsp);
-    vsp = 0;
-}
-y += vsp;
-```
+| Evento | Acción |
+|---|---|
+| Keyboard (held) → Left Arrow | Set Horizontal Speed a `-4` |
+| Keyboard (held) → Right Arrow | Set Horizontal Speed a `4` |
+| Keyboard: No Key | Set Horizontal Speed a `0` |
+| Key Press → Up Arrow | Set Vertical Speed a `-10` |
+| Collision with obj_ground | Stop Movement |
+
+Dos detalles que hacen que se sienta bien:
+
+- **No Key solo pone a cero la velocidad horizontal** — nunca uses
+  Stop Movement ahí, porque Stop Movement también pone a cero la
+  velocidad vertical, lo que anularía la gravedad cada vez que el
+  jugador suelta una tecla de dirección.
+- **Key Press (no held)** es lo que hace que Up sea un único impulso de
+  salto, en lugar de lanzar al jugador hacia arriba en cada fotograma
+  en que se mantiene presionado. **Stop Movement** al aterrizar anula
+  ese impulso, para que el jugador no siga subiendo tras aterrizar — la
+  colisión sólida integrada del motor (el Paso 3 ya hizo `obj_ground`
+  Solid) evita que el jugador se hunda en el suelo; el evento aquí solo
+  limpia la velocidad de caída restante.
 
 ---
 
@@ -130,9 +147,9 @@ y += vsp;
 
 **obj_coin** - Colisión con obj_player: Puntuación +10, destruir Self
 
-**obj_spike** - Colisión con obj_player: Mostrar mensaje, reiniciar room
+**obj_spike** - Colisión con obj_player: Mostrar mensaje, reiniciar la sala
 
-**obj_flag** - Colisión con obj_player: Mostrar mensaje, siguiente room
+**obj_flag** - Colisión con obj_player: Mostrar mensaje, siguiente sala
 
 ---
 
@@ -148,10 +165,9 @@ y += vsp;
 
 ## Lo Que Aprendiste
 
-- **Física de gravedad** - Fuerza constante hacia abajo
-- **Mecánicas de salto** - Velocidad vertical negativa
-- **Detección del suelo** - Usar `place_meeting`
-- **Manejo de colisiones** - Mover píxel por píxel
+- **Física de gravedad** - Set Gravity aplica una fuerza constante hacia abajo en cada fotograma
+- **Mecánicas de salto** - Un evento Key Press (no held) da un único impulso de velocidad hacia arriba
+- **Colisión sólida integrada** - El suelo bloquea al jugador automáticamente una vez marcado como Solid, sin código manual de comprobación de posición
 
 ---
 
