@@ -175,9 +175,13 @@ nome_projeto/
 - [Referência de Eventos](Event-Reference_pt) - Documentação completa de eventos
 - [Referência de Ações](Full-Action-Reference_pt) - Documentação completa de ações
 
+### Funcionalidades Avançadas
+- [Vista 3D](3D-View_pt) - Renderização em primeira pessoa no estilo Doom (raycast)
+- [Extensões](Extensions_pt) - Ações e renderizadores adicionais (como a Vista 3D é distribuída)
+
 ### Tutoriais e Guias
 - [**Tutoriais**](Tutorials_pt) - Todos os tutoriais em um só lugar
-- [Primeiros Passos](Primeiros_Passos_pt) - Primeiros passos com PyGameMaker
+- [Primeiros Passos](Comecar_pt) - Primeiros passos com PyGameMaker
 - [Crie Seu Primeiro Jogo](Primeiro_Jogo_pt) - Tutorial passo a passo
 - [Tutorial Pong](Tutorial-Pong_pt) - Crie um jogo Pong clássico para dois jogadores
 - [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout clássico
@@ -194,11 +198,8 @@ nome_projeto/
 
 ## Contribuir
 
-Contribuições são bem-vindas! Veja nossas diretrizes de contribuição para:
-- Relatórios de bugs e solicitações de funcionalidades
-- Contribuições de código
-- Traduções
-- Melhorias na documentação
+Relatórios de bugs, solicitações de funcionalidades e pull requests
+são bem-vindos no [issue tracker](https://github.com/Gabe1290/pythongm/issues).
 
 ---
 
