@@ -4,77 +4,207 @@
 
 ---
 
-[Voltar ao Inicio](Home_pt)
+[Voltar ao Início](Home_pt)
 
-O Editor de Objetos e a ferramenta central para definir o comportamento dos elementos do jogo.
+Os objetos são os blocos fundamentais de construção do seu jogo.
+Representam tudo, desde jogadores e inimigos até colecionáveis e
+elementos de interface.
 
-## Visão geral
+---
 
-Os objetos são os blocos de construção do seu jogo. Eles definem:
-- Aparencia (Sprite)
-- Comportamento (Eventos e Ações)
-- Propriedades físicas
-- Interações
+## Abrir o Editor de Objetos
 
-## Interface do Editor
+1. Clique duas vezes num objeto existente na árvore de recursos, ou
+2. Clique com o botão direito em **Objects** > **Create Object**
 
-### Areas principais
-1. **Lista de objetos**: Todos os objetos no projeto
-2. **Painel de propriedades**: Configurações básicas
-3. **Lista de eventos**: Eventos definidos
-4. **Editor de ações**: Ações para eventos
+---
 
-## Propriedades do objeto
+## Propriedades do Objeto
 
-### Gerais
-- **Nome**: Identificador único (ex. obj_jogador)
-- **Sprite**: Grafico atribuido
-- **Visivel**: Se o objeto é renderizado
-- **Persistente**: Sobrevive a mudancas de sala
+| Propriedade | Descrição |
+|-----------|-------------|
+| **Name** | Identificador único para o objeto (ex. `obj_jogador`) |
+| **Sprite** | A representação visual do objeto |
+| **Visible** | Se o objeto é desenhado (padrão: sim) |
+| **Solid** | Usado para deteção de colisão com objetos sólidos |
+| **Depth** | Ordem de desenho (menor = desenhado por cima) |
+| **Persistent** | O objeto sobrevive a mudanças de sala |
+| **Parent Object** | Herda propriedades/eventos comuns de outro objeto |
 
-### Física
-- **Sólido**: Colide com outros objetos
-- **Profundidade**: Ordem de desenho
-- **Objeto pai**: Heranca de propriedades
+### Convenção de Nomes
 
-## Trabalhar com eventos
+Use o prefixo `obj_` para os objetos:
+- `obj_jogador`
+- `obj_inimigo`
+- `obj_moeda`
+- `obj_parede`
 
-### Adicionar um evento
-1. Clique em "Adicionar Evento"
-2. Selecione o tipo de evento
-3. Adicione ações
+---
 
-### Tipos de eventos
-- **Create**: Ao criar a instância
-- **Step**: Cada frame
-- **Draw**: Para desenhar
-- **Teclado**: Entrada de teclado
-- **Rato**: Interações com o rato
-- **Colisão**: Ao tocar outros objetos
+## Eventos
 
-## Usar ações
+Eventos são gatilhos que causam a execução de ações. Clique em "Add
+Event" para adicionar um.
 
-### Adicionar ações
-1. Selecione um evento
-2. Arraste ações da biblioteca
-3. Configure os parametros
+### Eventos Comuns
 
-### Ações comuns
-- Mover numa direção
-- Definir variável
-- Criar/destruir instância
-- Reproduzir som
-- Mudar de sala
+| Evento | Quando Dispara |
+|-------|------------------|
+| **Create** | Uma vez, quando uma instância é criada |
+| **Destroy** | Quando a instância é destruída |
+| **Step** | A cada quadro do jogo (60 vezes por segundo) |
+| **Draw** | Durante a fase de desenho |
+| **Alarm [0-11]** | Quando um temporizador de alarme chega a zero |
 
-## Melhores práticas
+### Eventos de Teclado
 
-1. **Nomes claros**: Use prefixos como "obj_"
-2. **Modularidade**: Objetos pequenos e reutilizaveis
-3. **Use a herança**: Objetos pai para comportamento comum
-4. **Documentação**: Comentarios em eventos complexos
+| Evento | Quando Dispara |
+|-------|------------------|
+| **Key Press** | Uma vez, quando uma tecla é pressionada |
+| **Key Release** | Uma vez, quando uma tecla é solta |
+| **Keyboard** | A cada quadro enquanto uma tecla está pressionada |
+| **No Key** | Quando nenhuma tecla está pressionada |
 
-## Ver também
+### Eventos de Rato
 
-- [Eventos e Ações](Eventos_e_Acoes_pt)
-- [Programação Visual](Programacao_Visual_pt)
-- [Editor de Salas](Editor_Salas_pt)
+| Evento | Quando Dispara |
+|-------|------------------|
+| **Mouse Button** | Ao clicar na instância |
+| **Global Mouse** | Ao clicar em qualquer lugar |
+| **Mouse Enter** | Quando o cursor entra na instância |
+| **Mouse Leave** | Quando o cursor sai da instância |
+
+### Eventos de Colisão
+
+| Evento | Quando Dispara |
+|-------|------------------|
+| **Collision with [objeto]** | Ao tocar noutro tipo de objeto |
+
+### Outros Eventos
+
+| Evento | Quando Dispara |
+|-------|------------------|
+| **Outside Room** | Quando a instância sai da sala |
+| **Intersect Boundary** | Quando a instância toca a borda da sala |
+| **Game Start** | Uma vez, ao iniciar o jogo |
+| **Game End** | Uma vez, ao fechar o jogo |
+| **Room Start** | Ao entrar numa sala |
+| **Room End** | Ao sair de uma sala |
+
+---
+
+## Ações
+
+Ações são operações executadas quando um evento dispara. Cada evento
+pode ter várias ações, executadas em ordem.
+
+### Ações de Movimento
+- **Set Speed** — Define a velocidade de movimento
+- **Set Direction** — Define a direção de movimento (0-360 graus)
+- **Set Horizontal Speed** — Define hspeed
+- **Set Vertical Speed** — Define vspeed
+- **Mover para um ponto** — Move em direção a coordenadas
+- **Jump to Position** — Teletransporta instantaneamente para coordenadas
+- **Saltar para a posição inicial** — Retorna à posição de criação
+- **Saltar para posição aleatória** — Teletransporta para uma posição aleatória
+
+### Ações de Instância
+- **Create Instance** — Cria um novo objeto
+- **Destroy Instance** — Remove a instância atual
+- **Change Instance** — Transforma-se noutro tipo de objeto
+
+### Ações de Temporização
+- **Set Alarm** — Inicia um temporizador de contagem regressiva
+- **Sleep** — Pausa a execução por um breve momento
+
+### Ações de Desenho
+- **Draw Sprite** — Desenha um sprite
+- **Draw Text** — Mostra texto no ecrã
+- **Draw Rectangle** — Desenha um retângulo preenchido ou contornado
+- **Desenhar pontuação** — Mostra a pontuação atual
+- **Desenhar vidas** — Mostra as vidas restantes
+- **Desenhar barra de saúde** — Mostra a barra de saúde
+
+### Score/Lives/Health
+- **Set Score** — Altera o valor da pontuação
+- **Set Lives** — Altera o número de vidas
+- **Set Health** — Altera o valor da saúde
+- **Testar pontuação** — Verifica uma condição de pontuação
+- **Testar vidas** — Verifica uma condição de vidas
+- **Testar saúde** — Verifica uma condição de saúde
+
+### Ações de Sala
+- **Next Room** — Vai para a próxima sala
+- **Previous Room** — Vai para a sala anterior
+- **Restart Room** — Reinicia a sala atual
+- **Go to Room** — Salta para uma sala específica
+
+### Ações Sound
+- **Play Sound** — Reproduz um efeito sonoro
+- **Stop Sound** — Para um som em reprodução
+- **Play Music** — Reproduz música de fundo
+- **Stop Music** — Para a música de fundo
+
+### Ações de Variáveis
+- **Set Variable** — Atribui um valor a uma variável
+- **Testar variável** — Verifica uma condição de variável
+
+---
+
+## Programação Visual com Blockly
+
+Em vez de usar a lista de ações, pode mudar para a aba **Blockly** para
+programação visual:
+
+1. Abra um objeto
+2. Clique na aba **Blockly**
+3. Arraste blocos da barra de ferramentas para criar a lógica
+4. Os blocos encaixam-se para formar programas completos
+
+Veja [[Programacao_Visual_pt]] para mais detalhes.
+
+---
+
+## Dicas e Boas Práticas
+
+### Organização
+- Dê nomes descritivos aos objetos
+- Agrupe objetos relacionados com prefixos semelhantes
+- Use o evento Create apenas para inicialização
+
+### Desempenho
+- Evite cálculos pesados no evento Step
+- Use alarmes em vez de contar quadros manualmente
+- Destrua as instâncias que saem da sala
+
+### Depuração
+- Use a ação **Show Message** para mostrar valores
+- Verifique a saída da consola para erros
+- Teste frequentemente enquanto desenvolve
+
+---
+
+## Exemplo: IA Simples para Inimigo
+
+```
+Create Event:
+  - Set Alarm[0] = 60 (1 segundo a 60 FPS)
+  - Set direction = random(360)
+  - Set speed = 2
+
+Alarm[0] Event:
+  - Set direction = random(360)
+  - Set Alarm[0] = 60
+
+Collision with obj_player:
+  - Set Lives relative = -1
+  - Destroy Instance
+```
+
+---
+
+## Próximos Passos
+
+- [[Editor_Salas_pt]] - Coloque objetos nos seus níveis de jogo
+- [[Eventos_e_Acoes_pt]] - Referência completa de todos os eventos e ações
+- [[Programacao_Visual_pt]] - Aprenda a programação por blocos com Blockly

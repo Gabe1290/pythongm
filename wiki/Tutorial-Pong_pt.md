@@ -119,8 +119,8 @@ O objeto parede cria limites na parte superior e inferior da área de jogo.
 
 **Evento: Colisão com obj_wall**
 1. Adicionar Evento → Colisão → obj_wall
-2. Adicionar Ação: **Mover** → **Ricocheteio Contra Objetos**
-3. Selecione "Contra objetos sólidos"
+2. Adicionar Ação: **Mover** → **Quicar** (nenhuma configuração
+   necessária — ricocheteia sempre em objetos sólidos)
 
 ### 4.2 Raquete Direita (Jogador 2)
 
@@ -152,8 +152,8 @@ O objeto parede cria limites na parte superior e inferior da área de jogo.
 
 **Evento: Colisão com obj_wall**
 1. Adicionar Evento → Colisão → obj_wall
-2. Adicionar Ação: **Mover** → **Ricocheteio Contra Objetos**
-3. Selecione "Contra objetos sólidos"
+2. Adicionar Ação: **Mover** → **Quicar** (nenhuma configuração
+   necessária — ricocheteia sempre em objetos sólidos)
 
 ---
 
@@ -164,24 +164,25 @@ O objeto parede cria limites na parte superior e inferior da área de jogo.
 
 **Evento: Criar**
 1. Adicionar Evento → Criar
-2. Adicionar Ação: **Mover** → **Começar Movimento em Direção**
-3. Escolha uma direção diagonal (não reto para cima ou para baixo)
+2. Adicionar Ação: **Mover** → **Começar a mover (direção)**
+3. Escolha uma casinha diagonal no seletor de direção 3x3 (não reto
+   para cima ou para baixo)
 4. Defina a velocidade para `6`
 
 **Evento: Colisão com obj_paddle_left**
 1. Adicionar Evento → Colisão → obj_paddle_left
-2. Adicionar Ação: **Mover** → **Ricocheteio Contra Objetos**
-3. Selecione "Contra objetos sólidos"
+2. Adicionar Ação: **Mover** → **Quicar** (nenhuma configuração
+   necessária — ricocheteia sempre em objetos sólidos)
 
 **Evento: Colisão com obj_paddle_right**
 1. Adicionar Evento → Colisão → obj_paddle_right
-2. Adicionar Ação: **Mover** → **Ricocheteio Contra Objetos**
-3. Selecione "Contra objetos sólidos"
+2. Adicionar Ação: **Mover** → **Quicar** (nenhuma configuração
+   necessária — ricocheteia sempre em objetos sólidos)
 
 **Evento: Colisão com obj_wall**
 1. Adicionar Evento → Colisão → obj_wall
-2. Adicionar Ação: **Mover** → **Ricocheteio Contra Objetos**
-3. Selecione "Contra objetos sólidos"
+2. Adicionar Ação: **Mover** → **Quicar** (nenhuma configuração
+   necessária — ricocheteia sempre em objetos sólidos)
 
 ---
 
@@ -205,23 +206,32 @@ Gols são áreas invisíveis atrás de cada raquete. Quando a bola entra em um g
 
 ### 6.3 Adicionar Eventos de Colisão de Gol à Bola
 
+`global.p1score`/`global.p2score` são variáveis com nome
+personalizado, uma por jogador — a ação integrada **Set Score** não
+serve aqui, pois sempre escreve na única pontuação integrada, sem
+forma de apontar para um nome de variável. **Set Variable** é a ação
+real para uma variável com nome personalizado e suporta um escopo
+`global`:
+
 Volte para `obj_ball` e adicione estes eventos:
 
 **Evento: Colisão com obj_goal_left**
 1. Adicionar Evento → Colisão → obj_goal_left
 2. Adicionar Ação: **Mover** → **Saltar para Posição Inicial** (reseta a bola)
-3. Adicionar Ação: **Pontuação** → **Definir Pontuação**
-   - Variável: `global.p2score`
+3. Adicionar Ação: **Controle** → **Set Variable**
+   - Variável: `p2score`
    - Valor: `1`
-   - Marque "Relativo" (adiciona 1 à pontuação atual)
+   - Escopo: `global`
+   - Marque "Relative" (adiciona 1 à pontuação atual)
 
 **Evento: Colisão com obj_goal_right**
 1. Adicionar Evento → Colisão → obj_goal_right
 2. Adicionar Ação: **Mover** → **Saltar para Posição Inicial**
-3. Adicionar Ação: **Pontuação** → **Definir Pontuação**
-   - Variável: `global.p1score`
+3. Adicionar Ação: **Controle** → **Set Variable**
+   - Variável: `p1score`
    - Valor: `1`
-   - Marque "Relativo"
+   - Escopo: `global`
+   - Marque "Relative"
 
 ---
 
@@ -232,12 +242,10 @@ Volte para `obj_ball` e adicione estes eventos:
 
 **Evento: Criar**
 1. Adicionar Evento → Criar
-2. Adicionar Ação: **Pontuação** → **Definir Pontuação**
-   - Variável: `global.p1score`
-   - Valor: `0`
-3. Adicionar Ação: **Pontuação** → **Definir Pontuação**
-   - Variável: `global.p2score`
-   - Valor: `0`
+2. Adicionar Ação: **Controle** → **Set Variable**
+   - Variável: `p1score`, Valor: `0`, Escopo: `global`
+3. Adicionar Ação: **Controle** → **Set Variable**
+   - Variável: `p2score`, Valor: `0`, Escopo: `global`
 
 **Evento: Desenhar**
 1. Adicionar Evento → Desenhar
@@ -300,9 +308,19 @@ Volte para `obj_ball` e adicione estes eventos:
 ## Melhorias (Opcional)
 
 ### Aumentar Velocidade
-Faça a bola ficar mais rápida cada vez que acertar uma raquete adicionando aos eventos de colisão:
-- Após a ação de ricocheteio, adicione **Mover** → **Definir Velocidade**
-- Defina a velocidade para `speed + 0.5` com "Relativo" marcado
+Faça a bola ficar mais rápida cada vez que acertar uma raquete. `speed`
+não pode ser usado diretamente aqui — neste motor é a velocidade de
+*animação* do sprite, não a velocidade de movimento — então rastreie a
+velocidade da bola numa variável personalizada:
+
+1. No evento **Criar** de `obj_ball`, adicione **Controle** →
+   **Set Variable** (Variável: `ball_speed`, Valor: `6`) logo após a
+   ação Começar a mover.
+2. Em cada evento de colisão com uma raquete, após a ação **Quicar**,
+   adicione **Controle** → **Set Variable** (Variável: `ball_speed`,
+   Valor: `0.5`, **Relative** marcado), depois **Mover** → **Definir
+   Velocidade** com Valor `self.ball_speed` para aplicar a nova
+   velocidade mantendo a direção atual (Quicar já a inverteu).
 
 ### Efeitos Sonoros
 Adicione sons quando:
