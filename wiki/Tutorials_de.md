@@ -12,7 +12,11 @@ Willkommen auf der PyGameMaker Tutorials-Seite! Hier finden Sie Schritt-für-Sch
 
 ## Anfänger-Tutorials
 
-Diese Tutorials sind für Benutzer gedacht, die neu in der Spieleentwicklung sind. Sie verwenden die **Anfänger-Voreinstellung** und behandeln grundlegende Konzepte.
+Diese Tutorials sind für Benutzer gedacht, die neu in der
+Spieleentwicklung sind und ausschließlich die Ereignisse und Aktionen des
+[Anfänger-Presets](Beginner-Preset_de) verwenden (bestätigt gegen
+`config/blockly_config.py`'s `get_beginner()`, das genau diese beiden
+Tutorials namentlich nennt).
 
 ### Klassische Spiele
 
@@ -20,6 +24,21 @@ Diese Tutorials sind für Benutzer gedacht, die neu in der Spieleentwicklung sin
 |----------|-------------|----------------------|
 | [**Pong**](Tutorial-Pong_de) | Erstellen Sie ein klassisches Pong-Spiel für zwei Spieler | Tastatureingabe, Kollisionserkennung, Punkteverfolgung, globale Variablen |
 | [**Breakout**](Tutorial-Breakout_de) | Bauen Sie ein Ziegelstein-Brecher-Spiel | Objektvernichtung, Abprall-Mechanik, Leben-System |
+
+## Fortgeschrittene Tutorials
+
+Diese vier Tutorials benötigen das
+[Fortgeschrittenen-Preset](Intermediate-Preset_de) — die Schiebe-Mechanik
+von Sokoban (`if_can_push`) sowie die Gitterbewegung von Sokoban/
+Labyrinth (`move_snap_to_grid`/`move_grid`) sind nicht im
+Anfänger-Preset enthalten. Falls Ihr Projekt noch auf dem
+Standard-Anfänger-Preset läuft (neue Projekte starten dort — siehe den
+[Preset-Leitfaden](Preset-Guide_de)), stellen Sie es zuerst über
+`Tools > Configure Action Blocks...` um, sonst erscheinen die Aktionen
+dieser Tutorials in keinem der beiden Editoren.
+
+| Tutorial | Beschreibung | Erlernte Fähigkeiten |
+|----------|-------------|----------------------|
 | [**Sokoban**](Tutorial-Sokoban_de) | Erstellen Sie ein Kisten-Schiebe-Puzzlespiel | Rasterbasierte Bewegung, Schiebe-Mechanik, Siegbedingungen |
 | [**Labyrinth**](Tutorial-Maze_de) | Navigieren Sie durch Korridore zum Ausgang | Flüssige Bewegung, Wandkollision, Sammelobjekte, Timer |
 | [**Platformer**](Tutorial-Platformer_de) | Laufen, springen und Münzen sammeln | Schwerkraft, Sprungmechanik, Plattformkollision |
@@ -72,7 +91,8 @@ Jedes Tutorial lehrt wichtige Spieleentwicklungskonzepte:
 
 1. **PyGameMaker installieren** - Folgen Sie den [Installationsanweisungen](Home_de#installation)
 2. **Ein Tutorial auswählen** - Beginnen Sie mit [Pong](Tutorial-Pong_de) oder [Breakout](Tutorial-Breakout_de)
-3. **Ihre Voreinstellung einstellen** - Verwenden Sie die Anfänger-Voreinstellung für diese Tutorials
+3. **Ihr Preset einstellen** - Anfänger für Pong/Breakout, Fortgeschritten
+   für Sokoban/Labyrinth/Platformer/Mondlandung (siehe die Tabellen oben)
 4. **Schrittweise folgen** - Arbeiten Sie jeden Schritt sorgfältig durch
 5. **Experimentieren** - Versuchen Sie die Verbesserungsvorschläge am Ende!
 
