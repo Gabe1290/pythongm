@@ -12,7 +12,11 @@ Dobrodošli na stran PyGameMaker Vadnic! Tu boste našli vodnjike po korakih, ki
 
 ## Vadnice za začetnike
 
-Te vadnice so zasnovane za uporabnike, ki so novi v razvoju iger. Uporabljajo **Beginner Preset** in pokrivajo temeljne koncepte.
+Te vadnice so zasnovane za uporabnike, ki so novi v razvoju iger, in
+uporabljajo izključno dogodke in akcije [Prednastavitve za
+Začetnike](Beginner-Preset_sl) (preverjeno proti
+`config/blockly_config.py`'s `get_beginner()`, ki po imenu navaja
+prav ti dve vadnici).
 
 ### Klasične igre
 
@@ -20,6 +24,20 @@ Te vadnice so zasnovane za uporabnike, ki so novi v razvoju iger. Uporabljajo **
 |---------|------|-----------------|
 | [**Pong**](Tutorial-Pong_sl) | Ustvarite klasično igro Pong za dva igralca | Vnos s tipkovnico, zaznavanje trkov, sledenje rezultatom, globalne spremenljivke |
 | [**Breakout**](Tutorial-Breakout_sl) | Zgradite igro s premeščanjem opek | Uničenje predmetov, mehanika odboja, sistem življenj |
+
+## Srednje zahtevne vadnice
+
+Te štiri vadnice zahtevajo [Srednjo prednastavitev](Intermediate-Preset_sl)
+— mehanika potiskanja pri Sokobanu (`if_can_push`) in gibanje po
+mreži pri Sokobanu/Labirintu (`move_snap_to_grid`/`move_grid`) nista
+del prednastavitve za začetnike. Če vaš projekt še vedno uporablja
+privzeto prednastavitev za začetnike (novi projekti začnejo tam —
+glejte [Vodnik po Prednastavitvah](Preset-Guide_sl)), jo najprej
+preklopite prek `Tools > Configure Action Blocks...`, sicer se akcije
+teh vadnic ne bodo pojavile v nobenem od obeh urejevalnikov.
+
+| Vadnica | Opis | Naučeni veščini |
+|---------|------|-----------------|
 | [**Sokoban**](Tutorial-Sokoban_sl) | Ustvarite igro ugank s potiskanjem zabojev | Premikanje po mreži, mehanika potiskanja, pogoji zmage |
 | [**Labirint**](Tutorial-Maze_sl) | Navigirajte skozi hodnike do izhoda | Gladko gibanje, trk s stenami, zbirateljski predmeti, časovnik |
 | [**Platformer**](Tutorial-Platformer_sl) | Teci, skači in zbiraj kovance | Gravitacija, mehanika skakanja, trk s platformami |
@@ -76,7 +94,9 @@ Vsaka vadnica poučuje pomembne koncepte razvoja iger:
 
 1. **Namestite PyGameMaker** - Sledite [navodilom za namestitev](Home_sl#namestitev)
 2. **Izberite vadnico** - Začnite s [Pongom](Tutorial-Pong_sl) ali [Breakout-om](Tutorial-Breakout_sl)
-3. **Nastavite svojo prednastavko** - Uporabite Beginner Preset za te vadnice
+3. **Nastavite svojo prednastavitev** - Začetnik za Pong/Breakout,
+   Srednja za Sokoban/Labirint/Platformer/Lunarni Pristanek (glejte
+   tabele zgoraj)
 4. **Sledite navodilom** - Pazljivo se pomaknite skozi vsak korak
 5. **Eksperimentirajte** - Poskusite s predlogi za izboljšave na koncu!
 
