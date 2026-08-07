@@ -119,47 +119,40 @@ Der Spieler ist das komplexeste Objekt mit Schwerkraft, Springen und Bewegung.
 1. Erstellen Sie ein neues Objekt namens `obj_player`
 2. Setzen Sie das Sprite auf `spr_player`
 
-### 5.1 Create Event - Variablen initialisieren
+### 5.1 Schwerkraft
 
-**Event: Create**
-```gml
-hspeed_max = 4;
-vspeed_max = 10;
-jump_force = -10;
-gravity_force = 0.5;
-hsp = 0;
-vsp = 0;
-on_ground = false;
-```
+**Event: Create** — Add Action: **Move** → **Set Gravity**
+(Direction: `270`, Gravity: `0.5`) — 270° bedeutet senkrecht nach unten;
+der Wert wird bei jedem Frame zur Vertikalgeschwindigkeit des Spielers
+addiert, der Spieler beschleunigt also ab jetzt von selbst nach unten.
 
-### 5.2 Step Event - Bewegung und Physik
+### 5.2 Bewegung, Sprung und Bodenkollision
 
-**Event: Step**
-```gml
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-hsp = move_input * hspeed_max;
+Fügen Sie diese Events hinzu, nach demselben Muster wie in den vorherigen
+Tutorials dieses Wikis:
 
-vsp += gravity_force;
-if (vsp > vspeed_max) vsp = vspeed_max;
+| Event | Aktion |
+|---|---|
+| Keyboard (held) → Left Arrow | Set Horizontal Speed auf `-4` |
+| Keyboard (held) → Right Arrow | Set Horizontal Speed auf `4` |
+| Keyboard: No Key | Set Horizontal Speed auf `0` |
+| Key Press → Up Arrow | Set Vertical Speed auf `-10` |
+| Collision with obj_ground | Stop Movement |
 
-on_ground = place_meeting(x, y + 1, obj_ground);
+Zwei Details, die dafür sorgen, dass es sich richtig anfühlt:
 
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
-
-if (place_meeting(x + hsp, y, obj_ground)) {
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) x += sign(hsp);
-    hsp = 0;
-}
-x += hsp;
-
-if (place_meeting(x, y + vsp, obj_ground)) {
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) y += sign(vsp);
-    vsp = 0;
-}
-y += vsp;
-```
+- **No Key setzt NUR die Horizontalgeschwindigkeit auf 0** — verwenden Sie
+  hier niemals Stop Movement, denn Stop Movement setzt auch die
+  Vertikalgeschwindigkeit auf null, was die Schwerkraft jedes Mal
+  aufheben würde, wenn der Spieler eine Richtungstaste loslässt.
+- **Key Press (nicht held)** ist es, was Up zu einem einzelnen
+  Sprungimpuls macht, statt den Spieler bei jedem gehaltenen Frame nach
+  oben zu treiben. **Stop Movement** bei der Landung hebt diesen Impuls
+  dann auf, damit der Spieler nach dem Landen nicht weiter nach oben
+  steigt — die eingebaute solide Kollision der Engine (Schritt 3 hat
+  `obj_ground` bereits Solid gemacht) verhindert bereits, dass der
+  Spieler in den Boden einsinkt; das Event hier löscht lediglich die
+  verbleibende Fallgeschwindigkeit.
 
 ---
 
@@ -185,10 +178,9 @@ y += vsp;
 
 ## Was Sie gelernt haben
 
-- **Schwerkraftphysik** - Konstante Abwärtskraft
-- **Sprungmechanik** - Negative Vertikalgeschwindigkeit
-- **Bodenerkennung** - `place_meeting` verwenden
-- **Kollisionsbehandlung** - Pixel für Pixel bewegen
+- **Schwerkraftphysik** - Set Gravity wendet bei jedem Frame eine konstante Abwärtskraft an
+- **Sprungmechanik** - Ein Key-Press-Event (nicht held) gibt einen einzelnen Geschwindigkeitsimpuls nach oben
+- **Eingebaute solide Kollision** - Der Boden blockiert den Spieler automatisch, sobald er als Solid markiert ist, ohne manuellen Positionsprüfungs-Code
 
 ---
 
