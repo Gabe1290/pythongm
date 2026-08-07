@@ -8,17 +8,18 @@
 
 ## Einführung
 
-In diesem Tutorial erstellen Sie ein **Sokoban**-Puzzlespiel - ein klassisches Kisten-Schiebe-Puzzle, bei dem der Spieler alle Kisten auf Zielfelder schieben muss. Sokoban (was "Lagerverwalter" im Japanischen bedeutet) ist perfekt zum Lernen von gitterbasierter Bewegung und Puzzle-Spiellogik.
+In diesem Tutorial erstellen Sie ein **Sokoban**-Puzzlespiel - ein klassisches Kisten-Schiebe-Puzzle, bei dem der Spieler alle Kisten auf Zielfelder schieben muss. Sokoban (was "Lagerverwalter" auf Japanisch bedeutet) ist perfekt zum Lernen von gitterbasierter Bewegung und Puzzle-Spiellogik.
 
 **Was Sie lernen werden:**
 - Gitterbasierte Bewegung (Bewegung in festen Schritten)
 - Schiebemechaniken zum Bewegen von Objekten
 - Kollisionserkennung mit mehreren Objekttypen
-- Erkennungsbedingung zum Gewinnen
+- Erkennung der Gewinnbedingung
 - Leveldesign für Puzzlespiele
 
 **Schwierigkeitsgrad:** Anfänger
-**Voreinstellung:** Anfänger-Voreinstellung
+**Preset:** Fortgeschrittenen-Preset (die hier verwendete Schiebemechanik und
+gitterbasierte Bewegung sind nicht im Anfänger-Preset enthalten)
 
 ---
 
@@ -35,59 +36,59 @@ In diesem Tutorial erstellen Sie ein **Sokoban**-Puzzlespiel - ein klassisches K
 
 | Element | Zweck |
 |---------|-------|
-| **Spieler** | Der Lagerverwalter, den Sie kontrollieren |
+| **Spieler** | Der Lagerverwalter, den Sie steuern |
 | **Kiste** | Kartons, die der Spieler schiebt |
 | **Wand** | Feste Hindernisse, die die Bewegung blockieren |
 | **Ziel** | Zielfelder, auf die Kisten platziert werden müssen |
-| **Boden** | Begehbarer Untergrund (optional visuell) |
+| **Boden** | Begehbarer Untergrund (optional, nur visuell) |
 
 ---
 
-## Schritt 2: Erstellen Sie die Grafiken
+## Schritt 2: Erstellen Sie die Sprites
 
-Alle Grafiken sollten die gleiche Größe haben (32x32 Pixel funktioniert gut), um ein ordnungsgemäßes Gitter zu erstellen.
+Alle Sprites sollten die gleiche Größe haben (32x32 Pixel funktioniert gut), um ein ordentliches Gitter zu erzeugen.
 
-### 2.1 Spieler-Grafik
+### 2.1 Spieler-Sprite
 
-1. Klicken Sie im **Ressourcenbaum** mit der rechten Maustaste auf **Grafiken** und wählen Sie **Grafik erstellen**
-2. Geben Sie ihr den Namen `spr_player`
-3. Klicken Sie auf **Grafik bearbeiten**, um den Grafik-Editor zu öffnen
-4. Zeichnen Sie einen einfachen Charakter (eine Person oder Roboterform)
+1. Klicken Sie im **Ressourcenbaum** mit der rechten Maustaste auf **Sprites** und wählen Sie **Sprite erstellen**
+2. Nennen Sie es `spr_player`
+3. Klicken Sie auf **Sprite bearbeiten**, um den Sprite-Editor zu öffnen
+4. Zeichnen Sie eine einfache Figur (eine Person oder Roboterform)
 5. Verwenden Sie eine deutliche Farbe wie Blau oder Grün
 6. Größe: 32x32 Pixel
 7. Klicken Sie auf **OK**, um zu speichern
 
-### 2.2 Kisten-Grafik
+### 2.2 Kisten-Sprite
 
-1. Erstellen Sie eine neue Grafik mit dem Namen `spr_crate`
-2. Zeichnen Sie eine Holzkiste oder Kastenform
-3. Verwenden Sie braune oder orange Farben
+1. Erstellen Sie ein neues Sprite mit dem Namen `spr_crate`
+2. Zeichnen Sie eine Holzkiste
+3. Verwenden Sie braune oder orangefarbene Töne
 4. Größe: 32x32 Pixel
 
-### 2.3 Kiste auf Ziel-Grafik
+### 2.3 Sprite für Kiste auf Ziel
 
-1. Erstellen Sie eine neue Grafik mit dem Namen `spr_crate_ok`
-2. Zeichnen Sie die gleiche Kiste, aber mit einer anderen Farbe (grün), um zu zeigen, dass sie richtig platziert ist
+1. Erstellen Sie ein neues Sprite mit dem Namen `spr_crate_ok`
+2. Zeichnen Sie dieselbe Kiste, aber in einer anderen Farbe (grün), um zu zeigen, dass sie richtig platziert ist
 3. Größe: 32x32 Pixel
 
-### 2.4 Wand-Grafik
+### 2.4 Wand-Sprite
 
-1. Erstellen Sie eine neue Grafik mit dem Namen `spr_wall`
-2. Zeichnen Sie ein solides Ziegel- oder Steinmuster
+1. Erstellen Sie ein neues Sprite mit dem Namen `spr_wall`
+2. Zeichnen Sie ein durchgehendes Ziegel- oder Steinmuster
 3. Verwenden Sie graue oder dunkle Farben
 4. Größe: 32x32 Pixel
 
-### 2.5 Ziel-Grafik
+### 2.5 Ziel-Sprite
 
-1. Erstellen Sie eine neue Grafik mit dem Namen `spr_target`
-2. Zeichnen Sie ein X-Zeichen oder einen Zielindikator
-3. Verwenden Sie eine lebendige Farbe wie Rot oder Gelb
+1. Erstellen Sie ein neues Sprite mit dem Namen `spr_target`
+2. Zeichnen Sie ein X-Zeichen oder eine Zielmarkierung
+3. Verwenden Sie eine kräftige Farbe wie Rot oder Gelb
 4. Größe: 32x32 Pixel
 
-### 2.6 Boden-Grafik (Optional)
+### 2.6 Boden-Sprite (Optional)
 
-1. Erstellen Sie eine neue Grafik mit dem Namen `spr_floor`
-2. Zeichnen Sie ein einfaches Bodenfliesen-Muster
+1. Erstellen Sie ein neues Sprite mit dem Namen `spr_floor`
+2. Zeichnen Sie ein einfaches Bodenfliesenmuster
 3. Verwenden Sie eine neutrale Farbe
 4. Größe: 32x32 Pixel
 
@@ -97,11 +98,11 @@ Alle Grafiken sollten die gleiche Größe haben (32x32 Pixel funktioniert gut), 
 
 Die Wand ist das einfachste Objekt - sie blockiert einfach die Bewegung.
 
-1. Klicken Sie mit der rechten Maustaste auf **Objekte** und wählen Sie **Objekt erstellen**
-2. Geben Sie ihm den Namen `obj_wall`
-3. Setzen Sie die Grafik auf `spr_wall`
+1. Klicken Sie mit der rechten Maustaste auf **Objects** und wählen Sie **Create Object**
+2. Nennen Sie es `obj_wall`
+3. Setzen Sie das Sprite auf `spr_wall`
 4. **Aktivieren Sie das Kontrollkästchen "Solid"**
-5. Keine Ereignisse erforderlich
+5. Keine Ereignisse nötig
 
 ---
 
@@ -110,214 +111,149 @@ Die Wand ist das einfachste Objekt - sie blockiert einfach die Bewegung.
 Ziele markieren, wo Kisten platziert werden sollen.
 
 1. Erstellen Sie ein neues Objekt mit dem Namen `obj_target`
-2. Setzen Sie die Grafik auf `spr_target`
-3. Keine Ereignisse erforderlich - es ist nur ein Markierungsfeld
-4. Lassen Sie "Solid" deaktiviert (Spieler und Kisten können darauf sein)
+2. Setzen Sie das Sprite auf `spr_target`
+3. Keine Ereignisse nötig - es ist nur eine Markierung
+4. Lassen Sie "Solid" deaktiviert (Spieler und Kisten können darüber stehen)
 
 ---
 
 ## Schritt 5: Erstellen Sie das Kisten-Objekt
 
-Die Kiste wird vom Spieler geschoben und ändert ihr Aussehen, wenn sie sich auf einem Zielfeld befindet.
+Die Kiste wird vom Spieler geschoben und ändert ihr Aussehen, wenn sie auf einem Ziel steht.
 
 1. Erstellen Sie ein neues Objekt mit dem Namen `obj_crate`
-2. Setzen Sie die Grafik auf `spr_crate`
+2. Setzen Sie das Sprite auf `spr_crate`
 3. **Aktivieren Sie das Kontrollkästchen "Solid"**
 
-**Ereignis: Schritt**
-1. Ereignis hinzufügen → Schritt → Schritt
-2. Aktion hinzufügen: **Steuerung** → **Variable testen**
-   - Variable: `place_meeting(x, y, obj_target)`
-   - Wert: `1`
-   - Operation: Gleich
-3. Aktion hinzufügen: **Main1** → **Grafik wechseln**
-   - Grafik: `spr_crate_ok`
-   - Unterbild: `0`
-   - Geschwindigkeit: `1`
-4. Aktion hinzufügen: **Steuerung** → **Sonst**
-5. Aktion hinzufügen: **Main1** → **Grafik wechseln**
-   - Grafik: `spr_crate`
-   - Unterbild: `0`
-   - Geschwindigkeit: `1`
+**Ereignis: Step**
+1. Add Event → Step → Step
+2. Add Action: **Control** → **If Collision**
+   - X Offset: `0`
+   - Y Offset: `0`
+   - Against: `obj_target`
+3. Add Action: **Instance** → **Set Sprite**
+   - Sprite: `spr_crate_ok`
+4. Add Action: **Control** → **Else**
+5. Add Action: **Instance** → **Set Sprite**
+   - Sprite: `spr_crate`
 
-Dies lässt die Kiste grün werden, wenn sie sich auf einem Zielfeld befindet.
+Dadurch wird die Kiste grün, sobald sie auf einem Zielfeld steht — **If
+Collision** mit beiden Versätzen auf `0` prüft, ob die *aktuelle* Position
+der Kiste ein `obj_target` überlappt.
 
 ---
 
 ## Schritt 6: Erstellen Sie das Spieler-Objekt
 
-Der Spieler ist das komplexeste Objekt mit gitterbasierter Bewegung und Schiebemechaniken.
+Der Spieler bewegt sich immer genau eine Gitterzelle weit und schiebt Kisten, in die er hineinläuft.
 
 1. Erstellen Sie ein neues Objekt mit dem Namen `obj_player`
-2. Setzen Sie die Grafik auf `spr_player`
+2. Setzen Sie das Sprite auf `spr_player`
 
-### 6.1 Nach rechts bewegen
+### 6.1 Gitterbewegung
 
-**Ereignis: Tastatur Nach-rechts-Pfeiltaste drücken**
-1. Ereignis hinzufügen → Tastatur → Nach rechts drücken
+Fügen Sie ein **Key Press**-Ereignis pro Richtung hinzu, jeweils mit einer **Move** → **Move Grid**-Aktion:
 
-Überprüfen Sie zunächst, ob eine Wand im Weg ist:
-2. Aktion hinzufügen: **Steuerung** → **Kollision testen**
-   - Objekt: `obj_wall`
-   - X: `32`
-   - Y: `0`
-   - Prüfen: NICHT (was bedeutet "wenn es KEINE Wand gibt")
+| Ereignis | Move-Grid-Aktion |
+|---|---|
+| Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
+| Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
+| Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
+| Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-Falls keine Wand vorhanden ist, überprüfen Sie, ob es eine Kiste gibt:
-3. Aktion hinzufügen: **Steuerung** → **Kollision testen**
-   - Objekt: `obj_crate`
-   - X: `32`
-   - Y: `0`
+**Move Grid** bewegt die Instanz exakt eine Gitterzelle weit und erkennt
+dabei selbstständig Kollisionen — es bewegt den Spieler nicht in eine
+solide `obj_wall` hinein, daher ist hier keine zusätzliche Wandprüfung nötig.
 
-Falls es eine Kiste gibt, müssen wir überprüfen, ob wir sie schieben können:
-4. Aktion hinzufügen: **Steuerung** → **Kollision testen** (für das Zielfeld der Kiste)
-   - Objekt: `obj_wall`
-   - X: `64`
-   - Y: `0`
-   - Prüfen: NICHT
+### 6.2 An Wänden stoppen
 
-5. Aktion hinzufügen: **Steuerung** → **Kollision testen**
-   - Objekt: `obj_crate`
-   - X: `64`
-   - Y: `0`
-   - Prüfen: NICHT
+**Ereignis: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-Falls beide Überprüfungen bestanden sind, schieben Sie die Kiste:
-6. Aktion hinzufügen: **Steuerung** → **Codeblock**
-```
-var crate = instance_place(x + 32, y, obj_crate);
-if (crate != noone) {
-    crate.x += 32;
-}
-```
+### 6.3 Kisten schieben
 
-Jetzt bewegen Sie den Spieler:
-7. Aktion hinzufügen: **Bewegung** → **Zu Position springen**
-   - X: `32`
-   - Y: `0`
-   - Markieren Sie "Relativ"
+**Ereignis: Collision with obj_crate**
+1. Add Event → Collision → `obj_crate`
+2. Add Action: **Control** → **If Can Push**
+   - Direction: `facing`
+   - Object Type: `obj_crate`
+   - Then Action: `push_and_move`
 
-### 6.2 Nach links bewegen
-
-**Ereignis: Tastatur Nach-links-Pfeiltaste drücken**
-Folgen Sie dem gleichen Muster wie das Bewegen nach rechts, verwenden Sie aber:
-- X-Versatz: `-32` zum Überprüfen von Wand/Kiste
-- X-Versatz: `-64` zum Überprüfen, ob die Kiste geschoben werden kann
-- Kiste um `-32` verschieben
-- Zu Position X springen: `-32`
-
-### 6.3 Nach oben bewegen
-
-**Ereignis: Tastatur Nach-oben-Pfeiltaste drücken**
-Folgen Sie dem gleichen Muster, verwenden Sie aber Y-Werte:
-- Y-Versatz: `-32` zum Überprüfen
-- Y-Versatz: `-64` für das Zielfeld der Kiste
-- Kiste um Y verschieben: `-32`
-- Zu Position Y springen: `-32`
-
-### 6.4 Nach unten bewegen
-
-**Ereignis: Tastatur Nach-unten-Pfeiltaste drücken**
-Verwenden Sie:
-- Y-Versatz: `32` zum Überprüfen
-- Y-Versatz: `64` für das Zielfeld der Kiste
-- Kiste um Y verschieben: `32`
-- Zu Position Y springen: `32`
+**If Can Push** prüft, ob der Platz hinter der Kiste (in der Richtung, in
+die sich der Spieler bewegt) frei ist, und schiebt — falls ja — die Kiste
+um eine Zelle weiter und bewegt den Spieler an ihre bisherige Stelle,
+alles in einer einzigen Aktion. Ist der Platz hinter der Kiste durch eine
+Wand oder eine andere Kiste blockiert, bewegt sich nichts.
 
 ---
 
-## Schritt 7: Vereinfachte Spielerbewegung (Alternative)
+## Schritt 7: Erstellen Sie die Gewinnbedingungsprüfung
 
-Falls der blockbasierte Ansatz oben komplex zu sein scheint, hier ist ein einfacherer codebasierter Ansatz für jede Richtung:
-
-**Ereignis: Tastatur Nach-rechts-Pfeiltaste drücken**
-Aktion hinzufügen: **Steuerung** → **Code ausführen**
-```
-// Überprüfen Sie, ob wir nach rechts gehen können
-if (!place_meeting(x + 32, y, obj_wall)) {
-    // Überprüfen Sie, ob es eine Kiste gibt
-    var crate = instance_place(x + 32, y, obj_crate);
-    if (crate != noone) {
-        // Es gibt eine Kiste - können wir sie schieben?
-        if (!place_meeting(x + 64, y, obj_wall) && !place_meeting(x + 64, y, obj_crate)) {
-            crate.x += 32;
-            x += 32;
-        }
-    } else {
-        // Keine Kiste, einfach bewegen
-        x += 32;
-    }
-}
-```
-
-Wiederholen Sie dies für andere Richtungen mit entsprechenden Koordinatenänderungen.
-
----
-
-## Schritt 8: Erstellen Sie die Gewinnbedingungsprüfer
-
-Wir benötigen ein Objekt, um zu überprüfen, ob sich alle Kisten auf Zielfeldern befinden.
+Wir brauchen einen unsichtbaren Controller, der überwacht, ob sich jede Kiste auf einem Ziel befindet.
 
 1. Erstellen Sie ein neues Objekt mit dem Namen `obj_game_controller`
-2. Keine Grafik erforderlich
+2. Kein Sprite nötig
 
-**Ereignis: Erstellen**
-1. Ereignis hinzufügen → Erstellen
-2. Aktion hinzufügen: **Punktestand** → **Variable einstellen**
-   - Variable: `global.total_targets`
-   - Wert: `0`
-3. Aktion hinzufügen: **Steuerung** → **Code ausführen**
-```
-// Zählen Sie, wie viele Ziele existieren
-global.total_targets = instance_number(obj_target);
-```
+**Ereignis: Create** — die Zielanzahl einmalig ermitteln, mit **Control** →
+**Execute Code** (die Execute-Code-Aktion dieses Projekts führt echtes
+Python aus, keine GameMaker Language — `self` ist die aktuelle Instanz,
+`game` ist der Game Runner):
 
-**Ereignis: Schritt**
-1. Ereignis hinzufügen → Schritt → Schritt
-2. Aktion hinzufügen: **Steuerung** → **Code ausführen**
-```
-// Zählen Sie Kisten, die sich auf Zielen befinden
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
-
-// Überprüfen Sie, ob alle Ziele Kisten haben
-if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
-    // Level abgeschlossen!
-    show_message("Level abgeschlossen!");
-    room_restart();
-}
+```python
+# Zählt, wie viele Zielfelder sich im Room befinden
+self.total_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_target'
+)
 ```
 
-**Ereignis: Zeichnen**
-1. Ereignis hinzufügen → Zeichnen
-2. Aktion hinzufügen: **Zeichnen** → **Text zeichnen**
-   - Text: `Sokoban - Schieben Sie alle Kisten zu den Zielen!`
+**Ereignis: Step** — bei jedem Frame prüfen, ob alle Kisten auf einem Ziel stehen:
+
+```python
+# Zählt Kisten, die aktuell ein Zielfeld überlappen
+crates_on_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_crate'
+    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')
+)
+
+if self.total_targets > 0 and crates_on_targets >= self.total_targets:
+    self.restart_room_flag = True
+```
+
+`self.restart_room_flag = True` löst denselben Room-Neustart aus, den auch
+die **Restart Room**-Aktion durchführt — die Hauptschleife prüft dieses
+Flag bei jedem Frame. Fügen Sie direkt nach dem Execute-Code-Block eine
+**Show Message**-Aktion (aus **Output**, Nachricht `Level Complete!`)
+hinzu, wenn Sie vor dem Neustart ein Popup anzeigen möchten.
+
+**Ereignis: Draw**
+1. Add Event → Draw
+2. Add Action: **Draw** → **Draw Text**
+   - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
 
 ---
 
-## Schritt 9: Entwerfen Sie Ihren Level
+## Schritt 9: Entwerfen Sie Ihr Level
 
-1. Klicken Sie mit der rechten Maustaste auf **Zimmer** und wählen Sie **Zimmer erstellen**
-2. Geben Sie ihm den Namen `room_level1`
-3. Setzen Sie die Zimmergröße auf ein Vielfaches von 32 (z. B. 640x480)
-4. Aktivieren Sie "An Gitter ausrichten" und setzen Sie das Gitter auf 32x32
+1. Klicken Sie mit der rechten Maustaste auf **Rooms** und wählen Sie **Create Room**
+2. Nennen Sie es `room_level1`
+3. Setzen Sie die Room-Größe auf ein Vielfaches von 32 (z. B. 640x480)
+4. Aktivieren Sie "Snap to Grid" und setzen Sie das Gitter auf 32x32
 
-### Platzierung von Objekten
+### Objekte platzieren
 
-Bauen Sie Ihren Level nach diesen Richtlinien:
+Bauen Sie Ihr Level nach diesen Richtlinien:
 
-1. **Umgeben Sie den Level mit Wänden** - Erstellen Sie einen Rahmen
-2. **Fügen Sie interne Wände hinzu** - Erstellen Sie die Rätselstruktur
-3. **Platzieren Sie Ziele** - Wo Kisten hin müssen
+1. **Umgeben Sie das Level mit Wänden** - Erstellen Sie eine Umrandung
+2. **Fügen Sie innere Wände hinzu** - Erstellen Sie die Rätselstruktur
+3. **Platzieren Sie Ziele** - Wo Kisten hin sollen
 4. **Platzieren Sie Kisten** - Gleiche Anzahl wie Ziele!
 5. **Platzieren Sie den Spieler** - Startposition
-6. **Platzieren Sie den Spielkontroller** - Überall (er ist unsichtbar)
+6. **Platzieren Sie den Game Controller** - Beliebige Stelle (er ist unsichtbar)
 
 ### Beispiel-Levellayout
 
@@ -339,56 +275,50 @@ T = Ziel
 . = Leerer Boden
 ```
 
-**Wichtig:** Stellen Sie immer sicher, dass Sie die gleiche Anzahl von Kisten und Zielen haben!
+**Wichtig:** Achten Sie immer darauf, dieselbe Anzahl an Kisten und Zielen zu haben!
 
 ---
 
 ## Schritt 10: Testen Sie Ihr Spiel!
 
-1. Klicken Sie auf **Ausführen** oder drücken Sie **F5**, um zu testen
-2. Verwenden Sie Pfeiltasten, um sich zu bewegen
+1. Klicken Sie auf **Run** oder drücken Sie **F5**, um zu testen
+2. Bewegen Sie sich mit den Pfeiltasten
 3. Schieben Sie Kisten auf die roten X-Ziele
-4. Wenn sich alle Kisten auf Zielen befinden, gewinnen Sie!
+4. Wenn alle Kisten auf Zielen stehen, gewinnen Sie!
 
 ---
 
 ## Verbesserungen (Optional)
 
-### Fügen Sie einen Zählschaltbesucher hinzu
+### Zugzähler hinzufügen
 
-In `obj_game_controller`:
+Fügen Sie im **Create**-Ereignis von `obj_game_controller` **Control** →
+**Set Variable** hinzu (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
-**Ereignis: Erstellen** - Fügen Sie hinzu:
-```
-global.moves = 0;
-```
+Fügen Sie in jedem der vier Key-Press-Ereignisse von `obj_player` direkt
+nach Move Grid eine zweite Aktion hinzu: **Control** → **Set Variable**
+(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relative**
+aktiviert) — dies addiert bei jedem Tastendruck 1 zum Zähler, unabhängig
+davon, ob die Bewegung tatsächlich durch eine Wand blockiert wurde.
 
-In `obj_player`, nach jedem erfolgreichen Zug, fügen Sie hinzu:
-```
-global.moves += 1;
-```
+Fügen Sie im **Draw**-Ereignis von `obj_game_controller` **Draw** →
+**Draw Variable** hinzu (Variable: `global.moves`, X: `10`, Y: `30`).
 
-In `obj_game_controller` **Ereignis: Zeichnen** - Fügen Sie hinzu:
-```
-draw_text(10, 30, "Moves: " + string(global.moves));
-```
+### Undo-Funktion hinzufügen
 
-### Fügen Sie eine Rückgängig-Funktion hinzu
+Speichern Sie vorherige Positionen und ermöglichen Sie es, mit Z den letzten Zug rückgängig zu machen.
 
-Speichern Sie vorherige Positionen und ermöglichen Sie es, Z zu drücken, um den letzten Zug rückgängig zu machen.
+### Mehrere Level hinzufügen
 
-### Fügen Sie mehrere Level hinzu
+Erstellen Sie weitere Rooms (`room_level2`, `room_level3` usw.) und
+verwenden Sie im Gewinnprüfungs-Codeblock die **Next Room**-Aktion
+(Kategorie Room) statt **Restart Room** (`self.next_room_flag = True`
+statt `self.restart_room_flag = True`), wenn ein Level abgeschlossen wird.
 
-Erstellen Sie mehr Zimmer (`room_level2`, `room_level3`, etc.) und verwenden Sie:
-```
-room_goto_next();
-```
-statt `room_restart()` nach dem Abschließen eines Levels.
+### Soundeffekte hinzufügen
 
-### Fügen Sie Soundeffekte hinzu
-
-Fügen Sie Sounds für hinzu:
-- Spieler bewegt sich
+Fügen Sie Sounds hinzu für:
+- Spielerbewegung
 - Kiste schieben
 - Kiste landet auf Ziel
 - Level abgeschlossen
@@ -399,11 +329,11 @@ Fügen Sie Sounds für hinzu:
 
 | Problem | Lösung |
 |---------|--------|
-| Spieler geht durch Wände | Überprüfen Sie, ob `obj_wall` "Solid" aktiviert hat |
-| Kiste ändert die Farbe nicht | Überprüfen Sie, ob das Schritt-Ereignis `place_meeting` korrekt kontrolliert |
-| Kiste kann durch Wand geschoben werden | Überprüfen Sie die Kollisionserkennung vor dem Verschieben der Kiste |
-| Gewinnmeldung erscheint sofort | Stellen Sie sicher, dass Ziele separate von Kisten platziert werden |
-| Spieler bewegt mehrere Felder | Verwenden Sie das Ereignis "Tastatur drücken", nicht "Tastatur" |
+| Spieler geht durch Wände | Prüfen Sie, ob `obj_wall` "Solid" aktiviert hat |
+| Kiste ändert die Farbe nicht | Prüfen Sie, ob die **If Collision**-Aktion im Step-Ereignis auf `obj_target` zielt |
+| Kiste kann durch Wand geschoben werden | Kollisionserkennung vor dem Verschieben der Kiste prüfen |
+| Gewinnmeldung erscheint sofort | Stellen Sie sicher, dass Ziele getrennt von Kisten platziert sind |
+| Spieler bewegt sich mehrere Felder | Verwenden Sie das Keyboard-Press-Ereignis, nicht das Keyboard-Ereignis |
 
 ---
 
@@ -413,29 +343,29 @@ Glückwunsch! Sie haben ein vollständiges Sokoban-Puzzlespiel erstellt! Sie hab
 
 - **Gitterbasierte Bewegung** - Bewegung in festen 32-Pixel-Schritten
 - **Schiebemechaniken** - Erkennung und Bewegung von Objekten, die der Spieler schiebt
-- **Komplexe Kollisionslogik** - Überprüfung mehrerer Bedingungen vor der Zulassung einer Bewegung
-- **Statusänderungen** - Änderung der Grafik basierend auf der Objektposition
-- **Gewinnbedingungen** - Überprüfung, wenn alle Ziele erreicht sind
+- **Komplexe Kollisionslogik** - Prüfung mehrerer Bedingungen vor einer Bewegung
+- **Statuswechsel** - Sprite-Änderung abhängig von der Objektposition
+- **Gewinnbedingungen** - Prüfung, wann alle Ziele erreicht sind
 - **Leveldesign** - Erstellung lösbarer Puzzle-Layouts
 
 ---
 
 ## Herausforderung: Entwerfen Sie Ihre eigenen Level!
 
-Der wahre Spaß bei Sokoban liegt im Entwerfen von Rätseln. Versuchen Sie, Level zu erstellen, die:
-- Einfach anfangen und progressiv schwieriger werden
+Der wahre Spaß an Sokoban liegt im Entwerfen von Rätseln. Versuchen Sie, Level zu erstellen, die:
+- Leicht beginnen und zunehmend schwieriger werden
 - Vorausplanung erfordern
 - Nur eine Lösung haben
 - Den Platz effizient nutzen
 
-Denken Sie daran: Ein gutes Sokoban-Puzzle sollte herausfordernd aber fair sein!
+Denken Sie daran: Ein gutes Sokoban-Rätsel sollte herausfordernd, aber fair sein!
 
 ---
 
 ## Siehe auch
 
 - [Tutorials](Tutorials_de) - Weitere Spiel-Tutorials
-- [Anfänger-Voreinstellung](Beginner-Preset_de) - Übersicht der Anfänger-Funktionen
+- [Fortgeschrittenen-Preset](Intermediate-Preset_de) - Übersicht des für dieses Tutorial nötigen Presets
 - [Tutorial: Pong](Tutorial-Pong_de) - Erstellen Sie ein Zwei-Spieler-Spiel
-- [Tutorial: Breakout](Tutorial-Breakout_de) - Erstellen Sie ein Brick-Breaker-Spiel
-- [Ereignis-Referenz](Event-Reference_de) - Vollständige Ereignisdokumentation
+- [Tutorial: Breakout](Tutorial-Breakout_de) - Erstellen Sie ein Ziegelstein-Spiel
+- [Event-Referenz](Event-Reference_de) - Vollständige Ereignisdokumentation
