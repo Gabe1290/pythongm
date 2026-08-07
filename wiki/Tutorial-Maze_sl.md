@@ -1,4 +1,4 @@
-# Vadnica: Ustvari Igro Labirinta
+# Vodič: Ustvari Igro Labirinta
 
 > **Select your language / Choisissez votre langue / Wählen Sie Ihre Sprache:**
 >
@@ -8,17 +8,18 @@
 
 ## Uvod
 
-V tej vadnici boš ustvaril **Igro Labirinta**, kjer igralec navigira skozi hodnike do izhoda, medtem ko se izogiba oviram in zbira kovance. Ta klasična vrsta igre je popolna za učenje gladkega gibanja, zaznavanja trkov in oblikovanja ravni.
+V tem vodiču boš ustvaril **Igro Labirinta**, kjer igralec navigira skozi hodnike do izhoda, medtem ko se izogiba oviram in zbira kovance. Ta klasična vrsta igre je odlična za učenje gladkega gibanja, zaznavanja trkov in oblikovanja ravni.
 
 **Kaj se boš naučil:**
 - Gladko gibanje igralca s tipkovnico
 - Obravnavanje trkov s stenami
 - Zaznavanje cilja (doseganje izhoda)
-- Zbirateljski predmeti
+- Zbirateljske predmete
 - Preprost sistem časovnika
 
 **Težavnost:** Začetnik
-**Preset:** Začetniški Preset
+**Prednastavitev:** Srednja prednastavitev (akcija Execute Code,
+uporabljena za časovnik, ni del prednastavitve za začetnike)
 
 ---
 
@@ -43,211 +44,193 @@ V tej vadnici boš ustvaril **Igro Labirinta**, kjer igralec navigira skozi hodn
 
 ---
 
-## Korak 2: Ustvari Sprite
+## Korak 2: Ustvari Sprite-e
 
-Vsi sprite za stene in tla naj bodo 32x32 pikslov za pravilno mrežo.
+Vsi sprite-i za stene in tla naj bodo 32x32 pikslov za pravilno mrežo.
 
 ### 2.1 Sprite Igralca
 
-1. V **Drevesu Virov** desno klikni na **Sprite** in izberi **Ustvari Sprite**
+1. V **Drevesu Virov** desno klikni na **Sprites** in izberi **Create Sprite**
 2. Poimenuj ga `spr_player`
-3. Klikni **Uredi Sprite** za odpiranje urejevalnika
-4. Nariši majhen lik (krog, oseba ali oblika puščice)
-5. Uporabi živo barvo kot modra ali zelena
+3. Klikni **Edit Sprite** za odpiranje urejevalnika
+4. Nariši majhen lik (krog, osebo ali obliko puščice)
+5. Uporabi živo barvo, kot je modra ali zelena
 6. Velikost: 24x24 pikslov (manjši od sten za lažjo navigacijo)
-7. Klikni **V redu** za shranjevanje
+7. Klikni **OK** za shranjevanje
 
 ### 2.2 Sprite Stene
 
-1. Ustvari nov sprite imenovan `spr_wall`
+1. Ustvari nov sprite z imenom `spr_wall`
 2. Nariši trden vzorec opeke ali kamna
-3. Uporabi sive ali temne barve
+3. Uporabi sivo ali temno barvo
 4. Velikost: 32x32 pikslov
 
 ### 2.3 Sprite Izhoda
 
-1. Ustvari nov sprite imenovan `spr_exit`
+1. Ustvari nov sprite z imenom `spr_exit`
 2. Nariši vrata, zastavo ali svetel označevalec cilja
-3. Uporabi zelene ali zlate barve
+3. Uporabi zeleno ali zlato barvo
 4. Velikost: 32x32 pikslov
 
 ### 2.4 Sprite Kovanca
 
-1. Ustvari nov sprite imenovan `spr_coin`
-2. Nariši majhen rumeno/zlat krog
+1. Ustvari nov sprite z imenom `spr_coin`
+2. Nariši majhen rumen/zlat krog
 3. Velikost: 16x16 pikslov
 
 ### 2.5 Sprite Tal (Neobvezno)
 
-1. Ustvari nov sprite imenovan `spr_floor`
+1. Ustvari nov sprite z imenom `spr_floor`
 2. Nariši preprost vzorec talnih ploščic
 3. Uporabi svetlo nevtralno barvo
 4. Velikost: 32x32 pikslov
 
 ---
 
-## Korak 3: Ustvari Objekt Stene
+## Korak 3: Ustvari Objekt Stena
 
 Stena blokira gibanje igralca.
 
-1. Desno klikni na **Objekti** in izberi **Ustvari Objekt**
+1. Desno klikni na **Objects** in izberi **Create Object**
 2. Poimenuj ga `obj_wall`
 3. Nastavi sprite na `spr_wall`
-4. **Označi potrditveno polje "Trden"**
+4. **Označi polje "Solid"**
 5. Dogodki niso potrebni
 
 ---
 
-## Korak 4: Ustvari Objekt Izhoda
+## Korak 4: Ustvari Objekt Izhod
 
 Izhod konča raven, ko ga igralec doseže.
 
-1. Ustvari nov objekt imenovan `obj_exit`
+1. Ustvari nov objekt z imenom `obj_exit`
 2. Nastavi sprite na `spr_exit`
 
-**Dogodek: Trk z obj_player**
-1. Dodaj Dogodek → Trk → obj_player
-2. Dodaj Akcijo: **Main2** → **Prikaži Sporočilo**
-   - Sporočilo: `Zmagal si! Čas: ` + string(floor(global.timer)) + ` sekund`
-3. Dodaj Akcijo: **Main1** → **Naslednja Soba** (ali **Ponastavi Sobo** za eno raven)
+**Dogodek: Collision with obj_player**
+1. Add Event → Collision → obj_player
+2. Add Action: **Output** → **Show Message**
+   - Message: `You Win!`
+3. Add Action: **Room** → **Next Room** (ali **Restart Room** za eno raven)
+
+Besedilo Show Message je fiksen niz — ne more vsebovati žive vrednosti,
+kot je pretečen čas. Časovnik ostane viden v HUD-u (Korak 7) vse do
+zmage, zato je igralec svoj čas že videl.
 
 ---
 
-## Korak 5: Ustvari Objekt Kovanca
+## Korak 5: Ustvari Objekt Kovanec
 
 Kovanci dodajajo k rezultatu, ko so pobrani.
 
-1. Ustvari nov objekt imenovan `obj_coin`
+1. Ustvari nov objekt z imenom `obj_coin`
 2. Nastavi sprite na `spr_coin`
 
-**Dogodek: Trk z obj_player**
-1. Dodaj Dogodek → Trk → obj_player
-2. Dodaj Akcijo: **Rezultat** → **Nastavi Rezultat**
-   - Nov Rezultat: `10`
-   - Označi "Relativno" za dodajanje 10 točk
-3. Dodaj Akcijo: **Main1** → **Uniči Instanco**
-   - Velja za: Self
+**Dogodek: Collision with obj_player**
+1. Add Event → Collision → obj_player
+2. Add Action: **Score** → **Set Score**
+   - New Score: `10`
+   - Označi "Relative" za dodajanje 10 točk
+3. Add Action: **Instance** → **Destroy Instance**
+   - Applies to: Self
 
 ---
 
-## Korak 6: Ustvari Objekt Igralca
+## Korak 6: Ustvari Objekt Igralec
 
 Igralec se gladko premika s puščičnimi tipkami.
 
-1. Ustvari nov objekt imenovan `obj_player`
+1. Ustvari nov objekt z imenom `obj_player`
 2. Nastavi sprite na `spr_player`
 
-### 6.1 Dogodek Create - Inicializiraj Spremenljivke
+### 6.1 Gibanje
 
-**Dogodek: Create**
-1. Dodaj Dogodek → Create
-2. Dodaj Akcijo: **Nadzor** → **Nastavi Spremenljivko**
-   - Spremenljivka: `move_speed`
-   - Vrednost: `4`
+Dodaj štiri dogodke **Keyboard (held)** in en dogodek **No Key**,
+vsakega z akcijo **Move** → **Set Horizontal/Vertical Speed**:
 
-### 6.2 Gibanje s Trki
+| Dogodek | Akcija |
+|---|---|
+| Keyboard (held) → Right Arrow | Set Horizontal Speed na `4` |
+| Keyboard (held) → Left Arrow | Set Horizontal Speed na `-4` |
+| Keyboard (held) → Down Arrow | Set Vertical Speed na `4` |
+| Keyboard (held) → Up Arrow | Set Vertical Speed na `-4` |
+| Keyboard: No Key | Set Horizontal Speed na `0` **in** Set Vertical Speed na `0` |
 
-**Dogodek: Step**
-1. Dodaj Dogodek → Step → Step
-2. Dodaj Akcijo: **Nadzor** → **Izvedi Kodo**
+### 6.2 Ustavljanje ob Stenah
 
-```gml
-// Vodoravno gibanje
-var hspd = 0;
-if (keyboard_check(vk_right)) hspd = move_speed;
-if (keyboard_check(vk_left)) hspd = -move_speed;
+**Dogodek: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-// Navpično gibanje
-var vspd = 0;
-if (keyboard_check(vk_down)) vspd = move_speed;
-if (keyboard_check(vk_up)) vspd = -move_speed;
-
-// Preverjanje vodoravnega trka
-if (!place_meeting(x + hspd, y, obj_wall)) {
-    x += hspd;
-} else {
-    // Premakni se čim bližje steni
-    while (!place_meeting(x + sign(hspd), y, obj_wall)) {
-        x += sign(hspd);
-    }
-}
-
-// Preverjanje navpičnega trka
-if (!place_meeting(x, y + vspd, obj_wall)) {
-    y += vspd;
-} else {
-    // Premakni se čim bližje steni
-    while (!place_meeting(x, y + sign(vspd), obj_wall)) {
-        y += sign(vspd);
-    }
-}
-```
-
-### 6.3 Alternativa: Preprosto Gibanje z Bloki
-
-Če raje uporabljaš akcijske bloke namesto kode:
-
-**Dogodek: Tipka Pritisnjena - Desna Puščica**
-1. Dodaj Dogodek → Tipkovnica → \<Desno\>
-2. Dodaj Akcijo: **Nadzor** → **Testiraj Trk**
-   - Objekt: `obj_wall`
-   - X: `4`
-   - Y: `0`
-   - Preveri: NOT
-3. Dodaj Akcijo: **Gibanje** → **Skoči na Položaj**
-   - X: `4`
-   - Y: `0`
-   - Označi "Relativno"
-
-Ponovi za Levo (-4, 0), Gor (0, -4) in Dol (0, 4).
+Tukaj ni potrebne ročne kode za preverjanje položaja. Gibalna zanka
+tega pogona že prepreči, da bi se instanca premaknila v trden objekt,
+preden je sličica narisana (`obj_wall` je Solid), zato se igralec
+nikoli dejansko ne prekriva s steno — dogodek trka zgoraj samo
+izniči morebitno preostalo hitrost, tako da igralec ne "pritiska"
+naprej vanjo.
 
 ---
 
-## Korak 7: Ustvari Nadzornik Igre
+## Korak 7: Ustvari Game Controller
 
-Nadzornik igre upravlja časovnik in prikazuje informacije.
+Game controller upravlja časovnik in prikazuje informacije.
 
-1. Ustvari nov objekt imenovan `obj_game_controller`
+1. Ustvari nov objekt z imenom `obj_game_controller`
 2. Sprite ni potreben
 
-**Dogodek: Create**
-1. Dodaj Dogodek → Create
-2. Dodaj Akcijo: **Nadzor** → **Nastavi Spremenljivko**
-   - Spremenljivka: `global.timer`
-   - Vrednost: `0`
+**Dogodek: Create** — zažene časovnik z uporabo **Control** →
+**Execute Code** (akcija Execute Code v tem projektu izvede pravi
+Python, ne GameMaker Language):
 
-**Dogodek: Step**
-1. Dodaj Dogodek → Step → Step
-2. Dodaj Akcijo: **Nadzor** → **Nastavi Spremenljivko**
-   - Spremenljivka: `global.timer`
-   - Vrednost: `1/room_speed`
-   - Označi "Relativno"
-
-**Dogodek: Draw**
-1. Dodaj Dogodek → Draw → Draw
-2. Dodaj Akcijo: **Nadzor** → **Izvedi Kodo**
-
-```gml
-// Nariši rezultat
-draw_set_color(c_white);
-draw_text(10, 10, "Točke: " + string(score));
-
-// Nariši časovnik
-draw_text(10, 30, "Čas: " + string(floor(global.timer)) + "s");
-
-// Nariši preostale kovance
-var coins_left = instance_number(obj_coin);
-draw_text(10, 50, "Kovanci: " + string(coins_left));
+```python
+self.timer = 0.0
 ```
+
+**Dogodek: Step** — poveča ga vsako sličico:
+
+```python
+self.timer += 1.0 / game.fps
+```
+
+**Dogodek: Draw** — zgradi HUD z resničnimi ukazi vrste za risanje.
+Dodaj tri akcije **Draw** → **Draw Text**:
+
+| Akcija Draw Text | Besedilo | Položaj |
+|---|---|---|
+| 1. | `Score:` | X `10`, Y `10` |
+| 2. | `Time:` | X `10`, Y `30` |
+| 3. | `Coins:` | X `10`, Y `50` |
+
+nato takoj za njimi tri akcije **Draw** → **Draw Variable**, da
+prikažeš žive vrednosti ob vsaki oznaki:
+
+| Akcija Draw Variable | Spremenljivka | Položaj |
+|---|---|---|
+| 1. | `score` | X `70`, Y `10` |
+| 2. | `self.timer` | X `70`, Y `30` |
+| 3. | *(glej spodaj)* | X `70`, Y `50` |
+
+Ni vgrajenega števca "preostalih kovancev", na katerega bi kazal Draw
+Variable — tik pred akcijami Draw Variable dodaj še eno akcijo
+**Control** → **Execute Code**, da ga izračunaš v spremenljivko
+instance, ki jo Draw Variable nato lahko prebere:
+
+```python
+self.coins_left = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_coin'
+)
+```
+
+(nato nastavi polje Variable 3. akcije Draw Variable na `self.coins_left`).
 
 ---
 
 ## Korak 8: Oblikuj Svoj Labirint
 
-1. Desno klikni na **Sobe** in izberi **Ustvari Sobo**
+1. Desno klikni na **Rooms** in izberi **Create Room**
 2. Poimenuj jo `room_maze`
 3. Nastavi velikost sobe (npr. 640x480)
-4. Omogoči "Pripni na Mrežo" in nastavi mrežo na 32x32
+4. Omogoči "Snap to Grid" in nastavi mrežo na 32x32
 
 ### Postavljanje Objektov
 
@@ -258,7 +241,7 @@ Zgradi svoj labirint po teh smernicah:
 3. **Postavi izhod** - Postavi ga na konec labirinta
 4. **Razporedi kovance** - Postavi jih vzdolž poti
 5. **Postavi igralca** - Blizu vhoda
-6. **Dodaj nadzornik igre** - Kjerkoli (neviden je)
+6. **Dodaj game controller** - Kjerkoli (neviden je)
 
 ### Primer Postavitve Labirinta
 
@@ -286,7 +269,7 @@ W = Stena    P = Igralec    E = Izhod    C = Kovanec    . = Prazno
 
 ## Korak 9: Testiraj Svojo Igro!
 
-1. Klikni **Zaženi** ali pritisni **F5** za testiranje
+1. Klikni **Run** ali pritisni **F5** za testiranje
 2. Uporabi puščične tipke za navigacijo skozi labirint
 3. Zberi kovance za točke
 4. Najdi izhod za zmago!
@@ -300,52 +283,50 @@ W = Stena    P = Igralec    E = Izhod    C = Kovanec    . = Prazno
 Ustvari preprostega patrulirajočega sovražnika:
 
 1. Ustvari `spr_enemy` (rdeča barva, 24x24)
-2. Ustvari `obj_enemy` s spriteom `spr_enemy`
+2. Ustvari `obj_enemy` s spritom `spr_enemy`
 
-**Dogodek: Create**
-```gml
-hspeed = 2;  // Premika se vodoravno
-```
+**Dogodek: Create** — Add Action: **Move** → **Start Moving Direction**
+(Directions: `right`, Speed: `2`)
 
-**Dogodek: Trk z obj_wall**
-```gml
-hspeed = -hspeed;  // Obrni smer
-```
+**Dogodek: Collision with obj_wall** — Add Action: **Move** → **Reverse
+Horizontal** (obrne sovražnika, ko zadene steno — koda ni potrebna;
+skupaj z vgrajenim trdim trkom iz Koraka 6.2 sovražnik nikoli ne more
+iti skozi steno)
 
-**Dogodek: Trk z obj_player**
-```gml
-room_restart();  // Igralec izgubi
-```
+**Dogodek: Collision with obj_player** — Add Action: **Room** →
+**Restart Room**
 
 ### Dodaj Sistem Življenj
 
-V dogodku Create `obj_game_controller`:
-```gml
-global.lives = 3;
-```
+V dogodku **Create** za `obj_game_controller` dodaj **Score** →
+**Set Lives** (Value: `3`).
 
-Ko igralec zadene sovražnika (namesto ponastavitve):
-```gml
-global.lives -= 1;
-if (global.lives <= 0) {
-    show_message("Konec igre!");
-    game_restart();
-} else {
-    // Ponovno pojavi igralca na začetku
-    obj_player.x = start_x;
-    obj_player.y = start_y;
-}
-```
+V dogodku **Collision with obj_player** za `obj_enemy` zamenjaj
+**Restart Room** z dvema akcijama: **Score** → **Set Lives** (Value:
+`-1`, **Relative** označeno), nato **Move** → **Jump to Start
+Position** (uporabljena na igralcu prek **Applies to: Other**), da se
+igralec ponovno pojavi namesto ponovnega zagona celega labirinta.
 
-### Dodaj Ključe in Zaklenjenna Vrata
+Dodaj `obj_game_controller` še en dogodek: **Other Events** → **No
+More Lives** — ta se sproži samodejno takoj, ko življenja dosežejo 0,
+zato ga ni treba ročno preverjati. Dodaj **Output** → **Show Message**
+(`Game Over!`), nato **Room** → **Restart Game**.
 
-1. Ustvari `obj_key` - izgine ob pobiranju, nastavi `global.has_key = true`
-2. Ustvari `obj_locked_door` - odpre se samo ko `global.has_key == true`
+### Dodaj Ključe in Zaklenjena Vrata
+
+1. Ustvari `obj_key` — ob trku z `obj_player`: **Set Variable**
+   (Variable: `global.has_key`, Value: `true`, Scope: `global`), nato
+   **Destroy Instance** (self).
+2. Ustvari `obj_locked_door` z označenim Solid. Dodaj mu dogodek
+   **Step** z **Control** → **Test Variable** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
+   **Destroy Instance** (self) — vrata izginejo (in prenehajo
+   blokirati) takoj, ko je ključ pobran.
 
 ### Dodaj Več Ravni
 
 1. Ustvari dodatne sobe (`room_maze2`, `room_maze3`)
-2. V `obj_exit` uporabi `room_goto_next()` namesto `room_restart()`
+2. V `obj_exit` uporabi akcijo **Next Room** namesto **Restart Room**
 
 ### Dodaj Zvočne Učinke
 
@@ -353,7 +334,7 @@ Dodaj zvoke za:
 - Pobiranje kovancev
 - Doseganje izhoda
 - Zadevanje sovražnikov (če so dodani)
-- Glasba v ozadju
+- Glasbo v ozadju
 
 ---
 
@@ -361,11 +342,11 @@ Dodaj zvoke za:
 
 | Težava | Rešitev |
 |--------|---------|
-| Igralec gre skozi stene | Preveri, da ima `obj_wall` označeno "Trden" |
+| Igralec gre skozi stene | Preveri, da ima `obj_wall` označeno "Solid" |
 | Igralec se zatakne v stenah | Poskrbi, da je sprite igralca manjši od vrzeli med stenami |
 | Kovanci ne izginejo | Preveri, da dogodek trka uniči Self, ne Other |
-| Časovnik ne deluje | Poskrbi, da je nadzornik igre postavljen v sobi |
-| Gibanje je trgano | Prilagodi vrednost `move_speed` (poskusi 3-5) |
+| Časovnik ne deluje | Poskrbi, da je game controller postavljen v sobi |
+| Gibanje je trzavo | Prilagodi vrednost hitrosti v akcijah Set Horizontal/Vertical Speed (poskusi 3-5) |
 
 ---
 
@@ -373,19 +354,18 @@ Dodaj zvoke za:
 
 Čestitke! Ustvaril si igro labirinta! Naučil si se:
 
-- **Gladko gibanje** - Preverjanje stanja pritisnjenih tipk za neprekinjeno gibanje
-- **Zaznavanje trkov** - Uporaba `place_meeting` za preverjanje pred premikom
-- **Pikselsko natančen trk** - Premikanje čim bližje stenam
+- **Gladko gibanje** - Preverjanje stanja pridržanih tipk za neprekinjeno gibanje
+- **Vgrajeni trdi trk** - Stene samodejno blokirajo gibanje, ko so označene kot Solid, brez ročne kode za preverjanje položaja
 - **Zbirateljski predmeti** - Ustvarjanje predmetov, ki povečajo rezultat in izginejo
-- **Sistem časovnika** - Sledenje pretečenemu času s spremenljivkami
+- **Sistem časovnika** - Sledenje pretečenemu času s spremenljivkami instance
 - **Oblikovanje ravni** - Ustvarjanje navigabilnih postavitev labirintov
 
 ---
 
 ## Ideje za Izzive
 
-1. **Dirka s Časom** - Dodaj odštevalnik. Doseži izhod preden zmanjka časa!
-2. **Popoln Rezultat** - Zahtevaj pobiranje vseh kovancev preden se izhod odpre
+1. **Dirka s Časom** - Dodaj odštevalnik. Doseži izhod, preden zmanjka časa!
+2. **Popoln Rezultat** - Zahtevaj pobiranje vseh kovancev, preden se izhod odpre
 3. **Naključni Labirint** - Raziskuj proceduralno generiranje labirintov
 4. **Megla Vojne** - Prikaži samo območje okoli igralca
 5. **Minimapa** - Prikaži majhen pregled labirinta
@@ -394,9 +374,9 @@ Dodaj zvoke za:
 
 ## Glej Tudi
 
-- [Vadnice](Tutorials_sl) - Več vadnic za igre
-- [Začetniški Preset](Beginner-Preset_sl) - Pregled funkcij za začetnike
-- [Vadnica: Pong](Tutorial-Pong_sl) - Ustvari igro za dva igralca
-- [Vadnica: Breakout](Tutorial-Breakout_sl) - Ustvari igro razbijanja opek
-- [Vadnica: Sokoban](Tutorial-Sokoban_sl) - Ustvari uganko s potiskanjem zabojev
+- [Vodiči](Tutorials_sl) - Več vodičev za igre
+- [Srednja prednastavitev](Intermediate-Preset_sl) - Pregled prednastavitve, potrebne za ta vodič
+- [Vodič: Pong](Tutorial-Pong_sl) - Ustvari igro za dva igralca
+- [Vodič: Breakout](Tutorial-Breakout_sl) - Ustvari igro razbijanja opek
+- [Vodič: Sokoban](Tutorial-Sokoban_sl) - Ustvari uganko s potiskanjem zabojev
 - [Referenca Dogodkov](Event-Reference_sl) - Popolna dokumentacija dogodkov

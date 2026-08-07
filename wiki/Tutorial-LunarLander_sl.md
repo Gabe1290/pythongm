@@ -1,4 +1,4 @@
-# Vadnica: Ustvari Igro Lunarnega Pristanka
+# Vodič: Ustvari Igro Lunarnega Pristanka
 
 > **Select your language / Choisissez votre langue / Wählen Sie Ihre Sprache:**
 >
@@ -8,28 +8,29 @@
 
 ## Uvod
 
-V tej vadnici boš ustvaril **Igro Lunarnega Pristanka** - klasično arkadno igro, kjer nadziraš vesoljsko plovilo, ki se spušča na pristajalno ploščad. Upravljati moraš potisk, da protiuteži gravitacijo in pristaneš nežno brez trka. Ta igra je popolna za učenje fizikalnih konceptov kot so gravitacija, potisk, hitrost in upravljanje goriva.
+V tem vodiču boš ustvaril **Igro Lunarnega Pristanka** - klasično arkadno igro, kjer nadziraš vesoljsko plovilo, ki se spušča na pristajalno ploščad. Upravljati moraš potisk, da uravnotežiš gravitacijo in pristaneš nežno, brez trka. Ta igra je odlična za učenje fizikalnih konceptov, kot so gravitacija, potisk, hitrost in upravljanje goriva.
 
 **Kaj se boš naučil:**
-- Fizika gravitacije in potiska
+- Fiziko gravitacije in potiska
 - Zaznavanje pristanka na podlagi hitrosti
 - Sistem upravljanja goriva
 - Rotacijski ali smerni nadzor
 - Varne pristajalne cone
 
 **Težavnost:** Začetnik
-**Preset:** Začetniški Preset
+**Prednastavitev:** Srednja prednastavitev (fizika potiska/goriva v
+celoti temelji na Execute Code, ki ni del prednastavitve za začetnike)
 
 ---
 
 ## Korak 1: Razumevanje Igre
 
 ### Mehanike Igre
-1. Pristajalniku gravitacija vleče navzdol
+1. Pristajalnik gravitacija vleče navzdol
 2. Pritisk GOR uporabi potisk navzgor (porabi gorivo)
 3. LEVO/DESNO nadzira rotacijo ali gibanje
 4. Pristani nežno na ploščadi za zmago
-5. Trk če pristaneš prehitro ali zgrešiš ploščad
+5. Zaletiš se, če pristaneš prehitro ali zgrešiš ploščad
 6. Brez goriva ne moreš upočasniti!
 
 ### Kaj Potrebujemo
@@ -44,9 +45,9 @@ V tej vadnici boš ustvaril **Igro Lunarnega Pristanka** - klasično arkadno igr
 
 ---
 
-## Korak 2: Ustvari Sprite
+## Korak 2: Ustvari Sprite-e
 
-### Sprite
+### Sprite-i
 - `spr_lander` (32x32 pikslov) - preprosto plovilo
 - `spr_pad` (64x16 pikslov) - pristajalna ploščad
 - `spr_ground` (32x32 pikslov) - skalnati teren
@@ -54,82 +55,127 @@ V tej vadnici boš ustvaril **Igro Lunarnega Pristanka** - klasično arkadno igr
 
 ---
 
-## Korak 3-4: Ustvari Objekte Tal in Ploščadi
+## Korak 3-4: Ustvari Objekte Tla in Ploščad
 
-**obj_ground** in **obj_pad**: Nastavi sprite, označi "Trden"
-
----
-
-## Korak 5: Ustvari Objekt Pristajalnika
-
-### Dogodek Create
-```gml
-gravity_force = 0.05;
-thrust_force = 0.1;
-max_speed = 5;
-hsp = 0;
-vsp = 0;
-fuel = 100;
-fuel_use = 0.5;
-landed = false;
-crashed = false;
-safe_speed = 2;
-```
-
-### Dogodek Step
-```gml
-if (landed || crashed) exit;
-
-vsp += gravity_force;
-
-if (keyboard_check(vk_up) && fuel > 0) {
-    vsp -= thrust_force;
-    fuel -= fuel_use;
-    if (fuel < 0) fuel = 0;
-}
-
-if (keyboard_check(vk_left)) hsp -= 0.05;
-if (keyboard_check(vk_right)) hsp += 0.05;
-
-hsp = clamp(hsp, -max_speed, max_speed);
-vsp = clamp(vsp, -max_speed, max_speed);
-
-x += hsp;
-y += vsp;
-
-if (x < 16) { x = 16; hsp = 0; }
-if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
-if (y < 16) { y = 16; vsp = 0; }
-```
-
-### Trk z obj_pad
-```gml
-var total_speed = sqrt(hsp*hsp + vsp*vsp);
-
-if (total_speed <= safe_speed) {
-    landed = true;
-    hsp = 0;
-    vsp = 0;
-    show_message("Popoln Pristanek! Zmagal si!");
-} else {
-    crashed = true;
-    show_message("Trk! Prehitro!");
-    room_restart();
-}
-```
-
-### Trk z obj_ground
-```gml
-crashed = true;
-show_message("Trk v teren!");
-room_restart();
-```
+**obj_ground** in **obj_pad**: Nastavi sprite, označi "Solid"
 
 ---
 
-## Korak 6-7: Krmilnik Igre
+## Korak 5: Ustvari Objekt Pristajalnik
 
-**obj_game_controller** - Dogodek Draw: Prikaži gorivo, hitrost, navodila
+Pristajalnik je glavni objekt, ki ga upravlja igralec. Za razliko od
+drugih gibalnih vodičev tega wikija morajo njegovi kontrolniki
+postopoma zbirati hitrost in slediti viru goriva, zato ta objekt bolj
+temelji na **Control** → **Execute Code** (pravi Python — `self` je
+trenutna instanca, `game` je izvajalec igre, `keyboard.check(name)`
+sporoči, ali je tipka pridržana) kot prejšnji gibalni vodiči, a še
+vedno uporablja strukturirano akcijo, kjer je to mogoče.
+
+### 5.1 Gravitacija in Začetne Spremenljivke
+
+**Dogodek: Create**
+1. Akcija: **Move** → **Set Gravity** (Direction: `270`, Gravity:
+   `0.05`) — rahel vlek navzdol; pogon ga samodejno prišteje k
+   navpični hitrosti pristajalnika vsako sličico, enako kot v vodiču
+   za platforme, le šibkeje.
+2. Akcija: **Control** → **Execute Code**:
+
+```python
+self.thrust_force = 0.1
+self.max_speed = 5
+self.fuel = 100
+self.fuel_use = 0.5
+self.landed = False
+self.crashed = False
+self.safe_speed = 2
+```
+
+Gibalni sistem tega pogona že sledi hitrosti prek `self.hspeed`/
+`self.vspeed` in premakne instanco za ta znesek vsako sličico (z
+vgrajenim trdim trkom) — ni treba ustvarjati ločenih spremenljivk
+`hsp`/`vsp`, kot bi to počela ročna fizikalna simulacija.
+
+### 5.2 Dogodek Step — Potisk in Kontrole
+
+**Dogodek: Step** — Akcija: **Control** → **Execute Code**:
+
+```python
+if not self.landed and not self.crashed:
+    if keyboard.check('up') and self.fuel > 0:
+        self.vspeed -= self.thrust_force
+        self.fuel -= self.fuel_use
+        if self.fuel < 0:
+            self.fuel = 0
+
+    if keyboard.check('left'):
+        self.hspeed -= 0.05
+    if keyboard.check('right'):
+        self.hspeed += 0.05
+
+    # Omeji najvišjo hitrost
+    self.hspeed = max(-self.max_speed, min(self.max_speed, self.hspeed))
+    self.vspeed = max(-self.max_speed, min(self.max_speed, self.vspeed))
+
+    # Prepreči, da bi pristajalnik zdrsnil ven ob straneh ali nad sobo
+    room = game.current_room
+    if self.x < 16:
+        self.x = 16
+        self.hspeed = 0
+    if self.x > room.width - 16:
+        self.x = room.width - 16
+        self.hspeed = 0
+    if self.y < 16:
+        self.y = 16
+        self.vspeed = 0
+```
+
+Celoten blok je znotraj `if not self.landed and not self.crashed:`,
+tako da se potisk in krmiljenje ustavita v trenutku, ko se igra konča
+— objekt nima načina, da bi prekinil dogodek na sredini (ni `exit`
+kot v GML); `if` okrog preostale kode opravi enako nalogo.
+
+### 5.3 Trk s Ploščadjo
+
+**Dogodek: Collision with obj_pad**
+1. Akcija: **Control** → **Test Expression**
+   - Expression: `(self.hspeed**2 + self.vspeed**2)**0.5 <=
+     self.safe_speed` — hitrost pristanka je dolžina vektorja hitrosti
+     (Pitagorov izrek), ne spremenljivka `speed` (v tem pogonu je
+     `speed` *hitrost animacije* sprite-a, ne velikost gibanja — prava
+     past za tiste, ki prihajajo iz GameMakerja).
+   - Then Actions:
+     1. **Control** → **Set Variable** (Variable: `landed`, Value: `true`, Scope: `self`)
+     2. **Move** → **Stop Movement**
+     3. **Move** → **Set Gravity** (Direction: `270`, Gravity: `0`) —
+        prepreči, da bi gravitacija tiho spet nabirala navpično
+        hitrost na že pristalem pristajalniku
+     4. **Output** → **Show Message** (Message: `Popoln Pristanek! Zmagal si!`)
+   - Else Actions:
+     1. **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
+     2. **Output** → **Show Message** (Message: `Trk! Prehitro!`)
+     3. **Room** → **Restart Room**
+
+Besedilo Show Message je fiksen niz — ne more prikazati dejanske
+hitrosti pristanka. HUD (Korak 7) že prikazuje živo hitrost vse do
+trenutka dotika, zato je igralec številko že videl.
+
+### 5.4 Trk s Tlemi
+
+**Dogodek: Collision with obj_ground**
+1. Akcija: **Control** → **Set Variable** (Variable: `crashed`, Value: `true`, Scope: `self`)
+2. Akcija: **Output** → **Show Message** (Message: `Trk v teren!`)
+3. Akcija: **Room** → **Restart Room**
+
+---
+
+## Korak 6-7: Game Controller
+
+**obj_game_controller** — Dogodek Draw: najde pristajalnik s zanko
+skozi `game.current_room.instances` (enak vzorec kot pri števcu
+kovancev v vodiču za labirint), izračuna zaokroženo gorivo/hitrost v
+**Execute Code**, nato pa ju prikaže z **Draw Text**/**Draw
+Variable**; za popolne podrobnosti po akcijah glej [angleško
+različico](Tutorial-LunarLander).
 
 ---
 
@@ -140,21 +186,20 @@ room_restart();
 3. Postavi tla spodaj z odprtino
 4. Postavi ploščad v odprtino
 5. Postavi pristajalnik zgoraj
-6. Postavi krmilnik igre
+6. Postavi game controller
 
 ---
 
 ## Kaj Si Se Naučil
 
-- **Fizika potiska** - Protiuteži gravitaciji
-- **Upravljanje hitrosti** - Nadzor hitrosti
-- **Sistem goriva** - Upravljanje virov
-- **Zaznavanje trkov** - Različni rezultati
+- **Fizika potiska** - Prilagajanje `self.vspeed` proti nenehnemu vleku Set Gravity
+- **Upravljanje hitrosti** - Izračun hitrosti iz `hspeed`/`vspeed` s Pitagorovim izrekom
+- **Sistem goriva** - Upravljanje virov s preprosto spremenljivko instance
+- **Zaznavanje trkov** - Različni izidi za ploščad in tla, izbrani s Test Expression
 
 ---
 
 ## Glej Tudi
 
-- [Vadnice](Tutorials_sl) - Več vadnic
-- [Vadnica: Platformer](Tutorial-Platformer_sl) - Ustvari platformsko igro
-
+- [Vodiči](Tutorials_sl) - Več vodičev
+- [Vodič: Platformer](Tutorial-Platformer_sl) - Ustvari platformsko igro
