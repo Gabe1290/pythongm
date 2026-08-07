@@ -366,7 +366,3 @@ Lahko jo tudi še izboljšate, na primer z dodajanjem:
 - [Event-Reference_sl](Event-Reference_sl) - Popoln seznam vseh dogodkov
 - [Full-Action-Reference_sl](Full-Action-Reference_sl) - Popoln seznam vseh akcij
 - [Tutorial-Breakout_sl](Tutorial-Breakout_sl) - Krajša verzija tega vodiča
-
----
-
-Zdaj ste uvedeni v osnove ustvarjanja videoiger s PyGameMaker. Zdaj je na vrsti, da ustvarite svoje lastne igre!
