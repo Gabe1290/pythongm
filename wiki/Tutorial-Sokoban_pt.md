@@ -18,7 +18,8 @@ Neste tutorial, você criará um jogo de puzzle **Sokoban** - um clássico puzzl
 - Design de nível para jogos de puzzle
 
 **Dificuldade:** Iniciante
-**Preset:** Beginner Preset
+**Preset:** Preset Intermediário (a mecânica de empurrar e o movimento
+baseado em grade usados aqui não estão no preset Iniciante)
 
 ---
 
@@ -39,19 +40,19 @@ Neste tutorial, você criará um jogo de puzzle **Sokoban** - um clássico puzzl
 | **Caixa** | Caixas que o jogador empurra |
 | **Parede** | Obstáculos sólidos que bloqueiam o movimento |
 | **Destino** | Locais de objetivo onde as caixas devem ser colocadas |
-| **Chão** | Terra caminhável (visual opcional) |
+| **Chão** | Terreno caminhável (visual opcional) |
 
 ---
 
 ## Passo 2: Crie os Sprites
 
-Todos os sprites devem ter o mesmo tamanho (32x32 pixels funcionam bem) para criar uma grade apropriada.
+Todos os sprites devem ter o mesmo tamanho (32x32 pixels funciona bem) para criar uma grade apropriada.
 
 ### 2.1 Sprite do Jogador
 
-1. Na **Árvore de Recursos**, clique com botão direito em **Sprites** e selecione **Criar Sprite**
+1. Na **Árvore de Recursos**, clique com o botão direito em **Sprites** e selecione **Create Sprite**
 2. Nomeie-o como `spr_player`
-3. Clique em **Editar Sprite** para abrir o editor de sprites
+3. Clique em **Edit Sprite** para abrir o editor de sprites
 4. Desenhe um personagem simples (uma forma de pessoa ou robô)
 5. Use uma cor distinta como azul ou verde
 6. Tamanho: 32x32 pixels
@@ -74,7 +75,7 @@ Todos os sprites devem ter o mesmo tamanho (32x32 pixels funcionam bem) para cri
 
 1. Crie um novo sprite nomeado `spr_wall`
 2. Desenhe um padrão sólido de tijolos ou pedra
-3. Use cores cinza ou escuro
+3. Use cores cinza ou escuras
 4. Tamanho: 32x32 pixels
 
 ### 2.5 Sprite do Destino
@@ -97,10 +98,10 @@ Todos os sprites devem ter o mesmo tamanho (32x32 pixels funcionam bem) para cri
 
 A parede é o objeto mais simples - ela apenas bloqueia o movimento.
 
-1. Clique com botão direito em **Objetos** e selecione **Criar Objeto**
+1. Clique com o botão direito em **Objects** e selecione **Create Object**
 2. Nomeie-o como `obj_wall`
 3. Defina o sprite como `spr_wall`
-4. **Marque a caixa de seleção "Sólido"**
+4. **Marque a caixa de seleção "Solid"**
 5. Nenhum evento necessário
 
 ---
@@ -112,190 +113,127 @@ Os destinos marcam onde as caixas devem ser colocadas.
 1. Crie um novo objeto nomeado `obj_target`
 2. Defina o sprite como `spr_target`
 3. Nenhum evento necessário - é apenas um marcador
-4. Deixe "Sólido" desmarcado (jogador e caixas podem estar em cima dele)
+4. Deixe "Solid" desmarcado (jogador e caixas podem estar em cima dele)
 
 ---
 
 ## Passo 5: Crie o Objeto Caixa
 
-A caixa é empurrada pelo jogador e muda de aparência quando em um destino.
+A caixa é empurrada pelo jogador e muda de aparência quando está em um destino.
 
 1. Crie um novo objeto nomeado `obj_crate`
 2. Defina o sprite como `spr_crate`
-3. **Marque a caixa de seleção "Sólido"**
+3. **Marque a caixa de seleção "Solid"**
 
-**Evento: Passo**
-1. Adicione Evento → Passo → Passo
-2. Adicione Ação: **Controle** → **Testar Variável**
-   - Variável: `place_meeting(x, y, obj_target)`
-   - Valor: `1`
-   - Operação: Igual a
-3. Adicione Ação: **Main1** → **Mudar Sprite**
+**Evento: Step**
+1. Add Event → Step → Step
+2. Add Action: **Control** → **If Collision**
+   - X Offset: `0`
+   - Y Offset: `0`
+   - Against: `obj_target`
+3. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate_ok`
-   - Subimagem: `0`
-   - Velocidade: `1`
-4. Adicione Ação: **Controle** → **Senão**
-5. Adicione Ação: **Main1** → **Mudar Sprite**
+4. Add Action: **Control** → **Else**
+5. Add Action: **Instance** → **Set Sprite**
    - Sprite: `spr_crate`
-   - Subimagem: `0`
-   - Velocidade: `1`
 
-Isto faz a caixa ficar verde quando está em um local de destino.
+Isso faz a caixa ficar verde quando está em um local de destino —
+**If Collision** com ambos os deslocamentos em `0` verifica se a
+posição *atual* da caixa se sobrepõe a um `obj_target`.
 
 ---
 
 ## Passo 6: Crie o Objeto Jogador
 
-O jogador é o objeto mais complexo com movimento baseado em grade e mecânica de empurrar.
+O jogador se move exatamente uma célula da grade por vez e empurra as caixas em que esbarra.
 
 1. Crie um novo objeto nomeado `obj_player`
 2. Defina o sprite como `spr_player`
 
-### 6.1 Movimentar-se para a Direita
+### 6.1 Movimento em Grade
 
-**Evento: Pressionar Seta Direita**
-1. Adicione Evento → Teclado → Pressionar Direita
+Adicione um evento **Key Press** por direção, cada um com uma ação **Move** → **Move Grid**:
 
-Primeiro, verifique se há uma parede no caminho:
-2. Adicione Ação: **Controle** → **Testar Colisão**
-   - Objeto: `obj_wall`
-   - X: `32`
-   - Y: `0`
-   - Verificar: NÃO (significado "se NÃO há parede")
+| Evento | Ação Move Grid |
+|---|---|
+| Key Press → Right Arrow | Direction: `right`, Grid Size: `32` |
+| Key Press → Left Arrow | Direction: `left`, Grid Size: `32` |
+| Key Press → Up Arrow | Direction: `up`, Grid Size: `32` |
+| Key Press → Down Arrow | Direction: `down`, Grid Size: `32` |
 
-Se não houver parede, verifique se há uma caixa:
-3. Adicione Ação: **Controle** → **Testar Colisão**
-   - Objeto: `obj_crate`
-   - X: `32`
-   - Y: `0`
+**Move Grid** move a instância exatamente uma célula da grade e já
+detecta colisões por conta própria — não moverá o jogador para dentro
+de um `obj_wall` sólido, então não é necessária uma verificação de
+parede adicional aqui.
 
-Se há uma caixa, precisamos verificar se podemos empurrá-la:
-4. Adicione Ação: **Controle** → **Testar Colisão** (para o destino da caixa)
-   - Objeto: `obj_wall`
-   - X: `64`
-   - Y: `0`
-   - Verificar: NÃO
+### 6.2 Parar nas Paredes
 
-5. Adicione Ação: **Controle** → **Testar Colisão**
-   - Objeto: `obj_crate`
-   - X: `64`
-   - Y: `0`
-   - Verificar: NÃO
+**Evento: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-Se ambas as verificações passarem, empurre a caixa:
-6. Adicione Ação: **Controle** → **Bloco de Código**
-```
-var crate = instance_place(x + 32, y, obj_crate);
-if (crate != noone) {
-    crate.x += 32;
-}
-```
+### 6.3 Empurrar Caixas
 
-Agora mova o jogador:
-7. Adicione Ação: **Mover** → **Pular para Posição**
-   - X: `32`
-   - Y: `0`
-   - Marque "Relativo"
+**Evento: Collision with obj_crate**
+1. Add Event → Collision → `obj_crate`
+2. Add Action: **Control** → **If Can Push**
+   - Direction: `facing`
+   - Object Type: `obj_crate`
+   - Then Action: `push_and_move`
 
-### 6.2 Movimentar-se para a Esquerda
-
-**Evento: Pressionar Seta Esquerda**
-Siga o mesmo padrão que mover para a direita, mas use:
-- Deslocamento X: `-32` para verificar parede/caixa
-- Deslocamento X: `-64` para verificar se a caixa pode ser empurrada
-- Mover caixa por `-32`
-- Pular para posição X: `-32`
-
-### 6.3 Movimentar-se para Cima
-
-**Evento: Pressionar Seta para Cima**
-Siga o mesmo padrão, mas use valores Y:
-- Deslocamento Y: `-32` para verificar
-- Deslocamento Y: `-64` para destino da caixa
-- Mover caixa por Y: `-32`
-- Pular para posição Y: `-32`
-
-### 6.4 Movimentar-se para Baixo
-
-**Evento: Pressionar Seta para Baixo**
-Use:
-- Deslocamento Y: `32` para verificar
-- Deslocamento Y: `64` para destino da caixa
-- Mover caixa por Y: `32`
-- Pular para posição Y: `32`
+**If Can Push** verifica se o espaço atrás da caixa (na direção em que
+o jogador está se movendo) está livre e, se estiver, empurra a caixa
+uma célula e move o jogador para o lugar dela, tudo em uma única ação.
+Se o espaço atrás da caixa estiver bloqueado por uma parede ou outra
+caixa, nada se move.
 
 ---
 
-## Passo 7: Movimento do Jogador Simplificado (Alternativa)
+## Passo 7: Crie o Verificador de Condição de Vitória
 
-Se a abordagem baseada em blocos acima parecer complexa, aqui está uma abordagem mais simples baseada em código para cada direção:
-
-**Evento: Pressionar Seta Direita**
-Adicione Ação: **Controle** → **Executar Código**
-```
-// Verificar se podemos nos mover para a direita
-if (!place_meeting(x + 32, y, obj_wall)) {
-    // Verificar se há uma caixa
-    var crate = instance_place(x + 32, y, obj_crate);
-    if (crate != noone) {
-        // Há uma caixa - podemos empurrá-la?
-        if (!place_meeting(x + 64, y, obj_wall) && !place_meeting(x + 64, y, obj_crate)) {
-            crate.x += 32;
-            x += 32;
-        }
-    } else {
-        // Sem caixa, apenas mova
-        x += 32;
-    }
-}
-```
-
-Repita para outras direções com mudanças de coordenadas apropriadas.
-
----
-
-## Passo 8: Crie o Verificador de Condição de Vitória
-
-Precisamos de um objeto para verificar se todas as caixas estão em destinos.
+Precisamos de um controlador invisível que observe se cada caixa está em um destino.
 
 1. Crie um novo objeto nomeado `obj_game_controller`
 2. Nenhum sprite necessário
 
-**Evento: Criar**
-1. Adicione Evento → Criar
-2. Adicione Ação: **Pontuação** → **Definir Variável**
-   - Variável: `global.total_targets`
-   - Valor: `0`
-3. Adicione Ação: **Controle** → **Executar Código**
-```
-// Contar quantos destinos existem
-global.total_targets = instance_number(obj_target);
+**Evento: Create** — define a contagem de destinos uma única vez,
+usando **Control** → **Execute Code** (a ação Execute Code deste
+projeto executa Python real, não GameMaker Language — `self` é a
+instância atual, `game` é o executor do jogo):
+
+```python
+# Conta quantos destinos existem na sala
+self.total_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_target'
+)
 ```
 
-**Evento: Passo**
-1. Adicione Evento → Passo → Passo
-2. Adicione Ação: **Controle** → **Executar Código**
-```
-// Contar caixas que estão em destinos
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
+**Evento: Step** — verifica a cada quadro se todas as caixas estão em um destino:
 
-// Verificar se todos os destinos têm caixas
-if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
-    // Nível completo!
-    show_message("Nível Completo!");
-    room_restart();
-}
+```python
+# Conta as caixas que atualmente se sobrepõem a um destino
+crates_on_targets = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_crate'
+    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')
+)
+
+if self.total_targets > 0 and crates_on_targets >= self.total_targets:
+    self.restart_room_flag = True
 ```
 
-**Evento: Desenhar**
-1. Adicione Evento → Desenhar
-2. Adicione Ação: **Desenhar** → **Desenhar Texto**
-   - Texto: `Sokoban - Empurre todas as caixas para os destinos!`
+`self.restart_room_flag = True` é a forma como um bloco Execute Code
+bruto aciona o mesmo reinício de sala que a ação **Restart Room**
+realiza — o loop principal verifica isso a cada quadro. Adicione uma
+ação **Show Message** (de **Output**, mensagem `Level Complete!`)
+logo após o bloco Execute Code se quiser mostrar um popup antes do
+reinício.
+
+**Evento: Draw**
+1. Add Event → Draw
+2. Add Action: **Draw** → **Draw Text**
+   - Text: `Sokoban - Push all crates to targets!`
    - X: `10`
    - Y: `10`
 
@@ -303,10 +241,10 @@ if (crates_on_targets >= global.total_targets && global.total_targets > 0) {
 
 ## Passo 9: Projete Seu Nível
 
-1. Clique com botão direito em **Salas** e selecione **Criar Sala**
+1. Clique com o botão direito em **Rooms** e selecione **Create Room**
 2. Nomeie-a como `room_level1`
 3. Defina o tamanho da sala como um múltiplo de 32 (por ex., 640x480)
-4. Ative "Encaixar na Grade" e defina a grade como 32x32
+4. Ative "Snap to Grid" e defina a grade como 32x32
 
 ### Colocando Objetos
 
@@ -317,7 +255,7 @@ Construa seu nível seguindo estas diretrizes:
 3. **Coloque destinos** - Onde as caixas precisam ir
 4. **Coloque caixas** - Mesmo número que destinos!
 5. **Coloque o jogador** - Posição inicial
-6. **Coloque o controlador de jogo** - Em qualquer lugar (é invisível)
+6. **Coloque o game controller** - Em qualquer lugar (é invisível)
 
 ### Exemplo de Layout de Nível
 
@@ -345,10 +283,10 @@ T = Destino
 
 ## Passo 10: Teste Seu Jogo!
 
-1. Clique em **Executar** ou pressione **F5** para testar
+1. Clique em **Run** ou pressione **F5** para testar
 2. Use as setas para se mover
-3. Empurre as caixas para os destinos X vermelho
-4. Quando todas as caixas estão nos destinos, você vence!
+3. Empurre as caixas para os destinos X vermelhos
+4. Quando todas as caixas estiverem nos destinos, você vence!
 
 ---
 
@@ -356,22 +294,18 @@ T = Destino
 
 ### Adicionar um Contador de Movimentos
 
-Em `obj_game_controller`:
+No evento **Create** de `obj_game_controller`, adicione **Control** →
+**Set Variable** (Variable: `global.moves`, Value: `0`, Scope: `global`).
 
-**Evento: Criar** - Adicione:
-```
-global.moves = 0;
-```
+Em cada um dos quatro eventos Key Press de `obj_player`, adicione uma
+segunda ação logo após Move Grid: **Control** → **Set Variable**
+(Variable: `global.moves`, Value: `1`, Scope: `global`, **Relative**
+marcado) — isso soma 1 ao contador a cada pressionamento de tecla,
+independentemente de o movimento ter sido realmente bloqueado por uma
+parede.
 
-Em `obj_player`, após cada movimento bem-sucedido, adicione:
-```
-global.moves += 1;
-```
-
-Em `obj_game_controller` **Evento: Desenhar** - Adicione:
-```
-draw_text(10, 30, "Movimentos: " + string(global.moves));
-```
+No evento **Draw** de `obj_game_controller`, adicione **Draw** →
+**Draw Variable** (Variable: `global.moves`, X: `10`, Y: `30`).
 
 ### Adicionar Recurso de Desfazer
 
@@ -379,18 +313,17 @@ Armazene posições anteriores e permita pressionar Z para desfazer o último mo
 
 ### Adicionar Múltiplos Níveis
 
-Crie mais salas (`room_level2`, `room_level3`, etc.) e use:
-```
-room_goto_next();
-```
-em vez de `room_restart()` ao completar um nível.
+Crie mais salas (`room_level2`, `room_level3`, etc.) e use a ação
+**Next Room** (categoria Room) em vez de **Restart Room** no bloco
+Execute Code de verificação de vitória (`self.next_room_flag = True`
+em vez de `self.restart_room_flag = True`) ao completar um nível.
 
 ### Adicionar Efeitos Sonoros
 
 Adicione sons para:
 - Jogador se movendo
 - Empurrando uma caixa
-- Caixa caindo em destino
+- Caixa caindo em um destino
 - Nível completo
 
 ---
@@ -399,11 +332,11 @@ Adicione sons para:
 
 | Problema | Solução |
 |----------|---------|
-| Jogador se move através de paredes | Verifique se `obj_wall` tem "Sólido" marcado |
-| Caixa não muda de cor | Verifique se o evento Passo verifica `place_meeting` corretamente |
-| Pode empurrar caixa através de parede | Verifique detecção de colisão antes de mover caixa |
-| Mensagem de vitória aparece imediatamente | Certifique-se de que destinos foram colocados separadamente das caixas |
-| Jogador se move múltiplos quadrados | Use evento Pressionar Teclado, não evento Teclado |
+| Jogador se move através de paredes | Verifique se `obj_wall` tem "Solid" marcado |
+| Caixa não muda de cor | Verifique se a ação **If Collision** do evento Step aponta para `obj_target` |
+| Pode empurrar caixa através de parede | Verifique a detecção de colisão antes de mover a caixa |
+| Mensagem de vitória aparece imediatamente | Certifique-se de que os destinos foram colocados separadamente das caixas |
+| Jogador se move vários quadrados | Use o evento Keyboard Press, não o evento Keyboard |
 
 ---
 
@@ -428,14 +361,14 @@ A diversão real do Sokoban é projetar puzzles. Tente criar níveis que:
 - Tenham apenas uma solução
 - Usem espaço mínimo eficientemente
 
-Lembre-se: Um bom puzzle Sokoban deve ser desafiador mas justo!
+Lembre-se: um bom puzzle Sokoban deve ser desafiador mas justo!
 
 ---
 
 ## Veja Também
 
 - [Tutoriais](Tutorials_pt) - Mais tutoriais de jogos
-- [Beginner Preset](Beginner-Preset_pt) - Visão geral dos recursos iniciantes
+- [Intermediate Preset](Intermediate-Preset_pt) - Visão geral do preset necessário para este tutorial
 - [Tutorial: Pong](Tutorial-Pong_pt) - Criar um jogo para dois jogadores
 - [Tutorial: Breakout](Tutorial-Breakout_pt) - Criar um jogo de quebrador de tijolos
 - [Referência de Eventos](Event-Reference_pt) - Documentação completa de eventos

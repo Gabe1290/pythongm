@@ -78,51 +78,68 @@ Neste tutorial, você criará um **Jogo de Plataforma** - um jogo de ação de r
 
 ---
 
-## Passo 3-4: Criar Objetos de Chão e Plataforma
+## Passo 3: Criar o Objeto Chão
 
-**obj_ground** e **obj_platform**: Defina sprite, marque "Sólido"
+O chão é uma plataforma sólida que impede o jogador de cair.
+
+1. Clique com o botão direito em **Objects** e selecione **Create Object**
+2. Nomeie como `obj_ground`
+3. Defina o sprite como `spr_ground`
+4. **Marque a caixa "Solid"**
+5. Nenhum evento necessário
+
+---
+
+## Passo 4: Criar o Objeto Plataforma
+
+Plataformas funcionam como o chão, mas podem ser colocadas no ar.
+
+1. Crie um novo objeto chamado `obj_platform`
+2. Defina o sprite como `spr_platform`
+3. **Marque a caixa "Solid"**
 
 ---
 
 ## Passo 5: Criar o Objeto Jogador
 
-### Evento Create
-```gml
-hspeed_max = 4;
-vspeed_max = 10;
-jump_force = -10;
-gravity_force = 0.5;
-hsp = 0;
-vsp = 0;
-on_ground = false;
-```
+O jogador é o objeto mais complexo, com gravidade, pulo e movimento.
 
-### Evento Step
-```gml
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-hsp = move_input * hspeed_max;
+1. Crie um novo objeto chamado `obj_player`
+2. Defina o sprite como `spr_player`
 
-vsp += gravity_force;
-if (vsp > vspeed_max) vsp = vspeed_max;
+### 5.1 Gravidade
 
-on_ground = place_meeting(x, y + 1, obj_ground);
+**Evento: Create** — Add Action: **Move** → **Set Gravity**
+(Direction: `270`, Gravity: `0.5`) — 270° é diretamente para baixo; o
+valor é somado à velocidade vertical do jogador a cada quadro, então o
+jogador acelera para baixo sozinho a partir daqui.
 
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
+### 5.2 Movimento, Pulo e Colisão com o Chão
 
-if (place_meeting(x + hsp, y, obj_ground)) {
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) x += sign(hsp);
-    hsp = 0;
-}
-x += hsp;
+Adicione estes eventos, seguindo o mesmo padrão que os tutoriais
+anteriores deste wiki já usam:
 
-if (place_meeting(x, y + vsp, obj_ground)) {
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) y += sign(vsp);
-    vsp = 0;
-}
-y += vsp;
-```
+| Evento | Ação |
+|---|---|
+| Keyboard (held) → Left Arrow | Set Horizontal Speed para `-4` |
+| Keyboard (held) → Right Arrow | Set Horizontal Speed para `4` |
+| Keyboard: No Key | Set Horizontal Speed para `0` |
+| Key Press → Up Arrow | Set Vertical Speed para `-10` |
+| Collision with obj_ground | Stop Movement |
+
+Dois detalhes que fazem tudo parecer certo:
+
+- **No Key define APENAS a velocidade horizontal como 0** — nunca use
+  Stop Movement aqui, porque Stop Movement também zera a velocidade
+  vertical, o que anularia a gravidade toda vez que o jogador soltasse
+  uma tecla de direção.
+- **Key Press (não held)** é o que faz Up ser um único impulso de
+  pulo, em vez de lançar o jogador para cima a cada quadro em que é
+  mantido pressionado. **Stop Movement** ao aterrissar anula esse
+  impulso, para que o jogador não continue subindo depois de aterrissar
+  — a colisão sólida integrada do motor (o Passo 3 já tornou
+  `obj_ground` Solid) já impede que o jogador afunde no chão; o evento
+  aqui apenas limpa a velocidade de queda restante.
 
 ---
 
@@ -130,9 +147,9 @@ y += vsp;
 
 **obj_coin** - Colisão com obj_player: Pontuação +10, destruir Self
 
-**obj_spike** - Colisão com obj_player: Mostrar mensagem, reiniciar room
+**obj_spike** - Colisão com obj_player: Mostrar mensagem, reiniciar a sala
 
-**obj_flag** - Colisão com obj_player: Mostrar mensagem, próxima room
+**obj_flag** - Colisão com obj_player: Mostrar mensagem, próxima sala
 
 ---
 
@@ -140,18 +157,17 @@ y += vsp;
 
 1. Crie `room_level1` (800x480)
 2. Ative ajuste à grade (32x32)
-3. Coloque chão embaixo, plataformas no ar
+3. Coloque o chão embaixo, plataformas no ar
 4. Adicione moedas, espinhos
-5. Coloque bandeira no final, jogador no início
+5. Coloque a bandeira no final, o jogador no início
 
 ---
 
 ## O Que Você Aprendeu
 
-- **Física de gravidade** - Força constante para baixo
-- **Mecânicas de pulo** - Velocidade vertical negativa
-- **Detecção de chão** - Usar `place_meeting`
-- **Tratamento de colisões** - Mover pixel por pixel
+- **Física de gravidade** - Set Gravity aplica uma força constante para baixo a cada quadro
+- **Mecânicas de pulo** - Um evento Key Press (não held) dá um único impulso de velocidade para cima
+- **Colisão sólida integrada** - O chão bloqueia o jogador automaticamente uma vez marcado como Solid, sem código manual de verificação de posição
 
 ---
 
