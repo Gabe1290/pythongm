@@ -8,11 +8,11 @@
 
 In questo tutorial, impareremo le basi della creazione di videogiochi con PyGameMaker. Trattandosi di un software relativamente completo con molte funzionalità, ci concentreremo solo su quelle che ci saranno utili durante questo tutorial.
 
-Creeremo un semplice gioco in stile Breakout che assomigliera a questo:
+Creeremo un semplice gioco in stile Breakout che assomiglierà a questo:
 
 ![Concetto del Gioco Breakout](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Breakout2600.svg/220px-Breakout2600.svg.png)
 
-Questo tutorial e pensato per te, anche se non hai conoscenze di programmazione, poiche PyGameMaker permette ai principianti di creare facilmente giochi indipendentemente dal loro livello di competenza.
+Questo tutorial è pensato per te, anche se non hai conoscenze di programmazione, poiché PyGameMaker permette ai principianti di creare facilmente giochi indipendentemente dal loro livello di competenza.
 
 Bene, iniziamo a progettare il nostro gioco!
 
@@ -32,7 +32,7 @@ Prima di tutto, in un videogioco, la prima cosa che il giocatore nota è ciò ch
 
 1. Fai clic destro sulla cartella **Sprites** in cima alla colonna sinistra
 2. Clicca su **Crea Sprite**
-3. Si aprira una finestra chiamata **Proprietà Sprite** - qui definirai tutte le caratteristiche del tuo sprite
+3. Si aprirà una finestra chiamata **Proprietà Sprite** - qui definirai tutte le caratteristiche del tuo sprite
 4. Usa l'editor integrato per disegnare un rettangolo orizzontale (circa 64x16 pixel) nel colore che preferisci
 5. **Importante:** Clicca **Centra** per impostare l'origine al centro del tuo sprite
    > L'origine di uno sprite è il suo punto centrale, le sue coordinate X:0 e Y:0. Queste sono le sue coordinate di base.
@@ -81,7 +81,7 @@ Ora dovresti avere tutti gli sprite per il nostro gioco:
 - `spr_brick_2` - Secondo mattone distruttibile
 - `spr_brick_3` - Mattone muro indistruttibile
 
-> **Nota:** Nei giochi, ci sono generalmente due fonti principali di rendering grafico: **Sprite** e **Sfondi**. E tutto ciò che compone quello che vedi sullo schermo. Uno Sfondo e, come suggerisce il nome, un'immagine di sfondo.
+> **Nota:** Nei giochi, ci sono generalmente due fonti principali di rendering grafico: **Sprite** e **Sfondi**. È tutto ciò che compone quello che vedi sullo schermo. Uno Sfondo è, come suggerisce il nome, un'immagine di sfondo.
 
 ---
 
@@ -114,7 +114,7 @@ Creiamo l'oggetto che il giocatore controllerà: la racchetta.
 1. Fai clic destro sulla cartella **Objects** -> **Crea Oggetto**
 2. Chiamalo `obj_paddle`
 3. Nel menu a tendina **Sprite**, seleziona `spr_paddle` - ora il nostro oggetto ha un aspetto visivo!
-4. Spunta la casella **Solido** (ci servira per le collisioni)
+4. Spunta la casella **Solido** (ci servirà per le collisioni)
 
 ### 4.2 Programmazione del Movimento
 
@@ -122,7 +122,7 @@ In un gioco Breakout, dobbiamo muovere la racchetta per impedire alla palla di s
 
 **Movimento a Destra:**
 1. Clicca **Aggiungi Evento** -> **Tastiera** -> **Freccia Destra**
-2. Dal pannello azioni sulla destra, aggiungi l'azione **Imposta Velocita Orizzontale**
+2. Dal pannello azioni sulla destra, aggiungi l'azione **Imposta Velocità Orizzontale**
 3. Imposta il **valore** a `5`
 4. Clicca **OK**
 
@@ -130,7 +130,7 @@ Questo significa: "Quando il tasto Freccia Destra viene premuto, imposta la velo
 
 **Movimento a Sinistra:**
 1. Clicca **Aggiungi Evento** -> **Tastiera** -> **Freccia Sinistra**
-2. Aggiungi l'azione **Imposta Velocita Orizzontale**
+2. Aggiungi l'azione **Imposta Velocità Orizzontale**
 3. Imposta il **valore** a `-5`
 4. Clicca **OK**
 
@@ -139,11 +139,11 @@ Questo significa: "Quando il tasto Freccia Destra viene premuto, imposta la velo
 Se testassimo ora, la racchetta continuerebbe a muoversi anche dopo aver rilasciato il tasto! Risolviamolo:
 
 1. Clicca **Aggiungi Evento** -> **Rilascio Tasto** -> **Freccia Destra**
-2. Aggiungi l'azione **Imposta Velocita Orizzontale** con valore `0`
+2. Aggiungi l'azione **Imposta Velocità Orizzontale** con valore `0`
 3. Clicca **OK**
 
 4. Clicca **Aggiungi Evento** -> **Rilascio Tasto** -> **Freccia Sinistra**
-5. Aggiungi l'azione **Imposta Velocita Orizzontale** con valore `0`
+5. Aggiungi l'azione **Imposta Velocità Orizzontale** con valore `0`
 6. Clicca **OK**
 
 Ora la nostra racchetta si muove quando i tasti vengono premuti e si ferma quando vengono rilasciati. Abbiamo finito con questo oggetto per ora!
@@ -152,7 +152,7 @@ Ora la nostra racchetta si muove quando i tasti vengono premuti e si ferma quand
 
 ## Passo 5: Creazione dell'Oggetto Mattone Muro
 
-Creiamo un mattone muro indistruttibile - questo formera i confini della nostra area di gioco.
+Creiamo un mattone muro indistruttibile - questo formerà i confini della nostra area di gioco.
 
 1. Crea un nuovo oggetto chiamato `obj_brick_3`
 2. Assegna lo sprite `spr_brick_3`
@@ -177,12 +177,12 @@ Ora creiamo la palla, l'elemento essenziale del nostro gioco.
 Vogliamo che la palla si muova da sola dall'inizio. Diamole una velocità e una direzione iniziali.
 
 1. Clicca **Aggiungi Evento** -> **Creazione**
-   > L'evento Creazione esegue azioni quando l'oggetto appare nel gioco, cioe quando entra nella scena.
-2. Aggiungi l'azione **Imposta Velocita Orizzontale** con valore `4`
-3. Aggiungi l'azione **Imposta Velocita Verticale** con valore `-4`
+   > L'evento Creazione esegue azioni quando l'oggetto appare nel gioco, cioè quando entra nella scena.
+2. Aggiungi l'azione **Imposta Velocità Orizzontale** con valore `4`
+3. Aggiungi l'azione **Imposta Velocità Verticale** con valore `-4`
 4. Clicca **OK**
 
-Questo da alla palla un movimento diagonale (destra e su) all'inizio del gioco.
+Questo dà alla palla un movimento diagonale (destra e su) all'inizio del gioco.
 
 ### 6.3 Rimbalzo sulla Racchetta
 
@@ -234,7 +234,7 @@ Clicca il pulsante **Gioca** (freccia verde) nella barra degli strumenti. Questo
 
 Puoi già divertirti a far rimbalzare la palla sui muri e sulla racchetta!
 
-E minimo, ma già un buon inizio - hai le fondamenta del tuo gioco!
+È minimo, ma già un buon inizio - hai le fondamenta del tuo gioco!
 
 ---
 
@@ -334,7 +334,7 @@ Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 
 ---
 
-## Riepilogo di Cio Che Hai Imparato
+## Riepilogo di Ciò Che Hai Imparato
 
 | Concetto | Descrizione |
 |----------|-------------|
@@ -366,7 +366,3 @@ Puoi anche perfezionarlo ulteriormente, ad esempio aggiungendo:
 - [Riferimento Eventi](Event-Reference_it) - Lista completa di tutti gli eventi
 - [Riferimento Completo Azioni](Full-Action-Reference_it) - Lista completa di tutte le azioni
 - [Tutorial: Breakout](Tutorial-Breakout_it) - Versione più breve di questo tutorial
-
----
-
-Ora sei iniziato alle basi della creazione di videogiochi con PyGameMaker. Tocca a te creare i tuoi giochi!
