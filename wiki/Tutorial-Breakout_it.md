@@ -95,7 +95,7 @@ Ora il paddle si ferma quando rilasci i tasti freccia.
 
 ### 3.2 Impostare il Movimento Iniziale
 1. Clicca su **Add Event** -> **Create**
-2. Aggiungi l'azione **Move in Direction** (o **Set Horizontal/Vertical Speed**)
+2. Aggiungi l'azione **Start Moving (Direction)** (o **Set Horizontal/Vertical Speed**)
 3. Imposta una direzione diagonale con velocità `5`
    - Per esempio: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -126,12 +126,13 @@ Questo fa partire la palla quando il gioco inizia.
 Questo distrugge il mattone quando la palla lo colpisce!
 
 ### 4.3 Far Rimbalzare la Palla
-Nello stesso evento di collisione, aggiungi anche:
-1. Aggiungi l'azione **Reverse Vertical** (applicata a **other** - la palla)
+**Reverse Vertical** si applica sempre all'istanza nel cui evento si
+trova — non ha un'opzione "applica a other" — quindi questa azione deve
+stare sulla palla, non sul mattone:
 
-Oppure torna a `obj_ball` e aggiungi:
-1. **Add Event** -> **Collision** -> seleziona `obj_brick`
-2. Aggiungi l'azione **Reverse Vertical**
+1. Torna a `obj_ball` e aggiungi:
+2. **Add Event** -> **Collision** -> seleziona `obj_brick`
+3. Aggiungi l'azione **Reverse Vertical**
 
 ---
 
