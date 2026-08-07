@@ -366,7 +366,3 @@
 - [Event-Reference_ru](Event-Reference_ru) - Полный список всех событий
 - [Full-Action-Reference_ru](Full-Action-Reference_ru) - Полный список всех действий
 - [Tutorial-Breakout_ru](Tutorial-Breakout_ru) - Краткая версия этого руководства
-
----
-
-Теперь вы освоили основы создания видеоигр с PyGameMaker. Настала ваша очередь создавать собственные игры!
