@@ -41,7 +41,7 @@
 
 ### 1.4 Створення спрайта стіни
 1. Створіть спрайт з назвою `spr_wall`
-2. Намалюйте квадрат (приблизно 32x32 пікселів) - це буде межа
+2. Намалюйте квадрат (приблизно 32x32 пікселів) — це буде межа
 3. Натисніть **Center**, щоб встановити початок координат
 
 ### 1.5 Створення фону (необов'язково)
@@ -95,7 +95,7 @@
 
 ### 3.2 Встановлення початкового руху
 1. Натисніть **Add Event** → **Create**
-2. Додайте дію **Move in Direction** (або **Set Horizontal/Vertical Speed**)
+2. Додайте дію **Start Moving (Direction)** (або **Set Horizontal/Vertical Speed**)
 3. Встановіть діагональний напрямок зі швидкістю `5`
    - Наприклад: **hspeed** = `4`, **vspeed** = `-4`
 
@@ -126,12 +126,13 @@
 Це знищує цеглину, коли м'яч вдаряє по ній!
 
 ### 4.3 Відбивання м'яча
-У тій самій події зіткнення також додайте:
-1. Додайте дію **Reverse Vertical** (застосовану до **other** - м'яча)
+**Reverse Vertical** завжди застосовується до екземпляра, у чиїй події
+вона перебуває — вона не має варіанту "застосувати до other" — тому ця
+дія має бути на м'ячі, а не на цеглині:
 
-Або поверніться до `obj_ball` і додайте:
-1. **Add Event** → **Collision** → виберіть `obj_brick`
-2. Додайте дію **Reverse Vertical**
+1. Поверніться до `obj_ball` і додайте:
+2. **Add Event** → **Collision** → виберіть `obj_brick`
+3. Додайте дію **Reverse Vertical**
 
 ---
 
@@ -142,7 +143,7 @@
 2. Встановіть **Sprite** як `spr_wall`
 3. Поставте прапорець **Solid**
 
-Це все - стіна просто повинна бути твердою, щоб м'яч відбивався.
+Це все — стіна просто повинна бути твердою, щоб м'яч відбивався.
 
 ---
 
@@ -212,13 +213,13 @@
 |--------|--------|---------|-------|
 | `obj_paddle` | `spr_paddle` | Так | Keyboard (Left/Right), Keyboard Release |
 | `obj_ball` | `spr_ball` | Так | Create, Collision (paddle, wall, brick) |
-| `obj_brick` | `spr_brick` | Так | Collision (ball) - Знищити self |
+| `obj_brick` | `spr_brick` | Так | Collision (ball) — Знищити self |
 | `obj_wall` | `spr_wall` | Так | Не потрібно |
 
 ---
 
 ## Дивіться також
 
-- [Beginner Preset](Beginner-Preset_uk) - Події та дії, використані в цьому посібнику
-- [Event Reference](Event-Reference_uk) - Всі доступні події
-- [Full Action Reference](Full-Action-Reference_uk) - Всі доступні дії
+- [Beginner Preset](Beginner-Preset_uk) — Події та дії, використані в цьому посібнику
+- [Event Reference](Event-Reference_uk) — Всі доступні події
+- [Full Action Reference](Full-Action-Reference_uk) — Всі доступні дії
