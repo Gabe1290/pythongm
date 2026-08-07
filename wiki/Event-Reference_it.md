@@ -113,7 +113,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `keyboard_press` |
 | **Icona** | 🔘 |
 | **Categoria** | Input |
-| **Preset** | Principiante |
+| **Preset** | Intermedio |
 
 **Descrizione:** Si attiva una volta quando un tasto viene premuto per la prima volta.
 
@@ -129,7 +129,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `keyboard_release` |
 | **Icona** | ⬆️ |
 | **Categoria** | Input |
-| **Preset** | Avanzato |
+| **Preset** | Completo (Edizione Sviluppo) |
 
 **Descrizione:** Si attiva una volta quando un tasto viene rilasciato.
 
@@ -146,7 +146,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `keyboard_no_key` |
 | **Icona** | ⌨️ |
 | **Categoria** | Input |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva a ogni fotogramma mentre **nessun** tasto è premuto.
 
@@ -164,7 +164,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `mouse` |
 | **Icona** | 🖱️ |
 | **Categoria** | Input |
-| **Preset** | Intermedio |
+| **Preset** | Completo (Edizione Sviluppo) |
 
 **Descrizione:** Eventi di pulsanti del mouse e movimento.
 
@@ -221,7 +221,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `alarm` |
 | **Icona** | ⏰ |
 | **Categoria** | Temporizzazione |
-| **Preset** | Intermedio |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando un conto alla rovescia dell'allarme raggiunge lo zero.
 
@@ -243,7 +243,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `begin_step` |
 | **Icona** | ▶️ |
 | **Categoria** | Step |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva all'inizio di ogni frame, prima degli eventi Step regolari.
 
@@ -261,7 +261,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `end_step` |
 | **Icona** | ⏹️ |
 | **Categoria** | Step |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva alla fine di ogni frame, dopo le collisioni.
 
@@ -280,7 +280,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `draw` |
 | **Icona** | 🎨 |
 | **Categoria** | Disegno |
-| **Preset** | Intermedio |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva durante la fase di rendering.
 
@@ -309,7 +309,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `draw_gui` |
 | **Icona** | 🖥️ |
 | **Categoria** | Disegno |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Disegna nello **spazio schermo (GUI)**, sopra la stanza e non influenzato dallo scorrimento delle viste/camera.
 
@@ -325,7 +325,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `room_start` |
 | **Icona** | 🚪 |
 | **Categoria** | Stanza |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando si entra in una stanza, dopo tutti gli eventi Create.
 
@@ -342,7 +342,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `room_end` |
 | **Icona** | 🚪 |
 | **Categoria** | Stanza |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando si esce da una stanza.
 
@@ -361,7 +361,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `game_start` |
 | **Icona** | 🎮 |
 | **Categoria** | Gioco |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva una volta quando il gioco inizia per la prima volta (solo nella prima stanza).
 
@@ -378,7 +378,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `game_end` |
 | **Icona** | 🎮 |
 | **Categoria** | Gioco |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando il gioco sta terminando.
 
@@ -396,7 +396,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `outside_room` |
 | **Icona** | 🚫 |
 | **Categoria** | Altro |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando l'istanza e completamente fuori dai confini della stanza.
 
@@ -413,7 +413,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `intersect_boundary` |
 | **Icona** | ⚠️ |
 | **Categoria** | Altro |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando l'istanza tocca il confine della stanza.
 
@@ -429,7 +429,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `no_more_lives` |
 | **Icona** | 💀 |
 | **Categoria** | Altro |
-| **Preset** | Intermedio |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando le vite diventano 0 o meno.
 
@@ -446,7 +446,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `no_more_health` |
 | **Icona** | 💔 |
 | **Categoria** | Altro |
-| **Preset** | Intermedio |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando la salute diventa 0 o meno.
 
@@ -463,7 +463,7 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 | **Nome** | `animation_end` |
 | **Icona** | 🎞️ |
 | **Categoria** | Altro |
-| **Preset** | Avanzato |
+| **Preset** | Principiante |
 
 **Descrizione:** Si attiva quando l'animazione dello sprite dell'istanza completa un ciclo intero (torna dall'ultimo fotogramma al primo).
 
@@ -476,25 +476,39 @@ Questa pagina documenta tutti gli eventi disponibili in PyGameMaker. Gli eventi 
 
 ## Ordine di Esecuzione degli Eventi
 
-Capire quando gli eventi si attivano aiuta a creare un comportamento di gioco prevedibile:
+Capire quando gli eventi si attivano aiuta a creare un comportamento di
+gioco prevedibile (verificato contro il ciclo principale in
+`runtime/game_runner.py`):
 
-1. **Begin Step** - Inizio del frame
-2. **Alarm** - Qualsiasi allarme attivato
-3. **Keyboard/Mouse** - Eventi di input
-4. **Step** - Logica principale del gioco
-5. **Collision** - Dopo il movimento
-6. **End Step** - Dopo le collisioni
-7. **Draw** - Fase di rendering
+1. **Begin Step** — Inizio del frame
+2. **Alarm** — Tutti gli allarmi attivati contano alla rovescia e si attivano
+3. **Step** (e **Keyboard (tenuto premuto)**) — Logica principale di gioco,
+   poi i controlli continui dei tasti tenuti premuti per la stessa istanza
+4. **Keyboard Press/Release, Mouse** — Gli eventi di input accumulati per
+   questo frame vengono elaborati (questo avviene *dopo* Step, non prima —
+   il codice in Step reagisce ai tasti già premuti all'*inizio* del frame,
+   non a quelli premuti durante il frame stesso)
+5. **Movimento, poi Collisione** — La fisica (gravità/attrito/hspeed/
+   vspeed) viene applicata, poi le collisioni vengono rilevate e i loro
+   eventi si attivano
+6. **End Step** (e **Destroy**) — Dopo le collisioni
+7. **Draw** — Fase di rendering
 
 ---
 
 ## Eventi per Preset
 
+Verificato contro `events.event_types.get_available_events()` alimentato
+con ciascun preset reale da `config/blockly_config.py` — vedi la
+[Guida ai Preset](Preset-Guide_it) per quello che un "preset" restringe
+davvero (sia il selettore Blockly sia il pannello strutturato Events/
+Actions) e come si imposta il preset di un progetto.
+
 | Preset | Eventi Inclusi |
 |--------|----------------|
-| **Principiante** | Create, Step, Keyboard Press, Collision |
-| **Intermedio** | + Draw, Destroy, Mouse, Alarm |
-| **Avanzato** | + Tutte le varianti di tastiera, Begin/End Step, Eventi di stanza, Eventi di gioco, Eventi di confine |
+| **Principiante** (19 eventi) | Create, Step, Keyboard (tenuto premuto), Keyboard \<Nessun Tasto\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
+| **Intermedio** (21 eventi) | + Destroy, Keyboard Press |
+| **Completo** (solo Edizione Sviluppo, 23 eventi) | + Keyboard Release, Mouse |
 
 ---
 
