@@ -175,9 +175,13 @@ ime_projekta/
 - [Referenca Dogodkov](Event-Reference_sl) - Popolna dokumentacija dogodkov
 - [Referenca Akcij](Full-Action-Reference_sl) - Popolna dokumentacija akcij
 
+### Napredne Funkcije
+- [Pogled 3D](3D-View_sl) - Prvoosebno izrisovanje v slogu Doom (raycast)
+- [Razširitve](Extensions_sl) - Dodatne akcije in izrisovalniki (kako je distribuiran Pogled 3D)
+
 ### Vadnice in Vodniki
 - [**Vadnice**](Tutorials_sl) - Vse vadnice na enem mestu
-- [Kako Začeti](Kako_Zaceti_sl) - Prvi koraki s PyGameMaker
+- [Kako Začeti](Zacetek_sl) - Prvi koraki s PyGameMaker
 - [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica korak za korakom
 - [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasično igro Pong za dva igralca
 - [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
@@ -194,11 +198,8 @@ ime_projekta/
 
 ## Prispevanje
 
-Prispevki so dobrodošli! Glejte naše smernice za prispevanje za:
-- Poročila o napakah in zahteve za funkcije
-- Prispevke kode
-- Prevode
-- Izboljšave dokumentacije
+Poročila o napakah, zahteve za funkcije in pull requesti so
+dobrodošli na [sledilniku napak](https://github.com/Gabe1290/pythongm/issues).
 
 ---
 
