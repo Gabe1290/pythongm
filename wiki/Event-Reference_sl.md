@@ -2,7 +2,7 @@
 
 *[Domov](Home_sl) | [Vodič po Presetih](Preset-Guide_sl) | [Popolna Referenca Akcij](Full-Action-Reference_sl)*
 
-Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprožilci, ki izvršijo akcije, ko se v vaši igri pojavijo določene pogoji.
+Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprožilci, ki izvršijo akcije, ko se v vaši igri pojavijo določeni pogoji.
 
 ## Kategorije Dogodkov
 
@@ -113,13 +113,13 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `keyboard_press` |
 | **Ikona** | 🔘 |
 | **Kategorija** | Vnos |
-| **Preset** | Začetnik |
+| **Preset** | Srednji |
 
 **Opis:** Sproži se enkrat, ko je tipka prvič pritisnjena.
 
 **Najboljše za:** Posamezne akcije (skok, strel, izbira v meniju)
 
-**Razlika od Tipkovnice:** Sproži se samo enkrat na pritisk, ne med drzanjem.
+**Razlika od Tipkovnice:** Sproži se samo enkrat na pritisk, ne med držanjem.
 
 ---
 
@@ -129,7 +129,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `keyboard_release` |
 | **Ikona** | ⬆️ |
 | **Kategorija** | Vnos |
-| **Preset** | Napreden |
+| **Preset** | Popoln (Razvojna izdaja) |
 
 **Opis:** Sproži se enkrat, ko je tipka sproščena.
 
@@ -146,7 +146,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `keyboard_no_key` |
 | **Ikona** | ⌨️ |
 | **Kategorija** | Vnos |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se ob vsakem sličici, medtem ko **nobena** tipka ni pritisnjena.
 
@@ -164,7 +164,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `mouse` |
 | **Ikona** | 🖱️ |
 | **Kategorija** | Vnos |
-| **Preset** | Srednji |
+| **Preset** | Popoln (Razvojna izdaja) |
 
 **Opis:** Dogodki gumbov miške in gibanja.
 
@@ -221,7 +221,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `alarm` |
 | **Ikona** | ⏰ |
 | **Kategorija** | Časovni |
-| **Preset** | Srednji |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se, ko odštevanje alarma doseže nic.
 
@@ -243,7 +243,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `begin_step` |
 | **Ikona** | ▶️ |
 | **Kategorija** | Step |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se na začetku vsakega okvirja, pred rednimi dogodki Step.
 
@@ -261,7 +261,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `end_step` |
 | **Ikona** | ⏹️ |
 | **Kategorija** | Step |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se na koncu vsakega okvirja, po trkih.
 
@@ -280,7 +280,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `draw` |
 | **Ikona** | 🎨 |
 | **Kategorija** | Risanje |
-| **Preset** | Srednji |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se med fazo izrisovanja.
 
@@ -309,7 +309,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `draw_gui` |
 | **Ikona** | 🖥️ |
 | **Kategorija** | Risanje |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Riše v **zaslonskem prostoru (GUI)**, čez sobo in neodvisno od drsenja pogledov/kamere.
 
@@ -325,14 +325,14 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `room_start` |
 | **Ikona** | 🚪 |
 | **Kategorija** | Soba |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se ob vstopu v sobo, po vseh dogodkih Create.
 
 **Pogoste uporabe:**
 - Inicializacija sobe
 - Predvajanje glasbe sobe
-- Nastavitev spremenljivk, specificnih za sobo
+- Nastavitev spremenljivk, specifičnih za sobo
 
 ---
 
@@ -342,14 +342,14 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `room_end` |
 | **Ikona** | 🚪 |
 | **Kategorija** | Soba |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se ob odhodu iz sobe.
 
 **Pogoste uporabe:**
 - Shranjevanje napredka
 - Ustavitev glasbe
-- Ciscenje
+- Čiščenje
 
 ---
 
@@ -361,9 +361,9 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `game_start` |
 | **Ikona** | 🎮 |
 | **Kategorija** | Igra |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
-**Opis:** Sproži se enkrat, ko se igra prvič zazene (samo v prvi sobi).
+**Opis:** Sproži se enkrat, ko se igra prvič zažene (samo v prvi sobi).
 
 **Pogoste uporabe:**
 - Inicializacija globalnih spremenljivk
@@ -378,13 +378,13 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `game_end` |
 | **Ikona** | 🎮 |
 | **Kategorija** | Igra |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
-**Opis:** Sproži se, ko se igra koncuje.
+**Opis:** Sproži se, ko se igra konča.
 
 **Pogoste uporabe:**
 - Shranjevanje podatkov igre
-- Ciscenje virov
+- Čiščenje virov
 
 ---
 
@@ -396,7 +396,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `outside_room` |
 | **Ikona** | 🚫 |
 | **Kategorija** | Drugo |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se, ko je instanca popolnoma zunaj meja sobe.
 
@@ -413,7 +413,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `intersect_boundary` |
 | **Ikona** | ⚠️ |
 | **Kategorija** | Drugo |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se, ko instanca dotakne mejo sobe.
 
@@ -429,14 +429,14 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `no_more_lives` |
 | **Ikona** | 💀 |
 | **Kategorija** | Drugo |
-| **Preset** | Srednji |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se, ko življenja padejo na 0 ali manj.
 
 **Pogoste uporabe:**
 - Zaslon konca igre
 - Ponovni zagon igre
-- Prikaz koncnega rezultata
+- Prikaz končnega rezultata
 
 ---
 
@@ -446,7 +446,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `no_more_health` |
 | **Ikona** | 💔 |
 | **Kategorija** | Drugo |
-| **Preset** | Srednji |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se, ko zdravje pade na 0 ali manj.
 
@@ -463,7 +463,7 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 | **Ime** | `animation_end` |
 | **Ikona** | 🎞️ |
 | **Kategorija** | Drugo |
-| **Preset** | Napreden |
+| **Preset** | Začetnik |
 
 **Opis:** Sproži se, ko animacija spritea instance dokonča celoten cikel (se vrne z zadnje sličice na prvo).
 
@@ -476,25 +476,39 @@ Ta stran dokumentira vse razpoložljive dogodke v PyGameMaker. Dogodki so sprož
 
 ## Vrstni Red Izvajanja Dogodkov
 
-Razumevanje, kdaj se dogodki sprožijo, pomaga ustvariti predvidljivo obnašanje igre:
+Razumevanje, kdaj se dogodki sprožijo, pomaga ustvariti predvidljivo
+obnašanje igre (preverjeno proti glavni zanki v
+`runtime/game_runner.py`):
 
-1. **Begin Step** - Začetek okvirja
-2. **Alarm** - Vsi sproženi alarmi
-3. **Keyboard/Mouse** - Dogodki vnosa
-4. **Step** - Glavna logika igre
-5. **Collision** - Po gibanju
-6. **End Step** - Po trkih
-7. **Draw** - Faza izrisovanja
+1. **Begin Step** — Začetek sličice
+2. **Alarm** — Vsi sproženi alarmi odštevajo in se sprožijo
+3. **Step** (in **Keyboard (pridržana)**) — Glavna logika igre, nato
+   neprekinjena preverjanja pridržanih tipk za isto instanco
+4. **Keyboard Press/Release, Mouse** — Nakopičeni dogodki vnosa za to
+   sličico se obdelajo (to se zgodi *po* Step, ne pred njim — koda v
+   Step reagira na tipke, ki so bile pritisnjene že na *začetku*
+   sličice, ne na tiste, pritisnjene med njo)
+5. **Gibanje, nato Trk** — Uveljavi se fizika (gravitacija/trenje/
+   hspeed/vspeed), nato se zaznajo trki in sprožijo njihovi dogodki
+6. **End Step** (in **Destroy**) — Po trkih
+7. **Draw** — Faza izrisovanja
 
 ---
 
 ## Dogodki po Presetu
 
-| Preset | Vkljuceni Dogodki |
+Preverjeno proti `events.event_types.get_available_events()`,
+napolnjeni z vsako pravo prednastavitvijo iz
+`config/blockly_config.py` — za to, kaj "preset" dejansko omeji (tako
+izbirnik Blockly kot strukturiran panel Events/Actions) in kako se
+določi prednastavitev projekta, glejte [Vodnik po
+Prednastavitvah](Preset-Guide_sl).
+
+| Preset | Vključeni Dogodki |
 |--------|-------------------|
-| **Začetnik** | Create, Step, Keyboard Press, Collision |
-| **Srednji** | + Draw, Destroy, Mouse, Alarm |
-| **Napreden** | + Vse variante tipkovnice, Begin/End Step, Dogodki sobe, Dogodki igre, Dogodki meje |
+| **Začetnik** (19 dogodkov) | Create, Step, Keyboard (pridržana), Keyboard \<Brez Tipke\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
+| **Srednji** (21 dogodkov) | + Destroy, Keyboard Press |
+| **Popoln** (samo Razvojna izdaja, 23 dogodkov) | + Keyboard Release, Mouse |
 
 ---
 
