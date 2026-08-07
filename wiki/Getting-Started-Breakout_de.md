@@ -366,7 +366,3 @@ Du kannst es auch weiter verfeinern, zum Beispiel durch Hinzufügen von:
 - [Event Reference](Event-Reference_de) - Vollständige Liste aller Events
 - [Full Action Reference](Full-Action-Reference_de) - Vollständige Liste aller Aktionen
 - [Tutorial: Breakout](Tutorial-Breakout_de) - Kürzere Version dieses Tutorials
-
----
-
-Du bist jetzt in die Grundlagen der Videospiel-Erstellung mit PyGameMaker eingeweiht. Jetzt bist du dran, deine eigenen Spiele zu erstellen!
