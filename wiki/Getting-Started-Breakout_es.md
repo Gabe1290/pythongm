@@ -1,28 +1,28 @@
 # Introducción a la Creación de Videojuegos con PyGameMaker
 
-*[Home_es](Home_es) | [Beginner-Preset_es](Beginner-Preset_es) | [English](Getting-Started-Breakout) | [Francais](Getting-Started-Breakout_fr)*
+*[Home_es](Home_es) | [Beginner-Preset_es](Beginner-Preset_es) | [English](Getting-Started-Breakout) | [Français](Getting-Started-Breakout_fr)*
 
 **Por el Equipo de PyGameMaker**
 
 ---
 
-En este tutorial, aprenderemos los conceptos basicos de la creación de videojuegos con PyGameMaker. Como es un software relativamente completo con muchas funcionalidades, nos centraremos unicamente en aquellas que nos ayudaran durante este tutorial.
+En este tutorial, aprenderemos los conceptos básicos de la creación de videojuegos con PyGameMaker. Como es un software relativamente completo con muchas funcionalidades, nos centraremos únicamente en aquellas que nos ayudarán durante este tutorial.
 
-Crearemos un juego sencillo estilo Breakout que se vera así:
+Crearemos un juego sencillo estilo Breakout que se verá así:
 
 ![Concepto del Juego Breakout](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Breakout2600.svg/220px-Breakout2600.svg.png)
 
-Este tutorial es para ti, incluso si no tienes conocimientos de programación, ya que PyGameMaker permite a los principiantes crear juegos facilmente sin importar su nivel de habilidad.
+Este tutorial es para ti, incluso si no tienes conocimientos de programación, ya que PyGameMaker permite a los principiantes crear juegos fácilmente sin importar su nivel de habilidad.
 
-Muy bien, comencemos a diseñar nuestro juego!
+¡Muy bien, comencemos a diseñar nuestro juego!
 
 ---
 
 ## Paso 1: Primeros Pasos
 
-Comienza abriendo PyGameMaker. Deberias ver la interfaz principal con el panel de **Assets** en el lado izquierdo, listando diferentes categorias de recursos: Sprites, Sounds, Backgrounds, Fonts, Objects y Rooms.
+Comienza abriendo PyGameMaker. Deberías ver la interfaz principal con el panel de **Assets** en el lado izquierdo, listando diferentes categorías de recursos: Sprites, Sounds, Backgrounds, Fonts, Objects y Rooms.
 
-Antes que nada, en un videojuego, lo primero que el jugador nota es lo que ve en pantalla. Esta es en realidad la base de un juego: un juego sin gráficos no existe (o es un caso muy especial). Por lo tanto, comenzaremos insertando imagenes en nuestro juego, que seran la representación gráfica de los objetos que el jugador vera en pantalla. En la terminologia del desarrollo de juegos, estas imagenes se llaman **Sprites**.
+Antes que nada, en un videojuego, lo primero que el jugador nota es lo que ve en pantalla. Esta es en realidad la base de un juego: un juego sin gráficos no existe (o es un caso muy especial). Por lo tanto, comenzaremos insertando imágenes en nuestro juego, que serán la representación gráfica de los objetos que el jugador verá en pantalla. En la terminología del desarrollo de juegos, estas imágenes se llaman **Sprites**.
 
 ---
 
@@ -32,49 +32,49 @@ Antes que nada, en un videojuego, lo primero que el jugador nota es lo que ve en
 
 1. Haz clic derecho en la carpeta **Sprites** en la parte superior de la columna izquierda
 2. Haz clic en **Create Sprite**
-3. Se abrira una ventana llamada **Sprite Properties** - aquí es donde definiras todas las características de tu sprite
-4. Usa el editor integrado para dibujar un rectangulo horizontal (aproximadamente 64x16 pixeles) en un color que te guste
+3. Se abrirá una ventana llamada **Sprite Properties** - aquí es donde definirás todas las características de tu sprite
+4. Usa el editor integrado para dibujar un rectángulo horizontal (aproximadamente 64x16 píxeles) en un color que te guste
 5. **Importante:** Haz clic en **Center** para establecer el origen en el centro de tu sprite
    > El origen de un sprite es su punto central, sus coordenadas X:0 e Y:0. Estas son sus coordenadas base.
 6. Cambia el nombre de tu sprite usando el campo de texto en la parte superior, e ingresa `spr_paddle`
-   > Esto no tiene impacto tecnico - es solo para ayudarte a navegar mejor tus archivos una vez que tengas más. Puedes elegir cualquier nombre que quieras; esto es solo un ejemplo.
+   > Esto no tiene impacto técnico - es solo para ayudarte a navegar mejor tus archivos una vez que tengas más. Puedes elegir cualquier nombre que quieras; esto es solo un ejemplo.
 7. Haz clic en **OK**
 
-Acabas de crear tu primer sprite! Esta es tu paleta, el objeto que el jugador controlara para atrapar la pelota.
+¡Acabas de crear tu primer sprite! Esta es tu paleta, el objeto que el jugador controlará para atrapar la pelota.
 
 ### 2.2 Creando el Sprite de la Pelota
 
 Continuemos y agreguemos más sprites. Repite el mismo proceso:
 
 1. Haz clic derecho en **Sprites** → **Create Sprite**
-2. Dibuja un circulo pequeño (aproximadamente 16x16 pixeles)
+2. Dibuja un círculo pequeño (aproximadamente 16x16 píxeles)
 3. Haz clic en **Center** para establecer el origen
-4. Nombralo `spr_ball`
+4. Nómbralo `spr_ball`
 5. Haz clic en **OK**
 
 ### 2.3 Creando los Sprites de los Ladrillos
 
-Necesitamos tres tipos de ladrillos. Crealos uno por uno:
+Necesitamos tres tipos de ladrillos. Créalos uno por uno:
 
 **Primer Ladrillo (Destructible):**
 1. Crea un nuevo sprite
-2. Dibuja un rectangulo (aproximadamente 48x24 pixeles) - usa un color brillante como rojo
-3. Haz clic en **Center**, nombralo `spr_brick_1`
+2. Dibuja un rectángulo (aproximadamente 48x24 píxeles) - usa un color brillante como rojo
+3. Haz clic en **Center**, nómbralo `spr_brick_1`
 4. Haz clic en **OK**
 
 **Segundo Ladrillo (Destructible):**
 1. Crea un nuevo sprite
-2. Dibuja un rectangulo (mismo tamaño) - usa un color diferente como azul
-3. Haz clic en **Center**, nombralo `spr_brick_2`
+2. Dibuja un rectángulo (mismo tamaño) - usa un color diferente como azul
+3. Haz clic en **Center**, nómbralo `spr_brick_2`
 4. Haz clic en **OK**
 
 **Tercer Ladrillo (Muro Indestructible):**
 1. Crea un nuevo sprite
-2. Dibuja un rectangulo (mismo tamaño) - usa un color más oscuro como gris
-3. Haz clic en **Center**, nombralo `spr_brick_3`
+2. Dibuja un rectángulo (mismo tamaño) - usa un color más oscuro como gris
+3. Haz clic en **Center**, nómbralo `spr_brick_3`
 4. Haz clic en **OK**
 
-Ahora deberias tener todos los sprites para nuestro juego:
+Ahora deberías tener todos los sprites para nuestro juego:
 - `spr_paddle` - La paleta del jugador
 - `spr_ball` - La pelota que rebota
 - `spr_brick_1` - Primer ladrillo destructible
@@ -87,13 +87,13 @@ Ahora deberias tener todos los sprites para nuestro juego:
 
 ## Paso 3: Entendiendo Objetos y Eventos
 
-Que dijimos al principio? Lo primero que el jugador nota es lo que ve en pantalla. Nos hemos encargado de eso con nuestros sprites. Pero un juego hecho solo de imagenes no es un juego - es una pintura! Ahora pasaremos a la siguiente etapa: los **Objects**.
+¿Qué dijimos al principio? Lo primero que el jugador nota es lo que ve en pantalla. Nos hemos encargado de eso con nuestros sprites. Pero un juego hecho solo de imágenes no es un juego - ¡es una pintura! Ahora pasaremos a la siguiente etapa: los **Objects**.
 
 Un Object es una entidad en tu juego que puede tener comportamientos, responder a eventos e interactuar con otros objetos. El sprite es solo la representación visual; el objeto es lo que le da vida.
 
-### Como Funciona la Lógica del Juego
+### Cómo Funciona la Lógica del Juego
 
-Todo en la programación de juegos sigue este patron: **Si esto sucede, entonces ejecuto aquello.**
+Todo en la programación de juegos sigue este patrón: **Si esto sucede, entonces ejecuto aquello.**
 
 - Si el jugador presiona una tecla, entonces hago esto
 - Si esta variable es igual a este valor, entonces hago aquello
@@ -107,13 +107,13 @@ Esto es lo que llamamos **Events** y **Actions** en PyGameMaker:
 
 ## Paso 4: Creando el Objeto de la Paleta
 
-Creemos el objeto que el jugador controlara: la paleta.
+Creemos el objeto que el jugador controlará: la paleta.
 
 ### 4.1 Crear el Objeto
 
 1. Haz clic derecho en la carpeta **Objects** → **Create Object**
-2. Nombralo `obj_paddle`
-3. En el menú desplegable **Sprite**, selecciona `spr_paddle` - ahora nuestro objeto tiene una apariencia visual!
+2. Nómbralo `obj_paddle`
+3. En el menú desplegable **Sprite**, selecciona `spr_paddle` - ¡ahora nuestro objeto tiene una apariencia visual!
 4. Marca la casilla **Solid** (lo necesitaremos para las colisiones)
 
 ### 4.2 Programando el Movimiento
@@ -136,7 +136,7 @@ Esto significa: "Cuando se presione la tecla Flecha Derecha, establecer la veloc
 
 **Detenerse Cuando se Sueltan las Teclas:**
 
-Si probamos ahora, la paleta seguiria moviendose incluso después de soltar la tecla! Arreglemos eso:
+¡Si probamos ahora, la paleta seguiría moviéndose incluso después de soltar la tecla! Arreglemos eso:
 
 1. Haz clic en **Add Event** → **Keyboard Release** → **Right Arrow**
 2. Agrega la acción **Set Horizontal Speed** con valor `0`
@@ -146,19 +146,19 @@ Si probamos ahora, la paleta seguiria moviendose incluso después de soltar la t
 5. Agrega la acción **Set Horizontal Speed** con valor `0`
 6. Haz clic en **OK**
 
-Ahora nuestra paleta se mueve cuando se presionan las teclas y se detiene cuando se sueltan. Hemos terminado con este objeto por ahora!
+Ahora nuestra paleta se mueve cuando se presionan las teclas y se detiene cuando se sueltan. ¡Hemos terminado con este objeto por ahora!
 
 ---
 
 ## Paso 5: Creando el Objeto del Ladrillo Muro
 
-Creemos un ladrillo muro indestructible - esto formara los límites de nuestra área de juego.
+Creemos un ladrillo muro indestructible - esto formará los límites de nuestra área de juego.
 
 1. Crea un nuevo objeto llamado `obj_brick_3`
 2. Asigna el sprite `spr_brick_3`
 3. Marca la casilla **Solid**
 
-La pelota rebotará en este ladrillo. Como es solo un muro, no necesitamos ningun evento - solo necesita ser sólido. Haz clic en **OK** para guardar.
+La pelota rebotará en este ladrillo. Como es solo un muro, no necesitamos ningún evento - solo necesita ser sólido. Haz clic en **OK** para guardar.
 
 ---
 
@@ -174,7 +174,7 @@ Ahora creemos la pelota, el elemento esencial de nuestro juego.
 
 ### 6.2 Movimiento Inicial
 
-Queremos que la pelota se mueva por si sola desde el inicio. Demosle una velocidad y dirección inicial.
+Queremos que la pelota se mueva por sí sola desde el inicio. Demosle una velocidad y dirección inicial.
 
 1. Haz clic en **Add Event** → **Create**
    > El evento Create ejecuta acciones cuando el objeto aparece en el juego, es decir, cuando entra en la escena.
@@ -201,19 +201,19 @@ La misma operación para los ladrillos muro:
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_brick_3`
 2. Agrega la acción **Reverse Vertical**
 3. Agrega la acción **Reverse Horizontal**
-   > Agregamos ambas porque la pelota podria golpear el muro desde diferentes angulos.
+   > Agregamos ambas porque la pelota podría golpear el muro desde diferentes ángulos.
 4. Haz clic en **OK**
 
 ---
 
 ## Paso 7: Probando Nuestro Progreso - Creando una Room
 
-Despues de los Sprites y Objects, llegan las **Rooms**. Una room es donde el juego tiene lugar: es un mapa, un nivel. Aqui es donde colocas todos los elementos de tu juego, donde organizas lo que aparecera en pantalla.
+Después de los Sprites y Objects, llegan las **Rooms**. Una room es donde el juego tiene lugar: es un mapa, un nivel. Aquí es donde colocas todos los elementos de tu juego, donde organizas lo que aparecerá en pantalla.
 
 ### 7.1 Crear la Room
 
 1. Haz clic derecho en **Rooms** → **Create Room**
-2. Nombrala `room_game`
+2. Nómbrala `room_game`
 
 ### 7.2 Coloca tus Objetos
 
@@ -224,17 +224,17 @@ Ahora coloca tus objetos usando el ratón:
 Selecciona el objeto a colocar desde el menú desplegable en el editor de room.
 
 **Construye tu nivel:**
-1. Coloca instancias de `obj_brick_3` alrededor de los bordes (arriba, izquierda, derecha) - deja la parte inferior abierta!
+1. Coloca instancias de `obj_brick_3` alrededor de los bordes (arriba, izquierda, derecha) - ¡deja la parte inferior abierta!
 2. Coloca `obj_paddle` en el centro inferior
-3. Coloca `obj_ball` en algun lugar del medio
+3. Coloca `obj_ball` en algún lugar del medio
 
-### 7.3 Prueba el Juego!
+### 7.3 ¡Prueba el Juego!
 
 Haz clic en el botón **Play** (flecha verde) en la barra de herramientas. Esto te permite probar tu juego en cualquier momento.
 
-Ya puedes divertirte haciendo rebotar la pelota en los muros y la paleta!
+¡Ya puedes divertirte haciendo rebotar la pelota en los muros y la paleta!
 
-Es minimo, pero ya es un buen comienzo - tienes la base de tu juego!
+Es mínimo, pero ya es un buen comienzo - ¡tienes la base de tu juego!
 
 ---
 
@@ -248,14 +248,14 @@ Agreguemos algunos ladrillos para romper, para hacer nuestro juego más divertid
 2. Asigna el sprite `spr_brick_1`
 3. Marca **Solid**
 
-Agregaremos el comportamiento para destruirse a si mismo cuando sea golpeado por la pelota:
+Agregaremos el comportamiento para destruirse a sí mismo cuando sea golpeado por la pelota:
 
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_ball`
 2. Agrega la acción **Destroy Instance** con objetivo **self**
    > Esta acción elimina un objeto durante el juego - aquí, el ladrillo mismo.
 3. Haz clic en **OK**
 
-Y así de simple, tienes tu nuevo ladrillo destructible!
+Y así de simple, ¡tienes tu nuevo ladrillo destructible!
 
 ### 8.2 Segundo Ladrillo Destructible (Usando Parent)
 
@@ -266,13 +266,13 @@ Ahora crearemos un segundo ladrillo destructible, pero sin tener que reprogramar
 3. Marca **Solid**
 4. En el menú desplegable **Parent**, selecciona `obj_brick_1`
 
-Que significa esto? Simplemente que lo que programamos en `obj_brick_1` será heredado por `obj_brick_2`, sin tener que reproducirlo nosotros mismos. La relación padre-hijo permite que los objetos compartan comportamientos!
+¿Qué significa esto? Simplemente que lo que programamos en `obj_brick_1` será heredado por `obj_brick_2`, sin tener que reproducirlo nosotros mismos. ¡La relación padre-hijo permite que los objetos compartan comportamientos!
 
 Haz clic en **OK** para guardar.
 
 ### 8.3 Hacer que la Pelota Rebote en los Nuevos Ladrillos
 
-Vuelve a abrir `obj_ball` haciendo doble clic en el, y agrega eventos de colisión para nuestros nuevos ladrillos:
+Vuelve a abrir `obj_ball` haciendo doble clic en él, y agrega eventos de colisión para nuestros nuevos ladrillos:
 
 1. Haz clic en **Add Event** → **Collision** → selecciona `obj_brick_1`
 2. Agrega la acción **Reverse Vertical**
@@ -297,7 +297,7 @@ En `obj_ball`:
 
 ---
 
-## Paso 10: Diseno Final del Nivel
+## Paso 10: Diseño Final del Nivel
 
 Ahora coloca todo en tu room para crear tu nivel final de Breakout:
 
@@ -322,15 +322,15 @@ Ahora coloca todo en tu room para crear tu nivel final de Breakout:
 
 ---
 
-## Felicitaciones!
+## ¡Felicitaciones!
 
-Tu juego Breakout esta completo! Ahora puedes disfrutar de tu trabajo jugando el juego que acabas de crear!
+¡Tu juego Breakout está completo! Ahora puedes disfrutar de tu trabajo jugando el juego que acabas de crear!
 
-Tambien puedes refinarlo aun más, como agregar:
+También puedes refinarlo aún más, como agregar:
 - **Efectos de sonido** para rebotes y destrucción de ladrillos
 - **Seguimiento de puntaje** usando la acción Add Score
 - **Tipos adicionales de ladrillos** con diferentes comportamientos
-- **Multiples niveles** con diferentes disposiciones
+- **Múltiples niveles** con diferentes disposiciones
 
 ---
 
@@ -338,7 +338,7 @@ Tambien puedes refinarlo aun más, como agregar:
 
 | Concepto | Descripción |
 |----------|-------------|
-| **Sprites** | Imagenes visuales que representan objetos en tu juego |
+| **Sprites** | Imágenes visuales que representan objetos en tu juego |
 | **Objects** | Entidades del juego con comportamientos, combinando sprites con eventos y acciones |
 | **Events** | Disparadores que ejecutan acciones (Create, Keyboard, Collision, etc.) |
 | **Actions** | Operaciones a realizar (Move, Destroy, Bounce, etc.) |
@@ -352,21 +352,17 @@ Tambien puedes refinarlo aun más, como agregar:
 
 | Objeto | Sprite | Solid | Eventos |
 |--------|--------|-------|---------|
-| `obj_paddle` | `spr_paddle` | Si | Keyboard (Left/Right), Keyboard Release |
-| `obj_ball` | `spr_ball` | Si | Create, Collision (paddle, bricks), Outside Room |
-| `obj_brick_1` | `spr_brick_1` | Si | Collision (ball) - Se destruye a si mismo |
-| `obj_brick_2` | `spr_brick_2` | Si | Hereda de `obj_brick_1` |
-| `obj_brick_3` | `spr_brick_3` | Si | Ninguno (solo un muro) |
+| `obj_paddle` | `spr_paddle` | Sí | Keyboard (Left/Right), Keyboard Release |
+| `obj_ball` | `spr_ball` | Sí | Create, Collision (paddle, bricks), Outside Room |
+| `obj_brick_1` | `spr_brick_1` | Sí | Collision (ball) - Se destruye a sí mismo |
+| `obj_brick_2` | `spr_brick_2` | Sí | Hereda de `obj_brick_1` |
+| `obj_brick_3` | `spr_brick_3` | Sí | Ninguno (solo un muro) |
 
 ---
 
-## Ver Tambien
+## Ver También
 
 - [Beginner-Preset_es](Beginner-Preset_es) - Eventos y acciones disponibles para principiantes
 - [Event-Reference_es](Event-Reference_es) - Lista completa de todos los eventos
 - [Full-Action-Reference_es](Full-Action-Reference_es) - Lista completa de todas las acciones
 - [Tutorial-Breakout_es](Tutorial-Breakout_es) - Versión más corta de este tutorial
-
----
-
-Ahora estas iniciado en los conceptos basicos de la creación de videojuegos con PyGameMaker. Es tu turno de crear tus propios juegos!
