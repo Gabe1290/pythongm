@@ -18,7 +18,8 @@ In diesem Tutorial erstellen Sie ein **Labyrinth-Spiel**, in dem der Spieler dur
 - Einfaches Timer-System
 
 **Schwierigkeit:** Anfänger
-**Preset:** Anfänger-Preset
+**Preset:** Fortgeschrittenen-Preset (die für den Timer verwendete
+Execute-Code-Aktion ist nicht im Anfänger-Preset enthalten)
 
 ---
 
@@ -90,11 +91,11 @@ Alle Wand- und Boden-Sprites sollten 32x32 Pixel groß sein, um ein korrektes Ra
 
 Die Wand blockiert die Spielerbewegung.
 
-1. Klicken Sie mit der rechten Maustaste auf **Objekte** und wählen Sie **Objekt erstellen**
+1. Klicken Sie mit der rechten Maustaste auf **Objects** und wählen Sie **Create Object**
 2. Nennen Sie es `obj_wall`
 3. Setzen Sie das Sprite auf `spr_wall`
 4. **Aktivieren Sie das Kontrollkästchen "Solid"**
-5. Keine Events benötigt
+5. Keine Events nötig
 
 ---
 
@@ -105,11 +106,16 @@ Der Ausgang beendet das Level, wenn der Spieler ihn erreicht.
 1. Erstellen Sie ein neues Objekt namens `obj_exit`
 2. Setzen Sie das Sprite auf `spr_exit`
 
-**Event: Kollision mit obj_player**
-1. Event hinzufügen → Kollision → obj_player
-2. Aktion hinzufügen: **Main2** → **Nachricht anzeigen**
-   - Nachricht: `Du gewinnst! Zeit: ` + string(floor(global.timer)) + ` Sekunden`
-3. Aktion hinzufügen: **Main1** → **Nächster Raum** (oder **Raum neu starten** für einzelnes Level)
+**Event: Collision with obj_player**
+1. Add Event → Collision → obj_player
+2. Add Action: **Output** → **Show Message**
+   - Message: `You Win!`
+3. Add Action: **Room** → **Next Room** (oder **Restart Room** für ein einzelnes Level)
+
+Der Text von Show Message ist eine feste, statische Zeichenkette — er kann
+keinen Live-Wert wie die vergangene Zeit einbetten. Der Timer bleibt im HUD
+(Schritt 7) bis zum Sieg sichtbar, der Spieler hat seine Zeit also bereits
+gesehen.
 
 ---
 
@@ -120,13 +126,13 @@ Münzen erhöhen den Punktestand, wenn sie gesammelt werden.
 1. Erstellen Sie ein neues Objekt namens `obj_coin`
 2. Setzen Sie das Sprite auf `spr_coin`
 
-**Event: Kollision mit obj_player**
-1. Event hinzufügen → Kollision → obj_player
-2. Aktion hinzufügen: **Score** → **Score setzen**
-   - Neuer Score: `10`
-   - Aktivieren Sie "Relativ", um 10 Punkte hinzuzufügen
-3. Aktion hinzufügen: **Main1** → **Instanz zerstören**
-   - Gilt für: Self
+**Event: Collision with obj_player**
+1. Add Event → Collision → obj_player
+2. Add Action: **Score** → **Set Score**
+   - New Score: `10`
+   - Aktivieren Sie "Relative", um 10 Punkte hinzuzufügen
+3. Add Action: **Main1** → **Destroy Instance**
+   - Applies to: Self
 
 ---
 
@@ -137,128 +143,106 @@ Der Spieler bewegt sich flüssig mit den Pfeiltasten.
 1. Erstellen Sie ein neues Objekt namens `obj_player`
 2. Setzen Sie das Sprite auf `spr_player`
 
-### 6.1 Create Event - Variablen initialisieren
+### 6.1 Bewegung
 
-**Event: Create**
-1. Event hinzufügen → Create
-2. Aktion hinzufügen: **Kontrolle** → **Variable setzen**
-   - Variable: `move_speed`
-   - Wert: `4`
+Fügen Sie vier **Keyboard (held)**-Events sowie ein **No Key**-Event hinzu,
+jeweils mit einer **Move** → **Set Horizontal/Vertical Speed**-Aktion:
 
-### 6.2 Bewegung mit Kollision
+| Event | Aktion |
+|---|---|
+| Keyboard (held) → Right Arrow | Set Horizontal Speed auf `4` |
+| Keyboard (held) → Left Arrow | Set Horizontal Speed auf `-4` |
+| Keyboard (held) → Down Arrow | Set Vertical Speed auf `4` |
+| Keyboard (held) → Up Arrow | Set Vertical Speed auf `-4` |
+| Keyboard: No Key | Set Horizontal Speed auf `0` **und** Set Vertical Speed auf `0` |
 
-**Event: Step**
-1. Event hinzufügen → Step → Step
-2. Aktion hinzufügen: **Kontrolle** → **Code ausführen**
+### 6.2 An Wänden stoppen
 
-```gml
-// Horizontale Bewegung
-var hspd = 0;
-if (keyboard_check(vk_right)) hspd = move_speed;
-if (keyboard_check(vk_left)) hspd = -move_speed;
+**Event: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-// Vertikale Bewegung
-var vspd = 0;
-if (keyboard_check(vk_down)) vspd = move_speed;
-if (keyboard_check(vk_up)) vspd = -move_speed;
-
-// Horizontale Kollisionsprüfung
-if (!place_meeting(x + hspd, y, obj_wall)) {
-    x += hspd;
-} else {
-    // So nah wie möglich an die Wand bewegen
-    while (!place_meeting(x + sign(hspd), y, obj_wall)) {
-        x += sign(hspd);
-    }
-}
-
-// Vertikale Kollisionsprüfung
-if (!place_meeting(x, y + vspd, obj_wall)) {
-    y += vspd;
-} else {
-    // So nah wie möglich an die Wand bewegen
-    while (!place_meeting(x, y + sign(vspd), obj_wall)) {
-        y += sign(vspd);
-    }
-}
-```
-
-### 6.3 Alternative: Einfache Block-Bewegung
-
-Wenn Sie lieber Aktionsblöcke statt Code verwenden:
-
-**Event: Taste gedrückt - Pfeil rechts**
-1. Event hinzufügen → Tastatur → \<Rechts\>
-2. Aktion hinzufügen: **Kontrolle** → **Kollision testen**
-   - Objekt: `obj_wall`
-   - X: `4`
-   - Y: `0`
-   - Prüfen: NOT
-3. Aktion hinzufügen: **Bewegung** → **Zur Position springen**
-   - X: `4`
-   - Y: `0`
-   - Aktivieren Sie "Relativ"
-
-Wiederholen Sie für Links (-4, 0), Oben (0, -4) und Unten (0, 4).
+Hier ist kein manueller Positionsprüfungs-Code nötig. Die Bewegungsschleife
+dieser Engine verhindert bereits, dass eine Instanz vor dem Zeichnen des
+Frames in ein solides Objekt hineinbewegt wird (`obj_wall` ist Solid), der
+Spieler kann eine Wand also nie tatsächlich überlappen — das Kollisions-
+Event oben setzt lediglich verbleibende Restgeschwindigkeit auf null,
+damit der Spieler nicht weiter gegen die Wand "drückt".
 
 ---
 
-## Schritt 7: Den Spiel-Controller erstellen
+## Schritt 7: Den Game Controller erstellen
 
-Der Spiel-Controller verwaltet den Timer und zeigt Informationen an.
+Der Game Controller verwaltet den Timer und zeigt Informationen an.
 
 1. Erstellen Sie ein neues Objekt namens `obj_game_controller`
-2. Kein Sprite benötigt
+2. Kein Sprite nötig
 
-**Event: Create**
-1. Event hinzufügen → Create
-2. Aktion hinzufügen: **Kontrolle** → **Variable setzen**
-   - Variable: `global.timer`
-   - Wert: `0`
+**Event: Create** — startet den Timer, mit **Control** → **Execute Code**
+(die Execute-Code-Aktion dieses Projekts führt echtes Python aus, keine
+GameMaker Language):
 
-**Event: Step**
-1. Event hinzufügen → Step → Step
-2. Aktion hinzufügen: **Kontrolle** → **Variable setzen**
-   - Variable: `global.timer`
-   - Wert: `1/room_speed`
-   - Aktivieren Sie "Relativ"
-
-**Event: Draw**
-1. Event hinzufügen → Draw → Draw
-2. Aktion hinzufügen: **Kontrolle** → **Code ausführen**
-
-```gml
-// Score zeichnen
-draw_set_color(c_white);
-draw_text(10, 10, "Punkte: " + string(score));
-
-// Timer zeichnen
-draw_text(10, 30, "Zeit: " + string(floor(global.timer)) + "s");
-
-// Verbleibende Münzen zeichnen
-var coins_left = instance_number(obj_coin);
-draw_text(10, 50, "Münzen: " + string(coins_left));
+```python
+self.timer = 0.0
 ```
+
+**Event: Step** — erhöht ihn bei jedem Frame:
+
+```python
+self.timer += 1.0 / game.fps
+```
+
+**Event: Draw** — baut das HUD aus echten Draw-Queue-Befehlen auf. Fügen
+Sie drei **Draw** → **Draw Text**-Aktionen hinzu:
+
+| Draw-Text-Aktion | Text | Position |
+|---|---|---|
+| 1. | `Score:` | X `10`, Y `10` |
+| 2. | `Time:` | X `10`, Y `30` |
+| 3. | `Coins:` | X `10`, Y `50` |
+
+danach drei **Draw** → **Draw Variable**-Aktionen direkt dahinter, um die
+Live-Werte neben jeder Beschriftung anzuzeigen:
+
+| Draw-Variable-Aktion | Variable | Position |
+|---|---|---|
+| 1. | `score` | X `70`, Y `10` |
+| 2. | `self.timer` | X `70`, Y `30` |
+| 3. | *(siehe unten)* | X `70`, Y `50` |
+
+Es gibt keinen eingebauten "verbleibende Münzen"-Zähler, auf den Draw
+Variable zeigen könnte — fügen Sie direkt vor den Draw-Variable-Aktionen
+eine weitere **Control** → **Execute Code**-Aktion hinzu, um ihn in eine
+Instanzvariable zu berechnen, die Draw Variable dann lesen kann:
+
+```python
+self.coins_left = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_coin'
+)
+```
+
+(setzen Sie danach das Variable-Feld der 3. Draw-Variable-Aktion auf `self.coins_left`).
 
 ---
 
-## Schritt 8: Ihr Labyrinth entwerfen
+## Schritt 8: Entwerfen Sie Ihr Labyrinth
 
-1. Klicken Sie mit der rechten Maustaste auf **Räume** und wählen Sie **Raum erstellen**
+1. Klicken Sie mit der rechten Maustaste auf **Rooms** und wählen Sie **Create Room**
 2. Nennen Sie ihn `room_maze`
-3. Setzen Sie die Raumgröße (z.B. 640x480)
-4. Aktivieren Sie "Am Raster ausrichten" und setzen Sie das Raster auf 32x32
+3. Setzen Sie die Room-Größe (z. B. 640x480)
+4. Aktivieren Sie "Snap to Grid" und setzen Sie das Gitter auf 32x32
 
 ### Objekte platzieren
 
 Bauen Sie Ihr Labyrinth nach diesen Richtlinien:
 
-1. **Erstellen Sie den Rand** - Umgeben Sie den Raum mit Wänden
+1. **Erstellen Sie den Rand** - Umgeben Sie den Room mit Wänden
 2. **Bauen Sie Korridore** - Erstellen Sie Wege durch das Labyrinth
 3. **Platzieren Sie den Ausgang** - Setzen Sie ihn ans Ende des Labyrinths
 4. **Verteilen Sie Münzen** - Platzieren Sie sie entlang der Wege
 5. **Platzieren Sie den Spieler** - Nahe am Eingang
-6. **Fügen Sie den Spiel-Controller hinzu** - Irgendwo (er ist unsichtbar)
+6. **Fügen Sie den Game Controller hinzu** - Irgendwo (er ist unsichtbar)
 
 ### Beispiel-Labyrinth-Layout
 
@@ -286,7 +270,7 @@ W = Wand    P = Spieler    E = Ausgang    C = Münze    . = Leer
 
 ## Schritt 9: Testen Sie Ihr Spiel!
 
-1. Klicken Sie auf **Ausführen** oder drücken Sie **F5** zum Testen
+1. Klicken Sie auf **Run** oder drücken Sie **F5** zum Testen
 2. Verwenden Sie die Pfeiltasten, um durch das Labyrinth zu navigieren
 3. Sammeln Sie Münzen für Punkte
 4. Finden Sie den Ausgang zum Gewinnen!
@@ -302,50 +286,49 @@ Erstellen Sie einen einfachen patrouillierenden Feind:
 1. Erstellen Sie `spr_enemy` (rote Farbe, 24x24)
 2. Erstellen Sie `obj_enemy` mit Sprite `spr_enemy`
 
-**Event: Create**
-```gml
-hspeed = 2;  // Bewegt sich horizontal
-```
+**Event: Create** — Add Action: **Move** → **Start Moving Direction**
+(Directions: `right`, Speed: `2`)
 
-**Event: Kollision mit obj_wall**
-```gml
-hspeed = -hspeed;  // Richtung umkehren
-```
+**Event: Collision with obj_wall** — Add Action: **Move** → **Reverse
+Horizontal** (dreht den Feind um, wenn er auf eine Wand trifft — kein Code
+nötig; zusammen mit der eingebauten soliden Kollision aus Schritt 6.2 kann
+der Feind gar nicht erst durch eine Wand laufen)
 
-**Event: Kollision mit obj_player**
-```gml
-room_restart();  // Spieler verliert
-```
+**Event: Collision with obj_player** — Add Action: **Room** → **Restart
+Room**
 
-### Leben-System hinzufügen
+### Ein Leben-System hinzufügen
 
-Im Create-Event von `obj_game_controller`:
-```gml
-global.lives = 3;
-```
+Fügen Sie im **Create**-Event von `obj_game_controller` **Score** →
+**Set Lives** hinzu (Value: `3`).
 
-Wenn der Spieler einen Feind berührt (statt neu zu starten):
-```gml
-global.lives -= 1;
-if (global.lives <= 0) {
-    show_message("Game Over!");
-    game_restart();
-} else {
-    // Spieler am Start respawnen
-    obj_player.x = start_x;
-    obj_player.y = start_y;
-}
-```
+Ersetzen Sie im **Collision with obj_player**-Event von `obj_enemy`
+**Restart Room** durch zwei Aktionen: **Score** → **Set Lives** (Value:
+`-1`, **Relative** aktiviert), dann **Move** → **Jump to Start Position**
+(auf den Spieler angewendet, über **Applies to: Other**), um den Spieler
+zu respawnen statt das ganze Labyrinth neu zu starten.
+
+Fügen Sie `obj_game_controller` ein weiteres Event hinzu: **Other Events**
+→ **No More Lives** — dies feuert automatisch, sobald die Leben 0
+erreichen, Sie müssen es also nicht selbst abfragen. Fügen Sie **Output**
+→ **Show Message** hinzu (`Game Over!`), gefolgt von **Room** →
+**Restart Game**.
 
 ### Schlüssel und verschlossene Türen hinzufügen
 
-1. Erstellen Sie `obj_key` - verschwindet beim Einsammeln, setzt `global.has_key = true`
-2. Erstellen Sie `obj_locked_door` - öffnet sich nur wenn `global.has_key == true`
+1. Erstellen Sie `obj_key` — bei Collision mit `obj_player`: **Set
+   Variable** (Variable: `global.has_key`, Value: `true`, Scope:
+   `global`), dann **Destroy Instance** (self).
+2. Erstellen Sie `obj_locked_door`, Solid aktiviert. Geben Sie ihm ein
+   **Step**-Event mit **Control** → **Test Variable** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
+   **Destroy Instance** (self) — die Tür verschwindet (und blockiert
+   nicht mehr), sobald der Schlüssel eingesammelt wurde.
 
 ### Mehrere Level hinzufügen
 
-1. Erstellen Sie zusätzliche Räume (`room_maze2`, `room_maze3`)
-2. In `obj_exit` verwenden Sie `room_goto_next()` statt `room_restart()`
+1. Erstellen Sie zusätzliche Rooms (`room_maze2`, `room_maze3`)
+2. Verwenden Sie in `obj_exit` die **Next Room**-Aktion statt **Restart Room**
 
 ### Soundeffekte hinzufügen
 
@@ -364,7 +347,7 @@ Fügen Sie Sounds hinzu für:
 | Spieler bewegt sich durch Wände | Prüfen Sie, ob `obj_wall` "Solid" aktiviert hat |
 | Spieler steckt in Wänden fest | Stellen Sie sicher, dass das Spieler-Sprite kleiner als die Wandlücken ist |
 | Münzen verschwinden nicht | Überprüfen Sie, dass das Kollisions-Event Self zerstört, nicht Other |
-| Timer funktioniert nicht | Stellen Sie sicher, dass der Spiel-Controller im Raum platziert ist |
+| Timer funktioniert nicht | Stellen Sie sicher, dass der Game Controller im Room platziert ist |
 | Bewegung fühlt sich ruckelig an | Passen Sie den `move_speed`-Wert an (versuchen Sie 3-5) |
 
 ---
@@ -374,10 +357,9 @@ Fügen Sie Sounds hinzu für:
 Gratulation! Sie haben ein Labyrinth-Spiel erstellt! Sie haben gelernt:
 
 - **Flüssige Bewegung** - Gedrückte Tasten für kontinuierliche Bewegung prüfen
-- **Kollisionserkennung** - `place_meeting` vor dem Bewegen verwenden
-- **Pixel-genaue Kollision** - So nah wie möglich an Wände bewegen
+- **Eingebaute solide Kollision** - Wände blockieren die Bewegung automatisch, sobald sie als Solid markiert sind, ohne manuellen Positionsprüfungs-Code
 - **Sammelobjekte** - Gegenstände erstellen, die den Score erhöhen und verschwinden
-- **Timer-System** - Vergangene Zeit mit Variablen verfolgen
+- **Timer-System** - Vergangene Zeit mit Instanzvariablen verfolgen
 - **Level-Design** - Navigierbare Labyrinth-Layouts erstellen
 
 ---
@@ -394,9 +376,9 @@ Gratulation! Sie haben ein Labyrinth-Spiel erstellt! Sie haben gelernt:
 
 ## Siehe auch
 
-- [Tutorials](Tutorials_de) - Mehr Spiel-Tutorials
-- [Anfänger-Preset](Beginner-Preset_de) - Übersicht der Anfänger-Funktionen
+- [Tutorials](Tutorials_de) - Weitere Spiel-Tutorials
+- [Fortgeschrittenen-Preset](Intermediate-Preset_de) - Übersicht des für dieses Tutorial nötigen Presets
 - [Tutorial: Pong](Tutorial-Pong_de) - Ein Zwei-Spieler-Spiel erstellen
-- [Tutorial: Breakout](Tutorial-Breakout_de) - Ein Brick-Breaker-Spiel erstellen
-- [Tutorial: Sokoban](Tutorial-Sokoban_de) - Ein Box-Pushing-Puzzle erstellen
+- [Tutorial: Breakout](Tutorial-Breakout_de) - Ein Ziegelstein-Spiel erstellen
+- [Tutorial: Sokoban](Tutorial-Sokoban_de) - Ein Kisten-Schiebe-Puzzle erstellen
 - [Event-Referenz](Event-Reference_de) - Vollständige Event-Dokumentation
