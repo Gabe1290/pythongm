@@ -2,15 +2,33 @@
 
 *[Italiano](Preset-Guide_it) | [Torna alla Home](Home_it)*
 
-PyGameMaker offre diversi preset che controllano quali eventi e azioni sono disponibili. Questo aiuta i principianti a concentrarsi sulle funzionalità essenziali permettendo agli utenti esperti di accedere al set completo di strumenti.
+PyGameMaker offre diversi preset che controllano quali eventi e azioni
+sono disponibili — **sia** nella tavolozza di blocchi visivi Blockly sia
+nel pannello strutturato Eventi/Azioni ("Add Event"/"Add Action") che
+ogni tutorial di questo wiki utilizza. Questo aiuta i principianti a
+concentrarsi sulle funzionalità essenziali, permettendo agli utenti
+esperti di accedere al set completo di strumenti.
+
+Il preset di un progetto si imposta in due modi: **`Preferenze > IDE
+Edition`** sceglie il predefinito per i *nuovi* progetti (i progetti
+esistenti non vengono mai modificati cambiando edizione), e
+**`Strumenti > Configura blocchi azione...`** cambia il preset del
+progetto *attualmente aperto* in qualsiasi momento. L'edizione
+predefinita dell'IDE è Principiante, quindi i nuovi progetti di
+un'installazione pulita partono già sul preset Principiante.
 
 ## Scegli il Tuo Livello
 
-| Preset | Ideale Per | Funzionalità |
+| IDE Edition | Ideale Per | Preset usato |
 |--------|------------|--------------|
-| [**Principiante**](Beginner-Preset_it) | Nuovi allo sviluppo giochi | 4 eventi, 17 azioni - Movimento, collisioni, punteggio, stanze |
-| [**Intermedio**](Intermediate-Preset_it) | Qualche esperienza | +4 eventi, +12 azioni - Vite, salute, suono, allarmi, disegno |
-| **Avanzato** | Utenti esperti | Tutti i 40+ eventi e azioni disponibili |
+| **Principiante** (predefinita) | Nuovi utenti | [Preset Principiante](Beginner-Preset_it) — movimento base, collisioni, punteggio, stanze |
+| **Avanzato** | Un po' di esperienza | [Preset Intermedio](Intermediate-Preset_it) — + vite, salute, suono, allarmi, movimento a griglia |
+| **Sviluppo** | Utenti esperti | Il preset `full` — ogni evento e azione disponibile |
+
+Nota che i nomi non corrispondono 1:1: l'edizione "Avanzato" usa il
+preset `intermediate` (non esiste un preset separato "avanzato") — vedi
+[Preset Principiante](Beginner-Preset_it)/[Preset Intermedio](Intermediate-Preset_it)
+per i numeri esatti e sempre aggiornati di eventi e azioni di ciascuno.
 
 ---
 
@@ -19,14 +37,14 @@ PyGameMaker offre diversi preset che controllano quali eventi e azioni sono disp
 ### Preset
 | Pagina | Descrizione |
 |--------|-------------|
-| [Preset Principiante](Beginner-Preset_it) | 4 eventi, 17 azioni - Funzionalità essenziali |
-| [Preset Intermedio](Intermediate-Preset_it) | +4 eventi, +12 azioni - Vite, salute, suono |
+| [Preset Principiante](Beginner-Preset_it) | Funzionalità essenziali — numeri esatti in quella pagina |
+| [Preset Intermedio](Intermediate-Preset_it) | Aggiunge vite, salute, suono, allarmi, movimento a griglia — numeri esatti in quella pagina |
 
 ### Riferimento
 | Pagina | Descrizione |
 |--------|-------------|
 | [Riferimento Eventi](Event-Reference_it) | Lista completa di tutti gli eventi |
-| [Riferimento Azioni](Full-Action-Reference_it) | Lista completa di tutte le azioni |
+| [Riferimento completo delle azioni](Full-Action-Reference_it) | Lista completa di tutte le azioni |
 
 ---
 
@@ -41,23 +59,23 @@ Ecco un semplice gioco di raccolta monete usando solo funzionalità Principiante
 
 ### 2. Aggiungere Eventi al Giocatore
 
-**Tastiera (Tasti Freccia):**
+**Keyboard (Arrow Keys):**
 ```
-Freccia Sinistra  → Imposta Velocità Orizzontale: -4
-Freccia Destra    → Imposta Velocità Orizzontale: 4
-Freccia Su        → Imposta Velocità Verticale: -4
-Freccia Giù       → Imposta Velocità Verticale: 4
-```
-
-**Collisione con obj_coin:**
-```
-Aggiungi Punteggio: 10
-Distruggi Istanza: other
+Left Arrow  → Set Horizontal Speed: -4
+Right Arrow → Set Horizontal Speed: 4
+Up Arrow    → Set Vertical Speed: -4
+Down Arrow  → Set Vertical Speed: 4
 ```
 
-**Collisione con obj_wall:**
+**Collision with obj_coin:**
 ```
-Ferma Movimento
+Add Score: 10
+Destroy Instance: other
+```
+
+**Collision with obj_wall:**
+```
+Stop Movement
 ```
 
 ### 3. Creare una Stanza
@@ -83,7 +101,7 @@ Premi il pulsante Play per testare il tuo gioco.
 ## Vedi Anche
 
 - [Home](Home_it) - Pagina principale wiki
-- [Per Iniziare](Per_Iniziare_it) - Installazione e configurazione
+- [Iniziare](Iniziare_it) - Installazione e configurazione
 - [Eventi e Azioni](Eventi_e_Azioni_it) - Concetti base
 - [Crea il Tuo Primo Gioco](Primo_Gioco_it) - Tutorial
 - [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout

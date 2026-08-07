@@ -12,7 +12,11 @@ Benvenuto nella pagina dei Tutorial di PyGameMaker! Qui troverai guide passo dop
 
 ## Tutorial per Principianti
 
-Questi tutorial sono progettati per gli utenti nuovi allo sviluppo di giochi. Utilizzano il **Beginner Preset** e coprono i concetti fondamentali.
+Questi tutorial sono pensati per gli utenti nuovi allo sviluppo di
+giochi e usano esclusivamente gli eventi e le azioni del
+[Preset Principiante](Beginner-Preset_it) (verificato contro
+`config/blockly_config.py`'s `get_beginner()`, che elenca esattamente
+questi due tutorial per nome).
 
 ### Giochi Classici
 
@@ -20,6 +24,21 @@ Questi tutorial sono progettati per gli utenti nuovi allo sviluppo di giochi. Ut
 |----------|-------------|-----------------|
 | [**Pong**](Tutorial-Pong_it) | Crea un classico gioco Pong a due giocatori | Input da tastiera, rilevamento collisioni, tracciamento dei punteggi, variabili globali |
 | [**Breakout**](Tutorial-Breakout_it) | Costruisci un gioco di distruzione dei mattoni | Distruzione di oggetti, meccanica di rimbalzo, sistema di vite |
+
+## Tutorial Intermedi
+
+Questi quattro tutorial richiedono il
+[Preset Intermedio](Intermediate-Preset_it) — la meccanica di spinta di
+Sokoban (`if_can_push`) e il movimento a griglia di Sokoban/Labirinto
+(`move_snap_to_grid`/`move_grid`) non sono inclusi nel preset
+Principiante. Se il tuo progetto usa ancora il preset Principiante
+predefinito (i nuovi progetti partono da lì — vedi la
+[Guida ai Preset](Preset-Guide_it)), passa prima a quello tramite
+`Strumenti > Configura blocchi azione...`, altrimenti le azioni di
+questi tutorial non compariranno in nessuno dei due editor.
+
+| Tutorial | Descrizione | Abilità Apprese |
+|----------|-------------|-----------------|
 | [**Sokoban**](Tutorial-Sokoban_it) | Crea un gioco puzzle di spinta scatole | Movimento a griglia, meccanica di spinta, condizioni di vittoria |
 | [**Labirinto**](Tutorial-Maze_it) | Naviga attraverso i corridoi fino all'uscita | Movimento fluido, collisione con i muri, collezionabili, timer |
 | [**Platformer**](Tutorial-Platformer_it) | Corri, salta e raccogli monete | Gravità, meccaniche di salto, collisione con piattaforme |
@@ -72,7 +91,9 @@ Ogni tutorial insegna importanti concetti dello sviluppo di giochi:
 
 1. **Installa PyGameMaker** - Segui le [istruzioni di installazione](Home_it#installation)
 2. **Scegli un Tutorial** - Inizia con [Pong](Tutorial-Pong_it) o [Breakout](Tutorial-Breakout_it)
-3. **Imposta il Tuo Preset** - Usa il Beginner Preset per questi tutorial
+3. **Imposta il Tuo Preset** - Principiante per Pong/Breakout, Intermedio
+   per Sokoban/Labirinto/Platformer/Atterraggio Lunare (vedi le tabelle
+   sopra)
 4. **Segui Passo Dopo Passo** - Lavora attraverso ogni passaggio con attenzione
 5. **Sperimenta** - Prova i suggerimenti di miglioramento alla fine!
 
@@ -90,7 +111,7 @@ Ogni tutorial insegna importanti concetti dello sviluppo di giochi:
 
 ## Vedi Anche
 
-- [Beginner Preset](Beginner-Preset_it) - Panoramica delle funzioni per principianti
-- [Event Reference](Event-Reference_it) - Documentazione completa degli eventi
-- [Full Action Reference](Full-Action-Reference_it) - Tutte le azioni disponibili
+- [Preset Principiante](Beginner-Preset_it) - Panoramica delle funzioni per principianti
+- [Riferimento Eventi](Event-Reference_it) - Documentazione completa degli eventi
+- [Riferimento completo delle azioni](Full-Action-Reference_it) - Tutte le azioni disponibili
 - [FAQ](FAQ_it) - Domande frequenti
