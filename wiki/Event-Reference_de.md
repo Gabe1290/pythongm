@@ -113,7 +113,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `keyboard_press` |
 | **Symbol** | 🔘 |
 | **Kategorie** | Eingabe |
-| **Preset** | Anfänger |
+| **Preset** | Fortgeschritten |
 
 **Beschreibung:** Löst einmal aus, wenn eine Taste zum ersten Mal gedrückt wird.
 
@@ -129,7 +129,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `keyboard_release` |
 | **Symbol** | ⬆️ |
 | **Kategorie** | Eingabe |
-| **Preset** | Experte |
+| **Preset** | Voll (Entwicklungsedition) |
 
 **Beschreibung:** Löst einmal aus, wenn eine Taste losgelassen wird.
 
@@ -146,7 +146,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `keyboard_no_key` |
 | **Symbol** | ⌨️ |
 | **Kategorie** | Eingabe |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst jeden Frame aus, solange **keine** Taste gehalten wird.
 
@@ -164,7 +164,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `mouse` |
 | **Symbol** | 🖱️ |
 | **Kategorie** | Eingabe |
-| **Preset** | Fortgeschritten |
+| **Preset** | Voll (Entwicklungsedition) |
 
 **Beschreibung:** Maustasten- und Bewegungsereignisse.
 
@@ -221,7 +221,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `alarm` |
 | **Symbol** | ⏰ |
 | **Kategorie** | Zeit |
-| **Preset** | Fortgeschritten |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn ein Alarm-Countdown null erreicht.
 
@@ -243,7 +243,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `begin_step` |
 | **Symbol** | ▶️ |
 | **Kategorie** | Step |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst am Anfang jedes Frames aus, vor regulären Step-Ereignissen.
 
@@ -261,7 +261,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `end_step` |
 | **Symbol** | ⏹️ |
 | **Kategorie** | Step |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst am Ende jedes Frames aus, nach Kollisionen.
 
@@ -280,7 +280,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `draw` |
 | **Symbol** | 🎨 |
 | **Kategorie** | Zeichnen |
-| **Preset** | Fortgeschritten |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst während der Renderphase aus.
 
@@ -309,7 +309,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `draw_gui` |
 | **Symbol** | 🖥️ |
 | **Kategorie** | Zeichnen |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Zeichnet im **Bildschirm- (GUI-)Raum**, über dem Raum und unbeeinflusst vom Scrollen der Ansichten/Kamera.
 
@@ -325,7 +325,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `room_start` |
 | **Symbol** | 🚪 |
 | **Kategorie** | Raum |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst beim Betreten eines Raums aus, nach allen Create-Ereignissen.
 
@@ -342,7 +342,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `room_end` |
 | **Symbol** | 🚪 |
 | **Kategorie** | Raum |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst beim Verlassen eines Raums aus.
 
@@ -361,7 +361,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `game_start` |
 | **Symbol** | 🎮 |
 | **Kategorie** | Spiel |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst einmal aus, wenn das Spiel zum ersten Mal startet (nur im ersten Raum).
 
@@ -378,7 +378,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `game_end` |
 | **Symbol** | 🎮 |
 | **Kategorie** | Spiel |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn das Spiel endet.
 
@@ -396,7 +396,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `outside_room` |
 | **Symbol** | 🚫 |
 | **Kategorie** | Andere |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn die Instanz vollständig außerhalb der Raumgrenzen ist.
 
@@ -413,7 +413,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `intersect_boundary` |
 | **Symbol** | ⚠️ |
 | **Kategorie** | Andere |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn die Instanz die Raumgrenze berührt.
 
@@ -429,7 +429,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `no_more_lives` |
 | **Symbol** | 💀 |
 | **Kategorie** | Andere |
-| **Preset** | Fortgeschritten |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn Leben 0 oder weniger werden.
 
@@ -446,7 +446,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `no_more_health` |
 | **Symbol** | 💔 |
 | **Kategorie** | Andere |
-| **Preset** | Fortgeschritten |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn Gesundheit 0 oder weniger wird.
 
@@ -463,7 +463,7 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 | **Name** | `animation_end` |
 | **Symbol** | 🎞️ |
 | **Kategorie** | Andere |
-| **Preset** | Experte |
+| **Preset** | Anfänger |
 
 **Beschreibung:** Löst aus, wenn die Sprite-Animation der Instanz einen vollständigen Zyklus abschließt (vom letzten Bild zurück zum ersten springt).
 
@@ -476,25 +476,37 @@ Diese Seite dokumentiert alle verfügbaren Ereignisse in PyGameMaker. Ereignisse
 
 ## Ereignis-Ausführungsreihenfolge
 
-Das Verständnis, wann Ereignisse auslösen, hilft dabei, vorhersehbares Spielverhalten zu erstellen:
+Das Verständnis, wann Ereignisse auslösen, hilft dabei, vorhersehbares Spielverhalten zu erstellen
+(bestätigt gegen die Hauptschleife in `runtime/game_runner.py`):
 
 1. **Begin Step** — Anfang des Frames
-2. **Alarm** — Alle ausgelösten Alarme
-3. **Keyboard/Mouse** — Eingabeereignisse
-4. **Step** — Haupt-Spiellogik
-5. **Collision** — Nach Bewegung
-6. **End Step** — Nach Kollisionen
+2. **Alarm** — Alle ausgelösten Alarme zählen herunter und lösen aus
+3. **Step** (und **Keyboard (gehalten)**) — Haupt-Spiellogik, danach kontinuierliche
+   Tastenprüfungen für dieselbe Instanz
+4. **Keyboard Press/Release, Mouse** — Für diesen Frame angesammelte Eingabeereignisse
+   werden verarbeitet (das geschieht *nach* Step, nicht davor — Code im Step-Ereignis
+   reagiert auf Tasten, die zu *Beginn* des Frames bereits gedrückt waren, nicht auf
+   solche, die während des Frames gedrückt wurden)
+5. **Bewegung, dann Kollision** — Physik (Schwerkraft/Reibung/hspeed/vspeed) wird
+   angewendet, dann werden Kollisionen erkannt und ihre Ereignisse ausgelöst
+6. **End Step** (und **Destroy**) — Nach den Kollisionen
 7. **Draw** — Renderphase
 
 ---
 
 ## Ereignisse nach Preset
 
+Bestätigt gegen `events.event_types.get_available_events()`, gespeist mit jedem
+echten Preset aus `config/blockly_config.py` — siehe den
+[Preset-Leitfaden](Preset-Guide_de) für das, was ein „Preset" tatsächlich
+einschränkt (sowohl den Blockly-Picker als auch das strukturierte
+Ereignisse/Aktionen-Panel) und wie das Preset eines Projekts festgelegt wird.
+
 | Preset | Enthaltene Ereignisse |
 |--------|----------------------|
-| **Anfänger** | Create, Step, Keyboard Press, Collision |
-| **Fortgeschritten** | + Draw, Destroy, Mouse, Alarm |
-| **Experte** | + Alle Tastaturvarianten, Begin/End Step, Raum-Ereignisse, Spiel-Ereignisse, Grenzereignisse |
+| **Anfänger** (19 Ereignisse) | Create, Step, Keyboard (gehalten), Keyboard \<Keine Taste\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
+| **Fortgeschritten** (21 Ereignisse) | + Destroy, Keyboard Press |
+| **Voll** (nur Entwicklungsedition, 23 Ereignisse) | + Keyboard Release, Mouse |
 
 ---
 
