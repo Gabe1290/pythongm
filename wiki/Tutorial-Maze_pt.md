@@ -18,7 +18,8 @@ Neste tutorial, você criará um **Jogo de Labirinto** onde o jogador navega atr
 - Sistema de cronômetro simples
 
 **Dificuldade:** Iniciante
-**Preset:** Preset Iniciante
+**Preset:** Preset Intermediário (a ação Execute Code usada para o
+cronômetro não está no preset Iniciante)
 
 ---
 
@@ -49,9 +50,9 @@ Todos os sprites de parede e chão devem ter 32x32 pixels para criar uma grade a
 
 ### 2.1 Sprite do Jogador
 
-1. Na **Árvore de Recursos**, clique com o botão direito em **Sprites** e selecione **Criar Sprite**
+1. Na **Árvore de Recursos**, clique com o botão direito em **Sprites** e selecione **Create Sprite**
 2. Nomeie como `spr_player`
-3. Clique em **Editar Sprite** para abrir o editor
+3. Clique em **Edit Sprite** para abrir o editor
 4. Desenhe um pequeno personagem (círculo, pessoa ou forma de seta)
 5. Use uma cor brilhante como azul ou verde
 6. Tamanho: 24x24 pixels (menor que as paredes para navegação mais fácil)
@@ -90,10 +91,10 @@ Todos os sprites de parede e chão devem ter 32x32 pixels para criar uma grade a
 
 A parede bloqueia o movimento do jogador.
 
-1. Clique com o botão direito em **Objetos** e selecione **Criar Objeto**
+1. Clique com o botão direito em **Objects** e selecione **Create Object**
 2. Nomeie como `obj_wall`
 3. Defina o sprite como `spr_wall`
-4. **Marque a caixa "Sólido"**
+4. **Marque a caixa "Solid"**
 5. Nenhum evento necessário
 
 ---
@@ -105,11 +106,15 @@ A saída termina o nível quando o jogador a alcança.
 1. Crie um novo objeto chamado `obj_exit`
 2. Defina o sprite como `spr_exit`
 
-**Evento: Colisão com obj_player**
-1. Adicionar Evento → Colisão → obj_player
-2. Adicionar Ação: **Main2** → **Mostrar Mensagem**
-   - Mensagem: `Você venceu! Tempo: ` + string(floor(global.timer)) + ` segundos`
-3. Adicionar Ação: **Main1** → **Próxima Room** (ou **Reiniciar Room** para um único nível)
+**Evento: Collision with obj_player**
+1. Add Event → Collision → obj_player
+2. Add Action: **Output** → **Show Message**
+   - Message: `You Win!`
+3. Add Action: **Room** → **Next Room** (ou **Restart Room** para um único nível)
+
+O texto de Show Message é uma string fixa — não pode incluir um valor
+dinâmico como o tempo decorrido. O cronômetro permanece visível no HUD
+(Passo 7) até a vitória, então o jogador já viu seu tempo.
 
 ---
 
@@ -120,13 +125,13 @@ Moedas adicionam à pontuação quando coletadas.
 1. Crie um novo objeto chamado `obj_coin`
 2. Defina o sprite como `spr_coin`
 
-**Evento: Colisão com obj_player**
-1. Adicionar Evento → Colisão → obj_player
-2. Adicionar Ação: **Score** → **Definir Score**
-   - Novo Score: `10`
-   - Marque "Relativo" para adicionar 10 pontos
-3. Adicionar Ação: **Main1** → **Destruir Instância**
-   - Aplica-se a: Self
+**Evento: Collision with obj_player**
+1. Add Event → Collision → obj_player
+2. Add Action: **Score** → **Set Score**
+   - New Score: `10`
+   - Marque "Relative" para adicionar 10 pontos
+3. Add Action: **Instance** → **Destroy Instance**
+   - Applies to: Self
 
 ---
 
@@ -137,128 +142,106 @@ O jogador se move suavemente usando as teclas de seta.
 1. Crie um novo objeto chamado `obj_player`
 2. Defina o sprite como `spr_player`
 
-### 6.1 Evento Create - Inicializar Variáveis
+### 6.1 Movimento
 
-**Evento: Create**
-1. Adicionar Evento → Create
-2. Adicionar Ação: **Controle** → **Definir Variável**
-   - Variável: `move_speed`
-   - Valor: `4`
+Adicione quatro eventos **Keyboard (held)** mais um evento **No Key**,
+cada um com uma ação **Move** → **Set Horizontal/Vertical Speed**:
 
-### 6.2 Movimento com Colisão
+| Evento | Ação |
+|---|---|
+| Keyboard (held) → Right Arrow | Set Horizontal Speed para `4` |
+| Keyboard (held) → Left Arrow | Set Horizontal Speed para `-4` |
+| Keyboard (held) → Down Arrow | Set Vertical Speed para `4` |
+| Keyboard (held) → Up Arrow | Set Vertical Speed para `-4` |
+| Keyboard: No Key | Set Horizontal Speed para `0` **e** Set Vertical Speed para `0` |
 
-**Evento: Step**
-1. Adicionar Evento → Step → Step
-2. Adicionar Ação: **Controle** → **Executar Código**
+### 6.2 Parar nas Paredes
 
-```gml
-// Movimento horizontal
-var hspd = 0;
-if (keyboard_check(vk_right)) hspd = move_speed;
-if (keyboard_check(vk_left)) hspd = -move_speed;
+**Evento: Collision with obj_wall**
+1. Add Event → Collision → `obj_wall`
+2. Add Action: **Move** → **Stop Movement**
 
-// Movimento vertical
-var vspd = 0;
-if (keyboard_check(vk_down)) vspd = move_speed;
-if (keyboard_check(vk_up)) vspd = -move_speed;
-
-// Verificação de colisão horizontal
-if (!place_meeting(x + hspd, y, obj_wall)) {
-    x += hspd;
-} else {
-    // Mover o mais perto possível da parede
-    while (!place_meeting(x + sign(hspd), y, obj_wall)) {
-        x += sign(hspd);
-    }
-}
-
-// Verificação de colisão vertical
-if (!place_meeting(x, y + vspd, obj_wall)) {
-    y += vspd;
-} else {
-    // Mover o mais perto possível da parede
-    while (!place_meeting(x, y + sign(vspd), obj_wall)) {
-        y += sign(vspd);
-    }
-}
-```
-
-### 6.3 Alternativa: Movimento Simples por Blocos
-
-Se você preferir usar blocos de ação em vez de código:
-
-**Evento: Tecla Pressionada - Seta Direita**
-1. Adicionar Evento → Teclado → \<Direita\>
-2. Adicionar Ação: **Controle** → **Testar Colisão**
-   - Objeto: `obj_wall`
-   - X: `4`
-   - Y: `0`
-   - Verificar: NOT
-3. Adicionar Ação: **Movimento** → **Saltar para Posição**
-   - X: `4`
-   - Y: `0`
-   - Marque "Relativo"
-
-Repita para Esquerda (-4, 0), Cima (0, -4) e Baixo (0, 4).
+Nenhum código manual de verificação de posição é necessário aqui. O
+loop de movimento deste motor já impede que uma instância se mova para
+dentro de um objeto sólido antes de o quadro ser desenhado (`obj_wall`
+é Solid), então o jogador nunca pode realmente se sobrepor a uma
+parede — o evento de colisão acima apenas zera qualquer velocidade
+restante, para que o jogador não continue "empurrando" contra ela.
 
 ---
 
-## Passo 7: Criar o Controlador do Jogo
+## Passo 7: Criar o Game Controller
 
-O controlador do jogo gerencia o cronômetro e exibe informações.
+O game controller gerencia o cronômetro e exibe informações.
 
 1. Crie um novo objeto chamado `obj_game_controller`
 2. Nenhum sprite necessário
 
-**Evento: Create**
-1. Adicionar Evento → Create
-2. Adicionar Ação: **Controle** → **Definir Variável**
-   - Variável: `global.timer`
-   - Valor: `0`
+**Evento: Create** — inicia o cronômetro, usando **Control** →
+**Execute Code** (a ação Execute Code deste projeto executa Python
+real, não GameMaker Language):
 
-**Evento: Step**
-1. Adicionar Evento → Step → Step
-2. Adicionar Ação: **Controle** → **Definir Variável**
-   - Variável: `global.timer`
-   - Valor: `1/room_speed`
-   - Marque "Relativo"
-
-**Evento: Draw**
-1. Adicionar Evento → Draw → Draw
-2. Adicionar Ação: **Controle** → **Executar Código**
-
-```gml
-// Desenhar pontuação
-draw_set_color(c_white);
-draw_text(10, 10, "Pontos: " + string(score));
-
-// Desenhar cronômetro
-draw_text(10, 30, "Tempo: " + string(floor(global.timer)) + "s");
-
-// Desenhar moedas restantes
-var coins_left = instance_number(obj_coin);
-draw_text(10, 50, "Moedas: " + string(coins_left));
+```python
+self.timer = 0.0
 ```
+
+**Evento: Step** — incrementa a cada quadro:
+
+```python
+self.timer += 1.0 / game.fps
+```
+
+**Evento: Draw** — constrói o HUD com comandos reais da fila de
+desenho. Adicione três ações **Draw** → **Draw Text**:
+
+| Ação Draw Text | Texto | Posição |
+|---|---|---|
+| 1ª | `Score:` | X `10`, Y `10` |
+| 2ª | `Time:` | X `10`, Y `30` |
+| 3ª | `Coins:` | X `10`, Y `50` |
+
+depois três ações **Draw** → **Draw Variable** logo em seguida, para
+mostrar os valores em tempo real ao lado de cada rótulo:
+
+| Ação Draw Variable | Variável | Posição |
+|---|---|---|
+| 1ª | `score` | X `70`, Y `10` |
+| 2ª | `self.timer` | X `70`, Y `30` |
+| 3ª | *(veja abaixo)* | X `70`, Y `50` |
+
+Não existe um contador integrado de "moedas restantes" para o Draw
+Variable apontar — adicione mais uma ação **Control** → **Execute
+Code**, logo antes das ações Draw Variable, para calculá-lo em uma
+variável de instância que o Draw Variable possa então ler:
+
+```python
+self.coins_left = sum(
+    1 for inst in game.current_room.instances
+    if inst.object_name == 'obj_coin'
+)
+```
+
+(depois defina o campo Variable da 3ª ação Draw Variable como `self.coins_left`).
 
 ---
 
 ## Passo 8: Projete Seu Labirinto
 
-1. Clique com o botão direito em **Rooms** e selecione **Criar Room**
+1. Clique com o botão direito em **Rooms** e selecione **Create Room**
 2. Nomeie como `room_maze`
-3. Defina o tamanho da room (ex: 640x480)
-4. Ative "Alinhar à Grade" e defina a grade como 32x32
+3. Defina o tamanho da sala (ex: 640x480)
+4. Ative "Snap to Grid" e defina a grade como 32x32
 
 ### Posicionamento de Objetos
 
 Construa seu labirinto seguindo estas diretrizes:
 
-1. **Crie a borda** - Cerque a room com paredes
+1. **Crie a borda** - Cerque a sala com paredes
 2. **Construa corredores** - Crie caminhos através do labirinto
 3. **Posicione a saída** - Coloque-a no final do labirinto
 4. **Espalhe moedas** - Posicione-as ao longo dos caminhos
 5. **Posicione o jogador** - Perto da entrada
-6. **Adicione o controlador do jogo** - Em qualquer lugar (é invisível)
+6. **Adicione o game controller** - Em qualquer lugar (é invisível)
 
 ### Exemplo de Layout de Labirinto
 
@@ -286,7 +269,7 @@ W = Parede    P = Jogador    E = Saída    C = Moeda    . = Vazio
 
 ## Passo 9: Teste Seu Jogo!
 
-1. Clique em **Executar** ou pressione **F5** para testar
+1. Clique em **Run** ou pressione **F5** para testar
 2. Use as teclas de seta para navegar pelo labirinto
 3. Colete moedas para pontos
 4. Encontre a saída para vencer!
@@ -302,50 +285,49 @@ Crie um inimigo patrulhador simples:
 1. Crie `spr_enemy` (cor vermelha, 24x24)
 2. Crie `obj_enemy` com sprite `spr_enemy`
 
-**Evento: Create**
-```gml
-hspeed = 2;  // Move horizontalmente
-```
+**Evento: Create** — Add Action: **Move** → **Start Moving Direction**
+(Directions: `right`, Speed: `2`)
 
-**Evento: Colisão com obj_wall**
-```gml
-hspeed = -hspeed;  // Inverter direção
-```
+**Evento: Collision with obj_wall** — Add Action: **Move** → **Reverse
+Horizontal** (faz o inimigo virar ao bater em uma parede — nenhum
+código necessário; combinado com a colisão sólida integrada do Passo
+6.2, o inimigo nunca consegue atravessar uma parede)
 
-**Evento: Colisão com obj_player**
-```gml
-room_restart();  // Jogador perde
-```
+**Evento: Collision with obj_player** — Add Action: **Room** →
+**Restart Room**
 
 ### Adicionar Sistema de Vidas
 
-No evento Create de `obj_game_controller`:
-```gml
-global.lives = 3;
-```
+No evento **Create** de `obj_game_controller`, adicione **Score** →
+**Set Lives** (Value: `3`).
 
-Quando o jogador toca um inimigo (em vez de reiniciar):
-```gml
-global.lives -= 1;
-if (global.lives <= 0) {
-    show_message("Game Over!");
-    game_restart();
-} else {
-    // Reaparecer jogador no início
-    obj_player.x = start_x;
-    obj_player.y = start_y;
-}
-```
+No evento **Collision with obj_player** de `obj_enemy`, substitua
+**Restart Room** por duas ações: **Score** → **Set Lives** (Value:
+`-1`, **Relative** marcado), depois **Move** → **Jump to Start
+Position** (aplicada ao jogador via **Applies to: Other**) para
+reaparecer o jogador em vez de reiniciar todo o labirinto.
+
+Adicione mais um evento a `obj_game_controller`: **Other Events** →
+**No More Lives** — isso é acionado automaticamente assim que as vidas
+chegam a 0, então você não precisa verificar isso manualmente. Adicione
+**Output** → **Show Message** (`Game Over!`) seguido de **Room** →
+**Restart Game**.
 
 ### Adicionar Chaves e Portas Trancadas
 
-1. Crie `obj_key` - desaparece quando coletada, define `global.has_key = true`
-2. Crie `obj_locked_door` - só abre quando `global.has_key == true`
+1. Crie `obj_key` — ao colidir com `obj_player`, **Set Variable**
+   (Variable: `global.has_key`, Value: `true`, Scope: `global`), depois
+   **Destroy Instance** (self).
+2. Crie `obj_locked_door`, com Solid marcado. Dê a ele um evento
+   **Step** com **Control** → **Test Variable** (Variable:
+   `global.has_key`, Value: `true`, Scope: `global`) → **Instance** →
+   **Destroy Instance** (self) — a porta desaparece (e para de
+   bloquear) assim que a chave é coletada.
 
 ### Adicionar Múltiplos Níveis
 
-1. Crie rooms adicionais (`room_maze2`, `room_maze3`)
-2. Em `obj_exit`, use `room_goto_next()` em vez de `room_restart()`
+1. Crie salas adicionais (`room_maze2`, `room_maze3`)
+2. Em `obj_exit`, use a ação **Next Room** em vez de **Restart Room**
 
 ### Adicionar Efeitos Sonoros
 
@@ -361,11 +343,11 @@ Adicione sons para:
 
 | Problema | Solução |
 |----------|---------|
-| Jogador atravessa paredes | Verifique se `obj_wall` tem "Sólido" marcado |
+| Jogador atravessa paredes | Verifique se `obj_wall` tem "Solid" marcado |
 | Jogador fica preso nas paredes | Certifique-se de que o sprite do jogador é menor que os espaços entre paredes |
 | Moedas não desaparecem | Verifique se o evento de colisão destrói Self, não Other |
-| Cronômetro não funciona | Certifique-se de que o controlador do jogo está colocado na room |
-| Movimento parece travado | Ajuste o valor de `move_speed` (tente 3-5) |
+| Cronômetro não funciona | Certifique-se de que o game controller está colocado na sala |
+| Movimento parece travado | Ajuste o valor de velocidade nas ações Set Horizontal/Vertical Speed (tente 3-5) |
 
 ---
 
@@ -373,11 +355,10 @@ Adicione sons para:
 
 Parabéns! Você criou um jogo de labirinto! Você aprendeu:
 
-- **Movimento suave** - Verificar estado de tecla pressionada para movimento contínuo
-- **Detecção de colisão** - Usar `place_meeting` para verificar antes de mover
-- **Colisão pixel-perfect** - Mover o mais perto possível das paredes
+- **Movimento suave** - Verificar estado de tecla mantida para movimento contínuo
+- **Colisão sólida integrada** - Paredes bloqueiam o movimento automaticamente uma vez marcadas como Solid, sem código manual de verificação de posição
 - **Colecionáveis** - Criar itens que aumentam a pontuação e desaparecem
-- **Sistema de cronômetro** - Rastrear tempo decorrido com variáveis
+- **Sistema de cronômetro** - Rastrear tempo decorrido com variáveis de instância
 - **Design de níveis** - Criar layouts de labirinto navegáveis
 
 ---
@@ -395,7 +376,7 @@ Parabéns! Você criou um jogo de labirinto! Você aprendeu:
 ## Veja Também
 
 - [Tutoriais](Tutorials_pt) - Mais tutoriais de jogos
-- [Preset Iniciante](Beginner-Preset_pt) - Visão geral dos recursos para iniciantes
+- [Intermediate Preset](Intermediate-Preset_pt) - Visão geral do preset necessário para este tutorial
 - [Tutorial: Pong](Tutorial-Pong_pt) - Criar um jogo de dois jogadores
 - [Tutorial: Breakout](Tutorial-Breakout_pt) - Criar um jogo de quebrar tijolos
 - [Tutorial: Sokoban](Tutorial-Sokoban_pt) - Criar um puzzle de empurrar caixas
