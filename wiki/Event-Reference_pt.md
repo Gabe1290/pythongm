@@ -71,7 +71,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Categoria** | Objeto |
 | **Preset** | Intermediário |
 
-**Descrição:** Executado quando uma instância é destruida.
+**Descrição:** Executado quando uma instância é destruída.
 
 **Quando dispara:** Logo antes da instância ser removida do jogo.
 
@@ -113,7 +113,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `keyboard_press` |
 | **Ícone** | 🔘 |
 | **Categoria** | Entrada |
-| **Preset** | Iniciante |
+| **Preset** | Intermediário |
 
 **Descrição:** Dispara uma vez quando uma tecla é pressionada pela primeira vez.
 
@@ -129,7 +129,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `keyboard_release` |
 | **Ícone** | ⬆️ |
 | **Categoria** | Entrada |
-| **Preset** | Avançado |
+| **Preset** | Completo (Edição Desenvolvimento) |
 
 **Descrição:** Dispara uma vez quando uma tecla é solta.
 
@@ -146,7 +146,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `keyboard_no_key` |
 | **Ícone** | ⌨️ |
 | **Categoria** | Entrada |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara a cada quadro enquanto **nenhuma** tecla está sendo mantida.
 
@@ -164,7 +164,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `mouse` |
 | **Ícone** | 🖱️ |
 | **Categoria** | Entrada |
-| **Preset** | Intermediário |
+| **Preset** | Completo (Edição Desenvolvimento) |
 
 **Descrição:** Eventos de botão do mouse e movimento.
 
@@ -221,7 +221,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `alarm` |
 | **Ícone** | ⏰ |
 | **Categoria** | Tempo |
-| **Preset** | Intermediário |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara quando uma contagem regressiva de alarme chega a zero.
 
@@ -243,7 +243,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `begin_step` |
 | **Ícone** | ▶️ |
 | **Categoria** | Step |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara no início de cada quadro, antes dos eventos Step regulares.
 
@@ -261,7 +261,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `end_step` |
 | **Ícone** | ⏹️ |
 | **Categoria** | Step |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara no final de cada quadro, após as colisões.
 
@@ -280,11 +280,11 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `draw` |
 | **Ícone** | 🎨 |
 | **Categoria** | Desenho |
-| **Preset** | Intermediário |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara durante a fase de renderização.
 
-**Importante:** Adicionar um evento Draw desabilita o desenho automatico do sprite. Voce deve desenhar o sprite manualmente se quiser que ele seja visivel.
+**Importante:** Adicionar um evento Draw desabilita o desenho automático do sprite. Você deve desenhar o sprite manualmente se quiser que ele seja visível.
 
 **Usos comuns:**
 - Renderização personalizada
@@ -296,8 +296,8 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 **Ações de desenho disponíveis:**
 - Desenhar Sprite
 - Desenhar Texto
-- Desenhar Retangulo
-- Desenhar Circulo
+- Desenhar Retângulo
+- Desenhar Círculo
 - Desenhar Linha
 - Desenhar Barra de Saúde
 
@@ -309,7 +309,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `draw_gui` |
 | **Ícone** | 🖥️ |
 | **Categoria** | Desenho |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Desenha no **espaço de tela (GUI)**, por cima da sala e sem ser afetado pela rolagem de vistas/câmera.
 
@@ -325,13 +325,13 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `room_start` |
 | **Ícone** | 🚪 |
 | **Categoria** | Sala |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara ao entrar em uma sala, após todos os eventos Create.
 
 **Usos comuns:**
 - Inicialização da sala
-- Tocar musica da sala
+- Tocar música da sala
 - Definir variáveis específicas da sala
 
 ---
@@ -342,13 +342,13 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `room_end` |
 | **Ícone** | 🚪 |
 | **Categoria** | Sala |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara ao sair de uma sala.
 
 **Usos comuns:**
 - Salvar progresso
-- Parar musica
+- Parar música
 - Limpeza
 
 ---
@@ -361,7 +361,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `game_start` |
 | **Ícone** | 🎮 |
 | **Categoria** | Jogo |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara uma vez quando o jogo inicia pela primeira vez (apenas na primeira sala).
 
@@ -378,9 +378,9 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `game_end` |
 | **Ícone** | 🎮 |
 | **Categoria** | Jogo |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
-**Descrição:** Dispara quando o jogo esta terminando.
+**Descrição:** Dispara quando o jogo está terminando.
 
 **Usos comuns:**
 - Salvar dados do jogo
@@ -396,12 +396,12 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `outside_room` |
 | **Ícone** | 🚫 |
 | **Categoria** | Outro |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
-**Descrição:** Dispara quando a instância esta completamente fora dos limites da sala.
+**Descrição:** Dispara quando a instância está completamente fora dos limites da sala.
 
 **Usos comuns:**
-- Destruir projeteis fora da tela
+- Destruir projéteis fora da tela
 - Aparecer do outro lado
 - Disparar game over
 
@@ -413,7 +413,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `intersect_boundary` |
 | **Ícone** | ⚠️ |
 | **Categoria** | Outro |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara quando a instância toca o limite da sala.
 
@@ -429,7 +429,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `no_more_lives` |
 | **Ícone** | 💀 |
 | **Categoria** | Outro |
-| **Preset** | Intermediário |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara quando as vidas chegam a 0 ou menos.
 
@@ -446,7 +446,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `no_more_health` |
 | **Ícone** | 💔 |
 | **Categoria** | Outro |
-| **Preset** | Intermediário |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara quando a saúde chega a 0 ou menos.
 
@@ -463,7 +463,7 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 | **Nome** | `animation_end` |
 | **Ícone** | 🎞️ |
 | **Categoria** | Outro |
-| **Preset** | Avançado |
+| **Preset** | Iniciante |
 
 **Descrição:** Dispara quando a animação do sprite da instância completa um ciclo inteiro (volta do último quadro ao primeiro).
 
@@ -476,31 +476,48 @@ Esta página documenta todos os eventos disponíveis no PyGameMaker. Eventos sã
 
 ## Ordem de Execução de Eventos
 
-Entender quando os eventos disparam ajuda a criar um comportamento de jogo previsivel:
+Entender quando os eventos disparam ajuda a criar um comportamento de
+jogo previsível (verificado contra o loop principal em
+`runtime/game_runner.py`):
 
-1. **Begin Step** - Início do quadro
-2. **Alarm** - Qualquer alarme disparado
-3. **Keyboard/Mouse** - Eventos de entrada
-4. **Step** - Lógica principal do jogo
-5. **Collision** - Após o movimento
-6. **End Step** - Após colisões
-7. **Draw** - Fase de renderização
+1. **Begin Step** — Início do quadro
+2. **Alarm** — Todos os alarmes disparados fazem a contagem regressiva e disparam
+3. **Step** (e **Keyboard (mantida)**) — Lógica principal do jogo,
+   depois verificações contínuas de teclas mantidas para a mesma
+   instância
+4. **Keyboard Press/Release, Mouse** — Os eventos de entrada
+   acumulados para este quadro são processados (isso acontece *depois*
+   de Step, não antes — o código em Step reage às teclas que já
+   estavam pressionadas no *início* do quadro, não às pressionadas
+   durante o quadro)
+5. **Movimento, depois Colisão** — A física (gravidade/atrito/hspeed/
+   vspeed) é aplicada, depois as colisões são detectadas e seus
+   eventos disparam
+6. **End Step** (e **Destroy**) — Após as colisões
+7. **Draw** — Fase de renderização
 
 ---
 
 ## Eventos por Preset
 
-| Preset | Eventos Incluidos |
+Verificado contra `events.event_types.get_available_events()`
+alimentado com cada preset real de `config/blockly_config.py` — veja o
+[Guia de Predefinições](Preset-Guide_pt) para o que uma "predefinição"
+realmente restringe (tanto o seletor do Blockly quanto o painel
+estruturado Events/Actions) e como a predefinição de um projeto é
+definida.
+
+| Preset | Eventos Incluídos |
 |--------|-------------------|
-| **Iniciante** | Create, Step, Keyboard Press, Collision |
-| **Intermediário** | + Draw, Destroy, Mouse, Alarm |
-| **Avançado** | + Todas as variantes de teclado, Begin/End Step, Eventos de sala, Eventos de jogo, Eventos de limite |
+| **Iniciante** (19 eventos) | Create, Step, Keyboard (mantida), Keyboard \<Sem Tecla\>, Collision, Begin Step, End Step, Alarm, Draw, Draw GUI, Room Start, Room End, Game Start, Game End, Outside Room, Intersect Boundary, No More Lives, No More Health, Animation End |
+| **Intermediário** (21 eventos) | + Destroy, Keyboard Press |
+| **Completo** (apenas Edição Desenvolvimento, 23 eventos) | + Keyboard Release, Mouse |
 
 ---
 
-## Veja Tambem
+## Veja Também
 
 - [Referência Completa de Ações](Full-Action-Reference_pt) - Lista completa de ações
 - [Preset Iniciante](Beginner-Preset_pt) - Eventos essenciais para iniciantes
 - [Preset Intermediário](Intermediate-Preset_pt) - Eventos adicionais
-- [Eventos e Ações](Eventos_e_Acoes_pt) - Visao geral dos conceitos basicos
+- [Eventos e Ações](Eventos_e_Acoes_pt) - Visão geral dos conceitos básicos
