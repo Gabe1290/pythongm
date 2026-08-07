@@ -2,15 +2,35 @@
 
 *[Português](Preset-Guide_pt) | [Voltar ao Início](Home_pt)*
 
-PyGameMaker oferece diferentes predefinições que controlam quais eventos e ações estão disponíveis. Isso ajuda iniciantes a focar nas funcionalidades essenciais enquanto permite que usuários experientes acessem o conjunto completo de ferramentas.
+PyGameMaker oferece diferentes predefinições que controlam quais
+eventos e ações estão disponíveis — **tanto** na paleta visual de
+blocos Blockly quanto no painel estruturado Events/Actions ("Add
+Event"/"Add Action") que todo tutorial deste wiki utiliza. Isso ajuda
+iniciantes a focar nas funcionalidades essenciais enquanto permite que
+usuários experientes acessem o conjunto completo de ferramentas.
+
+A predefinição de um projeto é definida de duas formas:
+**`Preferences > IDE Edition`** escolhe a padrão para projetos *novos*
+(projetos existentes nunca são alterados ao trocar de edição), e
+**`Tools > Configure Action Blocks...`** muda a predefinição do
+projeto *atualmente aberto* a qualquer momento. A edição padrão da IDE
+é Iniciante, então novos projetos de uma instalação limpa já começam
+na predefinição Iniciante.
 
 ## Escolha Seu Nível
 
-| Predefinição | Ideal Para | Funcionalidades |
-|--------------|------------|-----------------|
-| [**Iniciante**](Beginner-Preset_pt) | Novos em desenvolvimento de jogos | 4 eventos, 17 ações - Movimento, colisões, pontuação, salas |
-| [**Intermediário**](Intermediate-Preset_pt) | Alguma experiência | +4 eventos, +12 ações - Vidas, saúde, som, alarmes, desenho |
-| **Avançado** | Usuários experientes | Todos os 40+ eventos e ações disponíveis |
+| IDE Edition | Ideal Para | Predefinição usada |
+|--------|------------|----------|
+| **Iniciante** (padrão) | Novos usuários | [Predefinição Iniciante](Beginner-Preset_pt) — movimento básico, colisões, pontuação, salas |
+| **Avançado** | Alguma experiência | [Predefinição Intermediária](Intermediate-Preset_pt) — + vidas, saúde, som, alarmes, movimento em grade |
+| **Desenvolvimento** | Usuários experientes | A predefinição `full` — todos os eventos e ações disponíveis |
+
+Observe que os nomes não correspondem 1:1: a edição "Avançado" usa a
+predefinição `intermediate` (não existe uma predefinição "avançada"
+separada) — veja
+[Predefinição Iniciante](Beginner-Preset_pt)/[Predefinição Intermediária](Intermediate-Preset_pt)
+para os números exatos e sempre atualizados de eventos e ações de
+cada uma.
 
 ---
 
@@ -19,8 +39,8 @@ PyGameMaker oferece diferentes predefinições que controlam quais eventos e aç
 ### Predefinições
 | Página | Descrição |
 |--------|-----------|
-| [Predefinição Iniciante](Beginner-Preset_pt) | 4 eventos, 17 ações - Funcionalidades essenciais |
-| [Predefinição Intermediário](Intermediate-Preset_pt) | +4 eventos, +12 ações - Vidas, saúde, som |
+| [Predefinição Iniciante](Beginner-Preset_pt) | Funcionalidades essenciais — números exatos nessa página |
+| [Predefinição Intermediária](Intermediate-Preset_pt) | Adiciona vidas, saúde, som, alarmes, movimento em grade — números exatos nessa página |
 
 ### Referência
 | Página | Descrição |
@@ -41,23 +61,23 @@ Aqui está um simples jogo de coleta de moedas usando apenas funcionalidades Ini
 
 ### 2. Adicionar Eventos ao Jogador
 
-**Teclado (Teclas de Seta):**
+**Keyboard (Arrow Keys):**
 ```
-Seta Esquerda  → Definir Velocidade Horizontal: -4
-Seta Direita   → Definir Velocidade Horizontal: 4
-Seta Cima      → Definir Velocidade Vertical: -4
-Seta Baixo     → Definir Velocidade Vertical: 4
-```
-
-**Colisão com obj_coin:**
-```
-Adicionar Pontuação: 10
-Destruir Instância: other
+Left Arrow  → Set Horizontal Speed: -4
+Right Arrow → Set Horizontal Speed: 4
+Up Arrow    → Set Vertical Speed: -4
+Down Arrow  → Set Vertical Speed: 4
 ```
 
-**Colisão com obj_wall:**
+**Collision with obj_coin:**
 ```
-Parar Movimento
+Add Score: 10
+Destroy Instance: other
+```
+
+**Collision with obj_wall:**
+```
+Stop Movement
 ```
 
 ### 3. Criar uma Sala
@@ -66,7 +86,7 @@ Parar Movimento
 - Adicione paredes ao redor das bordas
 
 ### 4. Execute o Jogo!
-Pressione o botão Jogar para testar seu jogo.
+Pressione o botão Play para testar seu jogo.
 
 ---
 
@@ -83,7 +103,7 @@ Pressione o botão Jogar para testar seu jogo.
 ## Veja Também
 
 - [Início](Home_pt) - Página principal da wiki
-- [Primeiros Passos](Primeiros_Passos_pt) - Instalação e configuração
+- [Primeiros Passos](Comecar_pt) - Instalação e configuração
 - [Eventos e Ações](Eventos_e_Acoes_pt) - Conceitos básicos
 - [Crie Seu Primeiro Jogo](Primeiro_Jogo_pt) - Tutorial
 - [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout clássico
