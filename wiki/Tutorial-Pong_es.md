@@ -119,8 +119,8 @@ El objeto pared crea límites en la parte superior e inferior del área de juego
 
 **Evento: Colisión con obj_wall**
 1. Agregar Evento → Colisión → obj_wall
-2. Agregar Acción: **Movimiento** → **Rebotar Contra Objetos**
-3. Selecciona "Contra objetos sólidos"
+2. Agregar Acción: **Movimiento** → **Rebotar** (no se necesita
+   configuración — siempre rebota en objetos sólidos)
 
 ### 4.2 Paleta Derecha (Jugador 2)
 
@@ -152,8 +152,8 @@ El objeto pared crea límites en la parte superior e inferior del área de juego
 
 **Evento: Colisión con obj_wall**
 1. Agregar Evento → Colisión → obj_wall
-2. Agregar Acción: **Movimiento** → **Rebotar Contra Objetos**
-3. Selecciona "Contra objetos sólidos"
+2. Agregar Acción: **Movimiento** → **Rebotar** (no se necesita
+   configuración — siempre rebota en objetos sólidos)
 
 ---
 
@@ -164,24 +164,25 @@ El objeto pared crea límites en la parte superior e inferior del área de juego
 
 **Evento: Crear**
 1. Agregar Evento → Crear
-2. Agregar Acción: **Movimiento** → **Comenzar a Moverse en Dirección**
-3. Elige una dirección diagonal (no recta hacia arriba o abajo)
+2. Agregar Acción: **Movimiento** → **Empezar a moverse (dirección)**
+3. Elige una casilla diagonal en el selector de dirección 3x3 (no recta
+   hacia arriba o abajo)
 4. Establece la velocidad en `6`
 
 **Evento: Colisión con obj_paddle_left**
 1. Agregar Evento → Colisión → obj_paddle_left
-2. Agregar Acción: **Movimiento** → **Rebotar Contra Objetos**
-3. Selecciona "Contra objetos sólidos"
+2. Agregar Acción: **Movimiento** → **Rebotar** (no se necesita
+   configuración — siempre rebota en objetos sólidos)
 
 **Evento: Colisión con obj_paddle_right**
 1. Agregar Evento → Colisión → obj_paddle_right
-2. Agregar Acción: **Movimiento** → **Rebotar Contra Objetos**
-3. Selecciona "Contra objetos sólidos"
+2. Agregar Acción: **Movimiento** → **Rebotar** (no se necesita
+   configuración — siempre rebota en objetos sólidos)
 
 **Evento: Colisión con obj_wall**
 1. Agregar Evento → Colisión → obj_wall
-2. Agregar Acción: **Movimiento** → **Rebotar Contra Objetos**
-3. Selecciona "Contra objetos sólidos"
+2. Agregar Acción: **Movimiento** → **Rebotar** (no se necesita
+   configuración — siempre rebota en objetos sólidos)
 
 ---
 
@@ -205,23 +206,32 @@ Las zonas de gol son áreas invisibles detrás de cada paleta. Cuando la pelota 
 
 ### 6.3 Agrega Eventos de Colisión de Zona de Gol a la Pelota
 
+`global.p1score`/`global.p2score` son variables con nombre
+personalizado, una por jugador — la acción integrada **Set Score** no
+sirve aquí, porque siempre escribe la única puntuación integrada, sin
+forma de apuntar a un nombre de variable. **Set Variable** es la acción
+real para una variable con nombre personalizado y admite un ámbito
+`global`:
+
 Vuelve a `obj_ball` y agrega estos eventos:
 
 **Evento: Colisión con obj_goal_left**
 1. Agregar Evento → Colisión → obj_goal_left
 2. Agregar Acción: **Movimiento** → **Saltar a Posición de Inicio** (reinicia la pelota)
-3. Agregar Acción: **Puntuación** → **Establecer Puntuación**
-   - Variable: `global.p2score`
+3. Agregar Acción: **Control** → **Set Variable**
+   - Variable: `p2score`
    - Valor: `1`
-   - Marca "Relativo" (suma 1 a la puntuación actual)
+   - Ámbito: `global`
+   - Marca "Relative" (suma 1 a la puntuación actual)
 
 **Evento: Colisión con obj_goal_right**
 1. Agregar Evento → Colisión → obj_goal_right
 2. Agregar Acción: **Movimiento** → **Saltar a Posición de Inicio**
-3. Agregar Acción: **Puntuación** → **Establecer Puntuación**
-   - Variable: `global.p1score`
+3. Agregar Acción: **Control** → **Set Variable**
+   - Variable: `p1score`
    - Valor: `1`
-   - Marca "Relativo"
+   - Ámbito: `global`
+   - Marca "Relative"
 
 ---
 
@@ -232,12 +242,10 @@ Vuelve a `obj_ball` y agrega estos eventos:
 
 **Evento: Crear**
 1. Agregar Evento → Crear
-2. Agregar Acción: **Puntuación** → **Establecer Puntuación**
-   - Variable: `global.p1score`
-   - Valor: `0`
-3. Agregar Acción: **Puntuación** → **Establecer Puntuación**
-   - Variable: `global.p2score`
-   - Valor: `0`
+2. Agregar Acción: **Control** → **Set Variable**
+   - Variable: `p1score`, Valor: `0`, Ámbito: `global`
+3. Agregar Acción: **Control** → **Set Variable**
+   - Variable: `p2score`, Valor: `0`, Ámbito: `global`
 
 **Evento: Dibujar**
 1. Agregar Evento → Dibujar
@@ -300,9 +308,21 @@ Vuelve a `obj_ball` y agrega estos eventos:
 ## Mejoras (Opcional)
 
 ### Aumento de Velocidad
-Haz que la pelota sea más rápida cada vez que golpea una paleta añadiendo a los eventos de colisión:
-- Después de la acción de rebote, agrega **Movimiento** → **Establecer Velocidad**
-- Establece la velocidad en `speed + 0.5` con "Relativo" marcado
+Haz que la pelota sea más rápida cada vez que golpea una paleta.
+`speed` no se puede usar directamente aquí — en este motor es la
+velocidad de *animación* del sprite, no la velocidad de movimiento —
+así que rastrea la velocidad de la pelota en una variable
+personalizada:
+
+1. En el evento **Crear** de `obj_ball`, agrega **Control** →
+   **Set Variable** (Variable: `ball_speed`, Valor: `6`) justo después
+   de la acción Empezar a moverse.
+2. En cada evento de colisión con una paleta, después de la acción
+   **Rebotar**, agrega **Control** → **Set Variable** (Variable:
+   `ball_speed`, Valor: `0.5`, **Relative** marcado), luego
+   **Movimiento** → **Establecer Velocidad** con Valor
+   `self.ball_speed` para aplicar la nueva velocidad manteniendo la
+   dirección actual (Rebotar ya la invirtió).
 
 ### Efectos de Sonido
 Agrega sonidos cuando:
