@@ -1,4 +1,4 @@
-# Vadnica: Ustvari Platformsko Igro
+# Vodič: Ustvari Platformsko Igro
 
 > **Select your language / Choisissez votre langue / Wählen Sie Ihre Sprache:**
 >
@@ -8,17 +8,17 @@
 
 ## Uvod
 
-V tej vadnici boš ustvaril **Platformsko Igro** - akcijsko igro s stranskim pomikanjem, kjer igralec teče, skače in navigira po platformah, medtem ko se izogiba nevarnostim in zbira kovance. Ta klasični žanr je popoln za učenje gravitacije, mehanike skakanja in trkov s platformami.
+V tem vodiču boš ustvaril **Platformsko Igro** - akcijsko igro s stranskim pomikanjem, kjer igralec teče, skače in navigira po platformah, medtem ko se izogiba nevarnostim in zbira kovance. Ta klasični žanr je odličen za učenje gravitacije, mehanike skakanja in trkov s platformami.
 
 **Kaj se boš naučil:**
-- Gravitacija in fizika padanja
-- Mehanika skakanja z zaznavanjem tal
+- Gravitacijo in fiziko padanja
+- Mehaniko skakanja z zaznavanjem tal
 - Trk s platformami (pristajanje na vrhu)
 - Gibanje levo/desno
-- Zbirateljski predmeti in nevarnosti
+- Zbirateljske predmete in nevarnosti
 
 **Težavnost:** Začetnik
-**Preset:** Začetniški Preset
+**Prednastavitev:** Prednastavitev za začetnike
 
 ---
 
@@ -44,9 +44,9 @@ V tej vadnici boš ustvaril **Platformsko Igro** - akcijsko igro s stranskim pom
 
 ---
 
-## Korak 2: Ustvari Sprite
+## Korak 2: Ustvari Sprite-e
 
-### Sprite
+### Sprite-i
 - `spr_player` (32x48 pikslov) - preprost lik
 - `spr_ground` (32x32 pikslov) - ploščica trave/zemlje
 - `spr_platform` (64x16 pikslov) - lebdeča platforma
@@ -56,51 +56,66 @@ V tej vadnici boš ustvaril **Platformsko Igro** - akcijsko igro s stranskim pom
 
 ---
 
-## Korak 3-4: Ustvari Objekte Tal in Platform
+## Korak 3: Ustvari Objekt Tla
 
-**obj_ground** in **obj_platform**: Nastavi sprite, označi "Trden"
+Tla so trdna platforma, ki prepreči padec igralca.
+
+1. Desno klikni na **Objects** in izberi **Create Object**
+2. Poimenuj ga `obj_ground`
+3. Nastavi sprite na `spr_ground`
+4. **Označi polje "Solid"**
+5. Dogodki niso potrebni
 
 ---
 
-## Korak 5: Ustvari Objekt Igralca
+## Korak 4: Ustvari Objekt Platforma
 
-### Dogodek Create
-```gml
-hspeed_max = 4;
-vspeed_max = 10;
-jump_force = -10;
-gravity_force = 0.5;
-hsp = 0;
-vsp = 0;
-on_ground = false;
-```
+Platforme delujejo enako kot tla, vendar jih lahko postaviš v zrak.
 
-### Dogodek Step
-```gml
-var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
-hsp = move_input * hspeed_max;
+1. Ustvari nov objekt z imenom `obj_platform`
+2. Nastavi sprite na `spr_platform`
+3. **Označi polje "Solid"**
 
-vsp += gravity_force;
-if (vsp > vspeed_max) vsp = vspeed_max;
+---
 
-on_ground = place_meeting(x, y + 1, obj_ground);
+## Korak 5: Ustvari Objekt Igralec
 
-if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
-    vsp = jump_force;
-}
+Igralec je najbolj zapleten objekt, z gravitacijo, skakanjem in gibanjem.
 
-if (place_meeting(x + hsp, y, obj_ground)) {
-    while (!place_meeting(x + sign(hsp), y, obj_ground)) x += sign(hsp);
-    hsp = 0;
-}
-x += hsp;
+1. Ustvari nov objekt z imenom `obj_player`
+2. Nastavi sprite na `spr_player`
 
-if (place_meeting(x, y + vsp, obj_ground)) {
-    while (!place_meeting(x, y + sign(vsp), obj_ground)) y += sign(vsp);
-    vsp = 0;
-}
-y += vsp;
-```
+### 5.1 Gravitacija
+
+**Dogodek: Create** — Add Action: **Move** → **Set Gravity**
+(Direction: `270`, Gravity: `0.5`) — 270° pomeni naravnost navzdol;
+vrednost se vsako sličico prišteje k navpični hitrosti igralca, zato
+igralec od tu naprej sam pospešuje navzdol.
+
+### 5.2 Gibanje, Skakanje in Trk s Tlemi
+
+Dodaj te dogodke po istem vzorcu, ki ga že uporabljajo prejšnji vodiči tega wikija:
+
+| Dogodek | Akcija |
+|---|---|
+| Keyboard (held) → Left Arrow | Set Horizontal Speed na `-4` |
+| Keyboard (held) → Right Arrow | Set Horizontal Speed na `4` |
+| Keyboard: No Key | Set Horizontal Speed na `0` |
+| Key Press → Up Arrow | Set Vertical Speed na `-10` |
+| Collision with obj_ground | Stop Movement |
+
+Dve podrobnosti, zaradi katerih se to zdi pravilno:
+
+- **No Key nastavi SAMO vodoravno hitrost na 0** — nikoli ne uporabi
+  tu Stop Movement, ker Stop Movement izniči tudi navpično hitrost, kar
+  bi vsakič izničilo gravitacijo, ko igralec spusti smerno tipko.
+- **Key Press (ne held)** je tisto, zaradi česar je Up en sam skočni
+  impulz, namesto da bi igralca poganjal navzgor vsako sličico, ko je
+  tipka pridržana. **Stop Movement** ob pristanku izniči ta impulz,
+  tako da igralec po pristanku ne nadaljuje z vzpenjanjem — vgrajeni
+  trdi trk pogona (Korak 3 je `obj_ground` že naredil Solid) že
+  prepreči, da bi igralec potonil v tla; dogodek tukaj le počisti
+  preostalo hitrost padanja.
 
 ---
 
@@ -126,14 +141,13 @@ y += vsp;
 
 ## Kaj Si Se Naučil
 
-- **Fizika gravitacije** - Konstantna sila navzdol
-- **Mehanika skakanja** - Negativna navpična hitrost
-- **Zaznavanje tal** - Uporaba `place_meeting`
-- **Obravnavanje trkov** - Premikanje piksel po piksel
+- **Fizika gravitacije** - Set Gravity vsako sličico uporabi konstantno silo navzdol
+- **Mehanika skakanja** - Dogodek Key Press (ne held) da en sam impulz hitrosti navzgor
+- **Vgrajeni trdi trk** - Tla samodejno blokirajo igralca, ko so označena kot Solid, brez ročne kode za preverjanje položaja
 
 ---
 
 ## Glej Tudi
 
-- [Vadnice](Tutorials_sl) - Več vadnic za igre
-- [Vadnica: Labirint](Tutorial-Maze_sl) - Ustvari igro labirinta
+- [Vodiči](Tutorials_sl) - Več vodičev za igre
+- [Vodič: Labirint](Tutorial-Maze_sl) - Ustvari igro labirinta
