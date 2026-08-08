@@ -841,7 +841,7 @@ This will allow auto-save to work with the zip file.</source>
         <location filename="../core/ide_window.py" line="2776"/>
         <location filename="../core/ide_window.py" line="2816"/>
         <source>No Project</source>
-        <translation>Aucun projet</translation>
+        <translation>Нет проекта</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="591"/>
@@ -891,7 +891,7 @@ This will allow auto-save to work with the zip file.</source>
         <location filename="../core/ide_window.py" line="758"/>
         <location filename="../core/ide_window.py" line="772"/>
         <source>Import Failed</source>
-        <translation>Échec de l&apos;importation</translation>
+        <translation>Ошибка импорта</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="625"/>
@@ -978,7 +978,7 @@ This will allow auto-save to work with the zip file.</source>
     <message>
         <location filename="../core/ide_window.py" line="1177"/>
         <source>No recent projects</source>
-        <translation>Aucun projet récent</translation>
+        <translation>Нет недавних проектов</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1236"/>
@@ -1040,12 +1040,12 @@ Would you like to create a new project now?</source>
     <message>
         <location filename="../core/ide_window.py" line="1592"/>
         <source>Create {0}</source>
-        <translation>Créer {0}</translation>
+        <translation>Создать {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1593"/>
         <source>Enter name for new {0}:</source>
-        <translation>Entrez le nom du nouveau {0} :</translation>
+        <translation>Введите имя для нового {0}:</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1682"/>
@@ -1326,7 +1326,7 @@ Please use HTML5, Windows EXE, or Linux Binary export for now.</source>
     <message>
         <location filename="../core/ide_window.py" line="2312"/>
         <source>Choose Export Location</source>
-        <translation>Choisir l&apos;emplacement d&apos;export</translation>
+        <translation>Выберите место экспорта</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2103"/>
@@ -1366,7 +1366,7 @@ Please use HTML5, Windows EXE, or Linux Binary export for now.</source>
         <location filename="../core/ide_window.py" line="2159"/>
         <location filename="../core/ide_window.py" line="2185"/>
         <source>Export Failed</source>
-        <translation>Échec de l&apos;export</translation>
+        <translation>Ошибка экспорта</translation>
     </message>
     <message>
         <source>Not Implemented</source>
@@ -1616,7 +1616,7 @@ Asset: {1}</source>
         <location filename="../core/ide_window.py" line="3414"/>
         <location filename="../core/ide_window.py" line="3422"/>
         <source>Save Error</source>
-        <translation>Erreur d&apos;enregistrement</translation>
+        <translation>Ошибка сохранения</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3415"/>
@@ -1825,7 +1825,7 @@ Would you like to:
     <message>
         <location filename="../core/ide_window.py" line="1869"/>
         <source>Game stopped</source>
-        <translation>Jeu arrêté</translation>
+        <translation>Игра остановлена</translation>
     </message>
     <message>
         <source>Build</source>

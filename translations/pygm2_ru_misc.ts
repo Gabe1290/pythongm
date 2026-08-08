@@ -82,7 +82,7 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="61"/>
         <source>Visual Block Programming (Detached)</source>
-        <translation>Visual Block Programming (Detached)</translation>
+        <translation>Визуальное блочное программирование (Отсоединено)</translation>
     </message>
 </context>
 <context>
@@ -90,7 +90,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="25"/>
         <source>Object Properties</source>
-        <translation>Object Properties</translation>
+        <translation>Свойства объекта</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="39"/>
@@ -113,7 +113,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
         <source>Sprite:</source>
-        <translation>Sprite :</translation>
+        <translation>Спрайт:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
@@ -123,7 +123,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Видимый</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="67"/>
@@ -143,7 +143,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
         <source>Solid</source>
-        <translation>Solide</translation>
+        <translation>Твёрдый</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
