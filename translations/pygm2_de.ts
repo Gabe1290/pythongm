@@ -7938,15 +7938,16 @@ Möchten Sie trotzdem speichern?</translation>
         <translation>Ansicht auf Standard zurückgesetzt</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="800"/>
-        <location filename="../widgets/thymio_playground.py" line="854"/>
-        <source>Zoom: {int(self.zoom_level * 100)}%</source>
-        <translation>Zoom: {int(self.zoom_level * 100)}%</translation>
+        <location filename="../widgets/thymio_playground.py" line="830"/>
+        <location filename="../widgets/thymio_playground.py" line="884"/>
+        <source>Zoom: {0}%</source>
+        <translation>Zoom: {0}%</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="801"/>
-        <source>Pan: {int(self.camera_x)}, {int(self.camera_y)}</source>
-        <translation>Verschiebung: {int(self.camera_x)}, {int(self.camera_y)}</translation>
+        <location filename="../widgets/thymio_playground.py" line="831"/>
+        <location filename="../widgets/thymio_playground.py" line="885"/>
+        <source>Pan: {0}, {1}</source>
+        <translation>Verschiebung: {0}, {1}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="861"/>
@@ -8009,29 +8010,29 @@ Möchten Sie trotzdem speichern?</translation>
         <translation>Keine inneren Hindernisse zum Löschen</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="979"/>
-        <source>Sensor visualization: {state}</source>
-        <translation>Sensorvisualisierung: {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1009"/>
+        <source>Sensor visualization: {0}</source>
+        <translation>Sensorvisualisierung: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="986"/>
-        <source>Simulation {state}</source>
-        <translation>Simulation {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1016"/>
+        <source>Simulation {0}</source>
+        <translation>Simulation {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="1066"/>
-        <source>Playground resized to {width}x{height}</source>
-        <translation>Spielfeld auf {width}x{height} vergrößert</translation>
+        <location filename="../widgets/thymio_playground.py" line="1096"/>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>Spielfeld auf {0}x{1} vergrößert</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="1127"/>
-        <source>Mode: {mode_names[mode]}</source>
-        <translation>Modus: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1157"/>
+        <source>Mode: {0}</source>
+        <translation>Modus: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/thymio_playground.py" line="1128"/>
-        <source>Edit mode: {mode_names[mode]}</source>
-        <translation>Bearbeitungsmodus: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1158"/>
+        <source>Edit mode: {0}</source>
+        <translation>Bearbeitungsmodus: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1179"/>
@@ -8107,6 +8108,27 @@ Möchten Sie trotzdem speichern?</translation>
         <location filename="../widgets/thymio_playground.py" line="1302"/>
         <source>No line segments to clear</source>
         <translation>Keine Liniensegmente zum Löschen</translation>
+    </message>
+
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>ein</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>aus</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>pausiert</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>läuft</translation>
     </message>
 </context>
 <context>

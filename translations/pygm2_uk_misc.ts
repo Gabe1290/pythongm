@@ -310,12 +310,16 @@
         <translation type="vanished">Вигляд скинуто за замовчуванням</translation>
     </message>
     <message>
-        <source>Zoom: {int(self.zoom_level * 100)}%</source>
-        <translation type="vanished">Масштаб: {int(self.zoom_level * 100)}%</translation>
+        <location filename="../widgets/thymio_playground.py" line="830"/>
+        <location filename="../widgets/thymio_playground.py" line="884"/>
+        <source>Zoom: {0}%</source>
+        <translation>Масштаб: {0}%</translation>
     </message>
     <message>
-        <source>Pan: {int(self.camera_x)}, {int(self.camera_y)}</source>
-        <translation type="vanished">Панорама: {int(self.camera_x)}, {int(self.camera_y)}</translation>
+        <location filename="../widgets/thymio_playground.py" line="831"/>
+        <location filename="../widgets/thymio_playground.py" line="885"/>
+        <source>Pan: {0}, {1}</source>
+        <translation>Панорама: {0}, {1}</translation>
     </message>
     <message>
         <source>Warning: Obstacle very close!</source>
@@ -366,24 +370,29 @@
         <translation type="vanished">Немає внутрішніх перешкод для видалення</translation>
     </message>
     <message>
-        <source>Sensor visualization: {state}</source>
-        <translation type="vanished">Візуалізація сенсорів: {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1009"/>
+        <source>Sensor visualization: {0}</source>
+        <translation>Візуалізація сенсорів: {0}</translation>
     </message>
     <message>
-        <source>Simulation {state}</source>
-        <translation type="vanished">Симуляція {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1016"/>
+        <source>Simulation {0}</source>
+        <translation>Симуляція {0}</translation>
     </message>
     <message>
-        <source>Playground resized to {width}x{height}</source>
-        <translation type="vanished">Майданчик змінено до {width}x{height}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1096"/>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>Майданчик змінено до {0}x{1}</translation>
     </message>
     <message>
-        <source>Mode: {mode_names[mode]}</source>
-        <translation type="vanished">Режим: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1157"/>
+        <source>Mode: {0}</source>
+        <translation>Режим: {0}</translation>
     </message>
     <message>
-        <source>Edit mode: {mode_names[mode]}</source>
-        <translation type="vanished">Режим редагування: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1158"/>
+        <source>Edit mode: {0}</source>
+        <translation>Режим редагування: {0}</translation>
     </message>
     <message>
         <source>Obstacle added</source>
@@ -444,6 +453,27 @@
     <message>
         <source>No line segments to clear</source>
         <translation type="vanished">Немає лінійних сегментів для видалення</translation>
+    </message>
+
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>увімк</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>вимк</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>на паузі</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>виконується</translation>
     </message>
 </context>
 <context>
