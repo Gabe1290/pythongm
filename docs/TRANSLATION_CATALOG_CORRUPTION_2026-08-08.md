@@ -138,7 +138,7 @@ it the same way: **multi-session, one file per commit, no shortcuts.**
 - [x] `pygm2_sl_core.ts` (100) — commit `8d8f453`
 - [x] `pygm2_sl_blockly.ts` (15) — commit `39892cf`
 - [x] `pygm2_sl_actions.ts` (4) — commit `39892cf`. **Slovenian fully closed.**
-- [ ] `pygm2_ru_dialogs.ts` (163) — 1 commit
+- [x] `pygm2_ru_dialogs.ts` (157 after no-op filter) — commit `fb5347d`
 - [ ] `pygm2_ru_editors.ts` (128) — 1 commit
 - [ ] `pygm2_ru_blockly.ts` (20) — 1 commit
 - [ ] `pygm2_ru_core.ts` (11) — 1 commit
