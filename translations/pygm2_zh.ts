@@ -1089,4 +1089,134 @@ Do you want to save anyway?</source>
         <translation>请先选择一个 Thymio 操作。</translation>
     </message>
 </context>
+<context>
+    <name>ImportAssetsDialog</name>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="22"/>
+        <source>Import Assets</source>
+        <translation>导入资源</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="32"/>
+        <location filename="../dialogs/import_dialogs.py" line="90"/>
+        <source>Select Files to Import</source>
+        <translation>选择要导入的文件</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="40"/>
+        <source>Add Files...</source>
+        <translation>添加文件...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="44"/>
+        <source>Add Folder...</source>
+        <translation>添加文件夹...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="48"/>
+        <source>Clear All</source>
+        <translation>全部清除</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="57"/>
+        <source>Import Options</source>
+        <translation>导入选项</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="60"/>
+        <source>Auto-detect asset type</source>
+        <translation>自动检测资源类型</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="64"/>
+        <source>Copy files to project folder</source>
+        <translation>将文件复制到项目文件夹</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="73"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="76"/>
+        <source>Import</source>
+        <translation>导入</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="92"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
+        <translation>图像 (*.png *.jpg *.jpeg *.bmp *.gif);;声音 (*.wav *.mp3 *.ogg);;所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="107"/>
+        <source>Select Folder</source>
+        <translation>选择文件夹</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectPropertiesPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="25"/>
+        <source>Object Properties</source>
+        <translation>对象属性</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="39"/>
+        <source>Sprite to display for this object</source>
+        <translation>此对象要显示的精灵</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="45"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="101"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
+        <source>&lt;no parent&gt;</source>
+        <translation>＜无父对象＞</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
+        <source>Parent object (inherits collision events)</source>
+        <translation>父对象（继承碰撞事件）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
+        <source>Sprite:</source>
+        <translation>精灵：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
+        <source>Parent:</source>
+        <translation>父对象：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
+        <source>Visible</source>
+        <translation>可见</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="67"/>
+        <source>Object is visible in the game</source>
+        <translation>对象在游戏中可见</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="74"/>
+        <source>Persistent</source>
+        <translation>持久</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="76"/>
+        <source>Object persists between rooms</source>
+        <translation>对象在房间间保持存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
+        <source>Solid</source>
+        <translation>实体</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
+        <source>Solid objects block movement</source>
+        <translation>实体对象会阻挡移动</translation>
+    </message>
+</context>
 </TS>
