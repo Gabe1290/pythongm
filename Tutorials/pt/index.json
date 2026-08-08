@@ -99,6 +99,19 @@
                 "04_game_controller.html"
             ],
             "thumbnail": "thumbnails/08_lunar_lander.png"
+        },
+        {
+            "title": "Pegue as Moedas!",
+            "folder": "09_catch_the_coins",
+            "description": "Pegue cada moeda sem esbarrar no inimigo",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_coins_and_enemy.html",
+                "04_catching_and_crashing.html",
+                "05_winning.html"
+            ],
+            "thumbnail": "thumbnails/09_catch_the_coins.png"
         }
     ]
 }
