@@ -3459,4 +3459,279 @@ Some changes may require restarting the IDE to take effect.</source>
 {}</translation>
     </message>
 </context>
+<context>
+    <name>ConditionalActionEditor</name>
+    <message>
+        <location filename="../events/conditional_editor.py" line="27"/>
+        <source>Configure If Condition</source>
+        <translation>If条件を設定</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="39"/>
+        <source>Condition</source>
+        <translation>条件</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="44"/>
+        <source>Condition Type:</source>
+        <translation>条件の種類：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="47"/>
+        <source>instance_count</source>
+        <translation>インスタンス数</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="48"/>
+        <source>variable_compare</source>
+        <translation>変数比較</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="49"/>
+        <source>position_check</source>
+        <translation>位置チェック</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="50"/>
+        <source>collision_check</source>
+        <translation>衝突チェック</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="51"/>
+        <source>key_pressed</source>
+        <translation>キー押下</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="52"/>
+        <source>mouse_check</source>
+        <translation>マウスチェック</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="53"/>
+        <source>random_chance</source>
+        <translation>ランダム確率</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="54"/>
+        <source>expression</source>
+        <translation>式</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="101"/>
+        <source>Then Do (if condition is TRUE)</source>
+        <translation>実行（条件がTRUEの場合）</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="110"/>
+        <location filename="../events/conditional_editor.py" line="137"/>
+        <source>+ Add Action</source>
+        <translation>+ アクションを追加</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="114"/>
+        <location filename="../events/conditional_editor.py" line="141"/>
+        <source>Edit Action</source>
+        <translation>アクションを編集</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="118"/>
+        <location filename="../events/conditional_editor.py" line="145"/>
+        <source>- Remove</source>
+        <translation>- 削除</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="128"/>
+        <source>Else Do (if condition is FALSE)</source>
+        <translation>それ以外（条件がFALSEの場合）</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="170"/>
+        <source>Object:</source>
+        <translation>オブジェクト：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="187"/>
+        <source>Count is:</source>
+        <translation>個数：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="209"/>
+        <source>Variable:</source>
+        <translation>変数：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="211"/>
+        <source>health, score, x, y, etc.</source>
+        <translation>health、score、x、y など</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="217"/>
+        <location filename="../events/conditional_editor.py" line="253"/>
+        <location filename="../events/conditional_editor.py" line="319"/>
+        <source>Is:</source>
+        <translation>状態：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="222"/>
+        <source>Value:</source>
+        <translation>値：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="239"/>
+        <source>Check if:</source>
+        <translation>確認内容：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="242"/>
+        <source>x position</source>
+        <translation>x座標</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="243"/>
+        <source>y position</source>
+        <translation>y座標</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="244"/>
+        <source>in region</source>
+        <translation>領域内</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="245"/>
+        <source>distance to object</source>
+        <translation>オブジェクトまでの距離</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="275"/>
+        <source>Colliding with:</source>
+        <translation>衝突対象：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="284"/>
+        <source>At offset X:</source>
+        <translation>オフセットX：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="291"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="309"/>
+        <source>Key:</source>
+        <translation>キー：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Space</source>
+        <translation>スペース</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Enter</source>
+        <translation>Enter</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Escape</source>
+        <translation>Escape</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Left Arrow</source>
+        <translation>左矢印</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Right Arrow</source>
+        <translation>右矢印</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Up Arrow</source>
+        <translation>上矢印</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Down Arrow</source>
+        <translation>下矢印</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Shift</source>
+        <translation>Shift</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Control</source>
+        <translation>Control</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Alt</source>
+        <translation>Alt</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Pressed</source>
+        <translation>押した瞬間</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Held</source>
+        <translation>押し続けている</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Released</source>
+        <translation>離した瞬間</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="335"/>
+        <source>Mouse:</source>
+        <translation>マウス：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="338"/>
+        <source>Left button pressed</source>
+        <translation>左ボタンを押した</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="339"/>
+        <source>Right button pressed</source>
+        <translation>右ボタンを押した</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="340"/>
+        <source>Middle button pressed</source>
+        <translation>中央ボタンを押した</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="341"/>
+        <source>Over object</source>
+        <translation>オブジェクトの上</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="342"/>
+        <source>In region</source>
+        <translation>領域内</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="357"/>
+        <source>Chance:</source>
+        <translation>確率：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="383"/>
+        <source>Custom GML Expression:</source>
+        <translation>カスタムGML式：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="387"/>
+        <source>Enter any GML expression that evaluates to true/false
+Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
+        <translation>true/falseを返す任意のGML式を入力してください
+例：x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+</context>
 </TS>
