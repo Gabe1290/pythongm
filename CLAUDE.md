@@ -1207,3 +1207,53 @@ reference-file approach generalizes correctly to a second language.
   Chinese doesn't get Romance-language pattern-matching either — the
   plan doc's original effort-expectation note already said this).
   `docs/I18N_CLEANUP_2026-08-06.md` Section H is the resume state.
+
+**2026-08-09 — zh UI translation (Section H) finished; all three
+languages (pt/ja/zh) now complete — Section H is CLOSED.** Same session
+as the ja completion above (continued across several "proceed" check-ins
+at rising usage percentages), worked the full 61-context/1369-message zh
+tier to completion across ~11 commits using `scripts/
+gen_translation_ts.py` with `pygm2_pt.ts` as source. **Result:
+`pygm2_zh.ts` translates all 1369 real distinct UI strings — 61
+contexts, EXACTLY matching pt's and ja's final shape** — a third
+independent confirmation the reference-file approach generalizes.
+- Followed ja's predicted CJK menu-mnemonic convention for the large
+  `PyGameMakerIDE` context — original English letter kept in parentheses
+  at the end (`"&File"` → `"文件(&F)"`), not embedded in the translated
+  word.
+- **New landmine, not hit by pt or ja, worth carrying into any future
+  language:** `TranslationBuilder.add_contexts`/`add_partial_context`
+  XML-escapes the translation VALUE for you (`xml.sax.saxutils.escape`,
+  per the module's own docstring) — a translated value must use real
+  unescaped characters (`>`, `<`, `&`), never the SOURCE's already-
+  escaped `&gt;`/`&amp;&amp;`/`&lt;` form copied over by habit. Doing so
+  double-escapes the output (`&amp;gt;`), which is syntactically valid
+  XML and passes both `xml.dom.minidom` validation and `lrelease`
+  compilation silently — the resulting `.qm` just displays literal
+  `&gt;` text to the user instead of resolving to `>`. Caught once (in
+  `ConditionalActionEditor`'s GML-expression-example string) only by a
+  live `QTranslator` spot-check comparing actual output against the
+  expected real character; fixed same session (commit `fb731c4`). Only
+  the SOURCE dict *keys* need the escaped form (matched verbatim against
+  existing `<source>` text) — this rule applies to translation *values*
+  only.
+- Every pt/ja-established landmine (entity-escaped `&apos;`/`&quot;`
+  sources, `{0}`-style placeholders, literal tab characters, exact emoji
+  codepoint matching via `\U000XXXXX` escapes verified against the
+  source file before use, HTML markup preservation in the About/License
+  dialog text) reproduced correctly with zero new process gaps beyond
+  the one above.
+- Deleted the now-superseded `translations/pygamemaker_zh.ts` stub (289
+  entries, all `type="unfinished"`) — same treatment as the pt/ja stubs.
+  `zh` (中文 🇨🇳) confirmed in `LanguageManager._discover_languages()`.
+  Full suite held at 2207 passed / 0 failed throughout (one isolated
+  flaky/timing-sensitive re-run of
+  `test_raycast_view.py::TestFloorCasting::test_full_textured_pipeline_under_budget`,
+  confirmed pre-existing and unrelated — passed clean in isolation).
+- **Section H (`docs/I18N_CLEANUP_2026-08-06.md`) is now fully closed** —
+  pt/ja/zh are all 1369/1369 (61/61 contexts). Only Section L (in-app
+  Tutorials curriculum, its own deferred plan doc) remains open in that
+  registry. **Not done for any of the three languages: a human opening
+  the running IDE with pt/ja/zh selected and eyeballing the rendered
+  UI** — every string is programmatically verified to resolve via a
+  live `QTranslator`, but nobody has looked at the actual widgets.
