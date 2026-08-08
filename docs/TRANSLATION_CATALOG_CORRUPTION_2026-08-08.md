@@ -135,7 +135,7 @@ it the same way: **multi-session, one file per commit, no shortcuts.**
   registry's scope; left untouched.
 - [x] `pygm2_sl_dialogs.ts` (171 after no-op filter) — commit `a02608b`
 - [x] `pygm2_sl_editors.ts` (117 after no-op filter) — commit `cd1755d`
-- [ ] `pygm2_sl_core.ts` (100, minus any no-op-filtered) — 1 commit
+- [x] `pygm2_sl_core.ts` (100) — commit `8d8f453`
 - [ ] `pygm2_sl_blockly.ts` (15) — 1 commit
 - [ ] `pygm2_sl_actions.ts` (4) — 1 commit
 - [ ] `pygm2_ru_dialogs.ts` (163) — 1 commit
