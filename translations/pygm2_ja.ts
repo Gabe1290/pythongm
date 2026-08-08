@@ -3734,4 +3734,320 @@ Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
 例：x &gt; 100 &amp;&amp; y &lt; 200</translation>
     </message>
 </context>
+<context>
+    <name>ObjectEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
+        <source>Object Events</source>
+        <translation>オブジェクトイベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
+        <source>Event</source>
+        <translation>イベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
+        <source>Actions</source>
+        <translation>アクション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="150"/>
+        <source>+ Add Event</source>
+        <translation>+ イベントを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
+        <source>- Remove Event</source>
+        <translation>- イベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="163"/>
+        <source>↑ Move Up</source>
+        <translation>↑ 上へ移動</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="166"/>
+        <source>Move selected action up (Ctrl+Up)</source>
+        <translation>選択したアクションを上へ移動（Ctrl+Up）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="169"/>
+        <source>↓ Move Down</source>
+        <translation>↓ 下へ移動</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="172"/>
+        <source>Move selected action down (Ctrl+Down)</source>
+        <translation>選択したアクションを下へ移動（Ctrl+Down）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="181"/>
+        <source>Ctrl+Up</source>
+        <translation>Ctrl+Up</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="184"/>
+        <source>Ctrl+Down</source>
+        <translation>Ctrl+Down</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="231"/>
+        <source>{0} Collision With...</source>
+        <translation>{0} との衝突...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="195"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="411"/>
+        <source>Event Exists</source>
+        <translation>イベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="196"/>
+        <source>The {0} event already exists.</source>
+        <translation>{0} イベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="243"/>
+        <source>No objects available</source>
+        <translation>利用可能なオブジェクトがありません</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
+        <source>🤖 Thymio Events</source>
+        <translation>🤖 Thymioイベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
+        <source>🤖 Visual Selector...</source>
+        <translation>🤖 ビジュアルセレクター...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="357"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="384"/>
+        <source>Key Event Exists</source>
+        <translation>キーイベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="358"/>
+        <source>The {0} arrow key event already exists.</source>
+        <translation>{0} 矢印キーイベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="385"/>
+        <source>The {0} key event already exists for {1}.</source>
+        <translation>{1} の {0} キーイベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="412"/>
+        <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+        <translation>キーボード＜キーなし＞イベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="447"/>
+        <source>Mouse Event Exists</source>
+        <translation>マウスイベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="448"/>
+        <source>This mouse event already exists.</source>
+        <translation>このマウスイベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
+        <source>Alarm Event Exists</source>
+        <translation>アラームイベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
+        <source>Alarm {0} event already exists.</source>
+        <translation>アラーム {0} イベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="569"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="664"/>
+        <source>Remove Event</source>
+        <translation>イベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="570"/>
+        <source>Are you sure you want to remove the {0} event and all its actions?</source>
+        <translation>{0} イベントとそのすべてのアクションを削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="621"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="645"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="682"/>
+        <source>Add Action</source>
+        <translation>アクションを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="616"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1775"/>
+        <source>Remove Collision Event</source>
+        <translation>衝突イベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="640"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1828"/>
+        <source>Remove Mouse Event</source>
+        <translation>マウスイベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="704"/>
+        <source>Remove {0} Event</source>
+        <translation>{0} イベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1001"/>
+        <source>❌ NOT Colliding with {0}</source>
+        <translation>❌ {0} と衝突していない</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1005"/>
+        <source>💥 Collision with {0}</source>
+        <translation>💥 {0} との衝突</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="709"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="719"/>
+        <source>Edit Action</source>
+        <translation>アクションを編集</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="712"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="722"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="958"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="978"/>
+        <source>Remove Action</source>
+        <translation>アクションを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="737"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="755"/>
+        <source>Cannot Add Action</source>
+        <translation>アクションを追加できません</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="738"/>
+        <source>Cannot add actions directly to Alarm.
+
+Please add actions to a specific alarm number instead:
+Right-click on Alarm 0, Alarm 1, etc.</source>
+        <translation>アラームに直接アクションを追加することはできません。
+
+代わりに特定のアラーム番号にアクションを追加してください：
+Alarm 0、Alarm 1などを右クリックしてください。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
+        <source>Cannot add actions directly to %1.
+
+Please add actions to specific arrow keys instead:
+Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
+        <translation>%1 に直接アクションを追加することはできません。
+
+代わりに特定の矢印キーにアクションを追加してください：
+左矢印、右矢印、上矢印、下矢印のいずれかを右クリックしてください。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="843"/>
+        <source>Remove Key Event</source>
+        <translation>キーイベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="844"/>
+        <source>Are you sure you want to remove the {0} arrow key event and all its actions?</source>
+        <translation>{0} 矢印キーイベントとそのすべてのアクションを削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
+        <source>Could not open action editor: {0}</source>
+        <translation>アクションエディタを開けませんでした：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="979"/>
+        <source>Are you sure you want to remove this action?</source>
+        <translation>このアクションを削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1008"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1077"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1125"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1155"/>
+        <source>{0} actions</source>
+        <translation>{0} 件のアクション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1044"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1111"/>
+        <source>{0} total actions</source>
+        <translation>合計 {0} 件のアクション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1697"/>
+        <source>Collision Event Options</source>
+        <translation>衝突イベントのオプション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1700"/>
+        <source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source>
+        <translation>&lt;b&gt;衝突対象：{0}&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1703"/>
+        <source>❌ NOT colliding (trigger when NOT touching)</source>
+        <translation>❌ 衝突していない（接触していないときに発動）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1704"/>
+        <source>Check this to trigger actions when the object is NOT colliding with the target</source>
+        <translation>オブジェクトが対象と衝突していないときにアクションを発動するには、これをチェックしてください</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1727"/>
+        <source>Collision Event Exists</source>
+        <translation>衝突イベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1728"/>
+        <source>This collision event already exists.</source>
+        <translation>この衝突イベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1776"/>
+        <source>Are you sure you want to remove the collision event with {0}?</source>
+        <translation>{0} との衝突イベントを削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1829"/>
+        <source>Are you sure you want to remove the {0} event?</source>
+        <translation>{0} イベントを削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="499"/>
+        <source>Thymio Event Exists</source>
+        <translation>Thymioイベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="500"/>
+        <source>This Thymio event already exists.</source>
+        <translation>このThymioイベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="612"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="636"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="660"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="698"/>
+        <source>🤖 Thymio Action...</source>
+        <translation>🤖 Thymioアクション...</translation>
+    </message>
+</context>
 </TS>
