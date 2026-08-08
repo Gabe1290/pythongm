@@ -129,7 +129,10 @@ it the same way: **multi-session, one file per commit, no shortcuts.**
 
 ## Work queue
 
-- [ ] `pygm2_es.ts` (436 entries) — 1 commit
+- [x] `pygm2_es.ts` (436 entries) — commit `e7cb4a7`. Also found: 308
+  entries with genuinely-empty `<translation>` (never attempted, not
+  corrupted) — a separate, pre-existing incompleteness, out of this
+  registry's scope; left untouched.
 - [ ] `pygm2_sl_dialogs.ts` (177) — 1 commit
 - [ ] `pygm2_sl_editors.ts` (125) — 1 commit
 - [ ] `pygm2_sl_core.ts` (100, minus any no-op-filtered) — 1 commit
