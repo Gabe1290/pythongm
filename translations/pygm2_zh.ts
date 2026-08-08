@@ -3459,4 +3459,595 @@ Some changes may require restarting the IDE to take effect.</source>
 {}</translation>
     </message>
 </context>
+<context>
+    <name>ConditionalActionEditor</name>
+    <message>
+        <location filename="../events/conditional_editor.py" line="27"/>
+        <source>Configure If Condition</source>
+        <translation>配置 If 条件</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="39"/>
+        <source>Condition</source>
+        <translation>条件</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="44"/>
+        <source>Condition Type:</source>
+        <translation>条件类型：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="47"/>
+        <source>instance_count</source>
+        <translation>实例数量</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="48"/>
+        <source>variable_compare</source>
+        <translation>变量比较</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="49"/>
+        <source>position_check</source>
+        <translation>位置检查</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="50"/>
+        <source>collision_check</source>
+        <translation>碰撞检查</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="51"/>
+        <source>key_pressed</source>
+        <translation>按键按下</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="52"/>
+        <source>mouse_check</source>
+        <translation>鼠标检查</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="53"/>
+        <source>random_chance</source>
+        <translation>随机概率</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="54"/>
+        <source>expression</source>
+        <translation>表达式</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="101"/>
+        <source>Then Do (if condition is TRUE)</source>
+        <translation>执行（如果条件为真）</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="110"/>
+        <location filename="../events/conditional_editor.py" line="137"/>
+        <source>+ Add Action</source>
+        <translation>+ 添加操作</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="114"/>
+        <location filename="../events/conditional_editor.py" line="141"/>
+        <source>Edit Action</source>
+        <translation>编辑操作</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="118"/>
+        <location filename="../events/conditional_editor.py" line="145"/>
+        <source>- Remove</source>
+        <translation>- 移除</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="128"/>
+        <source>Else Do (if condition is FALSE)</source>
+        <translation>否则执行（如果条件为假）</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="170"/>
+        <source>Object:</source>
+        <translation>对象：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="187"/>
+        <source>Count is:</source>
+        <translation>数量为：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="209"/>
+        <source>Variable:</source>
+        <translation>变量：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="211"/>
+        <source>health, score, x, y, etc.</source>
+        <translation>生命值、分数、x、y 等</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="217"/>
+        <location filename="../events/conditional_editor.py" line="253"/>
+        <location filename="../events/conditional_editor.py" line="319"/>
+        <source>Is:</source>
+        <translation>为：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="222"/>
+        <source>Value:</source>
+        <translation>值：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="239"/>
+        <source>Check if:</source>
+        <translation>检查：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="242"/>
+        <source>x position</source>
+        <translation>x 坐标</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="243"/>
+        <source>y position</source>
+        <translation>y 坐标</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="244"/>
+        <source>in region</source>
+        <translation>在区域内</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="245"/>
+        <source>distance to object</source>
+        <translation>到对象的距离</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="275"/>
+        <source>Colliding with:</source>
+        <translation>碰撞对象：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="284"/>
+        <source>At offset X:</source>
+        <translation>偏移 X：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="291"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="309"/>
+        <source>Key:</source>
+        <translation>按键：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Space</source>
+        <translation>空格</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Enter</source>
+        <translation>回车</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Escape</source>
+        <translation>Esc</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Left Arrow</source>
+        <translation>左箭头</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Right Arrow</source>
+        <translation>右箭头</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Up Arrow</source>
+        <translation>上箭头</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Down Arrow</source>
+        <translation>下箭头</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Shift</source>
+        <translation>Shift</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Control</source>
+        <translation>Control</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Alt</source>
+        <translation>Alt</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Pressed</source>
+        <translation>按下</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Held</source>
+        <translation>按住</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Released</source>
+        <translation>释放</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="335"/>
+        <source>Mouse:</source>
+        <translation>鼠标：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="338"/>
+        <source>Left button pressed</source>
+        <translation>左键按下</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="339"/>
+        <source>Right button pressed</source>
+        <translation>右键按下</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="340"/>
+        <source>Middle button pressed</source>
+        <translation>中键按下</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="341"/>
+        <source>Over object</source>
+        <translation>悬停于对象上</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="342"/>
+        <source>In region</source>
+        <translation>在区域内</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="357"/>
+        <source>Chance:</source>
+        <translation>概率：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="383"/>
+        <source>Custom GML Expression:</source>
+        <translation>自定义 GML 表达式：</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="387"/>
+        <source>Enter any GML expression that evaluates to true/false
+Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
+        <translation>输入任何计算结果为真/假的 GML 表达式
+示例：x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
+        <source>Object Events</source>
+        <translation>对象事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
+        <source>Event</source>
+        <translation>事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
+        <source>Actions</source>
+        <translation>操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="150"/>
+        <source>+ Add Event</source>
+        <translation>+ 添加事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
+        <source>- Remove Event</source>
+        <translation>- 移除事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="163"/>
+        <source>↑ Move Up</source>
+        <translation>↑ 上移</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="166"/>
+        <source>Move selected action up (Ctrl+Up)</source>
+        <translation>将选中的操作上移 (Ctrl+Up)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="169"/>
+        <source>↓ Move Down</source>
+        <translation>↓ 下移</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="172"/>
+        <source>Move selected action down (Ctrl+Down)</source>
+        <translation>将选中的操作下移 (Ctrl+Down)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="181"/>
+        <source>Ctrl+Up</source>
+        <translation>Ctrl+Up</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="184"/>
+        <source>Ctrl+Down</source>
+        <translation>Ctrl+Down</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="231"/>
+        <source>{0} Collision With...</source>
+        <translation>{0} 碰撞对象...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="195"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="411"/>
+        <source>Event Exists</source>
+        <translation>事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="196"/>
+        <source>The {0} event already exists.</source>
+        <translation>{0} 事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="243"/>
+        <source>No objects available</source>
+        <translation>无可用对象</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
+        <source>🤖 Thymio Events</source>
+        <translation>🤖 Thymio 事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
+        <source>🤖 Visual Selector...</source>
+        <translation>🤖 可视化选择器...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="357"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="384"/>
+        <source>Key Event Exists</source>
+        <translation>按键事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="358"/>
+        <source>The {0} arrow key event already exists.</source>
+        <translation>{0} 方向键事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="385"/>
+        <source>The {0} key event already exists for {1}.</source>
+        <translation>{1} 的 {0} 按键事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="412"/>
+        <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+        <translation>键盘“无按键”事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="447"/>
+        <source>Mouse Event Exists</source>
+        <translation>鼠标事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="448"/>
+        <source>This mouse event already exists.</source>
+        <translation>此鼠标事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
+        <source>Alarm Event Exists</source>
+        <translation>闹钟事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
+        <source>Alarm {0} event already exists.</source>
+        <translation>闹钟 {0} 事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="569"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="664"/>
+        <source>Remove Event</source>
+        <translation>移除事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="570"/>
+        <source>Are you sure you want to remove the {0} event and all its actions?</source>
+        <translation>确定要移除 {0} 事件及其所有操作吗？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="621"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="645"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="682"/>
+        <source>Add Action</source>
+        <translation>添加操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="616"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1775"/>
+        <source>Remove Collision Event</source>
+        <translation>移除碰撞事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="640"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1828"/>
+        <source>Remove Mouse Event</source>
+        <translation>移除鼠标事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="704"/>
+        <source>Remove {0} Event</source>
+        <translation>移除 {0} 事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1001"/>
+        <source>❌ NOT Colliding with {0}</source>
+        <translation>❌ 未与 {0} 碰撞</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1005"/>
+        <source>💥 Collision with {0}</source>
+        <translation>💥 与 {0} 碰撞</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="709"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="719"/>
+        <source>Edit Action</source>
+        <translation>编辑操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="712"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="722"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="958"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="978"/>
+        <source>Remove Action</source>
+        <translation>移除操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="737"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="755"/>
+        <source>Cannot Add Action</source>
+        <translation>无法添加操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="738"/>
+        <source>Cannot add actions directly to Alarm.
+
+Please add actions to a specific alarm number instead:
+Right-click on Alarm 0, Alarm 1, etc.</source>
+        <translation>无法直接向“闹钟”添加操作。
+
+请改为向特定的闹钟编号添加操作：
+右键点击闹钟 0、闹钟 1 等。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
+        <source>Cannot add actions directly to %1.
+
+Please add actions to specific arrow keys instead:
+Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
+        <translation>无法直接向 %1 添加操作。
+
+请改为向特定的方向键添加操作：
+右键点击左箭头、右箭头、上箭头或下箭头。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="843"/>
+        <source>Remove Key Event</source>
+        <translation>移除按键事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="844"/>
+        <source>Are you sure you want to remove the {0} arrow key event and all its actions?</source>
+        <translation>确定要移除 {0} 方向键事件及其所有操作吗？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
+        <source>Could not open action editor: {0}</source>
+        <translation>无法打开操作编辑器：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="979"/>
+        <source>Are you sure you want to remove this action?</source>
+        <translation>确定要移除此操作吗？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1008"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1077"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1125"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1155"/>
+        <source>{0} actions</source>
+        <translation>{0} 个操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1044"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1111"/>
+        <source>{0} total actions</source>
+        <translation>共 {0} 个操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1697"/>
+        <source>Collision Event Options</source>
+        <translation>碰撞事件选项</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1700"/>
+        <source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source>
+        <translation>&lt;b&gt;碰撞对象：{0}&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1703"/>
+        <source>❌ NOT colliding (trigger when NOT touching)</source>
+        <translation>❌ 未碰撞（未接触时触发）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1704"/>
+        <source>Check this to trigger actions when the object is NOT colliding with the target</source>
+        <translation>勾选此项可在对象未与目标碰撞时触发操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1727"/>
+        <source>Collision Event Exists</source>
+        <translation>碰撞事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1728"/>
+        <source>This collision event already exists.</source>
+        <translation>此碰撞事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1776"/>
+        <source>Are you sure you want to remove the collision event with {0}?</source>
+        <translation>确定要移除与 {0} 的碰撞事件吗？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1829"/>
+        <source>Are you sure you want to remove the {0} event?</source>
+        <translation>确定要移除 {0} 事件吗？</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="499"/>
+        <source>Thymio Event Exists</source>
+        <translation>Thymio 事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="500"/>
+        <source>This Thymio event already exists.</source>
+        <translation>此 Thymio 事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="612"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="636"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="660"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="698"/>
+        <source>🤖 Thymio Action...</source>
+        <translation>🤖 Thymio 操作...</translation>
+    </message>
+</context>
 </TS>
