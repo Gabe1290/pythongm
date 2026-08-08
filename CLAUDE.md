@@ -1121,3 +1121,37 @@ Continuation of the `docs/I18N_CLEANUP_2026-08-06.md` queue across several
   2204→2207 passed, 0 failed. pt's own `ThymioPlaygroundWindow`
   translation (75 messages, using the now-fixed source) landed in the
   same commit — 1061/1375 active pt messages done (63 of 65 contexts).
+- **pt UI translation (Section H) finished the same session.** Closed
+  the remaining `PyGameMakerIDE` context (287 messages — the main
+  window menu bar/toolbar/status bar, by far the largest single
+  context) in 5 batches, translated incrementally via a new
+  `add_partial_context()` generator helper (appends into the same
+  `<context>` block across runs — the ordinary `add_contexts()` helper
+  required the whole context up front, unworkable at this size).
+  Content: File/Edit/Assets/Build/Tools/Help menus + mnemonic
+  accelerators, auto-save toggles, object/room/GameMaker-.gmk/Open-
+  Roberta-XML import flows, project create/save/load, Test/Debug Game,
+  the full Export Game dialog (every platform's availability string),
+  the About dialog (features/tech-stack/license HTML blocks, verified
+  the markup and the GitHub link/LICENSE code identifiers survive
+  translation intact), Aseba (Thymio) export, and the 5 Thymio editor
+  guard dialogs. Finished by folding `self.ide`'s 18 real-but-orphaned
+  `ide_exporters.py` strings into the now-complete `PyGameMakerIDE`
+  context (commit `c461528`) — the fix from the `self.ide` finding
+  above. **Result: pygm2_pt.ts translates all 1369 real distinct UI
+  strings in the current codebase (61 real contexts; 65 in the
+  reference catalog minus 3 zero-active minus the dead `self.ide`
+  context name itself).** Deleted the now-superseded
+  `translations/pygamemaker_pt.ts` stub (289 entries, zero real
+  translations, confirmed unreferenced). `pt` confirmed in
+  `LanguageManager._discover_languages()`; every batch this session
+  additionally spot-checked its own strings via a live `QTranslator`.
+  **Not done: a human has not opened the running IDE with pt selected
+  and eyeballed it** — every string is programmatically verified to
+  resolve, but nobody has looked at the actual rendered UI. ja and zh
+  are unstarted, same-shaped tiers — `docs/I18N_CLEANUP_2026-08-06.md`
+  Section H is the resume state, with pt's full commit history as the
+  worked example to follow (source-string-list decision, generator-
+  script pattern, per-batch verification discipline, and the two real
+  bugs — `self.ide` and the `self.tr(f"...")` f-strings — that were
+  found and fixed along the way rather than silently replicated).
