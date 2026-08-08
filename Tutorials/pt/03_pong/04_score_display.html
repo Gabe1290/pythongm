@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Exibição da pontuação</h1>
+
+    <p>Vamos adicionar um controlador de jogo para inicializar e exibir as pontuações na tela.</p>
+
+    <!-- ============= SCORE CONTROLLER ============= -->
+    <h2>Crie o controlador de pontuação</h2>
+    <div class="step">
+        <ol>
+            <li>Crie um novo objeto chamado <code>obj_score</code></li>
+            <li><strong>Nenhum sprite necessário</strong></li>
+        </ol>
+    </div>
+
+    <h2>Inicialize as pontuações</h2>
+    <div class="step">
+        <p>Dê um duplo clique em <code>obj_score</code> &rarr; aba <strong>Blockly</strong>.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-score block-indent">Set variable global.p1score to <span class="block-num">0</span></span><br>
+            <span class="block block-score block-indent">Set variable global.p2score to <span class="block-num">0</span></span>
+        </div>
+    </div>
+
+    <h2>Desenhe as pontuações na tela</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw text "Jogador 1:" at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Draw variable global.p1score at x: <span class="block-num">100</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Draw text "Jogador 2:" at x: <span class="block-num">10</span> y: <span class="block-num">30</span></span><br>
+            <span class="block block-score block-indent">Draw variable global.p2score at x: <span class="block-num">100</span> y: <span class="block-num">30</span></span>
+        </div>
+    </div>
+
+    <!-- ============= PLACE IN ROOM ============= -->
+    <h2>Posicione na sala</h2>
+    <div class="step">
+        <p>Abra <code>room_pong</code> e posicione <code>obj_score</code> em qualquer lugar
+        (ele não tem sprite, apenas desenha texto).</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Parabéns! Teste seu jogo final!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li><strong>Jogador 1:</strong> W (cima) e S (baixo)</li>
+            <li><strong>Jogador 2:</strong> Seta cima e Seta baixo</li>
+            <li>As pontuações são exibidas no canto superior esquerdo</li>
+            <li>O primeiro a perder a bola dá um ponto ao outro jogador!</li>
+        </ul>
+    </div>
+
+    <div class="challenge">
+        <strong>Ideias de desafios:</strong>
+        <ul>
+            <li>Faça a bola acelerar depois de cada rebatida</li>
+            <li>Encerre o jogo quando um jogador alcançar 10 pontos</li>
+            <li>Adicione uma linha central para dar um toque visual</li>
+            <li>Faça o ângulo da bola mudar conforme onde ela atinge a raquete</li>
+        </ul>
+    </div>
+</body>
+</html>
