@@ -83,38 +83,38 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
         <location filename="../editors/editor_status_widget.py" line="70"/>
         <location filename="../editors/editor_status_widget.py" line="96"/>
         <source>Saved</source>
-        <translation>Enregistré</translation>
+        <translation>Shranjeno</translation>
     </message>
     <message>
         <location filename="../editors/editor_status_widget.py" line="43"/>
         <location filename="../editors/editor_status_widget.py" line="77"/>
         <source>🔄 Auto-save: ON</source>
-        <translation>🔄 Sauvegarde automatique : ACTIVÉE</translation>
+        <translation>🔄 Samodejno shranjevanje: VKLOPLJENO</translation>
     </message>
     <message>
         <location filename="../editors/editor_status_widget.py" line="62"/>
         <source>Unsaved (auto-save in 3s)</source>
-        <translation>Non enregistré (sauvegarde auto dans 3s)</translation>
+        <translation>Ni shranjeno (samodejno shranjevanje čez 3s)</translation>
     </message>
     <message>
         <location filename="../editors/editor_status_widget.py" line="67"/>
         <source>Unsaved - press Ctrl+S</source>
-        <translation>Non enregistré - appuyez sur Ctrl+S</translation>
+        <translation>Ni shranjeno - pritisnite Ctrl+S</translation>
     </message>
     <message>
         <location filename="../editors/editor_status_widget.py" line="80"/>
         <source>⏸️ Auto-save: OFF</source>
-        <translation>⏸️ Sauvegarde automatique : DÉSACTIVÉE</translation>
+        <translation>⏸️ Samodejno shranjevanje: IZKLOPLJENO</translation>
     </message>
     <message>
         <location filename="../editors/editor_status_widget.py" line="85"/>
         <source>Saving...</source>
-        <translation>Enregistrement...</translation>
+        <translation>Shranjevanje...</translation>
     </message>
     <message>
         <location filename="../editors/editor_status_widget.py" line="91"/>
         <source>Saved ✓</source>
-        <translation>Enregistré ✓</translation>
+        <translation>Shranjeno ✓</translation>
     </message>
 </context>
 <context>
@@ -122,12 +122,12 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="21"/>
         <source>Preferences</source>
-        <translation>Préférences</translation>
+        <translation>Nastavitve</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="46"/>
         <source>Note: Some settings require restarting the IDE to take effect.</source>
-        <translation>Note : Certains paramètres nécessitent de redémarrer l&apos;IDE pour prendre effet.</translation>
+        <translation>Opomba: Nekatere nastavitve zahtevajo ponovni zagon IDE, da začnejo veljati.</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="62"/>
@@ -153,191 +153,191 @@ block preset for new projects. Existing projects are not affected.</source>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="96"/>
         <source>Font Settings</source>
-        <translation>Paramètres de police</translation>
+        <translation>Nastavitve pisave</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="103"/>
         <source>Font Size:</source>
-        <translation>Taille de police :</translation>
+        <translation>Velikost pisave:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="108"/>
         <source>System Default</source>
-        <translation>Système par défaut</translation>
+        <translation>Privzeto v sistemu</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="111"/>
         <source>Font Family:</source>
-        <translation>Famille de police :</translation>
+        <translation>Družina pisave:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="114"/>
         <source>Preview: The quick brown fox jumps over the lazy dog</source>
-        <translation>Aperçu : Portez ce vieux whisky au juge blond qui fume</translation>
+        <translation>Predogled: V kožuščku hudo mravljinca stipala je kobilica</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="116"/>
         <source>Preview:</source>
-        <translation>Aperçu :</translation>
+        <translation>Predogled:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="121"/>
         <source>Theme Settings</source>
-        <translation>Paramètres de thème</translation>
+        <translation>Nastavitve teme</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="127"/>
         <source>Theme:</source>
-        <translation>Thème :</translation>
+        <translation>Tema:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="134"/>
         <source>UI Scale:</source>
-        <translation>Échelle de l&apos;interface :</translation>
+        <translation>Merilo vmesnika:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="137"/>
         <source>Show tooltips</source>
-        <translation>Afficher les info-bulles</translation>
+        <translation>Pokaži namige</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="143"/>
         <source>Appearance</source>
-        <translation>Apparence</translation>
+        <translation>Videz</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="151"/>
         <source>Auto-Save Settings</source>
-        <translation>Paramètres de sauvegarde automatique</translation>
+        <translation>Nastavitve samodejnega shranjevanja</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="154"/>
         <source>Enable auto-save</source>
-        <translation>Activer la sauvegarde automatique</translation>
+        <translation>Omogoči samodejno shranjevanje</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="159"/>
         <source> minutes</source>
-        <translation> minutes</translation>
+        <translation> minut</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="160"/>
         <source>Auto-save interval:</source>
-        <translation>Intervalle de sauvegarde automatique :</translation>
+        <translation>Interval samodejnega shranjevanja:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="165"/>
         <source>Grid &amp; Snapping</source>
-        <translation>Grille et magnétisme</translation>
+        <translation>Mreža in pripenjanje</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="168"/>
         <source>Show grid in editors</source>
-        <translation>Afficher la grille dans les éditeurs</translation>
+        <translation>Pokaži mrežo v urejevalnikih</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="174"/>
         <source>Grid size:</source>
-        <translation>Taille de la grille :</translation>
+        <translation>Velikost mreže:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="176"/>
         <source>Snap to grid</source>
-        <translation>Magnétiser sur la grille</translation>
+        <translation>Pripni na mrežo</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="179"/>
         <source>Show collision boxes</source>
-        <translation>Afficher les boîtes de collision</translation>
+        <translation>Pokaži okvirje trkov</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="185"/>
         <source>Editor</source>
-        <translation>Éditeur</translation>
+        <translation>Urejevalnik</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="193"/>
         <source>Project Paths</source>
-        <translation>Chemins du projet</translation>
+        <translation>Poti projekta</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="199"/>
         <source>Browse...</source>
-        <translation>Parcourir...</translation>
+        <translation>Prebrskaj...</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="203"/>
         <source>Default projects folder:</source>
-        <translation>Dossier de projets par défaut :</translation>
+        <translation>Privzeta mapa projektov:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="208"/>
         <source>Project Settings</source>
-        <translation>Paramètres du projet</translation>
+        <translation>Nastavitve projekta</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="213"/>
         <source>Recent projects limit:</source>
-        <translation>Limite de projets récents :</translation>
+        <translation>Omejitev nedavnih projektov:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="215"/>
         <source>Create backup on save</source>
-        <translation>Créer une sauvegarde lors de l&apos;enregistrement</translation>
+        <translation>Ustvari varnostno kopijo ob shranjevanju</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="221"/>
         <source>Project</source>
-        <translation>Projet</translation>
+        <translation>Projekt</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="229"/>
         <source>Debug Settings</source>
-        <translation>Paramètres de débogage</translation>
+        <translation>Nastavitve razhroščevanja</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="232"/>
         <source>Enable debug mode</source>
-        <translation>Activer le mode débogage</translation>
+        <translation>Omogoči način razhroščevanja</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="235"/>
         <source>Show console output</source>
-        <translation>Afficher la sortie de la console</translation>
+        <translation>Pokaži izpis konzole</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="241"/>
         <source>Performance</source>
-        <translation>Performance</translation>
+        <translation>Zmogljivost</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="246"/>
         <source>Maximum undo steps:</source>
-        <translation>Nombre maximum d&apos;annulations :</translation>
+        <translation>Največje število korakov razveljavitve:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="251"/>
         <source>Advanced</source>
-        <translation>Avancé</translation>
+        <translation>Napredno</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="343"/>
         <source>Select Default Projects Directory</source>
-        <translation>Sélectionner le répertoire de projets par défaut</translation>
+        <translation>Izberite privzeti imenik projektov</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="402"/>
         <source>Settings Saved</source>
-        <translation>Paramètres enregistrés</translation>
+        <translation>Nastavitve shranjene</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="403"/>
         <source>Settings have been saved successfully.
 
 Some changes may require restarting the IDE to take effect.</source>
-        <translation>Les paramètres ont été enregistrés avec succès.
+        <translation>Nastavitve so bile uspešno shranjene.
 
-Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre effet.</translation>
+Nekatere spremembe lahko zahtevajo ponovni zagon IDE, da začnejo veljati.</translation>
     </message>
 </context>
 <context>
@@ -375,47 +375,47 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="174"/>
         <source>Export as HTML5...</source>
-        <translation>Exporter en HTML5...</translation>
+        <translation>Izvozi kot HTML5...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="175"/>
         <source>Export as &amp;Zip...</source>
-        <translation>Exporter en &amp;Zip...</translation>
+        <translation>Izvozi kot &amp;Zip...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="176"/>
         <source>Export to Kivy...</source>
-        <translation>Exporter vers Kivy...</translation>
+        <translation>Izvozi v Kivy...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="178"/>
         <source>Export Project...</source>
-        <translation>Exporter le projet...</translation>
+        <translation>Izvozi projekt...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="186"/>
         <source>Open &amp;Zip Project...</source>
-        <translation>Ouvrir un projet &amp;Zip...</translation>
+        <translation>Odpri projekt &amp;Zip...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="196"/>
         <source>Auto-Save to Zip</source>
-        <translation>Sauvegarde auto en Zip</translation>
+        <translation>Samodejno shranjevanje v Zip</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="203"/>
         <source>Enable Auto-Save</source>
-        <translation>Activer la sauvegarde auto</translation>
+        <translation>Omogoči samodejno shranjevanje</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="210"/>
         <source>Auto-Save Settings...</source>
-        <translation>Paramètres de sauvegarde auto...</translation>
+        <translation>Nastavitve samodejnega shranjevanja...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="215"/>
         <source>Project &amp;Settings...</source>
-        <translation>Paramètres du &amp;projet...</translation>
+        <translation>&amp;Nastavitve projekta...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="217"/>
@@ -430,27 +430,27 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="220"/>
         <source>&amp;Undo</source>
-        <translation>&amp;Annuler</translation>
+        <translation>&amp;Razveljavi</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="221"/>
         <source>&amp;Redo</source>
-        <translation>&amp;Rétablir</translation>
+        <translation>&amp;Uveljavi</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="223"/>
         <source>Cu&amp;t</source>
-        <translation>Cou&amp;per</translation>
+        <translation>&amp;Izreži</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="224"/>
         <source>&amp;Copy</source>
-        <translation>&amp;Copier</translation>
+        <translation>&amp;Kopiraj</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="225"/>
         <source>&amp;Paste</source>
-        <translation>Co&amp;ller</translation>
+        <translation>&amp;Prilepi</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
@@ -487,12 +487,12 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="247"/>
         <source>&amp;Assets</source>
-        <translation>&amp;Ressources</translation>
+        <translation>&amp;Viri</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="229"/>
         <source>Import &amp;Sprite...</source>
-        <translation>Importer un &amp;sprite...</translation>
+        <translation>Uvozi &amp;sprite...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="226"/>
@@ -510,22 +510,22 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="230"/>
         <source>Import &amp;Sound...</source>
-        <translation>Importer un &amp;son...</translation>
+        <translation>Uvozi &amp;zvok...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="231"/>
         <source>Import &amp;Background...</source>
-        <translation>Importer un arrière-&amp;plan...</translation>
+        <translation>Uvozi &amp;ozadje...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="232"/>
         <source>Create &amp;Object...</source>
-        <translation>Créer un &amp;objet...</translation>
+        <translation>Ustvari &amp;objekt...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="233"/>
         <source>Create &amp;Room...</source>
-        <translation>Créer une &amp;salle...</translation>
+        <translation>Ustvari &amp;sobo...</translation>
     </message>
     <message>
         <source>Create &amp;Script...</source>
@@ -534,27 +534,27 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="236"/>
         <source>Create &amp;Font...</source>
-        <translation>Créer une &amp;police...</translation>
+        <translation>Ustvari &amp;pisavo...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="259"/>
         <source>Import Object Package...</source>
-        <translation>Importer un package d&apos;objet...</translation>
+        <translation>Uvozi paket objekta...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="260"/>
         <source>Import Room Package...</source>
-        <translation>Importer un package de salle...</translation>
+        <translation>Uvozi paket sobe...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="264"/>
         <source>&amp;Build</source>
-        <translation>&amp;Compiler</translation>
+        <translation>&amp;Zgradi</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="266"/>
         <source>&amp;Test Game</source>
-        <translation>&amp;Tester le jeu</translation>
+        <translation>&amp;Preizkusi igro</translation>
     </message>
     <message>
         <source>&amp;Build Game...</source>
@@ -567,7 +567,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="268"/>
         <source>&amp;Export Game...</source>
-        <translation>&amp;Exporter le jeu...</translation>
+        <translation>&amp;Izvozi igro...</translation>
     </message>
     <message>
         <source>&amp;Run</source>
@@ -580,7 +580,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="267"/>
         <source>&amp;Debug Game</source>
-        <translation>&amp;Déboguer le jeu</translation>
+        <translation>&amp;Razhroščuj igro</translation>
     </message>
     <message>
         <source>&amp;Stop Game</source>
@@ -594,7 +594,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="281"/>
         <source>&amp;Preferences...</source>
-        <translation>&amp;Préférences...</translation>
+        <translation>&amp;Nastavitve...</translation>
     </message>
     <message>
         <source>&amp;Asset Manager...</source>
@@ -607,7 +607,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="296"/>
         <source>&amp;Validate Project</source>
-        <translation>&amp;Valider le projet</translation>
+        <translation>&amp;Preveri projekt</translation>
     </message>
     <message>
         <source>&amp;Clean Project</source>
@@ -616,7 +616,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="304"/>
         <source>🌐 &amp;Language</source>
-        <translation>🌐 &amp;Langue</translation>
+        <translation>🌐 &amp;Jezik</translation>
     </message>
     <message>
         <source>&amp;Language</source>
@@ -648,7 +648,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="3049"/>
         <source>About PyGameMaker</source>
-        <translation>À propos de PyGameMaker</translation>
+        <translation>O PyGameMaker</translation>
     </message>
     <message>
         <source>PyGameMaker IDE</source>
@@ -658,7 +658,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
         <location filename="../core/ide_window.py" line="1103"/>
         <location filename="../core/ide_window.py" line="3783"/>
         <source>Ready</source>
-        <translation>Prêt</translation>
+        <translation>Pripravljeno</translation>
     </message>
     <message>
         <source>Assets</source>
@@ -684,7 +684,7 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
         <location filename="../core/ide_window.py" line="3256"/>
         <location filename="../core/ide_window.py" line="3296"/>
         <source>Error</source>
-        <translation>Erreur</translation>
+        <translation>Napaka</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -746,12 +746,12 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="339"/>
         <source>&amp;About PyGameMaker</source>
-        <translation>&amp;À propos de PyGameMaker</translation>
+        <translation>&amp;O PyGameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="475"/>
         <source>Translation Not Available</source>
-        <translation>Traduction non disponible</translation>
+        <translation>Prevod ni na voljo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="476"/>
@@ -841,7 +841,7 @@ To bo omogočilo samodejno shranjevanje z datoteko zip.</translation>
         <location filename="../core/ide_window.py" line="2776"/>
         <location filename="../core/ide_window.py" line="2816"/>
         <source>No Project</source>
-        <translation>Aucun projet</translation>
+        <translation>Ni projekta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="591"/>
@@ -891,7 +891,7 @@ To bo omogočilo samodejno shranjevanje z datoteko zip.</translation>
         <location filename="../core/ide_window.py" line="758"/>
         <location filename="../core/ide_window.py" line="772"/>
         <source>Import Failed</source>
-        <translation>Échec de l&apos;importation</translation>
+        <translation>Uvoz ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="625"/>
@@ -1040,12 +1040,12 @@ Ali želite zdaj ustvariti nov projekt?</translation>
     <message>
         <location filename="../core/ide_window.py" line="1592"/>
         <source>Create {0}</source>
-        <translation>Créer {0}</translation>
+        <translation>Ustvari {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1593"/>
         <source>Enter name for new {0}:</source>
-        <translation>Entrez le nom du nouveau {0} :</translation>
+        <translation>Vnesite ime za nov {0}:</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1682"/>
@@ -1326,7 +1326,7 @@ Prosimo, zaenkrat uporabite izvoz HTML5, Windows EXE ali Linux binarno datoteko.
     <message>
         <location filename="../core/ide_window.py" line="2312"/>
         <source>Choose Export Location</source>
-        <translation>Choisir l&apos;emplacement d&apos;export</translation>
+        <translation>Izberite mesto izvoza</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2103"/>
@@ -1366,7 +1366,7 @@ Prosimo, zaenkrat uporabite izvoz HTML5, Windows EXE ali Linux binarno datoteko.
         <location filename="../core/ide_window.py" line="2159"/>
         <location filename="../core/ide_window.py" line="2185"/>
         <source>Export Failed</source>
-        <translation>Échec de l&apos;export</translation>
+        <translation>Izvoz ni uspel</translation>
     </message>
     <message>
         <source>Not Implemented</source>
@@ -1561,7 +1561,7 @@ ali obiščite:</translation>
     <message>
         <location filename="../core/ide_window.py" line="3001"/>
         <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Un environnement de développement de jeux visuel complet&lt;br&gt;inspiré de GameMaker Studio, construit avec Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Fonctionnalités&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Double mode de programmation :&lt;/b&gt; Visuel (Blockly) et Événements traditionnels&lt;/li&gt;&lt;li&gt;&lt;b&gt;Gestion des ressources :&lt;/b&gt; Sprites, sons, objets et salles&lt;/li&gt;&lt;li&gt;&lt;b&gt;Export multiplateforme :&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Configuration flexible :&lt;/b&gt; Visibilité personnalisable des blocs/événements&lt;/li&gt;&lt;li&gt;&lt;b&gt;Test en temps réel :&lt;/b&gt; Exécutez les jeux directement depuis l&apos;IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technologies utilisées&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE :&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Moteur de jeu :&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Programmation visuelle :&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export :&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Langage :&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Informations sur le projet&lt;/h3&gt;&lt;p&gt;PyGameMaker est un outil éducatif conçu pour rendre&lt;br&gt;le développement de jeux accessible aux débutants tout en offrant&lt;br&gt;des fonctionnalités puissantes pour les développeurs expérimentés.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Créé avec ❤️ en utilisant Python et Qt&lt;/small&gt;&lt;/p&gt;</translation>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Različica {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Celovito vizualno razvojno okolje za igre&lt;br&gt;navdihnjeno z GameMaker Studio, zgrajeno s Pythonom.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Funkcije&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dvojni način programiranja:&lt;/b&gt; Vizualni (Blockly) in tradicionalni dogodki&lt;/li&gt;&lt;li&gt;&lt;b&gt;Upravljanje virov:&lt;/b&gt; Sprite-i, zvoki, objekti in sobe&lt;/li&gt;&lt;li&gt;&lt;b&gt;Medplatformni izvoz:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Prilagodljiva konfiguracija:&lt;/b&gt; Nastavljiva vidnost blokov/dogodkov&lt;/li&gt;&lt;li&gt;&lt;b&gt;Testiranje v realnem času:&lt;/b&gt; Zaženite igre neposredno iz IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Tehnološki sklad&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Igralni pogon:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Vizualno programiranje:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Izvoz:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Jezik:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Informacije o projektu&lt;/h3&gt;&lt;p&gt;PyGameMaker je izobraževalno orodje, zasnovano za to,&lt;br&gt;da naredi razvoj iger dostopen začetnikom, hkrati pa ponuja&lt;br&gt;zmogljive funkcije za izkušene razvijalce.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Izdelano z ❤️ s Pythonom in Qt&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3037"/>
@@ -1575,7 +1575,7 @@ ali obiščite:</translation>
     </message>
     <message>
         <source>Editor</source>
-        <translation type="vanished">Éditeur</translation>
+        <translation type="vanished">Urejevalnik</translation>
     </message>
     <message>
         <source>Editor for {0} not yet implemented.
@@ -1765,7 +1765,7 @@ Ali želite:
     <message>
         <location filename="../core/ide_window.py" line="1243"/>
         <source>Open Project</source>
-        <translation>Ouvrir un projet</translation>
+        <translation>Odpri projekt</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3257"/>
@@ -1787,7 +1787,7 @@ Ali želite:
     <message>
         <location filename="../core/ide_window.py" line="3719"/>
         <source>Save Project</source>
-        <translation>Enregistrer le projet</translation>
+        <translation>Shrani projekt</translation>
     </message>
     <message>
         <source>Project saved successfully</source>
@@ -1797,7 +1797,7 @@ Ali želite:
         <location filename="../core/ide_window.py" line="1293"/>
         <location filename="../core/ide_window.py" line="1319"/>
         <source>Failed to save project</source>
-        <translation>Échec de l&apos;enregistrement du projet</translation>
+        <translation>Shranjevanje projekta ni uspelo</translation>
     </message>
     <message>
         <source>Project loaded successfully</source>
@@ -1806,13 +1806,13 @@ Ali želite:
     <message>
         <location filename="../core/ide_window.py" line="1280"/>
         <source>Failed to load project</source>
-        <translation>Échec du chargement du projet</translation>
+        <translation>Nalaganje projekta ni uspelo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="972"/>
         <location filename="../core/ide_window.py" line="3878"/>
         <source>Unsaved Changes</source>
-        <translation>Modifications non enregistrées</translation>
+        <translation>Neshranjene spremembe</translation>
     </message>
     <message>
         <source>Do you want to save your changes?</source>
@@ -1825,7 +1825,7 @@ Ali želite:
     <message>
         <location filename="../core/ide_window.py" line="1869"/>
         <source>Game stopped</source>
-        <translation>Jeu arrêté</translation>
+        <translation>Igra ustavljena</translation>
     </message>
     <message>
         <source>Build</source>
@@ -1838,7 +1838,7 @@ Ali želite:
     <message>
         <location filename="../core/ide_window.py" line="3724"/>
         <source>Build and Run</source>
-        <translation>Compiler et exécuter</translation>
+        <translation>Zgradi in zaženi</translation>
     </message>
     <message>
         <source>Clear Build Cache</source>
@@ -1848,7 +1848,7 @@ Ali želite:
         <location filename="../core/ide_window.py" line="1110"/>
         <location filename="../core/ide_window.py" line="3778"/>
         <source>No project loaded</source>
-        <translation>Aucun projet chargé</translation>
+        <translation>Ni naloženega projekta</translation>
     </message>
     <message>
         <source>Please create or open a project first</source>
@@ -1857,7 +1857,7 @@ Ali želite:
     <message>
         <location filename="../core/ide_window.py" line="466"/>
         <source>Language Changed</source>
-        <translation>Langue modifiée</translation>
+        <translation>Jezik spremenjen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="467"/>
@@ -2469,7 +2469,7 @@ Preverite konzolo za podrobnosti o napaki.</translation>
     <message>
         <location filename="../widgets/welcome_tab.py" line="86"/>
         <source>Welcome to PyGameMaker IDE</source>
-        <translation>Bienvenue dans PyGameMaker IDE</translation>
+        <translation>Dobrodošli v PyGameMaker IDE</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="124"/>
