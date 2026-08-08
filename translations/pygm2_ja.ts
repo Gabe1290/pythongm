@@ -581,4 +581,292 @@ Do you want to save anyway?</source>
         <translation>（なし）</translation>
     </message>
 </context>
+<context>
+    <name>BlocklyWidget</name>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
+        <source>⬜ Detach</source>
+        <translation>⬜ 切り離す</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="131"/>
+        <source>Open Blockly editor in a separate window</source>
+        <translation>Blocklyエディタを別のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
+        <source>Drag blocks from the toolbox on the left to create game logic!</source>
+        <translation>左側のツールボックスからブロックをドラッグしてゲームロジックを作成しましょう！</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
+        <source>Error loading Blockly</source>
+        <translation>Blocklyの読み込みエラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
+        <source>Blocks updated - {0} events</source>
+        <translation>ブロックを更新しました - {0} イベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
+        <source>No events to load</source>
+        <translation>読み込むイベントがありません</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
+        <source>Loaded {0} events as blocks</source>
+        <translation>{0} 件のイベントをブロックとして読み込みました</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
+        <source>Loaded {0} events - some may not have block equivalents</source>
+        <translation>{0} 件のイベントを読み込みました - 一部はブロックに対応していない場合があります</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
+        <source>Configuration applied: {0} blocks, {1} categories</source>
+        <translation>設定を適用しました：ブロック {0} 個、カテゴリ {1} 個</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialDialog</name>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="27"/>
+        <source>Tutorials</source>
+        <translation>チュートリアル</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="46"/>
+        <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker チュートリアル&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="50"/>
+        <source>Select a tutorial and click Open (or double-click):</source>
+        <translation>チュートリアルを選択して「開く」をクリック（またはダブルクリック）してください：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="83"/>
+        <source>Tip: Check the documentation (F1) for quick help!</source>
+        <translation>ヒント：クイックヘルプはドキュメント（F1）を確認してください！</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="91"/>
+        <source>Open</source>
+        <translation>開く</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="97"/>
+        <source>Close</source>
+        <translation>閉じる</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="118"/>
+        <source>Select a tutorial to see its description.</source>
+        <translation>チュートリアルを選択すると説明が表示されます。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="121"/>
+        <source>No tutorials folder found</source>
+        <translation>チュートリアルフォルダが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="162"/>
+        <source>No tutorials available</source>
+        <translation>利用可能なチュートリアルがありません</translation>
+    </message>
+</context>
+<context>
+    <name>MultiActionEditor</name>
+    <message>
+        <location filename="../events/action_editor.py" line="574"/>
+        <source>Configure Actions</source>
+        <translation>アクションを設定</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="584"/>
+        <source>Action Sequence</source>
+        <translation>アクションの順序</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="590"/>
+        <source>Action</source>
+        <translation>アクション</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="590"/>
+        <source>Parameters</source>
+        <translation>パラメータ</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="597"/>
+        <source>➕ Add Action</source>
+        <translation>➕ アクションを追加</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="601"/>
+        <source>✏️ Edit Action</source>
+        <translation>✏️ アクションを編集</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="605"/>
+        <source>➖ Remove Action</source>
+        <translation>➖ アクションを削除</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="609"/>
+        <source>⬆️ Move Up</source>
+        <translation>⬆️ 上へ移動</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="613"/>
+        <source>⬇️ Move Down</source>
+        <translation>⬇️ 下へ移動</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundColorManager</name>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="29"/>
+        <source>Colors</source>
+        <translation>色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="43"/>
+        <source>Add color</source>
+        <translation>色を追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="49"/>
+        <source>Remove color</source>
+        <translation>色を削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Add Color</source>
+        <translation>色を追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Color name:</source>
+        <translation>色の名前：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="87"/>
+        <source>Duplicate</source>
+        <translation>重複</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="88"/>
+        <source>A color named &apos;{}&apos; already exists.</source>
+        <translation>「{}」という名前の色はすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="91"/>
+        <source>Choose Color</source>
+        <translation>色を選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="121"/>
+        <source>Edit Color</source>
+        <translation>色を編集</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundToolPalette</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="25"/>
+        <source>Tools</source>
+        <translation>ツール</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="32"/>
+        <source>Select</source>
+        <translation>選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="35"/>
+        <source>Select and move elements</source>
+        <translation>要素を選択して移動</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="39"/>
+        <source>Wall</source>
+        <translation>壁</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="41"/>
+        <source>Click to place walls</source>
+        <translation>クリックして壁を配置</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="45"/>
+        <source>Robot</source>
+        <translation>ロボット</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="47"/>
+        <source>Click to place robots</source>
+        <translation>クリックしてロボットを配置</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="51"/>
+        <source>Block</source>
+        <translation>ブロック</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="53"/>
+        <source>Paint cube blocks on a grid (Minecraft-style)</source>
+        <translation>グリッド上に立方体ブロックを描画（マインクラフト風）</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="44"/>
+        <source>Select Thymio Event</source>
+        <translation>Thymioイベントを選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="52"/>
+        <source>Select a Thymio event to respond to:</source>
+        <translation>応答するThymioイベントを選択してください：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="72"/>
+        <source>Click on the robot to filter events, or select from the list below.</source>
+        <translation>ロボットをクリックしてイベントを絞り込むか、以下のリストから選択してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="84"/>
+        <source>All</source>
+        <translation>すべて</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="108"/>
+        <source>Search:</source>
+        <translation>検索：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="112"/>
+        <source>Type to filter events...</source>
+        <translation>入力してイベントを絞り込む...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="140"/>
+        <source>Select Event</source>
+        <translation>イベントを選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="308"/>
+        <source>No Selection</source>
+        <translation>未選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="309"/>
+        <source>Please select a Thymio event first.</source>
+        <translation>先にThymioイベントを選択してください。</translation>
+    </message>
+</context>
 </TS>
