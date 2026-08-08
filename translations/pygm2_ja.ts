@@ -1089,4 +1089,134 @@ Do you want to save anyway?</source>
         <translation>先にThymioアクションを選択してください。</translation>
     </message>
 </context>
+<context>
+    <name>ImportAssetsDialog</name>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="22"/>
+        <source>Import Assets</source>
+        <translation>アセットをインポート</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="32"/>
+        <location filename="../dialogs/import_dialogs.py" line="90"/>
+        <source>Select Files to Import</source>
+        <translation>インポートするファイルを選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="40"/>
+        <source>Add Files...</source>
+        <translation>ファイルを追加...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="44"/>
+        <source>Add Folder...</source>
+        <translation>フォルダを追加...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="48"/>
+        <source>Clear All</source>
+        <translation>すべてクリア</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="57"/>
+        <source>Import Options</source>
+        <translation>インポートオプション</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="60"/>
+        <source>Auto-detect asset type</source>
+        <translation>アセットの種類を自動検出</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="64"/>
+        <source>Copy files to project folder</source>
+        <translation>ファイルをプロジェクトフォルダにコピー</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="73"/>
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="76"/>
+        <source>Import</source>
+        <translation>インポート</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="92"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
+        <translation>画像 (*.png *.jpg *.jpeg *.bmp *.gif);;サウンド (*.wav *.mp3 *.ogg);;すべてのファイル (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="107"/>
+        <source>Select Folder</source>
+        <translation>フォルダを選択</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectPropertiesPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="25"/>
+        <source>Object Properties</source>
+        <translation>オブジェクトのプロパティ</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="39"/>
+        <source>Sprite to display for this object</source>
+        <translation>このオブジェクトに表示するスプライト</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="45"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="101"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
+        <source>&lt;no parent&gt;</source>
+        <translation>＜親なし＞</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
+        <source>Parent object (inherits collision events)</source>
+        <translation>親オブジェクト（衝突イベントを継承）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
+        <source>Sprite:</source>
+        <translation>スプライト：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
+        <source>Parent:</source>
+        <translation>親：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
+        <source>Visible</source>
+        <translation>表示</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="67"/>
+        <source>Object is visible in the game</source>
+        <translation>オブジェクトはゲーム内で表示されます</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="74"/>
+        <source>Persistent</source>
+        <translation>永続</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="76"/>
+        <source>Object persists between rooms</source>
+        <translation>オブジェクトはルーム間で保持されます</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
+        <source>Solid</source>
+        <translation>ソリッド</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
+        <source>Solid objects block movement</source>
+        <translation>ソリッドオブジェクトは移動を妨げます</translation>
+    </message>
+</context>
 </TS>
