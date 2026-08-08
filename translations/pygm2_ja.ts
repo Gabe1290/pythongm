@@ -2520,4 +2520,485 @@ Do you want to save anyway?</source>
         <translation>アニメーション速度：</translation>
     </message>
 </context>
+<context>
+    <name>ExportProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="419"/>
+        <source>Export Project</source>
+        <translation>プロジェクトをエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="430"/>
+        <source>Export Target</source>
+        <translation>エクスポート先</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="435"/>
+        <source>Desktop Executable (.exe/.app)</source>
+        <translation>デスクトップ実行ファイル（.exe/.app）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="436"/>
+        <source>Web (HTML5)</source>
+        <translation>Web（HTML5）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="437"/>
+        <source>Mobile (Kivy)</source>
+        <translation>モバイル（Kivy）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="438"/>
+        <source>Mobile (APK)</source>
+        <translation>モバイル（APK）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="439"/>
+        <source>Source Code (.zip)</source>
+        <translation>ソースコード（.zip）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="441"/>
+        <source>Target Platform:</source>
+        <translation>対象プラットフォーム：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="446"/>
+        <source>Choose export location...</source>
+        <translation>エクスポート先を選択...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="448"/>
+        <source>Browse...</source>
+        <translation>参照...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="453"/>
+        <source>Output Location:</source>
+        <translation>出力先：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="458"/>
+        <source>Export Options</source>
+        <translation>エクスポートオプション</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="463"/>
+        <source>Include Assets:</source>
+        <translation>アセットを含める：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="467"/>
+        <source>Optimize for Release:</source>
+        <translation>リリース用に最適化：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="471"/>
+        <source>Include Debug Info:</source>
+        <translation>デバッグ情報を含める：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="488"/>
+        <source>Export</source>
+        <translation>エクスポート</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="510"/>
+        <source>Choose Export Location</source>
+        <translation>エクスポート先を選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Invalid Output</source>
+        <translation>無効な出力</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Please choose an export location.</source>
+        <translation>エクスポート先を選択してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="564"/>
+        <location filename="../dialogs/project_dialogs.py" line="594"/>
+        <location filename="../dialogs/project_dialogs.py" line="635"/>
+        <location filename="../dialogs/project_dialogs.py" line="675"/>
+        <location filename="../dialogs/project_dialogs.py" line="680"/>
+        <location filename="../dialogs/project_dialogs.py" line="698"/>
+        <location filename="../dialogs/project_dialogs.py" line="779"/>
+        <source>Export Error</source>
+        <translation>エクスポートエラー</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="565"/>
+        <location filename="../dialogs/project_dialogs.py" line="676"/>
+        <source>Could not access project manager</source>
+        <translation>プロジェクトマネージャーにアクセスできませんでした</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="574"/>
+        <location filename="../dialogs/project_dialogs.py" line="613"/>
+        <location filename="../dialogs/project_dialogs.py" line="655"/>
+        <location filename="../dialogs/project_dialogs.py" line="751"/>
+        <source>Export Successful</source>
+        <translation>エクスポート成功</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="575"/>
+        <source>Kivy project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Kivyプロジェクトをエクスポートしました：
+{0}
+
+エクスポート先フォルダを開きますか？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="589"/>
+        <location filename="../dialogs/project_dialogs.py" line="630"/>
+        <location filename="../dialogs/project_dialogs.py" line="672"/>
+        <location filename="../dialogs/project_dialogs.py" line="770"/>
+        <source>Export Failed</source>
+        <translation>エクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="590"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>プロジェクトのエクスポートに失敗しました。コンソールでエラーを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="595"/>
+        <source>Error during export:
+{0}
+
+{1}</source>
+        <translation>エクスポート中にエラーが発生しました：
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="614"/>
+        <source>HTML5 game exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>HTML5ゲームをエクスポートしました：
+{0}
+
+エクスポート先フォルダを開きますか？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="631"/>
+        <source>Failed to export HTML5 game. Check console for errors.</source>
+        <translation>HTML5ゲームのエクスポートに失敗しました。コンソールでエラーを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="636"/>
+        <source>Error during HTML5 export:
+{0}
+
+{1}</source>
+        <translation>HTML5エクスポート中にエラーが発生しました：
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="656"/>
+        <source>Project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>プロジェクトをエクスポートしました：
+{0}
+
+エクスポート先フォルダを開きますか？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="673"/>
+        <source>Failed to export ZIP file. Check console for errors.</source>
+        <translation>ZIPファイルのエクスポートに失敗しました。コンソールでエラーを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="681"/>
+        <source>Error during ZIP export:
+{0}
+
+{1}</source>
+        <translation>ZIPエクスポート中にエラーが発生しました：
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="699"/>
+        <source>Project file not found: {0}</source>
+        <translation>プロジェクトファイルが見つかりません：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="715"/>
+        <source>Initializing export...</source>
+        <translation>エクスポートを初期化中...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="716"/>
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="720"/>
+        <source>Exporting Executable</source>
+        <translation>実行ファイルをエクスポート中</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="752"/>
+        <source>Executable exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>実行ファイルをエクスポートしました：
+{0}
+
+エクスポート先フォルダを開きますか？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="771"/>
+        <source>Failed to export executable:
+
+{0}</source>
+        <translation>実行ファイルのエクスポートに失敗しました：
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="780"/>
+        <source>Error during executable export:
+{0}
+
+{1}</source>
+        <translation>実行ファイルのエクスポート中にエラーが発生しました：
+{0}
+
+{1}</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectEditor</name>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="184"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="650"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="664"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="186"/>
+        <source>Save object (Ctrl+S)</source>
+        <translation>オブジェクトを保存（Ctrl+S）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="380"/>
+        <source>Actions are managed through the Object Events panel on the left.
+
+Select an event and right-click to add actions.</source>
+        <translation>アクションは左側の「オブジェクトイベント」パネルで管理されています。
+
+イベントを選択し、右クリックしてアクションを追加してください。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="395"/>
+        <source>📋 Event List</source>
+        <translation>📋 イベントリスト</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="402"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="558"/>
+        <source>🧩 Blockly</source>
+        <translation>🧩 Blockly</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="405"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="561"/>
+        <source>Scratch-like block programming</source>
+        <translation>Scratch風のブロックプログラミング</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="421"/>
+        <source>Mode:</source>
+        <translation>モード：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="425"/>
+        <source>📖 View Generated Code</source>
+        <translation>📖 生成されたコードを表示</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="426"/>
+        <source>✏️ Edit Custom Code</source>
+        <translation>✏️ カスタムコードを編集</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="440"/>
+        <source>🔄 Refresh</source>
+        <translation>🔄 更新</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="450"/>
+        <source># Python code editor
+# Switch to &apos;Edit Custom Code&apos; mode to write your own Python code
+# Or view generated code from visual events</source>
+        <translation># Pythonコードエディタ
+# 独自のPythonコードを書くには「カスタムコードを編集」モードに切り替えてください
+# またはビジュアルイベントから生成されたコードを表示できます</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="485"/>
+        <source>Event for custom code:</source>
+        <translation>カスタムコードのイベント：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="500"/>
+        <source>💻 Code Editor</source>
+        <translation>💻 コードエディタ</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="502"/>
+        <source>Edit Python code or view generated code</source>
+        <translation>Pythonコードを編集するか、生成されたコードを表示</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="546"/>
+        <source>Blockly visual programming is not available.
+
+Error: {0}</source>
+        <translation>Blocklyビジュアルプログラミングは利用できません。
+
+エラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
+        <source>Validation Error</source>
+        <translation>検証エラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="702"/>
+        <source>Cannot save: {0}</source>
+        <translation>保存できません：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="730"/>
+        <source>Saved: {0}</source>
+        <translation>保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="746"/>
+        <source>Save Error</source>
+        <translation>保存エラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="747"/>
+        <source>Error saving object: {0}</source>
+        <translation>オブジェクトの保存エラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="793"/>
+        <source>Loaded {0} sprites</source>
+        <translation>スプライトを {0} 個読み込みました</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="813"/>
+        <source>Error loading assets: {0}</source>
+        <translation>アセットの読み込みエラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="966"/>
+        <source>Object name is required</source>
+        <translation>オブジェクト名が必要です</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="972"/>
+        <source>Referenced sprite &apos;{0}&apos; does not exist</source>
+        <translation>参照先のスプライト「{0}」が存在しません</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="979"/>
+        <source>Event &apos;{0}&apos; has invalid data structure</source>
+        <translation>イベント「{0}」のデータ構造が無効です</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="984"/>
+        <source>Event &apos;{0}&apos; has invalid actions data</source>
+        <translation>イベント「{0}」のアクションデータが無効です</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="990"/>
+        <source>Validation error: {0}</source>
+        <translation>検証エラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
+        <source>Edit mode: changes apply automatically as you type</source>
+        <translation>編集モード：入力すると自動的に変更が適用されます</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
+        <source>No event methods found in the code</source>
+        <translation>コード内にイベントメソッドが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
+        <source>{0} events</source>
+        <translation>{0} 件のイベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1141"/>
+        <source>Editing event: {0}</source>
+        <translation>イベントを編集中：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1198"/>
+        <source>Applied {0} events from visual blocks</source>
+        <translation>ビジュアルブロックから {0} 件のイベントを適用しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1208"/>
+        <source>Selected action: {0} ({1})</source>
+        <translation>選択されたアクション：{0}（{1}）</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1229"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1250"/>
+        <source># No events or actions have been added yet.
+# Add events in the Object Events panel to see generated code here.</source>
+        <translation># イベントやアクションはまだ追加されていません。
+# 「オブジェクトイベント」パネルでイベントを追加すると、生成されたコードがここに表示されます。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1268"/>
+        <source>Generated code view updated</source>
+        <translation>生成されたコードの表示を更新しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1421"/>
+        <source>View mode: Switch to &apos;Edit Custom Code&apos; to modify and apply code</source>
+        <translation>表示モード：コードを変更して適用するには「カスタムコードを編集」に切り替えてください</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1593"/>
+        <source>Assets loaded: {0} sprites</source>
+        <translation>アセットを読み込みました：スプライト {0} 個</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="257"/>
+        <source>Standard</source>
+        <translation>標準</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="271"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="295"/>
+        <source>🤖 Thymio</source>
+        <translation>🤖 Thymio</translation>
+    </message>
+</context>
 </TS>
