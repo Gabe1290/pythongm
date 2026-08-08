@@ -120,6 +120,19 @@
                 "08_room_setup.html"
             ],
             "thumbnail": "thumbnails/08_lunar_lander.png"
+        },
+        {
+            "title": "Prendi le Monete: Vincere e Perdere",
+            "folder": "09_catch_the_coins",
+            "description": "Costruisci un gioco completo: prendi le monete per vincere, evita il nemico o è game over",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_coins_and_enemy.html",
+                "04_catching_and_crashing.html",
+                "05_winning.html"
+            ],
+            "thumbnail": "thumbnails/09_catch_the_coins.png"
         }
     ]
 }
