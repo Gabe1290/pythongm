@@ -20,31 +20,31 @@
         <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="101"/>
         <source>Full (All Blocks)</source>
-        <translation>Complet (Tous les blocs)</translation>
+        <translation>Polno (Vsi bloki)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="55"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="102"/>
         <source>Beginner (Basic Blocks)</source>
-        <translation>Débutant (Blocs basiques)</translation>
+        <translation>Začetnik (Osnovni bloki)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="56"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="103"/>
         <source>Intermediate (More Features)</source>
-        <translation>Intermédiaire (Plus de fonctionnalités)</translation>
+        <translation>Srednja stopnja (Več funkcij)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="57"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="104"/>
         <source>Platformer Game</source>
-        <translation>Jeu de plateforme</translation>
+        <translation>Ploščadna igra</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="58"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="105"/>
         <source>Grid-based RPG</source>
-        <translation>RPG basé sur une grille</translation>
+        <translation>RPG na osnovi mreže</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="59"/>
@@ -84,12 +84,12 @@
         <location filename="../dialogs/blockly_config_dialog.py" line="64"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
         <source>Custom</source>
-        <translation>Personnalisé</translation>
+        <translation>Po meri</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
         <source>Select blocks to enable:</source>
-        <translation>Sélectionner les blocs à activer :</translation>
+        <translation>Izberite bloke za omogočanje:</translation>
     </message>
     <message>
         <source>Block</source>
@@ -136,7 +136,7 @@
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="136"/>
         <source>{0} blocks, {1} categories</source>
-        <translation>{0} blocs, {1} catégories</translation>
+        <translation>{0} blokov, {1} kategorij</translation>
     </message>
     <message>
         <source>Missing Dependencies</source>
@@ -147,9 +147,9 @@
         <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
 
 Do you want to save anyway?</source>
-        <translation>Certains blocs activés ont des dépendances manquantes. Les blocs pourraient ne pas fonctionner correctement.
+        <translation>Nekaterim omogočenim blokom manjkajo odvisnosti. Bloki morda ne bodo delovali pravilno.
 
-Voulez-vous enregistrer quand même ?</translation>
+Ali želite vseeno shraniti?</translation>
     </message>
 </context>
 <context>
@@ -235,7 +235,7 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
-        <translation>Glissez des blocs depuis la boîte à outils à gauche pour créer la logique du jeu !</translation>
+        <translation>Povlecite bloke iz orodjarne na levi, da ustvarite logiko igre!</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
@@ -253,7 +253,7 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
         <source>Blocks updated - {0} events</source>
-        <translation>Blocs mis à jour - {0} événements</translation>
+        <translation>Bloki posodobljeni - {0} dogodkov</translation>
     </message>
     <message>
         <source>Applied {0} events</source>
@@ -266,17 +266,17 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
         <source>No events to load</source>
-        <translation>Aucun événement à charger</translation>
+        <translation>Ni dogodkov za nalaganje</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
         <source>Loaded {0} events as blocks</source>
-        <translation>{0} événements chargés en blocs</translation>
+        <translation>Naloženih {0} dogodkov kot blokov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
         <source>Loaded {0} events - some may not have block equivalents</source>
-        <translation>{0} événements chargés - certains peuvent ne pas avoir d&apos;équivalent en blocs</translation>
+        <translation>Naloženih {0} dogodkov - nekateri morda nimajo ustreznih blokov</translation>
     </message>
     <message>
         <source>Requesting sync from events...</source>
@@ -285,7 +285,7 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
         <source>Configuration applied: {0} blocks, {1} categories</source>
-        <translation>Configuration appliquée : {0} blocs, {1} catégories</translation>
+        <translation>Konfiguracija uporabljena: {0} blokov, {1} kategorij</translation>
     </message>
 </context>
 <context>
