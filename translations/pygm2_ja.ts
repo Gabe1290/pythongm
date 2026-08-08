@@ -869,4 +869,224 @@ Do you want to save anyway?</source>
         <translation>先にThymioイベントを選択してください。</translation>
     </message>
 </context>
+<context>
+    <name>BaseBlockConfigDialog</name>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="149"/>
+        <source>Preset:</source>
+        <translation>プリセット：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Block</source>
+        <translation>ブロック</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Description</source>
+        <translation>説明</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="196"/>
+        <source>Select All</source>
+        <translation>すべて選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="200"/>
+        <source>Select None</source>
+        <translation>選択解除</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="237"/>
+        <source>{0} blocks</source>
+        <translation>ブロック {0} 個</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="268"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[未実装] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="284"/>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="285"/>
+        <source>Requires: {0}</source>
+        <translation>必要条件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="378"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ 警告：一部のブロックに依存関係が不足しています：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="391"/>
+        <source>Missing Dependencies</source>
+        <translation>依存関係の不足</translation>
+    </message>
+</context>
+<context>
+    <name>InstanceProperties</name>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="27"/>
+        <source>Instance Properties</source>
+        <translation>インスタンスのプロパティ</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="35"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="135"/>
+        <source>Object: None</source>
+        <translation>オブジェクト：なし</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="39"/>
+        <source>Position</source>
+        <translation>位置</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="42"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="77"/>
+        <source>X:</source>
+        <translation>X：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="48"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="85"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="57"/>
+        <source>Visible</source>
+        <translation>表示</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="63"/>
+        <source>Rotation</source>
+        <translation>回転</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="74"/>
+        <source>Scale</source>
+        <translation>拡大縮小</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="96"/>
+        <source>Delete Instance</source>
+        <translation>インスタンスを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="117"/>
+        <source>Object: {0}</source>
+        <translation>オブジェクト：{0}</translation>
+    </message>
+</context>
+<context>
+    <name>OpenProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="149"/>
+        <source>Open Project</source>
+        <translation>プロジェクトを開く</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="159"/>
+        <source>Recent Projects</source>
+        <translation>最近のプロジェクト</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="167"/>
+        <source>Browse for Project</source>
+        <translation>プロジェクトを参照</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="171"/>
+        <source>Select project file...</source>
+        <translation>プロジェクトファイルを選択...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="173"/>
+        <source>Browse...</source>
+        <translation>参照...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="203"/>
+        <source>Open PyGameMaker Project</source>
+        <translation>PyGameMakerプロジェクトを開く</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="204"/>
+        <source>PyGameMaker Projects (*.json);;All Files (*)</source>
+        <translation>PyGameMakerプロジェクト (*.json);;すべてのファイル (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Invalid Input</source>
+        <translation>無効な入力</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <source>Please enter a project name.</source>
+        <translation>プロジェクト名を入力してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Please choose a project location.</source>
+        <translation>プロジェクトの保存場所を選択してください。</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioActionSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="92"/>
+        <source>Select Thymio Action</source>
+        <translation>Thymioアクションを選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="100"/>
+        <source>Select a Thymio action to add:</source>
+        <translation>追加するThymioアクションを選択してください：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="120"/>
+        <source>Click on the robot to filter actions, or select from the list below.</source>
+        <translation>ロボットをクリックしてアクションを絞り込むか、以下のリストから選択してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="132"/>
+        <source>All</source>
+        <translation>すべて</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="154"/>
+        <source>Search:</source>
+        <translation>検索：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="158"/>
+        <source>Type to filter actions...</source>
+        <translation>入力してアクションを絞り込む...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="186"/>
+        <location filename="../dialogs/thymio_action_selector.py" line="343"/>
+        <source>Configure &amp;&amp; Add</source>
+        <translation>設定して追加</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="345"/>
+        <source>Add Action</source>
+        <translation>アクションを追加</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="405"/>
+        <source>No Selection</source>
+        <translation>未選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="406"/>
+        <source>Please select a Thymio action first.</source>
+        <translation>先にThymioアクションを選択してください。</translation>
+    </message>
+</context>
 </TS>
