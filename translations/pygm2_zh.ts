@@ -7159,5 +7159,379 @@ Events: {1}, Actions: {2}{3}</source>
         <source>Game running... (close game window to return)</source>
         <translation>游戏正在运行...（关闭游戏窗口以返回）</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1996"/>
+        <source>Windows Executable (.exe) - ⚠️ Requires Windows</source>
+        <translation>Windows 可执行文件 (.exe) - ⚠️ 需要 Windows</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2004"/>
+        <source>Linux Binary - ⚠️ Requires Linux</source>
+        <translation>Linux 二进制文件 - ⚠️ 需要 Linux</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2010"/>
+        <source>macOS Application (.app) - ✅ Available</source>
+        <translation>macOS 应用程序 (.app) - ✅ 可用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2012"/>
+        <source>macOS Application (.app) - ⚠️ Requires macOS</source>
+        <translation>macOS 应用程序 (.app) - ⚠️ 需要 macOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2018"/>
+        <source>Android Package (.apk) - ✅ Available</source>
+        <translation>Android 安装包 (.apk) - ✅ 可用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2026"/>
+        <source>Android Package (.apk) - ✅ Available (via WSL)</source>
+        <translation>Android 安装包 (.apk) - ✅ 可用（通过 WSL）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2029"/>
+        <location filename="../core/ide_window.py" line="2032"/>
+        <source>Android Package (.apk) - ⚠️ Requires WSL (not detected)</source>
+        <translation>Android 安装包 (.apk) - ⚠️ 需要 WSL（未检测到）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2034"/>
+        <source>Android Package (.apk) - ⚠️ Requires Linux or macOS</source>
+        <translation>Android 安装包 (.apk) - ⚠️ 需要 Linux 或 macOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2040"/>
+        <source>iOS App (.ipa) - ✅ Available (macOS only)</source>
+        <translation>iOS 应用 (.ipa) - ✅ 可用（仅限 macOS）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2042"/>
+        <source>iOS App (.ipa) - ⚠️ Requires macOS with Xcode</source>
+        <translation>iOS 应用 (.ipa) - ⚠️ 需要安装 Xcode 的 macOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2076"/>
+        <source>This export format is not yet available.</source>
+        <translation>此导出格式尚不可用。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2188"/>
+        <source>Export cancelled</source>
+        <translation>导出已取消</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2210"/>
+        <source>Building iOS App</source>
+        <translation>正在构建 iOS 应用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2211"/>
+        <source>Preparing iOS export...</source>
+        <translation>正在准备 iOS 导出...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2213"/>
+        <source>iOS Export Complete</source>
+        <translation>iOS 导出完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2214"/>
+        <source>iOS Export Failed</source>
+        <translation>iOS 导出失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2215"/>
+        <source>Open the output folder?</source>
+        <translation>是否打开输出文件夹？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2217"/>
+        <source>iOS export cancelled</source>
+        <translation>iOS 导出已取消</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2237"/>
+        <source>Exporting Aseba code...</source>
+        <translation>正在导出 Aseba 代码...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2244"/>
+        <source>Aseba Export Failed</source>
+        <translation>Aseba 导出失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2245"/>
+        <source>Failed to export Aseba code:
+
+{0}</source>
+        <translation>导出 Aseba 代码失败：
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2247"/>
+        <source>Aseba export failed</source>
+        <translation>Aseba 导出失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2253"/>
+        <source>Aseba Export</source>
+        <translation>Aseba 导出</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2255"/>
+        <source>No Thymio objects found in this project, so no Aseba code was generated. Add a Thymio object to the project and try again.</source>
+        <translation>此项目中未找到 Thymio 对象，因此未生成 Aseba 代码。请向项目中添加一个 Thymio 对象后重试。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2260"/>
+        <source>Aseba export: nothing to export</source>
+        <translation>Aseba 导出：没有可导出的内容</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2263"/>
+        <source>Aseba export complete</source>
+        <translation>Aseba 导出完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2266"/>
+        <source>Aseba Export Complete</source>
+        <translation>Aseba 导出完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2267"/>
+        <source>Aseba .aesl files written to:
+{0}
+
+Would you like to open the output folder?</source>
+        <translation>Aseba .aesl 文件已写入：
+{0}
+
+是否要打开输出文件夹？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2406"/>
+        <source>Cancelling...</source>
+        <translation>正在取消...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2632"/>
+        <source>Thymio Configuration Saved</source>
+        <translation>Thymio 配置已保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2633"/>
+        <source>Thymio block configuration has been saved.
+
+The new Thymio event/action selection is now active.</source>
+        <translation>Thymio 积木配置已保存。
+
+新的 Thymio 事件/操作选择现已生效。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2707"/>
+        <source>Event Exists</source>
+        <translation>事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2708"/>
+        <source>This Thymio event already exists in the object.</source>
+        <translation>此对象中已存在该 Thymio 事件。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2717"/>
+        <location filename="../core/ide_window.py" line="2730"/>
+        <source>No Object Editor</source>
+        <translation>无对象编辑器</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2718"/>
+        <source>Please open an object editor first to add Thymio events.</source>
+        <translation>请先打开对象编辑器以添加 Thymio 事件。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2731"/>
+        <source>Please open an object editor first to add Thymio actions.</source>
+        <translation>请先打开对象编辑器以添加 Thymio 操作。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2741"/>
+        <source>No Event Selected</source>
+        <translation>未选择事件</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2742"/>
+        <source>Please select an event first to add actions to it.</source>
+        <translation>请先选择一个事件以便向其添加操作。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2751"/>
+        <source>Invalid Selection</source>
+        <translation>无效的选择</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2752"/>
+        <source>Please select an event (not an action) to add Thymio actions.</source>
+        <translation>请选择一个事件（而非操作）以添加 Thymio 操作。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2817"/>
+        <source>Please open a project first to migrate.</source>
+        <translation>请先打开一个项目再进行迁移。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2823"/>
+        <source>Migrate Project Structure</source>
+        <translation>迁移项目结构</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2824"/>
+        <source>This will migrate your project to use a modular file structure:
+
+• Objects will be saved to objects/*.json
+• Rooms will be saved to rooms/*.json
+
+This makes the project easier to manage and version control.
+
+Do you want to continue?</source>
+        <translation>这将把您的项目迁移为使用模块化文件结构：
+
+• 对象将保存到 objects/*.json
+• 房间将保存到 rooms/*.json
+
+这样可以让项目更易于管理和版本控制。
+
+是否要继续？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2836"/>
+        <source>Migration Complete</source>
+        <translation>迁移完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2837"/>
+        <source>Project has been migrated to modular structure.
+
+Objects and rooms are now stored in separate files.</source>
+        <translation>项目已迁移为模块化结构。
+
+对象和房间现已存储在独立的文件中。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2843"/>
+        <source>Migration Failed</source>
+        <translation>迁移失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2844"/>
+        <source>Failed to migrate project structure.
+Check the console for error details.</source>
+        <translation>迁移项目结构失败。
+请查看控制台了解错误详情。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="40"/>
+        <source>Please open or create a project first before exporting.</source>
+        <translation>导出前请先打开或创建一个项目。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="48"/>
+        <source>Select Export Directory</source>
+        <translation>选择导出目录</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="56"/>
+        <source>Exporting to HTML5...</source>
+        <translation>正在导出为 HTML5...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="63"/>
+        <location filename="../core/ide_exporters.py" line="128"/>
+        <source>Export Successful</source>
+        <translation>导出成功</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="64"/>
+        <source>Game exported as HTML5!
+
+{0}
+
+Open in browser now?</source>
+        <translation>游戏已导出为 HTML5！
+
+{0}
+
+是否立即在浏览器中打开？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="72"/>
+        <source>HTML5 export complete</source>
+        <translation>HTML5 导出完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="77"/>
+        <source>Failed to export game as HTML5. Check console for details.</source>
+        <translation>将游戏导出为 HTML5 失败，请查看控制台了解详情。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="79"/>
+        <location filename="../core/ide_exporters.py" line="138"/>
+        <source>Export failed</source>
+        <translation>导出失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="113"/>
+        <source>Export Project as Zip</source>
+        <translation>将项目导出为 Zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="115"/>
+        <location filename="../core/ide_exporters.py" line="146"/>
+        <source>Zip Files (*.zip)</source>
+        <translation>Zip 文件 (*.zip)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="122"/>
+        <source>Exporting project...</source>
+        <translation>正在导出项目...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="129"/>
+        <source>Project exported to:
+{0}</source>
+        <translation>项目已导出到：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="131"/>
+        <source>Project exported</source>
+        <translation>项目已导出</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="136"/>
+        <source>Failed to export project as zip</source>
+        <translation>将项目导出为 Zip 失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="144"/>
+        <source>Open Zip Project</source>
+        <translation>打开 Zip 项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="163"/>
+        <source>Loading project from zip...</source>
+        <translation>正在从 Zip 加载项目...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="168"/>
+        <source>Project loaded from zip</source>
+        <translation>已从 Zip 加载项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="175"/>
+        <source>Failed to load</source>
+        <translation>加载失败</translation>
+    </message>
 </context>
 </TS>
