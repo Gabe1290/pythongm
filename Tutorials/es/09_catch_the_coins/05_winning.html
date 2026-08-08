@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Fase 4: Ganar el juego</h1>
+
+    <p>Ahora mismo el jugador puede perder, pero no hay forma de <em>ganar</em>. Lo arreglaremos
+    comprobando después de cada paso: <strong>"¿Quedan monedas?"</strong> &mdash;
+    si no quedan, vamos a una sala de victoria completamente nueva.</p>
+
+    <h2>Construye la sala de victoria</h2>
+
+    <h2>Crea el sprite de victoria (opcional)</h2>
+    <div class="step">
+        <p>Si quieres un aspecto festivo, crea un sprite llamado <code>spr_win_text</code>.
+        Este paso es opcional &mdash; el texto dibujado en el siguiente paso funciona sin sprite.</p>
+    </div>
+
+    <h2>Crea el objeto de texto de victoria</h2>
+    <div class="step">
+        <ol>
+            <li>Clic derecho en <strong>Objetos</strong> &rarr; <strong>Crear nuevo objeto</strong></li>
+            <li>Llámalo <code>obj_win_text</code></li>
+            <li>Abre la pestaña <strong>Blockly</strong> y añade estos dos eventos:</li>
+        </ol>
+
+        <p style="margin-top: 8px;"><strong>Muestra el mensaje de victoria:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">¡GANASTE!</span> at x:<span class="block-num">412</span> y:<span class="block-num">320</span></span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">Pulsa ESPACIO para jugar de nuevo</span> at x:<span class="block-num">340</span> y:<span class="block-num">400</span></span>
+        </div>
+
+        <p style="margin-top: 8px;"><strong>Reinicia con espacio:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: space</span><br>
+            <span class="block block-game block-indent">Restart Game</span>
+        </div>
+    </div>
+
+    <h2>Crea la sala de victoria</h2>
+    <div class="step">
+        <ol>
+            <li>Clic derecho en <strong>Salas</strong> &rarr; <strong>Crear nueva sala</strong></li>
+            <li>Llámala <code>room_win</code></li>
+            <li>Pon el color de fondo en un color festivo (verde claro o dorado)</li>
+            <li>Coloca una instancia de <code>obj_win_text</code> en cualquier lugar de la sala (su dibujo está en coordenadas fijas)</li>
+        </ol>
+    </div>
+
+    <h2>La comprobación de victoria</h2>
+    <p>Ahora la parte importante: en cada paso, el jugador comprueba si quedan monedas.
+    Cuando el conteo llega a cero, vamos a la sala de victoria.</p>
+
+    <div class="step">
+        <ol>
+            <li>Abre <code>obj_player</code></li>
+            <li>Haz clic en la pestaña <strong>Blockly</strong></li>
+            <li>Añade este evento <strong>Step</strong>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Every step</span><br>
+            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
+            <span class="block block-room block-indent2">Go to room <span class="block-text">room_win</span></span>
+        </div>
+
+        <div class="info" style="margin-top: 10px;">
+            <strong>Qué hace esto:</strong> El bloque <strong>If Count Of</strong> mira la sala
+            y cuenta cuántas instancias de <code>obj_coin</code> siguen vivas. Cuando las has
+            atrapado todas, el conteo es cero, la comparación <code>== 0</code> es verdadera, y la
+            acción <strong>Go to room</strong> se ejecuta.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">¡Prueba tu juego completo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>¡Pulsa F5 para jugar!</strong></p>
+        <ul>
+            <li>Atrapa cada moneda &rarr; aparece la pantalla <strong>¡GANASTE!</strong></li>
+            <li>Toca al enemigo &rarr; aparece la pantalla <strong>GAME OVER</strong></li>
+            <li>Pulsa <strong>ESPACIO</strong> desde cualquiera de los dos finales para volver a jugar</li>
+        </ul>
+    </div>
+
+    <h2>¡Has construido un juego completo!</h2>
+    <p>Felicidades &mdash; eso es un bucle de juego completo con:</p>
+    <ul>
+        <li>Entrada del jugador (movimiento por teclado)</li>
+        <li>Dos tipos de colisión (buena y mala)</li>
+        <li>Una puntuación que el jugador puede ver crecer</li>
+        <li>Un estado claro de victoria y de derrota</li>
+        <li>Una forma de reiniciar y volver a intentarlo</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Prueba esto a continuación:</strong> añade más monedas, coloca un segundo enemigo, o cambia
+        las velocidades de la moneda y el enemigo en sus eventos <strong>When created</strong>.
+        Cada cambio es solo un número que puedes editar y probar.
+    </div>
+</body>
+</html>
