@@ -400,4 +400,185 @@
         <translation>请先选择一个按键。</translation>
     </message>
 </context>
+<context>
+    <name>FrameTimeline</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="121"/>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="122"/>
+        <source>Add frame</source>
+        <translation>添加帧</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="126"/>
+        <source>D</source>
+        <translation>D</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="127"/>
+        <source>Duplicate frame</source>
+        <translation>复制帧</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="131"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="132"/>
+        <source>Delete frame</source>
+        <translation>删除帧</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="136"/>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="302"/>
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="297"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+</context>
+<context>
+    <name>ResizeCanvasDialog</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="88"/>
+        <source>Resize / Scale</source>
+        <translation>调整大小/缩放</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="96"/>
+        <source>Current size: {0} x {1}</source>
+        <translation>当前大小：{0} x {1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="101"/>
+        <source>Mode</source>
+        <translation>模式</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="103"/>
+        <source>Scale Image (stretch content to new size)</source>
+        <translation>缩放图像（将内容拉伸至新尺寸）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="104"/>
+        <source>Resize Canvas (keep content, add/crop space)</source>
+        <translation>调整画布大小（保留内容，增加/裁剪空间）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="113"/>
+        <source>Width:</source>
+        <translation>宽度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="119"/>
+        <source>Height:</source>
+        <translation>高度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="127"/>
+        <source>Anchor</source>
+        <translation>锚点</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioConfigDialog</name>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="45"/>
+        <source>Configure Thymio Events &amp; Actions</source>
+        <translation>配置 Thymio 事件和操作</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="52"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="118"/>
+        <source>Thymio Full (All Thymio Blocks)</source>
+        <translation>Thymio 完整版（所有 Thymio 积木）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="53"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="120"/>
+        <source>Thymio Basic (Buttons + Motors)</source>
+        <translation>Thymio 基础版（按钮 + 电机）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="54"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="122"/>
+        <source>Thymio Sensors</source>
+        <translation>Thymio 传感器</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="55"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="124"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="59"/>
+        <source>Select Thymio blocks to enable:</source>
+        <translation>选择要启用的 Thymio 积木：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="183"/>
+        <source>{0} Thymio blocks, {1} categories</source>
+        <translation>{0} 个 Thymio 积木，{1} 个类别</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="168"/>
+        <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+        <translation>部分已启用的 Thymio 积木缺少依赖项，可能无法正常工作。
+
+是否仍要保存？</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="153"/>
+        <source>Tile Palette</source>
+        <translation>图块面板</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="169"/>
+        <source>Tileset:</source>
+        <translation>图块集：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="174"/>
+        <source>Tile W:</source>
+        <translation>图块宽：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="181"/>
+        <source>H:</source>
+        <translation>高：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="191"/>
+        <source>Layer:</source>
+        <translation>图层：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="208"/>
+        <source>Clear Tile</source>
+        <translation>清除图块</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="212"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="244"/>
+        <source>(none)</source>
+        <translation>（无）</translation>
+    </message>
+</context>
 </TS>
