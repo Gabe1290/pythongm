@@ -1219,4 +1219,368 @@ Do you want to save anyway?</source>
         <translation>ソリッドオブジェクトは移動を妨げます</translation>
     </message>
 </context>
+<context>
+    <name>TutorialPanel</name>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="343"/>
+        <source>Float</source>
+        <translation>フロート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="339"/>
+        <source>Re-dock</source>
+        <translation>再ドッキング</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="345"/>
+        <source>Detach this tutorial into its own movable window</source>
+        <translation>このチュートリアルを移動可能な別のウィンドウに切り離す</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="341"/>
+        <source>Dock this tutorial back into the IDE</source>
+        <translation>このチュートリアルをIDEに戻してドッキング</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="39"/>
+        <source>Tutorials</source>
+        <translation>チュートリアル</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="56"/>
+        <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
+        <translation>&lt;b&gt;チュートリアル&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="80"/>
+        <source>Select a tutorial:</source>
+        <translation>チュートリアルを選択：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="87"/>
+        <source>Open Tutorial</source>
+        <translation>チュートリアルを開く</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="120"/>
+        <source>Back to List</source>
+        <translation>リストに戻る</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="126"/>
+        <source>&lt; Previous</source>
+        <translation>＜ 前へ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="130"/>
+        <source>Next &gt;</source>
+        <translation>次へ ＞</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="158"/>
+        <source>No tutorials folder found</source>
+        <translation>チュートリアルフォルダが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="202"/>
+        <source>No tutorials available</source>
+        <translation>利用可能なチュートリアルがありません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="308"/>
+        <source>Page {0} of {1}</source>
+        <translation>ページ {0} / {1}</translation>
+    </message>
+</context>
+<context>
+    <name>AutoSaveSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="17"/>
+        <source>Auto-Save Settings</source>
+        <translation>自動保存の設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="27"/>
+        <source>Auto-Save</source>
+        <translation>自動保存</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="30"/>
+        <source>Enable automatic saving</source>
+        <translation>自動保存を有効にする</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="35"/>
+        <source>When enabled, your project will be saved automatically at regular intervals.</source>
+        <translation>有効にすると、プロジェクトは一定間隔で自動的に保存されます。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="43"/>
+        <source>Save Interval</source>
+        <translation>保存間隔</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="50"/>
+        <source> seconds</source>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="53"/>
+        <source>Save every:</source>
+        <translation>保存間隔：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="58"/>
+        <source>15s</source>
+        <translation>15秒</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="62"/>
+        <source>30s</source>
+        <translation>30秒</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="66"/>
+        <source>1m</source>
+        <translation>1分</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="70"/>
+        <source>2m</source>
+        <translation>2分</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="74"/>
+        <source>5m</source>
+        <translation>5分</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="78"/>
+        <source>Presets:</source>
+        <translation>プリセット：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="83"/>
+        <source>⚠️  Shorter intervals may impact performance on large projects.</source>
+        <translation>⚠️  間隔を短くすると、大きなプロジェクトではパフォーマンスに影響する場合があります。</translation>
+    </message>
+</context>
+<context>
+    <name>BaseEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="126"/>
+        <location filename="../editors/base_editor.py" line="158"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="129"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>自動保存を切り替え（現在3秒ごと）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="138"/>
+        <location filename="../editors/base_editor.py" line="195"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="141"/>
+        <location filename="../editors/base_editor.py" line="200"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="150"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="151"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="159"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自動保存は有効です。クリックして無効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="161"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="162"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自動保存は無効です。クリックして有効にします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="193"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 元に戻す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="198"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ やり直す {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="219"/>
+        <source>Loaded: {0}</source>
+        <translation>読み込み済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="283"/>
+        <source>Auto-saved: {0}</source>
+        <translation>自動保存済み：{0}</translation>
+    </message>
+</context>
+<context>
+    <name>BuildProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="797"/>
+        <source>Build Project</source>
+        <translation>プロジェクトをビルド</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="808"/>
+        <source>Build Configuration</source>
+        <translation>ビルド構成</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Debug</source>
+        <translation>デバッグ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Release</source>
+        <translation>リリース</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="813"/>
+        <source>Build Type:</source>
+        <translation>ビルドタイプ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>None</source>
+        <translation>なし</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Basic</source>
+        <translation>基本</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Full</source>
+        <translation>フル</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="817"/>
+        <source>Optimization:</source>
+        <translation>最適化：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="822"/>
+        <source>Build Options</source>
+        <translation>ビルドオプション</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="826"/>
+        <source>Clean Build:</source>
+        <translation>クリーンビルド：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="829"/>
+        <source>Verbose Output:</source>
+        <translation>詳細出力：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="841"/>
+        <source>Build</source>
+        <translation>ビルド</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="56"/>
+        <source>Thymio Programming</source>
+        <translation>Thymioプログラミング</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="72"/>
+        <source>Click on the robot to add events</source>
+        <translation>ロボットをクリックしてイベントを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="114"/>
+        <source>+ Event</source>
+        <translation>+ イベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="115"/>
+        <source>Add Thymio event</source>
+        <translation>Thymioイベントを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Event</source>
+        <translation>イベント</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Actions</source>
+        <translation>アクション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="153"/>
+        <source>Add Event</source>
+        <translation>イベントを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="213"/>
+        <source>Event Exists</source>
+        <translation>イベントはすでに存在します</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="214"/>
+        <source>This event already exists.</source>
+        <translation>このイベントはすでに存在します。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="239"/>
+        <source>Add Action</source>
+        <translation>アクションを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="261"/>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="346"/>
+        <source>Remove Event</source>
+        <translation>イベントを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="268"/>
+        <source>Edit Action</source>
+        <translation>アクションを編集</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="271"/>
+        <source>Remove Action</source>
+        <translation>アクションを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="347"/>
+        <source>Remove this event and all its actions?</source>
+        <translation>このイベントとそのすべてのアクションを削除しますか？</translation>
+    </message>
+</context>
 </TS>
