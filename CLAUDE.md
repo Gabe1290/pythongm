@@ -1155,3 +1155,55 @@ Continuation of the `docs/I18N_CLEANUP_2026-08-06.md` queue across several
   script pattern, per-batch verification discipline, and the two real
   bugs — `self.ide` and the `self.tr(f"...")` f-strings — that were
   found and fixed along the way rather than silently replicated).
+
+**2026-08-09 — ja UI translation (Section H) also finished, following
+the plan exactly as written.** Picked up `docs/JA_ZH_I18N_PLAN.md` in a
+fresh session and worked the full 61-context/1369-message ja tier to
+completion across ~20 commits, using the committed `scripts/
+gen_translation_ts.py` tool with `pygm2_pt.ts` as the source-string
+reference (per the plan's own reasoning — pt is the corrected, de-
+duplicated end state after the `self.ide` and f-string bug fixes, so
+starting from it means ja never had to re-discover either bug).
+**Result: `pygm2_ja.ts` translates all 1369 real distinct UI strings —
+61 contexts, EXACTLY matching pt's final shape** (same context count,
+same message count), which is itself a useful cross-check that the
+reference-file approach generalizes correctly to a second language.
+- **One new landmine, unique to ja, worth carrying into zh:** Qt/
+  Windows menu mnemonics (`&File`) don't have a natural "letter
+  position" once translated into a language with no Latin alphabet.
+  Followed the standard Japanese Qt/Windows localization convention
+  instead of embedding `&` in the translated word: keep the ORIGINAL
+  English mnemonic letter in parentheses at the end of the translated
+  label — `"&File"` → `"ファイル(&F)"`, `"&Edit"` → `"編集(&E)"`. This
+  only came up in the large `PyGameMakerIDE` menu-bar context; none of
+  the other 60 contexts have real menu mnemonics. zh likely needs the
+  same convention (it's standard for CJK-localized Qt/Windows apps
+  generally, not ja-specific) — check before assuming otherwise.
+- The snake_case `ConditionalActionEditor` combo-box values
+  (`instance_count` etc.) were translated to natural short Japanese
+  labels (インスタンス数, 変数比較, ...) rather than literal snake_case
+  — underscore-joining isn't idiomatic in Japanese UI text, unlike the
+  Romance languages which mostly kept the joined-word style. Judgment
+  call, not a hard rule; zh may want its own natural phrasing too
+  rather than copying ja's exact choices.
+- Every other pt-established landmine (leading/trailing-space sources,
+  literal tab characters in the 5 Sprite Editor shortcut strings,
+  `&quot;`/`&apos;`-escaped quotes, Qt `%1` placeholders, HTML markup
+  preservation in the About dialog) reproduced identically — the
+  `TranslationBuilder` tool and per-batch verification discipline
+  (XML validity, `lrelease` compile, live `QTranslator` resolution,
+  full suite green) caught all of them the same way pt's build did,
+  with zero new process gaps.
+- Deleted the now-superseded `translations/pygamemaker_ja.ts` stub (289
+  entries, all `type="unfinished"`) once `pygm2_ja.ts` was complete —
+  same treatment as `pygamemaker_pt.ts` earlier. `ja` (日本語 🇯🇵)
+  confirmed in `LanguageManager._discover_languages()`. Full suite held
+  at 2207 passed / 0 failed throughout (no application code changed
+  this arc — pure translation-file + one doc/tooling commit at the
+  start).
+- **Two of three Section H languages (pt, ja) are now fully done.**
+  Only zh remains — same plan doc, same tool, same `pygm2_pt.ts`
+  reference, budget it the same as ja (NOT as cheap as pt, since
+  Chinese doesn't get Romance-language pattern-matching either — the
+  plan doc's original effort-expectation note already said this).
+  `docs/I18N_CLEANUP_2026-08-06.md` Section H is the resume state.
