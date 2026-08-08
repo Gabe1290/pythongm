@@ -869,4 +869,224 @@ Do you want to save anyway?</source>
         <translation>请先选择一个 Thymio 事件。</translation>
     </message>
 </context>
+<context>
+    <name>BaseBlockConfigDialog</name>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="149"/>
+        <source>Preset:</source>
+        <translation>预设：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Block</source>
+        <translation>积木</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Description</source>
+        <translation>描述</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="196"/>
+        <source>Select All</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="200"/>
+        <source>Select None</source>
+        <translation>全不选</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="237"/>
+        <source>{0} blocks</source>
+        <translation>{0} 个积木</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="268"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[未实现] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="284"/>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="285"/>
+        <source>Requires: {0}</source>
+        <translation>需要：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="378"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ 警告：部分积木缺少依赖项：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="391"/>
+        <source>Missing Dependencies</source>
+        <translation>缺少依赖项</translation>
+    </message>
+</context>
+<context>
+    <name>InstanceProperties</name>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="27"/>
+        <source>Instance Properties</source>
+        <translation>实例属性</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="35"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="135"/>
+        <source>Object: None</source>
+        <translation>对象：无</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="39"/>
+        <source>Position</source>
+        <translation>位置</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="42"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="77"/>
+        <source>X:</source>
+        <translation>X：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="48"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="85"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="57"/>
+        <source>Visible</source>
+        <translation>可见</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="63"/>
+        <source>Rotation</source>
+        <translation>旋转</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="74"/>
+        <source>Scale</source>
+        <translation>缩放</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="96"/>
+        <source>Delete Instance</source>
+        <translation>删除实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="117"/>
+        <source>Object: {0}</source>
+        <translation>对象：{0}</translation>
+    </message>
+</context>
+<context>
+    <name>OpenProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="149"/>
+        <source>Open Project</source>
+        <translation>打开项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="159"/>
+        <source>Recent Projects</source>
+        <translation>最近的项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="167"/>
+        <source>Browse for Project</source>
+        <translation>浏览项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="171"/>
+        <source>Select project file...</source>
+        <translation>选择项目文件...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="173"/>
+        <source>Browse...</source>
+        <translation>浏览...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="203"/>
+        <source>Open PyGameMaker Project</source>
+        <translation>打开 PyGameMaker 项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="204"/>
+        <source>PyGameMaker Projects (*.json);;All Files (*)</source>
+        <translation>PyGameMaker 项目 (*.json);;所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Invalid Input</source>
+        <translation>输入无效</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <source>Please enter a project name.</source>
+        <translation>请输入项目名称。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Please choose a project location.</source>
+        <translation>请选择项目位置。</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioActionSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="92"/>
+        <source>Select Thymio Action</source>
+        <translation>选择 Thymio 操作</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="100"/>
+        <source>Select a Thymio action to add:</source>
+        <translation>选择要添加的 Thymio 操作：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="120"/>
+        <source>Click on the robot to filter actions, or select from the list below.</source>
+        <translation>点击机器人以筛选操作，或从下方列表中选择。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="132"/>
+        <source>All</source>
+        <translation>全部</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="154"/>
+        <source>Search:</source>
+        <translation>搜索：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="158"/>
+        <source>Type to filter actions...</source>
+        <translation>输入以筛选操作...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="186"/>
+        <location filename="../dialogs/thymio_action_selector.py" line="343"/>
+        <source>Configure &amp;&amp; Add</source>
+        <translation>配置并添加</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="345"/>
+        <source>Add Action</source>
+        <translation>添加操作</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="405"/>
+        <source>No Selection</source>
+        <translation>未选择</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="406"/>
+        <source>Please select a Thymio action first.</source>
+        <translation>请先选择一个 Thymio 操作。</translation>
+    </message>
+</context>
 </TS>
