@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 4: Retoques finais</h1>
+
+    <p>Vamos adicionar alguns retoques para fazer seu jogo parecer completo!</p>
+
+    <h2>Mantenha o jogador na tela</h2>
+    <div class="step">
+        <p>Abra <code>obj_player</code> no editor Blockly e adicione um evento <strong>Step</strong>
+        com verificações de limite:</p>
+        <ul>
+            <li>Se x &lt; 0, defina x = 0</li>
+            <li>Se x &gt; room_width &minus; sprite_width, defina x = room_width &minus; sprite_width</li>
+        </ul>
+        <p>Isso impede que o jogador saia da tela.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Defina uma cor de fundo</h2>
+    <div class="step">
+        <p>Abra <code>room_game</code> no Editor de Salas e defina a cor de fundo
+        para um azul-céu ou uma cor escura espacial.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Parabéns!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Seu primeiro jogo está completo!</strong></p>
+        <p>Pressione <strong>F5</strong> para jogar o jogo finalizado. Pegue quantas estrelas puder!</p>
+    </div>
+
+    <h2>Ideias de desafios</h2>
+    <div class="challenge">
+        <strong>Quer ir além? Experimente estas:</strong>
+        <ul>
+            <li>Adicione vidas &mdash; perca uma vida quando uma estrela chegar ao fundo</li>
+            <li>Faça as estrelas caírem mais rápido conforme a pontuação aumenta</li>
+            <li>Adicione estrelas de cores diferentes valendo pontuações diferentes</li>
+            <li>Adicione um objeto "ruim" (bomba) que encerra o jogo se for pego</li>
+            <li>Adicione efeitos sonoros ao pegar estrelas</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>O que vem a seguir?</strong><br>
+        Explore mais tutoriais para aprender sobre bolas quicantes, quebra-cabeças, e jogos de plataforma!
+    </div>
+</body>
+</html>

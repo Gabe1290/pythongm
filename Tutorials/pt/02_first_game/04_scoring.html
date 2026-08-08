@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Pegando e pontuando</h1>
+
+    <p>Vamos fazer o jogador pegar estrelas, ganhar pontos, e exibir a pontuação!</p>
+
+    <h2>Pegue estrelas na colisão</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_player</code> &rarr; aba <strong>Blockly</strong></li>
+            <li>Adicione este novo bloco de evento (mantenha seus blocos de movimento existentes):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_star</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p>Quando o jogador toca uma estrela:</p>
+        <ul>
+            <li><strong>Add to score 10</strong> (de <em>Score/Lives/Health</em>) &mdash; ganha 10 pontos</li>
+            <li><strong>Destroy other instance</strong> (de <em>Instance</em>) &mdash; a estrela desaparece</li>
+        </ul>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Exiba a pontuação</h2>
+    <p>Precisamos de um controlador de jogo para mostrar a pontuação na tela.</p>
+
+    <div class="step">
+        <ol>
+            <li>Crie um novo objeto chamado <code>obj_game_controller</code></li>
+            <li><strong>Nenhum sprite necessário</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_game_controller</code> &rarr; aba <strong>Blockly</strong></li>
+            <li>Adicione estes blocos:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <h2>Limpe as estrelas perdidas</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_star</code> &rarr; aba <strong>Blockly</strong></li>
+            <li>Adicione este evento (mantenha o evento Create existente):</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Outside Room</span><br>
+            <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+        <p>Estrelas que caem para fora da parte inferior da tela são destruídas para não se acumularem na memória.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <h2>Posicione o controlador de jogo</h2>
+    <div class="step">
+        <p>Abra <code>room_game</code> e posicione <code>obj_game_controller</code> em qualquer lugar da sala.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>Pegue estrelas caindo para ganhar pontos</li>
+            <li>A pontuação é exibida no canto superior esquerdo</li>
+            <li>Estrelas que você perde caem da tela e desaparecem</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para retoques finais e desafios.
+    </div>
+</body>
+</html>
