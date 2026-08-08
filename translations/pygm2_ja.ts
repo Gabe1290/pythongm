@@ -244,4 +244,160 @@
         <translation>再開</translation>
     </message>
 </context>
+<context>
+    <name>CreateAssetDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="234"/>
+        <source>Create {0}</source>
+        <translation>{0} を作成</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="243"/>
+        <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;新しい{0}を作成&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="247"/>
+        <source>Asset name:</source>
+        <translation>アセット名：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="251"/>
+        <source>Enter {0} name...</source>
+        <translation>{0} の名前を入力...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="258"/>
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="262"/>
+        <source>Create</source>
+        <translation>作成</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="289"/>
+        <source>Invalid Name</source>
+        <translation>無効な名前</translation>
+    </message>
+</context>
+<context>
+    <name>EditorStatusWidget</name>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="37"/>
+        <location filename="../editors/editor_status_widget.py" line="70"/>
+        <location filename="../editors/editor_status_widget.py" line="96"/>
+        <source>Saved</source>
+        <translation>保存済み</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="43"/>
+        <location filename="../editors/editor_status_widget.py" line="77"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自動保存：オン</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="62"/>
+        <source>Unsaved (auto-save in 3s)</source>
+        <translation>未保存（3秒後に自動保存）</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="67"/>
+        <source>Unsaved - press Ctrl+S</source>
+        <translation>未保存 - Ctrl+Sを押してください</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="80"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自動保存：オフ</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="85"/>
+        <source>Saving...</source>
+        <translation>保存中...</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="91"/>
+        <source>Saved ✓</source>
+        <translation>保存済み ✓</translation>
+    </message>
+</context>
+<context>
+    <name>GM80ActionDialog</name>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="37"/>
+        <source>Configure: {0}</source>
+        <translation>設定：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="55"/>
+        <source>Parameters</source>
+        <translation>パラメータ</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="70"/>
+        <source>This action has no parameters.</source>
+        <translation>このアクションにはパラメータがありません。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="136"/>
+        <source>Pick Color...</source>
+        <translation>色を選択...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="197"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="230"/>
+        <source>{0} actions</source>
+        <translation>{0} 件のアクション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="202"/>
+        <source>📋 Configure...</source>
+        <translation>📋 設定...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="217"/>
+        <source>Pick Color</source>
+        <translation>色を選択</translation>
+    </message>
+</context>
+<context>
+    <name>KeySelectorDialog</name>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="29"/>
+        <source>Select Key</source>
+        <translation>キーを選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="35"/>
+        <source>Select which key to respond to:</source>
+        <translation>応答するキーを選択してください：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="41"/>
+        <source>Search:</source>
+        <translation>検索：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="45"/>
+        <source>Type to filter keys...</source>
+        <translation>入力してキーを絞り込む...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="75"/>
+        <source>{0} ({1})</source>
+        <translation>{0}（{1}）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="134"/>
+        <source>No Selection</source>
+        <translation>未選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="135"/>
+        <source>Please select a key first.</source>
+        <translation>先にキーを選択してください。</translation>
+    </message>
+</context>
 </TS>
