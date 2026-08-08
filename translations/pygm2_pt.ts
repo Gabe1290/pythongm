@@ -7159,5 +7159,276 @@ Eventos: {1}, Ações: {2}{3}</translation>
         <source>Game running... (close game window to return)</source>
         <translation>Jogo em execução... (feche a janela do jogo para retornar)</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1996"/>
+        <source>Windows Executable (.exe) - ⚠️ Requires Windows</source>
+        <translation>Executável Windows (.exe) - ⚠️ Requer Windows</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2004"/>
+        <source>Linux Binary - ⚠️ Requires Linux</source>
+        <translation>Binário Linux - ⚠️ Requer Linux</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2010"/>
+        <source>macOS Application (.app) - ✅ Available</source>
+        <translation>Aplicativo macOS (.app) - ✅ Disponível</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2012"/>
+        <source>macOS Application (.app) - ⚠️ Requires macOS</source>
+        <translation>Aplicativo macOS (.app) - ⚠️ Requer macOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2018"/>
+        <source>Android Package (.apk) - ✅ Available</source>
+        <translation>Pacote Android (.apk) - ✅ Disponível</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2026"/>
+        <source>Android Package (.apk) - ✅ Available (via WSL)</source>
+        <translation>Pacote Android (.apk) - ✅ Disponível (via WSL)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2029"/>
+        <location filename="../core/ide_window.py" line="2032"/>
+        <source>Android Package (.apk) - ⚠️ Requires WSL (not detected)</source>
+        <translation>Pacote Android (.apk) - ⚠️ Requer WSL (não detectado)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2034"/>
+        <source>Android Package (.apk) - ⚠️ Requires Linux or macOS</source>
+        <translation>Pacote Android (.apk) - ⚠️ Requer Linux ou macOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2040"/>
+        <source>iOS App (.ipa) - ✅ Available (macOS only)</source>
+        <translation>Aplicativo iOS (.ipa) - ✅ Disponível (somente macOS)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2042"/>
+        <source>iOS App (.ipa) - ⚠️ Requires macOS with Xcode</source>
+        <translation>Aplicativo iOS (.ipa) - ⚠️ Requer macOS com Xcode</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2076"/>
+        <source>This export format is not yet available.</source>
+        <translation>Este formato de exportação ainda não está disponível.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2188"/>
+        <source>Export cancelled</source>
+        <translation>Exportação cancelada</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2210"/>
+        <source>Building iOS App</source>
+        <translation>Compilando Aplicativo iOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2211"/>
+        <source>Preparing iOS export...</source>
+        <translation>Preparando exportação iOS...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2213"/>
+        <source>iOS Export Complete</source>
+        <translation>Exportação iOS Concluída</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2214"/>
+        <source>iOS Export Failed</source>
+        <translation>Falha na Exportação iOS</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2215"/>
+        <source>Open the output folder?</source>
+        <translation>Abrir a pasta de saída?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2217"/>
+        <source>iOS export cancelled</source>
+        <translation>Exportação iOS cancelada</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2237"/>
+        <source>Exporting Aseba code...</source>
+        <translation>Exportando código Aseba...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2244"/>
+        <source>Aseba Export Failed</source>
+        <translation>Falha na Exportação Aseba</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2245"/>
+        <source>Failed to export Aseba code:
+
+{0}</source>
+        <translation>Falha ao exportar código Aseba:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2247"/>
+        <source>Aseba export failed</source>
+        <translation>Falha na exportação Aseba</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2253"/>
+        <source>Aseba Export</source>
+        <translation>Exportação Aseba</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2255"/>
+        <source>No Thymio objects found in this project, so no Aseba code was generated. Add a Thymio object to the project and try again.</source>
+        <translation>Nenhum objeto Thymio encontrado neste projeto, então nenhum código Aseba foi gerado. Adicione um objeto Thymio ao projeto e tente novamente.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2260"/>
+        <source>Aseba export: nothing to export</source>
+        <translation>Exportação Aseba: nada para exportar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2263"/>
+        <source>Aseba export complete</source>
+        <translation>Exportação Aseba concluída</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2266"/>
+        <source>Aseba Export Complete</source>
+        <translation>Exportação Aseba Concluída</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2267"/>
+        <source>Aseba .aesl files written to:
+{0}
+
+Would you like to open the output folder?</source>
+        <translation>Arquivos .aesl do Aseba gravados em:
+{0}
+
+Deseja abrir a pasta de saída?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2406"/>
+        <source>Cancelling...</source>
+        <translation>Cancelando...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2632"/>
+        <source>Thymio Configuration Saved</source>
+        <translation>Configuração do Thymio Salva</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2633"/>
+        <source>Thymio block configuration has been saved.
+
+The new Thymio event/action selection is now active.</source>
+        <translation>A configuração de blocos do Thymio foi salva.
+
+A nova seleção de eventos/ações do Thymio agora está ativa.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2707"/>
+        <source>Event Exists</source>
+        <translation>Evento Já Existe</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2708"/>
+        <source>This Thymio event already exists in the object.</source>
+        <translation>Este evento Thymio já existe no objeto.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2717"/>
+        <location filename="../core/ide_window.py" line="2730"/>
+        <source>No Object Editor</source>
+        <translation>Nenhum Editor de Objeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2718"/>
+        <source>Please open an object editor first to add Thymio events.</source>
+        <translation>Abra um editor de objeto primeiro para adicionar eventos Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2731"/>
+        <source>Please open an object editor first to add Thymio actions.</source>
+        <translation>Abra um editor de objeto primeiro para adicionar ações Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2741"/>
+        <source>No Event Selected</source>
+        <translation>Nenhum Evento Selecionado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2742"/>
+        <source>Please select an event first to add actions to it.</source>
+        <translation>Selecione um evento primeiro para adicionar ações a ele.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2751"/>
+        <source>Invalid Selection</source>
+        <translation>Seleção Inválida</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2752"/>
+        <source>Please select an event (not an action) to add Thymio actions.</source>
+        <translation>Selecione um evento (não uma ação) para adicionar ações Thymio.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2817"/>
+        <source>Please open a project first to migrate.</source>
+        <translation>Abra um projeto primeiro para migrar.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2823"/>
+        <source>Migrate Project Structure</source>
+        <translation>Migrar Estrutura do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2824"/>
+        <source>This will migrate your project to use a modular file structure:
+
+• Objects will be saved to objects/*.json
+• Rooms will be saved to rooms/*.json
+
+This makes the project easier to manage and version control.
+
+Do you want to continue?</source>
+        <translation>Isso migrará seu projeto para usar uma estrutura de arquivos modular:
+
+• Objetos serão salvos em objects/*.json
+• Salas serão salvas em rooms/*.json
+
+Isso torna o projeto mais fácil de gerenciar e versionar.
+
+Deseja continuar?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2836"/>
+        <source>Migration Complete</source>
+        <translation>Migração Concluída</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2837"/>
+        <source>Project has been migrated to modular structure.
+
+Objects and rooms are now stored in separate files.</source>
+        <translation>O projeto foi migrado para a estrutura modular.
+
+Objetos e salas agora são armazenados em arquivos separados.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2843"/>
+        <source>Migration Failed</source>
+        <translation>Falha na Migração</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2844"/>
+        <source>Failed to migrate project structure.
+Check the console for error details.</source>
+        <translation>Falha ao migrar a estrutura do projeto.
+Verifique o console para detalhes do erro.</translation>
+    </message>
 </context>
 </TS>
