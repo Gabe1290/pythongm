@@ -6455,5 +6455,371 @@ For now, check the console for debug messages.</source>
         <source>Warnings:</source>
         <translation>警告：</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1947"/>
+        <source>Project Validation Issues</source>
+        <translation>プロジェクト検証の問題</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1954"/>
+        <source>Project Validation Warnings</source>
+        <translation>プロジェクト検証の警告</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1965"/>
+        <source>Please open or create a project first before exporting a game.</source>
+        <translation>ゲームをエクスポートする前に、プロジェクトを開くか作成してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1976"/>
+        <source>Export Game</source>
+        <translation>ゲームをエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1981"/>
+        <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;ゲームをエクスポート&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1982"/>
+        <source>Choose export format:</source>
+        <translation>エクスポート形式を選択：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1987"/>
+        <source>HTML5 (Web Browser) - ✅ Available</source>
+        <translation>HTML5（Webブラウザ）- ✅ 利用可能</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1994"/>
+        <source>Windows Executable (.exe) - ✅ Available</source>
+        <translation>Windows実行ファイル（.exe）- ✅ 利用可能</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2002"/>
+        <source>Linux Binary - ✅ Available</source>
+        <translation>Linuxバイナリ - ✅ 利用可能</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2075"/>
+        <source>Coming Soon</source>
+        <translation>近日公開</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2293"/>
+        <source>Please open or create a project first.</source>
+        <translation>先にプロジェクトを開くか作成してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2312"/>
+        <source>Choose Export Location</source>
+        <translation>エクスポート先を選択</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2103"/>
+        <location filename="../core/ide_window.py" line="2129"/>
+        <location filename="../core/ide_window.py" line="2155"/>
+        <location filename="../core/ide_window.py" line="2181"/>
+        <source>Exporting Game</source>
+        <translation>ゲームをエクスポート中</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2104"/>
+        <location filename="../core/ide_window.py" line="2130"/>
+        <location filename="../core/ide_window.py" line="2156"/>
+        <location filename="../core/ide_window.py" line="2182"/>
+        <source>Preparing export...</source>
+        <translation>エクスポートを準備中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2106"/>
+        <location filename="../core/ide_window.py" line="2132"/>
+        <location filename="../core/ide_window.py" line="2158"/>
+        <location filename="../core/ide_window.py" line="2184"/>
+        <source>Export Complete</source>
+        <translation>エクスポート完了</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2108"/>
+        <location filename="../core/ide_window.py" line="2134"/>
+        <location filename="../core/ide_window.py" line="2160"/>
+        <location filename="../core/ide_window.py" line="2186"/>
+        <source>Would you like to open the output folder?</source>
+        <translation>出力フォルダを開きますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2107"/>
+        <location filename="../core/ide_window.py" line="2133"/>
+        <location filename="../core/ide_window.py" line="2159"/>
+        <location filename="../core/ide_window.py" line="2185"/>
+        <source>Export Failed</source>
+        <translation>エクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2584"/>
+        <source>Configuration Saved</source>
+        <translation>設定を保存しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2585"/>
+        <source>Blockly configuration has been saved.
+
+The new event/block selection is now active in:
+• Visual programming editor (Blockly)
+• Traditional event editor
+
+Changes apply immediately to currently open editors.</source>
+        <translation>Blocklyの設定を保存しました。
+
+新しいイベント/ブロックの選択は以下で有効になりました：
+• ビジュアルプログラミングエディタ（Blockly）
+• 従来のイベントエディタ
+
+変更は現在開いているエディタに即座に適用されます。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2777"/>
+        <source>Please open a project first to validate.</source>
+        <translation>検証するには先にプロジェクトを開いてください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2799"/>
+        <source>Validation Issues Found</source>
+        <translation>検証で問題が見つかりました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2800"/>
+        <source>Project validation found the following issues:
+
+</source>
+        <translation>プロジェクトの検証で以下の問題が見つかりました：
+
+</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2805"/>
+        <source>Validation Passed</source>
+        <translation>検証に合格しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2806"/>
+        <source>Project structure is valid!
+
+✓ All required directories exist
+✓ project.json is present</source>
+        <translation>プロジェクト構造は有効です！
+
+✓ 必要なディレクトリはすべて存在します
+✓ project.jsonが存在します</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2866"/>
+        <source>Documentation</source>
+        <translation>ドキュメント</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2867"/>
+        <source>Quick Help:
+• F1: Open this help
+• Ctrl+N: New Project
+• Ctrl+O: Open Project
+• Ctrl+S: Save Project
+• Double-click assets to edit them
+• Right-click for more options
+
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+        <translation>クイックヘルプ：
+• F1：このヘルプを開く
+• Ctrl+N：新規プロジェクト
+• Ctrl+O：プロジェクトを開く
+• Ctrl+S：プロジェクトを保存
+• アセットをダブルクリックして編集
+• 右クリックでその他のオプション
+
+完全なドキュメントは以下を参照してください：
+ヘルプ → オンラインドキュメント
+または以下にアクセス：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2940"/>
+        <source>Tutorials</source>
+        <translation>チュートリアル</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3001"/>
+        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;バージョン {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Pythonで構築された、GameMaker Studioにインスパイアされた&lt;br&gt;包括的なビジュアルゲーム開発環境です。&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;機能&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;デュアルプログラミングモード：&lt;/b&gt; ビジュアル（Blockly）と従来のイベント&lt;/li&gt;&lt;li&gt;&lt;b&gt;アセット管理：&lt;/b&gt; スプライト、サウンド、オブジェクト、ルーム&lt;/li&gt;&lt;li&gt;&lt;b&gt;クロスプラットフォームエクスポート：&lt;/b&gt; Windows、Linux、macOS、Android、iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;柔軟な設定：&lt;/b&gt; カスタマイズ可能なブロック/イベントの表示&lt;/li&gt;&lt;li&gt;&lt;b&gt;リアルタイムテスト：&lt;/b&gt; IDEから直接ゲームを実行&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;技術スタック&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE：&lt;/b&gt; PySide6（Qt 6）&lt;br&gt;• &lt;b&gt;ゲームエンジン：&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;ビジュアルプログラミング：&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;エクスポート：&lt;/b&gt; PyInstaller、Kivy&lt;br&gt;• &lt;b&gt;言語：&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;プロジェクト情報&lt;/h3&gt;&lt;p&gt;PyGameMakerは、初心者でもゲーム開発に取り組みやすく、&lt;br&gt;経験豊富な開発者にも強力な機能を提供するよう設計された&lt;br&gt;教育用ツールです。&lt;/p&gt;&lt;p&gt;&lt;small&gt;PythonとQtを使用し、❤️を込めて作られました&lt;/small&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3037"/>
+        <source>&lt;h3&gt;License&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Source code:&lt;/b&gt; MIT License&lt;br&gt;• &lt;b&gt;Documentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier to reuse for educators, students, and downstream projects. See the &lt;code&gt;LICENSE&lt;/code&gt; and &lt;code&gt;LICENSE-docs&lt;/code&gt; files for full terms.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</source>
+        <translation>&lt;h3&gt;ライセンス&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;ソースコード：&lt;/b&gt; MITライセンス&lt;br&gt;• &lt;b&gt;ドキュメント：&lt;/b&gt; Creative Commons Attribution 4.0（CC BY 4.0）&lt;br&gt;&lt;small&gt;教育者、学生、および派生プロジェクトによる再利用のハードルを下げるため、GPLv3からMIT + CC BY 4.0に再ライセンスされました。完全な条件については&lt;code&gt;LICENSE&lt;/code&gt;および&lt;code&gt;LICENSE-docs&lt;/code&gt;ファイルを参照してください。&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3057"/>
+        <source>Imported {0}</source>
+        <translation>{0} をインポートしました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3133"/>
+        <source>Opened room: {0}</source>
+        <translation>ルームを開きました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3144"/>
+        <source>Failed to open room editor: {0}</source>
+        <translation>ルームエディタを開けませんでした：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3181"/>
+        <source>Opened playground: {0}</source>
+        <translation>プレイグラウンドを開きました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3192"/>
+        <source>Failed to open playground editor: {0}</source>
+        <translation>プレイグラウンドエディタを開けませんでした：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3234"/>
+        <source>Opened object: {0}</source>
+        <translation>オブジェクトを開きました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3414"/>
+        <location filename="../core/ide_window.py" line="3422"/>
+        <source>Save Error</source>
+        <translation>保存エラー</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3415"/>
+        <source>Failed to save project to disk</source>
+        <translation>プロジェクトをディスクに保存できませんでした</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3423"/>
+        <source>Failed to save {0}: {1}</source>
+        <translation>{0} の保存に失敗しました：{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3506"/>
+        <source>Floated: {0}</source>
+        <translation>フロート表示：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3544"/>
+        <source>Reattached: {0}</source>
+        <translation>再接続：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3571"/>
+        <source>Window mode: Tabbed</source>
+        <translation>ウィンドウモード：タブ表示</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3583"/>
+        <source>Window mode: Floating</source>
+        <translation>ウィンドウモード：フロート表示</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3590"/>
+        <source>⧉ Floating</source>
+        <translation>⧉ フロート表示</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3592"/>
+        <source>Window mode: Floating. Click to switch all editors back into tabs (use this if a floating window has been dragged off-screen).</source>
+        <translation>ウィンドウモード：フロート表示。クリックしてすべてのエディタをタブ表示に戻します（フロートウィンドウが画面外にドラッグされた場合に使用してください）。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3596"/>
+        <source>⊞ Tabbed</source>
+        <translation>⊞ タブ表示</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3598"/>
+        <source>Window mode: Tabbed. Click to pop every editor out into its own window.</source>
+        <translation>ウィンドウモード：タブ表示。クリックしてすべてのエディタを個別のウィンドウに切り離します。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3681"/>
+        <source>Project loaded: {0}</source>
+        <translation>プロジェクトを読み込みました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Save Project As...</source>
+        <translation>プロジェクトに名前を付けて保存...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Project Settings...</source>
+        <translation>プロジェクト設定...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3721"/>
+        <source>Create</source>
+        <translation>作成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Test Game</source>
+        <translation>ゲームをテスト</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Debug Game</source>
+        <translation>ゲームをデバッグ</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3724"/>
+        <source>Export Game...</source>
+        <translation>ゲームをエクスポート...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3776"/>
+        <source>Project: {0}</source>
+        <translation>プロジェクト：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3879"/>
+        <source>You have unsaved changes. Do you want to save before closing?</source>
+        <translation>未保存の変更があります。閉じる前に保存しますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3917"/>
+        <source>You need to create or open a project before {0}.
+
+Would you like to:
+• Create a new project, or
+• Open an existing project?</source>
+        <translation>{0} する前にプロジェクトを作成または開く必要があります。
+
+次のいずれかを行いますか：
+• 新しいプロジェクトを作成する、または
+• 既存のプロジェクトを開く？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3929"/>
+        <source>Create or Open Project</source>
+        <translation>プロジェクトを作成または開く</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3930"/>
+        <source>Choose project action:</source>
+        <translation>プロジェクトの操作を選択：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3721"/>
+        <source>Import</source>
+        <translation>インポート</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2049"/>
+        <source>Export</source>
+        <translation>エクスポート</translation>
+    </message>
 </context>
 </TS>
