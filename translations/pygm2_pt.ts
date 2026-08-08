@@ -6455,5 +6455,371 @@ Por enquanto, verifique o console para mensagens de depuração.</translation>
         <source>Warnings:</source>
         <translation>Avisos:</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1947"/>
+        <source>Project Validation Issues</source>
+        <translation>Problemas de Validação do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1954"/>
+        <source>Project Validation Warnings</source>
+        <translation>Avisos de Validação do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1965"/>
+        <source>Please open or create a project first before exporting a game.</source>
+        <translation>Abra ou crie um projeto antes de exportar um jogo.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1976"/>
+        <source>Export Game</source>
+        <translation>Exportar Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1981"/>
+        <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;Exportar Jogo&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1982"/>
+        <source>Choose export format:</source>
+        <translation>Escolha o formato de exportação:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1987"/>
+        <source>HTML5 (Web Browser) - ✅ Available</source>
+        <translation>HTML5 (Navegador Web) - ✅ Disponível</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1994"/>
+        <source>Windows Executable (.exe) - ✅ Available</source>
+        <translation>Executável Windows (.exe) - ✅ Disponível</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2002"/>
+        <source>Linux Binary - ✅ Available</source>
+        <translation>Binário Linux - ✅ Disponível</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2075"/>
+        <source>Coming Soon</source>
+        <translation>Em Breve</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2293"/>
+        <source>Please open or create a project first.</source>
+        <translation>Abra ou crie um projeto primeiro.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2312"/>
+        <source>Choose Export Location</source>
+        <translation>Escolher Local de Exportação</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2103"/>
+        <location filename="../core/ide_window.py" line="2129"/>
+        <location filename="../core/ide_window.py" line="2155"/>
+        <location filename="../core/ide_window.py" line="2181"/>
+        <source>Exporting Game</source>
+        <translation>Exportando Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2104"/>
+        <location filename="../core/ide_window.py" line="2130"/>
+        <location filename="../core/ide_window.py" line="2156"/>
+        <location filename="../core/ide_window.py" line="2182"/>
+        <source>Preparing export...</source>
+        <translation>Preparando exportação...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2106"/>
+        <location filename="../core/ide_window.py" line="2132"/>
+        <location filename="../core/ide_window.py" line="2158"/>
+        <location filename="../core/ide_window.py" line="2184"/>
+        <source>Export Complete</source>
+        <translation>Exportação Concluída</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2108"/>
+        <location filename="../core/ide_window.py" line="2134"/>
+        <location filename="../core/ide_window.py" line="2160"/>
+        <location filename="../core/ide_window.py" line="2186"/>
+        <source>Would you like to open the output folder?</source>
+        <translation>Deseja abrir a pasta de saída?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2107"/>
+        <location filename="../core/ide_window.py" line="2133"/>
+        <location filename="../core/ide_window.py" line="2159"/>
+        <location filename="../core/ide_window.py" line="2185"/>
+        <source>Export Failed</source>
+        <translation>Falha na Exportação</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2584"/>
+        <source>Configuration Saved</source>
+        <translation>Configuração Salva</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2585"/>
+        <source>Blockly configuration has been saved.
+
+The new event/block selection is now active in:
+• Visual programming editor (Blockly)
+• Traditional event editor
+
+Changes apply immediately to currently open editors.</source>
+        <translation>A configuração do Blockly foi salva.
+
+A nova seleção de eventos/blocos agora está ativa em:
+• Editor de programação visual (Blockly)
+• Editor de eventos tradicional
+
+As alterações se aplicam imediatamente aos editores abertos no momento.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2777"/>
+        <source>Please open a project first to validate.</source>
+        <translation>Abra um projeto primeiro para validar.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2799"/>
+        <source>Validation Issues Found</source>
+        <translation>Problemas de Validação Encontrados</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2800"/>
+        <source>Project validation found the following issues:
+
+</source>
+        <translation>A validação do projeto encontrou os seguintes problemas:
+
+</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2805"/>
+        <source>Validation Passed</source>
+        <translation>Validação Aprovada</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2806"/>
+        <source>Project structure is valid!
+
+✓ All required directories exist
+✓ project.json is present</source>
+        <translation>A estrutura do projeto é válida!
+
+✓ Todos os diretórios necessários existem
+✓ project.json está presente</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2866"/>
+        <source>Documentation</source>
+        <translation>Documentação</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2867"/>
+        <source>Quick Help:
+• F1: Open this help
+• Ctrl+N: New Project
+• Ctrl+O: Open Project
+• Ctrl+S: Save Project
+• Double-click assets to edit them
+• Right-click for more options
+
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+        <translation>Ajuda Rápida:
+• F1: Abrir esta ajuda
+• Ctrl+N: Novo Projeto
+• Ctrl+O: Abrir Projeto
+• Ctrl+S: Salvar Projeto
+• Duplo clique nos recursos para editá-los
+• Clique com o botão direito para mais opções
+
+Para a documentação completa, acesse:
+Ajuda → Documentação Online
+ou visite:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2940"/>
+        <source>Tutorials</source>
+        <translation>Tutoriais</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3001"/>
+        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Versão {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Um ambiente completo de desenvolvimento visual de jogos&lt;br&gt;inspirado no GameMaker Studio, construído com Python.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Recursos&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Modos de Programação Duplos:&lt;/b&gt; Visual (Blockly) e Eventos Tradicionais&lt;/li&gt;&lt;li&gt;&lt;b&gt;Gerenciamento de Recursos:&lt;/b&gt; Sprites, sons, objetos e salas&lt;/li&gt;&lt;li&gt;&lt;b&gt;Exportação Multiplataforma:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Configuração Flexível:&lt;/b&gt; Visibilidade de blocos/eventos personalizável&lt;/li&gt;&lt;li&gt;&lt;b&gt;Teste em Tempo Real:&lt;/b&gt; Execute jogos diretamente do IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Pilha de Tecnologia&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Motor do Jogo:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Programação Visual:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Exportação:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Linguagem:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Informações do Projeto&lt;/h3&gt;&lt;p&gt;O PyGameMaker é uma ferramenta educacional projetada para tornar&lt;br&gt;o desenvolvimento de jogos acessível a iniciantes, ao mesmo tempo que oferece&lt;br&gt;recursos poderosos para desenvolvedores experientes.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Construído com ❤️ usando Python e Qt&lt;/small&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3037"/>
+        <source>&lt;h3&gt;License&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Source code:&lt;/b&gt; MIT License&lt;br&gt;• &lt;b&gt;Documentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier to reuse for educators, students, and downstream projects. See the &lt;code&gt;LICENSE&lt;/code&gt; and &lt;code&gt;LICENSE-docs&lt;/code&gt; files for full terms.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</source>
+        <translation>&lt;h3&gt;Licença&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Código-fonte:&lt;/b&gt; Licença MIT&lt;br&gt;• &lt;b&gt;Documentação:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicenciado de GPLv3 para MIT + CC BY 4.0 para reduzir a barreira de reutilização para educadores, estudantes e projetos derivados. Veja os arquivos &lt;code&gt;LICENSE&lt;/code&gt; e &lt;code&gt;LICENSE-docs&lt;/code&gt; para os termos completos.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3057"/>
+        <source>Imported {0}</source>
+        <translation>{0} importado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3133"/>
+        <source>Opened room: {0}</source>
+        <translation>Sala aberta: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3144"/>
+        <source>Failed to open room editor: {0}</source>
+        <translation>Falha ao abrir o editor de sala: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3181"/>
+        <source>Opened playground: {0}</source>
+        <translation>Playground aberto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3192"/>
+        <source>Failed to open playground editor: {0}</source>
+        <translation>Falha ao abrir o editor de playground: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3234"/>
+        <source>Opened object: {0}</source>
+        <translation>Objeto aberto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3414"/>
+        <location filename="../core/ide_window.py" line="3422"/>
+        <source>Save Error</source>
+        <translation>Erro ao Salvar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3415"/>
+        <source>Failed to save project to disk</source>
+        <translation>Falha ao salvar o projeto no disco</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3423"/>
+        <source>Failed to save {0}: {1}</source>
+        <translation>Falha ao salvar {0}: {1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3506"/>
+        <source>Floated: {0}</source>
+        <translation>Destacado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3544"/>
+        <source>Reattached: {0}</source>
+        <translation>Reanexado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3571"/>
+        <source>Window mode: Tabbed</source>
+        <translation>Modo de janela: Em Abas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3583"/>
+        <source>Window mode: Floating</source>
+        <translation>Modo de janela: Flutuante</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3590"/>
+        <source>⧉ Floating</source>
+        <translation>⧉ Flutuante</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3592"/>
+        <source>Window mode: Floating. Click to switch all editors back into tabs (use this if a floating window has been dragged off-screen).</source>
+        <translation>Modo de janela: Flutuante. Clique para voltar todos os editores para abas (use isto se uma janela flutuante tiver sido arrastada para fora da tela).</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3596"/>
+        <source>⊞ Tabbed</source>
+        <translation>⊞ Em Abas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3598"/>
+        <source>Window mode: Tabbed. Click to pop every editor out into its own window.</source>
+        <translation>Modo de janela: Em Abas. Clique para destacar todos os editores em suas próprias janelas.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3681"/>
+        <source>Project loaded: {0}</source>
+        <translation>Projeto carregado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Save Project As...</source>
+        <translation>Salvar Projeto Como...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Project Settings...</source>
+        <translation>Configurações do Projeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3721"/>
+        <source>Create</source>
+        <translation>Criar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Test Game</source>
+        <translation>Testar Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Debug Game</source>
+        <translation>Depurar Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3724"/>
+        <source>Export Game...</source>
+        <translation>Exportar Jogo...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3776"/>
+        <source>Project: {0}</source>
+        <translation>Projeto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3879"/>
+        <source>You have unsaved changes. Do you want to save before closing?</source>
+        <translation>Você tem alterações não salvas. Deseja salvar antes de fechar?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3917"/>
+        <source>You need to create or open a project before {0}.
+
+Would you like to:
+• Create a new project, or
+• Open an existing project?</source>
+        <translation>Você precisa criar ou abrir um projeto antes de {0}.
+
+Deseja:
+• Criar um novo projeto, ou
+• Abrir um projeto existente?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3929"/>
+        <source>Create or Open Project</source>
+        <translation>Criar ou Abrir Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3930"/>
+        <source>Choose project action:</source>
+        <translation>Escolha a ação do projeto:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3721"/>
+        <source>Import</source>
+        <translation>Importar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2049"/>
+        <source>Export</source>
+        <translation>Exportar</translation>
+    </message>
 </context>
 </TS>
