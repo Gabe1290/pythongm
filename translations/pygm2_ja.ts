@@ -5775,4 +5775,330 @@ Events: {4}</source>
         <translation>実行中</translation>
     </message>
 </context>
+<context>
+    <name>PyGameMakerIDE</name>
+    <message>
+        <location filename="../core/ide_window.py" line="154"/>
+        <source>&amp;File</source>
+        <translation>ファイル(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="157"/>
+        <source>&amp;New Project...</source>
+        <translation>新しいプロジェクト(&amp;N)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="158"/>
+        <source>&amp;Open Project...</source>
+        <translation>プロジェクトを開く(&amp;O)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="159"/>
+        <source>&amp;Save Project</source>
+        <translation>プロジェクトを保存(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="160"/>
+        <source>Save Project &amp;As...</source>
+        <translation>プロジェクトに名前を付けて保存(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="168"/>
+        <source>Recent Projects</source>
+        <translation>最近のプロジェクト</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="174"/>
+        <source>Export as HTML5...</source>
+        <translation>HTML5としてエクスポート...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="175"/>
+        <source>Export as &amp;Zip...</source>
+        <translation>Zipとしてエクスポート(&amp;Z)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="176"/>
+        <source>Export to Kivy...</source>
+        <translation>Kivyにエクスポート...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="178"/>
+        <source>Export Project...</source>
+        <translation>プロジェクトをエクスポート...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="186"/>
+        <source>Open &amp;Zip Project...</source>
+        <translation>Zipプロジェクトを開く(&amp;Z)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="196"/>
+        <source>Auto-Save to Zip</source>
+        <translation>Zipへの自動保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="203"/>
+        <source>Enable Auto-Save</source>
+        <translation>自動保存を有効にする</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="210"/>
+        <source>Auto-Save Settings...</source>
+        <translation>自動保存の設定...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="215"/>
+        <source>Project &amp;Settings...</source>
+        <translation>プロジェクト設定(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="217"/>
+        <source>E&amp;xit</source>
+        <translation>終了(&amp;X)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="219"/>
+        <source>&amp;Edit</source>
+        <translation>編集(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="220"/>
+        <source>&amp;Undo</source>
+        <translation>元に戻す(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="221"/>
+        <source>&amp;Redo</source>
+        <translation>やり直す(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="223"/>
+        <source>Cu&amp;t</source>
+        <translation>切り取り(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="224"/>
+        <source>&amp;Copy</source>
+        <translation>コピー(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="225"/>
+        <source>&amp;Paste</source>
+        <translation>貼り付け(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="247"/>
+        <source>&amp;Assets</source>
+        <translation>アセット(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="229"/>
+        <source>Import &amp;Sprite...</source>
+        <translation>スプライトをインポート(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="226"/>
+        <source>&amp;Duplicate</source>
+        <translation>複製(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="230"/>
+        <source>Import &amp;Sound...</source>
+        <translation>サウンドをインポート(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="231"/>
+        <source>Import &amp;Background...</source>
+        <translation>背景をインポート(&amp;B)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="232"/>
+        <source>Create &amp;Object...</source>
+        <translation>オブジェクトを作成(&amp;O)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="233"/>
+        <source>Create &amp;Room...</source>
+        <translation>ルームを作成(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="236"/>
+        <source>Create &amp;Font...</source>
+        <translation>フォントを作成(&amp;F)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="259"/>
+        <source>Import Object Package...</source>
+        <translation>オブジェクトパッケージをインポート...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="260"/>
+        <source>Import Room Package...</source>
+        <translation>ルームパッケージをインポート...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="264"/>
+        <source>&amp;Build</source>
+        <translation>ビルド(&amp;B)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="266"/>
+        <source>&amp;Test Game</source>
+        <translation>ゲームをテスト(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="268"/>
+        <source>&amp;Export Game...</source>
+        <translation>ゲームをエクスポート(&amp;E)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="267"/>
+        <source>&amp;Debug Game</source>
+        <translation>ゲームをデバッグ(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="275"/>
+        <source>&amp;Tools</source>
+        <translation>ツール(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="281"/>
+        <source>&amp;Preferences...</source>
+        <translation>設定(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="296"/>
+        <source>&amp;Validate Project</source>
+        <translation>プロジェクトを検証(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="304"/>
+        <source>🌐 &amp;Language</source>
+        <translation>🌐 言語(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="334"/>
+        <source>&amp;Help</source>
+        <translation>ヘルプ(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="335"/>
+        <source>&amp;Documentation</source>
+        <translation>ドキュメント(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="336"/>
+        <source>&amp;Online Documentation</source>
+        <translation>オンラインドキュメント(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3049"/>
+        <source>About PyGameMaker</source>
+        <translation>PyGameMakerについて</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1103"/>
+        <location filename="../core/ide_window.py" line="3783"/>
+        <source>Ready</source>
+        <translation>準備完了</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1239"/>
+        <location filename="../core/ide_window.py" line="1259"/>
+        <location filename="../core/ide_window.py" line="1280"/>
+        <location filename="../core/ide_window.py" line="1293"/>
+        <location filename="../core/ide_window.py" line="1319"/>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <location filename="../core/ide_window.py" line="3143"/>
+        <location filename="../core/ide_window.py" line="3191"/>
+        <location filename="../core/ide_window.py" line="3256"/>
+        <location filename="../core/ide_window.py" line="3296"/>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2051"/>
+        <location filename="../core/ide_window.py" line="2365"/>
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="235"/>
+        <source>Create S&amp;cript...</source>
+        <translation>スクリプトを作成(&amp;C)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="284"/>
+        <source>Configure &amp;Action Blocks...</source>
+        <translation>アクションブロックを設定(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="337"/>
+        <source>&amp;Tutorials</source>
+        <translation>チュートリアル(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="339"/>
+        <source>&amp;About PyGameMaker</source>
+        <translation>PyGameMakerについて(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="475"/>
+        <source>Translation Not Available</source>
+        <translation>翻訳が利用できません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="476"/>
+        <source>Translation file for {0} is not available.
+
+The language has been set, but the interface will remain in English until a translation file is provided.
+
+Expected file: translations/pygamemaker_{1}.qm</source>
+        <translation>{0}の翻訳ファイルが利用できません。
+
+言語は設定されましたが、翻訳ファイルが提供されるまでインターフェースは英語のままです。
+
+必要なファイル：translations/pygamemaker_{1}.qm</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="515"/>
+        <source>Auto-Save to Zip Enabled</source>
+        <translation>Zipへの自動保存を有効にしました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="516"/>
+        <source>The project will now automatically save to the original zip file.</source>
+        <translation>プロジェクトは今後、元のZipファイルに自動的に保存されます。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="522"/>
+        <source>Export as Zip?</source>
+        <translation>Zipとしてエクスポートしますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="523"/>
+        <source>Would you like to export the current project as a zip file now?
+
+This will allow auto-save to work with the zip file.</source>
+        <translation>現在のプロジェクトをZipファイルとしてエクスポートしますか？
+
+これにより、Zipファイルでの自動保存が機能するようになります。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="531"/>
+        <source>Auto-save to zip disabled</source>
+        <translation>Zipへの自動保存を無効にしました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="543"/>
+        <source>Auto-save enabled</source>
+        <translation>自動保存を有効にしました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="546"/>
+        <source>Auto-Save Enabled</source>
+        <translation>自動保存を有効にしました</translation>
+    </message>
+</context>
 </TS>
