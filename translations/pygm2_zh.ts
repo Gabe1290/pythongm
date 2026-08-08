@@ -4722,4 +4722,675 @@ Events: {4}</source>
         <translation>固体</translation>
     </message>
 </context>
+<context>
+    <name>RoomEditor</name>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="85"/>
+        <source>Tile Palette...</source>
+        <translation>瓦片调色板...</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="116"/>
+        <source>Room Editor</source>
+        <translation>房间编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="122"/>
+        <source>Save room (Ctrl+S)</source>
+        <translation>保存房间 (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="128"/>
+        <location filename="../editors/room_editor/__init__.py" line="623"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="129"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>撤销 (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="133"/>
+        <location filename="../editors/room_editor/__init__.py" line="629"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="134"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>重做 (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="141"/>
+        <source>✂️ Cut</source>
+        <translation>✂️ 剪切</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="142"/>
+        <source>Cut selected instance (Ctrl+X)</source>
+        <translation>剪切选中的实例 (Ctrl+X)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="146"/>
+        <source>📋 Copy</source>
+        <translation>📋 复制</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="147"/>
+        <source>Copy selected instance (Ctrl+C)</source>
+        <translation>复制选中的实例 (Ctrl+C)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="151"/>
+        <source>📄 Paste</source>
+        <translation>📄 粘贴</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="152"/>
+        <source>Paste instance (Ctrl+V)</source>
+        <translation>粘贴实例 (Ctrl+V)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="156"/>
+        <source>⎘ Duplicate</source>
+        <translation>⎘ 复制副本</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="157"/>
+        <source>Duplicate selected instance (Ctrl+D)</source>
+        <translation>复制选中实例的副本 (Ctrl+D)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="164"/>
+        <source>🔲 Grid</source>
+        <translation>🔲 网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="167"/>
+        <source>Toggle grid visibility</source>
+        <translation>切换网格可见性</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="171"/>
+        <source>🧲 Snap</source>
+        <translation>🧲 吸附</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="174"/>
+        <source>Toggle snap to grid</source>
+        <translation>切换吸附到网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="180"/>
+        <source>🗑️ Clear All</source>
+        <translation>🗑️ 全部清除</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="181"/>
+        <source>Remove all object instances</source>
+        <translation>移除所有对象实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="185"/>
+        <source>↔ Shift All</source>
+        <translation>↔ 全部平移</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="186"/>
+        <source>Shift all instances by an X/Y offset</source>
+        <translation>按 X/Y 偏移量平移所有实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="202"/>
+        <location filename="../editors/room_editor/__init__.py" line="278"/>
+        <source>Ready</source>
+        <translation>就绪</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="223"/>
+        <source>Clear All Instances</source>
+        <translation>清除所有实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="224"/>
+        <source>Are you sure you want to remove all {0} object instances?</source>
+        <translation>确定要移除所有 {0} 个对象实例吗？</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="233"/>
+        <source>All instances cleared</source>
+        <translation>所有实例已清除</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="238"/>
+        <source>Shift All</source>
+        <translation>全部平移</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="238"/>
+        <source>No instances to shift.</source>
+        <translation>没有可平移的实例。</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="242"/>
+        <source>Shift All Instances</source>
+        <translation>平移所有实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="249"/>
+        <source>X offset:</source>
+        <translation>X 偏移：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="255"/>
+        <source>Y offset:</source>
+        <translation>Y 偏移：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="268"/>
+        <source>Shifted all instances by ({0}, {1})</source>
+        <translation>已将所有实例平移 ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="330"/>
+        <source>Deleted {0}</source>
+        <translation>已删除 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="332"/>
+        <source>Deleted {0} instances</source>
+        <translation>已删除 {0} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="383"/>
+        <source>Loaded room &apos;{0}&apos; with {1} instances</source>
+        <translation>已加载房间“{0}”，包含 {1} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="424"/>
+        <source>Loaded {0} objects</source>
+        <translation>已加载 {0} 个对象</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="428"/>
+        <source>Error loading objects: {0}</source>
+        <translation>加载对象时出错：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="447"/>
+        <source>Selected &apos;{0}&apos; - Click in room to place</source>
+        <translation>已选择“{0}” - 在房间中点击以放置</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="449"/>
+        <source>No object selected</source>
+        <translation>未选择对象</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="462"/>
+        <source>Tile selected - Click in room to paint</source>
+        <translation>已选择瓦片 - 在房间中点击以绘制</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="467"/>
+        <source>Tile mode cleared</source>
+        <translation>已清除瓦片模式</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="484"/>
+        <source>Selected {0} at ({1}, {2})</source>
+        <translation>已在 ({1}, {2}) 选择 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="486"/>
+        <source>Selected {0} instances</source>
+        <translation>已选择 {0} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="488"/>
+        <source>No instance selected</source>
+        <translation>未选择实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="494"/>
+        <source>Moved {0} to ({1}, {2})</source>
+        <translation>已将 {0} 移动到 ({1}, {2})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="499"/>
+        <source>Added {0} at ({1}, {2})</source>
+        <translation>已在 ({1}, {2}) 添加 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="506"/>
+        <source>Deleted {0} instance</source>
+        <translation>已删除 {0} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="508"/>
+        <source>Updated {0} {1}: {2}</source>
+        <translation>已更新 {0} {1}：{2}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="553"/>
+        <source>Saving room...</source>
+        <translation>正在保存房间...</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="559"/>
+        <source>Room &apos;{0}&apos; saved successfully</source>
+        <translation>房间“{0}”保存成功</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="568"/>
+        <source>Error saving room: {0}</source>
+        <translation>保存房间时出错：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="569"/>
+        <source>Save Error</source>
+        <translation>保存错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="569"/>
+        <source>Failed to save room:
+{0}</source>
+        <translation>保存房间失败：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="601"/>
+        <source>Undo</source>
+        <translation>撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="608"/>
+        <source>Redo</source>
+        <translation>重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="621"/>
+        <source>↶ Undo: {0}</source>
+        <translation>↶ 撤销：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="627"/>
+        <source>↷ Redo: {0}</source>
+        <translation>↷ 重做：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="638"/>
+        <source>Cut {0} instance(s) to clipboard</source>
+        <translation>已将 {0} 个实例剪切到剪贴板</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="646"/>
+        <source>Copied {0} instance(s) to clipboard</source>
+        <translation>已将 {0} 个实例复制到剪贴板</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="657"/>
+        <source>Instance pasted</source>
+        <translation>实例已粘贴</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="659"/>
+        <source>Pasted {0} instances</source>
+        <translation>已粘贴 {0} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="667"/>
+        <source>Duplicated {0} instance(s)</source>
+        <translation>已复制 {0} 个实例的副本</translation>
+    </message>
+</context>
+<context>
+    <name>SpriteEditor</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="276"/>
+        <source>Pencil</source>
+        <translation>铅笔</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="276"/>
+        <source>Draw pixels (P)</source>
+        <translation>绘制像素 (P)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="277"/>
+        <source>Eraser</source>
+        <translation>橡皮擦</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="277"/>
+        <source>Erase pixels (E)</source>
+        <translation>擦除像素 (E)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="278"/>
+        <source>Picker</source>
+        <translation>吸管</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="278"/>
+        <source>Pick color from canvas (I)</source>
+        <translation>从画布拾取颜色 (I)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="279"/>
+        <source>Fill</source>
+        <translation>填充</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="279"/>
+        <source>Flood fill area (G)</source>
+        <translation>区域填充 (G)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="280"/>
+        <source>Line</source>
+        <translation>直线</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="280"/>
+        <source>Draw line (L)</source>
+        <translation>绘制直线 (L)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="281"/>
+        <source>Rect</source>
+        <translation>矩形</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="281"/>
+        <source>Draw rectangle (R)</source>
+        <translation>绘制矩形 (R)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="282"/>
+        <source>Ellipse</source>
+        <translation>椭圆</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="282"/>
+        <source>Draw ellipse (O)</source>
+        <translation>绘制椭圆 (O)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="283"/>
+        <source>Select</source>
+        <translation>选择</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="283"/>
+        <source>Rectangle selection (S)</source>
+        <translation>矩形选择 (S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="310"/>
+        <source>Select tool from list</source>
+        <translation>从列表中选择工具</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="319"/>
+        <source>Size:</source>
+        <translation>大小：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="324"/>
+        <source>Brush / line width in pixels</source>
+        <translation>画笔/线条宽度（像素）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="335"/>
+        <source>Origin</source>
+        <translation>原点</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="340"/>
+        <source>Origin preset</source>
+        <translation>原点预设</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="341"/>
+        <source>Top-Left</source>
+        <translation>左上</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="342"/>
+        <source>Top-Center</source>
+        <translation>上中</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="343"/>
+        <source>Center</source>
+        <translation>居中</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="344"/>
+        <source>Center-Bottom</source>
+        <translation>下中</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="345"/>
+        <source>Bottom-Left</source>
+        <translation>左下</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="346"/>
+        <source>Bottom-Right</source>
+        <translation>右下</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="347"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="357"/>
+        <source>Origin X coordinate</source>
+        <translation>原点 X 坐标</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="365"/>
+        <source>Origin Y coordinate</source>
+        <translation>原点 Y 坐标</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="375"/>
+        <source>Precise Collision</source>
+        <translation>精确碰撞</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="377"/>
+        <source>Enable pixel-perfect collision for this sprite. Static-only: rotated or scaled instances fall back to AABB.</source>
+        <translation>为此精灵启用像素级精确碰撞。仅限静态：旋转或缩放的实例将回退为 AABB（轴对齐边界框）。</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="384"/>
+        <source>Filled</source>
+        <translation>填充</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="386"/>
+        <source>Toggle filled shapes</source>
+        <translation>切换填充形状</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="391"/>
+        <source>Mirror H</source>
+        <translation>水平镜像</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="392"/>
+        <source>Mirror V</source>
+        <translation>垂直镜像</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="395"/>
+        <source>Resize</source>
+        <translation>调整大小</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="400"/>
+        <source>Grid</source>
+        <translation>网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="403"/>
+        <source>Toggle pixel grid</source>
+        <translation>切换像素网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="408"/>
+        <source>Zoom Out</source>
+        <translation>缩小</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="412"/>
+        <source>Zoom In</source>
+        <translation>放大</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="416"/>
+        <source>Export PNG…</source>
+        <translation>导出 PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="571"/>
+        <source>Tool: {0}</source>
+        <translation>工具：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="606"/>
+        <source>Draw</source>
+        <translation>绘制</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="748"/>
+        <source>Scale to {0}x{1}</source>
+        <translation>缩放到 {0}x{1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="761"/>
+        <source>Resize Canvas to {0}x{1}</source>
+        <translation>将画布调整为 {0}x{1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="777"/>
+        <source>Copied selection</source>
+        <translation>已复制选区</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="786"/>
+        <source>Cut selection</source>
+        <translation>已剪切选区</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="797"/>
+        <source>Pasted from clipboard</source>
+        <translation>已从剪贴板粘贴</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="818"/>
+        <source>Copy	Ctrl+C</source>
+        <translation>复制	Ctrl+C</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="822"/>
+        <source>Cut	Ctrl+X</source>
+        <translation>剪切	Ctrl+X</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="826"/>
+        <source>Paste	Ctrl+V</source>
+        <translation>粘贴	Ctrl+V</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="832"/>
+        <source>Delete	Del</source>
+        <translation>删除	Del</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="837"/>
+        <source>Deselect	Esc</source>
+        <translation>取消选择	Esc</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="843"/>
+        <source>Select All</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="847"/>
+        <source>Export as PNG…</source>
+        <translation>导出为 PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="872"/>
+        <source>Export as PNG</source>
+        <translation>导出为 PNG</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="873"/>
+        <source>PNG Images (*.png)</source>
+        <translation>PNG 图像 (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="878"/>
+        <source>Exported: {0}</source>
+        <translation>已导出：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="880"/>
+        <source>Export Error</source>
+        <translation>导出错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="881"/>
+        <source>Failed to export PNG.</source>
+        <translation>导出 PNG 失败。</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1015"/>
+        <source>No frames in sprite</source>
+        <translation>精灵中没有帧</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1029"/>
+        <source>Validation Error</source>
+        <translation>验证错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1063"/>
+        <source>Saved: {0}</source>
+        <translation>已保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1074"/>
+        <source>Save Error</source>
+        <translation>保存错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1075"/>
+        <source>Failed to save sprite: {0}</source>
+        <translation>保存精灵失败：{0}</translation>
+    </message>
+</context>
 </TS>
