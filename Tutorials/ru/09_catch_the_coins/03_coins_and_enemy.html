@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Фаза 2: Монеты и враг</h1>
+
+    <p>Теперь добавим монеты для сбора и одного врага, которого нужно избегать. Оба падают прямо вниз.</p>
+
+    <h2>Создай спрайт монеты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкни правой кнопкой на <strong>Спрайты</strong> &rarr; <strong>Создать новый спрайт</strong></li>
+            <li>Назови его <code>spr_coin</code></li>
+            <li>Открой Редактор спрайтов и нарисуй жёлтый круг 24&times;24. Сохрани через <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Создай спрайт врага</h2>
+    <div class="step">
+        <ol>
+            <li>Повтори шаги выше для спрайта под названием <code>spr_enemy</code></li>
+            <li>Нарисуй красный квадрат 32&times;32, чтобы врага было легко заметить</li>
+        </ol>
+    </div>
+
+    <h2>Создай объект монеты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкни правой кнопкой на <strong>Объекты</strong> &rarr; <strong>Создать новый объект</strong></li>
+            <li>Назови его <code>obj_coin</code></li>
+            <li>Установи спрайт <code>spr_coin</code></li>
+            <li>Открой вкладку <strong>Blockly</strong> и добавь это:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Создай объект врага</h2>
+    <div class="step">
+        <ol>
+            <li>Создай ещё один объект под названием <code>obj_enemy</code></li>
+            <li>Установи его спрайт <code>spr_enemy</code></li>
+            <li>Добавь такое же событие <strong>When created</strong>, чтобы он тоже падал:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Размести их в комнате</h2>
+    <div class="step">
+        <ol>
+            <li>Открой <code>room_main</code></li>
+            <li>Размести <strong>от 5 до 8 монет</strong> в верхней части комнаты, распределив их по горизонтали</li>
+            <li>Размести <strong>1 врага</strong> где-нибудь сверху, между монетами</li>
+            <li>Убедись, что <code>obj_player</code> всё ещё внизу по центру</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Совет:</strong> Количество монет — это счёт, которого игроку нужно достичь для победы.
+            Начни с 5 для быстрой демонстрации &mdash; позже ты всегда сможешь добавить ещё.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Проверь свою игру!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Нажми F5, чтобы играть!</strong></p>
+        <ul>
+            <li>Монеты и враг должны падать сверху комнаты</li>
+            <li>Игрок может двигаться влево и вправо под ними</li>
+            <li>Пока прикосновение к ним ничего не делает &mdash; это следующая фаза!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Нажми «Далее», чтобы настроить очки и столкновение, ведущее к проигрышу.
+    </div>
+</body>
+</html>

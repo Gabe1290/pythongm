@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Собери монеты!</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/09_catch_the_coins.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128176;</p>
+        <p><strong>Собери каждую монету &mdash; не столкнувшись с врагом!</strong></p>
+        <p>Двигайся влево и вправо, собирай все падающие монеты, чтобы победить, и избегай врага, иначе игра закончится.</p>
+    </div>
+
+    <h2>Что мы построим</h2>
+    <p>Ты создашь полноценную игру с чёткими состояниями победы и поражения.
+    В игру можно будет играть в конце каждой фазы, так что ты можешь остановиться
+    и попробовать её в любой момент.</p>
+
+    <h2>Как работает этот урок</h2>
+
+    <div class="phase">
+        <strong>Фаза 1 &mdash; Движущийся игрок</strong><br>
+        Создай игрока, который двигается влево и вправо. Проверь сразу же!
+    </div>
+
+    <div class="phase">
+        <strong>Фаза 2 &mdash; Монеты и враг</strong><br>
+        Добавь монеты, падающие с неба, и одного врага. Размести их в комнате.
+    </div>
+
+    <div class="phase">
+        <strong>Фаза 3 &mdash; Сбор и столкновение</strong><br>
+        Собирай монеты за очки, столкнись с врагом и игра завершится.
+    </div>
+
+    <div class="phase">
+        <strong>Фаза 4 &mdash; Победа в игре</strong><br>
+        Добавь экран победы, который появляется, когда собраны все монеты.
+    </div>
+
+    <h2>Чему ты научишься</h2>
+    <ul>
+        <li>Создавать спрайты, объекты и комнаты</li>
+        <li>Использовать события клавиатуры для управления игроком</li>
+        <li>Обнаруживать столкновения между объектами</li>
+        <li>Отслеживать и отображать очки</li>
+        <li>Использовать переходы между комнатами для экранов проигрыша и победы</li>
+        <li>Использовать блок <strong>If Condition</strong>, чтобы проверять, сколько объектов осталось</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Необходимое время:</strong> Около 15&ndash;20 минут
+    </div>
+
+    <div class="info">
+        <strong>Готов?</strong> Нажми «Далее», чтобы начать создавать игру.
+    </div>
+</body>
+</html>

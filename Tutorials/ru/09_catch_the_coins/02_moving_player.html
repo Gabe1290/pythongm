@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Фаза 1: Движущийся игрок</h1>
+
+    <p>Начнём с создания игрока и его движения влево и вправо с помощью клавиш со стрелками.</p>
+
+    <h2>Создай новый проект</h2>
+    <div class="step">
+        <ol>
+            <li>Перейди в <code>Файл &gt; Новый проект</code></li>
+            <li>Назови его <strong>CatchTheCoins</strong></li>
+            <li>Для <strong>Шаблона</strong> выбери <strong>«С экраном проигрыша»</strong></li>
+        </ol>
+        <p style="margin-top: 8px; font-style: italic;">Этот шаблон даёт тебе готовый
+        экран проигрыша, который мы подключим позже, так что тебе не придётся создавать его самому.</p>
+    </div>
+
+    <h2>Создай спрайт игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкни правой кнопкой на <strong>Спрайты</strong> в дереве ресурсов &rarr; <strong>Создать новый спрайт</strong></li>
+            <li>Назови его <code>spr_player</code></li>
+            <li>Дважды щёлкни по нему, чтобы открыть Редактор спрайтов, и нарисуй персонажа 32&times;32
+            (ракетка, корзина или просто зелёный квадрат подойдут). Нажми <strong>Ctrl+S</strong>, чтобы сохранить.</li>
+        </ol>
+    </div>
+
+    <h2>Создай объект игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкни правой кнопкой на <strong>Объекты</strong> &rarr; <strong>Создать новый объект</strong></li>
+            <li>Назови его <code>obj_player</code></li>
+            <li>Установи спрайт <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Создай игровую комнату</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкни правой кнопкой на <strong>Комнаты</strong> &rarr; <strong>Создать новую комнату</strong></li>
+            <li>Назови её <code>room_main</code></li>
+            <li>Открой комнату и размести <code>obj_player</code> внизу по центру</li>
+        </ol>
+    </div>
+
+    <h2>Добавь движение игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Дважды щёлкни по <code>obj_player</code>, чтобы открыть Редактор объектов</li>
+            <li>Нажми на вкладку <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Движение влево</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Движение вправо</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>Остановка, когда клавиша не нажата</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>У тебя должно получиться <strong>3 блока событий</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Проверь свою игру!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Нажми F5, чтобы играть!</strong></p>
+        <ul>
+            <li>Используй клавиши <strong>Влево</strong> и <strong>Вправо</strong>, чтобы двигать игрока</li>
+            <li>Пока игрок может уходить за пределы экрана &mdash; монеты появятся дальше!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Нажми «Далее», чтобы добавить монеты и врага.
+    </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Фаза 3: Сбор и столкновение</h1>
+
+    <p>Пора заставить монеты и врага по-настоящему <em>что-то</em> делать. Добавим три правила:</p>
+    <ul>
+        <li>Касание монеты: <strong>+1 очко</strong>, монета исчезает</li>
+        <li>Касание врага: <strong>игра окончена</strong></li>
+        <li>Счёт отображается на экране</li>
+    </ul>
+
+    <h2>Открой объект игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Дважды щёлкни по <code>obj_player</code>, чтобы открыть Редактор объектов</li>
+            <li>Нажми на вкладку <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Сбрось счёт при старте игры</h2>
+    <div class="step">
+        <p>Добавь это событие, чтобы счёт каждый раз начинался с нуля:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+    </div>
+
+    <h2>Собери монету (начисли очки и уничтожь её)</h2>
+    <div class="step">
+        <p>Добавь событие <strong>Collision</strong> с <code>obj_coin</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Collision with obj_coin</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p style="margin-top: 8px;"><strong>Destroy other instance</strong> означает «уничтожить монету, которую мы только что коснулись» &mdash;
+        а не игрока.</p>
+    </div>
+
+    <h2>Столкновение с врагом (игра окончена)</h2>
+    <div class="step">
+        <p>Добавь ещё одно событие <strong>Collision</strong>, на этот раз с <code>obj_enemy</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Collision with obj_enemy</span><br>
+            <span class="block block-room block-indent">Go to room <span class="block-text">room_gameover</span></span>
+        </div>
+        <p style="margin-top: 8px;">Комната <code>room_gameover</code> взята из
+        шаблона <strong>«С экраном проигрыша»</strong> &mdash; она уже показывает
+        «GAME OVER» и перезапускается, когда игрок нажимает <strong>ПРОБЕЛ</strong>.</p>
+    </div>
+
+    <h2>Покажи счёт на экране</h2>
+    <div class="step">
+        <p>Добавь событие <strong>Draw</strong>, чтобы счёт был виден во время игры:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-score block-indent">Draw Score at x:<span class="block-num">10</span> y:<span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Теперь у твоего <code>obj_player</code> есть:
+        <strong>When created</strong>, <strong>When drawing</strong>, <strong>два столкновения</strong>,
+        и <strong>три события клавиатуры</strong> из Фазы 1 &mdash; <strong>всего семь блоков событий</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Проверь свою игру!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Нажми F5, чтобы играть!</strong></p>
+        <ul>
+            <li>Собирай монеты &rarr; <strong>счёт растёт</strong>, монеты исчезают</li>
+            <li>Коснись врага &rarr; <strong>появляется экран проигрыша</strong></li>
+            <li>Нажми <strong>ПРОБЕЛ</strong> на экране проигрыша, чтобы начать заново</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Нажми «Далее», чтобы добавить экран победы.
+    </div>
+</body>
+</html>
