@@ -24,6 +24,18 @@
                 "05_finishing.html"
             ],
             "thumbnail": "thumbnails/02_first_game.png"
+        },
+        {
+            "title": "Pong Clássico: Jogo de Dois Jogadores",
+            "folder": "03_pong",
+            "description": "Crie o clássico jogo de fliperama Pong para dois jogadores",
+            "pages": [
+                "01_introduction.html",
+                "02_paddles_and_ball.html",
+                "03_goals_and_scoring.html",
+                "04_score_display.html"
+            ],
+            "thumbnail": "thumbnails/03_pong.png"
         }
     ]
 }
