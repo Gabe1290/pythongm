@@ -400,4 +400,185 @@
         <translation>先にキーを選択してください。</translation>
     </message>
 </context>
+<context>
+    <name>FrameTimeline</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="121"/>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="122"/>
+        <source>Add frame</source>
+        <translation>フレームを追加</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="126"/>
+        <source>D</source>
+        <translation>D</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="127"/>
+        <source>Duplicate frame</source>
+        <translation>フレームを複製</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="131"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="132"/>
+        <source>Delete frame</source>
+        <translation>フレームを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="136"/>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="302"/>
+        <source>Play</source>
+        <translation>再生</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="297"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+</context>
+<context>
+    <name>ResizeCanvasDialog</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="88"/>
+        <source>Resize / Scale</source>
+        <translation>サイズ変更／拡大縮小</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="96"/>
+        <source>Current size: {0} x {1}</source>
+        <translation>現在のサイズ：{0} x {1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="101"/>
+        <source>Mode</source>
+        <translation>モード</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="103"/>
+        <source>Scale Image (stretch content to new size)</source>
+        <translation>画像を拡大縮小（内容を新しいサイズに合わせて伸縮）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="104"/>
+        <source>Resize Canvas (keep content, add/crop space)</source>
+        <translation>キャンバスをサイズ変更（内容を保持し、余白を追加／切り取り）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="113"/>
+        <source>Width:</source>
+        <translation>幅：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="119"/>
+        <source>Height:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="127"/>
+        <source>Anchor</source>
+        <translation>アンカー</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioConfigDialog</name>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="45"/>
+        <source>Configure Thymio Events &amp; Actions</source>
+        <translation>Thymioのイベントとアクションを設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="52"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="118"/>
+        <source>Thymio Full (All Thymio Blocks)</source>
+        <translation>Thymioフル（すべてのThymioブロック）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="53"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="120"/>
+        <source>Thymio Basic (Buttons + Motors)</source>
+        <translation>Thymioベーシック（ボタン＋モーター）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="54"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="122"/>
+        <source>Thymio Sensors</source>
+        <translation>Thymioセンサー</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="55"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="124"/>
+        <source>Custom</source>
+        <translation>カスタム</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="59"/>
+        <source>Select Thymio blocks to enable:</source>
+        <translation>有効にするThymioブロックを選択してください：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="183"/>
+        <source>{0} Thymio blocks, {1} categories</source>
+        <translation>Thymioブロック {0} 個、カテゴリ {1} 個</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="168"/>
+        <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+        <translation>有効になっている一部のThymioブロックに依存関係が不足しています。ブロックが正しく動作しない可能性があります。
+
+それでも保存しますか？</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="153"/>
+        <source>Tile Palette</source>
+        <translation>タイルパレット</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="169"/>
+        <source>Tileset:</source>
+        <translation>タイルセット：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="174"/>
+        <source>Tile W:</source>
+        <translation>タイル幅：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="181"/>
+        <source>H:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="191"/>
+        <source>Layer:</source>
+        <translation>レイヤー：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="208"/>
+        <source>Clear Tile</source>
+        <translation>タイルをクリア</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="212"/>
+        <source>Close</source>
+        <translation>閉じる</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="244"/>
+        <source>(none)</source>
+        <translation>（なし）</translation>
+    </message>
+</context>
 </TS>
