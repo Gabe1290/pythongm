@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 2: Pouso e colisão</h1>
+
+    <p>Agora adicionamos uma plataforma de pouso e detecção de colisão.
+    Pouse na plataforma para vencer &mdash; colida com o solo para reiniciar!</p>
+
+    <h2>Crie o sprite da plataforma de pouso</h2>
+    <div class="step">
+        <p><strong>spr_pad</strong> (32x32) &mdash; Uma plataforma verde plana</p>
+        <ol>
+            <li>Clique com o botão direito em <strong>Sprites</strong> &gt; <strong>Criar Novo Sprite</strong></li>
+            <li>Nomeie-o <code>spr_pad</code> (32x32 pixels)</li>
+            <li>Desenhe uma plataforma verde plana (um retângulo verde vivo), ou importe dos recursos</li>
+        </ol>
+    </div>
+
+    <h2>Crie o objeto da plataforma de pouso</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Objetos</strong> &gt; <strong>Criar Novo Objeto</strong></li>
+            <li>Nomeie-o <code>obj_pad</code>, atribua <code>spr_pad</code></li>
+            <li>Marque a caixa <strong>Solid</strong></li>
+        </ol>
+    </div>
+
+    <h2>Programe as colisões do módulo (Blockly)</h2>
+    <p>Abra o editor Blockly de <code>obj_lander</code> e adicione dois novos eventos de colisão.</p>
+
+    <h2>1. Pousando na plataforma (Sucesso!)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_pad</span><br>
+            <span class="block block-move block-indent">Stop movement</span><br>
+            <span class="block block-game block-indent">Show Message <span class="block-val">"Pouso bem-sucedido!"</span></span>
+        </div>
+        <p>Encontre <strong>Collision</strong> em <em>Events</em>, digite <code>obj_pad</code>.
+        Adicione <strong>Stop Movement</strong> (de <em>Movement</em>) para parar o módulo.
+        Depois adicione <strong>Show Message</strong> (de <em>Game</em>) com seu texto de vitória.</p>
+    </div>
+
+    <h2>2. Colidindo com o solo (Falha!)</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_ground</span><br>
+            <span class="block block-game block-indent">Show Message <span class="block-val">"Colidiu!"</span></span><br>
+            <span class="block block-game block-indent">Restart Room</span>
+        </div>
+        <p>Encontre <strong>Collision</strong> em <em>Events</em>, digite <code>obj_ground</code>.
+        Adicione <strong>Show Message</strong> (de <em>Game</em>) com o texto de colisão,
+        depois <strong>Restart Room</strong> (de <em>Room</em>).
+        Atingir o solo rochoso reinicia a fase!</p>
+    </div>
+
+    <h2>Aplique seus blocos</h2>
+    <div class="step">
+        <ol>
+            <li>Você deve agora ter <strong>7 blocos de evento</strong> no total (Create + 3 teclado + No key + 2 colisões)</li>
+        </ol>
+    </div>
+
+    <h2>Atualize a sala</h2>
+    <div class="step">
+        <p>Abra <code>room_game</code> e atualize o terreno:</p>
+        <ol>
+            <li>Torne o solo <strong>irregular</strong> &mdash; empilhe alguns blocos <code>obj_ground</code> mais alto em alguns lugares para criar colinas</li>
+            <li>Remova um ou dois blocos de solo da linha inferior para criar uma abertura</li>
+            <li>Posicione <code>obj_pad</code> na abertura (a zona de pouso!)</li>
+        </ol>
+    </div>
+
+    <h2>Exemplo de layout de fase</h2>
+    <pre>
+        L                          &lt;- O módulo começa aqui
+
+
+
+GG       GG
+GGG     GGGG    PP     GGGGG     GGG
+GGGGGGGGGGGG    PP     GGGGGGGGGGGGG
+
+G = Solo (colisão!)    L = Módulo    P = Plataforma de Pouso (seguro!)</pre>
+
+    <div class="highlight">
+        <strong>Dica:</strong> Torne a área de pouso pequena o suficiente para ser um desafio, mas não impossivelmente minúscula!
+        Um ou dois blocos de plataforma lado a lado funciona bem.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>Voe em direção à <strong>plataforma de pouso verde</strong></li>
+            <li>Pouse na plataforma &rarr; a mensagem "Pouso bem-sucedido!" aparece</li>
+            <li>Colida com o solo &rarr; mensagem "Colidiu!", depois a sala reinicia</li>
+            <li>Use rajadas curtas de impulso (toque em Up) para controlar sua descida</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para adicionar o controlador de jogo com texto de HUD!
+    </div>
+</body>
+</html>

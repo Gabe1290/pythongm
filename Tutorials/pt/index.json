@@ -87,6 +87,18 @@
                 "04_game_controller.html"
             ],
             "thumbnail": "thumbnails/07_platformer.png"
+        },
+        {
+            "title": "Lunar Lander: Pouse na Lua",
+            "folder": "08_lunar_lander",
+            "description": "Controle seu impulso e pouse com segurança na plataforma",
+            "pages": [
+                "01_introduction.html",
+                "02_flying_lander.html",
+                "03_landing_and_crashing.html",
+                "04_game_controller.html"
+            ],
+            "thumbnail": "thumbnails/08_lunar_lander.png"
         }
     ]
 }
