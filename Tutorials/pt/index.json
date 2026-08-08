@@ -11,6 +11,19 @@
                 "04_next_steps.html"
             ],
             "thumbnail": "thumbnails/01_getting_started.png"
+        },
+        {
+            "title": "Seu Primeiro Jogo: Pegue a Estrela",
+            "folder": "02_first_game",
+            "description": "Crie um jogo simples onde você pega estrelas caindo",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_falling_stars.html",
+                "04_scoring.html",
+                "05_finishing.html"
+            ],
+            "thumbnail": "thumbnails/02_first_game.png"
         }
     ]
 }
