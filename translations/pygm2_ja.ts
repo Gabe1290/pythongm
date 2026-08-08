@@ -6100,5 +6100,360 @@ This will allow auto-save to work with the zip file.</source>
         <source>Auto-Save Enabled</source>
         <translation>自動保存を有効にしました</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="547"/>
+        <source>Your project will be automatically saved every {0} seconds.</source>
+        <translation>プロジェクトは {0} 秒ごとに自動的に保存されます。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="550"/>
+        <source>Auto-save disabled</source>
+        <translation>自動保存を無効にしました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="553"/>
+        <source>Auto-Save Disabled</source>
+        <translation>自動保存が無効です</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="554"/>
+        <source>Remember to save your project manually (Ctrl+S).</source>
+        <translation>手動でプロジェクトを保存することを忘れないでください（Ctrl+S）。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="586"/>
+        <source>Auto-save settings updated</source>
+        <translation>自動保存の設定を更新しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="591"/>
+        <location filename="../core/ide_window.py" line="632"/>
+        <location filename="../core/ide_window.py" line="1327"/>
+        <location filename="../core/ide_window.py" line="1584"/>
+        <location filename="../core/ide_window.py" line="1725"/>
+        <location filename="../core/ide_window.py" line="1964"/>
+        <location filename="../core/ide_window.py" line="2292"/>
+        <location filename="../core/ide_window.py" line="2776"/>
+        <location filename="../core/ide_window.py" line="2816"/>
+        <source>No Project</source>
+        <translation>プロジェクトなし</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="591"/>
+        <location filename="../core/ide_window.py" line="632"/>
+        <location filename="../core/ide_window.py" line="1327"/>
+        <location filename="../core/ide_window.py" line="1584"/>
+        <source>Please open a project first</source>
+        <translation>先にプロジェクトを開いてください</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="596"/>
+        <source>Import Object Package</source>
+        <translation>オブジェクトパッケージをインポート</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="598"/>
+        <source>GameMaker Objects (*.gmobj)</source>
+        <translation>GameMakerオブジェクト (*.gmobj)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="604"/>
+        <source>Importing object...</source>
+        <translation>オブジェクトをインポート中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="617"/>
+        <location filename="../core/ide_window.py" line="658"/>
+        <location filename="../core/ide_window.py" line="707"/>
+        <location filename="../core/ide_window.py" line="787"/>
+        <source>Import Successful</source>
+        <translation>インポート成功</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="618"/>
+        <source>Object &apos;{0}&apos; imported successfully!</source>
+        <translation>オブジェクト「{0}」を正常にインポートしました！</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="620"/>
+        <source>Object imported: {0}</source>
+        <translation>オブジェクトをインポートしました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="624"/>
+        <location filename="../core/ide_window.py" line="665"/>
+        <location filename="../core/ide_window.py" line="725"/>
+        <location filename="../core/ide_window.py" line="758"/>
+        <location filename="../core/ide_window.py" line="772"/>
+        <source>Import Failed</source>
+        <translation>インポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="625"/>
+        <source>Failed to import object package</source>
+        <translation>オブジェクトパッケージのインポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="627"/>
+        <location filename="../core/ide_window.py" line="668"/>
+        <source>Import failed</source>
+        <translation>インポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="637"/>
+        <source>Import Room Package</source>
+        <translation>ルームパッケージをインポート</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="639"/>
+        <source>GameMaker Rooms (*.gmroom)</source>
+        <translation>GameMakerルーム (*.gmroom)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="645"/>
+        <source>Importing room...</source>
+        <translation>ルームをインポート中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="659"/>
+        <source>Room &apos;{0}&apos; imported successfully!</source>
+        <translation>ルーム「{0}」を正常にインポートしました！</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="661"/>
+        <source>Room imported: {0}</source>
+        <translation>ルームをインポートしました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="666"/>
+        <source>Failed to import room package</source>
+        <translation>ルームパッケージのインポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="797"/>
+        <source>Main</source>
+        <translation>メイン</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="973"/>
+        <source>&quot;{0}&quot; has unsaved changes. Save before closing?</source>
+        <translation>「{0}」に未保存の変更があります。閉じる前に保存しますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1015"/>
+        <location filename="../core/ide_window.py" line="3504"/>
+        <location filename="../core/ide_window.py" line="3645"/>
+        <source>Welcome</source>
+        <translation>ようこそ</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1177"/>
+        <source>No recent projects</source>
+        <translation>最近のプロジェクトはありません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1236"/>
+        <source>Project created successfully</source>
+        <translation>プロジェクトを正常に作成しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1239"/>
+        <source>Failed to create project</source>
+        <translation>プロジェクトの作成に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1245"/>
+        <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
+        <translation>プロジェクトファイル (project.json);;Zipファイル (*.zip);;すべてのファイル (*)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1259"/>
+        <source>Failed to load project from zip</source>
+        <translation>Zipからプロジェクトを読み込めませんでした</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1261"/>
+        <source>Invalid Zip</source>
+        <translation>無効なZip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1262"/>
+        <source>This zip file does not contain a valid PyGameMaker project</source>
+        <translation>このZipファイルには有効なPyGameMakerプロジェクトが含まれていません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1290"/>
+        <location filename="../core/ide_window.py" line="1316"/>
+        <location filename="../core/ide_window.py" line="3685"/>
+        <source>Project saved</source>
+        <translation>プロジェクトを保存しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1309"/>
+        <source>Save Project As</source>
+        <translation>プロジェクトに名前を付けて保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1346"/>
+        <location filename="../core/ide_window.py" line="3916"/>
+        <source>No Project Loaded</source>
+        <translation>プロジェクトが読み込まれていません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1347"/>
+        <source>You need to create or open a project before importing sprites.
+
+Would you like to create a new project now?</source>
+        <translation>スプライトをインポートする前にプロジェクトを作成または開く必要があります。
+
+今すぐ新しいプロジェクトを作成しますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1592"/>
+        <source>Create {0}</source>
+        <translation>{0} を作成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1593"/>
+        <source>Enter name for new {0}:</source>
+        <translation>新しい{0}の名前を入力：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1682"/>
+        <source>Created {0}</source>
+        <translation>{0} を作成しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>Failed to create {0}: {1}</source>
+        <translation>{0} の作成に失敗しました：{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1726"/>
+        <source>Please open or create a project first before testing a game.</source>
+        <translation>ゲームをテストする前に、プロジェクトを開くか作成してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1747"/>
+        <source>Running game...</source>
+        <translation>ゲームを実行中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1754"/>
+        <source>Project Error</source>
+        <translation>プロジェクトエラー</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1755"/>
+        <source>project.json not found in project directory</source>
+        <translation>プロジェクトディレクトリにproject.jsonが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1785"/>
+        <location filename="../core/ide_window.py" line="1856"/>
+        <source>Game closed</source>
+        <translation>ゲームを閉じました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1831"/>
+        <source>Game Test Error</source>
+        <translation>ゲームテストエラー</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1832"/>
+        <source>Failed to run game:
+
+{0}
+
+Check console for details.</source>
+        <translation>ゲームの実行に失敗しました：
+
+{0}
+
+詳細はコンソールを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1787"/>
+        <location filename="../core/ide_window.py" line="1837"/>
+        <source>Game test failed</source>
+        <translation>ゲームテストに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1716"/>
+        <location filename="../core/ide_window.py" line="1880"/>
+        <source>Game Running</source>
+        <translation>ゲーム実行中</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1881"/>
+        <source>A game is already running. Please stop it first.</source>
+        <translation>ゲームはすでに実行中です。先に停止してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1891"/>
+        <source>Starting game in debug mode...</source>
+        <translation>デバッグモードでゲームを起動中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1895"/>
+        <source>Debug Mode</source>
+        <translation>デバッグモード</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1896"/>
+        <source>Debug mode will start the game with verbose console output.
+
+Future features:
+• Breakpoints
+• Variable inspection
+• Step-through execution
+• Performance profiling
+
+For now, check the console for debug messages.</source>
+        <translation>デバッグモードでは、詳細なコンソール出力とともにゲームが起動します。
+
+今後の機能：
+• ブレークポイント
+• 変数の検査
+• ステップ実行
+• パフォーマンスプロファイリング
+
+現時点では、コンソールでデバッグメッセージを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1907"/>
+        <source>Game started in debug mode - Check console for debug output</source>
+        <translation>デバッグモードでゲームを開始しました - コンソールでデバッグ出力を確認してください</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1909"/>
+        <source>Failed to start game</source>
+        <translation>ゲームの起動に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1912"/>
+        <source>Game Error</source>
+        <translation>ゲームエラー</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1913"/>
+        <source>Failed to start the game. Check console for details.</source>
+        <translation>ゲームの起動に失敗しました。詳細はコンソールを確認してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Build Game</source>
+        <translation>ゲームをビルド</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1931"/>
+        <source>Errors:</source>
+        <translation>エラー：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1937"/>
+        <source>Warnings:</source>
+        <translation>警告：</translation>
+    </message>
 </context>
 </TS>
