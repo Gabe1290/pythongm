@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Фаза 4: Перемога у грі</h1>
+
+    <p>Наразі гравець може програти, але немає способу <em>перемогти</em>. Ми це виправимо,
+    перевіряючи після кожного кроку: <strong>«Чи залишилися монети?»</strong> &mdash;
+    якщо ні, ми переходимо до абсолютно нової кімнати перемоги.</p>
+
+    <h2>Побудуйте кімнату перемоги</h2>
+
+    <h2>Створіть спрайт перемоги (необов'язково)</h2>
+    <div class="step">
+        <p>Якщо хочете святковий вигляд, створіть спрайт з назвою <code>spr_win_text</code>.
+        Цей крок необов'язковий &mdash; текст, намальований на наступному кроці, працює і без спрайту.</p>
+    </div>
+
+    <h2>Створіть об'єкт тексту перемоги</h2>
+    <div class="step">
+        <ol>
+            <li>Клацніть правою кнопкою на <strong>Об'єкти</strong> &rarr; <strong>Створити новий об'єкт</strong></li>
+            <li>Назвіть його <code>obj_win_text</code></li>
+            <li>Відкрийте вкладку <strong>Blockly</strong> і додайте ці дві події:</li>
+        </ol>
+
+        <p style="margin-top: 8px;"><strong>Покажіть повідомлення про перемогу:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Коли малювати</span><br>
+            <span class="block block-draw block-indent">Малювати текст <span class="block-text">ВИ ПЕРЕМОГЛИ!</span> в x:<span class="block-num">412</span> y:<span class="block-num">320</span></span><br>
+            <span class="block block-draw block-indent">Малювати текст <span class="block-text">Натисніть ПРОБІЛ, щоб зіграти знову</span> в x:<span class="block-num">340</span> y:<span class="block-num">400</span></span>
+        </div>
+
+        <p style="margin-top: 8px;"><strong>Перезапуск пробілом:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Клавіша натиснута: Space</span><br>
+            <span class="block block-game block-indent">Перезапустити гру</span>
+        </div>
+    </div>
+
+    <h2>Створіть кімнату перемоги</h2>
+    <div class="step">
+        <ol>
+            <li>Клацніть правою кнопкою на <strong>Кімнати</strong> &rarr; <strong>Створити нову кімнату</strong></li>
+            <li>Назвіть її <code>room_win</code></li>
+            <li>Встановіть колір фону на святковий (світло-зелений або золотий)</li>
+            <li>Розмістіть один екземпляр <code>obj_win_text</code> будь-де в кімнаті (його малювання відбувається за фіксованими координатами)</li>
+        </ol>
+    </div>
+
+    <h2>Перевірка перемоги</h2>
+    <p>Тепер важлива частина: на кожному кроці гравець перевіряє, чи залишилися монети.
+    Коли лічильник досягає нуля, ми переходимо до кімнати перемоги.</p>
+
+    <div class="step">
+        <ol>
+            <li>Відкрийте <code>obj_player</code></li>
+            <li>Натисніть вкладку <strong>Blockly</strong></li>
+            <li>Додайте цю подію <strong>Крок</strong>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Кожен крок</span><br>
+            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
+            <span class="block block-room block-indent2">Перейти до кімнати <span class="block-text">room_win</span></span>
+        </div>
+
+        <div class="info" style="margin-top: 10px;">
+            <strong>Що це робить:</strong> Блок <strong>If Count Of</strong> дивиться на кімнату
+            й рахує, скільки екземплярів <code>obj_coin</code> ще живі. Коли ви зібрали
+            їх усі, лічильник дорівнює нулю, порівняння <code>== 0</code> істинне, і дія
+            <strong>Перейти до кімнати</strong> виконується.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Перевірте свою повну гру!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Натисніть F5, щоб грати!</strong></p>
+        <ul>
+            <li>Зберіть кожну монету &rarr; з'являється екран <strong>ВИ ПЕРЕМОГЛИ!</strong></li>
+            <li>Торкніться ворога &rarr; з'являється екран <strong>GAME OVER</strong></li>
+            <li>Натисніть <strong>ПРОБІЛ</strong> на будь-якому з екранів, щоб зіграти знову</li>
+        </ul>
+    </div>
+
+    <h2>Ви побудували повноцінну гру!</h2>
+    <p>Вітаємо &mdash; це повний ігровий цикл із:</p>
+    <ul>
+        <li>Введенням гравця (рух клавіатурою)</li>
+        <li>Двома видами зіткнень (добрим і поганим)</li>
+        <li>Рахунком, зростання якого гравець може бачити</li>
+        <li>Чітким станом перемоги та поразки</li>
+        <li>Способом перезапустити й спробувати знову</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Спробуйте далі:</strong> додайте більше монет, розмістіть другого ворога, або змініть
+        швидкості монети та ворога в їхніх подіях <strong>Коли створено</strong>.
+        Кожна зміна — це просто число, яке ви можете редагувати й тестувати.
+    </div>
+</body>
+</html>
