@@ -5775,4 +5775,330 @@ Eventos: {4}</translation>
         <translation>em execução</translation>
     </message>
 </context>
+<context>
+    <name>PyGameMakerIDE</name>
+    <message>
+        <location filename="../core/ide_window.py" line="154"/>
+        <source>&amp;File</source>
+        <translation>&amp;Arquivo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="157"/>
+        <source>&amp;New Project...</source>
+        <translation>&amp;Novo Projeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="158"/>
+        <source>&amp;Open Project...</source>
+        <translation>&amp;Abrir Projeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="159"/>
+        <source>&amp;Save Project</source>
+        <translation>&amp;Salvar Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="160"/>
+        <source>Save Project &amp;As...</source>
+        <translation>Salvar Projeto &amp;Como...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="168"/>
+        <source>Recent Projects</source>
+        <translation>Projetos Recentes</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="174"/>
+        <source>Export as HTML5...</source>
+        <translation>Exportar como HTML5...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="175"/>
+        <source>Export as &amp;Zip...</source>
+        <translation>Exportar como &amp;Zip...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="176"/>
+        <source>Export to Kivy...</source>
+        <translation>Exportar para Kivy...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="178"/>
+        <source>Export Project...</source>
+        <translation>Exportar Projeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="186"/>
+        <source>Open &amp;Zip Project...</source>
+        <translation>Abrir Projeto &amp;Zip...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="196"/>
+        <source>Auto-Save to Zip</source>
+        <translation>Salvamento Automático em Zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="203"/>
+        <source>Enable Auto-Save</source>
+        <translation>Ativar Salvamento Automático</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="210"/>
+        <source>Auto-Save Settings...</source>
+        <translation>Configurações de Salvamento Automático...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="215"/>
+        <source>Project &amp;Settings...</source>
+        <translation>&amp;Configurações do Projeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="217"/>
+        <source>E&amp;xit</source>
+        <translation>S&amp;air</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="219"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Editar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="220"/>
+        <source>&amp;Undo</source>
+        <translation>&amp;Desfazer</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="221"/>
+        <source>&amp;Redo</source>
+        <translation>&amp;Refazer</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="223"/>
+        <source>Cu&amp;t</source>
+        <translation>Recor&amp;tar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="224"/>
+        <source>&amp;Copy</source>
+        <translation>&amp;Copiar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="225"/>
+        <source>&amp;Paste</source>
+        <translation>C&amp;olar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="247"/>
+        <source>&amp;Assets</source>
+        <translation>&amp;Recursos</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="229"/>
+        <source>Import &amp;Sprite...</source>
+        <translation>Importar &amp;Sprite...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="226"/>
+        <source>&amp;Duplicate</source>
+        <translation>&amp;Duplicar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="230"/>
+        <source>Import &amp;Sound...</source>
+        <translation>Importar &amp;Som...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="231"/>
+        <source>Import &amp;Background...</source>
+        <translation>Importar &amp;Plano de Fundo...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="232"/>
+        <source>Create &amp;Object...</source>
+        <translation>Criar &amp;Objeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="233"/>
+        <source>Create &amp;Room...</source>
+        <translation>Criar &amp;Sala...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="236"/>
+        <source>Create &amp;Font...</source>
+        <translation>Criar &amp;Fonte...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="259"/>
+        <source>Import Object Package...</source>
+        <translation>Importar Pacote de Objeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="260"/>
+        <source>Import Room Package...</source>
+        <translation>Importar Pacote de Sala...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="264"/>
+        <source>&amp;Build</source>
+        <translation>&amp;Compilar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="266"/>
+        <source>&amp;Test Game</source>
+        <translation>&amp;Testar Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="268"/>
+        <source>&amp;Export Game...</source>
+        <translation>&amp;Exportar Jogo...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="267"/>
+        <source>&amp;Debug Game</source>
+        <translation>&amp;Depurar Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="275"/>
+        <source>&amp;Tools</source>
+        <translation>&amp;Ferramentas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="281"/>
+        <source>&amp;Preferences...</source>
+        <translation>&amp;Preferências...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="296"/>
+        <source>&amp;Validate Project</source>
+        <translation>&amp;Validar Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="304"/>
+        <source>🌐 &amp;Language</source>
+        <translation>🌐 &amp;Idioma</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="334"/>
+        <source>&amp;Help</source>
+        <translation>A&amp;juda</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="335"/>
+        <source>&amp;Documentation</source>
+        <translation>&amp;Documentação</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="336"/>
+        <source>&amp;Online Documentation</source>
+        <translation>Documentação &amp;Online</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3049"/>
+        <source>About PyGameMaker</source>
+        <translation>Sobre o PyGameMaker</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1103"/>
+        <location filename="../core/ide_window.py" line="3783"/>
+        <source>Ready</source>
+        <translation>Pronto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1239"/>
+        <location filename="../core/ide_window.py" line="1259"/>
+        <location filename="../core/ide_window.py" line="1280"/>
+        <location filename="../core/ide_window.py" line="1293"/>
+        <location filename="../core/ide_window.py" line="1319"/>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <location filename="../core/ide_window.py" line="3143"/>
+        <location filename="../core/ide_window.py" line="3191"/>
+        <location filename="../core/ide_window.py" line="3256"/>
+        <location filename="../core/ide_window.py" line="3296"/>
+        <source>Error</source>
+        <translation>Erro</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2051"/>
+        <location filename="../core/ide_window.py" line="2365"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="235"/>
+        <source>Create S&amp;cript...</source>
+        <translation>Criar S&amp;cript...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="284"/>
+        <source>Configure &amp;Action Blocks...</source>
+        <translation>Configurar Blocos de &amp;Ação...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="337"/>
+        <source>&amp;Tutorials</source>
+        <translation>&amp;Tutoriais</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="339"/>
+        <source>&amp;About PyGameMaker</source>
+        <translation>&amp;Sobre o PyGameMaker</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="475"/>
+        <source>Translation Not Available</source>
+        <translation>Tradução Não Disponível</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="476"/>
+        <source>Translation file for {0} is not available.
+
+The language has been set, but the interface will remain in English until a translation file is provided.
+
+Expected file: translations/pygamemaker_{1}.qm</source>
+        <translation>O arquivo de tradução para {0} não está disponível.
+
+O idioma foi definido, mas a interface permanecerá em inglês até que um arquivo de tradução seja fornecido.
+
+Arquivo esperado: translations/pygamemaker_{1}.qm</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="515"/>
+        <source>Auto-Save to Zip Enabled</source>
+        <translation>Salvamento Automático em Zip Ativado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="516"/>
+        <source>The project will now automatically save to the original zip file.</source>
+        <translation>O projeto agora será salvo automaticamente no arquivo zip original.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="522"/>
+        <source>Export as Zip?</source>
+        <translation>Exportar como Zip?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="523"/>
+        <source>Would you like to export the current project as a zip file now?
+
+This will allow auto-save to work with the zip file.</source>
+        <translation>Deseja exportar o projeto atual como um arquivo zip agora?
+
+Isso permitirá que o salvamento automático funcione com o arquivo zip.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="531"/>
+        <source>Auto-save to zip disabled</source>
+        <translation>Salvamento automático em zip desativado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="543"/>
+        <source>Auto-save enabled</source>
+        <translation>Salvamento automático ativado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="546"/>
+        <source>Auto-Save Enabled</source>
+        <translation>Salvamento Automático Ativado</translation>
+    </message>
+</context>
 </TS>
