@@ -2412,4 +2412,375 @@ Deseja salvar mesmo assim?</translation>
         <translation>Velocidade V:</translation>
     </message>
 </context>
+<context>
+    <name>ExportProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="419"/>
+        <source>Export Project</source>
+        <translation>Exportar Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="430"/>
+        <source>Export Target</source>
+        <translation>Destino da Exportação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="435"/>
+        <source>Desktop Executable (.exe/.app)</source>
+        <translation>Executável Desktop (.exe/.app)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="436"/>
+        <source>Web (HTML5)</source>
+        <translation>Web (HTML5)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="437"/>
+        <source>Mobile (Kivy)</source>
+        <translation>Móvel (Kivy)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="438"/>
+        <source>Mobile (APK)</source>
+        <translation>Móvel (APK)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="439"/>
+        <source>Source Code (.zip)</source>
+        <translation>Código-Fonte (.zip)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="441"/>
+        <source>Target Platform:</source>
+        <translation>Plataforma de Destino:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="446"/>
+        <source>Choose export location...</source>
+        <translation>Escolha o local de exportação...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="448"/>
+        <source>Browse...</source>
+        <translation>Procurar...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="453"/>
+        <source>Output Location:</source>
+        <translation>Local de Saída:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="458"/>
+        <source>Export Options</source>
+        <translation>Opções de Exportação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="463"/>
+        <source>Include Assets:</source>
+        <translation>Incluir Recursos:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="467"/>
+        <source>Optimize for Release:</source>
+        <translation>Otimizar para Lançamento:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="471"/>
+        <source>Include Debug Info:</source>
+        <translation>Incluir Informações de Depuração:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="488"/>
+        <source>Export</source>
+        <translation>Exportar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="510"/>
+        <source>Choose Export Location</source>
+        <translation>Escolher Local de Exportação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Invalid Output</source>
+        <translation>Saída Inválida</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Please choose an export location.</source>
+        <translation>Escolha um local de exportação.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="564"/>
+        <location filename="../dialogs/project_dialogs.py" line="594"/>
+        <location filename="../dialogs/project_dialogs.py" line="635"/>
+        <location filename="../dialogs/project_dialogs.py" line="675"/>
+        <location filename="../dialogs/project_dialogs.py" line="680"/>
+        <location filename="../dialogs/project_dialogs.py" line="698"/>
+        <location filename="../dialogs/project_dialogs.py" line="779"/>
+        <source>Export Error</source>
+        <translation>Erro de Exportação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="565"/>
+        <location filename="../dialogs/project_dialogs.py" line="676"/>
+        <source>Could not access project manager</source>
+        <translation>Não foi possível acessar o gerenciador de projetos</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="574"/>
+        <location filename="../dialogs/project_dialogs.py" line="613"/>
+        <location filename="../dialogs/project_dialogs.py" line="655"/>
+        <location filename="../dialogs/project_dialogs.py" line="751"/>
+        <source>Export Successful</source>
+        <translation>Exportação Bem-Sucedida</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="575"/>
+        <source>Kivy project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Projeto Kivy exportado para:
+{0}
+
+Deseja abrir o diretório de exportação?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="589"/>
+        <location filename="../dialogs/project_dialogs.py" line="630"/>
+        <location filename="../dialogs/project_dialogs.py" line="672"/>
+        <location filename="../dialogs/project_dialogs.py" line="770"/>
+        <source>Export Failed</source>
+        <translation>Falha na Exportação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="590"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>Falha ao exportar o projeto. Verifique o console para erros.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="595"/>
+        <source>Error during export:
+{0}
+
+{1}</source>
+        <translation>Erro durante a exportação:
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="614"/>
+        <source>HTML5 game exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Jogo HTML5 exportado para:
+{0}
+
+Deseja abrir o diretório de exportação?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="631"/>
+        <source>Failed to export HTML5 game. Check console for errors.</source>
+        <translation>Falha ao exportar o jogo HTML5. Verifique o console para erros.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="636"/>
+        <source>Error during HTML5 export:
+{0}
+
+{1}</source>
+        <translation>Erro durante a exportação HTML5:
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="656"/>
+        <source>Project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Projeto exportado para:
+{0}
+
+Deseja abrir o diretório de exportação?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="673"/>
+        <source>Failed to export ZIP file. Check console for errors.</source>
+        <translation>Falha ao exportar o arquivo ZIP. Verifique o console para erros.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="681"/>
+        <source>Error during ZIP export:
+{0}
+
+{1}</source>
+        <translation>Erro durante a exportação ZIP:
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="699"/>
+        <source>Project file not found: {0}</source>
+        <translation>Arquivo do projeto não encontrado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="715"/>
+        <source>Initializing export...</source>
+        <translation>Inicializando exportação...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="716"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="720"/>
+        <source>Exporting Executable</source>
+        <translation>Exportando Executável</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="752"/>
+        <source>Executable exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Executável exportado para:
+{0}
+
+Deseja abrir o diretório de exportação?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="771"/>
+        <source>Failed to export executable:
+
+{0}</source>
+        <translation>Falha ao exportar o executável:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="780"/>
+        <source>Error during executable export:
+{0}
+
+{1}</source>
+        <translation>Erro durante a exportação do executável:
+{0}
+
+{1}</translation>
+    </message>
+</context>
+<context>
+    <name>SpriteStripDialog</name>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="208"/>
+        <source>Configure Sprite Strip</source>
+        <translation>Configurar Tira de Sprites</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="221"/>
+        <source>Sprite Sheet Preview</source>
+        <translation>Pré-visualização da Folha de Sprites</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="229"/>
+        <source>Frame:</source>
+        <translation>Quadro:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="241"/>
+        <source>Animation Preview</source>
+        <translation>Pré-visualização da Animação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="248"/>
+        <source>Play</source>
+        <translation>Reproduzir</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="250"/>
+        <source>Stop</source>
+        <translation>Parar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="263"/>
+        <source>Image Info</source>
+        <translation>Informações da Imagem</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="267"/>
+        <source>Width:</source>
+        <translation>Largura:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="268"/>
+        <source>Height:</source>
+        <translation>Altura:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="272"/>
+        <source>Frame Configuration</source>
+        <translation>Configuração de Quadros</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="277"/>
+        <source>Horizontal Strip</source>
+        <translation>Tira Horizontal</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="278"/>
+        <source>Vertical Strip</source>
+        <translation>Tira Vertical</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="279"/>
+        <source>Grid (Rows x Columns)</source>
+        <translation>Grade (Linhas x Colunas)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="281"/>
+        <source>Strip Type:</source>
+        <translation>Tipo de Tira:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="288"/>
+        <source>Frame Width:</source>
+        <translation>Largura do Quadro:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="294"/>
+        <source>Frame Height:</source>
+        <translation>Altura do Quadro:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="301"/>
+        <source>Columns:</source>
+        <translation>Colunas:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="307"/>
+        <source>Rows:</source>
+        <translation>Linhas:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="311"/>
+        <source>Total Frames:</source>
+        <translation>Total de Quadros:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="316"/>
+        <source>Animation Settings</source>
+        <translation>Configurações de Animação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="324"/>
+        <source>Animation Speed:</source>
+        <translation>Velocidade da Animação:</translation>
+    </message>
+</context>
 </TS>
