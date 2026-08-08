@@ -1834,4 +1834,466 @@ Do you want to save anyway?</source>
         <translation>ロボットのプロパティ</translation>
     </message>
 </context>
+<context>
+    <name>NewProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="26"/>
+        <source>New Project</source>
+        <translation>新しいプロジェクト</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="36"/>
+        <source>Project Details</source>
+        <translation>プロジェクトの詳細</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="40"/>
+        <source>Enter project name...</source>
+        <translation>プロジェクト名を入力...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="41"/>
+        <source>Project Name:</source>
+        <translation>プロジェクト名：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="45"/>
+        <source>Choose project location...</source>
+        <translation>プロジェクトの保存場所を選択...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="47"/>
+        <source>Browse...</source>
+        <translation>参照...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="52"/>
+        <source>Location:</source>
+        <translation>場所：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="56"/>
+        <source>Optional project description...</source>
+        <translation>プロジェクトの説明（任意）...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="57"/>
+        <source>Description:</source>
+        <translation>説明：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="62"/>
+        <source>Empty Project</source>
+        <translation>空のプロジェクト</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="63"/>
+        <source>With Game Over Screen</source>
+        <translation>ゲームオーバー画面付き</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="67"/>
+        <source>Template:</source>
+        <translation>テンプレート：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="106"/>
+        <source>Choose Project Location</source>
+        <translation>プロジェクトの保存場所を選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Invalid Input</source>
+        <translation>無効な入力</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <source>Please enter a project name.</source>
+        <translation>プロジェクト名を入力してください。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Please choose a project location.</source>
+        <translation>プロジェクトの保存場所を選択してください。</translation>
+    </message>
+</context>
+<context>
+    <name>ViewConfigDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="969"/>
+        <source>View Configuration</source>
+        <translation>ビューの設定</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="979"/>
+        <source>View {0}</source>
+        <translation>ビュー {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="980"/>
+        <source>View:</source>
+        <translation>ビュー：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="984"/>
+        <source>View in Room</source>
+        <translation>ルーム内のビュー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="988"/>
+        <source>Visible:</source>
+        <translation>表示：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="992"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1014"/>
+        <source>X:</source>
+        <translation>X：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="996"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1018"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1000"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1022"/>
+        <source>Width:</source>
+        <translation>幅：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1004"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1026"/>
+        <source>Height:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1009"/>
+        <source>Port on Screen</source>
+        <translation>画面上のポート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1031"/>
+        <source>Object Following</source>
+        <translation>追従するオブジェクト</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1035"/>
+        <source>None</source>
+        <translation>なし</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1038"/>
+        <source>Follow:</source>
+        <translation>追従：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1042"/>
+        <source>H Border:</source>
+        <translation>H境界：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1046"/>
+        <source>V Border:</source>
+        <translation>V境界：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1050"/>
+        <source>H Speed:</source>
+        <translation>H速度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1054"/>
+        <source>V Speed:</source>
+        <translation>V速度：</translation>
+    </message>
+</context>
+<context>
+    <name>ActionConfigDialog</name>
+    <message>
+        <location filename="../events/action_editor.py" line="47"/>
+        <source>Configure {0}</source>
+        <translation>{0} を設定</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="58"/>
+        <source>This action requires special configuration.</source>
+        <translation>このアクションには特別な設定が必要です。</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="146"/>
+        <location filename="../events/action_editor.py" line="471"/>
+        <location filename="../events/action_editor.py" line="513"/>
+        <source>→ Next Room</source>
+        <translation>→ 次のルーム</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="148"/>
+        <location filename="../events/action_editor.py" line="472"/>
+        <location filename="../events/action_editor.py" line="515"/>
+        <source>← Previous Room</source>
+        <translation>← 前のルーム</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="150"/>
+        <location filename="../events/action_editor.py" line="473"/>
+        <location filename="../events/action_editor.py" line="517"/>
+        <source>↺ Restart Current Room</source>
+        <translation>↺ 現在のルームを再開</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="172"/>
+        <source>⚙️ Configure...</source>
+        <translation>⚙️ 設定...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="198"/>
+        <source>Number or expression</source>
+        <translation>数値または式</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="218"/>
+        <source>📋 Configure Actions...</source>
+        <translation>📋 アクションを設定...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="236"/>
+        <source>🎨 Choose Color...</source>
+        <translation>🎨 色を選択...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="262"/>
+        <source>(No sprites available)</source>
+        <translation>（利用可能なスプライトがありません）</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="279"/>
+        <source>(No sounds available)</source>
+        <translation>（利用可能なサウンドがありません）</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="290"/>
+        <source>Enter code here...</source>
+        <translation>ここにコードを入力...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="304"/>
+        <source>X: </source>
+        <translation>X： </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="309"/>
+        <source>Y: </source>
+        <translation>Y： </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="399"/>
+        <source>Choose Color</source>
+        <translation>色を選択</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="405"/>
+        <source>🎨 {0}</source>
+        <translation>🎨 {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="344"/>
+        <source>Translations...</source>
+        <translation>翻訳...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="346"/>
+        <source>Add translations for different languages</source>
+        <translation>さまざまな言語の翻訳を追加</translation>
+    </message>
+</context>
+<context>
+    <name>AssetPropertiesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="114"/>
+        <source>{0} Properties - {1}</source>
+        <translation>{0} のプロパティ - {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="126"/>
+        <source>Type: {0}</source>
+        <translation>種類：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="131"/>
+        <source>File: {0}</source>
+        <translation>ファイル：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Imported</source>
+        <translation>インポート済み</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Not imported</source>
+        <translation>未インポート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
+        <source>Status: {0}</source>
+        <translation>状態：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="143"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 画像をインポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="150"/>
+        <source>Created: {0}</source>
+        <translation>作成日：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="155"/>
+        <source>Close</source>
+        <translation>閉じる</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="171"/>
+        <source>Select Sprite Image</source>
+        <translation>スプライト画像を選択</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="173"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>画像ファイル (*.png *.jpg *.jpeg *.bmp *.gif);;すべてのファイル (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="198"/>
+        <source>Success</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="199"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>スプライト「{0}」に画像を正常にインポートしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="207"/>
+        <source>Import Failed</source>
+        <translation>インポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="208"/>
+        <source>Failed to import the image. Please try again.</source>
+        <translation>画像のインポートに失敗しました。もう一度お試しください。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="213"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="219"/>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="214"/>
+        <source>Error importing image: {0}</source>
+        <translation>画像のインポートエラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="220"/>
+        <source>Could not access asset manager. Please try again.</source>
+        <translation>アセットマネージャーにアクセスできませんでした。もう一度お試しください。</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="265"/>
+        <source>Project Settings</source>
+        <translation>プロジェクト設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="275"/>
+        <source>Project Information</source>
+        <translation>プロジェクト情報</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="279"/>
+        <source>Project Name:</source>
+        <translation>プロジェクト名：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="283"/>
+        <source>Project Path:</source>
+        <translation>プロジェクトパス：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <source>Description:</source>
+        <translation>説明：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="291"/>
+        <source>Settings</source>
+        <translation>設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="295"/>
+        <source>Auto-save:</source>
+        <translation>自動保存：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Desktop</source>
+        <translation>デスクトップ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Web</source>
+        <translation>Web</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Mobile</source>
+        <translation>モバイル</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="299"/>
+        <source>Target Platform:</source>
+        <translation>対象プラットフォーム：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="304"/>
+        <source>Game Settings</source>
+        <translation>ゲーム設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="310"/>
+        <source>Starting Lives:</source>
+        <translation>初期ライフ数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="313"/>
+        <source>Show Lives in Caption:</source>
+        <translation>キャプションにライフを表示：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="318"/>
+        <source>Starting Score:</source>
+        <translation>初期スコア：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="321"/>
+        <source>Show Score in Caption:</source>
+        <translation>キャプションにスコアを表示：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="326"/>
+        <source>Starting Health:</source>
+        <translation>初期体力：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="329"/>
+        <source>Show Health in Caption:</source>
+        <translation>キャプションに体力を表示：</translation>
+    </message>
+</context>
 </TS>
