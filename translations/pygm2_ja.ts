@@ -4050,4 +4050,314 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation>🤖 Thymioアクション...</translation>
     </message>
 </context>
+<context>
+    <name>AssetTreeWidget</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="59"/>
+        <source>Assets</source>
+        <translation>アセット</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
+        <source>No project loaded.
+Use File → New Project or File → Open Project to begin.</source>
+        <translation>プロジェクトが読み込まれていません。
+「ファイル → 新規プロジェクト」または「ファイル → プロジェクトを開く」から始めてください。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
+        <source>Sprites</source>
+        <translation>スプライト</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="125"/>
+        <source>Sounds</source>
+        <translation>サウンド</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="126"/>
+        <source>Backgrounds</source>
+        <translation>背景</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="128"/>
+        <source>Objects</source>
+        <translation>オブジェクト</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="129"/>
+        <source>Rooms</source>
+        <translation>ルーム</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
+        <source>Playgrounds</source>
+        <translation>プレイグラウンド</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
+        <source>Scripts</source>
+        <translation>スクリプト</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="133"/>
+        <source>Fonts</source>
+        <translation>フォント</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226"/>
+        <source>➕ Create New {0}...</source>
+        <translation>➕ 新しい{0}を作成...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="232"/>
+        <source>📥 Import {0}...</source>
+        <translation>📥 {0}をインポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="239"/>
+        <source>📦 Import {0} Package...</source>
+        <translation>📦 {0}パッケージをインポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="248"/>
+        <source>✏️ Rename</source>
+        <translation>✏️ 名前を変更</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="254"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 画像をインポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="259"/>
+        <source>🎬 Configure Animation...</source>
+        <translation>🎬 アニメーションを設定...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
+        <source>💾 Export as PNG…</source>
+        <translation>💾 PNGとしてエクスポート…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
+        <source>📋 Duplicate</source>
+        <translation>📋 複製</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
+        <source>🗑️ Delete</source>
+        <translation>🗑️ 削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="281"/>
+        <source>📦 Export Package...</source>
+        <translation>📦 パッケージをエクスポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="305"/>
+        <source>⬆️ Move Up</source>
+        <translation>⬆️ 上へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="311"/>
+        <source>⬇️ Move Down</source>
+        <translation>⬇️ 下へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="319"/>
+        <source>⏫ Move to Top</source>
+        <translation>⏫ 先頭へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325"/>
+        <source>⏬ Move to Bottom</source>
+        <translation>⏬ 末尾へ移動</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="333"/>
+        <source>⚙️ Properties...</source>
+        <translation>⚙️ プロパティ...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="375"/>
+        <source>Import Assets</source>
+        <translation>アセットをインポート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="376"/>
+        <source>Please use the File menu to import {0}</source>
+        <translation>{0}をインポートするには「ファイル」メニューを使用してください</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="425"/>
+        <source>Select Image for Sprite &apos;{0}&apos;</source>
+        <translation>スプライト「{0}」の画像を選択</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="427"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>画像ファイル (*.png *.jpg *.jpeg *.bmp *.gif);;すべてのファイル (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="439"/>
+        <source>Success</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="440"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>スプライト「{0}」に画像を正常にインポートしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="454"/>
+        <source>No Sprite Data</source>
+        <translation>スプライトデータがありません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="455"/>
+        <source>Could not load sprite data for &apos;{0}&apos;</source>
+        <translation>「{0}」のスプライトデータを読み込めませんでした</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="392"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="464"/>
+        <source>No Image</source>
+        <translation>画像なし</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
+        <source>Sprite &apos;{0}&apos; has no image file.</source>
+        <translation>スプライト「{0}」には画像ファイルがありません。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
+        <source>File Not Found</source>
+        <translation>ファイルが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
+        <source>Image file not found: {0}</source>
+        <translation>画像ファイルが見つかりません：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
+        <source>Export Sprite as PNG</source>
+        <translation>スプライトをPNGとしてエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
+        <source>PNG Images (*.png)</source>
+        <translation>PNG画像 (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
+        <source>Export Error</source>
+        <translation>エクスポートエラー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
+        <source>Failed to export: {0}</source>
+        <translation>エクスポートに失敗しました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
+        <source>Sprite &apos;{0}&apos; has no image file. Please import an image first.</source>
+        <translation>スプライト「{0}」には画像ファイルがありません。先に画像をインポートしてください。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="479"/>
+        <source>Image Not Found</source>
+        <translation>画像が見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="480"/>
+        <source>Could not find image file: {0}</source>
+        <translation>画像ファイルが見つかりませんでした：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="509"/>
+        <source>Animation Configured</source>
+        <translation>アニメーションを設定しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="510"/>
+        <source>Sprite &apos;{0}&apos; configured with {1} frames at {2} FPS</source>
+        <translation>スプライト「{0}」を {1} フレーム、{2} FPSで設定しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
+        <source>No Project</source>
+        <translation>プロジェクトなし</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
+        <source>No project is currently loaded</source>
+        <translation>現在プロジェクトが読み込まれていません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="543"/>
+        <source>Export {0}</source>
+        <translation>{0} をエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="560"/>
+        <source>Export Successful</source>
+        <translation>エクスポート成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="561"/>
+        <source>{0} &apos;{1}&apos; exported to:
+{2}</source>
+        <translation>{0}「{1}」をエクスポートしました：
+{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="566"/>
+        <source>Export Failed</source>
+        <translation>エクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="567"/>
+        <source>Failed to export {0} &apos;{1}&apos;</source>
+        <translation>{0}「{1}」のエクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="595"/>
+        <source>Import {0} Package</source>
+        <translation>{0}パッケージをインポート</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="615"/>
+        <source>Import Successful</source>
+        <translation>インポート成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="616"/>
+        <source>{0} &apos;{1}&apos; imported successfully!</source>
+        <translation>{0}「{1}」を正常にインポートしました！</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="621"/>
+        <source>Import Failed</source>
+        <translation>インポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="622"/>
+        <source>Failed to import {0} package</source>
+        <translation>{0}パッケージのインポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="664"/>
+        <source>Create {0}</source>
+        <translation>{0} を作成</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="665"/>
+        <source>Enter name for new {0}:</source>
+        <translation>新しい{0}の名前を入力：</translation>
+    </message>
+</context>
 </TS>
