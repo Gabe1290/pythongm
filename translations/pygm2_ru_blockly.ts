@@ -20,31 +20,31 @@
         <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="101"/>
         <source>Full (All Blocks)</source>
-        <translation>Full (All Blocks)</translation>
+        <translation>Полный (Все блоки)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="55"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="102"/>
         <source>Beginner (Basic Blocks)</source>
-        <translation>Beginner (Basic Blocks)</translation>
+        <translation>Начинающий (Базовые блоки)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="56"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="103"/>
         <source>Intermediate (More Features)</source>
-        <translation>Intermediate (More Features)</translation>
+        <translation>Средний (Больше функций)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="57"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="104"/>
         <source>Platformer Game</source>
-        <translation>Platformer Game</translation>
+        <translation>Платформер</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="58"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="105"/>
         <source>Grid-based RPG</source>
-        <translation>Grid-based RPG</translation>
+        <translation>RPG на основе сетки</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="59"/>
@@ -84,12 +84,12 @@
         <location filename="../dialogs/blockly_config_dialog.py" line="64"/>
         <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
         <source>Custom</source>
-        <translation>Custom</translation>
+        <translation>Пользовательский</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
         <source>Select blocks to enable:</source>
-        <translation>Select blocks to enable:</translation>
+        <translation>Выберите блоки для включения:</translation>
     </message>
     <message>
         <source>Block</source>
@@ -136,7 +136,7 @@
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="136"/>
         <source>{0} blocks, {1} categories</source>
-        <translation>{0} blocks, {1} categories</translation>
+        <translation>{0} блоков, {1} категорий</translation>
     </message>
     <message>
         <source>Missing Dependencies</source>
@@ -147,9 +147,9 @@
         <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
 
 Do you want to save anyway?</source>
-        <translation>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
+        <translation>У некоторых включённых блоков отсутствуют зависимости. Блоки могут работать некорректно.
 
-Do you want to save anyway?</translation>
+Всё равно сохранить?</translation>
     </message>
 </context>
 <context>
@@ -165,17 +165,17 @@ Do you want to save anyway?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="627"/>
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation>Editor is detached. Close the detached window to return it here.</translation>
+        <translation>Редактор отсоединён. Закройте отдельное окно, чтобы вернуть его сюда.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="662"/>
         <source>📥 Attach</source>
-        <translation>📥 Attach</translation>
+        <translation>📥 Прикрепить</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="663"/>
         <source>Return editor to the tab</source>
-        <translation>Return editor to the tab</translation>
+        <translation>Вернуть редактор во вкладку</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="690"/>
@@ -225,17 +225,17 @@ Do you want to save anyway?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
         <source>⬜ Detach</source>
-        <translation>⬜ Detach</translation>
+        <translation>⬜ Отсоединить</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="131"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation>Open Blockly editor in a separate window</translation>
+        <translation>Открыть редактор Blockly в отдельном окне</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
-        <translation>Drag blocks from the toolbox on the left to create game logic!</translation>
+        <translation>Перетащите блоки из панели инструментов слева, чтобы создать логику игры!</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
@@ -253,7 +253,7 @@ Do you want to save anyway?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
         <source>Blocks updated - {0} events</source>
-        <translation>Blocks updated - {0} events</translation>
+        <translation>Блоки обновлены - {0} событий</translation>
     </message>
     <message>
         <source>Applied {0} events</source>
@@ -266,17 +266,17 @@ Do you want to save anyway?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
         <source>No events to load</source>
-        <translation>No events to load</translation>
+        <translation>Нет событий для загрузки</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
         <source>Loaded {0} events as blocks</source>
-        <translation>Loaded {0} events as blocks</translation>
+        <translation>Загружено {0} событий в виде блоков</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
         <source>Loaded {0} events - some may not have block equivalents</source>
-        <translation>Loaded {0} events - some may not have block equivalents</translation>
+        <translation>Загружено {0} событий - некоторые могут не иметь блочных эквивалентов</translation>
     </message>
     <message>
         <source>Requesting sync from events...</source>
@@ -285,7 +285,7 @@ Do you want to save anyway?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
         <source>Configuration applied: {0} blocks, {1} categories</source>
-        <translation>Configuration applied: {0} blocks, {1} categories</translation>
+        <translation>Конфигурация применена: {0} блоков, {1} категорий</translation>
     </message>
 </context>
 <context>

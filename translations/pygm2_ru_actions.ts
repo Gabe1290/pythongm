@@ -440,28 +440,28 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="37"/>
         <source>Configure: {0}</source>
-        <translation>Configure: {0}</translation>
+        <translation>Настроить: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="55"/>
         <source>Parameters</source>
-        <translation>Parameters</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="70"/>
         <source>This action has no parameters.</source>
-        <translation>This action has no parameters.</translation>
+        <translation>Это действие не имеет параметров.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="136"/>
         <source>Pick Color...</source>
-        <translation>Pick Color...</translation>
+        <translation>Выбрать цвет...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="197"/>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="230"/>
         <source>{0} actions</source>
-        <translation>{0} actions</translation>
+        <translation>{0} действий</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="202"/>
@@ -614,7 +614,7 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     </message>
     <message>
         <source>{0} actions</source>
-        <translation type="vanished">{0} actions</translation>
+        <translation type="vanished">{0} действий</translation>
     </message>
     <message>
         <source>💥 Collision with {0}</source>
