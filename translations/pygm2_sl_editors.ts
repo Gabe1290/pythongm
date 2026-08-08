@@ -97,7 +97,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="121"/>
         <source>💾 Save</source>
-        <translation>💾 Enregistrer</translation>
+        <translation>💾 Shrani</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="126"/>
@@ -108,13 +108,13 @@
     <message>
         <location filename="../editors/base_editor.py" line="129"/>
         <source>Toggle automatic saving (currently every 3 seconds)</source>
-        <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+        <translation>Preklopi samodejno shranjevanje (trenutno vsake 3 sekunde)</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="138"/>
         <location filename="../editors/base_editor.py" line="195"/>
         <source>↶ Undo</source>
-        <translation>↶ Annuler</translation>
+        <translation>↶ Razveljavi</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="141"/>
@@ -150,7 +150,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
         <source>Auto-save is enabled. Click to disable.</source>
-        <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+        <translation>Samodejno shranjevanje je omogočeno. Kliknite za onemogočenje.</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="161"/>
@@ -160,7 +160,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="162"/>
         <source>Auto-save is disabled. Click to enable.</source>
-        <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+        <translation>Samodejno shranjevanje je onemogočeno. Kliknite za omogočenje.</translation>
     </message>
 </context>
 <context>
@@ -168,13 +168,13 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="97"/>
         <source>Asset Information</source>
-        <translation>Informations sur la ressource</translation>
+        <translation>Informacije o viru</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="100"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="475"/>
         <source>No asset selected</source>
-        <translation>Aucune ressource sélectionnée</translation>
+        <translation>Ni izbranega vira</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="104"/>
@@ -189,7 +189,7 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="106"/>
         <source>Status:</source>
-        <translation>Statut :</translation>
+        <translation>Stanje:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="111"/>
@@ -199,31 +199,31 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="118"/>
         <source>Preview</source>
-        <translation>Aperçu</translation>
+        <translation>Predogled</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="121"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="485"/>
         <source>No preview available</source>
-        <translation>Aucun aperçu disponible</translation>
+        <translation>Predogled ni na voljo</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="193"/>
         <source>Room (Editor)</source>
-        <translation>Salle (Éditeur)</translation>
+        <translation>Soba (Urejevalnik)</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="194"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="688"/>
         <source>Active</source>
-        <translation>Actif</translation>
+        <translation>Aktivno</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="714"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="771"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="835"/>
         <source>None</source>
-        <translation>Aucun</translation>
+        <translation>Brez</translation>
     </message>
     <message>
         <source>Background Image:</source>
@@ -286,53 +286,53 @@
         <location filename="../widgets/enhanced_properties_panel.py" line="276"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="541"/>
         <source>Instances:</source>
-        <translation>Instances :</translation>
+        <translation>Instance:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="330"/>
         <source>Choose Background Color</source>
-        <translation>Choisir la couleur d&apos;arrière-plan</translation>
+        <translation>Izberite barvo ozadja</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="388"/>
         <source>Room Preview
 {0}x{1}
 {2} instances</source>
-        <translation>Aperçu de la salle
+        <translation>Predogled sobe
 {0}x{1}
-{2} instances</translation>
+{2} instanc</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="391"/>
         <source>Preview
 Generation Failed</source>
-        <translation>Aperçu
-Échec de la génération</translation>
+        <translation>Predogled
+Generiranje ni uspelo</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="393"/>
         <source>Preview
 Not Available</source>
-        <translation>Aperçu
-Non disponible</translation>
+        <translation>Predogled
+Ni na voljo</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="397"/>
         <source>Preview
 Update Error</source>
-        <translation>Aperçu
-Erreur de mise à jour</translation>
+        <translation>Predogled
+Napaka posodobitve</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="525"/>
         <source>Loaded</source>
-        <translation>Chargé</translation>
+        <translation>Naloženo</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="445"/>
         <source>Room: {0}
 {1} x {2}</source>
-        <translation>Salle : {0}
+        <translation>Soba: {0}
 {1} x {2}</translation>
     </message>
     <message>
@@ -375,17 +375,17 @@ Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da s
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="559"/>
         <source>Frames:</source>
-        <translation>Images :</translation>
+        <translation>Sličice:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="560"/>
         <source>Origin X:</source>
-        <translation>Origine X :</translation>
+        <translation>Izhodišče X:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="561"/>
         <source>Origin Y:</source>
-        <translation>Origine Y :</translation>
+        <translation>Izhodišče Y:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="562"/>
@@ -421,30 +421,30 @@ Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da s
         <location filename="../widgets/enhanced_properties_panel.py" line="577"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="587"/>
         <source>File:</source>
-        <translation>Fichier :</translation>
+        <translation>Datoteka:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="603"/>
         <source>{0}: {1}</source>
-        <translation>{0} : {1}</translation>
+        <translation>{0}: {1}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="638"/>
         <source>No image file path found for {0}</source>
-        <translation>Aucun chemin de fichier image trouvé pour {0}</translation>
+        <translation>Ni najdene poti do slikovne datoteke za {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="643"/>
         <source>Image file not found:
 {0}</source>
-        <translation>Fichier image introuvable :
+        <translation>Slikovna datoteka ni najdena:
 {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="651"/>
         <source>Failed to load image:
 {0}</source>
-        <translation>Échec du chargement de l&apos;image :
+        <translation>Nalaganje slike ni uspelo:
 {0}</translation>
     </message>
     <message>
@@ -458,13 +458,13 @@ Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da s
         <location filename="../widgets/enhanced_properties_panel.py" line="677"/>
         <source>Error loading image:
 {0}</source>
-        <translation>Erreur lors du chargement de l&apos;image :
+        <translation>Napaka pri nalaganju slike:
 {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="687"/>
         <source>Object (Editor)</source>
-        <translation>Objet (Éditeur)</translation>
+        <translation>Objekt (Urejevalnik)</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="741"/>
@@ -479,27 +479,27 @@ Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da s
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="749"/>
         <source>Sprite Size:</source>
-        <translation>Taille du sprite :</translation>
+        <translation>Velikost sprite-a:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="751"/>
         <source>Visible:</source>
-        <translation>Visible :</translation>
+        <translation>Vidno:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="752"/>
         <source>Solid:</source>
-        <translation>Solide :</translation>
+        <translation>Trdno:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="753"/>
         <source>Persistent:</source>
-        <translation>Persistant :</translation>
+        <translation>Trajno:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="757"/>
         <source>Events:</source>
-        <translation>Événements :</translation>
+        <translation>Dogodki:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="874"/>
@@ -507,30 +507,30 @@ Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da s
 Sprite: {1}
 Size: {2}x{3}
 Events: {4}</source>
-        <translation>Objet : {0}
-Sprite : {1}
-Taille : {2}x{3}
-Événements : {4}</translation>
+        <translation>Objekt: {0}
+Sprite: {1}
+Velikost: {2}x{3}
+Dogodki: {4}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="889"/>
         <source>Object: {0}</source>
-        <translation>Objet : {0}</translation>
+        <translation>Objekt: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="891"/>
         <source>Sprite: {0}</source>
-        <translation>Sprite : {0}</translation>
+        <translation>Sprite: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="893"/>
         <source>No sprite assigned</source>
-        <translation>Aucun sprite assigné</translation>
+        <translation>Ni dodeljenega sprite-a</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="894"/>
         <source>Events: {0}</source>
-        <translation>Événements : {0}</translation>
+        <translation>Dogodki: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="898"/>
@@ -554,18 +554,18 @@ Taille : {2}x{3}
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="27"/>
         <source>Instance Properties</source>
-        <translation>Propriétés de l&apos;instance</translation>
+        <translation>Lastnosti instance</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="35"/>
         <location filename="../editors/room_editor/instance_properties.py" line="135"/>
         <source>Object: None</source>
-        <translation>Objet : Aucun</translation>
+        <translation>Objekt: Brez</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="39"/>
         <source>Position</source>
-        <translation>Position</translation>
+        <translation>Položaj</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="42"/>
@@ -587,22 +587,22 @@ Taille : {2}x{3}
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="63"/>
         <source>Rotation</source>
-        <translation>Rotation</translation>
+        <translation>Rotacija</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="74"/>
         <source>Scale</source>
-        <translation>Échelle</translation>
+        <translation>Merilo</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="96"/>
         <source>Delete Instance</source>
-        <translation>Supprimer l&apos;instance</translation>
+        <translation>Izbriši instanco</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="117"/>
         <source>Object: {0}</source>
-        <translation>Objet : {0}</translation>
+        <translation>Objekt: {0}</translation>
     </message>
 </context>
 <context>
@@ -655,12 +655,12 @@ Taille : {2}x{3}
         <location filename="../editors/object_editor/object_editor_main.py" line="650"/>
         <location filename="../editors/object_editor/object_editor_main.py" line="664"/>
         <source>💾 Save</source>
-        <translation>💾 Enregistrer</translation>
+        <translation>💾 Shrani</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="186"/>
         <source>Save object (Ctrl+S)</source>
-        <translation>Enregistrer l&apos;objet (Ctrl+S)</translation>
+        <translation>Shrani objekt (Ctrl+S)</translation>
     </message>
     <message>
         <source>Object Events</source>
@@ -686,7 +686,7 @@ Izberite dogodek in kliknite desno tipko za dodajanje akcij.</translation>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="395"/>
         <source>📋 Event List</source>
-        <translation>📋 Liste des événements</translation>
+        <translation>📋 Seznam dogodkov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="402"/>
@@ -1042,22 +1042,22 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
         <source>Event</source>
-        <translation>Événement</translation>
+        <translation>Dogodek</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
         <source>Actions</source>
-        <translation>Actions</translation>
+        <translation>Dejanja</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="150"/>
         <source>+ Add Event</source>
-        <translation>+ Ajouter un événement</translation>
+        <translation>+ Dodaj dogodek</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
         <source>- Remove Event</source>
-        <translation>- Retirer l&apos;événement</translation>
+        <translation>- Odstrani dogodek</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="163"/>
@@ -1102,7 +1102,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="196"/>
         <source>The {0} event already exists.</source>
-        <translation>L&apos;événement {0} existe déjà.</translation>
+        <translation>Dogodek {0} že obstaja.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="231"/>
@@ -1112,7 +1112,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="243"/>
         <source>No objects available</source>
-        <translation>Aucun objet disponible</translation>
+        <translation>Ni razpoložljivih objektov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="357"/>
@@ -1144,7 +1144,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
         <location filename="../editors/object_editor/object_events_panel.py" line="569"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="664"/>
         <source>Remove Event</source>
-        <translation>Retirer l&apos;événement</translation>
+        <translation>Odstrani dogodek</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="570"/>
@@ -1182,7 +1182,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
         <location filename="../editors/object_editor/object_events_panel.py" line="645"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="682"/>
         <source>Add Action</source>
-        <translation>Ajouter une action</translation>
+        <translation>Dodaj dejanje</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="616"/>
@@ -1205,7 +1205,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
         <location filename="../editors/object_editor/object_events_panel.py" line="709"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="719"/>
         <source>Edit Action</source>
-        <translation>Modifier l&apos;action</translation>
+        <translation>Uredi dejanje</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="712"/>
@@ -1213,7 +1213,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
         <location filename="../editors/object_editor/object_events_panel.py" line="958"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="978"/>
         <source>Remove Action</source>
-        <translation>Retirer l&apos;action</translation>
+        <translation>Odstrani dejanje</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="737"/>
@@ -1264,7 +1264,7 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="979"/>
         <source>Are you sure you want to remove this action?</source>
-        <translation>Voulez-vous vraiment supprimer cette action ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti to dejanje?</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1001"/>
@@ -1334,7 +1334,7 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1728"/>
         <source>This collision event already exists.</source>
-        <translation>Cet événement de collision existe déjà.</translation>
+        <translation>Ta dogodek trka že obstaja.</translation>
     </message>
     <message>
         <source>target_object</source>
@@ -1352,7 +1352,7 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1829"/>
         <source>Are you sure you want to remove the {0} event?</source>
-        <translation>Voulez-vous vraiment supprimer l&apos;événement {0} ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti dogodek {0}?</translation>
     </message>
     <message>
         <source>🤖 Thymio Event...</source>
@@ -1838,12 +1838,12 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/room_editor/object_palette.py" line="34"/>
         <source>Objects</source>
-        <translation>Objets</translation>
+        <translation>Objekti</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/object_palette.py" line="45"/>
         <source>Clear Selection</source>
-        <translation>Effacer la sélection</translation>
+        <translation>Počisti izbor</translation>
     </message>
 </context>
 <context>
@@ -1896,104 +1896,104 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/room_editor/__init__.py" line="121"/>
         <source>💾 Save</source>
-        <translation>💾 Enregistrer</translation>
+        <translation>💾 Shrani</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="122"/>
         <source>Save room (Ctrl+S)</source>
-        <translation>Enregistrer la salle (Ctrl+S)</translation>
+        <translation>Shrani sobo (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="128"/>
         <location filename="../editors/room_editor/__init__.py" line="623"/>
         <source>↶ Undo</source>
-        <translation>↶ Annuler</translation>
+        <translation>↶ Razveljavi</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="129"/>
         <source>Undo (Ctrl+Z)</source>
-        <translation>Annuler (Ctrl+Z)</translation>
+        <translation>Razveljavi (Ctrl+Z)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="133"/>
         <location filename="../editors/room_editor/__init__.py" line="629"/>
         <source>↷ Redo</source>
-        <translation>↷ Rétablir</translation>
+        <translation>↷ Uveljavi</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="134"/>
         <source>Redo (Ctrl+Y)</source>
-        <translation>Rétablir (Ctrl+Y)</translation>
+        <translation>Uveljavi (Ctrl+Y)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="141"/>
         <source>✂️ Cut</source>
-        <translation>✂️ Couper</translation>
+        <translation>✂️ Izreži</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="142"/>
         <source>Cut selected instance (Ctrl+X)</source>
-        <translation>Couper l&apos;instance sélectionnée (Ctrl+X)</translation>
+        <translation>Izreži izbrano instanco (Ctrl+X)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="146"/>
         <source>📋 Copy</source>
-        <translation>📋 Copier</translation>
+        <translation>📋 Kopiraj</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="147"/>
         <source>Copy selected instance (Ctrl+C)</source>
-        <translation>Copier l&apos;instance sélectionnée (Ctrl+C)</translation>
+        <translation>Kopiraj izbrano instanco (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="151"/>
         <source>📄 Paste</source>
-        <translation>📄 Coller</translation>
+        <translation>📄 Prilepi</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="152"/>
         <source>Paste instance (Ctrl+V)</source>
-        <translation>Coller l&apos;instance (Ctrl+V)</translation>
+        <translation>Prilepi instanco (Ctrl+V)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="156"/>
         <source>⎘ Duplicate</source>
-        <translation>⎘ Dupliquer</translation>
+        <translation>⎘ Podvoji</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="157"/>
         <source>Duplicate selected instance (Ctrl+D)</source>
-        <translation>Dupliquer l&apos;instance sélectionnée (Ctrl+D)</translation>
+        <translation>Podvoji izbrano instanco (Ctrl+D)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="164"/>
         <source>🔲 Grid</source>
-        <translation>🔲 Grille</translation>
+        <translation>🔲 Mreža</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="167"/>
         <source>Toggle grid visibility</source>
-        <translation>Basculer la visibilité de la grille</translation>
+        <translation>Preklopi vidnost mreže</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="171"/>
         <source>🧲 Snap</source>
-        <translation>🧲 Magnétisme</translation>
+        <translation>🧲 Pripenjanje</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="174"/>
         <source>Toggle snap to grid</source>
-        <translation>Basculer le magnétisme sur la grille</translation>
+        <translation>Preklopi pripenjanje na mrežo</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="180"/>
         <source>🗑️ Clear All</source>
-        <translation>🗑️ Tout effacer</translation>
+        <translation>🗑️ Počisti vse</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="181"/>
         <source>Remove all object instances</source>
-        <translation>Supprimer toutes les instances d&apos;objet</translation>
+        <translation>Odstrani vse instance objektov</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
@@ -2019,22 +2019,22 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <location filename="../editors/room_editor/__init__.py" line="202"/>
         <location filename="../editors/room_editor/__init__.py" line="278"/>
         <source>Ready</source>
-        <translation>Prêt</translation>
+        <translation>Pripravljeno</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="223"/>
         <source>Clear All Instances</source>
-        <translation>Effacer toutes les instances</translation>
+        <translation>Počisti vse instance</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="224"/>
         <source>Are you sure you want to remove all {0} object instances?</source>
-        <translation>Voulez-vous vraiment supprimer toutes les instances de l&apos;objet {0} ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti vse instance objekta {0}?</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="233"/>
         <source>All instances cleared</source>
-        <translation>Toutes les instances effacées</translation>
+        <translation>Vse instance počiščene</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
@@ -2069,37 +2069,37 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
         <source>Deleted {0}</source>
-        <translation>{0} supprimé</translation>
+        <translation>Izbrisano {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="332"/>
         <source>Deleted {0} instances</source>
-        <translation>{0} instances supprimées</translation>
+        <translation>Izbrisanih {0} instanc</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="383"/>
         <source>Loaded room &apos;{0}&apos; with {1} instances</source>
-        <translation>Salle &apos;{0}&apos; chargée avec {1} instances</translation>
+        <translation>Soba &apos;{0}&apos; naložena z {1} instancami</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="424"/>
         <source>Loaded {0} objects</source>
-        <translation>{0} objets chargés</translation>
+        <translation>Naloženih {0} objektov</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="428"/>
         <source>Error loading objects: {0}</source>
-        <translation>Erreur lors du chargement des objets : {0}</translation>
+        <translation>Napaka pri nalaganju objektov: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="447"/>
         <source>Selected &apos;{0}&apos; - Click in room to place</source>
-        <translation>&apos;{0}&apos; sélectionné - Cliquez dans la salle pour placer</translation>
+        <translation>Izbrano &apos;{0}&apos; - kliknite v sobo za postavitev</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="449"/>
         <source>No object selected</source>
-        <translation>Aucun objet sélectionné</translation>
+        <translation>Ni izbranega objekta</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
@@ -2114,52 +2114,52 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>
         <source>Selected {0} at ({1}, {2})</source>
-        <translation>{0} sélectionné à ({1}, {2})</translation>
+        <translation>Izbrano {0} na ({1}, {2})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="486"/>
         <source>Selected {0} instances</source>
-        <translation>{0} instances sélectionnées</translation>
+        <translation>Izbranih {0} instanc</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="488"/>
         <source>No instance selected</source>
-        <translation>Aucune instance sélectionnée</translation>
+        <translation>Ni izbrane instance</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="494"/>
         <source>Moved {0} to ({1}, {2})</source>
-        <translation>{0} déplacé vers ({1}, {2})</translation>
+        <translation>{0} premaknjeno na ({1}, {2})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="499"/>
         <source>Added {0} at ({1}, {2})</source>
-        <translation>Ajouté {0} à ({1}, {2})</translation>
+        <translation>Dodano {0} na ({1}, {2})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="506"/>
         <source>Deleted {0} instance</source>
-        <translation>{0} instance supprimée</translation>
+        <translation>Izbrisana {0} instanca</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="508"/>
         <source>Updated {0} {1}: {2}</source>
-        <translation>{0} {1} mis à jour : {2}</translation>
+        <translation>Posodobljeno {0} {1}: {2}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="553"/>
         <source>Saving room...</source>
-        <translation>Enregistrement de la salle...</translation>
+        <translation>Shranjevanje sobe...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="559"/>
         <source>Room &apos;{0}&apos; saved successfully</source>
-        <translation>Salle &apos;{0}&apos; enregistrée avec succès</translation>
+        <translation>Soba &apos;{0}&apos; uspešno shranjena</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="568"/>
         <source>Error saving room: {0}</source>
-        <translation>Erreur lors de l&apos;enregistrement de la salle : {0}</translation>
+        <translation>Napaka pri shranjevanju sobe: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="569"/>
@@ -2170,7 +2170,7 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <location filename="../editors/room_editor/__init__.py" line="569"/>
         <source>Failed to save room:
 {0}</source>
-        <translation>Échec de l&apos;enregistrement de la salle :
+        <translation>Shranjevanje sobe ni uspelo:
 {0}</translation>
     </message>
     <message>
@@ -2186,37 +2186,37 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/room_editor/__init__.py" line="621"/>
         <source>↶ Undo: {0}</source>
-        <translation>↶ Annuler : {0}</translation>
+        <translation>↶ Razveljavi: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="627"/>
         <source>↷ Redo: {0}</source>
-        <translation>↷ Rétablir : {0}</translation>
+        <translation>↷ Uveljavi: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="638"/>
         <source>Cut {0} instance(s) to clipboard</source>
-        <translation>{0} instance(s) coupée(s) dans le presse-papiers</translation>
+        <translation>V odložišče izrezanih {0} instanc</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="646"/>
         <source>Copied {0} instance(s) to clipboard</source>
-        <translation>{0} instance(s) copiée(s) dans le presse-papiers</translation>
+        <translation>V odložišče kopiranih {0} instanc</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="657"/>
         <source>Instance pasted</source>
-        <translation>Instance collée</translation>
+        <translation>Instanca prilepljena</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="659"/>
         <source>Pasted {0} instances</source>
-        <translation>{0} instances collées</translation>
+        <translation>Prilepljenih {0} instanc</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="667"/>
         <source>Duplicated {0} instance(s)</source>
-        <translation>{0} instance(s) dupliquée(s)</translation>
+        <translation>Podvojenih {0} instanc</translation>
     </message>
 </context>
 <context>
