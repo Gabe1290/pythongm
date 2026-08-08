@@ -310,12 +310,16 @@
         <translation type="vanished">Vista reimpostata ai valori predefiniti</translation>
     </message>
     <message>
-        <source>Zoom: {int(self.zoom_level * 100)}%</source>
-        <translation type="vanished">Zoom: {int(self.zoom_level * 100)}%</translation>
+        <location filename="../widgets/thymio_playground.py" line="830"/>
+        <location filename="../widgets/thymio_playground.py" line="884"/>
+        <source>Zoom: {0}%</source>
+        <translation>Zoom: {0}%</translation>
     </message>
     <message>
-        <source>Pan: {int(self.camera_x)}, {int(self.camera_y)}</source>
-        <translation type="vanished">Panoramica: {int(self.camera_x)}, {int(self.camera_y)}</translation>
+        <location filename="../widgets/thymio_playground.py" line="831"/>
+        <location filename="../widgets/thymio_playground.py" line="885"/>
+        <source>Pan: {0}, {1}</source>
+        <translation>Panoramica: {0}, {1}</translation>
     </message>
     <message>
         <source>Warning: Obstacle very close!</source>
@@ -366,24 +370,29 @@
         <translation type="vanished">Nessun ostacolo interno da cancellare</translation>
     </message>
     <message>
-        <source>Sensor visualization: {state}</source>
-        <translation type="vanished">Visualizzazione sensori: {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1009"/>
+        <source>Sensor visualization: {0}</source>
+        <translation>Visualizzazione sensori: {0}</translation>
     </message>
     <message>
-        <source>Simulation {state}</source>
-        <translation type="vanished">Simulazione {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1016"/>
+        <source>Simulation {0}</source>
+        <translation>Simulazione {0}</translation>
     </message>
     <message>
-        <source>Playground resized to {width}x{height}</source>
-        <translation type="vanished">Campo di gioco ridimensionato a {width}x{height}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1096"/>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>Campo di gioco ridimensionato a {0}x{1}</translation>
     </message>
     <message>
-        <source>Mode: {mode_names[mode]}</source>
-        <translation type="vanished">Modalità: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1157"/>
+        <source>Mode: {0}</source>
+        <translation>Modalità: {0}</translation>
     </message>
     <message>
-        <source>Edit mode: {mode_names[mode]}</source>
-        <translation type="vanished">Modalità di modifica: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1158"/>
+        <source>Edit mode: {0}</source>
+        <translation>Modalità di modifica: {0}</translation>
     </message>
     <message>
         <source>Obstacle added</source>
@@ -444,6 +453,27 @@
     <message>
         <source>No line segments to clear</source>
         <translation type="vanished">Nessun segmento di linea da cancellare</translation>
+    </message>
+
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>attivo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>disattivato</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>in pausa</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>in esecuzione</translation>
     </message>
 </context>
 <context>

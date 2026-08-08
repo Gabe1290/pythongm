@@ -827,8 +827,8 @@ class ThymioPlaygroundWindow(QMainWindow):
 
     def _update_zoom_label(self):
         """Update the zoom label in the UI"""
-        self.zoom_label.setText(self.tr(f"Zoom: {int(self.zoom_level * 100)}%"))
-        self.pan_label.setText(self.tr(f"Pan: {int(self.camera_x)}, {int(self.camera_y)}"))
+        self.zoom_label.setText(self.tr("Zoom: {0}%").format(int(self.zoom_level * 100)))
+        self.pan_label.setText(self.tr("Pan: {0}, {1}").format(int(self.camera_x), int(self.camera_y)))
 
     def _update_status_panel(self):
         """Update the status panel with current robot state"""
@@ -881,8 +881,8 @@ class ThymioPlaygroundWindow(QMainWindow):
             self.led_top_label.setStyleSheet("")
 
         # Zoom info
-        self.zoom_label.setText(self.tr(f"Zoom: {int(self.zoom_level * 100)}%"))
-        self.pan_label.setText(f"Pan: {int(self.camera_x)}, {int(self.camera_y)}")
+        self.zoom_label.setText(self.tr("Zoom: {0}%").format(int(self.zoom_level * 100)))
+        self.pan_label.setText(self.tr("Pan: {0}, {1}").format(int(self.camera_x), int(self.camera_y)))
 
     def _check_proximity_warnings(self):
         """Check for proximity warnings and update status bar"""
@@ -1005,15 +1005,15 @@ class ThymioPlaygroundWindow(QMainWindow):
     def toggle_sensors(self):
         """Toggle sensor visualization"""
         self.renderer.toggle_sensors()
-        state = "on" if self.renderer.show_sensors else "off"
-        self.statusbar.showMessage(self.tr(f"Sensor visualization: {state}"))
+        state = self.tr("on") if self.renderer.show_sensors else self.tr("off")
+        self.statusbar.showMessage(self.tr("Sensor visualization: {0}").format(state))
 
     def toggle_pause(self):
         """Toggle simulation pause"""
         self.paused = not self.paused
         self.pause_action.setChecked(self.paused)
-        state = "paused" if self.paused else "running"
-        self.statusbar.showMessage(self.tr(f"Simulation {state}"))
+        state = self.tr("paused") if self.paused else self.tr("running")
+        self.statusbar.showMessage(self.tr("Simulation {0}").format(state))
 
     # ========================================================================
     # PLAYGROUND SIZE METHODS
@@ -1093,7 +1093,7 @@ class ThymioPlaygroundWindow(QMainWindow):
         self.reset_view()
 
         self.statusbar.showMessage(
-            self.tr(f"Playground resized to {width}x{height}")
+            self.tr("Playground resized to {0}x{1}").format(width, height)
         )
         logger.info(f"Playground resized from {old_width}x{old_height} to {width}x{height}")
 
@@ -1150,12 +1150,12 @@ class ThymioPlaygroundWindow(QMainWindow):
         self.selected_line = None
 
         mode_names = {
-            EditMode.SELECT: "Select",
-            EditMode.OBSTACLE: "Obstacle",
-            EditMode.LINE: "Line"
+            EditMode.SELECT: self.tr("Select"),
+            EditMode.OBSTACLE: self.tr("Obstacle"),
+            EditMode.LINE: self.tr("Line")
         }
-        self.edit_mode_label.setText(self.tr(f"Mode: {mode_names[mode]}"))
-        self.statusbar.showMessage(self.tr(f"Edit mode: {mode_names[mode]}"))
+        self.edit_mode_label.setText(self.tr("Mode: {0}").format(mode_names[mode]))
+        self.statusbar.showMessage(self.tr("Edit mode: {0}").format(mode_names[mode]))
 
     def on_mouse_pressed(self, x: int, y: int, button: int):
         """Handle mouse press in pygame area"""

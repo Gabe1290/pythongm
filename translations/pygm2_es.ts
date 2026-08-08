@@ -8496,13 +8496,13 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/thymio_playground.py" line="800"/>
         <location filename="../widgets/thymio_playground.py" line="854"/>
-        <source>Zoom: {int(self.zoom_level * 100)}%</source>
-        <translation>Zoom: {int(self.zoom_level * 100)}%</translation>
+        <source>Zoom: {0}%</source>
+        <translation>Zoom: {0}%</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="801"/>
-        <source>Pan: {int(self.camera_x)}, {int(self.camera_y)}</source>
-        <translation>Desplazamiento: {int(self.camera_x)}, {int(self.camera_y)}</translation>
+        <source>Pan: {0}, {1}</source>
+        <translation>Desplazamiento: {0}, {1}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="861"/>
@@ -8566,28 +8566,28 @@ Do you want to save anyway?</source>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="979"/>
-        <source>Sensor visualization: {state}</source>
-        <translation>Visualización de sensores: {state}</translation>
+        <source>Sensor visualization: {0}</source>
+        <translation>Visualización de sensores: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="986"/>
-        <source>Simulation {state}</source>
-        <translation>Simulación {state}</translation>
+        <source>Simulation {0}</source>
+        <translation>Simulación {0}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1066"/>
-        <source>Playground resized to {width}x{height}</source>
-        <translation>Zona de pruebas redimensionada a {width}x{height}</translation>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>Zona de pruebas redimensionada a {0}x{1}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1127"/>
-        <source>Mode: {mode_names[mode]}</source>
-        <translation>Modo: {mode_names[mode]}</translation>
+        <source>Mode: {0}</source>
+        <translation>Modo: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1128"/>
-        <source>Edit mode: {mode_names[mode]}</source>
-        <translation>Modo de edición: {mode_names[mode]}</translation>
+        <source>Edit mode: {0}</source>
+        <translation>Modo de edición: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/thymio_playground.py" line="1179"/>
@@ -8663,6 +8663,27 @@ Do you want to save anyway?</source>
         <location filename="../widgets/thymio_playground.py" line="1302"/>
         <source>No line segments to clear</source>
         <translation>No hay segmentos de línea para borrar</translation>
+    </message>
+
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>activado</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>desactivado</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>en pausa</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>en ejecución</translation>
     </message>
 </context>
 <context>

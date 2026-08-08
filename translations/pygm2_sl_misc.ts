@@ -310,12 +310,16 @@
         <translation type="vanished">Pogled ponastavljen na privzeto</translation>
     </message>
     <message>
-        <source>Zoom: {int(self.zoom_level * 100)}%</source>
-        <translation type="vanished">Povečava: {int(self.zoom_level * 100)}%</translation>
+        <location filename="../widgets/thymio_playground.py" line="830"/>
+        <location filename="../widgets/thymio_playground.py" line="884"/>
+        <source>Zoom: {0}%</source>
+        <translation>Povečava: {0}%</translation>
     </message>
     <message>
-        <source>Pan: {int(self.camera_x)}, {int(self.camera_y)}</source>
-        <translation type="vanished">Premik: {int(self.camera_x)}, {int(self.camera_y)}</translation>
+        <location filename="../widgets/thymio_playground.py" line="831"/>
+        <location filename="../widgets/thymio_playground.py" line="885"/>
+        <source>Pan: {0}, {1}</source>
+        <translation>Premik: {0}, {1}</translation>
     </message>
     <message>
         <source>Warning: Obstacle very close!</source>
@@ -366,24 +370,29 @@
         <translation type="vanished">Ni notranjih ovir za odstranitev</translation>
     </message>
     <message>
-        <source>Sensor visualization: {state}</source>
-        <translation type="vanished">Vizualizacija senzorjev: {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1009"/>
+        <source>Sensor visualization: {0}</source>
+        <translation>Vizualizacija senzorjev: {0}</translation>
     </message>
     <message>
-        <source>Simulation {state}</source>
-        <translation type="vanished">Simulacija {state}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1016"/>
+        <source>Simulation {0}</source>
+        <translation>Simulacija {0}</translation>
     </message>
     <message>
-        <source>Playground resized to {width}x{height}</source>
-        <translation type="vanished">Igrišče spremenjeno na {width}x{height}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1096"/>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>Igrišče spremenjeno na {0}x{1}</translation>
     </message>
     <message>
-        <source>Mode: {mode_names[mode]}</source>
-        <translation type="vanished">Način: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1157"/>
+        <source>Mode: {0}</source>
+        <translation>Način: {0}</translation>
     </message>
     <message>
-        <source>Edit mode: {mode_names[mode]}</source>
-        <translation type="vanished">Način urejanja: {mode_names[mode]}</translation>
+        <location filename="../widgets/thymio_playground.py" line="1158"/>
+        <source>Edit mode: {0}</source>
+        <translation>Način urejanja: {0}</translation>
     </message>
     <message>
         <source>Obstacle added</source>
@@ -444,6 +453,27 @@
     <message>
         <source>No line segments to clear</source>
         <translation type="vanished">Ni črtnih segmentov za odstranitev</translation>
+    </message>
+
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>vklopljeno</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>izklopljeno</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>v premoru</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>teče</translation>
     </message>
 </context>
 <context>
