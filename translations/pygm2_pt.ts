@@ -4722,4 +4722,342 @@ Eventos: {4}</translation>
         <translation>Sólido</translation>
     </message>
 </context>
+<context>
+    <name>RoomEditor</name>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="85"/>
+        <source>Tile Palette...</source>
+        <translation>Paleta de Blocos...</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="116"/>
+        <source>Room Editor</source>
+        <translation>Editor de Sala</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="122"/>
+        <source>Save room (Ctrl+S)</source>
+        <translation>Salvar sala (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="128"/>
+        <location filename="../editors/room_editor/__init__.py" line="623"/>
+        <source>↶ Undo</source>
+        <translation>↶ Desfazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="129"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>Desfazer (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="133"/>
+        <location filename="../editors/room_editor/__init__.py" line="629"/>
+        <source>↷ Redo</source>
+        <translation>↷ Refazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="134"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>Refazer (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="141"/>
+        <source>✂️ Cut</source>
+        <translation>✂️ Recortar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="142"/>
+        <source>Cut selected instance (Ctrl+X)</source>
+        <translation>Recortar instância selecionada (Ctrl+X)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="146"/>
+        <source>📋 Copy</source>
+        <translation>📋 Copiar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="147"/>
+        <source>Copy selected instance (Ctrl+C)</source>
+        <translation>Copiar instância selecionada (Ctrl+C)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="151"/>
+        <source>📄 Paste</source>
+        <translation>📄 Colar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="152"/>
+        <source>Paste instance (Ctrl+V)</source>
+        <translation>Colar instância (Ctrl+V)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="156"/>
+        <source>⎘ Duplicate</source>
+        <translation>⎘ Duplicar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="157"/>
+        <source>Duplicate selected instance (Ctrl+D)</source>
+        <translation>Duplicar instância selecionada (Ctrl+D)</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="164"/>
+        <source>🔲 Grid</source>
+        <translation>🔲 Grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="167"/>
+        <source>Toggle grid visibility</source>
+        <translation>Alternar visibilidade da grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="171"/>
+        <source>🧲 Snap</source>
+        <translation>🧲 Alinhar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="174"/>
+        <source>Toggle snap to grid</source>
+        <translation>Alternar alinhamento à grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="180"/>
+        <source>🗑️ Clear All</source>
+        <translation>🗑️ Limpar Tudo</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="181"/>
+        <source>Remove all object instances</source>
+        <translation>Remover todas as instâncias de objetos</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="185"/>
+        <source>↔ Shift All</source>
+        <translation>↔ Deslocar Tudo</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="186"/>
+        <source>Shift all instances by an X/Y offset</source>
+        <translation>Deslocar todas as instâncias por um deslocamento X/Y</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Flutuar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>Abrir este editor em sua própria janela</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="202"/>
+        <location filename="../editors/room_editor/__init__.py" line="278"/>
+        <source>Ready</source>
+        <translation>Pronto</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="223"/>
+        <source>Clear All Instances</source>
+        <translation>Limpar Todas as Instâncias</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="224"/>
+        <source>Are you sure you want to remove all {0} object instances?</source>
+        <translation>Tem certeza de que deseja remover todas as {0} instâncias de objetos?</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="233"/>
+        <source>All instances cleared</source>
+        <translation>Todas as instâncias foram removidas</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="238"/>
+        <source>Shift All</source>
+        <translation>Deslocar Tudo</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="238"/>
+        <source>No instances to shift.</source>
+        <translation>Nenhuma instância para deslocar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="242"/>
+        <source>Shift All Instances</source>
+        <translation>Deslocar Todas as Instâncias</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="249"/>
+        <source>X offset:</source>
+        <translation>Deslocamento X:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="255"/>
+        <source>Y offset:</source>
+        <translation>Deslocamento Y:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="268"/>
+        <source>Shifted all instances by ({0}, {1})</source>
+        <translation>Todas as instâncias deslocadas por ({0}, {1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="330"/>
+        <source>Deleted {0}</source>
+        <translation>{0} excluído</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="332"/>
+        <source>Deleted {0} instances</source>
+        <translation>{0} instâncias excluídas</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="383"/>
+        <source>Loaded room &apos;{0}&apos; with {1} instances</source>
+        <translation>Sala '{0}' carregada com {1} instâncias</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="424"/>
+        <source>Loaded {0} objects</source>
+        <translation>{0} objetos carregados</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="428"/>
+        <source>Error loading objects: {0}</source>
+        <translation>Erro ao carregar objetos: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="447"/>
+        <source>Selected &apos;{0}&apos; - Click in room to place</source>
+        <translation>'{0}' selecionado - Clique na sala para posicionar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="449"/>
+        <source>No object selected</source>
+        <translation>Nenhum objeto selecionado</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="462"/>
+        <source>Tile selected - Click in room to paint</source>
+        <translation>Bloco selecionado - Clique na sala para pintar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="467"/>
+        <source>Tile mode cleared</source>
+        <translation>Modo de bloco desativado</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="484"/>
+        <source>Selected {0} at ({1}, {2})</source>
+        <translation>{0} selecionado em ({1}, {2})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="486"/>
+        <source>Selected {0} instances</source>
+        <translation>{0} instâncias selecionadas</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="488"/>
+        <source>No instance selected</source>
+        <translation>Nenhuma instância selecionada</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="494"/>
+        <source>Moved {0} to ({1}, {2})</source>
+        <translation>{0} movido para ({1}, {2})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="499"/>
+        <source>Added {0} at ({1}, {2})</source>
+        <translation>{0} adicionado em ({1}, {2})</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="506"/>
+        <source>Deleted {0} instance</source>
+        <translation>{0} instância excluída</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="508"/>
+        <source>Updated {0} {1}: {2}</source>
+        <translation>{0} {1} atualizado: {2}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="553"/>
+        <source>Saving room...</source>
+        <translation>Salvando sala...</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="559"/>
+        <source>Room &apos;{0}&apos; saved successfully</source>
+        <translation>Sala '{0}' salva com sucesso</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="568"/>
+        <source>Error saving room: {0}</source>
+        <translation>Erro ao salvar a sala: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="569"/>
+        <source>Save Error</source>
+        <translation>Erro ao Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="569"/>
+        <source>Failed to save room:
+{0}</source>
+        <translation>Falha ao salvar a sala:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="601"/>
+        <source>Undo</source>
+        <translation>Desfazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="608"/>
+        <source>Redo</source>
+        <translation>Refazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="621"/>
+        <source>↶ Undo: {0}</source>
+        <translation>↶ Desfazer: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="627"/>
+        <source>↷ Redo: {0}</source>
+        <translation>↷ Refazer: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="638"/>
+        <source>Cut {0} instance(s) to clipboard</source>
+        <translation>{0} instância(s) recortada(s) para a área de transferência</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="646"/>
+        <source>Copied {0} instance(s) to clipboard</source>
+        <translation>{0} instância(s) copiada(s) para a área de transferência</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="657"/>
+        <source>Instance pasted</source>
+        <translation>Instância colada</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="659"/>
+        <source>Pasted {0} instances</source>
+        <translation>{0} instâncias coladas</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="667"/>
+        <source>Duplicated {0} instance(s)</source>
+        <translation>{0} instância(s) duplicada(s)</translation>
+    </message>
+</context>
 </TS>
