@@ -2783,4 +2783,222 @@ Deseja abrir o diretório de exportação?</translation>
         <translation>Velocidade da Animação:</translation>
     </message>
 </context>
+<context>
+    <name>ObjectEditor</name>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="184"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="650"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="664"/>
+        <source>💾 Save</source>
+        <translation>💾 Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="186"/>
+        <source>Save object (Ctrl+S)</source>
+        <translation>Salvar objeto (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="380"/>
+        <source>Actions are managed through the Object Events panel on the left.
+
+Select an event and right-click to add actions.</source>
+        <translation>As ações são gerenciadas através do painel de Eventos do Objeto à esquerda.
+
+Selecione um evento e clique com o botão direito para adicionar ações.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="395"/>
+        <source>📋 Event List</source>
+        <translation>📋 Lista de Eventos</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="402"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="558"/>
+        <source>🧩 Blockly</source>
+        <translation>🧩 Blockly</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="405"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="561"/>
+        <source>Scratch-like block programming</source>
+        <translation>Programação em blocos estilo Scratch</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="421"/>
+        <source>Mode:</source>
+        <translation>Modo:</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="425"/>
+        <source>📖 View Generated Code</source>
+        <translation>📖 Ver Código Gerado</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="426"/>
+        <source>✏️ Edit Custom Code</source>
+        <translation>✏️ Editar Código Personalizado</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="440"/>
+        <source>🔄 Refresh</source>
+        <translation>🔄 Atualizar</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="450"/>
+        <source># Python code editor
+# Switch to &apos;Edit Custom Code&apos; mode to write your own Python code
+# Or view generated code from visual events</source>
+        <translation># Editor de código Python
+# Mude para o modo 'Editar Código Personalizado' para escrever seu próprio código Python
+# Ou veja o código gerado a partir dos eventos visuais</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="485"/>
+        <source>Event for custom code:</source>
+        <translation>Evento para código personalizado:</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="500"/>
+        <source>💻 Code Editor</source>
+        <translation>💻 Editor de Código</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="502"/>
+        <source>Edit Python code or view generated code</source>
+        <translation>Edite código Python ou veja o código gerado</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="546"/>
+        <source>Blockly visual programming is not available.
+
+Error: {0}</source>
+        <translation>A programação visual Blockly não está disponível.
+
+Erro: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
+        <source>Validation Error</source>
+        <translation>Erro de Validação</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="702"/>
+        <source>Cannot save: {0}</source>
+        <translation>Não é possível salvar: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="730"/>
+        <source>Saved: {0}</source>
+        <translation>Salvo: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="746"/>
+        <source>Save Error</source>
+        <translation>Erro ao Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="747"/>
+        <source>Error saving object: {0}</source>
+        <translation>Erro ao salvar o objeto: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="793"/>
+        <source>Loaded {0} sprites</source>
+        <translation>{0} sprites carregados</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="813"/>
+        <source>Error loading assets: {0}</source>
+        <translation>Erro ao carregar recursos: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="966"/>
+        <source>Object name is required</source>
+        <translation>O nome do objeto é obrigatório</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="972"/>
+        <source>Referenced sprite &apos;{0}&apos; does not exist</source>
+        <translation>O sprite referenciado '{0}' não existe</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="979"/>
+        <source>Event &apos;{0}&apos; has invalid data structure</source>
+        <translation>O evento '{0}' tem uma estrutura de dados inválida</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="984"/>
+        <source>Event &apos;{0}&apos; has invalid actions data</source>
+        <translation>O evento '{0}' tem dados de ações inválidos</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="990"/>
+        <source>Validation error: {0}</source>
+        <translation>Erro de validação: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
+        <source>Edit mode: changes apply automatically as you type</source>
+        <translation>Modo de edição: as alterações são aplicadas automaticamente enquanto você digita</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
+        <source>No event methods found in the code</source>
+        <translation>Nenhum método de evento encontrado no código</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
+        <source>{0} events</source>
+        <translation>{0} eventos</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1141"/>
+        <source>Editing event: {0}</source>
+        <translation>Editando evento: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1198"/>
+        <source>Applied {0} events from visual blocks</source>
+        <translation>{0} eventos aplicados a partir dos blocos visuais</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1208"/>
+        <source>Selected action: {0} ({1})</source>
+        <translation>Ação selecionada: {0} ({1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1229"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1250"/>
+        <source># No events or actions have been added yet.
+# Add events in the Object Events panel to see generated code here.</source>
+        <translation># Nenhum evento ou ação foi adicionado ainda.
+# Adicione eventos no painel de Eventos do Objeto para ver o código gerado aqui.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1268"/>
+        <source>Generated code view updated</source>
+        <translation>Visualização do código gerado atualizada</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1421"/>
+        <source>View mode: Switch to &apos;Edit Custom Code&apos; to modify and apply code</source>
+        <translation>Modo de visualização: Mude para 'Editar Código Personalizado' para modificar e aplicar código</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1593"/>
+        <source>Assets loaded: {0} sprites</source>
+        <translation>Recursos carregados: {0} sprites</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="257"/>
+        <source>Standard</source>
+        <translation>Padrão</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="271"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="295"/>
+        <source>🤖 Thymio</source>
+        <translation>🤖 Thymio</translation>
+    </message>
+</context>
 </TS>
