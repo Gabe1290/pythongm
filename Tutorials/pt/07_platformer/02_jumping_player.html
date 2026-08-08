@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Um jogador que pula</h1>
+
+    <p>Nesta fase, criamos o jogador e o chão, configuramos a gravidade e o movimento,
+    e construímos uma sala com plataformas. No final, você poderá correr e pular!</p>
+
+    <h2>Crie os sprites</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Sprites</strong> &gt; <strong>Criar Novo Sprite</strong></li>
+            <li>Nomeie-o <code>spr_player</code>, tamanho <strong>32x32</strong></li>
+            <li>Desenhe um personagem (ou importe de <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Crie outro sprite: <code>spr_ground</code>, tamanho <strong>32x32</strong></li>
+            <li>Desenhe um bloco de chão (verde no topo, marrom embaixo) ou importe-o</li>
+        </ol>
+    </div>
+
+    <h2>Crie os objetos</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Objetos</strong> &gt; <strong>Criar Novo Objeto</strong></li>
+            <li>Crie <code>obj_ground</code>, atribua o sprite <code>spr_ground</code></li>
+            <li>Marque a caixa <strong>Solid</strong> para <code>obj_ground</code></li>
+            <li>Crie <code>obj_player</code>, atribua o sprite <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Por que Solid?</strong> Marcar <code>obj_ground</code> como Solid diz ao motor do jogo
+        que outros objetos não devem atravessá-lo. Isso é essencial para plataformas!
+    </div>
+
+    <h2>Programe obj_player com Blockly</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_player</code> para abrir o Editor de Objetos</li>
+            <li>Clique na aba <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Ative a gravidade (Create Event)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.5</span></span>
+        </div>
+        <p>Encontre <strong>Create</strong> na categoria <em>Events</em>.
+        Depois encontre <strong>Set Gravity</strong> na categoria <em>Movement</em>.
+        Defina a direção como <strong>270</strong> (para baixo) e a força como <strong>0.5</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Direção 270 = para baixo.</strong> Os ângulos começam em 0 (direita) e vão sentido anti-horário:
+        90 = cima, 180 = esquerda, 270 = baixo.
+    </div>
+
+    <h2>Mova para a esquerda</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">-4</span></span>
+        </div>
+        <p>Encontre <strong>Keyboard (held)</strong> em <em>Events</em>, selecione <strong>Left Arrow</strong>.
+        Depois encaixe <strong>Set Horizontal Speed</strong> de <em>Movement</em> com valor <strong>-4</strong>
+        (negativo = esquerda).</p>
+    </div>
+
+    <h2>Mova para a direita</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">4</span></span>
+        </div>
+    </div>
+
+    <h2>Pare quando nenhuma tecla for pressionada</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">0</span></span>
+        </div>
+        <p>Isso para o movimento horizontal quando nenhuma tecla é pressionada.
+        Usamos <strong>Set horizontal speed to 0</strong> (NÃO "Stop Movement") para que a gravidade continue funcionando!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> Se você usar "Stop Movement" aqui, isso também cancelaria a velocidade vertical
+        e a gravidade pararia. Ao definir apenas a velocidade horizontal como 0, o jogador continua caindo normalmente.
+    </div>
+
+    <h2>Pule</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Key press: Up Arrow</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-val">-10</span></span>
+        </div>
+        <p>Encontre <strong>Key press</strong> em <em>Events</em>, selecione <strong>Up Arrow</strong>.
+        Defina a velocidade vertical como <strong>-10</strong> (negativo = para cima).
+        O evento <em>Press</em> dispara apenas uma vez, dando um único impulso de pulo.</p>
+    </div>
+
+    <h2>Colida com o chão</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_ground</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Encontre <strong>Collision</strong> em <em>Events</em>, digite <code>obj_ground</code>.
+        Encaixe <strong>Stop Movement</strong> dentro. Isso impede que o jogador caia através
+        do chão e o para ao atingir paredes.</p>
+    </div>
+
+    <div class="step">
+        <p>Você deve ter <strong>6 blocos de evento</strong> em seu espaço de trabalho
+        (Create + Left + Right + No key + Press Up + Collision).</p>
+    </div>
+
+    <h2>Crie a sala</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Rooms</strong> &gt; <strong>Criar Nova Sala</strong></li>
+            <li>Nomeie-a <code>room_level1</code></li>
+            <li>Defina o tamanho: <strong>800 x 480</strong></li>
+            <li>Defina a cor de fundo como azul claro (céu)</li>
+            <li>Ative "Snap to Grid" e defina a grade como <strong>32x32</strong></li>
+            <li>Posicione <code>obj_ground</code> ao longo da linha inferior</li>
+            <li>Crie plataformas em diferentes alturas posicionando mais blocos <code>obj_ground</code> no ar</li>
+            <li>Posicione um único <code>obj_player</code> no lado esquerdo, sobre o chão</li>
+        </ol>
+    </div>
+
+    <pre>
+                        ====
+            ====                  ====
+    P                 ====
+  ====  ====  ====          ====  ====  ====
+  GGGGGGGGGGGGGGGG    GGGGGGGGGGGGGGGGGGGGGG
+
+G = Chão (obj_ground)     P = Jogador (obj_player)
+==== = Plataformas em diferentes alturas</pre>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>O jogador cai com a gravidade</li>
+            <li>As setas esquerda/direita movem o jogador</li>
+            <li>A seta para cima faz o jogador pular</li>
+            <li>O jogador pousa em plataformas e no chão</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para adicionar moedas, espinhos e uma bandeira!
+    </div>
+</body>
+</html>

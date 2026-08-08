@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Fase 2: Moedas e perigos</h1>
+
+    <p>Agora adicionamos moedas colecionáveis, espinhos perigosos e uma bandeira para alcançar.
+    Programamos tudo como novos eventos de colisão em <code>obj_player</code>.</p>
+
+    <h2>Crie os sprites</h2>
+    <div class="step">
+        <ol>
+            <li>Crie o sprite <code>spr_coin</code>, tamanho <strong>32x32</strong> &mdash; desenhe um círculo amarelo/dourado (ou importe de <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Crie o sprite <code>spr_spike</code>, tamanho <strong>32x32</strong> &mdash; desenhe espinhos triangulares apontando para cima</li>
+            <li>Crie o sprite <code>spr_flag</code>, tamanho <strong>32x32</strong> &mdash; desenhe uma bandeira em um mastro</li>
+        </ol>
+    </div>
+
+    <h2>Crie os objetos</h2>
+    <div class="step">
+        <ol>
+            <li>Crie <code>obj_coin</code>, atribua o sprite <code>spr_coin</code></li>
+            <li>Crie <code>obj_spike</code>, atribua o sprite <code>spr_spike</code></li>
+            <li>Crie <code>obj_flag</code>, atribua o sprite <code>spr_flag</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Nenhum Blockly necessário nesses objetos!</strong> Vamos programar todas as interações
+        como eventos de colisão em <code>obj_player</code>, já que é o jogador quem
+        toca as moedas, os espinhos e a bandeira.
+    </div>
+
+    <h2>Programe obj_player &mdash; Adicione eventos de colisão</h2>
+    <div class="step">
+        <p>Abra o editor Blockly de <code>obj_player</code> (os blocos da Fase 1 ainda estão lá).
+        Adicione estes novos blocos de evento:</p>
+    </div>
+
+    <h2>Colete moedas</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_coin</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-val">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p>Encontre <strong>Collision</strong> em <em>Events</em>, digite <code>obj_coin</code>.
+        Encaixe <strong>Add to Score</strong> (de <em>Score/Lives/Health</em>) com valor <strong>10</strong>.
+        Depois encaixe <strong>Destroy Instance</strong> (de <em>Instance</em>) definido como <strong>Other</strong>,
+        para que a moeda desapareça ao ser coletada.</p>
+    </div>
+
+    <h2>Toque em um espinho</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_spike</span><br>
+            <span class="block block-room block-indent">Restart room</span>
+        </div>
+        <p>Encontre <strong>Collision</strong> em <em>Events</em>, digite <code>obj_spike</code>.
+        Encaixe <strong>Restart Room</strong> (de <em>Room</em>) dentro.
+        Quando o jogador toca um espinho, a fase reinicia!</p>
+    </div>
+
+    <h2>Alcance a bandeira</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_flag</span><br>
+            <span class="block block-output block-indent">Show message <span class="block-val">"Você Venceu!"</span></span>
+        </div>
+        <p>Encontre <strong>Collision</strong> em <em>Events</em>, digite <code>obj_flag</code>.
+        Encaixe <strong>Show Message</strong> (de <em>Output</em>) e digite <strong>Você Venceu!</strong>.
+        Uma janela aparece quando o jogador alcança a bandeira!</p>
+    </div>
+
+    <h2>Aplique seus blocos</h2>
+    <div class="step">
+        <ol>
+            <li>Você deve agora ter <strong>9 blocos de evento</strong> no total para <code>obj_player</code>
+            (6 da Fase 1 + 3 novos eventos de colisão)</li>
+        </ol>
+    </div>
+
+    <h2>Atualize sua sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abra <code>room_level1</code></li>
+            <li>Posicione <code>obj_coin</code> em plataformas e locais de difícil acesso</li>
+            <li>Posicione <code>obj_spike</code> perto de buracos ou em plataformas perigosas</li>
+            <li>Posicione <code>obj_flag</code> no final da fase (lado direito)</li>
+        </ol>
+    </div>
+
+    <pre>
+                                        F
+                                      ====
+                  C           C
+                ====        ====
+    C                               C
+  ====  X     X         X     ====
+    P               C
+  ====  ====  ====  ====  ====  ====  ====
+  GGGGGG      GGGG  GGGG       GGGGGGGGGG
+
+G = Chão    P = Jogador    F = Bandeira    C = Moeda    X = Espinho</pre>
+
+    <div class="highlight">
+        <strong>Dica de design de fase:</strong> Posicione espinhos perto de buracos para criar tensão.
+        Coloque moedas em plataformas altas para recompensar saltos habilidosos. Posicione a bandeira
+        na extremidade mais distante para que o jogador tenha que atravessar toda a fase!
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>Colete moedas &mdash; cada uma dá 10 pontos e desaparece</li>
+            <li>Toque um espinho &mdash; a sala reinicia!</li>
+            <li>Alcance a bandeira &mdash; uma mensagem "Você Venceu!" aparece</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para adicionar um controlador de jogo que exibe a pontuação e as vidas!
+    </div>
+</body>
+</html>
