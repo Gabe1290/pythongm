@@ -6821,5 +6821,343 @@ Would you like to:
         <source>Export</source>
         <translation>エクスポート</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1243"/>
+        <source>Open Project</source>
+        <translation>プロジェクトを開く</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3257"/>
+        <source>Failed to open object editor:
+
+{0}</source>
+        <translation>オブジェクトエディタを開けませんでした：
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3286"/>
+        <source>Opened sprite: {0}</source>
+        <translation>スプライトを開きました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3297"/>
+        <source>Failed to open sprite editor: {0}</source>
+        <translation>スプライトエディタを開けませんでした：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Save Project</source>
+        <translation>プロジェクトを保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1293"/>
+        <location filename="../core/ide_window.py" line="1319"/>
+        <source>Failed to save project</source>
+        <translation>プロジェクトの保存に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1280"/>
+        <source>Failed to load project</source>
+        <translation>プロジェクトの読み込みに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="972"/>
+        <location filename="../core/ide_window.py" line="3878"/>
+        <source>Unsaved Changes</source>
+        <translation>未保存の変更</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1869"/>
+        <source>Game stopped</source>
+        <translation>ゲームを停止しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3724"/>
+        <source>Build and Run</source>
+        <translation>ビルドして実行</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1110"/>
+        <location filename="../core/ide_window.py" line="3778"/>
+        <source>No project loaded</source>
+        <translation>プロジェクトが読み込まれていません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="466"/>
+        <source>Language Changed</source>
+        <translation>言語を変更しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="467"/>
+        <source>Language changed to {0}.
+
+Please close and restart the IDE for the change to take effect.</source>
+        <translation>言語を {0} に変更しました。
+
+変更を反映するにはIDEを閉じて再起動してください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="287"/>
+        <source>Configure &amp;Thymio Blocks...</source>
+        <translation>Thymioブロックを設定(&amp;T)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="177"/>
+        <source>Export &amp;Aseba (Thymio) code...</source>
+        <translation>Aseba（Thymio）コードをエクスポート(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="189"/>
+        <location filename="../core/ide_window.py" line="331"/>
+        <source>Import Open &amp;Roberta XML...</source>
+        <translation>Open Roberta XMLをインポート(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="190"/>
+        <source>Import &amp;GameMaker .gmk File...</source>
+        <translation>GameMaker .gmkファイルをインポート(&amp;G)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="298"/>
+        <source>&amp;Migrate to Modular Structure</source>
+        <translation>モジュール構造に移行(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="309"/>
+        <source>🤖 &amp;Thymio Programming</source>
+        <translation>🤖 Thymioプログラミング(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="312"/>
+        <source>Show Thymio Tab in Object Editor</source>
+        <translation>オブジェクトエディタにThymioタブを表示</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="319"/>
+        <source>Open &amp;Playground...</source>
+        <translation>プレイグラウンドを開く(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="325"/>
+        <source>Add &amp;Event...</source>
+        <translation>イベントを追加(&amp;E)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="327"/>
+        <source>Add &amp;Action...</source>
+        <translation>アクションを追加(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="674"/>
+        <source>Import Open Roberta XML</source>
+        <translation>Open Roberta XMLをインポート</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="676"/>
+        <source>Open Roberta XML (*.xml)</source>
+        <translation>Open Roberta XML (*.xml)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="685"/>
+        <source>Select Output Directory for Imported Project</source>
+        <translation>インポートしたプロジェクトの出力先ディレクトリを選択</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="694"/>
+        <source>Importing Open Roberta program...</source>
+        <translation>Open Robertaプログラムをインポート中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="702"/>
+        <location filename="../core/ide_window.py" line="783"/>
+        <source>
+
+Warnings:
+</source>
+        <translation>
+
+警告：
+</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="708"/>
+        <source>Project &apos;{0}&apos; imported successfully!
+Events: {1}, Actions: {2}{3}</source>
+        <translation>プロジェクト「{0}」を正常にインポートしました！
+イベント：{1}、アクション：{2}{3}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="715"/>
+        <source>Roberta import complete: {0}</source>
+        <translation>Robertaのインポートが完了しました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="726"/>
+        <source>Failed to import Open Roberta XML:
+{0}</source>
+        <translation>Open Roberta XMLのインポートに失敗しました：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="728"/>
+        <source>Roberta import failed</source>
+        <translation>Robertaのインポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="734"/>
+        <source>Import GameMaker File</source>
+        <translation>GameMakerファイルをインポート</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="736"/>
+        <source>GameMaker Files (*.gmk)</source>
+        <translation>GameMakerファイル (*.gmk)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="759"/>
+        <source>Could not create output folder:
+{0}</source>
+        <translation>出力フォルダを作成できませんでした：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="765"/>
+        <source>Importing GameMaker file...</source>
+        <translation>GameMakerファイルをインポート中...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="769"/>
+        <source>(no details)</source>
+        <translation>（詳細なし）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="773"/>
+        <source>Failed to import {0}:
+
+{1}</source>
+        <translation>{0} のインポートに失敗しました：
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="775"/>
+        <source>GMK import failed</source>
+        <translation>GMKのインポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="778"/>
+        <source>(empty project)</source>
+        <translation>（空のプロジェクト）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="782"/>
+        <source>
+  ...and {0} more</source>
+        <translation>
+  ...他 {0} 件</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="788"/>
+        <source>Imported &apos;{0}&apos; to:
+{1}
+
+{2}{3}</source>
+        <translation>「{0}」を次の場所にインポートしました：
+{1}
+
+{2}{3}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="791"/>
+        <source>GMK import complete: {0}</source>
+        <translation>GMKのインポートが完了しました：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="835"/>
+        <source>New Project (Ctrl+N)</source>
+        <translation>新規プロジェクト（Ctrl+N）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="836"/>
+        <source>Open Project (Ctrl+O)</source>
+        <translation>プロジェクトを開く（Ctrl+O）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="837"/>
+        <source>Save Project (Ctrl+S)</source>
+        <translation>プロジェクトを保存（Ctrl+S）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="842"/>
+        <source>Test Game (F5)</source>
+        <translation>ゲームをテスト（F5）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="843"/>
+        <source>Debug Game (F6)</source>
+        <translation>ゲームをデバッグ（F6）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="844"/>
+        <source>Export Game…</source>
+        <translation>ゲームをエクスポート…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="849"/>
+        <source>Import Sprite…</source>
+        <translation>スプライトをインポート…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="850"/>
+        <source>Import Sound…</source>
+        <translation>サウンドをインポート…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="858"/>
+        <source>Thymio</source>
+        <translation>Thymio</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="860"/>
+        <source>Add Thymio Event</source>
+        <translation>Thymioイベントを追加</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="869"/>
+        <source>Tabbed</source>
+        <translation>タブ表示</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="872"/>
+        <source>Toggle between Tabbed and Floating editor layouts</source>
+        <translation>タブ表示とフロート表示のエディタレイアウトを切り替え</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1189"/>
+        <location filename="../core/ide_window.py" line="1196"/>
+        <source>Clear Recent Projects</source>
+        <translation>最近のプロジェクトをクリア</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1197"/>
+        <source>Are you sure you want to clear the recent projects list?</source>
+        <translation>最近のプロジェクトのリストをクリアしますか？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1210"/>
+        <source>Recent projects list cleared</source>
+        <translation>最近のプロジェクトのリストをクリアしました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1717"/>
+        <source>A game is already running. Please close it first.</source>
+        <translation>ゲームはすでに実行中です。先に閉じてください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1826"/>
+        <source>Game running... (close game window to return)</source>
+        <translation>ゲーム実行中...（戻るにはゲームウィンドウを閉じてください）</translation>
+    </message>
 </context>
 </TS>
