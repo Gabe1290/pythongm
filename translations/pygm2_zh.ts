@@ -5775,4 +5775,685 @@ Events: {4}</source>
         <translation>运行中</translation>
     </message>
 </context>
+<context>
+    <name>PyGameMakerIDE</name>
+    <message>
+        <location filename="../core/ide_window.py" line="154"/>
+        <source>&amp;File</source>
+        <translation>文件(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="157"/>
+        <source>&amp;New Project...</source>
+        <translation>新建项目(&amp;N)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="158"/>
+        <source>&amp;Open Project...</source>
+        <translation>打开项目(&amp;O)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="159"/>
+        <source>&amp;Save Project</source>
+        <translation>保存项目(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="160"/>
+        <source>Save Project &amp;As...</source>
+        <translation>项目另存为(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="168"/>
+        <source>Recent Projects</source>
+        <translation>最近的项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="174"/>
+        <source>Export as HTML5...</source>
+        <translation>导出为 HTML5...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="175"/>
+        <source>Export as &amp;Zip...</source>
+        <translation>导出为 Zip(&amp;Z)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="176"/>
+        <source>Export to Kivy...</source>
+        <translation>导出到 Kivy...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="178"/>
+        <source>Export Project...</source>
+        <translation>导出项目...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="186"/>
+        <source>Open &amp;Zip Project...</source>
+        <translation>打开 Zip 项目(&amp;Z)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="196"/>
+        <source>Auto-Save to Zip</source>
+        <translation>自动保存到 Zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="203"/>
+        <source>Enable Auto-Save</source>
+        <translation>启用自动保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="210"/>
+        <source>Auto-Save Settings...</source>
+        <translation>自动保存设置...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="215"/>
+        <source>Project &amp;Settings...</source>
+        <translation>项目设置(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="217"/>
+        <source>E&amp;xit</source>
+        <translation>退出(&amp;X)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="219"/>
+        <source>&amp;Edit</source>
+        <translation>编辑(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="220"/>
+        <source>&amp;Undo</source>
+        <translation>撤销(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="221"/>
+        <source>&amp;Redo</source>
+        <translation>重做(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="223"/>
+        <source>Cu&amp;t</source>
+        <translation>剪切(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="224"/>
+        <source>&amp;Copy</source>
+        <translation>复制(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="225"/>
+        <source>&amp;Paste</source>
+        <translation>粘贴(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="247"/>
+        <source>&amp;Assets</source>
+        <translation>资源(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="229"/>
+        <source>Import &amp;Sprite...</source>
+        <translation>导入精灵(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="226"/>
+        <source>&amp;Duplicate</source>
+        <translation>复制副本(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="230"/>
+        <source>Import &amp;Sound...</source>
+        <translation>导入声音(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="231"/>
+        <source>Import &amp;Background...</source>
+        <translation>导入背景(&amp;B)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="232"/>
+        <source>Create &amp;Object...</source>
+        <translation>新建对象(&amp;O)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="233"/>
+        <source>Create &amp;Room...</source>
+        <translation>新建房间(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="236"/>
+        <source>Create &amp;Font...</source>
+        <translation>新建字体(&amp;F)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="259"/>
+        <source>Import Object Package...</source>
+        <translation>导入对象包...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="260"/>
+        <source>Import Room Package...</source>
+        <translation>导入房间包...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="264"/>
+        <source>&amp;Build</source>
+        <translation>构建(&amp;B)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="266"/>
+        <source>&amp;Test Game</source>
+        <translation>测试游戏(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="268"/>
+        <source>&amp;Export Game...</source>
+        <translation>导出游戏(&amp;E)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="267"/>
+        <source>&amp;Debug Game</source>
+        <translation>调试游戏(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="275"/>
+        <source>&amp;Tools</source>
+        <translation>工具(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="281"/>
+        <source>&amp;Preferences...</source>
+        <translation>首选项(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="296"/>
+        <source>&amp;Validate Project</source>
+        <translation>验证项目(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="304"/>
+        <source>🌐 &amp;Language</source>
+        <translation>🌐 语言(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="334"/>
+        <source>&amp;Help</source>
+        <translation>帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="335"/>
+        <source>&amp;Documentation</source>
+        <translation>文档(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="336"/>
+        <source>&amp;Online Documentation</source>
+        <translation>在线文档(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3049"/>
+        <source>About PyGameMaker</source>
+        <translation>关于 PyGameMaker</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1103"/>
+        <location filename="../core/ide_window.py" line="3783"/>
+        <source>Ready</source>
+        <translation>就绪</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1239"/>
+        <location filename="../core/ide_window.py" line="1259"/>
+        <location filename="../core/ide_window.py" line="1280"/>
+        <location filename="../core/ide_window.py" line="1293"/>
+        <location filename="../core/ide_window.py" line="1319"/>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <location filename="../core/ide_window.py" line="3143"/>
+        <location filename="../core/ide_window.py" line="3191"/>
+        <location filename="../core/ide_window.py" line="3256"/>
+        <location filename="../core/ide_window.py" line="3296"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2051"/>
+        <location filename="../core/ide_window.py" line="2365"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="235"/>
+        <source>Create S&amp;cript...</source>
+        <translation>新建脚本(&amp;C)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="284"/>
+        <source>Configure &amp;Action Blocks...</source>
+        <translation>配置操作积木(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="337"/>
+        <source>&amp;Tutorials</source>
+        <translation>教程(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="339"/>
+        <source>&amp;About PyGameMaker</source>
+        <translation>关于 PyGameMaker(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="475"/>
+        <source>Translation Not Available</source>
+        <translation>无可用翻译</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="476"/>
+        <source>Translation file for {0} is not available.
+
+The language has been set, but the interface will remain in English until a translation file is provided.
+
+Expected file: translations/pygamemaker_{1}.qm</source>
+        <translation>{0} 的翻译文件不可用。
+
+语言已设置，但在提供翻译文件之前界面将保持英文。
+
+预期文件：translations/pygamemaker_{1}.qm</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="515"/>
+        <source>Auto-Save to Zip Enabled</source>
+        <translation>已启用自动保存到 Zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="516"/>
+        <source>The project will now automatically save to the original zip file.</source>
+        <translation>项目现在将自动保存到原始 Zip 文件。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="522"/>
+        <source>Export as Zip?</source>
+        <translation>导出为 Zip？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="523"/>
+        <source>Would you like to export the current project as a zip file now?
+
+This will allow auto-save to work with the zip file.</source>
+        <translation>是否要立即将当前项目导出为 Zip 文件？
+
+这将使自动保存可以与该 Zip 文件配合使用。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="531"/>
+        <source>Auto-save to zip disabled</source>
+        <translation>已禁用自动保存到 Zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="543"/>
+        <source>Auto-save enabled</source>
+        <translation>已启用自动保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="546"/>
+        <source>Auto-Save Enabled</source>
+        <translation>自动保存已启用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="547"/>
+        <source>Your project will be automatically saved every {0} seconds.</source>
+        <translation>您的项目将每 {0} 秒自动保存一次。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="550"/>
+        <source>Auto-save disabled</source>
+        <translation>已禁用自动保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="553"/>
+        <source>Auto-Save Disabled</source>
+        <translation>自动保存已禁用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="554"/>
+        <source>Remember to save your project manually (Ctrl+S).</source>
+        <translation>请记得手动保存项目 (Ctrl+S)。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="586"/>
+        <source>Auto-save settings updated</source>
+        <translation>自动保存设置已更新</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="591"/>
+        <location filename="../core/ide_window.py" line="632"/>
+        <location filename="../core/ide_window.py" line="1327"/>
+        <location filename="../core/ide_window.py" line="1584"/>
+        <location filename="../core/ide_window.py" line="1725"/>
+        <location filename="../core/ide_window.py" line="1964"/>
+        <location filename="../core/ide_window.py" line="2292"/>
+        <location filename="../core/ide_window.py" line="2776"/>
+        <location filename="../core/ide_window.py" line="2816"/>
+        <source>No Project</source>
+        <translation>无项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="591"/>
+        <location filename="../core/ide_window.py" line="632"/>
+        <location filename="../core/ide_window.py" line="1327"/>
+        <location filename="../core/ide_window.py" line="1584"/>
+        <source>Please open a project first</source>
+        <translation>请先打开一个项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="596"/>
+        <source>Import Object Package</source>
+        <translation>导入对象包</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="598"/>
+        <source>GameMaker Objects (*.gmobj)</source>
+        <translation>GameMaker 对象 (*.gmobj)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="604"/>
+        <source>Importing object...</source>
+        <translation>正在导入对象...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="617"/>
+        <location filename="../core/ide_window.py" line="658"/>
+        <location filename="../core/ide_window.py" line="707"/>
+        <location filename="../core/ide_window.py" line="787"/>
+        <source>Import Successful</source>
+        <translation>导入成功</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="618"/>
+        <source>Object &apos;{0}&apos; imported successfully!</source>
+        <translation>对象“{0}”导入成功！</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="620"/>
+        <source>Object imported: {0}</source>
+        <translation>已导入对象：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="624"/>
+        <location filename="../core/ide_window.py" line="665"/>
+        <location filename="../core/ide_window.py" line="725"/>
+        <location filename="../core/ide_window.py" line="758"/>
+        <location filename="../core/ide_window.py" line="772"/>
+        <source>Import Failed</source>
+        <translation>导入失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="625"/>
+        <source>Failed to import object package</source>
+        <translation>导入对象包失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="627"/>
+        <location filename="../core/ide_window.py" line="668"/>
+        <source>Import failed</source>
+        <translation>导入失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="637"/>
+        <source>Import Room Package</source>
+        <translation>导入房间包</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="639"/>
+        <source>GameMaker Rooms (*.gmroom)</source>
+        <translation>GameMaker 房间 (*.gmroom)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="645"/>
+        <source>Importing room...</source>
+        <translation>正在导入房间...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="659"/>
+        <source>Room &apos;{0}&apos; imported successfully!</source>
+        <translation>房间“{0}”导入成功！</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="661"/>
+        <source>Room imported: {0}</source>
+        <translation>已导入房间：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="666"/>
+        <source>Failed to import room package</source>
+        <translation>导入房间包失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="797"/>
+        <source>Main</source>
+        <translation>主页</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="973"/>
+        <source>&quot;{0}&quot; has unsaved changes. Save before closing?</source>
+        <translation>“{0}”有未保存的更改。是否在关闭前保存？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1015"/>
+        <location filename="../core/ide_window.py" line="3504"/>
+        <location filename="../core/ide_window.py" line="3645"/>
+        <source>Welcome</source>
+        <translation>欢迎</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1177"/>
+        <source>No recent projects</source>
+        <translation>暂无最近的项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1236"/>
+        <source>Project created successfully</source>
+        <translation>项目创建成功</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1239"/>
+        <source>Failed to create project</source>
+        <translation>创建项目失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1245"/>
+        <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
+        <translation>项目文件 (project.json);;Zip 文件 (*.zip);;所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1259"/>
+        <source>Failed to load project from zip</source>
+        <translation>从 Zip 加载项目失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1261"/>
+        <source>Invalid Zip</source>
+        <translation>无效的 Zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1262"/>
+        <source>This zip file does not contain a valid PyGameMaker project</source>
+        <translation>此 Zip 文件不包含有效的 PyGameMaker 项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1290"/>
+        <location filename="../core/ide_window.py" line="1316"/>
+        <location filename="../core/ide_window.py" line="3685"/>
+        <source>Project saved</source>
+        <translation>项目已保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1309"/>
+        <source>Save Project As</source>
+        <translation>项目另存为</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1346"/>
+        <location filename="../core/ide_window.py" line="3916"/>
+        <source>No Project Loaded</source>
+        <translation>未加载项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1347"/>
+        <source>You need to create or open a project before importing sprites.
+
+Would you like to create a new project now?</source>
+        <translation>导入精灵前需要先创建或打开一个项目。
+
+是否现在创建新项目？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1592"/>
+        <source>Create {0}</source>
+        <translation>新建 {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1593"/>
+        <source>Enter name for new {0}:</source>
+        <translation>为新建的 {0} 输入名称：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1682"/>
+        <source>Created {0}</source>
+        <translation>已创建 {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>Failed to create {0}: {1}</source>
+        <translation>创建 {0} 失败：{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1726"/>
+        <source>Please open or create a project first before testing a game.</source>
+        <translation>测试游戏前请先打开或创建一个项目。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1747"/>
+        <source>Running game...</source>
+        <translation>正在运行游戏...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1754"/>
+        <source>Project Error</source>
+        <translation>项目错误</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1755"/>
+        <source>project.json not found in project directory</source>
+        <translation>在项目目录中未找到 project.json</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1785"/>
+        <location filename="../core/ide_window.py" line="1856"/>
+        <source>Game closed</source>
+        <translation>游戏已关闭</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1831"/>
+        <source>Game Test Error</source>
+        <translation>游戏测试错误</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1832"/>
+        <source>Failed to run game:
+
+{0}
+
+Check console for details.</source>
+        <translation>运行游戏失败：
+
+{0}
+
+请查看控制台了解详情。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1787"/>
+        <location filename="../core/ide_window.py" line="1837"/>
+        <source>Game test failed</source>
+        <translation>游戏测试失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1716"/>
+        <location filename="../core/ide_window.py" line="1880"/>
+        <source>Game Running</source>
+        <translation>游戏正在运行</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1881"/>
+        <source>A game is already running. Please stop it first.</source>
+        <translation>已有游戏正在运行，请先停止它。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1891"/>
+        <source>Starting game in debug mode...</source>
+        <translation>正在以调试模式启动游戏...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1895"/>
+        <source>Debug Mode</source>
+        <translation>调试模式</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1896"/>
+        <source>Debug mode will start the game with verbose console output.
+
+Future features:
+• Breakpoints
+• Variable inspection
+• Step-through execution
+• Performance profiling
+
+For now, check the console for debug messages.</source>
+        <translation>调试模式将以详细的控制台输出启动游戏。
+
+未来功能：
+• 断点
+• 变量检查
+• 单步执行
+• 性能分析
+
+目前请查看控制台以获取调试信息。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1907"/>
+        <source>Game started in debug mode - Check console for debug output</source>
+        <translation>游戏已以调试模式启动 - 请查看控制台以获取调试输出</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1909"/>
+        <source>Failed to start game</source>
+        <translation>启动游戏失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1912"/>
+        <source>Game Error</source>
+        <translation>游戏错误</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1913"/>
+        <source>Failed to start the game. Check console for details.</source>
+        <translation>启动游戏失败，请查看控制台了解详情。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Build Game</source>
+        <translation>构建游戏</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1931"/>
+        <source>Errors:</source>
+        <translation>错误：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1937"/>
+        <source>Warnings:</source>
+        <translation>警告：</translation>
+    </message>
+</context>
 </TS>
