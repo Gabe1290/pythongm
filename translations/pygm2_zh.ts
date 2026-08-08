@@ -1834,4 +1834,466 @@ Do you want to save anyway?</source>
         <translation>机器人属性</translation>
     </message>
 </context>
+<context>
+    <name>ActionConfigDialog</name>
+    <message>
+        <location filename="../events/action_editor.py" line="47"/>
+        <source>Configure {0}</source>
+        <translation>配置 {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="58"/>
+        <source>This action requires special configuration.</source>
+        <translation>此操作需要特殊配置。</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="146"/>
+        <location filename="../events/action_editor.py" line="471"/>
+        <location filename="../events/action_editor.py" line="513"/>
+        <source>→ Next Room</source>
+        <translation>→ 下一个房间</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="148"/>
+        <location filename="../events/action_editor.py" line="472"/>
+        <location filename="../events/action_editor.py" line="515"/>
+        <source>← Previous Room</source>
+        <translation>← 上一个房间</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="150"/>
+        <location filename="../events/action_editor.py" line="473"/>
+        <location filename="../events/action_editor.py" line="517"/>
+        <source>↺ Restart Current Room</source>
+        <translation>↺ 重新开始当前房间</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="172"/>
+        <source>⚙️ Configure...</source>
+        <translation>⚙️ 配置...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="198"/>
+        <source>Number or expression</source>
+        <translation>数字或表达式</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="218"/>
+        <source>📋 Configure Actions...</source>
+        <translation>📋 配置操作...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="236"/>
+        <source>🎨 Choose Color...</source>
+        <translation>🎨 选择颜色...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="262"/>
+        <source>(No sprites available)</source>
+        <translation>（无可用精灵）</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="279"/>
+        <source>(No sounds available)</source>
+        <translation>（无可用声音）</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="290"/>
+        <source>Enter code here...</source>
+        <translation>在此输入代码...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="304"/>
+        <source>X: </source>
+        <translation>X： </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="309"/>
+        <source>Y: </source>
+        <translation>Y： </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="399"/>
+        <source>Choose Color</source>
+        <translation>选择颜色</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="405"/>
+        <source>🎨 {0}</source>
+        <translation>🎨 {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="344"/>
+        <source>Translations...</source>
+        <translation>翻译...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="346"/>
+        <source>Add translations for different languages</source>
+        <translation>为不同语言添加翻译</translation>
+    </message>
+</context>
+<context>
+    <name>AssetPropertiesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="114"/>
+        <source>{0} Properties - {1}</source>
+        <translation>{0} 属性 - {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="126"/>
+        <source>Type: {0}</source>
+        <translation>类型：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="131"/>
+        <source>File: {0}</source>
+        <translation>文件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Imported</source>
+        <translation>已导入</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Not imported</source>
+        <translation>未导入</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
+        <source>Status: {0}</source>
+        <translation>状态：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="143"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 导入图像...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="150"/>
+        <source>Created: {0}</source>
+        <translation>创建时间：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="155"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="171"/>
+        <source>Select Sprite Image</source>
+        <translation>选择精灵图像</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="173"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>图像文件 (*.png *.jpg *.jpeg *.bmp *.gif);;所有文件 (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="198"/>
+        <source>Success</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="199"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>已成功为精灵“{0}”导入图像</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="207"/>
+        <source>Import Failed</source>
+        <translation>导入失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="208"/>
+        <source>Failed to import the image. Please try again.</source>
+        <translation>导入图像失败，请重试。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="213"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="219"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="214"/>
+        <source>Error importing image: {0}</source>
+        <translation>导入图像时出错：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="220"/>
+        <source>Could not access asset manager. Please try again.</source>
+        <translation>无法访问资源管理器，请重试。</translation>
+    </message>
+</context>
+<context>
+    <name>NewProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="26"/>
+        <source>New Project</source>
+        <translation>新建项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="36"/>
+        <source>Project Details</source>
+        <translation>项目详情</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="40"/>
+        <source>Enter project name...</source>
+        <translation>输入项目名称...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="41"/>
+        <source>Project Name:</source>
+        <translation>项目名称：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="45"/>
+        <source>Choose project location...</source>
+        <translation>选择项目位置...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="47"/>
+        <source>Browse...</source>
+        <translation>浏览...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="52"/>
+        <source>Location:</source>
+        <translation>位置：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="56"/>
+        <source>Optional project description...</source>
+        <translation>项目描述（可选）...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="57"/>
+        <source>Description:</source>
+        <translation>描述：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="62"/>
+        <source>Empty Project</source>
+        <translation>空白项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="63"/>
+        <source>With Game Over Screen</source>
+        <translation>带游戏结束界面</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="67"/>
+        <source>Template:</source>
+        <translation>模板：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="106"/>
+        <source>Choose Project Location</source>
+        <translation>选择项目位置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Invalid Input</source>
+        <translation>输入无效</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <source>Please enter a project name.</source>
+        <translation>请输入项目名称。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Please choose a project location.</source>
+        <translation>请选择项目位置。</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="265"/>
+        <source>Project Settings</source>
+        <translation>项目设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="275"/>
+        <source>Project Information</source>
+        <translation>项目信息</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="279"/>
+        <source>Project Name:</source>
+        <translation>项目名称：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="283"/>
+        <source>Project Path:</source>
+        <translation>项目路径：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <source>Description:</source>
+        <translation>描述：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="291"/>
+        <source>Settings</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="295"/>
+        <source>Auto-save:</source>
+        <translation>自动保存：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Desktop</source>
+        <translation>桌面</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Web</source>
+        <translation>网页</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Mobile</source>
+        <translation>移动</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="299"/>
+        <source>Target Platform:</source>
+        <translation>目标平台：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="304"/>
+        <source>Game Settings</source>
+        <translation>游戏设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="310"/>
+        <source>Starting Lives:</source>
+        <translation>初始生命数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="313"/>
+        <source>Show Lives in Caption:</source>
+        <translation>在标题中显示生命：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="318"/>
+        <source>Starting Score:</source>
+        <translation>初始分数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="321"/>
+        <source>Show Score in Caption:</source>
+        <translation>在标题中显示分数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="326"/>
+        <source>Starting Health:</source>
+        <translation>初始生命值：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="329"/>
+        <source>Show Health in Caption:</source>
+        <translation>在标题中显示生命值：</translation>
+    </message>
+</context>
+<context>
+    <name>ViewConfigDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="969"/>
+        <source>View Configuration</source>
+        <translation>视图配置</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="979"/>
+        <source>View {0}</source>
+        <translation>视图 {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="980"/>
+        <source>View:</source>
+        <translation>视图：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="984"/>
+        <source>View in Room</source>
+        <translation>在房间中的视图</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="988"/>
+        <source>Visible:</source>
+        <translation>可见：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="992"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1014"/>
+        <source>X:</source>
+        <translation>X：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="996"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1018"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1000"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1022"/>
+        <source>Width:</source>
+        <translation>宽度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1004"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1026"/>
+        <source>Height:</source>
+        <translation>高度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1009"/>
+        <source>Port on Screen</source>
+        <translation>屏幕上的显示区域</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1031"/>
+        <source>Object Following</source>
+        <translation>跟随对象</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1035"/>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1038"/>
+        <source>Follow:</source>
+        <translation>跟随：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1042"/>
+        <source>H Border:</source>
+        <translation>水平边界：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1046"/>
+        <source>V Border:</source>
+        <translation>垂直边界：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1050"/>
+        <source>H Speed:</source>
+        <translation>水平速度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1054"/>
+        <source>V Speed:</source>
+        <translation>垂直速度：</translation>
+    </message>
+</context>
 </TS>
