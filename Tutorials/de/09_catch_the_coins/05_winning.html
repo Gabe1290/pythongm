@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Das Spiel gewinnen</h1>
+
+    <p>Momentan kann der Spieler verlieren, aber es gibt keine Möglichkeit zu <em>gewinnen</em>. Das beheben wir,
+    indem wir nach jedem Schritt prüfen: <strong>&bdquo;Sind noch Münzen übrig?&ldquo;</strong> &mdash;
+    wenn nicht, gehen wir zu einem brandneuen Gewinnraum.</p>
+
+    <h2>Den Gewinnraum bauen</h2>
+
+    <h2>Gewinn-Sprite erstellen (optional)</h2>
+    <div class="step">
+        <p>Wenn du eine Feier-Optik möchtest, erstelle einen Sprite namens <code>spr_win_text</code>.
+        Dieser Schritt ist optional &mdash; der im nächsten Schritt gezeichnete Text funktioniert auch ohne Sprite.</p>
+    </div>
+
+    <h2>Gewinn-Text-Objekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklick auf <strong>Objekte</strong> &rarr; <strong>Neues Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_win_text</code></li>
+            <li>Öffne den Tab <strong>Blockly</strong> und füge diese zwei Ereignisse hinzu:</li>
+        </ol>
+
+        <p style="margin-top: 8px;"><strong>Die Gewinnnachricht anzeigen:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-draw block-indent">Zeichne Text <span class="block-text">DU HAST GEWONNEN!</span> bei x:<span class="block-num">412</span> y:<span class="block-num">320</span></span><br>
+            <span class="block block-draw block-indent">Zeichne Text <span class="block-text">Drücke LEERTASTE, um erneut zu spielen</span> bei x:<span class="block-num">340</span> y:<span class="block-num">400</span></span>
+        </div>
+
+        <p style="margin-top: 8px;"><strong>Neustart bei Leertaste:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Taste gedrückt: Leertaste</span><br>
+            <span class="block block-game block-indent">Spiel neu starten</span>
+        </div>
+    </div>
+
+    <h2>Gewinnraum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklick auf <strong>Räume</strong> &rarr; <strong>Neuen Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_win</code></li>
+            <li>Setze die Hintergrundfarbe auf eine festliche Farbe (hellgrün oder gold)</li>
+            <li>Platziere eine <code>obj_win_text</code>-Instanz irgendwo im Raum (ihre Zeichnung erfolgt an festen Koordinaten)</li>
+        </ol>
+    </div>
+
+    <h2>Die Gewinnprüfung</h2>
+    <p>Jetzt der wichtige Teil: In jedem Schritt prüft der Spieler, ob noch Münzen übrig sind.
+    Wenn die Anzahl null erreicht, gehen wir zum Gewinnraum.</p>
+
+    <div class="step">
+        <ol>
+            <li>Öffne <code>obj_player</code></li>
+            <li>Klicke auf den Tab <strong>Blockly</strong></li>
+            <li>Füge dieses <strong>Schritt</strong>-Ereignis hinzu:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Jeden Schritt</span><br>
+            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
+            <span class="block block-room block-indent2">Gehe zu Raum <span class="block-text">room_win</span></span>
+        </div>
+
+        <div class="info" style="margin-top: 10px;">
+            <strong>Was das bewirkt:</strong> Der Block <strong>If Count Of</strong> schaut sich den Raum an
+            und zählt, wie viele <code>obj_coin</code>-Instanzen noch am Leben sind. Wenn du alle
+            gesammelt hast, ist die Anzahl null, der Vergleich <code>== 0</code> ist wahr, und die
+            Aktion <strong>Gehe zu Raum</strong> wird ausgeführt.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein vollständiges Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Jede Münze sammeln &rarr; Bildschirm <strong>DU HAST GEWONNEN!</strong> erscheint</li>
+            <li>Gegner berühren &rarr; Bildschirm <strong>GAME OVER</strong> erscheint</li>
+            <li>Drücke <strong>LEERTASTE</strong> von beiden Enden aus, um erneut zu spielen</li>
+        </ul>
+    </div>
+
+    <h2>Du hast ein vollständiges Spiel gebaut!</h2>
+    <p>Glückwunsch &mdash; das ist eine komplette Spielschleife mit:</p>
+    <ul>
+        <li>Spielereingabe (Tastaturbewegung)</li>
+        <li>Zwei Arten von Kollision (gut und schlecht)</li>
+        <li>Einem Punktestand, den der Spieler wachsen sehen kann</li>
+        <li>Einem klaren Gewinn- und Verlierzustand</li>
+        <li>Einer Möglichkeit, neu zu starten und es erneut zu versuchen</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Probiere als Nächstes:</strong> Füge mehr Münzen hinzu, platziere einen zweiten Gegner, oder ändere die
+        Geschwindigkeit von Münzen und Gegner in ihren <strong>Wenn erstellt</strong>-Ereignissen.
+        Jede Änderung ist nur eine Zahl, die du bearbeiten und testen kannst.
+    </div>
+</body>
+</html>

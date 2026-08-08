@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Ein beweglicher Spieler</h1>
+
+    <p>Beginnen wir damit, einen Spieler zu erstellen und ihn mit den Pfeiltasten nach links und rechts zu bewegen.</p>
+
+    <h2>Neues Projekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Gehe zu <code>Datei &gt; Neues Projekt</code></li>
+            <li>Nenne es <strong>CatchTheCoins</strong></li>
+            <li>Wähle für die <strong>Vorlage</strong> &bdquo;Mit Game-Over-Bildschirm&ldquo;</li>
+        </ol>
+        <p style="margin-top: 8px; font-style: italic;">Diese Vorlage gibt dir einen fertigen
+        Game-Over-Bildschirm, den wir später verbinden, sodass du ihn nicht selbst bauen musst.</p>
+    </div>
+
+    <h2>Spieler-Sprite erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklick auf <strong>Sprites</strong> im Ressourcenbaum &rarr; <strong>Neuen Sprite erstellen</strong></li>
+            <li>Nenne ihn <code>spr_player</code></li>
+            <li>Doppelklicke ihn, um den Sprite-Editor zu öffnen, und zeichne einen 32&times;32 großen Charakter
+            (ein Schläger, ein Korb oder einfach ein grünes Quadrat funktioniert gut). Drücke <strong>Strg+S</strong> zum Speichern.</li>
+        </ol>
+    </div>
+
+    <h2>Spielerobjekt erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklick auf <strong>Objekte</strong> &rarr; <strong>Neues Objekt erstellen</strong></li>
+            <li>Nenne es <code>obj_player</code></li>
+            <li>Setze den Sprite auf <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Spielraum erstellen</h2>
+    <div class="step">
+        <ol>
+            <li>Rechtsklick auf <strong>Räume</strong> &rarr; <strong>Neuen Raum erstellen</strong></li>
+            <li>Nenne ihn <code>room_main</code></li>
+            <li>Öffne den Raum und platziere <code>obj_player</code> in der <strong>unteren Mitte</strong></li>
+        </ol>
+    </div>
+
+    <h2>Spielerbewegung hinzufügen</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke <code>obj_player</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Tab <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Nach links bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil links (gehalten)</span><br>
+            <span class="block block-move block-indent">Setze horizontale Geschwindigkeit auf <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Nach rechts bewegen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Pfeil rechts (gehalten)</span><br>
+            <span class="block block-move block-indent">Setze horizontale Geschwindigkeit auf <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>Stoppen, wenn keine Taste gedrückt ist</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Tastatur: Keine Taste</span><br>
+            <span class="block block-move block-indent">Bewegung stoppen</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Du solltest jetzt <strong>3 Ereignisblöcke</strong> haben.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Benutze die Tasten <strong>Links</strong> und <strong>Rechts</strong>, um den Spieler zu bewegen</li>
+            <li>Der Spieler kann vorerst aus dem Bildschirm treiben &mdash; Münzen kommen als Nächstes!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf &bdquo;Weiter&ldquo;, um Münzen und den Gegner hinzuzufügen.
+    </div>
+</body>
+</html>
