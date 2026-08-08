@@ -966,4 +966,409 @@ Deseja salvar mesmo assim?</translation>
         <translation>Pinte blocos cúbicos em uma grade (estilo Minecraft)</translation>
     </message>
 </context>
+<context>
+    <name>BaseBlockConfigDialog</name>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="149"/>
+        <source>Preset:</source>
+        <translation>Predefinição:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Block</source>
+        <translation>Bloco</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
+        <source>Description</source>
+        <translation>Descrição</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="196"/>
+        <source>Select All</source>
+        <translation>Selecionar Tudo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="200"/>
+        <source>Select None</source>
+        <translation>Selecionar Nenhum</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="237"/>
+        <source>{0} blocks</source>
+        <translation>{0} blocos</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="268"/>
+        <source>[Not implemented] {0}</source>
+        <translation>[Não implementado] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="284"/>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="285"/>
+        <source>Requires: {0}</source>
+        <translation>Requer: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="378"/>
+        <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+        <translation>⚠️ Aviso: Alguns blocos estão sem dependências:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/_block_config_dialog_base.py" line="391"/>
+        <source>Missing Dependencies</source>
+        <translation>Dependências Ausentes</translation>
+    </message>
+</context>
+<context>
+    <name>InstanceProperties</name>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="27"/>
+        <source>Instance Properties</source>
+        <translation>Propriedades da Instância</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="35"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="135"/>
+        <source>Object: None</source>
+        <translation>Objeto: Nenhum</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="39"/>
+        <source>Position</source>
+        <translation>Posição</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="42"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="77"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="48"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="85"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="57"/>
+        <source>Visible</source>
+        <translation>Visível</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="63"/>
+        <source>Rotation</source>
+        <translation>Rotação</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="74"/>
+        <source>Scale</source>
+        <translation>Escala</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="96"/>
+        <source>Delete Instance</source>
+        <translation>Excluir Instância</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/instance_properties.py" line="117"/>
+        <source>Object: {0}</source>
+        <translation>Objeto: {0}</translation>
+    </message>
+</context>
+<context>
+    <name>OpenProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="149"/>
+        <source>Open Project</source>
+        <translation>Abrir Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="159"/>
+        <source>Recent Projects</source>
+        <translation>Projetos Recentes</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="167"/>
+        <source>Browse for Project</source>
+        <translation>Procurar Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="171"/>
+        <source>Select project file...</source>
+        <translation>Selecione o arquivo do projeto...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="173"/>
+        <source>Browse...</source>
+        <translation>Procurar...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="203"/>
+        <source>Open PyGameMaker Project</source>
+        <translation>Abrir Projeto PyGameMaker</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="204"/>
+        <source>PyGameMaker Projects (*.json);;All Files (*)</source>
+        <translation>Projetos PyGameMaker (*.json);;Todos os Arquivos (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Invalid Input</source>
+        <translation>Entrada Inválida</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="221"/>
+        <source>Please enter a project name.</source>
+        <translation>Digite um nome de projeto.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="225"/>
+        <source>Please choose a project location.</source>
+        <translation>Escolha um local para o projeto.</translation>
+    </message>
+</context>
+<context>
+    <name>ResizeCanvasDialog</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="88"/>
+        <source>Resize / Scale</source>
+        <translation>Redimensionar / Escalar</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="96"/>
+        <source>Current size: {0} x {1}</source>
+        <translation>Tamanho atual: {0} x {1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="101"/>
+        <source>Mode</source>
+        <translation>Modo</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="103"/>
+        <source>Scale Image (stretch content to new size)</source>
+        <translation>Escalar Imagem (esticar o conteúdo para o novo tamanho)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="104"/>
+        <source>Resize Canvas (keep content, add/crop space)</source>
+        <translation>Redimensionar Tela (manter conteúdo, adicionar/cortar espaço)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="113"/>
+        <source>Width:</source>
+        <translation>Largura:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="119"/>
+        <source>Height:</source>
+        <translation>Altura:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="127"/>
+        <source>Anchor</source>
+        <translation>Âncora</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioActionSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="92"/>
+        <source>Select Thymio Action</source>
+        <translation>Selecionar Ação do Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="100"/>
+        <source>Select a Thymio action to add:</source>
+        <translation>Selecione uma ação do Thymio para adicionar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="120"/>
+        <source>Click on the robot to filter actions, or select from the list below.</source>
+        <translation>Clique no robô para filtrar ações, ou selecione na lista abaixo.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="132"/>
+        <source>All</source>
+        <translation>Todos</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="154"/>
+        <source>Search:</source>
+        <translation>Buscar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="158"/>
+        <source>Type to filter actions...</source>
+        <translation>Digite para filtrar ações...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="186"/>
+        <location filename="../dialogs/thymio_action_selector.py" line="343"/>
+        <source>Configure &amp;&amp; Add</source>
+        <translation>Configurar e Adicionar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="345"/>
+        <source>Add Action</source>
+        <translation>Adicionar Ação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="405"/>
+        <source>No Selection</source>
+        <translation>Nenhuma Seleção</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_action_selector.py" line="406"/>
+        <source>Please select a Thymio action first.</source>
+        <translation>Selecione uma ação do Thymio primeiro.</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioConfigDialog</name>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="45"/>
+        <source>Configure Thymio Events &amp; Actions</source>
+        <translation>Configurar Eventos e Ações do Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="52"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="118"/>
+        <source>Thymio Full (All Thymio Blocks)</source>
+        <translation>Thymio Completo (Todos os Blocos Thymio)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="53"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="120"/>
+        <source>Thymio Basic (Buttons + Motors)</source>
+        <translation>Thymio Básico (Botões + Motores)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="54"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="122"/>
+        <source>Thymio Sensors</source>
+        <translation>Sensores do Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="55"/>
+        <location filename="../dialogs/thymio_config_dialog.py" line="124"/>
+        <source>Custom</source>
+        <translation>Personalizado</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="59"/>
+        <source>Select Thymio blocks to enable:</source>
+        <translation>Selecione os blocos do Thymio para ativar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="183"/>
+        <source>{0} Thymio blocks, {1} categories</source>
+        <translation>{0} blocos do Thymio, {1} categorias</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_config_dialog.py" line="168"/>
+        <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+        <translation>Alguns blocos do Thymio ativados estão sem suas dependências. Os blocos podem não funcionar corretamente.
+
+Deseja salvar mesmo assim?</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="44"/>
+        <source>Select Thymio Event</source>
+        <translation>Selecionar Evento do Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="52"/>
+        <source>Select a Thymio event to respond to:</source>
+        <translation>Selecione um evento do Thymio para responder:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="72"/>
+        <source>Click on the robot to filter events, or select from the list below.</source>
+        <translation>Clique no robô para filtrar eventos, ou selecione na lista abaixo.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="84"/>
+        <source>All</source>
+        <translation>Todos</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="108"/>
+        <source>Search:</source>
+        <translation>Buscar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="112"/>
+        <source>Type to filter events...</source>
+        <translation>Digite para filtrar eventos...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="140"/>
+        <source>Select Event</source>
+        <translation>Selecionar Evento</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="308"/>
+        <source>No Selection</source>
+        <translation>Nenhuma Seleção</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="309"/>
+        <source>Please select a Thymio event first.</source>
+        <translation>Selecione um evento do Thymio primeiro.</translation>
+    </message>
+</context>
+<context>
+    <name>TilePaletteDialog</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="153"/>
+        <source>Tile Palette</source>
+        <translation>Paleta de Blocos</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="169"/>
+        <source>Tileset:</source>
+        <translation>Conjunto de Blocos:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="174"/>
+        <source>Tile W:</source>
+        <translation>Larg. do Bloco:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="181"/>
+        <source>H:</source>
+        <translation>A:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="191"/>
+        <source>Layer:</source>
+        <translation>Camada:</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="208"/>
+        <source>Clear Tile</source>
+        <translation>Limpar Bloco</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="212"/>
+        <source>Close</source>
+        <translation>Fechar</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="244"/>
+        <source>(none)</source>
+        <translation>(nenhum)</translation>
+    </message>
+</context>
 </TS>
