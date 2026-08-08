@@ -3001,4 +3001,462 @@ Error: {0}</source>
         <translation>🤖 Thymio</translation>
     </message>
 </context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="21"/>
+        <source>Preferences</source>
+        <translation>設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="46"/>
+        <source>Note: Some settings require restarting the IDE to take effect.</source>
+        <translation>注：一部の設定はIDEを再起動しないと反映されません。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="62"/>
+        <source>IDE Edition</source>
+        <translation>IDEエディション</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="69"/>
+        <source>Edition:</source>
+        <translation>エディション：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="79"/>
+        <source>The edition controls which tutorials are shown and the default
+block preset for new projects. Existing projects are not affected.</source>
+        <translation>エディションによって、表示されるチュートリアルと新しいプロジェクトの
+デフォルトのブロックプリセットが決まります。既存のプロジェクトには影響しません。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="88"/>
+        <source>General</source>
+        <translation>全般</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="96"/>
+        <source>Font Settings</source>
+        <translation>フォント設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="103"/>
+        <source>Font Size:</source>
+        <translation>フォントサイズ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="108"/>
+        <source>System Default</source>
+        <translation>システムのデフォルト</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="111"/>
+        <source>Font Family:</source>
+        <translation>フォントファミリー：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="114"/>
+        <source>Preview: The quick brown fox jumps over the lazy dog</source>
+        <translation>プレビュー：いろはにほへとちりぬるを</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="116"/>
+        <source>Preview:</source>
+        <translation>プレビュー：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="121"/>
+        <source>Theme Settings</source>
+        <translation>テーマ設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="127"/>
+        <source>Theme:</source>
+        <translation>テーマ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="134"/>
+        <source>UI Scale:</source>
+        <translation>UIスケール：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="137"/>
+        <source>Show tooltips</source>
+        <translation>ツールチップを表示</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="143"/>
+        <source>Appearance</source>
+        <translation>外観</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="151"/>
+        <source>Auto-Save Settings</source>
+        <translation>自動保存の設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="154"/>
+        <source>Enable auto-save</source>
+        <translation>自動保存を有効にする</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="159"/>
+        <source> minutes</source>
+        <translation> 分</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="160"/>
+        <source>Auto-save interval:</source>
+        <translation>自動保存の間隔：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="165"/>
+        <source>Grid &amp; Snapping</source>
+        <translation>グリッドとスナップ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="168"/>
+        <source>Show grid in editors</source>
+        <translation>エディタにグリッドを表示</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="174"/>
+        <source>Grid size:</source>
+        <translation>グリッドサイズ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="176"/>
+        <source>Snap to grid</source>
+        <translation>グリッドにスナップ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="179"/>
+        <source>Show collision boxes</source>
+        <translation>衝突ボックスを表示</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="185"/>
+        <source>Editor</source>
+        <translation>エディタ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="193"/>
+        <source>Project Paths</source>
+        <translation>プロジェクトパス</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="199"/>
+        <source>Browse...</source>
+        <translation>参照...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="203"/>
+        <source>Default projects folder:</source>
+        <translation>デフォルトのプロジェクトフォルダ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="208"/>
+        <source>Project Settings</source>
+        <translation>プロジェクト設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="213"/>
+        <source>Recent projects limit:</source>
+        <translation>最近のプロジェクトの上限：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="215"/>
+        <source>Create backup on save</source>
+        <translation>保存時にバックアップを作成</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="221"/>
+        <source>Project</source>
+        <translation>プロジェクト</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="229"/>
+        <source>Debug Settings</source>
+        <translation>デバッグ設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="232"/>
+        <source>Enable debug mode</source>
+        <translation>デバッグモードを有効にする</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="235"/>
+        <source>Show console output</source>
+        <translation>コンソール出力を表示</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="241"/>
+        <source>Performance</source>
+        <translation>パフォーマンス</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="246"/>
+        <source>Maximum undo steps:</source>
+        <translation>元に戻す操作の最大回数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="251"/>
+        <source>Advanced</source>
+        <translation>詳細設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="343"/>
+        <source>Select Default Projects Directory</source>
+        <translation>デフォルトのプロジェクトディレクトリを選択</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="402"/>
+        <source>Settings Saved</source>
+        <translation>設定を保存しました</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="403"/>
+        <source>Settings have been saved successfully.
+
+Some changes may require restarting the IDE to take effect.</source>
+        <translation>設定は正常に保存されました。
+
+一部の変更はIDEを再起動しないと反映されない場合があります。</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="103"/>
+        <source>Playground Editor</source>
+        <translation>プレイグラウンドエディタ</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="108"/>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="109"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>プレイグラウンドを保存（Ctrl+S）</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="115"/>
+        <source>Undo</source>
+        <translation>元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="116"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>元に戻す（Ctrl+Z）</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="119"/>
+        <source>Redo</source>
+        <translation>やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="120"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>やり直す（Ctrl+Y）</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="126"/>
+        <source>Grid</source>
+        <translation>グリッド</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="129"/>
+        <source>Toggle grid display</source>
+        <translation>グリッド表示を切り替え</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="132"/>
+        <source>Snap</source>
+        <translation>スナップ</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="135"/>
+        <source>Snap to grid</source>
+        <translation>グリッドにスナップ</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="140"/>
+        <source> Thickness: </source>
+        <translation> 太さ： </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="147"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>ドラッグ描画時のデフォルトの壁の太さ</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="152"/>
+        <source> Block: </source>
+        <translation> ブロック： </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="159"/>
+        <source>Block size for block-paint mode</source>
+        <translation>ブロック塗りモードのブロックサイズ</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="166"/>
+        <source>Color for painted blocks</source>
+        <translation>塗りつぶしブロックの色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="173"/>
+        <location filename="../editors/playground_editor/__init__.py" line="501"/>
+        <source>Arena Settings</source>
+        <translation>アリーナ設定</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="174"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>アリーナの寸法と背景を設定</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="180"/>
+        <source>▶ Run</source>
+        <translation>▶ 実行</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="181"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>リンクされたロボットコードでプレイグラウンドをシミュレート</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="185"/>
+        <source>Export .playground</source>
+        <translation>.playgroundをエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="186"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>Aseba .playgroundファイルとしてエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="349"/>
+        <source>Select Ground Texture</source>
+        <translation>地面のテクスチャを選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="351"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>画像 (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="369"/>
+        <source>Texture Error</source>
+        <translation>テクスチャエラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="370"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>テクスチャをコピーできませんでした：
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="507"/>
+        <source>Width:</source>
+        <translation>幅：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="512"/>
+        <source>Height:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="519"/>
+        <source>Background:</source>
+        <translation>背景：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="524"/>
+        <source>Grid size:</source>
+        <translation>グリッドサイズ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="530"/>
+        <location filename="../editors/playground_editor/__init__.py" line="538"/>
+        <location filename="../editors/playground_editor/__init__.py" line="543"/>
+        <source>(none)</source>
+        <translation>（なし）</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="532"/>
+        <source>Browse...</source>
+        <translation>参照...</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="533"/>
+        <source>Clear</source>
+        <translation>クリア</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="551"/>
+        <source>Ground texture:</source>
+        <translation>地面のテクスチャ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="596"/>
+        <source>Run Failed</source>
+        <translation>実行に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="597"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>シミュレーターの起動エラー：
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="625"/>
+        <source>Export Playground</source>
+        <translation>プレイグラウンドをエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="627"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Aseba Playground (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="638"/>
+        <source>Export Successful</source>
+        <translation>エクスポート成功</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="639"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>プレイグラウンドをエクスポートしました：
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="643"/>
+        <source>Export Failed</source>
+        <translation>エクスポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="644"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>プレイグラウンドのエクスポートエラー：
+{}</translation>
+    </message>
+</context>
 </TS>
