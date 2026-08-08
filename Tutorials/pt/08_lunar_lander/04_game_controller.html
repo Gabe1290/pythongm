@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Controlador de jogo</h1>
+
+    <p>Vamos adicionar um objeto controlador de jogo para exibir um título, instruções, e inicializar a pontuação.</p>
+
+    <h2>Crie o objeto controlador</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Objetos</strong> &gt; <strong>Criar Novo Objeto</strong></li>
+            <li>Nomeie-o <code>obj_game_controller</code></li>
+            <li><strong>Nenhum sprite necessário</strong> &mdash; este é um controlador invisível</li>
+        </ol>
+    </div>
+
+    <h2>Programe o controlador (Blockly)</h2>
+    <p>Dê um duplo clique em <code>obj_game_controller</code> e abra a aba <strong>Blockly</strong>.</p>
+
+    <h2>1. Inicialize a pontuação (Create Event)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-score block-indent">Set Score <span class="block-val">0</span></span>
+        </div>
+        <p>Encontre <strong>Create</strong> em <em>Events</em>.
+        Adicione <strong>Set Score</strong> (de <em>Score</em>) com valor <strong>0</strong>.
+        Isso redefine a pontuação toda vez que a sala inicia.</p>
+    </div>
+
+    <h2>2. Desenhe o texto do HUD (Draw Event)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Draw</span><br>
+            <span class="block block-draw block-indent">Draw Text <span class="block-val">"Lunar Lander"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span><br>
+            <span class="block block-draw block-indent">Draw Text <span class="block-val">"Pouse na plataforma verde!"</span> at <span class="block-val">10</span>, <span class="block-val">30</span></span>
+        </div>
+        <p>Encontre <strong>Draw</strong> em <em>Events</em>.
+        Adicione dois blocos <strong>Draw Text</strong> (de <em>Drawing</em>) &mdash;
+        um para o título do jogo na posição (10, 10) e um para as instruções na posição (10, 30).</p>
+    </div>
+
+    <h2>Aplique seus blocos</h2>
+    <div class="step">
+        <ol>
+            <li>Você deve ter <strong>2 blocos de evento</strong> (Create + Draw)</li>
+        </ol>
+    </div>
+
+    <h2>Posicione o controlador na sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abra <code>room_game</code></li>
+            <li>Posicione uma instância de <code>obj_game_controller</code> em qualquer lugar da sala (não tem sprite, então sua posição não importa)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>O título "Lunar Lander" aparece no canto superior esquerdo</li>
+            <li>As instruções "Pouse na plataforma verde!" são exibidas abaixo</li>
+            <li>Pilote seu módulo, pouse na plataforma para vencer, colida para reiniciar</li>
+            <li>O jogo completo agora está pronto!</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Parabéns! Você construiu um jogo Lunar Lander!</strong>
+        </p>
+        <p>Seu jogo tem gravidade lunar, controles de impulso, uma plataforma de pouso, detecção de colisão e um display de HUD. Muito bem!</p>
+    </div>
+
+    <h2>Ideias de desafio</h2>
+    <div class="challenge">
+        <p>Quer tornar seu jogo ainda melhor? Tente estas melhorias:</p>
+        <ul>
+            <li><strong>Sistema de combustível:</strong> Adicione uma variável de combustível que diminui ao dar impulso. Se o combustível chegar a 0, o impulso para de funcionar!</li>
+            <li><strong>Detecção de colisão baseada em velocidade:</strong> Use o <code>vspeed</code> do módulo para verificar a velocidade de pouso. Se o módulo estiver se movendo rápido demais ao tocar a plataforma, ele colide em vez de pousar com segurança!</li>
+            <li><strong>Plataforma de pouso menor:</strong> Torne a plataforma menor (menos blocos) para aumentar a dificuldade</li>
+            <li><strong>Múltiplos níveis:</strong> Crie salas adicionais com diferentes layouts de terreno e pontos de pouso mais difíceis</li>
+            <li><strong>Pontuação baseada no combustível restante:</strong> Conceda mais pontos por pousar com mais combustível restante &mdash; incentiva o voo eficiente!</li>
+        </ul>
+    </div>
+</body>
+</html>
