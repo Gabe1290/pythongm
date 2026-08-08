@@ -6455,5 +6455,709 @@ For now, check the console for debug messages.</source>
         <source>Warnings:</source>
         <translation>警告：</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1947"/>
+        <source>Project Validation Issues</source>
+        <translation>项目验证问题</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1954"/>
+        <source>Project Validation Warnings</source>
+        <translation>项目验证警告</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1965"/>
+        <source>Please open or create a project first before exporting a game.</source>
+        <translation>导出游戏前请先打开或创建一个项目。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1976"/>
+        <source>Export Game</source>
+        <translation>导出游戏</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1981"/>
+        <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;导出游戏&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1982"/>
+        <source>Choose export format:</source>
+        <translation>选择导出格式：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1987"/>
+        <source>HTML5 (Web Browser) - ✅ Available</source>
+        <translation>HTML5（网页浏览器）- ✅ 可用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1994"/>
+        <source>Windows Executable (.exe) - ✅ Available</source>
+        <translation>Windows 可执行文件 (.exe) - ✅ 可用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2002"/>
+        <source>Linux Binary - ✅ Available</source>
+        <translation>Linux 二进制文件 - ✅ 可用</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2075"/>
+        <source>Coming Soon</source>
+        <translation>即将推出</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2293"/>
+        <source>Please open or create a project first.</source>
+        <translation>请先打开或创建一个项目。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2312"/>
+        <source>Choose Export Location</source>
+        <translation>选择导出位置</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2103"/>
+        <location filename="../core/ide_window.py" line="2129"/>
+        <location filename="../core/ide_window.py" line="2155"/>
+        <location filename="../core/ide_window.py" line="2181"/>
+        <source>Exporting Game</source>
+        <translation>正在导出游戏</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2104"/>
+        <location filename="../core/ide_window.py" line="2130"/>
+        <location filename="../core/ide_window.py" line="2156"/>
+        <location filename="../core/ide_window.py" line="2182"/>
+        <source>Preparing export...</source>
+        <translation>正在准备导出...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2106"/>
+        <location filename="../core/ide_window.py" line="2132"/>
+        <location filename="../core/ide_window.py" line="2158"/>
+        <location filename="../core/ide_window.py" line="2184"/>
+        <source>Export Complete</source>
+        <translation>导出完成</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2108"/>
+        <location filename="../core/ide_window.py" line="2134"/>
+        <location filename="../core/ide_window.py" line="2160"/>
+        <location filename="../core/ide_window.py" line="2186"/>
+        <source>Would you like to open the output folder?</source>
+        <translation>是否要打开输出文件夹？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2107"/>
+        <location filename="../core/ide_window.py" line="2133"/>
+        <location filename="../core/ide_window.py" line="2159"/>
+        <location filename="../core/ide_window.py" line="2185"/>
+        <source>Export Failed</source>
+        <translation>导出失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2584"/>
+        <source>Configuration Saved</source>
+        <translation>配置已保存</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2585"/>
+        <source>Blockly configuration has been saved.
+
+The new event/block selection is now active in:
+• Visual programming editor (Blockly)
+• Traditional event editor
+
+Changes apply immediately to currently open editors.</source>
+        <translation>Blockly 配置已保存。
+
+新的事件/积木选择现已在以下位置生效：
+• 可视化编程编辑器（Blockly）
+• 传统事件编辑器
+
+更改会立即应用于当前打开的编辑器。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2777"/>
+        <source>Please open a project first to validate.</source>
+        <translation>请先打开一个项目再进行验证。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2799"/>
+        <source>Validation Issues Found</source>
+        <translation>发现验证问题</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2800"/>
+        <source>Project validation found the following issues:
+
+</source>
+        <translation>项目验证发现以下问题：
+
+</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2805"/>
+        <source>Validation Passed</source>
+        <translation>验证通过</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2806"/>
+        <source>Project structure is valid!
+
+✓ All required directories exist
+✓ project.json is present</source>
+        <translation>项目结构有效！
+
+✓ 所有必需的目录均存在
+✓ project.json 存在</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2866"/>
+        <source>Documentation</source>
+        <translation>文档</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2867"/>
+        <source>Quick Help:
+• F1: Open this help
+• Ctrl+N: New Project
+• Ctrl+O: Open Project
+• Ctrl+S: Save Project
+• Double-click assets to edit them
+• Right-click for more options
+
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+        <translation>快速帮助：
+• F1：打开此帮助
+• Ctrl+N：新建项目
+• Ctrl+O：打开项目
+• Ctrl+S：保存项目
+• 双击资源以编辑
+• 右键点击以查看更多选项
+
+如需完整文档，请前往：
+帮助 → 在线文档
+或访问：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2940"/>
+        <source>Tutorials</source>
+        <translation>教程</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3001"/>
+        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;版本 {0}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;一个全面的可视化游戏开发环境，&lt;br&gt;灵感来自 GameMaker Studio，使用 Python 构建。&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;功能特性&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;双重编程模式：&lt;/b&gt;可视化（Blockly）与传统事件&lt;/li&gt;&lt;li&gt;&lt;b&gt;资源管理：&lt;/b&gt;精灵、声音、对象和房间&lt;/li&gt;&lt;li&gt;&lt;b&gt;跨平台导出：&lt;/b&gt;Windows、Linux、macOS、Android、iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;灵活配置：&lt;/b&gt;可自定义积木/事件的可见性&lt;/li&gt;&lt;li&gt;&lt;b&gt;实时测试：&lt;/b&gt;直接从 IDE 运行游戏&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;技术栈&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE：&lt;/b&gt;PySide6（Qt 6）&lt;br&gt;• &lt;b&gt;游戏引擎：&lt;/b&gt;Pygame&lt;br&gt;• &lt;b&gt;可视化编程：&lt;/b&gt;Blockly&lt;br&gt;• &lt;b&gt;导出：&lt;/b&gt;PyInstaller、Kivy&lt;br&gt;• &lt;b&gt;语言：&lt;/b&gt;Python 3.11+&lt;/p&gt;&lt;h3&gt;项目信息&lt;/h3&gt;&lt;p&gt;PyGameMaker 是一款教育工具，旨在让&lt;br&gt;游戏开发对初学者更易上手，同时为&lt;br&gt;经验丰富的开发者提供强大的功能。&lt;/p&gt;&lt;p&gt;&lt;small&gt;使用 Python 和 Qt 用 ❤️ 打造&lt;/small&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3037"/>
+        <source>&lt;h3&gt;License&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Source code:&lt;/b&gt; MIT License&lt;br&gt;• &lt;b&gt;Documentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier to reuse for educators, students, and downstream projects. See the &lt;code&gt;LICENSE&lt;/code&gt; and &lt;code&gt;LICENSE-docs&lt;/code&gt; files for full terms.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</source>
+        <translation>&lt;h3&gt;许可证&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;源代码：&lt;/b&gt;MIT 许可证&lt;br&gt;• &lt;b&gt;文档：&lt;/b&gt;知识共享署名 4.0（CC BY 4.0）&lt;br&gt;&lt;small&gt;已从 GPLv3 重新授权为 MIT + CC BY 4.0，以降低教育工作者、学生和下游项目的复用门槛。完整条款请参阅 &lt;code&gt;LICENSE&lt;/code&gt; 和 &lt;code&gt;LICENSE-docs&lt;/code&gt; 文件。&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3057"/>
+        <source>Imported {0}</source>
+        <translation>已导入 {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3133"/>
+        <source>Opened room: {0}</source>
+        <translation>已打开房间：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3144"/>
+        <source>Failed to open room editor: {0}</source>
+        <translation>打开房间编辑器失败：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3181"/>
+        <source>Opened playground: {0}</source>
+        <translation>已打开实验场：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3192"/>
+        <source>Failed to open playground editor: {0}</source>
+        <translation>打开实验场编辑器失败：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3234"/>
+        <source>Opened object: {0}</source>
+        <translation>已打开对象：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3414"/>
+        <location filename="../core/ide_window.py" line="3422"/>
+        <source>Save Error</source>
+        <translation>保存错误</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3415"/>
+        <source>Failed to save project to disk</source>
+        <translation>保存项目到磁盘失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3423"/>
+        <source>Failed to save {0}: {1}</source>
+        <translation>保存 {0} 失败：{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3506"/>
+        <source>Floated: {0}</source>
+        <translation>已浮动：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3544"/>
+        <source>Reattached: {0}</source>
+        <translation>已重新停靠：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3571"/>
+        <source>Window mode: Tabbed</source>
+        <translation>窗口模式：标签页</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3583"/>
+        <source>Window mode: Floating</source>
+        <translation>窗口模式：浮动</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3590"/>
+        <source>⧉ Floating</source>
+        <translation>⧉ 浮动</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3592"/>
+        <source>Window mode: Floating. Click to switch all editors back into tabs (use this if a floating window has been dragged off-screen).</source>
+        <translation>窗口模式：浮动。点击以将所有编辑器切换回标签页（如果浮动窗口被拖出屏幕外，可使用此选项）。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3596"/>
+        <source>⊞ Tabbed</source>
+        <translation>⊞ 标签页</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3598"/>
+        <source>Window mode: Tabbed. Click to pop every editor out into its own window.</source>
+        <translation>窗口模式：标签页。点击以将每个编辑器弹出到独立窗口。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3681"/>
+        <source>Project loaded: {0}</source>
+        <translation>项目已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Save Project As...</source>
+        <translation>项目另存为...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Project Settings...</source>
+        <translation>项目设置...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3721"/>
+        <source>Create</source>
+        <translation>新建</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Test Game</source>
+        <translation>测试游戏</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Debug Game</source>
+        <translation>调试游戏</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3724"/>
+        <source>Export Game...</source>
+        <translation>导出游戏...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3776"/>
+        <source>Project: {0}</source>
+        <translation>项目：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3879"/>
+        <source>You have unsaved changes. Do you want to save before closing?</source>
+        <translation>您有未保存的更改。是否在关闭前保存？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3917"/>
+        <source>You need to create or open a project before {0}.
+
+Would you like to:
+• Create a new project, or
+• Open an existing project?</source>
+        <translation>在{0}之前，您需要先创建或打开一个项目。
+
+您想要：
+• 创建一个新项目，还是
+• 打开一个现有项目？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3929"/>
+        <source>Create or Open Project</source>
+        <translation>创建或打开项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3930"/>
+        <source>Choose project action:</source>
+        <translation>选择项目操作：</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3721"/>
+        <source>Import</source>
+        <translation>导入</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="2049"/>
+        <source>Export</source>
+        <translation>导出</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1243"/>
+        <source>Open Project</source>
+        <translation>打开项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3257"/>
+        <source>Failed to open object editor:
+
+{0}</source>
+        <translation>打开对象编辑器失败：
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3286"/>
+        <source>Opened sprite: {0}</source>
+        <translation>已打开精灵：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3297"/>
+        <source>Failed to open sprite editor: {0}</source>
+        <translation>打开精灵编辑器失败：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3719"/>
+        <source>Save Project</source>
+        <translation>保存项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1293"/>
+        <location filename="../core/ide_window.py" line="1319"/>
+        <source>Failed to save project</source>
+        <translation>保存项目失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1280"/>
+        <source>Failed to load project</source>
+        <translation>加载项目失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="972"/>
+        <location filename="../core/ide_window.py" line="3878"/>
+        <source>Unsaved Changes</source>
+        <translation>未保存的更改</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1869"/>
+        <source>Game stopped</source>
+        <translation>游戏已停止</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3724"/>
+        <source>Build and Run</source>
+        <translation>构建并运行</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1110"/>
+        <location filename="../core/ide_window.py" line="3778"/>
+        <source>No project loaded</source>
+        <translation>未加载项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="466"/>
+        <source>Language Changed</source>
+        <translation>语言已更改</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="467"/>
+        <source>Language changed to {0}.
+
+Please close and restart the IDE for the change to take effect.</source>
+        <translation>语言已更改为 {0}。
+
+请关闭并重启 IDE 以使更改生效。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="287"/>
+        <source>Configure &amp;Thymio Blocks...</source>
+        <translation>配置 Thymio 积木(&amp;T)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="177"/>
+        <source>Export &amp;Aseba (Thymio) code...</source>
+        <translation>导出 Aseba（Thymio）代码(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="189"/>
+        <location filename="../core/ide_window.py" line="331"/>
+        <source>Import Open &amp;Roberta XML...</source>
+        <translation>导入 Open Roberta XML(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="190"/>
+        <source>Import &amp;GameMaker .gmk File...</source>
+        <translation>导入 GameMaker .gmk 文件(&amp;G)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="298"/>
+        <source>&amp;Migrate to Modular Structure</source>
+        <translation>迁移到模块化结构(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="309"/>
+        <source>🤖 &amp;Thymio Programming</source>
+        <translation>🤖 Thymio 编程(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="312"/>
+        <source>Show Thymio Tab in Object Editor</source>
+        <translation>在对象编辑器中显示 Thymio 选项卡</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="319"/>
+        <source>Open &amp;Playground...</source>
+        <translation>打开实验场(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="325"/>
+        <source>Add &amp;Event...</source>
+        <translation>添加事件(&amp;E)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="327"/>
+        <source>Add &amp;Action...</source>
+        <translation>添加操作(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="674"/>
+        <source>Import Open Roberta XML</source>
+        <translation>导入 Open Roberta XML</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="676"/>
+        <source>Open Roberta XML (*.xml)</source>
+        <translation>Open Roberta XML (*.xml)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="685"/>
+        <source>Select Output Directory for Imported Project</source>
+        <translation>选择导入项目的输出目录</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="694"/>
+        <source>Importing Open Roberta program...</source>
+        <translation>正在导入 Open Roberta 程序...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="702"/>
+        <location filename="../core/ide_window.py" line="783"/>
+        <source>
+
+Warnings:
+</source>
+        <translation>
+
+警告：
+</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="708"/>
+        <source>Project &apos;{0}&apos; imported successfully!
+Events: {1}, Actions: {2}{3}</source>
+        <translation>项目“{0}”导入成功！
+事件数：{1}，操作数：{2}{3}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="715"/>
+        <source>Roberta import complete: {0}</source>
+        <translation>Roberta 导入完成：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="726"/>
+        <source>Failed to import Open Roberta XML:
+{0}</source>
+        <translation>导入 Open Roberta XML 失败：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="728"/>
+        <source>Roberta import failed</source>
+        <translation>Roberta 导入失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="734"/>
+        <source>Import GameMaker File</source>
+        <translation>导入 GameMaker 文件</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="736"/>
+        <source>GameMaker Files (*.gmk)</source>
+        <translation>GameMaker 文件 (*.gmk)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="759"/>
+        <source>Could not create output folder:
+{0}</source>
+        <translation>无法创建输出文件夹：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="765"/>
+        <source>Importing GameMaker file...</source>
+        <translation>正在导入 GameMaker 文件...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="769"/>
+        <source>(no details)</source>
+        <translation>（无详情）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="773"/>
+        <source>Failed to import {0}:
+
+{1}</source>
+        <translation>导入 {0} 失败：
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="775"/>
+        <source>GMK import failed</source>
+        <translation>GMK 导入失败</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="778"/>
+        <source>(empty project)</source>
+        <translation>（空项目）</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="782"/>
+        <source>
+  ...and {0} more</source>
+        <translation>
+  ...以及另外 {0} 项</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="788"/>
+        <source>Imported &apos;{0}&apos; to:
+{1}
+
+{2}{3}</source>
+        <translation>已将“{0}”导入到：
+{1}
+
+{2}{3}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="791"/>
+        <source>GMK import complete: {0}</source>
+        <translation>GMK 导入完成：{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="835"/>
+        <source>New Project (Ctrl+N)</source>
+        <translation>新建项目 (Ctrl+N)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="836"/>
+        <source>Open Project (Ctrl+O)</source>
+        <translation>打开项目 (Ctrl+O)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="837"/>
+        <source>Save Project (Ctrl+S)</source>
+        <translation>保存项目 (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="842"/>
+        <source>Test Game (F5)</source>
+        <translation>测试游戏 (F5)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="843"/>
+        <source>Debug Game (F6)</source>
+        <translation>调试游戏 (F6)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="844"/>
+        <source>Export Game…</source>
+        <translation>导出游戏…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="849"/>
+        <source>Import Sprite…</source>
+        <translation>导入精灵…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="850"/>
+        <source>Import Sound…</source>
+        <translation>导入声音…</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="858"/>
+        <source>Thymio</source>
+        <translation>Thymio</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="860"/>
+        <source>Add Thymio Event</source>
+        <translation>添加 Thymio 事件</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="869"/>
+        <source>Tabbed</source>
+        <translation>标签页</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="872"/>
+        <source>Toggle between Tabbed and Floating editor layouts</source>
+        <translation>在标签页和浮动编辑器布局之间切换</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1189"/>
+        <location filename="../core/ide_window.py" line="1196"/>
+        <source>Clear Recent Projects</source>
+        <translation>清除最近的项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1197"/>
+        <source>Are you sure you want to clear the recent projects list?</source>
+        <translation>确定要清除最近的项目列表吗？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1210"/>
+        <source>Recent projects list cleared</source>
+        <translation>最近的项目列表已清除</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1717"/>
+        <source>A game is already running. Please close it first.</source>
+        <translation>已有游戏正在运行，请先将其关闭。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1826"/>
+        <source>Game running... (close game window to return)</source>
+        <translation>游戏正在运行...（关闭游戏窗口以返回）</translation>
+    </message>
 </context>
 </TS>
