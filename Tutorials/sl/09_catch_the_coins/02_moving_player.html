@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Faza 1: Premikajoči se igralec</h1>
+
+    <p>Začnimo z ustvarjanjem igralca in premikanjem levo in desno s puščičnimi tipkami.</p>
+
+    <h2>Ustvarite nov projekt</h2>
+    <div class="step">
+        <ol>
+            <li>Pojdite na <code>Datoteka &gt; Nov projekt</code></li>
+            <li>Poimenujte ga <strong>CatchTheCoins</strong></li>
+            <li>Za <strong>Predlogo</strong> izberite <strong>"Z zaslonom konca igre"</strong></li>
+        </ol>
+        <p style="margin-top: 8px; font-style: italic;">Ta predloga vam da že pripravljen
+        zaslon konca igre, ki ga bomo povezali kasneje, tako da ga ni treba zgraditi sami.</p>
+    </div>
+
+    <h2>Ustvarite sprite igralca</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Sprite-i</strong> v drevesu virov &rarr; <strong>Ustvari nov sprite</strong></li>
+            <li>Poimenujte ga <code>spr_player</code></li>
+            <li>Dvokliknite ga, da odprete Urejevalnik sprite-ov, in narišite lik 32&times;32
+            (loparček, košara ali kar zelen kvadrat je v redu). Pritisnite <strong>Ctrl+S</strong> za shranjevanje.</li>
+        </ol>
+    </div>
+
+    <h2>Ustvarite objekt igralca</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Objekti</strong> &rarr; <strong>Ustvari nov objekt</strong></li>
+            <li>Poimenujte ga <code>obj_player</code></li>
+            <li>Nastavite sprite na <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Ustvarite igralno sobo</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Sobe</strong> &rarr; <strong>Ustvari novo sobo</strong></li>
+            <li>Poimenujte jo <code>room_main</code></li>
+            <li>Odprite sobo in postavite <code>obj_player</code> blizu spodnjega sredinskega dela</li>
+        </ol>
+    </div>
+
+    <h2>Dodajte gibanje igralca</h2>
+    <div class="step">
+        <ol>
+            <li>Dvokliknite <code>obj_player</code>, da odprete Urejevalnik objektov</li>
+            <li>Kliknite zavihek <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Premik levo</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Premik desno</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>Ustavitev, ko ni pritisnjena nobena tipka</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Imeti bi morali <strong>3 dogodkovne bloke</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Preizkusite svojo igro!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pritisnite F5 za igranje!</strong></p>
+        <ul>
+            <li>Uporabite tipki <strong>Levo</strong> in <strong>Desno</strong> za premikanje igralca</li>
+            <li>Igralec lahko za zdaj zaide z zaslona &mdash; kovanci prihajajo naslednji!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknite "Naprej", da dodate kovance in sovražnika.
+    </div>
+</body>
+</html>

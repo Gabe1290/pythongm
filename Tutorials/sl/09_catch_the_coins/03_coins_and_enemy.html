@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Faza 2: Kovanci in sovražnik</h1>
+
+    <p>Zdaj bomo dodali kovance za pobiranje in enega sovražnika, ki se mu je treba izogibati. Oba padata naravnost navzdol.</p>
+
+    <h2>Ustvarite sprite kovanca</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Sprite-i</strong> &rarr; <strong>Ustvari nov sprite</strong></li>
+            <li>Poimenujte ga <code>spr_coin</code></li>
+            <li>Odprite Urejevalnik sprite-ov in narišite rumen krog 24&times;24. Shranite s <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Ustvarite sprite sovražnika</h2>
+    <div class="step">
+        <ol>
+            <li>Ponovite zgornje korake za sprite z imenom <code>spr_enemy</code></li>
+            <li>Narišite rdeč kvadrat 32&times;32, da je sovražnika lahko opaziti</li>
+        </ol>
+    </div>
+
+    <h2>Ustvarite objekt kovanca</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Objekti</strong> &rarr; <strong>Ustvari nov objekt</strong></li>
+            <li>Poimenujte ga <code>obj_coin</code></li>
+            <li>Nastavite sprite na <code>spr_coin</code></li>
+            <li>Odprite zavihek <strong>Blockly</strong> in dodajte to:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Ustvarite objekt sovražnika</h2>
+    <div class="step">
+        <ol>
+            <li>Ustvarite še en objekt z imenom <code>obj_enemy</code></li>
+            <li>Nastavite njegov sprite na <code>spr_enemy</code></li>
+            <li>Dodajte enak dogodek <strong>When created</strong>, da tudi on pada:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Postavite ju v sobo</h2>
+    <div class="step">
+        <ol>
+            <li>Odprite <code>room_main</code></li>
+            <li>Postavite <strong>5 do 8 kovancev</strong> po vrhu sobe, razporejenih vodoravno</li>
+            <li>Postavite <strong>1 sovražnika</strong> nekje zgoraj, med kovanci</li>
+            <li>Prepričajte se, da je <code>obj_player</code> še vedno na spodnjem sredinskem delu</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Nasvet:</strong> Število kovancev je točkovni prag, ki ga mora igralec doseči za zmago.
+            Začnite s 5 za hitro predstavitev &mdash; kasneje jih lahko vedno dodate več.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Preizkusite svojo igro!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pritisnite F5 za igranje!</strong></p>
+        <ul>
+            <li>Kovanci in sovražnik naj bi padali z vrha sobe</li>
+            <li>Igralec se lahko premika levo in desno pod njimi</li>
+            <li>Dotik z njimi za zdaj še ne naredi ničesar &mdash; to je naslednja faza!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknite "Naprej", da povežete točkovanje in trk, ki pomeni konec igre.
+    </div>
+</body>
+</html>

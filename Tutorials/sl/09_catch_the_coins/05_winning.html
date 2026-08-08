@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Faza 4: Zmaga v igri</h1>
+
+    <p>Trenutno lahko igralec izgubi, a nima načina, da bi <em>zmagal</em>. To bomo popravili
+    tako, da po vsakem koraku preverimo: <strong>"Ali je še kaj kovancev?"</strong> &mdash;
+    če ne, gremo v povsem novo sobo zmage.</p>
+
+    <h2>Zgradite sobo zmage</h2>
+
+    <h2>Ustvarite sprite zmage (neobvezno)</h2>
+    <div class="step">
+        <p>Če želite praznični videz, ustvarite sprite z imenom <code>spr_win_text</code>.
+        Ta korak je neobvezen &mdash; besedilo, narisano v naslednjem koraku, deluje tudi brez sprite-a.</p>
+    </div>
+
+    <h2>Ustvarite objekt besedila zmage</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Objekti</strong> &rarr; <strong>Ustvari nov objekt</strong></li>
+            <li>Poimenujte ga <code>obj_win_text</code></li>
+            <li>Odprite zavihek <strong>Blockly</strong> in dodajte ta dva dogodka:</li>
+        </ol>
+
+        <p style="margin-top: 8px;"><strong>Prikažite sporočilo o zmagi:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">ZMAGALI STE!</span> at x:<span class="block-num">412</span> y:<span class="block-num">320</span></span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">Pritisnite PRESLEDNICO za ponovno igro</span> at x:<span class="block-num">340</span> y:<span class="block-num">400</span></span>
+        </div>
+
+        <p style="margin-top: 8px;"><strong>Ponoven zagon s preslednico:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: space</span><br>
+            <span class="block block-game block-indent">Restart Game</span>
+        </div>
+    </div>
+
+    <h2>Ustvarite sobo zmage</h2>
+    <div class="step">
+        <ol>
+            <li>Desni klik na <strong>Sobe</strong> &rarr; <strong>Ustvari novo sobo</strong></li>
+            <li>Poimenujte jo <code>room_win</code></li>
+            <li>Nastavite barvo ozadja na praznično barvo (svetlo zeleno ali zlato)</li>
+            <li>Postavite eno instanco <code>obj_win_text</code> kamor koli v sobo (njeno risanje je na fiksnih koordinatah)</li>
+        </ol>
+    </div>
+
+    <h2>Preverjanje zmage</h2>
+    <p>Zdaj pomemben del: ob vsakem koraku igralec preveri, ali je še kaj kovancev.
+    Ko števec doseže nič, gremo v sobo zmage.</p>
+
+    <div class="step">
+        <ol>
+            <li>Odprite <code>obj_player</code></li>
+            <li>Kliknite zavihek <strong>Blockly</strong></li>
+            <li>Dodajte ta dogodek <strong>Step</strong>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Every step</span><br>
+            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
+            <span class="block block-room block-indent2">Go to room <span class="block-text">room_win</span></span>
+        </div>
+
+        <div class="info" style="margin-top: 10px;">
+            <strong>Kaj to naredi:</strong> Blok <strong>If Count Of</strong> pogleda sobo
+            in prešteje, koliko instanc <code>obj_coin</code> je še živih. Ko ste jih
+            pobrali vse, je števec nič, primerjava <code>== 0</code> je resnična, in dejanje
+            <strong>Go to room</strong> se izvede.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Preizkusite svojo popolno igro!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pritisnite F5 za igranje!</strong></p>
+        <ul>
+            <li>Poberite vsak kovanec &rarr; prikaže se zaslon <strong>ZMAGALI STE!</strong></li>
+            <li>Dotaknite se sovražnika &rarr; prikaže se zaslon <strong>GAME OVER</strong></li>
+            <li>Pritisnite <strong>PRESLEDNICO</strong> na katerem koli od obeh zaslonov za ponovno igro</li>
+        </ul>
+    </div>
+
+    <h2>Zgradili ste popolno igro!</h2>
+    <p>Čestitke &mdash; to je popolna igralna zanka z:</p>
+    <ul>
+        <li>Vnosom igralca (gibanje s tipkovnico)</li>
+        <li>Dvema vrstama trka (dobrim in slabim)</li>
+        <li>Točkami, katerih rast lahko igralec vidi</li>
+        <li>Jasnim stanjem zmage in poraza</li>
+        <li>Načinom za ponoven zagon in nov poskus</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Naslednjič poskusite:</strong> dodajte več kovancev, postavite drugega sovražnika, ali spremenite
+        hitrosti kovanca in sovražnika v njunih dogodkih <strong>When created</strong>.
+        Vsaka sprememba je samo številka, ki jo lahko uredite in preizkusite.
+    </div>
+</body>
+</html>
