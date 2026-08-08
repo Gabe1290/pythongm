@@ -178,4 +178,241 @@ Deseja salvar mesmo assim?</translation>
         <translation>Programação Visual em Blocos (Destacada)</translation>
     </message>
 </context>
+<context>
+    <name>TutorialDialog</name>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="27"/>
+        <source>Tutorials</source>
+        <translation>Tutoriais</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="46"/>
+        <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;Tutoriais do PyGameMaker&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="50"/>
+        <source>Select a tutorial and click Open (or double-click):</source>
+        <translation>Selecione um tutorial e clique em Abrir (ou dê um duplo clique):</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="83"/>
+        <source>Tip: Check the documentation (F1) for quick help!</source>
+        <translation>Dica: Consulte a documentação (F1) para ajuda rápida!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="91"/>
+        <source>Open</source>
+        <translation>Abrir</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="97"/>
+        <source>Close</source>
+        <translation>Fechar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="118"/>
+        <source>Select a tutorial to see its description.</source>
+        <translation>Selecione um tutorial para ver sua descrição.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="121"/>
+        <source>No tutorials folder found</source>
+        <translation>Nenhuma pasta de tutoriais encontrada</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="162"/>
+        <source>No tutorials available</source>
+        <translation>Nenhum tutorial disponível</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialPanel</name>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="343"/>
+        <source>Float</source>
+        <translation>Flutuar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="339"/>
+        <source>Re-dock</source>
+        <translation>Reancorar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="345"/>
+        <source>Detach this tutorial into its own movable window</source>
+        <translation>Destacar este tutorial em sua própria janela móvel</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="341"/>
+        <source>Dock this tutorial back into the IDE</source>
+        <translation>Ancorar este tutorial de volta no IDE</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="39"/>
+        <source>Tutorials</source>
+        <translation>Tutoriais</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="56"/>
+        <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Tutoriais&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="80"/>
+        <source>Select a tutorial:</source>
+        <translation>Selecione um tutorial:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="87"/>
+        <source>Open Tutorial</source>
+        <translation>Abrir Tutorial</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="120"/>
+        <source>Back to List</source>
+        <translation>Voltar à Lista</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="126"/>
+        <source>&lt; Previous</source>
+        <translation>&lt; Anterior</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="130"/>
+        <source>Next &gt;</source>
+        <translation>Próximo &gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="158"/>
+        <source>No tutorials folder found</source>
+        <translation>Nenhuma pasta de tutoriais encontrada</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="202"/>
+        <source>No tutorials available</source>
+        <translation>Nenhum tutorial disponível</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="308"/>
+        <source>Page {0} of {1}</source>
+        <translation>Página {0} de {1}</translation>
+    </message>
+</context>
+<context>
+    <name>WelcomeTab</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="86"/>
+        <source>Welcome to PyGameMaker IDE</source>
+        <translation>Bem-vindo ao PyGameMaker IDE</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="124"/>
+        <source>Get started</source>
+        <translation>Comece agora</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="128"/>
+        <source>📄  New Project</source>
+        <translation>📄  Novo Projeto</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="130"/>
+        <source>📂  Open Project...</source>
+        <translation>📂  Abrir Projeto...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="135"/>
+        <source>More options</source>
+        <translation>Mais opções</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="137"/>
+        <source>🗜  Open ZIP Project...</source>
+        <translation>🗜  Abrir Projeto ZIP...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="138"/>
+        <source>📥  Import GameMaker .gmk...</source>
+        <translation>📥  Importar GameMaker .gmk...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="139"/>
+        <source>📥  Import Open Roberta XML...</source>
+        <translation>📥  Importar Open Roberta XML...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="144"/>
+        <source>Try a sample game</source>
+        <translation>Experimente um jogo de exemplo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="155"/>
+        <source>🎮  {0}</source>
+        <translation>🎮  {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="161"/>
+        <source>Choose a sample</source>
+        <translation>Escolha um exemplo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="163"/>
+        <source>(No bundled samples found in this build.)</source>
+        <translation>(Nenhum exemplo incluído encontrado nesta versão.)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="178"/>
+        <source>Continue where you left off</source>
+        <translation>Continue de onde parou</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="197"/>
+        <source>Clear recent projects</source>
+        <translation>Limpar projetos recentes</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="210"/>
+        <source>Documentation</source>
+        <translation>Documentação</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="211"/>
+        <source>Tutorials</source>
+        <translation>Tutoriais</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="212"/>
+        <source>About</source>
+        <translation>Sobre</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="240"/>
+        <source>(No recent projects yet.)</source>
+        <translation>(Ainda não há projetos recentes.)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="424"/>
+        <source>Save sample project to...</source>
+        <translation>Salvar projeto de exemplo em...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="438"/>
+        <location filename="../widgets/welcome_tab.py" line="446"/>
+        <source>Sample import failed</source>
+        <translation>Falha ao importar exemplo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="439"/>
+        <source>Could not import the sample project:
+{0}</source>
+        <translation>Não foi possível importar o projeto de exemplo:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="447"/>
+        <source>The bundled sample could not be imported. See the console output for details.</source>
+        <translation>Não foi possível importar o exemplo incluído. Veja a saída do console para mais detalhes.</translation>
+    </message>
+</context>
 </TS>
