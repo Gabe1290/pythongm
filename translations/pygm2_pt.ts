@@ -2147,4 +2147,269 @@ Deseja salvar mesmo assim?</translation>
         <translation>Remover este evento e todas as suas ações?</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundElementProperties</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="29"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="233"/>
+        <source>No Selection</source>
+        <translation>Nenhuma Seleção</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="34"/>
+        <source>Wall</source>
+        <translation>Parede</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="72"/>
+        <source>Height:</source>
+        <translation>Altura:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="82"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="159"/>
+        <source>Angle:</source>
+        <translation>Ângulo:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="93"/>
+        <source>Color:</source>
+        <translation>Cor:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="102"/>
+        <source>Pushable</source>
+        <translation>Empurrável</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="118"/>
+        <source>Robot</source>
+        <translation>Robô</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="124"/>
+        <source>Type:</source>
+        <translation>Tipo:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="134"/>
+        <source>Name:</source>
+        <translation>Nome:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="170"/>
+        <source>Port:</source>
+        <translation>Porta:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="180"/>
+        <source>Code:</source>
+        <translation>Código:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="183"/>
+        <source>Which Thymio object&apos;s code to run when simulating</source>
+        <translation>Qual código de objeto Thymio executar durante a simulação</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="192"/>
+        <source>Delete</source>
+        <translation>Excluir</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="240"/>
+        <source>Wall Properties</source>
+        <translation>Propriedades da Parede</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="258"/>
+        <source>Robot Properties</source>
+        <translation>Propriedades do Robô</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="265"/>
+        <source>Project Settings</source>
+        <translation>Configurações do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="275"/>
+        <source>Project Information</source>
+        <translation>Informações do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="279"/>
+        <source>Project Name:</source>
+        <translation>Nome do Projeto:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="283"/>
+        <source>Project Path:</source>
+        <translation>Caminho do Projeto:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <source>Description:</source>
+        <translation>Descrição:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="291"/>
+        <source>Settings</source>
+        <translation>Configurações</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="295"/>
+        <source>Auto-save:</source>
+        <translation>Salvamento Automático:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Desktop</source>
+        <translation>Desktop</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Web</source>
+        <translation>Web</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Mobile</source>
+        <translation>Móvel</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="299"/>
+        <source>Target Platform:</source>
+        <translation>Plataforma de Destino:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="304"/>
+        <source>Game Settings</source>
+        <translation>Configurações do Jogo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="310"/>
+        <source>Starting Lives:</source>
+        <translation>Vidas Iniciais:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="313"/>
+        <source>Show Lives in Caption:</source>
+        <translation>Mostrar Vidas no Título:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="318"/>
+        <source>Starting Score:</source>
+        <translation>Pontuação Inicial:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="321"/>
+        <source>Show Score in Caption:</source>
+        <translation>Mostrar Pontuação no Título:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="326"/>
+        <source>Starting Health:</source>
+        <translation>Saúde Inicial:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="329"/>
+        <source>Show Health in Caption:</source>
+        <translation>Mostrar Saúde no Título:</translation>
+    </message>
+</context>
+<context>
+    <name>ViewConfigDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="969"/>
+        <source>View Configuration</source>
+        <translation>Configuração de Visualização</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="979"/>
+        <source>View {0}</source>
+        <translation>Visualização {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="980"/>
+        <source>View:</source>
+        <translation>Visualização:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="984"/>
+        <source>View in Room</source>
+        <translation>Visualização na Sala</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="988"/>
+        <source>Visible:</source>
+        <translation>Visível:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="992"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1014"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="996"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1018"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1000"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1022"/>
+        <source>Width:</source>
+        <translation>Largura:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1004"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1026"/>
+        <source>Height:</source>
+        <translation>Altura:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1009"/>
+        <source>Port on Screen</source>
+        <translation>Porta na Tela</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1031"/>
+        <source>Object Following</source>
+        <translation>Seguindo Objeto</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1035"/>
+        <source>None</source>
+        <translation>Nenhum</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1038"/>
+        <source>Follow:</source>
+        <translation>Seguir:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1042"/>
+        <source>H Border:</source>
+        <translation>Borda H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1046"/>
+        <source>V Border:</source>
+        <translation>Borda V:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1050"/>
+        <source>H Speed:</source>
+        <translation>Velocidade H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1054"/>
+        <source>V Speed:</source>
+        <translation>Velocidade V:</translation>
+    </message>
+</context>
 </TS>
