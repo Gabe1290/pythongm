@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .step {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .step-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Criando Seu Primeiro Projeto</h1>
+
+    <p>Vamos criar um projeto simples passo a passo.</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Criar um Novo Projeto</span>
+        <p>Vá em <code>Arquivo &gt; Novo Projeto</code> (ou pressione <code>Ctrl+N</code>).</p>
+        <p>Digite um nome para o seu projeto e escolha onde salvá-lo.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Criar um Sprite</span>
+        <p>Clique com o botão direito em <strong>Sprites</strong> na árvore de recursos e selecione
+        <code>Criar Novo Sprite</code>.</p>
+        <p>Nomeie-o "spr_player". Dê um duplo clique nele para abrir o Editor de Sprites e desenhar um personagem simples, ou clique com o botão direito e selecione <strong>Importar Imagem...</strong> para carregar um arquivo de imagem existente.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Criar um Objeto</span>
+        <p>Clique com o botão direito em <strong>Objetos</strong> e selecione <code>Criar Novo Objeto</code>.</p>
+        <p>Nomeie-o "obj_player" e atribua o sprite que você acabou de criar.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Criar uma Sala</span>
+        <p>Clique com o botão direito em <strong>Salas</strong> e selecione <code>Criar Nova Sala</code>.</p>
+        <p>Nomeie-a "room_game". Este será o primeiro nível do seu jogo.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Posicionar Seu Objeto</span>
+        <p>Dê um duplo clique na sua sala para abrir o Editor de Salas.</p>
+        <p>Selecione seu objeto na lista e clique na sala para posicioná-lo.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Testar Seu Jogo</span>
+        <p>Pressione <code>F5</code> ou vá em <code>Compilar &gt; Testar Jogo</code>.</p>
+        <p>Uma janela será aberta mostrando seu jogo com o objeto que você posicionou!</p>
+    </div>
+
+    <div class="success">
+        <strong>Parabéns!</strong> Você criou seu primeiro projeto do PyGameMaker!
+        Ele ainda não faz muita coisa, mas você vai aprender a adicionar comportamentos nos próximos tutoriais.
+    </div>
+</body>
+</html>
