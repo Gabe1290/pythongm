@@ -1371,4 +1371,351 @@ Deseja salvar mesmo assim?</translation>
         <translation>(nenhum)</translation>
     </message>
 </context>
+<context>
+    <name>AutoSaveSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="17"/>
+        <source>Auto-Save Settings</source>
+        <translation>Configurações de Salvamento Automático</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="27"/>
+        <source>Auto-Save</source>
+        <translation>Salvamento Automático</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="30"/>
+        <source>Enable automatic saving</source>
+        <translation>Ativar salvamento automático</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="35"/>
+        <source>When enabled, your project will be saved automatically at regular intervals.</source>
+        <translation>Quando ativado, seu projeto será salvo automaticamente em intervalos regulares.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="43"/>
+        <source>Save Interval</source>
+        <translation>Intervalo de Salvamento</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="50"/>
+        <source> seconds</source>
+        <translation> segundos</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="53"/>
+        <source>Save every:</source>
+        <translation>Salvar a cada:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="58"/>
+        <source>15s</source>
+        <translation>15s</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="62"/>
+        <source>30s</source>
+        <translation>30s</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="66"/>
+        <source>1m</source>
+        <translation>1m</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="70"/>
+        <source>2m</source>
+        <translation>2m</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="74"/>
+        <source>5m</source>
+        <translation>5m</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="78"/>
+        <source>Presets:</source>
+        <translation>Predefinições:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="83"/>
+        <source>⚠️  Shorter intervals may impact performance on large projects.</source>
+        <translation>⚠️  Intervalos mais curtos podem afetar o desempenho em projetos grandes.</translation>
+    </message>
+</context>
+<context>
+    <name>BaseEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="126"/>
+        <location filename="../editors/base_editor.py" line="158"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Salvamento automático: LIGADO</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="129"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Alternar salvamento automático (atualmente a cada 3 segundos)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="138"/>
+        <location filename="../editors/base_editor.py" line="195"/>
+        <source>↶ Undo</source>
+        <translation>↶ Desfazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="141"/>
+        <location filename="../editors/base_editor.py" line="200"/>
+        <source>↷ Redo</source>
+        <translation>↷ Refazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="150"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Flutuar</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="151"/>
+        <source>Open this editor in its own window</source>
+        <translation>Abrir este editor em sua própria janela</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="159"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>O salvamento automático está ativado. Clique para desativar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="161"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Salvamento automático: DESLIGADO</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="162"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>O salvamento automático está desativado. Clique para ativar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="193"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Desfazer {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="198"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Refazer {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="219"/>
+        <source>Loaded: {0}</source>
+        <translation>Carregado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="283"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Salvo automaticamente: {0}</translation>
+    </message>
+</context>
+<context>
+    <name>BuildProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="797"/>
+        <source>Build Project</source>
+        <translation>Compilar Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="808"/>
+        <source>Build Configuration</source>
+        <translation>Configuração de Compilação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Debug</source>
+        <translation>Depuração</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Release</source>
+        <translation>Lançamento</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="813"/>
+        <source>Build Type:</source>
+        <translation>Tipo de Compilação:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>None</source>
+        <translation>Nenhum</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Basic</source>
+        <translation>Básico</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Full</source>
+        <translation>Completo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="817"/>
+        <source>Optimization:</source>
+        <translation>Otimização:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="822"/>
+        <source>Build Options</source>
+        <translation>Opções de Compilação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="826"/>
+        <source>Clean Build:</source>
+        <translation>Compilação Limpa:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="829"/>
+        <source>Verbose Output:</source>
+        <translation>Saída Detalhada:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="841"/>
+        <source>Build</source>
+        <translation>Compilar</translation>
+    </message>
+</context>
+<context>
+    <name>ImportAssetsDialog</name>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="22"/>
+        <source>Import Assets</source>
+        <translation>Importar Recursos</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="32"/>
+        <location filename="../dialogs/import_dialogs.py" line="90"/>
+        <source>Select Files to Import</source>
+        <translation>Selecionar Arquivos para Importar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="40"/>
+        <source>Add Files...</source>
+        <translation>Adicionar Arquivos...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="44"/>
+        <source>Add Folder...</source>
+        <translation>Adicionar Pasta...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="48"/>
+        <source>Clear All</source>
+        <translation>Limpar Tudo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="57"/>
+        <source>Import Options</source>
+        <translation>Opções de Importação</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="60"/>
+        <source>Auto-detect asset type</source>
+        <translation>Detectar automaticamente o tipo de recurso</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="64"/>
+        <source>Copy files to project folder</source>
+        <translation>Copiar arquivos para a pasta do projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="73"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="76"/>
+        <source>Import</source>
+        <translation>Importar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="92"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
+        <translation>Imagens (*.png *.jpg *.jpeg *.bmp *.gif);;Sons (*.wav *.mp3 *.ogg);;Todos os Arquivos (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="107"/>
+        <source>Select Folder</source>
+        <translation>Selecionar Pasta</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectPropertiesPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="25"/>
+        <source>Object Properties</source>
+        <translation>Propriedades do Objeto</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="39"/>
+        <source>Sprite to display for this object</source>
+        <translation>Sprite a ser exibido para este objeto</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="45"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="101"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
+        <source>&lt;no parent&gt;</source>
+        <translation>&lt;sem pai&gt;</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
+        <source>Parent object (inherits collision events)</source>
+        <translation>Objeto pai (herda eventos de colisão)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
+        <source>Sprite:</source>
+        <translation>Sprite:</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
+        <source>Parent:</source>
+        <translation>Pai:</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
+        <source>Visible</source>
+        <translation>Visível</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="67"/>
+        <source>Object is visible in the game</source>
+        <translation>O objeto é visível no jogo</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="74"/>
+        <source>Persistent</source>
+        <translation>Persistente</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="76"/>
+        <source>Object persists between rooms</source>
+        <translation>O objeto persiste entre salas</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
+        <source>Solid</source>
+        <translation>Sólido</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
+        <source>Solid objects block movement</source>
+        <translation>Objetos sólidos bloqueiam movimento</translation>
+    </message>
+</context>
 </TS>
