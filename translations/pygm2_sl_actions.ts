@@ -440,22 +440,22 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="37"/>
         <source>Configure: {0}</source>
-        <translation>Configurer : {0}</translation>
+        <translation>Konfiguriraj: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="55"/>
         <source>Parameters</source>
-        <translation>Paramètres</translation>
+        <translation>Parametri</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="70"/>
         <source>This action has no parameters.</source>
-        <translation>Cette action n&apos;a pas de paramètres.</translation>
+        <translation>To dejanje nima parametrov.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="136"/>
         <source>Pick Color...</source>
-        <translation>Choisir une couleur...</translation>
+        <translation>Izberi barvo...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="197"/>
