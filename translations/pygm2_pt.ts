@@ -3225,4 +3225,238 @@ Some changes may require restarting the IDE to take effect.</source>
 Algumas alterações podem exigir reiniciar o IDE para terem efeito.</translation>
     </message>
 </context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="103"/>
+        <source>Playground Editor</source>
+        <translation>Editor de Playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="108"/>
+        <source>Save</source>
+        <translation>Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="109"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>Salvar playground (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="115"/>
+        <source>Undo</source>
+        <translation>Desfazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="116"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>Desfazer (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="119"/>
+        <source>Redo</source>
+        <translation>Refazer</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="120"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>Refazer (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="126"/>
+        <source>Grid</source>
+        <translation>Grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="129"/>
+        <source>Toggle grid display</source>
+        <translation>Alternar exibição da grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="132"/>
+        <source>Snap</source>
+        <translation>Alinhar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="135"/>
+        <source>Snap to grid</source>
+        <translation>Alinhar à grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="140"/>
+        <source> Thickness: </source>
+        <translation> Espessura: </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="147"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>Espessura padrão de parede para arrastar e desenhar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="152"/>
+        <source> Block: </source>
+        <translation> Bloco: </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="159"/>
+        <source>Block size for block-paint mode</source>
+        <translation>Tamanho do bloco para o modo de pintura de blocos</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="166"/>
+        <source>Color for painted blocks</source>
+        <translation>Cor para blocos pintados</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="173"/>
+        <location filename="../editors/playground_editor/__init__.py" line="501"/>
+        <source>Arena Settings</source>
+        <translation>Configurações da Arena</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="174"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>Configure as dimensões e o fundo da arena</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="180"/>
+        <source>▶ Run</source>
+        <translation>▶ Executar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="181"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>Simule o playground com o código do robô vinculado</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="185"/>
+        <source>Export .playground</source>
+        <translation>Exportar .playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="186"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>Exportar como arquivo Aseba .playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Flutuar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>Abrir este editor em sua própria janela</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="349"/>
+        <source>Select Ground Texture</source>
+        <translation>Selecionar Textura do Chão</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="351"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>Imagens (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="369"/>
+        <source>Texture Error</source>
+        <translation>Erro de Textura</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="370"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>Não foi possível copiar a textura:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="507"/>
+        <source>Width:</source>
+        <translation>Largura:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="512"/>
+        <source>Height:</source>
+        <translation>Altura:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="519"/>
+        <source>Background:</source>
+        <translation>Fundo:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="524"/>
+        <source>Grid size:</source>
+        <translation>Tamanho da grade:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="530"/>
+        <location filename="../editors/playground_editor/__init__.py" line="538"/>
+        <location filename="../editors/playground_editor/__init__.py" line="543"/>
+        <source>(none)</source>
+        <translation>(nenhum)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="532"/>
+        <source>Browse...</source>
+        <translation>Procurar...</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="533"/>
+        <source>Clear</source>
+        <translation>Limpar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="551"/>
+        <source>Ground texture:</source>
+        <translation>Textura do chão:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="596"/>
+        <source>Run Failed</source>
+        <translation>Falha ao Executar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="597"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>Erro ao iniciar o simulador:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="625"/>
+        <source>Export Playground</source>
+        <translation>Exportar Playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="627"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Aseba Playground (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="638"/>
+        <source>Export Successful</source>
+        <translation>Exportação Bem-Sucedida</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="639"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>Playground exportado para:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="643"/>
+        <source>Export Failed</source>
+        <translation>Falha na Exportação</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="644"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>Erro ao exportar o playground:
+{}</translation>
+    </message>
+</context>
 </TS>
