@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Sammeln und Abstürzen</h1>
+
+    <p>Zeit, dass Münzen und Gegner wirklich etwas <em>bewirken</em>. Wir fügen drei Regeln hinzu:</p>
+    <ul>
+        <li>Münze berühren: <strong>+1 Punkt</strong>, die Münze verschwindet</li>
+        <li>Gegner berühren: <strong>Game Over</strong></li>
+        <li>Der Punktestand wird auf dem Bildschirm angezeigt</li>
+    </ul>
+
+    <h2>Spielerobjekt öffnen</h2>
+    <div class="step">
+        <ol>
+            <li>Doppelklicke <code>obj_player</code>, um den Objekt-Editor zu öffnen</li>
+            <li>Klicke auf den Tab <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Punktestand bei Spielstart zurücksetzen</h2>
+    <div class="step">
+        <p>Füge dieses Ereignis hinzu, damit der Punktestand jedes Mal bei null beginnt:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn erstellt</span><br>
+            <span class="block block-score block-indent">Setze Punkte auf <span class="block-num">0</span></span>
+        </div>
+    </div>
+
+    <h2>Eine Münze fangen (Punkte geben und zerstören)</h2>
+    <div class="step">
+        <p>Füge ein <strong>Kollision</strong>-Ereignis mit <code>obj_coin</code> hinzu:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_coin</span><br>
+            <span class="block block-score block-indent">Füge <span class="block-num">1</span> zu Punkten hinzu</span><br>
+            <span class="block block-instance block-indent">Zerstöre andere Instanz</span>
+        </div>
+        <p style="margin-top: 8px;"><strong>Zerstöre andere Instanz</strong> bedeutet &bdquo;zerstöre die Münze, die wir gerade berührt haben&ldquo; &mdash;
+        nicht den Spieler.</p>
+    </div>
+
+    <h2>Mit dem Gegner zusammenstoßen (Game Over)</h2>
+    <div class="step">
+        <p>Füge ein weiteres <strong>Kollision</strong>-Ereignis hinzu, diesmal mit <code>obj_enemy</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Wenn Kollision mit obj_enemy</span><br>
+            <span class="block block-room block-indent">Gehe zu Raum <span class="block-text">room_gameover</span></span>
+        </div>
+        <p style="margin-top: 8px;">Der Raum <code>room_gameover</code> stammt aus der
+        Vorlage &bdquo;Mit Game-Over-Bildschirm&ldquo; &mdash; er zeigt bereits
+        &bdquo;GAME OVER&ldquo; an und startet neu, wenn der Spieler <strong>LEERTASTE</strong> drückt.</p>
+    </div>
+
+    <h2>Punktestand auf dem Bildschirm anzeigen</h2>
+    <div class="step">
+        <p>Füge ein <strong>Zeichnen</strong>-Ereignis hinzu, damit der Punktestand während des Spiels sichtbar ist:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Beim Zeichnen</span><br>
+            <span class="block block-score block-indent">Zeige Punkte bei x:<span class="block-num">10</span> y:<span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Dein <code>obj_player</code> hat jetzt:
+        <strong>Wenn erstellt</strong>, <strong>Beim Zeichnen</strong>, <strong>zwei Kollisionen</strong>,
+        und die <strong>drei Tastaturereignisse</strong> aus Phase 1 &mdash; <strong>insgesamt sieben Ereignisblöcke</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste dein Spiel!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Drücke F5 zum Spielen!</strong></p>
+        <ul>
+            <li>Münzen sammeln &rarr; <strong>Punktestand steigt</strong>, Münzen verschwinden</li>
+            <li>Gegner berühren &rarr; <strong>Game-Over-Bildschirm erscheint</strong></li>
+            <li>Drücke <strong>LEERTASTE</strong> auf dem Game-Over-Bildschirm zum Neustart</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Klicke auf &bdquo;Weiter&ldquo;, um den Gewinnbildschirm hinzuzufügen.
+    </div>
+</body>
+</html>

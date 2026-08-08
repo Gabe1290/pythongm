@@ -120,6 +120,19 @@
                 "08_room_setup.html"
             ],
             "thumbnail": "thumbnails/08_lunar_lander.png"
+        },
+        {
+            "title": "Münzen sammeln: Gewinnen und Verlieren",
+            "folder": "09_catch_the_coins",
+            "description": "Baue ein vollständiges Spiel: sammle Münzen zum Gewinnen, weiche dem Gegner aus, sonst ist das Spiel vorbei",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_coins_and_enemy.html",
+                "04_catching_and_crashing.html",
+                "05_winning.html"
+            ],
+            "thumbnail": "thumbnails/09_catch_the_coins.png"
         }
     ]
 }
