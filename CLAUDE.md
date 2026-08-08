@@ -1086,3 +1086,38 @@ Continuation of the `docs/I18N_CLEANUP_2026-08-06.md` queue across several
   by a small separate registry-checkbox commit+push — so a mid-session
   usage-limit stop loses nothing and the next session resumes straight from
   `docs/I18N_CLEANUP_2026-08-06.md`'s checkboxes.
+- **Second dead-translation bug found the same way, same session,
+  different root cause: `self.tr(f"...")` f-strings.** While
+  translating `ThymioPlaygroundWindow` (commit `19797f9`), found 7
+  messages in `widgets/thymio_playground.py` written as
+  `self.tr(f"Zoom: {int(self.zoom_level * 100)}%")` — an f-string is
+  fully interpolated BEFORE reaching `tr()`, so Qt's `translate()` only
+  ever saw the already-substituted runtime string (e.g. `"Zoom: 150%"`),
+  never the literal template text every language's `.ts` had a real,
+  complete human translation for. Same FAILURE MODE as `self.ide`
+  (translated text that can never reach the running app), different
+  CAUSE (broken source code, not a wrong context name) — worth
+  remembering as its own pattern to grep for (`self\.tr\(f"` or
+  `self\.tr\(f'`) if auditing other files for this class of bug; a
+  repo-wide sweep for the same pattern was **not** done this session,
+  scoped to just this one file. One extra wrinkle made this worse than
+  `self.ide` for 5 of the 7 shipped languages: the split
+  `pygm2_<lang>_misc.ts` files ACTUALLY SHIPPED for de/it/ru/sl/uk had
+  these entries marked `type="vanished"` with no `<location>` —
+  `lrelease` drops `type="vanished"` from the compiled `.qm` outright,
+  so they were dead a SECOND, independent way there (confirmed
+  empirically: a translation that clearly differs from its source
+  still resolved to the untranslated English pre-fix). Fixed: converted
+  all 8 call sites to `self.tr("Zoom: {0}%").format(...)` placeholder
+  style, wrapped the two interpolated English state words
+  (`"on"/"off"/"paused"/"running"`, never previously localized
+  anywhere) in their own `self.tr()` calls, and re-filed every
+  already-shipped language's real translation under the corrected
+  source text (un-vanishing + adding real `<location>` tags where
+  needed) rather than discarding good translation work. `pygm2_de.ts`
+  (monolithic — this repo's documented Section H source-string
+  reference) was synced to match. Regression:
+  `tests/test_thymio_playground_fstring_tr_fix.py` (3 tests). Suite
+  2204→2207 passed, 0 failed. pt's own `ThymioPlaygroundWindow`
+  translation (75 messages, using the now-fixed source) landed in the
+  same commit — 1061/1375 active pt messages done (63 of 65 contexts).
