@@ -455,6 +455,30 @@ def required_extensions_for_project(project_data) -> List[str]:
     return sorted(folders)
 
 
+def not_installed_extensions_for_project(project_data) -> List[str]:
+    """Folder names in the project's persisted ``requires_extensions`` that
+    this install has NO trace of at all — not just disabled, genuinely absent
+    from the ``extensions/`` directory.
+
+    This is the older-app-opens-newer-project case: an install built before
+    an extension existed (or one where its folder was never copied in) has no
+    manifest to read, so it can't know the extension's display name or which
+    actions it supplies — it can only see the dependency the newer app
+    recorded. Distinct from :func:`missing_extensions_for_project`, which
+    covers an extension that IS present on disk but toggled off (there, the
+    manifest is readable and the exact actions can be named).
+
+    ``[]`` when the project has no ``requires_extensions`` field, or every
+    entry in it is present on disk (enabled or disabled — either way this
+    install has the code and can at least attempt to run it).
+    """
+    required = (project_data or {}).get("requires_extensions") or []
+    if not isinstance(required, list) or not required:
+        return []
+    present = {info["folder"] for info in list_available_extensions()}
+    return sorted(set(required) - present)
+
+
 # The one shared loader for this process. See load_all_plugins.
 _shared_loader: Optional[PluginLoader] = None
 

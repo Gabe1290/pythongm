@@ -135,6 +135,35 @@ def test_save_writes_requires_extensions_and_drops_it_when_stale():
     assert "requires_extensions" not in pm._prepare_project_data_for_save()
 
 
+# --- (d) not_installed_extensions_for_project (older app, newer project) ----
+
+def test_not_installed_flags_a_folder_absent_from_this_install(monkeypatch):
+    monkeypatch.setattr(pl, "list_available_extensions", lambda: _fake_exts(True))
+    proj = {"requires_extensions": ["raycast_2_5d", "future_ext"]}
+    assert pl.not_installed_extensions_for_project(proj) == ["future_ext"]
+
+
+def test_not_installed_extension_present_but_disabled_is_not_flagged(monkeypatch):
+    # Present-but-off is a different, more specific warning
+    # (missing_extensions_for_project) — this check only cares whether the
+    # install has the code at all.
+    monkeypatch.setattr(pl, "list_available_extensions", lambda: _fake_exts(False))
+    proj = {"requires_extensions": ["raycast_2_5d"]}
+    assert pl.not_installed_extensions_for_project(proj) == []
+
+
+def test_not_installed_empty_without_requires_field(monkeypatch):
+    monkeypatch.setattr(pl, "list_available_extensions", lambda: _fake_exts(True))
+    assert pl.not_installed_extensions_for_project({}) == []
+    assert pl.not_installed_extensions_for_project({"requires_extensions": []}) == []
+
+
+def test_not_installed_tolerant_of_odd_data(monkeypatch):
+    monkeypatch.setattr(pl, "list_available_extensions", lambda: _fake_exts(True))
+    assert pl.not_installed_extensions_for_project(None) == []
+    assert pl.not_installed_extensions_for_project({"requires_extensions": "raycast_2_5d"}) == []
+
+
 def test_real_raycast_sample_needs_the_extension_when_disabled(monkeypatch):
     """End-to-end against a real sample: raycast_1 uses enable_raycast_view, so
     it flags the raycast extension when that extension is turned off."""
