@@ -555,4 +555,415 @@ Deseja salvar mesmo assim?</translation>
         <translation>A programação visual agora é gerenciada através do painel de Eventos</translation>
     </message>
 </context>
+<context>
+    <name>CreateAssetDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="234"/>
+        <source>Create {0}</source>
+        <translation>Criar {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="243"/>
+        <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;Criar Novo(a) {0}&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="247"/>
+        <source>Asset name:</source>
+        <translation>Nome do recurso:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="251"/>
+        <source>Enter {0} name...</source>
+        <translation>Digite o nome de {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="258"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="262"/>
+        <source>Create</source>
+        <translation>Criar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="289"/>
+        <source>Invalid Name</source>
+        <translation>Nome Inválido</translation>
+    </message>
+</context>
+<context>
+    <name>EditorStatusWidget</name>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="37"/>
+        <location filename="../editors/editor_status_widget.py" line="70"/>
+        <location filename="../editors/editor_status_widget.py" line="96"/>
+        <source>Saved</source>
+        <translation>Salvo</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="43"/>
+        <location filename="../editors/editor_status_widget.py" line="77"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Salvamento automático: LIGADO</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="62"/>
+        <source>Unsaved (auto-save in 3s)</source>
+        <translation>Não salvo (salvamento automático em 3s)</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="67"/>
+        <source>Unsaved - press Ctrl+S</source>
+        <translation>Não salvo - pressione Ctrl+S</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="80"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Salvamento automático: DESLIGADO</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="85"/>
+        <source>Saving...</source>
+        <translation>Salvando...</translation>
+    </message>
+    <message>
+        <location filename="../editors/editor_status_widget.py" line="91"/>
+        <source>Saved ✓</source>
+        <translation>Salvo ✓</translation>
+    </message>
+</context>
+<context>
+    <name>FrameTimeline</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="121"/>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="122"/>
+        <source>Add frame</source>
+        <translation>Adicionar quadro</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="126"/>
+        <source>D</source>
+        <translation>D</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="127"/>
+        <source>Duplicate frame</source>
+        <translation>Duplicar quadro</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="131"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="132"/>
+        <source>Delete frame</source>
+        <translation>Excluir quadro</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="136"/>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="302"/>
+        <source>Play</source>
+        <translation>Reproduzir</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_frames.py" line="297"/>
+        <source>Stop</source>
+        <translation>Parar</translation>
+    </message>
+</context>
+<context>
+    <name>GM80ActionDialog</name>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="37"/>
+        <source>Configure: {0}</source>
+        <translation>Configurar: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="55"/>
+        <source>Parameters</source>
+        <translation>Parâmetros</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="70"/>
+        <source>This action has no parameters.</source>
+        <translation>Esta ação não tem parâmetros.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="136"/>
+        <source>Pick Color...</source>
+        <translation>Escolher Cor...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="197"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="230"/>
+        <source>{0} actions</source>
+        <translation>{0} ações</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="202"/>
+        <source>📋 Configure...</source>
+        <translation>📋 Configurar...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="217"/>
+        <source>Pick Color</source>
+        <translation>Escolher Cor</translation>
+    </message>
+</context>
+<context>
+    <name>KeySelectorDialog</name>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="29"/>
+        <source>Select Key</source>
+        <translation>Selecionar Tecla</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="35"/>
+        <source>Select which key to respond to:</source>
+        <translation>Selecione a qual tecla responder:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="41"/>
+        <source>Search:</source>
+        <translation>Buscar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="45"/>
+        <source>Type to filter keys...</source>
+        <translation>Digite para filtrar teclas...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="75"/>
+        <source>{0} ({1})</source>
+        <translation>{0} ({1})</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="134"/>
+        <source>No Selection</source>
+        <translation>Nenhuma Seleção</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/key_selector_dialog.py" line="135"/>
+        <source>Please select a key first.</source>
+        <translation>Selecione uma tecla primeiro.</translation>
+    </message>
+</context>
+<context>
+    <name>MouseEventSelectorDialog</name>
+    <message>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="28"/>
+        <source>Select Mouse Event</source>
+        <translation>Selecionar Evento do Mouse</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="34"/>
+        <source>Select which mouse event to respond to:</source>
+        <translation>Selecione a qual evento do mouse responder:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="40"/>
+        <source>Search:</source>
+        <translation>Buscar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="44"/>
+        <source>Type to filter events...</source>
+        <translation>Digite para filtrar eventos...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="141"/>
+        <source>No Selection</source>
+        <translation>Nenhuma Seleção</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="142"/>
+        <source>Please select a mouse event first.</source>
+        <translation>Selecione um evento do mouse primeiro.</translation>
+    </message>
+</context>
+<context>
+    <name>MultiActionEditor</name>
+    <message>
+        <location filename="../events/action_editor.py" line="574"/>
+        <source>Configure Actions</source>
+        <translation>Configurar Ações</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="584"/>
+        <source>Action Sequence</source>
+        <translation>Sequência de Ações</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="590"/>
+        <source>Action</source>
+        <translation>Ação</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="590"/>
+        <source>Parameters</source>
+        <translation>Parâmetros</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="597"/>
+        <source>➕ Add Action</source>
+        <translation>➕ Adicionar Ação</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="601"/>
+        <source>✏️ Edit Action</source>
+        <translation>✏️ Editar Ação</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="605"/>
+        <source>➖ Remove Action</source>
+        <translation>➖ Remover Ação</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="609"/>
+        <source>⬆️ Move Up</source>
+        <translation>⬆️ Mover Para Cima</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="613"/>
+        <source>⬇️ Move Down</source>
+        <translation>⬇️ Mover Para Baixo</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundColorManager</name>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="29"/>
+        <source>Colors</source>
+        <translation>Cores</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="43"/>
+        <source>Add color</source>
+        <translation>Adicionar cor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="49"/>
+        <source>Remove color</source>
+        <translation>Remover cor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Add Color</source>
+        <translation>Adicionar Cor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Color name:</source>
+        <translation>Nome da cor:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="87"/>
+        <source>Duplicate</source>
+        <translation>Duplicado</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="88"/>
+        <source>A color named &apos;{}&apos; already exists.</source>
+        <translation>Já existe uma cor chamada '{}'.</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="91"/>
+        <source>Choose Color</source>
+        <translation>Escolher Cor</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="121"/>
+        <source>Edit Color</source>
+        <translation>Editar Cor</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundRunnerWindow</name>
+    <message>
+        <location filename="../runtime/playground_runner.py" line="133"/>
+        <source>Playground - Running</source>
+        <translation>Playground - Em Execução</translation>
+    </message>
+    <message>
+        <location filename="../runtime/playground_runner.py" line="235"/>
+        <source>Running: {} robots, {} walls</source>
+        <translation>Em execução: {} robôs, {} paredes</translation>
+    </message>
+    <message>
+        <location filename="../runtime/playground_runner.py" line="239"/>
+        <location filename="../runtime/playground_runner.py" line="437"/>
+        <source>Pause</source>
+        <translation>Pausar</translation>
+    </message>
+    <message>
+        <location filename="../runtime/playground_runner.py" line="242"/>
+        <source>Reset</source>
+        <translation>Reiniciar</translation>
+    </message>
+    <message>
+        <location filename="../runtime/playground_runner.py" line="257"/>
+        <source>Arrow keys / Space = all robots; click a robot&apos;s button = that robot only. The linked object&apos;s code runs automatically.</source>
+        <translation>Setas / Espaço = todos os robôs; clique no botão de um robô = apenas aquele robô. O código do objeto vinculado é executado automaticamente.</translation>
+    </message>
+    <message>
+        <location filename="../runtime/playground_runner.py" line="437"/>
+        <source>Resume</source>
+        <translation>Continuar</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundToolPalette</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="25"/>
+        <source>Tools</source>
+        <translation>Ferramentas</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="32"/>
+        <source>Select</source>
+        <translation>Selecionar</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="35"/>
+        <source>Select and move elements</source>
+        <translation>Selecionar e mover elementos</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="39"/>
+        <source>Wall</source>
+        <translation>Parede</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="41"/>
+        <source>Click to place walls</source>
+        <translation>Clique para posicionar paredes</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="45"/>
+        <source>Robot</source>
+        <translation>Robô</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="47"/>
+        <source>Click to place robots</source>
+        <translation>Clique para posicionar robôs</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="51"/>
+        <source>Block</source>
+        <translation>Bloco</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="53"/>
+        <source>Paint cube blocks on a grid (Minecraft-style)</source>
+        <translation>Pinte blocos cúbicos em uma grade (estilo Minecraft)</translation>
+    </message>
+</context>
 </TS>
