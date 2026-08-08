@@ -743,239 +743,8 @@ const BLOCK_MESSAGES = {
         'direction': 'direzione',
         'color': 'colore',
         'grid_size': 'dimensione griglia',
-    }
-};
-
-/**
- * Get translated message for a block
- * @param {string} key Message key
- * @param {string} lang Language code (fr, de, it, en)
- * @returns {string} Translated message or key if not found
- */
-function getBlockMessage(key, lang) {
-    if (lang === 'en' || !BLOCK_MESSAGES[lang]) {
-        return null; // Use default English
-    }
-    return BLOCK_MESSAGES[lang][key] || null;
-}
-
-// Keyboard key name translations
-const KEY_NAMES = {
-    'fr': {
-        // Arrow keys
-        'Right Arrow': 'Flèche droite',
-        'Left Arrow': 'Flèche gauche',
-        'Up Arrow': 'Flèche haut',
-        'Down Arrow': 'Flèche bas',
-        // Common keys
-        'Space': 'Espace',
-        'Enter': 'Entrée',
-        'Escape': 'Échap',
-        'Tab': 'Tab',
-        'Backspace': 'Retour',
-        'Delete': 'Suppr',
-        // Modifier keys
-        'Left Shift': 'Maj gauche',
-        'Right Shift': 'Maj droite',
-        'Left Ctrl': 'Ctrl gauche',
-        'Right Ctrl': 'Ctrl droite',
-        'Left Alt': 'Alt gauche',
-        'Right Alt': 'Alt droite',
-        // Navigation keys
-        'Home': 'Début',
-        'End': 'Fin',
-        'Page Up': 'Page préc',
-        'Page Down': 'Page suiv',
-        'Insert': 'Insérer',
-        // Numpad
-        'Numpad 0': 'Pavé num 0',
-        'Numpad 1': 'Pavé num 1',
-        'Numpad 2': 'Pavé num 2',
-        'Numpad 3': 'Pavé num 3',
-        'Numpad 4': 'Pavé num 4',
-        'Numpad 5': 'Pavé num 5',
-        'Numpad 6': 'Pavé num 6',
-        'Numpad 7': 'Pavé num 7',
-        'Numpad 8': 'Pavé num 8',
-        'Numpad 9': 'Pavé num 9',
-        'Numpad +': 'Pavé num +',
-        'Numpad -': 'Pavé num -',
-        'Numpad *': 'Pavé num *',
-        'Numpad /': 'Pavé num /',
-        'Numpad Enter': 'Pavé num Entrée',
-        'Numpad .': 'Pavé num .',
-    },
-    'de': {
-        // Arrow keys
-        'Right Arrow': 'Pfeil rechts',
-        'Left Arrow': 'Pfeil links',
-        'Up Arrow': 'Pfeil oben',
-        'Down Arrow': 'Pfeil unten',
-        // Common keys
-        'Space': 'Leertaste',
-        'Enter': 'Eingabe',
-        'Escape': 'Escape',
-        'Tab': 'Tab',
-        'Backspace': 'Rücktaste',
-        'Delete': 'Entf',
-        // Modifier keys
-        'Left Shift': 'Umschalt links',
-        'Right Shift': 'Umschalt rechts',
-        'Left Ctrl': 'Strg links',
-        'Right Ctrl': 'Strg rechts',
-        'Left Alt': 'Alt links',
-        'Right Alt': 'Alt rechts',
-        // Navigation keys
-        'Home': 'Pos1',
-        'End': 'Ende',
-        'Page Up': 'Bild auf',
-        'Page Down': 'Bild ab',
-        'Insert': 'Einfg',
-        // Numpad
-        'Numpad 0': 'Num 0',
-        'Numpad 1': 'Num 1',
-        'Numpad 2': 'Num 2',
-        'Numpad 3': 'Num 3',
-        'Numpad 4': 'Num 4',
-        'Numpad 5': 'Num 5',
-        'Numpad 6': 'Num 6',
-        'Numpad 7': 'Num 7',
-        'Numpad 8': 'Num 8',
-        'Numpad 9': 'Num 9',
-        'Numpad +': 'Num +',
-        'Numpad -': 'Num -',
-        'Numpad *': 'Num *',
-        'Numpad /': 'Num /',
-        'Numpad Enter': 'Num Eingabe',
-        'Numpad .': 'Num ,',
-    },
-    'it': {
-        // Arrow keys
-        'Right Arrow': 'Freccia destra',
-        'Left Arrow': 'Freccia sinistra',
-        'Up Arrow': 'Freccia su',
-        'Down Arrow': 'Freccia giù',
-        // Common keys
-        'Space': 'Spazio',
-        'Enter': 'Invio',
-        'Escape': 'Esc',
-        'Tab': 'Tab',
-        'Backspace': 'Backspace',
-        'Delete': 'Canc',
-        // Modifier keys
-        'Left Shift': 'Maiusc sinistro',
-        'Right Shift': 'Maiusc destro',
-        'Left Ctrl': 'Ctrl sinistro',
-        'Right Ctrl': 'Ctrl destro',
-        'Left Alt': 'Alt sinistro',
-        'Right Alt': 'Alt destro',
-        // Navigation keys
-        'Home': 'Home',
-        'End': 'Fine',
-        'Page Up': 'Pag su',
-        'Page Down': 'Pag giù',
-        'Insert': 'Ins',
-        // Numpad
-        'Numpad 0': 'Num 0',
-        'Numpad 1': 'Num 1',
-        'Numpad 2': 'Num 2',
-        'Numpad 3': 'Num 3',
-        'Numpad 4': 'Num 4',
-        'Numpad 5': 'Num 5',
-        'Numpad 6': 'Num 6',
-        'Numpad 7': 'Num 7',
-        'Numpad 8': 'Num 8',
-        'Numpad 9': 'Num 9',
-        'Numpad +': 'Num +',
-        'Numpad -': 'Num -',
-        'Numpad *': 'Num *',
-        'Numpad /': 'Num /',
-        'Numpad Enter': 'Num Invio',
-        'Numpad .': 'Num .',
-    }
-};
-
-/**
- * Get translated key name
- * @param {string} key Key name in English
- * @param {string} lang Language code (fr, de, it, en)
- * @returns {string} Translated key name or original if not found
- */
-function getKeyName(key, lang) {
-    if (lang === 'en' || !KEY_NAMES[lang]) {
-        return key; // Use default English
-    }
-    return KEY_NAMES[lang][key] || key;
-}
-
-/**
- * Set Blockly language
- * @param {string} lang Language code
- */
-function setBlocklyLanguage(lang) {
-    window.BLOCKLY_LANG = lang || 'en';
-    console.log('Blockly language set to:', window.BLOCKLY_LANG);
-}
-
-// Category name translations
-const CATEGORY_MESSAGES = {
-    'fr': {
-        'Events': 'Événements',
-        'Movement': 'Mouvement',
-        'Timing': 'Minuterie',
-        'Drawing': 'Dessin',
-        'Score/Lives/Health': 'Score/Vies/Santé',
-        'Instance': 'Instance',
-        'Room': 'Niveau',
-        'Values': 'Valeurs',
-        'Sound': 'Son',
-        'Output': 'Sortie',
-        'Math': 'Maths',
-        'Logic': 'Logique'
-    },
-    'de': {
-        'Events': 'Ereignisse',
-        'Movement': 'Bewegung',
-        'Timing': 'Zeitsteuerung',
-        'Drawing': 'Zeichnen',
-        'Score/Lives/Health': 'Punkte/Leben/Gesundheit',
-        'Instance': 'Instanz',
-        'Room': 'Raum',
-        'Values': 'Werte',
-        'Sound': 'Klang',
-        'Output': 'Ausgabe',
-        'Math': 'Mathematik',
-        'Logic': 'Logik'
-    },
-    'it': {
-        'Events': 'Eventi',
-        'Movement': 'Movimento',
-        'Timing': 'Temporizzazione',
-        'Drawing': 'Disegno',
-        'Score/Lives/Health': 'Punteggio/Vite/Salute',
-        'Instance': 'Istanza',
-        'Room': 'Stanza',
-        'Values': 'Valori',
-        'Sound': 'Suono',
-        'Output': 'Uscita',
-        'Math': 'Matematica',
-        'Logic': 'Logica'
     },
     'uk': {
-        // Categories
-        'Events': 'Події',
-        'Movement': 'Рух',
-        'Timing': 'Таймінг',
-        'Drawing': 'Малювання',
-        'Score/Lives/Health': 'Рахунок/Життя/Здоров\'я',
-        'Instance': 'Екземпляр',
-        'Room': 'Кімната',
-        'Values': 'Значення',
-        'Sound': 'Звук',
-        'Output': 'Вивід',
-        'Math': 'Математика',
-        'Logic': 'Логіка',
-
         // Event blocks
         'event_create': 'Коли створено',
         'event_create_tooltip': 'Виконується коли об\'єкт створено',
@@ -1234,6 +1003,238 @@ const CATEGORY_MESSAGES = {
         'logic_if': 'якщо',
         'logic_else': 'інакше',
         'logic_then': 'тоді'
+    }
+};
+
+/**
+ * Get translated message for a block
+ * @param {string} key Message key
+ * @param {string} lang Language code (fr, de, it, en)
+ * @returns {string} Translated message or key if not found
+ */
+function getBlockMessage(key, lang) {
+    if (lang === 'en' || !BLOCK_MESSAGES[lang]) {
+        return null; // Use default English
+    }
+    return BLOCK_MESSAGES[lang][key] || null;
+}
+
+// Keyboard key name translations
+const KEY_NAMES = {
+    'fr': {
+        // Arrow keys
+        'Right Arrow': 'Flèche droite',
+        'Left Arrow': 'Flèche gauche',
+        'Up Arrow': 'Flèche haut',
+        'Down Arrow': 'Flèche bas',
+        // Common keys
+        'Space': 'Espace',
+        'Enter': 'Entrée',
+        'Escape': 'Échap',
+        'Tab': 'Tab',
+        'Backspace': 'Retour',
+        'Delete': 'Suppr',
+        // Modifier keys
+        'Left Shift': 'Maj gauche',
+        'Right Shift': 'Maj droite',
+        'Left Ctrl': 'Ctrl gauche',
+        'Right Ctrl': 'Ctrl droite',
+        'Left Alt': 'Alt gauche',
+        'Right Alt': 'Alt droite',
+        // Navigation keys
+        'Home': 'Début',
+        'End': 'Fin',
+        'Page Up': 'Page préc',
+        'Page Down': 'Page suiv',
+        'Insert': 'Insérer',
+        // Numpad
+        'Numpad 0': 'Pavé num 0',
+        'Numpad 1': 'Pavé num 1',
+        'Numpad 2': 'Pavé num 2',
+        'Numpad 3': 'Pavé num 3',
+        'Numpad 4': 'Pavé num 4',
+        'Numpad 5': 'Pavé num 5',
+        'Numpad 6': 'Pavé num 6',
+        'Numpad 7': 'Pavé num 7',
+        'Numpad 8': 'Pavé num 8',
+        'Numpad 9': 'Pavé num 9',
+        'Numpad +': 'Pavé num +',
+        'Numpad -': 'Pavé num -',
+        'Numpad *': 'Pavé num *',
+        'Numpad /': 'Pavé num /',
+        'Numpad Enter': 'Pavé num Entrée',
+        'Numpad .': 'Pavé num .',
+    },
+    'de': {
+        // Arrow keys
+        'Right Arrow': 'Pfeil rechts',
+        'Left Arrow': 'Pfeil links',
+        'Up Arrow': 'Pfeil oben',
+        'Down Arrow': 'Pfeil unten',
+        // Common keys
+        'Space': 'Leertaste',
+        'Enter': 'Eingabe',
+        'Escape': 'Escape',
+        'Tab': 'Tab',
+        'Backspace': 'Rücktaste',
+        'Delete': 'Entf',
+        // Modifier keys
+        'Left Shift': 'Umschalt links',
+        'Right Shift': 'Umschalt rechts',
+        'Left Ctrl': 'Strg links',
+        'Right Ctrl': 'Strg rechts',
+        'Left Alt': 'Alt links',
+        'Right Alt': 'Alt rechts',
+        // Navigation keys
+        'Home': 'Pos1',
+        'End': 'Ende',
+        'Page Up': 'Bild auf',
+        'Page Down': 'Bild ab',
+        'Insert': 'Einfg',
+        // Numpad
+        'Numpad 0': 'Num 0',
+        'Numpad 1': 'Num 1',
+        'Numpad 2': 'Num 2',
+        'Numpad 3': 'Num 3',
+        'Numpad 4': 'Num 4',
+        'Numpad 5': 'Num 5',
+        'Numpad 6': 'Num 6',
+        'Numpad 7': 'Num 7',
+        'Numpad 8': 'Num 8',
+        'Numpad 9': 'Num 9',
+        'Numpad +': 'Num +',
+        'Numpad -': 'Num -',
+        'Numpad *': 'Num *',
+        'Numpad /': 'Num /',
+        'Numpad Enter': 'Num Eingabe',
+        'Numpad .': 'Num ,',
+    },
+    'it': {
+        // Arrow keys
+        'Right Arrow': 'Freccia destra',
+        'Left Arrow': 'Freccia sinistra',
+        'Up Arrow': 'Freccia su',
+        'Down Arrow': 'Freccia giù',
+        // Common keys
+        'Space': 'Spazio',
+        'Enter': 'Invio',
+        'Escape': 'Esc',
+        'Tab': 'Tab',
+        'Backspace': 'Backspace',
+        'Delete': 'Canc',
+        // Modifier keys
+        'Left Shift': 'Maiusc sinistro',
+        'Right Shift': 'Maiusc destro',
+        'Left Ctrl': 'Ctrl sinistro',
+        'Right Ctrl': 'Ctrl destro',
+        'Left Alt': 'Alt sinistro',
+        'Right Alt': 'Alt destro',
+        // Navigation keys
+        'Home': 'Home',
+        'End': 'Fine',
+        'Page Up': 'Pag su',
+        'Page Down': 'Pag giù',
+        'Insert': 'Ins',
+        // Numpad
+        'Numpad 0': 'Num 0',
+        'Numpad 1': 'Num 1',
+        'Numpad 2': 'Num 2',
+        'Numpad 3': 'Num 3',
+        'Numpad 4': 'Num 4',
+        'Numpad 5': 'Num 5',
+        'Numpad 6': 'Num 6',
+        'Numpad 7': 'Num 7',
+        'Numpad 8': 'Num 8',
+        'Numpad 9': 'Num 9',
+        'Numpad +': 'Num +',
+        'Numpad -': 'Num -',
+        'Numpad *': 'Num *',
+        'Numpad /': 'Num /',
+        'Numpad Enter': 'Num Invio',
+        'Numpad .': 'Num .',
+    }
+};
+
+/**
+ * Get translated key name
+ * @param {string} key Key name in English
+ * @param {string} lang Language code (fr, de, it, en)
+ * @returns {string} Translated key name or original if not found
+ */
+function getKeyName(key, lang) {
+    if (lang === 'en' || !KEY_NAMES[lang]) {
+        return key; // Use default English
+    }
+    return KEY_NAMES[lang][key] || key;
+}
+
+/**
+ * Set Blockly language
+ * @param {string} lang Language code
+ */
+function setBlocklyLanguage(lang) {
+    window.BLOCKLY_LANG = lang || 'en';
+    console.log('Blockly language set to:', window.BLOCKLY_LANG);
+}
+
+// Category name translations
+const CATEGORY_MESSAGES = {
+    'fr': {
+        'Events': 'Événements',
+        'Movement': 'Mouvement',
+        'Timing': 'Minuterie',
+        'Drawing': 'Dessin',
+        'Score/Lives/Health': 'Score/Vies/Santé',
+        'Instance': 'Instance',
+        'Room': 'Niveau',
+        'Values': 'Valeurs',
+        'Sound': 'Son',
+        'Output': 'Sortie',
+        'Math': 'Maths',
+        'Logic': 'Logique'
+    },
+    'de': {
+        'Events': 'Ereignisse',
+        'Movement': 'Bewegung',
+        'Timing': 'Zeitsteuerung',
+        'Drawing': 'Zeichnen',
+        'Score/Lives/Health': 'Punkte/Leben/Gesundheit',
+        'Instance': 'Instanz',
+        'Room': 'Raum',
+        'Values': 'Werte',
+        'Sound': 'Klang',
+        'Output': 'Ausgabe',
+        'Math': 'Mathematik',
+        'Logic': 'Logik'
+    },
+    'it': {
+        'Events': 'Eventi',
+        'Movement': 'Movimento',
+        'Timing': 'Temporizzazione',
+        'Drawing': 'Disegno',
+        'Score/Lives/Health': 'Punteggio/Vite/Salute',
+        'Instance': 'Istanza',
+        'Room': 'Stanza',
+        'Values': 'Valori',
+        'Sound': 'Suono',
+        'Output': 'Uscita',
+        'Math': 'Matematica',
+        'Logic': 'Logica'
+    },
+    'uk': {
+        // Categories
+        'Events': 'Події',
+        'Movement': 'Рух',
+        'Timing': 'Таймінг',
+        'Drawing': 'Малювання',
+        'Score/Lives/Health': 'Рахунок/Життя/Здоров\'я',
+        'Instance': 'Екземпляр',
+        'Room': 'Кімната',
+        'Values': 'Значення',
+        'Sound': 'Звук',
+        'Output': 'Вивід',
+        'Math': 'Математика',
+        'Logic': 'Логіка'
     }
 };
 
