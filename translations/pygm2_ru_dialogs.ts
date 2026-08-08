@@ -6,42 +6,42 @@
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="114"/>
         <source>{0} Properties - {1}</source>
-        <translation>{0} Properties - {1}</translation>
+        <translation>Свойства {0} - {1}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="126"/>
         <source>Type: {0}</source>
-        <translation>Type: {0}</translation>
+        <translation>Тип: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="131"/>
         <source>File: {0}</source>
-        <translation>File: {0}</translation>
+        <translation>Файл: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
         <source>Imported</source>
-        <translation>Imported</translation>
+        <translation>Импортировано</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
         <source>Not imported</source>
-        <translation>Not imported</translation>
+        <translation>Не импортировано</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
         <source>Status: {0}</source>
-        <translation>Status: {0}</translation>
+        <translation>Статус: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="143"/>
         <source>📥 Import Image...</source>
-        <translation>📥 Import Image...</translation>
+        <translation>📥 Импортировать изображение...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="150"/>
         <source>Created: {0}</source>
-        <translation>Created: {0}</translation>
+        <translation>Создано: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="155"/>
@@ -51,32 +51,32 @@
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="171"/>
         <source>Select Sprite Image</source>
-        <translation>Select Sprite Image</translation>
+        <translation>Выберите изображение спрайта</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="173"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
-        <translation>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</translation>
+        <translation>Файлы изображений (*.png *.jpg *.jpeg *.bmp *.gif);;Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="198"/>
         <source>Success</source>
-        <translation>Success</translation>
+        <translation>Успешно</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="199"/>
         <source>Image imported successfully for sprite &apos;{0}&apos;</source>
-        <translation>Image imported successfully for sprite &apos;{0}&apos;</translation>
+        <translation>Изображение успешно импортировано для спрайта &apos;{0}&apos;</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="207"/>
         <source>Import Failed</source>
-        <translation>Import Failed</translation>
+        <translation>Ошибка импорта</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="208"/>
         <source>Failed to import the image. Please try again.</source>
-        <translation>Failed to import the image. Please try again.</translation>
+        <translation>Не удалось импортировать изображение. Попробуйте ещё раз.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="213"/>
@@ -87,12 +87,12 @@
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="214"/>
         <source>Error importing image: {0}</source>
-        <translation>Error importing image: {0}</translation>
+        <translation>Ошибка при импорте изображения: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="220"/>
         <source>Could not access asset manager. Please try again.</source>
-        <translation>Could not access asset manager. Please try again.</translation>
+        <translation>Не удалось получить доступ к менеджеру ресурсов. Попробуйте ещё раз.</translation>
     </message>
 </context>
 <context>
@@ -100,17 +100,17 @@
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="25"/>
         <source>Rename {0}</source>
-        <translation>Rename {0}</translation>
+        <translation>Переименовать {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="34"/>
         <source>Current name: &lt;b&gt;{0}&lt;/b&gt;</source>
-        <translation>Current name: &lt;b&gt;{0}&lt;/b&gt;</translation>
+        <translation>Текущее имя: &lt;b&gt;{0}&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="38"/>
         <source>New name:</source>
-        <translation>New name:</translation>
+        <translation>Новое имя:</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="50"/>
@@ -125,7 +125,7 @@
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="90"/>
         <source>Invalid Name</source>
-        <translation>Invalid Name</translation>
+        <translation>Недопустимое имя</translation>
     </message>
 </context>
 <context>
@@ -184,12 +184,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226"/>
         <source>➕ Create New {0}...</source>
-        <translation>➕ Create New {0}...</translation>
+        <translation>➕ Создать новый {0}...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="232"/>
         <source>📥 Import {0}...</source>
-        <translation>📥 Import {0}...</translation>
+        <translation>📥 Импортировать {0}...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="239"/>
@@ -199,12 +199,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="248"/>
         <source>✏️ Rename</source>
-        <translation>✏️ Rename</translation>
+        <translation>✏️ Переименовать</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="254"/>
         <source>📥 Import Image...</source>
-        <translation>📥 Import Image...</translation>
+        <translation>📥 Импортировать изображение...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="259"/>
@@ -224,7 +224,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
         <source>🗑️ Delete</source>
-        <translation>🗑️ Delete</translation>
+        <translation>🗑️ Удалить</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="281"/>
@@ -234,27 +234,27 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="305"/>
         <source>⬆️ Move Up</source>
-        <translation>⬆️ Move Up</translation>
+        <translation>⬆️ Переместить вверх</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="311"/>
         <source>⬇️ Move Down</source>
-        <translation>⬇️ Move Down</translation>
+        <translation>⬇️ Переместить вниз</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="319"/>
         <source>⏫ Move to Top</source>
-        <translation>⏫ Move to Top</translation>
+        <translation>⏫ Переместить в начало</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325"/>
         <source>⏬ Move to Bottom</source>
-        <translation>⏬ Move to Bottom</translation>
+        <translation>⏬ Переместить в конец</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="333"/>
         <source>⚙️ Properties...</source>
-        <translation>⚙️ Properties...</translation>
+        <translation>⚙️ Свойства...</translation>
     </message>
     <message>
         <source>Create Asset</source>
@@ -267,32 +267,32 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="375"/>
         <source>Import Assets</source>
-        <translation>Import Assets</translation>
+        <translation>Импортировать ресурсы</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="376"/>
         <source>Please use the File menu to import {0}</source>
-        <translation>Please use the File menu to import {0}</translation>
+        <translation>Используйте меню Файл для импорта {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="425"/>
         <source>Select Image for Sprite &apos;{0}&apos;</source>
-        <translation>Select Image for Sprite &apos;{0}&apos;</translation>
+        <translation>Выберите изображение для спрайта &apos;{0}&apos;</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="427"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
-        <translation>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</translation>
+        <translation>Файлы изображений (*.png *.jpg *.jpeg *.bmp *.gif);;Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="439"/>
         <source>Success</source>
-        <translation>Success</translation>
+        <translation>Успешно</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="440"/>
         <source>Image imported successfully for sprite &apos;{0}&apos;</source>
-        <translation>Image imported successfully for sprite &apos;{0}&apos;</translation>
+        <translation>Изображение успешно импортировано для спрайта &apos;{0}&apos;</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="454"/>
@@ -338,7 +338,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
         <source>Export Error</source>
-        <translation type="unfinished">Export Error</translation>
+        <translation type="unfinished">Ошибка экспорта</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
@@ -374,40 +374,40 @@ Use File → New Project or File → Open Project to begin.</source>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
         <source>No Project</source>
-        <translation>No Project</translation>
+        <translation>Нет проекта</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
         <source>No project is currently loaded</source>
-        <translation>No project is currently loaded</translation>
+        <translation>В данный момент проект не загружен</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="543"/>
         <source>Export {0}</source>
-        <translation>Export {0}</translation>
+        <translation>Экспортировать {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="560"/>
         <source>Export Successful</source>
-        <translation>Export Successful</translation>
+        <translation>Экспорт успешен</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="561"/>
         <source>{0} &apos;{1}&apos; exported to:
 {2}</source>
-        <translation>{0} &apos;{1}&apos; exported to:
+        <translation>{0} &apos;{1}&apos; экспортирован в:
 {2}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="566"/>
         <source>Export Failed</source>
-        <translation>Export Failed</translation>
+        <translation>Ошибка экспорта</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="567"/>
         <source>Failed to export {0} &apos;{1}&apos;</source>
-        <translation>Failed to export {0} &apos;{1}&apos;</translation>
+        <translation>Не удалось экспортировать {0} &apos;{1}&apos;</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="595"/>
@@ -437,12 +437,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="664"/>
         <source>Create {0}</source>
-        <translation>Create {0}</translation>
+        <translation>Создать {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="665"/>
         <source>Enter name for new {0}:</source>
-        <translation>Enter name for new {0}:</translation>
+        <translation>Введите имя для нового {0}:</translation>
     </message>
 </context>
 <context>
@@ -455,32 +455,32 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="27"/>
         <source>Auto-Save</source>
-        <translation>Auto-Save</translation>
+        <translation>Автосохранение</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="30"/>
         <source>Enable automatic saving</source>
-        <translation>Enable automatic saving</translation>
+        <translation>Включить автоматическое сохранение</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="35"/>
         <source>When enabled, your project will be saved automatically at regular intervals.</source>
-        <translation>When enabled, your project will be saved automatically at regular intervals.</translation>
+        <translation>Если включено, ваш проект будет автоматически сохраняться через регулярные промежутки времени.</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="43"/>
         <source>Save Interval</source>
-        <translation>Save Interval</translation>
+        <translation>Интервал сохранения</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="50"/>
         <source> seconds</source>
-        <translation> seconds</translation>
+        <translation> секунд</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="53"/>
         <source>Save every:</source>
-        <translation>Save every:</translation>
+        <translation>Сохранять каждые:</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="58"/>
@@ -510,12 +510,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="78"/>
         <source>Presets:</source>
-        <translation>Presets:</translation>
+        <translation>Пресеты:</translation>
     </message>
     <message>
         <location filename="../dialogs/auto_save_dialog.py" line="83"/>
         <source>⚠️  Shorter intervals may impact performance on large projects.</source>
-        <translation>⚠️  Shorter intervals may impact performance on large projects.</translation>
+        <translation>⚠️  Более короткие интервалы могут повлиять на производительность в больших проектах.</translation>
     </message>
 </context>
 <context>
@@ -523,62 +523,62 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="797"/>
         <source>Build Project</source>
-        <translation>Build Project</translation>
+        <translation>Собрать проект</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="808"/>
         <source>Build Configuration</source>
-        <translation>Build Configuration</translation>
+        <translation>Конфигурация сборки</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="812"/>
         <source>Debug</source>
-        <translation>Debug</translation>
+        <translation>Отладка</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="812"/>
         <source>Release</source>
-        <translation>Release</translation>
+        <translation>Финальная версия</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="813"/>
         <source>Build Type:</source>
-        <translation>Build Type:</translation>
+        <translation>Тип сборки:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="816"/>
         <source>None</source>
-        <translation>None</translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="816"/>
         <source>Basic</source>
-        <translation>Basic</translation>
+        <translation>Базовый</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="816"/>
         <source>Full</source>
-        <translation>Full</translation>
+        <translation>Полный</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="817"/>
         <source>Optimization:</source>
-        <translation>Optimization:</translation>
+        <translation>Оптимизация:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="822"/>
         <source>Build Options</source>
-        <translation>Build Options</translation>
+        <translation>Параметры сборки</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="826"/>
         <source>Clean Build:</source>
-        <translation>Clean Build:</translation>
+        <translation>Чистая сборка:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="829"/>
         <source>Verbose Output:</source>
-        <translation>Verbose Output:</translation>
+        <translation>Подробный вывод:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="841"/>
@@ -591,22 +591,22 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="234"/>
         <source>Create {0}</source>
-        <translation>Create {0}</translation>
+        <translation>Создать {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="243"/>
         <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
-        <translation>&lt;h3&gt;Create New {0}&lt;/h3&gt;</translation>
+        <translation>&lt;h3&gt;Создать новый {0}&lt;/h3&gt;</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="247"/>
         <source>Asset name:</source>
-        <translation>Asset name:</translation>
+        <translation>Имя ресурса:</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="251"/>
         <source>Enter {0} name...</source>
-        <translation>Enter {0} name...</translation>
+        <translation>Введите имя {0}...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="258"/>
@@ -621,7 +621,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="289"/>
         <source>Invalid Name</source>
-        <translation>Invalid Name</translation>
+        <translation>Недопустимое имя</translation>
     </message>
 </context>
 <context>
@@ -629,47 +629,47 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="419"/>
         <source>Export Project</source>
-        <translation>Export Project</translation>
+        <translation>Экспортировать проект</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="430"/>
         <source>Export Target</source>
-        <translation>Export Target</translation>
+        <translation>Цель экспорта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="435"/>
         <source>Desktop Executable (.exe/.app)</source>
-        <translation>Desktop Executable (.exe/.app)</translation>
+        <translation>Настольное приложение (.exe/.app)</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="436"/>
         <source>Web (HTML5)</source>
-        <translation>Web (HTML5)</translation>
+        <translation>Веб (HTML5)</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="437"/>
         <source>Mobile (Kivy)</source>
-        <translation>Mobile (Kivy)</translation>
+        <translation>Мобильное (Kivy)</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="438"/>
         <source>Mobile (APK)</source>
-        <translation>Mobile (APK)</translation>
+        <translation>Мобильное (APK)</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="439"/>
         <source>Source Code (.zip)</source>
-        <translation>Source Code (.zip)</translation>
+        <translation>Исходный код (.zip)</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="441"/>
         <source>Target Platform:</source>
-        <translation>Target Platform:</translation>
+        <translation>Целевая платформа:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="446"/>
         <source>Choose export location...</source>
-        <translation>Choose export location...</translation>
+        <translation>Выберите место экспорта...</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="448"/>
@@ -679,27 +679,27 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="453"/>
         <source>Output Location:</source>
-        <translation>Output Location:</translation>
+        <translation>Место вывода:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="458"/>
         <source>Export Options</source>
-        <translation>Export Options</translation>
+        <translation>Параметры экспорта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="463"/>
         <source>Include Assets:</source>
-        <translation>Include Assets:</translation>
+        <translation>Включить ресурсы:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="467"/>
         <source>Optimize for Release:</source>
-        <translation>Optimize for Release:</translation>
+        <translation>Оптимизировать для финальной версии:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="471"/>
         <source>Include Debug Info:</source>
-        <translation>Include Debug Info:</translation>
+        <translation>Включить отладочную информацию:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="488"/>
@@ -709,17 +709,17 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="510"/>
         <source>Choose Export Location</source>
-        <translation>Choose Export Location</translation>
+        <translation>Выберите место экспорта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="524"/>
         <source>Invalid Output</source>
-        <translation>Invalid Output</translation>
+        <translation>Недопустимый вывод</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="524"/>
         <source>Please choose an export location.</source>
-        <translation>Please choose an export location.</translation>
+        <translation>Выберите место экспорта.</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="564"/>
@@ -730,13 +730,13 @@ Use File → New Project or File → Open Project to begin.</source>
         <location filename="../dialogs/project_dialogs.py" line="698"/>
         <location filename="../dialogs/project_dialogs.py" line="779"/>
         <source>Export Error</source>
-        <translation>Export Error</translation>
+        <translation>Ошибка экспорта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="565"/>
         <location filename="../dialogs/project_dialogs.py" line="676"/>
         <source>Could not access project manager</source>
-        <translation>Could not access project manager</translation>
+        <translation>Не удалось получить доступ к менеджеру проектов</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="574"/>
@@ -744,7 +744,7 @@ Use File → New Project or File → Open Project to begin.</source>
         <location filename="../dialogs/project_dialogs.py" line="655"/>
         <location filename="../dialogs/project_dialogs.py" line="751"/>
         <source>Export Successful</source>
-        <translation>Export Successful</translation>
+        <translation>Экспорт успешен</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="575"/>
@@ -752,10 +752,10 @@ Use File → New Project or File → Open Project to begin.</source>
 {0}
 
 Would you like to open the export directory?</source>
-        <translation>Kivy project exported to:
+        <translation>Проект Kivy экспортирован в:
 {0}
 
-Would you like to open the export directory?</translation>
+Открыть папку экспорта?</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="589"/>
@@ -763,12 +763,12 @@ Would you like to open the export directory?</translation>
         <location filename="../dialogs/project_dialogs.py" line="672"/>
         <location filename="../dialogs/project_dialogs.py" line="770"/>
         <source>Export Failed</source>
-        <translation>Export Failed</translation>
+        <translation>Ошибка экспорта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="590"/>
         <source>Failed to export project. Check console for errors.</source>
-        <translation>Failed to export project. Check console for errors.</translation>
+        <translation>Не удалось экспортировать проект. Проверьте консоль на наличие ошибок.</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="595"/>
@@ -776,7 +776,7 @@ Would you like to open the export directory?</translation>
 {0}
 
 {1}</source>
-        <translation>Error during export:
+        <translation>Ошибка при экспорте:
 {0}
 
 {1}</translation>
@@ -787,15 +787,15 @@ Would you like to open the export directory?</translation>
 {0}
 
 Would you like to open the export directory?</source>
-        <translation>HTML5 game exported to:
+        <translation>Игра HTML5 экспортирована в:
 {0}
 
-Would you like to open the export directory?</translation>
+Открыть папку экспорта?</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="631"/>
         <source>Failed to export HTML5 game. Check console for errors.</source>
-        <translation>Failed to export HTML5 game. Check console for errors.</translation>
+        <translation>Не удалось экспортировать игру HTML5. Проверьте консоль на наличие ошибок.</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="636"/>
@@ -803,7 +803,7 @@ Would you like to open the export directory?</translation>
 {0}
 
 {1}</source>
-        <translation>Error during HTML5 export:
+        <translation>Ошибка при экспорте HTML5:
 {0}
 
 {1}</translation>
@@ -814,15 +814,15 @@ Would you like to open the export directory?</translation>
 {0}
 
 Would you like to open the export directory?</source>
-        <translation>Project exported to:
+        <translation>Проект экспортирован в:
 {0}
 
-Would you like to open the export directory?</translation>
+Открыть папку экспорта?</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="673"/>
         <source>Failed to export ZIP file. Check console for errors.</source>
-        <translation>Failed to export ZIP file. Check console for errors.</translation>
+        <translation>Не удалось экспортировать файл ZIP. Проверьте консоль на наличие ошибок.</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="681"/>
@@ -830,7 +830,7 @@ Would you like to open the export directory?</translation>
 {0}
 
 {1}</source>
-        <translation>Error during ZIP export:
+        <translation>Ошибка при экспорте ZIP:
 {0}
 
 {1}</translation>
@@ -838,12 +838,12 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="699"/>
         <source>Project file not found: {0}</source>
-        <translation>Project file not found: {0}</translation>
+        <translation>Файл проекта не найден: {0}</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="715"/>
         <source>Initializing export...</source>
-        <translation>Initializing export...</translation>
+        <translation>Инициализация экспорта...</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="716"/>
@@ -853,7 +853,7 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="720"/>
         <source>Exporting Executable</source>
-        <translation>Exporting Executable</translation>
+        <translation>Экспорт исполняемого файла</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="752"/>
@@ -861,17 +861,17 @@ Would you like to open the export directory?</translation>
 {0}
 
 Would you like to open the export directory?</source>
-        <translation>Executable exported to:
+        <translation>Исполняемый файл экспортирован в:
 {0}
 
-Would you like to open the export directory?</translation>
+Открыть папку экспорта?</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="771"/>
         <source>Failed to export executable:
 
 {0}</source>
-        <translation>Failed to export executable:
+        <translation>Не удалось экспортировать исполняемый файл:
 
 {0}</translation>
     </message>
@@ -881,7 +881,7 @@ Would you like to open the export directory?</translation>
 {0}
 
 {1}</source>
-        <translation>Error during executable export:
+        <translation>Ошибка при экспорте исполняемого файла:
 {0}
 
 {1}</translation>
@@ -892,43 +892,43 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="22"/>
         <source>Import Assets</source>
-        <translation>Import Assets</translation>
+        <translation>Импортировать ресурсы</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="32"/>
         <location filename="../dialogs/import_dialogs.py" line="90"/>
         <source>Select Files to Import</source>
-        <translation>Select Files to Import</translation>
+        <translation>Выберите файлы для импорта</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="40"/>
         <source>Add Files...</source>
-        <translation>Add Files...</translation>
+        <translation>Добавить файлы...</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="44"/>
         <source>Add Folder...</source>
-        <translation>Add Folder...</translation>
+        <translation>Добавить папку...</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="48"/>
         <source>Clear All</source>
-        <translation>Clear All</translation>
+        <translation>Очистить всё</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="57"/>
         <source>Import Options</source>
-        <translation>Import Options</translation>
+        <translation>Параметры импорта</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="60"/>
         <source>Auto-detect asset type</source>
-        <translation>Auto-detect asset type</translation>
+        <translation>Автоопределение типа ресурса</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="64"/>
         <source>Copy files to project folder</source>
-        <translation>Copy files to project folder</translation>
+        <translation>Копировать файлы в папку проекта</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="73"/>
@@ -943,12 +943,12 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="92"/>
         <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
-        <translation>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</translation>
+        <translation>Изображения (*.png *.jpg *.jpeg *.bmp *.gif);;Звуки (*.wav *.mp3 *.ogg);;Все файлы (*)</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="107"/>
         <source>Select Folder</source>
-        <translation>Select Folder</translation>
+        <translation>Выберите папку</translation>
     </message>
 </context>
 <context>
@@ -956,32 +956,32 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="29"/>
         <source>Select Key</source>
-        <translation>Select Key</translation>
+        <translation>Выберите клавишу</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="35"/>
         <source>Select which key to respond to:</source>
-        <translation>Select which key to respond to:</translation>
+        <translation>Выберите, на какую клавишу реагировать:</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="41"/>
         <source>Search:</source>
-        <translation>Search:</translation>
+        <translation>Поиск:</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="45"/>
         <source>Type to filter keys...</source>
-        <translation>Type to filter keys...</translation>
+        <translation>Введите текст для фильтрации клавиш...</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="134"/>
         <source>No Selection</source>
-        <translation>No Selection</translation>
+        <translation>Ничего не выбрано</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="135"/>
         <source>Please select a key first.</source>
-        <translation>Please select a key first.</translation>
+        <translation>Сначала выберите клавишу.</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="75"/>
@@ -1033,32 +1033,32 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/mouse_event_selector_dialog.py" line="28"/>
         <source>Select Mouse Event</source>
-        <translation>Select Mouse Event</translation>
+        <translation>Выберите событие мыши</translation>
     </message>
     <message>
         <location filename="../dialogs/mouse_event_selector_dialog.py" line="34"/>
         <source>Select which mouse event to respond to:</source>
-        <translation>Select which mouse event to respond to:</translation>
+        <translation>Выберите, на какое событие мыши реагировать:</translation>
     </message>
     <message>
         <location filename="../dialogs/mouse_event_selector_dialog.py" line="40"/>
         <source>Search:</source>
-        <translation>Search:</translation>
+        <translation>Поиск:</translation>
     </message>
     <message>
         <location filename="../dialogs/mouse_event_selector_dialog.py" line="44"/>
         <source>Type to filter events...</source>
-        <translation>Type to filter events...</translation>
+        <translation>Введите текст для фильтрации событий...</translation>
     </message>
     <message>
         <location filename="../dialogs/mouse_event_selector_dialog.py" line="141"/>
         <source>No Selection</source>
-        <translation>No Selection</translation>
+        <translation>Ничего не выбрано</translation>
     </message>
     <message>
         <location filename="../dialogs/mouse_event_selector_dialog.py" line="142"/>
         <source>Please select a mouse event first.</source>
-        <translation>Please select a mouse event first.</translation>
+        <translation>Сначала выберите событие мыши.</translation>
     </message>
 </context>
 <context>
@@ -1071,22 +1071,22 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="36"/>
         <source>Project Details</source>
-        <translation>Project Details</translation>
+        <translation>Детали проекта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="40"/>
         <source>Enter project name...</source>
-        <translation>Enter project name...</translation>
+        <translation>Введите имя проекта...</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="41"/>
         <source>Project Name:</source>
-        <translation>Project Name:</translation>
+        <translation>Имя проекта:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="45"/>
         <source>Choose project location...</source>
-        <translation>Choose project location...</translation>
+        <translation>Выберите расположение проекта...</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="47"/>
@@ -1096,17 +1096,17 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="52"/>
         <source>Location:</source>
-        <translation>Location:</translation>
+        <translation>Расположение:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="56"/>
         <source>Optional project description...</source>
-        <translation>Optional project description...</translation>
+        <translation>Необязательное описание проекта...</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="57"/>
         <source>Description:</source>
-        <translation>Description:</translation>
+        <translation>Описание:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="62"/>
@@ -1126,23 +1126,23 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="106"/>
         <source>Choose Project Location</source>
-        <translation>Choose Project Location</translation>
+        <translation>Выберите расположение проекта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="115"/>
         <location filename="../dialogs/project_dialogs.py" line="119"/>
         <source>Invalid Input</source>
-        <translation>Invalid Input</translation>
+        <translation>Недопустимый ввод</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="115"/>
         <source>Please enter a project name.</source>
-        <translation>Please enter a project name.</translation>
+        <translation>Введите имя проекта.</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="119"/>
         <source>Please choose a project location.</source>
-        <translation>Please choose a project location.</translation>
+        <translation>Выберите расположение для проекта.</translation>
     </message>
 </context>
 <context>
@@ -1160,12 +1160,12 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="167"/>
         <source>Browse for Project</source>
-        <translation>Browse for Project</translation>
+        <translation>Обзор проекта</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="171"/>
         <source>Select project file...</source>
-        <translation>Select project file...</translation>
+        <translation>Выберите файл проекта...</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="173"/>
@@ -1175,28 +1175,28 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="203"/>
         <source>Open PyGameMaker Project</source>
-        <translation>Open PyGameMaker Project</translation>
+        <translation>Открыть проект PyGameMaker</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="204"/>
         <source>PyGameMaker Projects (*.json);;All Files (*)</source>
-        <translation>PyGameMaker Projects (*.json);;All Files (*)</translation>
+        <translation>Проекты PyGameMaker (*.json);;Все файлы (*)</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="221"/>
         <location filename="../dialogs/project_dialogs.py" line="225"/>
         <source>Invalid Input</source>
-        <translation>Invalid Input</translation>
+        <translation>Недопустимый ввод</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="221"/>
         <source>Please enter a project name.</source>
-        <translation>Please enter a project name.</translation>
+        <translation>Введите имя проекта.</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="225"/>
         <source>Please choose a project location.</source>
-        <translation>Please choose a project location.</translation>
+        <translation>Выберите расположение для проекта.</translation>
     </message>
 </context>
 <context>
@@ -1209,52 +1209,52 @@ Would you like to open the export directory?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="275"/>
         <source>Project Information</source>
-        <translation>Project Information</translation>
+        <translation>Информация о проекте</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="279"/>
         <source>Project Name:</source>
-        <translation>Project Name:</translation>
+        <translation>Имя проекта:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="283"/>
         <source>Project Path:</source>
-        <translation>Project Path:</translation>
+        <translation>Путь проекта:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="287"/>
         <source>Description:</source>
-        <translation>Description:</translation>
+        <translation>Описание:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="291"/>
         <source>Settings</source>
-        <translation>Settings</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="295"/>
         <source>Auto-save:</source>
-        <translation>Auto-save:</translation>
+        <translation>Автосохранение:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="298"/>
         <source>Desktop</source>
-        <translation>Desktop</translation>
+        <translation>Рабочий стол</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="298"/>
         <source>Web</source>
-        <translation>Web</translation>
+        <translation>Веб</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="298"/>
         <source>Mobile</source>
-        <translation>Mobile</translation>
+        <translation>Мобильное</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="299"/>
         <source>Target Platform:</source>
-        <translation>Target Platform:</translation>
+        <translation>Целевая платформа:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="304"/>
