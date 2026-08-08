@@ -1718,4 +1718,433 @@ Deseja salvar mesmo assim?</translation>
         <translation>Objetos sólidos bloqueiam movimento</translation>
     </message>
 </context>
+<context>
+    <name>ActionConfigDialog</name>
+    <message>
+        <location filename="../events/action_editor.py" line="47"/>
+        <source>Configure {0}</source>
+        <translation>Configurar {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="58"/>
+        <source>This action requires special configuration.</source>
+        <translation>Esta ação requer configuração especial.</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="146"/>
+        <location filename="../events/action_editor.py" line="471"/>
+        <location filename="../events/action_editor.py" line="513"/>
+        <source>→ Next Room</source>
+        <translation>→ Próxima Sala</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="148"/>
+        <location filename="../events/action_editor.py" line="472"/>
+        <location filename="../events/action_editor.py" line="515"/>
+        <source>← Previous Room</source>
+        <translation>← Sala Anterior</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="150"/>
+        <location filename="../events/action_editor.py" line="473"/>
+        <location filename="../events/action_editor.py" line="517"/>
+        <source>↺ Restart Current Room</source>
+        <translation>↺ Reiniciar Sala Atual</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="172"/>
+        <source>⚙️ Configure...</source>
+        <translation>⚙️ Configurar...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="198"/>
+        <source>Number or expression</source>
+        <translation>Número ou expressão</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="218"/>
+        <source>📋 Configure Actions...</source>
+        <translation>📋 Configurar Ações...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="236"/>
+        <source>🎨 Choose Color...</source>
+        <translation>🎨 Escolher Cor...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="262"/>
+        <source>(No sprites available)</source>
+        <translation>(Nenhum sprite disponível)</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="279"/>
+        <source>(No sounds available)</source>
+        <translation>(Nenhum som disponível)</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="290"/>
+        <source>Enter code here...</source>
+        <translation>Digite o código aqui...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="304"/>
+        <source>X: </source>
+        <translation>X: </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="309"/>
+        <source>Y: </source>
+        <translation>Y: </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="399"/>
+        <source>Choose Color</source>
+        <translation>Escolher Cor</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="405"/>
+        <source>🎨 {0}</source>
+        <translation>🎨 {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="344"/>
+        <source>Translations...</source>
+        <translation>Traduções...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="346"/>
+        <source>Add translations for different languages</source>
+        <translation>Adicionar traduções para diferentes idiomas</translation>
+    </message>
+</context>
+<context>
+    <name>AssetPropertiesDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="114"/>
+        <source>{0} Properties - {1}</source>
+        <translation>Propriedades de {0} - {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="126"/>
+        <source>Type: {0}</source>
+        <translation>Tipo: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="131"/>
+        <source>File: {0}</source>
+        <translation>Arquivo: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Imported</source>
+        <translation>Importado</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136"/>
+        <source>Not imported</source>
+        <translation>Não importado</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
+        <source>Status: {0}</source>
+        <translation>Status: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="143"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 Importar Imagem...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="150"/>
+        <source>Created: {0}</source>
+        <translation>Criado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="155"/>
+        <source>Close</source>
+        <translation>Fechar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="171"/>
+        <source>Select Sprite Image</source>
+        <translation>Selecionar Imagem do Sprite</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="173"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>Arquivos de Imagem (*.png *.jpg *.jpeg *.bmp *.gif);;Todos os Arquivos (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="198"/>
+        <source>Success</source>
+        <translation>Sucesso</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="199"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>Imagem importada com sucesso para o sprite '{0}'</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="207"/>
+        <source>Import Failed</source>
+        <translation>Falha na Importação</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="208"/>
+        <source>Failed to import the image. Please try again.</source>
+        <translation>Falha ao importar a imagem. Tente novamente.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="213"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="219"/>
+        <source>Error</source>
+        <translation>Erro</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="214"/>
+        <source>Error importing image: {0}</source>
+        <translation>Erro ao importar imagem: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="220"/>
+        <source>Could not access asset manager. Please try again.</source>
+        <translation>Não foi possível acessar o gerenciador de recursos. Tente novamente.</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundLayersDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
+        <source>Background Layers</source>
+        <translation>Camadas de Plano de Fundo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
+        <source>Background {0}</source>
+        <translation>Plano de Fundo {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
+        <source>Layer:</source>
+        <translation>Camada:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
+        <source>Layer Properties</source>
+        <translation>Propriedades da Camada</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
+        <source>Visible:</source>
+        <translation>Visível:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
+        <source>Foreground:</source>
+        <translation>Primeiro Plano:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
+        <source>None</source>
+        <translation>Nenhum</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
+        <source>Image:</source>
+        <translation>Imagem:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
+        <source>Stretch:</source>
+        <translation>Esticar:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
+        <source>Tile H:</source>
+        <translation>Bloco H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
+        <source>Tile V:</source>
+        <translation>Bloco V:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1232"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1238"/>
+        <source>H Speed:</source>
+        <translation>Velocidade H:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1244"/>
+        <source>V Speed:</source>
+        <translation>Velocidade V:</translation>
+    </message>
+</context>
+<context>
+    <name>NewProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="26"/>
+        <source>New Project</source>
+        <translation>Novo Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="36"/>
+        <source>Project Details</source>
+        <translation>Detalhes do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="40"/>
+        <source>Enter project name...</source>
+        <translation>Digite o nome do projeto...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="41"/>
+        <source>Project Name:</source>
+        <translation>Nome do Projeto:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="45"/>
+        <source>Choose project location...</source>
+        <translation>Escolha o local do projeto...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="47"/>
+        <source>Browse...</source>
+        <translation>Procurar...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="52"/>
+        <source>Location:</source>
+        <translation>Local:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="56"/>
+        <source>Optional project description...</source>
+        <translation>Descrição do projeto (opcional)...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="57"/>
+        <source>Description:</source>
+        <translation>Descrição:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="62"/>
+        <source>Empty Project</source>
+        <translation>Projeto Vazio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="63"/>
+        <source>With Game Over Screen</source>
+        <translation>Com Tela de Fim de Jogo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="67"/>
+        <source>Template:</source>
+        <translation>Modelo:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="106"/>
+        <source>Choose Project Location</source>
+        <translation>Escolher Local do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Invalid Input</source>
+        <translation>Entrada Inválida</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="115"/>
+        <source>Please enter a project name.</source>
+        <translation>Digite um nome de projeto.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="119"/>
+        <source>Please choose a project location.</source>
+        <translation>Escolha um local para o projeto.</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="56"/>
+        <source>Thymio Programming</source>
+        <translation>Programação Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="72"/>
+        <source>Click on the robot to add events</source>
+        <translation>Clique no robô para adicionar eventos</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="114"/>
+        <source>+ Event</source>
+        <translation>+ Evento</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="115"/>
+        <source>Add Thymio event</source>
+        <translation>Adicionar evento Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Event</source>
+        <translation>Evento</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Actions</source>
+        <translation>Ações</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="153"/>
+        <source>Add Event</source>
+        <translation>Adicionar Evento</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="213"/>
+        <source>Event Exists</source>
+        <translation>Evento Já Existe</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="214"/>
+        <source>This event already exists.</source>
+        <translation>Este evento já existe.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="239"/>
+        <source>Add Action</source>
+        <translation>Adicionar Ação</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="261"/>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="346"/>
+        <source>Remove Event</source>
+        <translation>Remover Evento</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="268"/>
+        <source>Edit Action</source>
+        <translation>Editar Ação</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="271"/>
+        <source>Remove Action</source>
+        <translation>Remover Ação</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="347"/>
+        <source>Remove this event and all its actions?</source>
+        <translation>Remover este evento e todas as suas ações?</translation>
+    </message>
+</context>
 </TS>
