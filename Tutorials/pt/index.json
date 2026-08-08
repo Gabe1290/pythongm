@@ -75,6 +75,18 @@
                 "04_game_controller.html"
             ],
             "thumbnail": "thumbnails/06_maze.png"
+        },
+        {
+            "title": "Platformer: Corra, Pule, Colete",
+            "folder": "07_platformer",
+            "description": "Pule entre plataformas, evite perigos, colete moedas",
+            "pages": [
+                "01_introduction.html",
+                "02_jumping_player.html",
+                "03_coins_and_hazards.html",
+                "04_game_controller.html"
+            ],
+            "thumbnail": "thumbnails/07_platformer.png"
         }
     ]
 }
