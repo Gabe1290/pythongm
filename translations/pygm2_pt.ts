@@ -6100,5 +6100,360 @@ Isso permitirá que o salvamento automático funcione com o arquivo zip.</transl
         <source>Auto-Save Enabled</source>
         <translation>Salvamento Automático Ativado</translation>
     </message>
+    <message>
+        <location filename="../core/ide_window.py" line="547"/>
+        <source>Your project will be automatically saved every {0} seconds.</source>
+        <translation>Seu projeto será salvo automaticamente a cada {0} segundos.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="550"/>
+        <source>Auto-save disabled</source>
+        <translation>Salvamento automático desativado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="553"/>
+        <source>Auto-Save Disabled</source>
+        <translation>Salvamento Automático Desativado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="554"/>
+        <source>Remember to save your project manually (Ctrl+S).</source>
+        <translation>Lembre-se de salvar seu projeto manualmente (Ctrl+S).</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="586"/>
+        <source>Auto-save settings updated</source>
+        <translation>Configurações de salvamento automático atualizadas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="591"/>
+        <location filename="../core/ide_window.py" line="632"/>
+        <location filename="../core/ide_window.py" line="1327"/>
+        <location filename="../core/ide_window.py" line="1584"/>
+        <location filename="../core/ide_window.py" line="1725"/>
+        <location filename="../core/ide_window.py" line="1964"/>
+        <location filename="../core/ide_window.py" line="2292"/>
+        <location filename="../core/ide_window.py" line="2776"/>
+        <location filename="../core/ide_window.py" line="2816"/>
+        <source>No Project</source>
+        <translation>Nenhum Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="591"/>
+        <location filename="../core/ide_window.py" line="632"/>
+        <location filename="../core/ide_window.py" line="1327"/>
+        <location filename="../core/ide_window.py" line="1584"/>
+        <source>Please open a project first</source>
+        <translation>Abra um projeto primeiro</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="596"/>
+        <source>Import Object Package</source>
+        <translation>Importar Pacote de Objeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="598"/>
+        <source>GameMaker Objects (*.gmobj)</source>
+        <translation>Objetos GameMaker (*.gmobj)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="604"/>
+        <source>Importing object...</source>
+        <translation>Importando objeto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="617"/>
+        <location filename="../core/ide_window.py" line="658"/>
+        <location filename="../core/ide_window.py" line="707"/>
+        <location filename="../core/ide_window.py" line="787"/>
+        <source>Import Successful</source>
+        <translation>Importação Bem-Sucedida</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="618"/>
+        <source>Object &apos;{0}&apos; imported successfully!</source>
+        <translation>Objeto '{0}' importado com sucesso!</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="620"/>
+        <source>Object imported: {0}</source>
+        <translation>Objeto importado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="624"/>
+        <location filename="../core/ide_window.py" line="665"/>
+        <location filename="../core/ide_window.py" line="725"/>
+        <location filename="../core/ide_window.py" line="758"/>
+        <location filename="../core/ide_window.py" line="772"/>
+        <source>Import Failed</source>
+        <translation>Falha na Importação</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="625"/>
+        <source>Failed to import object package</source>
+        <translation>Falha ao importar o pacote de objeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="627"/>
+        <location filename="../core/ide_window.py" line="668"/>
+        <source>Import failed</source>
+        <translation>Falha na importação</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="637"/>
+        <source>Import Room Package</source>
+        <translation>Importar Pacote de Sala</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="639"/>
+        <source>GameMaker Rooms (*.gmroom)</source>
+        <translation>Salas GameMaker (*.gmroom)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="645"/>
+        <source>Importing room...</source>
+        <translation>Importando sala...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="659"/>
+        <source>Room &apos;{0}&apos; imported successfully!</source>
+        <translation>Sala '{0}' importada com sucesso!</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="661"/>
+        <source>Room imported: {0}</source>
+        <translation>Sala importada: {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="666"/>
+        <source>Failed to import room package</source>
+        <translation>Falha ao importar o pacote de sala</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="797"/>
+        <source>Main</source>
+        <translation>Principal</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="973"/>
+        <source>&quot;{0}&quot; has unsaved changes. Save before closing?</source>
+        <translation>"{0}" tem alterações não salvas. Salvar antes de fechar?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1015"/>
+        <location filename="../core/ide_window.py" line="3504"/>
+        <location filename="../core/ide_window.py" line="3645"/>
+        <source>Welcome</source>
+        <translation>Bem-vindo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1177"/>
+        <source>No recent projects</source>
+        <translation>Nenhum projeto recente</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1236"/>
+        <source>Project created successfully</source>
+        <translation>Projeto criado com sucesso</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1239"/>
+        <source>Failed to create project</source>
+        <translation>Falha ao criar o projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1245"/>
+        <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
+        <translation>Arquivos de Projeto (project.json);;Arquivos Zip (*.zip);;Todos os Arquivos (*)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1259"/>
+        <source>Failed to load project from zip</source>
+        <translation>Falha ao carregar o projeto do zip</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1261"/>
+        <source>Invalid Zip</source>
+        <translation>Zip Inválido</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1262"/>
+        <source>This zip file does not contain a valid PyGameMaker project</source>
+        <translation>Este arquivo zip não contém um projeto PyGameMaker válido</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1290"/>
+        <location filename="../core/ide_window.py" line="1316"/>
+        <location filename="../core/ide_window.py" line="3685"/>
+        <source>Project saved</source>
+        <translation>Projeto salvo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1309"/>
+        <source>Save Project As</source>
+        <translation>Salvar Projeto Como</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1346"/>
+        <location filename="../core/ide_window.py" line="3916"/>
+        <source>No Project Loaded</source>
+        <translation>Nenhum Projeto Carregado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1347"/>
+        <source>You need to create or open a project before importing sprites.
+
+Would you like to create a new project now?</source>
+        <translation>Você precisa criar ou abrir um projeto antes de importar sprites.
+
+Deseja criar um novo projeto agora?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1592"/>
+        <source>Create {0}</source>
+        <translation>Criar {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1593"/>
+        <source>Enter name for new {0}:</source>
+        <translation>Digite o nome para o(a) novo(a) {0}:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1682"/>
+        <source>Created {0}</source>
+        <translation>{0} criado(a)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>Failed to create {0}: {1}</source>
+        <translation>Falha ao criar {0}: {1}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1726"/>
+        <source>Please open or create a project first before testing a game.</source>
+        <translation>Abra ou crie um projeto antes de testar um jogo.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1747"/>
+        <source>Running game...</source>
+        <translation>Executando jogo...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1754"/>
+        <source>Project Error</source>
+        <translation>Erro do Projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1755"/>
+        <source>project.json not found in project directory</source>
+        <translation>project.json não encontrado no diretório do projeto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1785"/>
+        <location filename="../core/ide_window.py" line="1856"/>
+        <source>Game closed</source>
+        <translation>Jogo fechado</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1831"/>
+        <source>Game Test Error</source>
+        <translation>Erro no Teste do Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1832"/>
+        <source>Failed to run game:
+
+{0}
+
+Check console for details.</source>
+        <translation>Falha ao executar o jogo:
+
+{0}
+
+Verifique o console para detalhes.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1787"/>
+        <location filename="../core/ide_window.py" line="1837"/>
+        <source>Game test failed</source>
+        <translation>Falha no teste do jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1716"/>
+        <location filename="../core/ide_window.py" line="1880"/>
+        <source>Game Running</source>
+        <translation>Jogo em Execução</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1881"/>
+        <source>A game is already running. Please stop it first.</source>
+        <translation>Um jogo já está em execução. Pare-o primeiro.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1891"/>
+        <source>Starting game in debug mode...</source>
+        <translation>Iniciando o jogo em modo de depuração...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1895"/>
+        <source>Debug Mode</source>
+        <translation>Modo de Depuração</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1896"/>
+        <source>Debug mode will start the game with verbose console output.
+
+Future features:
+• Breakpoints
+• Variable inspection
+• Step-through execution
+• Performance profiling
+
+For now, check the console for debug messages.</source>
+        <translation>O modo de depuração iniciará o jogo com saída detalhada no console.
+
+Recursos futuros:
+• Pontos de interrupção
+• Inspeção de variáveis
+• Execução passo a passo
+• Análise de desempenho
+
+Por enquanto, verifique o console para mensagens de depuração.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1907"/>
+        <source>Game started in debug mode - Check console for debug output</source>
+        <translation>Jogo iniciado em modo de depuração - Verifique o console para a saída de depuração</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1909"/>
+        <source>Failed to start game</source>
+        <translation>Falha ao iniciar o jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1912"/>
+        <source>Game Error</source>
+        <translation>Erro do Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1913"/>
+        <source>Failed to start the game. Check console for details.</source>
+        <translation>Falha ao iniciar o jogo. Verifique o console para detalhes.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="3723"/>
+        <source>Build Game</source>
+        <translation>Compilar Jogo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1931"/>
+        <source>Errors:</source>
+        <translation>Erros:</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1937"/>
+        <source>Warnings:</source>
+        <translation>Avisos:</translation>
+    </message>
 </context>
 </TS>
