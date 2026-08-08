@@ -581,4 +581,292 @@ Do you want to save anyway?</source>
         <translation>（无）</translation>
     </message>
 </context>
+<context>
+    <name>BlocklyWidget</name>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
+        <source>⬜ Detach</source>
+        <translation>⬜ 分离</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="131"/>
+        <source>Open Blockly editor in a separate window</source>
+        <translation>在单独的窗口中打开 Blockly 编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
+        <source>Drag blocks from the toolbox on the left to create game logic!</source>
+        <translation>从左侧工具箱拖动积木以创建游戏逻辑！</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
+        <source>Error loading Blockly</source>
+        <translation>加载 Blockly 时出错</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
+        <source>Blocks updated - {0} events</source>
+        <translation>积木已更新 - {0} 个事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
+        <source>No events to load</source>
+        <translation>没有可加载的事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
+        <source>Loaded {0} events as blocks</source>
+        <translation>已将 {0} 个事件加载为积木</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
+        <source>Loaded {0} events - some may not have block equivalents</source>
+        <translation>已加载 {0} 个事件 - 部分事件可能没有对应的积木</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
+        <source>Configuration applied: {0} blocks, {1} categories</source>
+        <translation>已应用配置：{0} 个积木，{1} 个类别</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialDialog</name>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="27"/>
+        <source>Tutorials</source>
+        <translation>教程</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="46"/>
+        <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker 教程&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="50"/>
+        <source>Select a tutorial and click Open (or double-click):</source>
+        <translation>选择一个教程并点击“打开”（或双击）：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="83"/>
+        <source>Tip: Check the documentation (F1) for quick help!</source>
+        <translation>提示：查看文档（F1）以获取快速帮助！</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="91"/>
+        <source>Open</source>
+        <translation>打开</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="97"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="118"/>
+        <source>Select a tutorial to see its description.</source>
+        <translation>选择一个教程以查看其说明。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="121"/>
+        <source>No tutorials folder found</source>
+        <translation>未找到教程文件夹</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="162"/>
+        <source>No tutorials available</source>
+        <translation>没有可用的教程</translation>
+    </message>
+</context>
+<context>
+    <name>MultiActionEditor</name>
+    <message>
+        <location filename="../events/action_editor.py" line="574"/>
+        <source>Configure Actions</source>
+        <translation>配置操作</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="584"/>
+        <source>Action Sequence</source>
+        <translation>操作序列</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="590"/>
+        <source>Action</source>
+        <translation>操作</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="590"/>
+        <source>Parameters</source>
+        <translation>参数</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="597"/>
+        <source>➕ Add Action</source>
+        <translation>➕ 添加操作</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="601"/>
+        <source>✏️ Edit Action</source>
+        <translation>✏️ 编辑操作</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="605"/>
+        <source>➖ Remove Action</source>
+        <translation>➖ 移除操作</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="609"/>
+        <source>⬆️ Move Up</source>
+        <translation>⬆️ 上移</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="613"/>
+        <source>⬇️ Move Down</source>
+        <translation>⬇️ 下移</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundColorManager</name>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="29"/>
+        <source>Colors</source>
+        <translation>颜色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="43"/>
+        <source>Add color</source>
+        <translation>添加颜色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="49"/>
+        <source>Remove color</source>
+        <translation>移除颜色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Add Color</source>
+        <translation>添加颜色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="81"/>
+        <source>Color name:</source>
+        <translation>颜色名称：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="87"/>
+        <source>Duplicate</source>
+        <translation>重复</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="88"/>
+        <source>A color named &apos;{}&apos; already exists.</source>
+        <translation>名为“{}”的颜色已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="91"/>
+        <source>Choose Color</source>
+        <translation>选择颜色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/color_manager.py" line="121"/>
+        <source>Edit Color</source>
+        <translation>编辑颜色</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundToolPalette</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="25"/>
+        <source>Tools</source>
+        <translation>工具</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="32"/>
+        <source>Select</source>
+        <translation>选择</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="35"/>
+        <source>Select and move elements</source>
+        <translation>选择并移动元素</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="39"/>
+        <source>Wall</source>
+        <translation>墙</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="41"/>
+        <source>Click to place walls</source>
+        <translation>点击以放置墙</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="45"/>
+        <source>Robot</source>
+        <translation>机器人</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="47"/>
+        <source>Click to place robots</source>
+        <translation>点击以放置机器人</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="51"/>
+        <source>Block</source>
+        <translation>方块</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_tool_palette.py" line="53"/>
+        <source>Paint cube blocks on a grid (Minecraft-style)</source>
+        <translation>在网格上绘制立方体方块（我的世界风格）</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventSelector</name>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="44"/>
+        <source>Select Thymio Event</source>
+        <translation>选择 Thymio 事件</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="52"/>
+        <source>Select a Thymio event to respond to:</source>
+        <translation>选择要响应的 Thymio 事件：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="72"/>
+        <source>Click on the robot to filter events, or select from the list below.</source>
+        <translation>点击机器人以筛选事件，或从下方列表中选择。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="84"/>
+        <source>All</source>
+        <translation>全部</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="108"/>
+        <source>Search:</source>
+        <translation>搜索：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="112"/>
+        <source>Type to filter events...</source>
+        <translation>输入以筛选事件...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="140"/>
+        <source>Select Event</source>
+        <translation>选择事件</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="308"/>
+        <source>No Selection</source>
+        <translation>未选择</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/thymio_event_selector.py" line="309"/>
+        <source>Please select a Thymio event first.</source>
+        <translation>请先选择一个 Thymio 事件。</translation>
+    </message>
+</context>
 </TS>
