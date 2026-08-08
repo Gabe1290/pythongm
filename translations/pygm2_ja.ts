@@ -1583,4 +1583,255 @@ Do you want to save anyway?</source>
         <translation>このイベントとそのすべてのアクションを削除しますか？</translation>
     </message>
 </context>
+<context>
+    <name>BlocklyConfigDialog</name>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="46"/>
+        <source>Configure Events &amp; Actions</source>
+        <translation>イベントとアクションを設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="101"/>
+        <source>Full (All Blocks)</source>
+        <translation>フル（すべてのブロック）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="55"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="102"/>
+        <source>Beginner (Basic Blocks)</source>
+        <translation>初級（基本ブロック）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="56"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="103"/>
+        <source>Intermediate (More Features)</source>
+        <translation>中級（より多くの機能）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="57"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="104"/>
+        <source>Platformer Game</source>
+        <translation>プラットフォーマーゲーム</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="58"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="105"/>
+        <source>Grid-based RPG</source>
+        <translation>グリッド式RPG</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="59"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="106"/>
+        <source>Sokoban (Box Puzzle)</source>
+        <translation>倉庫番（箱パズル）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="60"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="107"/>
+        <source>Testing (Validated Only)</source>
+        <translation>テスト（検証済みのみ）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="61"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="108"/>
+        <source>Implemented Only</source>
+        <translation>実装済みのみ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="62"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="109"/>
+        <source>Code Editor</source>
+        <translation>コードエディタ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="63"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="110"/>
+        <source>Blockly Editor</source>
+        <translation>Blocklyエディタ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="64"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
+        <source>Custom</source>
+        <translation>カスタム</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
+        <source>Select blocks to enable:</source>
+        <translation>有効にするブロックを選択してください：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="136"/>
+        <source>{0} blocks, {1} categories</source>
+        <translation>ブロック {0} 個、カテゴリ {1} 個</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="128"/>
+        <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+        <translation>有効になっている一部のブロックに依存関係が不足しています。ブロックが正しく動作しない可能性があります。
+
+それでも保存しますか？</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundLayersDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
+        <source>Background Layers</source>
+        <translation>背景レイヤー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
+        <source>Background {0}</source>
+        <translation>背景 {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
+        <source>Layer:</source>
+        <translation>レイヤー：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
+        <source>Layer Properties</source>
+        <translation>レイヤーのプロパティ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
+        <source>Visible:</source>
+        <translation>表示：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
+        <source>Foreground:</source>
+        <translation>前景：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
+        <source>None</source>
+        <translation>なし</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
+        <source>Image:</source>
+        <translation>画像：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
+        <source>Stretch:</source>
+        <translation>伸縮：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
+        <source>Tile H:</source>
+        <translation>タイルH：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
+        <source>Tile V:</source>
+        <translation>タイルV：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
+        <source>X:</source>
+        <translation>X：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1232"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1238"/>
+        <source>H Speed:</source>
+        <translation>H速度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1244"/>
+        <source>V Speed:</source>
+        <translation>V速度：</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundElementProperties</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="29"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="233"/>
+        <source>No Selection</source>
+        <translation>未選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="34"/>
+        <source>Wall</source>
+        <translation>壁</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="72"/>
+        <source>Height:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="82"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="159"/>
+        <source>Angle:</source>
+        <translation>角度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="93"/>
+        <source>Color:</source>
+        <translation>色：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="102"/>
+        <source>Pushable</source>
+        <translation>押せる</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="118"/>
+        <source>Robot</source>
+        <translation>ロボット</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="124"/>
+        <source>Type:</source>
+        <translation>種類：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="134"/>
+        <source>Name:</source>
+        <translation>名前：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="170"/>
+        <source>Port:</source>
+        <translation>ポート：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="180"/>
+        <source>Code:</source>
+        <translation>コード：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="183"/>
+        <source>Which Thymio object&apos;s code to run when simulating</source>
+        <translation>シミュレーション時に実行するThymioオブジェクトのコード</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="192"/>
+        <source>Delete</source>
+        <translation>削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="240"/>
+        <source>Wall Properties</source>
+        <translation>壁のプロパティ</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="258"/>
+        <source>Robot Properties</source>
+        <translation>ロボットのプロパティ</translation>
+    </message>
+</context>
 </TS>
