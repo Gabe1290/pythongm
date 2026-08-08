@@ -24,20 +24,27 @@ aren't mixed for the same language.
 
 ## Available Languages
 
-Reflects what's actually compiled as of 2026-08-06 (`ls translations/*.qm`):
+Reflects what's actually compiled as of 2026-08-08 (`ls translations/*.qm`):
 
 - English (en) - built-in default, no translation file
 - French (fr) - `pygm2_fr.qm` (monolithic)
 - Spanish (es) - `pygm2_es.qm` (monolithic)
+- Portuguese (pt) - `pygm2_pt.qm` (monolithic) - fully translated as of
+  2026-08-08 (1369/1369 real distinct UI strings; see
+  `docs/I18N_CLEANUP_2026-08-06.md` Section H). The old pre-`pygm2`
+  `pygamemaker_pt.ts` stub (289 entries, all untranslated) was deleted
+  once this real replacement existed.
 - German (de) - `pygm2_de*.qm` (split)
 - Italian (it) - `pygm2_it*.qm` (split)
 - Slovenian (sl) - `pygm2_sl*.qm` (split)
 - Ukrainian (uk) - `pygm2_uk*.qm` (split)
 - Russian (ru) - `pygm2_ru*.qm` (split)
-- Portuguese (pt), Japanese (ja), Chinese (zh) - `.ts` source exists
-  (`pygamemaker_pt.ts`/`_ja.ts`/`_zh.ts`, pre-`pygm2`-naming) but is not yet
-  compiled to `.qm`, so none of the three currently appear in the app's
-  Tools > Language menu. See `docs/I18N_CLEANUP_2026-08-06.md` Section H.
+- Japanese (ja), Chinese (zh) - `.ts` source exists (`pygamemaker_ja.ts`/
+  `_zh.ts`, pre-`pygm2`-naming, 289 untranslated entries) but is not yet
+  compiled to `.qm`, so neither currently appears in the app's
+  Tools > Language menu. See `docs/I18N_CLEANUP_2026-08-06.md` Section H
+  for the pt precedent to follow (source-string list, generator-script
+  approach, per-context verification discipline).
 
 ## Compiling
 
