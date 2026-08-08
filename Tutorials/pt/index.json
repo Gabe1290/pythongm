@@ -51,6 +51,18 @@
                 "07_game_controller.html"
             ],
             "thumbnail": "thumbnails/04_breakout.png"
+        },
+        {
+            "title": "Sokoban: Quebra-Cabeça de Empurrar Caixas",
+            "folder": "05_sokoban",
+            "description": "Crie um jogo clássico de quebra-cabeça de empurrar caixas",
+            "pages": [
+                "01_introduction.html",
+                "02_player_and_walls.html",
+                "03_pushing_crates.html",
+                "04_targets_and_controller.html"
+            ],
+            "thumbnail": "thumbnails/05_sokoban.png"
         }
     ]
 }
