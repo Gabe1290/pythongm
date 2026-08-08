@@ -4050,4 +4050,676 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <translation>🤖 Thymio 操作...</translation>
     </message>
 </context>
+<context>
+    <name>AssetTreeWidget</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="59"/>
+        <source>Assets</source>
+        <translation>资源</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
+        <source>No project loaded.
+Use File → New Project or File → Open Project to begin.</source>
+        <translation>未加载项目。
+请使用“文件→新建项目”或“文件→打开项目”开始。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
+        <source>Sprites</source>
+        <translation>精灵</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="125"/>
+        <source>Sounds</source>
+        <translation>声音</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="126"/>
+        <source>Backgrounds</source>
+        <translation>背景</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="128"/>
+        <source>Objects</source>
+        <translation>对象</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="129"/>
+        <source>Rooms</source>
+        <translation>房间</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
+        <source>Playgrounds</source>
+        <translation>实验场</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
+        <source>Scripts</source>
+        <translation>脚本</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="133"/>
+        <source>Fonts</source>
+        <translation>字体</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226"/>
+        <source>➕ Create New {0}...</source>
+        <translation>➕ 新建 {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="232"/>
+        <source>📥 Import {0}...</source>
+        <translation>📥 导入 {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="239"/>
+        <source>📦 Import {0} Package...</source>
+        <translation>📦 导入 {0} 包...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="248"/>
+        <source>✏️ Rename</source>
+        <translation>✏️ 重命名</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="254"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 导入图像...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="259"/>
+        <source>🎬 Configure Animation...</source>
+        <translation>🎬 配置动画...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
+        <source>💾 Export as PNG…</source>
+        <translation>💾 导出为 PNG…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
+        <source>📋 Duplicate</source>
+        <translation>📋 复制</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
+        <source>🗑️ Delete</source>
+        <translation>🗑️ 删除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="281"/>
+        <source>📦 Export Package...</source>
+        <translation>📦 导出包...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="305"/>
+        <source>⬆️ Move Up</source>
+        <translation>⬆️ 上移</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="311"/>
+        <source>⬇️ Move Down</source>
+        <translation>⬇️ 下移</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="319"/>
+        <source>⏫ Move to Top</source>
+        <translation>⏫ 移到顶部</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325"/>
+        <source>⏬ Move to Bottom</source>
+        <translation>⏬ 移到底部</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="333"/>
+        <source>⚙️ Properties...</source>
+        <translation>⚙️ 属性...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="375"/>
+        <source>Import Assets</source>
+        <translation>导入资源</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="376"/>
+        <source>Please use the File menu to import {0}</source>
+        <translation>请使用“文件”菜单导入 {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="425"/>
+        <source>Select Image for Sprite &apos;{0}&apos;</source>
+        <translation>为精灵“{0}”选择图像</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="427"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>图像文件 (*.png *.jpg *.jpeg *.bmp *.gif);;所有文件 (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="439"/>
+        <source>Success</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="440"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>已成功为精灵“{0}”导入图像</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="454"/>
+        <source>No Sprite Data</source>
+        <translation>无精灵数据</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="455"/>
+        <source>Could not load sprite data for &apos;{0}&apos;</source>
+        <translation>无法加载“{0}”的精灵数据</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="392"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="464"/>
+        <source>No Image</source>
+        <translation>无图像</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
+        <source>Sprite &apos;{0}&apos; has no image file.</source>
+        <translation>精灵“{0}”没有图像文件。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
+        <source>File Not Found</source>
+        <translation>未找到文件</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
+        <source>Image file not found: {0}</source>
+        <translation>未找到图像文件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
+        <source>Export Sprite as PNG</source>
+        <translation>将精灵导出为 PNG</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
+        <source>PNG Images (*.png)</source>
+        <translation>PNG 图像 (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
+        <source>Export Error</source>
+        <translation>导出错误</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
+        <source>Failed to export: {0}</source>
+        <translation>导出失败：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
+        <source>Sprite &apos;{0}&apos; has no image file. Please import an image first.</source>
+        <translation>精灵“{0}”没有图像文件，请先导入图像。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="479"/>
+        <source>Image Not Found</source>
+        <translation>未找到图像</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="480"/>
+        <source>Could not find image file: {0}</source>
+        <translation>找不到图像文件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="509"/>
+        <source>Animation Configured</source>
+        <translation>动画已配置</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="510"/>
+        <source>Sprite &apos;{0}&apos; configured with {1} frames at {2} FPS</source>
+        <translation>精灵“{0}”已配置为 {1} 帧，帧率 {2} FPS</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
+        <source>No Project</source>
+        <translation>无项目</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
+        <source>No project is currently loaded</source>
+        <translation>当前未加载任何项目</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="543"/>
+        <source>Export {0}</source>
+        <translation>导出 {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="560"/>
+        <source>Export Successful</source>
+        <translation>导出成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="561"/>
+        <source>{0} &apos;{1}&apos; exported to:
+{2}</source>
+        <translation>{0}“{1}”已导出到：
+{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="566"/>
+        <source>Export Failed</source>
+        <translation>导出失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="567"/>
+        <source>Failed to export {0} &apos;{1}&apos;</source>
+        <translation>导出 {0}“{1}”失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="595"/>
+        <source>Import {0} Package</source>
+        <translation>导入 {0} 包</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="615"/>
+        <source>Import Successful</source>
+        <translation>导入成功</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="616"/>
+        <source>{0} &apos;{1}&apos; imported successfully!</source>
+        <translation>{0}“{1}”导入成功！</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="621"/>
+        <source>Import Failed</source>
+        <translation>导入失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="622"/>
+        <source>Failed to import {0} package</source>
+        <translation>导入 {0} 包失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="664"/>
+        <source>Create {0}</source>
+        <translation>新建 {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="665"/>
+        <source>Enter name for new {0}:</source>
+        <translation>为新建的 {0} 输入名称：</translation>
+    </message>
+</context>
+<context>
+    <name>EnhancedPropertiesPanel</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="97"/>
+        <source>Asset Information</source>
+        <translation>资源信息</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="100"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="475"/>
+        <source>No asset selected</source>
+        <translation>未选择资源</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="104"/>
+        <source>Name:</source>
+        <translation>名称：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="105"/>
+        <source>Type:</source>
+        <translation>类型：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="106"/>
+        <source>Status:</source>
+        <translation>状态：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="111"/>
+        <source>Properties</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="118"/>
+        <source>Preview</source>
+        <translation>预览</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="121"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="485"/>
+        <source>No preview available</source>
+        <translation>无可用预览</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="193"/>
+        <source>Room (Editor)</source>
+        <translation>房间（编辑器）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="194"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="688"/>
+        <source>Active</source>
+        <translation>启用</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="714"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="771"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="835"/>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="266"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="537"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="553"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="556"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="583"/>
+        <source>Width:</source>
+        <translation>宽度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="267"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="538"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="554"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="557"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="584"/>
+        <source>Height:</source>
+        <translation>高度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="539"/>
+        <source>Background:</source>
+        <translation>背景：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="270"/>
+        <source>Enable Views:</source>
+        <translation>启用视图：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="268"/>
+        <source>Background Color:</source>
+        <translation>背景颜色：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="276"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="541"/>
+        <source>Instances:</source>
+        <translation>实例：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="330"/>
+        <source>Choose Background Color</source>
+        <translation>选择背景颜色</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="388"/>
+        <source>Room Preview
+{0}x{1}
+{2} instances</source>
+        <translation>房间预览
+{0}x{1}
+{2} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="391"/>
+        <source>Preview
+Generation Failed</source>
+        <translation>预览
+生成失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="393"/>
+        <source>Preview
+Not Available</source>
+        <translation>预览
+不可用</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="397"/>
+        <source>Preview
+Update Error</source>
+        <translation>预览
+更新出错</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="525"/>
+        <source>Loaded</source>
+        <translation>已加载</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="445"/>
+        <source>Room: {0}
+{1} x {2}</source>
+        <translation>房间：{0}
+{1} x {2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="81"/>
+        <source>No project loaded.
+
+Open or create a project, then select an asset from the tree on the left to view its details here.</source>
+        <translation>未加载项目。
+
+打开或新建一个项目，然后从左侧的资源树中选择一个资源以在此查看详情。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="235"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="260"/>
+        <source>Configure...</source>
+        <translation>配置...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
+        <source>Backgrounds:</source>
+        <translation>背景：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
+        <source>Room: {0}
+{1} x {2}
+{3} instances</source>
+        <translation>房间：{0}
+{1} x {2}
+{3} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="431"/>
+        <source>Room: {0}
+{1}x{2}
+{3} instances</source>
+        <translation>房间：{0}
+{1}x{2}
+{3} 个实例</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="440"/>
+        <source>Preview generation failed</source>
+        <translation>预览生成失败</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="559"/>
+        <source>Frames:</source>
+        <translation>帧数：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="560"/>
+        <source>Origin X:</source>
+        <translation>原点 X：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="561"/>
+        <source>Origin Y:</source>
+        <translation>原点 Y：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="562"/>
+        <source>Speed:</source>
+        <translation>速度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="568"/>
+        <source>Horizontal Strip</source>
+        <translation>水平条</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="569"/>
+        <source>Vertical Strip</source>
+        <translation>垂直条</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="570"/>
+        <source>Grid</source>
+        <translation>网格</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="571"/>
+        <source>Single Frame</source>
+        <translation>单帧</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="573"/>
+        <source>Animation:</source>
+        <translation>动画：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="577"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="587"/>
+        <source>File:</source>
+        <translation>文件：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="603"/>
+        <source>{0}: {1}</source>
+        <translation>{0}：{1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="638"/>
+        <source>No image file path found for {0}</source>
+        <translation>未找到 {0} 的图像文件路径</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="643"/>
+        <source>Image file not found:
+{0}</source>
+        <translation>未找到图像文件：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="651"/>
+        <source>Failed to load image:
+{0}</source>
+        <translation>加载图像失败：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="670"/>
+        <source>{0}
+{1}x{2}</source>
+        <translation>{0}
+{1}x{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="677"/>
+        <source>Error loading image:
+{0}</source>
+        <translation>加载图像时出错：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="687"/>
+        <source>Object (Editor)</source>
+        <translation>对象（编辑器）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="741"/>
+        <source>Sprite:</source>
+        <translation>精灵：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="747"/>
+        <source>{0} x {1}</source>
+        <translation>{0} x {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="749"/>
+        <source>Sprite Size:</source>
+        <translation>精灵大小：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="751"/>
+        <source>Visible:</source>
+        <translation>可见：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="752"/>
+        <source>Solid:</source>
+        <translation>固体：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="753"/>
+        <source>Persistent:</source>
+        <translation>持久：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="757"/>
+        <source>Events:</source>
+        <translation>事件：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="874"/>
+        <source>Object: {0}
+Sprite: {1}
+Size: {2}x{3}
+Events: {4}</source>
+        <translation>对象：{0}
+精灵：{1}
+大小：{2}x{3}
+事件：{4}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="889"/>
+        <source>Object: {0}</source>
+        <translation>对象：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="891"/>
+        <source>Sprite: {0}</source>
+        <translation>精灵：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="893"/>
+        <source>No sprite assigned</source>
+        <translation>未指定精灵</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="894"/>
+        <source>Events: {0}</source>
+        <translation>事件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="898"/>
+        <source>Visible</source>
+        <translation>可见</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
+        <source>Solid</source>
+        <translation>固体</translation>
+    </message>
+</context>
 </TS>
