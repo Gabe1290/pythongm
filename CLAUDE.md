@@ -1011,3 +1011,78 @@ es, pt, sl) for accuracy AND correct diacritics, ~52 `docs(wiki)` commits, all o
   github.com — worth spot-checking that accents render (not mojibake), the
   language-switcher banners resolve (no 404s), and accented-header ToC anchors +
   the `Full-Action-Reference#3d-view` deep links land correctly.
+
+**2026-08-08 — pt Tutorials curriculum complete; Section H (pt/ja/zh UI
+translation) underway; found + fixed a real dead-translation-context bug.**
+Continuation of the `docs/I18N_CLEANUP_2026-08-06.md` queue across several
+`/loop`-style "proceed" turns.
+- **`Tutorials/pt/` built from scratch, all 9 lessons (Section L, Section 2).**
+  Same workflow as the six other languages' `09_catch_the_coins` additions:
+  read the CURRENT English lesson from the top-level `Tutorials/index.json` +
+  actual files (several lessons' real page counts differed from what stale
+  registry guesses assumed — e.g. `06_maze`/`07_platformer`/`08_lunar_lander`
+  are 4 pages each, not 7/8/8), translate prose, keep Blockly block-LABEL
+  mockups in English (pt has zero `BLOCK_MESSAGES`/`KEY_NAMES` coverage in
+  `blockly_i18n.js`), translate quoted in-game block-TEXT content (e.g.
+  "Você Venceu!"), keep asset paths pointing at the English folder. Verified
+  folder-for-folder, page-count-for-page-count parity against
+  `Tutorials/index.json` by script (zero mismatches) before the final commit.
+  Final in-IDE verification (open the Tutorial panel with pt selected) is
+  still gated on Section H, since pt isn't in the language menu yet.
+- **Section H (pt UI translation) started — 438/1371 active messages done
+  (51 of 65 contexts) as of this note, all pushed one context-batch per
+  commit.** Source-string list decision: `pygm2_de.ts` (**monolithic**, 1371
+  active messages / 65 contexts), NOT the split `pygm2_de_*.ts` set — the
+  split set turned out to be a *narrower* subset of the same maintained
+  content (1007 active messages), not a staler one (spot-checked: the
+  raycast_2/3/4 `WelcomeTab` entries exist in both, added the same day per
+  git log). `pygm2_pt.ts` is built **monolithic** to dodge
+  `compile_translations.py`'s split-set bootstrap gate (`should_compile` only
+  compiles `pygm2_<lang>_<group>.ts` once `pygm2_<lang>_core.qm` already
+  exists — a chicken-and-egg problem for a brand-new split language). A
+  session-local generator script reads a named context's active (has
+  `<location>`, i.e. not `type="vanished"`) messages out of `pygm2_de.ts` and
+  emits the same `<context>` block into `pygm2_pt.ts` with supplied
+  Portuguese translations — mechanical XML generation to avoid hand-format
+  errors across hundreds of entries. Per-batch verification that held for
+  every commit: XML well-formedness, `scripts/compile_translations.py`
+  compiles cleanly, a live `QTranslator` resolves sampled strings (incl.
+  leading/trailing-space and `{0}`-placeholder cases — the same
+  leading-space landmine as the `TRANSLATION_CATALOG_CORRUPTION_2026-08-08`
+  fix), full suite green. Registry (`docs/I18N_CLEANUP_2026-08-06.md`,
+  Section H) has a full per-context checklist with commit hashes — that's
+  the resume state, not this note.
+- **Real bug found and fixed: the "self.ide" translation context never
+  applied at runtime, in EVERY shipped language.** While translating pt,
+  noticed a context literally named `self.ide` in `pygm2_de.ts`. Root cause:
+  `self.ide.tr(...)` calls in `core/ide_exporters.py` (`self.ide` is a
+  `PyGameMakerIDE` instance, set via `self.ide = ide_window` in
+  `core/ide_window.py`) resolve their Qt translation CONTEXT from the
+  runtime class name (`"PyGameMakerIDE"`), not the `"self.ide"` call-site
+  text — confirmed empirically with a live `QTranslator` + a `QMainWindow`
+  subclass literally named `PyGameMakerIDE`: `self.tr("No Project")` fell
+  back to English even with a `"self.ide"`-context translation loaded, and
+  `QCoreApplication.translate("self.ide", ...)` was simply never consulted
+  by the real call path. Of 24 such messages per language, 6 happened to
+  already work (duplicated, correctly, under the real `PyGameMakerIDE`
+  context via `ide_window.py`'s own `self.tr()` calls) — **the other 18
+  were genuinely broken**, real human-translated text sitting in every
+  language's `.ts` that could never reach the running app. Fixed for all 7
+  already-shipped languages (commit `cfdb541`): moved the 18 into the real
+  `PyGameMakerIDE` context of whichever file is actually shipped —
+  `pygm2_<lang>_core.ts` for de/it/ru/sl/uk (split-shipping; `PyGameMakerIDE`
+  already lives in `_core` for those), `pygm2_<lang>.ts` in place for es/fr
+  (monolithic-shipping) — reusing each language's own already-correct
+  translation text and real `core/ide_exporters.py` locations, then deleted
+  the now-redundant `self.ide` context from the fixed file. Did **not**
+  create a `self.ide` context for pt (would've been dead on arrival) —
+  those 18 strings will fold into pt's own `PyGameMakerIDE` batch (287
+  messages, not yet started) when that context is tackled. Regression
+  coverage: `tests/test_self_ide_context_fix.py` (4 tests, hand-rolled
+  offscreen `QApplication` per this repo's audit-test convention — no
+  `qapp` fixture needed). Suite 2200→2204 passed, 0 failed.
+- **Session-limit discipline held throughout:** every translation batch
+  (typically 1-10 contexts / 10-80 strings) is its own commit+push, followed
+  by a small separate registry-checkbox commit+push — so a mid-session
+  usage-limit stop loses nothing and the next session resumes straight from
+  `docs/I18N_CLEANUP_2026-08-06.md`'s checkboxes.
