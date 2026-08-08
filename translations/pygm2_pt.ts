@@ -5060,4 +5060,337 @@ Eventos: {4}</translation>
         <translation>{0} instância(s) duplicada(s)</translation>
     </message>
 </context>
+<context>
+    <name>SpriteEditor</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="276"/>
+        <source>Pencil</source>
+        <translation>Lápis</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="276"/>
+        <source>Draw pixels (P)</source>
+        <translation>Desenhar pixels (P)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="277"/>
+        <source>Eraser</source>
+        <translation>Borracha</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="277"/>
+        <source>Erase pixels (E)</source>
+        <translation>Apagar pixels (E)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="278"/>
+        <source>Picker</source>
+        <translation>Conta-gotas</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="278"/>
+        <source>Pick color from canvas (I)</source>
+        <translation>Selecionar cor da tela (I)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="279"/>
+        <source>Fill</source>
+        <translation>Preencher</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="279"/>
+        <source>Flood fill area (G)</source>
+        <translation>Preencher área (G)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="280"/>
+        <source>Line</source>
+        <translation>Linha</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="280"/>
+        <source>Draw line (L)</source>
+        <translation>Desenhar linha (L)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="281"/>
+        <source>Rect</source>
+        <translation>Retâng.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="281"/>
+        <source>Draw rectangle (R)</source>
+        <translation>Desenhar retângulo (R)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="282"/>
+        <source>Ellipse</source>
+        <translation>Elipse</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="282"/>
+        <source>Draw ellipse (O)</source>
+        <translation>Desenhar elipse (O)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="283"/>
+        <source>Select</source>
+        <translation>Selecionar</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="283"/>
+        <source>Rectangle selection (S)</source>
+        <translation>Seleção retangular (S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="310"/>
+        <source>Select tool from list</source>
+        <translation>Selecionar ferramenta da lista</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="319"/>
+        <source>Size:</source>
+        <translation>Tamanho:</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="324"/>
+        <source>Brush / line width in pixels</source>
+        <translation>Largura do pincel/linha em pixels</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="335"/>
+        <source>Origin</source>
+        <translation>Origem</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="340"/>
+        <source>Origin preset</source>
+        <translation>Predefinição de origem</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="341"/>
+        <source>Top-Left</source>
+        <translation>Superior Esquerda</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="342"/>
+        <source>Top-Center</source>
+        <translation>Superior Centro</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="343"/>
+        <source>Center</source>
+        <translation>Centro</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="344"/>
+        <source>Center-Bottom</source>
+        <translation>Centro Inferior</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="345"/>
+        <source>Bottom-Left</source>
+        <translation>Inferior Esquerda</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="346"/>
+        <source>Bottom-Right</source>
+        <translation>Inferior Direita</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="347"/>
+        <source>Custom</source>
+        <translation>Personalizado</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="357"/>
+        <source>Origin X coordinate</source>
+        <translation>Coordenada X da origem</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="365"/>
+        <source>Origin Y coordinate</source>
+        <translation>Coordenada Y da origem</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="375"/>
+        <source>Precise Collision</source>
+        <translation>Colisão Precisa</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="377"/>
+        <source>Enable pixel-perfect collision for this sprite. Static-only: rotated or scaled instances fall back to AABB.</source>
+        <translation>Ativar colisão pixel-perfeita para este sprite. Apenas estático: instâncias rotacionadas ou escaladas usam AABB como alternativa.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="384"/>
+        <source>Filled</source>
+        <translation>Preenchido</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="386"/>
+        <source>Toggle filled shapes</source>
+        <translation>Alternar formas preenchidas</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="391"/>
+        <source>Mirror H</source>
+        <translation>Espelhar H</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="392"/>
+        <source>Mirror V</source>
+        <translation>Espelhar V</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="395"/>
+        <source>Resize</source>
+        <translation>Redimensionar</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="400"/>
+        <source>Grid</source>
+        <translation>Grade</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="403"/>
+        <source>Toggle pixel grid</source>
+        <translation>Alternar grade de pixels</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="408"/>
+        <source>Zoom Out</source>
+        <translation>Diminuir Zoom</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="412"/>
+        <source>Zoom In</source>
+        <translation>Aumentar Zoom</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="416"/>
+        <source>Export PNG…</source>
+        <translation>Exportar PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="571"/>
+        <source>Tool: {0}</source>
+        <translation>Ferramenta: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="606"/>
+        <source>Draw</source>
+        <translation>Desenhar</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="748"/>
+        <source>Scale to {0}x{1}</source>
+        <translation>Escalar para {0}x{1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="761"/>
+        <source>Resize Canvas to {0}x{1}</source>
+        <translation>Redimensionar Tela para {0}x{1}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="777"/>
+        <source>Copied selection</source>
+        <translation>Seleção copiada</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="786"/>
+        <source>Cut selection</source>
+        <translation>Seleção recortada</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="797"/>
+        <source>Pasted from clipboard</source>
+        <translation>Colado da área de transferência</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="818"/>
+        <source>Copy	Ctrl+C</source>
+        <translation>Copiar	Ctrl+C</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="822"/>
+        <source>Cut	Ctrl+X</source>
+        <translation>Recortar	Ctrl+X</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="826"/>
+        <source>Paste	Ctrl+V</source>
+        <translation>Colar	Ctrl+V</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="832"/>
+        <source>Delete	Del</source>
+        <translation>Excluir	Del</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="837"/>
+        <source>Deselect	Esc</source>
+        <translation>Desmarcar	Esc</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="843"/>
+        <source>Select All</source>
+        <translation>Selecionar Tudo</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="847"/>
+        <source>Export as PNG…</source>
+        <translation>Exportar como PNG…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="872"/>
+        <source>Export as PNG</source>
+        <translation>Exportar como PNG</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="873"/>
+        <source>PNG Images (*.png)</source>
+        <translation>Imagens PNG (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="878"/>
+        <source>Exported: {0}</source>
+        <translation>Exportado: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="880"/>
+        <source>Export Error</source>
+        <translation>Erro de Exportação</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="881"/>
+        <source>Failed to export PNG.</source>
+        <translation>Falha ao exportar PNG.</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1015"/>
+        <source>No frames in sprite</source>
+        <translation>Nenhum quadro no sprite</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1029"/>
+        <source>Validation Error</source>
+        <translation>Erro de Validação</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1063"/>
+        <source>Saved: {0}</source>
+        <translation>Salvo: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1074"/>
+        <source>Save Error</source>
+        <translation>Erro ao Salvar</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1075"/>
+        <source>Failed to save sprite: {0}</source>
+        <translation>Falha ao salvar o sprite: {0}</translation>
+    </message>
+</context>
 </TS>
