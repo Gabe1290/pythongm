@@ -4360,4 +4360,366 @@ Use File → New Project or File → Open Project to begin.</source>
         <translation>新しい{0}の名前を入力：</translation>
     </message>
 </context>
+<context>
+    <name>EnhancedPropertiesPanel</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="97"/>
+        <source>Asset Information</source>
+        <translation>アセット情報</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="100"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="475"/>
+        <source>No asset selected</source>
+        <translation>アセットが選択されていません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="104"/>
+        <source>Name:</source>
+        <translation>名前：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="105"/>
+        <source>Type:</source>
+        <translation>種類：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="106"/>
+        <source>Status:</source>
+        <translation>状態：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="111"/>
+        <source>Properties</source>
+        <translation>プロパティ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="118"/>
+        <source>Preview</source>
+        <translation>プレビュー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="121"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="485"/>
+        <source>No preview available</source>
+        <translation>プレビューを利用できません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="193"/>
+        <source>Room (Editor)</source>
+        <translation>ルーム（エディタ）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="194"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="688"/>
+        <source>Active</source>
+        <translation>アクティブ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="714"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="771"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="835"/>
+        <source>None</source>
+        <translation>なし</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="266"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="537"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="553"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="556"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="583"/>
+        <source>Width:</source>
+        <translation>幅：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="267"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="538"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="554"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="557"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="584"/>
+        <source>Height:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="539"/>
+        <source>Background:</source>
+        <translation>背景：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="270"/>
+        <source>Enable Views:</source>
+        <translation>ビューを有効にする：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="268"/>
+        <source>Background Color:</source>
+        <translation>背景色：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="276"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="541"/>
+        <source>Instances:</source>
+        <translation>インスタンス：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="330"/>
+        <source>Choose Background Color</source>
+        <translation>背景色を選択</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="388"/>
+        <source>Room Preview
+{0}x{1}
+{2} instances</source>
+        <translation>ルームプレビュー
+{0}x{1}
+インスタンス数：{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="391"/>
+        <source>Preview
+Generation Failed</source>
+        <translation>プレビュー
+生成に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="393"/>
+        <source>Preview
+Not Available</source>
+        <translation>プレビュー
+利用できません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="397"/>
+        <source>Preview
+Update Error</source>
+        <translation>プレビュー
+更新エラー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="525"/>
+        <source>Loaded</source>
+        <translation>読み込み済み</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="445"/>
+        <source>Room: {0}
+{1} x {2}</source>
+        <translation>ルーム：{0}
+{1} x {2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="81"/>
+        <source>No project loaded.
+
+Open or create a project, then select an asset from the tree on the left to view its details here.</source>
+        <translation>プロジェクトが読み込まれていません。
+
+プロジェクトを開くか作成し、左側のツリーからアセットを選択すると詳細がここに表示されます。</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="235"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="260"/>
+        <source>Configure...</source>
+        <translation>設定...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
+        <source>Backgrounds:</source>
+        <translation>背景：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
+        <source>Room: {0}
+{1} x {2}
+{3} instances</source>
+        <translation>ルーム：{0}
+{1} x {2}
+インスタンス数：{3}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="431"/>
+        <source>Room: {0}
+{1}x{2}
+{3} instances</source>
+        <translation>ルーム：{0}
+{1}x{2}
+インスタンス数：{3}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="440"/>
+        <source>Preview generation failed</source>
+        <translation>プレビューの生成に失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="559"/>
+        <source>Frames:</source>
+        <translation>フレーム：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="560"/>
+        <source>Origin X:</source>
+        <translation>原点X：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="561"/>
+        <source>Origin Y:</source>
+        <translation>原点Y：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="562"/>
+        <source>Speed:</source>
+        <translation>速度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="568"/>
+        <source>Horizontal Strip</source>
+        <translation>水平ストリップ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="569"/>
+        <source>Vertical Strip</source>
+        <translation>垂直ストリップ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="570"/>
+        <source>Grid</source>
+        <translation>グリッド</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="571"/>
+        <source>Single Frame</source>
+        <translation>単一フレーム</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="573"/>
+        <source>Animation:</source>
+        <translation>アニメーション：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="577"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="587"/>
+        <source>File:</source>
+        <translation>ファイル：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="603"/>
+        <source>{0}: {1}</source>
+        <translation>{0}：{1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="638"/>
+        <source>No image file path found for {0}</source>
+        <translation>{0} の画像ファイルパスが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="643"/>
+        <source>Image file not found:
+{0}</source>
+        <translation>画像ファイルが見つかりません：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="651"/>
+        <source>Failed to load image:
+{0}</source>
+        <translation>画像の読み込みに失敗しました：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="670"/>
+        <source>{0}
+{1}x{2}</source>
+        <translation>{0}
+{1}x{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="677"/>
+        <source>Error loading image:
+{0}</source>
+        <translation>画像の読み込みエラー：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="687"/>
+        <source>Object (Editor)</source>
+        <translation>オブジェクト（エディタ）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="741"/>
+        <source>Sprite:</source>
+        <translation>スプライト：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="747"/>
+        <source>{0} x {1}</source>
+        <translation>{0} x {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="749"/>
+        <source>Sprite Size:</source>
+        <translation>スプライトサイズ：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="751"/>
+        <source>Visible:</source>
+        <translation>表示：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="752"/>
+        <source>Solid:</source>
+        <translation>ソリッド：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="753"/>
+        <source>Persistent:</source>
+        <translation>永続：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="757"/>
+        <source>Events:</source>
+        <translation>イベント：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="874"/>
+        <source>Object: {0}
+Sprite: {1}
+Size: {2}x{3}
+Events: {4}</source>
+        <translation>オブジェクト：{0}
+スプライト：{1}
+サイズ：{2}x{3}
+イベント：{4}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="889"/>
+        <source>Object: {0}</source>
+        <translation>オブジェクト：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="891"/>
+        <source>Sprite: {0}</source>
+        <translation>スプライト：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="893"/>
+        <source>No sprite assigned</source>
+        <translation>スプライトが割り当てられていません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="894"/>
+        <source>Events: {0}</source>
+        <translation>イベント：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="898"/>
+        <source>Visible</source>
+        <translation>表示</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
+        <source>Solid</source>
+        <translation>ソリッド</translation>
+    </message>
+</context>
 </TS>
