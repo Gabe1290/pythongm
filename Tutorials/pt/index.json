@@ -1,0 +1,16 @@
+{
+    "tutorials": [
+        {
+            "title": "Primeiros Passos com o PyGameMaker",
+            "folder": "01_getting_started",
+            "description": "Aprenda o básico do IDE do PyGameMaker",
+            "pages": [
+                "01_welcome.html",
+                "02_interface.html",
+                "03_first_project.html",
+                "04_next_steps.html"
+            ],
+            "thumbnail": "thumbnails/01_getting_started.png"
+        }
+    ]
+}
