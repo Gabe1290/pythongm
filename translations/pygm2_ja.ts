@@ -5060,4 +5060,337 @@ Events: {4}</source>
         <translation>{0} 個のインスタンスを複製しました</translation>
     </message>
 </context>
+<context>
+    <name>SpriteEditor</name>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="276"/>
+        <source>Pencil</source>
+        <translation>鉛筆</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="276"/>
+        <source>Draw pixels (P)</source>
+        <translation>ピクセルを描画（P）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="277"/>
+        <source>Eraser</source>
+        <translation>消しゴム</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="277"/>
+        <source>Erase pixels (E)</source>
+        <translation>ピクセルを消去（E）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="278"/>
+        <source>Picker</source>
+        <translation>スポイト</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="278"/>
+        <source>Pick color from canvas (I)</source>
+        <translation>キャンバスから色を取得（I）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="279"/>
+        <source>Fill</source>
+        <translation>塗りつぶし</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="279"/>
+        <source>Flood fill area (G)</source>
+        <translation>領域を塗りつぶし（G）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="280"/>
+        <source>Line</source>
+        <translation>直線</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="280"/>
+        <source>Draw line (L)</source>
+        <translation>直線を描画（L）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="281"/>
+        <source>Rect</source>
+        <translation>矩形</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="281"/>
+        <source>Draw rectangle (R)</source>
+        <translation>矩形を描画（R）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="282"/>
+        <source>Ellipse</source>
+        <translation>楕円</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="282"/>
+        <source>Draw ellipse (O)</source>
+        <translation>楕円を描画（O）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="283"/>
+        <source>Select</source>
+        <translation>選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="283"/>
+        <source>Rectangle selection (S)</source>
+        <translation>矩形選択（S）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="310"/>
+        <source>Select tool from list</source>
+        <translation>リストからツールを選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="319"/>
+        <source>Size:</source>
+        <translation>サイズ：</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="324"/>
+        <source>Brush / line width in pixels</source>
+        <translation>ブラシ／線の太さ（ピクセル）</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="335"/>
+        <source>Origin</source>
+        <translation>原点</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="340"/>
+        <source>Origin preset</source>
+        <translation>原点プリセット</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="341"/>
+        <source>Top-Left</source>
+        <translation>左上</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="342"/>
+        <source>Top-Center</source>
+        <translation>上中央</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="343"/>
+        <source>Center</source>
+        <translation>中央</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="344"/>
+        <source>Center-Bottom</source>
+        <translation>下中央</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="345"/>
+        <source>Bottom-Left</source>
+        <translation>左下</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="346"/>
+        <source>Bottom-Right</source>
+        <translation>右下</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="347"/>
+        <source>Custom</source>
+        <translation>カスタム</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="357"/>
+        <source>Origin X coordinate</source>
+        <translation>原点のX座標</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="365"/>
+        <source>Origin Y coordinate</source>
+        <translation>原点のY座標</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="375"/>
+        <source>Precise Collision</source>
+        <translation>精密衝突判定</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="377"/>
+        <source>Enable pixel-perfect collision for this sprite. Static-only: rotated or scaled instances fall back to AABB.</source>
+        <translation>このスプライトにピクセル単位の衝突判定を有効にします。静的のみ：回転または拡大縮小されたインスタンスはAABBにフォールバックします。</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="384"/>
+        <source>Filled</source>
+        <translation>塗りつぶし</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="386"/>
+        <source>Toggle filled shapes</source>
+        <translation>塗りつぶし図形を切り替え</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="391"/>
+        <source>Mirror H</source>
+        <translation>水平反転</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="392"/>
+        <source>Mirror V</source>
+        <translation>垂直反転</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="395"/>
+        <source>Resize</source>
+        <translation>サイズ変更</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="400"/>
+        <source>Grid</source>
+        <translation>グリッド</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="403"/>
+        <source>Toggle pixel grid</source>
+        <translation>ピクセルグリッドを切り替え</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="408"/>
+        <source>Zoom Out</source>
+        <translation>ズームアウト</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="412"/>
+        <source>Zoom In</source>
+        <translation>ズームイン</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="416"/>
+        <source>Export PNG…</source>
+        <translation>PNGをエクスポート…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="571"/>
+        <source>Tool: {0}</source>
+        <translation>ツール：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="606"/>
+        <source>Draw</source>
+        <translation>描画</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="748"/>
+        <source>Scale to {0}x{1}</source>
+        <translation>{0}x{1} に拡大縮小</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="761"/>
+        <source>Resize Canvas to {0}x{1}</source>
+        <translation>キャンバスを {0}x{1} にサイズ変更</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="777"/>
+        <source>Copied selection</source>
+        <translation>選択範囲をコピーしました</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="786"/>
+        <source>Cut selection</source>
+        <translation>選択範囲を切り取りました</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="797"/>
+        <source>Pasted from clipboard</source>
+        <translation>クリップボードから貼り付けました</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="818"/>
+        <source>Copy	Ctrl+C</source>
+        <translation>コピー	Ctrl+C</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="822"/>
+        <source>Cut	Ctrl+X</source>
+        <translation>切り取り	Ctrl+X</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="826"/>
+        <source>Paste	Ctrl+V</source>
+        <translation>貼り付け	Ctrl+V</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="832"/>
+        <source>Delete	Del</source>
+        <translation>削除	Del</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="837"/>
+        <source>Deselect	Esc</source>
+        <translation>選択解除	Esc</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="843"/>
+        <source>Select All</source>
+        <translation>すべて選択</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="847"/>
+        <source>Export as PNG…</source>
+        <translation>PNGとしてエクスポート…</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="872"/>
+        <source>Export as PNG</source>
+        <translation>PNGとしてエクスポート</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="873"/>
+        <source>PNG Images (*.png)</source>
+        <translation>PNG画像 (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="878"/>
+        <source>Exported: {0}</source>
+        <translation>エクスポート済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="880"/>
+        <source>Export Error</source>
+        <translation>エクスポートエラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="881"/>
+        <source>Failed to export PNG.</source>
+        <translation>PNGのエクスポートに失敗しました。</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1015"/>
+        <source>No frames in sprite</source>
+        <translation>スプライトにフレームがありません</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1029"/>
+        <source>Validation Error</source>
+        <translation>検証エラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1063"/>
+        <source>Saved: {0}</source>
+        <translation>保存済み：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1074"/>
+        <source>Save Error</source>
+        <translation>保存エラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/sprite_editor_main.py" line="1075"/>
+        <source>Failed to save sprite: {0}</source>
+        <translation>スプライトの保存に失敗しました：{0}</translation>
+    </message>
+</context>
 </TS>
