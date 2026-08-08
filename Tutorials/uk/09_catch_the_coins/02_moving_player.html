@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Фаза 1: Рухомий гравець</h1>
+
+    <p>Почнімо зі створення гравця та його руху ліворуч і праворуч клавішами зі стрілками.</p>
+
+    <h2>Створіть новий проєкт</h2>
+    <div class="step">
+        <ol>
+            <li>Перейдіть до <code>Файл &gt; Новий проєкт</code></li>
+            <li>Назвіть його <strong>CatchTheCoins</strong></li>
+            <li>Для <strong>Шаблону</strong> виберіть <strong>«З екраном завершення гри»</strong></li>
+        </ol>
+        <p style="margin-top: 8px; font-style: italic;">Цей шаблон дає вам готовий
+        екран завершення гри, який ми підключимо пізніше, тож вам не доведеться будувати його самостійно.</p>
+    </div>
+
+    <h2>Створіть спрайт гравця</h2>
+    <div class="step">
+        <ol>
+            <li>Клацніть правою кнопкою на <strong>Спрайти</strong> в дереві ресурсів &rarr; <strong>Створити новий спрайт</strong></li>
+            <li>Назвіть його <code>spr_player</code></li>
+            <li>Двічі клацніть, щоб відкрити редактор спрайтів, і намалюйте персонажа 32&times;32
+            (ракетка, кошик або просто зелений квадрат підійдуть). Натисніть <strong>Ctrl+S</strong>, щоб зберегти.</li>
+        </ol>
+    </div>
+
+    <h2>Створіть об'єкт гравця</h2>
+    <div class="step">
+        <ol>
+            <li>Клацніть правою кнопкою на <strong>Об'єкти</strong> &rarr; <strong>Створити новий об'єкт</strong></li>
+            <li>Назвіть його <code>obj_player</code></li>
+            <li>Встановіть спрайт <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Створіть ігрову кімнату</h2>
+    <div class="step">
+        <ol>
+            <li>Клацніть правою кнопкою на <strong>Кімнати</strong> &rarr; <strong>Створити нову кімнату</strong></li>
+            <li>Назвіть її <code>room_main</code></li>
+            <li>Відкрийте кімнату й розмістіть <code>obj_player</code> внизу по центру</li>
+        </ol>
+    </div>
+
+    <h2>Додайте рух гравця</h2>
+    <div class="step">
+        <ol>
+            <li>Двічі клацніть <code>obj_player</code>, щоб відкрити редактор об'єктів</li>
+            <li>Натисніть вкладку <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Рух ліворуч</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Клавіатура: Left Arrow (утримується)</span><br>
+            <span class="block block-move block-indent">встановити горизонтальну швидкість на <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Рух праворуч</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Клавіатура: Right Arrow (утримується)</span><br>
+            <span class="block block-move block-indent">встановити горизонтальну швидкість на <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>Зупинка, коли жодну клавішу не натиснуто</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Клавіатура: Жодної клавіші</span><br>
+            <span class="block block-move block-indent">зупинити рух</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>У вас має бути <strong>3 блоки подій</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Перевірте свою гру!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Натисніть F5, щоб грати!</strong></p>
+        <ul>
+            <li>Використовуйте клавіші <strong>Ліворуч</strong> і <strong>Праворуч</strong>, щоб рухати гравця</li>
+            <li>Поки що гравець може виходити за межі екрана &mdash; монети будуть далі!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Натисніть "Далі", щоб додати монети та ворога.
+    </div>
+</body>
+</html>

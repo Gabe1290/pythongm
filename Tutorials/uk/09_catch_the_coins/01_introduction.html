@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Збери монети!</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/09_catch_the_coins.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128176;</p>
+        <p><strong>Збери кожну монету &mdash; не зіткнувшись із ворогом!</strong></p>
+        <p>Рухайся ліворуч і праворуч, збери всі монети, що падають, щоб перемогти, і уникай ворога, інакше гра закінчиться.</p>
+    </div>
+
+    <h2>Що ми побудуємо</h2>
+    <p>Ви створите повноцінну гру з чітким станом перемоги та поразки.
+    У гру можна буде грати наприкінці кожної фази, тож ви можете зупинитися й
+    спробувати її, коли захочете.</p>
+
+    <h2>Як працює цей урок</h2>
+
+    <div class="phase">
+        <strong>Фаза 1 &mdash; Рухомий гравець</strong><br>
+        Створіть гравця, що рухається ліворуч і праворуч. Перевірте одразу ж!
+    </div>
+
+    <div class="phase">
+        <strong>Фаза 2 &mdash; Монети та ворог</strong><br>
+        Додайте монети, що падають з неба, плюс одного ворога. Розмістіть їх у кімнаті.
+    </div>
+
+    <div class="phase">
+        <strong>Фаза 3 &mdash; Збір і зіткнення</strong><br>
+        Збирайте монети за очки, торкніться ворога — і гра завершується.
+    </div>
+
+    <div class="phase">
+        <strong>Фаза 4 &mdash; Перемога у грі</strong><br>
+        Додайте екран перемоги, що з'являється, коли зібрано всі монети.
+    </div>
+
+    <h2>Чого ви навчитеся</h2>
+    <ul>
+        <li>Створювати спрайти, об'єкти та кімнати</li>
+        <li>Використовувати події клавіатури для керування гравцем</li>
+        <li>Виявляти зіткнення між об'єктами</li>
+        <li>Відстежувати й показувати рахунок</li>
+        <li>Використовувати переходи між кімнатами для екранів завершення гри та перемоги</li>
+        <li>Використовувати блок <strong>If Condition</strong>, щоб перевіряти, скільки об'єктів залишилося</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Потрібний час:</strong> Приблизно 15&ndash;20 хвилин
+    </div>
+
+    <div class="info">
+        <strong>Готові?</strong> Натисніть "Далі", щоб почати будувати.
+    </div>
+</body>
+</html>
