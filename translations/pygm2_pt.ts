@@ -415,4 +415,144 @@ Deseja salvar mesmo assim?</translation>
         <translation>Não foi possível importar o exemplo incluído. Veja a saída do console para mais detalhes.</translation>
     </message>
 </context>
+<context>
+    <name>ActionListWidget</name>
+    <message>
+        <location filename="../editors/object_editor_components.py" line="23"/>
+        <source>Actions are now managed through the Events panel</source>
+        <translation>As ações agora são gerenciadas através do painel de Eventos</translation>
+    </message>
+</context>
+<context>
+    <name>AssetRenameDialog</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="25"/>
+        <source>Rename {0}</source>
+        <translation>Renomear {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="34"/>
+        <source>Current name: &lt;b&gt;{0}&lt;/b&gt;</source>
+        <translation>Nome atual: &lt;b&gt;{0}&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="38"/>
+        <source>New name:</source>
+        <translation>Novo nome:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="50"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="54"/>
+        <source>Rename</source>
+        <translation>Renomear</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="90"/>
+        <source>Invalid Name</source>
+        <translation>Nome Inválido</translation>
+    </message>
+</context>
+<context>
+    <name>ColorPaletteWidget</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="157"/>
+        <source>Swap foreground/background</source>
+        <translation>Trocar cor de frente/fundo</translation>
+    </message>
+</context>
+<context>
+    <name>ColorSwatch</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="49"/>
+        <source>Choose Color</source>
+        <translation>Escolher Cor</translation>
+    </message>
+</context>
+<context>
+    <name>FloatableEditorMixin</name>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="44"/>
+        <source>📥 Attach</source>
+        <translation>📥 Anexar</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="45"/>
+        <source>Return this editor to the IDE&apos;s tab strip</source>
+        <translation>Retornar este editor para a faixa de abas do IDE</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="47"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Flutuar</translation>
+    </message>
+    <message>
+        <location filename="../editors/_floatable_editor.py" line="48"/>
+        <source>Open this editor in its own window</source>
+        <translation>Abrir este editor em sua própria janela</translation>
+    </message>
+</context>
+<context>
+    <name>ForegroundBackgroundSwatch</name>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="106"/>
+        <source>Foreground Color</source>
+        <translation>Cor de Frente</translation>
+    </message>
+    <message>
+        <location filename="../editors/sprite_editor/color_palette.py" line="113"/>
+        <source>Background Color</source>
+        <translation>Cor de Fundo</translation>
+    </message>
+</context>
+<context>
+    <name>MessageTranslationsDialog</name>
+    <message>
+        <location filename="../events/action_editor.py" line="751"/>
+        <source>Message Translations</source>
+        <translation>Traduções de Mensagem</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="778"/>
+        <source>Default message (English):</source>
+        <translation>Mensagem padrão (Inglês):</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="795"/>
+        <source>Translation for {0}</source>
+        <translation>Tradução para {0}</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectPalette</name>
+    <message>
+        <location filename="../editors/room_editor/object_palette.py" line="34"/>
+        <source>Objects</source>
+        <translation>Objetos</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/object_palette.py" line="45"/>
+        <source>Clear Selection</source>
+        <translation>Limpar Seleção</translation>
+    </message>
+</context>
+<context>
+    <name>TileGridWidget</name>
+    <message>
+        <location filename="../editors/room_editor/tile_palette.py" line="70"/>
+        <source>No tileset</source>
+        <translation>Nenhum conjunto de blocos</translation>
+    </message>
+</context>
+<context>
+    <name>VisualScriptingArea</name>
+    <message>
+        <location filename="../editors/object_editor_components.py" line="41"/>
+        <source>Visual scripting is now managed through the Events panel</source>
+        <translation>A programação visual agora é gerenciada através do painel de Eventos</translation>
+    </message>
+</context>
 </TS>
