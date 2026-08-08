@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Controlador de jogo</h1>
+
+    <p>O jogo funciona, mas você ainda não pode ver sua pontuação na tela!
+    Nesta fase final, você vai criar um objeto controlador de jogo invisível
+    que exibe a pontuação e a reinicia no início do jogo.</p>
+
+    <div class="info">
+        <strong>O que é um controlador de jogo?</strong> É um objeto sem sprite que gerencia
+        coisas como a exibição da pontuação. Como é invisível, não interfere
+        no jogo &mdash; ele apenas roda em segundo plano.
+    </div>
+
+    <h2>Passo 1: Crie o objeto</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Objetos</strong> &rarr; <strong>Criar Novo Objeto</strong></li>
+            <li>Nomeie-o <code>obj_game_controller</code></li>
+            <li><strong>Nenhum sprite necessário</strong> &mdash; deixe o campo de sprite vazio</li>
+            <li>Deixe "Solid" desmarcado</li>
+        </ol>
+    </div>
+
+    <h2>Passo 2: Programe o controlador de jogo (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_game_controller</code> para abrir o Editor de Objetos</li>
+            <li>Clique na aba <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Reiniciar pontuação no início</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <p>De <em>Events</em>, arraste um bloco <strong>Create Event</strong>.
+        De <em>Score/Lives/Health</em>, encaixe <strong>Set Score</strong> dentro e digite <strong>0</strong>.</p>
+        <p>Isso garante que a pontuação comece em zero toda vez que a sala carrega.</p>
+    </div>
+
+    <h2>Exibir pontuação na tela</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>De <em>Events</em>, arraste um bloco <strong>Draw Event</strong>.
+        De <em>Score/Lives/Health</em>, encaixe <strong>Draw Score</strong> dentro.
+        Defina x como <strong>10</strong> e y como <strong>10</strong> (canto superior esquerdo).</p>
+    </div>
+
+    <h2>Aplique seus blocos</h2>
+    <div class="step">
+        <ol>
+            <li>Você deve ter <strong>2 blocos de evento</strong> em seu espaço de trabalho (Create e Draw)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Como funciona:</strong> O Create Event roda uma vez quando o objeto aparece na sala,
+        definindo a pontuação como 0. O Draw Event roda a cada quadro e exibe
+        "Score: X" no canto superior esquerdo. Conforme o jogador coleta moedas,
+        a pontuação se atualiza automaticamente!
+    </div>
+
+    <h2>Passo 3: Coloque na sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abra <code>room_maze</code></li>
+            <li>Selecione <code>obj_game_controller</code> e coloque-o em qualquer lugar da sala</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Não esqueça!</strong> O controlador de jogo deve ser colocado na sala
+        para que a pontuação seja exibida. Como não tem sprite, você não o verá durante o jogo,
+        mas ele continuará rodando.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>A pontuação deve exibir <strong>"Score: 0"</strong> no canto superior esquerdo</li>
+            <li>Colete moedas &mdash; a pontuação deve aumentar em <strong>10</strong> para cada moeda</li>
+            <li>Navegue até a saída &mdash; uma mensagem <strong>"Você Venceu!"</strong> aparece</li>
+            <li>Após a mensagem, a sala reinicia e a pontuação volta a 0</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Parabéns!</strong> Você construiu um jogo de labirinto completo!
+        </p>
+        <p>Seu jogo tem um jogador que navega por corredores, moedas colecionáveis,
+        exibição de pontuação e uma saída de vitória. Muito bem!</p>
+    </div>
+
+    <h2>Ideias de desafio</h2>
+    <div class="challenge">
+        <p>Quer tornar seu jogo de labirinto ainda melhor? Tente estes desafios:</p>
+        <ul>
+            <li><strong>Múltiplos níveis:</strong> Crie salas adicionais (<code>room_maze2</code>, <code>room_maze3</code>)
+            com labirintos mais difíceis. Mude o bloco <strong>Restart room</strong> da saída para <strong>Go to next room</strong>.</li>
+            <li><strong>Cronômetro:</strong> Adicione um cronômetro regressivo usando uma variável. Se o tempo acabar, reinicie a sala!</li>
+            <li><strong>Inimigos:</strong> Crie um objeto inimigo patrulhador que se move de um lado para o outro.
+            Se o jogador colidir com o inimigo, reinicie a sala.</li>
+            <li><strong>Chaves e portas:</strong> Adicione um objeto chave que deve ser coletado antes que a saída se abra.</li>
+        </ul>
+    </div>
+</body>
+</html>
