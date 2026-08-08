@@ -45,13 +45,12 @@ Reflects what's actually compiled as of 2026-08-09 (`ls translations/*.qm`):
 - Slovenian (sl) - `pygm2_sl*.qm` (split)
 - Ukrainian (uk) - `pygm2_uk*.qm` (split)
 - Russian (ru) - `pygm2_ru*.qm` (split)
-- Chinese (zh) - `.ts` source exists (`pygamemaker_zh.ts`, pre-`pygm2`-
-  naming, 289 untranslated entries) but is not yet compiled to `.qm`,
-  so it doesn't currently appear in the app's Tools > Language menu.
-  See `docs/JA_ZH_I18N_PLAN.md` for the ja precedent to follow —
-  source-string list (`pygm2_pt.ts`), generator-script approach
-  (`scripts/gen_translation_ts.py`), per-context verification
-  discipline.
+- Chinese (zh) - `pygm2_zh.qm` (monolithic) - fully translated as of
+  2026-08-09 (1369/1369 real distinct UI strings, built from
+  `pygm2_pt.ts` via `scripts/gen_translation_ts.py` per
+  `docs/JA_ZH_I18N_PLAN.md`). The old pre-`pygm2` `pygamemaker_zh.ts`
+  stub (289 entries, all untranslated) was deleted once this real
+  replacement existed.
 
 ## Compiling
 
