@@ -92,12 +92,12 @@
     <message>
         <location filename="../editors/base_editor.py" line="219"/>
         <source>Loaded: {0}</source>
-        <translation>Loaded: {0}</translation>
+        <translation>Загружено: {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="121"/>
         <source>💾 Save</source>
-        <translation>💾 Save</translation>
+        <translation>💾 Сохранить</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="126"/>
@@ -108,19 +108,19 @@
     <message>
         <location filename="../editors/base_editor.py" line="129"/>
         <source>Toggle automatic saving (currently every 3 seconds)</source>
-        <translation>Toggle automatic saving (currently every 3 seconds)</translation>
+        <translation>Переключить автоматическое сохранение (сейчас каждые 3 секунды)</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="138"/>
         <location filename="../editors/base_editor.py" line="195"/>
         <source>↶ Undo</source>
-        <translation>↶ Undo</translation>
+        <translation>↶ Отменить</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="141"/>
         <location filename="../editors/base_editor.py" line="200"/>
         <source>↷ Redo</source>
-        <translation>↷ Redo</translation>
+        <translation>↷ Повторить</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
@@ -150,7 +150,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
         <source>Auto-save is enabled. Click to disable.</source>
-        <translation>Auto-save is enabled. Click to disable.</translation>
+        <translation>Автосохранение включено. Нажмите, чтобы отключить.</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="161"/>
@@ -160,7 +160,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="162"/>
         <source>Auto-save is disabled. Click to enable.</source>
-        <translation>Auto-save is disabled. Click to enable.</translation>
+        <translation>Автосохранение отключено. Нажмите, чтобы включить.</translation>
     </message>
 </context>
 <context>
@@ -179,17 +179,17 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="104"/>
         <source>Name:</source>
-        <translation>Name:</translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="105"/>
         <source>Type:</source>
-        <translation>Type:</translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="106"/>
         <source>Status:</source>
-        <translation>Status:</translation>
+        <translation>Статус:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="111"/>
@@ -199,7 +199,7 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="118"/>
         <source>Preview</source>
-        <translation>Preview</translation>
+        <translation>Предпросмотр</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="121"/>
@@ -223,7 +223,7 @@
         <location filename="../widgets/enhanced_properties_panel.py" line="771"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="835"/>
         <source>None</source>
-        <translation>None</translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <source>Background Image:</source>
@@ -291,37 +291,37 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="330"/>
         <source>Choose Background Color</source>
-        <translation>Choose Background Color</translation>
+        <translation>Выберите цвет фона</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="388"/>
         <source>Room Preview
 {0}x{1}
 {2} instances</source>
-        <translation>Room Preview
+        <translation>Предпросмотр комнаты
 {0}x{1}
-{2} instances</translation>
+{2} экземпляров</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="391"/>
         <source>Preview
 Generation Failed</source>
-        <translation>Preview
-Generation Failed</translation>
+        <translation>Предпросмотр
+Ошибка создания</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="393"/>
         <source>Preview
 Not Available</source>
-        <translation>Preview
-Not Available</translation>
+        <translation>Предпросмотр
+Недоступен</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="397"/>
         <source>Preview
 Update Error</source>
-        <translation>Preview
-Update Error</translation>
+        <translation>Предпросмотр
+Ошибка обновления</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="525"/>
@@ -332,7 +332,7 @@ Update Error</translation>
         <location filename="../widgets/enhanced_properties_panel.py" line="445"/>
         <source>Room: {0}
 {1} x {2}</source>
-        <translation>Room: {0}
+        <translation>Комната: {0}
 {1} x {2}</translation>
     </message>
     <message>
@@ -431,20 +431,20 @@ Open or create a project, then select an asset from the tree on the left to view
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="638"/>
         <source>No image file path found for {0}</source>
-        <translation>No image file path found for {0}</translation>
+        <translation>Не найден путь к файлу изображения для {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="643"/>
         <source>Image file not found:
 {0}</source>
-        <translation>Image file not found:
+        <translation>Файл изображения не найден:
 {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="651"/>
         <source>Failed to load image:
 {0}</source>
-        <translation>Failed to load image:
+        <translation>Не удалось загрузить изображение:
 {0}</translation>
     </message>
     <message>
@@ -458,18 +458,18 @@ Open or create a project, then select an asset from the tree on the left to view
         <location filename="../widgets/enhanced_properties_panel.py" line="677"/>
         <source>Error loading image:
 {0}</source>
-        <translation>Error loading image:
+        <translation>Ошибка при загрузке изображения:
 {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="687"/>
         <source>Object (Editor)</source>
-        <translation>Object (Editor)</translation>
+        <translation>Объект (Редактор)</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="741"/>
         <source>Sprite:</source>
-        <translation>Sprite:</translation>
+        <translation>Спрайт:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="747"/>
@@ -479,27 +479,27 @@ Open or create a project, then select an asset from the tree on the left to view
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="749"/>
         <source>Sprite Size:</source>
-        <translation>Sprite Size:</translation>
+        <translation>Размер спрайта:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="751"/>
         <source>Visible:</source>
-        <translation>Visible:</translation>
+        <translation>Видимый:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="752"/>
         <source>Solid:</source>
-        <translation>Solid:</translation>
+        <translation>Твёрдый:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="753"/>
         <source>Persistent:</source>
-        <translation>Persistent:</translation>
+        <translation>Постоянный:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="757"/>
         <source>Events:</source>
-        <translation>Events:</translation>
+        <translation>События:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="874"/>
@@ -507,40 +507,40 @@ Open or create a project, then select an asset from the tree on the left to view
 Sprite: {1}
 Size: {2}x{3}
 Events: {4}</source>
-        <translation>Object: {0}
-Sprite: {1}
-Size: {2}x{3}
-Events: {4}</translation>
+        <translation>Объект: {0}
+Спрайт: {1}
+Размер: {2}x{3}
+События: {4}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="889"/>
         <source>Object: {0}</source>
-        <translation>Object: {0}</translation>
+        <translation>Объект: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="891"/>
         <source>Sprite: {0}</source>
-        <translation>Sprite: {0}</translation>
+        <translation>Спрайт: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="893"/>
         <source>No sprite assigned</source>
-        <translation>No sprite assigned</translation>
+        <translation>Спрайт не назначен</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="894"/>
         <source>Events: {0}</source>
-        <translation>Events: {0}</translation>
+        <translation>События: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="898"/>
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Видимый</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
         <source>Solid</source>
-        <translation>Solid</translation>
+        <translation>Твёрдый</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="235"/>
@@ -554,18 +554,18 @@ Events: {4}</translation>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="27"/>
         <source>Instance Properties</source>
-        <translation>Instance Properties</translation>
+        <translation>Свойства экземпляра</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="35"/>
         <location filename="../editors/room_editor/instance_properties.py" line="135"/>
         <source>Object: None</source>
-        <translation>Object: None</translation>
+        <translation>Объект: Нет</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="39"/>
         <source>Position</source>
-        <translation>Position</translation>
+        <translation>Положение</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="42"/>
@@ -582,27 +582,27 @@ Events: {4}</translation>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="57"/>
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Видимый</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="63"/>
         <source>Rotation</source>
-        <translation>Rotation</translation>
+        <translation>Поворот</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="74"/>
         <source>Scale</source>
-        <translation>Scale</translation>
+        <translation>Масштаб</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="96"/>
         <source>Delete Instance</source>
-        <translation>Delete Instance</translation>
+        <translation>Удалить экземпляр</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="117"/>
         <source>Object: {0}</source>
-        <translation>Object: {0}</translation>
+        <translation>Объект: {0}</translation>
     </message>
 </context>
 <context>
@@ -655,16 +655,16 @@ Events: {4}</translation>
         <location filename="../editors/object_editor/object_editor_main.py" line="650"/>
         <location filename="../editors/object_editor/object_editor_main.py" line="664"/>
         <source>💾 Save</source>
-        <translation>💾 Save</translation>
+        <translation>💾 Сохранить</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="186"/>
         <source>Save object (Ctrl+S)</source>
-        <translation>Save object (Ctrl+S)</translation>
+        <translation>Сохранить объект (Ctrl+S)</translation>
     </message>
     <message>
         <source>Object Events</source>
-        <translation type="vanished">Événements de l&apos;objet</translation>
+        <translation type="vanished">События объекта</translation>
     </message>
     <message>
         <source>Object: Not loaded</source>
@@ -686,7 +686,7 @@ Select an event and right-click to add actions.</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="395"/>
         <source>📋 Event List</source>
-        <translation>📋 Event List</translation>
+        <translation>📋 Список событий</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="402"/>
@@ -741,7 +741,7 @@ Select an event and right-click to add actions.</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="500"/>
         <source>💻 Code Editor</source>
-        <translation>💻 Code Editor</translation>
+        <translation>💻 Редактор кода</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="502"/>
@@ -773,7 +773,7 @@ Error: {0}</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="746"/>
         <source>Save Error</source>
-        <translation>Erreur d&apos;enregistrement</translation>
+        <translation>Ошибка сохранения</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="747"/>
@@ -836,7 +836,7 @@ Error: {0}</source>
     </message>
     <message>
         <source>Visible</source>
-        <translation type="vanished">Visible</translation>
+        <translation type="vanished">Видимый</translation>
     </message>
     <message>
         <source>Solid</source>
@@ -1037,27 +1037,27 @@ The code will execute when the event triggers during gameplay.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
-        <translation>Événements de l&apos;objet</translation>
+        <translation>События объекта</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
         <source>Event</source>
-        <translation>Événement</translation>
+        <translation>Событие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
         <source>Actions</source>
-        <translation>Actions</translation>
+        <translation>Действия</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="150"/>
         <source>+ Add Event</source>
-        <translation>+ Ajouter un événement</translation>
+        <translation>+ Добавить событие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
         <source>- Remove Event</source>
-        <translation>- Retirer l&apos;événement</translation>
+        <translation>- Удалить событие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="163"/>
@@ -1102,7 +1102,7 @@ The code will execute when the event triggers during gameplay.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="196"/>
         <source>The {0} event already exists.</source>
-        <translation>L&apos;événement {0} existe déjà.</translation>
+        <translation>Событие {0} уже существует.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="231"/>
@@ -1112,7 +1112,7 @@ The code will execute when the event triggers during gameplay.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="243"/>
         <source>No objects available</source>
-        <translation>Aucun objet disponible</translation>
+        <translation>Нет доступных объектов</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="357"/>
@@ -1144,7 +1144,7 @@ The code will execute when the event triggers during gameplay.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="569"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="664"/>
         <source>Remove Event</source>
-        <translation>Retirer l&apos;événement</translation>
+        <translation>Удалить событие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="570"/>
@@ -1182,7 +1182,7 @@ The code will execute when the event triggers during gameplay.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="645"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="682"/>
         <source>Add Action</source>
-        <translation>Ajouter une action</translation>
+        <translation>Добавить действие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="616"/>
@@ -1205,7 +1205,7 @@ The code will execute when the event triggers during gameplay.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="709"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="719"/>
         <source>Edit Action</source>
-        <translation>Modifier l&apos;action</translation>
+        <translation>Изменить действие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="712"/>
@@ -1213,7 +1213,7 @@ The code will execute when the event triggers during gameplay.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="958"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="978"/>
         <source>Remove Action</source>
-        <translation>Retirer l&apos;action</translation>
+        <translation>Удалить действие</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="737"/>
@@ -1264,7 +1264,7 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="979"/>
         <source>Are you sure you want to remove this action?</source>
-        <translation>Voulez-vous vraiment supprimer cette action ?</translation>
+        <translation>Вы уверены, что хотите удалить это действие?</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1001"/>
@@ -1282,7 +1282,7 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="1125"/>
         <location filename="../editors/object_editor/object_events_panel.py" line="1155"/>
         <source>{0} actions</source>
-        <translation>{0} actions</translation>
+        <translation>{0} действий</translation>
     </message>
     <message>
         <source>{action_type.icon} {action_type.display_name}</source>
@@ -1334,7 +1334,7 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1728"/>
         <source>This collision event already exists.</source>
-        <translation>Cet événement de collision existe déjà.</translation>
+        <translation>Это событие столкновения уже существует.</translation>
     </message>
     <message>
         <source>target_object</source>
@@ -1352,7 +1352,7 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1829"/>
         <source>Are you sure you want to remove the {0} event?</source>
-        <translation>Voulez-vous vraiment supprimer l&apos;événement {0} ?</translation>
+        <translation>Вы уверены, что хотите удалить событие {0}?</translation>
     </message>
     <message>
         <source>🤖 Thymio Event...</source>
@@ -1843,7 +1843,7 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/room_editor/object_palette.py" line="45"/>
         <source>Clear Selection</source>
-        <translation>Clear Selection</translation>
+        <translation>Очистить выделение</translation>
     </message>
 </context>
 <context>
@@ -1891,109 +1891,109 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="116"/>
         <source>Room Editor</source>
-        <translation>Room Editor</translation>
+        <translation>Редактор комнат</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="121"/>
         <source>💾 Save</source>
-        <translation>💾 Save</translation>
+        <translation>💾 Сохранить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="122"/>
         <source>Save room (Ctrl+S)</source>
-        <translation>Save room (Ctrl+S)</translation>
+        <translation>Сохранить комнату (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="128"/>
         <location filename="../editors/room_editor/__init__.py" line="623"/>
         <source>↶ Undo</source>
-        <translation>↶ Undo</translation>
+        <translation>↶ Отменить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="129"/>
         <source>Undo (Ctrl+Z)</source>
-        <translation>Undo (Ctrl+Z)</translation>
+        <translation>Отменить (Ctrl+Z)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="133"/>
         <location filename="../editors/room_editor/__init__.py" line="629"/>
         <source>↷ Redo</source>
-        <translation>↷ Redo</translation>
+        <translation>↷ Повторить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="134"/>
         <source>Redo (Ctrl+Y)</source>
-        <translation>Redo (Ctrl+Y)</translation>
+        <translation>Повторить (Ctrl+Y)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="141"/>
         <source>✂️ Cut</source>
-        <translation>✂️ Cut</translation>
+        <translation>✂️ Вырезать</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="142"/>
         <source>Cut selected instance (Ctrl+X)</source>
-        <translation>Cut selected instance (Ctrl+X)</translation>
+        <translation>Вырезать выбранный экземпляр (Ctrl+X)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="146"/>
         <source>📋 Copy</source>
-        <translation>📋 Copy</translation>
+        <translation>📋 Копировать</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="147"/>
         <source>Copy selected instance (Ctrl+C)</source>
-        <translation>Copy selected instance (Ctrl+C)</translation>
+        <translation>Копировать выбранный экземпляр (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="151"/>
         <source>📄 Paste</source>
-        <translation>📄 Paste</translation>
+        <translation>📄 Вставить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="152"/>
         <source>Paste instance (Ctrl+V)</source>
-        <translation>Paste instance (Ctrl+V)</translation>
+        <translation>Вставить экземпляр (Ctrl+V)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="156"/>
         <source>⎘ Duplicate</source>
-        <translation>⎘ Duplicate</translation>
+        <translation>⎘ Дублировать</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="157"/>
         <source>Duplicate selected instance (Ctrl+D)</source>
-        <translation>Duplicate selected instance (Ctrl+D)</translation>
+        <translation>Дублировать выбранный экземпляр (Ctrl+D)</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="164"/>
         <source>🔲 Grid</source>
-        <translation>🔲 Grid</translation>
+        <translation>🔲 Сетка</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="167"/>
         <source>Toggle grid visibility</source>
-        <translation>Toggle grid visibility</translation>
+        <translation>Переключить видимость сетки</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="171"/>
         <source>🧲 Snap</source>
-        <translation>🧲 Snap</translation>
+        <translation>🧲 Привязка</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="174"/>
         <source>Toggle snap to grid</source>
-        <translation>Toggle snap to grid</translation>
+        <translation>Переключить привязку к сетке</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="180"/>
         <source>🗑️ Clear All</source>
-        <translation>🗑️ Clear All</translation>
+        <translation>🗑️ Очистить всё</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="181"/>
         <source>Remove all object instances</source>
-        <translation>Remove all object instances</translation>
+        <translation>Удалить все экземпляры объектов</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
@@ -2024,17 +2024,17 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="223"/>
         <source>Clear All Instances</source>
-        <translation>Clear All Instances</translation>
+        <translation>Очистить все экземпляры</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="224"/>
         <source>Are you sure you want to remove all {0} object instances?</source>
-        <translation>Are you sure you want to remove all {0} object instances?</translation>
+        <translation>Вы уверены, что хотите удалить все экземпляры объекта {0}?</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="233"/>
         <source>All instances cleared</source>
-        <translation>All instances cleared</translation>
+        <translation>Все экземпляры очищены</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
@@ -2069,37 +2069,37 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
         <source>Deleted {0}</source>
-        <translation>Deleted {0}</translation>
+        <translation>Удалено {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="332"/>
         <source>Deleted {0} instances</source>
-        <translation>Deleted {0} instances</translation>
+        <translation>Удалено экземпляров: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="383"/>
         <source>Loaded room &apos;{0}&apos; with {1} instances</source>
-        <translation>Loaded room &apos;{0}&apos; with {1} instances</translation>
+        <translation>Комната &apos;{0}&apos; загружена с {1} экземплярами</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="424"/>
         <source>Loaded {0} objects</source>
-        <translation>Loaded {0} objects</translation>
+        <translation>Загружено объектов: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="428"/>
         <source>Error loading objects: {0}</source>
-        <translation>Error loading objects: {0}</translation>
+        <translation>Ошибка при загрузке объектов: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="447"/>
         <source>Selected &apos;{0}&apos; - Click in room to place</source>
-        <translation>Selected &apos;{0}&apos; - Click in room to place</translation>
+        <translation>Выбрано &apos;{0}&apos; - щёлкните в комнате, чтобы разместить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="449"/>
         <source>No object selected</source>
-        <translation>No object selected</translation>
+        <translation>Объект не выбран</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
@@ -2114,109 +2114,109 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>
         <source>Selected {0} at ({1}, {2})</source>
-        <translation>Selected {0} at ({1}, {2})</translation>
+        <translation>Выбрано {0} в ({1}, {2})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="486"/>
         <source>Selected {0} instances</source>
-        <translation>Selected {0} instances</translation>
+        <translation>Выбрано экземпляров: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="488"/>
         <source>No instance selected</source>
-        <translation>No instance selected</translation>
+        <translation>Экземпляр не выбран</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="494"/>
         <source>Moved {0} to ({1}, {2})</source>
-        <translation>Moved {0} to ({1}, {2})</translation>
+        <translation>{0} перемещён в ({1}, {2})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="499"/>
         <source>Added {0} at ({1}, {2})</source>
-        <translation>Added {0} at ({1}, {2})</translation>
+        <translation>Добавлено {0} в ({1}, {2})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="506"/>
         <source>Deleted {0} instance</source>
-        <translation>Deleted {0} instance</translation>
+        <translation>Удалён экземпляр {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="508"/>
         <source>Updated {0} {1}: {2}</source>
-        <translation>Updated {0} {1}: {2}</translation>
+        <translation>Обновлено {0} {1}: {2}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="553"/>
         <source>Saving room...</source>
-        <translation>Saving room...</translation>
+        <translation>Сохранение комнаты...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="559"/>
         <source>Room &apos;{0}&apos; saved successfully</source>
-        <translation>Room &apos;{0}&apos; saved successfully</translation>
+        <translation>Комната &apos;{0}&apos; успешно сохранена</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="568"/>
         <source>Error saving room: {0}</source>
-        <translation>Error saving room: {0}</translation>
+        <translation>Ошибка при сохранении комнаты: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="569"/>
         <source>Save Error</source>
-        <translation>Save Error</translation>
+        <translation>Ошибка сохранения</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="569"/>
         <source>Failed to save room:
 {0}</source>
-        <translation>Failed to save room:
+        <translation>Не удалось сохранить комнату:
 {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="601"/>
         <source>Undo</source>
-        <translation>Undo</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="608"/>
         <source>Redo</source>
-        <translation>Redo</translation>
+        <translation>Повторить</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="621"/>
         <source>↶ Undo: {0}</source>
-        <translation>↶ Undo: {0}</translation>
+        <translation>↶ Отменить: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="627"/>
         <source>↷ Redo: {0}</source>
-        <translation>↷ Redo: {0}</translation>
+        <translation>↷ Повторить: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="638"/>
         <source>Cut {0} instance(s) to clipboard</source>
-        <translation>Cut {0} instance(s) to clipboard</translation>
+        <translation>В буфер обмена вырезано экземпляров: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="646"/>
         <source>Copied {0} instance(s) to clipboard</source>
-        <translation>Copied {0} instance(s) to clipboard</translation>
+        <translation>В буфер обмена скопировано экземпляров: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="657"/>
         <source>Instance pasted</source>
-        <translation>Instance pasted</translation>
+        <translation>Экземпляр вставлен</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="659"/>
         <source>Pasted {0} instances</source>
-        <translation>Pasted {0} instances</translation>
+        <translation>Вставлено экземпляров: {0}</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="667"/>
         <source>Duplicated {0} instance(s)</source>
-        <translation>Duplicated {0} instance(s)</translation>
+        <translation>Продублировано экземпляров: {0}</translation>
     </message>
 </context>
 <context>
