@@ -140,10 +140,12 @@ it the same way: **multi-session, one file per commit, no shortcuts.**
 - [x] `pygm2_sl_actions.ts` (4) — commit `39892cf`. **Slovenian fully closed.**
 - [x] `pygm2_ru_dialogs.ts` (157 after no-op filter) — commit `fb5347d`
 - [x] `pygm2_ru_editors.ts` (119 after no-op filter) — commit `0a58f20`
-- [ ] `pygm2_ru_blockly.ts` (20) — 1 commit
-- [ ] `pygm2_ru_core.ts` (11) — 1 commit
-- [ ] `pygm2_ru_misc.ts` (5) — 1 commit
-- [ ] `pygm2_ru_actions.ts` (5) — 1 commit
+- [x] `pygm2_ru_blockly.ts` (20) — commit `101d9ad`
+- [x] `pygm2_ru_core.ts` (9 after no-op filter) — commit `101d9ad`
+- [x] `pygm2_ru_misc.ts` (5) — commit `101d9ad`
+- [x] `pygm2_ru_actions.ts` (6) — commit `101d9ad`. **Russian fully
+  closed — the entire registry (es/sl/ru) is now closed, ~1,158
+  strings fixed across 12 files.**
 
 12 file-units, ~1,158 individual strings. Work largest-impact-first within
 each language (dialogs/editors carry the most user-visible surface); order
