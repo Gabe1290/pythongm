@@ -2248,6 +2248,110 @@ Check the console for error details.</source>
         <source>Failed to open sprite editor: {0}</source>
         <translation type="unfinished"></translation>
     </message>
+
+    <message>
+        <location filename="../core/ide_exporters.py" line="40"/>
+        <source>Please open or create a project first before exporting.</source>
+        <translation>Спочатку відкрийте або створіть проект перед експортом.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="48"/>
+        <source>Select Export Directory</source>
+        <translation>Виберіть директорію експорту</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="56"/>
+        <source>Exporting to HTML5...</source>
+        <translation>Експорт в HTML5...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="63"/>
+        <location filename="../core/ide_exporters.py" line="128"/>
+        <source>Export Successful</source>
+        <translation>Експорт успішний</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="64"/>
+        <source>Game exported as HTML5!
+
+{0}
+
+Open in browser now?</source>
+        <translation>Гру експортовано як HTML5!
+
+{0}
+
+Відкрити в браузері зараз?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="72"/>
+        <source>HTML5 export complete</source>
+        <translation>Експорт HTML5 завершено</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="77"/>
+        <source>Failed to export game as HTML5. Check console for details.</source>
+        <translation>Не вдалося експортувати гру як HTML5. Перевірте консоль для деталей.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="79"/>
+        <location filename="../core/ide_exporters.py" line="138"/>
+        <source>Export failed</source>
+        <translation>Експорт не вдався</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="113"/>
+        <source>Export Project as Zip</source>
+        <translation>Експорт проекту як ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="115"/>
+        <location filename="../core/ide_exporters.py" line="146"/>
+        <source>Zip Files (*.zip)</source>
+        <translation>ZIP-файли (*.zip)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="122"/>
+        <source>Exporting project...</source>
+        <translation>Експорт проекту...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="129"/>
+        <source>Project exported to:
+{0}</source>
+        <translation>Проект експортовано до:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="131"/>
+        <source>Project exported</source>
+        <translation>Проект експортовано</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="136"/>
+        <source>Failed to export project as zip</source>
+        <translation>Не вдалося експортувати проект як ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="144"/>
+        <source>Open Zip Project</source>
+        <translation>Відкрити ZIP-проект</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="163"/>
+        <source>Loading project from zip...</source>
+        <translation>Завантаження проекту з ZIP...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="168"/>
+        <source>Project loaded from zip</source>
+        <translation>Проект завантажено з ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="175"/>
+        <source>Failed to load</source>
+        <translation>Не вдалося завантажити</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

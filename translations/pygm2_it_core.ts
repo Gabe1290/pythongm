@@ -2384,6 +2384,110 @@ Check the console for error details.</source>
         <translation>Migrazione della struttura del progetto fallita.
 Controlla la console per i dettagli dell&apos;errore.</translation>
     </message>
+
+    <message>
+        <location filename="../core/ide_exporters.py" line="40"/>
+        <source>Please open or create a project first before exporting.</source>
+        <translation>Apri o crea prima un progetto prima di esportare.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="48"/>
+        <source>Select Export Directory</source>
+        <translation>Seleziona directory di esportazione</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="56"/>
+        <source>Exporting to HTML5...</source>
+        <translation>Esportazione in HTML5...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="63"/>
+        <location filename="../core/ide_exporters.py" line="128"/>
+        <source>Export Successful</source>
+        <translation>Esportazione riuscita</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="64"/>
+        <source>Game exported as HTML5!
+
+{0}
+
+Open in browser now?</source>
+        <translation>Gioco esportato come HTML5!
+
+{0}
+
+Aprire nel browser ora?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="72"/>
+        <source>HTML5 export complete</source>
+        <translation>Esportazione HTML5 completata</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="77"/>
+        <source>Failed to export game as HTML5. Check console for details.</source>
+        <translation>Impossibile esportare il gioco come HTML5. Controlla la console per i dettagli.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="79"/>
+        <location filename="../core/ide_exporters.py" line="138"/>
+        <source>Export failed</source>
+        <translation>Esportazione fallita</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="113"/>
+        <source>Export Project as Zip</source>
+        <translation>Esporta progetto come ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="115"/>
+        <location filename="../core/ide_exporters.py" line="146"/>
+        <source>Zip Files (*.zip)</source>
+        <translation>File ZIP (*.zip)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="122"/>
+        <source>Exporting project...</source>
+        <translation>Esportazione progetto...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="129"/>
+        <source>Project exported to:
+{0}</source>
+        <translation>Progetto esportato in:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="131"/>
+        <source>Project exported</source>
+        <translation>Progetto esportato</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="136"/>
+        <source>Failed to export project as zip</source>
+        <translation>Impossibile esportare il progetto come ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="144"/>
+        <source>Open Zip Project</source>
+        <translation>Apri progetto ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="163"/>
+        <source>Loading project from zip...</source>
+        <translation>Caricamento progetto da ZIP...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="168"/>
+        <source>Project loaded from zip</source>
+        <translation>Progetto caricato da ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="175"/>
+        <source>Failed to load</source>
+        <translation>Caricamento fallito</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>
