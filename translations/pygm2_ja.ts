@@ -2296,4 +2296,228 @@ Do you want to save anyway?</source>
         <translation>キャプションに体力を表示：</translation>
     </message>
 </context>
+<context>
+    <name>WelcomeTab</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="86"/>
+        <source>Welcome to PyGameMaker IDE</source>
+        <translation>PyGameMaker IDEへようこそ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="124"/>
+        <source>Get started</source>
+        <translation>はじめる</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="128"/>
+        <source>📄  New Project</source>
+        <translation>📄  新規プロジェクト</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="130"/>
+        <source>📂  Open Project...</source>
+        <translation>📂  プロジェクトを開く...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="135"/>
+        <source>More options</source>
+        <translation>その他のオプション</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="137"/>
+        <source>🗜  Open ZIP Project...</source>
+        <translation>🗜  ZIPプロジェクトを開く...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="138"/>
+        <source>📥  Import GameMaker .gmk...</source>
+        <translation>📥  GameMaker .gmk をインポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="139"/>
+        <source>📥  Import Open Roberta XML...</source>
+        <translation>📥  Open Roberta XML をインポート...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="144"/>
+        <source>Try a sample game</source>
+        <translation>サンプルゲームを試す</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="155"/>
+        <source>🎮  {0}</source>
+        <translation>🎮  {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="161"/>
+        <source>Choose a sample</source>
+        <translation>サンプルを選択</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="163"/>
+        <source>(No bundled samples found in this build.)</source>
+        <translation>（このビルドには同梱サンプルがありません。）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="178"/>
+        <source>Continue where you left off</source>
+        <translation>前回の続きから再開</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="197"/>
+        <source>Clear recent projects</source>
+        <translation>最近のプロジェクトをクリア</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="210"/>
+        <source>Documentation</source>
+        <translation>ドキュメント</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="211"/>
+        <source>Tutorials</source>
+        <translation>チュートリアル</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="212"/>
+        <source>About</source>
+        <translation>情報</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="240"/>
+        <source>(No recent projects yet.)</source>
+        <translation>（まだ最近のプロジェクトはありません。）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="424"/>
+        <source>Save sample project to...</source>
+        <translation>サンプルプロジェクトの保存先...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="438"/>
+        <location filename="../widgets/welcome_tab.py" line="446"/>
+        <source>Sample import failed</source>
+        <translation>サンプルのインポートに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="439"/>
+        <source>Could not import the sample project:
+{0}</source>
+        <translation>サンプルプロジェクトをインポートできませんでした：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="447"/>
+        <source>The bundled sample could not be imported. See the console output for details.</source>
+        <translation>同梱サンプルをインポートできませんでした。詳細はコンソール出力を確認してください。</translation>
+    </message>
+</context>
+<context>
+    <name>SpriteStripDialog</name>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="208"/>
+        <source>Configure Sprite Strip</source>
+        <translation>スプライトストリップを設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="221"/>
+        <source>Sprite Sheet Preview</source>
+        <translation>スプライトシートのプレビュー</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="229"/>
+        <source>Frame:</source>
+        <translation>フレーム：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="241"/>
+        <source>Animation Preview</source>
+        <translation>アニメーションのプレビュー</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="248"/>
+        <source>Play</source>
+        <translation>再生</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="250"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="263"/>
+        <source>Image Info</source>
+        <translation>画像情報</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="267"/>
+        <source>Width:</source>
+        <translation>幅：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="268"/>
+        <source>Height:</source>
+        <translation>高さ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="272"/>
+        <source>Frame Configuration</source>
+        <translation>フレーム設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="277"/>
+        <source>Horizontal Strip</source>
+        <translation>水平ストリップ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="278"/>
+        <source>Vertical Strip</source>
+        <translation>垂直ストリップ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="279"/>
+        <source>Grid (Rows x Columns)</source>
+        <translation>グリッド（行 x 列）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="281"/>
+        <source>Strip Type:</source>
+        <translation>ストリップの種類：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="288"/>
+        <source>Frame Width:</source>
+        <translation>フレーム幅：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="294"/>
+        <source>Frame Height:</source>
+        <translation>フレーム高さ：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="301"/>
+        <source>Columns:</source>
+        <translation>列数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="307"/>
+        <source>Rows:</source>
+        <translation>行数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="311"/>
+        <source>Total Frames:</source>
+        <translation>合計フレーム数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="316"/>
+        <source>Animation Settings</source>
+        <translation>アニメーション設定</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="324"/>
+        <source>Animation Speed:</source>
+        <translation>アニメーション速度：</translation>
+    </message>
+</context>
 </TS>
