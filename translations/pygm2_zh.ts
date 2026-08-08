@@ -2520,4 +2520,943 @@ Do you want to save anyway?</source>
         <translation>动画速度：</translation>
     </message>
 </context>
+<context>
+    <name>ExportProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="419"/>
+        <source>Export Project</source>
+        <translation>导出项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="430"/>
+        <source>Export Target</source>
+        <translation>导出目标</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="435"/>
+        <source>Desktop Executable (.exe/.app)</source>
+        <translation>桌面可执行文件 (.exe/.app)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="436"/>
+        <source>Web (HTML5)</source>
+        <translation>网页 (HTML5)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="437"/>
+        <source>Mobile (Kivy)</source>
+        <translation>移动端 (Kivy)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="438"/>
+        <source>Mobile (APK)</source>
+        <translation>移动端 (APK)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="439"/>
+        <source>Source Code (.zip)</source>
+        <translation>源代码 (.zip)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="441"/>
+        <source>Target Platform:</source>
+        <translation>目标平台：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="446"/>
+        <source>Choose export location...</source>
+        <translation>选择导出位置...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="448"/>
+        <source>Browse...</source>
+        <translation>浏览...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="453"/>
+        <source>Output Location:</source>
+        <translation>输出位置：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="458"/>
+        <source>Export Options</source>
+        <translation>导出选项</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="463"/>
+        <source>Include Assets:</source>
+        <translation>包含资源：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="467"/>
+        <source>Optimize for Release:</source>
+        <translation>发布优化：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="471"/>
+        <source>Include Debug Info:</source>
+        <translation>包含调试信息：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="488"/>
+        <source>Export</source>
+        <translation>导出</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="510"/>
+        <source>Choose Export Location</source>
+        <translation>选择导出位置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Invalid Output</source>
+        <translation>输出无效</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Please choose an export location.</source>
+        <translation>请选择导出位置。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="564"/>
+        <location filename="../dialogs/project_dialogs.py" line="594"/>
+        <location filename="../dialogs/project_dialogs.py" line="635"/>
+        <location filename="../dialogs/project_dialogs.py" line="675"/>
+        <location filename="../dialogs/project_dialogs.py" line="680"/>
+        <location filename="../dialogs/project_dialogs.py" line="698"/>
+        <location filename="../dialogs/project_dialogs.py" line="779"/>
+        <source>Export Error</source>
+        <translation>导出错误</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="565"/>
+        <location filename="../dialogs/project_dialogs.py" line="676"/>
+        <source>Could not access project manager</source>
+        <translation>无法访问项目管理器</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="574"/>
+        <location filename="../dialogs/project_dialogs.py" line="613"/>
+        <location filename="../dialogs/project_dialogs.py" line="655"/>
+        <location filename="../dialogs/project_dialogs.py" line="751"/>
+        <source>Export Successful</source>
+        <translation>导出成功</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="575"/>
+        <source>Kivy project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Kivy 项目已导出到：
+{0}
+
+是否要打开导出目录？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="589"/>
+        <location filename="../dialogs/project_dialogs.py" line="630"/>
+        <location filename="../dialogs/project_dialogs.py" line="672"/>
+        <location filename="../dialogs/project_dialogs.py" line="770"/>
+        <source>Export Failed</source>
+        <translation>导出失败</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="590"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>导出项目失败，请查看控制台以获取错误信息。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="595"/>
+        <source>Error during export:
+{0}
+
+{1}</source>
+        <translation>导出时出错：
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="614"/>
+        <source>HTML5 game exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>HTML5 游戏已导出到：
+{0}
+
+是否要打开导出目录？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="631"/>
+        <source>Failed to export HTML5 game. Check console for errors.</source>
+        <translation>导出 HTML5 游戏失败，请查看控制台以获取错误信息。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="636"/>
+        <source>Error during HTML5 export:
+{0}
+
+{1}</source>
+        <translation>HTML5 导出时出错：
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="656"/>
+        <source>Project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>项目已导出到：
+{0}
+
+是否要打开导出目录？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="673"/>
+        <source>Failed to export ZIP file. Check console for errors.</source>
+        <translation>导出 ZIP 文件失败，请查看控制台以获取错误信息。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="681"/>
+        <source>Error during ZIP export:
+{0}
+
+{1}</source>
+        <translation>ZIP 导出时出错：
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="699"/>
+        <source>Project file not found: {0}</source>
+        <translation>未找到项目文件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="715"/>
+        <source>Initializing export...</source>
+        <translation>正在初始化导出...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="716"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="720"/>
+        <source>Exporting Executable</source>
+        <translation>正在导出可执行文件</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="752"/>
+        <source>Executable exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>可执行文件已导出到：
+{0}
+
+是否要打开导出目录？</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="771"/>
+        <source>Failed to export executable:
+
+{0}</source>
+        <translation>导出可执行文件失败：
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="780"/>
+        <source>Error during executable export:
+{0}
+
+{1}</source>
+        <translation>导出可执行文件时出错：
+{0}
+
+{1}</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectEditor</name>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="184"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="650"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="664"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="186"/>
+        <source>Save object (Ctrl+S)</source>
+        <translation>保存对象 (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="380"/>
+        <source>Actions are managed through the Object Events panel on the left.
+
+Select an event and right-click to add actions.</source>
+        <translation>操作通过左侧的对象事件面板进行管理。
+
+选择一个事件并右键点击以添加操作。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="395"/>
+        <source>📋 Event List</source>
+        <translation>📋 事件列表</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="402"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="558"/>
+        <source>🧩 Blockly</source>
+        <translation>🧩 Blockly</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="405"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="561"/>
+        <source>Scratch-like block programming</source>
+        <translation>类似 Scratch 的积木编程</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="421"/>
+        <source>Mode:</source>
+        <translation>模式：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="425"/>
+        <source>📖 View Generated Code</source>
+        <translation>📖 查看生成的代码</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="426"/>
+        <source>✏️ Edit Custom Code</source>
+        <translation>✏️ 编辑自定义代码</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="440"/>
+        <source>🔄 Refresh</source>
+        <translation>🔄 刷新</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="450"/>
+        <source># Python code editor
+# Switch to &apos;Edit Custom Code&apos; mode to write your own Python code
+# Or view generated code from visual events</source>
+        <translation># Python 代码编辑器
+# 切换到“编辑自定义代码”模式以编写您自己的 Python 代码
+# 或查看可视化事件生成的代码</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="485"/>
+        <source>Event for custom code:</source>
+        <translation>自定义代码对应的事件：</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="500"/>
+        <source>💻 Code Editor</source>
+        <translation>💻 代码编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="502"/>
+        <source>Edit Python code or view generated code</source>
+        <translation>编辑 Python 代码或查看生成的代码</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="546"/>
+        <source>Blockly visual programming is not available.
+
+Error: {0}</source>
+        <translation>Blockly 可视化编程不可用。
+
+错误：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
+        <source>Validation Error</source>
+        <translation>验证错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="702"/>
+        <source>Cannot save: {0}</source>
+        <translation>无法保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="730"/>
+        <source>Saved: {0}</source>
+        <translation>已保存：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="746"/>
+        <source>Save Error</source>
+        <translation>保存错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="747"/>
+        <source>Error saving object: {0}</source>
+        <translation>保存对象时出错：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="793"/>
+        <source>Loaded {0} sprites</source>
+        <translation>已加载 {0} 个精灵</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="813"/>
+        <source>Error loading assets: {0}</source>
+        <translation>加载资源时出错：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="966"/>
+        <source>Object name is required</source>
+        <translation>对象名称为必填项</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="972"/>
+        <source>Referenced sprite &apos;{0}&apos; does not exist</source>
+        <translation>引用的精灵“{0}”不存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="979"/>
+        <source>Event &apos;{0}&apos; has invalid data structure</source>
+        <translation>事件“{0}”的数据结构无效</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="984"/>
+        <source>Event &apos;{0}&apos; has invalid actions data</source>
+        <translation>事件“{0}”的操作数据无效</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="990"/>
+        <source>Validation error: {0}</source>
+        <translation>验证错误：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
+        <source>Edit mode: changes apply automatically as you type</source>
+        <translation>编辑模式：输入时自动应用更改</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
+        <source>No event methods found in the code</source>
+        <translation>代码中未找到事件方法</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
+        <source>{0} events</source>
+        <translation>{0} 个事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1141"/>
+        <source>Editing event: {0}</source>
+        <translation>正在编辑事件：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1198"/>
+        <source>Applied {0} events from visual blocks</source>
+        <translation>已从可视化积木应用 {0} 个事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1208"/>
+        <source>Selected action: {0} ({1})</source>
+        <translation>已选择操作：{0} ({1})</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1229"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1250"/>
+        <source># No events or actions have been added yet.
+# Add events in the Object Events panel to see generated code here.</source>
+        <translation># 尚未添加任何事件或操作。
+# 在对象事件面板中添加事件即可在此查看生成的代码。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1268"/>
+        <source>Generated code view updated</source>
+        <translation>生成的代码视图已更新</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1421"/>
+        <source>View mode: Switch to &apos;Edit Custom Code&apos; to modify and apply code</source>
+        <translation>查看模式：切换到“编辑自定义代码”以修改并应用代码</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1593"/>
+        <source>Assets loaded: {0} sprites</source>
+        <translation>已加载资源：{0} 个精灵</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="257"/>
+        <source>Standard</source>
+        <translation>标准</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="271"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="295"/>
+        <source>🤖 Thymio</source>
+        <translation>🤖 Thymio</translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="21"/>
+        <source>Preferences</source>
+        <translation>首选项</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="46"/>
+        <source>Note: Some settings require restarting the IDE to take effect.</source>
+        <translation>注意：部分设置需要重启 IDE 才能生效。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="62"/>
+        <source>IDE Edition</source>
+        <translation>IDE 版本</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="69"/>
+        <source>Edition:</source>
+        <translation>版本：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="79"/>
+        <source>The edition controls which tutorials are shown and the default
+block preset for new projects. Existing projects are not affected.</source>
+        <translation>版本决定了显示哪些教程以及新项目的默认
+积木预设。现有项目不受影响。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="88"/>
+        <source>General</source>
+        <translation>常规</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="96"/>
+        <source>Font Settings</source>
+        <translation>字体设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="103"/>
+        <source>Font Size:</source>
+        <translation>字体大小：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="108"/>
+        <source>System Default</source>
+        <translation>系统默认</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="111"/>
+        <source>Font Family:</source>
+        <translation>字体族：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="114"/>
+        <source>Preview: The quick brown fox jumps over the lazy dog</source>
+        <translation>预览：敏捷的棕色狐狸跳过了懒狗</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="116"/>
+        <source>Preview:</source>
+        <translation>预览：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="121"/>
+        <source>Theme Settings</source>
+        <translation>主题设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="127"/>
+        <source>Theme:</source>
+        <translation>主题：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="134"/>
+        <source>UI Scale:</source>
+        <translation>界面缩放：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="137"/>
+        <source>Show tooltips</source>
+        <translation>显示工具提示</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="143"/>
+        <source>Appearance</source>
+        <translation>外观</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="151"/>
+        <source>Auto-Save Settings</source>
+        <translation>自动保存设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="154"/>
+        <source>Enable auto-save</source>
+        <translation>启用自动保存</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="159"/>
+        <source> minutes</source>
+        <translation> 分钟</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="160"/>
+        <source>Auto-save interval:</source>
+        <translation>自动保存间隔：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="165"/>
+        <source>Grid &amp; Snapping</source>
+        <translation>网格与吸附</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="168"/>
+        <source>Show grid in editors</source>
+        <translation>在编辑器中显示网格</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="174"/>
+        <source>Grid size:</source>
+        <translation>网格大小：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="176"/>
+        <source>Snap to grid</source>
+        <translation>吸附到网格</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="179"/>
+        <source>Show collision boxes</source>
+        <translation>显示碰撞框</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="185"/>
+        <source>Editor</source>
+        <translation>编辑器</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="193"/>
+        <source>Project Paths</source>
+        <translation>项目路径</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="199"/>
+        <source>Browse...</source>
+        <translation>浏览...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="203"/>
+        <source>Default projects folder:</source>
+        <translation>默认项目文件夹：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="208"/>
+        <source>Project Settings</source>
+        <translation>项目设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="213"/>
+        <source>Recent projects limit:</source>
+        <translation>最近项目数量限制：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="215"/>
+        <source>Create backup on save</source>
+        <translation>保存时创建备份</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="221"/>
+        <source>Project</source>
+        <translation>项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="229"/>
+        <source>Debug Settings</source>
+        <translation>调试设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="232"/>
+        <source>Enable debug mode</source>
+        <translation>启用调试模式</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="235"/>
+        <source>Show console output</source>
+        <translation>显示控制台输出</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="241"/>
+        <source>Performance</source>
+        <translation>性能</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="246"/>
+        <source>Maximum undo steps:</source>
+        <translation>最大撤销步数：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="251"/>
+        <source>Advanced</source>
+        <translation>高级</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="343"/>
+        <source>Select Default Projects Directory</source>
+        <translation>选择默认项目目录</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="402"/>
+        <source>Settings Saved</source>
+        <translation>设置已保存</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="403"/>
+        <source>Settings have been saved successfully.
+
+Some changes may require restarting the IDE to take effect.</source>
+        <translation>设置已成功保存。
+
+部分更改可能需要重启 IDE 才能生效。</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="103"/>
+        <source>Playground Editor</source>
+        <translation>实验场编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="108"/>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="109"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>保存实验场 (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="115"/>
+        <source>Undo</source>
+        <translation>撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="116"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>撤销 (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="119"/>
+        <source>Redo</source>
+        <translation>重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="120"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>重做 (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="126"/>
+        <source>Grid</source>
+        <translation>网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="129"/>
+        <source>Toggle grid display</source>
+        <translation>切换网格显示</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="132"/>
+        <source>Snap</source>
+        <translation>吸附</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="135"/>
+        <source>Snap to grid</source>
+        <translation>吸附到网格</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="140"/>
+        <source> Thickness: </source>
+        <translation> 厚度： </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="147"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>拖拽绘制时的默认墙壁厚度</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="152"/>
+        <source> Block: </source>
+        <translation> 方块： </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="159"/>
+        <source>Block size for block-paint mode</source>
+        <translation>方块绘制模式的方块大小</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="166"/>
+        <source>Color for painted blocks</source>
+        <translation>已绘制方块的颜色</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="173"/>
+        <location filename="../editors/playground_editor/__init__.py" line="501"/>
+        <source>Arena Settings</source>
+        <translation>场地设置</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="174"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>配置场地尺寸和背景</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="180"/>
+        <source>▶ Run</source>
+        <translation>▶ 运行</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="181"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>使用关联的机器人代码模拟实验场</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="185"/>
+        <source>Export .playground</source>
+        <translation>导出 .playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="186"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>导出为 Aseba .playground 文件</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="349"/>
+        <source>Select Ground Texture</source>
+        <translation>选择地面纹理</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="351"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>图像 (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="369"/>
+        <source>Texture Error</source>
+        <translation>纹理错误</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="370"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>无法复制纹理：
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="507"/>
+        <source>Width:</source>
+        <translation>宽度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="512"/>
+        <source>Height:</source>
+        <translation>高度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="519"/>
+        <source>Background:</source>
+        <translation>背景：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="524"/>
+        <source>Grid size:</source>
+        <translation>网格大小：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="530"/>
+        <location filename="../editors/playground_editor/__init__.py" line="538"/>
+        <location filename="../editors/playground_editor/__init__.py" line="543"/>
+        <source>(none)</source>
+        <translation>（无）</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="532"/>
+        <source>Browse...</source>
+        <translation>浏览...</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="533"/>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="551"/>
+        <source>Ground texture:</source>
+        <translation>地面纹理：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="596"/>
+        <source>Run Failed</source>
+        <translation>运行失败</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="597"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>启动模拟器时出错：
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="625"/>
+        <source>Export Playground</source>
+        <translation>导出实验场</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="627"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Aseba 实验场 (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="638"/>
+        <source>Export Successful</source>
+        <translation>导出成功</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="639"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>实验场已导出到：
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="643"/>
+        <source>Export Failed</source>
+        <translation>导出失败</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="644"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>导出实验场时出错：
+{}</translation>
+    </message>
+</context>
 </TS>
