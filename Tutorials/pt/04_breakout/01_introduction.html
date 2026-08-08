@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Breakout: Jogo de Quebrar Blocos</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/04_breakout.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#129521;</p>
+        <p><strong>BREAKOUT</strong></p>
+        <p>Quebre todos os blocos com sua bola e raquete!</p>
+    </div>
+
+    <h2>O que vamos criar</h2>
+    <p>Neste tutorial, você vai construir um jogo clássico de Breakout passo a passo usando
+    <strong>blocos visuais do Blockly</strong>. Em vez de construir tudo antes de testar,
+    vamos adotar uma abordagem progressiva &mdash; você terá um jogo jogável em cada fase!</p>
+
+    <h2>Como este tutorial funciona</h2>
+
+    <div class="phase">
+        <strong>Fase 1 &mdash; Uma bola quicante</strong><br>
+        Crie uma raquete, uma bola, e paredes. A bola quica por aí e você já pode jogar!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 2 &mdash; Primeira fileira de blocos</strong><br>
+        Adicione uma fileira de blocos para quebrar. Aprenda sobre objetos pai e pontuação.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 3 &mdash; Mais fileiras de blocos</strong><br>
+        Adicione fileiras coloridas de blocos, cada uma valendo pontos diferentes.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 4 &mdash; Controlador de jogo</strong><br>
+        Adicione um sistema de vidas e exiba a pontuação na tela.
+    </div>
+
+    <h2>O que você vai aprender</h2>
+    <ul>
+        <li>Usar <strong>blocos visuais do Blockly</strong> para programar o comportamento do jogo</li>
+        <li>Controles de teclado para movimento da raquete</li>
+        <li>Quique da bola com blocos de movimento reverso</li>
+        <li>Destruir objetos na colisão</li>
+        <li>Usar <strong>objetos pai</strong> para blocos semelhantes</li>
+        <li>Rastreamento de pontuação e vidas</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Tempo necessário:</strong> Cerca de 25&ndash;30 minutos
+    </div>
+
+    <div class="info">
+        <strong>Pronto?</strong> Clique em "Próximo" para começar a criar seus primeiros sprites!
+    </div>
+</body>
+</html>
