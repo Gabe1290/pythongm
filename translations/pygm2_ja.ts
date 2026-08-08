@@ -4722,4 +4722,342 @@ Events: {4}</source>
         <translation>ソリッド</translation>
     </message>
 </context>
+<context>
+    <name>RoomEditor</name>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="85"/>
+        <source>Tile Palette...</source>
+        <translation>タイルパレット...</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="116"/>
+        <source>Room Editor</source>
+        <translation>ルームエディタ</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="122"/>
+        <source>Save room (Ctrl+S)</source>
+        <translation>ルームを保存（Ctrl+S）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="128"/>
+        <location filename="../editors/room_editor/__init__.py" line="623"/>
+        <source>↶ Undo</source>
+        <translation>↶ 元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="129"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>元に戻す（Ctrl+Z）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="133"/>
+        <location filename="../editors/room_editor/__init__.py" line="629"/>
+        <source>↷ Redo</source>
+        <translation>↷ やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="134"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>やり直す（Ctrl+Y）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="141"/>
+        <source>✂️ Cut</source>
+        <translation>✂️ 切り取り</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="142"/>
+        <source>Cut selected instance (Ctrl+X)</source>
+        <translation>選択したインスタンスを切り取り（Ctrl+X）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="146"/>
+        <source>📋 Copy</source>
+        <translation>📋 コピー</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="147"/>
+        <source>Copy selected instance (Ctrl+C)</source>
+        <translation>選択したインスタンスをコピー（Ctrl+C）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="151"/>
+        <source>📄 Paste</source>
+        <translation>📄 貼り付け</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="152"/>
+        <source>Paste instance (Ctrl+V)</source>
+        <translation>インスタンスを貼り付け（Ctrl+V）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="156"/>
+        <source>⎘ Duplicate</source>
+        <translation>⎘ 複製</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="157"/>
+        <source>Duplicate selected instance (Ctrl+D)</source>
+        <translation>選択したインスタンスを複製（Ctrl+D）</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="164"/>
+        <source>🔲 Grid</source>
+        <translation>🔲 グリッド</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="167"/>
+        <source>Toggle grid visibility</source>
+        <translation>グリッド表示を切り替え</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="171"/>
+        <source>🧲 Snap</source>
+        <translation>🧲 スナップ</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="174"/>
+        <source>Toggle snap to grid</source>
+        <translation>グリッドへのスナップを切り替え</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="180"/>
+        <source>🗑️ Clear All</source>
+        <translation>🗑️ すべてクリア</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="181"/>
+        <source>Remove all object instances</source>
+        <translation>すべてのオブジェクトインスタンスを削除</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="185"/>
+        <source>↔ Shift All</source>
+        <translation>↔ すべてをシフト</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="186"/>
+        <source>Shift all instances by an X/Y offset</source>
+        <translation>すべてのインスタンスをX/Yオフセットでシフト</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 フロート</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>このエディタを専用のウィンドウで開く</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="202"/>
+        <location filename="../editors/room_editor/__init__.py" line="278"/>
+        <source>Ready</source>
+        <translation>準備完了</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="223"/>
+        <source>Clear All Instances</source>
+        <translation>すべてのインスタンスをクリア</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="224"/>
+        <source>Are you sure you want to remove all {0} object instances?</source>
+        <translation>{0} 個のオブジェクトインスタンスをすべて削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="233"/>
+        <source>All instances cleared</source>
+        <translation>すべてのインスタンスをクリアしました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="238"/>
+        <source>Shift All</source>
+        <translation>すべてをシフト</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="238"/>
+        <source>No instances to shift.</source>
+        <translation>シフトするインスタンスがありません。</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="242"/>
+        <source>Shift All Instances</source>
+        <translation>すべてのインスタンスをシフト</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="249"/>
+        <source>X offset:</source>
+        <translation>Xオフセット：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="255"/>
+        <source>Y offset:</source>
+        <translation>Yオフセット：</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="268"/>
+        <source>Shifted all instances by ({0}, {1})</source>
+        <translation>すべてのインスタンスを ({0}, {1}) でシフトしました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="330"/>
+        <source>Deleted {0}</source>
+        <translation>{0} を削除しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="332"/>
+        <source>Deleted {0} instances</source>
+        <translation>{0} 個のインスタンスを削除しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="383"/>
+        <source>Loaded room &apos;{0}&apos; with {1} instances</source>
+        <translation>ルーム「{0}」を {1} 個のインスタンスで読み込みました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="424"/>
+        <source>Loaded {0} objects</source>
+        <translation>{0} 個のオブジェクトを読み込みました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="428"/>
+        <source>Error loading objects: {0}</source>
+        <translation>オブジェクトの読み込みエラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="447"/>
+        <source>Selected &apos;{0}&apos; - Click in room to place</source>
+        <translation>「{0}」を選択 - ルーム内をクリックして配置</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="449"/>
+        <source>No object selected</source>
+        <translation>オブジェクトが選択されていません</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="462"/>
+        <source>Tile selected - Click in room to paint</source>
+        <translation>タイルを選択 - ルーム内をクリックして描画</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="467"/>
+        <source>Tile mode cleared</source>
+        <translation>タイルモードを解除しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="484"/>
+        <source>Selected {0} at ({1}, {2})</source>
+        <translation>{0} を ({1}, {2}) で選択しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="486"/>
+        <source>Selected {0} instances</source>
+        <translation>{0} 個のインスタンスを選択しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="488"/>
+        <source>No instance selected</source>
+        <translation>インスタンスが選択されていません</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="494"/>
+        <source>Moved {0} to ({1}, {2})</source>
+        <translation>{0} を ({1}, {2}) に移動しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="499"/>
+        <source>Added {0} at ({1}, {2})</source>
+        <translation>{0} を ({1}, {2}) に追加しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="506"/>
+        <source>Deleted {0} instance</source>
+        <translation>{0} インスタンスを削除しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="508"/>
+        <source>Updated {0} {1}: {2}</source>
+        <translation>{0} {1} を更新しました：{2}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="553"/>
+        <source>Saving room...</source>
+        <translation>ルームを保存中...</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="559"/>
+        <source>Room &apos;{0}&apos; saved successfully</source>
+        <translation>ルーム「{0}」を正常に保存しました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="568"/>
+        <source>Error saving room: {0}</source>
+        <translation>ルームの保存エラー：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="569"/>
+        <source>Save Error</source>
+        <translation>保存エラー</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="569"/>
+        <source>Failed to save room:
+{0}</source>
+        <translation>ルームの保存に失敗しました：
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="601"/>
+        <source>Undo</source>
+        <translation>元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="608"/>
+        <source>Redo</source>
+        <translation>やり直す</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="621"/>
+        <source>↶ Undo: {0}</source>
+        <translation>↶ 元に戻す：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="627"/>
+        <source>↷ Redo: {0}</source>
+        <translation>↷ やり直す：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="638"/>
+        <source>Cut {0} instance(s) to clipboard</source>
+        <translation>{0} 個のインスタンスをクリップボードに切り取りました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="646"/>
+        <source>Copied {0} instance(s) to clipboard</source>
+        <translation>{0} 個のインスタンスをクリップボードにコピーしました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="657"/>
+        <source>Instance pasted</source>
+        <translation>インスタンスを貼り付けました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="659"/>
+        <source>Pasted {0} instances</source>
+        <translation>{0} 個のインスタンスを貼り付けました</translation>
+    </message>
+    <message>
+        <location filename="../editors/room_editor/__init__.py" line="667"/>
+        <source>Duplicated {0} instance(s)</source>
+        <translation>{0} 個のインスタンスを複製しました</translation>
+    </message>
+</context>
 </TS>
