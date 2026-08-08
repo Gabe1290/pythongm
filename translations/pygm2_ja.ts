@@ -5393,4 +5393,386 @@ Events: {4}</source>
         <translation>スプライトの保存に失敗しました：{0}</translation>
     </message>
 </context>
+<context>
+    <name>ThymioPlaygroundWindow</name>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="173"/>
+        <source>Thymio Playground</source>
+        <translation>Thymioプレイグラウンド</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="261"/>
+        <source>Robot: Arrow keys = buttons, Space = stop, R = reset | Edit: Click+drag to draw, Delete = remove | Zoom: +/- or scroll, Middle-drag to pan, Home = reset view</source>
+        <translation>ロボット：矢印キー＝ボタン、スペース＝停止、R＝リセット ｜ 編集：クリック＋ドラッグで描画、Delete＝削除 ｜ ズーム：+/-またはスクロール、中ボタンドラッグでパン、Home＝表示をリセット</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="307"/>
+        <source>Angle: -90°</source>
+        <translation>角度：-90°</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="313"/>
+        <source>L: 0</source>
+        <translation>L：0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="314"/>
+        <source>R: 0</source>
+        <translation>R：0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="315"/>
+        <source>Motors:</source>
+        <translation>モーター：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="322"/>
+        <location filename="../widgets/thymio_playground.py" line="850"/>
+        <source>LED: Off</source>
+        <translation>LED：オフ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="330"/>
+        <source>Robot Status</source>
+        <translation>ロボットの状態</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="339"/>
+        <source>Zoom: 100%</source>
+        <translation>ズーム：100%</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="352"/>
+        <source>Pan: 0, 0</source>
+        <translation>パン：0, 0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="355"/>
+        <source>View</source>
+        <translation>ビュー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="365"/>
+        <source>Custom</source>
+        <translation>カスタム</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="391"/>
+        <source>Apply</source>
+        <translation>適用</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="395"/>
+        <source>Size</source>
+        <translation>サイズ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="403"/>
+        <source>Mode: Select</source>
+        <translation>モード：選択</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="407"/>
+        <source>Click: select | Drag: draw</source>
+        <translation>クリック：選択 ｜ ドラッグ：描画</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="413"/>
+        <source>Edit</source>
+        <translation>編集</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="421"/>
+        <location filename="../widgets/thymio_playground.py" line="495"/>
+        <source>Reset Robot</source>
+        <translation>ロボットをリセット</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="425"/>
+        <source>Reset World</source>
+        <translation>ワールドをリセット</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="429"/>
+        <source>Toggle Sensors</source>
+        <translation>センサー表示を切り替え</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="447"/>
+        <source>Select</source>
+        <translation>選択</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="450"/>
+        <source>Select mode - click to select elements, Delete to remove</source>
+        <translation>選択モード - クリックして要素を選択、Deleteで削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="455"/>
+        <source>Obstacle</source>
+        <translation>障害物</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="457"/>
+        <source>Draw rectangular obstacles - click and drag</source>
+        <translation>矩形の障害物を描画 - クリックしてドラッグ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="462"/>
+        <source>Line</source>
+        <translation>ライン</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="464"/>
+        <source>Draw line track segments - click and drag</source>
+        <translation>ラインコースの区間を描画 - クリックしてドラッグ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="472"/>
+        <source>Undo</source>
+        <translation>元に戻す</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="478"/>
+        <source>Clear Obstacles</source>
+        <translation>障害物をクリア</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="482"/>
+        <source>Clear Lines</source>
+        <translation>ラインをクリア</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="489"/>
+        <source>Pause</source>
+        <translation>一時停止</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="502"/>
+        <source>Sensors</source>
+        <translation>センサー</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="511"/>
+        <source>Zoom In (+)</source>
+        <translation>ズームイン（+）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="516"/>
+        <source>Zoom Out (-)</source>
+        <translation>ズームアウト（-）</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="521"/>
+        <source>Reset View</source>
+        <translation>表示をリセット</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="526"/>
+        <source>Fit to Window</source>
+        <translation>ウィンドウに合わせる</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="535"/>
+        <source>Ready - Use arrow keys to control Thymio</source>
+        <translation>準備完了 - 矢印キーでThymioを操作</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="767"/>
+        <source>View reset to default</source>
+        <translation>表示をデフォルトにリセットしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="830"/>
+        <location filename="../widgets/thymio_playground.py" line="884"/>
+        <source>Zoom: {0}%</source>
+        <translation>ズーム：{0}%</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="831"/>
+        <location filename="../widgets/thymio_playground.py" line="885"/>
+        <source>Pan: {0}, {1}</source>
+        <translation>パン：{0}, {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="861"/>
+        <source>Warning: Obstacle very close!</source>
+        <translation>警告：障害物が非常に近くにあります！</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="863"/>
+        <source>Obstacle detected ahead</source>
+        <translation>前方に障害物を検知</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="871"/>
+        <source>Moving forward</source>
+        <translation>前進中</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="877"/>
+        <source>Moving backward</source>
+        <translation>後退中</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="883"/>
+        <source>Turning left</source>
+        <translation>左折中</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="889"/>
+        <source>Turning right</source>
+        <translation>右折中</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="895"/>
+        <source>Stopped</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="913"/>
+        <source>Selection cleared</source>
+        <translation>選択を解除しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="945"/>
+        <source>Robot reset to center</source>
+        <translation>ロボットを中央にリセットしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="958"/>
+        <source>World reset to default</source>
+        <translation>ワールドをデフォルトにリセットしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="971"/>
+        <source>Interior obstacles cleared</source>
+        <translation>内部の障害物をクリアしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="973"/>
+        <source>No interior obstacles to clear</source>
+        <translation>クリアする内部の障害物がありません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1009"/>
+        <source>Sensor visualization: {0}</source>
+        <translation>センサー表示：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1016"/>
+        <source>Simulation {0}</source>
+        <translation>シミュレーション {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1096"/>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>プレイグラウンドを {0}x{1} にサイズ変更しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1157"/>
+        <source>Mode: {0}</source>
+        <translation>モード：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1158"/>
+        <source>Edit mode: {0}</source>
+        <translation>編集モード：{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1179"/>
+        <source>Obstacle added</source>
+        <translation>障害物を追加しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1183"/>
+        <source>Line segment added</source>
+        <translation>ライン区間を追加しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1185"/>
+        <source>Element too small - drag to create larger area</source>
+        <translation>要素が小さすぎます - ドラッグしてより大きな範囲を作成してください</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1223"/>
+        <source>Obstacle selected - press Delete to remove</source>
+        <translation>障害物を選択 - Deleteキーで削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1230"/>
+        <source>Line segment selected - press Delete to remove</source>
+        <translation>ライン区間を選択 - Deleteキーで削除</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1233"/>
+        <source>No element selected</source>
+        <translation>要素が選択されていません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1257"/>
+        <source>Nothing to undo</source>
+        <translation>元に戻す操作がありません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1265"/>
+        <source>Undid obstacle addition</source>
+        <translation>障害物の追加を元に戻しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1269"/>
+        <source>Undid line addition</source>
+        <translation>ラインの追加を元に戻しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1272"/>
+        <source>Undid obstacle deletion</source>
+        <translation>障害物の削除を元に戻しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1275"/>
+        <source>Undid line deletion</source>
+        <translation>ラインの削除を元に戻しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1283"/>
+        <source>Obstacle deleted</source>
+        <translation>障害物を削除しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1289"/>
+        <source>Line segment deleted</source>
+        <translation>ライン区間を削除しました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1300"/>
+        <source>All line segments cleared</source>
+        <translation>すべてのライン区間をクリアしました</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1302"/>
+        <source>No line segments to clear</source>
+        <translation>クリアするライン区間がありません</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>オン</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>オフ</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>一時停止中</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>実行中</translation>
+    </message>
+</context>
 </TS>
