@@ -1583,4 +1583,255 @@ Do you want to save anyway?</source>
         <translation>是否移除此事件及其所有操作？</translation>
     </message>
 </context>
+<context>
+    <name>BlocklyConfigDialog</name>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="46"/>
+        <source>Configure Events &amp; Actions</source>
+        <translation>配置事件和操作</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="54"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="101"/>
+        <source>Full (All Blocks)</source>
+        <translation>完整版（所有积木）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="55"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="102"/>
+        <source>Beginner (Basic Blocks)</source>
+        <translation>初级（基础积木）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="56"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="103"/>
+        <source>Intermediate (More Features)</source>
+        <translation>中级（更多功能）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="57"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="104"/>
+        <source>Platformer Game</source>
+        <translation>平台跳跃游戏</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="58"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="105"/>
+        <source>Grid-based RPG</source>
+        <translation>网格式 RPG</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="59"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="106"/>
+        <source>Sokoban (Box Puzzle)</source>
+        <translation>推箱子（箱子谜题）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="60"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="107"/>
+        <source>Testing (Validated Only)</source>
+        <translation>测试（仅验证过的）</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="61"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="108"/>
+        <source>Implemented Only</source>
+        <translation>仅已实现的</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="62"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="109"/>
+        <source>Code Editor</source>
+        <translation>代码编辑器</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="63"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="110"/>
+        <source>Blockly Editor</source>
+        <translation>Blockly 编辑器</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="64"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
+        <source>Select blocks to enable:</source>
+        <translation>选择要启用的积木：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="136"/>
+        <source>{0} blocks, {1} categories</source>
+        <translation>{0} 个积木，{1} 个类别</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="128"/>
+        <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+        <translation>部分已启用的积木缺少依赖项，可能无法正常工作。
+
+是否仍要保存？</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundLayersDialog</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
+        <source>Background Layers</source>
+        <translation>背景图层</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
+        <source>Background {0}</source>
+        <translation>背景 {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
+        <source>Layer:</source>
+        <translation>图层：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
+        <source>Layer Properties</source>
+        <translation>图层属性</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
+        <source>Visible:</source>
+        <translation>可见：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
+        <source>Foreground:</source>
+        <translation>前景：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
+        <source>Image:</source>
+        <translation>图像：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
+        <source>Stretch:</source>
+        <translation>拉伸：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
+        <source>Tile H:</source>
+        <translation>水平平铺：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
+        <source>Tile V:</source>
+        <translation>垂直平铺：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
+        <source>X:</source>
+        <translation>X：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1232"/>
+        <source>Y:</source>
+        <translation>Y：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1238"/>
+        <source>H Speed:</source>
+        <translation>水平速度：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="1244"/>
+        <source>V Speed:</source>
+        <translation>垂直速度：</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundElementProperties</name>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="29"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="233"/>
+        <source>No Selection</source>
+        <translation>未选择</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="34"/>
+        <source>Wall</source>
+        <translation>墙</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="72"/>
+        <source>Height:</source>
+        <translation>高度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="82"/>
+        <location filename="../editors/playground_editor/playground_properties.py" line="159"/>
+        <source>Angle:</source>
+        <translation>角度：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="93"/>
+        <source>Color:</source>
+        <translation>颜色：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="102"/>
+        <source>Pushable</source>
+        <translation>可推动</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="118"/>
+        <source>Robot</source>
+        <translation>机器人</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="124"/>
+        <source>Type:</source>
+        <translation>类型：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="134"/>
+        <source>Name:</source>
+        <translation>名称：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="170"/>
+        <source>Port:</source>
+        <translation>端口：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="180"/>
+        <source>Code:</source>
+        <translation>代码：</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="183"/>
+        <source>Which Thymio object&apos;s code to run when simulating</source>
+        <translation>模拟时运行哪个 Thymio 对象的代码</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="192"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="240"/>
+        <source>Wall Properties</source>
+        <translation>墙属性</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/playground_properties.py" line="258"/>
+        <source>Robot Properties</source>
+        <translation>机器人属性</translation>
+    </message>
+</context>
 </TS>
