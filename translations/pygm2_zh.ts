@@ -1219,4 +1219,368 @@ Do you want to save anyway?</source>
         <translation>实体对象会阻挡移动</translation>
     </message>
 </context>
+<context>
+    <name>TutorialPanel</name>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="343"/>
+        <source>Float</source>
+        <translation>浮动</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="339"/>
+        <source>Re-dock</source>
+        <translation>重新停靠</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="345"/>
+        <source>Detach this tutorial into its own movable window</source>
+        <translation>将此教程分离到独立的可移动窗口</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="341"/>
+        <source>Dock this tutorial back into the IDE</source>
+        <translation>将此教程重新停靠到 IDE 中</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="39"/>
+        <source>Tutorials</source>
+        <translation>教程</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="56"/>
+        <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
+        <translation>&lt;b&gt;教程&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="80"/>
+        <source>Select a tutorial:</source>
+        <translation>选择一个教程：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="87"/>
+        <source>Open Tutorial</source>
+        <translation>打开教程</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="120"/>
+        <source>Back to List</source>
+        <translation>返回列表</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="126"/>
+        <source>&lt; Previous</source>
+        <translation>＜ 上一页</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="130"/>
+        <source>Next &gt;</source>
+        <translation>下一页 ＞</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="158"/>
+        <source>No tutorials folder found</source>
+        <translation>未找到教程文件夹</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="202"/>
+        <source>No tutorials available</source>
+        <translation>没有可用的教程</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="308"/>
+        <source>Page {0} of {1}</source>
+        <translation>第 {0} 页，共 {1} 页</translation>
+    </message>
+</context>
+<context>
+    <name>AutoSaveSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="17"/>
+        <source>Auto-Save Settings</source>
+        <translation>自动保存设置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="27"/>
+        <source>Auto-Save</source>
+        <translation>自动保存</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="30"/>
+        <source>Enable automatic saving</source>
+        <translation>启用自动保存</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="35"/>
+        <source>When enabled, your project will be saved automatically at regular intervals.</source>
+        <translation>启用后，您的项目将按固定的时间间隔自动保存。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="43"/>
+        <source>Save Interval</source>
+        <translation>保存间隔</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="50"/>
+        <source> seconds</source>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="53"/>
+        <source>Save every:</source>
+        <translation>保存间隔：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="58"/>
+        <source>15s</source>
+        <translation>15秒</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="62"/>
+        <source>30s</source>
+        <translation>30秒</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="66"/>
+        <source>1m</source>
+        <translation>1分钟</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="70"/>
+        <source>2m</source>
+        <translation>2分钟</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="74"/>
+        <source>5m</source>
+        <translation>5分钟</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="78"/>
+        <source>Presets:</source>
+        <translation>预设：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="83"/>
+        <source>⚠️  Shorter intervals may impact performance on large projects.</source>
+        <translation>⚠️  较短的间隔可能会影响大型项目的性能。</translation>
+    </message>
+</context>
+<context>
+    <name>BaseEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 保存</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="126"/>
+        <location filename="../editors/base_editor.py" line="158"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 自动保存：开</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="129"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>切换自动保存（当前每3秒一次）</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="138"/>
+        <location filename="../editors/base_editor.py" line="195"/>
+        <source>↶ Undo</source>
+        <translation>↶ 撤销</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="141"/>
+        <location filename="../editors/base_editor.py" line="200"/>
+        <source>↷ Redo</source>
+        <translation>↷ 重做</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="150"/>
+        <source>🪟 Float</source>
+        <translation>🪟 浮动</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="151"/>
+        <source>Open this editor in its own window</source>
+        <translation>在独立窗口中打开此编辑器</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="159"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>自动保存已启用。点击以禁用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="161"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ 自动保存：关</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="162"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>自动保存已禁用。点击以启用。</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="193"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ 撤销 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="198"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ 重做 {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="219"/>
+        <source>Loaded: {0}</source>
+        <translation>已加载：{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="283"/>
+        <source>Auto-saved: {0}</source>
+        <translation>已自动保存：{0}</translation>
+    </message>
+</context>
+<context>
+    <name>BuildProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="797"/>
+        <source>Build Project</source>
+        <translation>构建项目</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="808"/>
+        <source>Build Configuration</source>
+        <translation>构建配置</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Debug</source>
+        <translation>调试</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Release</source>
+        <translation>发布</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="813"/>
+        <source>Build Type:</source>
+        <translation>构建类型：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Basic</source>
+        <translation>基础</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Full</source>
+        <translation>完整</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="817"/>
+        <source>Optimization:</source>
+        <translation>优化：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="822"/>
+        <source>Build Options</source>
+        <translation>构建选项</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="826"/>
+        <source>Clean Build:</source>
+        <translation>清理构建：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="829"/>
+        <source>Verbose Output:</source>
+        <translation>详细输出：</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="841"/>
+        <source>Build</source>
+        <translation>构建</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="56"/>
+        <source>Thymio Programming</source>
+        <translation>Thymio 编程</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="72"/>
+        <source>Click on the robot to add events</source>
+        <translation>点击机器人以添加事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="114"/>
+        <source>+ Event</source>
+        <translation>+ 事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="115"/>
+        <source>Add Thymio event</source>
+        <translation>添加 Thymio 事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Event</source>
+        <translation>事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Actions</source>
+        <translation>操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="153"/>
+        <source>Add Event</source>
+        <translation>添加事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="213"/>
+        <source>Event Exists</source>
+        <translation>事件已存在</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="214"/>
+        <source>This event already exists.</source>
+        <translation>此事件已存在。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="239"/>
+        <source>Add Action</source>
+        <translation>添加操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="261"/>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="346"/>
+        <source>Remove Event</source>
+        <translation>移除事件</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="268"/>
+        <source>Edit Action</source>
+        <translation>编辑操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="271"/>
+        <source>Remove Action</source>
+        <translation>移除操作</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="347"/>
+        <source>Remove this event and all its actions?</source>
+        <translation>是否移除此事件及其所有操作？</translation>
+    </message>
+</context>
 </TS>
