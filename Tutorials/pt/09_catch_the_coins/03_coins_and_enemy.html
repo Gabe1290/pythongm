@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 2: Moedas e um inimigo</h1>
+
+    <p>Agora vamos adicionar as moedas para coletar e um inimigo para evitar. Ambos caem em linha reta.</p>
+
+    <h2>Crie o sprite da moeda</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Sprites</strong> &rarr; <strong>Criar Novo Sprite</strong></li>
+            <li>Nomeie-o <code>spr_coin</code></li>
+            <li>Abra o Editor de Sprites e desenhe um círculo amarelo 24&times;24. Salve com <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Crie o sprite do inimigo</h2>
+    <div class="step">
+        <ol>
+            <li>Repita os passos acima para um sprite chamado <code>spr_enemy</code></li>
+            <li>Desenhe um quadrado vermelho 32&times;32 para que o inimigo seja fácil de identificar</li>
+        </ol>
+    </div>
+
+    <h2>Crie o objeto da moeda</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Objetos</strong> &rarr; <strong>Criar Novo Objeto</strong></li>
+            <li>Nomeie-o <code>obj_coin</code></li>
+            <li>Defina o sprite como <code>spr_coin</code></li>
+            <li>Abra a aba <strong>Blockly</strong> e adicione isto:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Crie o objeto do inimigo</h2>
+    <div class="step">
+        <ol>
+            <li>Crie outro objeto chamado <code>obj_enemy</code></li>
+            <li>Defina seu sprite como <code>spr_enemy</code></li>
+            <li>Adicione o mesmo evento <strong>When created</strong> para que ele também caia:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Posicione-os na sala</h2>
+    <div class="step">
+        <ol>
+            <li>Abra <code>room_main</code></li>
+            <li>Posicione <strong>de 5 a 8 moedas</strong> pelo topo da sala, espalhadas horizontalmente</li>
+            <li>Posicione <strong>1 inimigo</strong> em algum lugar do topo, entre as moedas</li>
+            <li>Certifique-se de que <code>obj_player</code> ainda está no centro inferior</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Dica:</strong> O número de moedas é a pontuação que o jogador precisa alcançar para vencer.
+            Comece com 5 para uma demonstração rápida &mdash; você sempre pode adicionar mais depois.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>Moedas e o inimigo devem cair do topo da sala</li>
+            <li>O jogador pode se mover para a esquerda e direita embaixo deles</li>
+            <li>Tocá-los ainda não faz nada &mdash; essa é a próxima fase!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para conectar a pontuação e a colisão de fim de jogo.
+    </div>
+</body>
+</html>

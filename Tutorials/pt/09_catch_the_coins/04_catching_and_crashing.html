@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Fase 3: Pegando e colidindo</h1>
+
+    <p>É hora de fazer as moedas e o inimigo realmente <em>fazerem</em> algo. Vamos adicionar três regras:</p>
+    <ul>
+        <li>Tocar uma moeda: <strong>+1 pontuação</strong>, a moeda desaparece</li>
+        <li>Tocar o inimigo: <strong>fim de jogo</strong></li>
+        <li>A pontuação é exibida na tela</li>
+    </ul>
+
+    <h2>Abra o objeto do jogador</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_player</code> para abrir o Editor de Objetos</li>
+            <li>Clique na aba <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Redefina a pontuação quando o jogo começar</h2>
+    <div class="step">
+        <p>Adicione este evento para que a pontuação comece em zero toda vez:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+    </div>
+
+    <h2>Pegue uma moeda (pontue e a destrua)</h2>
+    <div class="step">
+        <p>Adicione um evento de <strong>Collision</strong> com <code>obj_coin</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Collision with obj_coin</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p style="margin-top: 8px;"><strong>Destroy other instance</strong> significa &ldquo;destruir a moeda que acabamos de tocar&rdquo; &mdash;
+        não o jogador.</p>
+    </div>
+
+    <h2>Colida com o inimigo (fim de jogo)</h2>
+    <div class="step">
+        <p>Adicione outro evento de <strong>Collision</strong>, desta vez com <code>obj_enemy</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Collision with obj_enemy</span><br>
+            <span class="block block-room block-indent">Go to room <span class="block-text">room_gameover</span></span>
+        </div>
+        <p style="margin-top: 8px;">A sala <code>room_gameover</code> veio do modelo
+        <strong>"With Game Over Screen"</strong> &mdash; ela já exibe
+        "GAME OVER" e reinicia quando o jogador pressiona <strong>ESPAÇO</strong>.</p>
+    </div>
+
+    <h2>Exiba a pontuação na tela</h2>
+    <div class="step">
+        <p>Adicione um evento <strong>Draw</strong> para que a pontuação fique visível enquanto você joga:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-score block-indent">Draw Score at x:<span class="block-num">10</span> y:<span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Seu <code>obj_player</code> agora tem:
+        <strong>When created</strong>, <strong>When drawing</strong>, <strong>duas colisões</strong>,
+        e os <strong>três eventos de teclado</strong> da Fase 1 &mdash; <strong>sete blocos de evento no total</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>Pegue moedas &rarr; <strong>a pontuação aumenta</strong>, as moedas desaparecem</li>
+            <li>Toque o inimigo &rarr; <strong>a tela de Game Over aparece</strong></li>
+            <li>Pressione <strong>ESPAÇO</strong> na tela de Game Over para reiniciar</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para adicionar a tela de vitória.
+    </div>
+</body>
+</html>

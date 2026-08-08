@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Pegue as Moedas!</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/09_catch_the_coins.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128176;</p>
+        <p><strong>Pegue cada moeda &mdash; sem esbarrar no inimigo!</strong></p>
+        <p>Mova-se para a esquerda e direita, colete todas as moedas que caem para vencer, e evite o inimigo ou é fim de jogo.</p>
+    </div>
+
+    <h2>O que vamos construir</h2>
+    <p>Você vai criar um jogo completo com um estado claro de vitória e derrota.
+    O jogo será jogável ao final de cada fase, então você pode parar e testá-lo
+    quando quiser.</p>
+
+    <h2>Como este tutorial funciona</h2>
+
+    <div class="phase">
+        <strong>Fase 1 &mdash; Um jogador em movimento</strong><br>
+        Crie um jogador que se move para a esquerda e direita. Teste-o imediatamente!
+    </div>
+
+    <div class="phase">
+        <strong>Fase 2 &mdash; Moedas e um inimigo</strong><br>
+        Adicione moedas que caem do céu, mais um inimigo. Posicione-os na sala.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 3 &mdash; Pegando e colidindo</strong><br>
+        Pegue moedas para ganhar pontos, atinja o inimigo e o jogo termina.
+    </div>
+
+    <div class="phase">
+        <strong>Fase 4 &mdash; Vencendo o jogo</strong><br>
+        Adicione uma tela de vitória que aparece quando todas as moedas forem pegas.
+    </div>
+
+    <h2>O que você vai aprender</h2>
+    <ul>
+        <li>Criar sprites, objetos e salas</li>
+        <li>Usar eventos de teclado para controlar o jogador</li>
+        <li>Detectar colisões entre objetos</li>
+        <li>Rastrear e exibir uma pontuação</li>
+        <li>Usar transições de sala para telas de fim de jogo e vitória</li>
+        <li>Usar o bloco <strong>If Condition</strong> para verificar quantos objetos restam</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Tempo necessário:</strong> Cerca de 15&ndash;20 minutos
+    </div>
+
+    <div class="info">
+        <strong>Pronto?</strong> Clique em "Próximo" para começar a construir.
+    </div>
+</body>
+</html>
