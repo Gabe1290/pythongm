@@ -63,6 +63,18 @@
                 "04_targets_and_controller.html"
             ],
             "thumbnail": "thumbnails/05_sokoban.png"
+        },
+        {
+            "title": "Labirinto: Navegue até a Saída",
+            "folder": "06_maze",
+            "description": "Navegue pelos corredores, colete moedas, alcance a saída",
+            "pages": [
+                "01_introduction.html",
+                "02_player_and_maze.html",
+                "03_coins_and_exit.html",
+                "04_game_controller.html"
+            ],
+            "thumbnail": "thumbnails/06_maze.png"
         }
     ]
 }
