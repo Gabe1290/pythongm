@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Crie a sala &mdash; Vamos jogar!</h1>
+
+    <p>Hora de construir a sala e testar seu jogo! Vamos posicionar paredes ao redor das bordas,
+    uma zona de morte no fundo, uma raquete, e a bola.</p>
+
+    <h2>Crie a sala</h2>
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Salas</strong> e selecione <strong>Criar Nova Sala</strong></li>
+            <li>Nomeie-a <code>room_breakout</code></li>
+            <li>Defina o tamanho como <strong>640&times;480</strong> pixels</li>
+        </ol>
+    </div>
+
+    <h2>Layout da sala</h2>
+    <pre>
+S T T T T T T T T T T T T T T T T T T S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D D
+
+S = Parede lateral (obj_wall_side)
+T = Parede do topo (obj_wall_top)
+D = Zona de morte (obj_death_zone, invisível)
+(o) = Bola</pre>
+
+    <h2>Posicione os objetos</h2>
+
+    <h3>1. Paredes laterais</h3>
+    <div class="step">
+        <p>Posicione <code>obj_wall_side</code> ao longo das bordas <strong>esquerda e direita</strong>,
+        de cima a baixo. Empilhe-as verticalmente para formar colunas sólidas.</p>
+    </div>
+
+    <h3>2. Parede do topo</h3>
+    <div class="step">
+        <p>Posicione <code>obj_wall_top</code> ao longo da borda <strong>superior</strong>,
+        entre as paredes laterais.</p>
+    </div>
+
+    <h3>3. Zona de morte</h3>
+    <div class="step">
+        <p>Posicione <code>obj_death_zone</code> ao longo da borda <strong>inferior</strong>.
+        Ela será invisível durante o jogo &mdash; captura a bola quando ela cai.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> NÃO há parede no fundo! O fundo aberto é onde
+        a bola pode escapar. A zona de morte invisível detecta quando isso acontece.
+    </div>
+
+    <h3>4. Raquete</h3>
+    <div class="step">
+        <p>Posicione <code>obj_paddle</code> perto do fundo da sala, centralizada horizontalmente.</p>
+    </div>
+
+    <h3>5. Bola</h3>
+    <div class="step">
+        <p>Posicione <code>obj_ball</code> logo acima da raquete, perto do centro da sala.</p>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Teste seu jogo!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Pressione F5 para jogar!</strong></p>
+        <ul>
+            <li>Use as teclas de seta <strong>Esquerda</strong> e <strong>Direita</strong> para mover a raquete</li>
+            <li>A bola deve quicar nas paredes e na raquete</li>
+            <li>Quando a bola cai além da raquete, ela reaparece no centro</li>
+        </ul>
+        <p>Se algo não estiver funcionando, volte e verifique seus blocos Blockly.
+        Suas alterações são salvas automaticamente enquanto você edita, então os blocos da raquete e da bola já estão ativos.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Muito bem!</strong> Você já tem um jogo jogável com uma bola quicante.
+        Agora vamos torná-lo mais interessante adicionando blocos para quebrar!
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para adicionar sua primeira fileira de blocos.
+    </div>
+</body>
+</html>

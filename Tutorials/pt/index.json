@@ -36,6 +36,21 @@
                 "04_score_display.html"
             ],
             "thumbnail": "thumbnails/03_pong.png"
+        },
+        {
+            "title": "Breakout: Quebra-Blocos",
+            "folder": "04_breakout",
+            "description": "Construa um jogo clássico de quebrar blocos",
+            "pages": [
+                "01_introduction.html",
+                "02_sprites_basic.html",
+                "03_paddle_and_ball.html",
+                "04_first_room.html",
+                "05_first_bricks.html",
+                "06_more_bricks.html",
+                "07_game_controller.html"
+            ],
+            "thumbnail": "thumbnails/04_breakout.png"
         }
     ]
 }

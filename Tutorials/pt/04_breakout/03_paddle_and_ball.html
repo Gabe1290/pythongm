@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fase 1: Objetos, raquete e bola</h1>
+
+    <p>Vamos criar os objetos do jogo e programá-los para que possamos testar o jogo rapidamente!</p>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Crie os objetos</h2>
+    <p>Precisamos de dois tipos diferentes de parede para que a bola saiba em qual direção quicar.</p>
+
+    <div class="step">
+        <ol>
+            <li>Clique com o botão direito em <strong>Objetos</strong> &rarr; <strong>Criar Novo Objeto</strong></li>
+            <li>Crie <code>obj_wall_side</code> &mdash; sprite: <code>spr_wall</code>, marque <strong>Solid</strong></li>
+            <li>Crie <code>obj_wall_top</code> &mdash; sprite: <code>spr_wall</code>, marque <strong>Solid</strong></li>
+            <li>Crie <code>obj_paddle</code> &mdash; sprite: <code>spr_paddle</code>, marque <strong>Solid</strong></li>
+            <li>Crie <code>obj_ball</code> &mdash; sprite: <code>spr_ball</code>, deixe Solid <strong>desmarcado</strong></li>
+            <li>Crie <code>obj_death_zone</code> &mdash; sprite: <code>spr_death_zone</code>, desmarque <strong>Visible</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Por que dois tipos de parede?</strong> Quando a bola atinge uma parede lateral, ela inverte sua
+        direção horizontal. Quando atinge a parede do topo, inverte sua direção vertical.
+        Usar dois objetos permite programar comportamentos de quique diferentes!
+    </div>
+
+    <!-- ============= PADDLE ============= -->
+    <h2>Programe a raquete</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_paddle</code> para abrir o Editor de Objetos</li>
+            <li>Clique na aba <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Como o Blockly funciona:</strong> Arraste blocos da caixa de ferramentas à esquerda para a área de trabalho.
+        Encaixe blocos de ação dentro de blocos de evento para definir o que acontece.
+        Seus blocos são salvos no painel de eventos automaticamente enquanto você edita.
+    </div>
+
+    <h2>Mover para a esquerda</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-8</span></span>
+        </div>
+        <p>Encontre <strong>Keyboard (held)</strong> em <em>Events</em>, selecione <strong>Left Arrow</strong>.
+        Depois encaixe <strong>Set Horizontal Speed</strong> de <em>Movement</em> dentro.
+        Digite <strong>-8</strong> (negativo = esquerda).</p>
+    </div>
+
+    <h2>Mover para a direita</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">8</span></span>
+        </div>
+        <p>Igual ao anterior, mas escolha <strong>Right Arrow</strong> e digite <strong>8</strong> (positivo = direita).</p>
+    </div>
+
+    <h2>Parar quando nenhuma tecla for pressionada</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Isso impede que a raquete deslize para sempre quando você solta a tecla.</p>
+    </div>
+
+    <h2>Parar nas paredes laterais</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Isso mantém a raquete dentro da área de jogo.</p>
+    </div>
+
+    <div class="step">
+        <p>Você deve ter <strong>4 blocos de evento</strong>.</p>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Programe a bola</h2>
+    <div class="step">
+        <ol>
+            <li>Dê um duplo clique em <code>obj_ball</code> para abrir o Editor de Objetos</li>
+            <li>Clique na aba <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Inicie o movimento da bola</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-3</span></span>
+        </div>
+        <p>O Create Event roda uma vez quando o jogo começa.
+        Definir ambas as velocidades faz a bola se mover na diagonal para cima.</p>
+    </div>
+
+    <div class="info">
+        <strong>Por que duas velocidades?</strong> A velocidade horizontal (3) move a bola para os lados.
+        A velocidade vertical (-3) a move para cima (negativo = cima). Juntas, a bola se move na diagonal!
+    </div>
+
+    <h2>Quicar nas paredes laterais</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Reverse horizontal movement</span>
+        </div>
+        <p>A bola inverte sua direção esquerda/direita ao atingir uma parede lateral.</p>
+    </div>
+
+    <h2>Quicar na parede do topo</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_top</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>A bola quica para baixo ao atingir a parede do topo.</p>
+    </div>
+
+    <h2>Quicar na raquete</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_paddle</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>Igual à parede do topo &mdash; a bola quica de volta para cima.</p>
+    </div>
+
+    <h2>A bola cai da tela</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_death_zone</span><br>
+            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">100</span></span>
+        </div>
+        <p>Quando a bola atinge a zona de morte no fundo, ela reaparece acima da raquete.
+        Vamos adicionar vidas mais tarde &mdash; por enquanto, a bola simplesmente volta!</p>
+    </div>
+
+    <div class="step">
+        <p>Você deve ter <strong>5 blocos de evento</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Como o quique funciona:</strong> A bola sempre se move na diagonal. Quando atinge uma
+        superfície vertical (parede lateral), invertemos o movimento horizontal. Quando atinge uma superfície
+        horizontal (parede do topo, raquete), invertemos o movimento vertical. Isso cria um quique realista!
+    </div>
+
+    <div class="info">
+        Clique em "Próximo" para criar a sala e jogar!
+    </div>
+</body>
+</html>
