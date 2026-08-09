@@ -448,27 +448,28 @@ Other:
 
 ## Extensions
 
-### 2.0 extension system — compatibility guarantees
+### ~~2.0 extension system — compatibility guarantees~~ (DONE 2026-08-09)
 - Goal: a project using extensions (Thymio robotics, a future 3D extension)
   must never crash or silently corrupt when opened by an editor that
   doesn't have those extensions installed — audience is children on mixed
   hardware running different app versions.
 - Full plan: `docs/extension_compat_2_0/PLAN.md` (+ companion
   `compat_demo.py` / `project_2_0.json` in the same folder).
-- ~~Task 1 — format-version guard~~ **DONE, shipped v1.1.2 (2026-08-09).**
-  `core/project_format.py`'s `check_project_format()`; a project newer
-  than this build supports is refused with a specific dialog, never
-  crashes or gets silently resaved-over. `tests/test_project_format_guard.py`.
-- Tasks 2-4 (manifest read/write, unknown-action placeholder rendering,
-  install-offer UX) turned out **much smaller than originally drafted** —
-  `events/plugin_loader.py` already implements most of the manifest system
-  (`requires_extensions`, auto-derived per save) and the Object Events
-  panel already renders an unrecognized action distinctly rather than
-  crashing. One confirmed real bug found investigating it: resaving a
-  project without its referenced extension installed silently wipes the
-  `requires_extensions` record (the actions themselves survive, but the
-  dependency note doesn't) — see the plan's Task 2 section for the fix.
-  Not started yet; narrowed scope is in the plan doc.
+- Done: format-version guard (`core/project_format.py`, shipped v1.1.2,
+  `tests/test_project_format_guard.py`); the confirmed
+  `requires_extensions` resave-wipe bug fixed in
+  `_prepare_project_data_for_save` (`tests/test_extension_manifest_preservation.py`);
+  unrecognized-action tree items render amber with the owning extension
+  named when known instead of looking like a normal action, and
+  double-clicking one explains why instead of silently doing nothing
+  (`events/plugin_loader.extension_for_action`,
+  `tests/test_extension_action_ui.py`).
+- Not done, deliberately: an actual settings UI for toggling an
+  extension on/off. `events/plugin_loader.set_extension_enabled()`
+  exists but is never called anywhere in the app — there's currently no
+  UI surface for a user to enable/disable an extension at all. Would
+  need its own scoping pass (where does it live — Preferences? a new
+  dialog? — and a restart prompt, since extensions register at startup).
 
 ## Project format / persistence
 

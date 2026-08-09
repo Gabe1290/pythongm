@@ -195,69 +195,67 @@ including a byte-for-byte on-disk-unchanged assertion after a refused
 load — the concrete "does not crash or corrupt" proof). Shipped as
 **v1.1.2** (not 1.0.1 — see the Implementation update above for why).
 
-### Task 2 — Extension-dependency manifest read/write
+### Task 2 — Extension-dependency manifest read/write — ✅ DONE
 
 **Mostly already existed** (see the Implementation update above) as
 `events/plugin_loader.py`'s `requires_extensions` field +
 `required_extensions_for_project()`/`missing_extensions_for_project()`/
 `not_installed_extensions_for_project()`, auto-derived and written on
-every save. What's left, now narrowly scoped to the one confirmed gap:
+every save. The one confirmed gap is fixed:
+`ProjectManager._prepare_project_data_for_save` no longer lets a
+recomputed (necessarily incomplete — it can only see extensions present
+on disk) `required_extensions_for_project()` result silently drop an
+existing `requires_extensions` entry the current editor can't verify is
+stale; it unions the recomputed set with any entry absent from
+`list_available_extensions()`, only dropping entries it can positively
+confirm are gone. `tests/test_extension_manifest_preservation.py` (5
+tests) covers the resave-wipe case, the genuinely-stale-entry-gets-
+dropped case, and a mixed verifiable/unverifiable case. The reader side
+(tolerant of an absent/malformed `requires_extensions`, preserves
+unknown top-level keys) needed no change —
+`_validate_project_data` only requires `name`/`version`/`assets`.
 
-1. **Fix the resave-wipe bug** in
-   `ProjectManager._prepare_project_data_for_save`: don't let a
-   recomputed (necessarily incomplete — it can only see extensions
-   present on disk) `required_extensions_for_project()` result silently
-   drop an existing `requires_extensions` entry the current editor has
-   no way to verify is stale. Keep any entry not present in
-   `list_available_extensions()`, union it with the freshly computed
-   set, only drop entries this editor can positively confirm (extension
-   installed here, recomputation shows its actions are genuinely gone).
-2. **Regression test:** editor-without-the-extension resaves a project
-   that references `set_camera_3d`/`thymio_drive`-style actions from an
-   extension folder it doesn't have → `requires_extensions` on disk
-   still names that folder after the save, and the actual unknown
-   actions in `assets.objects` are still byte-identical.
-3. The reader side (tolerant of an absent/malformed `requires_extensions`,
-   preserves unknown top-level keys) already works — no change needed;
-   `_validate_project_data` only requires `name`/`version`/`assets`.
+### Task 3 — Placeholder rendering for unknown actions — ✅ DONE
 
-### Task 3 — Placeholder rendering for unknown actions
+`editors/object_editor/object_events_panel.py`'s `_set_action_item_text`
+already rendered an unrecognized action as `❓ <raw action id>` instead
+of crashing or hiding it, and already survived a save untouched. Fixed
+the two real gaps: it now renders **amber** (distinct from both a
+normal action and a comment's gray-italic) via a new
+`events.plugin_loader.extension_for_action()` lookup, which also names
+the owning extension in the label when its manifest is present on disk
+(`❓ set_camera_3d (needs 3D)`) — falling back to the raw id alone when
+no installed extension claims it. Double-clicking one no longer
+silently no-ops; `edit_action` shows a `QMessageBox.information`
+explaining whether the extension is installed-but-disabled or not
+present at all, and reassures the user the action itself is unaffected
+and will round-trip unchanged. `tests/test_extension_action_ui.py` (6
+tests, using mocked `get_action_type`/`extension_for_action` rather than
+relying on real global `ACTION_TYPES`/extension state, which can already
+be mutated by `load_all_plugins()` having run earlier in the same
+pytest session).
 
-**Partially already exists.** `editors/object_editor/object_events_panel.py`'s
-`_set_action_item_text` already renders an unrecognized action as
-`❓ <raw action id>` instead of crashing or hiding it, and it already
-survives a save untouched (nothing in `_prepare_project_data_for_save`
-touches `assets.objects`). Genuine gaps:
+### Task 4 — Install offer wired to the manifest — partially done
 
-- **Not visually "disabled."** Unlike a `comment` item (rendered
-  italic + gray), an unknown-action item uses the normal action font/
-  color — it reads as a broken action, not an intentionally-inert one.
-- **Silently does nothing on double-click.** `edit_action` calls
-  `get_action_type()`, finds nothing, logs a debug warning nobody sees,
-  and returns — no dialog, no message. Should show something like "This
-  action needs the {extension name} extension" (name looked up via
-  `list_available_extensions()`'s manifest when the extension is present-
-  but-disabled, or just the raw id when it's not installed at all and no
-  manifest exists to read a display name from).
-- **Raw id, not a friendly label.** `❓ set_camera_3d` instead of
-  something naming the owning extension when known.
-
-### Task 4 — Install offer wired to the manifest
-
-**Partially already exists**, as a *warning*, not an *offer*.
-`core/ide_window.py`'s `_warn_missing_extensions()` already shows a
-`QMessageBox` naming each disabled/not-installed extension and which
-actions need it — but its text says "Enable the extensions in your
-config" rather than presenting an actual action. Real gap: there's no
-one-click "enable this extension" button from that dialog (it would need
-to call `events.plugin_loader.set_extension_enabled()` and prompt a
-restart, since extensions register at startup) — currently the user has
-to go find a settings surface by themselves (and it's unclear one
-exists yet for toggling extensions from the UI at all; confirm before
-building this). For an extension that's missing entirely (no folder on
-disk), there is nothing to "install" in this bundled-extensions model —
-the honest offer there is closer to "update PyGameMaker" messaging,
-which `_warn_missing_extensions` already does via
+**Partially already existed**, as a *warning*, not an *offer* — and
+still is; this session fixed the warning's honesty but did not build a
+real offer. `core/ide_window.py`'s `_warn_missing_extensions()` already
+shows a `QMessageBox` naming each disabled/not-installed extension and
+which actions need it. Fixed: its text used to say "Enable the
+extensions in your config" — investigated and confirmed **no such
+config UI exists anywhere in the app**
+(`events.plugin_loader.set_extension_enabled()` is defined but never
+called from any UI code), so that sentence was dropped rather than left
+pointing at something that doesn't exist. **Still not built, and
+deliberately so:** an actual one-click "enable this extension" UI. It
+would need a real settings surface (Preferences? a new dialog? —
+undecided) plus a restart prompt, since extensions register at startup.
+Scope this properly before starting, the same way Asset Manager/Clean
+Project need their own scoping pass — don't bolt it onto an unrelated
+dialog. For an extension that's missing entirely (no folder on disk),
+there is nothing to "install" in this bundled-extensions model anyway —
+the honest message there is "update PyGameMaker," which
+`_warn_missing_extensions` already provides via
 `not_installed_extensions_for_project`.
 
 ## 5. Open questions to resolve against the real codebase
