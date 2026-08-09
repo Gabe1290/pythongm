@@ -1,8 +1,11 @@
 # Plan: Clean Project (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 11)
 
-Status: **Tier 1 (`.tmp` orphan sweep) DONE, 2026-08-09.** Tiers 2-3
-(orphaned physical asset files: detection, then deletion UI) remain open.
-`TODO.md`'s own note says to
+Status: **Tiers 1 (`.tmp` orphan sweep) and 2 (orphaned physical file
+detection) DONE, both 2026-08-09.** Only **Tier 3** (deletion UI for the
+files Tier 2 finds) remains open — Tier 1's own deletion is already UI'd
+(Tools → Clean Project) and unused-*entry* deletion already shipped as
+Asset Manager Tier 4, so what's left is specifically surfacing Tier 2's
+findings with a delete button. `TODO.md`'s own note says to
 scope this *after* Asset Manager, since it overlaps that item's unused-asset
 detection — Asset Manager Tier 1 (`utils/asset_usage.py`, done the same
 session) unblocked this scoping pass. The "Why nothing shipped this pass"
@@ -98,14 +101,31 @@ them.
    tests, pure filesystem, no Qt) + `tests/test_clean_project_dispatch.py`
    (4 tests, the repo's unbound-call-on-a-stub dispatch pattern). Full
    suite 2353 → 2367 passed, 0 failed.
-2. **Orphaned physical asset files (detection)** — the "shrink project
-   size" inverse-walk described above. Not started.
-3. **Deletion UI for both unused project.json entries and orphaned
-   physical files** — the undo-semantics question that used to gate this
-   is resolved (Trash, shared with `docs/ASSET_MANAGER_PLAN.md` Tier 4);
-   route both through `AssetManager.delete_asset` per item. Pure UI work
-   now: a dialog listing candidates with checkboxes and a delete button.
-   Not started.
+2. **Orphaned physical asset files (detection) — DONE (2026-08-09).**
+   `utils/project_cleanup.find_orphaned_physical_files(project_dir,
+   project_data)`: the inverse walk described above, grouped by category
+   (sprites/sounds/backgrounds/fonts/thumbnails). Cross-references every
+   on-disk file with a known asset extension against every `file_path`/
+   `thumbnail` value actually present in `project_data['assets']`, so it
+   catches both "entry deleted, file left behind" and "file dropped in by
+   hand, no entry ever created." Deliberately restricted to known
+   extensions per category (not a bare directory listing) so a README or
+   other file a user intentionally placed there isn't reported as debris.
+   Local copy of the extension table rather than importing
+   `core.asset_manager.AssetManager.SUPPORTED_FORMATS`, to keep this
+   module's "pure filesystem logic, no Qt" property genuinely true (that
+   class pulls in PySide6/pygame/PIL). Read-only — no deletion wired up
+   yet, that's Tier 3. Coverage: 10 more tests added to
+   `tests/test_project_cleanup.py` (18 total in that file). Full suite
+   2367 → 2375 passed, 0 failed.
+3. **Deletion UI for orphaned physical files** — the undo-semantics
+   question that used to gate this is resolved (Trash, shared with
+   `docs/ASSET_MANAGER_PLAN.md` Tier 4); route through
+   `AssetManager.delete_asset`-style trashing per file (note: these files
+   have no *asset* entry to delete, just a physical file — trashing them
+   needs a small variant, not a literal `delete_asset` call, since that
+   method operates on a named project.json entry). Not started; only
+   remaining open item in this plan.
 
 ## Why nothing shipped this pass
 

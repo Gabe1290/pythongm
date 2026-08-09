@@ -6,7 +6,8 @@ import os
 import time
 from pathlib import Path
 
-from utils.project_cleanup import find_orphan_tmp_files, sweep_orphan_tmp_files
+from utils.project_cleanup import (
+    find_orphan_tmp_files, sweep_orphan_tmp_files, find_orphaned_physical_files)
 
 
 def _age_file(path: Path, seconds_old: int):
@@ -106,3 +107,86 @@ class TestSweepOrphanTmpFiles:
         assert set(removed) == {f1, f2}
         assert not f1.exists()
         assert not f2.exists()
+
+
+class TestFindOrphanedPhysicalFiles:
+    def test_referenced_file_is_not_orphaned(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        (tmp_path / "sprites" / "spr_hero.png").write_bytes(b"png")
+        project_data = {"assets": {"sprites": {
+            "spr_hero": {"file_path": "sprites/spr_hero.png"}}}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {}
+
+    def test_unreferenced_file_is_orphaned(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        (tmp_path / "sprites" / "spr_hero.png").write_bytes(b"png")
+        (tmp_path / "sprites" / "spr_leftover.png").write_bytes(b"png")
+        project_data = {"assets": {"sprites": {
+            "spr_hero": {"file_path": "sprites/spr_hero.png"}}}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {"sprites": [tmp_path / "sprites" / "spr_leftover.png"]}
+
+    def test_thumbnail_reference_protects_thumbnail_file(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        (tmp_path / "thumbnails").mkdir()
+        (tmp_path / "sprites" / "spr_hero.png").write_bytes(b"png")
+        (tmp_path / "thumbnails" / "spr_hero_thumb.png").write_bytes(b"png")
+        project_data = {"assets": {"sprites": {
+            "spr_hero": {"file_path": "sprites/spr_hero.png",
+                         "thumbnail": "thumbnails/spr_hero_thumb.png"}}}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {}
+
+    def test_orphaned_thumbnail_with_no_owning_entry(self, tmp_path):
+        (tmp_path / "thumbnails").mkdir()
+        (tmp_path / "thumbnails" / "spr_deleted_thumb.png").write_bytes(b"png")
+        project_data = {"assets": {}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {"thumbnails": [tmp_path / "thumbnails" / "spr_deleted_thumb.png"]}
+
+    def test_non_asset_extension_is_ignored(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        (tmp_path / "sprites" / "README.txt").write_text("notes")
+        project_data = {"assets": {}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {}
+
+    def test_multiple_categories_reported_independently(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        (tmp_path / "sounds").mkdir()
+        (tmp_path / "sprites" / "spr_orphan.png").write_bytes(b"png")
+        (tmp_path / "sounds" / "snd_orphan.wav").write_bytes(b"wav")
+        project_data = {"assets": {}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {
+            "sprites": [tmp_path / "sprites" / "spr_orphan.png"],
+            "sounds": [tmp_path / "sounds" / "snd_orphan.wav"],
+        }
+
+    def test_missing_category_directory_is_a_safe_noop(self, tmp_path):
+        project_data = {"assets": {}}
+
+        orphaned = find_orphaned_physical_files(tmp_path, project_data)
+
+        assert orphaned == {}
+
+    def test_empty_project_data_is_a_safe_noop(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        (tmp_path / "sprites" / "spr_orphan.png").write_bytes(b"png")
+
+        orphaned = find_orphaned_physical_files(tmp_path, {})
+
+        assert orphaned == {"sprites": [tmp_path / "sprites" / "spr_orphan.png"]}
