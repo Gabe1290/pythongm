@@ -1257,3 +1257,42 @@ independent confirmation the reference-file approach generalizes.
   the running IDE with pt/ja/zh selected and eyeballing the rendered
   UI** — every string is programmatically verified to resolve via a
   live `QTranslator`, but nobody has looked at the actual widgets.
+
+**2026-08-09 — Section L (in-app Tutorials) closed; the entire
+`docs/I18N_CLEANUP_2026-08-06.md` registry is now COMPLETE.** New
+session, picked up the one remaining checkbox: the plan called for
+opening the Tutorial panel in a running IDE with pt (and, by extension,
+the six lesson-9 languages) selected and confirming every lesson
+renders — impossible in this headless environment. Closed it
+programmatically instead: `tests/test_tutorial_panel_i18n_verification.py`
+(commit `33e4a0e`) drives the real `TutorialPanel` widget through the
+exact code path a click-through exercises — `set_tutorials_path` →
+`load_tutorial_list` → `open_tutorial_by_data` → `load_current_page` for
+every page of every lesson — across every language with a
+`Tutorials/<lang>/` folder (de/es/fr/it/pt/ru/sl/uk), asserting the
+widget never falls into one of its own error/placeholder branches
+("Tutorial not found", "No content", "Error loading page") and that
+every page renders substantial content (>100 chars), plus a bonus test
+confirming ja/zh (no dedicated folder yet — outside this plan's
+original scope) fall back cleanly to the English root. Same judgment
+call as Section H's live-`QTranslator` proxy for a GUI check: the
+strongest automatable evidence available, not a literal substitute for
+eyeballing pixels, and treated as closing the item.
+- **Real discovery, not a bug:** the app's actual `DEFAULT_EDITION`
+  ("beginner", `config/editions.py`) only surfaces tutorials 1-4 — a
+  first draft of this test asserted the tutorial list always has all 9
+  lessons and failed for every non-fr/de/it language that doesn't get a
+  base-index-fallback rescue, because the beginner edition's
+  `tutorial_folders` whitelist genuinely hides 5-9. Fixed by having the
+  test fixture force `Config.set("edition", "development")`
+  (`tutorial_folders=None`, i.e. show all) — this is a verification
+  scoping fix, not an app fix; the beginner-edition gating is intended
+  behavior (`filter_tutorials_for_edition`'s own docstring/tests already
+  cover it).
+- 25 new tests, all passing; full suite 2207 → 2232, 0 failed.
+- **Registry status: Sections G/H/I/J/K/L are all now checked off —
+  `docs/I18N_CLEANUP_2026-08-06.md` is fully complete.** Anything found
+  after this point (a real GUI pass surfacing an actual rendering bug,
+  a new language, ja/zh eventually getting their own
+  `Tutorials/<lang>/` folders) is new work, not a resumption of this
+  queue.
