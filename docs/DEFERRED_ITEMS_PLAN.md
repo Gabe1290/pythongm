@@ -103,33 +103,39 @@ discipline as the match3_2/3 and views sessions:
    `tests/test_importers/`, following the exact recipe `TODO.md` already
    lays out. Don't start this inside a single session that's also doing
    other Tier 1/2 items — it has its own investigation phase.
-9. **Kivy `execute_code` environment parity** — ✅ **Score/lives/health
-   half DONE (2026-08-09, commit `c977f1c`).** Design decision made: the
-   two original halves are architecturally very different in size on
-   Kivy, so they're split. `game` binding fixed — execute_code now binds
-   `game`/`instance` via the same `_script_game()` proxy execute_script
-   already used, extended with `score`/`lives`/`health` as plain
-   read/write values (matching desktop's actual semantics exactly — a
-   raw `game.lives = X` on desktop does NOT trigger a caption update or
-   `no_more_lives` crossing check either; only the `set_lives`/
-   `set_health` ACTIONS do that). Wrapped in the same try/except
-   `execute_script` already had, so an unsupported `game.*` call fails
-   loudly instead of crashing the event. **"Locals copied back onto the
-   instance" is explicitly NOT done and deferred separately** — Kivy
-   inlines `execute_code` as literal Python in a real generated method,
-   unlike desktop's dynamic `exec()`, so matching that behavior means
-   either switching codegen strategy (perf/debuggability cost) or
-   AST-rewriting bare assignments into `self.x = x` lines (its own
-   correctness risk); needs its own design pass, not bundled into this
-   one. HTML5's matching `game: None` gap (its architecture — real
-   Pyodide `exec()`, locals already copied back — is much closer to
-   desktop's, so likely a smaller mechanical fix) was investigated but
-   **deliberately not touched this session**: the fix needs a JS refactor
-   of `set_score`/`set_lives`/`set_health`'s crossing-detection logic to
-   be shared between the action-codegen switch and the new patch-
-   application path, and this repo has no way to execute JS in CI to
-   verify it (confirmed by grep — no `node` dependency); still open, see
-   `TODO.md`'s HTML5 section.
+9. **`execute_code` environment parity (Kivy + HTML5 `game` binding)** —
+   ✅ **DONE on both targets.** Kivy's score/lives/health half shipped
+   2026-08-09 (commit `c977f1c`) — `game`/`instance` bound via the same
+   `_script_game()` proxy `execute_script` already used, extended with
+   `score`/`lives`/`health` as plain read/write values. HTML5's matching
+   `game: None` gap **also closed the same day** (commit `2ecc6f0`) — a
+   fresh `_Game(score, lives, health)` snapshot built each `run_code`
+   call from values synced in from the live JS `game` object, diffed
+   back out through the same JSON patch mechanism `self.x`/`self.y`
+   already use. **Both fixes share the identical design decision**,
+   confirmed correct by re-checking desktop's real behavior: a raw
+   `game.lives = X` from `execute_code` is a PLAIN write on every
+   target — no caption update, no `no_more_lives`/`no_more_health`
+   crossing check. Those only fire from the `set_lives`/`set_health`
+   ACTIONS specifically. This turned out to make the HTML5 fix *simpler*
+   than the original plan assumed — no shared-refactor of the crossing-
+   detection logic was needed after all, since the correct design never
+   triggers it from `execute_code` in the first place. Verified two
+   ways: `tests/test_html5_execute_code_game_binding.py`'s primary
+   coverage exec()'s the real `PY_BOOTSTRAP` Python source directly
+   (deterministic, no network, no JS engine — the established pattern
+   `test_sound_queue_primitive.py` already uses for this exact string),
+   plus a one-time ad hoc real-browser check (`playwright` + a real
+   headless Chromium against the actual Pyodide CDN, not a project
+   dependency, not committed) that caught a real cosmetic bug (an
+   unescaped-backtick `SyntaxWarning` in the new docstring) the
+   regression tests alone wouldn't have. **"Locals copied back onto the
+   instance" remains explicitly NOT done for Kivy** (its own deferred
+   follow-up — Kivy inlines `execute_code` as literal Python, unlike
+   both desktop's and HTML5's dynamic `exec()`, so matching that
+   behavior needs a codegen-strategy change or an AST-rewrite, its own
+   design pass) — HTML5 never had this gap, since Pyodide's real
+   `exec()` already copies locals back.
 10. **Asset Manager** (`Tools → Asset Manager...`) — bulk rename/move/
     delete, usage tracking ("which rooms/objects use this sprite?"),
     unused-asset cleanup. **Scoped 2026-08-09**:
