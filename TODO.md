@@ -635,18 +635,17 @@ Other:
     internet on first open. An "offline bundle" export option (ship
     pyodide files next to the .html) would fix locked-down school
     networks. Pure-action games are unaffected (no Pyodide load at all).
-  - The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
-    is None — no score/lives bridge yet (match3 tracks its own score).
-    **Investigated 2026-08-09** alongside the equivalent (now-fixed) Kivy
-    gap — architecturally closer to a real fix here (Pyodide's `exec()`
-    already copies locals back onto the instance, unlike Kivy's inlined
-    code, so only the `game` binding itself is missing). Not fixed this
-    pass: doing it properly means factoring `set_score`/`set_lives`/
-    `set_health`'s crossing-detection logic (`no_more_lives`/
-    `no_more_health`) into something both the action-codegen switch and a
-    new Python-patch-application path can call, and this repo has no way
-    to execute JS in CI to verify a refactor like that (no `node`
-    dependency) — see `docs/DEFERRED_ITEMS_PLAN.md` item 9.
+  - ~~The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
+    is None — no score/lives bridge~~ **DONE 2026-08-09.** `game` is now
+    a fresh `_Game(score, lives, health)` snapshot built each
+    `execute_code` call from values synced in from the live JS `game`
+    object, diffed back out through the same JSON patch mechanism
+    `self.x`/`self.y` already use — no shared crossing-detection refactor
+    needed after all (a raw `game.lives = X` from `execute_code` is a
+    plain write on every target, matching desktop's real semantics; only
+    the `set_lives`/`set_health` ACTIONS trigger `no_more_lives`/
+    `no_more_health`). `tests/test_html5_execute_code_game_binding.py`.
+    See `docs/DEFERRED_ITEMS_PLAN.md` item 9.
   - ~~Draw-queue `background`/`health_bar` commands... not implemented~~
     **DONE 2026-07-15** — `case 'background'` (reuses the `game.sprites`
     map backgrounds already share with sprites, per `encode_sprites`) and
