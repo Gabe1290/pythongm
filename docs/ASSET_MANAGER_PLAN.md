@@ -1,11 +1,13 @@
 # Plan: Asset Manager (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 10)
 
-Status: **Tiers 1 (usage tracking) and 2 (search & filter) done, both
-2026-08-09.** Written the same session it's first worked, per this repo's
-"no small starting subset documented; needs its own scoping pass" note —
-the scoping and the first tier's implementation happened together rather
-than as two sessions, since the investigation needed to scope it
-accurately also produced the design for the first tier.
+Status: **Tiers 1 (usage tracking), 2 (search & filter), and 4 (unused-asset
+cleanup UI) done, all 2026-08-09.** Written the same session it's first
+worked, per this repo's "no small starting subset documented; needs its
+own scoping pass" note — the scoping and the first tier's implementation
+happened together rather than as two sessions, since the investigation
+needed to scope it accurately also produced the design for the first
+tier. Only **Tier 3 (bulk multi-select rename/move/delete UI)** remains
+open.
 
 ## What "Asset Manager" actually means (from `TODO.md`)
 
@@ -159,17 +161,37 @@ already land in Trash regardless of whether they're triggered one at a
 time or as a batch. What's left is purely the multi-select UI and
 looping the existing (now trash-backed) single-asset operations.
 
-## Tier 4 — unused-asset cleanup, deletion side (not started; unblocked)
+## Tier 4 — unused-asset cleanup, deletion side (DONE, 2026-08-09)
 
-Tier 1's `find_unused_assets` already does the *detection*, and deletion
-now has a safety net (this session's Trash mechanism, above). What's left
-is purely UI: a dialog listing unused assets with checkboxes, "select all
-truly-zero-usage items," and routing selected ones through
-`AssetManager.delete_asset` (trash-backed) per item. Small once Tier 1
-exists — held for a future session so `docs/CLEAN_PROJECT_PLAN.md` (item
-11) can build its own "delete unused files/build artifacts" scope on top
-of both the detection engine and the trash mechanism, rather than
-duplicating either.
+`widgets/asset_tree/asset_dialogs.UnusedAssetsDialog`: lists
+`find_unused_assets`' output grouped by category, each leaf a checkbox,
+Select All / Select None, and "Move Selected to Trash" routing through
+`AssetManager.delete_asset` per item (trash-backed, same safety net as
+every other delete). `refresh_list` re-syncs the live asset-manager cache
+into `project_data` and re-scans after every delete, so a delete that
+clears a reference (e.g. removing an unused object that held the only
+remaining reference to a sprite) can reveal a newly-unused asset on the
+very next listing without closing/reopening the dialog.
+
+**One real design fix made along the way, not just UI-building**:
+`utils/asset_usage.py`'s own module docstring already flags that rooms
+have no usage-tracking path at all — a room nobody explicitly navigates
+to by name (a single-room game, or a linear sequence's first room)
+legitimately shows zero `AssetUsage` records, and the docstring explicitly
+warns callers not to present that as "unused." The dialog honors this:
+the rooms category is labeled "Rooms — not explicitly navigated to (N)"
+rather than "Rooms (N)", and **Select All deliberately skips rooms** (a
+one-click sweep could otherwise trash a game's starting room) while
+individual room checkboxes stay manually selectable for a deliberate
+choice. `core/ide_window.py`'s `show_unused_assets_dialog` wires it up
+(Tools → Find Unused Assets…), following the exact `show_trash_dialog`
+dispatch pattern (no-project guard, `on_deleted` callback updates the
+asset tree, save + status message only if anything was actually deleted).
+Coverage: `tests/test_unused_assets_dialog.py` (13 tests, hand-rolled
+offscreen `QApplication` against a real `AssetManager`/temp project dir,
+matching `tests/test_trash_dialog.py`'s convention) — including the
+rooms-excluded-from-Select-All behavior and the cascading-newly-unused
+scenario. Full suite 2340 → 2353 passed, 0 failed.
 
 ## Verification
 
