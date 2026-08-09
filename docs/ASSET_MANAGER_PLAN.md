@@ -1,13 +1,11 @@
 # Plan: Asset Manager (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 10)
 
-Status: **Tiers 1 (usage tracking), 2 (search & filter), and 4 (unused-asset
-cleanup UI) done, all 2026-08-09.** Written the same session it's first
-worked, per this repo's "no small starting subset documented; needs its
-own scoping pass" note — the scoping and the first tier's implementation
-happened together rather than as two sessions, since the investigation
-needed to scope it accurately also produced the design for the first
-tier. Only **Tier 3 (bulk multi-select rename/move/delete UI)** remains
-open.
+Status: **All four tiers DONE, all 2026-08-09.** `docs/ASSET_MANAGER_PLAN.md`
+is now fully closed. Written the same session it's first worked, per this
+repo's "no small starting subset documented; needs its own scoping pass"
+note — the scoping and the first tier's implementation happened together
+rather than as two sessions, since the investigation needed to scope it
+accurately also produced the design for the first tier.
 
 ## What "Asset Manager" actually means (from `TODO.md`)
 
@@ -153,13 +151,59 @@ delete and Clean Project's cleanup UI can now call
 around it) and get the same trash safety net for free, with no new
 undo design needed.
 
-## Tier 3 — bulk rename/move/delete (not started; delete's undo question resolved)
+## Tier 3 — bulk multi-select delete (DONE, 2026-08-09)
 
-The most UI-heavy piece: multi-select in the asset tree and a batch
-operation dialog. The undo/redo design question is now moot — deletes
-already land in Trash regardless of whether they're triggered one at a
-time or as a batch. What's left is purely the multi-select UI and
-looping the existing (now trash-backed) single-asset operations.
+**Scope correction made before implementing: "move" doesn't apply.** The
+original `TODO.md` wording ("rename, move, delete in batch") assumes
+assets can live in subfolders a bulk operation would relocate them
+between. This app's asset model has no such hierarchy — each category
+(sprites/sounds/…) is a flat list; "moving" an asset only ever means
+reordering within a category, which drag-and-drop already does one at a
+time. There's nothing a *bulk* "move" would do here, so it's dropped from
+scope rather than inventing a folder system to give it meaning. Batch
+rename (e.g. a shared prefix/suffix or find-replace across several
+selected assets) is a real, separately-schedulable feature — deferred,
+not because it's out of scope but because it's genuinely a different
+piece of UI than what shipped here (a rename dialog per unique new name
+vs. delete's uniform "remove all of these").
+
+**What shipped: multi-select + bulk delete**, the two clearly-defined,
+already-safe (Trash-backed) parts of the four. `AssetTreeWidget` now uses
+`ExtendedSelection` (was `SingleSelection`) so Ctrl/Shift-click multi-select
+works; right-clicking with 2+ non-category items selected shows a reduced
+context menu with just "Delete N Selected" instead of the full single-item
+menu. `bulk_delete_selected` shows **one combined confirmation** for the
+whole batch (not the per-item dialog N times — `docs/ASSET_MANAGER_PLAN.md`
+had actually suggested "looping the existing single-asset operations,"
+which would mean N separate "are you sure?" popups; built the better UX
+instead, consistent with `UnusedAssetsDialog`'s own single-confirmation
+precedent from Tier 4), then routes each item through the *same*
+trash-backed deletion a single delete uses.
+
+`widgets/asset_tree/asset_operations.py`'s `delete_asset` was split into
+`delete_asset` (confirmation + usage-note dialog) and a new
+`delete_asset_confirmed` (the actual deletion, assuming confirmation
+already happened) so bulk delete can call the latter directly per item.
+**A real regression caught by the existing suite, not by new tests**:
+the original code closed any editor open on the asset *before* showing
+the confirmation dialog — a pinned, if slightly odd, existing behavior
+(cancelling the delete still closed the editor; a stale composite-key
+call bug this exact behavior was tests against —
+`tests/test_rename_thumbnail_recovery.py`'s
+`test_delete_open_asset_closes_editor_with_composite_key`). The first cut
+of this split moved that step into `delete_asset_confirmed` (i.e. after
+confirmation), silently changing the behavior the pinned test enforced.
+Fixed by factoring it into an idempotent `_close_open_editor_if_any`
+helper called from BOTH `delete_asset` (before confirmation, preserving
+the quirk) and `delete_asset_confirmed` (so bulk delete, which skips
+`delete_asset` entirely, still closes editors for items it deletes).
+Coverage: `tests/test_asset_tree_bulk_delete.py` (9 tests: selection mode,
+no-selection/single-selection/multi-confirmed/multi-declined, category
+items excluded from a batch even though the raw Qt API can select them
+despite lacking `ItemIsSelectable`, `delete_asset_confirmed`'s own
+dialog-free + editor-closing behavior). Full suite 2398 → 2407 passed,
+0 failed (2406 immediately after the split, until the editor-close
+regression above was caught and fixed, landing at 2407).
 
 ## Tier 4 — unused-asset cleanup, deletion side (DONE, 2026-08-09)
 

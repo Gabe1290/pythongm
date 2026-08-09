@@ -149,9 +149,14 @@ discipline as the match3_2/3 and views sessions:
     name-substring filter box above the Asset Tree panel. **Tier 4
     (unused-asset cleanup UI) DONE (2026-08-09)** —
     `UnusedAssetsDialog`/`Tools → Find Unused Assets…`; see the plan doc
-    for the rooms-labeling fix this surfaced. Only **Tier 3** (the bulk
-    multi-select UI itself) remains open, now pure UI-building work with
-    no open design questions.
+    for the rooms-labeling fix this surfaced. **Tier 3 (bulk multi-select
+    delete) DONE (2026-08-09)** — `docs/ASSET_MANAGER_PLAN.md` scoped
+    "move" out entirely first (the app's flat per-category asset model has
+    no folder hierarchy for a bulk move to relocate anything within); what
+    shipped is `ExtendedSelection` + a reduced right-click menu + one
+    combined confirmation for the whole batch, routed through the same
+    trash-backed per-item delete. **`docs/ASSET_MANAGER_PLAN.md` is now
+    fully closed.**
 10.5. **The bulk-delete-undo design question — SETTLED (2026-08-09).**
     Explicitly its own numbered item because it was the shared blocker
     for both item 10 Tier 3 and item 11. Decision: **not**

@@ -98,8 +98,63 @@ class AssetOperations:
             logger.error(f"Error getting AssetManager: {e}")
             return None
 
+    def _usage_note_for(self, asset_category: str, asset_name: str) -> str:
+        """A human-readable "still referenced in N places" suffix for a
+        delete confirmation, or "" if there's no project_data to check or
+        nothing references the asset. Shared by the single-asset and bulk
+        delete confirmations (docs/ASSET_MANAGER_PLAN.md)."""
+        project_data = getattr(getattr(self.tree, 'project_manager', None),
+                                'current_project_data', None)
+        if not project_data:
+            return ""
+        try:
+            from utils.asset_usage import find_asset_usages
+            usages = find_asset_usages(project_data, asset_category, asset_name)
+            if usages:
+                locations = "\n".join(f"  • {u.location}" for u in usages[:10])
+                if len(usages) > 10:
+                    locations += f"\n  … and {len(usages) - 10} more"
+                return (
+                    f"\n\nThis asset is still referenced in {len(usages)} "
+                    f"place(s):\n{locations}\n\nDeleting it will leave those "
+                    f"references pointing at nothing."
+                )
+        except Exception as e:
+            logger.debug(f"Usage lookup failed (non-fatal): {e}")
+        return ""
+
+    def _close_open_editor_if_any(self, asset_category: str, asset_name: str) -> None:
+        """Close the asset's open editor, if any. Idempotent (a second
+        call after the editor's already closed/removed from open_editors
+        is a no-op) — delete_asset calls this BEFORE its confirmation
+        dialog (a pinned, if slightly odd, existing behavior: cancelling
+        the delete still closes the editor — see
+        tests/test_rename_thumbnail_recovery.py's
+        test_delete_open_asset_closes_editor_with_composite_key), and
+        delete_asset_confirmed calls it again as the one guaranteed step
+        for callers (bulk delete) that skip delete_asset's dialog
+        entirely and call delete_asset_confirmed directly.
+        """
+        parent = self.tree.parent()
+        while parent and not hasattr(parent, 'open_editors'):
+            parent = parent.parent()
+
+        if parent and hasattr(parent, 'open_editors'):
+            # Close the editor for THIS asset's category only (open_editors is
+            # keyed by a composite "<category>:<name>" so a same-named asset of
+            # another type isn't closed too — audit L5).
+            if hasattr(parent, '_editor_key'):
+                key = parent._editor_key(asset_category, asset_name)
+                if key in parent.open_editors:
+                    logger.debug("Asset is open in editor, closing it first...")
+                    parent.close_editor_by_name(key)
+            elif asset_name in parent.open_editors:
+                logger.debug("Asset is open in editor, closing it first...")
+                parent.close_editor_by_name(asset_name)
+
     def delete_asset(self, item) -> bool:
-        """Delete an asset from both UI and project data"""
+        """Delete a single asset from both UI and project data, with its
+        own confirmation dialog (including a usage summary)."""
         from .asset_tree_item import AssetTreeItem
 
         logger.debug("DELETE_ASSET METHOD CALLED!")
@@ -118,47 +173,13 @@ class AssetOperations:
 
         logger.debug(f"DELETE REQUEST: {asset_category}/{asset_name}")
 
-        # CHECK: If this is a room, see if it's open in an editor
-        parent = self.tree.parent()
-        while parent and not hasattr(parent, 'open_editors'):
-            parent = parent.parent()
+        # CHECK: If this is a room, see if it's open in an editor. This
+        # runs before the confirmation below on purpose (matches the
+        # long-standing behavior) — see _close_open_editor_if_any's
+        # docstring.
+        self._close_open_editor_if_any(asset_category, asset_name)
 
-        if parent and hasattr(parent, 'open_editors'):
-            # Close the editor for THIS asset's category only (open_editors is
-            # keyed by a composite "<category>:<name>" so a same-named asset of
-            # another type isn't closed too — audit L5).
-            if hasattr(parent, '_editor_key'):
-                key = parent._editor_key(asset_category, asset_name)
-                if key in parent.open_editors:
-                    logger.debug("Asset is open in editor, closing it first...")
-                    parent.close_editor_by_name(key)
-            elif asset_name in parent.open_editors:
-                logger.debug("Asset is open in editor, closing it first...")
-                parent.close_editor_by_name(asset_name)
-
-        # Confirm deletion with user — include a usage summary so deleting
-        # something still referenced elsewhere isn't a surprise (only
-        # sprite->object references were ever auto-cleared on delete;
-        # every other reference kind is left dangling, silently, without
-        # this warning — see docs/ASSET_MANAGER_PLAN.md).
-        usage_note = ""
-        project_data = getattr(getattr(self.tree, 'project_manager', None),
-                                'current_project_data', None)
-        if project_data:
-            try:
-                from utils.asset_usage import find_asset_usages
-                usages = find_asset_usages(project_data, asset_category, asset_name)
-                if usages:
-                    locations = "\n".join(f"  • {u.location}" for u in usages[:10])
-                    if len(usages) > 10:
-                        locations += f"\n  … and {len(usages) - 10} more"
-                    usage_note = (
-                        f"\n\nThis asset is still referenced in {len(usages)} "
-                        f"place(s):\n{locations}\n\nDeleting it will leave those "
-                        f"references pointing at nothing."
-                    )
-            except Exception as e:
-                logger.debug(f"Usage lookup failed (non-fatal): {e}")
+        usage_note = self._usage_note_for(asset_category, asset_name)
 
         reply = QMessageBox.question(
             self.tree,
@@ -174,15 +195,35 @@ class AssetOperations:
             logger.debug("User cancelled deletion")
             return False
 
+        return self.delete_asset_confirmed(item)
+
+    def delete_asset_confirmed(self, item) -> bool:
+        """The actual deletion, assuming confirmation already happened.
+
+        Split out of delete_asset so bulk multi-select delete
+        (AssetTreeWidget.bulk_delete_selected) can show ONE combined
+        confirmation for the whole batch and then call this per item,
+        instead of popping up delete_asset's own dialog N times.
+        """
+        from .asset_tree_item import AssetTreeItem
+
+        if not isinstance(item, AssetTreeItem) or item.is_category:
+            return False
+
+        asset_name = item.asset_name
+        asset_category = item.asset_type
+
+        self._close_open_editor_if_any(asset_category, asset_name)
+
         try:
             # Step 1: Remove from project data and file first
             success = self.remove_asset_from_project(asset_category, asset_name)
 
             if success:
                 # Step 2: Remove from UI tree
-                parent = item.parent()
-                if parent:
-                    parent.removeChild(item)
+                tree_parent = item.parent()
+                if tree_parent:
+                    tree_parent.removeChild(item)
                     logger.debug(f"Removed {asset_name} from UI")
 
                 # Step 3: Force refresh to sync everything
