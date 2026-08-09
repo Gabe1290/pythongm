@@ -177,11 +177,10 @@ discipline as the match3_2/3 and views sessions:
     (`_sweep_orphan_snapshots`, every load), and the `__pycache__`/`.pyc`
     workaround describes cleaning this dev repo, not a saved game project
     (which never has importable `.py` files under it). **Tier 1 (`.tmp`
-    orphan sweep) shipped** — `utils/project_cleanup.py`, wired up as
-    Tools → Clean Project. Tiers 2-3 (an orphaned-physical-file scan,
-    genuinely different from Asset Manager's unused-*entry* detection;
-    and deletion UI for both, on top of the trash-backed
-    `AssetManager.delete_asset`) remain open — pure UI/detection-building
+    orphan sweep) and Tier 2 (orphaned-physical-file detection) shipped**
+    — `utils/project_cleanup.py`; Tier 1 wired up as Tools → Clean
+    Project, Tier 2 is detection-only so far (no UI). Only **Tier 3**
+    (deletion UI for what Tier 2 finds) remains open — pure UI-building
     work, no open design questions.
 13. **2.0 extension system — the feature work.** ✅ **DONE (2026-08-09,
     commit `4c50485`)** for everything with a concrete, provable fix.
