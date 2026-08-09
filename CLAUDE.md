@@ -1509,3 +1509,56 @@ assets — not one live object.
   `AssetManager` integration, the legacy fallback path, the zip-export
   exclusion, and `TrashDialog`/`show_trash_dialog`. Full suite
   2286 → 2321, 0 failed.
+
+**2026-08-09 — HTML5 `execute_code` `game` binding: item 9's last open
+half, closed.** Same session, explicitly asked for after the summary
+above flagged it as the one remaining thread. Re-derived the design from
+the Kivy fix rather than the original (stale) plan: the plan's own note
+said fixing this needed "factoring `set_score`/`set_lives`/
+`set_health`'s crossing-detection logic into something both the action-
+codegen switch and a new Python-patch-application path can call" — but
+re-checking the Kivy fix's own decided semantics (a raw `game.lives = X`
+from `execute_code` never triggers `no_more_lives` on any target, only
+the `set_lives` ACTION does) made that refactor unnecessary. The fix is
+just: build a fresh `_Game(score, lives, health)` snapshot each
+`run_code` call from values synced in from the live JS `game` object,
+diff any change back out through the exact same JSON patch mechanism
+`self.x`/`self.y` already use. Smaller than planned, not bigger.
+- **Verification method worth remembering.** The committed regression
+  test uses an established pattern this session almost missed:
+  `tests/test_sound_queue_primitive.py`'s `py_bootstrap_ns` fixture
+  already `exec()`s `PY_BOOTSTRAP` (real embedded Python inside the JS
+  template literal) directly in a Python namespace and calls `run_code`/
+  `run_draw` for real — deterministic, no network, no JS engine, and
+  *stronger* than the source-structure regex assertions this session
+  first reached for out of habit (matching `test_draw_action_codegen.py`'s
+  "Node isn't a CI dependency" HTML5 pattern). Wrote the structural
+  checks first, found the exec-based fixture pattern by grepping for
+  other tests touching `PY_BOOTSTRAP`, and rewrote around it — the
+  lesson being: check for an existing execution-based harness before
+  defaulting to string matching, even when the "no JS engine" constraint
+  is real.
+- **Additionally, installed `playwright` + downloaded a real headless
+  Chromium ad hoc** (pip install + `playwright install chromium` both
+  worked in this environment — network access and no `--with-deps`
+  needed) to run `PY_BOOTSTRAP` against real Pyodide loaded from the
+  actual CDN in an actual browser, the strongest possible proof for the
+  hand-written half of this fix. Not a project dependency, not
+  committed — this was a one-time development-time check, consistent
+  with the repo's stance that Node/browser execution isn't a CI
+  dependency for `engine.js`. It found one real (if purely cosmetic) bug
+  the regression tests alone wouldn't have: the new `_Game` docstring
+  used escaped backticks (`` \`game\` ``) copying the style of a
+  pre-existing `#`-comment nearby, but inside a real Python docstring
+  that produces a `SyntaxWarning: invalid escape sequence` — comments
+  don't care about backslash escapes, string literals do. Fixed by
+  dropping the backtick formatting in the docstring; worth remembering
+  as a landmine for any future edit inside `PY_BOOTSTRAP`'s Python
+  source specifically (not a concern anywhere else in `engine.js`,
+  which is plain JS).
+- `tests/test_html5_execute_code_game_binding.py` (12 tests). Full suite
+  2321 → 2333, 0 failed. `docs/DEFERRED_ITEMS_PLAN.md` item 9 is now
+  fully closed on both export targets — the only remaining gap noted
+  there is Kivy's separately-deferred "locals copied back onto the
+  instance" (HTML5 never had it, since Pyodide's real `exec()` already
+  does that part).
