@@ -980,6 +980,24 @@ class ObjectEventsPanel(QWidget):
         action_type = get_action_type(action_data["action"])
         if not action_type:
             logger.warning(f"Unknown action type: {action_data['action']}")
+            from events.plugin_loader import extension_for_action
+            owner = extension_for_action(action_data["action"])
+            if owner:
+                message = self.tr(
+                    "This action needs the '{0}' extension, which is "
+                    "currently disabled, so it can't be edited here.\n\n"
+                    "The action itself is unaffected and will be kept "
+                    "exactly as-is when you save."
+                ).format(owner["name"])
+            else:
+                message = self.tr(
+                    "This action ('{0}') needs an extension that isn't "
+                    "installed in this copy of PyGameMaker, so it can't be "
+                    "edited here.\n\n"
+                    "The action itself is unaffected and will be kept "
+                    "exactly as-is when you save."
+                ).format(action_data["action"])
+            QMessageBox.information(self, self.tr("Extension Action"), message)
             return
 
         try:
@@ -1265,7 +1283,23 @@ class ObjectEventsPanel(QWidget):
             if action_type:
                 action_item.setText(0, f"{indent}{action_type.icon} {self.tr(action_type.display_name)}")
             else:
-                action_item.setText(0, f"{indent}❓ {action_name}")
+                # Unrecognized action — either a disabled/not-installed
+                # extension's action, or a genuine typo/stale name. Never
+                # crashes and always round-trips verbatim on save; render it
+                # visibly inert (gray, like a comment) rather than looking
+                # like a normal, editable action, and name the extension it
+                # needs when that's knowable.
+                from events.plugin_loader import extension_for_action
+                owner = extension_for_action(action_name)
+                if owner:
+                    label = self.tr("{0} (needs {1})").format(action_name, owner["name"])
+                else:
+                    label = action_name
+                action_item.setText(0, f"{indent}❓ {label}")
+                # Amber, not the comment's neutral gray — this reads as
+                # "needs attention" rather than "intentionally inert".
+                amber_brush = QBrush(QColor(180, 120, 20))
+                action_item.setForeground(0, amber_brush)
             if params:
                 action_item.setText(1, ActionParametersFormatter.format_action_parameters(action_name, params))
 
