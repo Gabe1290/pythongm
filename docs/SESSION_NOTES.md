@@ -81,6 +81,47 @@ but anything already extracted into `docs/session-notes/` survives in git.
 
 ---
 
+## 2026-08-09 — Extension-compatibility (2.0 manifest) design session, from mobile
+
+Off-machine design work (a mobile session, no repo access) produced a
+handoff brief for a **2.0 extension system with hard backwards-compatibility
+guarantees**: a project using extensions (Thymio robotics, a future 3D
+extension) must never crash or silently corrupt when opened by an editor
+that doesn't have those extensions installed — the audience is children on
+mixed hardware running different app versions. Core design: a new
+`format_version` field (absent ⇒ `"1.0"`) plus a `required_extensions`
+manifest dict; unrecognised actions render as greyed-out placeholders and
+round-trip byte-for-byte on save instead of being silently dropped.
+
+Brought into the repo this session and given a proper home:
+`docs/extension_compat_2_0/PLAN.md` (the adapted handoff — fixed mobile-
+export mojibake throughout, including French comment text in the JSON
+fixture that had the exact double-encoding bug CLAUDE.md's standing
+"French text must always carry proper accents" note warns about) plus its
+two design-session artifacts, `compat_demo.py` (a loader prototype) and
+`project_2_0.json` (a real `plateforme_3` project upgraded to 2.0 format).
+**Re-verified in-repo, not just trusted:** re-ran the prototype's three
+compatibility properties against the actual bundled
+`samples/plateforme_3/project.json` (not the phone session's own copy) and
+all three held — a 2.0-aware loader reads the 1.0 file cleanly, a 1.0-era
+loader refuses a 2.0 file without crashing or saving over it, and a
+2.0-aware loader with no extensions installed round-trips a 2.0 file
+byte-for-byte. This is real evidence the *design* is sound against this
+project's actual file shape; the real `core/project_manager.py` loader/
+saver hasn't been touched yet — see the plan's four-task sequence (ship a
+1.0.1 format-version guard first, then the 2.0 read/write, then placeholder
+rendering, then the install-offer UX) and its open questions before
+starting implementation.
+
+Also used this session to clean up `TODO.md` staleness found while
+reviewing the full backlog: the "Migrate ja/pt/zh off the legacy
+translation set" entry described exactly the problem the prior two
+sessions (2026-08-08/09, `docs/I18N_CLEANUP_2026-08-06.md`) already fixed
+— marked done. `docs/DEFERRED_ITEMS_PLAN.md` updated to match and to fold
+in the new extension-compat work as its own tier.
+
+---
+
 ## 2026-07-13 — Linux-box session notes backfilled + summary of this machine's sessions (Linux box)
 
 The automatic extract layer (`scripts/export_session_notes.py`, set up from
