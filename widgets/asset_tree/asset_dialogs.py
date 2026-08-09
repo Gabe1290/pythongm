@@ -6,7 +6,7 @@ UI dialogs for asset management operations
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
                                QPushButton, QLabel, QMessageBox, QListWidget,
-                               QListWidgetItem)
+                               QListWidgetItem, QTreeWidget, QTreeWidgetItem)
 from PySide6.QtCore import Qt
 
 from .asset_utils import validate_asset_name
@@ -432,3 +432,168 @@ class TrashDialog(QDialog):
         if reply == QMessageBox.Yes:
             self.asset_manager.empty_trash()
             self.refresh_list()
+
+
+class UnusedAssetsDialog(QDialog):
+    """List assets with zero references (utils/asset_usage.find_unused_assets)
+    and delete the checked ones — Tier 4 of docs/ASSET_MANAGER_PLAN.md.
+
+    Deletion routes through AssetManager.delete_asset, so a checked item
+    lands in the Trash (utils/asset_trash.py) like any other delete, not a
+    permanent removal — this dialog adds no new undo story of its own,
+    reusing the one item 10.5 already settled.
+    """
+
+    def __init__(self, project_data: dict, asset_manager, parent=None):
+        super().__init__(parent)
+        self.project_data = project_data
+        self.asset_manager = asset_manager
+        # Called with (asset_type, asset_name) after each successful
+        # delete, so the caller can update the asset tree. None (the
+        # default) means "don't notify".
+        self.on_deleted = None
+        self.deleted_count = 0
+        self.setup_ui()
+        self.refresh_list()
+
+    def setup_ui(self):
+        self.setWindowTitle(self.tr("Unused Assets"))
+        self.setMinimumSize(480, 400)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        info_label = QLabel(self.tr(
+            "Assets not referenced by any object, room, or action. "
+            "Deleted items go to the Trash, not removed permanently. "
+            "References inside execute_code/execute_script can't be "
+            "detected and may cause false positives here. Rooms are "
+            "listed as \"not explicitly navigated to\" rather than "
+            "unused — a starting room is often never referenced by name "
+            "anywhere, so that alone doesn't mean it's safe to delete."))
+        info_label.setWordWrap(True)
+        layout.addWidget(info_label)
+
+        self.tree_widget = QTreeWidget()
+        self.tree_widget.setHeaderHidden(True)
+        self.tree_widget.itemChanged.connect(self._update_button_states)
+        layout.addWidget(self.tree_widget)
+
+        select_layout = QHBoxLayout()
+        select_all_btn = QPushButton(self.tr("Select All"))
+        select_all_btn.clicked.connect(lambda: self._set_all_checked(True))
+        select_layout.addWidget(select_all_btn)
+        select_none_btn = QPushButton(self.tr("Select None"))
+        select_none_btn.clicked.connect(lambda: self._set_all_checked(False))
+        select_layout.addWidget(select_none_btn)
+        select_layout.addStretch()
+        layout.addLayout(select_layout)
+
+        button_layout = QHBoxLayout()
+
+        self.delete_btn = QPushButton(self.tr("Move Selected to Trash"))
+        self.delete_btn.clicked.connect(self._delete_selected)
+        self.delete_btn.setEnabled(False)
+        button_layout.addWidget(self.delete_btn)
+
+        button_layout.addStretch()
+
+        close_btn = QPushButton(self.tr("Close"))
+        close_btn.clicked.connect(self.accept)
+        button_layout.addWidget(close_btn)
+
+        layout.addLayout(button_layout)
+
+    def refresh_list(self):
+        # save_assets_to_project_data folds the live in-memory cache into
+        # project_data first — the same pattern AssetTreeWidget's own
+        # force_project_refresh uses — so a delete made moments ago (or by
+        # any other in-session edit) is reflected before re-scanning for
+        # usages, without ever reading from disk.
+        if hasattr(self.asset_manager, 'save_assets_to_project_data'):
+            self.asset_manager.save_assets_to_project_data(self.project_data)
+
+        from utils.asset_usage import find_unused_assets
+        unused = find_unused_assets(self.project_data)
+
+        self.tree_widget.blockSignals(True)
+        self.tree_widget.clear()
+        for category in sorted(unused):
+            names = unused[category]
+            if category == "rooms":
+                # A room with zero AssetUsage records may just be a
+                # starting room nothing ever explicitly navigates TO by
+                # name (asset_usage.py's own docstring) — real, but not
+                # the same claim as "unused", so label and treat it
+                # differently rather than implying it's obviously safe.
+                label = self.tr("Rooms — not explicitly navigated to ({0})").format(len(names))
+            else:
+                label = self.tr("{0} ({1})").format(category.title(), len(names))
+            cat_item = QTreeWidgetItem([label])
+            cat_item.setFlags(Qt.ItemIsEnabled)
+            cat_item.setData(0, Qt.UserRole, category)
+            self.tree_widget.addTopLevelItem(cat_item)
+            for name in names:
+                child = QTreeWidgetItem([name])
+                child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsSelectable)
+                child.setCheckState(0, Qt.Unchecked)
+                child.setData(0, Qt.UserRole, (category, name))
+                cat_item.addChild(child)
+            cat_item.setExpanded(True)
+        self.tree_widget.blockSignals(False)
+
+        if not unused:
+            empty_item = QTreeWidgetItem([self.tr("No unused assets found.")])
+            empty_item.setFlags(Qt.ItemIsEnabled)
+            self.tree_widget.addTopLevelItem(empty_item)
+
+        self._update_button_states()
+
+    def _checked_items(self):
+        result = []
+        for i in range(self.tree_widget.topLevelItemCount()):
+            cat_item = self.tree_widget.topLevelItem(i)
+            for j in range(cat_item.childCount()):
+                child = cat_item.child(j)
+                if child.checkState(0) == Qt.Checked:
+                    result.append(child.data(0, Qt.UserRole))
+        return result
+
+    def _set_all_checked(self, checked: bool):
+        """Select All/None. Rooms are deliberately excluded from Select
+        All — it's easy to one-click sweep in a starting room that's
+        never explicitly navigated to by name but is still very much in
+        use (see refresh_list's comment); individual room checkboxes stay
+        available for a deliberate choice. Select None still clears them,
+        since un-checking is always safe."""
+        state = Qt.Checked if checked else Qt.Unchecked
+        self.tree_widget.blockSignals(True)
+        for i in range(self.tree_widget.topLevelItemCount()):
+            cat_item = self.tree_widget.topLevelItem(i)
+            if checked and cat_item.data(0, Qt.UserRole) == "rooms":
+                continue
+            for j in range(cat_item.childCount()):
+                cat_item.child(j).setCheckState(0, state)
+        self.tree_widget.blockSignals(False)
+        self._update_button_states()
+
+    def _update_button_states(self, *_):
+        self.delete_btn.setEnabled(bool(self._checked_items()))
+
+    def _delete_selected(self):
+        items = self._checked_items()
+        if not items:
+            return
+        reply = QMessageBox.question(
+            self, self.tr("Move to Trash"),
+            self.tr("Move {0} unused asset(s) to the Trash?").format(len(items)),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply != QMessageBox.Yes:
+            return
+        for asset_type, asset_name in items:
+            if self.asset_manager.delete_asset(asset_type, asset_name):
+                self.deleted_count += 1
+                if self.on_deleted:
+                    self.on_deleted(asset_type, asset_name)
+        self.refresh_list()

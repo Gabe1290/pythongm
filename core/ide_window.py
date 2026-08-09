@@ -429,9 +429,12 @@ class PyGameMakerIDE(QMainWindow):
             self.tr("&Migrate to Modular Structure"), None, self.migrate_project_structure)
         self.show_trash_action = self.create_action(
             self.tr("&Restore Deleted Assets..."), None, self.show_trash_dialog)
+        self.show_unused_assets_action = self.create_action(
+            self.tr("Find &Unused Assets..."), None, self.show_unused_assets_dialog)
         tools_menu.addAction(self.validate_project_action)
         tools_menu.addAction(self.migrate_project_action)
         tools_menu.addAction(self.show_trash_action)
+        tools_menu.addAction(self.show_unused_assets_action)
         tools_menu.addSeparator()
 
         # Language submenu
@@ -3614,6 +3617,32 @@ class PyGameMakerIDE(QMainWindow):
 
         dialog.on_restored = _on_restored
         dialog.exec()
+
+    def show_unused_assets_dialog(self):
+        """Open the Unused Assets dialog (Tier 4, docs/ASSET_MANAGER_PLAN.md)
+        to review and trash assets nothing references."""
+        if not self.current_project_path or not self.project_manager.asset_manager:
+            QMessageBox.information(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open a project first.")
+            )
+            return
+
+        from widgets.asset_tree.asset_dialogs import UnusedAssetsDialog
+        dialog = UnusedAssetsDialog(
+            self.current_project_data, self.project_manager.asset_manager, parent=self)
+
+        def _on_deleted(asset_type, asset_name):
+            self.asset_tree.remove_asset(asset_type, asset_name)
+
+        dialog.on_deleted = _on_deleted
+        dialog.exec()
+
+        if dialog.deleted_count:
+            self.project_manager.save_project()
+            self.update_status(
+                self.tr("Moved {0} unused asset(s) to Trash").format(dialog.deleted_count))
 
     def migrate_project_structure(self):
         """Migrate project to use external files for objects and rooms"""
