@@ -1425,3 +1425,87 @@ phases:
   threads for a future session are the Asset Manager Tier 3 / Clean
   Project bulk-delete-undo design question (shared between both plans)
   and HTML5's `execute_code` `game` binding.
+
+**2026-08-09 — The bulk-delete-undo design question settled: a
+soft-delete Trash, not `QUndoCommand` undo/redo.** New session, picked
+up the one explicitly-flagged open thread from the note above. Real
+investigation before deciding (this repo's standing discipline):
+checked what undo infrastructure already exists — `editors/
+room_undo_commands.py`, `editors/playground_editor/
+playground_undo_commands.py`, the sprite editor — and found it's all
+real Qt `QUndoStack`/`QUndoCommand`, but scoped entirely to live,
+in-memory canvas edits with zero file I/O (moving a room instance,
+say). That's architecturally the wrong tool for "undo a file deletion":
+an in-memory undo stack is cleared on project switch or app restart,
+exactly when "I didn't mean to delete that" tends to get noticed, and
+asset deletion touches a `project.json` entry, a physical file, a
+thumbnail, a side file, and cross-references cleared in *other*
+assets — not one live object.
+- **Decision: soft-delete Trash instead.** `utils/asset_trash.py`
+  (pure file/manifest logic, no Qt) moves a deleted asset's files into
+  `<project>/.trash/` and records a manifest entry rather than
+  unlinking anything — `trash_asset`/`list_trash`/`restore_asset`/
+  `empty_trash`. Restore refuses to overwrite on a name collision
+  (a same-named asset created after the delete) rather than silently
+  clobbering it, leaving the trash entry intact for a retry.
+- **Found the REAL live-app delete path is `core/asset_manager.py`'s
+  `AssetManager.delete_asset`, not the file I'd initially assumed.**
+  `widgets/asset_tree/asset_operations.py`'s `remove_asset_from_project`
+  has two paths: a "preferred" one that delegates to
+  `project_manager.delete_asset()` → `asset_manager.delete_asset()`
+  whenever a `project_manager` is attached (true in the real running
+  IDE, always), and a "legacy fallback" (direct file round-trip) used
+  only when it isn't. Wired the trash mechanism into **both** rather
+  than just the one that looked more prominent in the file I happened
+  to read first — the legacy fallback is real, exercised by
+  `tests/test_audit_asset_operations_sidefiles.py`'s M59/L32 regression
+  tests, and leaving it silently non-trash-backed would've been an
+  inconsistent half-fix.
+- **`AssetManager` gained `list_trash`/`restore_from_trash`/
+  `empty_trash` wrapper methods.** `restore_from_trash` looks up
+  asset_type/asset_name from the manifest *before* calling
+  `utils.asset_trash.restore_asset` (which deletes the manifest entry on
+  success) — otherwise that information would be unrecoverable
+  afterward. Re-inserts into `assets_cache` and emits the existing
+  `asset_imported` signal (confirmed safe to reuse — its only real
+  listener, `ProjectManager.on_asset_changed`, just calls
+  `mark_dirty()`) rather than inventing a new `asset_restored` signal.
+  Deliberately did **not** add a parallel manual sync into
+  `current_project_data` the way `ProjectManager.import_asset` does
+  (a "CRITICAL FIX" comment there manually mirrors the cache into
+  `current_project_data['assets']`) — traced through `save_project()`
+  and confirmed it already calls `asset_manager.
+  save_assets_to_project_data(current_project_data)` right before
+  writing to disk, which is the same mechanism `delete_asset` already
+  relies on (it doesn't touch `current_project_data` either). Matching
+  the existing, simpler, already-correct pattern beat copying a second
+  one that looked more thorough but was actually redundant.
+- **Found and fixed a real, unrelated bug while checking whether trash
+  could leak anywhere:** `utils/project_compression.py`'s
+  `compress_project` walks the whole project directory
+  (`project_path.rglob('*')`) with **zero exclusions** — before this
+  fix, every soft-deleted asset would have been bundled straight back
+  into every zip export/backup, defeating the entire point of deleting
+  it. One `.trash` check fixes it; the save-rollback snapshot mechanism
+  (`_snapshot_for_rollback`) was checked too but turned out to already
+  be safe by construction (it copies an explicit allowlist of named
+  paths, not an unfiltered walk).
+- New "Tools → Restore Deleted Assets..." menu entry
+  (`show_trash_dialog` in `core/ide_window.py`) opens `TrashDialog`
+  (`widgets/asset_tree/asset_dialogs.py`): list, restore, delete
+  permanently, empty trash, and a detail line naming any cross-
+  references a delete cleared (e.g. an object's blanked `sprite`
+  field) — informational only, never auto-relinked on restore, since
+  guessing whether a reference should come back is exactly the kind of
+  silent behavior this repo's "stop lying to users" preference warns
+  against.
+- `docs/ASSET_MANAGER_PLAN.md` and `docs/CLEAN_PROJECT_PLAN.md` updated:
+  the shared blocker is resolved, so both plans' remaining tiers (Asset
+  Manager's bulk multi-select UI and unused-asset cleanup dialog; Clean
+  Project's `.tmp` sweep, orphaned-file scan, and their deletion UI) are
+  now pure UI-building work with no open design questions — any of them
+  is a reasonable next session's starting point.
+- 46 new tests across `utils/asset_trash.py`'s mechanism,
+  `AssetManager` integration, the legacy fallback path, the zip-export
+  exclusion, and `TrashDialog`/`show_trash_dialog`. Full suite
+  2286 → 2321, 0 failed.
