@@ -103,14 +103,33 @@ discipline as the match3_2/3 and views sessions:
    `tests/test_importers/`, following the exact recipe `TODO.md` already
    lays out. Don't start this inside a single session that's also doing
    other Tier 1/2 items — it has its own investigation phase.
-9. **Kivy `execute_code` environment parity** — `game` is `None` on Kivy
-   (confirmed this session, same root cause the sound-queue primitive
-   worked around) and locals aren't copied back onto the instance after
-   `execute_code` runs, unlike desktop/HTML5. Needs a design decision
-   first: build a `game` proxy object exposing score/lives (mirroring
-   what HTML5's bridge still lacks too — see `TODO.md`'s HTML5 section),
-   or accept the gap and document which patterns `execute_code` samples
-   must avoid on Kivy. Don't start without deciding that first.
+9. **Kivy `execute_code` environment parity** — ✅ **Score/lives/health
+   half DONE (2026-08-09, commit `c977f1c`).** Design decision made: the
+   two original halves are architecturally very different in size on
+   Kivy, so they're split. `game` binding fixed — execute_code now binds
+   `game`/`instance` via the same `_script_game()` proxy execute_script
+   already used, extended with `score`/`lives`/`health` as plain
+   read/write values (matching desktop's actual semantics exactly — a
+   raw `game.lives = X` on desktop does NOT trigger a caption update or
+   `no_more_lives` crossing check either; only the `set_lives`/
+   `set_health` ACTIONS do that). Wrapped in the same try/except
+   `execute_script` already had, so an unsupported `game.*` call fails
+   loudly instead of crashing the event. **"Locals copied back onto the
+   instance" is explicitly NOT done and deferred separately** — Kivy
+   inlines `execute_code` as literal Python in a real generated method,
+   unlike desktop's dynamic `exec()`, so matching that behavior means
+   either switching codegen strategy (perf/debuggability cost) or
+   AST-rewriting bare assignments into `self.x = x` lines (its own
+   correctness risk); needs its own design pass, not bundled into this
+   one. HTML5's matching `game: None` gap (its architecture — real
+   Pyodide `exec()`, locals already copied back — is much closer to
+   desktop's, so likely a smaller mechanical fix) was investigated but
+   **deliberately not touched this session**: the fix needs a JS refactor
+   of `set_score`/`set_lives`/`set_health`'s crossing-detection logic to
+   be shared between the action-codegen switch and the new patch-
+   application path, and this repo has no way to execute JS in CI to
+   verify it (confirmed by grep — no `node` dependency); still open, see
+   `TODO.md`'s HTML5 section.
 10. **Asset Manager** (`Tools → Asset Manager...`) — bulk rename/move/
     delete, usage tracking ("which rooms/objects use this sprite?"),
     unused-asset cleanup. No small starting subset documented; needs its
