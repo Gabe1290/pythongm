@@ -77,8 +77,12 @@ class AssetTreeWidget(QTreeWidget):
         # Set minimum width
         self.setMinimumWidth(200)
 
-        # Enable selection
-        self.setSelectionMode(QTreeWidget.SelectionMode.SingleSelection)
+        # Extended (not Single) so Ctrl/Shift-click can multi-select for
+        # bulk delete (docs/ASSET_MANAGER_PLAN.md Tier 3). Drag/drop
+        # reordering (dragMoveEvent/dropEvent above) only ever looks at
+        # currentItem(), which Qt keeps tracking correctly under Extended
+        # selection too, so this doesn't change single-item drag behavior.
+        self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
 
         # Set icon size to ensure all icons display at consistent 16x16 size
         self.setIconSize(QSize(16, 16))
@@ -360,6 +364,24 @@ class AssetTreeWidget(QTreeWidget):
             return
 
         logger.debug(f"Is category: {item.is_category}")
+
+        # Multi-select bulk delete (docs/ASSET_MANAGER_PLAN.md Tier 3):
+        # if 2+ non-category items are selected and the right-clicked item
+        # is one of them, show a reduced menu with just the bulk action
+        # instead of the full single-item menu below (which assumes
+        # exactly one asset).
+        selected_assets = [
+            it for it in self.selectedItems()
+            if isinstance(it, AssetTreeItem) and not it.is_category
+        ]
+        if len(selected_assets) > 1 and not item.is_category:
+            bulk_menu = QMenu(self)
+            bulk_delete_action = QAction(
+                self.tr("🗑️ Delete {0} Selected").format(len(selected_assets)), self)
+            bulk_delete_action.triggered.connect(self.bulk_delete_selected)
+            bulk_menu.addAction(bulk_delete_action)
+            bulk_menu.exec(self.mapToGlobal(position))
+            return
 
         # Create context menu
         context_menu = QMenu(self)
@@ -808,6 +830,46 @@ class AssetTreeWidget(QTreeWidget):
     def delete_asset(self, item):
         """Delete an asset - delegates to operations handler"""
         return self.operations.delete_asset(item)
+
+    def bulk_delete_selected(self):
+        """Delete every selected (non-category) asset with ONE combined
+        confirmation, instead of AssetOperations.delete_asset's own
+        per-item dialog popping up once per selected item — Tier 3 of
+        docs/ASSET_MANAGER_PLAN.md. Each item still goes through the
+        exact same trash-backed deletion
+        (AssetOperations.delete_asset_confirmed) as a single delete.
+        """
+        items = [
+            it for it in self.selectedItems()
+            if isinstance(it, AssetTreeItem) and not it.is_category
+        ]
+        if not items:
+            return
+        if len(items) == 1:
+            # Not actually a bulk case — keep the richer single-item
+            # confirmation (with its per-asset usage detail).
+            self.operations.delete_asset(items[0])
+            return
+
+        names = "\n".join(f"  • {it.asset_type}/{it.asset_name}" for it in items[:15])
+        if len(items) > 15:
+            names += self.tr("\n  … and {0} more").format(len(items) - 15)
+        reply = QMessageBox.question(
+            self,
+            self.tr("Delete {0} Assets").format(len(items)),
+            self.tr(
+                "Delete these {0} asset(s)?\n\n{1}\n\n"
+                "They will be moved to the project's trash and can be "
+                "restored later."
+            ).format(len(items), names),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply != QMessageBox.Yes:
+            return
+
+        for item in list(items):
+            self.operations.delete_asset_confirmed(item)
 
     def rename_asset(self, item):
         """Rename an asset - delegates to operations handler"""
