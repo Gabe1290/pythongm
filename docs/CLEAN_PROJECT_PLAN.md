@@ -1,7 +1,8 @@
 # Plan: Clean Project (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 11)
 
-Status: **scoped 2026-08-09; the deletion-undo blocker is now resolved
-(same day), the rest still not implemented.** `TODO.md`'s own note says to
+Status: **Tier 1 (`.tmp` orphan sweep) DONE, 2026-08-09.** Tiers 2-3
+(orphaned physical asset files: detection, then deletion UI) remain open.
+`TODO.md`'s own note says to
 scope this *after* Asset Manager, since it overlaps that item's unused-asset
 detection — Asset Manager Tier 1 (`utils/asset_usage.py`, done the same
 session) unblocked this scoping pass. The "Why nothing shipped this pass"
@@ -78,24 +79,33 @@ them.
   whether any export path defaults to writing under the project root
   before assuming there's real scope here.
 
-## Proposed tiers, once this is picked up for real implementation
+## Proposed tiers
 
-1. **`.tmp` orphan sweep** — smallest, safest, no design questions
-   (these files were never routed through the asset system at all, so
-   Trash doesn't apply — a `.tmp` file is never the authoritative copy
-   of anything, permanent removal is correct here). A function that
-   lists `*.tmp` under the project directory older than some threshold
-   (avoid racing an in-flight save) and removes them, with a simple
-   "found N, removed N" report. Good candidate for a "Tools → Clean
-   Project" menu entry that does *only* this to start, rather than
-   waiting for every other tier.
+1. **`.tmp` orphan sweep — DONE (2026-08-09).** `utils/project_cleanup.py`:
+   `find_orphan_tmp_files`/`sweep_orphan_tmp_files` list/remove `*.tmp`
+   files under the project directory older than `DEFAULT_MIN_AGE_SECONDS`
+   (60s — avoids racing an in-flight save; a real atomic write's `.tmp`
+   sibling lives only milliseconds). Pure filesystem logic, no Qt
+   dependency, so it's usable standalone or from a future automatic sweep.
+   Permanent removal, not Trash — these files were never routed through
+   the asset system, so item 10.5's soft-delete mechanism doesn't apply;
+   a `.tmp` file is never the authoritative copy of anything (contrast
+   with `utils/asset_trash.py`'s module docstring). Wired up exactly as
+   this section originally proposed: `core/ide_window.py`'s
+   `clean_project` (Tools → Clean Project) does *only* this for now — a
+   simple "removed N file(s)" or "nothing to clean" report — rather than
+   waiting for Tiers 2-3. Coverage: `tests/test_project_cleanup.py` (10
+   tests, pure filesystem, no Qt) + `tests/test_clean_project_dispatch.py`
+   (4 tests, the repo's unbound-call-on-a-stub dispatch pattern). Full
+   suite 2353 → 2367 passed, 0 failed.
 2. **Orphaned physical asset files (detection)** — the "shrink project
-   size" inverse-walk described above.
+   size" inverse-walk described above. Not started.
 3. **Deletion UI for both unused project.json entries and orphaned
    physical files** — the undo-semantics question that used to gate this
    is resolved (Trash, shared with `docs/ASSET_MANAGER_PLAN.md` Tier 4);
    route both through `AssetManager.delete_asset` per item. Pure UI work
    now: a dialog listing candidates with checkboxes and a delete button.
+   Not started.
 
 ## Why nothing shipped this pass
 
