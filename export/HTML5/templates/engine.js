@@ -112,7 +112,8 @@ const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
 // Python-side runtime: mirrors the IDE's execute_code environment
 // (runtime/action_executor.py execute_execute_code_action): `self` with
 // persistent attributes, `math`/`random` modules, a `keyboard.check()`
-// shim, and exec-locals copied back onto the instance afterwards.
+// shim, a `game` object (score/lives/health — see _Game below), and
+// exec-locals copied back onto the instance afterwards.
 const PY_BOOTSTRAP = `
 import json, math, random
 
@@ -127,7 +128,7 @@ def _get_inst(inst_id):
         inst = _ExecInstance()
         inst._draw_queue = []
         # Sounds queued via self._sound_queue.append('snd_x') — no live
-        # \`game\` object exists in this exec scope, so execute_code can't
+        # JS Audio object exists in this exec scope, so execute_code can't
         # call game.sounds[...].play() directly the way the desktop
         # pygame runtime does; the queue is drained into the JSON patch
         # below and actually played on the JS side (real Audio elements).
@@ -142,19 +143,38 @@ class _Keyboard:
         return str(key).lower() in self._held
     is_pressed = check
 
+class _Game:
+    """'game' object exposed inside execute_code bodies. score/lives/
+    health are plain read/write values — matching the desktop runtime's
+    actual execute_code semantics exactly: a raw game.lives = X
+    assignment there does NOT trigger a caption update or a
+    no_more_lives/no_more_health crossing check either; those only fire
+    from the set_lives/set_health ACTIONS specifically (see
+    executeAction's 'set_lives'/'set_health' cases), never from a bare
+    attribute write. There's no live reference back to the JS Game
+    object across a Pyodide call, so this is a fresh snapshot built from
+    the synced-in values each call; any change is diffed back out in
+    run_code's patch, the same way self.x/self.y already work.
+    """
+    def __init__(self, score, lives, health):
+        self.score = score
+        self.lives = lives
+        self.health = health
+
 def run_code(inst_id, code, sync_json):
     self = _get_inst(inst_id)
     sync = json.loads(sync_json)
     for key in ('x', 'y', 'mouse_x', 'mouse_y'):
         if key in sync:
             setattr(self, key, sync[key])
+    game = _Game(sync.get('score', 0), sync.get('lives', 0), sync.get('health', 100))
     exec_globals = {
         '__builtins__': __builtins__,
         'self': self,
         'sel': self,
         'instance': self,
         'other': None,
-        'game': None,
+        'game': game,
         'math': math,
         'random': random,
         'keyboard': _Keyboard(sync.get('keys', [])),
@@ -168,6 +188,9 @@ def run_code(inst_id, code, sync_json):
     for key in ('x', 'y', 'visible'):
         if key in sync and getattr(self, key, sync.get(key)) != sync.get(key):
             patch[key] = getattr(self, key)
+    for key in ('score', 'lives', 'health'):
+        if getattr(game, key) != sync.get(key):
+            patch[key] = getattr(game, key)
     if self._sound_queue:
         patch['sounds'] = self._sound_queue
         self._sound_queue = []
@@ -287,6 +310,7 @@ class PythonBridge {
             x: inst.x, y: inst.y, visible: inst.visible,
             mouse_x: inst.mouse_x || 0, mouse_y: inst.mouse_y || 0,
             keys: held,
+            score: game.score, lives: game.lives, health: game.health,
         });
     }
 
@@ -298,6 +322,14 @@ class PythonBridge {
             if ('x' in patch) inst.x = patch.x;
             if ('y' in patch) inst.y = patch.y;
             if ('visible' in patch) inst.visible = patch.visible;
+            // Plain writes, matching the desktop runtime's actual
+            // execute_code semantics (see PY_BOOTSTRAP's _Game docstring)
+            // — no caption update, no no_more_lives/no_more_health
+            // crossing check here; those only fire from the set_lives/
+            // set_health ACTIONS (executeAction's switch cases below).
+            if ('score' in patch) game.score = patch.score;
+            if ('lives' in patch) game.lives = patch.lives;
+            if ('health' in patch) game.health = patch.health;
             playQueuedSounds(patch.sounds, game);
         } catch (err) {
             // Log-and-continue, matching the IDE runtime's behaviour for
