@@ -103,8 +103,9 @@ discipline as the match3_2/3 and views sessions:
    `tests/test_importers/`, following the exact recipe `TODO.md` already
    lays out. Don't start this inside a single session that's also doing
    other Tier 1/2 items — it has its own investigation phase.
-9. **`execute_code` environment parity (Kivy + HTML5 `game` binding)** —
-   ✅ **DONE on both targets.** Kivy's score/lives/health half shipped
+9. **`execute_code` environment parity (Kivy + HTML5 `game` binding, and
+   Kivy locals-copied-back)** — ✅ **FULLY DONE, all sub-items.** Kivy's
+   score/lives/health half shipped
    2026-08-09 (commit `c977f1c`) — `game`/`instance` bound via the same
    `_script_game()` proxy `execute_script` already used, extended with
    `score`/`lives`/`health` as plain read/write values. HTML5's matching
@@ -129,13 +130,43 @@ discipline as the match3_2/3 and views sessions:
    headless Chromium against the actual Pyodide CDN, not a project
    dependency, not committed) that caught a real cosmetic bug (an
    unescaped-backtick `SyntaxWarning` in the new docstring) the
-   regression tests alone wouldn't have. **"Locals copied back onto the
-   instance" remains explicitly NOT done for Kivy** (its own deferred
-   follow-up — Kivy inlines `execute_code` as literal Python, unlike
-   both desktop's and HTML5's dynamic `exec()`, so matching that
-   behavior needs a codegen-strategy change or an AST-rewrite, its own
-   design pass) — HTML5 never had this gap, since Pyodide's real
-   `exec()` already copies locals back.
+   regression tests alone wouldn't have.
+
+   **"Locals copied back onto the instance" (the Kivy half) — DONE
+   (2026-08-09).** User given the choice between an exec()-at-runtime
+   switch (full parity, same mechanism desktop/HTML5 already use, loses
+   compile-time syntax checking of user code — which desktop/HTML5 don't
+   have either) and an export-time AST rewrite of bare assignments into
+   `self.x = x` (keeps literal inlining, correctness-fragile against
+   every binding form CPython's real `exec()` covers — for-loop targets,
+   `with...as`, tuple unpacking, augmented assignment); **chose exec()**.
+   `export/Kivy/code_generator.py`'s `execute_code` branch now embeds the
+   user's code as a `repr()`'d string literal and execs it at runtime
+   against `{self, instance, other, game, math, random, __builtins__}`,
+   then `setattr`s every leftover local onto the instance — byte-for-byte
+   the same mechanism as `runtime/action_executor.py`'s
+   `execute_execute_code_action` and HTML5's `PY_BOOTSTRAP` `run_code`.
+   `other` is bound to the real `other` parameter only inside a collision
+   handler (`None` elsewhere), matching desktop's
+   `_collision_other`-or-`None` semantics. `math`/`random` are now
+   *always* available (matching desktop's unconditional binding),
+   replacing the old conditional-import text-heuristic. Verified almost
+   entirely by REAL EXECUTION (compile + exec the generated method
+   against a stub class), not string matching — the only way to actually
+   prove the locals-copied-back mechanism works, since text matching
+   can't tell you whether `exec()` ran correctly:
+   `tests/test_kivy_execute_code_export.py` (11 tests, rewritten —
+   3 of the old tests tested the since-removed literal-inline/
+   conditional-import behavior and were replaced, not just patched).
+   Full suite 2407 → 2411 passed, 0 failed.
+   **Found but deliberately NOT fixed (separate, adjacent gap, out of
+   this item's scope):** `execute_script` has the identical
+   locals-discarded issue (still literally inlined) *and* is missing an
+   `other` binding entirely (desktop's `execute_execute_script_action`
+   binds it; Kivy's `execute_script` branch never did) — a candidate for
+   its own small follow-up applying the same pattern, not bundled in here
+   since item 9's title and the design decision above were both scoped to
+   `execute_code` specifically.
 10. **Asset Manager** (`Tools → Asset Manager...`) — ✅ **DONE
     (2026-08-09), all 4 tiers.** Bulk rename/move/delete, usage tracking
     ("which rooms/objects use this sprite?"), unused-asset cleanup.

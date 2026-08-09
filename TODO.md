@@ -594,19 +594,36 @@ Other:
     pattern); the desktop `_draw_arrow` fix gets both a `_DRAW_HANDLERS`
     lookup test and a real-pixel render test.
   - Right/middle mouse events have no touch equivalent and stay unexported.
-  - **`execute_code` env is thinner than the IDE's — partially fixed
-    2026-08-09 (commit `c977f1c`).** Code is inlined verbatim into the
-    generated method (good). `game` is now bound (a `_ScriptGameProxy`
-    exposing score/lives/health as plain read/write values, reusing
-    `execute_script`'s existing `_script_game()` helper) and errors are
-    caught and logged instead of propagating uncaught. **Still open:**
-    `keyboard`/`other` aren't bound (a bare `keyboard.check(...)` or
-    `other.<attr>` reference still raises `NameError`), and locals still
-    aren't copied back onto the instance after the block runs (Kivy
-    inlines the code as literal Python in a real method, unlike the IDE's
-    dynamic `exec()`, so this needs a codegen-strategy change or an
-    AST-rewrite of bare assignments — its own design pass, see
-    `docs/DEFERRED_ITEMS_PLAN.md` item 9).
+  - **`execute_code` env parity — DONE 2026-08-09** (commits `c977f1c`,
+    later same day). `game` is bound (a `_ScriptGameProxy` exposing
+    score/lives/health as plain read/write values, reusing
+    `execute_script`'s existing `_script_game()` helper), errors are
+    caught and logged instead of propagating uncaught, `other` is bound
+    to the real collision-handler parameter (`None` outside a collision
+    event), and — the piece that needed its own design pass — bare
+    locals now get copied back onto the instance after the block runs.
+    Kivy's codegen switched from inlining the code as literal Python to
+    embedding it as a string and running it through a real `exec()` call
+    at runtime (Kivy runs on real CPython, so this is available), the
+    exact mechanism desktop/HTML5 already use — chosen over an
+    export-time AST rewrite of bare assignments, which would need to
+    correctly replicate every binding form CPython's real `exec()`
+    covers (for-loop targets, `with...as`, tuple unpacking, augmented
+    assignment) to get full parity. See `docs/DEFERRED_ITEMS_PLAN.md`
+    item 9.
+  - **Still open, a separate/adjacent gap this pass didn't touch:**
+    `keyboard` still isn't bound in Kivy's execute_code namespace (a bare
+    `keyboard.check(...)` reference raises `NameError`) — desktop's
+    `_ExecKeyboard` reads `instance.keys_pressed` (a set of lowercase key
+    name strings); Kivy's generated objects track held keys differently
+    (`self.scene.keys_pressed` keyed by raw keycode int, used by the grid-
+    movement codegen), so wiring this needs a small adapter, not just
+    copying desktop's class verbatim. Also still open: `execute_script`
+    has the identical "still inlined literally, locals not copied back"
+    gap `execute_code` just had, plus is *also* missing an `other`
+    binding entirely (desktop's `execute_execute_script_action` binds it;
+    Kivy's `execute_script` codegen branch never did) — a natural
+    follow-up applying the same `execute_code` fix pattern.
   - A real on-device/buildozer end-to-end test still doesn't exist
     (`test_android_export_cleanup.py` mocks the build); the stub-kivy
     execution test above covers logic, not the actual Kivy/GL layer.

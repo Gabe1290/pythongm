@@ -701,25 +701,38 @@ class ActionCodeGenerator:
             return
 
         elif action_type in ('execute_code', 'code'):
-            # Inline Python authored in the IDE's code editor. Emitted verbatim
-            # (NOT through _convert_simple_action, which strips each line and
-            # would flatten any nested if/for indentation); add_line preserves
-            # the block's own relative indentation. Like the runtime's
-            # execute_code, the code is expected to use self.<attr> / other.<attr>;
-            # we additionally make math/random importable so `math.`/`random.`
-            # calls resolve the way they do in the IDE's exec namespace.
+            # Run the user's code via a real exec() call at runtime instead
+            # of inlining it as literal Python — mirrors the desktop/HTML5
+            # runtimes' actual execute_code semantics exactly
+            # (runtime/action_executor.py's execute_execute_code_action;
+            # engine.js's PY_BOOTSTRAP run_code): any bare local the code
+            # assigns (e.g. `hp = hp - 10`, no `self.`) lands in exec()'s
+            # locals dict and gets setattr'd onto the instance afterward, so
+            # it persists as a real instance attribute across frames — the
+            # GameMaker-style implicit-instance-var convenience desktop/
+            # HTML5 already have. The old literal-inline approach lost this:
+            # a bare local was just a real Python local, discarded when the
+            # generated method returned (DEFERRED_ITEMS_PLAN.md item 9,
+            # "locals copied back onto the instance"). Kivy runs on real
+            # CPython (unlike the browser/JS target), so exec() is fully
+            # available here — this gives byte-for-byte identical semantics
+            # rather than approximating them with an export-time AST
+            # rewrite. Trade-off, matching desktop/HTML5 (not a new
+            # regression): a syntax error in the user's code now surfaces
+            # at runtime via the printed message below, not at export/
+            # compile time.
             user_code = params.get('code', '')
             if not isinstance(user_code, str) or not user_code.strip():
                 # Empty body must still close a pending guard with valid syntax.
                 self.add_line('pass')
                 self._complete_unit()
                 return
-            # `\bmath\b` / `\brandom\b` heuristic — a spurious unused import is
-            # harmless; a missing one would NameError.
-            if 'math' in user_code:
-                self.add_line('import math')
-            if 'random' in user_code:
-                self.add_line('import random')
+            # `other` is a real method parameter only in a collision handler
+            # (params = "self, other" above); everywhere else it's None,
+            # matching the desktop runtime's `_collision_other`-or-None
+            # binding.
+            is_collision = event_type == 'collision' or event_type.startswith('collision_with_')
+            other_expr = 'other' if is_collision else 'None'
             # `game`/`instance` — same names + same _script_game() proxy the
             # execute_script branch below binds, closing the "game is
             # undefined on Kivy" gap (score/lives/health specifically;
@@ -728,11 +741,29 @@ class ActionCodeGenerator:
             self.add_line('instance = self')
             self.add_line('game = self._script_game()')
             # Wrapped the same way execute_script is: an error (e.g. an
-            # unsupported game.* call) fails loudly via a printed message
-            # instead of propagating up and potentially crashing the event.
+            # unsupported game.* call, or now also a syntax error in the
+            # user's code) fails loudly via a printed message instead of
+            # propagating up and potentially crashing the event.
             self.add_line('try:')
             self.push_indent()
-            self.add_line(user_code)
+            self.add_line('import math, random')
+            self.add_line(
+                '_exec_globals = {"self": self, "instance": self, '
+                f'"other": {other_expr}, "game": game, "math": math, '
+                '"random": random, "__builtins__": __builtins__}'
+            )
+            self.add_line('_exec_locals = {}')
+            self.add_line(
+                f'exec(compile({user_code!r}, "<execute_code>", "exec"), '
+                '_exec_globals, _exec_locals)'
+            )
+            self.add_line('for _k, _v in _exec_locals.items():')
+            self.push_indent()
+            self.add_line('if not _k.startswith("__"):')
+            self.push_indent()
+            self.add_line('setattr(self, _k, _v)')
+            self.pop_indent()
+            self.pop_indent()
             self.pop_indent()
             self.add_line('except Exception as _code_err:')
             self.push_indent()
