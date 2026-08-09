@@ -136,11 +136,35 @@ class AssetOperations:
                 logger.debug("Asset is open in editor, closing it first...")
                 parent.close_editor_by_name(asset_name)
 
-        # Confirm deletion with user
+        # Confirm deletion with user — include a usage summary so deleting
+        # something still referenced elsewhere isn't a surprise (only
+        # sprite->object references were ever auto-cleared on delete;
+        # every other reference kind is left dangling, silently, without
+        # this warning — see docs/ASSET_MANAGER_PLAN.md).
+        usage_note = ""
+        project_data = getattr(getattr(self.tree, 'project_manager', None),
+                                'current_project_data', None)
+        if project_data:
+            try:
+                from utils.asset_usage import find_asset_usages
+                usages = find_asset_usages(project_data, asset_category, asset_name)
+                if usages:
+                    locations = "\n".join(f"  • {u.location}" for u in usages[:10])
+                    if len(usages) > 10:
+                        locations += f"\n  … and {len(usages) - 10} more"
+                    usage_note = (
+                        f"\n\nThis asset is still referenced in {len(usages)} "
+                        f"place(s):\n{locations}\n\nDeleting it will leave those "
+                        f"references pointing at nothing."
+                    )
+            except Exception as e:
+                logger.debug(f"Usage lookup failed (non-fatal): {e}")
+
         reply = QMessageBox.question(
             self.tree,
             "Delete Asset",
-            f"Are you sure you want to delete '{asset_name}' from {asset_category}?\n\nThis will permanently remove the asset and its file.",
+            f"Are you sure you want to delete '{asset_name}' from {asset_category}?\n\n"
+            f"This will permanently remove the asset and its file.{usage_note}",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )
