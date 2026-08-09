@@ -36,6 +36,84 @@ This is real confirmation the loader *design* is sound against this
 project's actual file shape — it says nothing about the real
 `core/project_manager.py` loader/saver, which hasn't been touched.
 
+## Implementation update (2026-08-09) — Task 1 DONE; Task 2 mostly already existed
+
+**Task 1 is done, shipped as v1.1.2** (`core/project_format.py`,
+`ProjectManager.load_project()`, `core/ide_window.py`'s
+`_show_load_failure_message`; tests in
+`tests/test_project_format_guard.py`). Two corrections to this plan's
+original assumptions, found while implementing:
+
+1. **Version number was stale.** The plan said "ship 1.0.1" — written
+   when the phone session's mental model of this repo's release state
+   was `1.0`. `CHANGELOG.md`/`git tag` show the actual current line is
+   **1.1.x** (`v1.1.1` released 2026-07-14); this shipped as **1.1.2**
+   instead. If you're picking this plan up later and the repo has moved
+   further, check `__init__.py`'s `__version__` again before assuming
+   any specific number.
+2. **`version` field confirmed** (open question from the original plan):
+   `ProjectManager._validate_project_data` requires it and treats it as
+   the *project's own* version (e.g. `"1.0.0"` in a brand-new project),
+   never the app/format version — confirming `format_version` as a
+   genuinely separate new field was the right call.
+
+**Bigger finding: most of Task 2 already exists, under different names,
+and has one confirmed live bug.** `events/plugin_loader.py` already
+implements an extension-dependency system that predates this plan:
+
+- `requires_extensions` (a plain list of extension *folder names* — the
+  phone plan's `required_extensions` dict, simplified) is auto-derived
+  from a project's action names and written into `project.json` on
+  every save (`ProjectManager._prepare_project_data_for_save`), via
+  `required_extensions_for_project()`.
+- `missing_extensions_for_project()` detects when a project uses actions
+  from an extension that's installed but currently *disabled*, and
+  `not_installed_extensions_for_project()` detects when it names an
+  extension folder that's *not present at all* — exactly the "opened by
+  an editor without the extension" case this plan exists for. Both are
+  wired into `core/ide_window.py`'s `_warn_missing_extensions()`, shown
+  as a `QMessageBox` right after a project loads.
+- Unknown actions already survive a save verbatim (nothing in
+  `_prepare_project_data_for_save` touches `assets.objects`), and the
+  Object Events panel already renders an action `get_action_type()`
+  doesn't recognize with a distinct `❓ <raw action id>` label
+  (`editors/object_editor/object_events_panel.py`'s
+  `_set_action_item_text`) instead of crashing or hiding it.
+
+**Confirmed bug in the existing system** (found by testing it directly,
+not by inspection alone): `_prepare_project_data_for_save` recomputes
+`requires_extensions` from scratch on every save via
+`required_extensions_for_project()`, which can only name extensions that
+are **present on disk** (it iterates `list_available_extensions()`, a
+glob of the local `extensions/` folder). If editor B has an extension
+folder editor A had, editor B's resave computes an empty `reqs` for that
+folder's actions and the code does `data.pop('requires_extensions',
+None)` — **silently erasing the manifest record**, even though the
+actual unrecognized actions are still sitting untouched in
+`assets.objects`. Reproduced directly:
+```python
+from events.plugin_loader import required_extensions_for_project
+required_extensions_for_project({
+    "requires_extensions": ["threed"],
+    "assets": {"objects": {"obj_pingus": {"events": {"step": {"actions": [
+        {"action": "set_camera_3d", "parameters": {}},
+    ]}}}}},
+})  # -> [] , not ["threed"] — "threed" isn't installed here to confirm it
+```
+This is exactly the preserve-on-save invariant Task 2.3 asks for, and
+it's currently violated. **This is Tier 3 item 13's real starting
+point** — fix `_prepare_project_data_for_save` to keep any
+`requires_extensions` entry it can't positively verify is stale (i.e.
+any folder name not present in `list_available_extensions()` at all),
+rather than trusting a recomputation that structurally can't see
+absent extensions. The rest of "Task 2" doesn't need building from
+scratch; it needs this one fidelity fix plus the `format_version`
+guard's Task 1 (done) sitting alongside it.
+
+**Tasks 3 and 4 are correspondingly smaller than drafted, too** — see
+each task's own section below for what already exists vs. what's still
+a real gap.
+
 ## 1. Goal
 
 Introduce a 2.0 extension system while guaranteeing that a project using
@@ -101,84 +179,86 @@ versions of the app.
 
 ## 4. Work to do, in order
 
-### Task 1 — Ship 1.0.1 with a format-version guard *(do first)*
+### Task 1 — Ship a format-version guard *(do first)* — ✅ DONE, v1.1.2
 
-**Why first:** any 1.0 build that later meets a 2.0 file must refuse
+**Why first:** any build that later meets a newer-format file must refuse
 gracefully instead of crashing or saving over it (which would strip the
-manifest). This guard must live in the 1.0 line and go out as 1.0.1.
+manifest). Shipped as `core/project_format.py`
+(`SUPPORTED_FORMAT = (1, 9)`, `ProjectTooNewError`,
+`check_project_format()`, near-identical to the sketch this section used
+to have here), called from `ProjectManager.load_project()` immediately
+after `json.load` and before any further processing, with a specific
+`QMessageBox` at the UI layer (`ide_window.py`'s
+`_show_load_failure_message`) rather than a generic load-failure
+message. Tests: `tests/test_project_format_guard.py` (13 tests,
+including a byte-for-byte on-disk-unchanged assertion after a refused
+load — the concrete "does not crash or corrupt" proof). Shipped as
+**v1.1.2** (not 1.0.1 — see the Implementation update above for why).
 
-**Add this to the loader module:**
-```python
-# --- format-version guard (new in 1.0.1) -----------------------------------
-SUPPORTED_FORMAT = (1, 9)   # this build understands any 1.x project
+### Task 2 — Extension-dependency manifest read/write
 
-class ProjectTooNewError(Exception):
-    def __init__(self, fmt):
-        self.fmt = fmt
+**Mostly already existed** (see the Implementation update above) as
+`events/plugin_loader.py`'s `requires_extensions` field +
+`required_extensions_for_project()`/`missing_extensions_for_project()`/
+`not_installed_extensions_for_project()`, auto-derived and written on
+every save. What's left, now narrowly scoped to the one confirmed gap:
 
-def check_project_format(project_dict):
-    raw = project_dict.get("format_version", "1.0")   # 1.0 files omit the key
-    try:
-        fmt = tuple(int(p) for p in str(raw).split("."))
-    except ValueError:
-        fmt = (1, 0)
-    if fmt > SUPPORTED_FORMAT:
-        raise ProjectTooNewError(fmt)
-    return fmt
-```
-
-**Integration (order matters):**
-1. Call `check_project_format(data)` **immediately after `json.load`**,
-   before building anything from the data — so a too-new file is rejected
-   before any code path could later save over it. In this repo that's
-   `core/project_manager.py`'s project-loading path — confirm the exact
-   call site before implementing (it wasn't checked against real code in
-   the design session).
-2. Catch `ProjectTooNewError` at the UI layer and show a QMessageBox, e.g.
-   *"This project was made with a newer version of PyGameMaker (format
-   2.0). Please update to open it."* Then **abort the open** — the load
-   must not complete.
-3. Bump version to **1.0.1**, tag, and cut a patch release on GitHub.
-
-**Needs before implementing:** locate the function that opens
-`project.json` in `core/project_manager.py` (or wherever it actually is)
-to place the call precisely — this repo's real loader wasn't consulted
-when this plan was drafted.
-
-### Task 2 — Implement the 2.0 format read/write
-
-1. **Reader:** read `format_version` (default `"1.0"`) and
-   `required_extensions` (default `{}`); compute
-   `missing = required - installed`.
-2. **Writer:** when saving a project that uses ≥1 extension action, write
-   `format_version: "2.0"` and a `required_extensions` manifest listing
-   every extension whose actions appear. When no extension is used, keep
-   writing 1.0-style (no `format_version`) so ordinary files stay
-   maximally compatible.
-3. **Make the reader tolerant** (preserve unknown top-level keys) and the
-   **writer full-fidelity** (preserve unknown actions verbatim).
-4. **Add a round-trip test** on a real file asserting byte-identical
-   preservation when the extensions aren't installed — `compat_demo.py`
-   in this folder does exactly this (now proven against
-   `samples/plateforme_3/project.json` too, see the verification update
-   above) and is good starting scaffolding for both the real loader code
-   and this test.
+1. **Fix the resave-wipe bug** in
+   `ProjectManager._prepare_project_data_for_save`: don't let a
+   recomputed (necessarily incomplete — it can only see extensions
+   present on disk) `required_extensions_for_project()` result silently
+   drop an existing `requires_extensions` entry the current editor has
+   no way to verify is stale. Keep any entry not present in
+   `list_available_extensions()`, union it with the freshly computed
+   set, only drop entries this editor can positively confirm (extension
+   installed here, recomputation shows its actions are genuinely gone).
+2. **Regression test:** editor-without-the-extension resaves a project
+   that references `set_camera_3d`/`thymio_drive`-style actions from an
+   extension folder it doesn't have → `requires_extensions` on disk
+   still names that folder after the save, and the actual unknown
+   actions in `assets.objects` are still byte-identical.
+3. The reader side (tolerant of an absent/malformed `requires_extensions`,
+   preserves unknown top-level keys) already works — no change needed;
+   `_validate_project_data` only requires `name`/`version`/`assets`.
 
 ### Task 3 — Placeholder rendering for unknown actions
 
-- In the event / Blockly editor, an action whose type is registered by
-  neither core nor any installed extension renders as a **greyed-out,
-  non-editable block**, labelled with the extension it needs (looked up
-  from the `required_extensions` manifest entry).
-- It must be preserved **verbatim** on save (guaranteed by Task 2.3).
+**Partially already exists.** `editors/object_editor/object_events_panel.py`'s
+`_set_action_item_text` already renders an unrecognized action as
+`❓ <raw action id>` instead of crashing or hiding it, and it already
+survives a save untouched (nothing in `_prepare_project_data_for_save`
+touches `assets.objects`). Genuine gaps:
+
+- **Not visually "disabled."** Unlike a `comment` item (rendered
+  italic + gray), an unknown-action item uses the normal action font/
+  color — it reads as a broken action, not an intentionally-inert one.
+- **Silently does nothing on double-click.** `edit_action` calls
+  `get_action_type()`, finds nothing, logs a debug warning nobody sees,
+  and returns — no dialog, no message. Should show something like "This
+  action needs the {extension name} extension" (name looked up via
+  `list_available_extensions()`'s manifest when the extension is present-
+  but-disabled, or just the raw id when it's not installed at all and no
+  manifest exists to read a display name from).
+- **Raw id, not a friendly label.** `❓ set_camera_3d` instead of
+  something naming the owning extension when known.
 
 ### Task 4 — Install offer wired to the manifest
 
-- When a project loads with missing extensions, present a prompt (one per
-  missing extension, or one combined) using the manifest's display `name`:
-  *"This project needs {name}. Install it?"*
-- The label and identity come straight from the manifest entry, so the
-  offer works even for an action the editor otherwise knows nothing about.
+**Partially already exists**, as a *warning*, not an *offer*.
+`core/ide_window.py`'s `_warn_missing_extensions()` already shows a
+`QMessageBox` naming each disabled/not-installed extension and which
+actions need it — but its text says "Enable the extensions in your
+config" rather than presenting an actual action. Real gap: there's no
+one-click "enable this extension" button from that dialog (it would need
+to call `events.plugin_loader.set_extension_enabled()` and prompt a
+restart, since extensions register at startup) — currently the user has
+to go find a settings surface by themselves (and it's unclear one
+exists yet for toggling extensions from the UI at all; confirm before
+building this). For an extension that's missing entirely (no folder on
+disk), there is nothing to "install" in this bundled-extensions model —
+the honest offer there is closer to "update PyGameMaker" messaging,
+which `_warn_missing_extensions` already does via
+`not_installed_extensions_for_project`.
 
 ## 5. Open questions to resolve against the real codebase
 
