@@ -478,6 +478,49 @@ if not IS_ANDROID:
 # Global game manager reference
 _game_app = None
 
+
+class _ScriptGameProxy:
+    """`game` object exposed inside execute_script/execute_code bodies — a
+    minimal proxy onto the running GameApp, matching the desktop runtime's
+    execute_code semantics: score/lives/health are plain read/write values.
+    No automatic caption-update or no_more_lives/no_more_health crossing
+    side effects on a raw write — those only fire from the set_lives/
+    set_health ACTIONS on the desktop runtime too, never from a bare
+    attribute assignment, so matching that (not adding new behavior desktop
+    doesn't have) is the correct parity target. Anything beyond these three
+    raises AttributeError, which the caller (see _script_game's docstring)
+    catches and logs rather than silently doing nothing."""
+
+    @property
+    def score(self):
+        return _game_app.score if _game_app else 0
+
+    @score.setter
+    def score(self, value):
+        if _game_app:
+            _game_app.score = value
+
+    @property
+    def lives(self):
+        return _game_app.lives if _game_app else 0
+
+    @lives.setter
+    def lives(self, value):
+        if _game_app:
+            _game_app.lives = value
+
+    @property
+    def health(self):
+        return _game_app.health if _game_app else 100
+
+    @health.setter
+    def health(self, value):
+        if _game_app:
+            _game_app.health = value
+
+    def check_collision_at_position(self, inst, x, y, obj=None):
+        return inst.check_collision_at(x, y, obj)
+
 # Whether any object listens to keyboard events. A game with no keyboard
 # input (e.g. touch/mouse-driven puzzles) gets no virtual D-pad overlay,
 # which would otherwise cover the corner and swallow taps there.
@@ -3150,15 +3193,14 @@ class GameObject(Widget):
                 break
 
     def _script_game(self):
-        """A minimal `game` API for execute_script bodies, mapping the runtime
-        GameRunner methods scripts commonly call onto the Kivy object model.
-        A method a script uses that isn't here raises AttributeError, which the
-        script wrapper catches and logs — visible, not a silent no-op."""
-        import types
-        return types.SimpleNamespace(
-            check_collision_at_position=lambda inst, x, y, obj=None:
-                inst.check_collision_at(x, y, obj),
-        )
+        """A minimal `game` API for execute_script/execute_code bodies,
+        mapping the runtime GameRunner surface scripts/code commonly use
+        onto the Kivy object model (score/lives/health, plus the collision
+        helper). A method or attribute a script/code block uses that isn't
+        here raises AttributeError, which the caller catches and logs —
+        visible, not a silent no-op."""
+        from main import _ScriptGameProxy
+        return _ScriptGameProxy()
 
     def jump_to_start(self):
         """Reset to the spawn position, mirroring execute_jump_to_start."""

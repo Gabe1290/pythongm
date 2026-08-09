@@ -720,7 +720,24 @@ class ActionCodeGenerator:
                 self.add_line('import math')
             if 'random' in user_code:
                 self.add_line('import random')
+            # `game`/`instance` — same names + same _script_game() proxy the
+            # execute_script branch below binds, closing the "game is
+            # undefined on Kivy" gap (score/lives/health specifically;
+            # anything else raises AttributeError, caught below rather than
+            # crashing). Always bound (cheap; an unused local costs nothing).
+            self.add_line('instance = self')
+            self.add_line('game = self._script_game()')
+            # Wrapped the same way execute_script is: an error (e.g. an
+            # unsupported game.* call) fails loudly via a printed message
+            # instead of propagating up and potentially crashing the event.
+            self.add_line('try:')
+            self.push_indent()
             self.add_line(user_code)
+            self.pop_indent()
+            self.add_line('except Exception as _code_err:')
+            self.push_indent()
+            self.add_line("print('[execute_code] ' + str(_code_err))")
+            self.pop_indent()
             self._complete_unit()
             return
 
