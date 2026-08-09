@@ -80,8 +80,22 @@ it before picking an item to work on.
 ### Clean Project
 - Was: `Tools → Clean Project`.
 - Scope: remove temporary files, delete unused assets, clean build artifacts,
-  shrink project size.
-- Current workaround: manually delete `.cache/`, `__pycache__/`, `*.pyc`.
+  shrink project size. **Scoped in `docs/CLEAN_PROJECT_PLAN.md`
+  (2026-08-09)** — investigation found rollback-snapshot cleanup already
+  happens automatically (`ProjectManager._sweep_orphan_snapshots`, on every
+  load) and the `__pycache__`/`.pyc` workaround line below describes
+  cleaning *this dev repo*, not a saved game project (project code lives
+  as strings inside `project.json`, never as importable `.py` files under
+  a project directory, so that case likely doesn't apply here at all).
+  Real remaining scope: an orphaned-`.tmp`-file sweep (small, safe,
+  no design questions), an orphaned-physical-asset-file scan (files on
+  disk with no `project.json` entry — the actual "shrink project size"
+  case, distinct from Asset Manager's unused-*entry* detection), and
+  actual deletion UI for both — gated on the same bulk-delete-undo
+  question `docs/ASSET_MANAGER_PLAN.md` Tier 3 needs decided first.
+- Current workaround: manually delete `.cache/`, `__pycache__/`, `*.pyc`
+  (from this dev repo; unclear this applies to a saved project at all —
+  see above).
 - Notes: removed the menu entry and the `clean_project()` stub in
   `core/ide_window.py`.
 
