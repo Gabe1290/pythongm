@@ -39,6 +39,7 @@ class PreferencesDialog(QDialog):
         self.create_editor_tab()
         self.create_project_tab()
         self.create_advanced_tab()
+        self.create_extensions_tab()
 
         main_layout.addWidget(self.tabs)
 
@@ -250,6 +251,66 @@ class PreferencesDialog(QDialog):
 
         self.tabs.addTab(advanced_tab, self.tr("Advanced"))
 
+    def create_extensions_tab(self):
+        """Create the Extensions settings tab: enable/disable installed
+        folder extensions (events/plugin_loader.py). Checkbox states are
+        buffered — real values are filled in by load_current_settings()
+        and only written back by apply_settings(), matching every other
+        tab (Cancel must not persist a toggle)."""
+        extensions_tab = QWidget()
+        extensions_layout = QVBoxLayout(extensions_tab)
+
+        info_label = QLabel(self.tr(
+            "Disabling an extension here takes effect in the IDE after "
+            "restarting — extensions register their actions at startup. "
+            "Exports already respect this setting immediately, without "
+            "needing a restart."))
+        info_label.setWordWrap(True)
+        info_label.setStyleSheet("color: #666; font-style: italic; padding: 5px;")
+        extensions_layout.addWidget(info_label)
+
+        from events.plugin_loader import list_available_extensions
+        extensions = list_available_extensions()
+
+        # {folder_name: QCheckBox}, walked by load_current_settings() and
+        # apply_settings() — avoids re-querying list_available_extensions()
+        # (whose live state could already differ from the checkboxes once
+        # the user has toggled something but not yet applied it).
+        self.extension_checkboxes = {}
+
+        if not extensions:
+            empty_label = QLabel(self.tr("No extensions found."))
+            empty_label.setStyleSheet("color: #888; padding: 10px;")
+            extensions_layout.addWidget(empty_label)
+        else:
+            group = QGroupBox(self.tr("Installed Extensions"))
+            group_layout = QVBoxLayout(group)
+            for info in extensions:
+                checkbox = QCheckBox(info.get("name", info["folder"]))
+                if info.get("provides_actions"):
+                    checkbox.setToolTip(self.tr("Provides: {0}").format(
+                        ", ".join(info["provides_actions"])))
+                group_layout.addWidget(checkbox)
+
+                caption_parts = []
+                if info.get("version"):
+                    caption_parts.append(self.tr("v{0}").format(info["version"]))
+                if info.get("description"):
+                    caption_parts.append(info["description"])
+                if caption_parts:
+                    caption_label = QLabel(" — ".join(caption_parts))
+                    caption_label.setWordWrap(True)
+                    caption_label.setStyleSheet(
+                        "color: #888; padding-left: 20px; padding-bottom: 5px;")
+                    group_layout.addWidget(caption_label)
+
+                self.extension_checkboxes[info["folder"]] = checkbox
+            extensions_layout.addWidget(group)
+
+        extensions_layout.addStretch()
+
+        self.tabs.addTab(extensions_tab, self.tr("Extensions"))
+
     def load_current_settings(self):
         """Load current settings from config"""
         # Edition setting
@@ -297,6 +358,13 @@ class PreferencesDialog(QDialog):
         self.debug_mode.setChecked(advanced_config['debug_mode'])
         self.max_undo.setValue(advanced_config['max_undo_steps'])
         self.console_output.setChecked(advanced_config['console_output'])
+
+        # Extensions settings
+        from events.plugin_loader import list_available_extensions
+        for info in list_available_extensions():
+            checkbox = self.extension_checkboxes.get(info["folder"])
+            if checkbox:
+                checkbox.setChecked(info["enabled"])
 
         # Update font preview
         self.update_font_preview()
@@ -397,6 +465,9 @@ class PreferencesDialog(QDialog):
             console_output=self.console_output.isChecked()
         )
 
+        # Extensions settings
+        self._apply_extension_settings()
+
         QMessageBox.information(
             self,
             self.tr("Settings Saved"),
@@ -432,6 +503,17 @@ class PreferencesDialog(QDialog):
 
         if ide_window and hasattr(ide_window, 'refresh_event_panels_config'):
             ide_window.refresh_event_panels_config()
+
+    def _apply_extension_settings(self):
+        """Persist every extension checkbox's current state. Split out of
+        apply_settings() (rather than inlined like the other tabs' writes)
+        so it — and, just as importantly, the fact that Cancel never calls
+        it — can be tested without needing to safely invoke the rest of
+        apply_settings()'s many other real Config/theme/blockly-preset
+        writes."""
+        from events.plugin_loader import set_extension_enabled
+        for folder, checkbox in self.extension_checkboxes.items():
+            set_extension_enabled(folder, checkbox.isChecked())
 
     def accept_settings(self):
         """Save settings and close"""

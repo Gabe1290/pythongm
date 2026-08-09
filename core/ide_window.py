@@ -1696,7 +1696,8 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr(
                     "This project uses features from extensions that are turned "
                     "off:\n\n{list}\n\nThose actions won't run and the project may "
-                    "look or behave wrong.").format(list=lines))
+                    "look or behave wrong. You can enable an extension via "
+                    "Preferences → Extensions.").format(list=lines))
         if not_installed:
             lines = "\n".join(f"• {folder}" for folder in not_installed)
             QMessageBox.warning(

@@ -235,28 +235,39 @@ relying on real global `ACTION_TYPES`/extension state, which can already
 be mutated by `load_all_plugins()` having run earlier in the same
 pytest session).
 
-### Task 4 — Install offer wired to the manifest — partially done
+### Task 4 — Install offer wired to the manifest — DONE (settings-UI half, 2026-08-09)
 
-**Partially already existed**, as a *warning*, not an *offer* — and
-still is; this session fixed the warning's honesty but did not build a
-real offer. `core/ide_window.py`'s `_warn_missing_extensions()` already
-shows a `QMessageBox` naming each disabled/not-installed extension and
-which actions need it. Fixed: its text used to say "Enable the
-extensions in your config" — investigated and confirmed **no such
-config UI exists anywhere in the app**
-(`events.plugin_loader.set_extension_enabled()` is defined but never
-called from any UI code), so that sentence was dropped rather than left
-pointing at something that doesn't exist. **Still not built, and
-deliberately so:** an actual one-click "enable this extension" UI. It
-would need a real settings surface (Preferences? a new dialog? —
-undecided) plus a restart prompt, since extensions register at startup.
-Scope this properly before starting, the same way Asset Manager/Clean
-Project need their own scoping pass — don't bolt it onto an unrelated
-dialog. For an extension that's missing entirely (no folder on disk),
-there is nothing to "install" in this bundled-extensions model anyway —
-the honest message there is "update PyGameMaker," which
-`_warn_missing_extensions` already provides via
-`not_installed_extensions_for_project`.
+**Originally partial**: a *warning*, not an *offer* — `core/ide_window.py`'s
+`_warn_missing_extensions()` already showed a `QMessageBox` naming each
+disabled/not-installed extension and which actions need it, and a
+misleading "Enable the extensions in your config" sentence was dropped
+(investigation found **no such config UI existed anywhere in the app**).
+
+**Resolved in a later, separately-planned session** (scoped via
+`EnterPlanMode` before any code, per this section's own "scope this
+properly before starting" instruction): a new "Extensions" tab in
+`dialogs/preferences_dialog.py`'s `PreferencesDialog` — the "Preferences?
+a new dialog?" question above is answered in favor of Preferences, since
+its existing 5-tab structure was the natural, already-consistent fit, not
+a new top-level dialog. `events.plugin_loader.set_extension_enabled()` is
+now called from real UI code. The "restart prompt" turned out to need no
+new mechanism: the dialog already has a generic "settings require
+restarting the IDE" footer note, which covers this case too — no
+app-relaunch/hot-reload was built (deliberately out of scope; extension
+loading has real side effects not cleanly reversible without a restart:
+process-global `ACTION_TYPES` registration, room-renderer hook
+registration, synthetic-package-name imports). One real nuance found
+during design and folded into the tab's own caption text: the restart
+requirement is IDE-only — the Kivy/HTML5 exporters already re-check
+`enabled` live at export time, so toggling here changes export behavior
+immediately, before any restart. The dangling "enable it" pointer in
+`_warn_missing_extensions()`'s warning was restored, now that something
+real exists to point at. Full detail + test coverage:
+`docs/DEFERRED_ITEMS_PLAN.md` item 13's follow-up paragraph. For an
+extension that's missing entirely (no folder on disk), there is still
+nothing to "install" in this bundled-extensions model — the honest
+message there remains "update PyGameMaker," via
+`not_installed_extensions_for_project`, unchanged by this work.
 
 ## 5. Open questions to resolve against the real codebase
 

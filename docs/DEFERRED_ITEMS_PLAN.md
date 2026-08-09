@@ -239,13 +239,49 @@ discipline as the match3_2/3 and views sessions:
     nothing, with 6 regression tests (`tests/test_extension_action_ui.py`);
     (c) dropped a misleading "enable the extensions in your config" hint
     — investigation found no config UI for toggling extensions exists
-    anywhere in the app yet. **Deliberately NOT built:** an actual
-    one-click "enable this extension" settings UI (Task 4's fuller
-    vision) — the plan flagged this as needing its own scoping/design
-    pass before building, and this session's re-scoping confirmed that's
-    still true; it would need a real settings surface + a restart prompt
-    (extensions register at startup) that doesn't exist yet. Full suite
-    2245 → 2256, 0 failed.
+    anywhere in the app yet. Full suite 2245 → 2256, 0 failed.
+
+    **The deferred settings UI — DONE (2026-08-09, separate session, planned
+    via `EnterPlanMode` before coding).** A new "Extensions" tab in
+    `dialogs/preferences_dialog.py`'s `PreferencesDialog` (its existing
+    5-tab structure), listing every `events.plugin_loader.
+    list_available_extensions()` entry as a checkbox (name, version +
+    description caption, `provides_actions` in a tooltip rather than
+    inline to stay uncluttered as more extensions land), with an
+    empty-state placeholder when none are found. **The backend needed zero
+    changes** — `list_available_extensions`/`is_extension_enabled`/
+    `set_extension_enabled` already existed complete; this was pure UI.
+    Checkbox state is buffered and only written (via a new
+    `_apply_extension_settings()`, split out for testability) inside
+    `apply_settings()` — never live-on-toggle — matching every other tab's
+    Cancel-must-not-persist semantics. No new restart mechanism: the
+    dialog's existing generic footer ("Note: Some settings require
+    restarting the IDE...") already covers it; no app-relaunch/hot-reload
+    infrastructure exists anywhere in this codebase and building one was
+    explicitly scoped OUT (extension loading has real side effects —
+    process-global `ACTION_TYPES` registration, room-renderer hooks, a
+    synthetic-package-name import — cleanly unregistering all of that is a
+    materially bigger task). One real nuance surfaced during design
+    validation and folded into the tab's caption text: toggling here
+    changes **IDE** behavior after a restart, but the Kivy/HTML5 **exporters**
+    already re-check `enabled` live at export time (`export/HTML5/
+    html5_exporter.py`, `export/Kivy/kivy_exporter.py`, `export/Kivy/
+    code_generator.py` each call `list_available_extensions()` fresh per
+    export) — without calling this out, a user could be confused why an
+    export dropped code before restarting. Also restored the accurate
+    pointer text ("You can enable an extension via Preferences →
+    Extensions.") to `_warn_missing_extensions()`'s warning dialog, closing
+    the loop the misleading-hint removal above left open. Deliberately
+    NOT built (noted as future follow-ups only, not started): an "Enable
+    Now" button wired directly into that warning dialog (a second entry
+    point, needs its own scoping), and a live "Restart Now" relaunch
+    button. Coverage: `tests/test_preferences_extensions_tab.py` (8 tests
+    — listing, checked-state, tooltip, `_apply_extension_settings`
+    writing the right calls, Cancel never persisting, and a wiring check
+    that `apply_settings()` delegates to it — with `events.plugin_loader`
+    and `Config` mocked throughout so no test touches the real
+    `extensions/` folder or `~/.pygamemaker/config.json`). Full suite
+    2425 → 2433 passed, 0 failed.
 
 ## Tier 0 — do before anything else in this doc (protects future downloads) — ✅ DONE
 
