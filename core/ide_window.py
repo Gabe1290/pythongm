@@ -1588,7 +1588,7 @@ class PyGameMakerIDE(QMainWindow):
                     self.add_to_recent_projects(str(project_path))
                     self._warn_missing_extensions()
                 else:
-                    QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project from zip"))
+                    self._show_load_failure_message(self.tr("Failed to load project from zip"))
             else:
                 QMessageBox.warning(self, self.tr("Invalid Zip"),
                                     self.tr("This zip file does not contain a valid PyGameMaker project"))
@@ -1601,7 +1601,26 @@ class PyGameMakerIDE(QMainWindow):
             self._warn_missing_extensions()
         else:
             logger.warning(f"load_project: project_manager.load_project failed for {project_path}")
-            QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
+            self._show_load_failure_message(self.tr("Failed to load project"))
+
+    def _show_load_failure_message(self, generic_message):
+        """Show a load-failure dialog, upgrading to a specific "needs a
+        newer PyGameMaker" message when project_manager.load_project() (or
+        load_project_from_zip(), which delegates to it) refused the file
+        via the format-version guard rather than failing for some other
+        reason. Call this immediately after a load attempt returns False —
+        last_load_format_error reflects only the most recent attempt."""
+        fmt = getattr(self.project_manager, "last_load_format_error", None)
+        if fmt is not None:
+            QMessageBox.warning(
+                self, self.tr("Project Too New"),
+                self.tr(
+                    "This project was made with a newer version of "
+                    "PyGameMaker (format {0}.{1}). Please update PyGameMaker "
+                    "to open it."
+                ).format(fmt[0], fmt[1]))
+        else:
+            QMessageBox.warning(self, self.tr("Error"), generic_message)
 
     def _unsupported_actions_note(self):
         """A user-facing note listing actions the Kivy codegen had to skip in
