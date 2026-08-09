@@ -1002,5 +1002,6 @@
       "stretch": false
     }
   ],
-  "tiles": []
+  "tiles": [],
+  "persistent": true
 }

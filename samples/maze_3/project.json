@@ -1432,7 +1432,8 @@
         "modified": "2026-06-05T18:15:05.856093",
         "imported": true,
         "tiles": [],
-        "_external_file": "rooms/room_start.json"
+        "_external_file": "rooms/room_start.json",
+        "persistent": true
       },
       "room1": {
         "name": "room1",
@@ -1547,7 +1548,8 @@
           }
         ],
         "tiles": [],
-        "_external_file": "rooms/room1.json"
+        "_external_file": "rooms/room1.json",
+        "persistent": true
       },
       "room2": {
         "name": "room2",
@@ -1662,7 +1664,8 @@
           }
         ],
         "tiles": [],
-        "_external_file": "rooms/room2.json"
+        "_external_file": "rooms/room2.json",
+        "persistent": true
       },
       "room3": {
         "name": "room3",
@@ -1777,7 +1780,8 @@
           }
         ],
         "tiles": [],
-        "_external_file": "rooms/room3.json"
+        "_external_file": "rooms/room3.json",
+        "persistent": true
       },
       "room4": {
         "name": "room4",
@@ -1892,7 +1896,8 @@
           }
         ],
         "tiles": [],
-        "_external_file": "rooms/room4.json"
+        "_external_file": "rooms/room4.json",
+        "persistent": true
       },
       "room5": {
         "name": "room5",
@@ -2007,7 +2012,8 @@
           }
         ],
         "tiles": [],
-        "_external_file": "rooms/room5.json"
+        "_external_file": "rooms/room5.json",
+        "persistent": true
       }
     },
     "scripts": {},

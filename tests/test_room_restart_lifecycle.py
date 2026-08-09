@@ -29,6 +29,7 @@ def _runner(project_data, tmp_path):
     runner.rooms = {}
     runner._objects_data = project_data.get("assets", {}).get("objects", {})
     runner._destroyed_memory = {}
+    runner._visited_rooms = set()
     runner.screen = None
     runner.current_room = None
     runner.score = runner.lives = runner.health = 0

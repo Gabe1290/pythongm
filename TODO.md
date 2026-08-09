@@ -204,10 +204,37 @@ it before picking an item to work on.
 - **Still deferred to post-1.0 (do NOT add UI yet):** particle system
   (create_emitter/burst_particles/…), timelines (set_timeline/start_timeline/
   …), save_game/load_game, show_video, execute_script — these need a
-  functional check first; and the room-background/scrolling actions
-  (set_background*, set_room_speed/persistent) which are incomplete —
-  exposing them would re-introduce the rc.11 "stop lying to users"
-  anti-pattern.
+  functional check first.
+- **Room-background/scrolling actions (set_background*, set_room_speed,
+  set_room_persistent) — DONE 2026-08-09.** All four registered in
+  `events/action_types.py` (category "Room"), each actually finished
+  first: `set_room_speed` was already fully functional (just unregistered);
+  `set_background_color`'s `show_color` and `set_background`'s `foreground`
+  were accepted-and-discarded params, now wired onto new `GameRoom`
+  attributes (`show_background_color`, `background_foreground`) with real
+  rendering support; `set_room_persistent` set a flag nothing ever read
+  (`GameRoom.persistent`) — `GameRunner.change_room` reused
+  `self.rooms[room_name]` forever, so every room was accidentally
+  persistent regardless of the flag. Fixed with real GameMaker semantics:
+  a room now rebuilds fresh from its authored layout on every revisit
+  unless explicitly marked `persistent: true` (deliberately NOT applied to
+  `restart_game`, which already unconditionally rebuilds every room — a
+  full restart stays a hard reset). This surfaced a real regression in
+  `maze_3`/`maze_4` (the only samples with real backtracking via
+  `previous_room`/`next_room`): their `obj_diamond` collectibles would
+  have respawned on backtrack. Fixed by marking every room in both
+  samples `persistent: true`. See `docs/DEFERRED_ITEMS_PLAN.md`-style
+  planning in the session notes for the full design tradeoffs (an
+  `EnterPlanMode` session, including a Plan-agent validation pass that
+  traced the actual `change_room` body and audited every sample for
+  revisit paths). Coverage: `tests/test_room_background_scroll_actions.py`
+  (15 tests, including an end-to-end proof driving a real `GameRunner`
+  through the actual `maze_3` sample — collect a diamond, backtrack via
+  `previous_room`, return via `next_room`, assert it's still gone).
+  Kivy/HTML5 export codegen for these 4 actions is deliberately NOT
+  built — no sample uses them yet, matching the precedent already set for
+  `goto_room`'s `fade` transition ("scoped to desktop until a sample or
+  user need shows up").
 - **Views/camera — IN PROGRESS (2026-07-15).** No longer fully deferred.
   Plan: `docs/VIEWS_SAMPLES_PLAN.md`. Done: HTML5 8-view camera (`552a9bc`,
   Chromium-verified); `enable_views`/`set_view` **registered** in

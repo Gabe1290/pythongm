@@ -1283,6 +1283,139 @@ ACTION_TYPES = {
         ],
     ),
 
+    # Runtime: execute_set_room_speed_action
+    "set_room_speed": ActionType(
+        name="set_room_speed",
+        display_name="Set Room Speed",
+        description="Change the game's frame rate (frames per second)",
+        category="Room",
+        icon="⏱️",
+        parameters=[
+            ActionParameter(
+                name="speed",
+                display_name="Speed (FPS)",
+                param_type="number",
+                default_value=30,
+                description="Target frames per second (1-240)",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_set_room_persistent_action
+    "set_room_persistent": ActionType(
+        name="set_room_persistent",
+        display_name="Set Room Persistent",
+        description="Whether the current room keeps its live state (instance "
+                     "positions, destroyed instances, etc.) when the player "
+                     "leaves and later returns to it, instead of rebuilding "
+                     "fresh from its authored layout every revisit",
+        category="Room",
+        icon="💾",
+        parameters=[
+            ActionParameter(
+                name="persistent",
+                display_name="Persistent",
+                param_type="boolean",
+                default_value=True,
+                description="Keep this room's state across a revisit",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_set_background_color_action
+    "set_background_color": ActionType(
+        name="set_background_color",
+        display_name="Set Background Color",
+        description="Change the current room's background color",
+        category="Room",
+        icon="🎨",
+        parameters=[
+            ActionParameter(
+                name="color",
+                display_name="Color",
+                param_type="color",
+                default_value="#87CEEB",
+                description="Background color",
+            ),
+            ActionParameter(
+                name="show_color",
+                display_name="Show Color",
+                param_type="boolean",
+                default_value=True,
+                description="Whether the background color is visible "
+                             "(off fills black instead)",
+                required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_set_background_action
+    "set_background": ActionType(
+        name="set_background",
+        display_name="Set Background",
+        description="Set the current room's background image, with tiling "
+                     "and scrolling options",
+        category="Room",
+        icon="🖼️",
+        parameters=[
+            ActionParameter(
+                name="background",
+                display_name="Background",
+                param_type="string",
+                default_value="",
+                description="Background or sprite asset name",
+            ),
+            ActionParameter(
+                name="visible",
+                display_name="Visible",
+                param_type="boolean",
+                default_value=True,
+                description="Show the background",
+                required=False,
+            ),
+            ActionParameter(
+                name="foreground",
+                display_name="Foreground",
+                param_type="boolean",
+                default_value=False,
+                description="Draw in front of instances instead of behind them",
+                required=False,
+            ),
+            ActionParameter(
+                name="tiled_h",
+                display_name="Tile Horizontally",
+                param_type="boolean",
+                default_value=False,
+                description="Repeat the background across the width of the room",
+                required=False,
+            ),
+            ActionParameter(
+                name="tiled_v",
+                display_name="Tile Vertically",
+                param_type="boolean",
+                default_value=False,
+                description="Repeat the background across the height of the room",
+                required=False,
+            ),
+            ActionParameter(
+                name="hspeed",
+                display_name="Horizontal Scroll Speed",
+                param_type="number",
+                default_value=0,
+                description="Horizontal auto-scroll speed in pixels/frame",
+                required=False,
+            ),
+            ActionParameter(
+                name="vspeed",
+                display_name="Vertical Scroll Speed",
+                param_type="number",
+                default_value=0,
+                description="Vertical auto-scroll speed in pixels/frame",
+                required=False,
+            ),
+        ],
+    ),
+
     # Runtime: execute_create_random_instance_action (line 4510)
     "create_random_instance": ActionType(
         name="create_random_instance",
