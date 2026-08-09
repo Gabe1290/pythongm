@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.2] - 2026-08-09
 
-**The format-version guard release.** Ships Task 1 of
-`docs/extension_compat_2_0/PLAN.md` (2.0 extension-system compatibility
-plan) ahead of the rest of that work, because it has a real deadline: it
-needs to exist in a released build *before* any real 2.0-format project
-file exists, so that this and every future patch release can refuse
-(not crash on, not silently resave over) a project newer than they
-understand.
+**The extension-compatibility release.** Ships the concrete, provable
+parts of `docs/extension_compat_2_0/PLAN.md` (2.0 extension-system
+compatibility plan, drafted in a mobile design session): a format-version
+guard shipped first because it has a real deadline (must exist before
+any real 2.0-format project file does), plus two bugs the plan's own
+investigation surfaced in the extension-dependency system that already
+existed in this codebase, plus the first half of Kivy `execute_code`
+environment parity.
 
 ### Added
 - **Project-file format-version guard.** `core/project_format.py`'s
@@ -30,6 +31,32 @@ understand.
   (`core/ide_window.py`'s `_show_load_failure_message`), not a generic
   load-failure message. No project saved by 1.0.0 through 1.1.1 is
   affected — none of them write `format_version` at all.
+- **Unrecognized actions (a disabled or not-installed extension's) are
+  now visually distinct and explain themselves.** The Object Events
+  panel already survived and rendered them, but in the normal action
+  color (looked broken, not intentionally inert) and double-clicking one
+  silently did nothing. Now renders amber with the owning extension named
+  when its manifest is on disk, and double-clicking explains whether the
+  extension is disabled or not installed at all — the action itself is
+  never touched either way.
+- **Kivy `execute_code` now has a working `game` object.** Previously
+  unbound (`NameError` on any `game.*` reference) with no error handling.
+  Now exposes `game.score`/`game.lives`/`game.health` as plain
+  read/write values (matching the desktop runtime's actual semantics —
+  a raw attribute write there doesn't trigger a caption update or
+  `no_more_lives` crossing check either), and an error in the block is
+  caught and logged instead of silently crashing the event.
+
+### Fixed
+- **Resaving a project without one of its extensions installed could
+  silently erase the record that it needed that extension**, even though
+  the extension's actions themselves were untouched and preserved. The
+  dependency manifest (`requires_extensions`) is recomputed from
+  installed extensions on every save; an editor without a given
+  extension has no way to confirm its dependency is still real, so that
+  entry is now kept rather than dropped. Only entries this editor can
+  positively verify are stale (the extension IS installed here and its
+  actions are genuinely no longer used) are still cleaned up.
 
 ## [1.1.1] - 2026-07-14
 
