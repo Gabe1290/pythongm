@@ -5,7 +5,9 @@ UI dialogs for asset management operations
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
-                               QPushButton, QLabel, QMessageBox)
+                               QPushButton, QLabel, QMessageBox, QListWidget,
+                               QListWidgetItem)
+from PySide6.QtCore import Qt
 
 from .asset_utils import validate_asset_name
 
@@ -291,3 +293,142 @@ class CreateAssetDialog(QDialog):
 
         self.asset_name = name
         self.accept()
+
+
+class TrashDialog(QDialog):
+    """Restore or permanently delete soft-deleted assets.
+
+    See utils/asset_trash.py's module docstring for why deleted assets go
+    here instead of a QUndoCommand-based undo/redo — this dialog is the
+    UI half of that decision. Deliberately depends only on asset_manager
+    (list_trash/restore_from_trash/empty_trash), not on the asset tree or
+    project manager directly, so it stays testable without a full IDE
+    window; the caller is responsible for refreshing the tree / saving
+    after a successful restore (see on_restored).
+    """
+
+    def __init__(self, asset_manager, parent=None):
+        super().__init__(parent)
+        self.asset_manager = asset_manager
+        # Called with (asset_type, asset_name, asset_data) after a
+        # successful restore, so the caller can refresh the asset tree
+        # and persist the change. None (the default) means "don't notify".
+        self.on_restored = None
+        self.setup_ui()
+        self.refresh_list()
+
+    def setup_ui(self):
+        self.setWindowTitle(self.tr("Trash"))
+        self.setMinimumSize(480, 360)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        info_label = QLabel(self.tr(
+            "Deleted assets stay here until you permanently remove them."))
+        info_label.setWordWrap(True)
+        layout.addWidget(info_label)
+
+        self.list_widget = QListWidget()
+        self.list_widget.itemSelectionChanged.connect(self._update_button_states)
+        layout.addWidget(self.list_widget)
+
+        self.detail_label = QLabel("")
+        self.detail_label.setWordWrap(True)
+        layout.addWidget(self.detail_label)
+
+        button_layout = QHBoxLayout()
+
+        self.restore_btn = QPushButton(self.tr("Restore"))
+        self.restore_btn.clicked.connect(self._restore_selected)
+        self.restore_btn.setEnabled(False)
+        button_layout.addWidget(self.restore_btn)
+
+        self.delete_btn = QPushButton(self.tr("Delete Permanently"))
+        self.delete_btn.clicked.connect(self._delete_selected)
+        self.delete_btn.setEnabled(False)
+        button_layout.addWidget(self.delete_btn)
+
+        self.empty_btn = QPushButton(self.tr("Empty Trash"))
+        self.empty_btn.clicked.connect(self._empty_all)
+        button_layout.addWidget(self.empty_btn)
+
+        button_layout.addStretch()
+
+        close_btn = QPushButton(self.tr("Close"))
+        close_btn.clicked.connect(self.accept)
+        button_layout.addWidget(close_btn)
+
+        layout.addLayout(button_layout)
+
+    def refresh_list(self):
+        self.list_widget.clear()
+        entries = self.asset_manager.list_trash()
+        for entry in entries:
+            label = self.tr("{0} / {1}  —  deleted {2}").format(
+                entry["asset_type"], entry["asset_name"],
+                entry.get("deleted_at", "")[:19].replace("T", " "))
+            item = QListWidgetItem(label)
+            item.setData(Qt.UserRole, entry)
+            self.list_widget.addItem(item)
+        self.empty_btn.setEnabled(bool(entries))
+        self._update_button_states()
+
+    def _selected_entry(self):
+        item = self.list_widget.currentItem()
+        return item.data(Qt.UserRole) if item else None
+
+    def _update_button_states(self):
+        entry = self._selected_entry()
+        self.restore_btn.setEnabled(entry is not None)
+        self.delete_btn.setEnabled(entry is not None)
+        if entry and entry.get("cleared_references"):
+            names = ", ".join(c["object"] for c in entry["cleared_references"])
+            self.detail_label.setText(self.tr(
+                "Deleting this cleared a reference in: {0}. Restoring "
+                "brings the file back but does not re-link that "
+                "reference automatically.").format(names))
+        else:
+            self.detail_label.setText("")
+
+    def _restore_selected(self):
+        entry = self._selected_entry()
+        if not entry:
+            return
+        asset_data = self.asset_manager.restore_from_trash(entry["id"])
+        if asset_data is None:
+            QMessageBox.warning(
+                self, self.tr("Restore Failed"),
+                self.tr(
+                    "Could not restore '{0}' — an asset with that name "
+                    "already exists. Rename or remove it first, then try "
+                    "again.").format(entry["asset_name"]))
+            return
+        if self.on_restored:
+            self.on_restored(entry["asset_type"], entry["asset_name"], asset_data)
+        self.refresh_list()
+
+    def _delete_selected(self):
+        entry = self._selected_entry()
+        if not entry:
+            return
+        reply = QMessageBox.question(
+            self, self.tr("Delete Permanently"),
+            self.tr(
+                "Permanently delete '{0}'? This cannot be undone."
+            ).format(entry["asset_name"]),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.asset_manager.empty_trash(entry["id"])
+            self.refresh_list()
+
+    def _empty_all(self):
+        reply = QMessageBox.question(
+            self, self.tr("Empty Trash"),
+            self.tr("Permanently delete everything in the trash? This "
+                    "cannot be undone."),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.asset_manager.empty_trash()
+            self.refresh_list()

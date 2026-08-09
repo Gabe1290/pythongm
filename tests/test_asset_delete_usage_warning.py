@@ -93,7 +93,7 @@ def test_delete_of_unused_asset_has_no_usage_note(_qapp):
     assert mock_box.question.called
     message = mock_box.question.call_args[0][2]
     assert "still referenced" not in message
-    assert "permanently remove the asset" in message
+    assert "moved to the project's trash" in message
 
 
 def test_delete_with_no_project_manager_does_not_crash(_qapp):

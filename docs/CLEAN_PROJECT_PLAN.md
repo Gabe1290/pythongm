@@ -1,10 +1,19 @@
 # Plan: Clean Project (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 11)
 
-Status: **scoped 2026-08-09, not implemented.** `TODO.md`'s own note says to
+Status: **scoped 2026-08-09; the deletion-undo blocker is now resolved
+(same day), the rest still not implemented.** `TODO.md`'s own note says to
 scope this *after* Asset Manager, since it overlaps that item's unused-asset
 detection — Asset Manager Tier 1 (`utils/asset_usage.py`, done the same
-session) unblocks this. This doc is the scoping pass; nothing here has code
-yet, deliberately — see "Why nothing shipped this pass" at the end.
+session) unblocked this scoping pass. The "Why nothing shipped this pass"
+section below was written assuming the shared undo-semantics question was
+still open; it was settled the same day (see
+`docs/ASSET_MANAGER_PLAN.md`'s "The bulk-delete-undo question — SETTLED"
+section: a soft-delete Trash, `utils/asset_trash.py`, not a
+`QUndoCommand`-based undo/redo). **Deleting anything through
+`AssetManager.delete_asset` is now trash-backed and restorable**, so the
+specific blocking reason below no longer applies — this item's own
+sub-scope (the `.tmp` sweep, the orphaned-physical-file scan, and their
+deletion UI) is simply not built yet, not blocked.
 
 ## What "Clean Project" actually means (from `TODO.md`)
 
@@ -40,11 +49,15 @@ them.
   break for some export-related workflow before writing this off entirely,
   but the original TODO line looks like it may have conflated "clean this
   dev repo" with "clean a user's saved project."
-- **Unused assets — detection now exists (Asset Manager Tier 1), deletion
-  does not.** `utils.asset_usage.find_unused_assets` reports every asset
-  *entry* (in `project.json`) with zero references. Actually removing
-  them means routing through the existing single-asset delete path per
-  item, which **has no undo** — see "Why nothing shipped this pass" below.
+- **Unused assets — detection exists (Asset Manager Tier 1), and
+  deletion is now safe to route through.** `utils.asset_usage.
+  find_unused_assets` reports every asset *entry* (in `project.json`)
+  with zero references. Actually removing them means routing through the
+  existing single-asset delete path per item — `AssetManager.
+  delete_asset`, which is trash-backed as of the same session (see
+  status note above), so this is now just a UI-building task (a dialog
+  listing unused assets with checkboxes, calling delete per selected
+  item), not a design question.
 - **"Shrink project size" — probably means orphaned PHYSICAL files, a
   different thing from `find_unused_assets`.** A sprite/sound/background
   can be deleted from `project.json` (via the asset tree, or by hand-
@@ -67,36 +80,32 @@ them.
 
 ## Proposed tiers, once this is picked up for real implementation
 
-1. **`.tmp` orphan sweep** — smallest, safest, no design questions. A
-   function that lists `*.tmp` under the project directory older than
-   some threshold (avoid racing an in-flight save) and removes them, with
-   a simple "found N, removed N" report. Good candidate for a "Tools →
-   Clean Project" menu entry that does *only* this to start, rather than
+1. **`.tmp` orphan sweep** — smallest, safest, no design questions
+   (these files were never routed through the asset system at all, so
+   Trash doesn't apply — a `.tmp` file is never the authoritative copy
+   of anything, permanent removal is correct here). A function that
+   lists `*.tmp` under the project directory older than some threshold
+   (avoid racing an in-flight save) and removes them, with a simple
+   "found N, removed N" report. Good candidate for a "Tools → Clean
+   Project" menu entry that does *only* this to start, rather than
    waiting for every other tier.
-2. **Orphaned physical asset files (detection only)** — the "shrink
-   project size" inverse-walk described above. Read-only, matching Tier
-   1's own risk profile (`find_asset_usages`/`find_unused_assets` never
-   delete anything either) — report findings, don't act on them yet.
+2. **Orphaned physical asset files (detection)** — the "shrink project
+   size" inverse-walk described above.
 3. **Deletion UI for both unused project.json entries and orphaned
-   physical files** — gated on deciding undo semantics for bulk/
-   destructive asset operations, which is shared with
-   `docs/ASSET_MANAGER_PLAN.md` Tier 3. Decide that once, for both
-   features, not twice.
+   physical files** — the undo-semantics question that used to gate this
+   is resolved (Trash, shared with `docs/ASSET_MANAGER_PLAN.md` Tier 4);
+   route both through `AssetManager.delete_asset` per item. Pure UI work
+   now: a dialog listing candidates with checkboxes and a delete button.
 
 ## Why nothing shipped this pass
 
-Every sub-scope that's actually safe to build **read-only** (the `.tmp`
-sweep's *detection* half, the orphaned-physical-file scan) is small and
-could ship quickly. But the highest-value pieces of "Clean Project" as
-originally scoped — actually deleting unused assets, actually removing
-orphaned files — are destructive operations against a user's real,
-possibly-unsaved-elsewhere game project, and this repo doesn't yet have
-an answer to "what happens if that goes wrong" (no undo on the existing
-single-asset delete either). Shipping a *detection-only* tier alone,
-without ever wiring it to a delete action, would leave the feature
-looking half-finished — a report with no button to act on it. Better to
-resolve the undo-semantics question once (see Tier 3 above) and build
-detection + deletion together as a coherent unit, than to ship a stub now
-and a real feature later. Flagging this explicitly rather than silently
-deferring it, per this repo's own "stop lying to users" / no half-
-finished-implementations standing preference.
+This session's actual work went into settling the shared blocker (see the
+status note at the top) — the Trash mechanism itself, plus retrofitting
+both real delete paths and single-asset delete's confirmation dialog to
+use it — rather than into this item's own remaining sub-scope (the
+`.tmp` sweep, the orphaned-file scan, their UI). That was a deliberate
+choice: the blocker was shared with Asset Manager Tier 3/4, so resolving
+it once there unblocks both, and doing so first meant this item's actual
+build-out (now unblocked) could start clean in its own session rather
+than being squeezed in alongside the design work. Tiers 1-3 above remain
+open work for whenever this is picked up.

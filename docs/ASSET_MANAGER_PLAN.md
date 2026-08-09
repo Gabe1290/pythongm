@@ -94,26 +94,60 @@ Smaller than it sounds — the tree already has all assets loaded; this is
 a filter-as-you-type box above it, hiding non-matching items. No new data
 model needed. Good next small unit whenever picked up.
 
-## Tier 3 — bulk rename/move/delete (not started, needs its own design pass)
+## The bulk-delete-undo question — SETTLED (2026-08-09)
 
-The most UI-heavy piece: multi-select in the asset tree, a batch operation
-dialog, and — critically — **undo/redo integration**, since a batch delete
-across dozens of assets with no undo would be a real data-loss risk this
-repo's single-asset delete doesn't currently have either (it's also
-not undoable; check whether that's an accepted gap or worth fixing
-alongside bulk delete before building the bulk version on the same
-unsafe foundation). Do not start this without deciding that first.
+Both Tier 3 (bulk delete) and Clean Project's deletion UI
+(`docs/CLEAN_PROJECT_PLAN.md`) were blocked on the same open question:
+what happens when a delete was a mistake? **Decision: not a
+`QUndoCommand`-based undo/redo.** The existing `QUndoStack` usage in this
+codebase (`editors/room_undo_commands.py`,
+`editors/playground_editor/playground_undo_commands.py`, the sprite
+editor) is scoped to live, in-memory canvas edits with no file I/O — an
+undo stack for that is naturally cleared on project switch or app
+restart, exactly when "I didn't mean to delete that" tends to get
+noticed. Asset deletion also touches far more than one in-memory object:
+a `project.json` entry, a physical file, a thumbnail, a side file, and
+cross-references cleared in *other* assets.
 
-## Tier 4 — unused-asset cleanup, deletion side (not started)
+**Implemented instead: a soft-delete Trash**, `utils/asset_trash.py`.
+Deleting an asset moves its files into `<project>/.trash/` and records a
+manifest entry (the full `asset_data`, which files moved where, and any
+cross-references that were cleared) instead of unlinking anything. A new
+"Tools → Restore Deleted Assets..." dialog (`TrashDialog`,
+`widgets/asset_tree/asset_dialogs.py`) lists trash entries with Restore /
+Delete Permanently / Empty Trash. Both real delete paths —
+`core/asset_manager.py`'s `AssetManager.delete_asset` (the live-app path)
+and `widgets/asset_tree/asset_operations.py`'s legacy fallback — route
+through it, so single-asset delete is safer today, not just future bulk
+features. `utils/project_compression.py`'s zip export excludes `.trash/`
+(an unfiltered `rglob('*')` walk would otherwise have bundled deleted
+assets into every export/backup).
 
-Tier 1's `find_unused_assets` already does the *detection*. What's left is
-purely UI: a dialog listing unused assets with checkboxes, "select all
-truly-zero-usage items," and routing selected ones through the existing
-(single-asset, still not undoable) delete path. Small once Tier 1 exists —
-this is intentionally the cheapest remaining tier, held for a future
-session so `docs/DEFERRED_ITEMS_PLAN.md` item 11 (Clean Project) can build
-its own "delete unused files/build artifacts" scope on top of the same
-detection engine rather than duplicating it.
+This resolves the shared blocker for both remaining tiers below — bulk
+delete and Clean Project's cleanup UI can now call
+`AssetManager.delete_asset` per item (or a thin `bulk_delete` wrapper
+around it) and get the same trash safety net for free, with no new
+undo design needed.
+
+## Tier 3 — bulk rename/move/delete (not started; delete's undo question resolved)
+
+The most UI-heavy piece: multi-select in the asset tree and a batch
+operation dialog. The undo/redo design question is now moot — deletes
+already land in Trash regardless of whether they're triggered one at a
+time or as a batch. What's left is purely the multi-select UI and
+looping the existing (now trash-backed) single-asset operations.
+
+## Tier 4 — unused-asset cleanup, deletion side (not started; unblocked)
+
+Tier 1's `find_unused_assets` already does the *detection*, and deletion
+now has a safety net (this session's Trash mechanism, above). What's left
+is purely UI: a dialog listing unused assets with checkboxes, "select all
+truly-zero-usage items," and routing selected ones through
+`AssetManager.delete_asset` (trash-backed) per item. Small once Tier 1
+exists — held for a future session so `docs/CLEAN_PROJECT_PLAN.md` (item
+11) can build its own "delete unused files/build artifacts" scope on top
+of both the detection engine and the trash mechanism, rather than
+duplicating either.
 
 ## Verification
 
@@ -124,3 +158,21 @@ detection engine rather than duplicating it.
   confirmation dialog text includes usage counts when references exist,
   and stays as before (no spurious warning) when an asset truly has zero
   usages.
+- `tests/test_asset_trash.py` (12 tests) — the pure `utils/asset_trash.py`
+  mechanism: move/list/restore/empty, missing files, name-collision
+  refusal on restore, manifest persistence across a reload.
+- `tests/test_asset_manager.py`'s `TestAssetManagerDelete`/
+  `TestAssetManagerTrashWrappers` — `AssetManager.delete_asset` is a real
+  soft delete (restorable, records cleared references), and the
+  `list_trash`/`restore_from_trash`/`empty_trash` wrapper methods.
+- `tests/test_audit_asset_operations_sidefiles.py`'s
+  `test_legacy_fallback_delete_is_also_a_soft_delete` — the second delete
+  path (no `project_manager` attached) is trash-backed too, not just the
+  live-app one.
+- `tests/test_project_compression_trash_exclusion.py` — `.trash/` never
+  ends up inside a zip export.
+- `tests/test_trash_dialog.py` (12 tests) — `TrashDialog`'s listing,
+  restore (including the collision-refusal path), permanent delete, empty
+  all, and the cleared-references detail text; plus
+  `PyGameMakerIDE.show_trash_dialog`'s dispatch (no-project message vs.
+  opening the dialog).

@@ -371,7 +371,10 @@ class AssetManager(QObject):
         return asset_data
 
     def delete_asset(self, asset_type: str, asset_name: str) -> bool:
-        """Delete an asset and its associated files"""
+        """Soft-delete an asset: move its files to .trash/ instead of
+        unlinking them, and record enough in the trash manifest to restore
+        it. See utils/asset_trash.py's module docstring for why this is a
+        trash mechanism rather than a QUndoCommand-based undo/redo."""
         if not self.project_directory:
             return False
 
@@ -380,38 +383,36 @@ class AssetManager(QObject):
             if not asset_data:
                 return False
 
-            # Delete main file
-            if asset_data.get("file_path"):
-                file_path = self.get_absolute_path(asset_data["file_path"])
-                if file_path.exists():
-                    file_path.unlink()
-
-            # Delete thumbnail
-            if asset_data.get("thumbnail"):
-                thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
-                if thumbnail_path.exists():
-                    thumbnail_path.unlink()
-
             # Rooms/objects/playgrounds keep their payload in <type>/<name>.json
-            # side files that file_path doesn't reference. Remove them too: a
-            # stale orphan would resurrect the dead asset's data into any
-            # future asset created with the same name (audit H3; playgrounds
-            # added for M59).
+            # side files that file_path doesn't reference. A stale orphan left
+            # behind would resurrect the dead asset's data into any future
+            # asset created with the same name (audit H3; playgrounds added
+            # for M59) — trash_asset moves it alongside the main file/thumbnail
+            # rather than leaving it on disk.
+            side_file_rel = None
             if asset_type in ("rooms", "objects", "playgrounds"):
                 side_file = self.project_directory / asset_type / f"{asset_name}.json"
                 if side_file.exists():
-                    side_file.unlink()
+                    side_file_rel = f"{asset_type}/{asset_name}.json"
 
             # If deleting a sprite, clear references from objects that use it
+            # (informational only for restore — see asset_trash's docstring
+            # on cleared_references; not auto-relinked).
+            cleared_references = []
             if asset_type == "sprites":
-                self._clear_sprite_references(asset_name)
+                cleared_references = self._clear_sprite_references(asset_name)
+
+            from utils.asset_trash import trash_asset
+            trash_asset(self.project_directory, asset_type, asset_name, asset_data,
+                        side_file_rel=side_file_rel,
+                        cleared_references=cleared_references)
 
             # Remove from cache
             if asset_type in self.assets_cache and asset_name in self.assets_cache[asset_type]:
                 del self.assets_cache[asset_type][asset_name]
 
             self.asset_deleted.emit(asset_type, asset_name)
-            self.status_changed.emit(f"Deleted {asset_name}")
+            self.status_changed.emit(f"Deleted {asset_name} (moved to trash)")
 
             return True
 
@@ -419,19 +420,73 @@ class AssetManager(QObject):
             self.status_changed.emit(f"Failed to delete {asset_name}: {str(e)}")
             return False
 
-    def _clear_sprite_references(self, sprite_name: str) -> None:
-        """Clear references to a sprite from all objects that use it"""
+    def _clear_sprite_references(self, sprite_name: str) -> List[Dict[str, str]]:
+        """Clear references to a sprite from all objects that use it.
+        Returns [{"object": name, "field": "sprite"}, ...] for the trash
+        manifest — informational only, not auto-restored."""
         objects = self.assets_cache.get("objects", {})
-        updated_objects = []
+        cleared = []
 
         for obj_name, obj_data in objects.items():
             if obj_data.get("sprite") == sprite_name:
                 obj_data["sprite"] = ""
-                updated_objects.append(obj_name)
+                cleared.append({"object": obj_name, "field": "sprite"})
                 self.asset_updated.emit("objects", obj_name, obj_data)
 
-        if updated_objects:
-            logger.debug(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
+        if cleared:
+            names = ', '.join(c["object"] for c in cleared)
+            logger.debug(f"🔄 Cleared sprite reference from objects: {names}")
+        return cleared
+
+    def list_trash(self) -> List[Dict[str, Any]]:
+        """Every soft-deleted asset (utils/asset_trash.py), newest first."""
+        if not self.project_directory:
+            return []
+        from utils.asset_trash import list_trash
+        return list_trash(self.project_directory)
+
+    def restore_from_trash(self, trash_id: str) -> Optional[Dict[str, Any]]:
+        """Restore a trashed asset back into the live cache (and its files
+        back onto disk). Returns the restored asset_data (matching
+        import_asset's return convention), or None if the project
+        directory is unset, the trash entry doesn't exist, or a same-named
+        asset already exists at the destination (see
+        utils.asset_trash.restore_asset — it refuses to overwrite rather
+        than silently clobbering).
+
+        Does NOT re-link any references utils/asset_trash.py's
+        cleared_references recorded (e.g. an object's sprite field that
+        was blanked when the sprite was deleted) — that's listed for a
+        human to redo deliberately, not automatic.
+        """
+        if not self.project_directory:
+            return None
+
+        # Look up asset_type/asset_name BEFORE restoring — a successful
+        # restore_asset() call removes the manifest entry, so this
+        # information wouldn't be recoverable from the trash afterward.
+        entry = next((e for e in self.list_trash() if e.get("id") == trash_id), None)
+        if entry is None:
+            return None
+        asset_type, asset_name = entry["asset_type"], entry["asset_name"]
+
+        from utils.asset_trash import restore_asset
+        asset_data = restore_asset(self.project_directory, trash_id)
+        if asset_data is None:
+            return None
+
+        self.assets_cache.setdefault(asset_type, {})[asset_name] = asset_data
+        self.asset_imported.emit(asset_type, asset_name, asset_data)
+        self.status_changed.emit(f"Restored {asset_name} from trash")
+        return asset_data
+
+    def empty_trash(self, trash_id: Optional[str] = None) -> int:
+        """Permanently delete one trash entry (given) or all of them
+        (trash_id=None). Returns the number removed."""
+        if not self.project_directory:
+            return 0
+        from utils.asset_trash import empty_trash
+        return empty_trash(self.project_directory, trash_id)
 
     def rename_asset(self, asset_type: str, old_name: str, new_name: str) -> bool:
         """Rename an asset and update file paths"""
