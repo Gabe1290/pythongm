@@ -144,10 +144,12 @@ discipline as the match3_2/3 and views sessions:
     into the existing single-asset delete confirmation. **The Tier 3
     "bulk-delete-undo" design question is also DONE, same day** (commit
     range starting `feat: soft-delete Trash` — see item 10.5 below): a
-    soft-delete Trash, not a QUndoCommand undo/redo. Tiers 2-4
-    (search/filter; the bulk multi-select UI itself; unused-asset cleanup
-    UI) remain open but are now pure UI-building work, no open design
-    questions.
+    soft-delete Trash, not a QUndoCommand undo/redo. **Tier 2 (search &
+    filter) DONE (2026-08-09)** — `AssetTreeWidget.apply_asset_filter`, a
+    name-substring filter box above the Asset Tree panel; see the plan
+    doc for detail. Tiers 3-4 (the bulk multi-select UI itself;
+    unused-asset cleanup UI) remain open but are now pure UI-building
+    work, no open design questions.
 10.5. **The bulk-delete-undo design question — SETTLED (2026-08-09).**
     Explicitly its own numbered item because it was the shared blocker
     for both item 10 Tier 3 and item 11. Decision: **not**

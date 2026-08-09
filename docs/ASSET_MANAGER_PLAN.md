@@ -1,11 +1,11 @@
 # Plan: Asset Manager (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 10)
 
-Status: **Tier 1 (usage tracking) done, 2026-08-09.** Written the same session
-it's first worked, per this repo's "no small starting subset documented;
-needs its own scoping pass" note — the scoping and the first tier's
-implementation happened together rather than as two sessions, since the
-investigation needed to scope it accurately also produced the design for
-the first tier.
+Status: **Tiers 1 (usage tracking) and 2 (search & filter) done, both
+2026-08-09.** Written the same session it's first worked, per this repo's
+"no small starting subset documented; needs its own scoping pass" note —
+the scoping and the first tier's implementation happened together rather
+than as two sessions, since the investigation needed to scope it
+accurately also produced the design for the first tier.
 
 ## What "Asset Manager" actually means (from `TODO.md`)
 
@@ -87,12 +87,34 @@ references what — that didn't exist at all before this session.
   for a "usage tracking" feature. Documented in the module docstring so a
   future caller doesn't assume 100% recall.
 
-## Tier 2 — search & filter (not started)
+## Tier 2 — search & filter (DONE, 2026-08-09)
 
-Filtering the existing Asset Tree panel by name substring / asset type.
-Smaller than it sounds — the tree already has all assets loaded; this is
-a filter-as-you-type box above it, hiding non-matching items. No new data
-model needed. Good next small unit whenever picked up.
+Filtering the existing Asset Tree panel by name substring. Smaller than it
+sounds, as predicted — the tree already had all assets loaded; this is a
+filter-as-you-type box above it, hiding non-matching items, no new data
+model. `AssetTreeWidget.apply_asset_filter(text)` toggles Qt item
+visibility only (selection/drag-drop/everything else keeps working
+unchanged): matches case-insensitively against each leaf's raw
+`asset_name` (not the displayed text, which carries an emoji/status
+prefix); a category auto-hides once every child is filtered out and
+reappears once one matches; separators hide while a filter is active.
+`core/ide_window.py`'s `create_main_widget` now wraps `self.asset_tree` in
+a small container (`asset_panel`) with a `QLineEdit` (`asset_filter_box`,
+clear-button-enabled) above it, connected via `textChanged` — `self.asset_tree`
+itself is unchanged and still the direct object every existing call site
+references; only the splitter's index-0 child became the wrapper instead
+of the tree directly, so the two width constraints moved onto the wrapper.
+`refresh_from_project` (called on project load, drag-reorder, asset
+add/delete) re-applies whatever filter was active instead of it silently
+resetting on a tree rebuild — the one non-obvious bit, caught by writing
+that regression case first. Asset **type** filtering (mentioned in the
+original TODO wording) was intentionally left out of this cut: substring
+matching against category-grouped names already gets most of the value
+covering it would need a second control (a type dropdown) for a much
+smaller marginal benefit, since the tree is already grouped by category.
+Coverage: `tests/test_asset_tree_filter.py` (7 tests, hand-rolled offscreen
+`QApplication` — no pytest-qt needed, matching this repo's audit-test
+convention). Full suite 2333 → 2340 passed, 0 failed.
 
 ## The bulk-delete-undo question — SETTLED (2026-08-09)
 

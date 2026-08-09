@@ -7,7 +7,7 @@ from pathlib import Path
 from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
                                QSplitter, QMessageBox, QDialog, QFileDialog, QInputDialog,
                                QProgressBar, QLabel, QPushButton, QStyle, QTabWidget,
-                               QToolBar, QApplication)
+                               QToolBar, QApplication, QLineEdit)
 
 from PySide6.QtCore import Qt, QTimer, QSize, QThread
 from PySide6.QtGui import QAction
@@ -1072,15 +1072,28 @@ class PyGameMakerIDE(QMainWindow):
 
         self.main_splitter = QSplitter(Qt.Horizontal)
 
-        # Left panel - Asset tree (unchanged)
+        # Left panel - Asset tree, with a filter box above it
         try:
             self.asset_tree = AssetTreeWidget(self)
         except Exception as e:
             logger.error(f"Failed to create AssetTreeWidget: {e}")
             import traceback
             traceback.print_exc()
-        self.asset_tree.setMinimumWidth(200)
-        self.asset_tree.setMaximumWidth(300)
+
+        asset_panel = QWidget()
+        asset_panel_layout = QVBoxLayout(asset_panel)
+        asset_panel_layout.setContentsMargins(0, 0, 0, 0)
+        asset_panel_layout.setSpacing(2)
+
+        self.asset_filter_box = QLineEdit()
+        self.asset_filter_box.setPlaceholderText(self.tr("Filter assets…"))
+        self.asset_filter_box.setClearButtonEnabled(True)
+        self.asset_filter_box.textChanged.connect(self.asset_tree.apply_asset_filter)
+        asset_panel_layout.addWidget(self.asset_filter_box)
+        asset_panel_layout.addWidget(self.asset_tree)
+
+        asset_panel.setMinimumWidth(200)
+        asset_panel.setMaximumWidth(300)
 
         # Center panel - NEW: Tabbed editors
         center_panel = self.create_center_panel_with_editors()
@@ -1099,7 +1112,7 @@ class PyGameMakerIDE(QMainWindow):
         self.right_panel_stack.setCurrentIndex(0)
 
         # Add panels to main splitter
-        self.main_splitter.addWidget(self.asset_tree)
+        self.main_splitter.addWidget(asset_panel)
         self.main_splitter.addWidget(center_panel)
         self.main_splitter.addWidget(self.right_panel_stack)
 
