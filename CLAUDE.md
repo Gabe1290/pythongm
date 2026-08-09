@@ -1296,3 +1296,132 @@ eyeballing pixels, and treated as closing the item.
   a new language, ja/zh eventually getting their own
   `Tutorials/<lang>/` folders) is new work, not a resumption of this
   queue.
+
+**2026-08-09 — Extension-compat design brief integrated from mobile;
+1.1.2 released; `docs/DEFERRED_ITEMS_PLAN.md` Tier 3 fully worked
+through.** New session, separate arc from the i18n work above. Four
+phases:
+1. **Integrated a mobile design session's brief for a 2.0 extension
+   manifest system** (Thymio/future-3D compatibility guarantees) into
+   `docs/extension_compat_2_0/PLAN.md`, fixing the mobile export's
+   mojibake throughout (including French comment text that hit the
+   exact double-encoding bug this doc's own "accents matter" rule
+   warns about) and re-verifying its prototype's three claimed
+   properties against the real bundled `samples/plateforme_3/
+   project.json` rather than just trusting the phone session's own
+   copy. Logged as a dated `docs/SESSION_NOTES.md` entry. Also cleaned
+   a stale `TODO.md` entry ("migrate ja/pt/zh off the legacy
+   translation set") that had already been fixed by the i18n arc above.
+2. **Tier 0 (`docs/DEFERRED_ITEMS_PLAN.md`): a project-file format-
+   version guard, shipped as v1.1.2** — `core/project_format.py`'s
+   `check_project_format()`, called from `ProjectManager.load_project()`
+   immediately after parsing, refuses (never crashes, never silently
+   resaves over) a project newer than this build understands, with a
+   specific `_show_load_failure_message` dialog rather than a generic
+   one. `tests/test_project_format_guard.py` (13 tests) includes a
+   byte-for-byte on-disk-unchanged assertion after a refused load.
+3. **Tier 3, all four items closed** (done or scoped):
+   - **Item 13 (2.0 extension system feature work) — done, much smaller
+     than drafted.** Investigating before coding (this repo's standing
+     discipline) found `events/plugin_loader.py` already implemented
+     most of it — `requires_extensions`, auto-derived and saved every
+     save, plus disabled/not-installed detection already wired to a
+     warning dialog. Found and fixed a real, confirmed bug in the
+     existing system: `ProjectManager._prepare_project_data_for_save`
+     recomputed `requires_extensions` from scratch every save via
+     `required_extensions_for_project()`, which can only name an
+     extension whose manifest is present **on disk** — so an editor
+     without a given extension installed silently wiped the dependency
+     record on resave, even though the actual unrecognized actions
+     survived untouched. Fixed by unioning the recomputation with any
+     existing entry the current editor can't verify is stale. Also
+     gave unrecognized action tree items a real visual state (amber,
+     the owning extension named via new `plugin_loader.
+     extension_for_action()`) and a real double-click message instead
+     of a silent no-op (`editors/object_editor/object_events_panel.py`).
+     Dropped a misleading "enable the extensions in your config" hint —
+     investigation found no such config UI exists anywhere in the app
+     (`set_extension_enabled()` is defined but never called from any UI
+     code).
+   - **Item 9 (Kivy `execute_code` environment parity) — score/lives/
+     health half done, "locals copied back" half deliberately deferred
+     as its own follow-up.** `execute_code` previously had no `game`
+     name bound at all (`NameError` on any `game.*` reference) and no
+     error wrapping. Fixed by reusing `execute_script`'s existing
+     `_script_game()` helper for `execute_code` too, extended with a
+     real `_ScriptGameProxy` class matching desktop's actual semantics
+     exactly (a raw `game.lives = X` on desktop does **not** trigger a
+     caption update or `no_more_lives` crossing check either — only the
+     `set_lives`/`set_health` ACTIONS do that; the proxy intentionally
+     doesn't add behavior desktop doesn't have). Caught a real bug via
+     this repo's own stub-Kivy execution tests, not just codegen-string/
+     compile checks: `_script_game()` referenced `_ScriptGameProxy`
+     without importing it from `main` (where the class actually lives,
+     per this exporter's established `from main import <name>` lazy-
+     import pattern for `base_object.py` → `main.py` references) — would
+     have been a `NameError` on every `execute_code`/`execute_script`
+     call at runtime. Fixing it required updating 6 pre-existing test
+     files' stub `main` modules (`test_kivy_draw_queue_mouse_export.py`,
+     `test_kivy_match3_2_sound_sprite_export.py`,
+     `test_draw_queue_background_health_bar.py`, `test_kivy_raycast.py`,
+     `test_kivy_views.py`, `test_views_export_parity.py`) to also stub
+     `_ScriptGameProxy`, since `execute_code` now unconditionally needs
+     it. HTML5's matching `game: None` gap was investigated (its
+     architecture — real Pyodide `exec()`, locals already copied back —
+     is much closer to desktop's, likely a smaller fix) but left
+     untouched: fixing it needs a JS refactor of `set_score`/
+     `set_lives`/`set_health`'s crossing-detection logic to be shared
+     between the action-codegen switch and a new patch-application path,
+     and this repo has no way to execute JS in CI to verify a refactor
+     like that.
+   - **Item 10 (Asset Manager) — Tier 1 (usage tracking) done, Tiers
+     2-4 scoped.** `docs/ASSET_MANAGER_PLAN.md` breaks the TODO's four
+     bundled features into tiers after investigating what already
+     existed (single-asset delete had **zero** usage-impact warning —
+     the only auto-cleared reference was sprite→object). New
+     `utils/asset_usage.py`'s `find_asset_usages`/`find_unused_assets`
+     systematically walk every typed action parameter (using
+     `ActionParameter.param_type` metadata rather than a hand-
+     maintained action list), collision targets, room instances/
+     backgrounds/tiles, and object sprite/parent fields; wired into the
+     existing delete confirmation so deleting something still
+     referenced elsewhere is no longer a silent surprise. **Caught a
+     real correctness bug during development, not just at review:**
+     `play_sound` and other plugin actions (`plugins/audio_actions.py`)
+     are invisible to `get_action_type()` until `load_all_plugins()`
+     runs — the exact landmine this doc already documents elsewhere —
+     so without calling it internally, a project's actively-used sounds
+     showed up as "unused." Fixed by calling `load_all_plugins()`
+     inside the module rather than pushing that requirement onto every
+     caller; verified against real sample data
+     (`samples/plateforme_3`), not just a hand-built test case.
+   - **Item 11 (Clean Project) — scoped, not implemented.**
+     `docs/CLEAN_PROJECT_PLAN.md`. Investigation shrank the real scope:
+     rollback-snapshot cleanup already happens automatically
+     (`_sweep_orphan_snapshots`, every load), and the `__pycache__`/
+     `.pyc` workaround in `TODO.md` describes cleaning this dev repo,
+     not a saved game project (which never has importable `.py` files
+     under it — project code lives as strings inside `project.json`).
+     Real remaining scope (a `.tmp`-orphan sweep, an orphaned-physical-
+     asset-file scan distinct from Tier 1's unused-*entry* detection,
+     and deletion UI for both) was deliberately **not** implemented,
+     including the safe read-only detection halves — the valuable parts
+     are destructive operations against a user's real project files
+     with no undo story yet, a question shared with Asset Manager
+     Tier 3 worth resolving once rather than piecemeal.
+4. **Cut the actual `v1.1.2` release** (tag + GitHub Release, not just
+   the version-bump commit) once explicitly asked to — this is
+   deliberately treated as a separate, more consequential step from
+   committing/pushing code, per this doc's own risk-tiering; the
+   CHANGELOG's `[1.1.2]` entry was completed to cover everything that
+   actually shipped under that version (Tier 0 + item 13 + item 9, not
+   just the first thing written when the entry was drafted) before
+   tagging, so the release notes are accurate.
+- Every unit of work this session was its own commit, pushed
+  immediately (10 feature/fix + doc commits total) — full suite held
+  at 2207 → 2286 passed, 0 failed throughout. `docs/DEFERRED_ITEMS_PLAN.md`
+  Tier 3 is now fully worked through: every item is either done or has
+  a written, ready-to-resume scoping doc. The two genuinely open
+  threads for a future session are the Asset Manager Tier 3 / Clean
+  Project bulk-delete-undo design question (shared between both plans)
+  and HTML5's `execute_code` `game` binding.
