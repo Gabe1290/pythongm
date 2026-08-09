@@ -58,16 +58,22 @@ def _is_valid_python(src):
         return False
 
 
+_STUB_HEADER = (
+    "class _C:\n"
+    "    def _script_game(self):\n"
+    "        return None\n"
+    "    def _check_key(self, key):\n"
+    "        return False\n"
+)
+
+
 def _run(method_bodies, **methods_and_bodies):
     """Compile+exec a stub class with one generated method per kwarg
-    (method_name=generated_body) and return an instance. A no-op
-    `_script_game` stands in for the real Kivy proxy — fine for any test
-    whose generated code doesn't reference `game`."""
-    src = (
-        "class _C:\n"
-        "    def _script_game(self):\n"
-        "        return None\n"
-    )
+    (method_name=generated_body) and return an instance. No-op
+    `_script_game`/`_check_key` stand in for the real Kivy GameObject
+    methods — fine for any test whose generated code doesn't reference
+    `game`/`keyboard`."""
+    src = _STUB_HEADER
     for name, body in methods_and_bodies.items():
         src += f"    def {name}(self, other=None):\n{body}\n"
     ns = {}
@@ -131,14 +137,32 @@ def test_math_and_random_resolve_and_work():
     assert inst.roll == 5
 
 
-def test_other_bound_only_in_collision_events():
-    out = _gen("self.hp -= other.damage", event_type="collision_with_obj_enemy")
+def test_keyboard_check_is_wired_to_the_check_key_method():
+    """Codegen-level check: keyboard.check(...)/is_pressed(...) inside
+    execute_code must reach self._check_key (the real held-key lookup
+    lives there — see test_kivy_execute_code_game_proxy.py for a test
+    against the ACTUAL generated implementation, not this stub)."""
+    out = _gen('self.jumped = keyboard.check("space")\n'
+               'self.crouched = keyboard.is_pressed("down")')
     src = (
         "class _C:\n"
         "    def _script_game(self):\n"
         "        return None\n"
+        "    def _check_key(self, key):\n"
+        "        return str(key).lower() == 'space'\n"
         f"    def m(self, other=None):\n{out}\n"
     )
+    ns = {}
+    exec(compile(src, "<gen>", "exec"), ns)
+    inst = ns["_C"]()
+    inst.m()
+    assert inst.jumped is True
+    assert inst.crouched is False
+
+
+def test_other_bound_only_in_collision_events():
+    out = _gen("self.hp -= other.damage", event_type="collision_with_obj_enemy")
+    src = _STUB_HEADER + f"    def m(self, other=None):\n{out}\n"
     ns = {}
     exec(compile(src, "<gen>", "exec"), ns)
     inst = ns["_C"]()

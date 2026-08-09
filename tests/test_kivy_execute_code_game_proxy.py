@@ -28,6 +28,7 @@ import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 
 import json
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -156,6 +157,40 @@ def test_generated_main_still_compiles(exported_main):
 
 def test_generated_base_object_still_compiles(exported_base_object):
     compile(exported_base_object, "base_object.py", "exec")
+
+
+def test_check_key_real_implementation_resolves_keys(exported_base_object):
+    """Extract and exec the REAL generated _KIVY_KEY_NAME_TO_CODE +
+    GameObject._check_key from an actual export (not a re-implemented
+    test double — tests/test_kivy_execute_code_export.py's keyboard test
+    only proves the codegen WIRES keyboard.check() to self._check_key;
+    this proves the real _check_key body itself resolves keys correctly:
+    named keys, the single-letter/digit ord() fallback, case-
+    insensitivity, and "not held"/"unrecognized" both landing on False."""
+    key_map_match = re.search(
+        r"_KIVY_KEY_NAME_TO_CODE = dict\(.*\)", exported_base_object)
+    assert key_map_match, "key map line not found in generated base_object.py"
+
+    method_match = re.search(
+        r"    def _check_key\(self, key\):.*?\n(?=    def )",
+        exported_base_object, re.DOTALL)
+    assert method_match, "_check_key method not found in generated base_object.py"
+
+    ns = {}
+    exec(compile(key_map_match.group(0), "<key_map>", "exec"), ns)
+    exec(compile("class _S:\n" + method_match.group(0), "<check_key>", "exec"), ns)
+
+    inst = ns["_S"]()
+    inst.scene = type("Scene", (), {"keys_pressed": {32: True, 273: True, 97: True}})()
+
+    assert inst._check_key("space") is True    # named key, held
+    assert inst._check_key("SPACE") is True    # case-insensitive
+    assert inst._check_key("up") is True       # named key, held
+    assert inst._check_key("down") is False    # named key, not held
+    assert inst._check_key("return") is False  # named key (code 13), not held
+    assert inst._check_key("a") is True        # single-letter ord() fallback, held
+    assert inst._check_key("b") is False       # single-letter ord() fallback, not held
+    assert inst._check_key("not_a_real_key") is False  # unrecognized -> False, no crash
 
 
 def test_proxy_matches_desktop_no_side_effect_semantics(exported_main):

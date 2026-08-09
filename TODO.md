@@ -611,19 +611,33 @@ Other:
     covers (for-loop targets, `with...as`, tuple unpacking, augmented
     assignment) to get full parity. See `docs/DEFERRED_ITEMS_PLAN.md`
     item 9.
-  - **Still open, a separate/adjacent gap this pass didn't touch:**
-    `keyboard` still isn't bound in Kivy's execute_code namespace (a bare
-    `keyboard.check(...)` reference raises `NameError`) — desktop's
-    `_ExecKeyboard` reads `instance.keys_pressed` (a set of lowercase key
-    name strings); Kivy's generated objects track held keys differently
-    (`self.scene.keys_pressed` keyed by raw keycode int, used by the grid-
-    movement codegen), so wiring this needs a small adapter, not just
-    copying desktop's class verbatim. Also still open: `execute_script`
-    has the identical "still inlined literally, locals not copied back"
-    gap `execute_code` just had, plus is *also* missing an `other`
-    binding entirely (desktop's `execute_execute_script_action` binds it;
-    Kivy's `execute_script` codegen branch never did) — a natural
-    follow-up applying the same `execute_code` fix pattern.
+  - **Both adjacent follow-up gaps also DONE, same day.** `keyboard` is
+    now bound in Kivy's `execute_code`/`execute_script` namespaces via a
+    new `GameObject._check_key(key)` method (`kivy_exporter.py`'s
+    `_generate_base_object`): resolves a key name to a Kivy keycode
+    (arrows/space/enter/escape/backspace/tab by name, single letters/
+    digits via `ord()`) and checks it against `self.scene.keys_pressed`
+    (keyed by raw keycode int — different from desktop's per-instance
+    set of lowercase name strings, so this is a real adapter, not a
+    ported copy). The name→keycode table is single-sourced from
+    `code_generator.py`'s `_KIVY_KEY_NAME_TO_CODE` (also now what
+    `if_key_pressed`'s condition codegen uses, replacing its own inline
+    copy) and embedded into the generated file via a `.format()` value
+    substitution, not hand-duplicated. `execute_script` got the identical
+    exec()-based rewrite `execute_code` did, plus the `other`/`keyboard`
+    bindings it was missing entirely. A real bug surfaced and was fixed
+    along the way: the new template comment explaining the `.format()`
+    substitution originally *wrote the placeholder name in brace form*,
+    and `.format()` replaced that occurrence too, garbling the emitted
+    comment — caught by reading the actual generated output, not by any
+    test (now documented as a landmine in the comment itself). Coverage:
+    `tests/test_kivy_execute_script_export.py` (new, 12 tests, mirrors
+    `test_kivy_execute_code_export.py`'s real-execution pattern) plus
+    additions to `test_kivy_execute_code_export.py` and
+    `test_kivy_execute_code_game_proxy.py` (the latter execs the REAL
+    generated `_check_key`/`_KIVY_KEY_NAME_TO_CODE` from an actual
+    export, not a re-implemented stub). Full suite 2411 → 2425 passed,
+    0 failed.
   - A real on-device/buildozer end-to-end test still doesn't exist
     (`test_android_export_cleanup.py` mocks the build); the stub-kivy
     execution test above covers logic, not the actual Kivy/GL layer.

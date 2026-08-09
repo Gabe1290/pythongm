@@ -11,7 +11,7 @@ from typing import Dict, List, Any
 from core.logger import get_logger
 logger = get_logger(__name__)
 
-from export.Kivy.code_generator import ActionCodeGenerator
+from export.Kivy.code_generator import ActionCodeGenerator, _KIVY_KEY_NAME_TO_CODE
 
 
 def _bg_color_to_rgb(value) -> tuple:
@@ -2572,6 +2572,23 @@ except Exception:
     SOUND_PATHS = {{}}
     BACKGROUND_PATHS = {{}}
 
+# Named-key -> Kivy keycode, shared by execute_code/execute_script's
+# `keyboard` binding (GameObject._check_key below) and the if_key_pressed
+# condition codegen (export/Kivy/code_generator.py's _KIVY_KEY_NAME_TO_CODE).
+# The dict(...) call below is filled in by a .format() value substitution
+# (see _generate_base_object's code.format() call) from that same module-
+# level table at export time -- single-sourced, not a hand-maintained
+# second copy. NOTE for future edits: don't write the substitution
+# placeholder's name in this comment literally in brace form -- .format()
+# replaces EVERY occurrence of a given placeholder in the whole template,
+# comments included, which once produced a garbled comment here (a real
+# bug caught by reading the generated output, not by any test). A literal
+# {{}}/{{...}} dict would also need its own braces doubled to survive
+# .format(); dict([...]) sidesteps that entirely since [] needs no
+# escaping, and unlike dict(...) kwarg syntax it can hold a key like
+# 'return' that's a reserved word.
+_KIVY_KEY_NAME_TO_CODE = dict({key_map_items})
+
 
 class GameObject(Widget):
     """Base class for all game objects - GAMEMAKER 7.0 COMPATIBLE"""
@@ -3202,6 +3219,27 @@ class GameObject(Widget):
         from main import _ScriptGameProxy
         return _ScriptGameProxy()
 
+    def _check_key(self, key):
+        """`keyboard.check(key)`/`keyboard.is_pressed(key)` binding for
+        execute_code/execute_script — mirrors the desktop runtime's
+        _ExecKeyboard (runtime/action_executor.py's execute_execute_code_
+        action), which reads instance.keys_pressed (a per-instance SET of
+        lowercase key-name strings). Kivy tracks held keys differently —
+        self.scene.keys_pressed is a dict keyed by raw Kivy keycode int
+        (see if_key_pressed's codegen) — so this adapts between the two:
+        resolve the name to a keycode via the shared _KIVY_KEY_NAME_TO_CODE
+        table (arrows/space/enter/escape/backspace/tab by name, single
+        letters/digits via ord()), then check it against the scene's
+        held-key dict. Returns False for an unrecognized key name rather
+        than raising, matching a key that simply isn't held."""
+        k = str(key).lower()
+        code = _KIVY_KEY_NAME_TO_CODE.get(k)
+        if code is None and len(k) == 1 and (k.isalpha() or k.isdigit()):
+            code = ord(k)
+        if code is None:
+            return False
+        return bool(self.scene.keys_pressed.get(code, False))
+
     def jump_to_start(self):
         """Reset to the spawn position, mirroring execute_jump_to_start."""
         self.x = self.xstart
@@ -3488,7 +3526,10 @@ class GameObject(Widget):
 '''
 
         # Format the template with actual values
-        code_formatted = code.format(grid_size=self.grid_size)
+        code_formatted = code.format(
+            grid_size=self.grid_size,
+            key_map_items=repr(list(_KIVY_KEY_NAME_TO_CODE.items())),
+        )
         code_formatted = self._inject_extension_base_code(code_formatted)
 
         output_file = self.output_path / "game" / "objects" / "base_object.py"
