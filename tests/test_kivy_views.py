@@ -245,6 +245,17 @@ class _WindowCls:
         pass
 
 
+class _StubScriptGameProxy:
+    """Stand-in for the real main._ScriptGameProxy — execute_code/
+    execute_script now unconditionally bind `game = self._script_game()`,
+    which imports this name from `main`, so any object with either action
+    needs it even if the exercised code never reads game.score/lives/
+    health."""
+    score = 0
+    lives = 3
+    health = 100
+
+
 @contextmanager
 def _stub_kivy_env(game_dir: Path):
     saved_path = list(sys.path)
@@ -268,7 +279,7 @@ def _stub_kivy_env(game_dir: Path):
         mod("kivy.core.window", Window=_WindowCls())
         mod("kivy.core.image", Image=object)
         mod("kivy.core.text", Label=_CoreLabel)
-        mod("main", get_game_app=lambda: None)
+        mod("main", get_game_app=lambda: None, _ScriptGameProxy=_StubScriptGameProxy)
         for name in [n for n in sys.modules
                      if n == "utils" or n.startswith(("utils.", "scenes", "objects"))]:
             del sys.modules[name]
