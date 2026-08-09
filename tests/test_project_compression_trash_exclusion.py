@@ -30,6 +30,31 @@ def test_trash_contents_excluded_from_zip(tmp_path):
         f".trash contents leaked into export: {names}")
 
 
+def test_orphaned_file_trash_contents_excluded_from_zip(tmp_path):
+    """.trash_orphaned_files/ (utils/project_cleanup.py, Clean Project
+    Tier 3) is a second, deliberately separate trash store from .trash/ —
+    see project_cleanup.py's module docstring for why — so it needs its
+    own exclusion, not just a coincidental match on the ".trash" name
+    prefix the sibling test above happens to also catch it under."""
+    proj = tmp_path / "proj"
+    proj.mkdir()
+    (proj / "project.json").write_text('{"name": "p"}', encoding="utf-8")
+    orphan_trash_dir = proj / ".trash_orphaned_files" / "spr_old__abc123"
+    orphan_trash_dir.mkdir(parents=True)
+    (orphan_trash_dir / "spr_old.png").write_bytes(b"orphaned sprite bytes")
+    (proj / ".trash_orphaned_files" / "manifest.json").write_text("[]", encoding="utf-8")
+
+    zip_path = tmp_path / "out.zip"
+    assert ProjectCompressor.compress_project(proj, zip_path) is True
+
+    with zipfile.ZipFile(zip_path) as z:
+        names = z.namelist()
+
+    assert "project.json" in names
+    assert not any(n.startswith(".trash_orphaned_files") for n in names), (
+        f".trash_orphaned_files contents leaked into export: {names}")
+
+
 def test_ordinary_files_still_included(tmp_path):
     proj = tmp_path / "proj"
     (proj / "sprites").mkdir(parents=True)

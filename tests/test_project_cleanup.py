@@ -7,7 +7,8 @@ import time
 from pathlib import Path
 
 from utils.project_cleanup import (
-    find_orphan_tmp_files, sweep_orphan_tmp_files, find_orphaned_physical_files)
+    find_orphan_tmp_files, sweep_orphan_tmp_files, find_orphaned_physical_files,
+    trash_orphaned_file, list_orphan_trash, restore_orphaned_file, empty_orphan_trash)
 
 
 def _age_file(path: Path, seconds_old: int):
@@ -190,3 +191,97 @@ class TestFindOrphanedPhysicalFiles:
         orphaned = find_orphaned_physical_files(tmp_path, {})
 
         assert orphaned == {"sprites": [tmp_path / "sprites" / "spr_orphan.png"]}
+
+
+class TestOrphanFileTrash:
+    def test_trash_moves_file_and_records_manifest_entry(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        f = tmp_path / "sprites" / "spr_leftover.png"
+        f.write_bytes(b"png")
+
+        entry_id = trash_orphaned_file(tmp_path, "sprites/spr_leftover.png")
+
+        assert entry_id is not None
+        assert not f.exists()
+        entries = list_orphan_trash(tmp_path)
+        assert len(entries) == 1
+        assert entries[0]["relative_path"] == "sprites/spr_leftover.png"
+        assert entries[0]["id"] == entry_id
+
+    def test_trash_missing_file_returns_none(self, tmp_path):
+        assert trash_orphaned_file(tmp_path, "sprites/does_not_exist.png") is None
+        assert list_orphan_trash(tmp_path) == []
+
+    def test_restore_moves_file_back(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        f = tmp_path / "sprites" / "spr_leftover.png"
+        f.write_bytes(b"png")
+        entry_id = trash_orphaned_file(tmp_path, "sprites/spr_leftover.png")
+
+        restored_rel = restore_orphaned_file(tmp_path, entry_id)
+
+        assert restored_rel == "sprites/spr_leftover.png"
+        assert f.exists()
+        assert f.read_bytes() == b"png"
+        assert list_orphan_trash(tmp_path) == []
+
+    def test_restore_refuses_to_overwrite_existing_file(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        f = tmp_path / "sprites" / "spr_leftover.png"
+        f.write_bytes(b"original")
+        entry_id = trash_orphaned_file(tmp_path, "sprites/spr_leftover.png")
+        # Something new was created at the same path after the trash.
+        f.write_bytes(b"new file")
+
+        restored_rel = restore_orphaned_file(tmp_path, entry_id)
+
+        assert restored_rel is None
+        assert f.read_bytes() == b"new file"
+        # Entry stays in the trash since nothing was lost.
+        assert len(list_orphan_trash(tmp_path)) == 1
+
+    def test_restore_unknown_id_returns_none(self, tmp_path):
+        assert restore_orphaned_file(tmp_path, "does-not-exist") is None
+
+    def test_empty_trash_removes_one_entry(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        f1 = tmp_path / "sprites" / "spr_a.png"
+        f2 = tmp_path / "sprites" / "spr_b.png"
+        f1.write_bytes(b"a")
+        f2.write_bytes(b"b")
+        id1 = trash_orphaned_file(tmp_path, "sprites/spr_a.png")
+        trash_orphaned_file(tmp_path, "sprites/spr_b.png")
+
+        removed = empty_orphan_trash(tmp_path, id1)
+
+        assert removed == 1
+        entries = list_orphan_trash(tmp_path)
+        assert len(entries) == 1
+        assert entries[0]["relative_path"] == "sprites/spr_b.png"
+
+    def test_empty_trash_all_removes_everything(self, tmp_path):
+        (tmp_path / "sprites").mkdir()
+        f1 = tmp_path / "sprites" / "spr_a.png"
+        f2 = tmp_path / "sprites" / "spr_b.png"
+        f1.write_bytes(b"a")
+        f2.write_bytes(b"b")
+        trash_orphaned_file(tmp_path, "sprites/spr_a.png")
+        trash_orphaned_file(tmp_path, "sprites/spr_b.png")
+
+        removed = empty_orphan_trash(tmp_path)
+
+        assert removed == 2
+        assert list_orphan_trash(tmp_path) == []
+
+    def test_orphan_trash_is_isolated_from_asset_trash(self, tmp_path):
+        """Orphaned-file entries must never show up in the regular asset
+        Trash manifest — mixing them risks AssetManager.restore_from_trash
+        planting a fake asset_cache entry on restore (see the module
+        docstring)."""
+        (tmp_path / "sprites").mkdir()
+        f = tmp_path / "sprites" / "spr_leftover.png"
+        f.write_bytes(b"png")
+        trash_orphaned_file(tmp_path, "sprites/spr_leftover.png")
+
+        from utils.asset_trash import list_trash
+        assert list_trash(tmp_path) == []

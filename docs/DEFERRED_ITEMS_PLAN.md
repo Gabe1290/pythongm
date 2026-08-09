@@ -171,17 +171,21 @@ discipline as the match3_2/3 and views sessions:
     `test_asset_trash.py`, `test_trash_dialog.py`, and additions to
     `test_asset_manager.py`/`test_audit_asset_operations_sidefiles.py`/
     `test_project_compression_trash_exclusion.py`.
-11. **Clean Project** — ✅ **Scoped (2026-08-09); Tier 1 done the same
-    day.** `docs/CLEAN_PROJECT_PLAN.md`. Two findings shrank the real
-    scope: rollback-snapshot cleanup already happens automatically
+11. **Clean Project** — ✅ **DONE (2026-08-09), all 3 tiers.**
+    `docs/CLEAN_PROJECT_PLAN.md` is fully closed. Two findings shrank the
+    real scope: rollback-snapshot cleanup already happens automatically
     (`_sweep_orphan_snapshots`, every load), and the `__pycache__`/`.pyc`
     workaround describes cleaning this dev repo, not a saved game project
-    (which never has importable `.py` files under it). **Tier 1 (`.tmp`
-    orphan sweep) and Tier 2 (orphaned-physical-file detection) shipped**
-    — `utils/project_cleanup.py`; Tier 1 wired up as Tools → Clean
-    Project, Tier 2 is detection-only so far (no UI). Only **Tier 3**
-    (deletion UI for what Tier 2 finds) remains open — pure UI-building
-    work, no open design questions.
+    (which never has importable `.py` files under it). `utils/
+    project_cleanup.py`: Tier 1 (`.tmp` orphan sweep, permanent removal,
+    Tools → Clean Project), Tier 2 (orphaned-physical-file detection,
+    the inverse of Asset Manager's unused-*entry* detection), Tier 3
+    (`OrphanedFilesDialog`, Tools → Find Orphaned Files…, trashed via a
+    **second, deliberately separate** trash store —
+    `.trash_orphaned_files/`, not `.trash/` — since these files have no
+    project.json entry for `AssetManager.delete_asset`/its restore path
+    to operate on; see the plan doc for the concrete bug that sharing the
+    store would have caused).
 13. **2.0 extension system — the feature work.** ✅ **DONE (2026-08-09,
     commit `4c50485`)** for everything with a concrete, provable fix.
     Tasks 2-4 of `docs/extension_compat_2_0/PLAN.md` turned out much

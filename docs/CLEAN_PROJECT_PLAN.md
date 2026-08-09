@@ -1,11 +1,7 @@
 # Plan: Clean Project (`TODO.md` / `docs/DEFERRED_ITEMS_PLAN.md` item 11)
 
-Status: **Tiers 1 (`.tmp` orphan sweep) and 2 (orphaned physical file
-detection) DONE, both 2026-08-09.** Only **Tier 3** (deletion UI for the
-files Tier 2 finds) remains open — Tier 1's own deletion is already UI'd
-(Tools → Clean Project) and unused-*entry* deletion already shipped as
-Asset Manager Tier 4, so what's left is specifically surfacing Tier 2's
-findings with a delete button. `TODO.md`'s own note says to
+Status: **All three tiers DONE, all 2026-08-09.** `docs/CLEAN_PROJECT_PLAN.md`
+is now fully closed. `TODO.md`'s own note says to
 scope this *after* Asset Manager, since it overlaps that item's unused-asset
 detection — Asset Manager Tier 1 (`utils/asset_usage.py`, done the same
 session) unblocked this scoping pass. The "Why nothing shipped this pass"
@@ -118,14 +114,32 @@ them.
    yet, that's Tier 3. Coverage: 10 more tests added to
    `tests/test_project_cleanup.py` (18 total in that file). Full suite
    2367 → 2375 passed, 0 failed.
-3. **Deletion UI for orphaned physical files** — the undo-semantics
-   question that used to gate this is resolved (Trash, shared with
-   `docs/ASSET_MANAGER_PLAN.md` Tier 4); route through
-   `AssetManager.delete_asset`-style trashing per file (note: these files
-   have no *asset* entry to delete, just a physical file — trashing them
-   needs a small variant, not a literal `delete_asset` call, since that
-   method operates on a named project.json entry). Not started; only
-   remaining open item in this plan.
+3. **Deletion UI for orphaned physical files — DONE (2026-08-09).**
+   `widgets/asset_tree/asset_dialogs.OrphanedFilesDialog` (Tools → Find
+   Orphaned Files…): lists Tier 2's findings with checkboxes, "Move
+   Selected to Trash," plus a second panel listing this feature's own
+   trash (Restore / Delete Permanently / Empty), all in one window.
+   **Confirmed the note above was right to flag this**: these files have
+   no project.json entry, so `AssetManager.delete_asset` doesn't apply.
+   Went further than "a small variant" — built a genuinely **separate**
+   trash mechanism (`utils/project_cleanup.py`'s `trash_orphaned_file`/
+   `list_orphan_trash`/`restore_orphaned_file`/`empty_orphan_trash`,
+   backed by its own `.trash_orphaned_files/` + manifest, not
+   `utils/asset_trash.py`'s `.trash/`) after tracing through what reusing
+   the shared one would actually do: `AssetManager.restore_from_trash`
+   unconditionally does `assets_cache.setdefault(asset_type, {})
+   [asset_name] = asset_data` on restore — reusing it for a bare file
+   would plant a fake `"orphaned_files"` category into the live project
+   the next time anything saved, and would surface these entries in the
+   *general* "Restore Deleted Assets" dialog whose Restore button goes
+   through that exact method. A second, smaller, asset-model-free store
+   sidesteps both. `.trash_orphaned_files/` also excluded from zip
+   export, same reasoning as `.trash/`. Coverage:
+   `tests/test_project_cleanup.py` (8 more tests for the new trash
+   functions, 26 total in that file, incl. one pinning the isolation from
+   `utils/asset_trash.py`'s store), `tests/test_orphaned_files_dialog.py`
+   (14 tests), `tests/test_project_compression_trash_exclusion.py` (1
+   more test). Full suite 2375 → 2398 passed, 0 failed.
 
 ## Why nothing shipped this pass
 
