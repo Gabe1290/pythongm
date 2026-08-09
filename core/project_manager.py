@@ -11,6 +11,7 @@ from PySide6.QtCore import QObject, Signal, QTimer
 
 from utils.project_compression import ProjectCompressor
 from utils.project_file_merge import merge_room_file, merge_object_file
+from core.project_format import check_project_format, ProjectTooNewError
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -121,6 +122,12 @@ class ProjectManager(QObject):
         self.current_project_path = None
         self.current_project_data = {}
         self.is_dirty_flag = False
+        # Set by load_project() when it refuses a project whose
+        # format_version is newer than this build supports, so the UI layer
+        # can show a specific "needs a newer PyGameMaker" message instead of
+        # a generic load failure. None after any other outcome (success or
+        # unrelated failure).
+        self.last_load_format_error = None
 
         # Asset manager integration
         self.asset_manager = asset_manager
@@ -259,6 +266,7 @@ class ProjectManager(QObject):
 
     def load_project(self, project_path: Path) -> bool:
         """Load an existing project (compatibility method)"""
+        self.last_load_format_error = None
         try:
             project_path = Path(project_path)
 
@@ -272,6 +280,22 @@ class ProjectManager(QObject):
             with open(project_file, 'r', encoding='utf-8') as f:
                 from collections import OrderedDict
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
+
+            # Format-version guard — must run immediately after parsing,
+            # before any further processing (asset-file merges, migration,
+            # validation) could touch a project this build doesn't fully
+            # understand and later resave over it, stripping fields it
+            # doesn't recognize. A too-new project is refused outright, not
+            # silently degraded.
+            try:
+                check_project_format(project_data)
+            except ProjectTooNewError as e:
+                self.last_load_format_error = e.fmt
+                self.status_changed.emit(
+                    f"This project needs a newer version of PyGameMaker "
+                    f"(format {e.fmt[0]}.{e.fmt[1]})"
+                )
+                return False
 
             # Load asset data from separate files if they exist
             self._load_rooms_from_files(project_path, project_data)

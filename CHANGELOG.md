@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-08-09
+
+**The format-version guard release.** Ships Task 1 of
+`docs/extension_compat_2_0/PLAN.md` (2.0 extension-system compatibility
+plan) ahead of the rest of that work, because it has a real deadline: it
+needs to exist in a released build *before* any real 2.0-format project
+file exists, so that this and every future patch release can refuse
+(not crash on, not silently resave over) a project newer than they
+understand.
+
+### Added
+- **Project-file format-version guard.** `core/project_format.py`'s
+  `check_project_format()` reads a project's `format_version` field
+  (absent means 1.0-era — unchanged behavior for every project saved so
+  far) and raises `ProjectTooNewError` if it's newer than this build
+  supports. `ProjectManager.load_project()` calls it immediately after
+  parsing the file, before any further processing (asset-file merges,
+  legacy-action migration) could touch data this build doesn't fully
+  understand — a too-new project is refused outright, with a specific
+  "This project was made with a newer version of PyGameMaker" dialog
+  (`core/ide_window.py`'s `_show_load_failure_message`), not a generic
+  load-failure message. No project saved by 1.0.0 through 1.1.1 is
+  affected — none of them write `format_version` at all.
+
 ## [1.1.1] - 2026-07-14
 
 **The export-audit release.** An adversarial code review of the entire
