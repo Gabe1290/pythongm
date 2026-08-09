@@ -132,13 +132,21 @@ discipline as the match3_2/3 and views sessions:
    `TODO.md`'s HTML5 section.
 10. **Asset Manager** (`Tools → Asset Manager...`) — bulk rename/move/
     delete, usage tracking ("which rooms/objects use this sprite?"),
-    unused-asset cleanup. No small starting subset documented; needs its
-    own scoping pass before estimating.
+    unused-asset cleanup. **Scoped 2026-08-09**:
+    `docs/ASSET_MANAGER_PLAN.md` breaks it into 4 tiers. **Tier 1 (usage
+    tracking) DONE, same session** (commit `07a0d8a`) —
+    `utils/asset_usage.py`, wired into the existing single-asset delete
+    confirmation so deleting something still referenced elsewhere is no
+    longer a silent surprise. Tiers 2-4 (search/filter; bulk rename/move/
+    delete — needs its own design pass, see the plan; unused-asset
+    cleanup UI) remain open, each independently small once picked up.
 11. **Clean Project** — scope is genuinely vague in `TODO.md` ("remove
     temporary files, delete unused assets, clean build artifacts") and
-    overlaps with #10's unused-asset detection. Worth scoping *after*
-    Asset Manager, not before — building unused-asset detection twice
-    would be wasted work.
+    overlaps with Asset Manager's unused-asset detection — which now
+    exists (`utils/asset_usage.find_unused_assets`, item 10 Tier 1), so
+    this is unblocked to build its own scope on top of it rather than
+    duplicate it. Still needs its own scoping pass for the "temp files /
+    build artifacts" half, which usage tracking doesn't cover.
 13. **2.0 extension system — the feature work.** ✅ **DONE (2026-08-09,
     commit `4c50485`)** for everything with a concrete, provable fix.
     Tasks 2-4 of `docs/extension_compat_2_0/PLAN.md` turned out much
