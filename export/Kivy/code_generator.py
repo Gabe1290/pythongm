@@ -34,6 +34,19 @@ _EXPR_GLOBAL_MAP = {
     'room_height': 'self.scene.height',
 }
 
+# Named-key -> Kivy keycode. The single source of truth for both
+# if_key_pressed's condition codegen below (needs the keycode baked in as a
+# literal INT at export time) and GameObject._check_key's `keyboard.check()`
+# binding for execute_code/execute_script (kivy_exporter.py's
+# _generate_base_object imports this dict and embeds a repr() of its items
+# into the generated base_object.py at export time — not a hand-maintained
+# second copy).
+_KIVY_KEY_NAME_TO_CODE = {
+    'right': 275, 'left': 276, 'up': 273, 'down': 274,
+    'space': 32, 'enter': 13, 'return': 13, 'escape': 27,
+    'backspace': 8, 'tab': 9,
+}
+
 
 class _SelfNameResolver(ast.NodeTransformer):
     """Rewrite bare instance/custom variable names in an author expression to
@@ -480,11 +493,8 @@ class ActionCodeGenerator:
             # event simply never fires — the old fallback of '275' made EVERY
             # non-arrow key trigger on the RIGHT arrow.
             key = str(params.get('key', 'right')).lower()
-            key_map = {'right': 275, 'left': 276, 'up': 273, 'down': 274,
-                       'space': 32, 'enter': 13, 'return': 13, 'escape': 27,
-                       'backspace': 8, 'tab': 9}
-            if key in key_map:
-                key_code = key_map[key]
+            if key in _KIVY_KEY_NAME_TO_CODE:
+                key_code = _KIVY_KEY_NAME_TO_CODE[key]
             elif len(key) == 1 and (key.isalpha() or key.isdigit()):
                 key_code = ord(key)
             else:
@@ -746,10 +756,21 @@ class ActionCodeGenerator:
             # propagating up and potentially crashing the event.
             self.add_line('try:')
             self.push_indent()
-            self.add_line('import math, random')
+            self.add_line('import math, random, types')
+            # `keyboard.check("space")`/`.is_pressed(...)` — bound via
+            # GameObject._check_key (base_object.py), which adapts between
+            # this format's scene.keys_pressed (dict keyed by raw Kivy
+            # keycode) and the name-based lookup desktop's _ExecKeyboard
+            # exposes. types.SimpleNamespace(check=..., is_pressed=...)
+            # rather than a class so no new type needs defining per call.
+            self.add_line(
+                '_exec_keyboard = types.SimpleNamespace('
+                'check=self._check_key, is_pressed=self._check_key)'
+            )
             self.add_line(
                 '_exec_globals = {"self": self, "instance": self, '
-                f'"other": {other_expr}, "game": game, "math": math, '
+                f'"other": {other_expr}, "game": game, '
+                '"keyboard": _exec_keyboard, "math": math, '
                 '"random": random, "__builtins__": __builtins__}'
             )
             self.add_line('_exec_locals = {}')
@@ -773,12 +794,17 @@ class ActionCodeGenerator:
             return
 
         elif action_type in ('execute_script', 'script'):
-            # Inline a project script's body (mirrors execute_execute_script_action,
-            # which resolves it from assets.scripts). The body is bound the same
-            # way — instance/self/game/argument0-4, plus math/random — and wrapped
-            # so an unsupported `game.*` call fails LOUDLY (a logged message) rather
-            # than silently doing nothing (the whole point of surfacing this) or
-            # crashing the event. self.scripts is the {name: code} map.
+            # Run a project script's body (self.scripts is the {name: code}
+            # map) via a real exec() call at runtime, mirroring the desktop
+            # runtime's execute_execute_script_action and execute_code's own
+            # Kivy fix just above (same root cause: literal inlining lost
+            # "locals copied back onto the instance"; this branch ALSO never
+            # bound `other` or `keyboard` at all, unlike desktop). argument0-4
+            # are still resolved to real Python expressions at export time
+            # (via _resolve_instance_names, so a bare instance-var reference
+            # in an argument value keeps working) and passed into exec()'s
+            # globals as already-computed values rather than embedded into
+            # the exec'd string itself.
             script_name = str(params.get('script', '') or '')
             sdata = self.scripts.get(script_name)
             code = sdata.get('code', '') if isinstance(sdata, dict) else (sdata or '')
@@ -788,18 +814,46 @@ class ActionCodeGenerator:
                 self.add_line('pass')
                 self._complete_unit()
                 return
-            self.add_line('import random, math  # noqa: F401 (script may use them)')
+            is_collision = event_type == 'collision' or event_type.startswith('collision_with_')
+            other_expr = 'other' if is_collision else 'None'
+            argument_count = 0
             for i in range(5):
                 argv = params.get(f'arg{i}', '')
                 if str(argv).strip() in ('', 'None'):
                     self.add_line(f'argument{i} = None')
                 else:
                     self.add_line(f'argument{i} = {_resolve_instance_names(str(argv))}')
+                    argument_count += 1
             self.add_line('instance = self')
             self.add_line('game = self._script_game()')
             self.add_line('try:')
             self.push_indent()
-            self.add_line(str(code))
+            self.add_line('import math, random, types')
+            self.add_line(
+                '_exec_keyboard = types.SimpleNamespace('
+                'check=self._check_key, is_pressed=self._check_key)'
+            )
+            self.add_line(
+                '_exec_globals = {"self": self, "instance": self, '
+                f'"other": {other_expr}, "game": game, '
+                '"keyboard": _exec_keyboard, "math": math, "random": random, '
+                '"argument0": argument0, "argument1": argument1, '
+                '"argument2": argument2, "argument3": argument3, '
+                f'"argument4": argument4, "argument_count": {argument_count}, '
+                '"__builtins__": __builtins__}'
+            )
+            self.add_line('_exec_locals = {}')
+            self.add_line(
+                f'exec(compile({str(code)!r}, {("<script:" + script_name + ">")!r}, "exec"), '
+                '_exec_globals, _exec_locals)'
+            )
+            self.add_line('for _k, _v in _exec_locals.items():')
+            self.push_indent()
+            self.add_line('if not _k.startswith("__"):')
+            self.push_indent()
+            self.add_line('setattr(self, _k, _v)')
+            self.pop_indent()
+            self.pop_indent()
             self.pop_indent()
             self.add_line('except Exception as _script_err:')
             self.push_indent()

@@ -159,14 +159,15 @@ discipline as the match3_2/3 and views sessions:
    3 of the old tests tested the since-removed literal-inline/
    conditional-import behavior and were replaced, not just patched).
    Full suite 2407 → 2411 passed, 0 failed.
-   **Found but deliberately NOT fixed (separate, adjacent gap, out of
-   this item's scope):** `execute_script` has the identical
-   locals-discarded issue (still literally inlined) *and* is missing an
-   `other` binding entirely (desktop's `execute_execute_script_action`
-   binds it; Kivy's `execute_script` branch never did) — a candidate for
-   its own small follow-up applying the same pattern, not bundled in here
-   since item 9's title and the design decision above were both scoped to
-   `execute_code` specifically.
+   **Both adjacent follow-up gaps (found here, deliberately left open at
+   the time) are now ALSO DONE, same day.** `keyboard` binding via a new
+   `GameObject._check_key` adapter method (single-sourced key-name table
+   with `if_key_pressed`'s codegen), and `execute_script` got the
+   identical exec()-based rewrite `execute_code` did, plus the `other`/
+   `keyboard` bindings it never had at all. See `TODO.md`'s matching
+   entry for full detail, including a real `.format()`-template comment
+   bug this surfaced and fixed. `tests/test_kivy_execute_script_export.py`
+   (new). Full suite 2411 → 2425 passed, 0 failed.
 10. **Asset Manager** (`Tools → Asset Manager...`) — ✅ **DONE
     (2026-08-09), all 4 tiers.** Bulk rename/move/delete, usage tracking
     ("which rooms/objects use this sprite?"), unused-asset cleanup.
