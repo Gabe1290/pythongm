@@ -120,23 +120,28 @@ discipline as the match3_2/3 and views sessions:
     overlaps with #10's unused-asset detection. Worth scoping *after*
     Asset Manager, not before — building unused-asset detection twice
     would be wasted work.
-13. **2.0 extension system — the feature work.** Tasks 2-4 of
-    `docs/extension_compat_2_0/PLAN.md`. **Turned out much smaller than
-    drafted** — investigating before coding (per the standard discipline
-    here) found `events/plugin_loader.py` already implements most of
-    "Task 2" (`requires_extensions`, auto-derived and saved every save,
-    plus disabled/not-installed detection already wired into a warning
-    dialog) and most of "Task 3" (an unrecognized action already renders
-    distinctly and survives a save untouched). What's real: (a) a
-    confirmed bug where resaving a project without the referenced
-    extension installed silently wipes its `requires_extensions` entry
-    even though the actions themselves survive — fix
-    `_prepare_project_data_for_save`'s recomputation to not drop entries
-    it can't verify are stale; (b) the unknown-action tree item isn't
-    visually "disabled" and double-clicking it does nothing instead of
-    explaining why; (c) the missing-extension dialog is a warning, not an
-    offer — no one-click enable. See the plan's Task 2/3/4 sections
-    (rewritten 2026-08-09) for the narrowed scope.
+13. **2.0 extension system — the feature work.** ✅ **DONE (2026-08-09,
+    commit `4c50485`)** for everything with a concrete, provable fix.
+    Tasks 2-4 of `docs/extension_compat_2_0/PLAN.md` turned out much
+    smaller than drafted — investigating before coding found
+    `events/plugin_loader.py` already implemented most of "Task 2" and
+    "Task 3". Landed: (a) the `_prepare_project_data_for_save` fidelity
+    bug fixed (an extension dependency this editor can't verify is stale
+    is now preserved, not wiped) with 5 regression tests
+    (`tests/test_extension_manifest_preservation.py`); (b) unrecognized
+    action tree items now render amber with the owning extension named
+    when its manifest is on disk (new `plugin_loader.extension_for_action`),
+    and double-clicking one explains why instead of silently doing
+    nothing, with 6 regression tests (`tests/test_extension_action_ui.py`);
+    (c) dropped a misleading "enable the extensions in your config" hint
+    — investigation found no config UI for toggling extensions exists
+    anywhere in the app yet. **Deliberately NOT built:** an actual
+    one-click "enable this extension" settings UI (Task 4's fuller
+    vision) — the plan flagged this as needing its own scoping/design
+    pass before building, and this session's re-scoping confirmed that's
+    still true; it would need a real settings surface + a restart prompt
+    (extensions register at startup) that doesn't exist yet. Full suite
+    2245 → 2256, 0 failed.
 
 ## Tier 0 — do before anything else in this doc (protects future downloads) — ✅ DONE
 
