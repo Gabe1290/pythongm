@@ -121,30 +121,37 @@ discipline as the match3_2/3 and views sessions:
     Asset Manager, not before — building unused-asset detection twice
     would be wasted work.
 13. **2.0 extension system — the feature work.** Tasks 2-4 of
-    `docs/extension_compat_2_0/PLAN.md`: the `format_version`/
-    `required_extensions` read/write, greyed-out placeholder rendering
-    for unrecognised actions, and the install-offer UX. Depends on Tier
-    0's item 12 (the guard) shipping first, but is otherwise independent
-    of every other Tier 3 item. Has real open questions to resolve
-    against `core/project_manager.py` before starting (see the plan's
-    "Open questions" section) — don't start from the plan's assumptions
-    alone.
+    `docs/extension_compat_2_0/PLAN.md`. **Turned out much smaller than
+    drafted** — investigating before coding (per the standard discipline
+    here) found `events/plugin_loader.py` already implements most of
+    "Task 2" (`requires_extensions`, auto-derived and saved every save,
+    plus disabled/not-installed detection already wired into a warning
+    dialog) and most of "Task 3" (an unrecognized action already renders
+    distinctly and survives a save untouched). What's real: (a) a
+    confirmed bug where resaving a project without the referenced
+    extension installed silently wipes its `requires_extensions` entry
+    even though the actions themselves survive — fix
+    `_prepare_project_data_for_save`'s recomputation to not drop entries
+    it can't verify are stale; (b) the unknown-action tree item isn't
+    visually "disabled" and double-clicking it does nothing instead of
+    explaining why; (c) the missing-extension dialog is a warning, not an
+    offer — no one-click enable. See the plan's Task 2/3/4 sections
+    (rewritten 2026-08-09) for the narrowed scope.
 
-## Tier 0 — do before anything else in this doc (protects future 1.0 downloads)
+## Tier 0 — do before anything else in this doc (protects future downloads) — ✅ DONE
 
-12. **Ship 1.0.1 with a project-format-version guard.** Task 1 of
-    `docs/extension_compat_2_0/PLAN.md` (written 2026-08-09, from a
-    mobile design session, prototype already proven against
-    `samples/plateforme_3/project.json`). Small and self-contained: a
-    `check_project_format()` guard that makes any 1.0-line build refuse
-    (not crash, not silently save-and-corrupt) a project newer than it
-    understands. This has to ship as its own **1.0.1 patch release**
-    before any real 2.0-format file exists anywhere, or the whole
-    compatibility guarantee the rest of that plan depends on is
-    unenforceable retroactively. The remaining three tasks in that plan
-    (2.0 read/write, unknown-action placeholders, install-offer UX) are
-    real feature work — bucket those with Tier 3 instead, they don't
-    share Task 1's urgency.
+12. **Ship a project-format-version guard.** ✅ **DONE, shipped as v1.1.2
+    (2026-08-09)** — not 1.0.1 as originally drafted; the plan's "1.0"
+    assumption was stale (this repo was already on 1.1.1 when this item
+    was written). Task 1 of `docs/extension_compat_2_0/PLAN.md`:
+    `core/project_format.py`'s `check_project_format()`, called from
+    `ProjectManager.load_project()` immediately after parsing, refuses
+    (doesn't crash, doesn't resave-and-corrupt) a project newer than this
+    build supports, with a specific `QMessageBox` at the UI layer.
+    `tests/test_project_format_guard.py` (13 tests) includes a
+    byte-for-byte on-disk-unchanged assertion after a refused load. The
+    remaining three tasks in that plan (now much smaller than drafted —
+    see item 13) are real feature work, correctly bucketed with Tier 3.
 
 ## Explicitly not now (already scheduled or deliberately deferred)
 

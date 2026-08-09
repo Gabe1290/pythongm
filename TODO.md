@@ -448,23 +448,27 @@ Other:
 
 ## Extensions
 
-### 2.0 extension system — compatibility guarantees (design brief ready, 2026-08-09)
+### 2.0 extension system — compatibility guarantees
 - Goal: a project using extensions (Thymio robotics, a future 3D extension)
   must never crash or silently corrupt when opened by an editor that
   doesn't have those extensions installed — audience is children on mixed
   hardware running different app versions.
-- Full plan, decisions, and a prototype already proven against a real
-  bundled sample: `docs/extension_compat_2_0/PLAN.md` (+ companion
-  `compat_demo.py` / `project_2_0.json` in the same folder). Four ordered
-  tasks: ship a **1.0.1 format-version guard first** (protects future
-  downloads before any 2.0 file exists — do not skip or reorder this one),
-  then the 2.0 `format_version`/`required_extensions` read/write, then
-  greyed-out placeholder rendering for unknown actions, then the
-  install-offer UX wired to the manifest.
-- Not started against real code yet — the plan's "Open questions" section
-  lists what to confirm in `core/project_manager.py` first (strict vs.
-  tolerant unknown-key handling today, what the existing `version` field
-  actually means, whether the writer currently drops unrecognised data).
+- Full plan: `docs/extension_compat_2_0/PLAN.md` (+ companion
+  `compat_demo.py` / `project_2_0.json` in the same folder).
+- ~~Task 1 — format-version guard~~ **DONE, shipped v1.1.2 (2026-08-09).**
+  `core/project_format.py`'s `check_project_format()`; a project newer
+  than this build supports is refused with a specific dialog, never
+  crashes or gets silently resaved-over. `tests/test_project_format_guard.py`.
+- Tasks 2-4 (manifest read/write, unknown-action placeholder rendering,
+  install-offer UX) turned out **much smaller than originally drafted** —
+  `events/plugin_loader.py` already implements most of the manifest system
+  (`requires_extensions`, auto-derived per save) and the Object Events
+  panel already renders an unrecognized action distinctly rather than
+  crashing. One confirmed real bug found investigating it: resaving a
+  project without its referenced extension installed silently wipes the
+  `requires_extensions` record (the actions themselves survive, but the
+  dependency note doesn't) — see the plan's Task 2 section for the fix.
+  Not started yet; narrowed scope is in the plan doc.
 
 ## Project format / persistence
 
