@@ -413,6 +413,25 @@ def collect_project_action_names(project_data) -> set:
     return names
 
 
+def extension_for_action(action_name: str) -> Optional[dict]:
+    """The extension (the same info dict list_available_extensions() returns)
+    whose manifest ``provides_actions`` declares ``action_name``, or ``None``.
+
+    Looks at every extension folder present on disk regardless of enabled
+    state, so it can identify the owner of an action from a DISABLED
+    extension. Returns ``None`` for a plain unknown/typo action name, or one
+    whose extension isn't installed here at all — those two cases are
+    indistinguishable from this function alone (see
+    not_installed_extensions_for_project for the whole-project version of
+    that distinction, which has the project's persisted requires_extensions
+    to fall back on).
+    """
+    for info in list_available_extensions():
+        if action_name in (info.get("provides_actions") or []):
+            return info
+    return None
+
+
 def missing_extensions_for_project(project_data) -> List[dict]:
     """Extensions a project's actions need that are currently DISABLED.
 

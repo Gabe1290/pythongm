@@ -957,11 +957,33 @@ class ProjectManager(QObject):
         # from the used action names so it stays accurate; omitted when empty so
         # a non-extension project.json isn't littered (a file without the line is
         # fine — the load-time warning re-derives from the live actions anyway).
+        #
+        # required_extensions_for_project() can only NAME an extension whose
+        # manifest is readable — i.e. one present in extensions/ on THIS
+        # machine, enabled or not. If a project was saved by an editor that
+        # HAD, say, a "3D" extension installed, and is resaved by one that
+        # doesn't have it at all, a naive `reqs = required_extensions_for_
+        # project(data)` comes back without "threed" even though the actual
+        # threed actions are still sitting untouched in assets.objects — the
+        # dependency record would be silently wiped while the thing it
+        # describes survives, exactly the manifest fidelity bug the 2.0
+        # extension-compat plan (docs/extension_compat_2_0/PLAN.md, Task 2)
+        # exists to prevent. So: only DROP an existing entry this editor can
+        # positively verify is stale (the extension IS installed here and
+        # recomputation shows its actions are genuinely no longer used);
+        # unconditionally keep any entry for an extension this editor has no
+        # manifest for at all, since it structurally cannot tell whether
+        # that dependency is still real.
         try:
-            from events.plugin_loader import required_extensions_for_project
-            reqs = required_extensions_for_project(data)
-            if reqs:
-                data['requires_extensions'] = reqs
+            from events.plugin_loader import (required_extensions_for_project,
+                                               list_available_extensions)
+            reqs = set(required_extensions_for_project(data))
+            existing = set(data.get('requires_extensions') or [])
+            installed_folders = {info['folder'] for info in list_available_extensions()}
+            unverifiable = existing - installed_folders
+            combined = sorted(reqs | unverifiable)
+            if combined:
+                data['requires_extensions'] = combined
             else:
                 data.pop('requires_extensions', None)   # drop a now-stale record
         except Exception as exc:
