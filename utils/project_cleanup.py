@@ -12,16 +12,35 @@ contrasting case.
 
 Tier 2: detect physical asset files on disk with no project.json entry
 pointing at them ("shrink project size") — see
-``find_orphaned_physical_files``. Detection only; deletion (Tier 3) isn't
-built yet and, when it is, should route through the Trash like everything
-else in item 10.5, unlike Tier 1's permanent removal.
+``find_orphaned_physical_files``.
+
+Tier 3: trash the files Tier 2 finds — see ``trash_orphaned_file`` and
+friends. Deliberately its OWN manifest/``.trash_orphaned_files/`` store,
+NOT ``utils/asset_trash.py``'s ``.trash/`` mechanism, even though the
+move-instead-of-unlink idea is the same: an orphaned file has no
+project.json entry at all, but ``core/asset_manager.py``'s
+``AssetManager.restore_from_trash`` unconditionally re-inserts a restored
+entry into ``assets_cache[asset_type][asset_name]`` — reusing that path
+for a bare file would plant a fake asset entry (just a raw ``file_path``,
+none of the real shape a sprite/sound/background asset needs) into the
+live project the next time anything saves. Sharing the manifest would
+also surface these entries in the general "Restore Deleted Assets"
+dialog, whose Restore button goes through that exact method. A second,
+smaller, asset-model-free store avoids both problems entirely.
 """
+import json
+import shutil
 import time
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+ORPHAN_TRASH_DIR_NAME = ".trash_orphaned_files"
+_ORPHAN_MANIFEST_NAME = "manifest.json"
 
 # A save's .tmp sibling lives only for the duration of a single synchronous
 # write (milliseconds); this floor just guards against a sweep racing a
@@ -140,3 +159,131 @@ def find_orphaned_physical_files(project_dir: Path, project_data: Dict[str, Any]
         if found:
             orphaned[category] = found
     return orphaned
+
+
+def _orphan_trash_root(project_dir: Path) -> Path:
+    return Path(project_dir) / ORPHAN_TRASH_DIR_NAME
+
+
+def _orphan_manifest_path(project_dir: Path) -> Path:
+    return _orphan_trash_root(project_dir) / _ORPHAN_MANIFEST_NAME
+
+
+def _load_orphan_manifest(project_dir: Path) -> List[Dict[str, Any]]:
+    path = _orphan_manifest_path(project_dir)
+    if not path.exists():
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (OSError, ValueError) as e:
+        logger.warning(f"Could not read orphan-trash manifest {path}: {e}")
+        return []
+
+
+def _save_orphan_manifest(project_dir: Path, entries: List[Dict[str, Any]]) -> None:
+    root = _orphan_trash_root(project_dir)
+    root.mkdir(parents=True, exist_ok=True)
+    path = _orphan_manifest_path(project_dir)
+    tmp = path.with_suffix(".json.tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(entries, f, indent=2, ensure_ascii=False)
+    tmp.replace(path)
+
+
+def trash_orphaned_file(project_dir: Path, relative_path: str) -> Optional[str]:
+    """Move an orphaned physical file (as found by
+    ``find_orphaned_physical_files``) into ``.trash_orphaned_files/``
+    instead of deleting it outright, and record enough to restore it.
+
+    ``relative_path`` is project-relative (posix-style), e.g.
+    ``"sprites/spr_leftover.png"``. Returns the trash entry id, or None if
+    the source file doesn't exist (nothing to trash — a caller re-scanning
+    stale results shouldn't crash on it).
+    """
+    project_dir = Path(project_dir)
+    src = project_dir / relative_path
+    if not src.exists():
+        return None
+
+    entry_id = f"{Path(relative_path).stem}__{uuid.uuid4().hex[:12]}"
+    entry_dir = _orphan_trash_root(project_dir) / entry_id
+    entry_dir.mkdir(parents=True, exist_ok=True)
+    dest = entry_dir / Path(relative_path).name
+    shutil.move(str(src), str(dest))
+
+    manifest = _load_orphan_manifest(project_dir)
+    manifest.append({
+        "id": entry_id,
+        "relative_path": relative_path,
+        "deleted_at": datetime.now(timezone.utc).isoformat(),
+    })
+    _save_orphan_manifest(project_dir, manifest)
+    logger.debug(f"Trashed orphaned file {relative_path} as {entry_id}")
+    return entry_id
+
+
+def list_orphan_trash(project_dir: Path) -> List[Dict[str, Any]]:
+    """Every trashed orphaned file, newest first."""
+    entries = _load_orphan_manifest(project_dir)
+    return sorted(entries, key=lambda e: e.get("deleted_at", ""), reverse=True)
+
+
+def restore_orphaned_file(project_dir: Path, trash_id: str) -> Optional[str]:
+    """Move a trashed orphaned file back to its original relative path.
+
+    Refuses (returns None) if a file already exists at the destination —
+    something new was created at that path since the trash — rather than
+    overwriting it; the trash entry is left in place so nothing is lost.
+    Returns the restored relative path on success.
+    """
+    project_dir = Path(project_dir)
+    manifest = _load_orphan_manifest(project_dir)
+    entry = next((e for e in manifest if e.get("id") == trash_id), None)
+    if entry is None:
+        logger.warning(f"restore_orphaned_file: no trash entry {trash_id!r}")
+        return None
+
+    rel = entry["relative_path"]
+    dest = project_dir / rel
+    if dest.exists():
+        logger.warning(
+            f"restore_orphaned_file: refusing to overwrite existing file at "
+            f"{dest} (trash entry {trash_id!r})")
+        return None
+
+    entry_dir = _orphan_trash_root(project_dir) / trash_id
+    src = entry_dir / Path(rel).name
+    if not src.exists():
+        logger.warning(f"restore_orphaned_file: trashed file missing for {trash_id!r}")
+        return None
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(src), str(dest))
+    shutil.rmtree(entry_dir, ignore_errors=True)
+
+    manifest = [e for e in manifest if e.get("id") != trash_id]
+    _save_orphan_manifest(project_dir, manifest)
+    logger.debug(f"Restored orphaned file {rel} from {trash_id}")
+    return rel
+
+
+def empty_orphan_trash(project_dir: Path, trash_id: Optional[str] = None) -> int:
+    """Permanently delete one orphan-trash entry (``trash_id`` given) or
+    all of them (``trash_id=None``). Returns the number of entries removed."""
+    project_dir = Path(project_dir)
+    manifest = _load_orphan_manifest(project_dir)
+
+    if trash_id is None:
+        count = len(manifest)
+        shutil.rmtree(_orphan_trash_root(project_dir), ignore_errors=True)
+        return count
+
+    entry = next((e for e in manifest if e.get("id") == trash_id), None)
+    if entry is None:
+        return 0
+    shutil.rmtree(_orphan_trash_root(project_dir) / trash_id, ignore_errors=True)
+    manifest = [e for e in manifest if e.get("id") != trash_id]
+    _save_orphan_manifest(project_dir, manifest)
+    return 1

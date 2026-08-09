@@ -433,11 +433,14 @@ class PyGameMakerIDE(QMainWindow):
             self.tr("Find &Unused Assets..."), None, self.show_unused_assets_dialog)
         self.clean_project_action = self.create_action(
             self.tr("Clean &Project"), None, self.clean_project)
+        self.show_orphaned_files_action = self.create_action(
+            self.tr("Find &Orphaned Files..."), None, self.show_orphaned_files_dialog)
         tools_menu.addAction(self.validate_project_action)
         tools_menu.addAction(self.migrate_project_action)
         tools_menu.addAction(self.show_trash_action)
         tools_menu.addAction(self.show_unused_assets_action)
         tools_menu.addAction(self.clean_project_action)
+        tools_menu.addAction(self.show_orphaned_files_action)
         tools_menu.addSeparator()
 
         # Language submenu
@@ -3679,6 +3682,22 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Nothing to clean — no leftover temporary files found.")
             )
 
+    def show_orphaned_files_dialog(self):
+        """Open the Orphaned Files dialog (Tier 3, docs/CLEAN_PROJECT_PLAN.md)
+        to review and trash physical asset files nothing references."""
+        if not self.current_project_path or not self.project_manager.asset_manager:
+            QMessageBox.information(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open a project first.")
+            )
+            return
+
+        from widgets.asset_tree.asset_dialogs import OrphanedFilesDialog
+        dialog = OrphanedFilesDialog(
+            self.current_project_data, self.project_manager.asset_manager, parent=self)
+        dialog.exec()
+
     def migrate_project_structure(self):
         """Migrate project to use external files for objects and rooms"""
         if not self.current_project_path:
@@ -4980,6 +4999,8 @@ class PyGameMakerIDE(QMainWindow):
             self.show_unused_assets_action.setEnabled(has_project)
         if hasattr(self, 'clean_project_action'):
             self.clean_project_action.setEnabled(has_project)
+        if hasattr(self, 'show_orphaned_files_action'):
+            self.show_orphaned_files_action.setEnabled(has_project)
         # Thymio Add Event/Action target the active object editor, which
         # cannot exist without an open project.
         if hasattr(self, 'thymio_add_event_action'):

@@ -40,11 +40,13 @@ class ProjectCompressor:
                         # Calculate relative path
                         arcname = file_path.relative_to(project_path)
 
-                        # .trash/ holds soft-deleted assets (utils/asset_trash.py) —
+                        # .trash/ holds soft-deleted assets (utils/asset_trash.py)
+                        # and .trash_orphaned_files/ holds trashed orphaned physical
+                        # files (utils/project_cleanup.py, Clean Project Tier 3) —
                         # the whole point of deleting something is that it stops
                         # being part of the project; bundling it into every export/
                         # backup would defeat that and bloat the archive.
-                        if arcname.parts and arcname.parts[0] == '.trash':
+                        if arcname.parts and arcname.parts[0] in ('.trash', '.trash_orphaned_files'):
                             continue
 
                         # Add file to zip

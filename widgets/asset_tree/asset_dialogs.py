@@ -4,6 +4,8 @@ Asset Dialogs for PyGameMaker IDE
 UI dialogs for asset management operations
 """
 
+from pathlib import Path
+
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
                                QPushButton, QLabel, QMessageBox, QListWidget,
                                QListWidgetItem, QTreeWidget, QTreeWidgetItem)
@@ -597,3 +599,230 @@ class UnusedAssetsDialog(QDialog):
                 if self.on_deleted:
                     self.on_deleted(asset_type, asset_name)
         self.refresh_list()
+
+
+class OrphanedFilesDialog(QDialog):
+    """Find physical asset files with no project.json entry pointing at
+    them (utils.project_cleanup.find_orphaned_physical_files) and manage
+    this feature's own trash store — Tier 3 of docs/CLEAN_PROJECT_PLAN.md.
+
+    Deliberately its own trash mechanism (utils/project_cleanup.py's
+    trash_orphaned_file/list_orphan_trash/restore_orphaned_file/
+    empty_orphan_trash, backed by .trash_orphaned_files/), NOT
+    AssetManager.delete_asset / the asset Trash — see project_cleanup.py's
+    module docstring for why: these files have no project.json entry at
+    all, and AssetManager.restore_from_trash unconditionally re-inserts a
+    restored entry into assets_cache, which would plant a fake asset for
+    a bare file.
+    """
+
+    def __init__(self, project_data: dict, asset_manager, parent=None):
+        super().__init__(parent)
+        self.project_data = project_data
+        self.asset_manager = asset_manager
+        self.trashed_count = 0
+        self.setup_ui()
+        self.refresh()
+
+    def _project_dir(self):
+        project_dir = getattr(self.asset_manager, 'project_directory', None)
+        return Path(project_dir) if project_dir else None
+
+    def setup_ui(self):
+        self.setWindowTitle(self.tr("Orphaned Files"))
+        self.setMinimumSize(520, 560)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        info_label = QLabel(self.tr(
+            "Physical files under sprites/sounds/backgrounds/fonts/"
+            "thumbnails that nothing in this project references — usually "
+            "left behind by a deleted asset entry, or a file copied in by "
+            "hand. Trashed files can be restored below until permanently "
+            "removed."))
+        info_label.setWordWrap(True)
+        layout.addWidget(info_label)
+
+        layout.addWidget(QLabel(self.tr("Found on disk:")))
+        self.tree_widget = QTreeWidget()
+        self.tree_widget.setHeaderHidden(True)
+        self.tree_widget.itemChanged.connect(self._update_button_states)
+        layout.addWidget(self.tree_widget)
+
+        select_layout = QHBoxLayout()
+        select_all_btn = QPushButton(self.tr("Select All"))
+        select_all_btn.clicked.connect(lambda: self._set_all_checked(True))
+        select_layout.addWidget(select_all_btn)
+        select_none_btn = QPushButton(self.tr("Select None"))
+        select_none_btn.clicked.connect(lambda: self._set_all_checked(False))
+        select_layout.addWidget(select_none_btn)
+        select_layout.addStretch()
+        self.trash_btn = QPushButton(self.tr("Move Selected to Trash"))
+        self.trash_btn.clicked.connect(self._trash_selected)
+        self.trash_btn.setEnabled(False)
+        select_layout.addWidget(self.trash_btn)
+        layout.addLayout(select_layout)
+
+        layout.addWidget(QLabel(self.tr("Trashed:")))
+        self.trash_list = QListWidget()
+        self.trash_list.itemSelectionChanged.connect(self._update_button_states)
+        layout.addWidget(self.trash_list)
+
+        trash_button_layout = QHBoxLayout()
+        self.restore_btn = QPushButton(self.tr("Restore"))
+        self.restore_btn.clicked.connect(self._restore_selected)
+        self.restore_btn.setEnabled(False)
+        trash_button_layout.addWidget(self.restore_btn)
+        self.delete_permanently_btn = QPushButton(self.tr("Delete Permanently"))
+        self.delete_permanently_btn.clicked.connect(self._delete_selected_permanently)
+        self.delete_permanently_btn.setEnabled(False)
+        trash_button_layout.addWidget(self.delete_permanently_btn)
+        self.empty_btn = QPushButton(self.tr("Empty"))
+        self.empty_btn.clicked.connect(self._empty_all)
+        self.empty_btn.setEnabled(False)
+        trash_button_layout.addWidget(self.empty_btn)
+        trash_button_layout.addStretch()
+        close_btn = QPushButton(self.tr("Close"))
+        close_btn.clicked.connect(self.accept)
+        trash_button_layout.addWidget(close_btn)
+        layout.addLayout(trash_button_layout)
+
+    def refresh(self):
+        self._refresh_found()
+        self._refresh_trash()
+
+    def _refresh_found(self):
+        if hasattr(self.asset_manager, 'save_assets_to_project_data'):
+            self.asset_manager.save_assets_to_project_data(self.project_data)
+
+        project_dir = self._project_dir()
+        orphaned = {}
+        if project_dir:
+            from utils.project_cleanup import find_orphaned_physical_files
+            orphaned = find_orphaned_physical_files(project_dir, self.project_data)
+
+        self.tree_widget.blockSignals(True)
+        self.tree_widget.clear()
+        for category in sorted(orphaned):
+            paths = orphaned[category]
+            cat_item = QTreeWidgetItem([self.tr("{0} ({1})").format(category.title(), len(paths))])
+            cat_item.setFlags(Qt.ItemIsEnabled)
+            self.tree_widget.addTopLevelItem(cat_item)
+            for path in paths:
+                rel = path.relative_to(project_dir).as_posix()
+                child = QTreeWidgetItem([rel])
+                child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable | Qt.ItemIsSelectable)
+                child.setCheckState(0, Qt.Unchecked)
+                child.setData(0, Qt.UserRole, rel)
+                cat_item.addChild(child)
+            cat_item.setExpanded(True)
+        if not orphaned:
+            empty_item = QTreeWidgetItem([self.tr("No orphaned files found.")])
+            empty_item.setFlags(Qt.ItemIsEnabled)
+            self.tree_widget.addTopLevelItem(empty_item)
+        self.tree_widget.blockSignals(False)
+        self._update_button_states()
+
+    def _refresh_trash(self):
+        self.trash_list.clear()
+        project_dir = self._project_dir()
+        if project_dir:
+            from utils.project_cleanup import list_orphan_trash
+            for entry in list_orphan_trash(project_dir):
+                label = self.tr("{0}  —  deleted {1}").format(
+                    entry["relative_path"], entry.get("deleted_at", "")[:19].replace("T", " "))
+                item = QListWidgetItem(label)
+                item.setData(Qt.UserRole, entry)
+                self.trash_list.addItem(item)
+        self._update_button_states()
+
+    def _checked_paths(self):
+        result = []
+        for i in range(self.tree_widget.topLevelItemCount()):
+            cat_item = self.tree_widget.topLevelItem(i)
+            for j in range(cat_item.childCount()):
+                child = cat_item.child(j)
+                if child.checkState(0) == Qt.Checked:
+                    result.append(child.data(0, Qt.UserRole))
+        return result
+
+    def _set_all_checked(self, checked: bool):
+        state = Qt.Checked if checked else Qt.Unchecked
+        self.tree_widget.blockSignals(True)
+        for i in range(self.tree_widget.topLevelItemCount()):
+            cat_item = self.tree_widget.topLevelItem(i)
+            for j in range(cat_item.childCount()):
+                cat_item.child(j).setCheckState(0, state)
+        self.tree_widget.blockSignals(False)
+        self._update_button_states()
+
+    def _selected_trash_entry(self):
+        item = self.trash_list.currentItem()
+        return item.data(Qt.UserRole) if item else None
+
+    def _update_button_states(self, *_):
+        self.trash_btn.setEnabled(bool(self._checked_paths()))
+        entry = self._selected_trash_entry()
+        self.restore_btn.setEnabled(entry is not None)
+        self.delete_permanently_btn.setEnabled(entry is not None)
+        self.empty_btn.setEnabled(self.trash_list.count() > 0)
+
+    def _trash_selected(self):
+        paths = self._checked_paths()
+        if not paths:
+            return
+        reply = QMessageBox.question(
+            self, self.tr("Move to Trash"),
+            self.tr("Move {0} orphaned file(s) to the trash?").format(len(paths)),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply != QMessageBox.Yes:
+            return
+        project_dir = self._project_dir()
+        from utils.project_cleanup import trash_orphaned_file
+        for rel in paths:
+            if trash_orphaned_file(project_dir, rel):
+                self.trashed_count += 1
+        self.refresh()
+
+    def _restore_selected(self):
+        entry = self._selected_trash_entry()
+        if not entry:
+            return
+        from utils.project_cleanup import restore_orphaned_file
+        restored = restore_orphaned_file(self._project_dir(), entry["id"])
+        if restored is None:
+            QMessageBox.warning(
+                self, self.tr("Restore Failed"),
+                self.tr(
+                    "Could not restore '{0}' — a file already exists "
+                    "there. Move or remove it first, then try again."
+                ).format(entry["relative_path"]))
+            return
+        self.refresh()
+
+    def _delete_selected_permanently(self):
+        entry = self._selected_trash_entry()
+        if not entry:
+            return
+        reply = QMessageBox.question(
+            self, self.tr("Delete Permanently"),
+            self.tr("Permanently delete '{0}'? This cannot be undone."
+                    ).format(entry["relative_path"]),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            from utils.project_cleanup import empty_orphan_trash
+            empty_orphan_trash(self._project_dir(), entry["id"])
+            self.refresh()
+
+    def _empty_all(self):
+        reply = QMessageBox.question(
+            self, self.tr("Empty Trash"),
+            self.tr("Permanently delete every trashed orphaned file? This "
+                    "cannot be undone."),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            from utils.project_cleanup import empty_orphan_trash
+            empty_orphan_trash(self._project_dir())
+            self.refresh()
