@@ -13,14 +13,16 @@ attribute writes there do NOT trigger caption updates or
 no_more_lives/no_more_health crossing checks either; those only fire from
 the set_lives/set_health ACTIONS specifically).
 
-Deliberately NOT attempted here: "locals copied back onto the instance"
-parity (the OTHER half of item 9). Kivy inlines execute_code as literal
-Python source in a real generated method, unlike desktop's dynamic
-exec()/locals-dict approach — achieving the same behavior would mean
-either switching Kivy's codegen strategy to a runtime exec() (perf/
-debuggability cost) or AST-rewriting bare assignments into `self.x = x`
-lines (its own correctness risk). Left as a documented, explicitly scoped
-follow-up rather than forced into this pass.
+"Locals copied back onto the instance" parity (the other half of item 9)
+was deliberately NOT attempted in this pass — Kivy inlined execute_code as
+literal Python source in a real generated method, unlike desktop's dynamic
+exec()/locals-dict approach. It was resolved in a later pass: Kivy's codegen
+now runs the user's code through a real exec() call at runtime too (Kivy
+runs on real CPython, so this is available), giving byte-for-byte identical
+semantics to desktop rather than an export-time AST rewrite. See
+tests/test_kivy_execute_code_export.py for that behavior's coverage — this
+file's own tests below still hold: they cover the `game` proxy binding,
+which the exec() switch didn't change.
 """
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -71,12 +73,14 @@ def test_execute_code_wraps_errors_like_execute_script():
     assert _valid(out)
 
 
-def test_execute_code_preserves_nested_indentation():
+def test_execute_code_preserves_nested_code_text():
     code = "if self.x > 0:\n    self.x -= 1\nelse:\n    self.x = 0"
     out = _gen("execute_code", {"code": code})
     assert _valid(out)
-    # The user's own if/else structure must survive being nested one level
-    # deeper inside the new try: block.
+    # The user's code is now embedded as a repr()'d string literal (exec()'d
+    # at runtime, not inlined as literal source — see the module docstring),
+    # so it no longer appears as indented Python in the generated source;
+    # confirm the text still round-trips through repr() intact.
     assert "if self.x > 0:" in out
     assert "self.x -= 1" in out
 
