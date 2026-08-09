@@ -431,10 +431,13 @@ class PyGameMakerIDE(QMainWindow):
             self.tr("&Restore Deleted Assets..."), None, self.show_trash_dialog)
         self.show_unused_assets_action = self.create_action(
             self.tr("Find &Unused Assets..."), None, self.show_unused_assets_dialog)
+        self.clean_project_action = self.create_action(
+            self.tr("Clean &Project"), None, self.clean_project)
         tools_menu.addAction(self.validate_project_action)
         tools_menu.addAction(self.migrate_project_action)
         tools_menu.addAction(self.show_trash_action)
         tools_menu.addAction(self.show_unused_assets_action)
+        tools_menu.addAction(self.clean_project_action)
         tools_menu.addSeparator()
 
         # Language submenu
@@ -3644,6 +3647,38 @@ class PyGameMakerIDE(QMainWindow):
             self.update_status(
                 self.tr("Moved {0} unused asset(s) to Trash").format(dialog.deleted_count))
 
+    def clean_project(self):
+        """Tier 1 of docs/CLEAN_PROJECT_PLAN.md: sweep orphaned *.tmp
+        atomic-write siblings from the project directory. Unlike asset
+        deletion, these never go through the Trash — a .tmp file is never
+        the authoritative copy of anything, so permanent removal is
+        correct (see utils/project_cleanup.py)."""
+        if not self.current_project_path:
+            QMessageBox.information(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open a project first.")
+            )
+            return
+
+        from utils.project_cleanup import sweep_orphan_tmp_files
+        removed = sweep_orphan_tmp_files(Path(self.current_project_path))
+
+        if removed:
+            names = "\n".join(str(p.relative_to(self.current_project_path)) for p in removed)
+            QMessageBox.information(
+                self,
+                self.tr("Clean Project"),
+                self.tr("Removed {0} leftover temporary file(s):\n\n{1}").format(len(removed), names)
+            )
+            self.update_status(self.tr("Removed {0} leftover temporary file(s)").format(len(removed)))
+        else:
+            QMessageBox.information(
+                self,
+                self.tr("Clean Project"),
+                self.tr("Nothing to clean — no leftover temporary files found.")
+            )
+
     def migrate_project_structure(self):
         """Migrate project to use external files for objects and rooms"""
         if not self.current_project_path:
@@ -4941,6 +4976,10 @@ class PyGameMakerIDE(QMainWindow):
             self.migrate_project_action.setEnabled(has_project)
         if hasattr(self, 'show_trash_action'):
             self.show_trash_action.setEnabled(has_project)
+        if hasattr(self, 'show_unused_assets_action'):
+            self.show_unused_assets_action.setEnabled(has_project)
+        if hasattr(self, 'clean_project_action'):
+            self.clean_project_action.setEnabled(has_project)
         # Thymio Add Event/Action target the active object editor, which
         # cannot exist without an open project.
         if hasattr(self, 'thymio_add_event_action'):
