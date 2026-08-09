@@ -2,9 +2,11 @@
 """Tests for the per-object `remember_destroyed` ("Stay destroyed") feature.
 
 When an object opts in, destroying one of its instances is remembered so the
-instance does NOT respawn when the room is rebuilt from its layout (a room
-restart). Leaving and re-entering a room already preserves the deletion because
-change_room reuses the same room object, so that path needs no memory. A full
+instance does NOT respawn when the room is rebuilt from its layout — a room
+restart, a full game restart, or (since rooms are non-persistent by default —
+see GameRunner.change_room / GameRoom.persistent) an ordinary revisit to a
+non-persistent room. A persistent room instead keeps its live, already-culled
+instance list across a revisit, needing no memory lookup for that path. A full
 game restart clears the memory, bringing every instance back.
 """
 
@@ -35,6 +37,7 @@ def _make_runner():
             runner.health = 100
             runner._room_transition_grace_frames = 0
             runner._destroyed_memory = {}
+            runner._visited_rooms = set()
             return runner
 
 

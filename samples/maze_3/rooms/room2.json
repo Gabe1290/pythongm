@@ -975,5 +975,6 @@
       "y": 0
     }
   ],
-  "tiles": []
+  "tiles": [],
+  "persistent": true
 }

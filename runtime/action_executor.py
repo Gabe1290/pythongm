@@ -188,10 +188,12 @@ class ActionExecutor:
             return
 
         # The create event fires at most once per instance lifetime. Re-entering
-        # a previously visited room reuses the same (state-preserved) instances,
-        # so without this guard create would re-run on every visit, accumulating
-        # side effects (duplicate spawns, re-armed alarms, reset variables) — M53.
-        # Room rebuilds (restart) produce fresh instances with the flag unset.
+        # a PERSISTENT room's instances reuses the same (state-preserved)
+        # objects, so without this guard create would re-run on every visit,
+        # accumulating side effects (duplicate spawns, re-armed alarms, reset
+        # variables) — M53. Room rebuilds (restart, or a non-persistent room's
+        # rebuild-on-revisit — see GameRunner.change_room) produce fresh
+        # instances with the flag unset, so create correctly fires again there.
         if event_name == "create":
             if getattr(instance, "_create_fired", False):
                 return
@@ -4163,9 +4165,7 @@ class ActionExecutor:
 
         # Update room background color
         self.game_runner.current_room.background_color = color_rgb
-
-        # If show_color is False, we could hide the background, but for now just update the color
-        # (GameMaker's "show_color" typically controls whether solid color or image is displayed)
+        self.game_runner.current_room.show_background_color = show_color
 
         logger.debug(f"🎨 Set background color: {color_str} → {color_rgb}, show={show_color}")
 
@@ -4244,12 +4244,8 @@ class ActionExecutor:
             self.game_runner.current_room.tile_vertical = tiled_v
             self.game_runner.current_room.bg_hspeed = hspeed
             self.game_runner.current_room.bg_vspeed = vspeed
+            self.game_runner.current_room.background_foreground = foreground
 
-            # Note: foreground (drawing in front of instances) isn't wired
-            # for the legacy single-background path — only the newer
-            # multi-layer `backgrounds` room format supports per-layer
-            # foreground (see GameRoom._render_bg_layers). Acknowledged but
-            # not applied here; see TODO.md.
             logger.debug(f"🖼️ Set background: '{background_name}', visible={visible}, "
                   f"tiled_h={tiled_h}, tiled_v={tiled_v}, foreground={foreground}, "
                   f"hspeed={hspeed}, vspeed={vspeed}")

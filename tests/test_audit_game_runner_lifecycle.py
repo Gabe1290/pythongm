@@ -43,16 +43,18 @@ def _make_runner():
             runner.fps = 60
             runner._room_transition_grace_frames = 0
             runner._destroyed_memory = {}
+            runner._visited_rooms = set()
             return runner
 
 
-def _make_room(name, instances, width=640, height=480):
+def _make_room(name, instances, width=640, height=480, persistent=False):
     with patch('runtime.game_runner.pygame'):
         with patch('runtime.game_runner.load_all_plugins'):
             from runtime.game_runner import GameRoom
             return GameRoom(
                 name,
-                {'width': width, 'height': height, 'instances': instances},
+                {'width': width, 'height': height, 'instances': instances,
+                 'persistent': persistent},
                 action_executor=MagicMock(),
             )
 
@@ -269,15 +271,61 @@ class TestRestartGameRebuildsAll:
 # M53 — re-entering a visited room does not re-fire create
 # ---------------------------------------------------------------------------
 class TestChangeRoomCreateOnce:
-    def test_create_fires_once_per_instance_across_reentry(self):
-        # RETARGETED to our M53 implementation: the create-once-per-instance
-        # guard lives in ActionExecutor.execute_event (the single chokepoint),
-        # not in change_room. change_room calls execute_event(..., "create")
-        # on every entry and the guard makes the second call a no-op. The
-        # remote's discarded design guarded in change_room itself; that is why
-        # the original orphaned test mocked execute_event with a guard-less
-        # side_effect (which counted 2). We use a REAL ActionExecutor with a
-        # counting create handler so our actual guard is exercised.
+    # M53's ORIGINAL scenario (both rooms non-persistent) has since been
+    # RETARGETED: rooms are now non-persistent by default (real GameMaker
+    # semantics, DEFERRED_ITEMS_PLAN.md's room-background/scrolling-actions
+    # item — see GameRunner.change_room), so a non-persistent room revisit
+    # REBUILDS fresh instances and create correctly fires again there. The
+    # "does not re-fire create on a revisit" guarantee this class checks
+    # now only holds for a room explicitly marked `persistent: true`
+    # (which keeps its live, already-created instances across a revisit) —
+    # see test_create_does_not_refire_in_a_persistent_room below. The
+    # once-per-instance-lifetime GUARD itself (ActionExecutor.execute_event,
+    # the single chokepoint) is unchanged and still exercised here with a
+    # REAL ActionExecutor + a counting create handler, not a mocked
+    # execute_event.
+    def test_create_refires_on_a_non_persistent_room_rebuild(self):
+        # Own local project_data (not the shared _PROJECT/_PLAYER fixtures —
+        # 'player' there is OBJECT-level persistent: True, a separate,
+        # unrelated mechanism from ROOM-level persistence this test targets;
+        # mixing the two would muddy what's actually being proven here).
+        from runtime.action_executor import ActionExecutor
+        from runtime.game_runner import GameRoom
+
+        project_data = {
+            'assets': {
+                'rooms': {'r1': {'width': 320, 'height': 240,
+                                  'instances': [{'object_name': 'npc', 'x': 10, 'y': 10}]}},
+                'objects': {'npc': {'name': 'npc', 'events': {'create': {'actions': []}}}},
+            },
+            'settings': {},
+        }
+
+        runner = _make_runner()
+        runner.project_data = project_data
+        runner._objects_data = project_data['assets']['objects']
+        ex = ActionExecutor(game_runner=runner)
+        runner.action_executor = ex
+
+        room1 = GameRoom('r1', project_data['assets']['rooms']['r1'], action_executor=ex)
+        room1.set_sprites_for_instances({}, project_data['assets']['objects'])
+        room2 = _make_room('r2', [])
+
+        runner.rooms = {'r1': room1, 'r2': room2}
+        runner.current_room = room2  # start "elsewhere"
+
+        runner.change_room('r1')  # first entry -> create fires
+        first_instance = runner.current_room.instances[0]
+        assert first_instance._create_fired is True
+
+        runner.change_room('r2')
+        runner.change_room('r1')  # revisit -> non-persistent room REBUILDS
+        second_instance = runner.current_room.instances[0]
+
+        assert second_instance is not first_instance, "room was not rebuilt"
+        assert second_instance._create_fired is True, "create did not fire on the fresh instance"
+
+    def test_create_does_not_refire_in_a_persistent_room(self):
         from runtime.action_executor import ActionExecutor
 
         runner = _make_runner()
@@ -285,8 +333,7 @@ class TestChangeRoomCreateOnce:
         runner._objects_data = _PROJECT['assets']['objects']
 
         from runtime.game_runner import GameInstance
-        # r1 with a non-persistent monster whose create we count.
-        room1 = _make_room('r1', [])
+        room1 = _make_room('r1', [], persistent=True)
         ex = ActionExecutor(game_runner=runner)
         creates = []
         ex.action_handlers['__count_create'] = (
@@ -308,7 +355,8 @@ class TestChangeRoomCreateOnce:
 
         runner.change_room('r1')  # first entry -> create fires
         runner.change_room('r2')
-        runner.change_room('r1')  # re-entry -> create must NOT fire again
+        runner.change_room('r1')  # revisit -> persistent room keeps its live
+                                   # instance -> create must NOT fire again
 
         assert sum(creates) == 1
 

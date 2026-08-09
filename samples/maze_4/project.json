@@ -2340,7 +2340,8 @@
         "_external_file": "rooms/room_start.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room14": {
         "name": "room14",
@@ -2356,7 +2357,8 @@
         "_external_file": "rooms/room14.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room13": {
         "name": "room13",
@@ -2372,7 +2374,8 @@
         "_external_file": "rooms/room13.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room12": {
         "name": "room12",
@@ -2388,7 +2391,8 @@
         "_external_file": "rooms/room12.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room11": {
         "name": "room11",
@@ -2404,7 +2408,8 @@
         "_external_file": "rooms/room11.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room10": {
         "name": "room10",
@@ -2420,7 +2425,8 @@
         "_external_file": "rooms/room10.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room9": {
         "name": "room9",
@@ -2436,7 +2442,8 @@
         "_external_file": "rooms/room9.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room8": {
         "name": "room8",
@@ -2452,7 +2459,8 @@
         "_external_file": "rooms/room8.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room7": {
         "name": "room7",
@@ -2468,7 +2476,8 @@
         "_external_file": "rooms/room7.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room20": {
         "name": "room20",
@@ -2484,7 +2493,8 @@
         "_external_file": "rooms/room20.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room19": {
         "name": "room19",
@@ -2500,7 +2510,8 @@
         "_external_file": "rooms/room19.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room18": {
         "name": "room18",
@@ -2516,7 +2527,8 @@
         "_external_file": "rooms/room18.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room17": {
         "name": "room17",
@@ -2532,7 +2544,8 @@
         "_external_file": "rooms/room17.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room16": {
         "name": "room16",
@@ -2548,7 +2561,8 @@
         "_external_file": "rooms/room16.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room15": {
         "name": "room15",
@@ -2564,7 +2578,8 @@
         "_external_file": "rooms/room15.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room26": {
         "name": "room26",
@@ -2580,7 +2595,8 @@
         "_external_file": "rooms/room26.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room25": {
         "name": "room25",
@@ -2596,7 +2612,8 @@
         "_external_file": "rooms/room25.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room24": {
         "name": "room24",
@@ -2612,7 +2629,8 @@
         "_external_file": "rooms/room24.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room23": {
         "name": "room23",
@@ -2628,7 +2646,8 @@
         "_external_file": "rooms/room23.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room22": {
         "name": "room22",
@@ -2644,7 +2663,8 @@
         "_external_file": "rooms/room22.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       },
       "room21": {
         "name": "room21",
@@ -2660,7 +2680,8 @@
         "_external_file": "rooms/room21.json",
         "created": "2026-07-17T10:51:41.392106",
         "modified": "2026-07-17T10:51:41.392106",
-        "imported": true
+        "imported": true,
+        "persistent": true
       }
     },
     "scripts": {},

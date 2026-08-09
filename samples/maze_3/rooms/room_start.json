@@ -22,5 +22,6 @@
   "created": "2026-06-05T11:12:38.636764",
   "modified": "2026-06-05T18:15:05.856093",
   "imported": true,
-  "tiles": []
+  "tiles": [],
+  "persistent": true
 }

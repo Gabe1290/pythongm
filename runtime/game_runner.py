@@ -1322,6 +1322,19 @@ class GameRoom:
         self.bg_scroll_x = 0.0
         self.bg_scroll_y = 0.0
         self.background_surface = None
+        # set_background_color's `show_color` param (execute_set_background_
+        # color_action): whether render() fills the screen with
+        # background_color each frame, or black when hidden. Filling black
+        # rather than skipping the fill entirely — skipping would let the
+        # previous frame's pixels smear across frames in this continuously-
+        # redrawing pygame loop.
+        self.show_background_color = room_data.get('show_background_color', True)
+        # set_background's `foreground` param (execute_set_background_action):
+        # whether the legacy single-background image draws in front of
+        # instances instead of behind them. Mirrors bg_layers' own per-layer
+        # foreground pass (_render_bg_layers(foreground=True)) — see
+        # _render_room.
+        self.background_foreground = room_data.get('background_foreground', False)
         self._stretched_bg_cache = None  # Cached stretched background surface
         self._stretched_layer_cache: Dict[int, Any] = {}  # Cached stretched layer surfaces
         self.project_path = project_path
@@ -1627,14 +1640,15 @@ class GameRoom:
         the bg color, not stale pixels.
         """
         active_views = self._active_views() if self.views_enabled else []
+        fill_color = self.background_color if self.show_background_color else (0, 0, 0)
 
         if not active_views:
-            screen.fill(self.background_color)
+            screen.fill(fill_color)
             self.current_view_index = -1
             self._render_room(screen, (0, 0))
             return
 
-        screen.fill(self.background_color)
+        screen.fill(fill_color)
         prev_clip = screen.get_clip()
         try:
             for i, view in active_views:
@@ -1678,9 +1692,12 @@ class GameRoom:
             return
 
         # Draw background layers (non-foreground) or legacy single background
+        # — a legacy background configured with foreground=True (set_background's
+        # `foreground` param) is skipped here and drawn after instances instead
+        # (below), mirroring bg_layers' own foreground pass.
         if self.bg_layers:
             self._render_bg_layers(screen, foreground=False, view_offset=offset)
-        elif self.background_surface:
+        elif self.background_surface and not self.background_foreground:
             self._render_legacy_background(screen, view_offset=offset)
 
         # Render tile layer (behind instances, at depth 1000000 by default)
@@ -1700,6 +1717,8 @@ class GameRoom:
         # Draw foreground background layers
         if self.bg_layers:
             self._render_bg_layers(screen, foreground=True, view_offset=offset)
+        elif self.background_surface and self.background_foreground:
+            self._render_legacy_background(screen, view_offset=offset)
 
         # Render Thymio robots separately (on top)
         for instance in self.instances:
@@ -2000,12 +2019,18 @@ class GameRunner:
 
         # "Stay destroyed" memory: room name -> set of (object_name, xstart,
         # ystart) identities for instances flagged `remember_destroyed` that
-        # were destroyed during play. Consulted when a room is rebuilt from its
-        # authored layout (room restart / first-room rebuild on game restart)
+        # were destroyed during play. Consulted whenever a room is rebuilt from
+        # its authored layout (room restart / game restart / a non-persistent
+        # room's rebuild-on-revisit — see change_room and _visited_rooms below)
         # so those instances are not respawned. Cleared on a full game restart.
-        # Leaving and re-entering a room needs no entry here — change_room
-        # reuses the same room object, so destroyed instances are already gone.
         self._destroyed_memory: Dict[str, set] = {}
+
+        # Rooms this playthrough has already entered at least once via
+        # change_room. A room not in here yet is still the pristine object
+        # GameRoom-built at load, so change_room's rebuild-on-revisit check
+        # (only meaningful for an actual REVISIT) can skip it safely. Cleared
+        # on a full game restart alongside _destroyed_memory.
+        self._visited_rooms: set = set()
 
         # Cached reference to objects data (set once during project load)
         self._objects_data: Dict[str, dict] = {}
@@ -2416,6 +2441,7 @@ class GameRunner:
 
         logger.info(f"Starting with room: {starting_room}")
         self.current_room = self.rooms[starting_room]
+        self._visited_rooms.add(starting_room)
 
         # Set window size based on room
         self.window_width = self.current_room.width
@@ -4410,6 +4436,13 @@ class GameRunner:
         # Full reset: forget every "stay destroyed" instance so bonuses and the
         # like reappear on a fresh playthrough.
         self._destroyed_memory.clear()
+        # Also forget which rooms this playthrough has entered, so a room
+        # revisited after this restart is correctly treated as a fresh
+        # revisit by change_room's rebuild-on-revisit check (harmless
+        # either way for the loop below, which force-rebuilds every room
+        # unconditionally regardless of _visited_rooms — this only matters
+        # for a LATER change_room call after the restart completes).
+        self._visited_rooms.clear()
 
         logger.debug(f"  📊 Reset: Score={self.score}, Lives={self.lives}, Health={self.health}")
 
@@ -4464,12 +4497,20 @@ class GameRunner:
             # Replace the room in our dictionary
             self.rooms[first_room_name] = new_room
             self.current_room = new_room
+            self._visited_rooms.add(first_room_name)
 
             # Rebuild every OTHER already-visited room so rooms 2..N don't keep
             # the previous playthrough's mutated state (destroyed/moved/changed
             # instances). Without this, clearing _destroyed_memory only gave a
             # fresh start in room 1 (M52). Create events fire on entry (the
             # instances are fresh, so the create guard lets them run).
+            #
+            # Deliberately unconditional — every room rebuilds here regardless
+            # of GameRoom.persistent (unlike change_room's rebuild-on-revisit
+            # check, which honors it). A full game restart is a hard reset;
+            # letting a persistent room survive restart_game (as real
+            # GameMaker's persistent rooms do) would reopen the exact M52 bug
+            # this loop exists to fix, for a case no current sample needs.
             rooms_data = self.project_data.get('assets', {}).get('rooms', {})
             for rname in list(self.rooms.keys()):
                 if rname == first_room_name:
@@ -4667,7 +4708,25 @@ class GameRunner:
                 self.trigger_room_end_event()
 
             logger.info(f"🚪 Changing to room: {room_name}")
-            self.current_room = self.rooms[room_name]
+
+            # A room rebuilds fresh from its authored layout every time it's
+            # RE-entered, unless explicitly marked persistent — real
+            # GameMaker semantics (see set_room_persistent /
+            # GameRoom.persistent). Only fires on an actual revisit
+            # (room_name already in _visited_rooms); the room's first-ever
+            # entry uses the pristine object GameRoom already built at load,
+            # so rebuilding it again would be redundant. _build_room_from_data
+            # is the same helper restart_room/restart_game use — it also
+            # drops any remember_destroyed instances via _apply_destroyed_memory,
+            # so that mechanism keeps working on a non-persistent revisit too.
+            target_room = self.rooms[room_name]
+            if room_name in self._visited_rooms and not target_room.persistent:
+                room_data = self.project_data.get('assets', {}).get('rooms', {}).get(room_name)
+                if room_data:
+                    target_room = self._build_room_from_data(room_name, room_data)
+                    self.rooms[room_name] = target_room
+            self._visited_rooms.add(room_name)
+            self.current_room = target_room
 
             # Add persistent instances to the new room
             objects_data = self._objects_data
@@ -4871,6 +4930,7 @@ class GameRunner:
 
         logger.info(f"🎮 Starting game with room: {starting_room}")
         self.current_room = self.rooms[starting_room]
+        self._visited_rooms.add(starting_room)
 
         # Set window size based on room
         self.window_width = self.current_room.width
