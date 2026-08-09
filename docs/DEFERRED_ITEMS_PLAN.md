@@ -120,6 +120,31 @@ discipline as the match3_2/3 and views sessions:
     overlaps with #10's unused-asset detection. Worth scoping *after*
     Asset Manager, not before — building unused-asset detection twice
     would be wasted work.
+13. **2.0 extension system — the feature work.** Tasks 2-4 of
+    `docs/extension_compat_2_0/PLAN.md`: the `format_version`/
+    `required_extensions` read/write, greyed-out placeholder rendering
+    for unrecognised actions, and the install-offer UX. Depends on Tier
+    0's item 12 (the guard) shipping first, but is otherwise independent
+    of every other Tier 3 item. Has real open questions to resolve
+    against `core/project_manager.py` before starting (see the plan's
+    "Open questions" section) — don't start from the plan's assumptions
+    alone.
+
+## Tier 0 — do before anything else in this doc (protects future 1.0 downloads)
+
+12. **Ship 1.0.1 with a project-format-version guard.** Task 1 of
+    `docs/extension_compat_2_0/PLAN.md` (written 2026-08-09, from a
+    mobile design session, prototype already proven against
+    `samples/plateforme_3/project.json`). Small and self-contained: a
+    `check_project_format()` guard that makes any 1.0-line build refuse
+    (not crash, not silently save-and-corrupt) a project newer than it
+    understands. This has to ship as its own **1.0.1 patch release**
+    before any real 2.0-format file exists anywhere, or the whole
+    compatibility guarantee the rest of that plan depends on is
+    unenforceable retroactively. The remaining three tasks in that plan
+    (2.0 read/write, unknown-action placeholders, install-offer UX) are
+    real feature work — bucket those with Tier 3 instead, they don't
+    share Task 1's urgency.
 
 ## Explicitly not now (already scheduled or deliberately deferred)
 
@@ -127,7 +152,6 @@ discipline as the match3_2/3 and views sessions:
   says to do this "carefully... just before the final validation pass
   before the 1.0 release." Don't move it earlier; it changes the on-disk
   save format for every project.
-- **ja/pt/zh translation migration** — explicitly post-1.0 in `TODO.md`.
 - **Particle system / timelines / save_game / load_game / show_video /
   execute_script UI metadata** — `TODO.md` explicitly says "do NOT add UI
   yet" pending a functional check of the underlying handlers.
@@ -178,3 +202,26 @@ Project (items 10-11) have no small starting subset documented yet —
 scope Asset Manager first since Clean Project's unused-asset detection
 overlaps it. Re-verify each item's `TODO.md` claim against current code
 before starting it, per the discipline above.
+
+**Item 8 (GMK importer hardening) is now DONE** (2026-07-16, same day as
+the note above — `treasure`/`maze_4` reintroduced, 12 real bugs closed,
+registry in `docs/GMK_IMPORTER_HARDENING_PLAN.md` fully checked). ja/pt/zh
+translation migration, listed above as "explicitly not now," is **also
+now DONE** (2026-08-09 — see `TODO.md`'s matching entry and
+`docs/I18N_CLEANUP_2026-08-06.md`).
+
+**2026-08-09 — new Tier 0 item added.** A mobile design session produced
+a ready-to-implement plan for 2.0 extension-system compatibility
+(`docs/extension_compat_2_0/PLAN.md`) with its Task 1 — a project-format-
+version guard that must ship as **1.0.1** before any real 2.0 file exists
+— now item 12, sequenced *ahead* of everything else in this doc precisely
+because it's the one item here with a real "must happen before X" ordering
+constraint relative to work outside this repo entirely (future downloads
+of the already-released 1.0 build). The rest of that plan (2.0 read/write,
+placeholder rendering, install-offer UX) is item 13, bucketed with Tier 3
+since it's real feature work with open design questions, not urgent
+infrastructure. **Suggested next session, in order: item 12 first (small,
+self-contained, unblocks a release), then resume wherever Tier 3 was left
+— item 9 (Kivy `execute_code` parity, needs a design decision) or item 10
+(Asset Manager, needs its own scoping pass) are the two with no other
+open dependency.**
