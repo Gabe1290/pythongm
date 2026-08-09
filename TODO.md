@@ -424,21 +424,47 @@ Other:
 
 ## Translations / i18n
 
-### Migrate ja / pt / zh off the legacy translation set (post-1.0)
-- The language menu still lists Japanese, Portuguese, and Chinese, but those
-  three run on the abandoned `translations/pygamemaker_{ja,pt,zh}.ts` files
-  (legacy monolithic format). Their contexts reference source strings that no
-  longer exist in the codebase — e.g. the `WelcomeTab` context still lists
-  `Quick Actions`, `Create Room (Ctrl+R)`, and `Create amazing 2D games with
-  visual scripting`, none of which the current `widgets/welcome_tab.py`
-  emits — so essentially the whole IDE renders in English for these locales,
-  not just the Welcome tab.
-- The six maintained locales (fr/de/es/it/ru/sl/uk) live in the `pygm2_XX*`
-  split-file system and were brought fully up to date for the Welcome tab.
-- TODO once we have time: regenerate `pygm2_{ja,pt,zh}*.ts` from current
-  sources (same `pylupdate6`/split-group layout the other languages use),
-  translate, compile to `.qm`, and retire the `pygamemaker_*.{ts,qm}` legacy
-  files. Until then ja/pt/zh are effectively English with a flag.
+### ~~Migrate ja / pt / zh off the legacy translation set~~ (DONE 2026-08-09)
+- Done: `pygm2_pt.ts`/`pygm2_ja.ts`/`pygm2_zh.ts` were built from scratch
+  against the current string catalog (1369 real distinct messages / 61
+  contexts each — pt sourced from `pygm2_de.ts`, then ja/zh sourced from
+  the corrected `pygm2_pt.ts`, via the committed `scripts/
+  gen_translation_ts.py` tool; see `docs/I18N_CLEANUP_2026-08-06.md`
+  Section H and `docs/JA_ZH_I18N_PLAN.md`), fully translated, compiled to
+  `.qm`, and confirmed reachable in `LanguageManager._discover_languages()`.
+  The legacy `translations/pygamemaker_{ja,pt,zh}.ts` files (the ones this
+  entry described as abandoned/stale) are all deleted. All three now match
+  the six previously-maintained locales' coverage. Two real dead-
+  translation bugs were found and fixed along the way (a wrong Qt
+  translation *context* name, and `self.tr(f"...")` f-strings that could
+  never match a literal `<source>` template) — see `CLAUDE.md`'s
+  2026-08-08/09 session notes for detail.
+- Not done: a human has not opened the running IDE with pt/ja/zh selected
+  and eyeballed the rendered UI — every string is programmatically
+  verified to resolve via a live `QTranslator` and (for the in-app
+  Tutorials curriculum specifically) a real-widget-driven headless test,
+  but nobody has looked at actual pixels. Not tracked as a TODO item since
+  it needs a GUI this dev environment doesn't have, not more coding.
+
+## Extensions
+
+### 2.0 extension system — compatibility guarantees (design brief ready, 2026-08-09)
+- Goal: a project using extensions (Thymio robotics, a future 3D extension)
+  must never crash or silently corrupt when opened by an editor that
+  doesn't have those extensions installed — audience is children on mixed
+  hardware running different app versions.
+- Full plan, decisions, and a prototype already proven against a real
+  bundled sample: `docs/extension_compat_2_0/PLAN.md` (+ companion
+  `compat_demo.py` / `project_2_0.json` in the same folder). Four ordered
+  tasks: ship a **1.0.1 format-version guard first** (protects future
+  downloads before any 2.0 file exists — do not skip or reorder this one),
+  then the 2.0 `format_version`/`required_extensions` read/write, then
+  greyed-out placeholder rendering for unknown actions, then the
+  install-offer UX wired to the manifest.
+- Not started against real code yet — the plan's "Open questions" section
+  lists what to confirm in `core/project_manager.py` first (strict vs.
+  tolerant unknown-key handling today, what the existing `version` field
+  actually means, whether the writer currently drops unrecognised data).
 
 ## Project format / persistence
 
