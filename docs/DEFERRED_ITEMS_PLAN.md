@@ -140,13 +140,23 @@ discipline as the match3_2/3 and views sessions:
     longer a silent surprise. Tiers 2-4 (search/filter; bulk rename/move/
     delete — needs its own design pass, see the plan; unused-asset
     cleanup UI) remain open, each independently small once picked up.
-11. **Clean Project** — scope is genuinely vague in `TODO.md` ("remove
-    temporary files, delete unused assets, clean build artifacts") and
-    overlaps with Asset Manager's unused-asset detection — which now
-    exists (`utils/asset_usage.find_unused_assets`, item 10 Tier 1), so
-    this is unblocked to build its own scope on top of it rather than
-    duplicate it. Still needs its own scoping pass for the "temp files /
-    build artifacts" half, which usage tracking doesn't cover.
+11. **Clean Project** — ✅ **Scoped (2026-08-09), not implemented.**
+    `docs/CLEAN_PROJECT_PLAN.md`. Two findings shrank the real scope:
+    rollback-snapshot cleanup already happens automatically
+    (`_sweep_orphan_snapshots`, every load), and the `__pycache__`/`.pyc`
+    workaround describes cleaning this dev repo, not a saved game project
+    (which never has importable `.py` files under it). Real remaining
+    work: a `.tmp`-orphan sweep (small, safe), an orphaned-physical-file
+    scan (files on disk with no `project.json` entry — genuinely
+    different from Asset Manager's unused-*entry* detection, item 10
+    Tier 1), and deletion UI for both. **Deliberately not implemented
+    this pass**, including the safe read-only detection halves — see the
+    plan's "Why nothing shipped this pass": shipping detection with
+    nothing to act on would leave the feature looking half-finished, and
+    the actually-valuable deletion halves are destructive operations
+    against a user's real project files with no undo story yet (shared
+    open question with item 10 Tier 3). Resolve that once, deliberately,
+    then build detection + deletion together as one coherent unit.
 13. **2.0 extension system — the feature work.** ✅ **DONE (2026-08-09,
     commit `4c50485`)** for everything with a concrete, provable fix.
     Tasks 2-4 of `docs/extension_compat_2_0/PLAN.md` turned out much
