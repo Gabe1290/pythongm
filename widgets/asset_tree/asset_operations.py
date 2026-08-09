@@ -164,7 +164,8 @@ class AssetOperations:
             self.tree,
             "Delete Asset",
             f"Are you sure you want to delete '{asset_name}' from {asset_category}?\n\n"
-            f"This will permanently remove the asset and its file.{usage_note}",
+            f"It will be moved to the project's trash and can be restored "
+            f"later.{usage_note}",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )
@@ -428,43 +429,25 @@ class AssetOperations:
             rel_file_path = asset_data.get('file_path') or asset_data.get('project_path')
             logger.debug(f"Found asset data: {rel_file_path or 'No path'}")
 
-            # Delete physical file if it exists
-            if rel_file_path:
-                # Resolve relative path against project directory
-                file_path = Path(self.tree.project_path) / rel_file_path
-                if file_path.exists():
-                    file_path.unlink()
-                    logger.debug(f"Deleted file: {file_path}")
-
-            # Delete thumbnail if it exists
-            thumbnail_path = asset_data.get('thumbnail')
-            if thumbnail_path:
-                thumb_file = Path(self.tree.project_path) / thumbnail_path
-                if thumb_file.exists():
-                    thumb_file.unlink()
-                    logger.debug(f"Deleted thumbnail: {thumb_file}")
-
             # Rooms/objects keep their payload in <type>/<name>.json side files
-            # that file_path/project_path never reference, so the unlink above
-            # left them behind. A stale orphan resurrects the dead asset's data
-            # into any future asset created with the same name (the room save's
-            # preserve-instances branch and the object/room file-precedence
-            # merge both read it back). Remove it alongside the project.json
-            # entry (audit M59).
+            # that file_path/project_path never reference. A stale orphan left
+            # on disk would resurrect the dead asset's data into any future
+            # asset created with the same name (the room save's preserve-
+            # instances branch and the object/room file-precedence merge both
+            # read it back) — trash_asset moves it alongside the main file/
+            # thumbnail rather than leaving it behind (audit M59).
+            side_file_rel = None
             if asset_category in ("rooms", "objects"):
                 side_file = Path(self.tree.project_path) / asset_category / f"{asset_name}.json"
                 if side_file.exists():
-                    side_file.unlink()
-                    logger.debug(f"Deleted side file: {side_file}")
-
-            # Remove from project data
-            del assets[asset_category][asset_name]
-            logger.debug(f"Removed {asset_name} from project data")
+                    side_file_rel = f"{asset_category}/{asset_name}.json"
 
             # If deleting a sprite, clear references from objects that use it
+            # (informational only in the trash manifest — not auto-relinked
+            # on restore, see utils/asset_trash.py).
+            updated_objects = []
             if asset_category == "sprites":
                 objects = assets.get("objects", {})
-                updated_objects = []
                 for obj_name, obj_data in objects.items():
                     if obj_data.get("sprite") == asset_name:
                         obj_data["sprite"] = ""
@@ -494,6 +477,20 @@ class AssetOperations:
                                     logger.debug(f"Cleared sprite reference in side file: {obj_file}")
                             except (OSError, ValueError) as e:
                                 logger.warning(f"Could not update object side file {obj_file}: {e}")
+
+            # Move the asset's files to .trash/ (main file, thumbnail, side
+            # file) and record a manifest entry, instead of unlinking them —
+            # see utils/asset_trash.py's module docstring for why this is a
+            # trash mechanism rather than a QUndoCommand-based undo/redo.
+            from utils.asset_trash import trash_asset
+            cleared_references = [{"object": n, "field": "sprite"} for n in updated_objects]
+            trash_asset(Path(self.tree.project_path), asset_category, asset_name, asset_data,
+                        side_file_rel=side_file_rel,
+                        cleared_references=cleared_references)
+
+            # Remove from project data
+            del assets[asset_category][asset_name]
+            logger.debug(f"Removed {asset_name} from project data")
 
             # CRITICAL: Also remove from AssetManager cache
             parent = self.tree.parent()

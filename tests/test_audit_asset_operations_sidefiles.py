@@ -131,3 +131,37 @@ def test_delete_room_without_side_file_still_succeeds(tmp_path):
     assert ops.remove_asset_from_project("rooms", "level1") is True
     data = json.loads((tmp_path / "project.json").read_text(encoding="utf-8"))
     assert "level1" not in data["assets"]["rooms"]
+
+
+def test_legacy_fallback_delete_is_also_a_soft_delete(tmp_path):
+    """The legacy (no project_manager) fallback delete path routes through
+    the same trash mechanism as the live-model path
+    (core/asset_manager.py's AssetManager.delete_asset) — both a room's
+    side file and a sprite's main file end up restorable, not unlinked."""
+    from utils.asset_trash import list_trash, restore_asset
+
+    _write_project(tmp_path, {
+        "rooms": {"level2": {"name": "level2"}},
+        "sprites": {"spr_old": {"name": "spr_old", "file_path": "sprites/spr_old.png"}},
+    })
+    rooms_dir = tmp_path / "rooms"
+    rooms_dir.mkdir()
+    side_file = rooms_dir / "level2.json"
+    side_file.write_text(json.dumps({"name": "level2", "instances": []}), encoding="utf-8")
+    sprites_dir = tmp_path / "sprites"
+    sprites_dir.mkdir()
+    (sprites_dir / "spr_old.png").write_bytes(b"\x89PNG\r\n")
+
+    ops = AssetOperations(_FakeTree(tmp_path))
+    assert ops.remove_asset_from_project("rooms", "level2") is True
+    assert ops.remove_asset_from_project("sprites", "spr_old") is True
+
+    entries = {e["asset_name"]: e for e in list_trash(tmp_path)}
+    assert set(entries) == {"level2", "spr_old"}
+    assert entries["level2"]["files"]["side_file"] == "rooms/level2.json"
+    assert entries["spr_old"]["files"]["main"] == "sprites/spr_old.png"
+
+    # And it's genuinely restorable, not just "moved somewhere."
+    restored = restore_asset(tmp_path, entries["spr_old"]["id"])
+    assert restored is not None
+    assert (tmp_path / restored["file_path"]).exists()

@@ -327,6 +327,107 @@ class TestAssetManagerDelete:
 
         signal_spy.assert_called_once_with("sprites", "to_delete")
 
+    def test_delete_asset_is_a_soft_delete_recorded_in_trash(
+            self, asset_manager, sample_sprite_path, temp_project_dir):
+        """The file doesn't just vanish — it's moved to .trash/ and
+        restorable, per the design decision in utils/asset_trash.py
+        (docs/ASSET_MANAGER_PLAN.md's "bulk-delete-undo" question)."""
+        from utils.asset_trash import list_trash, restore_asset
+
+        asset_manager.import_asset(sample_sprite_path, "sprites", "to_delete")
+        asset_manager.delete_asset("sprites", "to_delete")
+
+        entries = list_trash(temp_project_dir)
+        assert len(entries) == 1
+        assert entries[0]["asset_type"] == "sprites"
+        assert entries[0]["asset_name"] == "to_delete"
+
+        restored = restore_asset(temp_project_dir, entries[0]["id"])
+        assert restored is not None
+        restored_file = temp_project_dir / restored["file_path"]
+        assert restored_file.exists()
+
+    def test_delete_sprite_records_cleared_object_references_in_trash(
+            self, asset_manager, sample_sprite_path, temp_project_dir):
+        from utils.asset_trash import list_trash
+
+        asset_manager.import_asset(sample_sprite_path, "sprites", "spr_x")
+        asset_manager.assets_cache.setdefault("objects", {})["obj_player"] = {
+            "name": "obj_player", "sprite": "spr_x",
+        }
+
+        asset_manager.delete_asset("sprites", "spr_x")
+
+        assert asset_manager.assets_cache["objects"]["obj_player"]["sprite"] == ""
+        entries = list_trash(temp_project_dir)
+        assert entries[0]["cleared_references"] == [
+            {"object": "obj_player", "field": "sprite"}]
+
+
+class TestAssetManagerTrashWrappers:
+    """AssetManager.list_trash/restore_from_trash/empty_trash — the
+    AssetManager-level API TrashDialog (widgets/asset_tree/asset_dialogs.py)
+    is built on."""
+
+    @pytest.fixture
+    def asset_manager(self, temp_project_dir):
+        with patch('pygame.mixer.init'):
+            from core.asset_manager import AssetManager
+            return AssetManager(project_directory=temp_project_dir)
+
+    def test_list_trash_empty_initially(self, asset_manager):
+        assert asset_manager.list_trash() == []
+
+    def test_restore_from_trash_puts_it_back_in_the_cache(
+            self, asset_manager, sample_sprite_path):
+        asset_manager.import_asset(sample_sprite_path, "sprites", "spr_hero")
+        asset_manager.delete_asset("sprites", "spr_hero")
+        assert asset_manager.get_asset("sprites", "spr_hero") is None
+
+        entry = asset_manager.list_trash()[0]
+        restored = asset_manager.restore_from_trash(entry["id"])
+
+        assert restored is not None
+        assert asset_manager.get_asset("sprites", "spr_hero") is not None
+        assert asset_manager.list_trash() == []
+
+    def test_restore_from_trash_emits_asset_imported(
+            self, asset_manager, sample_sprite_path):
+        asset_manager.import_asset(sample_sprite_path, "sprites", "spr_hero")
+        asset_manager.delete_asset("sprites", "spr_hero")
+        entry = asset_manager.list_trash()[0]
+
+        signal_spy = MagicMock()
+        asset_manager.asset_imported.connect(signal_spy)
+        asset_manager.restore_from_trash(entry["id"])
+
+        signal_spy.assert_called_once()
+        args = signal_spy.call_args[0]
+        assert args[0] == "sprites" and args[1] == "spr_hero"
+
+    def test_restore_from_trash_unknown_id_returns_none(self, asset_manager):
+        assert asset_manager.restore_from_trash("nope") is None
+
+    def test_empty_trash_removes_entry_permanently(
+            self, asset_manager, sample_sprite_path):
+        asset_manager.import_asset(sample_sprite_path, "sprites", "spr_hero")
+        asset_manager.delete_asset("sprites", "spr_hero")
+        entry = asset_manager.list_trash()[0]
+
+        removed = asset_manager.empty_trash(entry["id"])
+
+        assert removed == 1
+        assert asset_manager.list_trash() == []
+        assert asset_manager.restore_from_trash(entry["id"]) is None
+
+    def test_no_project_directory_is_safe(self):
+        with patch('pygame.mixer.init'):
+            from core.asset_manager import AssetManager
+            am = AssetManager(project_directory=None)
+        assert am.list_trash() == []
+        assert am.restore_from_trash("anything") is None
+        assert am.empty_trash() == 0
+
 
 class TestAssetManagerThumbnails:
     """Test thumbnail generation functionality"""

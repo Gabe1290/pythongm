@@ -427,8 +427,11 @@ class PyGameMakerIDE(QMainWindow):
             self.tr("&Validate Project"), None, self.validate_project)
         self.migrate_project_action = self.create_action(
             self.tr("&Migrate to Modular Structure"), None, self.migrate_project_structure)
+        self.show_trash_action = self.create_action(
+            self.tr("&Restore Deleted Assets..."), None, self.show_trash_dialog)
         tools_menu.addAction(self.validate_project_action)
         tools_menu.addAction(self.migrate_project_action)
+        tools_menu.addAction(self.show_trash_action)
         tools_menu.addSeparator()
 
         # Language submenu
@@ -3576,6 +3579,29 @@ class PyGameMakerIDE(QMainWindow):
                         "✓ project.json is present")
             )
 
+    def show_trash_dialog(self):
+        """Open the Trash dialog to restore or permanently delete soft-
+        deleted assets — see utils/asset_trash.py's module docstring for
+        why deletion is a trash mechanism rather than undo/redo."""
+        if not self.current_project_path or not self.project_manager.asset_manager:
+            QMessageBox.information(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open a project first.")
+            )
+            return
+
+        from widgets.asset_tree.asset_dialogs import TrashDialog
+        dialog = TrashDialog(self.project_manager.asset_manager, parent=self)
+
+        def _on_restored(asset_type, asset_name, asset_data):
+            self.asset_tree.add_asset(asset_type, asset_name, asset_data)
+            self.project_manager.save_project()
+            self.update_status(self.tr("Restored: {0}").format(asset_name))
+
+        dialog.on_restored = _on_restored
+        dialog.exec()
+
     def migrate_project_structure(self):
         """Migrate project to use external files for objects and rooms"""
         if not self.current_project_path:
@@ -4871,6 +4897,8 @@ class PyGameMakerIDE(QMainWindow):
             self.validate_project_action.setEnabled(has_project)
         if hasattr(self, 'migrate_project_action'):
             self.migrate_project_action.setEnabled(has_project)
+        if hasattr(self, 'show_trash_action'):
+            self.show_trash_action.setEnabled(has_project)
         # Thymio Add Event/Action target the active object editor, which
         # cannot exist without an open project.
         if hasattr(self, 'thymio_add_event_action'):

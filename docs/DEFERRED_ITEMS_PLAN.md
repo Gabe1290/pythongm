@@ -134,29 +134,45 @@ discipline as the match3_2/3 and views sessions:
     delete, usage tracking ("which rooms/objects use this sprite?"),
     unused-asset cleanup. **Scoped 2026-08-09**:
     `docs/ASSET_MANAGER_PLAN.md` breaks it into 4 tiers. **Tier 1 (usage
-    tracking) DONE, same session** (commit `07a0d8a`) —
-    `utils/asset_usage.py`, wired into the existing single-asset delete
-    confirmation so deleting something still referenced elsewhere is no
-    longer a silent surprise. Tiers 2-4 (search/filter; bulk rename/move/
-    delete — needs its own design pass, see the plan; unused-asset
-    cleanup UI) remain open, each independently small once picked up.
-11. **Clean Project** — ✅ **Scoped (2026-08-09), not implemented.**
-    `docs/CLEAN_PROJECT_PLAN.md`. Two findings shrank the real scope:
-    rollback-snapshot cleanup already happens automatically
-    (`_sweep_orphan_snapshots`, every load), and the `__pycache__`/`.pyc`
-    workaround describes cleaning this dev repo, not a saved game project
-    (which never has importable `.py` files under it). Real remaining
-    work: a `.tmp`-orphan sweep (small, safe), an orphaned-physical-file
-    scan (files on disk with no `project.json` entry — genuinely
-    different from Asset Manager's unused-*entry* detection, item 10
-    Tier 1), and deletion UI for both. **Deliberately not implemented
-    this pass**, including the safe read-only detection halves — see the
-    plan's "Why nothing shipped this pass": shipping detection with
-    nothing to act on would leave the feature looking half-finished, and
-    the actually-valuable deletion halves are destructive operations
-    against a user's real project files with no undo story yet (shared
-    open question with item 10 Tier 3). Resolve that once, deliberately,
-    then build detection + deletion together as one coherent unit.
+    tracking) DONE** (commit `07a0d8a`) — `utils/asset_usage.py`, wired
+    into the existing single-asset delete confirmation. **The Tier 3
+    "bulk-delete-undo" design question is also DONE, same day** (commit
+    range starting `feat: soft-delete Trash` — see item 10.5 below): a
+    soft-delete Trash, not a QUndoCommand undo/redo. Tiers 2-4
+    (search/filter; the bulk multi-select UI itself; unused-asset cleanup
+    UI) remain open but are now pure UI-building work, no open design
+    questions.
+10.5. **The bulk-delete-undo design question — SETTLED (2026-08-09).**
+    Explicitly its own numbered item because it was the shared blocker
+    for both item 10 Tier 3 and item 11. Decision: **not**
+    `QUndoCommand`-based undo/redo (the existing `QUndoStack` usage in
+    this codebase is scoped to live in-memory canvas edits with no file
+    I/O, cleared on project switch/app restart — the wrong tool for
+    "restore a deleted file"). Built instead: `utils/asset_trash.py`, a
+    soft-delete Trash — deleting an asset moves its files to
+    `<project>/.trash/` and records a manifest entry instead of
+    unlinking anything, with a new "Tools → Restore Deleted Assets..."
+    dialog (`TrashDialog`) to restore or permanently empty. Both real
+    delete paths (`AssetManager.delete_asset`, the live-app path, and
+    `asset_operations.py`'s legacy fallback) route through it, so
+    single-asset delete is safer today too, not just future bulk
+    features. Zip export excludes `.trash/` (the compression walk had no
+    exclusions at all before this). 46 new tests across
+    `test_asset_trash.py`, `test_trash_dialog.py`, and additions to
+    `test_asset_manager.py`/`test_audit_asset_operations_sidefiles.py`/
+    `test_project_compression_trash_exclusion.py`.
+11. **Clean Project** — ✅ **Scoped (2026-08-09); its blocking dependency
+    (item 10.5) resolved the same day.** `docs/CLEAN_PROJECT_PLAN.md`.
+    Two findings shrank the real scope: rollback-snapshot cleanup already
+    happens automatically (`_sweep_orphan_snapshots`, every load), and
+    the `__pycache__`/`.pyc` workaround describes cleaning this dev repo,
+    not a saved game project (which never has importable `.py` files
+    under it). Real remaining work — a `.tmp`-orphan sweep, an orphaned-
+    physical-file scan (genuinely different from Asset Manager's
+    unused-*entry* detection), and deletion UI for both — is now pure
+    UI-building on top of the trash-backed `AssetManager.delete_asset`,
+    not a design question. Still not implemented; a future session's
+    starting point.
 13. **2.0 extension system — the feature work.** ✅ **DONE (2026-08-09,
     commit `4c50485`)** for everything with a concrete, provable fix.
     Tasks 2-4 of `docs/extension_compat_2_0/PLAN.md` turned out much
