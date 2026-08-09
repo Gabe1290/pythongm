@@ -136,9 +136,10 @@ discipline as the match3_2/3 and views sessions:
    behavior needs a codegen-strategy change or an AST-rewrite, its own
    design pass) — HTML5 never had this gap, since Pyodide's real
    `exec()` already copies locals back.
-10. **Asset Manager** (`Tools → Asset Manager...`) — bulk rename/move/
-    delete, usage tracking ("which rooms/objects use this sprite?"),
-    unused-asset cleanup. **Scoped 2026-08-09**:
+10. **Asset Manager** (`Tools → Asset Manager...`) — ✅ **DONE
+    (2026-08-09), all 4 tiers.** Bulk rename/move/delete, usage tracking
+    ("which rooms/objects use this sprite?"), unused-asset cleanup.
+    **Scoped 2026-08-09**:
     `docs/ASSET_MANAGER_PLAN.md` breaks it into 4 tiers. **Tier 1 (usage
     tracking) DONE** (commit `07a0d8a`) — `utils/asset_usage.py`, wired
     into the existing single-asset delete confirmation. **The Tier 3
