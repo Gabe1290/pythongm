@@ -481,12 +481,20 @@ Other:
   double-clicking one explains why instead of silently doing nothing
   (`events/plugin_loader.extension_for_action`,
   `tests/test_extension_action_ui.py`).
-- Not done, deliberately: an actual settings UI for toggling an
-  extension on/off. `events/plugin_loader.set_extension_enabled()`
-  exists but is never called anywhere in the app — there's currently no
-  UI surface for a user to enable/disable an extension at all. Would
-  need its own scoping pass (where does it live — Preferences? a new
-  dialog? — and a restart prompt, since extensions register at startup).
+- **Settings UI for toggling an extension on/off — DONE 2026-08-09**
+  (separate, later, `EnterPlanMode`-scoped session). New "Extensions" tab
+  in `dialogs/preferences_dialog.py`'s `PreferencesDialog` (its existing
+  5-tab pattern) calls `events/plugin_loader.set_extension_enabled()` —
+  the backend needed zero changes, this was pure UI. Checkbox state is
+  buffered and only persisted on Apply/OK (`_apply_extension_settings()`),
+  matching every other tab's Cancel-doesn't-persist behavior; no new
+  restart mechanism needed (the dialog's existing generic "requires
+  restarting the IDE" footer already covers it) and none was built for
+  the Kivy/HTML5 exporters either, since they already re-check `enabled`
+  live at export time — only the in-IDE action registry needs the
+  restart. `_warn_missing_extensions()`'s warning dialog got its "enable
+  it" pointer restored now that something real exists to point at.
+  `tests/test_preferences_extensions_tab.py` (8 tests).
 
 ## Project format / persistence
 
