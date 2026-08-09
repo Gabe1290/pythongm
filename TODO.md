@@ -56,48 +56,40 @@ it before picking an item to work on.
   project-wide search (asset names, identifiers) are **not** covered —
   genuinely separate follow-up work, not silently dropped scope.
 
-### Asset Manager
+### ~~Asset Manager~~ (DONE 2026-08-09, all 4 tiers — see docs/ASSET_MANAGER_PLAN.md)
 - Was: `Tools → Asset Manager...`.
 - Scope: bulk operations on assets (rename, move, delete in batch), search and
   filter, usage tracking ("which rooms / objects use this sprite?"), and
-  unused-asset cleanup. Scoped into tiers in `docs/ASSET_MANAGER_PLAN.md`
-  (2026-08-09) after investigating what already existed.
-- **Tier 1 (usage tracking) DONE, 2026-08-09.** `utils/asset_usage.py`'s
-  `find_asset_usages`/`find_unused_assets` — systematically walks every
-  typed action parameter (sprite/object/sound/room, via
-  `ActionParameter.param_type`), collision targets, room instances/
-  backgrounds/tiles, and object sprite/parent fields. Wired into the
-  existing single-asset delete confirmation, which previously gave zero
-  warning about what would break (only sprite→object references were ever
-  auto-cleared on delete; everything else was left dangling silently).
-- Current workaround for the rest: the Asset Tree panel on the left handles
-  single-asset rename/delete/duplicate one at a time; no search/filter, no
-  batch operations, no unused-asset cleanup UI (the detection now exists,
-  just not a dialog to act on it — see the plan's Tier 4).
-- Notes: removed the menu entry and the `show_asset_manager()` stub in
-  `core/ide_window.py`.
+  unused-asset cleanup.
+- **"Move" scoped out**: the app's asset model has no folder hierarchy (each
+  category is a flat list), so there's nothing a bulk move would relocate
+  between — dropped rather than inventing a folder system to give it meaning.
+  Batch rename deferred as its own separately-schedulable feature (a
+  different UI shape than delete's uniform "remove all of these").
+- Shipped: `utils/asset_usage.py` usage tracking, wired into the delete
+  confirmation (Tier 1); `AssetTreeWidget.apply_asset_filter` name-substring
+  filter box (Tier 2); `ExtendedSelection` multi-select + one combined
+  confirmation for bulk delete (Tier 3); `UnusedAssetsDialog` / Tools → Find
+  Unused Assets… (Tier 4). Every delete (single or bulk) is trash-backed
+  (see item 10.5 in `docs/DEFERRED_ITEMS_PLAN.md`).
 
-### Clean Project
+### ~~Clean Project~~ (DONE 2026-08-09, all 3 tiers — see docs/CLEAN_PROJECT_PLAN.md)
 - Was: `Tools → Clean Project`.
 - Scope: remove temporary files, delete unused assets, clean build artifacts,
-  shrink project size. **Scoped in `docs/CLEAN_PROJECT_PLAN.md`
-  (2026-08-09)** — investigation found rollback-snapshot cleanup already
+  shrink project size. Investigation found rollback-snapshot cleanup already
   happens automatically (`ProjectManager._sweep_orphan_snapshots`, on every
-  load) and the `__pycache__`/`.pyc` workaround line below describes
-  cleaning *this dev repo*, not a saved game project (project code lives
-  as strings inside `project.json`, never as importable `.py` files under
-  a project directory, so that case likely doesn't apply here at all).
-  Real remaining scope: an orphaned-`.tmp`-file sweep (small, safe,
-  no design questions), an orphaned-physical-asset-file scan (files on
-  disk with no `project.json` entry — the actual "shrink project size"
-  case, distinct from Asset Manager's unused-*entry* detection), and
-  actual deletion UI for both — gated on the same bulk-delete-undo
-  question `docs/ASSET_MANAGER_PLAN.md` Tier 3 needs decided first.
-- Current workaround: manually delete `.cache/`, `__pycache__/`, `*.pyc`
-  (from this dev repo; unclear this applies to a saved project at all —
-  see above).
-- Notes: removed the menu entry and the `clean_project()` stub in
-  `core/ide_window.py`.
+  load) and the `__pycache__`/`.pyc` workaround this entry used to describe
+  cleans *this dev repo*, not a saved game project (project code lives as
+  strings inside `project.json`, never as importable `.py` files under a
+  project directory — doesn't apply to a shipped project at all).
+- Shipped: `utils/project_cleanup.py`'s `.tmp`-orphan sweep (Tools → Clean
+  Project, permanent removal — never routed through the asset system in the
+  first place); `find_orphaned_physical_files`, the inverse of Asset
+  Manager's unused-*entry* detection (files on disk with no `project.json`
+  entry); `OrphanedFilesDialog` / Tools → Find Orphaned Files…, trashed via
+  its own separate `.trash_orphaned_files/` store (not the asset Trash —
+  these files have no asset entry for `AssetManager.delete_asset`'s restore
+  path to operate on safely).
 
 ### ~~Standalone executable build (Build Game / Build and Run)~~ (DONE
 2026-07-16, deferred-items plan tier 2, item 7 — closes tier 2)
