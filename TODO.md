@@ -60,9 +60,20 @@ it before picking an item to work on.
 - Was: `Tools → Asset Manager...`.
 - Scope: bulk operations on assets (rename, move, delete in batch), search and
   filter, usage tracking ("which rooms / objects use this sprite?"), and
-  unused-asset cleanup.
-- Current workaround: the Asset Tree panel on the left handles single-asset
-  operations.
+  unused-asset cleanup. Scoped into tiers in `docs/ASSET_MANAGER_PLAN.md`
+  (2026-08-09) after investigating what already existed.
+- **Tier 1 (usage tracking) DONE, 2026-08-09.** `utils/asset_usage.py`'s
+  `find_asset_usages`/`find_unused_assets` — systematically walks every
+  typed action parameter (sprite/object/sound/room, via
+  `ActionParameter.param_type`), collision targets, room instances/
+  backgrounds/tiles, and object sprite/parent fields. Wired into the
+  existing single-asset delete confirmation, which previously gave zero
+  warning about what would break (only sprite→object references were ever
+  auto-cleared on delete; everything else was left dangling silently).
+- Current workaround for the rest: the Asset Tree panel on the left handles
+  single-asset rename/delete/duplicate one at a time; no search/filter, no
+  batch operations, no unused-asset cleanup UI (the detection now exists,
+  just not a dialog to act on it — see the plan's Tier 4).
 - Notes: removed the menu entry and the `show_asset_manager()` stub in
   `core/ide_window.py`.
 
