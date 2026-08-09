@@ -577,12 +577,19 @@ Other:
     pattern); the desktop `_draw_arrow` fix gets both a `_DRAW_HANDLERS`
     lookup test and a real-pixel render test.
   - Right/middle mouse events have no touch equivalent and stay unexported.
-  - **`execute_code` env is thinner than the IDE's.** Code is inlined
-    verbatim into the generated method (good), but the IDE's exec
-    environment (`runtime/action_executor.py` `execute_execute_code_action`)
-    also copies locals back onto the instance and binds `game`, `keyboard`,
-    `other`; the export does none of that, so bare-name assignments don't
-    persist across events and those names raise `NameError`.
+  - **`execute_code` env is thinner than the IDE's — partially fixed
+    2026-08-09 (commit `c977f1c`).** Code is inlined verbatim into the
+    generated method (good). `game` is now bound (a `_ScriptGameProxy`
+    exposing score/lives/health as plain read/write values, reusing
+    `execute_script`'s existing `_script_game()` helper) and errors are
+    caught and logged instead of propagating uncaught. **Still open:**
+    `keyboard`/`other` aren't bound (a bare `keyboard.check(...)` or
+    `other.<attr>` reference still raises `NameError`), and locals still
+    aren't copied back onto the instance after the block runs (Kivy
+    inlines the code as literal Python in a real method, unlike the IDE's
+    dynamic `exec()`, so this needs a codegen-strategy change or an
+    AST-rewrite of bare assignments — its own design pass, see
+    `docs/DEFERRED_ITEMS_PLAN.md` item 9).
   - A real on-device/buildozer end-to-end test still doesn't exist
     (`test_android_export_cleanup.py` mocks the build); the stub-kivy
     execution test above covers logic, not the actual Kivy/GL layer.
@@ -605,6 +612,16 @@ Other:
     networks. Pure-action games are unaffected (no Pyodide load at all).
   - The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
     is None — no score/lives bridge yet (match3 tracks its own score).
+    **Investigated 2026-08-09** alongside the equivalent (now-fixed) Kivy
+    gap — architecturally closer to a real fix here (Pyodide's `exec()`
+    already copies locals back onto the instance, unlike Kivy's inlined
+    code, so only the `game` binding itself is missing). Not fixed this
+    pass: doing it properly means factoring `set_score`/`set_lives`/
+    `set_health`'s crossing-detection logic (`no_more_lives`/
+    `no_more_health`) into something both the action-codegen switch and a
+    new Python-patch-application path can call, and this repo has no way
+    to execute JS in CI to verify a refactor like that (no `node`
+    dependency) — see `docs/DEFERRED_ITEMS_PLAN.md` item 9.
   - ~~Draw-queue `background`/`health_bar` commands... not implemented~~
     **DONE 2026-07-15** — `case 'background'` (reuses the `game.sprites`
     map backgrounds already share with sprites, per `encode_sprites`) and
