@@ -49,6 +49,11 @@ class AssetTreeWidget(QTreeWidget):
         # the same state straight back to disk.
         self._applying_collapse_state = False
 
+        # Current name-substring filter (empty = show everything). Kept
+        # around so refresh_from_project can re-apply it after a rebuild
+        # instead of the filter silently resetting on every tree refresh.
+        self._active_filter = ""
+
         # Initialize operations handler
         self.operations = AssetOperations(self)
 
@@ -876,6 +881,39 @@ class AssetTreeWidget(QTreeWidget):
         for asset_type, asset_list in assets.items():
             for asset_name, asset_data in asset_list.items():
                 self.add_asset(asset_type, asset_name, asset_data)
+
+        # A rebuild replaces every leaf item, which would otherwise silently
+        # drop whatever filter the user had typed into the search box.
+        if self._active_filter:
+            self.apply_asset_filter(self._active_filter)
+
+    def apply_asset_filter(self, text: str):
+        """Filter visible asset items by a case-insensitive name substring.
+
+        Matches against the raw ``asset_name`` (not the displayed text,
+        which may carry an emoji/status prefix). A category stays visible
+        whenever the filter is empty or it still has at least one matching
+        child; separators hide while a filter is active since they'd
+        otherwise sit orphaned between hidden categories. No new data
+        model — this only toggles Qt item visibility, so selection,
+        drag/drop, and everything else keeps working unchanged.
+        """
+        query = (text or "").strip().lower()
+        self._active_filter = query
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            if not (isinstance(item, AssetTreeItem) and item.is_category):
+                item.setHidden(bool(query))
+                continue
+            any_visible = not query
+            for j in range(item.childCount()):
+                child = item.child(j)
+                if not isinstance(child, AssetTreeItem):
+                    continue
+                match = (not query) or (query in child.asset_name.lower())
+                child.setHidden(not match)
+                any_visible = any_visible or match
+            item.setHidden(bool(query) and not any_visible)
 
     def get_asset_data(self, asset_type: str, asset_name: str) -> Optional[Dict]:
         """Get asset data by type and name"""
