@@ -346,6 +346,75 @@ class TestBackgroundForeground:
         px = screen.get_at((4, 4))[:3]
         assert px == (0, 0, 255), f"background did not draw in front, got {px}"
 
+    def test_foreground_still_tiles_across_the_whole_room(self):
+        """foreground and tiled_h/tiled_v are independent params on the
+        same action — _render_legacy_background handles tiling entirely
+        internally and is called from exactly one of the two call sites
+        per frame (never both), so moving WHICH slot invokes it doesn't
+        touch the tiling logic itself. Verify the combination directly
+        rather than just reasoning about it: a small tile must repeat
+        across the full room AND still draw over instances when
+        foreground=True."""
+        from runtime.game_runner import GameRoom, GameInstance
+
+        room = GameRoom('r', {'width': 64, 'height': 64,
+                               'tile_horizontal': True, 'tile_vertical': True,
+                               'background_foreground': True},
+                         action_executor=MagicMock())
+        bg = pygame.Surface((16, 16))
+        bg.fill((0, 0, 255))
+        room.background_surface = bg
+        room.background_image_name = 'bg'
+
+        inst = GameInstance('obj', 0, 0, {'x': 0, 'y': 0}, action_executor=MagicMock())
+        sprite_surface = pygame.Surface((16, 16))
+        sprite_surface.fill((255, 0, 0))
+        inst.sprite = MagicMock()
+        inst.sprite.get_frame = MagicMock(return_value=sprite_surface)
+        inst.sprite.origin_x = 0
+        inst.sprite.origin_y = 0
+        inst.scale_x = 1.0
+        inst.scale_y = 1.0
+        inst.visible = True
+        inst.is_thymio = False
+        inst.object_data = None
+        room.instances.append(inst)
+        room._depth_dirty = True
+
+        screen = pygame.Surface((64, 64))
+        room._render_room(screen, (0, 0))
+
+        for point in ((0, 0), (40, 40), (60, 60)):
+            assert screen.get_at(point)[:3] == (0, 0, 255), \
+                f"tile did not repeat across the room at {point}"
+        # foreground=True: the tiled background must also cover the instance.
+        assert screen.get_at((4, 4))[:3] == (0, 0, 255), \
+            "tiled foreground background did not draw over the instance"
+
+    def test_scroll_speed_is_not_doubled_by_the_foreground_reorder(self):
+        """The background/foreground branches are mutually exclusive per
+        frame (exactly one _render_legacy_background call either way), so
+        bg_scroll_x/y — accumulated inside that one call — must advance by
+        exactly hspeed/vspeed per frame in EITHER mode, not twice."""
+        from runtime.game_runner import GameRoom
+
+        for foreground in (False, True):
+            room = GameRoom('r', {'width': 64, 'height': 64, 'bg_hspeed': 5,
+                                   'background_foreground': foreground},
+                             action_executor=MagicMock())
+            bg = pygame.Surface((16, 16))
+            bg.fill((0, 200, 0))
+            room.background_surface = bg
+            room.background_image_name = 'bg'
+
+            screen = pygame.Surface((64, 64))
+            room._render_room(screen, (0, 0))
+            room._render_room(screen, (0, 0))
+
+            assert room.bg_scroll_x == 10.0, (
+                f"foreground={foreground}: expected 2 frames * 5px = 10, "
+                f"got {room.bg_scroll_x}")
+
 
 # ---------------------------------------------------------------------------
 # End-to-end regression proof: maze_3's real sample data, real GameRunner
