@@ -231,10 +231,38 @@ it before picking an item to work on.
   (15 tests, including an end-to-end proof driving a real `GameRunner`
   through the actual `maze_3` sample — collect a diamond, backtrack via
   `previous_room`, return via `next_room`, assert it's still gone).
-  Kivy/HTML5 export codegen for these 4 actions is deliberately NOT
-  built — no sample uses them yet, matching the precedent already set for
-  `goto_room`'s `fade` transition ("scoped to desktop until a sample or
-  user need shows up").
+  **Kivy/HTML5 export codegen for these 4 actions — DONE 2026-08-10**
+  (was deliberately deferred, matching the `goto_room` `fade`-transition
+  precedent, until picked back up in a follow-on session). Kivy: two
+  commits — `set_room_speed`/`set_background_color`/`set_room_persistent`
+  first (`Scene.room_speed` replaces the hardcoded 60.0 baseline
+  `GameObject._process_movement` scales hspeed/vspeed by; `GameApp`
+  gained a `_room_cache` so a persistent room's scene instance is reused
+  across a revisit — Kivy previously always rebuilt every room, the
+  opposite default from what desktop's fix established), then
+  `set_background` on its own (a dedicated `_bg_image_group`
+  `InstructionGroup`, independent of the room's baked background,
+  supporting dynamic image swap/tiling/scroll/foreground). HTML5: one
+  commit for all four (no per-project codegen step there at all — the
+  whole project JSON is embedded as `gameData` and `engine.js`'s
+  `executeAction` reads params generically at runtime, so the work is
+  entirely inside `engine.js`; HTML5 had the OPPOSITE persistent-room bug
+  from Kivy, reusing every room forever, fixed with the same
+  visited+persistent reuse contract). Both targets' `restart_room` forces
+  a fresh rebuild of the current room specifically (needed since its
+  target IS the current room, which the normal cache-then-reuse flow
+  would otherwise immediately re-cache); HTML5's `restart_game` needed no
+  change (`window.location.reload()` already discards everything).
+  `set_room_speed` means something different per target — desktop/Kivy
+  scale real movement velocity (dt-scaled on Kivy, direct step-rate on
+  desktop); HTML5's loop isn't dt-scaled at all, so it scales hspeed/
+  vspeed's final per-tick delta by `roomSpeed/60` instead, a documented
+  approximation rather than a full step-rate throttle. Coverage:
+  `tests/test_kivy_room_actions.py` (26 tests, incl. a real headless
+  execution of the generated `main.py`'s `GameApp` for the room-cache
+  reuse logic) and `tests/test_html5_room_actions.py` (16 tests,
+  structural + a real export round-trip — no Node.js in CI). Full suite
+  2451 → 2493 passed, 0 failed across the three commits.
 - **Views/camera — IN PROGRESS (2026-07-15).** No longer fully deferred.
   Plan: `docs/VIEWS_SAMPLES_PLAN.md`. Done: HTML5 8-view camera (`552a9bc`,
   Chromium-verified); `enable_views`/`set_view` **registered** in
