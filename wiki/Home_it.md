@@ -186,6 +186,9 @@ nome_progetto/
 - [Tutorial Pong](Tutorial-Pong_it) - Crea un classico gioco Pong a due giocatori
 - [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
 - [Tutorial Sokoban](Tutorial-Sokoban_it) - Crea un gioco puzzle di spinta scatole
+- [Tutorial Labirinto](Tutorial-Maze_it) - Naviga attraverso i corridoi fino all'uscita
+- [Tutorial Platformer](Tutorial-Platformer_it) - Corri, salta e raccogli monete
+- [Tutorial Atterraggio Lunare](Tutorial-LunarLander_it) - Atterra un'astronave sulla luna
 - [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti
 - [Editor Oggetti](Editor_Oggetti_it) - Lavorare con oggetti di gioco
 - [Editor Stanze](Editor_Stanze_it) - Progettare livelli
@@ -193,6 +196,16 @@ nome_progetto/
 - [Programmazione Visuale](Programmazione_Visuale_it) - Usare i blocchi Blockly
 - [Esportare Giochi](Esportare_Giochi_it) - Compilare per diverse piattaforme
 - [FAQ](FAQ_it) - Domande frequenti
+
+### Dove trovo...?
+
+La documentazione di PyGameMaker è divisa in tre luoghi, ciascuno adatto a un diverso tipo di domanda:
+
+| Se vuoi... | Guarda qui |
+|---|---|
+| Approfondire un concetto o una funzionalità (editor, eventi, azioni, esportazione) | **Questo wiki** |
+| Seguire una lezione guidata, clic dopo clic, direttamente nell'app | Il pannello **Tutorial** dell'IDE (`Aiuto > Tutorial`) — un percorso di 9 lezioni dal primo progetto a un gioco completo con vittoria/sconfitta |
+| Capire un esempio specifico (`samples/`) incluso in PyGameMaker | La **guida** propria di quell'esempio — clicca su **📖 Guide agli esempi** nella scheda Home; ogni esempio include un `README.md` (tradotto per lingua) scritto appositamente per esso |
 
 ---
 

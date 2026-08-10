@@ -523,6 +523,16 @@ Other:
   driven headless test); nobody has looked at most of the app's actual
   pixels. Not tracked as a scheduled TODO item — pick up opportunistically
   by screenshotting more dialogs the same way, budget permitting.
+- **Found 2026-08-11, not yet fixed: `pygm2_pt.ts`'s `WelcomeTab` context
+  is missing 26 of 48 messages** (fr/de/it/es/ru/sl/uk all have all 48;
+  pt has 22), including the `"📖  Sample guides"` button — contradicts the
+  "1369/1369, 61/61 contexts" completeness claim above, so either
+  `WelcomeTab` grew new strings after pt's sweep or pt's own sweep missed
+  some of this context. Found incidentally while wiki-linking to that
+  button's label for `wiki/Home.md`'s Phase 0 fix (used the English
+  fallback there in the meantime — `guide_path()`'s documented behavior,
+  not a new workaround). Needs its own investigation before fixing: check
+  whether ja/zh (sourced from the corrected pt) inherited the same gap.
 
 ## Extensions
 

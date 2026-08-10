@@ -97,11 +97,22 @@ live).
 ## Registry (flip to DONE with commit hash as each unit lands)
 
 ### Phase 0 — quick wins
-- [ ] Fix `Home.md`'s Wiki Contents list to link Maze/Platformer/LunarLander
-      tutorials.
-- [ ] Add a short "Where do I find X?" cross-link section (wiki tutorials
+- [x] Fix `Home.md`'s Wiki Contents list to link Maze/Platformer/LunarLander
+      tutorials. DONE 2026-08-11, `f919295` (English only — translated
+      copies still have the old list; not yet propagated, see note below).
+- [x] Add a short "Where do I find X?" cross-link section (wiki tutorials
       vs. in-app Tutorials curriculum vs. in-app Sample Guides) so the three
-      content systems don't read as overlapping/redundant.
+      content systems don't read as overlapping/redundant. DONE 2026-08-11,
+      `f919295`. Menu path (`Help > Tutorials`) and button label
+      (`📖 Sample guides`) verified against `core/ide_window.py` and
+      `widgets/welcome_tab.py`, not assumed.
+- [ ] Propagate both fixes into `Home_de.md`/`Home_es.md`/`Home_fr.md`/
+      `Home_it.md`/`Home_pt.md`/`Home_ru.md`/`Home_sl.md`/`Home_uk.md`
+      (translate the 2 added table rows + 3 added links). Small, but not
+      yet done — the 8 translated Home pages are currently missing this
+      content. Fold into Phase 5 or do now as its own quick commit.
+- [ ] Push Phase 0 changes to the live wiki via `scripts/sync_wiki.sh push`
+      (not yet run for this change).
 
 ### Phase 1 — screenshots infrastructure + first batch
 - [ ] Extend `scripts/sync_wiki.sh` to carry an `images/` folder to the live
@@ -132,9 +143,11 @@ live).
       content (avoid duplicating).
 
 ### Phase 4 — decision needed from the user
-- [ ] Should `match3_*`/`raycast_*`/`treasure`/`views_*` samples get wiki
-      build-along tutorials, or stay covered only by their in-app Sample
-      Guides? Affects scope significantly — raycast alone is 4 samples.
+- [x] **DECIDED 2026-08-11: in-app Sample Guides are sufficient.**
+      `match3_*`/`raycast_*`/`treasure`/`views_*` will NOT get wiki
+      build-along tutorials — they stay covered only by their existing
+      per-sample `README.md` guides. No wiki work planned for these
+      samples.
 
 ### Phase 5 — translation tail
 - [ ] Translate every page touched in Phases 0–4 into de/es/fr/it/pt/ru/sl/uk.
