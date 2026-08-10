@@ -15,6 +15,12 @@ Objects are the core building blocks of your game. They represent everything fro
 1. Double-click an existing object in the resource tree, or
 2. Right-click **Objects** > **Create Object**
 
+![The Object Editor: an event list on the left (Create, Step, several
+Collision events, Keyboard, No More Lives, Game Start), object properties
+(sprite, parent, Visible/Persistent/Solid) on the right, and the Event
+List / Blockly / Code Editor tabs that switch how you author each event's
+actions](images/object-editor.png)
+
 ---
 
 ## Object Properties

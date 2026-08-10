@@ -15,6 +15,11 @@ Rooms are the levels, screens, or scenes in your game. The Room Editor lets you 
 1. Double-click an existing room in the resource tree, or
 2. Right-click **Rooms** > **Create Room**
 
+![The Room Editor: an object palette on the left for picking what to
+place, the room canvas in the center with a populated platformer level
+(grid, snap, and selection tools in the toolbar above it), and room/
+instance properties plus a minimap preview on the right](images/room-editor.png)
+
 ---
 
 ## Room Properties
