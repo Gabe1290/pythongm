@@ -1,6 +1,6 @@
 # Ressourcenverwaltung
 
-> [English](Asset-Manager) | [Deutsch](Asset-Manager_de)
+> [English](Asset-Manager) | [Français](Asset-Manager_fr) | [Deutsch](Asset-Manager_de) | [Italiano](Asset-Manager_it)
 
 ---
 
