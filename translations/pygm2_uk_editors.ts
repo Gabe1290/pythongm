@@ -1832,6 +1832,34 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <source>Game</source>
         <translation type="vanished">Гра</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Ця дія потребує розширення «{0}», яке зараз вимкнено, тому редагувати її тут неможливо.
+
+Сама дія не постраждає і буде збережена без змін.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Ця дія («{0}») потребує розширення, яке не встановлено в цій копії PyGameMaker, тому редагувати її тут неможливо.
+
+Сама дія не постраждає і буде збережена без змін.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Дія розширення</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (потребує {1})</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

@@ -3224,6 +3224,36 @@ Some changes may require restarting the IDE to take effect.</source>
 
 Algumas alterações podem exigir reiniciar o IDE para terem efeito.</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Extensões</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Desativar uma extensão aqui só tem efeito na IDE após reiniciar — as extensões registram suas ações na inicialização. As exportações já respeitam esta configuração imediatamente, sem precisar reiniciar.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>Nenhuma extensão encontrada.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Fornece: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Extensões instaladas</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
+    </message>
 </context>
 <context>
     <name>PlaygroundEditor</name>
@@ -4048,6 +4078,34 @@ Clique com o botão direito em Seta Esquerda, Seta Direita, Seta Cima ou Seta Ba
         <location filename="../editors/object_editor/object_events_panel.py" line="698"/>
         <source>🤖 Thymio Action...</source>
         <translation>🤖 Ação Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Esta ação precisa da extensão "{0}", que está atualmente desativada, então não pode ser editada aqui.
+
+A ação em si não é afetada e será mantida exatamente como está ao salvar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Esta ação ("{0}") precisa de uma extensão que não está instalada nesta cópia do PyGameMaker, então não pode ser editada aqui.
+
+A ação em si não é afetada e será mantida exatamente como está ao salvar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Ação de extensão</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (precisa de {1})</translation>
     </message>
 </context>
 <context>
@@ -7532,6 +7590,47 @@ Abrir no navegador agora?</translation>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>Falha ao carregar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — necessário para: {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>Extensões desativadas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>Este projeto usa recursos de extensões que estão desativadas:
+
+{list}
+
+Essas ações não serão executadas e o projeto pode parecer ou se comportar incorretamente. Você pode ativar uma extensão em Preferências → Extensões.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>Extensões não instaladas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>Este projeto foi criado com extensões que não estão presentes nesta cópia do PyGameMaker:
+
+{list}
+
+Qualquer ação delas será ignorada, e o projeto pode parecer ou se comportar incorretamente. Atualize o PyGameMaker ou adicione a(s) pasta(s) de extensão ausente(s) para restaurá-las.</translation>
     </message>
 </context>
 </TS>

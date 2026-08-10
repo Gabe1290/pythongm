@@ -1832,6 +1832,34 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <source>Game</source>
         <translation type="vanished">Igra</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>To dejanje potrebuje razširitev »{0}«, ki je trenutno onemogočena, zato je tukaj ni mogoče urejati.
+
+Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot je.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>To dejanje (»{0}«) potrebuje razširitev, ki v tej kopiji PyGameMaker ni nameščena, zato je tukaj ni mogoče urejati.
+
+Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot je.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Dejanje razširitve</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (potrebuje {1})</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

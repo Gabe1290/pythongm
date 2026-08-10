@@ -1832,6 +1832,34 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <source>Game</source>
         <translation type="vanished">Gioco</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Questa azione richiede l'estensione «{0}», attualmente disattivata, quindi non può essere modificata qui.
+
+L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salvataggio.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Questa azione («{0}») richiede un'estensione non installata in questa copia di PyGameMaker, quindi non può essere modificata qui.
+
+L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salvataggio.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Azione dell'estensione</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (richiede {1})</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

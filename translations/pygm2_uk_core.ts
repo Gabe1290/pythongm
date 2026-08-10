@@ -335,6 +335,36 @@ Some changes may require restarting the IDE to take effect.</source>
 
 Деякі зміни можуть вимагати перезапуску IDE для набуття чинності.</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Розширення</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Вимкнення розширення тут набуде чинності в IDE лише після перезапуску — розширення реєструють свої дії під час запуску. Експорт вже враховує це налаштування негайно, без перезапуску.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>Розширень не знайдено.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Надає: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Встановлені розширення</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
+    </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>
@@ -2351,6 +2381,47 @@ Open in browser now?</source>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>Не вдалося завантажити</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — потрібно для: {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>Вимкнені розширення</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>Цей проєкт використовує функції вимкнених розширень:
+
+{list}
+
+Ці дії не виконуватимуться, і проєкт може виглядати або поводитися неправильно. Ви можете увімкнути розширення через Налаштування → Розширення.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>Розширення не встановлено</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>Цей проєкт було створено з розширеннями, яких немає в цій копії PyGameMaker:
+
+{list}
+
+Будь-які дії з них будуть пропущені, і проєкт може виглядати або поводитися неправильно. Оновіть PyGameMaker або додайте відсутню папку(и) розширення, щоб відновити їх.</translation>
     </message>
 </context>
 <context>

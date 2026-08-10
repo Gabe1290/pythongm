@@ -3704,6 +3704,34 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
         <source>🤖 Thymio Action...</source>
         <translation>🤖 Action Thymio...</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Cette action nécessite l'extension « {0} », actuellement désactivée, elle ne peut donc pas être modifiée ici.
+
+L'action elle-même n'est pas affectée et sera conservée telle quelle lors de l'enregistrement.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Cette action (« {0} ») nécessite une extension qui n'est pas installée dans cette copie de PyGameMaker, elle ne peut donc pas être modifiée ici.
+
+L'action elle-même n'est pas affectée et sera conservée telle quelle lors de l'enregistrement.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Action d'extension</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (nécessite {1})</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
@@ -4512,6 +4540,36 @@ Some changes may require restarting the IDE to take effect.</source>
         <translation>Les paramètres ont été enregistrés avec succès.
 
 Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre effet.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Extensions</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Désactiver une extension ici prend effet dans l'IDE après un redémarrage — les extensions enregistrent leurs actions au démarrage. Les exports respectent déjà ce paramètre immédiatement, sans besoin de redémarrage.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>Aucune extension trouvée.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Fournit : {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Extensions installées</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
     </message>
 </context>
 <context>
@@ -6832,6 +6890,47 @@ Ouvrir dans le navigateur maintenant ?</translation>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>Échec du chargement</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — nécessaire pour : {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>Extensions désactivées</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>Ce projet utilise des fonctionnalités d'extensions qui sont désactivées :
+
+{list}
+
+Ces actions ne s'exécuteront pas et le projet peut sembler ou se comporter de façon incorrecte. Vous pouvez activer une extension via Préférences → Extensions.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>Extensions non installées</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>Ce projet a été créé avec des extensions qui ne sont pas présentes dans cette copie de PyGameMaker :
+
+{list}
+
+Toute action provenant de celles-ci sera ignorée et le projet peut sembler ou se comporter de façon incorrecte. Mettez à jour PyGameMaker ou ajoutez le(s) dossier(s) d'extension manquant(s) pour les restaurer.</translation>
     </message>
 </context>
 <context>
