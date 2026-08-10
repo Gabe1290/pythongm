@@ -1,6 +1,6 @@
 # Keyboard Shortcuts
 
-> [English](Keyboard-Shortcuts) | [Français](Keyboard-Shortcuts_fr) | [Deutsch](Keyboard-Shortcuts_de) | [Italiano](Keyboard-Shortcuts_it)
+> [English](Keyboard-Shortcuts) | [Français](Keyboard-Shortcuts_fr) | [Deutsch](Keyboard-Shortcuts_de) | [Italiano](Keyboard-Shortcuts_it) | [Español](Keyboard-Shortcuts_es)
 
 ---
 

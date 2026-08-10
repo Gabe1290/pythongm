@@ -17,6 +17,12 @@ configurando fondos.
 1. Haz doble clic en una sala existente en el árbol de recursos, o
 2. Clic derecho en **Rooms** > **Create Room**
 
+![El Editor de Salas: una paleta de objetos a la izquierda para elegir
+qué colocar, el área de la sala en el centro con un nivel de
+plataformas poblado (herramientas de cuadrícula, ajuste y selección en
+la barra de herramientas superior), y propiedades de sala/instancia más
+una vista previa en miniatura a la derecha](images/room-editor.png)
+
 ---
 
 ## Propiedades de la Sala

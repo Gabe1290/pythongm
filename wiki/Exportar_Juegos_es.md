@@ -329,5 +329,6 @@ Prueba siempre tu juego exportado:
 ## Próximos pasos
 
 - [[Empezar_es]] - Repasar los conceptos básicos
+- [[Troubleshooting_es|Solución de Problemas]] - Errores de dependencias faltantes y otros problemas de exportación
 - [[FAQ_es]] - Preguntas comunes sobre la exportación
 - [GitHub Issues](https://github.com/Gabe1290/pythongm/issues) - Informar de problemas de exportación
