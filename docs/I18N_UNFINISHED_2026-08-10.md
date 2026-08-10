@@ -152,7 +152,17 @@ not an **append**). For each language:
       Terminology cross-checked against fr's own existing translations for
       repeated menu items (Fichier/Nouveau projet/Ouvrir un projet/
       Enregistrer le projet/Tester le jeu/Déboguer le jeu/Exporter le jeu).
-- [ ] **de** (151 entries, shared list) —
+- [x] **de** (151 entries, shared list) — DONE 2026-08-10.
+      `tests/test_i18n_unfinished_de.py` (3 tests, across all 6 split
+      files). 16/151 already had a real translation in the monolithic
+      `pygm2_de.ts` (reused verbatim); the rest translated fresh, cross-
+      checked against de's own established menu terminology
+      (Datei/Neues Projekt/Projekt öffnen/Projekt speichern/Spiel
+      testen/Spiel debuggen/Spiel exportieren, "Strg" not "Ctrl" for
+      shortcuts) and the Blockly Detach/Attach vocabulary already used
+      elsewhere in the file. Screenshot-verified: the Preferences
+      dialog's "General" tab — the string that started this whole
+      investigation — now reads "Allgemein".
 - [ ] **it** (151 entries, shared list) —
 - [ ] **ru** (153 entries, shared list) —
 - [ ] **sl** (153 entries, shared list) —

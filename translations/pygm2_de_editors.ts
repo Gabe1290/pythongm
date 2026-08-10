@@ -6,7 +6,7 @@
     <message>
         <location filename="../editors/object_editor_components.py" line="23"/>
         <source>Actions are now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen werden jetzt über das Ereignis-Panel verwaltet</translation>
     </message>
 </context>
 <context>
@@ -14,22 +14,22 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
         <source>Background Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrundebenen</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
         <source>Background {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrund {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
         <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebeneneigenschaften</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
@@ -39,7 +39,7 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
         <source>Foreground:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vordergrund:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
@@ -49,22 +49,22 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
         <source>Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
         <source>Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Strecken:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
         <source>Tile H:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kacheln H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
         <source>Tile V:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kacheln V:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
@@ -120,12 +120,12 @@
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Abtrennen</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="151"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Diesen Editor in einem eigenen Fenster öffnen</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="193"/>
@@ -140,7 +140,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="283"/>
         <source>Auto-saved: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch gespeichert: {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
@@ -347,7 +347,7 @@ Open or create a project, then select an asset from the tree on the left to view
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
         <source>Backgrounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergründe:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
@@ -753,7 +753,9 @@ Wählen Sie ein Ereignis aus und klicken Sie mit der rechten Maustaste, um Aktio
         <source>Blockly visual programming is not available.
 
 Error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Blockly-Visualprogrammierung ist nicht verfügbar.
+
+Fehler: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
@@ -818,17 +820,17 @@ Error: {0}</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
         <source>Edit mode: changes apply automatically as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeitungsmodus: Änderungen werden automatisch beim Tippen übernommen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
         <source>No event methods found in the code</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Ereignismethoden im Code gefunden</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
         <source>{0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Ereignisse</translation>
     </message>
     <message>
         <source>Object: {0} | Sprite: {1}</source>
@@ -1159,22 +1161,22 @@ Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
         <source>🤖 Thymio Events</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Thymio-Ereignisse</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
         <source>🤖 Visual Selector...</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Visueller Selektor...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
         <source>Alarm Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Alarm-Ereignis existiert bereits</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
         <source>Alarm {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Ereignis für Alarm {0} existiert bereits.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
@@ -1227,7 +1229,10 @@ Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird
 
 Please add actions to a specific alarm number instead:
 Right-click on Alarm 0, Alarm 1, etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen können nicht direkt zu Alarm hinzugefügt werden.
+
+Fügen Sie Aktionen stattdessen einer bestimmten Alarmnummer hinzu:
+Rechtsklick auf Alarm 0, Alarm 1 usw.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
@@ -1253,12 +1258,12 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Could not open action editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktions-Editor konnte nicht geöffnet werden: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
@@ -1914,7 +1919,7 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
     <message>
         <location filename="../editors/room_editor/__init__.py" line="85"/>
         <source>Tile Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelpalette...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="116"/>
@@ -2026,22 +2031,22 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
         <source>↔ Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>↔ Alle verschieben</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="186"/>
         <source>Shift all instances by an X/Y offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Instanzen um einen X/Y-Versatz verschieben</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Abtrennen</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Diesen Editor in einem eigenen Fenster öffnen</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="202"/>
@@ -2067,32 +2072,32 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle verschieben</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>No instances to shift.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Instanzen zum Verschieben.</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="242"/>
         <source>Shift All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Instanzen verschieben</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="249"/>
         <source>X offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>X-Versatz:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="255"/>
         <source>Y offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y-Versatz:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="268"/>
         <source>Shifted all instances by ({0}, {1})</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Instanzen um ({0}, {1}) verschoben</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
@@ -2132,12 +2137,12 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
         <source>Tile selected - Click in room to paint</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachel ausgewählt - Klicken Sie in den Raum, um zu malen</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="467"/>
         <source>Tile mode cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelmodus zurückgesetzt</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>
