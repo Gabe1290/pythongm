@@ -321,5 +321,6 @@ Always test your exported game:
 ## Next Steps
 
 - [[Getting-Started]] - Review the basics
+- [[Troubleshooting]] - Missing-dependency errors and other export problems
 - [[FAQ]] - Common export questions
 - [GitHub Issues](https://github.com/Gabe1290/pythongm/issues) - Report export problems
