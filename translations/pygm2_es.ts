@@ -4150,6 +4150,34 @@ Haga clic derecho en Flecha izquierda, Flecha derecha, Flecha arriba o Flecha ab
         <source>Game</source>
         <translation type="vanished">Juego</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Esta acción necesita la extensión «{0}», que está actualmente desactivada, por lo que no se puede editar aquí.
+
+La acción en sí no se ve afectada y se conservará tal cual al guardar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Esta acción («{0}») necesita una extensión que no está instalada en esta copia de PyGameMaker, por lo que no se puede editar aquí.
+
+La acción en sí no se ve afectada y se conservará tal cual al guardar.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Acción de extensión</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (necesita {1})</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
@@ -4953,6 +4981,36 @@ Some changes may require restarting the IDE to take effect.</source>
         <translation>La configuración se ha guardado correctamente.
 
 Algunos cambios pueden requerir reiniciar el IDE para surtir efecto.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Extensiones</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Desactivar una extensión aquí surte efecto en el IDE después de reiniciar — las extensiones registran sus acciones al iniciar. Las exportaciones ya respetan este ajuste de inmediato, sin necesidad de reiniciar.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>No se encontraron extensiones.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Proporciona: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Extensiones instaladas</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
     </message>
 </context>
 <context>
@@ -7195,6 +7253,47 @@ Open in browser now?</source>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>Error al cargar</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — necesario para: {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>Extensiones desactivadas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>Este proyecto usa funciones de extensiones que están desactivadas:
+
+{list}
+
+Esas acciones no se ejecutarán y el proyecto puede verse o comportarse mal. Puedes activar una extensión desde Preferencias → Extensiones.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>Extensiones no instaladas</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>Este proyecto se creó con extensiones que no están presentes en esta copia de PyGameMaker:
+
+{list}
+
+Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse mal. Actualice PyGameMaker o añada la(s) carpeta(s) de extensión que falta(n) para restaurarlas.</translation>
     </message>
 </context>
 <context>

@@ -3224,6 +3224,36 @@ Some changes may require restarting the IDE to take effect.</source>
 
 一部の変更はIDEを再起動しないと反映されない場合があります。</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>拡張機能</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>ここで拡張機能を無効にしても、IDEでは再起動後に反映されます — 拡張機能は起動時にアクションを登録します。エクスポートはこの設定を再起動なしで即座に反映します。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>拡張機能が見つかりません。</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>提供: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>インストール済みの拡張機能</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
+    </message>
 </context>
 <context>
     <name>PlaygroundEditor</name>
@@ -4048,6 +4078,34 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <location filename="../editors/object_editor/object_events_panel.py" line="698"/>
         <source>🤖 Thymio Action...</source>
         <translation>🤖 Thymioアクション...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>このアクションには現在無効になっている拡張機能「{0}」が必要なため、ここでは編集できません。
+
+アクション自体には影響がなく、保存時にそのまま保持されます。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>このアクション(「{0}」)には、このPyGameMakerのコピーにインストールされていない拡張機能が必要なため、ここでは編集できません。
+
+アクション自体には影響がなく、保存時にそのまま保持されます。</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>拡張機能アクション</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0}({1}が必要)</translation>
     </message>
 </context>
 <context>
@@ -7532,6 +7590,47 @@ Open in browser now?</source>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>読み込みに失敗しました</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — 必要な用途: {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>無効な拡張機能</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>このプロジェクトは無効になっている拡張機能の機能を使用しています:
+
+{list}
+
+これらのアクションは実行されず、プロジェクトの見た目や動作がおかしくなる可能性があります。環境設定 → 拡張機能から拡張機能を有効にできます。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>拡張機能がインストールされていません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>このプロジェクトは、このPyGameMakerのコピーに存在しない拡張機能を使用して作成されました:
+
+{list}
+
+それらのアクションはすべてスキップされ、プロジェクトの見た目や動作がおかしくなる可能性があります。PyGameMakerを更新するか、不足している拡張機能フォルダーを追加して復元してください。</translation>
     </message>
 </context>
 </TS>

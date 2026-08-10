@@ -339,6 +339,36 @@ Some changes may require restarting the IDE to take effect.</source>
 
 Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam zu werden.</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Erweiterungen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Das Deaktivieren einer Erweiterung wird in der IDE erst nach einem Neustart wirksam — Erweiterungen registrieren ihre Aktionen beim Start. Exporte berücksichtigen diese Einstellung bereits sofort, ohne Neustart.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>Keine Erweiterungen gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Bietet: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Installierte Erweiterungen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
+    </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>
@@ -2487,6 +2517,47 @@ Jetzt im Browser öffnen?</translation>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>Laden fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — benötigt für: {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>Deaktivierte Erweiterungen</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>Dieses Projekt verwendet Funktionen von Erweiterungen, die deaktiviert sind:
+
+{list}
+
+Diese Aktionen werden nicht ausgeführt, und das Projekt sieht möglicherweise falsch aus oder verhält sich falsch. Sie können eine Erweiterung über Einstellungen → Erweiterungen aktivieren.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>Erweiterungen nicht installiert</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>Dieses Projekt wurde mit Erweiterungen erstellt, die in dieser Kopie von PyGameMaker nicht vorhanden sind:
+
+{list}
+
+Alle Aktionen daraus werden übersprungen, und das Projekt sieht möglicherweise falsch aus oder verhält sich falsch. Aktualisieren Sie PyGameMaker oder fügen Sie den/die fehlenden Erweiterungsordner hinzu, um sie wiederherzustellen.</translation>
     </message>
 </context>
 <context>

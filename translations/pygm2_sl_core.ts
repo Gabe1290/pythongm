@@ -339,6 +339,36 @@ Some changes may require restarting the IDE to take effect.</source>
 
 Nekatere spremembe lahko zahtevajo ponovni zagon IDE, da začnejo veljati.</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="312"/>
+        <source>Extensions</source>
+        <translation>Razširitve</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="263"/>
+        <source>Disabling an extension here takes effect in the IDE after restarting — extensions register their actions at startup. Exports already respect this setting immediately, without needing a restart.</source>
+        <translation>Onemogočanje razširitve tukaj začne veljati v IDE šele po ponovnem zagonu — razširitve registrirajo svoja dejanja ob zagonu. Izvozi to nastavitev že upoštevajo takoj, brez ponovnega zagona.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="282"/>
+        <source>No extensions found.</source>
+        <translation>Ni najdenih razširitev.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <source>Provides: {0}</source>
+        <translation>Zagotavlja: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="286"/>
+        <source>Installed Extensions</source>
+        <translation>Nameščene razširitve</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="297"/>
+        <source>v{0}</source>
+        <translation>v{0}</translation>
+    </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>
@@ -2487,6 +2517,47 @@ Odpri v brskalniku zdaj?</translation>
         <location filename="../core/ide_exporters.py" line="175"/>
         <source>Failed to load</source>
         <translation>Nalaganje ni uspelo</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1691"/>
+        <source>• {name} — needed for: {actions}</source>
+        <translation>• {name} — potrebno za: {actions}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1695"/>
+        <source>Disabled extensions</source>
+        <translation>Onemogočene razširitve</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1696"/>
+        <source>This project uses features from extensions that are turned off:
+
+{list}
+
+Those actions won't run and the project may look or behave wrong. You can enable an extension via Preferences → Extensions.</source>
+        <translation>Ta projekt uporablja funkcije razširitev, ki so onemogočene:
+
+{list}
+
+Ta dejanja se ne bodo izvedla in projekt se lahko prikazuje ali obnaša napačno. Razširitev lahko omogočite prek Nastavitve → Razširitve.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1704"/>
+        <source>Extensions not installed</source>
+        <translation>Razširitve niso nameščene</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1705"/>
+        <source>This project was created with extensions that aren't present in this copy of PyGameMaker:
+
+{list}
+
+Any actions from them will be skipped, and the project may look or behave wrong. Update PyGameMaker or add the missing extension folder(s) to restore them.</source>
+        <translation>Ta projekt je bil ustvarjen z razširitvami, ki jih v tej kopiji PyGameMaker ni:
+
+{list}
+
+Vsa dejanja iz njih bodo preskočena in projekt se lahko prikazuje ali obnaša napačno. Posodobite PyGameMaker ali dodajte manjkajočo mapo/mape razširitve, da jih obnovite.</translation>
     </message>
 </context>
 <context>

@@ -1832,6 +1832,34 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
         <source>Game</source>
         <translation type="vanished">Spiel</translation>
     </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Diese Aktion benötigt die Erweiterung „{0}“, die derzeit deaktiviert ist, daher kann sie hier nicht bearbeitet werden.
+
+Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert beibehalten.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Diese Aktion („{0}“) benötigt eine Erweiterung, die in dieser Kopie von PyGameMaker nicht installiert ist, daher kann sie hier nicht bearbeitet werden.
+
+Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert beibehalten.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Erweiterungsaktion</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (benötigt {1})</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
