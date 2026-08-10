@@ -1010,10 +1010,14 @@ class GameObject {
             }
         }
 
-        // Apply hspeed/vspeed - always move, collision events will handle response
+        // Apply hspeed/vspeed - always move, collision events will handle response.
+        // Scaled by roomSpeed/60 (set_room_speed) — see GameRoom's roomSpeed
+        // comment for what this does and doesn't cover (gravity/friction
+        // accumulation above is NOT scaled, only this final delta).
         if (this._hspeed !== 0 || this._vspeed !== 0) {
-            this.x += this._hspeed;
-            this.y += this._vspeed;
+            const roomSpeedFactor = (game && game.currentRoom) ? game.currentRoom.roomSpeed / 60 : 1;
+            this.x += this._hspeed * roomSpeedFactor;
+            this.y += this._vspeed * roomSpeedFactor;
         }
     }
 
@@ -1887,8 +1891,11 @@ class GameObject {
                 break;
 
             case 'restart_room':
-                // Restart current room
-                game.changeRoom(game.currentRoom.name);
+                // Restart current room. forceRebuild=true: see changeRoom's
+                // comment — the target IS the current room, so the normal
+                // persistent-reuse check would otherwise reuse the very
+                // instance being discarded.
+                game.changeRoom(game.currentRoom.name, true);
                 break;
 
             case 'change_room':
@@ -1920,6 +1927,54 @@ class GameObject {
                     game.changeRoom(roomName);
                 }
                 break;
+
+            case 'set_room_speed': {
+                // See GameRoom's roomSpeed comment: scales hspeed/vspeed's
+                // final position delta, not the game loop's call rate.
+                let speed = parseInt(params.speed, 10);
+                if (isNaN(speed)) speed = 30;
+                speed = Math.max(1, Math.min(240, speed));
+                if (game.currentRoom) game.currentRoom.roomSpeed = speed;
+                break;
+            }
+
+            case 'set_room_persistent': {
+                // Same defensive true/false-as-string coercion as enable_views
+                // above (params come straight from project JSON, which can
+                // hold either JS booleans or the string "true"/"false").
+                const p = params.persistent;
+                const flag = !(p === false || p === 'false' || p === 0 || p === '0');
+                if (game.currentRoom) game.currentRoom.persistent = flag;
+                break;
+            }
+
+            case 'set_background_color': {
+                if (game.currentRoom) {
+                    game.currentRoom.bgColor = params.color || '#000000';
+                    const sc = params.show_color;
+                    game.currentRoom.showBackgroundColor =
+                        !(sc === false || sc === 'false' || sc === 0 || sc === '0');
+                }
+                break;
+            }
+
+            case 'set_background': {
+                if (game.currentRoom) {
+                    const room = game.currentRoom;
+                    const vis = params.visible;
+                    const visible = !(vis === false || vis === 'false' || vis === 0 || vis === '0');
+                    const isTruthy = (v) => v === true || v === 'true' || v === 1 || v === '1';
+                    room.dynamicBgName = params.background || '';
+                    room.dynamicBgVisible = visible;
+                    room.dynamicBgForeground = isTruthy(params.foreground);
+                    room.dynamicBgTileH = isTruthy(params.tiled_h);
+                    room.dynamicBgTileV = isTruthy(params.tiled_v);
+                    room.dynamicBgHspeed = parseFloat(params.hspeed) || 0;
+                    room.dynamicBgVspeed = parseFloat(params.vspeed) || 0;
+                    if (!visible) room.dynamicBgName = '';
+                }
+                break;
+            }
 
             case 'if_next_room_exists':
                 // Note: Block-based if/else handling is done in executeActions()
@@ -2792,6 +2847,41 @@ class GameRoom {
         this.instances = [];
         this.backgroundSprite = null;
 
+        // Room-level state the "Room" category actions mutate at runtime
+        // (set_room_persistent / set_room_speed / set_background_color /
+        // set_background). `persistent` decides whether Game.changeRoom
+        // reuses this exact GameRoom on a revisit instead of rebuilding
+        // fresh (see Game.changeRoom/buildRoom below — HTML5 previously
+        // always reused every room forever, the opposite default from
+        // Kivy, and the same bug shape the desktop runtime had before its
+        // own fix). `roomSpeed` scales hspeed/vspeed's final per-tick
+        // position delta (GameObject.processMovement) — NOT the game loop's
+        // call rate, which stays uncapped/rAF-driven — so this is a
+        // documented approximation of the desktop runtime's true
+        // step-rate model: gravity/friction accumulation is unaffected by
+        // roomSpeed here, only the resulting hspeed/vspeed's translation
+        // into position.
+        this.persistent = !!data.persistent;
+        this.roomSpeed = 60;
+        this.showBackgroundColor = true;
+
+        // set_background's dynamic background image. Drawn directly each
+        // frame from this state (immediate-mode canvas rendering, unlike
+        // Kivy's retained instruction graph — no separate group/instruction
+        // bookkeeping needed). The room's baked bgImage/backgroundSprite (if
+        // any) keeps drawing underneath; for the common stretched/opaque
+        // case this dynamic one fully occludes it once set, matching
+        // GameMaker's "replace" semantics visually.
+        this.dynamicBgName = '';
+        this.dynamicBgVisible = false;
+        this.dynamicBgForeground = false;
+        this.dynamicBgTileH = false;
+        this.dynamicBgTileV = false;
+        this.dynamicBgHspeed = 0;
+        this.dynamicBgVspeed = 0;
+        this.dynamicBgScrollX = 0;
+        this.dynamicBgScrollY = 0;
+
         // GameMaker-style 8-view camera system (mirrors the desktop runtime's
         // GameRoom in game_runner.py). When enabled, the room can be larger
         // than the window and the renderer scrolls/clips per view.
@@ -2879,6 +2969,8 @@ class GameRoom {
     }
 
     step(game) {
+        this._advanceDynamicBgScroll();
+
         // 0. Pending create events fire BEFORE any step event touches the
         // instance (IDE-runtime order: create runs at room load). Firing
         // them at the END of the first frame let step events run against
@@ -3012,7 +3104,10 @@ class GameRoom {
         }
         // Fill the whole canvas with the bg color once; areas outside any
         // view port then show the bg color rather than stale pixels.
-        ctx.fillStyle = this.bgColor;
+        // showBackgroundColor=false fills black instead of skipping the
+        // fill (this canvas redraws every frame; skipping would smear the
+        // previous frame) — matches the desktop runtime's fallback.
+        ctx.fillStyle = this.showBackgroundColor ? this.bgColor : '#000000';
         const cw = ctx.canvas ? ctx.canvas.width : this.width;
         const ch = ctx.canvas ? ctx.canvas.height : this.height;
         ctx.fillRect(0, 0, cw, ch);
@@ -3064,6 +3159,8 @@ class GameRoom {
             }
         }
 
+        if (!this.dynamicBgForeground) this._drawDynamicBackground(ctx);
+
         // GAMEMAKER 7.0: Draw events (sort by depth first)
         // GameMaker depth: HIGHER depth is drawn FIRST (further back), so a
         // LOWER depth ends up in front. That means descending order — matching
@@ -3074,6 +3171,54 @@ class GameRoom {
         // (depth 100) instead of in front.
         const sortedInstances = [...this.instances].sort((a, b) => b.depth - a.depth);
         sortedInstances.forEach(inst => inst.onDraw(ctx));
+
+        if (this.dynamicBgForeground) this._drawDynamicBackground(ctx);
+    }
+
+    // set_background's dynamic image, tiled the same way as the baked
+    // bgImage/backgroundSprite above (start one tile before the scroll
+    // offset so a partial tile still covers the edge, wrapping via
+    // dynamicBgScrollX/Y) — mirrors the desktop runtime's
+    // GameRoom._render_legacy_background tiling math.
+    _drawDynamicBackground(ctx) {
+        if (!this.dynamicBgVisible || !this.dynamicBgName) return;
+        const sprites = this._gameRef ? this._gameRef.sprites : null;
+        const img = sprites ? sprites[this.dynamicBgName] : null;
+        if (!img || !img.complete) return;
+
+        const doTileH = this.dynamicBgTileH || this.dynamicBgHspeed !== 0;
+        const doTileV = this.dynamicBgTileV || this.dynamicBgVspeed !== 0;
+        if (!doTileH && !doTileV) {
+            ctx.drawImage(img, 0, 0, this.width, this.height);
+            return;
+        }
+        const iw = img.width, ih = img.height;
+        const ox = doTileH ? this.dynamicBgScrollX : 0;
+        const oy = doTileV ? this.dynamicBgScrollY : 0;
+        const startX = doTileH ? ox - iw : 0;
+        const startY = doTileV ? oy - ih : 0;
+        const stepX = doTileH ? iw : this.width;
+        const stepY = doTileV ? ih : this.height;
+        for (let x = startX; x < this.width; x += stepX) {
+            for (let y = startY; y < this.height; y += stepY) {
+                ctx.drawImage(img, x, y);
+            }
+        }
+    }
+
+    // Advances the dynamic background's scroll offset one tick, scaled by
+    // roomSpeed/60 — same scale factor GameObject.processMovement applies
+    // to hspeed/vspeed, so a faster roomSpeed scrolls the background
+    // faster too.
+    _advanceDynamicBgScroll() {
+        if (this.dynamicBgHspeed === 0 && this.dynamicBgVspeed === 0) return;
+        const sprites = this._gameRef ? this._gameRef.sprites : null;
+        const img = sprites ? sprites[this.dynamicBgName] : null;
+        if (!img || !img.complete) return;
+        const factor = this.roomSpeed / 60;
+        const iw = img.width || 1, ih = img.height || 1;
+        this.dynamicBgScrollX = ((this.dynamicBgScrollX + this.dynamicBgHspeed * factor) % iw + iw) % iw;
+        this.dynamicBgScrollY = ((this.dynamicBgScrollY + this.dynamicBgVspeed * factor) % ih + ih) % ih;
     }
 }
 
@@ -3084,6 +3229,9 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
         this.rooms = {};
         this.currentRoom = null;
+        // set_room_persistent support: which room indices/names have been
+        // entered before this playthrough — see buildRoom/changeRoom.
+        this._visitedRooms = new Set();
         this.running = false;
         this.paused = false;
         this.keys = {};
@@ -3290,57 +3438,69 @@ class Game {
         const roomsData = gameData.assets.rooms;
         console.log(`Loading ${Object.keys(roomsData).length} rooms...`);
 
-        for (const [roomName, roomData] of Object.entries(roomsData)) {
-            const room = new GameRoom(roomData);
-            room._gameRef = this;  // so renderRaycastView can resolve textures
-
-            if (room.bgImage && sprites[room.bgImage]) {
-                room.backgroundSprite = sprites[room.bgImage];
-            }
-
-            const instancesData = roomData.instances || [];
-            instancesData.forEach(instData => {
-                // Rooms written at different times use different keys for
-                // the object reference (same tolerance as the Android
-                // exporter): plateforme_* uses 'object', newer rooms use
-                // 'object_name'.
-                const objName = instData.object_name || instData.object ||
-                                instData.object_type || instData.type || '';
-                if (!objName) {
-                    console.warn('Skipping instance with no object reference:', instData);
-                    return;
-                }
-                const objectData = gameData.assets.objects[objName];
-                const inst = new GameObject(
-                    objName,
-                    instData.x,
-                    instData.y,
-                    instData,
-                    objectData
-                );
-
-                inst._gameRef = this;
-                // Store starting position for jump_to_start
-                inst._startX = instData.x;
-                inst._startY = instData.y;
-
-                if (objectData && objectData.sprite && sprites[objectData.sprite]) {
-                    inst.sprite = sprites[objectData.sprite];
-                    inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
-                }
-
-                room.instances.push(inst);
-            });
-
-            this.rooms[roomName] = room;
-            console.log(`✓ Loaded room: ${roomName} (${room.instances.length} instances)`);
+        for (const roomName of Object.keys(roomsData)) {
+            this.rooms[roomName] = this.buildRoom(roomName);
+            console.log(`✓ Loaded room: ${roomName} (${this.rooms[roomName].instances.length} instances)`);
         }
 
         const firstRoom = Object.keys(this.rooms)[0];
         if (firstRoom) {
             this.currentRoom = this.rooms[firstRoom];
+            this._visitedRooms.add(firstRoom);
             console.log(`🚀 Starting with room: ${firstRoom}`);
         }
+    }
+
+    // Builds a fresh GameRoom (with fresh instances) from this.gameData —
+    // the one place a room is constructed, called both at startup (loadGame,
+    // once per room) and by changeRoom on a non-persistent revisit (set_room_
+    // persistent's whole point: reproduce the room's authored layout again,
+    // discarding whatever state the previous visit left it in).
+    buildRoom(roomName) {
+        const roomData = this.gameData.assets.rooms[roomName];
+        const sprites = this.sprites;
+        const room = new GameRoom(roomData);
+        room._gameRef = this;  // so renderRaycastView can resolve textures
+
+        if (room.bgImage && sprites[room.bgImage]) {
+            room.backgroundSprite = sprites[room.bgImage];
+        }
+
+        const instancesData = roomData.instances || [];
+        instancesData.forEach(instData => {
+            // Rooms written at different times use different keys for
+            // the object reference (same tolerance as the Android
+            // exporter): plateforme_* uses 'object', newer rooms use
+            // 'object_name'.
+            const objName = instData.object_name || instData.object ||
+                            instData.object_type || instData.type || '';
+            if (!objName) {
+                console.warn('Skipping instance with no object reference:', instData);
+                return;
+            }
+            const objectData = this.gameData.assets.objects[objName];
+            const inst = new GameObject(
+                objName,
+                instData.x,
+                instData.y,
+                instData,
+                objectData
+            );
+
+            inst._gameRef = this;
+            // Store starting position for jump_to_start
+            inst._startX = instData.x;
+            inst._startY = instData.y;
+
+            if (objectData && objectData.sprite && sprites[objectData.sprite]) {
+                inst.sprite = sprites[objectData.sprite];
+                inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
+            }
+
+            room.instances.push(inst);
+        });
+
+        return room;
     }
 
     start() {
@@ -3487,8 +3647,14 @@ class Game {
         window.location.reload();
     }
 
-    changeRoom(roomName) {
-        if (this.rooms[roomName]) {
+    // forceRebuild=true (restart_room) always builds fresh and skips the
+    // reuse check entirely — needed because restart_room's target IS the
+    // current room name, so the normal "reuse if already visited and
+    // persistent" check would otherwise reuse the very room instance being
+    // discarded (its persistent flag hasn't changed just because a restart
+    // was requested).
+    changeRoom(roomName, forceRebuild = false) {
+        if (this.gameData.assets.rooms[roomName]) {
             // Clear keyboard state
             for (const key in this.keys) {
                 this.keys[key] = false;
@@ -3496,6 +3662,13 @@ class Game {
             this.keysPressed = {};
             this.keysReleased = {};
 
+            const existing = this.rooms[roomName];
+            const reuse = !forceRebuild && this._visitedRooms.has(roomName)
+                          && existing && existing.persistent;
+            if (!reuse) {
+                this.rooms[roomName] = this.buildRoom(roomName);
+            }
+            this._visitedRooms.add(roomName);
             this.currentRoom = this.rooms[roomName];
 
             // Resize canvas
