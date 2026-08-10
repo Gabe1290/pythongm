@@ -148,12 +148,41 @@ live).
       `a9218b5`, pushed live `6ad6be8`.
 
 ### Phase 2 — missing pages (English first)
-- [ ] `Sprite-Editor.md`
-- [ ] `Code-Editor.md`
-- [ ] `Asset-Manager.md` (covers usage tracking, Trash/restore, Clean
-      Project)
-- [ ] `Thymio-Robotics.md` (Aseba export, the 5 Thymio editor guard
-      dialogs, sensor/LED actions)
+- [x] `Sprite-Editor.md` — DONE 2026-08-11. Tools (Pencil/Eraser/Picker/
+      Fill/Line/Rect/Ellipse/Select + shortcuts), canvas ops (Mirror/
+      Resize with Scale-vs-Canvas modes/Grid/Zoom/Export PNG), frames +
+      animation playback, Origin presets, Precise Collision. Uses
+      `images/sprite-editor.png`.
+- [x] `Code-Editor.md` — DONE 2026-08-11. The two modes (View Generated
+      Code / Edit Custom Code), the 1.5s debounced auto-apply-by-parsing
+      behavior (`PythonToActionsParser.parse_full_class`, replace-not-merge
+      semantics), relationship to the `execute_code` action. Verified
+      against `object_editor_main.py` rather than assumed — the "Edit"
+      mode is a real two-way sync with events/actions, not a one-way code
+      dump. Uses `images/code-editor.png`.
+- [x] `Asset-Manager.md` — DONE 2026-08-11. Usage tracking + its known
+      blind spot (raw strings in Execute Code), the Trash mechanism
+      (Tools > Restore Deleted Assets...) and its cross-reference-not-
+      auto-relinked behavior, Find Unused Assets (with the rooms
+      carve-out), Find Orphaned Files (separate trash store, documented
+      why), Clean Project's `.tmp` sweep. All menu paths verified against
+      `core/ide_window.py`'s real `self.tr(...)` strings, not guessed.
+- [ ] ~~`Thymio-Robotics.md`~~ — **DESCOPED 2026-08-11, not written.**
+      Investigated before writing (this plan's own discipline) and found
+      Thymio/Open Roberta's UI menu entries were deliberately commented
+      out of `core/ide_window.py` for the 1.0 release (commit `5509033`,
+      "hide Thymio/Open Roberta menu entries... so 1.0 ships a focused
+      game-only IDE" — the runtime/export/dialog code is retained for a
+      "planned post-1.0 extension" per `docs/POST_1_0_REFACTOR.md`).
+      There is currently no menu path, toolbar button, or other UI entry
+      point that reaches Thymio features in the shipped app — even
+      `toggle_thymio_tab()`'s own `self.show_thymio_tab_action` is never
+      constructed. A how-to wiki page for a feature nobody can currently
+      reach from the running IDE would mislead readers into filing bugs
+      about a missing menu. Revisit this item if/when Thymio ships as a
+      real extension (same pattern as `extensions/raycast_2_5d/` — see
+      [[extensions-and-1.0-compat]] equivalent reasoning) — at that point
+      it becomes a normal Phase 2 page again.
 - [ ] `Keyboard-Shortcuts.md`
 - [ ] `Troubleshooting.md` (Test Game crash-log reading, common error
       messages, export dependency errors)
