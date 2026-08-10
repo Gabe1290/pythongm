@@ -1,6 +1,6 @@
 # Plan: closing the "organically maintained" languages' unfinished-translation gap
 
-Status: **in progress (3/7 done: fr, de, it).** Written 2026-08-10, right after
+Status: **in progress (4/7 done: fr, de, it, ru).** Written 2026-08-10, right after
 `tests/test_extension_ui_translations.py` (commit `051de39`) found that
 German's shipped catalogs carry 151 never-completed
 `<translation type="unfinished"></translation>` entries — the Preferences
@@ -190,7 +190,19 @@ not an **append**). For each language:
       section already warns about. `tests/test_i18n_de_double_escaping_fix.py`
       guards it; this file's own `test_no_double_escaped_translations`
       guards the same class of bug in the it batch.
-- [ ] **ru** (153 entries, shared list) —
+- [x] **ru** (153 entries, shared list + 2 ru-specific) — DONE 2026-08-10.
+      `tests/test_i18n_unfinished_ru.py` (4 tests, across all 6 split
+      files). 153 = the ~148 shared with de/it plus 2 ru-specific
+      (`BackgroundLayersDialog` "Visible:"/"None", already translated
+      in the other languages). Same sister-file reuse pattern as it
+      (`BlocklyVisualProgrammingTab`/`BlocklyWidget` across
+      blockly.ts/misc.ts; `VisualScriptingArea`/`ActionListWidget`
+      across actions.ts/editors.ts). Cross-checked against ru's own
+      established terminology (Новый проект/Открыть проект/Сохранить
+      проект/Тест игры/Отладка игры/Экспорт игры, "Ctrl" kept as-is,
+      "Отсоединить"/"Прикрепить" for the float-detach/attach pair
+      already established in `BlocklyWidget`). Screenshot-verified: the
+      Preferences dialog's "General" tab now reads "Общие".
 - [ ] **sl** (153 entries, shared list) —
 - [ ] **uk** (152 entries, shared list) —
 - [ ] **es** (294 entries, largest independent gap) —

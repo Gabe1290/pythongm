@@ -139,7 +139,8 @@
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
         <source>No project loaded.
 Use File → New Project or File → Open Project to begin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект не загружен.
+Используйте Файл → Новый проект или Файл → Открыть проект, чтобы начать.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
@@ -169,7 +170,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
         <source>Playgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Плейграунды</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
@@ -214,12 +215,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
         <source>💾 Export as PNG…</source>
-        <translation type="unfinished"></translation>
+        <translation>💾 Экспорт в PNG…</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
         <source>📋 Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Дублировать</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
@@ -313,27 +314,27 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
         <source>Sprite &apos;{0}&apos; has no image file.</source>
-        <translation type="unfinished"></translation>
+        <translation>У спрайта &apos;{0}&apos; нет файла изображения.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
         <source>File Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не найден</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
         <source>Image file not found: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл изображения не найден: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
         <source>Export Sprite as PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт спрайта в PNG</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
         <source>PNG Images (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображения PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
@@ -343,7 +344,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
         <source>Failed to export: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось экспортировать: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
@@ -1111,17 +1112,17 @@ Would you like to open the export directory?</source>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="62"/>
         <source>Empty Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Пустой проект</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="63"/>
         <source>With Game Over Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>С экраном Game Over</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="67"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблон:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="106"/>
@@ -1598,7 +1599,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="50"/>
         <source>Select a tutorial and click Open (or double-click):</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите руководство и нажмите Открыть (или дважды щёлкните):</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="83"/>
@@ -1608,7 +1609,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="91"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="97"/>

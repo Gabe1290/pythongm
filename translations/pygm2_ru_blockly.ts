@@ -240,7 +240,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
         <source>Error loading Blockly</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка загрузки Blockly</translation>
     </message>
     <message>
         <source>Error loading Blockly - click Reload to try again</source>
@@ -293,7 +293,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="61"/>
         <source>Visual Block Programming (Detached)</source>
-        <translation type="unfinished"></translation>
+        <translation>Визуальное программирование блоками (Отсоединено)</translation>
     </message>
 </context>
 </TS>
