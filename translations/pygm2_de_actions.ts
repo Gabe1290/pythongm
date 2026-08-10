@@ -666,7 +666,7 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
     <message>
         <location filename="../editors/object_editor_components.py" line="41"/>
         <source>Visual scripting is now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Visuelle Programmierung wird jetzt über das Ereignis-Panel verwaltet</translation>
     </message>
 </context>
 </TS>

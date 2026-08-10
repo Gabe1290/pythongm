@@ -6,27 +6,27 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="627"/>
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor ist abgetrennt. Schließen Sie das abgetrennte Fenster, um es hierher zurückzubringen.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="662"/>
         <source>📥 Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Anhängen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="663"/>
         <source>Return editor to the tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor zum Tab zurückbringen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="690"/>
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Abtrennen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="691"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Blockly-Editor in einem separaten Fenster öffnen</translation>
     </message>
 </context>
 <context>
@@ -34,47 +34,47 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Abtrennen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="131"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Blockly-Editor in einem separaten Fenster öffnen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ziehe Blöcke aus der Werkzeugleiste links, um Spiellogik zu erstellen!</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
         <source>Error loading Blockly</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Laden von Blockly</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
         <source>Blocks updated - {0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>Blöcke aktualisiert - {0} Ereignisse</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
         <source>No events to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Ereignisse zum Laden</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
         <source>Loaded {0} events as blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Ereignisse als Blöcke geladen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
         <source>Loaded {0} events - some may not have block equivalents</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Ereignisse geladen - einige haben möglicherweise keine Block-Entsprechungen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
         <source>Configuration applied: {0} blocks, {1} categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguration angewendet: {0} Blöcke, {1} Kategorien</translation>
     </message>
 </context>
 <context>
@@ -103,12 +103,12 @@
         <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
         <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
         <source>&lt;no parent&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;lt;kein übergeordnetes Objekt&amp;gt;</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
         <source>Parent object (inherits collision events)</source>
-        <translation type="unfinished"></translation>
+        <translation>Übergeordnetes Objekt (erbt Kollisionsereignisse)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
         <source>Parent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Übergeordnet:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>

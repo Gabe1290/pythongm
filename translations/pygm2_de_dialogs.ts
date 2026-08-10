@@ -139,7 +139,8 @@
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
         <source>No project loaded.
 Use File → New Project or File → Open Project to begin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Projekt geladen.
+Verwenden Sie Datei → Neues Projekt oder Datei → Projekt öffnen, um zu beginnen.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
@@ -169,7 +170,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
         <source>Playgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Spielfelder</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
@@ -214,12 +215,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
         <source>💾 Export as PNG…</source>
-        <translation type="unfinished"></translation>
+        <translation>💾 Als PNG exportieren…</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
         <source>📋 Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Duplizieren</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
@@ -313,27 +314,27 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
         <source>Sprite &apos;{0}&apos; has no image file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite „{0}“ hat keine Bilddatei.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
         <source>File Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei nicht gefunden</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
         <source>Image file not found: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilddatei nicht gefunden: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
         <source>Export Sprite as PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite als PNG exportieren</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
         <source>PNG Images (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG-Bilder (*.png)</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
@@ -343,7 +344,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
         <source>Failed to export: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Export fehlgeschlagen: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
@@ -1111,17 +1112,17 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="62"/>
         <source>Empty Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Leeres Projekt</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="63"/>
         <source>With Game Over Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit Game-Over-Bildschirm</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="67"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="106"/>
@@ -1598,7 +1599,7 @@ Möchten Sie trotzdem speichern?</translation>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="50"/>
         <source>Select a tutorial and click Open (or double-click):</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie ein Tutorial aus und klicken Sie auf Öffnen (oder doppelklicken Sie):</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="83"/>
@@ -1608,7 +1609,7 @@ Möchten Sie trotzdem speichern?</translation>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="91"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffnen</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="97"/>
