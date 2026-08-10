@@ -17,6 +17,11 @@ nastavljanjem ozadij.
 1. Dvokliknite na obstoječo sobo v drevesu virov, ali
 2. Desno kliknite na **Rooms** > **Create Room**
 
+![Urejevalnik Sob: paleta objektov na levi za izbiro, kaj postaviti,
+območje sobe na sredini z zapolnjenim platformskim nivojem (orodja
+mreže, lepljenja in izbire v orodni vrstici zgoraj), ter lastnosti
+sobe/instance in miniaturni predogled na desni](images/room-editor.png)
+
 ---
 
 ## Lastnosti Sobe

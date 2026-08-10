@@ -17,6 +17,12 @@ vmesnika.
 1. Dvokliknite na obstoječi objekt v drevesu virov, ali
 2. Desno kliknite na **Objects** > **Create Object**
 
+![Urejevalnik Objektov: seznam dogodkov na levi (Create, Step, več
+dogodkov Collision, Keyboard, No More Lives, Game Start), lastnosti
+objekta (sprite, parent, Visible/Persistent/Solid) na desni, ter zavihki
+Event List / Blockly / Urejevalnik Kode, ki spremenijo način urejanja
+akcij posameznega dogodka](images/object-editor.png)
+
 ---
 
 ## Lastnosti Objekta

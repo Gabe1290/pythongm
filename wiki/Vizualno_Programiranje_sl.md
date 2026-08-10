@@ -13,8 +13,16 @@ PyGameMaker vključuje Google Blockly za vizualno programiranje s povleci in spu
 ## Dostop do Blockly
 
 1. Odprite objekt v Object Editorju
-2. Kliknite na zavihek **Blockly** (poleg zavihka Events)
+2. Kliknite na zavihek **🧩 Blockly** (poleg Event List in Urejevalnika Kode)
 3. Prikaže se delovno področje Blockly z orodno vrstico na levi
+
+![Zavihki Event List / Blockly / Urejevalnik Kode Urejevalnika Objektov
+— klik na Blockly preklopi akcije istega dogodka v pogled blokov
+povleci-in-spusti](images/object-editor.png)
+
+*(Delovno področje Blockly samo je spletna komponenta in tukaj ni
+zajeto s posnetkom zaslona — glejte [[Code-Editor_sl|Urejevalnik Kode]]
+za izgled ustrezne generirane Python kode za isti dogodek.)*
 
 **Kateri bloki so vidni, je odvisno od vaše prednastavitve.**
 `Tools > Configure Action Blocks...` (ali `Preferences > IDE Edition`,

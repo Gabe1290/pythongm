@@ -10,6 +10,8 @@
 
 PyGameMaker je odprtokodni IDE, ki omogoča dostopno ustvarjanje 2D iger z vizualnim blokovnim programiranjem (Google Blockly) in sistemom dogodkov-akcij. Ustvarite igre brez poglobljenega znanja programiranja, nato pa jih izvozite za Windows, Linux, HTML5 ali mobilne platforme.
 
+![IDE PyGameMaker z odprtim platformskim projektom — zapolnjeno drevo virov na levi, plošča lastnosti na desni](images/ide-main-window.png)
+
 ---
 
 ## Izberite Svojo Raven
@@ -192,9 +194,14 @@ ime_projekta/
 - [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti
 - [Urejevalnik Sob](Urejevalnik_Sob_sl) - Oblikovanje nivojev
+- [Urejevalnik Sprite-ov](Sprite-Editor_sl) - Risanje in animiranje sprite-ov
+- [Urejevalnik Kode](Code-Editor_sl) - Pisanje (in generiranje) pravega Pythona za objekt
 - [Dogodki in Akcije](Dogodki_in_Akcije_sl) - Referenca igralne logike
 - [Vizualno Programiranje](Vizualno_Programiranje_sl) - Uporaba Blockly blokov
+- [Upravitelj Virov](Asset-Manager_sl) - Sledenje uporabe, Koš, iskanje neuporabljenih/osirotelih datotek
 - [Izvoz Iger](Izvoz_Iger_sl) - Gradnja za različne platforme
+- [Tipkovne Bližnjice](Keyboard-Shortcuts_sl) - Referenca bližnjic urejevalnika
+- [Odpravljanje Težav](Troubleshooting_sl) - Pogoste težave in kje jih iskati
 - [FAQ](FAQ_sl) - Pogosta vprašanja
 
 ### Kje najdem...?

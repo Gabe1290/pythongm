@@ -328,5 +328,6 @@ Vedno testirajte svojo izvoženo igro:
 ## Naslednji koraki
 
 - [[Zacetek_sl]] - Ponovitev osnov
+- [[Troubleshooting_sl|Odpravljanje Težav]] - Napake manjkajočih odvisnosti in druge težave z izvozom
 - [[FAQ_sl]] - Pogosta vprašanja o izvozu
 - [GitHub Issues](https://github.com/Gabe1290/pythongm/issues) - Prijava težav z izvozom
