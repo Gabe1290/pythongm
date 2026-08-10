@@ -1,6 +1,6 @@
 # Scorciatoie da Tastiera
 
-> [English](Keyboard-Shortcuts) | [Français](Keyboard-Shortcuts_fr) | [Deutsch](Keyboard-Shortcuts_de) | [Italiano](Keyboard-Shortcuts_it) | [Español](Keyboard-Shortcuts_es)
+> [English](Keyboard-Shortcuts) | [Français](Keyboard-Shortcuts_fr) | [Deutsch](Keyboard-Shortcuts_de) | [Italiano](Keyboard-Shortcuts_it) | [Español](Keyboard-Shortcuts_es) | [Português](Keyboard-Shortcuts_pt)
 
 ---
 

@@ -77,6 +77,8 @@ Ao iniciar o PyGameMaker pela primeira vez, verá:
 3. **Área de Trabalho** — área central para editar recursos
 4. **Painel de Propriedades** — painel direito para as propriedades dos recursos
 
+![O separador de Boas-vindas no primeiro arranque, ainda sem projeto aberto](images/ide-welcome.png)
+
 ---
 
 ## Criar o Seu Primeiro Projeto

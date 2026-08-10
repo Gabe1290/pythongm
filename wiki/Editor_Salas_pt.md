@@ -17,6 +17,11 @@ fundos.
 1. Clique duas vezes numa sala existente na árvore de recursos, ou
 2. Clique com o botão direito em **Rooms** > **Create Room**
 
+![O Editor de Salas: uma paleta de objetos à esquerda para escolher o
+que colocar, a área da sala ao centro com um nível de plataformas
+preenchido (ferramentas de grelha, encaixe e seleção na barra de
+ferramentas acima), e propriedades de sala/instância mais uma pré-visualização em miniatura à direita](images/room-editor.png)
+
 ---
 
 ## Propriedades da Sala

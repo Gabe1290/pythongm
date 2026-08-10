@@ -13,8 +13,16 @@ O PyGameMaker inclui o Google Blockly para programação visual de arrastar e so
 ## Acessar o Blockly
 
 1. Abra um objeto no Editor de Objetos
-2. Clique na aba **Blockly** (ao lado da aba Events)
+2. Clique no separador **🧩 Blockly** (ao lado de Event List e Editor de Código)
 3. A área de trabalho do Blockly aparece com uma barra de ferramentas à esquerda
+
+![Os separadores Event List / Blockly / Editor de Código do Editor de
+Objetos — clicar em Blockly muda as ações do mesmo evento para a vista
+de blocos arrastar-e-largar](images/object-editor.png)
+
+*(A própria área de trabalho do Blockly é um componente web e não foi
+capturada aqui — veja [[Code-Editor_pt|Editor de Código]] para ver como
+é o Python gerado equivalente para o mesmo evento.)*
 
 **Os blocos que você vê dependem da sua predefinição.**
 `Tools > Configure Action Blocks...` (ou `Preferences > IDE Edition`,
