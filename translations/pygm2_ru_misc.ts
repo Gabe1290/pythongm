@@ -6,27 +6,27 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="627"/>
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор отсоединён. Закройте отдельное окно, чтобы вернуть его сюда.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="662"/>
         <source>📥 Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Прикрепить</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="663"/>
         <source>Return editor to the tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Вернуть редактор во вкладку</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="690"/>
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Отсоединить</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="691"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть редактор Blockly в отдельном окне</translation>
     </message>
 </context>
 <context>
@@ -34,47 +34,47 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Отсоединить</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="131"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть редактор Blockly в отдельном окне</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетащите блоки из панели инструментов слева, чтобы создать логику игры!</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
         <source>Error loading Blockly</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка загрузки Blockly</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
         <source>Blocks updated - {0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>Блоки обновлены - {0} событий</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
         <source>No events to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет событий для загрузки</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
         <source>Loaded {0} events as blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Загружено {0} событий в виде блоков</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
         <source>Loaded {0} events - some may not have block equivalents</source>
-        <translation type="unfinished"></translation>
+        <translation>Загружено {0} событий - некоторые могут не иметь блочных эквивалентов</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
         <source>Configuration applied: {0} blocks, {1} categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфигурация применена: {0} блоков, {1} категорий</translation>
     </message>
 </context>
 <context>
@@ -103,12 +103,12 @@
         <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
         <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
         <source>&lt;no parent&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;нет родителя&gt;</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
         <source>Parent object (inherits collision events)</source>
-        <translation type="unfinished"></translation>
+        <translation>Родительский объект (наследует события столкновений)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
         <source>Parent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Родитель:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
