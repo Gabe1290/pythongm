@@ -1,6 +1,6 @@
 # Tipkovne Bližnjice
 
-> [English](Keyboard-Shortcuts) | [Français](Keyboard-Shortcuts_fr) | [Deutsch](Keyboard-Shortcuts_de) | [Italiano](Keyboard-Shortcuts_it) | [Español](Keyboard-Shortcuts_es) | [Português](Keyboard-Shortcuts_pt) | [Русский](Keyboard-Shortcuts_ru) | [Slovenščina](Keyboard-Shortcuts_sl)
+> [English](Keyboard-Shortcuts) | [Français](Keyboard-Shortcuts_fr) | [Deutsch](Keyboard-Shortcuts_de) | [Italiano](Keyboard-Shortcuts_it) | [Español](Keyboard-Shortcuts_es) | [Português](Keyboard-Shortcuts_pt) | [Русский](Keyboard-Shortcuts_ru) | [Slovenščina](Keyboard-Shortcuts_sl) | [Українська](Keyboard-Shortcuts_uk)
 
 ---
 
