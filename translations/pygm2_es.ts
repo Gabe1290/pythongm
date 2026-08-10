@@ -4331,27 +4331,27 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="29"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="43"/>
         <source>Add color</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir color</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="49"/>
         <source>Remove color</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar color</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="81"/>
         <source>Add Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir color</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="81"/>
         <source>Color name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del color:</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="87"/>
@@ -4361,7 +4361,7 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="88"/>
         <source>A color named &apos;{}&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ya existe un color llamado &apos;{}&apos;.</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="91"/>
@@ -4371,7 +4371,7 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/color_manager.py" line="121"/>
         <source>Edit Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar color</translation>
     </message>
 </context>
 <context>
@@ -4379,7 +4379,7 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="103"/>
         <source>Playground Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de zona de pruebas</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="108"/>
@@ -4389,12 +4389,12 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="109"/>
         <source>Save playground (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar zona de pruebas (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="115"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Deshacer</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="116"/>
@@ -4419,12 +4419,12 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="129"/>
         <source>Toggle grid display</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternar visualización de cuadrícula</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="132"/>
         <source>Snap</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="135"/>
@@ -4434,89 +4434,90 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="140"/>
         <source> Thickness: </source>
-        <translation type="unfinished"></translation>
+        <translation> Grosor: </translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="147"/>
         <source>Default wall thickness for drag-to-draw</source>
-        <translation type="unfinished"></translation>
+        <translation>Grosor de pared predeterminado para dibujar arrastrando</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="152"/>
         <source> Block: </source>
-        <translation type="unfinished"></translation>
+        <translation> Bloque: </translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="159"/>
         <source>Block size for block-paint mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño de bloque para el modo de pintura de bloques</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="166"/>
         <source>Color for painted blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de los bloques pintados</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="173"/>
         <location filename="../editors/playground_editor/__init__.py" line="501"/>
         <source>Arena Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de la arena</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="174"/>
         <source>Configure arena dimensions and background</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurar las dimensiones y el fondo de la arena</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="180"/>
         <source>▶ Run</source>
-        <translation type="unfinished"></translation>
+        <translation>▶ Ejecutar</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="181"/>
         <source>Simulate the playground with linked robot code</source>
-        <translation type="unfinished"></translation>
+        <translation>Simular la zona de pruebas con el código de robot vinculado</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="185"/>
         <source>Export .playground</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar .playground</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="186"/>
         <source>Export as Aseba .playground file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar como archivo .playground de Aseba</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Separar</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir este editor en su propia ventana</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="349"/>
         <source>Select Ground Texture</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar textura del suelo</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="351"/>
         <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
-        <translation type="unfinished"></translation>
+        <translation>Imágenes (*.png *.jpg *.jpeg *.bmp)</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="369"/>
         <source>Texture Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de textura</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="370"/>
         <source>Could not copy texture:
 {}</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo copiar la textura:
+{}</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="507"/>
@@ -4543,7 +4544,7 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
         <location filename="../editors/playground_editor/__init__.py" line="538"/>
         <location filename="../editors/playground_editor/__init__.py" line="543"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ninguno)</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="532"/>
@@ -4553,33 +4554,34 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="533"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="551"/>
         <source>Ground texture:</source>
-        <translation type="unfinished"></translation>
+        <translation>Textura del suelo:</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="596"/>
         <source>Run Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al ejecutar</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="597"/>
         <source>Error launching simulator:
 {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al iniciar el simulador:
+{}</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="625"/>
         <source>Export Playground</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar zona de pruebas</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="627"/>
         <source>Aseba Playground (*.playground)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zona de pruebas Aseba (*.playground)</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="638"/>
@@ -4590,7 +4592,8 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
         <location filename="../editors/playground_editor/__init__.py" line="639"/>
         <source>Playground exported to:
 {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Zona de pruebas exportada a:
+{}</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="643"/>
@@ -4601,7 +4604,8 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
         <location filename="../editors/playground_editor/__init__.py" line="644"/>
         <source>Error exporting playground:
 {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al exportar la zona de pruebas:
+{}</translation>
     </message>
 </context>
 <context>
@@ -4610,12 +4614,12 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
         <location filename="../editors/playground_editor/playground_properties.py" line="29"/>
         <location filename="../editors/playground_editor/playground_properties.py" line="233"/>
         <source>No Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sin selección</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="34"/>
         <source>Wall</source>
-        <translation type="unfinished"></translation>
+        <translation>Pared</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="72"/>
@@ -4626,22 +4630,22 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
         <location filename="../editors/playground_editor/playground_properties.py" line="82"/>
         <location filename="../editors/playground_editor/playground_properties.py" line="159"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ángulo:</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="93"/>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Color:</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="102"/>
         <source>Pushable</source>
-        <translation type="unfinished"></translation>
+        <translation>Empujable</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="118"/>
         <source>Robot</source>
-        <translation type="unfinished"></translation>
+        <translation>Robot</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="124"/>
@@ -4656,17 +4660,17 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="170"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto:</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="180"/>
         <source>Code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Código:</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="183"/>
         <source>Which Thymio object&apos;s code to run when simulating</source>
-        <translation type="unfinished"></translation>
+        <translation>Qué código de objeto Thymio ejecutar al simular</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="192"/>
@@ -4676,12 +4680,12 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="240"/>
         <source>Wall Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de la pared</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_properties.py" line="258"/>
         <source>Robot Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades del robot</translation>
     </message>
 </context>
 <context>
@@ -4689,12 +4693,12 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../runtime/playground_runner.py" line="133"/>
         <source>Playground - Running</source>
-        <translation type="unfinished"></translation>
+        <translation>Zona de pruebas - En ejecución</translation>
     </message>
     <message>
         <location filename="../runtime/playground_runner.py" line="235"/>
         <source>Running: {} robots, {} walls</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutando: {} robots, {} paredes</translation>
     </message>
     <message>
         <location filename="../runtime/playground_runner.py" line="239"/>
@@ -4705,17 +4709,17 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../runtime/playground_runner.py" line="242"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar</translation>
     </message>
     <message>
         <location filename="../runtime/playground_runner.py" line="257"/>
         <source>Arrow keys / Space = all robots; click a robot&apos;s button = that robot only. The linked object&apos;s code runs automatically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclas de flecha / Espacio = todos los robots; clic en el botón de un robot = solo ese robot. El código del objeto vinculado se ejecuta automáticamente.</translation>
     </message>
     <message>
         <location filename="../runtime/playground_runner.py" line="437"/>
         <source>Resume</source>
-        <translation type="unfinished"></translation>
+        <translation>Reanudar</translation>
     </message>
 </context>
 <context>
@@ -4723,7 +4727,7 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="25"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Herramientas</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="32"/>
@@ -4733,37 +4737,37 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="35"/>
         <source>Select and move elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar y mover elementos</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="39"/>
         <source>Wall</source>
-        <translation type="unfinished"></translation>
+        <translation>Pared</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="41"/>
         <source>Click to place walls</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic para colocar paredes</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="45"/>
         <source>Robot</source>
-        <translation type="unfinished"></translation>
+        <translation>Robot</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="47"/>
         <source>Click to place robots</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic para colocar robots</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="51"/>
         <source>Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloque</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/playground_tool_palette.py" line="53"/>
         <source>Paint cube blocks on a grid (Minecraft-style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pintar bloques cúbicos en una cuadrícula (estilo Minecraft)</translation>
     </message>
 </context>
 <context>
