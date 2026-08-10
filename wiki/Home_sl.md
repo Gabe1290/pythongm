@@ -186,6 +186,9 @@ ime_projekta/
 - [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasično igro Pong za dva igralca
 - [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
 - [Vadnica Sokoban](Tutorial-Sokoban_sl) - Ustvarite igro ugank s potiskanjem zabojev
+- [Vadnica Labirint](Tutorial-Maze_sl) - Navigirajte skozi hodnike do izhoda
+- [Vadnica Platformer](Tutorial-Platformer_sl) - Teci, skači in zbiraj kovance
+- [Vadnica Lunarni Pristanek](Tutorial-LunarLander_sl) - Pristani plovilo na luni
 - [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti
 - [Urejevalnik Sob](Urejevalnik_Sob_sl) - Oblikovanje nivojev
@@ -193,6 +196,16 @@ ime_projekta/
 - [Vizualno Programiranje](Vizualno_Programiranje_sl) - Uporaba Blockly blokov
 - [Izvoz Iger](Izvoz_Iger_sl) - Gradnja za različne platforme
 - [FAQ](FAQ_sl) - Pogosta vprašanja
+
+### Kje najdem...?
+
+Dokumentacija PyGameMaker je razdeljena na tri mesta, vsako primerno za drugačno vrsto vprašanja:
+
+| Če želite... | Poglejte tukaj |
+|---|---|
+| Poglobljeno spoznati koncept ali funkcijo (urejevalniki, dogodki, akcije, izvoz) | **Ta wiki** |
+| Slediti vodeni lekciji, klik za klikom, znotraj aplikacije | Panel **Vodniki** v IDE (`Pomoč > Vodniki`) — 9-lekcijski učni načrt od prvega projekta do popolne igre z zmago/porazom |
+| Razumeti določen primer projekta (`samples/`), ki je priložen PyGameMaker | Lasten **vodnik** tega primera — kliknite **📖 Vodniki po vzorcih** v zavihku Dobrodošli; vsak primer vsebuje `README.md` (preveden po jezikih), napisan posebej zanj |
 
 ---
 

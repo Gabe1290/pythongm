@@ -190,6 +190,9 @@ nom_du_projet/
 - [Tutoriel : Pong](Tutorial-Pong_fr) - Créez un jeu Pong classique à deux joueurs
 - [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
 - [Tutoriel : Sokoban](Tutorial-Sokoban_fr) - Créez un jeu de puzzle pousse-caisses
+- [Tutoriel : Labyrinthe](Tutorial-Maze_fr) - Naviguez à travers les couloirs jusqu'à la sortie
+- [Tutoriel : Platformer](Tutorial-Platformer_fr) - Courez, sautez et collectez des pièces
+- [Tutoriel : Atterrissage Lunaire](Tutorial-LunarLander_fr) - Posez un vaisseau sur la lune
 - [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu
 - [Éditeur de Salles](Editeur_Salles_fr) - Concevoir des niveaux
@@ -197,6 +200,16 @@ nom_du_projet/
 - [Programmation Visuelle](Programmation_Visuelle_fr) - Utiliser les blocs Blockly
 - [Exporter des Jeux](Exportation_fr) - Compiler pour différentes plateformes
 - [FAQ](FAQ_fr) - Questions fréquemment posées
+
+### Où trouver...?
+
+La documentation de PyGameMaker est répartie en trois endroits, chacun adapté à un type de question différent :
+
+| Si vous voulez... | Consultez... |
+|---|---|
+| Approfondir un concept ou une fonctionnalité (éditeurs, événements, actions, exportation) | **Ce wiki** |
+| Suivre une leçon guidée, clic par clic, directement dans l'application | Le panneau **Tutoriels** de l'IDE (`Aide > Tutoriels`) — un parcours de 9 leçons, du premier projet jusqu'à un jeu complet avec victoire/défaite |
+| Comprendre un exemple de projet précis (`samples/`) fourni avec PyGameMaker | Le **guide** propre à cet exemple — cliquez sur **📖 Guides des exemples** dans l'onglet Accueil ; chaque exemple fournit un `README.md` (traduit par langue) rédigé spécifiquement pour lui |
 
 ---
 
