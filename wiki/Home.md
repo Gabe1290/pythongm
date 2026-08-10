@@ -197,8 +197,11 @@ project_name/
 - [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
 - [Object-Editor](Object-Editor) - Working with game objects
 - [Room-Editor](Room-Editor) - Designing levels
+- [Sprite-Editor](Sprite-Editor) - Drawing and animating sprites
+- [Code-Editor](Code-Editor) - Writing (and generating) real Python for an object
 - [Events-and-Actions](Events-and-Actions) - Game logic reference
 - [Visual-Programming](Visual-Programming) - Using Blockly blocks
+- [Asset-Manager](Asset-Manager) - Usage tracking, Trash, and finding unused/orphaned files
 - [Exporting-Games](Exporting-Games) - Build for different platforms
 - [FAQ](FAQ) - Frequently asked questions
 
