@@ -1528,6 +1528,12 @@ if __name__ == '__main__':
         # Room-level behavior flags mutated at runtime by the "Room" category
         # actions (set_room_persistent et al.) — see __init__'s comment.
         persistent = bool(room_data.get('persistent', False))
+        # NOTE: this only seeds set_background's dynamic-group starting side;
+        # the room's own BAKED background image (bg_image_body below) has no
+        # foreground support in Kivy at all (a separate, pre-existing gap —
+        # the legacy single-background draw is unconditionally behind
+        # instances here, unlike the desktop runtime) and is left untouched.
+        foreground = bool(room_data.get('background_foreground', False))
 
         # Get background properties
         bg_color = room_data.get('background_color', '#808080')  # Default gray
@@ -1756,6 +1762,28 @@ class {class_name}(Widget):
         self._bg_color_instr = None
         self._fbo_clear = None
 
+        # set_background's dynamic background image. Kept in its own
+        # InstructionGroup (added once below, after the room's authored/baked
+        # background) so it can be rebuilt (image/tiling/scroll change) and
+        # repositioned (behind/foreground) at runtime without touching the
+        # baked drawing at all. A room's baked background (if any) keeps
+        # rendering underneath — for the common stretched/opaque case this
+        # dynamic one fully occludes it once set; an exotic tiled-with-gaps
+        # or transparent baked background could show through, a documented
+        # edge case rather than tearing up the baked path to prevent it.
+        self.background_foreground = {foreground}
+        self._bg_image_group = InstructionGroup()
+        self._bg_group_in_after = False
+        self._bg_fbo_behind_index = 0
+        self._bg_texture = None
+        self._bg_tile_h = False
+        self._bg_tile_v = False
+        self._bg_hspeed = 0.0
+        self._bg_vspeed = 0.0
+        self._bg_scroll_x = 0.0
+        self._bg_scroll_y = 0.0
+        self._bg_visible = False
+
         # Camera / views (GameMaker-style large-level scrolling + multi-view).
         # view_x/view_y hold the live camera position in Kivy space (y-up).
         self.views_enabled = {views_enabled}
@@ -1793,6 +1821,12 @@ class {class_name}(Widget):
                 self._fbo_clear = ClearColor({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
                 ClearBuffers()
                 self._draw_bg_image()
+                # Captured dynamically (not a hardcoded index) so a room WITH
+                # a baked background image (which adds its own instructions
+                # above) still repositions _bg_image_group to the correct
+                # "just behind instances" slot later, not a stale fixed one.
+                self._bg_fbo_behind_index = len(self._fbo.children)
+                self._fbo.add(self._bg_image_group)
             self.canvas.add(self._fbo)
             self._view_group = InstructionGroup()
             self.canvas.add(self._view_group)
@@ -1836,6 +1870,7 @@ class {class_name}(Widget):
             self._bg_color_instr = Color({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
             self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
             self._draw_bg_image()
+            self.canvas.before.add(self._bg_image_group)
         with self.canvas.after:
             PopMatrix()
 
@@ -1914,6 +1949,105 @@ class {class_name}(Widget):
             self._bg_color_instr.rgb = (r, g, b)
         if self._fbo_clear is not None:
             self._fbo_clear.rgb = (r, g, b)
+
+    def set_background(self, path, visible, foreground, tiled_h, tiled_v, hspeed, vspeed):
+        """Runtime set_background action. See __init__'s _bg_image_group
+        comment for why this draws through its own group rather than
+        touching the room's baked background."""
+        self._bg_visible = bool(visible)
+        self.background_foreground = bool(foreground)
+        self._bg_tile_h = bool(tiled_h)
+        self._bg_tile_v = bool(tiled_v)
+        try:
+            self._bg_hspeed = float(hspeed)
+        except (TypeError, ValueError):
+            self._bg_hspeed = 0.0
+        try:
+            self._bg_vspeed = float(vspeed)
+        except (TypeError, ValueError):
+            self._bg_vspeed = 0.0
+
+        if self._bg_visible and path:
+            img = load_image(path)
+            self._bg_texture = img.texture if img else None
+        elif not self._bg_visible:
+            self._bg_texture = None
+
+        self._reposition_bg_image_group()
+        self._rebuild_bg_image_group()
+
+    def _reposition_bg_image_group(self):
+        """Move _bg_image_group behind/in-front-of instances to match
+        background_foreground. A no-op when already in the right place, so
+        this is safe to call every set_background regardless of whether
+        foreground actually changed."""
+        want_after = self.background_foreground
+        if want_after == self._bg_group_in_after:
+            return
+        if self.views_enabled and self._fbo is not None:
+            self._fbo.remove(self._bg_image_group)
+            if want_after:
+                self._fbo.add(self._bg_image_group)  # append = drawn last = on top
+            else:
+                # The slot captured at construction, right after the Clear
+                # instructions and any baked background image — see
+                # __init__'s _bg_fbo_behind_index comment.
+                self._fbo.insert(self._bg_fbo_behind_index, self._bg_image_group)
+        else:
+            if want_after:
+                self.canvas.before.remove(self._bg_image_group)
+                self.canvas.after.add(self._bg_image_group)
+            else:
+                self.canvas.after.remove(self._bg_image_group)
+                self.canvas.before.add(self._bg_image_group)
+        self._bg_group_in_after = want_after
+
+    def _rebuild_bg_image_group(self):
+        """Repopulate _bg_image_group from the current texture/tiling/scroll
+        state. Tiling math mirrors the desktop runtime's
+        GameRoom._render_legacy_background (start/step per axis, wrap via
+        scroll offset)."""
+        self._bg_image_group.clear()
+        if not self._bg_visible or self._bg_texture is None:
+            return
+        tex = self._bg_texture
+        tw, th = tex.size
+        do_tile_h = self._bg_tile_h or self._bg_hspeed != 0.0
+        do_tile_v = self._bg_tile_v or self._bg_vspeed != 0.0
+        self._bg_image_group.add(Color(1, 1, 1, 1))
+        if do_tile_h or do_tile_v:
+            ox = int(self._bg_scroll_x) if do_tile_h else 0
+            oy = int(self._bg_scroll_y) if do_tile_v else 0
+            start_x = ox - tw if do_tile_h else 0
+            start_y = oy - th if do_tile_v else 0
+            step_x = tw if do_tile_h else self.room_width
+            step_y = th if do_tile_v else self.room_height
+            x = start_x
+            while x < self.room_width:
+                y = start_y
+                while y < self.room_height:
+                    self._bg_image_group.add(
+                        Rectangle(texture=tex, pos=(x, y), size=(tw, th)))
+                    y += step_y
+                x += step_x
+        else:
+            self._bg_image_group.add(Rectangle(
+                texture=tex, pos=(0, 0), size=(self.room_width, self.room_height)))
+
+    def _advance_bg_scroll(self, dt):
+        """Advance the dynamic background's scroll offset one tick, scaled
+        by room_speed like GameObject._process_movement — so a faster
+        room_speed scrolls the background faster too, matching the desktop
+        runtime's per-step model."""
+        if self._bg_hspeed == 0.0 and self._bg_vspeed == 0.0:
+            return
+        if self._bg_texture is None:
+            return
+        speed_factor = dt * self.room_speed if dt > 0 else 1.0
+        tw, th = self._bg_texture.size
+        self._bg_scroll_x = (self._bg_scroll_x + self._bg_hspeed * speed_factor) % max(1, tw)
+        self._bg_scroll_y = (self._bg_scroll_y + self._bg_vspeed * speed_factor) % max(1, th)
+        self._rebuild_bg_image_group()
 
     # Extension hooks (Stage C). Defaults are no-ops; the raycast extension
     # injects overriding _init_extensions / _render_extension_overlay and its
@@ -2111,6 +2245,11 @@ class {class_name}(Widget):
         # 7. Collision events
         # 8. End Step events
         # 9. Draw events (handled by Kivy rendering)
+
+        # Advance the dynamic background's scroll (set_background's
+        # hspeed/vspeed) — a no-op unless both are zero or no background is
+        # currently set.
+        self._advance_bg_scroll(dt)
 
         # Snapshot the instance list so that room switches or instance
         # creation/destruction during callbacks don't mutate the list
@@ -2396,6 +2535,7 @@ class {class_name}(Widget):
             width=width,
             height=height,
             persistent=persistent,
+            foreground=foreground,
             views_enabled=views_enabled,
             views_repr=views_repr,
             window_width=window_width,
