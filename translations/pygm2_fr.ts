@@ -338,7 +338,8 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
         <source>No project loaded.
 Use File → New Project or File → Open Project to begin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun projet chargé.
+Utilisez Fichier → Nouveau projet ou Fichier → Ouvrir un projet pour commencer.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
@@ -821,7 +822,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="200"/>
         <source>Select None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne rien sélectionner</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="237"/>
@@ -890,12 +891,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Détacher</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="151"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
@@ -1167,7 +1168,7 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
         <source>Error loading Blockly</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du chargement de Blockly</translation>
     </message>
     <message>
         <source>Error loading Blockly - click Reload to try again</source>
@@ -2358,17 +2359,17 @@ Voulez-vous ouvrir le répertoire d&apos;export ?</translation>
     <message>
         <location filename="../editors/_floatable_editor.py" line="45"/>
         <source>Return this editor to the IDE&apos;s tab strip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ramener cet éditeur dans la barre d'onglets de l'IDE</translation>
     </message>
     <message>
         <location filename="../editors/_floatable_editor.py" line="47"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Détacher</translation>
     </message>
     <message>
         <location filename="../editors/_floatable_editor.py" line="48"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
     </message>
 </context>
 <context>
@@ -3127,17 +3128,17 @@ Erreur : {0}</translation>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
         <source>Edit mode: changes apply automatically as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode édition : les modifications s'appliquent automatiquement pendant la saisie</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
         <source>No event methods found in the code</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune méthode d'événement trouvée dans le code</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
         <source>{0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} événements</translation>
     </message>
     <message>
         <source>Object: {0} | Sprite: {1}</source>
@@ -4038,12 +4039,12 @@ L'action elle-même n'est pas affectée et sera conservée telle quelle lors de 
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Détacher</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
     </message>
     <message>
         <location filename="../editors/playground_editor/__init__.py" line="349"/>
@@ -6107,42 +6108,42 @@ Ressource : {1}</translation>
     <message>
         <location filename="../core/ide_window.py" line="3506"/>
         <source>Floated: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Détaché : {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3544"/>
         <source>Reattached: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Rattaché : {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3571"/>
         <source>Window mode: Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode fenêtre : Onglets</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3583"/>
         <source>Window mode: Floating</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode fenêtre : Flottant</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3590"/>
         <source>⧉ Floating</source>
-        <translation type="unfinished"></translation>
+        <translation>⧉ Flottant</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3592"/>
         <source>Window mode: Floating. Click to switch all editors back into tabs (use this if a floating window has been dragged off-screen).</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode fenêtre : Flottant. Cliquez pour ramener tous les éditeurs dans des onglets (utile si une fenêtre flottante a été déplacée hors de l'écran).</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3596"/>
         <source>⊞ Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>⊞ Onglets</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3598"/>
         <source>Window mode: Tabbed. Click to pop every editor out into its own window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode fenêtre : Onglets. Cliquez pour détacher chaque éditeur dans sa propre fenêtre.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3681"/>
@@ -6359,7 +6360,7 @@ Veuillez fermer et redémarrer l&apos;IDE pour que le changement prenne effet.</
     <message>
         <location filename="../core/ide_window.py" line="177"/>
         <source>Export &amp;Aseba (Thymio) code...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter le code &amp;amp;Aseba (Thymio)...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="298"/>
@@ -6394,42 +6395,42 @@ Veuillez fermer et redémarrer l&apos;IDE pour que le changement prenne effet.</
     <message>
         <location filename="../core/ide_window.py" line="835"/>
         <source>New Project (Ctrl+N)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau projet (Ctrl+N)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="836"/>
         <source>Open Project (Ctrl+O)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir un projet (Ctrl+O)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="837"/>
         <source>Save Project (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le projet (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="842"/>
         <source>Test Game (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tester le jeu (F5)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="843"/>
         <source>Debug Game (F6)</source>
-        <translation type="unfinished"></translation>
+        <translation>Déboguer le jeu (F6)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="844"/>
         <source>Export Game…</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter le jeu…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="849"/>
         <source>Import Sprite…</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer un sprite…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="850"/>
         <source>Import Sound…</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer un son…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="858"/>
@@ -6444,12 +6445,12 @@ Veuillez fermer et redémarrer l&apos;IDE pour que le changement prenne effet.</
     <message>
         <location filename="../core/ide_window.py" line="869"/>
         <source>Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>Onglets</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="872"/>
         <source>Toggle between Tabbed and Floating editor layouts</source>
-        <translation type="unfinished"></translation>
+        <translation>Basculer entre les dispositions d'éditeur en onglets et flottante</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1189"/>
@@ -6541,49 +6542,51 @@ Veuillez fermer et redémarrer l&apos;IDE pour que le changement prenne effet.</
     <message>
         <location filename="../core/ide_window.py" line="2237"/>
         <source>Exporting Aseba code...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportation du code Aseba en cours...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2244"/>
         <source>Aseba Export Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l'export Aseba</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2245"/>
         <source>Failed to export Aseba code:
 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l'export du code Aseba :
+
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2247"/>
         <source>Aseba export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l'export Aseba</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2253"/>
         <source>Aseba Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Aseba</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2255"/>
         <source>No Thymio objects found in this project, so no Aseba code was generated. Add a Thymio object to the project and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun objet Thymio trouvé dans ce projet, donc aucun code Aseba n'a été généré. Ajoutez un objet Thymio au projet et réessayez.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2260"/>
         <source>Aseba export: nothing to export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Aseba : rien à exporter</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2263"/>
         <source>Aseba export complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Aseba terminé</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2266"/>
         <source>Aseba Export Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Aseba terminé</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2267"/>
@@ -6591,7 +6594,10 @@ Veuillez fermer et redémarrer l&apos;IDE pour que le changement prenne effet.</
 {0}
 
 Would you like to open the output folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Aseba .aesl écrits dans :
+{0}
+
+Souhaitez-vous ouvrir le dossier de sortie ?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2406"/>
@@ -7103,12 +7109,12 @@ Toute action provenant de celles-ci sera ignorée et le projet peut sembler ou s
     <message>
         <location filename="../editors/room_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Détacher</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir cet éditeur dans sa propre fenêtre</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="202"/>
@@ -7469,12 +7475,12 @@ Toute action provenant de celles-ci sera ignorée et le projet peut sembler ou s
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="375"/>
         <source>Precise Collision</source>
-        <translation type="unfinished"></translation>
+        <translation>Collision précise</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="377"/>
         <source>Enable pixel-perfect collision for this sprite. Static-only: rotated or scaled instances fall back to AABB.</source>
-        <translation type="unfinished"></translation>
+        <translation>Active la collision pixel par pixel pour ce sprite. Statique uniquement : les instances tournées ou redimensionnées reviennent à une collision AABB.</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="384"/>
@@ -8492,7 +8498,7 @@ Voulez-vous quand même enregistrer ?</translation>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="50"/>
         <source>Select a tutorial and click Open (or double-click):</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez un tutoriel puis cliquez sur Ouvrir (ou double-cliquez) :</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="83"/>
