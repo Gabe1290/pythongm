@@ -13,8 +13,16 @@ PyGameMaker includes Google Blockly for visual, drag-and-drop programming. Build
 ## Accessing Blockly
 
 1. Open an object in the Object Editor
-2. Click the **Blockly** tab (next to the Events tab)
+2. Click the **🧩 Blockly** tab (next to Event List and Code Editor)
 3. The Blockly workspace appears with a toolbox on the left
+
+![The Object Editor's Event List / Blockly / Code Editor tabs — clicking
+Blockly switches the same event's actions into the drag-and-drop block
+view](images/object-editor.png)
+
+*(The Blockly canvas itself is a web-based component and isn't captured
+here — see [Code-Editor](Code-Editor) for what the equivalent generated
+Python looks like for the same event.)*
 
 **Which blocks you see depends on your preset.** `Tools > Configure Action
 Blocks...` (or `Preferences > IDE Edition`, which sets the default for new

@@ -77,6 +77,8 @@ When you first launch PyGameMaker, you'll see:
 3. **Workspace** - Central area for editing assets
 4. **Properties Panel** - Right panel for asset properties
 
+![The Welcome tab on first launch, with no project open yet](images/ide-welcome.png)
+
 ---
 
 ## Creating Your First Project
