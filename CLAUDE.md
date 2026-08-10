@@ -1647,3 +1647,89 @@ one full-suite gate each.
 - `TODO.md`'s room-background/scrolling entry updated to record both
   targets done; no sample was changed to exercise these actions (matching
   the desktop session's own note that none currently do).
+
+**2026-08-10 — DEFERRED_ITEMS_PLAN.md/TODO.md re-verified fully drained;
+picked up the "needs human eyes" thread instead, found and fixed a real
+untranslated-UI bug.** Re-checked every tier/section in both docs against
+current code before doing anything (the established audit-is-a-lead
+discipline) — confirmed all of Tiers 0-3 and every numbered item (1-13,
+10.5) are genuinely DONE, and the remaining TODO.md sections (Kivy
+long-tail action coverage, right/middle mouse, the Pyodide offline
+bundle, manifest-ifying objects/sprites) are explicitly filed as
+"pick up opportunistically" / "just before 1.0 final," not ready items.
+Rather than invent scope on the closed backlog, picked up the other
+standing open thread: the "nobody has looked at the actual rendered UI"
+caveat attached to every completed i18n arc.
+- **New technique, worth reusing:** an offscreen `QApplication`
+  (`QT_QPA_PLATFORM=offscreen`) can still `QWidget.grab()` a real,
+  fully-laid-out widget into a `QPixmap` and save it as a PNG — no real
+  display needed. Combined with `get_language_manager().set_language(x)`
+  (installs the real compiled `.qm` into the running `QApplication`
+  before constructing the widget, so `self.tr()` resolves for real) and
+  Claude's own multimodal image reading, this is a genuine visual
+  spot-check in a headless dev box — categorically stronger than the
+  string-resolution tests this repo's i18n work has relied on until now,
+  even though it's still not literally "a human looked at it." Ran it
+  against `PreferencesDialog` (Tools → Preferences) for all 10 shipped
+  languages, switching every tab.
+- **Found a real bug on the very first screenshot.** pt/ja/zh's
+  Preferences dialog rendered every tab correctly EXCEPT "Extensions"
+  (the settings-UI tab from the item-13 follow-up work above), which was
+  100% English — tab label, description text, section header, all of it.
+  Traced the root cause: that whole feature arc (the tab, plus
+  `ObjectEventsPanel`'s unrecognized-action amber tree items and
+  `PyGameMakerIDE`'s missing/not-installed extension warning dialogs)
+  added 15 `self.tr()`-wrapped strings across those 3 contexts, but the
+  session that added them never touched a translation catalog at all —
+  confirmed by grep: zero of the 15 sources existed in ANY of the 10
+  shipped languages' `.ts` files, not just pt/ja/zh. A gap that predates
+  and is independent of the 2026-08-09 pt/ja/zh completion arc; it would
+  have hit de/es/fr/it/ru/sl/uk identically.
+- **Fixed for all 10 languages in one commit**, not just the 3 that
+  happened to be screenshotted. Wrote a one-off script (not committed,
+  same category as `scripts/gen_translation_ts.py`'s own session-local
+  predecessor before it got generalized) that appends new `<message>`
+  entries directly — `TranslationBuilder`/`gen_translation_ts.py` couldn't
+  be reused as-is here since it always pulls source text FROM an existing
+  reference `.ts`'s `<context>` block, and none of the 10 files had these
+  strings yet for it to pull from. Routed each context to the correct
+  shipped file per this repo's split-vs-monolithic rule
+  (`PreferencesDialog`/`PyGameMakerIDE` → `_core` for de/it/ru/sl/uk,
+  `ObjectEventsPanel` → `_editors`; one monolithic file for es/fr/pt/ja/zh)
+  — got this from re-deriving it via `grep -c "<name>X</name>"` across
+  each split file rather than assuming. Terminology (the noun
+  "extension," the enable/disable verb pair) was cross-checked against
+  each language's own translated `wiki/Extensions_<lang>.md` page instead
+  of invented fresh, so it matches vocabulary a reader may already have
+  seen from the wiki. Compiled clean; re-ran the same screenshot spike
+  post-fix and visually confirmed pt/ja/zh (full re-check) plus
+  de/es/fr/it/ru/sl/uk (Extensions tab only) all render correctly now —
+  no mojibake, no truncation, no leftover English. `tests/
+  test_extension_ui_translations.py` (3 tests: every source present with
+  a real translation in every shipped file; a live `QTranslator`
+  resolving all 15 strings in all 10 languages — the actual runtime bug).
+  One test-writing landmine: French's "Extensions" is a genuine cognate
+  (confirmed against `wiki/Extensions_fr.md`'s own page title, "# Extensions")
+  — a naive "translation must differ from the English source" assertion
+  false-positived on it; carved out as an explicit, documented exception
+  alongside "v{0}" (a legitimately-universal version-prefix string).
+- **Found, but explicitly did NOT chase, a much bigger related gap.**
+  While spot-checking why German's "General" tab label rendered in
+  English, found `pygm2_de_core.ts`/`_editors.ts` alone carry 151
+  `<translation type="unfinished"></translation>` entries (78 + 38, plus
+  smaller counts in `_blockly`/`_actions`/`_misc`/`_dialogs`) — real
+  strings that have simply never been translated, sitting quietly in an
+  "already maintained" language's catalog. This is categorically
+  different from the pt/ja/zh work (which built each catalog complete
+  from a clean reference and got verified 1369/1369) — the six older
+  "maintained" languages (de/es/fr/it/ru/sl/uk minus fr, which is
+  monolithic) were never swept for 100% completeness the same way, so
+  they likely carry similar-scale gaps too, just not counted. Logged in
+  `TODO.md`'s Extensions section rather than fixed here — real scope, but
+  unbounded until someone runs the same count across the other six
+  languages and decides whether/how to prioritize filling them, which is
+  a different, larger unit of work than "translate these 15 known
+  strings."
+- Suite 2493 → 2496 passed, 0 failed. Screenshot spike scripts were
+  throwaway (scratchpad, not committed), matching this repo's established
+  treatment of Playwright/ad hoc verification tooling.
