@@ -1,6 +1,13 @@
 # Wiki completeness plan (2026-08-11)
 
-Status: **OPEN — Phase 0 not started.** Written after an audit of the live
+Status: **CLOSED 2026-08-11 — Phases 0-3 and 5 all done; Phase 4 decided
+(no wiki tutorials for sample projects); the one deferred item (per-
+tutorial step screenshots) is explicitly scoped down and logged, not
+forgotten, in Phase 3 below.** 51 files touched across the closing batch
+alone (10 new pages × ~5.1 languages avg accounting for reuse, plus nav/
+caption propagation into 6×9 existing pages); link and image-reference
+integrity verified programmatically before calling this done (see
+Verification section at the end). Written after an audit of the live
 wiki (216 pages: 24 canonical English pages × 9 languages, full parity)
 following the 2026-08-10 sync (see `docs/SESSION_NOTES.md` / session notes
 for that day — 82 unpushed commits, incl. a fabricated-GML fix, were pushed
@@ -240,6 +247,35 @@ live).
       per-sample `README.md` guides. No wiki work planned for these
       samples.
 
-### Phase 5 — translation tail
-- [ ] Translate every page touched in Phases 0–4 into de/es/fr/it/pt/ru/sl/uk.
-      Size as its own multi-session arc; do not bundle into Phase 2/3 commits.
+### Phase 5 — translation tail — CLOSED 2026-08-11
+- [x] Translate every page touched in Phases 0–3 into de/es/fr/it/pt/ru/sl/uk.
+      Done in one session (not the anticipated multi-session arc — the
+      2026-07-20 sample-guide cost estimate this plan cited assumed much
+      longer prose per page; these 5 reference pages + caption
+      propagation were smaller units). One commit per language
+      (`4f63d78` fr, `0d48909` de, `2f92e79` it, `6f17a97` es, `3cc166f`
+      pt, `e5eb5e7` ru, `b172e9b` sl, `b951dae` uk), each pushed to the
+      live wiki immediately after. Every language's switcher header now
+      lists all 9 languages on every touched page — verified
+      programmatically (no missing cross-links), not just spot-checked.
+      Method: reused already-established terminology from each
+      language's existing translated pages (Object-Editor/Room-Editor/
+      Tutorials-index/pygm2_<lang>.ts) rather than inventing vocabulary,
+      matching this repo's standing i18n discipline. Filenames for the 5
+      new pages kept the English name + `_<lang>` suffix (the FAQ/
+      Preset-Guide precedent) rather than a fully translated slug (the
+      Object-Editor/Room-Editor precedent) — lower transliteration risk
+      across 8 languages including two non-Latin scripts.
+
+## Verification (done 2026-08-11, before closing this plan)
+
+- **Link integrity**: every `[[WikiLink]]` and local `[label](Target)`
+  reference across all 45 new/touched Phase 2/5 files resolves to a real
+  page — checked programmatically (Python script diffing link targets
+  against the actual file list), not by eye.
+- **Image integrity**: every `images/*.png` reference across all touched
+  files resolves to a real file in `wiki/images/`.
+- **Live sync**: `scripts/sync_wiki.sh check` reports only the expected
+  `.gitattributes`-only diff (a file that intentionally lives only in the
+  live wiki repo, not `wiki/`) — confirmed after every push this session,
+  not just at the end.
