@@ -132,23 +132,23 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="62"/>
         <source>IDE Edition</source>
-        <translation type="unfinished"></translation>
+        <translation>Izdaja IDE</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="69"/>
         <source>Edition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Izdaja:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="79"/>
         <source>The edition controls which tutorials are shown and the default
 block preset for new projects. Existing projects are not affected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Izdaja določa, kateri vodiči so prikazani in kateri privzeti nabor blokov se uporabi za nove projekte. Obstoječi projekti niso prizadeti.</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="88"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Splošno</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="96"/>
@@ -1596,7 +1596,7 @@ ali obiščite:</translation>
     <message>
         <location filename="../core/ide_window.py" line="3037"/>
         <source>&lt;h3&gt;License&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Source code:&lt;/b&gt; MIT License&lt;br&gt;• &lt;b&gt;Documentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier to reuse for educators, students, and downstream projects. See the &lt;code&gt;LICENSE&lt;/code&gt; and &lt;code&gt;LICENSE-docs&lt;/code&gt; files for full terms.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Licenca&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Izvorna koda:&lt;/b&gt; Licenca MIT&lt;br&gt;• &lt;b&gt;Dokumentacija:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Prelicencirano iz GPLv3 v MIT + CC BY 4.0, da se zniža ovira za ponovno uporabo za učitelje, študente in izpeljane projekte. Za celotne pogoje glejte datoteki &lt;code&gt;LICENSE&lt;/code&gt; in &lt;code&gt;LICENSE-docs&lt;/code&gt;.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3057"/>
@@ -1626,12 +1626,12 @@ Vir: {1}</translation>
     <message>
         <location filename="../core/ide_window.py" line="3181"/>
         <source>Opened playground: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Igrišče odprto: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3192"/>
         <source>Failed to open playground editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Urejevalnika igrišča ni bilo mogoče odpreti: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3234"/>
@@ -1661,42 +1661,42 @@ Vir: {1}</translation>
     <message>
         <location filename="../core/ide_window.py" line="3506"/>
         <source>Floated: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Ločeno: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3544"/>
         <source>Reattached: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Pripeto: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3571"/>
         <source>Window mode: Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>Način okna: Zavihki</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3583"/>
         <source>Window mode: Floating</source>
-        <translation type="unfinished"></translation>
+        <translation>Način okna: Plavajoče</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3590"/>
         <source>⧉ Floating</source>
-        <translation type="unfinished"></translation>
+        <translation>⧉ Plavajoče</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3592"/>
         <source>Window mode: Floating. Click to switch all editors back into tabs (use this if a floating window has been dragged off-screen).</source>
-        <translation type="unfinished"></translation>
+        <translation>Način okna: Plavajoče. Kliknite, da vse urejevalnike vrnete v zavihke (uporabite to, če je bilo plavajoče okno odvlečeno izven zaslona).</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3596"/>
         <source>⊞ Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>⊞ Zavihki</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3598"/>
         <source>Window mode: Tabbed. Click to pop every editor out into its own window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Način okna: Zavihki. Kliknite, da vsak urejevalnik odprete v svojem oknu.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3681"/>
@@ -1802,17 +1802,19 @@ Ali želite:
         <source>Failed to open object editor:
 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Urejevalnika predmeta ni bilo mogoče odpreti:
+
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3286"/>
         <source>Opened sprite: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite odprt: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3297"/>
         <source>Failed to open sprite editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Urejevalnika spritov ni bilo mogoče odpreti: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3719"/>
@@ -1906,18 +1908,18 @@ Zaprite in znova zaženite IDE, da bodo spremembe začele veljati.</translation>
     <message>
         <location filename="../core/ide_window.py" line="177"/>
         <source>Export &amp;Aseba (Thymio) code...</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvozi kodo &amp;Aseba (Thymio)...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="189"/>
         <location filename="../core/ide_window.py" line="331"/>
         <source>Import Open &amp;Roberta XML...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvozi &amp;Open Roberta XML...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="190"/>
         <source>Import &amp;GameMaker .gmk File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvozi datoteko &amp;GameMaker .gmk...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="298"/>
@@ -1952,22 +1954,22 @@ Zaprite in znova zaženite IDE, da bodo spremembe začele veljati.</translation>
     <message>
         <location filename="../core/ide_window.py" line="674"/>
         <source>Import Open Roberta XML</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvozi Open Roberta XML</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="676"/>
         <source>Open Roberta XML (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Roberta XML (*.xml)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="685"/>
         <source>Select Output Directory for Imported Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Izberite izhodno mapo za uvoženi projekt</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="694"/>
         <source>Importing Open Roberta program...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvažanje programa Open Roberta...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="702"/>
@@ -1976,78 +1978,87 @@ Zaprite in znova zaženite IDE, da bodo spremembe začele veljati.</translation>
 
 Warnings:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Opozorila:
+</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="708"/>
         <source>Project &apos;{0}&apos; imported successfully!
 Events: {1}, Actions: {2}{3}</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt &apos;{0}&apos; je bil uspešno uvožen!
+Dogodki: {1}, Akcije: {2}{3}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="715"/>
         <source>Roberta import complete: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvoz Roberta zaključen: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="726"/>
         <source>Failed to import Open Roberta XML:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Roberta XML ni bilo mogoče uvoziti:
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="728"/>
         <source>Roberta import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvoz Roberta ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="734"/>
         <source>Import GameMaker File</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvozi datoteko GameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="736"/>
         <source>GameMaker Files (*.gmk)</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteke GameMaker (*.gmk)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="759"/>
         <source>Could not create output folder:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Izhodne mape ni bilo mogoče ustvariti:
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="765"/>
         <source>Importing GameMaker file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvažanje datoteke GameMaker...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="769"/>
         <source>(no details)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ni podrobnosti)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="773"/>
         <source>Failed to import {0}:
 
 {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} ni bilo mogoče uvoziti:
+
+{1}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="775"/>
         <source>GMK import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvoz GMK ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="778"/>
         <source>(empty project)</source>
-        <translation type="unfinished"></translation>
+        <translation>(prazen projekt)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="782"/>
         <source>
   ...and {0} more</source>
-        <translation type="unfinished"></translation>
+        <translation>
+  ...in še {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="788"/>
@@ -2055,52 +2066,55 @@ Events: {1}, Actions: {2}{3}</source>
 {1}
 
 {2}{3}</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;{0}&apos; uvožen v:
+{1}
+
+{2}{3}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="791"/>
         <source>GMK import complete: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvoz GMK zaključen: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="835"/>
         <source>New Project (Ctrl+N)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nov projekt (Ctrl+N)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="836"/>
         <source>Open Project (Ctrl+O)</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpri projekt (Ctrl+O)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="837"/>
         <source>Save Project (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shrani projekt (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="842"/>
         <source>Test Game (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Testiraj igro (F5)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="843"/>
         <source>Debug Game (F6)</source>
-        <translation type="unfinished"></translation>
+        <translation>Razhroščuj igro (F6)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="844"/>
         <source>Export Game…</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvozi igro…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="849"/>
         <source>Import Sprite…</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvozi sprite…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="850"/>
         <source>Import Sound…</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvozi zvok…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="858"/>
@@ -2115,12 +2129,12 @@ Events: {1}, Actions: {2}{3}</source>
     <message>
         <location filename="../core/ide_window.py" line="869"/>
         <source>Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavihki</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="872"/>
         <source>Toggle between Tabbed and Floating editor layouts</source>
-        <translation type="unfinished"></translation>
+        <translation>Preklopi med razporeditvijo urejevalnikov: zavihki in plavajoče</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1189"/>
@@ -2161,130 +2175,132 @@ Events: {1}, Actions: {2}{3}</source>
     <message>
         <location filename="../core/ide_window.py" line="2010"/>
         <source>macOS Application (.app) - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikacija macOS (.app) - ✅ Na voljo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2012"/>
         <source>macOS Application (.app) - ⚠️ Requires macOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikacija macOS (.app) - ⚠️ Zahteva macOS</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2018"/>
         <source>Android Package (.apk) - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Paket Android (.apk) - ✅ Na voljo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2026"/>
         <source>Android Package (.apk) - ✅ Available (via WSL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Paket Android (.apk) - ✅ Na voljo (preko WSL)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2029"/>
         <location filename="../core/ide_window.py" line="2032"/>
         <source>Android Package (.apk) - ⚠️ Requires WSL (not detected)</source>
-        <translation type="unfinished"></translation>
+        <translation>Paket Android (.apk) - ⚠️ Zahteva WSL (ni zaznan)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2034"/>
         <source>Android Package (.apk) - ⚠️ Requires Linux or macOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Paket Android (.apk) - ⚠️ Zahteva Linux ali macOS</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2040"/>
         <source>iOS App (.ipa) - ✅ Available (macOS only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikacija iOS (.ipa) - ✅ Na voljo (samo macOS)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2042"/>
         <source>iOS App (.ipa) - ⚠️ Requires macOS with Xcode</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikacija iOS (.ipa) - ⚠️ Zahteva macOS z Xcode</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2076"/>
         <source>This export format is not yet available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta izvozna oblika še ni na voljo.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2188"/>
         <source>Export cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz preklican</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2210"/>
         <source>Building iOS App</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradnja aplikacije iOS</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2211"/>
         <source>Preparing iOS export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Priprava izvoza iOS...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2213"/>
         <source>iOS Export Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz iOS zaključen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2214"/>
         <source>iOS Export Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz iOS ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2215"/>
         <source>Open the output folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>Odprem izhodno mapo?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2217"/>
         <source>iOS export cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz iOS preklican</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2237"/>
         <source>Exporting Aseba code...</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvažanje kode Aseba...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2244"/>
         <source>Aseba Export Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz Aseba ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2245"/>
         <source>Failed to export Aseba code:
 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode Aseba ni bilo mogoče izvoziti:
+
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2247"/>
         <source>Aseba export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz Aseba ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2253"/>
         <source>Aseba Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz Aseba</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2255"/>
         <source>No Thymio objects found in this project, so no Aseba code was generated. Add a Thymio object to the project and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>V tem projektu ni bilo najdenih predmetov Thymio, zato koda Aseba ni bila ustvarjena. Dodajte predmet Thymio v projekt in poskusite znova.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2260"/>
         <source>Aseba export: nothing to export</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz Aseba: ni česa izvoziti</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2263"/>
         <source>Aseba export complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz Aseba zaključen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2266"/>
         <source>Aseba Export Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz Aseba zaključen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2267"/>
@@ -2292,12 +2308,15 @@ Events: {1}, Actions: {2}{3}</source>
 {0}
 
 Would you like to open the output folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteke .aesl Aseba zapisane v:
+{0}
+
+Ali želite odpreti izhodno mapo?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2406"/>
         <source>Cancelling...</source>
-        <translation type="unfinished"></translation>
+        <translation>Preklic...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2632"/>

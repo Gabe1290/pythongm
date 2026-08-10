@@ -1,6 +1,6 @@
 # Plan: closing the "organically maintained" languages' unfinished-translation gap
 
-Status: **in progress (4/7 done: fr, de, it, ru).** Written 2026-08-10, right after
+Status: **in progress (5/7 done: fr, de, it, ru, sl).** Written 2026-08-10, right after
 `tests/test_extension_ui_translations.py` (commit `051de39`) found that
 German's shipped catalogs carry 151 never-completed
 `<translation type="unfinished"></translation>` entries — the Preferences
@@ -203,6 +203,22 @@ not an **append**). For each language:
       "Отсоединить"/"Прикрепить" for the float-detach/attach pair
       already established in `BlocklyWidget`). Screenshot-verified: the
       Preferences dialog's "General" tab now reads "Общие".
-- [ ] **sl** (153 entries, shared list) —
+- [x] **sl** (153 entries, shared list + 2) — DONE 2026-08-10.
+      `tests/test_i18n_unfinished_sl.py` (4 tests, across all 6 split
+      files). Verified by direct diff that sl's 153 unfinished
+      (group, context, source) triples were byte-identical to ru's own
+      batch, so translation went straight from that known list. Same
+      sister-file reuse pattern as it/ru
+      (`BlocklyVisualProgrammingTab`/`BlocklyWidget` across
+      blockly.ts/misc.ts; `VisualScriptingArea`/`ActionListWidget`
+      across actions.ts/editors.ts). Cross-checked against sl's own
+      established terminology (Nov projekt/Odpri projekt/Shrani
+      projekt/Testiraj igro/Razhroščuj igro/Izvozi igro, "Ctrl" kept
+      as-is, "Loči"/"Pripni" for the float-detach/attach pair already
+      established in `BlocklyWidget`). Screenshot-verified: the
+      Preferences dialog's "General" tab now reads "Splošno" (the
+      dialog's own Cancel/Apply buttons stay in English — Qt's own
+      base translation catalog isn't bundled for sl, unrelated to this
+      app's `.ts` files).
 - [ ] **uk** (152 entries, shared list) —
 - [ ] **es** (294 entries, largest independent gap) —

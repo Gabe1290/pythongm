@@ -6,7 +6,7 @@
     <message>
         <location filename="../editors/object_editor_components.py" line="23"/>
         <source>Actions are now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Akcije se zdaj upravljajo preko plošče Dogodki</translation>
     </message>
 </context>
 <context>
@@ -14,57 +14,57 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
         <source>Background Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloji ozadja</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
         <source>Background {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Ozadje {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloj:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
         <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Lastnosti sloja</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vidno:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
         <source>Foreground:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ospredje:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Brez</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
         <source>Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Slika:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
         <source>Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raztegni:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
         <source>Tile H:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ploščica H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
         <source>Tile V:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ploščica V:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
@@ -125,12 +125,12 @@
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Loči</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="151"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpri ta urejevalnik v svojem oknu</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="193"/>
@@ -145,7 +145,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="283"/>
         <source>Auto-saved: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Samodejno shranjeno: {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
@@ -347,7 +347,7 @@ Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da s
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
         <source>Backgrounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ozadja:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
@@ -753,7 +753,9 @@ Izberite dogodek in kliknite desno tipko za dodajanje akcij.</translation>
         <source>Blockly visual programming is not available.
 
 Error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Vizualno programiranje Blockly ni na voljo.
+
+Napaka: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
@@ -818,17 +820,17 @@ Error: {0}</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
         <source>Edit mode: changes apply automatically as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Način urejanja: spremembe se uveljavijo samodejno med tipkanjem</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
         <source>No event methods found in the code</source>
-        <translation type="unfinished"></translation>
+        <translation>V kodi ni bilo najdenih metod dogodkov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
         <source>{0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} dogodkov</translation>
     </message>
     <message>
         <source>Object: {0} | Sprite: {1}</source>
@@ -1159,22 +1161,22 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
         <source>🤖 Thymio Events</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Dogodki Thymio</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
         <source>🤖 Visual Selector...</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Vizualni izbirnik...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
         <source>Alarm Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Dogodek Alarm že obstaja</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
         <source>Alarm {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dogodek Alarm {0} že obstaja.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
@@ -1227,7 +1229,10 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
 
 Please add actions to a specific alarm number instead:
 Right-click on Alarm 0, Alarm 1, etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Akcij ni mogoče dodati neposredno v Alarm.
+
+Namesto tega dodajte akcije določeni številki alarma:
+Z desno tipko miške kliknite Alarm 0, Alarm 1 itd.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
@@ -1253,12 +1258,12 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Napaka</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Could not open action editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Urejevalnika akcij ni bilo mogoče odpreti: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
@@ -1914,7 +1919,7 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <message>
         <location filename="../editors/room_editor/__init__.py" line="85"/>
         <source>Tile Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta ploščic...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="116"/>
@@ -2026,22 +2031,22 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
         <source>↔ Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>↔ Premakni vse</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="186"/>
         <source>Shift all instances by an X/Y offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Premakni vse primerke za odmik X/Y</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Loči</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpri ta urejevalnik v svojem oknu</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="202"/>
@@ -2067,32 +2072,32 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>Premakni vse</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>No instances to shift.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ni primerkov za premik.</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="242"/>
         <source>Shift All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Premakni vse primerke</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="249"/>
         <source>X offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Odmik X:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="255"/>
         <source>Y offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Odmik Y:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="268"/>
         <source>Shifted all instances by ({0}, {1})</source>
-        <translation type="unfinished"></translation>
+        <translation>Vsi primerki premaknjeni za ({0}, {1})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
@@ -2132,12 +2137,12 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
         <source>Tile selected - Click in room to paint</source>
-        <translation type="unfinished"></translation>
+        <translation>Ploščica izbrana - Kliknite v sobi za risanje</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="467"/>
         <source>Tile mode cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Način ploščic izklopljen</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>
