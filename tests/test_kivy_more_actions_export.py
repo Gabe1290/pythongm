@@ -86,7 +86,9 @@ def test_start_moving_direction_stop():
 
 def test_restart_game_switches_to_first_room():
     out = _gen("restart_game", {})
-    assert "_switch_to_room(0)" in out
+    # Routes through GameApp.restart_game() now (clears the persistent-room
+    # cache before switching) rather than calling _switch_to_room(0) directly.
+    assert "_app.restart_game()" in out
     assert "get_game_app" in out
     assert _valid(out)
 
