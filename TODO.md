@@ -564,14 +564,18 @@ Other:
   spike (see the i18n entry above); fixed for all 10 languages in one
   pass, terminology cross-checked against each language's translated
   `wiki/Extensions_<lang>.md`. `tests/test_extension_ui_translations.py`.
-  Surfaced a separate, NOT-fixed finding: de's shipped catalogs carry 151
-  never-completed `type="unfinished"` entries (e.g. the Preferences
-  dialog's own "General" tab label has never been translated to German) —
+  Surfaced a separate finding, since fixed: de's shipped catalogs carried
+  151 never-completed `type="unfinished"` entries (e.g. the Preferences
+  dialog's own "General" tab label had never been translated to German) —
   a pre-existing gap in the "organically maintained" languages (as
-  opposed to pt/ja/zh, verified 100% complete in the 2026-08-09 i18n arc),
-  likely present at some scale in the other maintained languages too.
-  Real, unbounded until scoped, and explicitly not chased in the same
-  session as the fix above — a legitimate next i18n item if picked up.
+  opposed to pt/ja/zh, verified 100% complete in the 2026-08-09 i18n arc).
+  **DONE 2026-08-10** — scoped and closed across all seven affected
+  languages (de/es/fr/it/ru/sl/uk), 1101 entries total, es alone
+  contributing 309 (largest, mostly independent gap). One real bug
+  found along the way: 4 of de's own translations landed double-escaped
+  (passed `lrelease` silently, resolved to literal `&lt;h3&gt;` text at
+  runtime), fixed separately. Full writeup, per-language notes, and the
+  regression-test registry: `docs/I18N_UNFINISHED_2026-08-10.md`.
 
 ## Project format / persistence
 
