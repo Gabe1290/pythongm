@@ -611,6 +611,23 @@ Other:
 
 ## Export
 
+### iOS exporter has no app icon (resources/ios/ ready, not wired) — 2026-08-10
+- `export/ios/ios_exporter.py` builds a game into an iOS IPA via kivy-ios +
+  xcodebuild but never touches an app icon at all — unlike `exe_exporter.py`/
+  `macos_exporter.py`, which both accept an `icon_path` export setting.
+  Exported iOS games ship with Xcode's blank default icon.
+- `resources/ios/AppIcon.appiconset/` already has a complete, valid Xcode
+  asset-catalog icon set (iPhone + iPad + App Store sizes, `Contents.json` +
+  18 PNGs) built from `resources/icon.png` — it just isn't copied into the
+  generated Xcode project anywhere.
+- TODO: add an `icon_path` export setting (same UI pattern as exe/macos),
+  and on export either (a) copy a user-provided image into a freshly
+  generated `.appiconset` at every required size, or (b) fall back to
+  `resources/ios/AppIcon.appiconset/` as PyGameMaker's own default so
+  exported games aren't icon-less by default. Whichever path, drop the
+  result into the generated Xcode project's `Assets.xcassets/AppIcon.appiconset/`
+  before `xcodebuild` runs.
+
 ### Kivy/Android export — remaining parity gaps (draw-queue + mouse LANDED)
 - Found while validating the `match3_1` bundled sample (2026-07-03) for
   Android. The two blocking gaps were **fixed the same day** in

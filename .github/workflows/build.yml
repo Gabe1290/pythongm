@@ -111,8 +111,10 @@ jobs:
 
       - name: Create DMG (optional packaging)
         run: |
-          # Create a simple zip for distribution
-          cd dist && zip -r ${{ env.APP_NAME }}-macOS-Intel.zip ${{ env.APP_NAME }}
+          # Zip the .app bundle (not the bare onefile binary) so the custom
+          # icon/Dock entry/CFBundle metadata from PyGameMaker.spec's BUNDLE
+          # step actually reaches users.
+          cd dist && zip -r ${{ env.APP_NAME }}-macOS-Intel.zip ${{ env.APP_NAME }}.app
 
       - name: Upload macOS Intel artifact
         uses: actions/upload-artifact@v4
@@ -155,7 +157,10 @@ jobs:
 
       - name: Create archive
         run: |
-          cd dist && zip -r ${{ env.APP_NAME }}-macOS-ARM.zip ${{ env.APP_NAME }}
+          # Zip the .app bundle (not the bare onefile binary) so the custom
+          # icon/Dock entry/CFBundle metadata from PyGameMaker.spec's BUNDLE
+          # step actually reaches users.
+          cd dist && zip -r ${{ env.APP_NAME }}-macOS-ARM.zip ${{ env.APP_NAME }}.app
 
       - name: Upload macOS ARM artifact
         uses: actions/upload-artifact@v4
