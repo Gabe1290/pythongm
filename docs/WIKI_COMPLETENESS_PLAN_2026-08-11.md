@@ -183,16 +183,55 @@ live).
       real extension (same pattern as `extensions/raycast_2_5d/` — see
       [[extensions-and-1.0-compat]] equivalent reasoning) — at that point
       it becomes a normal Phase 2 page again.
-- [ ] `Keyboard-Shortcuts.md`
-- [ ] `Troubleshooting.md` (Test Game crash-log reading, common error
-      messages, export dependency errors)
+- [x] `Keyboard-Shortcuts.md` — DONE 2026-08-11. Global/main-window
+      shortcuts pulled verbatim from `core/ide_window.py`'s real
+      `create_action(..., "Ctrl+X", ...)` calls (not guessed), plus
+      Sprite/Object/Room editor shortcuts sourced from the same code read
+      that built `Sprite-Editor.md`. Explicitly scoped to IDE *editing*
+      shortcuts, distinct from a game's own runtime keyboard handling
+      (which is [[Events-and-Actions]] territory).
+- [x] `Troubleshooting.md` — DONE 2026-08-11. Verified two DIFFERENT
+      logging paths rather than assuming one: object/room/sprite editor
+      crashes write a persistent `~/pygamemaker_crash.log` (added
+      specifically for console-less GUI launches), but a crashing
+      Test-Game *subprocess*'s traceback only ever reaches
+      `logger.error(...)` — console output only, no file — so the page
+      tells a Windows-shortcut user to relaunch from a terminal to see
+      it, rather than pointing them at a log file that doesn't cover
+      that case. The "export validation warnings don't block export"
+      claim was confirmed empirically, not assumed — the Phase 1
+      screenshot capture script's own cascading-dialog-closer proved the
+      real Export dialog opens right after dismissing the warning.
 
 ### Phase 3 — deepen existing pages
-- [ ] Add step-relevant screenshots into the 6 build-along tutorials at
-      their key steps (not just a banner image).
-- [ ] Evaluate whether `Exporting-Games.md` needs per-target subpages once
+- [x] Evaluate whether `Exporting-Games.md` needs per-target subpages once
       Phase 2's Troubleshooting page exists to absorb the error-handling
-      content (avoid duplicating).
+      content. DONE 2026-08-11 — checked first: `Exporting-Games.md` had
+      zero dependency/error content to begin with, so there's no overlap
+      to resolve. Added one cross-link to Troubleshooting instead of
+      restructuring anything.
+- [ ] ~~Add step-relevant screenshots into the 6 build-along tutorials at
+      their key steps~~ — **SCOPED DOWN 2026-08-11, not done this pass.**
+      The Phase 1 screenshots all came from one scratch copy of
+      `samples/plateforme_3` (a platformer). Pong/Breakout/Sokoban/Maze/
+      Lunar Lander each teach a *different* sample project from scratch
+      per their own tutorial text — genuinely illustrating their
+      individual steps would mean building/loading 5 more scratch
+      projects and capturing per-step screenshots for each, a comparable
+      unit of work to all of Phase 1 combined, for a lower-traffic set of
+      pages than the editor-reference pages Phase 1 already covered.
+      Deferred in favor of finishing Phase 5 (translating everything
+      already done into 8 languages), which makes every existing fix
+      available project-wide rather than adding more to English only.
+      **Checked and ruled out a shortcut**: `Tutorial-Platformer.md`
+      teaches its own from-scratch object names (`spr_player`,
+      `obj_ground`, `spr_coin`, ...), completely different from
+      `samples/plateforme_3`'s French-named assets the Phase 1
+      screenshots show (`obj_pingus`, `spr_pingus_dr`) — dropping those
+      screenshots in would show mismatched names next to instructions to
+      create differently-named ones, actively confusing rather than
+      free. A real attempt at this item needs its own captures per
+      tutorial, matching each one's actual taught asset names.
 
 ### Phase 4 — decision needed from the user
 - [x] **DECIDED 2026-08-11: in-app Sample Guides are sufficient.**

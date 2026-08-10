@@ -203,6 +203,8 @@ project_name/
 - [Visual-Programming](Visual-Programming) - Using Blockly blocks
 - [Asset-Manager](Asset-Manager) - Usage tracking, Trash, and finding unused/orphaned files
 - [Exporting-Games](Exporting-Games) - Build for different platforms
+- [Keyboard-Shortcuts](Keyboard-Shortcuts) - Editor shortcuts reference
+- [Troubleshooting](Troubleshooting) - Common problems and where to look
 - [FAQ](FAQ) - Frequently asked questions
 
 ### Where do I find...?
