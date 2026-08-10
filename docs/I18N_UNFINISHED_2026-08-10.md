@@ -147,7 +147,11 @@ not an **append**). For each language:
 
 ## Registry (flip to DONE with the commit hash as each unit lands)
 
-- [ ] **fr** (47 entries) —
+- [x] **fr** (47 entries) — DONE 2026-08-10. `tests/test_i18n_unfinished_fr.py`
+      (3 tests: XML presence, live-QTranslator resolution for all 47).
+      Terminology cross-checked against fr's own existing translations for
+      repeated menu items (Fichier/Nouveau projet/Ouvrir un projet/
+      Enregistrer le projet/Tester le jeu/Déboguer le jeu/Exporter le jeu).
 - [ ] **de** (151 entries, shared list) —
 - [ ] **it** (151 entries, shared list) —
 - [ ] **ru** (153 entries, shared list) —
