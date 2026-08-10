@@ -1,6 +1,6 @@
 # Plan: closing the "organically maintained" languages' unfinished-translation gap
 
-Status: **in progress (6/7 done: fr, de, it, ru, sl, uk).** Written 2026-08-10, right after
+Status: **CLOSED — all 7/7 done: fr, de, it, ru, sl, uk, es.** Written 2026-08-10, right after
 `tests/test_extension_ui_translations.py` (commit `051de39`) found that
 German's shipped catalogs carry 151 never-completed
 `<translation type="unfinished"></translation>` entries — the Preferences
@@ -237,4 +237,41 @@ not an **append**). For each language:
       `&apos;` in the `.ts` file, same as the name-placeholder
       convention, not a special case). Screenshot-verified: the
       Preferences dialog's "General" tab now reads "Загальні".
-- [ ] **es** (294 entries, largest independent gap) —
+- [x] **es** (309 entries, largest independent gap) — DONE 2026-08-10.
+      The plan's original count (294) was stale by the time this unit
+      started — recounted directly against the file (309) rather than
+      trusting the old number. Landed in 5 stages, one commit each
+      (es ships as a single monolithic `pygm2_es.ts`, unlike the other
+      six split-shipping languages, so there was no natural per-file
+      boundary to split on): (1) PreferencesDialog + PyGameMakerIDE —
+      78, the shared-list portion, all confirmed present verbatim in
+      ru's already-translated list; (2) AssetTreeWidget/
+      BackgroundLayersDialog/BaseEditor/BlocklyWidget/
+      EnhancedPropertiesPanel/NewProjectDialog/ObjectEditor/
+      ObjectEventsPanel/ObjectPropertiesPanel/RoomEditor/TutorialDialog
+      — 63; (3) the Thymio Playground editor (PlaygroundColorManager/
+      PlaygroundEditor/PlaygroundElementProperties/
+      PlaygroundRunnerWindow/PlaygroundToolPalette) — 62, entirely
+      es-specific, reusing the already-established "Zona de pruebas"
+      (Playground) term from `ThymioPlaygroundWindow`; (4) SpriteEditor
+      — 58, entirely es-specific, following established Spanish
+      image-editor vocabulary (Cuentagotas for color picker, Relleno
+      for fill); (5) ViewConfigDialog/BaseBlockConfigDialog/
+      TilePaletteDialog/FrameTimeline/ResizeCanvasDialog/
+      FloatableEditorMixin/ForegroundBackgroundSwatch/
+      ActionConfigDialog/ColorPaletteWidget/KeySelectorDialog/
+      TileGridWidget — 48. `tests/test_i18n_unfinished_es.py` (4 tests
+      covering the full 309) landed with the registry update, after the
+      last translation commit.
+      **Landmine found in stage 5**: `BaseBlockConfigDialog`'s
+      "Preset:" has an `<extracomment>` tag between `<source>` and
+      `<translation>` that a naive `<source>...</source>\n<translation
+      ...>` string match skips over — the per-context count silently
+      read 47 instead of 48 until re-derived with a comment-tolerant
+      scan. Worth remembering for any future `.ts` surgery on this
+      repo: don't assume `<translation>` immediately follows
+      `</source>`.
+      Screenshot-verified: the Preferences dialog's "General" tab now
+      reads "General" (a genuine Spanish/English cognate, confirmed
+      correct rather than a stray untranslated copy).
+      **This closes the entire 7-language queue.**
