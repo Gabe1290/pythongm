@@ -1,6 +1,6 @@
 # Code Editor
 
-> [English](Code-Editor)
+> [English](Code-Editor) | [Français](Code-Editor_fr)
 
 ---
 

@@ -75,6 +75,8 @@ Au premier lancement de PyGameMaker, vous verrez :
 3. **Espace de travail** - Zone centrale pour éditer les ressources
 4. **Panneau des propriétés** - Panneau droit pour les propriétés
 
+![L'onglet d'Accueil au premier lancement, sans projet ouvert](images/ide-welcome.png)
+
 ---
 
 ## Changer de langue
