@@ -1,6 +1,6 @@
 # Plan: closing the "organically maintained" languages' unfinished-translation gap
 
-Status: **in progress (5/7 done: fr, de, it, ru, sl).** Written 2026-08-10, right after
+Status: **in progress (6/7 done: fr, de, it, ru, sl, uk).** Written 2026-08-10, right after
 `tests/test_extension_ui_translations.py` (commit `051de39`) found that
 German's shipped catalogs carry 151 never-completed
 `<translation type="unfinished"></translation>` entries — the Preferences
@@ -220,5 +220,21 @@ not an **append**). For each language:
       dialog's own Cancel/Apply buttons stay in English — Qt's own
       base translation catalog isn't bundled for sl, unrelated to this
       app's `.ts` files).
-- [ ] **uk** (152 entries, shared list) —
+- [x] **uk** (152 entries, shared list + 1) — DONE 2026-08-10.
+      `tests/test_i18n_unfinished_uk.py` (4 tests, across all 6 split
+      files). Verified by direct diff that uk's unfinished set was
+      ru's 153 minus "Visible:" (uk already had that one translated),
+      so translation went straight from the known list. Same
+      sister-file reuse pattern as it/ru/sl
+      (`BlocklyVisualProgrammingTab`/`BlocklyWidget` across
+      blockly.ts/misc.ts; `VisualScriptingArea`/`ActionListWidget`
+      across actions.ts/editors.ts). Cross-checked against uk's own
+      established terminology (Новий проект/Відкрити проект/Зберегти
+      проект/Тестувати гру/Налагодити гру/Експортувати гру, "Ctrl"
+      kept as-is, "Від'єднати"/"Приєднати" for the float-detach/attach
+      pair already established in `BlocklyWidget` — note the genuine
+      Ukrainian apostrophe in "Від'єднати" is written as the entity
+      `&apos;` in the `.ts` file, same as the name-placeholder
+      convention, not a special case). Screenshot-verified: the
+      Preferences dialog's "General" tab now reads "Загальні".
 - [ ] **es** (294 entries, largest independent gap) —
