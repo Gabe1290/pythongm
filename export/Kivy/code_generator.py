@@ -1101,6 +1101,30 @@ if dist > 0:
                 flag = bool(raw)
             return f"self.scene.persistent = {flag}"
 
+        elif action_type == 'set_background':
+            bg = str(params.get('background', '') or '')
+            path = self.background_paths.get(bg) or self.sprite_paths.get(bg) or ''
+
+            visible_raw = params.get('visible', True)
+            visible = (visible_raw.strip().lower() in ('true', '1', 'yes')
+                       if isinstance(visible_raw, str) else bool(visible_raw))
+            foreground_raw = params.get('foreground', False)
+            foreground = (foreground_raw.strip().lower() in ('true', '1', 'yes')
+                          if isinstance(foreground_raw, str) else bool(foreground_raw))
+            tiled_h_raw = params.get('tiled_h', False)
+            tiled_h = (tiled_h_raw.strip().lower() in ('true', '1', 'yes')
+                       if isinstance(tiled_h_raw, str) else bool(tiled_h_raw))
+            tiled_v_raw = params.get('tiled_v', False)
+            tiled_v = (tiled_v_raw.strip().lower() in ('true', '1', 'yes')
+                       if isinstance(tiled_v_raw, str) else bool(tiled_v_raw))
+            hspeed = _num_code(params.get('hspeed', 0), 0)
+            vspeed = _num_code(params.get('vspeed', 0), 0)
+
+            if not path and visible:
+                return f"pass  # set_background: background {bg!r} not found in export"
+            return (f"self.scene.set_background({path!r}, {visible}, {foreground}, "
+                    f"{tiled_h}, {tiled_v}, {hspeed}, {vspeed})")
+
         elif action_type == 'set_background_color':
             color_str = str(params.get('color', '#000000'))
             try:

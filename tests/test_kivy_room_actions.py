@@ -60,7 +60,10 @@ def _room_actions_project_data():
         "name": "room_actions_syn",
         "settings": {},
         "assets": {
-            "sprites": {}, "sounds": {}, "backgrounds": {},
+            "sprites": {}, "sounds": {},
+            "backgrounds": {
+                "bg_sky": {"name": "bg_sky", "file_path": "backgrounds/bg_sky.png"},
+            },
             "objects": {
                 "obj_walker": {"name": "obj_walker", "sprite": "", "events": {}},
             },
@@ -86,9 +89,44 @@ def _room_actions_project_data():
 
 @pytest.fixture(scope="module")
 def exported():
+    from PIL import Image
+
     src = Path(tempfile.mkdtemp(prefix="kivy_room_actions_src_"))
+    (src / "backgrounds").mkdir(parents=True)
+    Image.new("RGBA", (64, 64), (10, 20, 30, 255)).save(src / "backgrounds" / "bg_sky.png")
+
     out = Path(tempfile.mkdtemp(prefix="kivy_room_actions_export_")) / "export"
     assert KivyExporter(_room_actions_project_data(), src, out).export()
+    return out / "game"
+
+
+def _views_room_project_data():
+    """A single views-enabled room, to exercise set_background's Fbo path
+    (distinct from _stub_kivy_env's non-views default)."""
+    data = _room_actions_project_data()
+    data["assets"]["rooms"] = {
+        "rm_views": {
+            "name": "rm_views", "width": 320, "height": 240,
+            "background_color": "#204060",
+            "views_enabled": True,
+            "views": {"view_0": {"visible": True, "view_w": 320, "view_h": 240}},
+            "instances": [],
+        },
+    }
+    data["room_order"] = ["rm_views"]
+    return data
+
+
+@pytest.fixture(scope="module")
+def exported_views():
+    from PIL import Image
+
+    src = Path(tempfile.mkdtemp(prefix="kivy_room_actions_views_src_"))
+    (src / "backgrounds").mkdir(parents=True)
+    Image.new("RGBA", (64, 64), (10, 20, 30, 255)).save(src / "backgrounds" / "bg_sky.png")
+
+    out = Path(tempfile.mkdtemp(prefix="kivy_room_actions_views_export_")) / "export"
+    assert KivyExporter(_views_room_project_data(), src, out).export()
     return out / "game"
 
 
@@ -122,6 +160,19 @@ def test_base_object_movement_uses_scene_room_speed(exported):
     base_obj = (exported / "objects" / "base_object.py").read_text(encoding="utf-8")
     assert "room_speed = self.scene.room_speed if self.scene else 60.0" in base_obj
     assert "speed_factor = dt * room_speed if dt > 0 else 1.0" in base_obj
+
+
+def test_scene_bakes_dynamic_background_group(exported):
+    scene = _scene_file(exported, "rm_a").read_text(encoding="utf-8")
+    assert "self._bg_image_group = InstructionGroup()" in scene
+    assert "self._bg_group_in_after = False" in scene
+    assert "self._bg_fbo_behind_index = 0" in scene
+    assert "def set_background(self, path, visible, foreground, tiled_h, tiled_v, hspeed, vspeed):" in scene
+    assert "def _reposition_bg_image_group(self):" in scene
+    assert "def _rebuild_bg_image_group(self):" in scene
+    assert "def _advance_bg_scroll(self, dt):" in scene
+    assert "self._advance_bg_scroll(dt)" in scene  # wired into the per-frame update
+    compile(scene, "rm_a.py", "exec")
 
 
 def test_main_app_has_room_cache_and_restart_game(exported):
@@ -176,6 +227,32 @@ def test_codegen_emits_set_background_color():
     assert code_off == "self.scene.set_background_color((0.0, 0.0, 0.0), False)"
 
 
+def test_codegen_emits_set_background():
+    gen = ActionCodeGenerator(background_paths={"bg_sky": "assets/images/bg_sky.png"})
+    code = gen._convert_simple_action(
+        "set_background",
+        {"background": "bg_sky", "visible": "true", "foreground": "false",
+         "tiled_h": "true", "tiled_v": "false", "hspeed": "2", "vspeed": "0"},
+        "create")
+    assert code == (
+        "self.scene.set_background('assets/images/bg_sky.png', True, False, "
+        "True, False, 2, 0)")
+
+
+def test_codegen_set_background_falls_back_to_sprite_paths():
+    gen = ActionCodeGenerator(sprite_paths={"spr_tile": "assets/images/spr_tile.png"})
+    code = gen._convert_simple_action(
+        "set_background", {"background": "spr_tile"}, "create")
+    assert "'assets/images/spr_tile.png'" in code
+
+
+def test_codegen_set_background_unresolved_visible_name_is_a_noop():
+    gen = ActionCodeGenerator()
+    code = gen._convert_simple_action(
+        "set_background", {"background": "does_not_exist", "visible": "true"}, "create")
+    assert code == "pass  # set_background: background 'does_not_exist' not found in export"
+
+
 def test_codegen_emits_restart_game_via_helper():
     gen = ActionCodeGenerator()
     code = gen._convert_simple_action("restart_game", {}, "create")
@@ -199,6 +276,9 @@ class _Group:
 
     def add(self, instr):
         self.children.append(instr)
+
+    def insert(self, index, instr):
+        self.children.insert(index, instr)
 
     def remove(self, instr):
         if instr in self.children:
@@ -267,6 +347,15 @@ class _Fbo(_Group):
 class _Tex:
     def __init__(self, size):
         self.size = size
+
+
+class _CoreImageStub:
+    """Stand-in for kivy.core.image.Image — load_image() (utils.py) calls
+    this with a real path (the PNG _export_background actually copied), so
+    it just needs to accept that and expose a sized .texture."""
+
+    def __init__(self, path, **kw):
+        self.texture = _Tex((64, 64))
 
 
 class _CoreLabel:
@@ -345,7 +434,7 @@ def _stub_kivy_env(game_dir: Path):
             Scale=_Translate, Fbo=_Fbo, ClearColor=_Instr, ClearBuffers=_Instr)
         mod("kivy.core")
         mod("kivy.core.window", Window=_WindowCls())
-        mod("kivy.core.image", Image=object)
+        mod("kivy.core.image", Image=_CoreImageStub)
         mod("kivy.core.text", Label=_CoreLabel)
         mod("kivy.app", App=object)
         mod("kivy.clock", Clock=_ClockStub())
@@ -422,6 +511,110 @@ def test_set_background_color_updates_the_live_instruction(exported):
         assert scene.background_color == (1.0, 0.0, 0.0)  # stored regardless of show
 
 
+def test_set_background_draws_stretched_by_default(exported):
+    with _stub_kivy_env(exported):
+        scene = _load_scene(exported, "rm_a")
+        assert scene._bg_image_group.children == []  # nothing until set_background runs
+
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 0, 0)
+
+        assert scene._bg_texture is not None
+        rects = [c for c in scene._bg_image_group.children if isinstance(c, _Instr)
+                  and 'texture' in c.kw]
+        assert len(rects) == 1
+        assert rects[0].kw['size'] == (320, 240)  # stretched to fill the room
+        assert scene._bg_group_in_after is False  # default: behind instances
+
+
+def test_set_background_tiling_produces_multiple_rects(exported):
+    with _stub_kivy_env(exported):
+        scene = _load_scene(exported, "rm_a")
+        scene.set_background('assets/images/bg_sky.png', True, False, True, True, 0, 0)
+
+        rects = [c for c in scene._bg_image_group.children if isinstance(c, _Instr)
+                  and 'texture' in c.kw]
+        # room is 320x240, a 64x64 tile starting one tile-width/height before
+        # the room edge (so a partial tile at the left/top edge still draws)
+        # needs ceil(320/64)+1=6 cols x ceil(240/64)+1=5 rows.
+        assert len(rects) == 30
+        assert all(r.kw['size'] == (64, 64) for r in rects)
+
+
+def test_set_background_foreground_moves_group_to_canvas_after(exported):
+    with _stub_kivy_env(exported):
+        scene = _load_scene(exported, "rm_a")
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 0, 0)
+        assert scene._bg_image_group in scene.canvas.before.children
+        assert scene._bg_image_group not in scene.canvas.after.children
+
+        scene.set_background('assets/images/bg_sky.png', True, True, False, False, 0, 0)
+        assert scene._bg_image_group in scene.canvas.after.children
+        assert scene._bg_image_group not in scene.canvas.before.children
+
+        # toggling back off returns it behind instances
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 0, 0)
+        assert scene._bg_image_group in scene.canvas.before.children
+        assert scene._bg_image_group not in scene.canvas.after.children
+
+
+def test_set_background_visible_false_clears_the_group(exported):
+    with _stub_kivy_env(exported):
+        scene = _load_scene(exported, "rm_a")
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 0, 0)
+        assert scene._bg_image_group.children
+
+        scene.set_background('', False, False, False, False, 0, 0)
+        assert scene._bg_image_group.children == []
+        assert scene._bg_texture is None
+
+
+def test_set_background_scroll_advances_and_wraps_scaled_by_room_speed(exported):
+    with _stub_kivy_env(exported):
+        scene = _load_scene(exported, "rm_a")
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 10, 0)
+
+        # room_speed=60 (default) -> dt(1/60)*60 == 1.0 -> scroll += 10
+        scene._advance_bg_scroll(1.0 / 60.0)
+        assert scene._bg_scroll_x == pytest.approx(10.0)
+
+        scene.set_room_speed(30)
+        scene._advance_bg_scroll(1.0 / 60.0)
+        # dt(1/60)*30 == 0.5 -> scroll += 5 -> 15
+        assert scene._bg_scroll_x == pytest.approx(15.0)
+
+        # wraps modulo the 64px texture width
+        for _ in range(20):
+            scene._advance_bg_scroll(1.0 / 60.0)
+        assert 0.0 <= scene._bg_scroll_x < 64.0
+
+        # nonzero hspeed auto-enables horizontal tiling even without tiled_h
+        rects = [c for c in scene._bg_image_group.children if isinstance(c, _Instr)
+                  and 'texture' in c.kw]
+        assert len(rects) > 1
+
+
+def test_set_background_views_room_uses_fbo(exported_views):
+    with _stub_kivy_env(exported_views):
+        scene = _load_scene(exported_views, "rm_views")
+        assert scene._fbo is not None
+        assert scene._bg_image_group in scene._fbo.children
+        behind_index = scene._bg_fbo_behind_index
+        assert scene._fbo.children[behind_index] is scene._bg_image_group
+
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 0, 0)
+        rects = [c for c in scene._bg_image_group.children if isinstance(c, _Instr)
+                  and 'texture' in c.kw]
+        assert len(rects) == 1
+
+        scene.set_background('assets/images/bg_sky.png', True, True, False, False, 0, 0)
+        # foreground: moved to the end of the Fbo's children (drawn last/on top)
+        assert scene._fbo.children[-1] is scene._bg_image_group
+
+        scene.set_background('assets/images/bg_sky.png', True, False, False, False, 0, 0)
+        # back to its captured "behind" slot (see __init__'s _bg_fbo_behind_index)
+        assert scene._fbo.children[behind_index] is scene._bg_image_group
+
+
 # ---------------------------------------------------------------------------
 # Headless run: App-level persistent-room cache (GameApp._do_room_switch /
 # restart_game), imported for real (not reimplemented as a parallel model).
@@ -431,6 +624,10 @@ def test_set_background_color_updates_the_live_instruction(exported):
 
 def _load_main(exported, tmp_path, monkeypatch):
     monkeypatch.setenv("ANDROID_APP_PATH", str(tmp_path))
+    # main.py's _log() writes 'pygm_crash.log' into the CWD unconditionally
+    # (even just importing the module logs "App starting") — chdir so that
+    # lands in tmp_path instead of littering the repo root.
+    monkeypatch.chdir(tmp_path)
     module = importlib.import_module("main")
     return module
 
