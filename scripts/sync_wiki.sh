@@ -11,6 +11,11 @@
 #   scripts/sync_wiki.sh pull    # live wiki  -> repo wiki/   (then commit wiki/)
 #   scripts/sync_wiki.sh push    # repo wiki/ -> live wiki    (commits + pushes the wiki repo)
 #
+# Carries wiki/*.md AND wiki/images/ (screenshots referenced by the pages).
+# GitHub wikis serve any file committed to the wiki repo, so images/*.png
+# referenced from a page as a relative path (e.g. `images/foo.png`) render
+# fine once pushed the same way as the .md pages.
+#
 # Note: copy is additive/overwrite — page *deletions* or *renames* are not
 # propagated automatically; handle those by hand on both sides.
 set -euo pipefail
@@ -36,11 +41,19 @@ case "${1:-check}" in
     ;;
   pull)
     cp "$LIVE"/*.md "$REPO_WIKI"/
+    if [ -d "$LIVE/images" ]; then
+      mkdir -p "$REPO_WIKI/images"
+      cp -r "$LIVE"/images/. "$REPO_WIKI/images"/
+    fi
     echo "Pulled live wiki -> wiki/. Review, then commit:"
     echo "    git add wiki/ && git commit -m 'docs(wiki): sync from live wiki'"
     ;;
   push)
     cp "$REPO_WIKI"/*.md "$LIVE"/
+    if [ -d "$REPO_WIKI/images" ]; then
+      mkdir -p "$LIVE/images"
+      cp -r "$REPO_WIKI"/images/. "$LIVE/images"/
+    fi
     git -C "$LIVE" add -A
     if git -C "$LIVE" diff --cached --quiet; then
       echo "Nothing to push — live wiki already matches wiki/."
