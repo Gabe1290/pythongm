@@ -13,8 +13,16 @@ PyGameMaker inclut Google Blockly pour la programmation visuelle par glisser-dé
 ## Accéder à Blockly
 
 1. Ouvrez un objet dans l'éditeur d'objets
-2. Cliquez sur l'onglet **Blockly** (à côté de l'onglet Événements)
+2. Cliquez sur l'onglet **🧩 Blockly** (à côté de Liste d'Événements et Éditeur de Code)
 3. L'espace de travail Blockly apparaît avec une boîte à outils à gauche
+
+![Les onglets Liste d'Événements / Blockly / Éditeur de Code de
+l'Éditeur d'Objets — cliquer sur Blockly bascule les actions du même
+événement vers la vue par blocs glisser-déposer](images/object-editor.png)
+
+*(L'espace de travail Blockly lui-même est un composant web et n'est pas
+capturé ici — voir [[Code-Editor_fr|Éditeur de Code]] pour voir à quoi
+ressemble le Python généré équivalent pour le même événement.)*
 
 **Les blocs visibles dépendent de votre préréglage.** `Outils > Configurer
 les blocs d'action...` (ou `Préférences > Édition de l'IDE`, qui définit le

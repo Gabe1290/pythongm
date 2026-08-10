@@ -1,6 +1,6 @@
 # Asset Manager
 
-> [English](Asset-Manager)
+> [English](Asset-Manager) | [Français](Asset-Manager_fr)
 
 ---
 

@@ -10,6 +10,8 @@
 
 PyGameMaker est un IDE open-source qui rend la création de jeux 2D accessible grâce à la programmation visuelle par blocs (Google Blockly) et un système d'événements-actions. Créez des jeux sans connaissances approfondies en programmation, puis exportez-les vers Windows, Linux, HTML5 ou plateformes mobiles.
 
+![L'IDE PyGameMaker avec un projet de plateforme ouvert — arborescence des ressources remplie à gauche, panneau de propriétés à droite](images/ide-main-window.png)
+
 ---
 
 ## Choisissez Votre Niveau
@@ -196,9 +198,14 @@ nom_du_projet/
 - [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu
 - [Éditeur de Salles](Editeur_Salles_fr) - Concevoir des niveaux
+- [Éditeur de Sprites](Sprite-Editor_fr) - Dessiner et animer des sprites
+- [Éditeur de Code](Code-Editor_fr) - Écrire (et générer) du vrai Python pour un objet
 - [Événements et Actions](Evenements_Actions_fr) - Référence de la logique de jeu
 - [Programmation Visuelle](Programmation_Visuelle_fr) - Utiliser les blocs Blockly
+- [Gestionnaire de Ressources](Asset-Manager_fr) - Suivi d'utilisation, Corbeille, et recherche de fichiers inutilisés/orphelins
 - [Exporter des Jeux](Exportation_fr) - Compiler pour différentes plateformes
+- [Raccourcis Clavier](Keyboard-Shortcuts_fr) - Référence des raccourcis de l'éditeur
+- [Dépannage](Troubleshooting_fr) - Problèmes courants et où chercher
 - [FAQ](FAQ_fr) - Questions fréquemment posées
 
 ### Où trouver...?

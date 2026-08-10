@@ -15,6 +15,12 @@ Les salles sont les niveaux, écrans ou scènes de votre jeu. L'éditeur de sall
 1. Double-cliquez sur une salle existante dans l'arbre des ressources, ou
 2. Clic droit sur **Salles** > **Créer une salle**
 
+![L'Éditeur de Salles : une palette d'objets à gauche pour choisir quoi
+placer, la zone de la salle au centre avec un niveau de plateforme
+rempli (outils grille, aimantation et sélection dans la barre d'outils
+au-dessus), et les propriétés de salle/instance plus un aperçu miniature
+à droite](images/room-editor.png)
+
 ---
 
 ## Propriétés de la salle

@@ -1,6 +1,6 @@
 # Sprite Editor
 
-> [English](Sprite-Editor)
+> [English](Sprite-Editor) | [Français](Sprite-Editor_fr)
 
 ---
 
