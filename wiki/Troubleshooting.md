@@ -1,6 +1,6 @@
 # Troubleshooting
 
-> [English](Troubleshooting) | [Français](Troubleshooting_fr)
+> [English](Troubleshooting) | [Français](Troubleshooting_fr) | [Deutsch](Troubleshooting_de)
 
 ---
 

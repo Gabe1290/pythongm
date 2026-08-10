@@ -17,6 +17,12 @@ Konfigurieren von Hintergründen.
 1. Doppelklicken Sie auf einen vorhandenen Room im Ressourcenbaum, oder
 2. Rechtsklick auf **Rooms** > **Room erstellen**
 
+![Der Raum-Editor: eine Objektpalette links zur Auswahl, was platziert
+werden soll, die Raumfläche in der Mitte mit einem gefüllten
+Plattformer-Level (Raster-, Einrast- und Auswahlwerkzeuge in der
+Symbolleiste darüber), und Raum-/Instanzeigenschaften plus eine
+Miniaturvorschau rechts](images/room-editor.png)
+
 ---
 
 ## Room-Eigenschaften
