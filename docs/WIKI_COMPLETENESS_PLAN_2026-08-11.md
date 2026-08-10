@@ -106,13 +106,15 @@ live).
       `f919295`. Menu path (`Help > Tutorials`) and button label
       (`📖 Sample guides`) verified against `core/ide_window.py` and
       `widgets/welcome_tab.py`, not assumed.
-- [ ] Propagate both fixes into `Home_de.md`/`Home_es.md`/`Home_fr.md`/
-      `Home_it.md`/`Home_pt.md`/`Home_ru.md`/`Home_sl.md`/`Home_uk.md`
-      (translate the 2 added table rows + 3 added links). Small, but not
-      yet done — the 8 translated Home pages are currently missing this
-      content. Fold into Phase 5 or do now as its own quick commit.
-- [ ] Push Phase 0 changes to the live wiki via `scripts/sync_wiki.sh push`
-      (not yet run for this change).
+- [x] Propagate both fixes into `Home_de.md`/`Home_es.md`/`Home_fr.md`/
+      `Home_it.md`/`Home_pt.md`/`Home_ru.md`/`Home_sl.md`/`Home_uk.md`.
+      DONE 2026-08-11, `0e0d53d`. Reused each language's already-shipped
+      tutorial titles and UI-menu translations rather than inventing new
+      terminology; `pt`'s "Sample guides" button falls back to English
+      text since that translation is genuinely missing from
+      `pygm2_pt.ts` (see `TODO.md`, found this session).
+- [x] Push Phase 0 changes to the live wiki via `scripts/sync_wiki.sh push`.
+      DONE 2026-08-11 — `a610619..5493493`. **Phase 0 is fully closed.**
 
 ### Phase 1 — screenshots infrastructure + first batch
 - [ ] Extend `scripts/sync_wiki.sh` to carry an `images/` folder to the live
