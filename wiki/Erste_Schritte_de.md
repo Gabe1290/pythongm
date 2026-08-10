@@ -77,6 +77,8 @@ Beim ersten Start von PyGameMaker sehen Sie:
 3. **Arbeitsbereich** — zentraler Bereich zum Bearbeiten von Assets
 4. **Eigenschaften-Panel** — rechtes Panel für Asset-Eigenschaften
 
+![Der Willkommens-Tab beim ersten Start, noch ohne geöffnetes Projekt](images/ide-welcome.png)
+
 ---
 
 ## Ihr erstes Projekt erstellen
