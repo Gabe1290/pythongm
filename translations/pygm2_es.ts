@@ -338,7 +338,8 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
         <source>No project loaded.
 Use File → New Project or File → Open Project to begin.</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay ningún proyecto cargado.
+Use Archivo → Nuevo proyecto o Archivo → Abrir proyecto para empezar.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
@@ -368,7 +369,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
         <source>Playgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Zonas de pruebas</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
@@ -413,12 +414,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
         <source>💾 Export as PNG…</source>
-        <translation type="unfinished"></translation>
+        <translation>💾 Exportar como PNG…</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
         <source>📋 Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Duplicar</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
@@ -512,27 +513,27 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
         <source>Sprite &apos;{0}&apos; has no image file.</source>
-        <translation type="unfinished"></translation>
+        <translation>El sprite &apos;{0}&apos; no tiene archivo de imagen.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
         <source>File Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo no encontrado</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
         <source>Image file not found: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de imagen no encontrado: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
         <source>Export Sprite as PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar sprite como PNG</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
         <source>PNG Images (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Imágenes PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
@@ -542,7 +543,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
         <source>Failed to export: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al exportar: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
@@ -722,22 +723,22 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
         <source>Background Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Capas de fondo</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
         <source>Background {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
         <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de la capa</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
@@ -747,7 +748,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
         <source>Foreground:</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer plano:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
@@ -757,22 +758,22 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
         <source>Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagen:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
         <source>Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Estirar:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
         <source>Tile H:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mosaico H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
         <source>Tile V:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mosaico V:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
@@ -787,12 +788,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1238"/>
         <source>H Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1244"/>
         <source>V Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad V:</translation>
     </message>
 </context>
 <context>
@@ -889,12 +890,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Separar</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="151"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir este editor en su propia ventana</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
@@ -914,17 +915,17 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../editors/base_editor.py" line="193"/>
         <source>↶ Undo {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>↶ Deshacer {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="198"/>
         <source>↷ Redo {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>↷ Rehacer {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="283"/>
         <source>Auto-saved: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardado automáticamente: {0}</translation>
     </message>
 </context>
 <context>
@@ -1166,7 +1167,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
         <source>Error loading Blockly</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al cargar Blockly</translation>
     </message>
     <message>
         <source>Error loading Blockly - click Reload to try again</source>
@@ -1876,12 +1877,12 @@ Abre o crea un proyecto y, a continuación, selecciona un recurso del árbol de 
         <location filename="../widgets/enhanced_properties_panel.py" line="235"/>
         <location filename="../widgets/enhanced_properties_panel.py" line="260"/>
         <source>Configure...</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurar...</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
         <source>Backgrounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondos:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
@@ -2916,17 +2917,17 @@ Les changements prendront effet immédiatement.</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="62"/>
         <source>Empty Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecto vacío</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="63"/>
         <source>With Game Over Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Con pantalla de Game Over</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="67"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plantilla:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="106"/>
@@ -3059,7 +3060,9 @@ Seleccione un evento y haga clic derecho para agregar acciones.</translation>
         <source>Blockly visual programming is not available.
 
 Error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>La programación visual de Blockly no está disponible.
+
+Error: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
@@ -3124,17 +3127,17 @@ Error: {0}</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
         <source>Edit mode: changes apply automatically as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de edición: los cambios se aplican automáticamente mientras escribe</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
         <source>No event methods found in the code</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontraron métodos de eventos en el código</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
         <source>{0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} eventos</translation>
     </message>
     <message>
         <source>Object: {0} | Sprite: {1}</source>
@@ -3398,7 +3401,7 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="231"/>
         <source>{0} Collision With...</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Colisión con...</translation>
     </message>
     <message>
         <source>Warning: Could not setup shortcuts: {e}</source>
@@ -3427,12 +3430,12 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
         <source>🤖 Thymio Events</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Eventos Thymio</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
         <source>🤖 Visual Selector...</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Selector visual...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="357"/>
@@ -3453,7 +3456,7 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="412"/>
         <source>The Keyboard &lt;No Key&gt; event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>El evento de teclado &lt;Sin tecla&gt; ya existe.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="447"/>
@@ -3468,12 +3471,12 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
         <source>Alarm Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>El evento Alarma ya existe</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
         <source>Alarm {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>El evento Alarma {0} ya existe.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="569"/>
@@ -3509,12 +3512,12 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="704"/>
         <source>Remove {0} Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar evento {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1001"/>
         <source>❌ NOT Colliding with {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>❌ NO colisiona con {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1005"/>
@@ -3551,7 +3554,10 @@ El código se ejecutará cuando el evento se active durante el juego.</translati
 
 Please add actions to a specific alarm number instead:
 Right-click on Alarm 0, Alarm 1, etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pueden añadir acciones directamente a Alarma.
+
+En su lugar, añada las acciones a un número de alarma específico:
+Haga clic derecho en Alarma 0, Alarma 1, etc.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
@@ -3582,7 +3588,7 @@ Haga clic derecho en Flecha izquierda, Flecha derecha, Flecha arriba o Flecha ab
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Could not open action editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir el editor de acciones: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
@@ -4210,12 +4216,12 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
         <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
         <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
         <source>&lt;no parent&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;sin padre&gt;</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
         <source>Parent object (inherits collision events)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto padre (hereda eventos de colisión)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
@@ -4225,7 +4231,7 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
         <source>Parent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Padre:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
@@ -7363,7 +7369,7 @@ Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse m
     <message>
         <location filename="../editors/room_editor/__init__.py" line="85"/>
         <source>Tile Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta de mosaicos...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="116"/>
@@ -7475,22 +7481,22 @@ Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse m
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
         <source>↔ Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>↔ Desplazar todo</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="186"/>
         <source>Shift all instances by an X/Y offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazar todas las instancias según un desplazamiento X/Y</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Separar</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir este editor en su propia ventana</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="202"/>
@@ -7516,32 +7522,32 @@ Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse m
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazar todo</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>No instances to shift.</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay instancias que desplazar.</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="242"/>
         <source>Shift All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazar todas las instancias</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="249"/>
         <source>X offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazamiento X:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="255"/>
         <source>Y offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazamiento Y:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="268"/>
         <source>Shifted all instances by ({0}, {1})</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas las instancias desplazadas ({0}, {1})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
@@ -7581,12 +7587,12 @@ Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse m
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
         <source>Tile selected - Click in room to paint</source>
-        <translation type="unfinished"></translation>
+        <translation>Mosaico seleccionado - Haga clic en la sala para pintar</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="467"/>
         <source>Tile mode cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de mosaico desactivado</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>
@@ -8874,7 +8880,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="50"/>
         <source>Select a tutorial and click Open (or double-click):</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un tutorial y haga clic en Abrir (o haga doble clic):</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="83"/>
