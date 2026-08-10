@@ -1596,7 +1596,7 @@ oder besuchen Sie:</translation>
     <message>
         <location filename="../core/ide_window.py" line="3037"/>
         <source>&lt;h3&gt;License&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Source code:&lt;/b&gt; MIT License&lt;br&gt;• &lt;b&gt;Documentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier to reuse for educators, students, and downstream projects. See the &lt;code&gt;LICENSE&lt;/code&gt; and &lt;code&gt;LICENSE-docs&lt;/code&gt; files for full terms.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</source>
-        <translation>&amp;lt;h3&amp;gt;Lizenz&amp;lt;/h3&amp;gt;&amp;lt;p&amp;gt;• &amp;lt;b&amp;gt;Quellcode:&amp;lt;/b&amp;gt; MIT-Lizenz&amp;lt;br&amp;gt;• &amp;lt;b&amp;gt;Dokumentation:&amp;lt;/b&amp;gt; Creative Commons Attribution 4.0 (CC BY 4.0)&amp;lt;br&amp;gt;&amp;lt;small&amp;gt;Von GPLv3 auf MIT + CC BY 4.0 relizenziert, um die Wiederverwendung für Lehrkräfte, Studierende und nachgelagerte Projekte zu erleichtern. Die vollständigen Bedingungen finden Sie in den Dateien &amp;lt;code&amp;gt;LICENSE&amp;lt;/code&amp;gt; und &amp;lt;code&amp;gt;LICENSE-docs&amp;lt;/code&amp;gt;.&amp;lt;/small&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;&amp;amp;copy; Gabriel Thullen, 2025-2026&amp;lt;/p&amp;gt;</translation>
+        <translation>&lt;h3&gt;Lizenz&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Quellcode:&lt;/b&gt; MIT-Lizenz&lt;br&gt;• &lt;b&gt;Dokumentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Von GPLv3 auf MIT + CC BY 4.0 relizenziert, um die Wiederverwendung für Lehrkräfte, Studierende und nachgelagerte Projekte zu erleichtern. Die vollständigen Bedingungen finden Sie in den Dateien &lt;code&gt;LICENSE&lt;/code&gt; und &lt;code&gt;LICENSE-docs&lt;/code&gt;.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3057"/>
@@ -1908,18 +1908,18 @@ Bitte schliessen Sie die IDE und starten Sie sie neu, damit die Änderung wirksa
     <message>
         <location filename="../core/ide_window.py" line="177"/>
         <source>Export &amp;Aseba (Thymio) code...</source>
-        <translation>Aseba-Code (Thymio) &amp;amp;exportieren...</translation>
+        <translation>Aseba-Code (Thymio) &amp;exportieren...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="189"/>
         <location filename="../core/ide_window.py" line="331"/>
         <source>Import Open &amp;Roberta XML...</source>
-        <translation>Open &amp;amp;Roberta XML importieren...</translation>
+        <translation>Open &amp;Roberta XML importieren...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="190"/>
         <source>Import &amp;GameMaker .gmk File...</source>
-        <translation>&amp;amp;GameMaker-.gmk-Datei importieren...</translation>
+        <translation>&amp;GameMaker-.gmk-Datei importieren...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="298"/>
