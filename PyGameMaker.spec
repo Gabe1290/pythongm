@@ -190,4 +190,24 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version=version_file,
+    icon=str(project_dir / 'resources' / 'icon.ico') if sys.platform == 'win32' else None,
 )
+
+# macOS: wrap the onefile executable in a proper .app bundle so it gets a
+# Dock/Finder icon and a display name. EXE()'s own icon= param only affects
+# Windows .exe file icons; macOS icons require a BUNDLE with an .icns.
+if sys.platform == 'darwin':
+    icns_path = project_dir / 'resources' / 'icon.icns'
+    app = BUNDLE(
+        exe,
+        name=f'{APP_NAME}.app',
+        icon=str(icns_path) if icns_path.exists() else None,
+        bundle_identifier='com.pygamemaker.ide',
+        info_plist={
+            'CFBundleName': APP_NAME,
+            'CFBundleDisplayName': APP_NAME,
+            'CFBundleVersion': VERSION,
+            'CFBundleShortVersionString': VERSION,
+            'NSHighResolutionCapable': True,
+        },
+    )
