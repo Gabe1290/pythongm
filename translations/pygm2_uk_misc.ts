@@ -6,27 +6,27 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="627"/>
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор від&apos;єднаний. Закрийте від&apos;єднане вікно, щоб повернути його сюди.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="662"/>
         <source>📥 Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Приєднати</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="663"/>
         <source>Return editor to the tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Повернути редактор до вкладки</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="690"/>
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Від&apos;єднати</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="691"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити редактор Blockly в окремому вікні</translation>
     </message>
 </context>
 <context>
@@ -34,47 +34,47 @@
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Від&apos;єднати</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="131"/>
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити редактор Blockly в окремому вікні</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="233"/>
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетягніть блоки з панелі інструментів зліва для створення ігрової логіки!</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="235"/>
         <source>Error loading Blockly</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження Blockly</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="322"/>
         <source>Blocks updated - {0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>Блоки оновлено - {0} подій</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="386"/>
         <source>No events to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає подій для завантаження</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="411"/>
         <source>Loaded {0} events as blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено {0} подій як блоки</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="413"/>
         <source>Loaded {0} events - some may not have block equivalents</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено {0} подій - деякі можуть не мати блокових еквівалентів</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="511"/>
         <source>Configuration applied: {0} blocks, {1} categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфігурацію застосовано: {0} блоків, {1} категорій</translation>
     </message>
 </context>
 <context>
@@ -103,12 +103,12 @@
         <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
         <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
         <source>&lt;no parent&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;без предка&gt;</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
         <source>Parent object (inherits collision events)</source>
-        <translation type="unfinished"></translation>
+        <translation>Батьківський об&apos;єкт (успадковує події зіткнень)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
         <source>Parent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Предок:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>

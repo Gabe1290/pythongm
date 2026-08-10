@@ -6,7 +6,7 @@
     <message>
         <location filename="../editors/object_editor_components.py" line="23"/>
         <source>Actions are now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії тепер керуються через панель Подій</translation>
     </message>
 </context>
 <context>
@@ -14,22 +14,22 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
         <source>Background Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Шари фону</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
         <source>Background {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Фон {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
         <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості шару</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
@@ -39,32 +39,32 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
         <source>Foreground:</source>
-        <translation type="unfinished"></translation>
+        <translation>Передній план:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
         <source>Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зображення:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
         <source>Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розтягнути:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
         <source>Tile H:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мозаїка Г:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
         <source>Tile V:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мозаїка В:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
@@ -120,12 +120,12 @@
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Від&apos;єднати</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="151"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити цей редактор в окремому вікні</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="193"/>
@@ -140,7 +140,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="283"/>
         <source>Auto-saved: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Автозбережено: {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
@@ -347,7 +347,7 @@ Open or create a project, then select an asset from the tree on the left to view
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
         <source>Backgrounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фони:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
@@ -757,7 +757,9 @@ Select an event and right-click to add actions.</source>
         <source>Blockly visual programming is not available.
 
 Error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Візуальне програмування Blockly недоступне.
+
+Помилка: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
@@ -822,17 +824,17 @@ Error: {0}</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
         <source>Edit mode: changes apply automatically as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим редагування: зміни застосовуються автоматично під час введення</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
         <source>No event methods found in the code</source>
-        <translation type="unfinished"></translation>
+        <translation>У коді не знайдено методів подій</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
         <source>{0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} подій</translation>
     </message>
     <message>
         <source>Object: {0} | Sprite: {1}</source>
@@ -1159,22 +1161,22 @@ The code will execute when the event triggers during gameplay.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
         <source>🤖 Thymio Events</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Події Thymio</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
         <source>🤖 Visual Selector...</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Візуальний селектор...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
         <source>Alarm Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія Будильника вже існує</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
         <source>Alarm {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія Будильника {0} вже існує.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
@@ -1227,7 +1229,10 @@ The code will execute when the event triggers during gameplay.</source>
 
 Please add actions to a specific alarm number instead:
 Right-click on Alarm 0, Alarm 1, etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можна додавати дії безпосередньо до Будильника.
+
+Додайте дії до конкретного номера будильника:
+Натисніть правою кнопкою миші на Будильник 0, Будильник 1 тощо.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
@@ -1253,12 +1258,12 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Could not open action editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити редактор дій: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
@@ -1914,7 +1919,7 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <location filename="../editors/room_editor/__init__.py" line="85"/>
         <source>Tile Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Палітра мозаїки...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="116"/>
@@ -2026,22 +2031,22 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
         <source>↔ Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>↔ Зсунути все</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="186"/>
         <source>Shift all instances by an X/Y offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Зсунути всі екземпляри на зміщення X/Y</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Від&apos;єднати</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити цей редактор в окремому вікні</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="202"/>
@@ -2067,32 +2072,32 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>Зсунути все</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>No instances to shift.</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає екземплярів для зсуву.</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="242"/>
         <source>Shift All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Зсунути всі екземпляри</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="249"/>
         <source>X offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміщення X:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="255"/>
         <source>Y offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміщення Y:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="268"/>
         <source>Shifted all instances by ({0}, {1})</source>
-        <translation type="unfinished"></translation>
+        <translation>Усі екземпляри зсунуто на ({0}, {1})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
@@ -2132,12 +2137,12 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
         <source>Tile selected - Click in room to paint</source>
-        <translation type="unfinished"></translation>
+        <translation>Мозаїку вибрано - Клацніть у кімнаті, щоб малювати</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="467"/>
         <source>Tile mode cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим мозаїки вимкнено</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>
