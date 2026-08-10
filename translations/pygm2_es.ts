@@ -134,7 +134,7 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
     <message>
         <location filename="../events/action_editor.py" line="198"/>
         <source>Number or expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Número o expresión</translation>
     </message>
     <message>
         <location filename="../events/action_editor.py" line="218"/>
@@ -802,32 +802,32 @@ Use Archivo → Nuevo proyecto o Archivo → Abrir proyecto para empezar.</trans
         <location filename="../dialogs/_block_config_dialog_base.py" line="149"/>
         <source>Preset:</source>
         <extracomment>Combo index that represents the &quot;Custom&quot; preset (subclass overrides).</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Preajuste:</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
         <source>Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloque</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="174"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Descripción</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="196"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="200"/>
         <source>Select None</source>
-        <translation type="unfinished"></translation>
+        <translation>No seleccionar nada</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="237"/>
         <source>{0} blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} bloques</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="268"/>
@@ -838,18 +838,19 @@ Use Archivo → Nuevo proyecto o Archivo → Abrir proyecto para empezar.</trans
         <location filename="../dialogs/_block_config_dialog_base.py" line="284"/>
         <location filename="../dialogs/_block_config_dialog_base.py" line="285"/>
         <source>Requires: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Requiere: {0}</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="378"/>
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>⚠️ Advertencia: A algunos bloques les faltan dependencias:
+{0}</translation>
     </message>
     <message>
         <location filename="../dialogs/_block_config_dialog_base.py" line="391"/>
         <source>Missing Dependencies</source>
-        <translation type="unfinished"></translation>
+        <translation>Dependencias faltantes</translation>
     </message>
 </context>
 <context>
@@ -1288,7 +1289,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/sprite_editor/color_palette.py" line="157"/>
         <source>Swap foreground/background</source>
-        <translation type="unfinished"></translation>
+        <translation>Intercambiar primer plano/fondo</translation>
     </message>
 </context>
 <context>
@@ -2358,17 +2359,17 @@ Would you like to open the export directory?</source>
     <message>
         <location filename="../editors/_floatable_editor.py" line="45"/>
         <source>Return this editor to the IDE&apos;s tab strip</source>
-        <translation type="unfinished"></translation>
+        <translation>Devolver este editor a la barra de pestañas del IDE</translation>
     </message>
     <message>
         <location filename="../editors/_floatable_editor.py" line="47"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Separar</translation>
     </message>
     <message>
         <location filename="../editors/_floatable_editor.py" line="48"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir este editor en su propia ventana</translation>
     </message>
 </context>
 <context>
@@ -2376,12 +2377,12 @@ Would you like to open the export directory?</source>
     <message>
         <location filename="../editors/sprite_editor/color_palette.py" line="106"/>
         <source>Foreground Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de primer plano</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/color_palette.py" line="113"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de fondo</translation>
     </message>
 </context>
 <context>
@@ -2389,32 +2390,32 @@ Would you like to open the export directory?</source>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="121"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="122"/>
         <source>Add frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir fotograma</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="126"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="127"/>
         <source>Duplicate frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicar fotograma</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="131"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="132"/>
         <source>Delete frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar fotograma</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_frames.py" line="136"/>
@@ -2755,7 +2756,7 @@ Les changements prendront effet immédiatement.</translation>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="75"/>
         <source>{0} ({1})</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} ({1})</translation>
     </message>
     <message>
         <location filename="../dialogs/key_selector_dialog.py" line="134"/>
@@ -7330,27 +7331,27 @@ Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse m
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="88"/>
         <source>Resize / Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Redimensionar / Escalar</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="96"/>
         <source>Current size: {0} x {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño actual: {0} x {1}</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="101"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="103"/>
         <source>Scale Image (stretch content to new size)</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar imagen (estirar el contenido al nuevo tamaño)</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="104"/>
         <source>Resize Canvas (keep content, add/crop space)</source>
-        <translation type="unfinished"></translation>
+        <translation>Redimensionar lienzo (mantener el contenido, añadir/recortar espacio)</translation>
     </message>
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="113"/>
@@ -7365,7 +7366,7 @@ Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse m
     <message>
         <location filename="../editors/sprite_editor/sprite_editor_main.py" line="127"/>
         <source>Anchor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anclaje</translation>
     </message>
 </context>
 <context>
@@ -8819,7 +8820,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="70"/>
         <source>No tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Sin conjunto de mosaicos</translation>
     </message>
 </context>
 <context>
@@ -8827,32 +8828,32 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="153"/>
         <source>Tile Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta de mosaicos</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="169"/>
         <source>Tileset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Conjunto de mosaicos:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="174"/>
         <source>Tile W:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mosaico W:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="181"/>
         <source>H:</source>
-        <translation type="unfinished"></translation>
+        <translation>H:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="191"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="208"/>
         <source>Clear Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar mosaico</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="212"/>
@@ -8862,7 +8863,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../editors/room_editor/tile_palette.py" line="244"/>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ninguno)</translation>
     </message>
 </context>
 <context>
@@ -8999,22 +9000,22 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="969"/>
         <source>View Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de vista</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="979"/>
         <source>View {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="980"/>
         <source>View:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="984"/>
         <source>View in Room</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista en la sala</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="988"/>
@@ -9048,12 +9049,12 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1009"/>
         <source>Port on Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto en pantalla</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1031"/>
         <source>Object Following</source>
-        <translation type="unfinished"></translation>
+        <translation>Seguimiento de objeto</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1035"/>
@@ -9063,27 +9064,27 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1038"/>
         <source>Follow:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seguir:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1042"/>
         <source>H Border:</source>
-        <translation type="unfinished"></translation>
+        <translation>Borde H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1046"/>
         <source>V Border:</source>
-        <translation type="unfinished"></translation>
+        <translation>Borde V:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1050"/>
         <source>H Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1054"/>
         <source>V Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad V:</translation>
     </message>
 </context>
 <context>
