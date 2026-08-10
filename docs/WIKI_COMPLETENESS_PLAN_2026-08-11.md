@@ -116,15 +116,36 @@ live).
 - [x] Push Phase 0 changes to the live wiki via `scripts/sync_wiki.sh push`.
       DONE 2026-08-11 — `a610619..5493493`. **Phase 0 is fully closed.**
 
-### Phase 1 — screenshots infrastructure + first batch
-- [ ] Extend `scripts/sync_wiki.sh` to carry an `images/` folder to the live
-      wiki (verify with a throwaway test image first).
-- [ ] Screenshot: main IDE window (empty + with a sample project loaded).
-- [ ] Screenshot: Object Editor, Room Editor, Sprite Editor.
-- [ ] Screenshot: Blockly/Playground workspace.
-- [ ] Screenshot: Export dialog (all-targets view).
-- [ ] Embed the above into `Home.md`, `Getting-Started.md`,
+### Phase 1 — screenshots infrastructure + first batch — CLOSED 2026-08-11
+- [x] Extend `scripts/sync_wiki.sh` to carry an `images/` folder to the live
+      wiki. `affa2db`, verified with a throwaway test PNG (pushed, fetched
+      from raw.githubusercontent.com/wiki/..., then manually removed —
+      the sync script is additive-only by design, so stray files need a
+      manual delete).
+- [x] Screenshot: main IDE window (empty + with a sample project loaded).
+      `a9218b5`. **Privacy fix required**: the Welcome tab's recent-projects
+      panel leaked this dev machine's real project history on the first
+      capture attempt — fixed by blanking `Config`'s recent-projects list
+      + no-opping `add_recent_project` before constructing the window.
+      Captured from a scratch copy of `samples/plateforme_3` (never load
+      the bundled `samples/` path directly for this — it triggers a
+      promotion-copy into the user's real Documents folder).
+- [x] Screenshot: Object Editor, Room Editor, Sprite Editor. `a9218b5`.
+- [x] Screenshot: Blockly/Playground workspace — **attempted, not
+      achieved**. Live Blockly is a `QWebEngineView`; an isolated,
+      hard-timeout attempt didn't segfault (the risk the source code
+      itself warns about) but rendered solid black — GPU context lost
+      under the offscreen platform, no software fallback available.
+      Discarded rather than publish a black box. `Visual-Programming.md`
+      reuses the Object Editor screenshot (shows the real tab) instead,
+      with an honest caption. Getting a true Blockly-canvas screenshot
+      needs a real display — out of scope for this automated pass, flag
+      for a manual capture if someone's ever driving the app by hand.
+- [x] Screenshot: Export dialog. `a9218b5` — also grabbed
+      `code-editor.png` (View Generated Code mode) as a bonus for Phase 2.
+- [x] Embed the above into `Home.md`, `Getting-Started.md`,
       `Object-Editor.md`, `Room-Editor.md`, `Visual-Programming.md`.
+      `a9218b5`, pushed live `6ad6be8`.
 
 ### Phase 2 — missing pages (English first)
 - [ ] `Sprite-Editor.md`
