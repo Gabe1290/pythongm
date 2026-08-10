@@ -6,7 +6,7 @@
     <message>
         <location filename="../editors/object_editor_components.py" line="23"/>
         <source>Actions are now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Le azioni sono ora gestite tramite il pannello Eventi</translation>
     </message>
 </context>
 <context>
@@ -14,22 +14,22 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1186"/>
         <source>Background Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Livelli sfondo</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1197"/>
         <source>Background {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Sfondo {0}</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1198"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Livello:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1202"/>
         <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà livello</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1206"/>
@@ -39,7 +39,7 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1209"/>
         <source>Foreground:</source>
-        <translation type="unfinished"></translation>
+        <translation>Primo piano:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1212"/>
@@ -49,22 +49,22 @@
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1215"/>
         <source>Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Immagine:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1218"/>
         <source>Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatta:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1221"/>
         <source>Tile H:</source>
-        <translation type="unfinished"></translation>
+        <translation>Affianca H:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1224"/>
         <source>Tile V:</source>
-        <translation type="unfinished"></translation>
+        <translation>Affianca V:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="1228"/>
@@ -120,12 +120,12 @@
     <message>
         <location filename="../editors/base_editor.py" line="150"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Stacca</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="151"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri questo editor in una finestra separata</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="193"/>
@@ -140,7 +140,7 @@
     <message>
         <location filename="../editors/base_editor.py" line="283"/>
         <source>Auto-saved: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvato automaticamente: {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="159"/>
@@ -347,7 +347,7 @@ Apri o crea un progetto, quindi seleziona una risorsa dall’albero a sinistra p
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
         <source>Backgrounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sfondi:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
@@ -753,7 +753,9 @@ Seleziona un evento e fai clic destro per aggiungere azioni.</translation>
         <source>Blockly visual programming is not available.
 
 Error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>La programmazione visuale Blockly non è disponibile.
+
+Errore: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="701"/>
@@ -818,17 +820,17 @@ Error: {0}</source>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1409"/>
         <source>Edit mode: changes apply automatically as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità modifica: le modifiche vengono applicate automaticamente mentre digiti</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1492"/>
         <source>No event methods found in the code</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun metodo evento trovato nel codice</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1516"/>
         <source>{0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} eventi</translation>
     </message>
     <message>
         <source>Object: {0} | Sprite: {1}</source>
@@ -1159,22 +1161,22 @@ Il codice verrà eseguito quando l&apos;evento si attiva durante il gioco.</tran
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
         <source>🤖 Thymio Events</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Eventi Thymio</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
         <source>🤖 Visual Selector...</source>
-        <translation type="unfinished"></translation>
+        <translation>🤖 Selettore visuale...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
         <source>Alarm Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;evento Allarme esiste già</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
         <source>Alarm {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;evento Allarme {0} esiste già.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
@@ -1227,7 +1229,10 @@ Il codice verrà eseguito quando l&apos;evento si attiva durante il gioco.</tran
 
 Please add actions to a specific alarm number instead:
 Right-click on Alarm 0, Alarm 1, etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non è possibile aggiungere azioni direttamente ad Allarme.
+
+Aggiungi invece le azioni a un numero di allarme specifico:
+Clic destro su Allarme 0, Allarme 1, ecc.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
@@ -1253,12 +1258,12 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
         <source>Could not open action editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire l&apos;editor azioni: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
@@ -1914,7 +1919,7 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <message>
         <location filename="../editors/room_editor/__init__.py" line="85"/>
         <source>Tile Palette...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tavolozza piastrelle...</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="116"/>
@@ -2026,22 +2031,22 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <message>
         <location filename="../editors/room_editor/__init__.py" line="185"/>
         <source>↔ Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>↔ Sposta tutto</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="186"/>
         <source>Shift all instances by an X/Y offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Sposta tutte le istanze di uno scarto X/Y</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="194"/>
         <source>🪟 Float</source>
-        <translation type="unfinished"></translation>
+        <translation>🪟 Stacca</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="195"/>
         <source>Open this editor in its own window</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri questo editor in una finestra separata</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="202"/>
@@ -2067,32 +2072,32 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>Shift All</source>
-        <translation type="unfinished"></translation>
+        <translation>Sposta tutto</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="238"/>
         <source>No instances to shift.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuna istanza da spostare.</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="242"/>
         <source>Shift All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Sposta tutte le istanze</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="249"/>
         <source>X offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Scarto X:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="255"/>
         <source>Y offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Scarto Y:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="268"/>
         <source>Shifted all instances by ({0}, {1})</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutte le istanze spostate di ({0}, {1})</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="330"/>
@@ -2132,12 +2137,12 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
     <message>
         <location filename="../editors/room_editor/__init__.py" line="462"/>
         <source>Tile selected - Click in room to paint</source>
-        <translation type="unfinished"></translation>
+        <translation>Piastrella selezionata - Clicca nella stanza per dipingere</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="467"/>
         <source>Tile mode cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità piastrella disattivata</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="484"/>

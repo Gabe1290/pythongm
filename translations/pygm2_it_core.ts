@@ -132,23 +132,23 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="62"/>
         <source>IDE Edition</source>
-        <translation type="unfinished"></translation>
+        <translation>Edizione IDE</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="69"/>
         <source>Edition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Edizione:</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="79"/>
         <source>The edition controls which tutorials are shown and the default
 block preset for new projects. Existing projects are not affected.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;edizione determina quali tutorial vengono mostrati e quale preset di blocchi predefinito viene usato per i nuovi progetti. I progetti esistenti non ne sono interessati.</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="88"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <location filename="../dialogs/preferences_dialog.py" line="96"/>
@@ -1596,7 +1596,7 @@ o visitare:</translation>
     <message>
         <location filename="../core/ide_window.py" line="3037"/>
         <source>&lt;h3&gt;License&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Source code:&lt;/b&gt; MIT License&lt;br&gt;• &lt;b&gt;Documentation:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier to reuse for educators, students, and downstream projects. See the &lt;code&gt;LICENSE&lt;/code&gt; and &lt;code&gt;LICENSE-docs&lt;/code&gt; files for full terms.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Licenza&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;Codice sorgente:&lt;/b&gt; Licenza MIT&lt;br&gt;• &lt;b&gt;Documentazione:&lt;/b&gt; Creative Commons Attribution 4.0 (CC BY 4.0)&lt;br&gt;&lt;small&gt;Rilicenziato da GPLv3 a MIT + CC BY 4.0 per abbassare la barriera al riutilizzo per educatori, studenti e progetti derivati. Consulta i file &lt;code&gt;LICENSE&lt;/code&gt; e &lt;code&gt;LICENSE-docs&lt;/code&gt; per i termini completi.&lt;/small&gt;&lt;/p&gt;&lt;p&gt;&amp;copy; Gabriel Thullen, 2025-2026&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3057"/>
@@ -1626,12 +1626,12 @@ Risorsa: {1}</translation>
     <message>
         <location filename="../core/ide_window.py" line="3181"/>
         <source>Opened playground: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Playground aperto: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3192"/>
         <source>Failed to open playground editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire l&apos;editor playground: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3234"/>
@@ -1661,42 +1661,42 @@ Risorsa: {1}</translation>
     <message>
         <location filename="../core/ide_window.py" line="3506"/>
         <source>Floated: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Staccato: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3544"/>
         <source>Reattached: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Riattaccato: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3571"/>
         <source>Window mode: Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità finestra: A schede</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3583"/>
         <source>Window mode: Floating</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità finestra: Flottante</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3590"/>
         <source>⧉ Floating</source>
-        <translation type="unfinished"></translation>
+        <translation>⧉ Flottante</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3592"/>
         <source>Window mode: Floating. Click to switch all editors back into tabs (use this if a floating window has been dragged off-screen).</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità finestra: Flottante. Clicca per riportare tutti gli editor nelle schede (utile se una finestra flottante è stata trascinata fuori dallo schermo).</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3596"/>
         <source>⊞ Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>⊞ A schede</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3598"/>
         <source>Window mode: Tabbed. Click to pop every editor out into its own window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità finestra: A schede. Clicca per estrarre ogni editor nella propria finestra.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3681"/>
@@ -1802,17 +1802,19 @@ Vuoi:
         <source>Failed to open object editor:
 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire l&apos;editor oggetto:
+
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3286"/>
         <source>Opened sprite: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite aperto: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3297"/>
         <source>Failed to open sprite editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire l&apos;editor sprite: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="3719"/>
@@ -1906,18 +1908,18 @@ Chiudi e riavvia l&apos;IDE per applicare la modifica.</translation>
     <message>
         <location filename="../core/ide_window.py" line="177"/>
         <source>Export &amp;Aseba (Thymio) code...</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta codice &amp;Aseba (Thymio)...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="189"/>
         <location filename="../core/ide_window.py" line="331"/>
         <source>Import Open &amp;Roberta XML...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa &amp;Open Roberta XML...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="190"/>
         <source>Import &amp;GameMaker .gmk File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa file &amp;GameMaker .gmk...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="298"/>
@@ -1952,22 +1954,22 @@ Chiudi e riavvia l&apos;IDE per applicare la modifica.</translation>
     <message>
         <location filename="../core/ide_window.py" line="674"/>
         <source>Import Open Roberta XML</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa Open Roberta XML</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="676"/>
         <source>Open Roberta XML (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Roberta XML (*.xml)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="685"/>
         <source>Select Output Directory for Imported Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona cartella di output per il progetto importato</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="694"/>
         <source>Importing Open Roberta program...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importazione del programma Open Roberta in corso...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="702"/>
@@ -1976,78 +1978,87 @@ Chiudi e riavvia l&apos;IDE per applicare la modifica.</translation>
 
 Warnings:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Avvisi:
+</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="708"/>
         <source>Project &apos;{0}&apos; imported successfully!
 Events: {1}, Actions: {2}{3}</source>
-        <translation type="unfinished"></translation>
+        <translation>Progetto &apos;{0}&apos; importato con successo!
+Eventi: {1}, Azioni: {2}{3}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="715"/>
         <source>Roberta import complete: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Importazione Roberta completata: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="726"/>
         <source>Failed to import Open Roberta XML:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile importare Open Roberta XML:
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="728"/>
         <source>Roberta import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Importazione Roberta non riuscita</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="734"/>
         <source>Import GameMaker File</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa file GameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="736"/>
         <source>GameMaker Files (*.gmk)</source>
-        <translation type="unfinished"></translation>
+        <translation>File GameMaker (*.gmk)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="759"/>
         <source>Could not create output folder:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare la cartella di output:
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="765"/>
         <source>Importing GameMaker file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importazione del file GameMaker in corso...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="769"/>
         <source>(no details)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nessun dettaglio)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="773"/>
         <source>Failed to import {0}:
 
 {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile importare {0}:
+
+{1}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="775"/>
         <source>GMK import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Importazione GMK non riuscita</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="778"/>
         <source>(empty project)</source>
-        <translation type="unfinished"></translation>
+        <translation>(progetto vuoto)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="782"/>
         <source>
   ...and {0} more</source>
-        <translation type="unfinished"></translation>
+        <translation>
+  ...e altri {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="788"/>
@@ -2055,52 +2066,55 @@ Events: {1}, Actions: {2}{3}</source>
 {1}
 
 {2}{3}</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;{0}&apos; importato in:
+{1}
+
+{2}{3}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="791"/>
         <source>GMK import complete: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Importazione GMK completata: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="835"/>
         <source>New Project (Ctrl+N)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuovo progetto (Ctrl+N)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="836"/>
         <source>Open Project (Ctrl+O)</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri progetto (Ctrl+O)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="837"/>
         <source>Save Project (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva progetto (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="842"/>
         <source>Test Game (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Testa gioco (F5)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="843"/>
         <source>Debug Game (F6)</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug gioco (F6)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="844"/>
         <source>Export Game…</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta gioco…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="849"/>
         <source>Import Sprite…</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa sprite…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="850"/>
         <source>Import Sound…</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa suono…</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="858"/>
@@ -2115,12 +2129,12 @@ Events: {1}, Actions: {2}{3}</source>
     <message>
         <location filename="../core/ide_window.py" line="869"/>
         <source>Tabbed</source>
-        <translation type="unfinished"></translation>
+        <translation>A schede</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="872"/>
         <source>Toggle between Tabbed and Floating editor layouts</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterna tra i layout degli editor A schede e Flottante</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1189"/>
@@ -2161,130 +2175,132 @@ Events: {1}, Actions: {2}{3}</source>
     <message>
         <location filename="../core/ide_window.py" line="2010"/>
         <source>macOS Application (.app) - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Applicazione macOS (.app) - ✅ Disponibile</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2012"/>
         <source>macOS Application (.app) - ⚠️ Requires macOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Applicazione macOS (.app) - ⚠️ Richiede macOS</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2018"/>
         <source>Android Package (.apk) - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Pacchetto Android (.apk) - ✅ Disponibile</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2026"/>
         <source>Android Package (.apk) - ✅ Available (via WSL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pacchetto Android (.apk) - ✅ Disponibile (tramite WSL)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2029"/>
         <location filename="../core/ide_window.py" line="2032"/>
         <source>Android Package (.apk) - ⚠️ Requires WSL (not detected)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pacchetto Android (.apk) - ⚠️ Richiede WSL (non rilevato)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2034"/>
         <source>Android Package (.apk) - ⚠️ Requires Linux or macOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Pacchetto Android (.apk) - ⚠️ Richiede Linux o macOS</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2040"/>
         <source>iOS App (.ipa) - ✅ Available (macOS only)</source>
-        <translation type="unfinished"></translation>
+        <translation>App iOS (.ipa) - ✅ Disponibile (solo macOS)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2042"/>
         <source>iOS App (.ipa) - ⚠️ Requires macOS with Xcode</source>
-        <translation type="unfinished"></translation>
+        <translation>App iOS (.ipa) - ⚠️ Richiede macOS con Xcode</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2076"/>
         <source>This export format is not yet available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Questo formato di esportazione non è ancora disponibile.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2188"/>
         <source>Export cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione annullata</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2210"/>
         <source>Building iOS App</source>
-        <translation type="unfinished"></translation>
+        <translation>Creazione dell&apos;app iOS in corso</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2211"/>
         <source>Preparing iOS export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Preparazione dell&apos;esportazione iOS in corso...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2213"/>
         <source>iOS Export Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione iOS completata</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2214"/>
         <source>iOS Export Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione iOS non riuscita</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2215"/>
         <source>Open the output folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>Aprire la cartella di output?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2217"/>
         <source>iOS export cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione iOS annullata</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2237"/>
         <source>Exporting Aseba code...</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione del codice Aseba in corso...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2244"/>
         <source>Aseba Export Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione Aseba non riuscita</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2245"/>
         <source>Failed to export Aseba code:
 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile esportare il codice Aseba:
+
+{0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2247"/>
         <source>Aseba export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione Aseba non riuscita</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2253"/>
         <source>Aseba Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione Aseba</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2255"/>
         <source>No Thymio objects found in this project, so no Aseba code was generated. Add a Thymio object to the project and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun oggetto Thymio trovato in questo progetto, quindi non è stato generato alcun codice Aseba. Aggiungi un oggetto Thymio al progetto e riprova.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2260"/>
         <source>Aseba export: nothing to export</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione Aseba: niente da esportare</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2263"/>
         <source>Aseba export complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione Aseba completata</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2266"/>
         <source>Aseba Export Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione Aseba completata</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2267"/>
@@ -2292,12 +2308,15 @@ Events: {1}, Actions: {2}{3}</source>
 {0}
 
 Would you like to open the output folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>File .aesl Aseba scritti in:
+{0}
+
+Vuoi aprire la cartella di output?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2406"/>
         <source>Cancelling...</source>
-        <translation type="unfinished"></translation>
+        <translation>Annullamento in corso...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2632"/>

@@ -1,6 +1,6 @@
 # Plan: closing the "organically maintained" languages' unfinished-translation gap
 
-Status: **in progress.** Written 2026-08-10, right after
+Status: **in progress (3/7 done: fr, de, it).** Written 2026-08-10, right after
 `tests/test_extension_ui_translations.py` (commit `051de39`) found that
 German's shipped catalogs carry 151 never-completed
 `<translation type="unfinished"></translation>` entries — the Preferences
@@ -163,7 +163,33 @@ not an **append**). For each language:
       elsewhere in the file. Screenshot-verified: the Preferences
       dialog's "General" tab — the string that started this whole
       investigation — now reads "Allgemein".
-- [ ] **it** (151 entries, shared list) —
+- [x] **it** (151 entries, shared list) — DONE 2026-08-10.
+      `tests/test_i18n_unfinished_it.py` (4 tests, across all 6 split
+      files). Several strings turned out to already have a real Italian
+      translation sitting in a SISTER split file under the same
+      (context, source) pair — reused verbatim rather than re-translated:
+      `BlocklyVisualProgrammingTab`/`BlocklyWidget` duplicated across
+      `blockly.ts`/`misc.ts`, and `VisualScriptingArea`/`ActionListWidget`
+      duplicated across `actions.ts`/`editors.ts`. The rest translated
+      fresh, cross-checked against it's own established terminology
+      (Nuovo progetto/Apri progetto/Salva progetto/Testa gioco/Debug
+      gioco/Esporta gioco, "Ctrl" kept as-is unlike German's "Strg",
+      "Stacca"/"Allega" for the float-detach/attach pair already
+      established in `BlocklyWidget`, "Adatta"/"Affianca" for background
+      Stretch/Tile already established from `Stretch Background:`/`Tile
+      Horizontal:`). Screenshot-verified: the Preferences dialog's
+      "General" tab — the string that started this whole
+      investigation — now reads "Generale".
+      **Found and fixed a real bug along the way** (separate commit,
+      before this one): the German batch (unit 2/7) had shipped 4
+      double-escaped translations (the About dialog's License HTML
+      block + 3 menu-mnemonic strings) that passed XML validity and
+      `lrelease` silently but resolved to literal `&lt;h3&gt;`/
+      `&amp;exportieren` text at runtime instead of real HTML/a real
+      mnemonic ampersand — the exact landmine this doc's own "Method"
+      section already warns about. `tests/test_i18n_de_double_escaping_fix.py`
+      guards it; this file's own `test_no_double_escaped_translations`
+      guards the same class of bug in the it batch.
 - [ ] **ru** (153 entries, shared list) —
 - [ ] **sl** (153 entries, shared list) —
 - [ ] **uk** (152 entries, shared list) —
