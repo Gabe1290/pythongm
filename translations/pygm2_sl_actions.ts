@@ -666,7 +666,7 @@ Les changements prendront effet immédiatement.</translation>
     <message>
         <location filename="../editors/object_editor_components.py" line="41"/>
         <source>Visual scripting is now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Vizualno programiranje se zdaj upravlja preko plošče Dogodki</translation>
     </message>
 </context>
 </TS>

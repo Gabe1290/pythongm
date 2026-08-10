@@ -139,7 +139,8 @@
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
         <source>No project loaded.
 Use File → New Project or File → Open Project to begin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noben projekt ni naložen.
+Uporabite Datoteka → Nov projekt ali Datoteka → Odpri projekt za začetek.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
@@ -169,7 +170,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
         <source>Playgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Igrišča</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
@@ -214,12 +215,12 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
         <source>💾 Export as PNG…</source>
-        <translation type="unfinished"></translation>
+        <translation>💾 Izvozi kot PNG…</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
         <source>📋 Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Podvoji</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
@@ -313,27 +314,27 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
         <source>Sprite &apos;{0}&apos; has no image file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite &apos;{0}&apos; nima slikovne datoteke.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
         <source>File Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteka ni najdena</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
         <source>Image file not found: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Slikovna datoteka ni najdena: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
         <source>Export Sprite as PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvozi sprite kot PNG</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
         <source>PNG Images (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Slike PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
@@ -343,7 +344,7 @@ Use File → New Project or File → Open Project to begin.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
         <source>Failed to export: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvoz ni uspel: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
@@ -1111,17 +1112,17 @@ Ali želite odpreti mapo izvoza?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="62"/>
         <source>Empty Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Prazen projekt</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="63"/>
         <source>With Game Over Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Z zaslonom Game Over</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="67"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Predloga:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="106"/>
@@ -1598,7 +1599,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="50"/>
         <source>Select a tutorial and click Open (or double-click):</source>
-        <translation type="unfinished"></translation>
+        <translation>Izberite vodič in kliknite Odpri (ali dvokliknite):</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="83"/>
@@ -1608,7 +1609,7 @@ Do you want to save anyway?</source>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="91"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpri</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="97"/>
