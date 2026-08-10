@@ -511,12 +511,18 @@ Other:
   translation *context* name, and `self.tr(f"...")` f-strings that could
   never match a literal `<source>` template) — see `CLAUDE.md`'s
   2026-08-08/09 session notes for detail.
-- Not done: a human has not opened the running IDE with pt/ja/zh selected
-  and eyeballed the rendered UI — every string is programmatically
-  verified to resolve via a live `QTranslator` and (for the in-app
-  Tutorials curriculum specifically) a real-widget-driven headless test,
-  but nobody has looked at actual pixels. Not tracked as a TODO item since
-  it needs a GUI this dev environment doesn't have, not more coding.
+- **Partially addressed 2026-08-10**: an offscreen-QApplication screenshot
+  spike (`QWidget.grab()` under `QT_QPA_PLATFORM=offscreen`, no real
+  display needed) rendered the Preferences dialog in every one of the 10
+  shipped languages and found a real bug this way — see the "extension
+  system UI" entry below. Still not a substitute for a full click-through:
+  only the Preferences dialog has been screenshotted+visually reviewed,
+  not the whole IDE (main window, every other dialog, in-canvas editors).
+  Every *string* is still only programmatically verified to resolve via a
+  live `QTranslator` (plus the in-app Tutorials curriculum's real-widget-
+  driven headless test); nobody has looked at most of the app's actual
+  pixels. Not tracked as a scheduled TODO item — pick up opportunistically
+  by screenshotting more dialogs the same way, budget permitting.
 
 ## Extensions
 
@@ -550,6 +556,22 @@ Other:
   restart. `_warn_missing_extensions()`'s warning dialog got its "enable
   it" pointer restored now that something real exists to point at.
   `tests/test_preferences_extensions_tab.py` (8 tests).
+- **The extension-system UI's translations — DONE 2026-08-10.** This
+  whole feature (the Extensions tab above, the unrecognized-action amber
+  tree items, the missing/not-installed extension warnings) shipped with
+  zero i18n coverage — 15 `self.tr()` strings across 3 contexts, present
+  in NONE of the 10 shipped languages. Found via an offscreen screenshot
+  spike (see the i18n entry above); fixed for all 10 languages in one
+  pass, terminology cross-checked against each language's translated
+  `wiki/Extensions_<lang>.md`. `tests/test_extension_ui_translations.py`.
+  Surfaced a separate, NOT-fixed finding: de's shipped catalogs carry 151
+  never-completed `type="unfinished"` entries (e.g. the Preferences
+  dialog's own "General" tab label has never been translated to German) —
+  a pre-existing gap in the "organically maintained" languages (as
+  opposed to pt/ja/zh, verified 100% complete in the 2026-08-09 i18n arc),
+  likely present at some scale in the other maintained languages too.
+  Real, unbounded until scoped, and explicitly not chased in the same
+  session as the fix above — a legitimate next i18n item if picked up.
 
 ## Project format / persistence
 
