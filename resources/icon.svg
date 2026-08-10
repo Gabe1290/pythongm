@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="frame">
+      <rect x="16" y="16" width="480" height="480" rx="96"/>
+    </clipPath>
+    <radialGradient id="bg" cx="18%" cy="14%" r="105%">
+      <stop offset="0%" stop-color="#22A6FF"/>
+      <stop offset="45%" stop-color="#3B4FE0"/>
+      <stop offset="100%" stop-color="#9A2FE0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background: blue-to-purple gradient, matching the reference illustration -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#bg)"/>
+
+  <g clip-path="url(#frame)">
+    <!-- Ground shadow -->
+    <ellipse cx="256" cy="372" rx="150" ry="26" fill="#1B1B3A" fill-opacity="0.28"/>
+
+    <!-- Controller body: darker underside sliver for isometric-flat depth -->
+    <path d="M116 232
+             c0 -34 30 -60 68 -60
+             h144
+             c38 0 68 26 68 60
+             v54
+             c0 34 -30 60 -68 60
+             c-16 0 -30 -8 -38 -20
+             l-14 -22
+             h-40
+             l-14 22
+             c-8 12 -22 20 -38 20
+             c-38 0 -68 -26 -68 -60
+             z"
+          fill="#2E4A42"/>
+    <!-- Controller body: top face -->
+    <path d="M116 224
+             c0 -34 30 -60 68 -60
+             h144
+             c38 0 68 26 68 60
+             v50
+             c0 34 -30 60 -68 60
+             c-16 0 -30 -8 -38 -20
+             l-14 -22
+             h-40
+             l-14 22
+             c-8 12 -22 20 -38 20
+             c-38 0 -68 -26 -68 -60
+             z"
+          fill="#6B9885" stroke="#1B2E28" stroke-width="10" stroke-linejoin="round"/>
+
+    <!-- D-pad -->
+    <g fill="#33544A" stroke="#1B2E28" stroke-width="7" stroke-linejoin="round">
+      <rect x="168" y="196" width="26" height="72" rx="6"/>
+      <rect x="145" y="219" width="72" height="26" rx="6"/>
+    </g>
+
+    <!-- Face buttons -->
+    <circle cx="352" cy="200" r="17" fill="#7FAE97" stroke="#1B2E28" stroke-width="7"/>
+    <circle cx="386" cy="222" r="17" fill="#7FAE97" stroke="#1B2E28" stroke-width="7"/>
+    <circle cx="352" cy="244" r="17" fill="#7FAE97" stroke="#1B2E28" stroke-width="7"/>
+    <circle cx="318" cy="222" r="17" fill="#D9503D" stroke="#1B2E28" stroke-width="7"/>
+  </g>
+</svg>
