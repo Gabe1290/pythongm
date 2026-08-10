@@ -14,6 +14,12 @@ oggetti e configurando gli sfondi.
 
 ## Aprire l'Editor Stanze
 
+![L'Editor Stanze: una palette di oggetti a sinistra per scegliere cosa
+posizionare, l'area della stanza al centro con un livello platform
+popolato (strumenti griglia, snap e selezione nella barra degli strumenti
+sopra), e le proprietà stanza/istanza più un'anteprima in miniatura a
+destra](images/room-editor.png)
+
 1. Fai doppio clic su una stanza esistente nell'albero delle risorse, oppure
 2. Clic destro su **Rooms** > **Create Room**
 

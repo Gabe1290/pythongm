@@ -77,6 +77,8 @@ Al primo avvio di PyGameMaker, vedrai:
 3. **Area di Lavoro** — area centrale per modificare gli asset
 4. **Pannello Proprietà** — pannello destro per le proprietà degli asset
 
+![La scheda Home al primo avvio, senza ancora un progetto aperto](images/ide-welcome.png)
+
 ---
 
 ## Creare il Tuo Primo Progetto
