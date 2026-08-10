@@ -77,6 +77,8 @@ Ob prvem zagonu PyGameMaker boste videli:
 3. **Delovno Področje** — osrednje področje za urejanje virov
 4. **Panel Lastnosti** — desni panel za lastnosti virov
 
+![Zavihek Dobrodošli ob prvem zagonu, brez odprtega projekta](images/ide-welcome.png)
+
 ---
 
 ## Ustvarite Svoj Prvi Projekt

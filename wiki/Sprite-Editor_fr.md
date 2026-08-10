@@ -1,6 +1,6 @@
 # Éditeur de Sprites
 
-> [English](Sprite-Editor) | [Français](Sprite-Editor_fr) | [Deutsch](Sprite-Editor_de) | [Italiano](Sprite-Editor_it) | [Español](Sprite-Editor_es) | [Português](Sprite-Editor_pt) | [Русский](Sprite-Editor_ru)
+> [English](Sprite-Editor) | [Français](Sprite-Editor_fr) | [Deutsch](Sprite-Editor_de) | [Italiano](Sprite-Editor_it) | [Español](Sprite-Editor_es) | [Português](Sprite-Editor_pt) | [Русский](Sprite-Editor_ru) | [Slovenščina](Sprite-Editor_sl)
 
 ---
 

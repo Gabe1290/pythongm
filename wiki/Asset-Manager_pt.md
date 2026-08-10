@@ -1,6 +1,6 @@
 # Gestor de Recursos
 
-> [English](Asset-Manager) | [Français](Asset-Manager_fr) | [Deutsch](Asset-Manager_de) | [Italiano](Asset-Manager_it) | [Español](Asset-Manager_es) | [Português](Asset-Manager_pt) | [Русский](Asset-Manager_ru)
+> [English](Asset-Manager) | [Français](Asset-Manager_fr) | [Deutsch](Asset-Manager_de) | [Italiano](Asset-Manager_it) | [Español](Asset-Manager_es) | [Português](Asset-Manager_pt) | [Русский](Asset-Manager_ru) | [Slovenščina](Asset-Manager_sl)
 
 ---
 
