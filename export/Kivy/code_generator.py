@@ -1080,7 +1080,42 @@ if dist > 0:
             return f"from main import goto_room; goto_room('{room_name}')"
 
         elif action_type == 'restart_room' or action_type == 'room_restart':
-            return "from main import get_game_app; app = get_game_app(); app._switch_to_room(app.current_room_index) if app else None"
+            # force_rebuild=True: the target IS the current room index, so
+            # the normal cache-then-check flow in _do_room_switch would
+            # otherwise re-cache-and-reuse the very instance being
+            # discarded. Matches the desktop runtime: restart_current_room
+            # always rebuilds regardless of the room's persistent flag.
+            return ("from main import get_game_app; app = get_game_app(); "
+                    "app._switch_to_room(app.current_room_index, force_rebuild=True) "
+                    "if app else None")
+
+        elif action_type == 'set_room_speed':
+            speed = _num_code(params.get('speed', 30), 30)
+            return f"self.scene.set_room_speed({speed})"
+
+        elif action_type == 'set_room_persistent':
+            raw = params.get('persistent', True)
+            if isinstance(raw, str):
+                flag = raw.strip().lower() in ('true', '1', 'yes')
+            else:
+                flag = bool(raw)
+            return f"self.scene.persistent = {flag}"
+
+        elif action_type == 'set_background_color':
+            color_str = str(params.get('color', '#000000'))
+            try:
+                hex_str = color_str.lstrip('#')
+                rgb = (int(hex_str[0:2], 16) / 255.0,
+                       int(hex_str[2:4], 16) / 255.0,
+                       int(hex_str[4:6], 16) / 255.0)
+            except (ValueError, IndexError):
+                rgb = (0.0, 0.0, 0.0)
+            show_raw = params.get('show_color', True)
+            if isinstance(show_raw, str):
+                show = show_raw.strip().lower() in ('true', '1', 'yes')
+            else:
+                show = bool(show_raw)
+            return f"self.scene.set_background_color({rgb!r}, {show})"
 
         # VIEW / CAMERA ACTIONS — reconfigure the scene's views live. The
         # multi-view render needs the Fbo built at construction (baked
@@ -1530,11 +1565,13 @@ if dist > 0:
             return "; ".join(parts) if parts else "pass  # set_sprite: no change"
 
         elif action_type == 'restart_game':
-            # Restart from the first room. Reuses the app's room-switch path
-            # (index 0) rather than adding new infra — mirrors the runtime's
-            # "recreate the room with fresh instances" restart.
+            # Restart from the first room. GameApp.restart_game() clears the
+            # persistent-room cache (every room rebuilds fresh again, even
+            # ones marked persistent) before switching — mirrors the desktop
+            # runtime's restart_game, which unconditionally rebuilds every
+            # room regardless of its persistent flag.
             return ("from main import get_game_app; _app = get_game_app(); "
-                    "(_app._switch_to_room(0) if _app else None)")
+                    "(_app.restart_game() if _app else None)")
 
         elif action_type == 'play_sound':
             # Resolve the sound name to its exported path and call the

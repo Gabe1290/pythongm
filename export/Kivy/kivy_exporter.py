@@ -807,13 +807,13 @@ def show_message(message):
             _log("_on_overlay_dismiss called")
             _popup_open = False
             if _pending_room_switch is not None:
-                room_index = _pending_room_switch
+                room_index, force_rebuild = _pending_room_switch
                 _pending_room_switch = None
                 _log(f"_on_overlay_dismiss: deferred room switch to {{room_index}}")
                 a2 = get_game_app()
                 if a2:
                     Clock.schedule_once(
-                        lambda dt: a2._switch_to_room(room_index), 0)
+                        lambda dt: a2._switch_to_room(room_index, force_rebuild), 0)
             else:
                 _log("_on_overlay_dismiss: resuming game loop")
                 a2 = get_game_app()
@@ -852,13 +852,13 @@ def show_message(message):
         Window.unbind(on_key_down=on_key_down)
 
         if _pending_room_switch is not None:
-            room_index = _pending_room_switch
+            room_index, force_rebuild = _pending_room_switch
             _pending_room_switch = None
             _log(f"on_dismiss: deferred room switch to index {{room_index}}")
             a2 = get_game_app()
             if a2:
                 Clock.schedule_once(
-                    lambda dt: a2._switch_to_room(room_index), 0)
+                    lambda dt: a2._switch_to_room(room_index, force_rebuild), 0)
         else:
             _log("on_dismiss: resuming game loop (no room switch)")
             a2 = get_game_app()
@@ -1065,6 +1065,14 @@ class GameApp(App):
         self.dpad = None
         self.update_event = None
 
+        # set_room_persistent support: a persistent room's scene instance is
+        # cached here (keyed by room index) when left, and reused instead of
+        # rebuilt on a later revisit. _visited_rooms distinguishes "never
+        # entered" (always builds fresh, nothing to reuse yet) from "entered
+        # before" — mirrors the desktop runtime's _visited_rooms/self.rooms.
+        self._room_cache = {{}}
+        self._visited_rooms = set()
+
         # Game state (initialized in build() from saved state or defaults)
         self.score = 0
         self.lives = 3
@@ -1122,6 +1130,7 @@ class GameApp(App):
         # Create the starting scene
         self.scene = _start_class()
         self.current_room_index = _start_idx
+        self._visited_rooms.add(_start_idx)
 
         if IS_ANDROID:
             # Scale game to fill screen with correct aspect ratio
@@ -1178,6 +1187,15 @@ class GameApp(App):
         container.add_widget(scene)
         return container
 
+    def restart_game(self):
+        """Restart from the first room, discarding every persistent room's
+        cached state. Mirrors the desktop runtime's restart_game, which
+        unconditionally rebuilds every room regardless of its persistent
+        flag (a full game restart is a harder reset than restart_room)."""
+        self._room_cache.clear()
+        self._visited_rooms.clear()
+        self._switch_to_room(0)
+
     def goto_next_room(self):
         """Switch to the next room"""
         next_index = self.current_room_index + 1
@@ -1201,10 +1219,16 @@ class GameApp(App):
         else:
             show_message(f"Room '{{room_name}}' not found")
 
-    def _switch_to_room(self, room_index):
-        """Internal method to switch rooms"""
+    def _switch_to_room(self, room_index, force_rebuild=False):
+        """Internal method to switch rooms.
+
+        force_rebuild=True bypasses the persistent-room cache entirely (ask
+        for a fresh instance and don't cache the one being left) — used by
+        restart_room, since it targets the CURRENT room index and would
+        otherwise re-cache-then-reuse the very instance it's meant to
+        discard."""
         global _pending_room_switch
-        _log(f"_switch_to_room({{room_index}}) called")
+        _log(f"_switch_to_room({{room_index}}, force_rebuild={{force_rebuild}}) called")
         if room_index < 0 or room_index >= len(ROOM_ORDER):
             _log(f"_switch_to_room: invalid index {{room_index}}")
             return
@@ -1212,7 +1236,7 @@ class GameApp(App):
         # If a message popup is open, defer the room switch until it's dismissed
         if _popup_open:
             _log("_switch_to_room: popup open, deferring")
-            _pending_room_switch = room_index
+            _pending_room_switch = (room_index, force_rebuild)
             return
 
         # Stop update loop before switching
@@ -1221,10 +1245,17 @@ class GameApp(App):
             self.update_event = None
 
         _log(f"_switch_to_room: scheduling _do_room_switch({{room_index}})")
-        Clock.schedule_once(lambda dt: self._do_room_switch(room_index), 0)
+        Clock.schedule_once(
+            lambda dt: self._do_room_switch(room_index, force_rebuild), 0)
 
-    def _do_room_switch(self, room_index):
-        """Switch to a new room with clean remove/add."""
+    def _do_room_switch(self, room_index, force_rebuild=False):
+        """Switch to a new room with clean remove/add.
+
+        force_rebuild=True (restart_room) skips both caching the room being
+        left and reusing any cached instance for the target — needed
+        because restart_room's target IS the current room index, so the
+        normal cache-then-check flow would immediately re-cache-and-reuse
+        the very instance it's supposed to discard."""
         global _room_transition_pending
 
         try:
@@ -1245,6 +1276,11 @@ class GameApp(App):
                     Window.unbind(on_key_up=old_scene.on_keyboard_up)
                 except Exception:
                     pass
+                # A persistent room's live scene (instance positions,
+                # destroyed instances, etc.) is kept for reuse instead of
+                # being discarded — set_room_persistent's whole point.
+                if not force_rebuild and getattr(old_scene, 'persistent', False):
+                    self._room_cache[self.current_room_index] = old_scene
 
             # 2. Remove old scene from widget tree (no canvas clearing)
             if IS_ANDROID:
@@ -1254,9 +1290,23 @@ class GameApp(App):
                 if old_scene:
                     self.root_layout.remove_widget(old_scene)
 
-            # 3. Create new scene
-            _log(f"_do_room_switch: creating {{room_class.__name__}}")
-            new_scene = room_class()
+            # 3. Reuse the cached scene on a persistent revisit; otherwise
+            # build fresh (first-ever visit, not marked persistent, or a
+            # forced restart_room rebuild).
+            reuse = (not force_rebuild
+                     and room_index in self._visited_rooms
+                     and room_index in self._room_cache
+                     and getattr(self._room_cache[room_index], 'persistent', False))
+            if reuse:
+                _log(f"_do_room_switch: reusing persistent {{room_class.__name__}}")
+                new_scene = self._room_cache[room_index]
+                Window.bind(on_keyboard=new_scene.on_keyboard)
+                Window.bind(on_key_up=new_scene.on_keyboard_up)
+            else:
+                _log(f"_do_room_switch: creating {{room_class.__name__}}")
+                new_scene = room_class()
+                self._room_cache.pop(room_index, None)
+            self._visited_rooms.add(room_index)
 
             # 4. Add new scene to widget tree. Use the scene's DISPLAYED size
             # (window/ports for a views room, else the room) so a views room
@@ -1475,6 +1525,10 @@ if __name__ == '__main__':
         height = self._safe_room_dim(room_data.get('height'), 768)
         instances = room_data.get('instances', [])
 
+        # Room-level behavior flags mutated at runtime by the "Room" category
+        # actions (set_room_persistent et al.) — see __init__'s comment.
+        persistent = bool(room_data.get('persistent', False))
+
         # Get background properties
         bg_color = room_data.get('background_color', '#808080')  # Default gray
         bg_image = room_data.get('background', '') or room_data.get('background_image', '')
@@ -1686,6 +1740,22 @@ class {class_name}(Widget):
         self.instances_to_destroy = []
         self._pending_creates = []
 
+        # Room-level state the "Room" category actions mutate at runtime
+        # (set_room_persistent / set_room_speed / set_background_color /
+        # set_background). `persistent` decides whether GameApp reuses this
+        # exact scene instance on a revisit instead of rebuilding fresh (see
+        # GameApp._do_room_switch); `room_speed` calibrates per-step
+        # hspeed/vspeed into real-world velocity (see
+        # GameObject._process_movement) the same way the desktop runtime's
+        # FPS does, independent of Kivy's own fixed-rate Clock callback.
+        self.persistent = {persistent}
+        self.room_speed = 60.0
+        # Pre-declared so set_background_color can target whichever one this
+        # room actually built (non-views uses _bg_color_instr, a views room's
+        # Fbo uses _fbo_clear) without an AttributeError on the other.
+        self._bg_color_instr = None
+        self._fbo_clear = None
+
         # Camera / views (GameMaker-style large-level scrolling + multi-view).
         # view_x/view_y hold the live camera position in Kivy space (y-up).
         self.views_enabled = {views_enabled}
@@ -1821,6 +1891,29 @@ class {class_name}(Widget):
         if 0 <= index < len(self.views):
             self.views[index].update(updates)
             self._render_views()
+
+    def set_room_speed(self, fps):
+        """Runtime set_room_speed action. See __init__'s room_speed comment:
+        this scales real-world velocity the same way the desktop runtime's
+        FPS clock does, without touching Kivy's own render/update rate."""
+        try:
+            fps = int(fps)
+        except (TypeError, ValueError):
+            fps = 60
+        self.room_speed = max(1, min(240, fps))
+
+    def set_background_color(self, rgb, show=True):
+        """Runtime set_background_color action. `show=False` fills black
+        instead of leaving the previous color (this canvas redraws every
+        frame, so skipping the fill would smear the prior frame) — mirrors
+        the desktop runtime's show_background_color fallback."""
+        self.background_color = rgb
+        self.show_background_color = bool(show)
+        r, g, b = rgb if self.show_background_color else (0.0, 0.0, 0.0)
+        if self._bg_color_instr is not None:
+            self._bg_color_instr.rgb = (r, g, b)
+        if self._fbo_clear is not None:
+            self._fbo_clear.rgb = (r, g, b)
 
     # Extension hooks (Stage C). Defaults are no-ops; the raycast extension
     # injects overriding _init_extensions / _render_extension_overlay and its
@@ -2302,6 +2395,7 @@ class {class_name}(Widget):
             class_name=class_name,
             width=width,
             height=height,
+            persistent=persistent,
             views_enabled=views_enabled,
             views_repr=views_repr,
             window_width=window_width,
@@ -2908,9 +3002,11 @@ class GameObject(Widget):
             return
 
         # MOVEMENT FIX: Scale movement by dt for frame-independence
-        # speeds are in pixels/frame at 60 FPS, so scale by (dt * 60)
-        # This makes movement consistent regardless of actual frame rate
-        speed_factor = dt * 60.0 if dt > 0 else 1.0
+        # speeds are in pixels/step at the room's room_speed (default 60,
+        # runtime-mutable via set_room_speed — matches the desktop runtime's
+        # fps-scaled step model), so scale by (dt * room_speed)
+        room_speed = self.scene.room_speed if self.scene else 60.0
+        speed_factor = dt * room_speed if dt > 0 else 1.0
         new_x = self._x + float(self._hspeed * speed_factor)
         new_y = self._y + float(self._vspeed * speed_factor)
 
