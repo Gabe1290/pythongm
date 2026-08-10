@@ -1562,3 +1562,88 @@ diff any change back out through the exact same JSON patch mechanism
   there is Kivy's separately-deferred "locals copied back onto the
   instance" (HTML5 never had it, since Pyodide's real `exec()` already
   does that part).
+
+**2026-08-10 — Kivy + HTML5 export codegen for the 4 room actions
+(picked back up after being flagged as deliberately deferred).** The
+2026-08-09 desktop-runtime session (`set_room_speed`/
+`set_background_color`/`set_background`'s `foreground`/
+`set_room_persistent`) explicitly left export codegen for both targets
+unbuilt, since no sample used the actions yet. Closed in three commits,
+one full-suite gate each.
+- **Kivy.** `set_room_speed` couldn't just mirror desktop: Kivy's
+  movement is already dt-scaled for frame-rate independence
+  (`GameObject._process_movement` multiplies by a hardcoded `dt * 60.0`),
+  the opposite architecture from desktop's raw per-step model. Replaced
+  the `60.0` literal with a new `Scene.room_speed` (default 60,
+  runtime-mutable), so changing it scales real-world velocity the same
+  way changing desktop's FPS clock does. `set_room_persistent` needed
+  actual new infrastructure, not just wiring: Kivy's `GameApp.
+  _do_room_switch` always constructed a fresh scene on every switch
+  (`room_class()`), so it already behaved like "always non-persistent" —
+  the opposite starting point from desktop's old bug. Added a
+  `_room_cache` (keyed by room index) populated on exit for a persistent
+  room and consulted on revisit; `restart_room` needed a new
+  `force_rebuild` param threaded through `_switch_to_room`/
+  `_do_room_switch` (and the popup-deferred `_pending_room_switch`, now a
+  tuple) since its target IS the current room index, so the normal
+  cache-on-exit step would otherwise immediately re-cache-and-reuse the
+  very instance being discarded; `restart_game` became a real `GameApp`
+  method that clears the whole cache first. `set_background` (its own,
+  larger commit) draws through a dedicated `_bg_image_group`
+  `InstructionGroup` added once at construction rather than touching the
+  existing baked `_draw_bg_image` codegen at all — repositionable
+  (behind/foreground, via a *captured* Fbo insert index for a views room,
+  not a hardcoded one, since a baked background adds its own instructions
+  first) and rebuildable (image swap/tiling/scroll) at runtime; a room's
+  baked background (if any) keeps rendering underneath, occluded by the
+  dynamic one in the common opaque/stretched case. Verification landmine
+  worth repeating: actually importing and executing the real generated
+  `main.py`'s `GameApp` (not just asserting on its source) needed
+  extending the stub-kivy-env with `kivy.app`/`kivy.config`/`kivy.clock`/
+  `kivy.uix.*` stubs, `monkeypatch.chdir(tmp_path)` (its `_log()`
+  unconditionally writes a crash log into the CWD on import — a stray
+  `pygm_crash.log` landed in the repo root on the first run, caught before
+  committing), and NOT pre-stubbing a fake `main` module the way
+  `test_kivy_views.py` does for scene-only tests (it would permanently
+  shadow the real one). `tests/test_kivy_room_actions.py` (26 tests).
+  Suite 2451 → 2467 → 2477 passed, 0 failed.
+- **HTML5.** Structurally nothing like Kivy: `html5_exporter.py` dumps
+  the whole project straight into `gameData` as JSON with zero
+  transformation, and `engine.js`'s `executeAction` is a single shared
+  runtime interpreter reading `action.parameters` generically — so there
+  is no separate per-action codegen step at all, the entire change lives
+  in `engine.js`. Two real surprises versus Kivy: (1) HTML5's game loop
+  is **not** dt-scaled at all (`this.x += this._hspeed`, no delta time),
+  so `set_room_speed` scales hspeed/vspeed's *final* per-tick position
+  delta by `roomSpeed/60` rather than the game loop's call rate (left
+  untouched — `requestAnimationFrame`-driven, uncapped — to avoid risking
+  a shared-loop change across every exported game); gravity/friction
+  accumulation is deliberately left unscaled, a documented approximation
+  rather than a full step-rate throttle. (2) HTML5 had the **opposite**
+  persistent-room bug from Kivy: `changeRoom` reused `this.rooms
+  [roomName]` forever (a dict built once at startup), so every room was
+  already accidentally persistent — the same bug shape desktop had before
+  its own fix, just on a different target. Fixed by extracting the
+  per-room construction loop out of `loadGame` into a reusable `Game.
+  buildRoom(roomName)`, and teaching `changeRoom` a `forceRebuild` param
+  plus a `_visitedRooms` Set so a non-persistent room rebuilds fresh on
+  revisit; `restart_room` passes `forceRebuild=true` for the same reason
+  as Kivy's `force_rebuild`. `restart_game` needed **no** change at all —
+  it's already `window.location.reload()`, a full page reload that
+  trivially discards everything, more thorough than an explicit cache
+  clear. All four actions' boolean params route through the same
+  defensive true/false-*as-string* coercion `enable_views` already
+  established (`v === false || v === 'false' || v === 0`), not a bare
+  `!!params.x` — the string `"false"` straight from project JSON is
+  truthy under `!!`, a real bug class this file already had the fix
+  pattern for. Verified via this repo's established "no Node.js in CI"
+  tier (source-structure regex assertions on `engine.js`, matched against
+  `test_html5_views.py`'s precedent) plus a real `HTML5Exporter` export
+  whose embedded `gameData` round-trips a project exercising all four
+  actions; brace/paren balance of the whole file checked before and after
+  (only the diff's own brackets — 14/14 — changed). `tests/
+  test_html5_room_actions.py` (16 tests, all passing on the first run).
+  Suite 2477 → 2493 passed, 0 failed.
+- `TODO.md`'s room-background/scrolling entry updated to record both
+  targets done; no sample was changed to exercise these actions (matching
+  the desktop session's own note that none currently do).
