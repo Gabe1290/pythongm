@@ -6,18 +6,17 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ## Catégories d'Événements
 
-- [Événements d'Objet](#evenements-dobjet) - Create, Step, Destroy
-- [Événements d'Entrée](#evenements-dentree) - Clavier, Souris
-- [Événements de Collision](#evenements-de-collision) - Collisions d'objets
-- [Événements de Temps](#evenements-de-temps) - Alarmes, Variantes de Step
-- [Événements de Dessin](#evenements-de-dessin) - Rendu personnalisé
-- [Événements de Salle](#evenements-de-salle) - Transitions de salles
-- [Événements de Jeu](#evenements-de-jeu) - Début/Fin de jeu
-- [Autres Événements](#autres-evenements) - Limites, Vies, Santé
+- [Événements d'Objet](#événements-dobjet) - Create, Step, Destroy
+- [Événements d'Entrée](#événements-dentrée) - Clavier, Souris
+- [Événements de Collision](#événements-de-collision) - Collisions d'objets
+- [Événements de Temps](#événements-de-temps) - Alarmes, Variantes de Step
+- [Événements de Dessin](#événements-de-dessin) - Rendu personnalisé
+- [Événements de Salle](#événements-de-salle) - Transitions de salles
+- [Événements de Jeu](#événements-de-jeu) - Début/Fin de jeu
+- [Autres Événements](#autres-événements) - Limites, Vies, Santé
 
 ---
 
-<a id="evenements-dobjet"></a>
 ## Événements d'Objet
 
 ### Create
@@ -84,7 +83,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="evenements-dentree"></a>
 ## Événements d'Entrée
 
 ### Clavier (Continu)
@@ -184,7 +182,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="evenements-de-collision"></a>
 ## Événements de Collision
 
 ### Collision
@@ -216,7 +213,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="evenements-de-temps"></a>
 ## Événements de Temps
 
 ### Alarme
@@ -276,7 +272,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="evenements-de-dessin"></a>
 ## Événements de Dessin
 
 ### Draw
@@ -322,7 +317,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="evenements-de-salle"></a>
 ## Événements de Salle
 
 ### Room Start
@@ -359,7 +353,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="evenements-de-jeu"></a>
 ## Événements de Jeu
 
 ### Game Start
@@ -395,7 +388,6 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
-<a id="autres-evenements"></a>
 ## Autres Événements
 
 ### Outside Room
