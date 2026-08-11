@@ -181,17 +181,7 @@ nome_progetto/
 - [Vista 3D](3D-View_it) - Rendering in prima persona in stile Doom (raycast)
 - [Estensioni](Extensions_it) - Azioni e renderer aggiuntivi (come viene distribuita la Vista 3D)
 
-### Tutorial e Guide
-- [**Tutorial**](Tutorials_it) - Tutti i tutorial in un unico posto
-- [Per Iniziare](Iniziare_it) - Primi passi con PyGameMaker
-- [Crea il Tuo Primo Gioco](Primo_Gioco_it) - Tutorial passo-passo
-- [Tutorial Pong](Tutorial-Pong_it) - Crea un classico gioco Pong a due giocatori
-- [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
-- [Tutorial Sokoban](Tutorial-Sokoban_it) - Crea un gioco puzzle di spinta scatole
-- [Tutorial Labirinto](Tutorial-Maze_it) - Naviga attraverso i corridoi fino all'uscita
-- [Tutorial Platformer](Tutorial-Platformer_it) - Corri, salta e raccogli monete
-- [Tutorial Atterraggio Lunare](Tutorial-LunarLander_it) - Atterra un'astronave sulla luna
-- [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti
+### Guide
 - [Editor Oggetti](Editor_Oggetti_it) - Lavorare con oggetti di gioco
 - [Editor Stanze](Editor_Stanze_it) - Progettare livelli
 - [Editor Sprite](Sprite-Editor_it) - Disegnare e animare sprite
@@ -203,6 +193,18 @@ nome_progetto/
 - [Scorciatoie da Tastiera](Keyboard-Shortcuts_it) - Riferimento delle scorciatoie dell'editor
 - [Risoluzione dei Problemi](Troubleshooting_it) - Problemi comuni e dove guardare
 - [FAQ](FAQ_it) - Domande frequenti
+
+### Tutorial
+- [**Tutorial**](Tutorials_it) - Tutti i tutorial in un unico posto
+- [Per Iniziare](Iniziare_it) - Primi passi con PyGameMaker
+- [Crea il Tuo Primo Gioco](Primo_Gioco_it) - Tutorial passo-passo
+- [Tutorial Pong](Tutorial-Pong_it) - Crea un classico gioco Pong a due giocatori
+- [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
+- [Tutorial Sokoban](Tutorial-Sokoban_it) - Crea un gioco puzzle di spinta scatole
+- [Tutorial Labirinto](Tutorial-Maze_it) - Naviga attraverso i corridoi fino all'uscita
+- [Tutorial Platformer](Tutorial-Platformer_it) - Corri, salta e raccogli monete
+- [Tutorial Atterraggio Lunare](Tutorial-LunarLander_it) - Atterra un'astronave sulla luna
+- [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti
 
 ### Dove trovo...?
 

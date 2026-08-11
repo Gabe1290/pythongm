@@ -185,17 +185,7 @@ projektname/
 - [3D-Ansicht](3D-View_de) - First-Person-Rendering im Doom-Stil (Raycast)
 - [Erweiterungen](Extensions_de) - Zusätzliche Aktionen und Renderer (wie die 3D-Ansicht ausgeliefert wird)
 
-### Tutorials & Anleitungen
-- [**Tutorials**](Tutorials_de) - Alle Tutorials an einem Ort
-- [Erste Schritte](Erste_Schritte_de) - Erste Schritte mit PyGameMaker
-- [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial-Durchgang
-- [Pong Tutorial](Tutorial-Pong_de) - Erstellen Sie ein klassisches Zwei-Spieler Pong-Spiel
-- [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Breakout-Spiel
-- [Sokoban Tutorial](Tutorial-Sokoban_de) - Erstellen Sie ein Kisten-Schiebe-Puzzlespiel
-- [Labyrinth Tutorial](Tutorial-Maze_de) - Navigieren Sie durch Korridore zum Ausgang
-- [Platformer Tutorial](Tutorial-Platformer_de) - Laufen, springen und Münzen sammeln
-- [Mondlandung Tutorial](Tutorial-LunarLander_de) - Lande ein Raumschiff auf dem Mond
-- [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial
+### Anleitungen
 - [Objekt-Editor](Objekt_Editor_de) - Arbeiten mit Spielobjekten
 - [Raum-Editor](Raum_Editor_de) - Level gestalten
 - [Sprite-Editor](Sprite-Editor_de) - Sprites zeichnen und animieren
@@ -207,6 +197,18 @@ projektname/
 - [Tastenkürzel](Keyboard-Shortcuts_de) - Referenz der Editor-Tastenkürzel
 - [Fehlerbehebung](Troubleshooting_de) - Häufige Probleme und wo man nachsieht
 - [FAQ](FAQ_de) - Häufig gestellte Fragen
+
+### Tutorials
+- [**Tutorials**](Tutorials_de) - Alle Tutorials an einem Ort
+- [Erste Schritte](Erste_Schritte_de) - Erste Schritte mit PyGameMaker
+- [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial-Durchgang
+- [Pong Tutorial](Tutorial-Pong_de) - Erstellen Sie ein klassisches Zwei-Spieler Pong-Spiel
+- [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Breakout-Spiel
+- [Sokoban Tutorial](Tutorial-Sokoban_de) - Erstellen Sie ein Kisten-Schiebe-Puzzlespiel
+- [Labyrinth Tutorial](Tutorial-Maze_de) - Navigieren Sie durch Korridore zum Ausgang
+- [Platformer Tutorial](Tutorial-Platformer_de) - Laufen, springen und Münzen sammeln
+- [Mondlandung Tutorial](Tutorial-LunarLander_de) - Lande ein Raumschiff auf dem Mond
+- [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial
 
 ### Wo finde ich...?
 
