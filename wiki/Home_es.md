@@ -181,17 +181,7 @@ nombre_proyecto/
 - [Vista 3D](3D-View_es) - Renderizado en primera persona al estilo Doom (raycast)
 - [Extensiones](Extensions_es) - Acciones y renderizadores adicionales (cómo se distribuye la Vista 3D)
 
-### Tutoriales y Guías
-- [**Tutoriales**](Tutorials_es) - Todos los tutoriales en un solo lugar
-- [Primeros Pasos](Empezar_es) - Primeros pasos con PyGameMaker
-- [Crea Tu Primer Juego](Primer_Juego_es) - Tutorial paso a paso
-- [Tutorial Pong](Tutorial-Pong_es) - Crea un juego Pong clásico para dos jugadores
-- [Tutorial Breakout](Tutorial-Breakout_es) - Crea un juego Breakout clásico
-- [Tutorial Sokoban](Tutorial-Sokoban_es) - Crea un juego de puzzle de empujar cajas
-- [Tutorial Laberinto](Tutorial-Maze_es) - Navega por los pasillos hasta la salida
-- [Tutorial Platformer](Tutorial-Platformer_es) - Corre, salta y colecciona monedas
-- [Tutorial Aterrizaje Lunar](Tutorial-LunarLander_es) - Aterriza una nave en la luna
-- [Introducción a la Creación de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
+### Guías
 - [Editor de Objetos](Editor_Objetos_es) - Trabajar con objetos del juego
 - [Editor de Salas](Editor_Salas_es) - Diseñar niveles
 - [Editor de Sprites](Sprite-Editor_es) - Dibujar y animar sprites
@@ -203,6 +193,18 @@ nombre_proyecto/
 - [Atajos de Teclado](Keyboard-Shortcuts_es) - Referencia de atajos del editor
 - [Solución de Problemas](Troubleshooting_es) - Problemas comunes y dónde buscar
 - [FAQ](FAQ_es) - Preguntas frecuentes
+
+### Tutoriales
+- [**Tutoriales**](Tutorials_es) - Todos los tutoriales en un solo lugar
+- [Primeros Pasos](Empezar_es) - Primeros pasos con PyGameMaker
+- [Crea Tu Primer Juego](Primer_Juego_es) - Tutorial paso a paso
+- [Tutorial Pong](Tutorial-Pong_es) - Crea un juego Pong clásico para dos jugadores
+- [Tutorial Breakout](Tutorial-Breakout_es) - Crea un juego Breakout clásico
+- [Tutorial Sokoban](Tutorial-Sokoban_es) - Crea un juego de puzzle de empujar cajas
+- [Tutorial Laberinto](Tutorial-Maze_es) - Navega por los pasillos hasta la salida
+- [Tutorial Platformer](Tutorial-Platformer_es) - Corre, salta y colecciona monedas
+- [Tutorial Aterrizaje Lunar](Tutorial-LunarLander_es) - Aterriza una nave en la luna
+- [Introducción a la Creación de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
 
 ### ¿Dónde encuentro...?
 

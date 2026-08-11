@@ -185,17 +185,7 @@ nom_du_projet/
 - [Vue 3D](3D-View_fr) - Rendu à la première personne façon Doom (lancer de rayons)
 - [Extensions](Extensions_fr) - Actions et moteurs de rendu additionnels (comment la Vue 3D est fournie)
 
-### Tutoriels et Guides
-- [**Tutoriels**](Tutorials_fr) - Tous les tutoriels en un seul endroit
-- [Premiers Pas](Demarrage_fr) - Premiers pas avec PyGameMaker
-- [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel pas à pas
-- [Tutoriel : Pong](Tutorial-Pong_fr) - Créez un jeu Pong classique à deux joueurs
-- [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
-- [Tutoriel : Sokoban](Tutorial-Sokoban_fr) - Créez un jeu de puzzle pousse-caisses
-- [Tutoriel : Labyrinthe](Tutorial-Maze_fr) - Naviguez à travers les couloirs jusqu'à la sortie
-- [Tutoriel : Platformer](Tutorial-Platformer_fr) - Courez, sautez et collectez des pièces
-- [Tutoriel : Atterrissage Lunaire](Tutorial-LunarLander_fr) - Posez un vaisseau sur la lune
-- [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
+### Guides
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu
 - [Éditeur de Salles](Editeur_Salles_fr) - Concevoir des niveaux
 - [Éditeur de Sprites](Sprite-Editor_fr) - Dessiner et animer des sprites
@@ -207,6 +197,18 @@ nom_du_projet/
 - [Raccourcis Clavier](Keyboard-Shortcuts_fr) - Référence des raccourcis de l'éditeur
 - [Dépannage](Troubleshooting_fr) - Problèmes courants et où chercher
 - [FAQ](FAQ_fr) - Questions fréquemment posées
+
+### Tutoriels
+- [**Tutoriels**](Tutorials_fr) - Tous les tutoriels en un seul endroit
+- [Premiers Pas](Demarrage_fr) - Premiers pas avec PyGameMaker
+- [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel pas à pas
+- [Tutoriel : Pong](Tutorial-Pong_fr) - Créez un jeu Pong classique à deux joueurs
+- [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
+- [Tutoriel : Sokoban](Tutorial-Sokoban_fr) - Créez un jeu de puzzle pousse-caisses
+- [Tutoriel : Labyrinthe](Tutorial-Maze_fr) - Naviguez à travers les couloirs jusqu'à la sortie
+- [Tutoriel : Platformer](Tutorial-Platformer_fr) - Courez, sautez et collectez des pièces
+- [Tutoriel : Atterrissage Lunaire](Tutorial-LunarLander_fr) - Posez un vaisseau sur la lune
+- [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
 
 ### Où trouver...?
 

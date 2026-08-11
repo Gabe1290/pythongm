@@ -181,17 +181,7 @@ ime_projekta/
 - [Pogled 3D](3D-View_sl) - Prvoosebno izrisovanje v slogu Doom (raycast)
 - [Razširitve](Extensions_sl) - Dodatne akcije in izrisovalniki (kako je distribuiran Pogled 3D)
 
-### Vadnice in Vodniki
-- [**Vadnice**](Tutorials_sl) - Vse vadnice na enem mestu
-- [Kako Začeti](Zacetek_sl) - Prvi koraki s PyGameMaker
-- [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica korak za korakom
-- [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasično igro Pong za dva igralca
-- [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
-- [Vadnica Sokoban](Tutorial-Sokoban_sl) - Ustvarite igro ugank s potiskanjem zabojev
-- [Vadnica Labirint](Tutorial-Maze_sl) - Navigirajte skozi hodnike do izhoda
-- [Vadnica Platformer](Tutorial-Platformer_sl) - Teci, skači in zbiraj kovance
-- [Vadnica Lunarni Pristanek](Tutorial-LunarLander_sl) - Pristani plovilo na luni
-- [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
+### Vodniki
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti
 - [Urejevalnik Sob](Urejevalnik_Sob_sl) - Oblikovanje nivojev
 - [Urejevalnik Sprite-ov](Sprite-Editor_sl) - Risanje in animiranje sprite-ov
@@ -203,6 +193,18 @@ ime_projekta/
 - [Tipkovne Bližnjice](Keyboard-Shortcuts_sl) - Referenca bližnjic urejevalnika
 - [Odpravljanje Težav](Troubleshooting_sl) - Pogoste težave in kje jih iskati
 - [FAQ](FAQ_sl) - Pogosta vprašanja
+
+### Vadnice
+- [**Vadnice**](Tutorials_sl) - Vse vadnice na enem mestu
+- [Kako Začeti](Zacetek_sl) - Prvi koraki s PyGameMaker
+- [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica korak za korakom
+- [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasično igro Pong za dva igralca
+- [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
+- [Vadnica Sokoban](Tutorial-Sokoban_sl) - Ustvarite igro ugank s potiskanjem zabojev
+- [Vadnica Labirint](Tutorial-Maze_sl) - Navigirajte skozi hodnike do izhoda
+- [Vadnica Platformer](Tutorial-Platformer_sl) - Teci, skači in zbiraj kovance
+- [Vadnica Lunarni Pristanek](Tutorial-LunarLander_sl) - Pristani plovilo na luni
+- [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
 
 ### Kje najdem...?
 
