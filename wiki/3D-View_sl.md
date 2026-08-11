@@ -47,7 +47,7 @@ prve pomoči ter prikaz vrstice stanja v slogu DOOM).
 | **Nariši mini zemljevid** (`draw_minimap`) | Nariše proti severu usmerjen mini zemljevid sten sobe z oznako "tukaj ste". Dejanje HUD — postavite ga v dogodek Nariši. |
 | **Nariši HUD DOOM** (`draw_doom_hud`) | Nariše spodnjo vrstico stanja v slogu DOOM: vrstica zdravja + število, na zdravje odziven obraz, rezultat, življenja in števec cilja. Se ujema z `viewport_height` dejanja `enable_raycast_view`. |
 
-Glejte [Popolno referenco dejanj](Full-Action-Reference_sl#3d-view) za vse parametre.
+Glejte [Popolno referenco dejanj](Full-Action-Reference-3D-View-Actions_sl) za vse parametre.
 
 ---
 
@@ -83,5 +83,5 @@ Sobo zgradite iz trdnih predmetov-sten na mreži 32 pikslov, tako kot primeri
 ## Glejte tudi
 
 - [Razširitve](Extensions_sl) — kako je Pogled 3D dostavljen in kako ga izklopiti
-- [Popolna referenca dejanj](Full-Action-Reference_sl#3d-view) — štiri dejanja podrobno
+- [Popolna referenca dejanj](Full-Action-Reference-3D-View-Actions_sl) — štiri dejanja podrobno
 - [Urejevalnik sob](Urejevalnik_Sob_sl) — postavljanje predmetov-sten, iz katerih je zgrajen pogled

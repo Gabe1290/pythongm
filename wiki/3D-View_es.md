@@ -50,7 +50,7 @@ DOOM).
 | **Dibujar minimapa** (`draw_minimap`) | Dibuja un minimapa orientado al norte de los muros de la sala con un marcador "estás aquí". Una acción de HUD — ponla en un evento Dibujar. |
 | **Dibujar HUD DOOM** (`draw_doom_hud`) | Dibuja una barra de estado inferior al estilo DOOM: barra de salud + número, un rostro que reacciona a la salud, puntuación, vidas y un contador de objetivo. Se combina con `viewport_height` de `enable_raycast_view`. |
 
-Ver la [Referencia completa de acciones](Full-Action-Reference_es#3d-view) para
+Ver la [Referencia completa de acciones](Full-Action-Reference-3D-View-Actions_es) para
 todos los parámetros.
 
 ---
@@ -87,5 +87,5 @@ los ejemplos `maze_*` — el raycaster convierte esos muros en corredores 3D.
 ## Véase también
 
 - [Extensiones](Extensions_es) — cómo se entrega la Vista 3D y cómo desactivarla
-- [Referencia completa de acciones](Full-Action-Reference_es#3d-view) — las cuatro acciones en detalle
+- [Referencia completa de acciones](Full-Action-Reference-3D-View-Actions_es) — las cuatro acciones en detalle
 - [Editor de salas](Editor_Salas_es) — colocar los objetos-muro con los que se construye la vista
