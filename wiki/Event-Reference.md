@@ -17,7 +17,8 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 
 ---
 
-## <a id="object-events"></a>Object Events
+<a id="object-events"></a>
+## Object Events
 
 ### Create
 | Property | Value |
