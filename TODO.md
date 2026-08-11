@@ -496,6 +496,22 @@ Other:
 
 ## Translations / i18n
 
+### `tools/action_ref_i18n.py` missing entries for 4 room actions — found 2026-08-11
+`set_room_speed`, `set_background_color`, `set_background`, `set_room_persistent`
+(added 2026-08-09, per the CLAUDE.md session note on Kivy/HTML5 room-action
+codegen) have no `action.display`/`action.desc`/`note:*` entries in any of
+the 8 non-English `CHROME_XX`/`ACTIONS_XX` tables in
+`tools/action_ref_i18n.py`. `tools/gen_action_reference.py` already falls
+back to English for these (by design — see the generator's own
+missing-string report), so nothing is broken, but these 4 actions read in
+English on every translated wiki page (`Full-Action-Reference-Room_<lang>.md`
+after the 2026-08-11 page split, or the old monolithic
+`Full-Action-Reference_<lang>.md` before it). Found incidentally while
+splitting the reference pages; not fixed here — needs real translations for
+19 strings (4 display names + 4 descriptions + 11 parameter notes) across 8
+languages added to `action_ref_i18n.py`, then `tools/gen_action_reference.py`
+re-run.
+
 ### ~~Migrate ja / pt / zh off the legacy translation set~~ (DONE 2026-08-09)
 - Done: `pygm2_pt.ts`/`pygm2_ja.ts`/`pygm2_zh.ts` were built from scratch
   against the current string catalog (1369 real distinct messages / 61
