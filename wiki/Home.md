@@ -184,17 +184,7 @@ project_name/
 - [3D View](3D-View) - Doom-style first-person (raycast) rendering
 - [Extensions](Extensions) - Add-on actions and renderers (how 3D View ships)
 
-### Tutorials & Guides
-- [**Tutorials**](Tutorials) - All tutorials in one place
-- [Getting-Started](Getting-Started) - First steps with PyGameMaker
-- [Creating-Your-First-Game](Creating-Your-First-Game) - Tutorial walkthrough
-- [Tutorial: Pong Game](Tutorial-Pong) - Create a classic two-player Pong game
-- [Tutorial: Breakout Game](Tutorial-Breakout) - Create a classic brick breaker game
-- [Tutorial: Sokoban Game](Tutorial-Sokoban) - Create a box-pushing puzzle game
-- [Tutorial: Maze Game](Tutorial-Maze) - Navigate corridors, collect coins, reach the exit
-- [Tutorial: Platformer Game](Tutorial-Platformer) - Run, jump, and collect coins
-- [Tutorial: Lunar Lander Game](Tutorial-LunarLander) - Land a spacecraft using thrust and fuel management
-- [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
+### Guides
 - [Object-Editor](Object-Editor) - Working with game objects
 - [Room-Editor](Room-Editor) - Designing levels
 - [Sprite-Editor](Sprite-Editor) - Drawing and animating sprites
@@ -206,6 +196,18 @@ project_name/
 - [Keyboard-Shortcuts](Keyboard-Shortcuts) - Editor shortcuts reference
 - [Troubleshooting](Troubleshooting) - Common problems and where to look
 - [FAQ](FAQ) - Frequently asked questions
+
+### Tutorials
+- [**Tutorials**](Tutorials) - All tutorials in one place
+- [Getting-Started](Getting-Started) - First steps with PyGameMaker
+- [Creating-Your-First-Game](Creating-Your-First-Game) - Tutorial walkthrough
+- [Tutorial: Pong Game](Tutorial-Pong) - Create a classic two-player Pong game
+- [Tutorial: Breakout Game](Tutorial-Breakout) - Create a classic brick breaker game
+- [Tutorial: Sokoban Game](Tutorial-Sokoban) - Create a box-pushing puzzle game
+- [Tutorial: Maze Game](Tutorial-Maze) - Navigate corridors, collect coins, reach the exit
+- [Tutorial: Platformer Game](Tutorial-Platformer) - Run, jump, and collect coins
+- [Tutorial: Lunar Lander Game](Tutorial-LunarLander) - Land a spacecraft using thrust and fuel management
+- [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
 
 ### Where do I find...?
 
