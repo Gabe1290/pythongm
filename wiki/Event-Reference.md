@@ -6,14 +6,14 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 
 ## Event Categories
 
-- [Object Events](#object-events) - Create, Step, Destroy
-- [Input Events](#input-events) - Keyboard, Mouse
-- [Collision Events](#collision-events) - Object collisions
-- [Timing Events](#timing-events) - Alarms, Step variants
-- [Drawing Events](#drawing-events) - Custom rendering
-- [Room Events](#room-events) - Room transitions
-- [Game Events](#game-events) - Game start/end
-- [Other Events](#other-events) - Boundaries, Lives, Health
+- [Object Events](#Object-Events) - Create, Step, Destroy
+- [Input Events](#Input-Events) - Keyboard, Mouse
+- [Collision Events](#Collision-Events) - Object collisions
+- [Timing Events](#Timing-Events) - Alarms, Step variants
+- [Drawing Events](#Drawing-Events) - Custom rendering
+- [Room Events](#Room-Events) - Room transitions
+- [Game Events](#Game-Events) - Game start/end
+- [Other Events](#Other-Events) - Boundaries, Lives, Health
 
 ---
 
