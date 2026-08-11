@@ -38,6 +38,17 @@ CATEGORY_ORDER = [
     "Control", "Grid", "Views", "3D View",
 ]
 
+# Filesystem-safe, English-stable key per category, used to build each
+# category's own page filename (Full-Action-Reference-<key>[_<lang>].md).
+# "3D View" gets a distinct key ("3D-View-Actions") to avoid colliding with
+# the existing standalone wiki/3D-View.md concept page.
+FILE_KEY = {
+    "Movement": "Movement", "Instance": "Instance", "Score": "Score",
+    "Room": "Room", "Timing": "Timing", "Audio": "Audio", "Game": "Game",
+    "Control": "Control", "Grid": "Grid", "Views": "Views",
+    "3D View": "3D-View-Actions",
+}
+
 TYPE_LABEL = {
     "number": "Number", "float": "Number", "string": "Text", "text": "Text",
     "boolean": "Yes/No", "color": "Color", "object": "Object", "sprite": "Sprite",
@@ -45,10 +56,6 @@ TYPE_LABEL = {
     "choice": "Choice", "multi_choice": "Multiple choice",
     "action_list": "Action list",
 }
-
-
-def anchor(cat: str) -> str:
-    return cat.lower().replace(" ", "-")
 
 
 class Tr:
@@ -138,14 +145,29 @@ def param_table(action, tr: Tr) -> str:
     return "\n".join(rows) + "\n"
 
 
-def build(lang: str = "en") -> tuple[str, set]:
+def _grouped(lang: str):
+    """(Tr, ordered category list, {category: [actions]}) for one language."""
     tr = Tr(lang)
     by_cat: dict[str, list] = {}
     for name, a in ACTION_TYPES.items():
         by_cat.setdefault(a.category or "Other", []).append(a)
     ordered = [c for c in CATEGORY_ORDER if c in by_cat]
     ordered += sorted(c for c in by_cat if c not in CATEGORY_ORDER)
+    return tr, ordered, by_cat
 
+
+def cat_page_name(cat: str, lang: str) -> str:
+    key = FILE_KEY[cat]
+    return f"Full-Action-Reference-{key}.md" if lang == "en" else f"Full-Action-Reference-{key}_{lang}.md"
+
+
+def build_index(lang: str = "en") -> tuple[str, set]:
+    """The category-list index page -- real page links, not same-page anchors.
+
+    (GitHub Wiki pages don't reliably scroll to in-page #fragment anchors --
+    confirmed live; splitting into real pages sidesteps that entirely.)
+    """
+    tr, ordered, by_cat = _grouped(lang)
     total = len(ACTION_TYPES)
     out = [
         f"# {tr.chrome('title', 'Full Action Reference')}",
@@ -168,38 +190,11 @@ def build(lang: str = "en") -> tuple[str, set]:
         "",
     ]
     for cat in ordered:
-        out.append(f"- [{tr.category(cat)}](#{anchor(cat)}) ({len(by_cat[cat])})")
+        page = cat_page_name(cat, lang)[:-3]  # strip .md
+        out.append(f"- [{tr.category(cat)}]({page}) ({len(by_cat[cat])})")
     out.append("")
     out.append("---")
     out.append("")
-
-    for cat in ordered:
-        # Anchor stays English (matches the category link targets and #3d-view deep links).
-        out.append(f'<a id="{anchor(cat)}"></a>')
-        out.append(f"## {tr.category(cat)}")
-        out.append("")
-        for a in sorted(by_cat[cat], key=lambda x: x.display_name or x.name):
-            out.append(f"### {tr.display(a)}")
-            out.append("")
-            meta = [f"| **{tr.chrome('p_name', 'Name')}** | `{a.name}` |"]
-            if getattr(a, "icon", ""):
-                meta.append(f"| **{tr.chrome('p_icon', 'Icon')}** | {a.icon} |")
-            meta.append(f"| **{tr.chrome('p_category', 'Category')}** | {tr.category(a.category)} |")
-            if getattr(a, "supports_applies_to", False):
-                meta.append(f"| **{tr.chrome('p_applies', 'Applies to')}** | "
-                            f"{tr.chrome('applies_val', 'self / other / object')} |")
-            out.append(f"| {tr.chrome('c_property', 'Property')} | {tr.chrome('c_value', 'Value')} |")
-            out.append("|----------|-------|")
-            out.extend(meta)
-            out.append("")
-            desc = tr.desc(a)
-            if desc:
-                out.append(desc.rstrip("."))
-                out.append("")
-            out.append(param_table(a, tr))
-        out.append("---")
-        out.append("")
-
     out += [
         f"## {tr.chrome('see_also', 'See Also')}",
         "",
@@ -212,6 +207,58 @@ def build(lang: str = "en") -> tuple[str, set]:
     return "\n".join(out), tr.missing
 
 
+def build_category(lang: str, cat: str) -> tuple[str, set]:
+    """One category's own page: its actions, plus a real-link nav to the
+    other categories and back to the index (no same-page anchors)."""
+    tr, ordered, by_cat = _grouped(lang)
+    index_page = "Full-Action-Reference" if lang == "en" else f"Full-Action-Reference_{lang}"
+
+    out = [
+        f"# {tr.category(cat)}",
+        "",
+        tr.chrome("nav", "*[Home](Home) | [Preset Guide](Preset-Guide) | "
+                         "[Event Reference](Event-Reference)*"),
+        "",
+        tr.chrome("autogen",
+                  "> **Auto-generated** from the IDE's action registry by "
+                  "`tools/gen_action_reference.py` — do not edit by hand; re-run the "
+                  "generator after changing actions."),
+        "",
+    ]
+    for a in sorted(by_cat[cat], key=lambda x: x.display_name or x.name):
+        out.append(f"### {tr.display(a)}")
+        out.append("")
+        meta = [f"| **{tr.chrome('p_name', 'Name')}** | `{a.name}` |"]
+        if getattr(a, "icon", ""):
+            meta.append(f"| **{tr.chrome('p_icon', 'Icon')}** | {a.icon} |")
+        meta.append(f"| **{tr.chrome('p_category', 'Category')}** | {tr.category(a.category)} |")
+        if getattr(a, "supports_applies_to", False):
+            meta.append(f"| **{tr.chrome('p_applies', 'Applies to')}** | "
+                        f"{tr.chrome('applies_val', 'self / other / object')} |")
+        out.append(f"| {tr.chrome('c_property', 'Property')} | {tr.chrome('c_value', 'Value')} |")
+        out.append("|----------|-------|")
+        out.extend(meta)
+        out.append("")
+        desc = tr.desc(a)
+        if desc:
+            out.append(desc.rstrip("."))
+            out.append("")
+        out.append(param_table(a, tr))
+    out.append("---")
+    out.append("")
+    out.append(f"## {tr.chrome('other_categories', 'Other Categories')}")
+    out.append("")
+    for c2 in ordered:
+        if c2 == cat:
+            continue
+        page2 = cat_page_name(c2, lang)[:-3]
+        out.append(f"- [{tr.category(c2)}]({page2}) ({len(by_cat[c2])})")
+    out.append("")
+    out.append(f"[← {tr.chrome('back_to_index', 'Back to Full Action Reference')}]({index_page})")
+    out.append("")
+    return "\n".join(out), tr.missing
+
+
 def out_name(lang: str) -> str:
     return "Full-Action-Reference.md" if lang == "en" else f"Full-Action-Reference_{lang}.md"
 
@@ -220,13 +267,26 @@ def main():
     langs = sys.argv[1:] or ["en"]
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
     for lang in langs:
-        md, missing = build(lang)
+        all_missing = set()
+
+        md, missing = build_index(lang)
         target = REPO / "wiki" / out_name(lang)
         target.write_text(md, encoding="utf-8")
-        print(f"Wrote {target} ({len(md.splitlines())} lines, {len(ACTION_TYPES)} actions)")
-        if missing:
-            print(f"  [{lang}] {len(missing)} untranslated strings fell back to English:")
-            for k in sorted(missing):
+        print(f"Wrote {target} ({len(md.splitlines())} lines)")
+        all_missing |= missing
+
+        _tr, ordered, by_cat = _grouped(lang)
+        for cat in ordered:
+            md, missing = build_category(lang, cat)
+            target = REPO / "wiki" / cat_page_name(cat, lang)
+            target.write_text(md, encoding="utf-8")
+            print(f"  Wrote {target} ({len(md.splitlines())} lines, {len(by_cat[cat])} actions)")
+            all_missing |= missing
+
+        print(f"[{lang}] {len(ACTION_TYPES)} actions across {len(ordered)} category pages")
+        if all_missing:
+            print(f"  [{lang}] {len(all_missing)} untranslated strings fell back to English:")
+            for k in sorted(all_missing):
                 print(f"    - {k}")
 
 

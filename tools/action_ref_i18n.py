@@ -42,6 +42,8 @@ CHROME_FR = {
     "sa_preset": "- [Guide des Préréglages](Preset-Guide_fr) — quelles de ces actions le préréglage de votre projet affiche réellement dans le sélecteur Blockly et le panneau structuré Actions",
     "sa_3d": "- [Vue 3D](3D-View_fr) — les actions de vue à la première personne (raycast)",
     "sa_ext": "- [Extensions](Extensions_fr) — comment les actions de la Vue 3D sont fournies",
+    "other_categories": "Autres Catégories",
+    "back_to_index": "Retour à la Référence Complète des Actions",
 }
 
 CHROME_DE = {
@@ -68,6 +70,8 @@ CHROME_DE = {
     "sa_preset": "- [Voreinstellungs-Leitfaden](Preset-Guide_de) — welche Aktionen jede Voreinstellung/Edition bereitstellt",
     "sa_3d": "- [3D-Ansicht](3D-View_de) — die First-Person-Raycast-Aktionen",
     "sa_ext": "- [Erweiterungen](Extensions_de) — wie die 3D-Ansicht-Aktionen bereitgestellt werden",
+    "other_categories": "Weitere Kategorien",
+    "back_to_index": "Zurück zur Vollständigen Aktionsreferenz",
 }
 
 # --------------------------------------------------------------------------- #
@@ -840,6 +844,8 @@ CHROME_UK = {
     "sa_preset": "- [Посібник із пресетів](Preset-Guide_uk) — які дії надає кожен пресет/видання",
     "sa_3d": "- [3D-вигляд](3D-View_uk) — дії першоособового виду (raycast)",
     "sa_ext": "- [Розширення](Extensions_uk) — як надаються дії 3D-вигляду",
+    "other_categories": "Інші Категорії",
+    "back_to_index": "Назад до Повного Довідника Дій",
 }
 
 CATEGORIES_UK = {
@@ -1234,6 +1240,8 @@ CHROME_RU = {
     "sa_preset": "- [Руководство по пресетам](Preset-Guide_ru) — какие действия предоставляет каждый пресет/издание",
     "sa_3d": "- [3D-вид](3D-View_ru) — действия вида от первого лица (raycast)",
     "sa_ext": "- [Расширения](Extensions_ru) — как предоставляются действия 3D-вида",
+    "other_categories": "Другие Категории",
+    "back_to_index": "Назад к Полному Справочнику Действий",
 }
 
 CATEGORIES_RU = {
@@ -1629,6 +1637,8 @@ CHROME_IT = {
     "sa_preset": "- [Guida ai preset](Preset-Guide_it) — quali azioni espone ogni preset/edizione",
     "sa_3d": "- [Vista 3D](3D-View_it) — le azioni della vista in prima persona (raycast)",
     "sa_ext": "- [Estensioni](Extensions_it) — come vengono fornite le azioni della Vista 3D",
+    "other_categories": "Altre Categorie",
+    "back_to_index": "Torna al Riferimento Completo delle Azioni",
 }
 
 CATEGORIES_IT = {
@@ -2024,6 +2034,8 @@ CHROME_ES = {
     "sa_preset": "- [Guía de preajustes](Preset-Guide_es) — qué acciones expone cada preajuste/edición",
     "sa_3d": "- [Vista 3D](3D-View_es) — las acciones de vista en primera persona (raycast)",
     "sa_ext": "- [Extensiones](Extensions_es) — cómo se proporcionan las acciones de la Vista 3D",
+    "other_categories": "Otras Categorías",
+    "back_to_index": "Volver a la Referencia Completa de Acciones",
 }
 
 CATEGORIES_ES = {
@@ -2418,6 +2430,8 @@ CHROME_PT = {
     "sa_preset": "- [Guia de predefinições](Preset-Guide_pt) — quais ações cada predefinição/edição expõe",
     "sa_3d": "- [Vista 3D](3D-View_pt) — as ações de vista em primeira pessoa (raycast)",
     "sa_ext": "- [Extensões](Extensions_pt) — como as ações da Vista 3D são fornecidas",
+    "other_categories": "Outras Categorias",
+    "back_to_index": "Voltar à Referência Completa de Ações",
 }
 
 CATEGORIES_PT = {
@@ -2811,6 +2825,8 @@ CHROME_SL = {
     "sa_preset": "- [Vodnik po prednastavitvah](Preset-Guide_sl) — katera dejanja izpostavlja vsaka prednastavitev/izdaja",
     "sa_3d": "- [Pogled 3D](3D-View_sl) — dejanja pogleda iz prve osebe (raycast)",
     "sa_ext": "- [Razširitve](Extensions_sl) — kako so zagotovljena dejanja Pogleda 3D",
+    "other_categories": "Druge Kategorije",
+    "back_to_index": "Nazaj na Popolno Referenco Dejanj",
 }
 
 CATEGORIES_SL = {
