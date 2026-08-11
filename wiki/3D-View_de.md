@@ -53,7 +53,7 @@ sowie eine Vorführung einer Statusleiste im DOOM-Stil).
 | **Minikarte zeichnen** (`draw_minimap`) | Zeichnet eine nach Norden ausgerichtete Minikarte der Wände des Raums mit einer „Sie sind hier"-Markierung. Eine HUD-Aktion — in ein Zeichnen-Ereignis setzen. |
 | **DOOM-HUD zeichnen** (`draw_doom_hud`) | Zeichnet eine untere Statusleiste im DOOM-Stil: Gesundheitsbalken + Zahl, ein auf die Gesundheit reagierendes Gesicht, Punktzahl, Leben und einen Zielzähler. Passt zu `viewport_height` von `enable_raycast_view`. |
 
-Siehe die [Vollständige Aktionsreferenz](Full-Action-Reference_de#3d-view) für
+Siehe die [Vollständige Aktionsreferenz](Full-Action-Reference-3D-View-Actions_de) für
 alle Parameter.
 
 ---
@@ -90,5 +90,5 @@ die `maze_*`-Beispiele — der Raycaster verwandelt diese Wände in die 3D-Korri
 ## Siehe auch
 
 - [Erweiterungen](Extensions_de) — wie die 3D-Ansicht ausgeliefert wird und wie man sie abschaltet
-- [Vollständige Aktionsreferenz](Full-Action-Reference_de#3d-view) — die vier Aktionen im Detail
+- [Vollständige Aktionsreferenz](Full-Action-Reference-3D-View-Actions_de) — die vier Aktionen im Detail
 - [Raum-Editor](Raum_Editor_de) — das Platzieren der Wandobjekte, aus denen die Ansicht aufgebaut wird

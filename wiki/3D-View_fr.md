@@ -53,7 +53,7 @@ barre d'état façon DOOM).
 | **Dessiner la mini-carte** (`draw_minimap`) | Dessine une mini-carte orientée nord des murs de la salle avec un repère « vous êtes ici ». C'est une action d'ATH (HUD) — à placer dans un événement Dessin. |
 | **Dessiner l'ATH DOOM** (`draw_doom_hud`) | Dessine une barre d'état inférieure façon DOOM : barre de santé + valeur, un visage réactif à la santé, le score, les vies et un compteur d'objectif. S'associe au `viewport_height` de `enable_raycast_view`. |
 
-Voir la [Référence Complète des Actions](Full-Action-Reference_fr#3d-view) pour
+Voir la [Référence Complète des Actions](Full-Action-Reference-3D-View-Actions_fr) pour
 tous les paramètres.
 
 ---
@@ -91,5 +91,5 @@ exactement comme les exemples `maze_*` — le moteur transforme ces murs en coul
 ## Voir aussi
 
 - [Extensions](Extensions_fr) — comment la Vue 3D est fournie et comment la désactiver
-- [Référence Complète des Actions](Full-Action-Reference_fr#3d-view) — les quatre actions en détail
+- [Référence Complète des Actions](Full-Action-Reference-3D-View-Actions_fr) — les quatre actions en détail
 - [Éditeur de Salles](Editeur_Salles_fr) — placer les objets-murs à partir desquels la vue est construite

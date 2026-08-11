@@ -47,7 +47,7 @@ variant, and a DOOM-style status-bar showcase).
 | **Draw Minimap** (`draw_minimap`) | Draw a north-up minimap of the room's walls with a "you are here" marker. A HUD action — put it in a Draw event. |
 | **Draw DOOM HUD** (`draw_doom_hud`) | Draw a DOOM-style bottom status bar: health bar + number, a health-reactive face, score, lives, and an objective counter. Pairs with `enable_raycast_view`'s `viewport_height`. |
 
-See the [Full Action Reference](Full-Action-Reference#3d-view) for every
+See the [Full Action Reference](Full-Action-Reference-3D-View-Actions) for every
 parameter.
 
 ---
@@ -83,5 +83,5 @@ Build the room out of solid wall objects on a 32-pixel grid, exactly like the
 ## See Also
 
 - [Extensions](Extensions) — how the 3D View ships and how to turn it off
-- [Full Action Reference](Full-Action-Reference#3d-view) — the four actions in full
+- [Full Action Reference](Full-Action-Reference-3D-View-Actions) — the four actions in full
 - [Room Editor](Room-Editor) — placing the wall objects the view is built from
