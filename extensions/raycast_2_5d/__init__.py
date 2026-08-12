@@ -33,6 +33,8 @@ nothing raycast-specific. The one thing left in core by design is
 inherently 3D (B4).
 """
 
+PLUGIN_NAME = "2.5D Raycast View"
+
 from .actions import PLUGIN_ACTIONS
 from .handlers import PluginExecutor
 from .state import peek_camera
