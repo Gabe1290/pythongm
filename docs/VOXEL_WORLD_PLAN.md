@@ -1,6 +1,6 @@
 # Voxel World extension — plan
 
-Status: **Phase 0 and Phase 1 done (2026-08-12); Phase 2 not started.**
+Status: **Phase 0, 1, and 2a done (2026-08-12); Phase 2b not started.**
 This doc is the worked
 plan for a Minecraft-*inspired* block-building extension, built the same way
 `extensions/raycast_2_5d/` was (see `docs/RAYCAST_EXTENSION_PLAN.md`) — except
@@ -131,6 +131,33 @@ per-unit discipline:
   instead of flat wall shading) — cheapest path to something on screen, and
   the best point to validate the CC0 textures actually read well at a
   distance.
+
+  **Done (2026-08-12):** `renderer.py` (`cast_ray` + `render_block_world_view`)
+  plus one new action, `enable_block_world_view` (`actions.py`/`handlers.py`),
+  mirroring `enable_raycast_view`'s camera/config plumbing — needed as
+  infrastructure for the render hook itself, not gameplay, so it landed
+  alongside the renderer rather than waiting for Phase 3. `cast_ray` turned
+  out simpler than raycast's own: raycast derives thin wall EDGES from sprite
+  instances and stops at a specific edge; a voxel block fills its whole grid
+  cell, so this is the more standard cell-occupancy DDA (Amanatides & Woo) —
+  step cell by cell, stop at the first occupied one via `state.get_block`.
+  Wall strips project as genuine cubes (no height multiplier, unlike
+  raycast's deliberately-taller corridors). Textures load straight from the
+  Phase 0 PNG files via a small lazy cache (`pygame.image.load(...)
+  .convert_alpha()`, the same convention `GameSprite` already uses) since
+  block textures aren't project sprite assets the way raycast's wall
+  textures are. `state.py` gained a `camera` sub-key and `peek_camera`,
+  mirroring raycast's non-creating peek. One test-authoring bug caught and
+  fixed along the way, worth remembering for Phase 2b/2c: a camera test
+  helper placed the instance's top-left at (16, 16), but the renderer centers
+  the ray origin at `top_left + size/2` — the actual camera center landed a
+  full cell away from where the test assumed, so a straight-ahead ray missed
+  a block placed for exactly that geometry. Fixed the helper, not the
+  renderer. 19 new tests in `tests/test_block_world_renderer.py` (action
+  config, deterministic `cast_ray` geometry, `wall_shade`, real-Surface
+  pixel-sampled rendering including one that exercises the actual imported
+  CC0 texture end to end, extension wiring). Suite 2540 → 2559 passed, 0
+  failed.
 - **2b — multi-layer heightmap.** Blocks stack (a handful of Z layers, not
   arbitrary depth), player can walk up single-block steps and see over
   short walls. Still no free vertical camera look — pitch stays level, like
