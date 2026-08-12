@@ -112,7 +112,7 @@ Reiniciar a sala atual
 
 *Parâmetros:* nenhum
 
-### Set Background
+### Definir fundo
 
 | Propriedade | Valor |
 |----------|-------|
@@ -120,19 +120,19 @@ Reiniciar a sala atual
 | **Ícone** | 🖼️ |
 | **Categoria** | Sala |
 
-Set the current room's background image, with tiling and scrolling options
+Definir a imagem de fundo da sala atual, com opções de mosaico e deslocamento
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `background` | Texto | — | Background or sprite asset name |
-| `visible` | Sim/Não | Sim | Show the background; opcional |
-| `foreground` | Sim/Não | Não | Draw in front of instances instead of behind them; opcional |
-| `tiled_h` | Sim/Não | Não | Repeat the background across the width of the room; opcional |
-| `tiled_v` | Sim/Não | Não | Repeat the background across the height of the room; opcional |
-| `hspeed` | Número | `0` | Horizontal auto-scroll speed in pixels/frame; opcional |
-| `vspeed` | Número | `0` | Vertical auto-scroll speed in pixels/frame; opcional |
+| `background` | Texto | — | Nome do recurso de fundo ou sprite |
+| `visible` | Sim/Não | Sim | Mostrar o fundo; opcional |
+| `foreground` | Sim/Não | Não | Desenhar à frente das instâncias em vez de atrás; opcional |
+| `tiled_h` | Sim/Não | Não | Repetir o fundo ao longo da largura da sala; opcional |
+| `tiled_v` | Sim/Não | Não | Repetir o fundo ao longo da altura da sala; opcional |
+| `hspeed` | Número | `0` | Velocidade de deslocamento automático horizontal em pixels/quadro; opcional |
+| `vspeed` | Número | `0` | Velocidade de deslocamento automático vertical em pixels/quadro; opcional |
 
-### Set Background Color
+### Definir cor de fundo
 
 | Propriedade | Valor |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Ícone** | 🎨 |
 | **Categoria** | Sala |
 
-Change the current room's background color
+Alterar a cor de fundo da sala atual
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `color` | Cor | `#87CEEB` | Background color |
-| `show_color` | Sim/Não | Sim | Whether the background color is visible (off fills black instead); opcional |
+| `color` | Cor | `#87CEEB` | Cor de fundo |
+| `show_color` | Sim/Não | Sim | Se a cor de fundo é visível (desativado preenche com preto); opcional |
 
 ### Definir título da sala
 
@@ -161,7 +161,7 @@ Definir o título da janela do jogo
 |-----------|------|---------|-------|
 | `caption` | Texto | — | Texto do título da janela |
 
-### Set Room Persistent
+### Definir persistência da sala
 
 | Propriedade | Valor |
 |----------|-------|
@@ -169,13 +169,13 @@ Definir o título da janela do jogo
 | **Ícone** | 💾 |
 | **Categoria** | Sala |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Se a sala atual mantém o seu estado ativo (posições das instâncias, instâncias destruídas, etc.) quando o jogador a deixa e depois regressa, em vez de a reconstruir do zero a partir do seu layout original a cada visita
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `persistent` | Sim/Não | Sim | Keep this room's state across a revisit |
+| `persistent` | Sim/Não | Sim | Manter o estado desta sala ao regressar a ela |
 
-### Set Room Speed
+### Definir velocidade da sala
 
 | Propriedade | Valor |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Ícone** | ⏱️ |
 | **Categoria** | Sala |
 
-Change the game's frame rate (frames per second)
+Alterar a taxa de quadros do jogo (quadros por segundo)
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `speed` | Número | `30` | Target frames per second (1-240) |
+| `speed` | Número | `30` | Quadros por segundo alvo (1-240) |
 
 ---
 

@@ -112,7 +112,7 @@ Reiniciar la sala actual
 
 *Parámetros:* ninguno
 
-### Set Background
+### Establecer fondo
 
 | Propiedad | Valor |
 |----------|-------|
@@ -120,19 +120,19 @@ Reiniciar la sala actual
 | **Icono** | 🖼️ |
 | **Categoría** | Sala |
 
-Set the current room's background image, with tiling and scrolling options
+Establecer la imagen de fondo de la sala actual, con opciones de mosaico y desplazamiento
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `background` | Texto | — | Background or sprite asset name |
-| `visible` | Sí/No | Sí | Show the background; opcional |
-| `foreground` | Sí/No | No | Draw in front of instances instead of behind them; opcional |
-| `tiled_h` | Sí/No | No | Repeat the background across the width of the room; opcional |
-| `tiled_v` | Sí/No | No | Repeat the background across the height of the room; opcional |
-| `hspeed` | Número | `0` | Horizontal auto-scroll speed in pixels/frame; opcional |
-| `vspeed` | Número | `0` | Vertical auto-scroll speed in pixels/frame; opcional |
+| `background` | Texto | — | Nombre del recurso de fondo o sprite |
+| `visible` | Sí/No | Sí | Mostrar el fondo; opcional |
+| `foreground` | Sí/No | No | Dibujar delante de las instancias en lugar de detrás; opcional |
+| `tiled_h` | Sí/No | No | Repetir el fondo a lo largo del ancho de la sala; opcional |
+| `tiled_v` | Sí/No | No | Repetir el fondo a lo largo de la altura de la sala; opcional |
+| `hspeed` | Número | `0` | Velocidad de desplazamiento automático horizontal en píxeles/fotograma; opcional |
+| `vspeed` | Número | `0` | Velocidad de desplazamiento automático vertical en píxeles/fotograma; opcional |
 
-### Set Background Color
+### Establecer color de fondo
 
 | Propiedad | Valor |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Icono** | 🎨 |
 | **Categoría** | Sala |
 
-Change the current room's background color
+Cambiar el color de fondo de la sala actual
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `color` | Color | `#87CEEB` | Background color |
-| `show_color` | Sí/No | Sí | Whether the background color is visible (off fills black instead); opcional |
+| `color` | Color | `#87CEEB` | Color de fondo |
+| `show_color` | Sí/No | Sí | Si el color de fondo es visible (desactivado rellena de negro); opcional |
 
 ### Establecer título de sala
 
@@ -161,7 +161,7 @@ Establecer el título de la ventana del juego
 |-----------|------|---------|-------|
 | `caption` | Texto | — | Texto del título de la ventana |
 
-### Set Room Persistent
+### Establecer persistencia de la sala
 
 | Propiedad | Valor |
 |----------|-------|
@@ -169,13 +169,13 @@ Establecer el título de la ventana del juego
 | **Icono** | 💾 |
 | **Categoría** | Sala |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Si la sala actual conserva su estado activo (posiciones de instancias, instancias destruidas, etc.) cuando el jugador la abandona y vuelve más tarde, en lugar de reconstruirla desde cero según su diseño original cada vez
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `persistent` | Sí/No | Sí | Keep this room's state across a revisit |
+| `persistent` | Sí/No | Sí | Mantener el estado de esta sala al volver a visitarla |
 
-### Set Room Speed
+### Establecer velocidad de la sala
 
 | Propiedad | Valor |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Icono** | ⏱️ |
 | **Categoría** | Sala |
 
-Change the game's frame rate (frames per second)
+Cambiar la velocidad de fotogramas del juego (fotogramas por segundo)
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `speed` | Número | `30` | Target frames per second (1-240) |
+| `speed` | Número | `30` | Fotogramas por segundo objetivo (1-240) |
 
 ---
 

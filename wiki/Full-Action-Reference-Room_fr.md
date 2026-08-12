@@ -112,7 +112,7 @@ Redémarrer la salle actuelle
 
 *Paramètres:* aucun
 
-### Set Background
+### Définir l'arrière-plan
 
 | Propriété | Valeur |
 |----------|-------|
@@ -120,19 +120,19 @@ Redémarrer la salle actuelle
 | **Icône** | 🖼️ |
 | **Catégorie** | Salle |
 
-Set the current room's background image, with tiling and scrolling options
+Définir l'image d'arrière-plan de la salle actuelle, avec des options de répétition et de défilement
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `background` | Texte | — | Background or sprite asset name |
-| `visible` | Oui/Non | Oui | Show the background; optionnel |
-| `foreground` | Oui/Non | Non | Draw in front of instances instead of behind them; optionnel |
-| `tiled_h` | Oui/Non | Non | Repeat the background across the width of the room; optionnel |
-| `tiled_v` | Oui/Non | Non | Repeat the background across the height of the room; optionnel |
-| `hspeed` | Nombre | `0` | Horizontal auto-scroll speed in pixels/frame; optionnel |
-| `vspeed` | Nombre | `0` | Vertical auto-scroll speed in pixels/frame; optionnel |
+| `background` | Texte | — | Nom de la ressource d'arrière-plan ou de sprite |
+| `visible` | Oui/Non | Oui | Afficher l'arrière-plan; optionnel |
+| `foreground` | Oui/Non | Non | Dessiner devant les instances au lieu de derrière; optionnel |
+| `tiled_h` | Oui/Non | Non | Répéter l'arrière-plan sur toute la largeur de la salle; optionnel |
+| `tiled_v` | Oui/Non | Non | Répéter l'arrière-plan sur toute la hauteur de la salle; optionnel |
+| `hspeed` | Nombre | `0` | Vitesse de défilement automatique horizontal en pixels/image; optionnel |
+| `vspeed` | Nombre | `0` | Vitesse de défilement automatique vertical en pixels/image; optionnel |
 
-### Set Background Color
+### Définir la couleur d'arrière-plan
 
 | Propriété | Valeur |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Icône** | 🎨 |
 | **Catégorie** | Salle |
 
-Change the current room's background color
+Changer la couleur d'arrière-plan de la salle actuelle
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `color` | Couleur | `#87CEEB` | Background color |
-| `show_color` | Oui/Non | Oui | Whether the background color is visible (off fills black instead); optionnel |
+| `color` | Couleur | `#87CEEB` | Couleur d'arrière-plan |
+| `show_color` | Oui/Non | Oui | Si la couleur d'arrière-plan est visible (désactivé remplit en noir à la place); optionnel |
 
 ### Définir le titre de la salle
 
@@ -161,7 +161,7 @@ Définir le titre de la fenêtre de jeu
 |-----------|------|---------|-------|
 | `caption` | Texte | — | Texte du titre de la fenêtre |
 
-### Set Room Persistent
+### Définir la persistance de la salle
 
 | Propriété | Valeur |
 |----------|-------|
@@ -169,13 +169,13 @@ Définir le titre de la fenêtre de jeu
 | **Icône** | 💾 |
 | **Catégorie** | Salle |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Si la salle actuelle conserve son état actif (positions des instances, instances détruites, etc.) quand le joueur la quitte puis y revient, au lieu de la reconstruire entièrement depuis sa disposition d'origine à chaque visite
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `persistent` | Oui/Non | Oui | Keep this room's state across a revisit |
+| `persistent` | Oui/Non | Oui | Conserver l'état de cette salle lors d'une nouvelle visite |
 
-### Set Room Speed
+### Définir la vitesse de la salle
 
 | Propriété | Valeur |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Icône** | ⏱️ |
 | **Catégorie** | Salle |
 
-Change the game's frame rate (frames per second)
+Changer la fréquence d'images du jeu (images par seconde)
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `speed` | Nombre | `30` | Target frames per second (1-240) |
+| `speed` | Nombre | `30` | Images par seconde cibles (1-240) |
 
 ---
 
