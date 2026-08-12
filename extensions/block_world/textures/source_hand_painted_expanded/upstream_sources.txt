@@ -1,0 +1,71 @@
+Miloslav Číž (drummyfish):
+
+The files in this repo are actually [webtoon](https://github.com/pithydon/webtoon)
+CC0 texture pack, which I keep rewriting with the new textures.
+
+The textures are largely my own work, but a lot of them are taken out of other
+CC0 works.
+
+I won't be commiting extremely often in order to not bloat the repo with binary file
+changes.
+
+Most notable texture sources (feel free to send me more sources or your own contributions):
+
+- https://www.blendswap.com/blends/view/74021
+- https://opengameart.org/content/glitch-sprite-assets-huge-collection
+- https://opengameart.org/content/glitch-alpine-landscape-svg
+- https://opengameart.org/content/handpainted-tileable-textures-512%D1%85512
+- https://opengameart.org/content/handpainted-stone-wall-textures
+- https://opengameart.org/content/4-hand-painted-ground-textures
+- https://opengameart.org/content/rpg-item-collection-3
+- https://opengameart.org/content/rpg-item-collection-2
+- https://opengameart.org/content/rpg-item-collection-1
+- https://opengameart.org/content/crate-barrel-bundle
+- https://opengameart.org/content/desert-rock
+- https://opengameart.org/content/glitch-groddle-forestmeadow-terrain-svg
+- https://opengameart.org/content/free-handpainted-plants-2
+- https://opengameart.org/content/free-handpainted-plants
+- https://opengameart.org/content/chest-blizzard-style
+- https://opengameart.org/content/free-lowpoly-golds
+- https://opengameart.org/content/stone-coffin
+- https://opengameart.org/content/free-textures-pack-59
+- https://www.blendswap.com/blends/view/46952
+- https://www.blendswap.com/blends/view/73730
+- https://opengameart.org/content/wyrmsun-cc0-over-900-items
+- https://opengameart.org/content/40-procedural-textures
+- https://opengameart.org/content/procedural-texture-pack?page=1
+- https://opengameart.org/content/cool-leaves-textures
+- https://www.deviantart.com/yughues/art/Free-IDKWIAD-3-730335893
+- https://www.deviantart.com/yughues/art/Free-IDKWIAD-4-732217780
+- https://opengameart.org/content/freebies-mundo-commissions
+- https://pixabay.com/en/floral-paisley-background-flower-1556345/
+- https://deepart.io
+- https://opengameart.org/content/fantasy-crystal-set
+- https://opengameart.org/content/cute-prop-models
+- https://www.blendswap.com/blends/view/89476
+- https://pixabay.com/en/bread-food-bakery-foodstuff-baking-3365842/
+
+shaft (current maintainer):
+
+Some sources of new CC0 textures:
+https://freesvg.org/
+https://www.rawpixel.com/image/5919722/photo-image-public-domain-nature-free
+https://opengameart.org/content/zortch-world-textures
+https://www.publicdomainpictures.net/en/view-image.php?image=459231&picture=cheese-texture-background-yellow
+https://opengameart.org/content/box-and-barrel-textures
+ethereal_lilac https://www.rawpixel.com/image/5958114/free-public-domain-cc0-photo
+ethereal_blue_marble https://www.rawpixel.com/image/3298108/free-photo-image-marble-blue-cc0
+ethereal_sponge https://www.publicdomainpictures.net/en/view-image.php?image=264020&picture=sea-sponges
+swords and steel axe by MELE https://opengameart.org/content/fantasy-sword-set
+wooden sword https://opengameart.org/content/macuahuitl-0
+farming_donut by MELE https://opengameart.org/content/sweets
+gems by MELE https://opengameart.org/content/fantasy-crystal-set
+default_tool_wood https://opengameart.org/content/wood-clean-seamless-handcrafted-texture
+palm_leaves banana_leaf ethereal_fern dry_shrub farming_cotton_wild https://opengameart.org/content/60-cc0-vegetation-textures?page=1
+ethereal_vine https://www.rawpixel.com/image/3284447/free-photo-image-vine-botanical-cc0
+gold_block https://opengameart.org/content/40-procedural-textures-texture11png
+stick based on https://opengameart.org/content/axe-4
+armor inventory icons https://opengameart.org/content/armor-icons-by-equipment-slot-with-transparency
+stone ladder stones https://freesvg.org/alpine-landscape-ladder-rock-01a-al1 https://freesvg.org/alpine-landscape-ladder-rock-01b-al1
+some guns https://opengameart.org/content/cc0-firearm-icons
+And of course much editing and work by myself.
