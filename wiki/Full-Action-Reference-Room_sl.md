@@ -112,7 +112,7 @@ Znova zaženi trenutno sobo
 
 *Parametri:* brez
 
-### Set Background
+### Nastavi ozadje
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -120,19 +120,19 @@ Znova zaženi trenutno sobo
 | **Ikona** | 🖼️ |
 | **Kategorija** | Soba |
 
-Set the current room's background image, with tiling and scrolling options
+Nastavi sliko ozadja trenutne sobe, z možnostmi ploščic in drsenja
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `background` | Besedilo | — | Background or sprite asset name |
-| `visible` | Da/Ne | Da | Show the background; neobvezno |
-| `foreground` | Da/Ne | Ne | Draw in front of instances instead of behind them; neobvezno |
-| `tiled_h` | Da/Ne | Ne | Repeat the background across the width of the room; neobvezno |
-| `tiled_v` | Da/Ne | Ne | Repeat the background across the height of the room; neobvezno |
-| `hspeed` | Število | `0` | Horizontal auto-scroll speed in pixels/frame; neobvezno |
-| `vspeed` | Število | `0` | Vertical auto-scroll speed in pixels/frame; neobvezno |
+| `background` | Besedilo | — | Ime vira ozadja ali sprite-a |
+| `visible` | Da/Ne | Da | Prikaži ozadje; neobvezno |
+| `foreground` | Da/Ne | Ne | Nariši pred instancami namesto za njimi; neobvezno |
+| `tiled_h` | Da/Ne | Ne | Ponovi ozadje po širini sobe; neobvezno |
+| `tiled_v` | Da/Ne | Ne | Ponovi ozadje po višini sobe; neobvezno |
+| `hspeed` | Število | `0` | Hitrost vodoravnega samodejnega drsenja v pikslih/sličico; neobvezno |
+| `vspeed` | Število | `0` | Hitrost navpičnega samodejnega drsenja v pikslih/sličico; neobvezno |
 
-### Set Background Color
+### Nastavi barvo ozadja
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Ikona** | 🎨 |
 | **Kategorija** | Soba |
 
-Change the current room's background color
+Spremeni barvo ozadja trenutne sobe
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `color` | Barva | `#87CEEB` | Background color |
-| `show_color` | Da/Ne | Da | Whether the background color is visible (off fills black instead); neobvezno |
+| `color` | Barva | `#87CEEB` | Barva ozadja |
+| `show_color` | Da/Ne | Da | Ali je barva ozadja vidna (izklopljeno namesto tega zapolni s črno); neobvezno |
 
 ### Nastavi naslov sobe
 
@@ -161,7 +161,7 @@ Nastavi naslov okna igre
 |-----------|------|---------|-------|
 | `caption` | Besedilo | — | Besedilo naslova okna |
 
-### Set Room Persistent
+### Nastavi obstojnost sobe
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -169,13 +169,13 @@ Nastavi naslov okna igre
 | **Ikona** | 💾 |
 | **Kategorija** | Soba |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Ali trenutna soba ohrani svoje aktivno stanje (položaje instanc, uničene instance itd.), ko jo igralec zapusti in se kasneje vrne vanjo, namesto da bi se ob vsakem obisku znova zgradila iz svoje izvirne postavitve
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `persistent` | Da/Ne | Da | Keep this room's state across a revisit |
+| `persistent` | Da/Ne | Da | Ohrani stanje te sobe ob ponovnem obisku |
 
-### Set Room Speed
+### Nastavi hitrost sobe
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Ikona** | ⏱️ |
 | **Kategorija** | Soba |
 
-Change the game's frame rate (frames per second)
+Spremeni hitrost sličic igre (sličice na sekundo)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `speed` | Število | `30` | Target frames per second (1-240) |
+| `speed` | Število | `30` | Ciljne sličice na sekundo (1-240) |
 
 ---
 

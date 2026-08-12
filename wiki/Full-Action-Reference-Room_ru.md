@@ -112,7 +112,7 @@
 
 *Параметры:* нет
 
-### Set Background
+### Задать фон
 
 | Свойство | Значение |
 |----------|-------|
@@ -120,19 +120,19 @@
 | **Значок** | 🖼️ |
 | **Категория** | Комната |
 
-Set the current room's background image, with tiling and scrolling options
+Задать фоновое изображение текущей комнаты с параметрами повтора и прокрутки
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `background` | Текст | — | Background or sprite asset name |
-| `visible` | Да/Нет | Да | Show the background; необязательно |
-| `foreground` | Да/Нет | Нет | Draw in front of instances instead of behind them; необязательно |
-| `tiled_h` | Да/Нет | Нет | Repeat the background across the width of the room; необязательно |
-| `tiled_v` | Да/Нет | Нет | Repeat the background across the height of the room; необязательно |
-| `hspeed` | Число | `0` | Horizontal auto-scroll speed in pixels/frame; необязательно |
-| `vspeed` | Число | `0` | Vertical auto-scroll speed in pixels/frame; необязательно |
+| `background` | Текст | — | Имя ресурса фона или спрайта |
+| `visible` | Да/Нет | Да | Показывать фон; необязательно |
+| `foreground` | Да/Нет | Нет | Рисовать перед экземплярами вместо позади них; необязательно |
+| `tiled_h` | Да/Нет | Нет | Повторять фон по ширине комнаты; необязательно |
+| `tiled_v` | Да/Нет | Нет | Повторять фон по высоте комнаты; необязательно |
+| `hspeed` | Число | `0` | Скорость автопрокрутки по горизонтали в пикселях/кадр; необязательно |
+| `vspeed` | Число | `0` | Скорость автопрокрутки по вертикали в пикселях/кадр; необязательно |
 
-### Set Background Color
+### Задать цвет фона
 
 | Свойство | Значение |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Значок** | 🎨 |
 | **Категория** | Комната |
 
-Change the current room's background color
+Изменить цвет фона текущей комнаты
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `color` | Цвет | `#87CEEB` | Background color |
-| `show_color` | Да/Нет | Да | Whether the background color is visible (off fills black instead); необязательно |
+| `color` | Цвет | `#87CEEB` | Цвет фона |
+| `show_color` | Да/Нет | Да | Виден ли цвет фона (при выключении заливается чёрным); необязательно |
 
 ### Задать заголовок комнаты
 
@@ -161,7 +161,7 @@ Change the current room's background color
 |-----------|------|---------|-------|
 | `caption` | Текст | — | Текст заголовка окна |
 
-### Set Room Persistent
+### Задать постоянство комнаты
 
 | Свойство | Значение |
 |----------|-------|
@@ -169,13 +169,13 @@ Change the current room's background color
 | **Значок** | 💾 |
 | **Категория** | Комната |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Сохраняет ли текущая комната своё активное состояние (позиции экземпляров, уничтоженные экземпляры и т. д.) при выходе игрока и последующем возвращении, вместо пересборки заново из исходной раскладки при каждом посещении
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `persistent` | Да/Нет | Да | Keep this room's state across a revisit |
+| `persistent` | Да/Нет | Да | Сохранять состояние этой комнаты при повторном посещении |
 
-### Set Room Speed
+### Задать скорость комнаты
 
 | Свойство | Значение |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Значок** | ⏱️ |
 | **Категория** | Комната |
 
-Change the game's frame rate (frames per second)
+Изменить частоту кадров игры (кадров в секунду)
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `speed` | Число | `30` | Target frames per second (1-240) |
+| `speed` | Число | `30` | Целевая частота кадров в секунду (1-240) |
 
 ---
 

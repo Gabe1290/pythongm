@@ -112,7 +112,7 @@
 
 *Параметри:* немає
 
-### Set Background
+### Задати фон
 
 | Властивість | Значення |
 |----------|-------|
@@ -120,19 +120,19 @@
 | **Значок** | 🖼️ |
 | **Категорія** | Кімната |
 
-Set the current room's background image, with tiling and scrolling options
+Задати фонове зображення поточної кімнати з параметрами повтору та прокрутки
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `background` | Текст | — | Background or sprite asset name |
-| `visible` | Так/Ні | Так | Show the background; необов'язково |
-| `foreground` | Так/Ні | Ні | Draw in front of instances instead of behind them; необов'язково |
-| `tiled_h` | Так/Ні | Ні | Repeat the background across the width of the room; необов'язково |
-| `tiled_v` | Так/Ні | Ні | Repeat the background across the height of the room; необов'язково |
-| `hspeed` | Число | `0` | Horizontal auto-scroll speed in pixels/frame; необов'язково |
-| `vspeed` | Число | `0` | Vertical auto-scroll speed in pixels/frame; необов'язково |
+| `background` | Текст | — | Назва ресурсу фону або спрайту |
+| `visible` | Так/Ні | Так | Показувати фон; необов'язково |
+| `foreground` | Так/Ні | Ні | Малювати перед екземплярами замість позаду них; необов'язково |
+| `tiled_h` | Так/Ні | Ні | Повторювати фон по ширині кімнати; необов'язково |
+| `tiled_v` | Так/Ні | Ні | Повторювати фон по висоті кімнати; необов'язково |
+| `hspeed` | Число | `0` | Швидкість автопрокрутки по горизонталі в пікселях/кадр; необов'язково |
+| `vspeed` | Число | `0` | Швидкість автопрокрутки по вертикалі в пікселях/кадр; необов'язково |
 
-### Set Background Color
+### Задати колір фону
 
 | Властивість | Значення |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Значок** | 🎨 |
 | **Категорія** | Кімната |
 
-Change the current room's background color
+Змінити колір фону поточної кімнати
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `color` | Колір | `#87CEEB` | Background color |
-| `show_color` | Так/Ні | Так | Whether the background color is visible (off fills black instead); необов'язково |
+| `color` | Колір | `#87CEEB` | Колір фону |
+| `show_color` | Так/Ні | Так | Чи видимий колір фону (вимкнено заповнює чорним натомість); необов'язково |
 
 ### Задати заголовок кімнати
 
@@ -161,7 +161,7 @@ Change the current room's background color
 |-----------|------|---------|-------|
 | `caption` | Текст | — | Текст заголовка вікна |
 
-### Set Room Persistent
+### Задати постійність кімнати
 
 | Властивість | Значення |
 |----------|-------|
@@ -169,13 +169,13 @@ Change the current room's background color
 | **Значок** | 💾 |
 | **Категорія** | Кімната |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Чи зберігає поточна кімната свій активний стан (позиції екземплярів, знищені екземпляри тощо), коли гравець залишає її й пізніше повертається, замість того щоб перебудовувати її заново з початкового макета щоразу
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `persistent` | Так/Ні | Так | Keep this room's state across a revisit |
+| `persistent` | Так/Ні | Так | Зберігати стан цієї кімнати при повторному відвідуванні |
 
-### Set Room Speed
+### Задати швидкість кімнати
 
 | Властивість | Значення |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Значок** | ⏱️ |
 | **Категорія** | Кімната |
 
-Change the game's frame rate (frames per second)
+Змінити частоту кадрів гри (кадрів за секунду)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `speed` | Число | `30` | Target frames per second (1-240) |
+| `speed` | Число | `30` | Цільова частота кадрів за секунду (1-240) |
 
 ---
 

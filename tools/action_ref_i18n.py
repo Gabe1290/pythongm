@@ -224,6 +224,10 @@ ACTIONS_FR = {
     "draw_minimap": {"display": "Dessiner la mini-carte", "desc": "Dessiner une mini-carte orientée nord des murs de la salle en lancer de rayons, avec un repère indiquant où se trouve la caméra et dans quelle direction elle regarde"},
     "enable_raycast_view": {"display": "Activer la vue Raycast", "desc": "Afficher la salle en vue 3D à la première personne façon Doom/Wolfenstein (murs, ciel, sol) au lieu de la vue du dessus"},
     "draw_doom_hud": {"display": "Dessiner l'ATH DOOM", "desc": "Dessiner une barre d'état inférieure façon DOOM (barre de santé + valeur, score, vies, un compteur d'objectif et une icône de visage réactive à la santé) par-dessus la vue en lancer de rayons"},
+    "set_room_speed": {"display": "Définir la vitesse de la salle", "desc": "Changer la fréquence d'images du jeu (images par seconde)"},
+    "set_room_persistent": {"display": "Définir la persistance de la salle", "desc": "Si la salle actuelle conserve son état actif (positions des instances, instances détruites, etc.) quand le joueur la quitte puis y revient, au lieu de la reconstruire entièrement depuis sa disposition d'origine à chaque visite"},
+    "set_background_color": {"display": "Définir la couleur d'arrière-plan", "desc": "Changer la couleur d'arrière-plan de la salle actuelle"},
+    "set_background": {"display": "Définir l'arrière-plan", "desc": "Définir l'image d'arrière-plan de la salle actuelle, avec des options de répétition et de défilement"},
 }
 
 ACTIONS_DE = {
@@ -336,6 +340,10 @@ ACTIONS_DE = {
     "draw_minimap": {"display": "Minikarte zeichnen", "desc": "Eine nach Norden ausgerichtete Minikarte der Wände des Raycast-Raums zeichnen, mit einer Markierung, die zeigt, wo die Kamera ist und in welche Richtung sie blickt"},
     "enable_raycast_view": {"display": "Raycast-Ansicht aktivieren", "desc": "Den Raum als First-Person-3D-Ansicht im Doom/Wolfenstein-Stil (Wände, Himmel, Boden) statt als Draufsicht darstellen"},
     "draw_doom_hud": {"display": "DOOM-HUD zeichnen", "desc": "Eine untere Statusleiste im DOOM-Stil (Gesundheitsbalken + Zahl, Punkte, Leben, ein Zielzähler und ein auf die Gesundheit reagierendes Gesichtssymbol) über der Raycast-Ansicht zeichnen"},
+    "set_room_speed": {"display": "Raumgeschwindigkeit setzen", "desc": "Die Bildrate des Spiels ändern (Bilder pro Sekunde)"},
+    "set_room_persistent": {"display": "Raum-Persistenz setzen", "desc": "Ob der aktuelle Raum seinen aktiven Zustand (Instanzpositionen, zerstörte Instanzen usw.) behält, wenn der Spieler ihn verlässt und später zurückkehrt, anstatt ihn bei jedem erneuten Betreten aus seinem ursprünglichen Layout neu aufzubauen"},
+    "set_background_color": {"display": "Hintergrundfarbe setzen", "desc": "Die Hintergrundfarbe des aktuellen Raums ändern"},
+    "set_background": {"display": "Hintergrund setzen", "desc": "Das Hintergrundbild des aktuellen Raums festlegen, mit Kachelungs- und Scroll-Optionen"},
 }
 
 # --------------------------------------------------------------------------- #
@@ -550,6 +558,17 @@ NOTES_FR = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Bande horizontale d'images de visage, du plus sain au moins sain (vide = pas d'icône de visage)",
     "How many frames the face strip has; health is bucketed evenly across them": "Nombre d'images de la bande de visage ; la santé y est répartie uniformément",
     "Expression shown after the objective label (bind your own key/quest variable)": "Expression affichée après l'étiquette d'objectif (associez votre propre variable de clé/quête)",
+    "Background color": "Couleur d'arrière-plan",
+    "Background or sprite asset name": "Nom de la ressource d'arrière-plan ou de sprite",
+    "Draw in front of instances instead of behind them": "Dessiner devant les instances au lieu de derrière",
+    "Horizontal auto-scroll speed in pixels/frame": "Vitesse de défilement automatique horizontal en pixels/image",
+    "Keep this room's state across a revisit": "Conserver l'état de cette salle lors d'une nouvelle visite",
+    "Repeat the background across the height of the room": "Répéter l'arrière-plan sur toute la hauteur de la salle",
+    "Repeat the background across the width of the room": "Répéter l'arrière-plan sur toute la largeur de la salle",
+    "Show the background": "Afficher l'arrière-plan",
+    "Target frames per second (1-240)": "Images par seconde cibles (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Vitesse de défilement automatique vertical en pixels/image",
+    "Whether the background color is visible (off fills black instead)": "Si la couleur d'arrière-plan est visible (désactivé remplit en noir à la place)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -790,6 +809,17 @@ NOTES_DE = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Horizontaler Streifen von Gesichtsbildern, das gesündeste zuerst (leer = kein Gesichtssymbol)",
     "How many frames the face strip has; health is bucketed evenly across them": "Wie viele Bilder der Gesichtsstreifen hat; die Gesundheit wird gleichmäßig auf sie verteilt",
     "Expression shown after the objective label (bind your own key/quest variable)": "Ausdruck, der nach der Zielbeschriftung angezeigt wird (binden Sie Ihre eigene Schlüssel-/Quest-Variable ein)",
+    "Background color": "Hintergrundfarbe",
+    "Background or sprite asset name": "Name der Hintergrund- oder Sprite-Ressource",
+    "Draw in front of instances instead of behind them": "Vor den Instanzen zeichnen statt dahinter",
+    "Horizontal auto-scroll speed in pixels/frame": "Horizontale Auto-Scroll-Geschwindigkeit in Pixel/Bild",
+    "Keep this room's state across a revisit": "Zustand dieses Raums bei erneutem Betreten beibehalten",
+    "Repeat the background across the height of the room": "Hintergrund über die Höhe des Raums wiederholen",
+    "Repeat the background across the width of the room": "Hintergrund über die Breite des Raums wiederholen",
+    "Show the background": "Hintergrund anzeigen",
+    "Target frames per second (1-240)": "Ziel-Bilder pro Sekunde (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Vertikale Auto-Scroll-Geschwindigkeit in Pixel/Bild",
+    "Whether the background color is visible (off fills black instead)": "Ob die Hintergrundfarbe sichtbar ist (aus füllt stattdessen mit Schwarz)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -975,6 +1005,10 @@ ACTIONS_UK = {
     "draw_minimap": {"display": "Намалювати мінікарту", "desc": "Намалювати орієнтовану на північ мінікарту стін кімнати raycast із позначкою, що показує, де камера і куди вона дивиться"},
     "enable_raycast_view": {"display": "Увімкнути вигляд Raycast", "desc": "Відображати кімнату як 3D-вигляд від першої особи у стилі Doom/Wolfenstein (стіни, небо, підлога) замість вигляду згори"},
     "draw_doom_hud": {"display": "Намалювати HUD DOOM", "desc": "Намалювати нижню смугу стану у стилі DOOM (смуга здоров'я + число, рахунок, життя, лічильник цілі та реагуюча на здоров'я іконка обличчя) поверх вигляду raycast"},
+    "set_room_speed": {"display": "Задати швидкість кімнати", "desc": "Змінити частоту кадрів гри (кадрів за секунду)"},
+    "set_room_persistent": {"display": "Задати постійність кімнати", "desc": "Чи зберігає поточна кімната свій активний стан (позиції екземплярів, знищені екземпляри тощо), коли гравець залишає її й пізніше повертається, замість того щоб перебудовувати її заново з початкового макета щоразу"},
+    "set_background_color": {"display": "Задати колір фону", "desc": "Змінити колір фону поточної кімнати"},
+    "set_background": {"display": "Задати фон", "desc": "Задати фонове зображення поточної кімнати з параметрами повтору та прокрутки"},
 }
 
 NOTES_UK = {
@@ -1185,6 +1219,17 @@ NOTES_UK = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Горизонтальна смуга кадрів обличчя, найздоровіший спочатку (порожньо = без іконки обличчя)",
     "How many frames the face strip has; health is bucketed evenly across them": "Скільки кадрів має смуга обличчя; здоров'я рівномірно розподіляється між ними",
     "Expression shown after the objective label (bind your own key/quest variable)": "Вираз, що показується після мітки цілі (прив'яжіть власну змінну ключа/квесту)",
+    "Background color": "Колір фону",
+    "Background or sprite asset name": "Назва ресурсу фону або спрайту",
+    "Draw in front of instances instead of behind them": "Малювати перед екземплярами замість позаду них",
+    "Horizontal auto-scroll speed in pixels/frame": "Швидкість автопрокрутки по горизонталі в пікселях/кадр",
+    "Keep this room's state across a revisit": "Зберігати стан цієї кімнати при повторному відвідуванні",
+    "Repeat the background across the height of the room": "Повторювати фон по висоті кімнати",
+    "Repeat the background across the width of the room": "Повторювати фон по ширині кімнати",
+    "Show the background": "Показувати фон",
+    "Target frames per second (1-240)": "Цільова частота кадрів за секунду (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Швидкість автопрокрутки по вертикалі в пікселях/кадр",
+    "Whether the background color is visible (off fills black instead)": "Чи видимий колір фону (вимкнено заповнює чорним натомість)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -1371,6 +1416,10 @@ ACTIONS_RU = {
     "draw_minimap": {"display": "Нарисовать миникарту", "desc": "Нарисовать ориентированную на север миникарту стен комнаты raycast с меткой, показывающей, где камера и куда она смотрит"},
     "enable_raycast_view": {"display": "Включить вид Raycast", "desc": "Отображать комнату как 3D-вид от первого лица в стиле Doom/Wolfenstein (стены, небо, пол) вместо вида сверху"},
     "draw_doom_hud": {"display": "Нарисовать HUD DOOM", "desc": "Нарисовать нижнюю полосу состояния в стиле DOOM (полоса здоровья + число, счёт, жизни, счётчик цели и реагирующая на здоровье иконка лица) поверх вида raycast"},
+    "set_room_speed": {"display": "Задать скорость комнаты", "desc": "Изменить частоту кадров игры (кадров в секунду)"},
+    "set_room_persistent": {"display": "Задать постоянство комнаты", "desc": "Сохраняет ли текущая комната своё активное состояние (позиции экземпляров, уничтоженные экземпляры и т. д.) при выходе игрока и последующем возвращении, вместо пересборки заново из исходной раскладки при каждом посещении"},
+    "set_background_color": {"display": "Задать цвет фона", "desc": "Изменить цвет фона текущей комнаты"},
+    "set_background": {"display": "Задать фон", "desc": "Задать фоновое изображение текущей комнаты с параметрами повтора и прокрутки"},
 }
 
 NOTES_RU = {
@@ -1581,6 +1630,17 @@ NOTES_RU = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Горизонтальная полоса кадров лица, самый здоровый первым (пусто = без иконки лица)",
     "How many frames the face strip has; health is bucketed evenly across them": "Сколько кадров имеет полоса лица; здоровье равномерно распределяется между ними",
     "Expression shown after the objective label (bind your own key/quest variable)": "Выражение, показываемое после метки цели (привяжите свою переменную ключа/квеста)",
+    "Background color": "Цвет фона",
+    "Background or sprite asset name": "Имя ресурса фона или спрайта",
+    "Draw in front of instances instead of behind them": "Рисовать перед экземплярами вместо позади них",
+    "Horizontal auto-scroll speed in pixels/frame": "Скорость автопрокрутки по горизонтали в пикселях/кадр",
+    "Keep this room's state across a revisit": "Сохранять состояние этой комнаты при повторном посещении",
+    "Repeat the background across the height of the room": "Повторять фон по высоте комнаты",
+    "Repeat the background across the width of the room": "Повторять фон по ширине комнаты",
+    "Show the background": "Показывать фон",
+    "Target frames per second (1-240)": "Целевая частота кадров в секунду (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Скорость автопрокрутки по вертикали в пикселях/кадр",
+    "Whether the background color is visible (off fills black instead)": "Виден ли цвет фона (при выключении заливается чёрным)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -1768,6 +1828,10 @@ ACTIONS_IT = {
     "draw_minimap": {"display": "Disegna minimappa", "desc": "Disegna una minimappa orientata a nord dei muri della stanza raycast, con un indicatore che mostra dove si trova la camera e in quale direzione guarda"},
     "enable_raycast_view": {"display": "Abilita vista Raycast", "desc": "Renderizza la stanza come vista 3D in prima persona in stile Doom/Wolfenstein (muri, cielo, pavimento) invece della vista dall'alto"},
     "draw_doom_hud": {"display": "Disegna HUD DOOM", "desc": "Disegna una barra di stato inferiore in stile DOOM (barra della salute + numero, punteggio, vite, un contatore di obiettivo e un'icona del volto reattiva alla salute) sopra la vista raycast"},
+    "set_room_speed": {"display": "Imposta velocità stanza", "desc": "Cambia il frame rate del gioco (fotogrammi al secondo)"},
+    "set_room_persistent": {"display": "Imposta persistenza stanza", "desc": "Se la stanza attuale mantiene il suo stato attivo (posizioni delle istanze, istanze distrutte, ecc.) quando il giocatore la lascia e vi ritorna, invece di ricostruirla da zero dal suo layout originale ogni volta"},
+    "set_background_color": {"display": "Imposta colore di sfondo", "desc": "Cambia il colore di sfondo della stanza attuale"},
+    "set_background": {"display": "Imposta sfondo", "desc": "Imposta l'immagine di sfondo della stanza attuale, con opzioni di ripetizione e scorrimento"},
 }
 
 NOTES_IT = {
@@ -1978,6 +2042,17 @@ NOTES_IT = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Striscia orizzontale di fotogrammi del volto, il più sano per primo (vuoto = nessuna icona del volto)",
     "How many frames the face strip has; health is bucketed evenly across them": "Quanti fotogrammi ha la striscia del volto; la salute è distribuita uniformemente tra essi",
     "Expression shown after the objective label (bind your own key/quest variable)": "Espressione mostrata dopo l'etichetta dell'obiettivo (associa la tua variabile chiave/missione)",
+    "Background color": "Colore di sfondo",
+    "Background or sprite asset name": "Nome della risorsa di sfondo o sprite",
+    "Draw in front of instances instead of behind them": "Disegna davanti alle istanze invece che dietro",
+    "Horizontal auto-scroll speed in pixels/frame": "Velocità di scorrimento automatico orizzontale in pixel/fotogramma",
+    "Keep this room's state across a revisit": "Mantieni lo stato di questa stanza tra una visita e l'altra",
+    "Repeat the background across the height of the room": "Ripeti lo sfondo sull'altezza della stanza",
+    "Repeat the background across the width of the room": "Ripeti lo sfondo sulla larghezza della stanza",
+    "Show the background": "Mostra lo sfondo",
+    "Target frames per second (1-240)": "Fotogrammi al secondo target (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Velocità di scorrimento automatico verticale in pixel/fotogramma",
+    "Whether the background color is visible (off fills black instead)": "Se il colore di sfondo è visibile (disattivato riempie di nero)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -2165,6 +2240,10 @@ ACTIONS_ES = {
     "draw_minimap": {"display": "Dibujar minimapa", "desc": "Dibujar un minimapa orientado al norte de los muros de la sala raycast, con un marcador que muestra dónde está la cámara y hacia dónde mira"},
     "enable_raycast_view": {"display": "Habilitar vista Raycast", "desc": "Renderizar la sala como una vista 3D en primera persona al estilo Doom/Wolfenstein (muros, cielo, suelo) en lugar de la vista cenital"},
     "draw_doom_hud": {"display": "Dibujar HUD DOOM", "desc": "Dibujar una barra de estado inferior al estilo DOOM (barra de salud + número, puntuación, vidas, un contador de objetivo y un icono de rostro que reacciona a la salud) sobre la vista raycast"},
+    "set_room_speed": {"display": "Establecer velocidad de la sala", "desc": "Cambiar la velocidad de fotogramas del juego (fotogramas por segundo)"},
+    "set_room_persistent": {"display": "Establecer persistencia de la sala", "desc": "Si la sala actual conserva su estado activo (posiciones de instancias, instancias destruidas, etc.) cuando el jugador la abandona y vuelve más tarde, en lugar de reconstruirla desde cero según su diseño original cada vez"},
+    "set_background_color": {"display": "Establecer color de fondo", "desc": "Cambiar el color de fondo de la sala actual"},
+    "set_background": {"display": "Establecer fondo", "desc": "Establecer la imagen de fondo de la sala actual, con opciones de mosaico y desplazamiento"},
 }
 
 NOTES_ES = {
@@ -2375,6 +2454,17 @@ NOTES_ES = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Tira horizontal de fotogramas de rostro, el más sano primero (vacío = sin icono de rostro)",
     "How many frames the face strip has; health is bucketed evenly across them": "Cuántos fotogramas tiene la tira de rostro; la salud se distribuye uniformemente entre ellos",
     "Expression shown after the objective label (bind your own key/quest variable)": "Expresión mostrada después de la etiqueta de objetivo (asocia tu propia variable de llave/misión)",
+    "Background color": "Color de fondo",
+    "Background or sprite asset name": "Nombre del recurso de fondo o sprite",
+    "Draw in front of instances instead of behind them": "Dibujar delante de las instancias en lugar de detrás",
+    "Horizontal auto-scroll speed in pixels/frame": "Velocidad de desplazamiento automático horizontal en píxeles/fotograma",
+    "Keep this room's state across a revisit": "Mantener el estado de esta sala al volver a visitarla",
+    "Repeat the background across the height of the room": "Repetir el fondo a lo largo de la altura de la sala",
+    "Repeat the background across the width of the room": "Repetir el fondo a lo largo del ancho de la sala",
+    "Show the background": "Mostrar el fondo",
+    "Target frames per second (1-240)": "Fotogramas por segundo objetivo (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Velocidad de desplazamiento automático vertical en píxeles/fotograma",
+    "Whether the background color is visible (off fills black instead)": "Si el color de fondo es visible (desactivado rellena de negro)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -2561,6 +2651,10 @@ ACTIONS_PT = {
     "draw_minimap": {"display": "Desenhar minimapa", "desc": "Desenhar um minimapa orientado ao norte dos muros da sala raycast, com um marcador que mostra onde está a câmera e para onde ela olha"},
     "enable_raycast_view": {"display": "Ativar vista Raycast", "desc": "Renderizar a sala como uma vista 3D em primeira pessoa no estilo Doom/Wolfenstein (muros, céu, chão) em vez da vista de cima"},
     "draw_doom_hud": {"display": "Desenhar HUD DOOM", "desc": "Desenhar uma barra de status inferior no estilo DOOM (barra de saúde + número, pontuação, vidas, um contador de objetivo e um ícone de rosto que reage à saúde) sobre a vista raycast"},
+    "set_room_speed": {"display": "Definir velocidade da sala", "desc": "Alterar a taxa de quadros do jogo (quadros por segundo)"},
+    "set_room_persistent": {"display": "Definir persistência da sala", "desc": "Se a sala atual mantém o seu estado ativo (posições das instâncias, instâncias destruídas, etc.) quando o jogador a deixa e depois regressa, em vez de a reconstruir do zero a partir do seu layout original a cada visita"},
+    "set_background_color": {"display": "Definir cor de fundo", "desc": "Alterar a cor de fundo da sala atual"},
+    "set_background": {"display": "Definir fundo", "desc": "Definir a imagem de fundo da sala atual, com opções de mosaico e deslocamento"},
 }
 
 NOTES_PT = {
@@ -2771,6 +2865,17 @@ NOTES_PT = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Faixa horizontal de quadros de rosto, o mais saudável primeiro (vazio = sem ícone de rosto)",
     "How many frames the face strip has; health is bucketed evenly across them": "Quantos quadros a faixa de rosto tem; a saúde é distribuída uniformemente entre eles",
     "Expression shown after the objective label (bind your own key/quest variable)": "Expressão mostrada após o rótulo de objetivo (associe sua própria variável de chave/missão)",
+    "Background color": "Cor de fundo",
+    "Background or sprite asset name": "Nome do recurso de fundo ou sprite",
+    "Draw in front of instances instead of behind them": "Desenhar à frente das instâncias em vez de atrás",
+    "Horizontal auto-scroll speed in pixels/frame": "Velocidade de deslocamento automático horizontal em pixels/quadro",
+    "Keep this room's state across a revisit": "Manter o estado desta sala ao regressar a ela",
+    "Repeat the background across the height of the room": "Repetir o fundo ao longo da altura da sala",
+    "Repeat the background across the width of the room": "Repetir o fundo ao longo da largura da sala",
+    "Show the background": "Mostrar o fundo",
+    "Target frames per second (1-240)": "Quadros por segundo alvo (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Velocidade de deslocamento automático vertical em pixels/quadro",
+    "Whether the background color is visible (off fills black instead)": "Se a cor de fundo é visível (desativado preenche com preto)",
 }
 
 # --------------------------------------------------------------------------- #
@@ -2956,6 +3061,10 @@ ACTIONS_SL = {
     "draw_minimap": {"display": "Nariši mini zemljevid", "desc": "Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki prikazuje, kje je kamera in kam je usmerjena"},
     "enable_raycast_view": {"display": "Omogoči pogled Raycast", "desc": "Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, tla) namesto pogleda od zgoraj"},
     "draw_doom_hud": {"display": "Nariši HUD DOOM", "desc": "Nariši spodnjo vrstico stanja v slogu DOOM (vrstica zdravja + število, rezultat, življenja, števec cilja in na zdravje odziven obraz) čez pogled raycast"},
+    "set_room_speed": {"display": "Nastavi hitrost sobe", "desc": "Spremeni hitrost sličic igre (sličice na sekundo)"},
+    "set_room_persistent": {"display": "Nastavi obstojnost sobe", "desc": "Ali trenutna soba ohrani svoje aktivno stanje (položaje instanc, uničene instance itd.), ko jo igralec zapusti in se kasneje vrne vanjo, namesto da bi se ob vsakem obisku znova zgradila iz svoje izvirne postavitve"},
+    "set_background_color": {"display": "Nastavi barvo ozadja", "desc": "Spremeni barvo ozadja trenutne sobe"},
+    "set_background": {"display": "Nastavi ozadje", "desc": "Nastavi sliko ozadja trenutne sobe, z možnostmi ploščic in drsenja"},
 }
 
 NOTES_SL = {
@@ -3166,6 +3275,17 @@ NOTES_SL = {
     "Horizontal strip of face frames, healthiest first (blank = no face icon)": "Vodoravni pas sličic obraza, najbolj zdrav prvi (prazno = brez ikone obraza)",
     "How many frames the face strip has; health is bucketed evenly across them": "Koliko sličic ima pas obraza; zdravje je enakomerno razporejeno mednje",
     "Expression shown after the objective label (bind your own key/quest variable)": "Izraz, prikazan za oznako cilja (povežite svojo spremenljivko ključa/naloge)",
+    "Background color": "Barva ozadja",
+    "Background or sprite asset name": "Ime vira ozadja ali sprite-a",
+    "Draw in front of instances instead of behind them": "Nariši pred instancami namesto za njimi",
+    "Horizontal auto-scroll speed in pixels/frame": "Hitrost vodoravnega samodejnega drsenja v pikslih/sličico",
+    "Keep this room's state across a revisit": "Ohrani stanje te sobe ob ponovnem obisku",
+    "Repeat the background across the height of the room": "Ponovi ozadje po višini sobe",
+    "Repeat the background across the width of the room": "Ponovi ozadje po širini sobe",
+    "Show the background": "Prikaži ozadje",
+    "Target frames per second (1-240)": "Ciljne sličice na sekundo (1-240)",
+    "Vertical auto-scroll speed in pixels/frame": "Hitrost navpičnega samodejnega drsenja v pikslih/sličico",
+    "Whether the background color is visible (off fills black instead)": "Ali je barva ozadja vidna (izklopljeno namesto tega zapolni s črno)",
 }
 
 # --------------------------------------------------------------------------- #

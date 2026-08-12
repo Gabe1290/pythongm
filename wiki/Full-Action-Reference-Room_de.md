@@ -112,7 +112,7 @@ Aktuellen Raum neu starten
 
 *Parameter:* keine
 
-### Set Background
+### Hintergrund setzen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -120,19 +120,19 @@ Aktuellen Raum neu starten
 | **Symbol** | 🖼️ |
 | **Kategorie** | Raum |
 
-Set the current room's background image, with tiling and scrolling options
+Das Hintergrundbild des aktuellen Raums festlegen, mit Kachelungs- und Scroll-Optionen
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `background` | Text | — | Background or sprite asset name |
-| `visible` | Ja/Nein | Ja | Show the background; optional |
-| `foreground` | Ja/Nein | Nein | Draw in front of instances instead of behind them; optional |
-| `tiled_h` | Ja/Nein | Nein | Repeat the background across the width of the room; optional |
-| `tiled_v` | Ja/Nein | Nein | Repeat the background across the height of the room; optional |
-| `hspeed` | Zahl | `0` | Horizontal auto-scroll speed in pixels/frame; optional |
-| `vspeed` | Zahl | `0` | Vertical auto-scroll speed in pixels/frame; optional |
+| `background` | Text | — | Name der Hintergrund- oder Sprite-Ressource |
+| `visible` | Ja/Nein | Ja | Hintergrund anzeigen; optional |
+| `foreground` | Ja/Nein | Nein | Vor den Instanzen zeichnen statt dahinter; optional |
+| `tiled_h` | Ja/Nein | Nein | Hintergrund über die Breite des Raums wiederholen; optional |
+| `tiled_v` | Ja/Nein | Nein | Hintergrund über die Höhe des Raums wiederholen; optional |
+| `hspeed` | Zahl | `0` | Horizontale Auto-Scroll-Geschwindigkeit in Pixel/Bild; optional |
+| `vspeed` | Zahl | `0` | Vertikale Auto-Scroll-Geschwindigkeit in Pixel/Bild; optional |
 
-### Set Background Color
+### Hintergrundfarbe setzen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Symbol** | 🎨 |
 | **Kategorie** | Raum |
 
-Change the current room's background color
+Die Hintergrundfarbe des aktuellen Raums ändern
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `color` | Farbe | `#87CEEB` | Background color |
-| `show_color` | Ja/Nein | Ja | Whether the background color is visible (off fills black instead); optional |
+| `color` | Farbe | `#87CEEB` | Hintergrundfarbe |
+| `show_color` | Ja/Nein | Ja | Ob die Hintergrundfarbe sichtbar ist (aus füllt stattdessen mit Schwarz); optional |
 
 ### Raumtitel festlegen
 
@@ -161,7 +161,7 @@ Die Titelleiste des Spielfensters festlegen
 |-----------|------|---------|-------|
 | `caption` | Text | — | Text des Fenstertitels |
 
-### Set Room Persistent
+### Raum-Persistenz setzen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -169,13 +169,13 @@ Die Titelleiste des Spielfensters festlegen
 | **Symbol** | 💾 |
 | **Kategorie** | Raum |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Ob der aktuelle Raum seinen aktiven Zustand (Instanzpositionen, zerstörte Instanzen usw.) behält, wenn der Spieler ihn verlässt und später zurückkehrt, anstatt ihn bei jedem erneuten Betreten aus seinem ursprünglichen Layout neu aufzubauen
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `persistent` | Ja/Nein | Ja | Keep this room's state across a revisit |
+| `persistent` | Ja/Nein | Ja | Zustand dieses Raums bei erneutem Betreten beibehalten |
 
-### Set Room Speed
+### Raumgeschwindigkeit setzen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Symbol** | ⏱️ |
 | **Kategorie** | Raum |
 
-Change the game's frame rate (frames per second)
+Die Bildrate des Spiels ändern (Bilder pro Sekunde)
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `speed` | Zahl | `30` | Target frames per second (1-240) |
+| `speed` | Zahl | `30` | Ziel-Bilder pro Sekunde (1-240) |
 
 ---
 

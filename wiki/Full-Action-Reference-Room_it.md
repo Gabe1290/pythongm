@@ -112,7 +112,7 @@ Riavvia la stanza corrente
 
 *Parametri:* nessuno
 
-### Set Background
+### Imposta sfondo
 
 | Proprietà | Valore |
 |----------|-------|
@@ -120,19 +120,19 @@ Riavvia la stanza corrente
 | **Icona** | 🖼️ |
 | **Categoria** | Stanza |
 
-Set the current room's background image, with tiling and scrolling options
+Imposta l'immagine di sfondo della stanza attuale, con opzioni di ripetizione e scorrimento
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `background` | Testo | — | Background or sprite asset name |
-| `visible` | Sì/No | Sì | Show the background; facoltativo |
-| `foreground` | Sì/No | No | Draw in front of instances instead of behind them; facoltativo |
-| `tiled_h` | Sì/No | No | Repeat the background across the width of the room; facoltativo |
-| `tiled_v` | Sì/No | No | Repeat the background across the height of the room; facoltativo |
-| `hspeed` | Numero | `0` | Horizontal auto-scroll speed in pixels/frame; facoltativo |
-| `vspeed` | Numero | `0` | Vertical auto-scroll speed in pixels/frame; facoltativo |
+| `background` | Testo | — | Nome della risorsa di sfondo o sprite |
+| `visible` | Sì/No | Sì | Mostra lo sfondo; facoltativo |
+| `foreground` | Sì/No | No | Disegna davanti alle istanze invece che dietro; facoltativo |
+| `tiled_h` | Sì/No | No | Ripeti lo sfondo sulla larghezza della stanza; facoltativo |
+| `tiled_v` | Sì/No | No | Ripeti lo sfondo sull'altezza della stanza; facoltativo |
+| `hspeed` | Numero | `0` | Velocità di scorrimento automatico orizzontale in pixel/fotogramma; facoltativo |
+| `vspeed` | Numero | `0` | Velocità di scorrimento automatico verticale in pixel/fotogramma; facoltativo |
 
-### Set Background Color
+### Imposta colore di sfondo
 
 | Proprietà | Valore |
 |----------|-------|
@@ -140,12 +140,12 @@ Set the current room's background image, with tiling and scrolling options
 | **Icona** | 🎨 |
 | **Categoria** | Stanza |
 
-Change the current room's background color
+Cambia il colore di sfondo della stanza attuale
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `color` | Colore | `#87CEEB` | Background color |
-| `show_color` | Sì/No | Sì | Whether the background color is visible (off fills black instead); facoltativo |
+| `color` | Colore | `#87CEEB` | Colore di sfondo |
+| `show_color` | Sì/No | Sì | Se il colore di sfondo è visibile (disattivato riempie di nero); facoltativo |
 
 ### Imposta titolo stanza
 
@@ -161,7 +161,7 @@ Imposta il titolo della finestra di gioco
 |-----------|------|---------|-------|
 | `caption` | Testo | — | Testo del titolo della finestra |
 
-### Set Room Persistent
+### Imposta persistenza stanza
 
 | Proprietà | Valore |
 |----------|-------|
@@ -169,13 +169,13 @@ Imposta il titolo della finestra di gioco
 | **Icona** | 💾 |
 | **Categoria** | Stanza |
 
-Whether the current room keeps its live state (instance positions, destroyed instances, etc.) when the player leaves and later returns to it, instead of rebuilding fresh from its authored layout every revisit
+Se la stanza attuale mantiene il suo stato attivo (posizioni delle istanze, istanze distrutte, ecc.) quando il giocatore la lascia e vi ritorna, invece di ricostruirla da zero dal suo layout originale ogni volta
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `persistent` | Sì/No | Sì | Keep this room's state across a revisit |
+| `persistent` | Sì/No | Sì | Mantieni lo stato di questa stanza tra una visita e l'altra |
 
-### Set Room Speed
+### Imposta velocità stanza
 
 | Proprietà | Valore |
 |----------|-------|
@@ -183,11 +183,11 @@ Whether the current room keeps its live state (instance positions, destroyed ins
 | **Icona** | ⏱️ |
 | **Categoria** | Stanza |
 
-Change the game's frame rate (frames per second)
+Cambia il frame rate del gioco (fotogrammi al secondo)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `speed` | Numero | `30` | Target frames per second (1-240) |
+| `speed` | Numero | `30` | Fotogrammi al secondo target (1-240) |
 
 ---
 
