@@ -121,7 +121,7 @@ def _key(x, y, z):
 
 
 def _fresh():
-    return {"blocks": {}}
+    return {"blocks": {}, "camera": {"enabled": False}}
 
 
 def block_world_state(room):
@@ -150,6 +150,16 @@ def peek_blocks(room):
     es = getattr(room, "extension_state", None)
     st = es.get(BLOCK_WORLD_KEY) if es else None
     return st["blocks"] if st else None
+
+
+def peek_camera(room):
+    """This room's camera config if it already has block-world state, else
+    None. Does NOT create state -- the room-renderer hook runs for EVERY
+    room (block-world or not) and must not stamp state onto rooms that
+    never enabled the view. Mirrors extensions.raycast_2_5d.state.peek_camera."""
+    es = getattr(room, "extension_state", None)
+    st = es.get(BLOCK_WORLD_KEY) if es else None
+    return st["camera"] if st else None
 
 
 def get_block(room, x, y, z):
