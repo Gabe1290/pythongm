@@ -247,6 +247,25 @@ per-unit discipline:
     **pit viewpoint is deliberately kept as evidence of the 2c limitation** —
     a level camera cannot look down, so a pit at your feet falls below the
     frame; from a few cells back it reads correctly as a recess.
+
+  **Scene-design lesson from the first playtest, and it generalises to any
+  world built on this engine:** the first version made every wall exactly one
+  block tall, and the player could simply walk up onto all of them. That is
+  not a movement bug — in a world of unit cubes a one-block wall and a
+  one-block step are the *same object*, and any rule permissive enough to
+  climb a staircase must also climb a kerb. So height is what separates them:
+  walls are now 3-4 blocks (a step is a quarter of the perimeter), display
+  rows 2, and the staircase is the only one-block rise in the world.
+  `MAX_STEP_UP = 1` then does the right thing everywhere. Build a one-high
+  wall and it stops being a wall.
+
+  Second, less obvious: a staircase seen HEAD-ON correctly renders as a
+  stepped wall, because each tread hides behind the riser in front of it.
+  Reading the profile needs a side-on view from ~10 cells back (at
+  `cell_size` 32 on a 600px screen, five stacked blocks only fit in frame at
+  that range), and a scene has to be laid out deliberately to afford one.
+  Worth knowing before Phase 5 designs a sample around a build the player is
+  supposed to admire.
 - **2c — free look (stretch, likely deferred).** Full 3D DDA with pitch
   (looking up/down), needed for tall builds or deep pits to read correctly
   from up close. This is the expensive step (real 3D ray marching, not the
