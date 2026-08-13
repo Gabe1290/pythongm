@@ -394,6 +394,54 @@ to build in. Notes worth carrying:
   hardcoded layer are both invisible. Any test for this action pair must
   drive the handler at a non-zero facing AND a non-zero layer.
 
+**Gap closed (2026-08-14): the actions never adopted Phase 2c's pitch.**
+When 2c landed (same day, later), `pick_voxel`/`screen_ray` were built and
+wired into the mouse-aim preview tool, but `handlers.py`'s `_pick` — what
+actually backs `place_block`/`break_block` — was never updated off the
+original level-only `pick_block`. So `set_look_pitch` changed what a game
+*showed* without changing what the actions *targeted*: the bullet above
+("digging down... needs 2c") stayed true for the shipped actions even after
+2c shipped, which a close review of the commit range caught. Found by
+tracing the code path, not by playtesting this time.
+
+Fixed by building `_pick`'s ray the same way the mouse-aim tool does —
+`screen_ray` through the fixed screen-centre crosshair, using
+`horizon_for(screen_h, pitch)` so the ray's vertical slope follows the
+current pitch — and marching it with `pick_voxel` instead of `pick_block`.
+Screen dimensions come from `game_runner.window_width/height`, falling back
+to `.screen.get_size()` then a hardcoded 640x480, the same fallback chain
+`draw_doom_hud` already established for action-side code with no direct
+render-surface access. At `pitch == 0` this is provably the same ray
+`pick_block` used (`horizon_for(h, 0) == h/2` exactly, and the crosshair
+sits at screen centre too, so `z_per_px` comes out to exactly `0.0`) — no
+behaviour change for a level view, confirmed by the full existing picking
+suite passing unmodified.
+
+**The gap-preference rule had to move with it.** `pick_voxel` had no
+equivalent of `pick_block`'s "prefer refilling a hole" heuristic — its own
+docstring's claim that it was already "the general form of pick_block" was
+only true for the *target*, not the *placement*, at `z_per_px == 0`: on a
+total miss it fell back to the *last* empty voxel visited (near the reach
+limit) rather than the *first* one (build directly ahead), and it had
+nothing tracking a gap at all. A naive swap would have silently re-shipped
+the exact "can't refill a hole" bug `ecb319c` fixed. Ported both the `gap`
+tracking and the `first`-on-total-miss fallback into `pick_voxel`, keyed on
+a single VOXEL now instead of a fixed layer (an empty voxel with a solid one
+directly above it, same x, y, z+1) — verified, not assumed, against the real
+functions before trusting the geometry: several new tests' exact parameters
+(entry/exit distances, `z_per_px` values) were found by running `pick_voxel`
+directly and reading its output before writing the assertion, the same way
+`TestPickVoxel`'s existing tests derive their numbers.
+`pick_block` itself is untouched — still the simpler, still-tested, still
+documented single-layer reference case `pick_voxel`'s docstring compares
+itself to.
+6 new tests (`tests/test_block_world_picking.py`): the total-miss fallback,
+the gap rule at `z_per_px == 0` and again on a genuinely tilted ray, and
+three tests through the real `place_block`/`break_block` actions proving
+pitch now changes what they target, including a tilt-up-then-back-to-level
+round trip. Suite 2725 → 2731 passed, 0 failed. README.md's Phase 3 section
+updated to match (it had been describing the pre-fix limitation as current).
+
 **Placement outline (2026-08-13).** `draw_cell_outline` marks the footprint
 of the cell a block would land in, so you see where you are building before
 committing. It rides on `project_point`, the inverse of what the render loop
