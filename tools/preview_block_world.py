@@ -255,14 +255,15 @@ def walk(size):
     from extensions.block_world.state import block_world_state
 
     room, camera = make_room()
-    place(room, camera, *VIEWPOINTS[0][1:5])
+    view_i = 0
+    place(room, camera, *VIEWPOINTS[view_i][1:5])
     collide = True
     shot_n = 0
     move_speed, turn_speed = 110.0, 120.0  # px/sec, deg/sec
 
     hud_lines = [
-        "WASD/arrows move+turn  Q,E strafe  1-%d viewpoints  C collision  "
-        "P screenshot  ESC quit" % min(9, len(VIEWPOINTS)),
+        "WASD/arrows move+turn   Q,E strafe   [ ] prev/next viewpoint (1-9 direct)",
+        "C collision   P screenshot   ESC quit",
     ]
     running = True
     while running:
@@ -280,8 +281,16 @@ def walk(size):
                     name = "block_world_shot_%02d.png" % shot_n
                     pygame.image.save(screen, name)
                     print("saved", name)
+                elif event.key in (pygame.K_LEFTBRACKET, pygame.K_RIGHTBRACKET):
+                    # Cycling reaches ALL viewpoints; the number keys only
+                    # cover the first nine, and every Phase 2b viewpoint sits
+                    # past that.
+                    view_i = (view_i + (1 if event.key == pygame.K_RIGHTBRACKET
+                                        else -1)) % len(VIEWPOINTS)
+                    place(room, camera, *VIEWPOINTS[view_i][1:5])
                 elif pygame.K_1 <= event.key < pygame.K_1 + min(9, len(VIEWPOINTS)):
-                    place(room, camera, *VIEWPOINTS[event.key - pygame.K_1][1:5])
+                    view_i = event.key - pygame.K_1
+                    place(room, camera, *VIEWPOINTS[view_i][1:5])
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -327,7 +336,9 @@ def walk(size):
         status = "cell %s  layer %d  angle %6.1f  fps %4.1f  collision %s" % (
             cell, standing, camera.facing_angle % 360, clock.get_fps(),
             "ON" if collide else "OFF")
-        for i, line in enumerate(hud_lines + [status]):
+        label, _cx, _cy, _fa, _cz, note = VIEWPOINTS[view_i]
+        legend = "[%d/%d] %s -- %s" % (view_i + 1, len(VIEWPOINTS), label, note)
+        for i, line in enumerate(hud_lines + [status, legend]):
             surf = font.render(line, True, (255, 255, 255))
             shadow = font.render(line, True, (0, 0, 0))
             screen.blit(shadow, (9, 9 + i * 18))
