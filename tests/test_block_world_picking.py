@@ -59,6 +59,10 @@ def _world(camera_cell=(0, 0), facing=0.0, enabled=True, **cfg):
         "enabled": enabled, "camera_object": "obj_person", "cell_size": CELL,
         "z_layer": 0, "fov": 66, "render_distance": 20, "columns": 1,
         "wall_textured": False, "wall_color": "#ff0000",
+        # Pinned so "layer 0" means the layer the eye is in and the cell
+        # arithmetic below reads directly. TestDefaultEyeHeight covers the
+        # shipped default of 1.5.
+        "eye_height": 0.5,
     })
     config.update(cfg)
     return room, camera
@@ -246,6 +250,78 @@ class TestBreakBlock:
         _run(room, "break_block")
         assert get_block(room, 3, 0, 1) is None, "did not break at the camera's layer"
         assert get_block(room, 3, 0, 0) == "stone", "broke the wrong layer"
+
+
+class TestDefaultEyeHeight:
+    """The camera is a TWO-BLOCK-TALL body by default, and that is
+    load-bearing rather than cosmetic.
+
+    Playtest report: "I can place blocks out from existing walls but I cannot
+    put one block on top of another block." The cause was not picking. A block
+    beside you has its top face at z = 1, so an eye at 0.5 sits BELOW that
+    surface and sees its underside -- the face points away from you, at every
+    pitch. Raising the eye to 1.5 is what makes stacking possible at all.
+
+    These tests deliberately do NOT pin eye_height, unlike the fixtures above.
+    """
+
+    def test_the_default_is_a_two_block_body(self):
+        from extensions.block_world.renderer import DEFAULT_EYE_HEIGHT
+        assert DEFAULT_EYE_HEIGHT == 1.5
+
+    def test_you_can_see_the_top_of_a_block_beside_you(self):
+        """The whole point: from the ground, aiming at a neighbouring block's
+        top face must offer the cell above it."""
+        from extensions.block_world.renderer import (screen_ray, pick_voxel,
+                                                     horizon_for,
+                                                     DEFAULT_EYE_HEIGHT)
+        room, camera = _world()
+        block_world_state(room)["camera"].pop("eye_height", None)
+        set_block(room, 3, 0, 0, "stone")
+        cx, cy = room._sprite_top_left(camera)
+        sw, sh = 800, 600
+
+        found = set()
+        for sy in range(sh // 2, sh, 10):
+            angle, z_per_px = screen_ray(sw / 2, sy, 0.0, math.radians(66),
+                                         sw, sh, CELL, horizon_for(sh, 0))
+            _target, build = pick_voxel(
+                room, cx + CELL / 2, cy + CELL / 2, DEFAULT_EYE_HEIGHT,
+                angle, z_per_px, CELL, 6)
+            if build:
+                found.add(build)
+        assert (3, 0, 1) in found, "cannot stack onto a block at your own level"
+
+    def test_an_eye_inside_the_block_layer_cannot(self):
+        """The control that makes the test above meaningful: at 0.5 the same
+        aim never offers that cell, which is exactly the bug reported."""
+        from extensions.block_world.renderer import (screen_ray, pick_voxel,
+                                                     horizon_for)
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        cx, cy = room._sprite_top_left(camera)
+        sw, sh = 800, 600
+        found = set()
+        for sy in range(sh // 2, sh, 10):
+            angle, z_per_px = screen_ray(sw / 2, sy, 0.0, math.radians(66),
+                                         sw, sh, CELL, horizon_for(sh, 0))
+            _target, build = pick_voxel(room, cx + CELL / 2, cy + CELL / 2,
+                                        0.5, angle, z_per_px, CELL, 6)
+            if build:
+                found.add(build)
+        assert (3, 0, 1) not in found
+
+    def test_the_actions_address_the_layer_the_eye_is_in(self):
+        """A level crosshair points at eye height. With feet on layer 0 and a
+        1.5 eye that is layer 1, so that is what breaking must remove --
+        picking the feet layer would break a block the crosshair is not on."""
+        room, _camera = _world()
+        block_world_state(room)["camera"].pop("eye_height", None)
+        set_block(room, 3, 0, 0, "stone")   # at the feet
+        set_block(room, 3, 0, 1, "brick")   # at the eye
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 1) is None, "did not break at eye height"
+        assert get_block(room, 3, 0, 0) == "stone", "broke at the feet instead"
 
 
 class TestSetLookPitch:

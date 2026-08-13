@@ -70,6 +70,12 @@ def _configure(room, **overrides):
         "z_layer": 0, "fov": 66, "render_distance": 20, "columns": 1,
         "wall_textured": False, "wall_color": "#ff0000",
         "floor_color": FLOOR, "ceiling_color": CEILING,
+        # Pinned deliberately. These tests assert closed-form projection
+        # geometry, and an eye at the middle of its own layer keeps the
+        # arithmetic 1:1 with the layer numbers. The SHIPPED default is 1.5
+        # (a two-block-tall body, so you can see the tops of blocks beside
+        # you) -- TestDefaultEyeHeight covers that.
+        "eye_height": 0.5,
     })
     cfg.update(overrides)
     return cfg

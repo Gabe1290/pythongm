@@ -58,12 +58,18 @@ class PluginExecutor:
 
         cell_size = int(cfg.get("cell_size", 32))
         cx, cy = room._sprite_top_left(camera)
-        from .renderer import pick_block  # lazy: keeps pygame out of IDE imports
+        from .renderer import pick_block, DEFAULT_EYE_HEIGHT  # lazy: pygame
+        # The layer the EYE is in, not the layer the feet are on. With the
+        # default two-block-tall body those differ, and a level crosshair
+        # addresses whatever is at eye height -- picking the feet layer would
+        # break blocks the crosshair is not on.
+        eye_z = (float(cfg.get("z_layer", 0))
+                 + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT)))
         target, placement = pick_block(
             room,
             cx + camera._cached_width / 2,
             cy + camera._cached_height / 2,
-            int(cfg.get("z_layer", 0)),
+            int(math.floor(eye_z)),
             math.radians(-camera.facing_angle),
             cell_size, reach)
         return room, target, placement

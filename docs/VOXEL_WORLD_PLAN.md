@@ -454,6 +454,33 @@ placement goes into it until it is filled. Defensible (you fix what you
 broke) but worth revisiting if a real game feels boxed in by it — and it is
 the reason the outline looked frozen.
 
+**The camera is a two-block-tall body (2026-08-13), and it had to be.**
+Playtest: "I can place blocks out from existing walls but I cannot put one
+block on top of another block." Not a picking bug. A block beside you has its
+top face at z = 1, so an eye at `layer + 0.5` sits BELOW that surface and
+sees its underside — the face points away from you, at every pitch, so no
+amount of 2c helps. `DEFAULT_EYE_HEIGHT` is now **1.5**, matching what every
+block game does and what makes stacking possible at all.
+
+Two consequences that have to move with it, or the view and the actions
+disagree:
+
+- **The actions address the layer the EYE is in**, not the layer the feet are
+  on. A level crosshair points at eye height; picking the feet layer would
+  break a block the crosshair is not on.
+- Anything computing an eye position reads `eye_height` from the config
+  rather than assuming 0.5 — the walkaround did, and would have aimed a whole
+  layer low.
+
+Changing a default like this is free ONLY because no sample ships on this
+engine yet. After Phase 5 it would be a migration. If another such default is
+in doubt, settle it before Phase 5, not after.
+
+Note for anyone reading the geometry tests: they pin `eye_height: 0.5`
+deliberately, because their closed-form assertions are 1:1 with layer numbers
+that way. `TestDefaultEyeHeight` is what covers the shipped value, including
+a control proving the old one genuinely could not stack.
+
 Still open in this phase: the hotbar, and a committed world generator. Also
 worth doing eventually: exposing the outline to authored games as an action,
 so a building game does not have to reimplement it — it is currently drawn

@@ -41,9 +41,13 @@ right-click places, Ctrl+Z undoes. Building is off until you ask for it so a
 stray click costs nothing.
 
 **To stack blocks**, aim at the top face of one and place: the new block goes
-on top. Scroll the wheel (or R/F) to look up and down — at a level view the
-steepest ray only drops about 26 degrees, so a block on your own layer never
-shows you its top; tilt down and it does.
+on top. Scroll the wheel (or R/F) to look up and down.
+
+The camera is a **two-block-tall body** (`eye_height`, default 1.5), and that
+is what makes stacking possible: a block beside you has its top at z = 1, so
+an eye at 0.5 would sit below that surface and see only its underside. The
+actions therefore act on the layer the EYE is in, not the one your feet are
+on — a level crosshair points at eye height.
 
 Looking up and down is a **y-shear**, not a rotated camera: vertical edges
 stay vertical rather than converging, the way Doom worked. For a world of
