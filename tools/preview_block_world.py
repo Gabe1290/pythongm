@@ -39,6 +39,16 @@ sys.path.insert(0, str(REPO_ROOT))
 CELL = 32
 WORLD_W, WORLD_H = 28, 24
 
+# Block heights, in layers. A step rises exactly ONE block and MAX_STEP_UP is
+# one, so anything two or more is unclimbable -- that difference is the only
+# thing separating a staircase from a wall in a world made of unit cubes.
+# Keep every wall at 2+ or it stops being a wall and becomes a kerb.
+WALL_H = 4        # perimeter -- a step is a quarter of it
+CORRIDOR_H = 3    # one lower, so the terrace deck can see over it
+HUT_H = 3
+DISPLAY_H = 2     # the material sample rows: tall enough not to walk onto
+TERRACE_Z = 5     # deck surface, reached by five one-block steps
+
 
 def build_world(room):
     """A showcase scene: one z-layer (all Phase 2a can draw), holding every
@@ -56,14 +66,17 @@ def build_world(room):
     """
     from extensions.block_world.state import set_block, remove_block
 
-    def fill(x0, y0, x1, y1, block_type):
+    def fill(x0, y0, x1, y1, block_type, height=WALL_H):
+        """Blocks from z=0 up to `height` layers tall, over a rectangle."""
         for x in range(x0, x1 + 1):
             for y in range(y0, y1 + 1):
-                set_block(room, x, y, 0, block_type)
+                for z in range(height):
+                    set_block(room, x, y, z, block_type)
 
-    def row(x0, y, block_types):
+    def row(x0, y, block_types, height=DISPLAY_H):
         for i, block_type in enumerate(block_types):
-            set_block(room, x0 + i, y, 0, block_type)
+            for z in range(height):
+                set_block(room, x0 + i, y, z, block_type)
 
     # Perimeter wall -- stone, so the eye has a neutral reference everywhere.
     fill(0, 0, WORLD_W - 1, 0, "stone")
@@ -74,27 +87,32 @@ def build_world(room):
     # A long cobble corridor: the distance test. The same texture repeats from
     # 2 cells away out past 20, so shading, fog and texel aliasing are all
     # visible in a single frame, with a brick end wall to stop the eye.
-    fill(4, 9, 25, 9, "cobble")
-    fill(4, 13, 25, 13, "cobble")
-    fill(25, 10, 25, 12, "brick")
+    # One block SHORTER than the perimeter, so the terrace deck (higher still)
+    # can see over it -- that is the "overlook" viewpoint.
+    fill(4, 9, 25, 9, "cobble", CORRIDOR_H)
+    fill(4, 13, 25, 13, "cobble", CORRIDOR_H)
+    fill(25, 10, 25, 12, "brick", CORRIDOR_H)
 
     # A brick hut in the upper yard with a doorway gap, for silhouette and
-    # inside-corner reading.
-    fill(4, 3, 9, 3, "brick")
-    fill(4, 7, 9, 7, "brick")
-    fill(4, 3, 4, 7, "brick")
-    fill(9, 3, 9, 7, "brick")
-    remove_block(room, 9, 5, 0)
+    # inside-corner reading. The doorway is a hole through the FULL height.
+    fill(4, 3, 9, 3, "brick", HUT_H)
+    fill(4, 7, 9, 7, "brick", HUT_H)
+    fill(4, 3, 4, 7, "brick", HUT_H)
+    fill(9, 3, 9, 7, "brick", HUT_H)
+    for z in range(HUT_H):
+        remove_block(room, 9, 5, z)
 
-    # Isolated single-cell pillars: corner geometry and the side-shade depth
-    # cue, without a long flat face confusing the picture.
-    for x in (14, 17, 20):
-        set_block(room, x, 5, 0, "stone")
+    # Isolated pillars of three different heights: corner geometry and the
+    # side-shade depth cue, plus an at-a-glance height reference. All are
+    # taller than one block, so none of them can be climbed.
+    for x, height in ((14, 2), (17, 3), (20, 4)):
+        for z in range(height):
+            set_block(room, x, 5, z, "stone")
 
     # Lower yard, one material family per lane.
-    # Shiny / transparent-flagged types. Phase 2a draws these fully opaque --
-    # BLOCK_TYPES' "transparent" flag is not honoured by the renderer yet,
-    # which is exactly the sort of thing worth SEEING before Phase 2b.
+    # Shiny / transparent-flagged types. The renderer still draws these fully
+    # opaque -- BLOCK_TYPES' "transparent" flag is not honoured -- though
+    # alpha textures now composite with whatever stands behind them.
     row(3, 15, ["glass", "water", "ice", "obsidian",
                 "coal_block", "gold_block", "diamond_block", "mese_block"])
     # Wool: flat colour, the quickest way to spot a shading or channel-order
@@ -112,29 +130,28 @@ def build_world(room):
 
     # --- Phase 2b: the parts that need more than one layer ----------------
     # A raised terrace in the upper-right yard, reached by a staircase, with
-    # a pit dug into it and a tower rising off it. Everything below is at
-    # z >= 1, so the flat showcase above is untouched and still renders
-    # exactly as it did under 2a.
-    def slab(x0, y0, x1, y1, z_top, block_type):
-        for x in range(x0, x1 + 1):
-            for y in range(y0, y1 + 1):
-                for z in range(0, z_top + 1):
-                    set_block(room, x, y, z, block_type)
-
-    # Three single-block steps: stand on one at a time, layer 1, 2, then 3.
-    slab(14, 2, 14, 3, 0, "sandstone")
-    slab(15, 2, 15, 3, 1, "sandstone")
-    slab(16, 2, 16, 3, 2, "sandstone")
-    # The terrace itself -- walking surface at z = 3, so an eye standing here
-    # looks DOWN on every one-high wall in the flat yard below.
-    slab(17, 1, 24, 4, 2, "cobble")
-    # A pit dug two deep into it. Its floor is the top face of the block at
-    # z = 0, so it reads as a hole rather than a gap in the world.
-    for z in (1, 2):
+    # a pit dug into it and a tower rising off it.
+    #
+    # The staircase is the ONLY climbable thing in the world, and that is the
+    # point: a step rises one block, every wall here is at least two, and the
+    # movement rule below only allows a one-block rise. Build a wall one block
+    # tall and you can simply walk up onto it, which is what a wall must not
+    # let you do.
+    for i in range(TERRACE_Z):  # five steps, each one block higher
+        for z in range(i + 1):
+            for y in (2, 3):
+                set_block(room, 12 + i, y, z, "sandstone")
+    # The terrace itself -- walking surface at z = TERRACE_Z, high enough to
+    # look down on the corridor walls and every display row below.
+    fill(17, 1, 24, 4, "cobble", TERRACE_Z)
+    # A pit dug two deep into the deck. Its floor is the top face of the block
+    # below, so it reads as a hole rather than a gap in the world.
+    for z in (TERRACE_Z - 1, TERRACE_Z - 2):
         remove_block(room, 20, 2, z)
         remove_block(room, 20, 3, z)
-    # A tower off the terrace's far end: three more blocks above the deck.
-    slab(22, 2, 22, 2, 5, "brick")
+    # A tower off the terrace: three more blocks above the deck.
+    for z in range(TERRACE_Z + 3):
+        set_block(room, 22, 2, z, "brick")
 
 
 def make_room():
@@ -199,15 +216,20 @@ VIEWPOINTS = [
     ("wood", 19, 19, 225, 0, "wood family, oblique -- both faces of each block"),
     ("corner", 3, 3, 135, 0, "stone perimeter corner, both faces at once"),
     # Phase 2b
-    ("steps", 10, 3, 0, 0, "2b: staircase from below -- three stacked heights"),
-    ("terrace", 23, 3, 180, 3, "2b: standing on the terrace, looking back down"),
-    ("overlook", 22, 4, 270, 3, "2b: see OVER the one-high yard walls from up top"),
+    # Head-on, a staircase correctly reads as a stepped wall -- each tread is
+    # hidden behind the riser in front of it. Seeing the profile needs a
+    # side-on view from ~10 cells back (5 stacked blocks only fit in frame at
+    # that range) and this world has no clear sightline that long. Walk it
+    # instead: the layer counter in the HUD ticks 0-1-2-3-4-5.
+    ("steps", 2, 1, 0, 0, "2b: staircase head-on -- WALK it to feel the rises"),
+    ("terrace", 23, 3, 180, 5, "2b: standing on the terrace, looking back down"),
+    ("overlook", 22, 4, 270, 5, "2b: see OVER the 3-high corridor walls from up top"),
     # A level camera cannot look down, so a pit right at your feet falls
     # below the frame -- you see its far lip, not its floor. That is the
     # limitation Phase 2c (free vertical look) exists to lift, and it is
     # worth having a picture of rather than a paragraph about.
-    ("pit", 23, 2, 180, 3, "2b: pit -- floor is BELOW a level camera's view"),
-    ("tower", 18, 2, 0, 3, "2b: tower across the pit, three blocks above deck"),
+    ("pit", 23, 2, 180, 5, "2b: pit -- floor is BELOW a level camera's view"),
+    ("tower", 18, 2, 0, 5, "2b: tower across the pit, three blocks above deck"),
 ]
 
 
