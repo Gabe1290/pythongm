@@ -19,7 +19,7 @@ action, no collision and no gravity — see "What's not here yet" below.
 | `extension.json` | The manifest. |
 | `__init__.py` | The entry point — declares `PLUGIN_ACTIONS`, `PluginExecutor` and `PLUGIN_ROOM_RENDERERS`, and `render_room` claims a room only when its camera config says `enabled`. |
 | `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store plus a camera config, both under `room.extension_state["block_world"]`, and the `BLOCK_TYPES` registry mapping block type ids to face textures. Also the derived `column_index` / `stack_top` heightmap queries the renderer reads. |
-| `renderer.py` | The renderer: `march_ray` (the one cell-occupancy DDA, yielding each cell's entry and exit distance), `cast_ray` (first-hit wrapper over it), and `render_block_world_view` (camera-plane projection, stacked textured wall columns, texture-mapped top/bottom faces). |
+| `renderer.py` | The renderer: `march_ray` (the one cell-occupancy DDA, yielding each cell's entry and exit distance), `cast_ray` (first-hit wrapper over it), and `render_block_world_view` (camera-plane projection, stacked textured wall columns, texture-mapped top/bottom faces). Also the overlay maths: `project_point`, its exact inverse `unproject_to_plane` (screen position → the floor square it is over), and `draw_cell_outline`. |
 | `actions.py` / `handlers.py` | Three actions: `enable_block_world_view` (camera/config plumbing, mirroring `enable_raycast_view`), plus `place_block` and `break_block`, which act on whatever the camera's centre ray reaches. |
 | `textures/source_hand_painted_expanded/` | The CC0-licensed block textures (Phase 0), 32 files. |
 | `ASSETS.md` | The licensing audit — read this before adding or swapping any texture. |
@@ -34,6 +34,11 @@ draws:
 py -3.12 tools/preview_block_world.py              # walk around (needs a display)
 py -3.12 tools/preview_block_world.py --shots out  # 14 fixed frames as PNGs (headless)
 ```
+
+Press **B** for build mode, then point with the **mouse**: the outline on
+the floor follows it and shows the square a block would land in, left-click
+breaks, right-click places, Ctrl+Z undoes. Building is off until you ask for
+it so a stray click costs nothing.
 
 The pixel-sampling tests prove a strip got drawn; this is how you judge
 whether the textures actually read well — which is the whole point of

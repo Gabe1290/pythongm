@@ -283,7 +283,8 @@ def walk(size):
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
                                               is_breakable)
-    from extensions.block_world.renderer import pick_block, draw_cell_outline
+    from extensions.block_world.renderer import (pick_block, draw_cell_outline,
+                                                 unproject_to_plane, march_ray)
 
     room, camera = make_room()
     view_i = 0
@@ -319,24 +320,57 @@ def walk(size):
         else:
             set_block(room, *cell, previous)
 
-    def aim():
-        """What the middle of the screen is pointing at.
+    def aim(mouse_pos):
+        """(break_target, build_cell) for wherever the mouse is pointing.
 
-        Calls the same pick_block the place_block / break_block actions call,
-        resolved the same way. The walkaround has no ActionExecutor to
-        dispatch real actions through, so it drives the layer underneath
-        them -- which is also where a picking-vs-rendering disagreement would
-        show up first."""
+        Two different questions, so two different answers:
+
+        - **Breaking** casts a ray through the mouse's COLUMN, still at eye
+          height. With no pitch, mouse y cannot tilt a ray, so only x steers
+          it. Same pick_block the break_block action uses, just not
+          restricted to the centre column.
+        - **Building** unprojects the mouse onto the floor of the camera's
+          layer, so you point directly at the square you want. That is what
+          the centre-ray rule could not express: it could only ever build
+          against a surface, never at a chosen spot.
+
+        The build cell has to be empty, within reach, and actually visible --
+        the floor of a square behind a wall still projects to a screen
+        position, and without the occlusion check you could build through
+        solid rock by pointing at where the floor would be.
+        """
         cfg = block_world_state(room)["camera"]
-        cx, cy = room._sprite_top_left(camera)
-        return pick_block(room, cx + camera._cached_width / 2,
-                          cy + camera._cached_height / 2,
-                          int(cfg["z_layer"]),
-                          math.radians(-camera.facing_angle), CELL, reach)
+        layer = int(cfg["z_layer"])
+        fov = math.radians(cfg.get("fov", 66))
+        ox, oy = room._sprite_top_left(camera)
+        px = ox + camera._cached_width / 2
+        py = oy + camera._cached_height / 2
+        facing = math.radians(-camera.facing_angle)
+        sw, sh = screen.get_size()
+        mx, my = mouse_pos
+
+        ray_angle = facing + math.atan(math.tan(fov / 2) * (2.0 * mx / sw - 1.0))
+        target, _placement = pick_block(room, px, py, layer, ray_angle, CELL, reach)
+
+        build = None
+        ground = unproject_to_plane(mx, my, layer, px, py, layer + 0.5,
+                                    facing, fov, sw, sh, CELL)
+        if ground is not None:
+            cell = (int(ground[0] // CELL), int(ground[1] // CELL), layer)
+            within = math.hypot(ground[0] - px, ground[1] - py) / CELL <= reach
+            if within and get_block(room, *cell) is None:
+                for cx, cy, *_rest in march_ray(room, px, py, ray_angle,
+                                                CELL, reach + 1):
+                    if (cx, cy) == cell[:2]:
+                        build = cell
+                        break
+                    if get_block(room, cx, cy, layer) is not None:
+                        break        # a wall stands between here and there
+        return target, build
 
     hud_lines = [
         "WASD/arrows move+turn   Q,E strafe   [ ] viewpoint (1-9 direct)",
-        "B build mode   LMB break   RMB place   , . block   Ctrl+Z undo",
+        "B build mode   point with the MOUSE   LMB break   RMB place   Ctrl+Z undo",
         "C collision   P screenshot   ESC quit",
     ]
     running = True
@@ -372,7 +406,7 @@ def walk(size):
                     view_i = event.key - pygame.K_1
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
             elif event.type == pygame.MOUSEBUTTONDOWN and building:
-                target, placement = aim()
+                target, placement = aim(event.pos)
                 if event.button == 1 and target is not None:
                     # Mirrors break_block's own rule -- this harness calls
                     # the state API directly, so it has to honour the flag
@@ -424,7 +458,7 @@ def walk(size):
 
         # Crosshair, and a readout of what it is actually on -- the fastest
         # way to spot picking drifting away from what is drawn.
-        target, placement = aim()
+        target, placement = aim(pygame.mouse.get_pos())
         w, h = screen.get_size()
 
         # Show where the next block would land, before committing to it.
@@ -437,12 +471,16 @@ def walk(size):
                 int(cfg["z_layer"]) + 0.5, math.radians(-camera.facing_angle),
                 math.radians(cfg.get("fov", 66)), CELL)
 
+        # The crosshair sits on the MOUSE, not the screen centre -- the mouse
+        # is what aims now, and a fixed centre mark would point at a cell
+        # nothing acts on. Bright when it is over something breakable.
         if not building:
             cross = (110, 110, 110)          # dim: clicks do nothing
         else:
             cross = (235, 235, 235) if target else (150, 150, 150)
-        pygame.draw.line(screen, cross, (w // 2 - 7, h // 2), (w // 2 + 7, h // 2))
-        pygame.draw.line(screen, cross, (w // 2, h // 2 - 7), (w // 2, h // 2 + 7))
+        mx, my = pygame.mouse.get_pos()
+        pygame.draw.line(screen, cross, (mx - 7, my), (mx + 7, my))
+        pygame.draw.line(screen, cross, (mx, my - 7), (mx, my + 7))
 
         cell = (cell_of(camera.x), cell_of(camera.y))
         status = "cell %s  layer %d  angle %6.1f  fps %4.1f  collision %s" % (

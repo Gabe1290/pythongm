@@ -366,6 +366,31 @@ re-deriving screen positions. It skips silently when a corner falls at or
 behind the camera plane: a partly-behind quad projects to nonsense, and half
 an outline is worse than none.
 
+**Mouse aiming (2026-08-13), and what it says about the centre-ray rule.**
+Playtesting again: with the crosshair fixed at screen centre, the placement
+outline appeared stuck — break through a wall and the next wall behind, and
+it still marked the first hole, because the gap rule pins placement to the
+first gap along the ray. The ask was "an outline that follows the mouse, so
+we can point at where the block should go", and that is the better primitive:
+**pointing beats inferring.** The centre-ray rule can only ever express
+"against the surface I am facing"; it cannot express "there".
+
+`unproject_to_plane` is the exact inverse of `project_point` onto a
+horizontal plane, so a screen position becomes the floor square it appears to
+be over. The walkaround now asks two different questions: **breaking** casts
+a ray through the mouse's COLUMN (still at eye height — with no pitch, mouse
+y cannot tilt a ray), and **building** unprojects the mouse onto the floor of
+the camera's layer. A build cell must also be empty, within reach, and
+actually visible: the floor of a square behind a wall still projects to a
+screen position, so without an occlusion check you can build through solid
+rock by pointing at where the floor would be.
+
+The gap rule stays for the ACTIONS, which have a crosshair and no mouse. But
+note the interaction it creates there: once a hole exists ahead of you, every
+placement goes into it until it is filled. Defensible (you fix what you
+broke) but worth revisiting if a real game feels boxed in by it — and it is
+the reason the outline looked frozen.
+
 Still open in this phase: the hotbar, and a committed world generator. Also
 worth doing eventually: exposing the outline to authored games as an action,
 so a building game does not have to reimplement it — it is currently drawn
