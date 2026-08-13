@@ -1,0 +1,342 @@
+"""Regression tests for Block World Phase 3 -- placing and breaking blocks.
+
+The property worth defending here is AGREEMENT: what `pick_block` selects has
+to be the block drawn under the middle of the screen. Picking and rendering
+run the same march at the same angle for exactly that reason, so there is a
+test below that breaks a block and checks the centre of the rendered frame
+actually changed, not merely that the world dict did.
+"""
+import os
+os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+
+import math
+import sys
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
+
+from conftest import skip_without_pygame
+
+pytestmark = skip_without_pygame
+
+import pygame
+pygame.init()
+pygame.display.set_mode((1, 1))
+
+from runtime.game_runner import GameRoom, GameInstance  # noqa: E402
+from runtime.action_executor import ActionExecutor  # noqa: E402
+from events.plugin_loader import load_all_plugins  # noqa: E402
+from extensions.block_world.state import (  # noqa: E402
+    block_world_state, get_block, set_block, column_index,
+)
+from extensions.block_world.renderer import pick_block, render_block_world_view  # noqa: E402
+
+CELL = 32
+
+
+class _Runner:
+    def __init__(self, room):
+        self.current_room = room
+        self.global_variables = {}
+
+
+def _world(camera_cell=(0, 0), facing=0.0, enabled=True, **cfg):
+    """A room with a camera at a cell centre, block-world view enabled."""
+    room = GameRoom("picking", {"width": 40 * CELL, "height": 40 * CELL},
+                    action_executor=None)
+    camera = GameInstance("obj_person", camera_cell[0] * CELL,
+                          camera_cell[1] * CELL, {}, action_executor=None)
+    camera._cached_object_data = {"solid": False}
+    camera._cached_width = camera._cached_height = CELL
+    camera.facing_angle = facing
+    room.instances.append(camera)
+    config = block_world_state(room)["camera"]
+    config.update({
+        "enabled": enabled, "camera_object": "obj_person", "cell_size": CELL,
+        "z_layer": 0, "fov": 66, "render_distance": 20, "columns": 1,
+        "wall_textured": False, "wall_color": "#ff0000",
+    })
+    config.update(cfg)
+    return room, camera
+
+
+def _executor(room):
+    ex = ActionExecutor(game_runner=_Runner(room))
+    load_all_plugins(ex)
+    return ex
+
+
+def _run(room, action, **params):
+    """Dispatch a plugin action as the camera instance would."""
+    ex = _executor(room)
+    caller = room.instances[0]
+    caller.action_executor = ex
+    return ex.action_handlers[action](caller, params)
+
+
+def _pick(room, camera, reach=5):
+    """pick_block with the camera resolved exactly as the handler does."""
+    cfg = block_world_state(room)["camera"]
+    cx, cy = room._sprite_top_left(camera)
+    return pick_block(room, cx + camera._cached_width / 2,
+                      cy + camera._cached_height / 2,
+                      int(cfg["z_layer"]), math.radians(-camera.facing_angle),
+                      CELL, reach)
+
+
+# ---------------------------------------------------------------------------
+# pick_block
+# ---------------------------------------------------------------------------
+
+class TestPickBlock:
+    def test_targets_the_first_block_along_the_ray(self):
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        set_block(room, 5, 0, 0, "brick")  # further -- must be ignored
+        target, _placement = _pick(room, camera)
+        assert target == (3, 0, 0)
+
+    def test_placement_is_the_cell_just_before_the_target(self):
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        _target, placement = _pick(room, camera)
+        assert placement == (2, 0, 0)
+
+    def test_nothing_in_range_places_directly_ahead(self):
+        room, camera = _world()
+        target, placement = _pick(room, camera)
+        assert target is None
+        assert placement == (1, 0, 0)
+
+    def test_flush_against_a_block_has_nowhere_to_place(self):
+        """The only cell 'before' the target is the one the camera occupies,
+        and putting a block there would bury the player."""
+        room, camera = _world()
+        set_block(room, 1, 0, 0, "stone")
+        target, placement = _pick(room, camera)
+        assert target == (1, 0, 0)
+        assert placement is None
+
+    def test_reach_limits_how_far_you_can_target(self):
+        room, camera = _world()
+        set_block(room, 6, 0, 0, "stone")
+        assert _pick(room, camera, reach=3)[0] is None
+        assert _pick(room, camera, reach=8)[0] == (6, 0, 0)
+
+    def test_picks_transparent_blocks_too(self):
+        """Glass has to be breakable, so picking must not skip it the way
+        the renderer's occlusion test does."""
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "glass")
+        set_block(room, 5, 0, 0, "stone")
+        assert _pick(room, camera)[0] == (3, 0, 0)
+
+    def test_only_reaches_the_cameras_own_layer(self):
+        """Phase 2b's level camera: the ray runs horizontally at eye height,
+        so a block one layer up is not pickable from the ground."""
+        room, camera = _world()
+        set_block(room, 3, 0, 1, "stone")
+        assert _pick(room, camera)[0] is None
+
+        block_world_state(room)["camera"]["z_layer"] = 1
+        assert _pick(room, camera)[0] == (3, 0, 1)
+
+    def test_follows_the_facing_angle(self):
+        room, camera = _world()
+        set_block(room, 0, 3, 0, "stone")  # due south (GM y grows downward)
+        assert _pick(room, camera)[0] is None
+        camera.facing_angle = 270
+        assert _pick(room, camera)[0] == (0, 3, 0)
+
+
+# ---------------------------------------------------------------------------
+# the actions
+# ---------------------------------------------------------------------------
+
+class TestPlaceBlock:
+    def test_places_against_the_block_you_are_looking_at(self):
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        _run(room, "place_block", block="brick")
+        assert get_block(room, 2, 0, 0) == "brick"
+
+    def test_places_ahead_when_looking_at_nothing(self):
+        room, _camera = _world()
+        _run(room, "place_block", block="sand")
+        assert get_block(room, 1, 0, 0) == "sand"
+
+    def test_defaults_to_stone(self):
+        room, _camera = _world()
+        _run(room, "place_block")
+        assert get_block(room, 1, 0, 0) == "stone"
+
+    def test_an_unknown_block_type_does_nothing(self):
+        room, _camera = _world()
+        _run(room, "place_block", block="unobtainium")
+        assert get_block(room, 1, 0, 0) is None
+
+    def test_never_overwrites_an_existing_block(self):
+        room, _camera = _world()
+        set_block(room, 1, 0, 0, "stone")   # flush against it
+        _run(room, "place_block", block="brick")
+        assert get_block(room, 1, 0, 0) == "stone"
+
+    def test_respects_reach(self):
+        room, _camera = _world()
+        set_block(room, 8, 0, 0, "stone")
+        _run(room, "place_block", block="brick", reach=3)
+        # Out of reach, so this builds directly ahead instead of against it.
+        assert get_block(room, 7, 0, 0) is None
+        assert get_block(room, 1, 0, 0) == "brick"
+
+    def test_does_nothing_when_the_view_is_off(self):
+        room, _camera = _world(enabled=False)
+        _run(room, "place_block", block="brick")
+        assert get_block(room, 1, 0, 0) is None
+
+    def test_builds_in_the_direction_the_camera_faces(self):
+        """Exercises the HANDLER's own angle conversion. Every other action
+        test faces 0, where radians(-a) and radians(a) are the same number,
+        so a sign flip in the handler goes unnoticed -- and the pick_block
+        tests above can't catch it either, since the helper there has its own
+        copy of the conversion."""
+        room, _camera = _world(camera_cell=(5, 5), facing=90)  # 90 = north
+        _run(room, "place_block", block="brick")
+        assert get_block(room, 5, 4, 0) == "brick", "built somewhere other than north"
+        assert get_block(room, 5, 6, 0) is None, "built south -- angle sign is inverted"
+
+
+class TestBreakBlock:
+    def test_removes_the_block_in_front(self):
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 0) is None
+
+    def test_leaves_blocks_behind_the_first_one(self):
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        set_block(room, 5, 0, 0, "brick")
+        _run(room, "break_block")
+        assert get_block(room, 5, 0, 0) == "brick"
+
+    def test_nothing_in_range_is_harmless(self):
+        room, _camera = _world()
+        set_block(room, 9, 0, 0, "stone")
+        _run(room, "break_block", reach=4)
+        assert get_block(room, 9, 0, 0) == "stone"
+
+    def test_does_nothing_when_the_view_is_off(self):
+        room, _camera = _world(enabled=False)
+        set_block(room, 3, 0, 0, "stone")
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 0) == "stone"
+
+    def test_acts_on_the_cameras_configured_layer(self):
+        """Exercises the HANDLER reading z_layer off the camera config.
+        Standing on a terrace, you break what is at your eye level, not what
+        is at ground level under it."""
+        room, _camera = _world(z_layer=1)
+        set_block(room, 3, 0, 0, "stone")   # ground, below the eye
+        set_block(room, 3, 0, 1, "brick")   # eye level
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 1) is None, "did not break at the camera's layer"
+        assert get_block(room, 3, 0, 0) == "stone", "broke the wrong layer"
+
+
+class TestPlacementIsAlwaysAir:
+    """place_block writes without re-checking the cell, which is only safe
+    because pick_block never returns an occupied one. Pin the invariant."""
+
+    @pytest.mark.parametrize("blocks", [
+        [],
+        [(3, 0, 0)],
+        [(1, 0, 0)],
+        [(2, 0, 0), (3, 0, 0)],
+        [(1, 0, 0), (2, 0, 0), (3, 0, 0)],
+        [(4, 0, 0), (5, 0, 0)],
+    ])
+    def test_placement_cell_is_empty(self, blocks):
+        room, camera = _world()
+        for x, y, z in blocks:
+            set_block(room, x, y, z, "stone")
+        _target, placement = _pick(room, camera)
+        if placement is not None:
+            assert get_block(room, *placement) is None
+
+
+# ---------------------------------------------------------------------------
+# agreement between picking and rendering
+# ---------------------------------------------------------------------------
+
+class TestPickingMatchesWhatIsDrawn:
+    def _centre_pixel(self, room):
+        screen = pygame.Surface((320, 240))
+        render_block_world_view(room, screen)
+        return screen.get_at((160, 120))[:3]
+
+    def test_breaking_changes_the_middle_of_the_screen(self):
+        """Not just the world dict -- the frame. If picking used a different
+        angle or layer from the renderer, this passes on the data and fails
+        on the pixels."""
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        before = self._centre_pixel(room)
+        _run(room, "break_block")
+        assert self._centre_pixel(room) != before
+
+    def test_placing_changes_the_middle_of_the_screen(self):
+        room, _camera = _world()
+        before = self._centre_pixel(room)
+        _run(room, "place_block", block="stone")
+        assert self._centre_pixel(room) != before
+
+    def test_the_wall_revealed_behind_is_the_next_one_along(self):
+        """Break the near wall and the far one should be what you now see,
+        at its own distance -- i.e. a shorter strip, not the same one."""
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        set_block(room, 6, 0, 0, "stone")
+        screen = pygame.Surface((320, 240))
+        render_block_world_view(room, screen)
+        floor = tuple(room.parse_color("#3a2f1c"))
+        ceiling = tuple(room.parse_color("#87CEEB"))
+
+        def wall_height():
+            render_block_world_view(room, screen)
+            return sum(1 for y in range(240)
+                       if screen.get_at((160, y))[:3] not in (floor, ceiling))
+
+        near = wall_height()
+        _run(room, "break_block")
+        far = wall_height()
+        assert 0 < far < near, "revealed wall should be smaller, not absent"
+
+    def test_a_placed_block_is_visible_immediately(self):
+        """set_block has to invalidate the renderer's derived column cache,
+        or the world changes and the picture does not."""
+        room, _camera = _world()
+        column_index(room)  # prime the cache before the world changes
+        _run(room, "place_block", block="stone")
+        assert (1, 0) in column_index(room)
+        screen = pygame.Surface((320, 240))
+        render_block_world_view(room, screen)
+        assert screen.get_at((160, 120))[:3] != tuple(room.parse_color("#3a2f1c"))
+
+
+def test_both_actions_are_registered_with_schemas():
+    from events.action_types import get_action_type
+    load_all_plugins()
+    for name in ("place_block", "break_block"):
+        schema = get_action_type(name)
+        assert schema is not None, "%s missing from ACTION_TYPES" % name
+        assert schema.category == "3D View"
+
+    block_param = next(p for p in get_action_type("place_block").parameters
+                       if p.name == "block")
+    assert block_param.param_type == "choice"
+    assert "stone" in block_param.choices and "glass" in block_param.choices

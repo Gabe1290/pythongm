@@ -9,6 +9,13 @@ PluginExecutor class). The loader merges this into ACTION_TYPES at startup.
 """
 from events.action_types import ActionType, ActionParameter
 
+from .state import BLOCK_TYPES
+
+# Offered as a dropdown rather than a typed string: these are the block ids
+# the CC0 texture registry actually knows, and a typo would otherwise be a
+# silent no-op at runtime.
+_BLOCK_CHOICES = sorted(BLOCK_TYPES)
+
 PLUGIN_ACTIONS = {
     "enable_block_world_view": ActionType(
         name="enable_block_world_view",
@@ -53,6 +60,35 @@ PLUGIN_ACTIONS = {
                 param_type="boolean", default_value=True, required=False,
                 description="Off forces flat block colours even though real "
                             "textures are available"),
+        ]
+    ),
+
+    "place_block": ActionType(
+        name="place_block",
+        display_name="Place Block",
+        description="Put a block in the empty cell the camera is looking at",
+        category="3D View",
+        icon="🧱",
+        parameters=[
+            ActionParameter(name="block", display_name="Block", param_type="choice",
+                default_value="stone", choices=_BLOCK_CHOICES,
+                description="Which kind of block to place"),
+            ActionParameter(name="reach", display_name="Reach", param_type="number",
+                default_value=5, required=False,
+                description="How many cells ahead you can build, in grid cells"),
+        ]
+    ),
+
+    "break_block": ActionType(
+        name="break_block",
+        display_name="Break Block",
+        description="Remove the block the camera is looking at",
+        category="3D View",
+        icon="⛏️",
+        parameters=[
+            ActionParameter(name="reach", display_name="Reach", param_type="number",
+                default_value=5, required=False,
+                description="How many cells ahead you can reach, in grid cells"),
         ]
     ),
 }

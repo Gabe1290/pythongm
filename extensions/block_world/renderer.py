@@ -151,6 +151,50 @@ def cast_ray(room, px: float, py: float, z_layer: int, angle_rad: float,
     return max(float(max_cells), 1e-4) * cell_size, side, False, 0.0, None
 
 
+def pick_block(room, cam_x, cam_y, layer, angle_rad, cell_size, reach):
+    """What the camera's centre ray is pointing at (Phase 3).
+
+    Returns ``(target, placement)``, each an ``(x, y, z)`` cell or None:
+
+    - ``target`` is the first cell along the ray that holds a block -- what
+      breaking removes.
+    - ``placement`` is the empty cell a new block should occupy: the one
+      immediately before the target, or, when the ray reaches nothing within
+      ``reach``, the cell directly ahead. None when there is nowhere valid
+      (the camera is already up against a block, so the only cell "before"
+      the target is the one the camera is standing in).
+
+    **A returned placement is always air**, and callers may rely on it: the
+    march only advances past cells it has read as empty, and a first cell
+    that is occupied returns immediately with no placement at all. Nothing
+    downstream needs to re-check before building there.
+
+    Deliberately the same march the renderer uses, at the same angle the
+    centre column is drawn from, so you break exactly what is under the
+    middle of the screen. A second raycast for picking would be a second
+    thing to keep in step.
+
+    Phase 2b's level camera constrains this: the ray runs horizontally at eye
+    height, so it can only ever reach blocks on the camera's OWN layer. You
+    build outwards at your feet and climb what you have built -- digging down
+    and placing onto ground below you need the free look Phase 2c is for.
+
+    Transparency is not consulted: glass is pickable like anything else, or
+    it could not be broken.
+    """
+    first = None
+    prev = None
+    for map_x, map_y, _entry, _exit, _side, _tex_u in march_ray(
+            room, cam_x, cam_y, angle_rad, cell_size, reach):
+        if first is None:
+            first = (map_x, map_y)
+        if get_block(room, map_x, map_y, layer) is not None:
+            placement = (prev[0], prev[1], layer) if prev else None
+            return (map_x, map_y, layer), placement
+        prev = (map_x, map_y)
+    return None, (first[0], first[1], layer) if first else None
+
+
 # --- wall shading -----------------------------------------------------
 # A smaller, self-contained copy of raycast_2_5d.renderer's shading formula
 # -- deliberately duplicated rather than imported, so each extension stays
