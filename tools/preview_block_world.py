@@ -281,7 +281,8 @@ def walk(size):
 
     from extensions.block_world.renderer import render_block_world_view
     from extensions.block_world.state import (block_world_state, set_block,
-                                              remove_block, get_block)
+                                              remove_block, get_block,
+                                              is_breakable)
     from extensions.block_world.renderer import pick_block
 
     room, camera = make_room()
@@ -373,7 +374,11 @@ def walk(size):
             elif event.type == pygame.MOUSEBUTTONDOWN and building:
                 target, placement = aim()
                 if event.button == 1 and target is not None:
-                    edit(target, None)
+                    # Mirrors break_block's own rule -- this harness calls
+                    # the state API directly, so it has to honour the flag
+                    # itself or the demo would contradict the engine.
+                    if is_breakable(get_block(room, *target)):
+                        edit(target, None)
                 elif event.button == 3 and placement is not None:
                     edit(placement, HOTBAR[slot])
 

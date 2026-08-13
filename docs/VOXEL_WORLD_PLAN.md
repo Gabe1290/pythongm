@@ -381,17 +381,35 @@ A global engine mode would add a concept without adding capability: the
 author would still have to decide when to flip it, which is the same decision
 as whether to bind the action.
 
-**What the engine genuinely lacks**, independent of any mode, is a way to say
-*this block cannot be broken* — so a player cannot dig out through the world
-boundary, and so an author can protect scenery. `BLOCK_TYPES` already carries
-`solid` and `transparent`; `breakable` (default True) is the natural third,
-checked in `break_block` only. Cheap, and it composes with everything else.
-An optional protected *region* (a bounding box the actions refuse to modify)
-is the follow-up if per-type turns out too coarse — do per-type first.
+**What the engine genuinely lacked**, independent of any mode, was a way to
+say *this block cannot be broken* — so a player cannot dig out through the
+world boundary, and so an author can protect scenery.
 
-Sequencing: the `breakable` flag can land any time; the editor and its undo
-stack are their own phase after Phase 5, when there is a real world worth
-editing.
+**Done (2026-08-13): the `breakable` flag.** `BLOCK_TYPES` already carried
+`solid` and `transparent`; `breakable` (default True) is the natural third,
+read by `state.is_breakable` and checked in `break_block` and nowhere else.
+An unbreakable block is still targeted (the crosshair lights up, which is the
+feedback saying it is there and solid), still occludes, still gets built
+against, and can still be *placed* — an author lining a world's edge with the
+stuff has to be able to put it there. Swinging at one is a silent no-op.
+
+**`obsidian` is the designated boundary material.** A flag no type ever sets
+is the same unreachable-code-posing-as-a-safety-net that mutation testing
+caught in `place_block` earlier the same day, so it needed a real user from
+the start. Obsidian is the only near-black stone in the registry, so "the
+black one cannot be broken" reads at a glance with no HUD to explain it, and
+it needs no new texture or `ASSETS.md` row. An unknown block id counts as
+breakable: a typo must not silently produce indestructible scenery.
+
+Mutation testing note: three of the four mutants were caught immediately, but
+*moving the check into `place_block` as well* survived — nothing pinned the
+"only in break_block" half of the requirement until a test placed an
+unbreakable type and asserted it lands.
+
+Still open here: an optional protected *region* (a bounding box the actions
+refuse to modify), the follow-up if per-type turns out too coarse. The editor
+and its undo stack are their own phase after Phase 5, when there is a real
+world worth editing.
 
 ## Phase 4 — collision, gravity, HUD
 

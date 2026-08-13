@@ -9,7 +9,8 @@ ActionExecutor directly.
 
 import math
 
-from .state import BLOCK_TYPES, block_world_state, peek_camera, remove_block, set_block
+from .state import (BLOCK_TYPES, block_world_state, get_block, is_breakable,
+                    peek_camera, remove_block, set_block)
 
 
 class PluginExecutor:
@@ -93,15 +94,24 @@ class PluginExecutor:
     def execute_break_block_action(self, instance, parameters):
         """Remove the block the camera's centre ray hits first.
 
+        Block types marked unbreakable (see state.is_breakable) are left
+        alone -- that check lives here and nowhere else, so an indestructible
+        block is still aimed at, still occludes, and can still be built
+        against. Swinging at one is a silent no-op, the same as swinging at
+        thin air.
+
         Parameters:
             reach: how many cells ahead you can reach (default 5)
         """
         picked = self._pick(instance, parameters)
         if picked is None:
             return
-        _room, target, _placement = picked
-        if target is not None:
-            remove_block(_room, *target)
+        room, target, _placement = picked
+        if target is None:
+            return
+        if not is_breakable(get_block(room, *target)):
+            return
+        remove_block(room, *target)
 
     def execute_enable_block_world_view_action(self, instance, parameters):
         """Switch the current room to a first-person voxel view (single

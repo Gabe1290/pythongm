@@ -79,7 +79,11 @@ BLOCK_TYPES = {
     "gold_block": {"all": "default_gold_block.png", "solid": True},
     "diamond_block": {"all": "default_diamond_block.png", "solid": True},
     "brick": {"all": "default_brick.png", "solid": True},
-    "obsidian": {"all": "default_obsidian.png", "solid": True},
+    # The designated boundary material: the one block break_block refuses to
+    # remove. Line a world's edges with it and a player cannot dig out. It is
+    # the only near-black stone in the registry, so "the black one cannot be
+    # broken" is a rule that reads at a glance and needs no HUD to explain.
+    "obsidian": {"all": "default_obsidian.png", "solid": True, "breakable": False},
     "mese_block": {"all": "default_mese_block.png", "solid": True},
     "wool_red": {"all": "wool_red.png", "solid": True},
     "wool_blue": {"all": "wool_blue.png", "solid": True},
@@ -131,6 +135,23 @@ def block_face_textures(block_type):
         }
     _FACE_PATH_CACHE[block_type] = resolved
     return resolved
+
+
+def is_breakable(block_type):
+    """False for a block `break_block` must refuse to remove.
+
+    Defaults to True, so a block type says nothing unless it wants to be
+    indestructible. Checked in the break action ONLY: an unbreakable block is
+    still targeted (the crosshair lights up on it, which is the feedback that
+    tells you it is there and solid), still occludes, still gets built
+    against. It just does not go away.
+
+    This is the whole of the protection model on purpose -- see the
+    edit-mode/play-mode section of docs/VOXEL_WORLD_PLAN.md for why the
+    engine has no modes. An unknown block id counts as breakable; the caller
+    validates ids, and a typo should not silently produce indestructible
+    scenery."""
+    return bool(BLOCK_TYPES.get(block_type, {}).get("breakable", True))
 
 
 def is_transparent(block_type):
