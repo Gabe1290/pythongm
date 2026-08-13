@@ -19,7 +19,7 @@ still no way to place or break a block, no collision, and no gravity — see
 | `extension.json` | The manifest. |
 | `__init__.py` | The entry point — declares `PLUGIN_ACTIONS`, `PluginExecutor` and `PLUGIN_ROOM_RENDERERS`, and `render_room` claims a room only when its camera config says `enabled`. |
 | `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store plus a camera config, both under `room.extension_state["block_world"]`, and the `BLOCK_TYPES` registry mapping block type ids to face textures. Also the derived `column_index` / `stack_top` heightmap queries the renderer reads. |
-| `renderer.py` | The renderer: `march_ray` (the one cell-occupancy DDA, yielding each cell's entry and exit distance), `cast_ray` (first-hit wrapper over it), and `render_block_world_view` (camera-plane projection, stacked textured wall columns, flat-shaded top/bottom faces). |
+| `renderer.py` | The renderer: `march_ray` (the one cell-occupancy DDA, yielding each cell's entry and exit distance), `cast_ray` (first-hit wrapper over it), and `render_block_world_view` (camera-plane projection, stacked textured wall columns, texture-mapped top/bottom faces). |
 | `actions.py` / `handlers.py` | One action, `enable_block_world_view` — camera/config plumbing, mirroring `enable_raycast_view`. |
 | `textures/source_hand_painted_expanded/` | The CC0-licensed block textures (Phase 0), 32 files. |
 | `ASSETS.md` | The licensing audit — read this before adding or swapping any texture. |
@@ -76,8 +76,10 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
   fixed level, so you cannot look down into a pit at your feet or up at the
   top of a tower you are standing against — run the preview's `pit`
   viewpoint to see exactly what that costs.
-- Textured horizontal faces. Tops and undersides are flat-shaded with their
-  texture's average colour; per-pixel floor casting is 2c work.
+- A fast renderer. A frame marches ~19 cells and draws ~38 wall strips per
+  column for a handful of visible surfaces, because painting far→near
+  rasterises everything hidden too; deck-heavy views run ~18 fps at 800x600
+  with 320 columns. `columns` and `top_cast_res` are the knobs.
 - Transparency as a designed feature. Alpha textures (glass, water, ice,
   leaves) do composite over whatever stands behind them, and `BLOCK_TYPES`'
   `transparent` flag is read in exactly one place — it stops a see-through

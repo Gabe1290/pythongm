@@ -211,14 +211,37 @@ per-unit discipline:
     then carried but unread — is what fixed it. **Generalise this before
     2c/Phase 6 re-derive the same logic: any occlusion shortcut must ask
     whether a block can be seen through, not just whether it is present.**
-  - **Horizontal faces are flat-shaded**, coloured by the texture's average
-    (`face_average_color`). Per-pixel floor casting is the expensive step
-    the raycast arc deferred on two of three targets; a step or a pit reads
-    correctly without it. Textured tops belong with 2c.
+  - **Horizontal faces are texture-mapped** (`_draw_horizontal_face_textured`).
+    They shipped flat-shaded from the texture's average colour, on the
+    reasoning that a step or a pit reads correctly without the grain and
+    per-pixel casting was 2c work — a playtest disagreed, and a large deck
+    of flat grey does look like plastic. Inverting the projection gives the
+    distance to the plane for a screen row directly, so the world point and
+    hence the texel follow; sampled every `res` rows into a 1px column and
+    upscaled, exactly the trick `raycast_2_5d.cast_floor_plane` uses.
+    `top_cast_res` (default 4, 0 = flat fallback) is the same knob as that
+    renderer's `floor_cast_res`. Shading is one hardware multiply on the
+    finished column, never per texel.
   - **A derived per-column index** (`state.column_index`, invalidated by
     every mutator) replaces per-layer probing of the `"x,y,z"` string keys.
     Without it the render path spends tens of thousands of string formats a
     frame. `stack_top` is the heightmap query Phase 4's footing will reuse.
+  - **Profile before optimising, and the answer will surprise you.** The
+    obvious suspects on a slow frame were the ray march and the per-column
+    blits. Neither: `cProfile` on the preview's terrace view found
+    **60,905 calls to `block_face_textures` in a single frame**, each doing
+    an `os.path.join`, making path construction the most expensive thing in
+    the renderer. It is a pure function over a static registry — memoising
+    it took ~20% off every frame, textured or flat.
+  - **Known and not addressed: overdraw.** That same frame marched 18.6
+    cells and drew 38.1 wall strips per column, for a handful of visible
+    surfaces. Painting far→near means everything hidden is still rasterised.
+    The sound fix is a cumulative-coverage early-out, but note the
+    subtlety: the union of per-cell spans is only guaranteed contiguous for
+    stacks taller than the eye (those all contain the horizon row), so a
+    naive min/max accumulator is wrong for a world of low blocks. Deck-heavy
+    views run ~18 fps at 800x600 with 320 columns; `columns` and
+    `top_cast_res` are the knobs until someone does the work.
   - **Pre-existing seam bug found and fixed en route.** A textured strip
     scales its texture column to a ROUNDED height while the span it fills is
     CEILED, so it could fall a row short — 2a showed the flat floor colour

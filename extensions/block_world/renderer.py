@@ -170,6 +170,13 @@ BOTTOM_SHADE = 0.55
 # this is the value that keeps a single-layer world pixel-identical.
 DEFAULT_EYE_HEIGHT = 0.5
 
+# Horizontal faces are cast every Nth screen row and the column upscaled.
+# 4 matches raycast_2_5d's floor_cast_res default, chosen there by the same
+# reasoning: full-res per-pixel casting is roughly an order of magnitude too
+# slow in pure Python, and on a horizontal plane the rows between samples
+# differ too little for the interpolation to show.
+DEFAULT_TOP_CAST_RES = 4
+
 
 def wall_shade(side: int, corrected: float, max_dist: float) -> float:
     """Brightness multiplier in [MIN_SHADE, 1] for a wall strip."""
@@ -304,13 +311,90 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
 
 
 def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color):
-    """A block's top or bottom face in one column: the span between its near
-    edge (the cell's entry distance) and its far edge (the exit)."""
+    """A block's top or bottom face in one column, flat-shaded: the span
+    between its near edge (the cell's entry distance) and its far edge (the
+    exit). The fallback when texturing is off."""
     screen_h = screen.get_height()
     y0 = max(0, int(math.floor(min(y_a, y_b))))
     y1 = min(screen_h, int(math.ceil(max(y_a, y_b))))
     if y1 > y0:
         screen.fill(color, (x0, y0, strip_w, y1 - y0))
+
+
+def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
+                                   cam_x, cam_y, dir_x, dir_y, cos_off,
+                                   plane_z, eye_z, half_h, cell_size,
+                                   shade, res):
+    """The same face, texture-mapped.
+
+    Inverting the projection gives the distance to the plane for a screen
+    row directly -- ``y = horizon + (eye_z - zval) * (h * cell / dist)``
+    rearranges to::
+
+        dist_perp = (eye_z - plane_z) * h * cell_size / (y - horizon)
+
+    so each row of the span is a known distance out along this column's ray,
+    and the world point there gives the texel. Sampled every ``res`` rows
+    into a one-pixel-wide column and upscaled, the trick
+    raycast_2_5d.cast_floor_plane uses -- full-res per-pixel casting is an
+    order of magnitude too slow in pure Python, and vertical neighbours on a
+    horizontal plane differ little enough that the interpolation is close to
+    free visually.
+
+    Shading is applied once to the finished column with a hardware multiply,
+    never per texel.
+    """
+    screen_h = screen.get_height()
+    y0 = max(0, int(math.floor(min(y_a, y_b))))
+    y1 = min(screen_h, int(math.ceil(max(y_a, y_b))))
+    span = y1 - y0
+    if span <= 0:
+        return
+    tw, th = texture.get_width(), texture.get_height()
+    if tw <= 0 or th <= 0:
+        return
+
+    # Same sign top or bottom: looking down, eye_z > plane_z and the rows sit
+    # below the horizon; looking up, both flip. The ratio stays positive.
+    k = (eye_z - plane_z) * screen_h * cell_size
+    samples = max(1, (span + res - 1) // res)
+    tex_at = texture.get_at
+    floor = math.floor
+    inv_cell = 1.0 / cell_size
+
+    def _texel(y):
+        denom = y + 0.5 - half_h
+        if -1e-6 < denom < 1e-6:
+            denom = 1e-6 if denom >= 0 else -1e-6
+        ray_dist = (k / denom) / cos_off
+        gx = (cam_x + dir_x * ray_dist) * inv_cell
+        gy = (cam_y + dir_y * ray_dist) * inv_cell
+        tx = int(tw * (gx - floor(gx)))
+        ty = int(th * (gy - floor(gy)))
+        return tex_at((min(tx, tw - 1), min(ty, th - 1)))
+
+    if samples == 1:
+        # Most faces are a handful of rows -- a distant deck is hundreds of
+        # one-sample slivers. Allocating a Surface and scaling it to fill a
+        # span this short costs far more than the fill it replaces, and per
+        # face per column that overhead was the dominant cost.
+        color = _texel(y0)
+        if shade < 1.0:
+            color = tuple(int(c * shade) for c in color[:3])
+        screen.fill(color, (x0, y0, strip_w, span))
+        return
+
+    column = pygame.Surface((1, samples))
+    put = column.set_at
+
+    for i in range(samples):
+        put((0, i), _texel(y0 + i * res))
+
+    strip = pygame.transform.scale(column, (strip_w, span))
+    if shade < 1.0:
+        v = int(shade * 255)
+        strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+    screen.blit(strip, (x0, y0))
 
 
 def render_block_world_view(room, screen: pygame.Surface):
@@ -377,6 +461,11 @@ def render_block_world_view(room, screen: pygame.Surface):
     # comment on why: uniform-angle sampling bends straight walls.
     plane_tan = math.tan(fov_rad / 2)
     textured = bool(cfg.get("wall_textured", True))
+    # Horizontal faces cast every Nth row and upscale. 0 turns texturing of
+    # tops off and falls back to the flat average colour, which is markedly
+    # cheaper on a scene with a lot of visible deck.
+    top_res = int(cfg.get("top_cast_res", DEFAULT_TOP_CAST_RES))
+    top_textured = textured and top_res >= 1
     columns = column_index(room)
 
     for col in range(num_columns):
@@ -384,6 +473,7 @@ def render_block_world_view(room, screen: pygame.Surface):
         ray_offset = math.atan(plane_tan * camera_x)
         ray_angle = facing_screen_rad + ray_offset
         cos_off = math.cos(ray_offset)  # fisheye correction
+        dir_x, dir_y = math.cos(ray_angle), math.sin(ray_angle)
         x0 = int(col * col_width)
         x1 = int((col + 1) * col_width)
         strip_w = max(1, x1 - x0)
@@ -422,21 +512,35 @@ def render_block_world_view(room, screen: pygame.Surface):
                 # Top face: visible only from above it, and only when nothing
                 # is stacked on top.
                 if eye_z > z + 1 and not _occupied(stack, z + 1):
-                    base = face_average_color(faces["top"]) if faces else wall_color
                     lit = face_shade(mid, max_dist, TOP_SHADE)
-                    _draw_horizontal_face(
-                        screen, x0, strip_w,
-                        half_h + (eye_z - (z + 1)) * px_per_cell_far,
-                        half_h + (eye_z - (z + 1)) * px_per_cell,
-                        tuple(int(c * lit) for c in base))
+                    y_far = half_h + (eye_z - (z + 1)) * px_per_cell_far
+                    y_near = half_h + (eye_z - (z + 1)) * px_per_cell
+                    if top_textured:
+                        _draw_horizontal_face_textured(
+                            screen, x0, strip_w, y_far, y_near,
+                            _load_texture(faces["top"]), cam_x, cam_y,
+                            dir_x, dir_y, cos_off, z + 1, eye_z, half_h,
+                            cell_size, lit, top_res)
+                    else:
+                        base = face_average_color(faces["top"]) if faces else wall_color
+                        _draw_horizontal_face(
+                            screen, x0, strip_w, y_far, y_near,
+                            tuple(int(c * lit) for c in base))
                 # Underside: only reachable by standing below an overhang,
                 # which a pure heightmap never has -- but a hand-built world
                 # can, and a missing face there is a hole straight to the sky.
                 elif eye_z < z and not _occupied(stack, z - 1):
-                    base = face_average_color(faces["bottom"]) if faces else wall_color
                     lit = face_shade(mid, max_dist, BOTTOM_SHADE)
-                    _draw_horizontal_face(
-                        screen, x0, strip_w,
-                        half_h + (eye_z - z) * px_per_cell,
-                        half_h + (eye_z - z) * px_per_cell_far,
-                        tuple(int(c * lit) for c in base))
+                    y_near = half_h + (eye_z - z) * px_per_cell
+                    y_far = half_h + (eye_z - z) * px_per_cell_far
+                    if top_textured:
+                        _draw_horizontal_face_textured(
+                            screen, x0, strip_w, y_near, y_far,
+                            _load_texture(faces["bottom"]), cam_x, cam_y,
+                            dir_x, dir_y, cos_off, z, eye_z, half_h,
+                            cell_size, lit, top_res)
+                    else:
+                        base = face_average_color(faces["bottom"]) if faces else wall_color
+                        _draw_horizontal_face(
+                            screen, x0, strip_w, y_near, y_far,
+                            tuple(int(c * lit) for c in base))

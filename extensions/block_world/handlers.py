@@ -71,4 +71,8 @@ class PluginExecutor:
             "floor_color": str(parameters.get("floor_color", "#3a2f1c")),
             "ceiling_color": str(parameters.get("ceiling_color", "#87CEEB")),
             "wall_textured": _bool("wall_textured", True),
+            # Horizontal (top/bottom) faces cast every Nth screen row and
+            # upscale the result; 0 falls back to a flat average colour,
+            # which is cheaper on a scene showing a lot of deck.
+            "top_cast_res": int(_num("top_cast_res", 4)),
         }

@@ -368,6 +368,129 @@ class TestTexturedSeams:
         assert _drawn_span(room, _render(room)) == flat
 
 
+class TestTexturedHorizontalFaces:
+    """Top and bottom faces are texture-mapped, not filled with the
+    texture's average colour."""
+
+    # Eye on layer 2 looking at a block 3.5 cells out puts its top face at
+    # roughly y 200..223 -- comfortably inside the 240px test surface and
+    # deep enough to hold several sample rows. Standing much higher pushes
+    # the face off the bottom of the screen entirely.
+    FACE_DIST, FACE_EYE = 3.5, 2.5
+
+    def _face_block(self, room, block_type):
+        _camera(room)
+        set_block(room, int(self.FACE_DIST + 0.5), 0, 0, block_type)
+
+    def _top_face_colors(self, room, **cfg_overrides):
+        """Distinct colours down the middle column of a block's top face."""
+        _configure(room, z_layer=2, wall_textured=True, **cfg_overrides)
+        screen = _render(room)
+        y_near = _project(self.FACE_EYE, 1, self.FACE_DIST)
+        y_far = _project(self.FACE_EYE, 1, self.FACE_DIST + 1)
+        return {screen.get_at((W // 2, y))[:3]
+                for y in range(int(y_far) + 1, int(y_near))}
+
+    def test_a_top_face_is_not_one_flat_colour(self):
+        room = _room()
+        self._face_block(room, "cobble")
+        assert len(self._top_face_colors(room)) > 1, \
+            "top face rendered as a single flat colour -- not textured"
+
+    def test_top_cast_res_zero_falls_back_to_flat_shading(self):
+        """The escape hatch stays available: casting tops is the expensive
+        part of a deck-heavy frame."""
+        room = _room()
+        self._face_block(room, "cobble")
+        assert len(self._top_face_colors(room, top_cast_res=0)) == 1
+
+    def test_texturing_tops_changes_the_frame(self):
+        room = _room()
+        _camera(room)
+        for x in range(4, 10):
+            set_block(room, x, 0, 0, "cobble")
+        _configure(room, z_layer=4, wall_textured=True, top_cast_res=0)
+        flat = pygame.image.tostring(_render(room), "RGB")
+        _configure(room, z_layer=4, wall_textured=True, top_cast_res=4)
+        assert pygame.image.tostring(_render(room), "RGB") != flat
+
+    def test_the_face_uses_its_own_top_texture_not_the_side_one(self, monkeypatch):
+        """Assert the wiring, not the colours.
+
+        The obvious version of this test -- render grass and check the top
+        face is green-dominant, unlike its dirt-banded side -- passes even
+        when the renderer is fed the SIDE texture, because a camera looking
+        straight down +x holds the sampled row constant at v=0.5, where
+        grass_side happens to be green too. Checking which Surface actually
+        reaches the face rasteriser has no such blind spot."""
+        from extensions.block_world import renderer as R
+        from extensions.block_world.state import block_face_textures
+        faces = block_face_textures("grass")
+        assert faces["top"] != faces["side"]
+
+        seen = []
+        real = R._draw_horizontal_face_textured
+
+        def spy(screen, x0, strip_w, y_a, y_b, texture, *args, **kwargs):
+            seen.append(texture)
+            return real(screen, x0, strip_w, y_a, y_b, texture, *args, **kwargs)
+
+        monkeypatch.setattr(R, "_draw_horizontal_face_textured", spy)
+        room = _room()
+        self._face_block(room, "grass")
+        self._top_face_colors(room)
+
+        assert seen, "no textured horizontal face was drawn at all"
+        expected = R._load_texture(faces["top"])
+        assert all(t is expected for t in seen), \
+            "top face was rasterised from a texture other than the top one"
+
+    def test_an_underside_uses_the_bottom_texture(self, monkeypatch):
+        """grass again: dirt underneath, green on top, so feeding the wrong
+        one through is visible here in a way it is not for a block whose
+        faces all share a texture."""
+        from extensions.block_world import renderer as R
+        from extensions.block_world.state import block_face_textures
+        faces = block_face_textures("grass")
+        assert faces["bottom"] != faces["top"]
+
+        seen = []
+        real = R._draw_horizontal_face_textured
+
+        def spy(screen, x0, strip_w, y_a, y_b, texture, *args, **kwargs):
+            seen.append(texture)
+            return real(screen, x0, strip_w, y_a, y_b, texture, *args, **kwargs)
+
+        monkeypatch.setattr(R, "_draw_horizontal_face_textured", spy)
+        room = _room()
+        _camera(room)
+        set_block(room, 6, 0, 3, "grass")  # overhead, so the eye sees under it
+        _configure(room, wall_textured=True)
+        _render(room)
+
+        assert seen, "no underside was drawn"
+        expected = R._load_texture(faces["bottom"])
+        assert all(t is expected for t in seen), \
+            "underside was rasterised from a texture other than the bottom one"
+
+
+class TestFaceTexturePathsAreCached:
+    def test_repeated_lookups_return_the_same_object(self):
+        """Profiling one frame of the preview's terrace view found 60,905
+        calls to block_face_textures, making os.path.join the single most
+        expensive thing in the render path."""
+        from extensions.block_world.state import block_face_textures
+        assert block_face_textures("stone") is block_face_textures("stone")
+
+    def test_each_block_type_still_resolves_its_own_faces(self):
+        from extensions.block_world.state import block_face_textures
+        assert block_face_textures("stone") != block_face_textures("dirt")
+        grass = block_face_textures("grass")
+        assert grass["top"].endswith("default_grass.png")
+        assert grass["side"].endswith("default_grass_side.png")
+        assert grass["bottom"].endswith("default_dirt.png")
+
+
 class TestTransparentBlocksNeverOcclude:
     """Reported from a playtest: a glass block looked right from the side and
     at a distance, then showed raw sky and floor through itself when walked
