@@ -552,6 +552,23 @@ class UnusedAssetsDialog(QDialog):
 
         self._update_button_states()
 
+    @staticmethod
+    def item_key(item):
+        """The ``(asset_type, asset_name)`` pair a leaf item carries, or None
+        for a category/placeholder row.
+
+        Always read the pair through here rather than calling ``data(0,
+        Qt.UserRole)`` directly. ``setData`` stores a Python tuple, but Qt
+        round-trips it through QVariant and PySide6 6.10 hands back a **list**
+        where 6.9 handed back the tuple it was given. Nothing in this dialog
+        cares (it only unpacks the pair), but a caller that hashes one --
+        putting it in a set, keying a dict -- gets ``TypeError: unhashable
+        type: 'list'`` on one PySide6 and works fine on the other. Normalising
+        on read makes the contract version-independent instead of leaving a
+        trap for the next caller."""
+        data = item.data(0, Qt.UserRole)
+        return tuple(data) if isinstance(data, (list, tuple)) else None
+
     def _checked_items(self):
         result = []
         for i in range(self.tree_widget.topLevelItemCount()):
@@ -559,7 +576,7 @@ class UnusedAssetsDialog(QDialog):
             for j in range(cat_item.childCount()):
                 child = cat_item.child(j)
                 if child.checkState(0) == Qt.Checked:
-                    result.append(child.data(0, Qt.UserRole))
+                    result.append(self.item_key(child))
         return result
 
     def _set_all_checked(self, checked: bool):

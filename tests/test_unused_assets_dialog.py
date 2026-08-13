@@ -93,7 +93,7 @@ class TestUnusedAssetsDialogListing:
             cat_item = dialog.tree_widget.topLevelItem(i)
             for j in range(cat_item.childCount()):
                 child = cat_item.child(j)
-                if child.data(0, Qt.UserRole) == ("sprites", "spr_unused"):
+                if dialog.item_key(child) == ("sprites", "spr_unused"):
                     found = True
         assert found
 
@@ -106,7 +106,7 @@ class TestUnusedAssetsDialogListing:
         for i in range(dialog.tree_widget.topLevelItemCount()):
             cat_item = dialog.tree_widget.topLevelItem(i)
             for j in range(cat_item.childCount()):
-                assert cat_item.child(j).data(0, Qt.UserRole) != ("sprites", "spr_used")
+                assert dialog.item_key(cat_item.child(j)) != ("sprites", "spr_used")
 
 
 def _check_category(dialog, category_prefix):
@@ -231,8 +231,49 @@ class TestUnusedAssetsDialogDelete:
             cat_item = dialog.tree_widget.topLevelItem(i)
             if cat_item.text(0).lower().startswith("sprites"):
                 for j in range(cat_item.childCount()):
-                    sprite_names.add(cat_item.child(j).data(0, Qt.UserRole))
+                    sprite_names.add(dialog.item_key(cat_item.child(j)))
         assert ("sprites", "spr_used") in sprite_names
+
+
+class TestItemKeyIsVersionIndependent:
+    """UnusedAssetsDialog.item_key must hand back a hashable (type, name)
+    tuple whatever Qt's QVariant round-trip did to the stored value.
+
+    setData stores a tuple; PySide6 6.10 returns a LIST where 6.9 returned
+    the tuple it was given, so a caller that hashed the pair (set, dict key)
+    raised TypeError on one version and passed on the other. Both shapes are
+    pinned explicitly below rather than only round-tripping through setData,
+    because a round-trip test alone only ever exercises whichever conversion
+    the installed PySide6 happens to do."""
+
+    def _item(self, stored):
+        from PySide6.QtWidgets import QTreeWidgetItem
+        item = QTreeWidgetItem(["leaf"])
+        item.setData(0, Qt.UserRole, stored)
+        return item
+
+    def test_normalizes_a_list_to_a_tuple(self, _qapp):
+        from widgets.asset_tree.asset_dialogs import UnusedAssetsDialog
+        item = self._item(["sprites", "spr_unused"])
+        assert UnusedAssetsDialog.item_key(item) == ("sprites", "spr_unused")
+        hash(UnusedAssetsDialog.item_key(item))  # must not raise
+
+    def test_leaves_a_tuple_alone(self, _qapp):
+        from widgets.asset_tree.asset_dialogs import UnusedAssetsDialog
+        item = self._item(("sprites", "spr_unused"))
+        assert UnusedAssetsDialog.item_key(item) == ("sprites", "spr_unused")
+
+    def test_category_and_placeholder_rows_have_no_key(self, _qapp):
+        from widgets.asset_tree.asset_dialogs import UnusedAssetsDialog
+        assert UnusedAssetsDialog.item_key(self._item("sprites")) is None
+        assert UnusedAssetsDialog.item_key(self._item(None)) is None
+
+    def test_checked_items_are_hashable(self, _qapp, asset_manager):
+        project_data = _project_data()
+        _sync_cache(asset_manager, project_data)
+        dialog = _make_dialog(project_data, asset_manager)
+        dialog._set_all_checked(True)
+        assert set(dialog._checked_items())  # TypeError here on a regression
 
 
 class TestShowUnusedAssetsDialogDispatch:
