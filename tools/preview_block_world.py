@@ -283,7 +283,7 @@ def walk(size):
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
                                               is_breakable)
-    from extensions.block_world.renderer import pick_block
+    from extensions.block_world.renderer import pick_block, draw_cell_outline
 
     room, camera = make_room()
     view_i = 0
@@ -426,6 +426,17 @@ def walk(size):
         # way to spot picking drifting away from what is drawn.
         target, placement = aim()
         w, h = screen.get_size()
+
+        # Show where the next block would land, before committing to it.
+        if building and placement is not None:
+            cfg = block_world_state(room)["camera"]
+            ccx, ccy = room._sprite_top_left(camera)
+            draw_cell_outline(
+                screen, placement,
+                ccx + camera._cached_width / 2, ccy + camera._cached_height / 2,
+                int(cfg["z_layer"]) + 0.5, math.radians(-camera.facing_angle),
+                math.radians(cfg.get("fov", 66)), CELL)
+
         if not building:
             cross = (110, 110, 110)          # dim: clicks do nothing
         else:

@@ -263,6 +263,12 @@ per-unit discipline:
     by an ULP from capturing `side` before it. That is enough to move a
     strip edge a pixel in the odd column. `march_ray` reproduces 2a's
     arithmetic deliberately — a comment says so, so nobody "cleans it up".
+  - **Mutation-testing gotcha worth knowing, cost a false conclusion once:**
+    if the anchor string you swap also appears in a docstring or comment, a
+    naive first-occurrence replace mutates the prose and leaves the code
+    intact — the mutant "survives" and you go hunting for a test gap that
+    does not exist. Assert the anchor occurs exactly once, or anchor on the
+    full statement including its indentation and `name =` prefix.
   - **Mutation-checked**, not just green: breaking each of the five 2b
     behaviours in turn (no horizontal faces, nearest-cell-only, eye height
     ignored, gapped stacks treated as opaque, seam left unpainted) each
@@ -337,7 +343,21 @@ to build in. Notes worth carrying:
   hardcoded layer are both invisible. Any test for this action pair must
   drive the handler at a non-zero facing AND a non-zero layer.
 
-Still open in this phase: the hotbar, and a committed world generator.
+**Placement outline (2026-08-13).** `draw_cell_outline` marks the footprint
+of the cell a block would land in, so you see where you are building before
+committing. It rides on `project_point`, the inverse of what the render loop
+does per column — built from the same camera-plane depth and the same one-line
+vertical mapping, so an overlay lands exactly on the geometry underneath it.
+Anything later that needs to draw *into* the 3D view (a selection box, a
+marker, a highlighted face) should use `project_point` rather than
+re-deriving screen positions. It skips silently when a corner falls at or
+behind the camera plane: a partly-behind quad projects to nonsense, and half
+an outline is worse than none.
+
+Still open in this phase: the hotbar, and a committed world generator. Also
+worth doing eventually: exposing the outline to authored games as an action,
+so a building game does not have to reimplement it — it is currently drawn
+only by the walkaround.
 
 Two new actions (`place_block`, `break_block`), mouse-bound, operating on
 whichever cube the camera's centre ray currently hits (reuse the DDA hit-test
