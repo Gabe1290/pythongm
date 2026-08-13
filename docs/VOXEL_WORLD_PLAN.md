@@ -3,8 +3,9 @@
 Status: **Phases 0, 1, 2a, 2b and 2c all done (2026-08-13); Phase 3 under
 way — picking, place/break and unbreakable blocks landed, hotbar and world
 generator still open.**
-This doc is the worked
-plan for a Minecraft-*inspired* block-building extension, built the same way
+
+This doc is the worked plan for a Minecraft-*inspired* block-building
+extension, built the same way
 `extensions/raycast_2_5d/` was (see `docs/RAYCAST_EXTENSION_PLAN.md`) — except
 this one starts life as a folder extension from commit 1, instead of living in
 core first and being extracted later. That extraction (Stage B/C of the
