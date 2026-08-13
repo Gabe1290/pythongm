@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
 from PySide6.QtCore import Qt
 
 from .asset_utils import validate_asset_name
+from ..qt_helpers import as_hashable_tuple
 
 
 class AssetRenameDialog(QDialog):
@@ -558,16 +559,10 @@ class UnusedAssetsDialog(QDialog):
         for a category/placeholder row.
 
         Always read the pair through here rather than calling ``data(0,
-        Qt.UserRole)`` directly. ``setData`` stores a Python tuple, but Qt
-        round-trips it through QVariant and PySide6 6.10 hands back a **list**
-        where 6.9 handed back the tuple it was given. Nothing in this dialog
-        cares (it only unpacks the pair), but a caller that hashes one --
-        putting it in a set, keying a dict -- gets ``TypeError: unhashable
-        type: 'list'`` on one PySide6 and works fine on the other. Normalising
-        on read makes the contract version-independent instead of leaving a
-        trap for the next caller."""
-        data = item.data(0, Qt.UserRole)
-        return tuple(data) if isinstance(data, (list, tuple)) else None
+        Qt.UserRole)`` directly -- see ``widgets.qt_helpers.as_hashable_tuple``
+        for why (a real, version-dependent PySide6 hashability hazard, not a
+        hypothetical one)."""
+        return as_hashable_tuple(item.data(0, Qt.UserRole))
 
     def _checked_items(self):
         result = []
