@@ -56,6 +56,9 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="ceiling_color", display_name="Ceiling Color", param_type="color",
                 default_value="#87CEEB", required=False,
                 description="Flat ceiling/sky colour (Phase 2a has no sky yet)"),
+            ActionParameter(name="pitch", display_name="Look Angle",
+                param_type="number", default_value=0, required=False,
+                description="Degrees to look up (+) or down (-); 0 is level"),
             ActionParameter(name="wall_textured", display_name="Textured Blocks",
                 param_type="boolean", default_value=True, required=False,
                 description="Off forces flat block colours even though real "
@@ -76,6 +79,23 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="reach", display_name="Reach", param_type="number",
                 default_value=5, required=False,
                 description="How many cells ahead you can build, in grid cells"),
+        ]
+    ),
+
+    "set_look_pitch": ActionType(
+        name="set_look_pitch",
+        display_name="Look Up / Down",
+        description="Tilt the block-world view up or down",
+        category="3D View",
+        icon="🔭",
+        parameters=[
+            ActionParameter(name="pitch", display_name="Angle", param_type="number",
+                default_value=0,
+                description="Degrees to look up (+) or down (-); 0 is level"),
+            ActionParameter(name="relative", display_name="Relative",
+                param_type="boolean", default_value=False, required=False,
+                description="On = add to the current angle, for a look control "
+                            "you can hold down; off = set it outright"),
         ]
     ),
 
