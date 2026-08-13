@@ -218,6 +218,7 @@ class TestRenderBlockWorldView:
         set_block(room, 2, 0, 0, "stone")
         cfg = block_world_state(room)["camera"]
         cfg.update({
+            "eye_height": 0.5,  # 2a's look: eye at the middle of its layer
             "enabled": True, "camera_object": "obj_person", "z_layer": 0,
             "cell_size": 32, "columns": 64, "wall_textured": False,
             "wall_color": "#ff0000",
@@ -238,6 +239,7 @@ class TestRenderBlockWorldView:
         set_block(room, 2, 0, 0, "stone")
         cfg = block_world_state(room)["camera"]
         cfg.update({
+            "eye_height": 0.5,  # 2a's look: eye at the middle of its layer
             "enabled": True, "camera_object": "obj_person", "z_layer": 0,
             "cell_size": 32, "columns": 64, "wall_textured": True,
         })

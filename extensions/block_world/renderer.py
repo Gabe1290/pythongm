@@ -406,10 +406,19 @@ MIN_SHADE = 0.35
 TOP_SHADE = 1.15
 BOTTOM_SHADE = 0.55
 
-# How high the eye sits inside its own layer. 0.5 == the middle of the block,
-# which is what Phase 2a drew (it centred a 1-cell cube on the horizon), so
-# this is the value that keeps a single-layer world pixel-identical.
-DEFAULT_EYE_HEIGHT = 0.5
+# How high the eye sits above the layer the feet are on.
+#
+# 1.5 makes the camera a TWO-BLOCK-TALL body, the way every block game does,
+# and that is load-bearing rather than cosmetic: a block beside you has its
+# top face at z = 1, so an eye at 0.5 is BELOW that surface and sees its
+# underside. You cannot stack onto a block at your own level, at any pitch,
+# because the face is pointing away from you. Playtesting found exactly that.
+#
+# Phases 2a and 2b drew 0.5 (2a centred a 1-cell cube on the horizon), which
+# is why the pixel-identity proof recorded in the plan doc used that value.
+# Changing the default is free only because no sample ships on this engine
+# yet -- after Phase 5 it would not be.
+DEFAULT_EYE_HEIGHT = 1.5
 
 # Horizontal faces are cast every Nth screen row and the column upscaled.
 # 4 matches raycast_2_5d's floor_cast_res default, chosen there by the same

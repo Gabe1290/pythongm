@@ -283,7 +283,8 @@ def walk(size):
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
                                               is_breakable)
-    from extensions.block_world.renderer import (MAX_PITCH_DEGREES,
+    from extensions.block_world.renderer import (DEFAULT_EYE_HEIGHT,
+                                                 MAX_PITCH_DEGREES,
                                                  draw_cell_outline, horizon_for,
                                                  march_ray, pick_voxel,
                                                  screen_ray, unproject_to_plane)
@@ -352,10 +353,11 @@ def walk(size):
         sw, sh = screen.get_size()
         mx, my = mouse_pos
 
+        eye_z = layer + cfg.get("eye_height", DEFAULT_EYE_HEIGHT)
         horizon = horizon_for(sh, cfg.get("pitch", 0.0))
         ray_angle, z_per_px = screen_ray(mx, my, facing, fov, sw, sh, CELL,
                                          horizon)
-        target, build = pick_voxel(room, px, py, layer + 0.5, ray_angle,
+        target, build = pick_voxel(room, px, py, eye_z, ray_angle,
                                    z_per_px, CELL, reach)
 
         if target is None:
@@ -365,7 +367,7 @@ def walk(size):
             # of the camera's own layer, which is what makes building out
             # across empty ground work at all.
             build = None
-            ground = unproject_to_plane(mx, my, layer, px, py, layer + 0.5,
+            ground = unproject_to_plane(mx, my, layer, px, py, eye_z,
                                         facing, fov, sw, sh, CELL, horizon)
             if ground is not None:
                 cell = (int(ground[0] // CELL), int(ground[1] // CELL), layer)
@@ -492,7 +494,8 @@ def walk(size):
             draw_cell_outline(
                 screen, placement,
                 ccx + camera._cached_width / 2, ccy + camera._cached_height / 2,
-                int(cfg["z_layer"]) + 0.5, math.radians(-camera.facing_angle),
+                int(cfg["z_layer"]) + cfg.get("eye_height", DEFAULT_EYE_HEIGHT),
+                math.radians(-camera.facing_angle),
                 math.radians(cfg.get("fov", 66)), CELL,
                 horizon=horizon_for(h, cfg.get("pitch", 0.0)))
 
