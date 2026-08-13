@@ -38,7 +38,7 @@ from extensions.block_world.state import (  # noqa: E402
     column_index, stack_top,
 )
 from extensions.block_world.renderer import (  # noqa: E402
-    march_ray, render_block_world_view, _fully_covers, _occupied,
+    march_ray, render_block_world_view, _fully_covers, _has_neighbor,
 )
 
 CELL = 32
@@ -206,10 +206,25 @@ class TestColumnIndex:
 # ---------------------------------------------------------------------------
 
 class TestOcclusionHelpers:
-    def test_occupied_finds_a_layer_in_the_stack(self):
-        stack = [(0, "dirt"), (2, "stone")]
-        assert _occupied(stack, 0) and _occupied(stack, 2)
-        assert not _occupied(stack, 1)
+    def test_neighbor_found_in_a_contiguous_stack(self):
+        stack = [(0, "dirt"), (1, "stone"), (2, "brick")]
+        assert _has_neighbor(stack, 0, +1)   # 0 has a block at 1
+        assert _has_neighbor(stack, 1, +1)   # 1 has a block at 2
+        assert _has_neighbor(stack, 1, -1)   # 1 has a block at 0
+        assert _has_neighbor(stack, 2, -1)   # 2 has a block at 1
+
+    def test_no_neighbor_across_a_gap(self):
+        """The whole point of doing this by adjacency, not by scanning for
+        'is z+1 present anywhere': a block further up the same stack must
+        NOT count as a neighbour of a lower one it isn't touching."""
+        stack = [(0, "dirt"), (2, "brick")]   # gap at z=1
+        assert not _has_neighbor(stack, 0, +1)   # nothing at z=1
+        assert not _has_neighbor(stack, 1, -1)   # nothing at z=1, from above
+
+    def test_no_neighbor_past_either_end(self):
+        stack = [(0, "dirt"), (1, "stone")]
+        assert not _has_neighbor(stack, 1, +1)   # nothing above the top entry
+        assert not _has_neighbor(stack, 0, -1)   # nothing below the bottom entry
 
     def test_gapless_stack_that_fills_the_screen_covers(self):
         stack = [(0, "s"), (1, "s"), (2, "s")]

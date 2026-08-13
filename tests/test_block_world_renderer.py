@@ -105,6 +105,19 @@ class TestEnableBlockWorldView:
         assert cfg["top_cast_res"] == 8
         assert cfg["eye_height"] == 0.5
 
+    def test_pitch_is_clamped_here_too_not_just_at_render_time(self):
+        """Was the one pitch-writing site (of four: this action,
+        set_look_pitch, and the preview tool's two look controls) that
+        didn't clamp -- rescued only by horizon_for's own defensive clamp at
+        render time, so the STORED config value could still exceed the
+        limit even though nothing could ever look further than it."""
+        from extensions.block_world.renderer import MAX_PITCH_DEGREES
+        executor = _bw_executor(game_runner=MockGameRunner())
+        instance = MockInstance()
+        _dispatch(executor, "enable_block_world_view", instance, {"pitch": 999})
+        cfg = block_world_state(executor.game_runner.current_room)["camera"]
+        assert cfg["pitch"] == MAX_PITCH_DEGREES
+
     def test_every_written_config_key_has_a_matching_action_parameter(self):
         """General guard for the class of bug eye_height/top_cast_res were:
         a config key the handler writes (so it clearly matters) but with no

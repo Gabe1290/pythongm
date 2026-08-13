@@ -440,6 +440,20 @@ BOTTOM_SHADE = 0.55
 # yet -- after Phase 5 it would not be.
 DEFAULT_EYE_HEIGHT = 1.5
 
+
+def eye_z_for(cfg):
+    """The camera's eye height in cells: the layer its body occupies plus
+    how far up its eye sits in that layer.
+
+    The renderer, picking (handlers._pick) and the mouse-aim preview tool
+    all need this exact number and must never disagree on it -- a mismatch
+    is how picking drifts away from the crosshair. This is the one place it
+    is computed; call it rather than re-deriving ``z_layer`` + ``eye_height``
+    inline. ``z_layer`` goes through ``int()`` -- the layer a body occupies
+    is discrete even though the eye's offset within it is not.
+    """
+    return int(cfg.get("z_layer", 0)) + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT))
+
 # Horizontal faces are cast every Nth screen row and the column upscaled.
 # 4 matches raycast_2_5d's floor_cast_res default, chosen there by the same
 # reasoning: full-res per-pixel casting is roughly an order of magnitude too
@@ -461,6 +475,21 @@ DEFAULT_TOP_CAST_RES = 4
 MAX_PITCH_DEGREES = 70.0
 
 
+def clamp_pitch(pitch_degrees):
+    """Clamp a look angle to +/-MAX_PITCH_DEGREES.
+
+    The one place this bound is applied -- call it at every site that WRITES
+    ``cfg["pitch"]`` (set_look_pitch, enable_block_world_view, the preview
+    tool's look controls), not just here at render time. horizon_for clamps
+    too, defensively, so a stored value that somehow got past every writer
+    still cannot rotate the view inside out -- but a config that never
+    actually held a clamped number is a bug in its own right (e.g. a project
+    JSON round-trip that reads pitch back out expects the bound already
+    applied), so writers should not rely on the render-time clamp alone.
+    """
+    return max(-MAX_PITCH_DEGREES, min(MAX_PITCH_DEGREES, float(pitch_degrees)))
+
+
 def horizon_for(screen_h, pitch_degrees):
     """Screen row the horizon sits on for a given look angle.
 
@@ -469,7 +498,7 @@ def horizon_for(screen_h, pitch_degrees):
     cell above the eye at one cell away lands screen_h * (cell/cell) from the
     horizon -- so the shift is simply ``screen_h * tan(pitch)``.
     """
-    pitch = max(-MAX_PITCH_DEGREES, min(MAX_PITCH_DEGREES, float(pitch_degrees)))
+    pitch = clamp_pitch(pitch_degrees)
     return screen_h * 0.5 + screen_h * math.tan(math.radians(pitch))
 
 
@@ -519,13 +548,20 @@ def face_average_color(path):
     return color
 
 
-def _occupied(stack, z):
-    """Is layer z present in this cell's stack? Stacks are a handful of
-    entries, so a scan beats building a set per cell per column."""
-    for entry_z, _block_type in stack:
-        if entry_z == z:
-            return True
-    return False
+def _has_neighbor(stack, index, delta):
+    """Is there an entry at ``stack[index]``'s z-value + ``delta``?
+    ``delta=+1`` asks "is something resting directly on top of this entry"
+    (hides its top face); ``delta=-1`` asks the same for directly below
+    (hides its bottom face).
+
+    O(1): ``stack`` is sorted lowest z first (see ``column_index``'s
+    guarantee), so a neighbouring z-value, if present at all, can only be
+    the very next or previous entry -- a full rescan of the stack (what an
+    earlier version of this did, checking "is z+1 present anywhere") is
+    unneeded work the caller's own loop index already avoids.
+    """
+    j = index + (1 if delta > 0 else -1)
+    return 0 <= j < len(stack) and stack[j][0] == stack[index][0] + delta
 
 
 def _fully_covers(stack, eye_z, horizon, screen_h, px_per_cell):
@@ -616,6 +652,24 @@ def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color):
         screen.fill(color, (x0, y0, strip_w, y1 - y0))
 
 
+_HORIZONTAL_FACE_SCRATCH = None
+
+
+def _horizontal_face_scratch(samples):
+    """A reusable 1xN scratch surface for _draw_horizontal_face_textured,
+    grown (never shrunk) to fit rather than allocated fresh every call.
+
+    This runs once per exposed top/bottom face per column -- up to a few
+    hundred times a frame on a scene with a lot of visible deck -- and
+    raycast_2_5d.cast_floor_plane already established the one-scratch-
+    surface pattern for the identical reason. Created lazily (module import
+    must not need a live pygame display) rather than at module scope."""
+    global _HORIZONTAL_FACE_SCRATCH
+    if _HORIZONTAL_FACE_SCRATCH is None or _HORIZONTAL_FACE_SCRATCH.get_height() < samples:
+        _HORIZONTAL_FACE_SCRATCH = pygame.Surface((1, samples))
+    return _HORIZONTAL_FACE_SCRATCH.subsurface((0, 0, 1, samples))
+
+
 def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
                                    cam_x, cam_y, dir_x, dir_y, cos_off,
                                    plane_z, eye_z, horizon, cell_size,
@@ -679,7 +733,7 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
         screen.fill(color, (x0, y0, strip_w, span))
         return
 
-    column = pygame.Surface((1, samples))
+    column = _horizontal_face_scratch(samples)
     put = column.set_at
 
     for i in range(samples):
@@ -750,8 +804,7 @@ def render_block_world_view(room, screen: pygame.Surface):
     cam_y = _cy + camera._cached_height / 2
     # z_layer is the layer the camera's body OCCUPIES; the eye sits partway
     # up it. Walking up a step is that number going up by one.
-    eye_z = (int(cfg.get("z_layer", 0))
-             + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT)))
+    eye_z = eye_z_for(cfg)
 
     wall_color = room.parse_color(cfg.get("wall_color", "#8a8a8a"))
     fov_deg = cfg.get("fov", 66)
@@ -795,8 +848,12 @@ def render_block_world_view(room, screen: pygame.Surface):
                 continue  # air column -- floor/ceiling fill shows through
             near = max(d_entry * cos_off, 1e-4)
             far = max(d_exit * cos_off, near)
-            hits.append((near, far, side, tex_u, stack))
-            if _fully_covers(stack, eye_z, horizon, h, h * cell_size / near):
+            # Computed once here and carried in the tuple rather than
+            # recomputed in the paint loop below -- one division per non-air
+            # cell the ray enters, every column, every frame otherwise.
+            px_per_cell = h * cell_size / near
+            hits.append((near, far, side, tex_u, stack, px_per_cell))
+            if _fully_covers(stack, eye_z, horizon, h, px_per_cell):
                 break
 
         # Painter's algorithm. Every face is opaque, and within one cell the
@@ -804,21 +861,28 @@ def render_block_world_view(room, screen: pygame.Surface):
         # face sits directly above its own vertical face, and the next block
         # up starts exactly where this one ends), so the ordering only has to
         # be right BETWEEN cells.
-        for near, far, side, tex_u, stack in reversed(hits):
-            px_per_cell = h * cell_size / near
+        for near, far, side, tex_u, stack, px_per_cell in reversed(hits):
             px_per_cell_far = h * cell_size / far
             shade = wall_shade(side, near, max_dist)
             mid = (near + far) / 2.0
-            for z, block_type in stack:
+            for i, (z, block_type) in enumerate(stack):
                 faces = block_face_textures(block_type) if textured else None
                 _draw_wall_strip(
                     screen, x0, strip_w,
                     horizon + (eye_z - (z + 1)) * px_per_cell, px_per_cell,
                     shade, faces["side"] if faces else None, tex_u, wall_color)
 
+                # Top/bottom face visibility: visible only from the
+                # corresponding side, and only when nothing sits against it.
+                # stack is sorted lowest z first (column_index's guarantee),
+                # so a block at z+1/z-1, if any, can only be the very next/
+                # previous entry -- no scan needed.
+                above = _has_neighbor(stack, i, +1)
+                below = _has_neighbor(stack, i, -1)
+
                 # Top face: visible only from above it, and only when nothing
                 # is stacked on top.
-                if eye_z > z + 1 and not _occupied(stack, z + 1):
+                if eye_z > z + 1 and not above:
                     lit = face_shade(mid, max_dist, TOP_SHADE)
                     y_far = horizon + (eye_z - (z + 1)) * px_per_cell_far
                     y_near = horizon + (eye_z - (z + 1)) * px_per_cell
@@ -836,7 +900,7 @@ def render_block_world_view(room, screen: pygame.Surface):
                 # Underside: only reachable by standing below an overhang,
                 # which a pure heightmap never has -- but a hand-built world
                 # can, and a missing face there is a hole straight to the sky.
-                elif eye_z < z and not _occupied(stack, z - 1):
+                elif eye_z < z and not below:
                     lit = face_shade(mid, max_dist, BOTTOM_SHADE)
                     y_near = horizon + (eye_z - z) * px_per_cell
                     y_far = horizon + (eye_z - z) * px_per_cell_far

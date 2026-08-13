@@ -67,15 +67,13 @@ class PluginExecutor:
 
         cell_size = int(cfg.get("cell_size", 32))
         cx, cy = room._sprite_top_left(camera)
-        from .renderer import pick_voxel, screen_ray, horizon_for, DEFAULT_EYE_HEIGHT  # lazy: pygame
+        from .renderer import pick_voxel, screen_ray, horizon_for, eye_z_for  # lazy: pygame
         # The layer the EYE is in, not the layer the feet are on. With the
         # default two-block-tall body those differ, and a level crosshair
         # addresses whatever is at eye height -- picking the feet layer would
-        # break blocks the crosshair is not on. Matches renderer.py's own
-        # eye_z expression exactly -- z_layer through int(), same as the
-        # render path -- so the two never disagree on a non-integer layer.
-        eye_z = (int(cfg.get("z_layer", 0))
-                 + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT)))
+        # break blocks the crosshair is not on. eye_z_for is the one place
+        # this is computed, so the render path can never disagree with it.
+        eye_z = eye_z_for(cfg)
 
         gr = ae.game_runner
         screen_w = getattr(gr, "window_width", 0) or 0
@@ -127,8 +125,8 @@ class PluginExecutor:
         # Clamp at the setter, not just in the renderer: a held look control
         # accumulating past the limit would have to be wound all the way back
         # before the view responded again.
-        from .renderer import MAX_PITCH_DEGREES  # lazy: keeps pygame out of the IDE
-        cfg["pitch"] = max(-MAX_PITCH_DEGREES, min(MAX_PITCH_DEGREES, pitch))
+        from .renderer import clamp_pitch  # lazy: keeps pygame out of the IDE
+        cfg["pitch"] = clamp_pitch(pitch)
 
     def execute_place_block_action(self, instance, parameters):
         """Put a block in the empty cell the camera's centre ray reaches.
@@ -201,9 +199,7 @@ class PluginExecutor:
         if ae is None or not ae.game_runner or not ae.game_runner.current_room:
             return
 
-        enable = ae._parse_value(parameters.get("enable", True), instance)
-        if isinstance(enable, str):
-            enable = enable.lower() in ("true", "1", "yes")
+        enable = _truthy(ae._parse_value(parameters.get("enable", True), instance))
 
         room = ae.game_runner.current_room
         if not enable:
@@ -222,7 +218,7 @@ class PluginExecutor:
         def _bool(key, default):
             return _truthy(parameters.get(key, default))
 
-        from .renderer import DEFAULT_EYE_HEIGHT  # lazy: pygame
+        from .renderer import DEFAULT_EYE_HEIGHT, clamp_pitch  # lazy: pygame
 
         block_world_state(room)["camera"] = {
             "enabled": True,
@@ -236,8 +232,10 @@ class PluginExecutor:
             "floor_color": str(parameters.get("floor_color", "#3a2f1c")),
             "ceiling_color": str(parameters.get("ceiling_color", "#87CEEB")),
             "wall_textured": _bool("wall_textured", True),
-            # Look angle in degrees, positive up (Phase 2c).
-            "pitch": _num("pitch", 0),
+            # Look angle in degrees, positive up (Phase 2c). Clamped here too
+            # -- was the one pitch-writing site that wasn't, rescued only by
+            # horizon_for's own defensive clamp at render time.
+            "pitch": clamp_pitch(_num("pitch", 0)),
             # Horizontal (top/bottom) faces cast every Nth screen row and
             # upscale the result; 0 falls back to a flat average colour,
             # which is cheaper on a scene showing a lot of deck.

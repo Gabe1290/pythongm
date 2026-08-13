@@ -182,14 +182,25 @@ def _fresh():
     return {"blocks": {}, "camera": {"enabled": False}, "_columns": None}
 
 
+def _peek_state(room):
+    """This room's block-world state dict if it already exists, else None.
+
+    Does NOT create it -- the one shared lookup ``_invalidate_columns``,
+    ``peek_blocks`` and ``peek_camera`` all build on, so a future change to
+    how state is namespaced (the key name, the getattr guard for bare test
+    objects) has exactly one place to update instead of three copies that
+    could drift out of sync."""
+    es = getattr(room, "extension_state", None)
+    return es.get(BLOCK_WORLD_KEY) if es else None
+
+
 def _invalidate_columns(room):
     """Drop the derived per-column cache. Called by every mutator here.
 
     Code that reaches around these helpers and edits ``state["blocks"]``
     directly MUST call this too, or the renderer keeps drawing the old world.
     """
-    es = getattr(room, "extension_state", None)
-    st = es.get(BLOCK_WORLD_KEY) if es else None
+    st = _peek_state(room)
     if st is not None:
         st["_columns"] = None
 
@@ -217,8 +228,7 @@ def peek_blocks(room):
     run for every room, block-world or not, and must not stamp block-world
     state onto rooms that never used it. Mirrors
     extensions.raycast_2_5d.state.peek_camera."""
-    es = getattr(room, "extension_state", None)
-    st = es.get(BLOCK_WORLD_KEY) if es else None
+    st = _peek_state(room)
     return st["blocks"] if st else None
 
 
@@ -227,8 +237,7 @@ def peek_camera(room):
     None. Does NOT create state -- the room-renderer hook runs for EVERY
     room (block-world or not) and must not stamp state onto rooms that
     never enabled the view. Mirrors extensions.raycast_2_5d.state.peek_camera."""
-    es = getattr(room, "extension_state", None)
-    st = es.get(BLOCK_WORLD_KEY) if es else None
+    st = _peek_state(room)
     return st["camera"] if st else None
 
 
