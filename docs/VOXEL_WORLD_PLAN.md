@@ -158,6 +158,28 @@ per-unit discipline:
   pixel-sampled rendering including one that exercises the actual imported
   CC0 texture end to end, extension wiring). Suite 2540 → 2559 passed, 0
   failed.
+
+  **Eyeball tool (added after the fact):** `tools/preview_block_world.py`
+  builds a showcase world (every registry block type, in lanes, at varied
+  distances) and drives the real `render_block_world_view` — either as a
+  walkaround window or, with `--shots DIR`, nine fixed frames as PNGs
+  headless. Pixel-sampling tests prove a strip got drawn; they say nothing
+  about whether the textures READ well, which is 2a's whole stated purpose.
+  Two things it surfaced immediately, both **Phase 2b/2c input rather than
+  bugs to fix now**:
+  1. `BLOCK_TYPES`' `transparent` flag is not honoured — glass, water and ice
+     draw fully opaque, and a ray stops at the first occupied cell regardless.
+  2. Textures with real alpha (leaves, glass) blit their alpha, so the gaps
+     show the flat floor/ceiling fill rather than whatever block is behind —
+     there is only one hit per column, so nothing behind was ever drawn. Any
+     see-through block type needs the ray to continue past it and the column
+     to composite back-to-front, which is a renderer change, not a texture one.
+
+  The scene layout has viewing lanes: a viewpoint must stand in open air with
+  a clear line to its subject, and at FOV 66 a row N cells wide needs roughly
+  N/1.3 cells of standoff to fit in frame. Four of the first-draft viewpoints
+  were boxed inside the corridor staring at a wall, which is obvious in a
+  picture and invisible to any assertion worth writing.
 - **2b — multi-layer heightmap.** Blocks stack (a handful of Z layers, not
   arbitrary depth), player can walk up single-block steps and see over
   short walls. Still no free vertical camera look — pitch stays level, like
