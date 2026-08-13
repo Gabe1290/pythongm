@@ -283,8 +283,9 @@ def walk(size):
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
                                               is_breakable)
-    from extensions.block_world.renderer import (pick_block, draw_cell_outline,
-                                                 unproject_to_plane, march_ray)
+    from extensions.block_world.renderer import (draw_cell_outline, march_ray,
+                                                 pick_voxel, screen_ray,
+                                                 unproject_to_plane)
 
     room, camera = make_room()
     view_i = 0
@@ -325,16 +326,17 @@ def walk(size):
 
         Two different questions, so two different answers:
 
-        - **Breaking** casts a ray through the mouse's COLUMN, still at eye
-          height. With no pitch, mouse y cannot tilt a ray, so only x steers
-          it. Same pick_block the break_block action uses, just not
-          restricted to the centre column.
-        - **Building** unprojects the mouse onto the floor of the camera's
-          layer, so you point directly at the square you want. That is what
-          the centre-ray rule could not express: it could only ever build
-          against a surface, never at a chosen spot.
+        - Against BLOCKS, a real 3D march (screen_ray + pick_voxel): the
+          target is the first solid voxel, and the build cell sits on the
+          near side of whichever face the ray came through. Point at a
+          block's top and you build on top of it; point at its side and you
+          build beside it.
+        - Over OPEN GROUND, where a voxel march has nothing to hit -- this
+          world's ground is a flat colour, not a layer of blocks -- it falls
+          back to the floor plane of the camera's own layer, which is what
+          makes building out across empty ground work at all.
 
-        The build cell has to be empty, within reach, and actually visible --
+        The fallback cell has to be empty, within reach, and actually visible:
         the floor of a square behind a wall still projects to a screen
         position, and without the occlusion check you could build through
         solid rock by pointing at where the floor would be.
@@ -349,23 +351,30 @@ def walk(size):
         sw, sh = screen.get_size()
         mx, my = mouse_pos
 
-        ray_angle = facing + math.atan(math.tan(fov / 2) * (2.0 * mx / sw - 1.0))
-        target, _placement = pick_block(room, px, py, layer, ray_angle, CELL, reach)
+        ray_angle, z_per_px = screen_ray(mx, my, facing, fov, sw, sh, CELL)
+        target, build = pick_voxel(room, px, py, layer + 0.5, ray_angle,
+                                   z_per_px, CELL, reach)
 
-        build = None
-        ground = unproject_to_plane(mx, my, layer, px, py, layer + 0.5,
-                                    facing, fov, sw, sh, CELL)
-        if ground is not None:
-            cell = (int(ground[0] // CELL), int(ground[1] // CELL), layer)
-            within = math.hypot(ground[0] - px, ground[1] - py) / CELL <= reach
-            if within and get_block(room, *cell) is None:
-                for cx, cy, *_rest in march_ray(room, px, py, ray_angle,
-                                                CELL, reach + 1):
-                    if (cx, cy) == cell[:2]:
-                        build = cell
-                        break
-                    if get_block(room, cx, cy, layer) is not None:
-                        break        # a wall stands between here and there
+        if target is None:
+            # The ray reached no block. In this world the ground is a flat
+            # colour rather than a layer of blocks, so open ground is not
+            # something a voxel march can hit -- fall back to the floor plane
+            # of the camera's own layer, which is what makes building out
+            # across empty ground work at all.
+            build = None
+            ground = unproject_to_plane(mx, my, layer, px, py, layer + 0.5,
+                                        facing, fov, sw, sh, CELL)
+            if ground is not None:
+                cell = (int(ground[0] // CELL), int(ground[1] // CELL), layer)
+                within = math.hypot(ground[0] - px, ground[1] - py) / CELL <= reach
+                if within and get_block(room, *cell) is None:
+                    for cx, cy, *_rest in march_ray(room, px, py, ray_angle,
+                                                    CELL, reach + 1):
+                        if (cx, cy) == cell[:2]:
+                            build = cell
+                            break
+                        if get_block(room, cx, cy, layer) is not None:
+                            break    # a wall stands between here and there
         return target, build
 
     hud_lines = [

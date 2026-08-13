@@ -385,6 +385,30 @@ actually visible: the floor of a square behind a wall still projects to a
 screen position, so without an occlusion check you can build through solid
 rock by pointing at where the floor would be.
 
+**3D picking (2026-08-13), and the thing that made it cheap.** Asked how to
+stack blocks one atop another; the honest answer was "climb what you build,
+and you cannot make a vertical column at all", because building only ever
+reached the floor plane of your own layer. The fix turned on one realisation:
+**a level camera constrains the forward AXIS to horizontal, not every ray.**
+Each pixel already corresponds to a real ray sloping up or down — that is
+precisely what `unproject_to_plane` exploits — so reading that slope out
+(`screen_ray`) and marching it through the grid (`pick_voxel`) gives full
+three-dimensional picking **with no renderer change at all**.
+
+`pick_voxel` returns the first solid voxel and the last empty one before it,
+so the FACE decides where a block goes and no case analysis is needed: aim at
+a top face and you build on top, at a side face and you build beside. It is
+the general form of `pick_block` — a centre-column ray at the horizon has
+`z_per_px == 0` and reduces to the same walk.
+
+What it does NOT lift is the vertical field of view, now measured rather than
+guessed: at the very bottom of a 600px view the steepest ray drops about half
+a cell per cell, roughly **26 degrees**. Consequences worth knowing before
+designing a sample around building: you must stand a couple of cells back for
+a ray to reach another layer at all, you can never see the top of a block on
+your OWN layer (its top is half a cell above the eye), and you cannot dig
+straight down. That 26 degrees is the concrete cost of deferring 2c.
+
 The gap rule stays for the ACTIONS, which have a crosshair and no mouse. But
 note the interaction it creates there: once a hole exists ahead of you, every
 placement goes into it until it is filled. Defensible (you fix what you

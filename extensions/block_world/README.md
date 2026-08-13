@@ -35,10 +35,16 @@ py -3.12 tools/preview_block_world.py              # walk around (needs a displa
 py -3.12 tools/preview_block_world.py --shots out  # 14 fixed frames as PNGs (headless)
 ```
 
-Press **B** for build mode, then point with the **mouse**: the outline on
-the floor follows it and shows the square a block would land in, left-click
-breaks, right-click places, Ctrl+Z undoes. Building is off until you ask for
-it so a stray click costs nothing.
+Press **B** for build mode, then point with the **mouse**: the outline
+follows it and shows the square a block would land in, left-click breaks,
+right-click places, Ctrl+Z undoes. Building is off until you ask for it so a
+stray click costs nothing.
+
+**To stack blocks**, aim at the top face of one and place: the new block goes
+on top. You have to stand a couple of cells back for the ray to reach down to
+another layer — the vertical field of view is about 26 degrees, so a block on
+your OWN layer never shows you its top (that top is half a cell above your
+eye). Otherwise, build outwards and climb what you built.
 
 The pixel-sampling tests prove a strip got drawn; this is how you judge
 whether the textures actually read well — which is the whole point of

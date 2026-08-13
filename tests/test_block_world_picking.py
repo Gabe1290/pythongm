@@ -248,6 +248,136 @@ class TestBreakBlock:
         assert get_block(room, 3, 0, 0) == "stone", "broke the wrong layer"
 
 
+class TestScreenRay:
+    """A level camera constrains the forward AXIS to horizontal; it does not
+    make every ray horizontal. screen_ray reads out the real 3D ray through
+    a pixel, which is what lets picking work in three dimensions with no
+    change to the renderer."""
+
+    SW, SH = 800, 600
+    FOV = math.radians(66)
+
+    def _ray(self, sx, sy, facing=0.0):
+        from extensions.block_world.renderer import screen_ray
+        return screen_ray(sx, sy, facing, self.FOV, self.SW, self.SH, CELL)
+
+    def test_the_horizon_is_level(self):
+        angle, z_per_px = self._ray(self.SW / 2, self.SH / 2)
+        assert angle == pytest.approx(0.0)
+        assert z_per_px == pytest.approx(0.0)
+
+    def test_below_the_horizon_descends_and_above_climbs(self):
+        assert self._ray(self.SW / 2, self.SH / 2 + 100)[1] < 0
+        assert self._ray(self.SW / 2, self.SH / 2 - 100)[1] > 0
+
+    def test_the_centre_column_looks_where_the_camera_faces(self):
+        assert self._ray(self.SW / 2, 400, facing=1.2)[0] == pytest.approx(1.2)
+
+    def test_the_vertical_field_of_view_is_bounded_by_the_screen(self):
+        """The steepest possible look-down, at the very bottom of the view,
+        is about half a cell per cell -- roughly 26 degrees. That IS the
+        vertical FOV, and the reason you cannot dig straight down."""
+        _angle, z_per_px = self._ray(self.SW / 2, self.SH - 1)
+        assert 0.45 < -z_per_px * CELL < 0.55
+
+    def test_it_describes_the_same_ray_as_unproject_to_plane(self):
+        """Two ways of asking the same question, so they must agree exactly
+        -- otherwise the cursor lands on one cell and the pick acts on
+        another."""
+        from extensions.block_world.renderer import unproject_to_plane
+        for sx, sy in ((400, 400), (200, 500), (700, 350), (150, 380)):
+            angle, z_per_px = self._ray(sx, sy, facing=0.4)
+            travel = (0 - 0.5) / z_per_px            # ray distance to z = 0
+            along = (16 + math.cos(angle) * travel, 16 + math.sin(angle) * travel)
+            flat = unproject_to_plane(sx, sy, 0, 16, 16, 0.5, 0.4, self.FOV,
+                                      self.SW, self.SH, CELL)
+            assert along == pytest.approx(flat)
+
+
+class TestPickVoxel:
+    """3D picking: the general form of pick_block. The face the ray comes
+    through decides where a new block goes, and it falls out of tracking the
+    previous voxel rather than being special-cased."""
+
+    def _pv(self, room, camera, z_per_px, reach=6, angle=None):
+        from extensions.block_world.renderer import pick_voxel
+        cfg = block_world_state(room)["camera"]
+        cx, cy = room._sprite_top_left(camera)
+        if angle is None:
+            angle = math.radians(-camera.facing_angle)
+        return pick_voxel(room, cx + camera._cached_width / 2,
+                          cy + camera._cached_height / 2,
+                          int(cfg["z_layer"]) + 0.5, angle, z_per_px,
+                          CELL, reach)
+
+    def test_a_level_ray_behaves_like_the_single_layer_walk(self):
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        target, placement = self._pv(room, camera, 0.0)
+        assert target == (3, 0, 0)
+        assert placement == (2, 0, 0)
+
+    def test_aiming_at_a_top_face_builds_on_top(self):
+        """The whole point: point at a block's top and the new one stacks."""
+        room, camera = _world(z_layer=1)
+        set_block(room, 4, 0, 0, "stone")
+        # Shallow descent: crosses z = 1 right as it reaches the block.
+        target, placement = self._pv(room, camera, -0.5 / (4 * CELL))
+        assert target == (4, 0, 0)
+        assert placement == (4, 0, 1), "should have landed on top of it"
+
+    def test_aiming_at_a_side_face_builds_beside(self):
+        room, camera = _world(z_layer=1)
+        set_block(room, 4, 0, 0, "stone")
+        # Steeper: already below the top plane before reaching the block.
+        target, placement = self._pv(room, camera, -0.5 / (2 * CELL))
+        assert target == (4, 0, 0)
+        assert placement[2] == 0 and placement[:2] != (4, 0)
+
+    def test_an_upward_ray_reaches_a_higher_layer(self):
+        """Breaking a block above eye level, which the single-layer walk
+        could never target."""
+        room, camera = _world()
+        for z in (0, 1, 2):
+            set_block(room, 4, 0, z, "cobble")
+        assert self._pv(room, camera, 0.0)[0] == (4, 0, 0)
+        assert self._pv(room, camera, 0.5 / (2 * CELL))[0] == (4, 0, 1)
+
+    def test_nothing_in_the_way_hits_nothing(self):
+        room, camera = _world()
+        assert self._pv(room, camera, -0.01)[0] is None
+
+    def test_it_does_not_tunnel_through_a_block_below(self):
+        """A descending ray must stop at the first solid voxel it enters,
+        not skip past it because the next column is lower."""
+        room, camera = _world(z_layer=2)
+        set_block(room, 2, 0, 1, "stone")
+        target, _placement = self._pv(room, camera, -1.0 / (2 * CELL))
+        assert target == (2, 0, 1)
+
+    def test_an_absurdly_steep_ray_terminates(self):
+        """Screen geometry bounds the real slope to about half a cell per
+        cell, but nothing stops a caller passing something wilder, and a
+        span of layers per column is a loop. z_min/z_max keep it finite."""
+        from extensions.block_world.renderer import pick_voxel
+        room, camera = _world()
+        cx, cy = room._sprite_top_left(camera)
+        target, _placement = pick_voxel(
+            room, cx + CELL / 2, cy + CELL / 2, 0.5, 0.0, -50.0, CELL, 6,
+            z_min=-4, z_max=4)
+        assert target is None
+
+    def test_the_clamp_does_not_hide_blocks_inside_the_range(self):
+        room, camera = _world()
+        set_block(room, 2, 0, -2, "stone")
+        from extensions.block_world.renderer import pick_voxel
+        cx, cy = room._sprite_top_left(camera)
+        target, _placement = pick_voxel(
+            room, cx + CELL / 2, cy + CELL / 2, 0.5, 0.0, -1.0 / CELL, CELL, 6,
+            z_min=-4, z_max=4)
+        assert target == (2, 0, -2)
+
+
 class TestRefillingHoles:
     """Reported from a playtest: break a block out of a wall and you can
     never put it back.

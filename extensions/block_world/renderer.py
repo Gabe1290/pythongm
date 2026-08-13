@@ -247,6 +247,67 @@ def project_point(wx, wy, wz, cam_x, cam_y, eye_z, facing_screen_rad,
     return sx, sy
 
 
+def screen_ray(sx, sy, facing_screen_rad, fov_rad, screen_w, screen_h,
+               cell_size):
+    """The 3D ray through a screen pixel, as ``(angle_rad, z_per_px)``.
+
+    A level camera constrains the forward AXIS to horizontal; it does not
+    make every ray horizontal. Each pixel still corresponds to a real ray
+    sloping up or down, which is exactly what unproject_to_plane relies on.
+    Reading that slope out explicitly is what lets picking work in three
+    dimensions without the renderer gaining pitch.
+
+    ``z_per_px`` is the change in height, in cells, per pixel travelled along
+    the ray: negative below the horizon (descending), zero on it. Its
+    magnitude is bounded by the screen: at the very bottom of a 600px view
+    the ray drops about half a cell per cell travelled, roughly 26 degrees.
+    That IS the vertical field of view, and it is why you cannot look
+    straight down -- the limit Phase 2c exists to lift.
+    """
+    camera_x = 2.0 * sx / screen_w - 1.0
+    offset = math.atan(math.tan(fov_rad / 2) * camera_x)
+    z_per_px = -(sy - screen_h * 0.5) * math.cos(offset) / (screen_h * cell_size)
+    return facing_screen_rad + offset, z_per_px
+
+
+def pick_voxel(room, cam_x, cam_y, eye_z, angle_rad, z_per_px, cell_size,
+               reach, z_min=-64, z_max=256):
+    """March a 3D ray and return ``(target, placement)``.
+
+    ``target`` is the first solid voxel it enters; ``placement`` is the last
+    empty voxel before that, which is the cell on the near side of whichever
+    FACE the ray came through -- so pointing at a block's top face places on
+    top of it, and at a side face places beside it. No special cases: the
+    face falls out of tracking the previous voxel.
+
+    This is the general form of pick_block. That one walks a single layer at
+    eye height and needs a heuristic to make a hole in a wall refillable;
+    with a real 3D ray you simply point at the hole. The two coexist because
+    the ACTIONS have a crosshair and no mouse: their ray is the centre column
+    at the horizon, where z_per_px is 0 and this reduces to the same walk.
+
+    Reuses the one DDA for the horizontal steps and tracks height across each
+    cell's entry and exit distance, so a column the ray passes through
+    diagonally has every layer it clips checked in ray order.
+    """
+    prev = None
+    for map_x, map_y, entry, exit_d, _side, _tex_u in march_ray(
+            room, cam_x, cam_y, angle_rad, cell_size, reach):
+        z_entry = eye_z + z_per_px * entry
+        z_exit = eye_z + z_per_px * exit_d
+        low, high = (z_entry, z_exit) if z_entry <= z_exit else (z_exit, z_entry)
+        low = max(int(math.floor(low)), z_min)
+        high = min(int(math.floor(high)), z_max)
+        if high < low:
+            continue                      # the ray left the world vertically
+        layers = range(low, high + 1) if z_per_px >= 0 else range(high, low - 1, -1)
+        for layer in layers:
+            if get_block(room, map_x, map_y, layer) is not None:
+                return (map_x, map_y, layer), prev
+            prev = (map_x, map_y, layer)
+    return None, prev
+
+
 def unproject_to_plane(sx, sy, plane_z, cam_x, cam_y, eye_z,
                        facing_screen_rad, fov_rad, screen_w, screen_h,
                        cell_size):
