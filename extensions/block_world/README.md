@@ -5,10 +5,12 @@ strings, or docs — see the naming section of `docs/VOXEL_WORLD_PLAN.md`. This
 is "inspired by," the same territory Luanti/Minetest itself occupies, not a
 clone wearing someone else's name.
 
-**Status: Phase 2a of `docs/VOXEL_WORLD_PLAN.md` done; Phase 2b next.** A room
-with the view enabled renders as a flat, single-layer textured first-person
-world. There is still no way to place or break a block, no collision, and no
-gravity — see "What's not here yet" below.
+**Status: Phase 2b of `docs/VOXEL_WORLD_PLAN.md` done; Phase 3 next.** A room
+with the view enabled renders as a textured first-person world whose blocks
+**stack** — walls can be several blocks high, you can stand on top of things
+and see over what's below you, and blocks show their top faces. There is
+still no way to place or break a block, no collision, and no gravity — see
+"What's not here yet" below.
 
 ## What exists so far
 
@@ -16,8 +18,8 @@ gravity — see "What's not here yet" below.
 |---|---|
 | `extension.json` | The manifest. |
 | `__init__.py` | The entry point — declares `PLUGIN_ACTIONS`, `PluginExecutor` and `PLUGIN_ROOM_RENDERERS`, and `render_room` claims a room only when its camera config says `enabled`. |
-| `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store plus a camera config, both under `room.extension_state["block_world"]`, and the `BLOCK_TYPES` registry mapping block type ids to face textures. |
-| `renderer.py` | Phase 2a's renderer: `cast_ray` (cell-occupancy DDA) and `render_block_world_view` (camera-plane projection, textured wall columns, flat floor/ceiling). |
+| `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store plus a camera config, both under `room.extension_state["block_world"]`, and the `BLOCK_TYPES` registry mapping block type ids to face textures. Also the derived `column_index` / `stack_top` heightmap queries the renderer reads. |
+| `renderer.py` | The renderer: `march_ray` (the one cell-occupancy DDA, yielding each cell's entry and exit distance), `cast_ray` (first-hit wrapper over it), and `render_block_world_view` (camera-plane projection, stacked textured wall columns, flat-shaded top/bottom faces). |
 | `actions.py` / `handlers.py` | One action, `enable_block_world_view` — camera/config plumbing, mirroring `enable_raycast_view`. |
 | `textures/source_hand_painted_expanded/` | The CC0-licensed block textures (Phase 0), 32 files. |
 | `ASSETS.md` | The licensing audit — read this before adding or swapping any texture. |
@@ -30,13 +32,14 @@ draws:
 
 ```
 py -3.12 tools/preview_block_world.py              # walk around (needs a display)
-py -3.12 tools/preview_block_world.py --shots out  # 9 fixed frames as PNGs (headless)
+py -3.12 tools/preview_block_world.py --shots out  # 14 fixed frames as PNGs (headless)
 ```
 
 The pixel-sampling tests prove a strip got drawn; this is how you judge
 whether the textures actually read well — which is the whole point of
-staging 2a first. Its movement and collision are the script's own, not
-engine features.
+staging 2a first. Its movement, footing and collision are the script's own,
+not engine features (the engine gets none until Phase 4), though the
+step-up rule it uses is built on the real `stack_top` heightmap query.
 
 ## The data model (`state.py`)
 
@@ -52,6 +55,14 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
 - `get_block` / `set_block` / `remove_block` / `iter_blocks` / `bounds` —
   the working API. Air is the absence of a key, not a stored block — the
   same "sparse, not dense" reasoning the plan doc gives.
+- `column_index(room)` / `stack_top(room, x, y)` — the DERIVED heightmap
+  view: every non-empty column as `{(x, y): [(z, type), ...]}`, lowest
+  first, cached until a mutator invalidates it. The renderer needs a whole
+  stack per cell it steps into, and probing the `"x,y,z"` string keys layer
+  by layer would cost tens of thousands of string formats a frame. Anything
+  that edits `state["blocks"]` without going through the mutators above
+  MUST call `_invalidate_columns`, or the renderer keeps drawing the old
+  world.
 - `to_block_list` / `load_block_list` — round-trip to a flat list of
   `{"x", "y", "z", "type"}` dicts, matching the shape convention room JSON
   already uses for tile layers. Nothing here reads or writes room JSON
@@ -61,8 +72,17 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
 
 ## What's not here yet
 
-- Stacked blocks / multiple visible z-layers (Phase 2b); free vertical look
-  (Phase 2c).
+- Free vertical camera look (Phase 2c, deliberately deferred). Pitch is
+  fixed level, so you cannot look down into a pit at your feet or up at the
+  top of a tower you are standing against — run the preview's `pit`
+  viewpoint to see exactly what that costs.
+- Textured horizontal faces. Tops and undersides are flat-shaded with their
+  texture's average colour; per-pixel floor casting is 2c work.
+- Transparency as a real feature. `BLOCK_TYPES` carries a `transparent`
+  flag that nothing reads, and a ray still stops at the first occupied
+  cell. Alpha textures (glass, leaves) do now composite over whatever the
+  ray reaches behind them, but that falls out of painting far→near rather
+  than being a designed see-through path.
 - `place_block` / `break_block` actions, a hotbar (Phase 3).
 - Collision, gravity, a HUD (Phase 4).
 - A sample game (Phase 5).

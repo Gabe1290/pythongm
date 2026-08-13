@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
-"""Block World renderer -- Phase 2a of docs/VOXEL_WORLD_PLAN.md: a flat,
-single-layer first-person view.
+"""Block World renderer -- Phase 2b of docs/VOXEL_WORLD_PLAN.md: a
+first-person view of a world whose blocks STACK.
 
 Reuses the SHAPE of extensions/raycast_2_5d/renderer.py (DDA ray marching,
 per-column screen strips, camera-plane projection, fisheye correction) but
-the hit test is genuinely simpler: raycast derives thin WALL EDGES from
+the hit test is genuinely different: raycast derives thin WALL EDGES from
 sprite instances and a ray stops at a specific edge; a voxel world's blocks
 each fill a whole grid cell, so this is the more standard "cell occupancy"
-DDA (Amanatides & Woo) -- a ray steps cell by cell and stops at the first
-occupied one, checked via state.get_block.
+DDA (Amanatides & Woo), stepping cell by cell.
 
-Phase 2a scope, deliberately: ONE z-layer (the camera's own layer -- no
-looking up/down, no stacking multiple visible layers), flat-colour floor and
-ceiling, textured wall columns using each block type's "side" face texture.
-No floor/ceiling texturing, no sky, no billboards -- later-phase work,
-mirroring how raycast staged its own texturing in over several phases.
+Where 2a stopped a ray at the first occupied cell on ONE layer and drew a
+single cube centred on the horizon, 2b marches on and draws the whole
+vertical STACK at each cell -- so a wall can be two blocks high, a step can
+be climbed, and standing on a ledge lets you see over things. The vertical
+projection is one line of maths, spelled out in render_block_world_view's
+own docstring.
+
+Still 2b, not 2c: the camera's pitch is fixed level (no looking up or down),
+and horizontal faces are flat-shaded rather than per-pixel texture mapped.
+No sky, no billboards -- later-phase work, mirroring how raycast staged its
+own texturing in over several phases.
 
 What ``room`` must provide is ordinary GameRoom API, none of it owned by
 this extension: ``parse_color()``, ``_find_first_instance()``,
@@ -26,7 +31,8 @@ import math
 
 import pygame
 
-from .state import block_world_state, get_block, block_face_textures
+from .state import (block_world_state, get_block, block_face_textures,
+                    column_index)
 
 _TEXTURE_CACHE = {}
 
@@ -43,22 +49,23 @@ def _load_texture(path):
     return surface
 
 
-def cast_ray(room, px: float, py: float, z_layer: int, angle_rad: float,
-             cell_size: int, max_cells: int):
-    """DDA raycast from (px, py) (room pixel coords) at angle_rad (standard
-    math convention: 0=+x, increasing counter-clockwise) through the block
-    grid at z_layer, until it enters an occupied cell -- not "crosses an
-    edge" (see this module's docstring for why that differs from
-    raycast_2_5d's own cast_ray).
+def march_ray(room, px: float, py: float, angle_rad: float,
+              cell_size: int, max_cells: int):
+    """Walk the DDA cell by cell, yielding one tuple per cell ENTERED:
 
-    Returns (distance_in_pixels, side, hit, tex_u, block_type):
-      - side is 0 for a vertical face (x-step hit) or 1 for a horizontal one
-        (y-step hit), the same convention raycast_2_5d uses -- a free depth
-        cue for shading.
-      - hit is False when the ray reached max range without entering an
-        occupied cell; the caller must draw no strip for that column.
-      - tex_u in [0, 1) is the horizontal texture coordinate along the hit
-        face; block_type is the block id at the hit cell (or None on a miss).
+        (map_x, map_y, entry_dist, exit_dist, side, tex_u)
+
+    both distances in pixels from the ray origin. Phase 2b needs the exit
+    distance as well as the entry one: a block's TOP face is a horizontal
+    surface running from the near vertical face (entry) back to the far one
+    (exit), so projecting it needs both edges.
+
+    This is the single DDA in the extension -- cast_ray below is a thin
+    first-hit wrapper over it, and Phase 3's block picking should reuse it
+    too rather than growing a third copy of the same stepping code.
+
+    The ray does NOT yield the cell the origin is already inside; a camera
+    standing inside a block is a caller bug, not a thing to render.
     """
     px_cell, py_cell = px / cell_size, py / cell_size
     dx, dy = math.cos(angle_rad), math.sin(angle_rad)
@@ -80,33 +87,68 @@ def cast_ray(room, px: float, py: float, z_layer: int, angle_rad: float,
         step_y = 1
         side_y = (map_y + 1 - py_cell) * delta_y
 
-    side = 0
-    dist_cells = float(max_cells)
     for _ in range(max_cells):
+        # The entry distance is deliberately recovered as (side - delta)
+        # AFTER the step rather than captured before it. Those differ by an
+        # ULP in floating point, and the pre-step value -- though marginally
+        # the more accurate one -- shifts a strip edge by a pixel in the
+        # occasional column where the rounding lands either side of an
+        # integer. Phase 2a's renderer computed it this way, so matching it
+        # keeps a single-layer world provably pixel-identical and leaves any
+        # future difference meaning a real regression.
         if side_x < side_y:
             side_x += delta_x
             map_x += step_x
             side = 0
+            entry = side_x - delta_x
         else:
             side_y += delta_y
             map_y += step_y
             side = 1
+            entry = side_y - delta_y
+        # Texture-U: fractional position along the hit face, same derivation
+        # as raycast_2_5d.renderer.cast_ray.
+        if side == 0:
+            wall_coord = py_cell + entry * dy
+            if dx > 0:
+                wall_coord = -wall_coord
+        else:
+            wall_coord = px_cell + entry * dx
+            if dy < 0:
+                wall_coord = -wall_coord
+        tex_u = wall_coord - math.floor(wall_coord)
+        exit_cells = side_x if side_x < side_y else side_y
+        yield (map_x, map_y, max(entry, 1e-4) * cell_size,
+               exit_cells * cell_size, side, tex_u)
+
+
+def cast_ray(room, px: float, py: float, z_layer: int, angle_rad: float,
+             cell_size: int, max_cells: int):
+    """First-hit raycast through the block grid at a SINGLE z_layer: march
+    until the ray enters an occupied cell -- not "crosses an edge" (see this
+    module's docstring for why that differs from raycast_2_5d's own
+    cast_ray).
+
+    Returns (distance_in_pixels, side, hit, tex_u, block_type):
+      - side is 0 for a vertical face (x-step hit) or 1 for a horizontal one
+        (y-step hit), the same convention raycast_2_5d uses -- a free depth
+        cue for shading.
+      - hit is False when the ray reached max range without entering an
+        occupied cell; the caller must draw no strip for that column.
+      - tex_u in [0, 1) is the horizontal texture coordinate along the hit
+        face; block_type is the block id at the hit cell (or None on a miss).
+
+    Since 2b the renderer draws every layer and uses march_ray directly, so
+    this is no longer on the render path -- it stays as the single-layer
+    query (Phase 3 picking, tests, anything wanting one answer not a stack).
+    """
+    side = 0
+    for map_x, map_y, dist, _exit, side, tex_u in march_ray(
+            room, px, py, angle_rad, cell_size, max_cells):
         block_type = get_block(room, map_x, map_y, z_layer)
         if block_type is not None:
-            dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
-            # Texture-U: fractional position along the hit face, same
-            # derivation as raycast_2_5d.renderer.cast_ray.
-            if side == 0:
-                wall_coord = py_cell + dist_cells * dy
-                if dx > 0:
-                    wall_coord = -wall_coord
-            else:
-                wall_coord = px_cell + dist_cells * dx
-                if dy < 0:
-                    wall_coord = -wall_coord
-            tex_u = wall_coord - math.floor(wall_coord)
-            return max(dist_cells, 1e-4) * cell_size, side, True, tex_u, block_type
-    return max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None
+            return dist, side, True, tex_u, block_type
+    return max(float(max_cells), 1e-4) * cell_size, side, False, 0.0, None
 
 
 # --- wall shading -----------------------------------------------------
@@ -116,6 +158,17 @@ def cast_ray(room, px: float, py: float, z_layer: int, angle_rad: float,
 SIDE_SHADE = 0.85
 FOG_STRENGTH = 0.55
 MIN_SHADE = 0.35
+
+# Horizontal faces (Phase 2b). A top face catches the light and a bottom face
+# is in shadow; without that split a stepped stack reads as one flat mass,
+# since every face would otherwise share the vertical faces' shading.
+TOP_SHADE = 1.15
+BOTTOM_SHADE = 0.55
+
+# How high the eye sits inside its own layer. 0.5 == the middle of the block,
+# which is what Phase 2a drew (it centred a 1-cell cube on the horizon), so
+# this is the value that keeps a single-layer world pixel-identical.
+DEFAULT_EYE_HEIGHT = 0.5
 
 
 def wall_shade(side: int, corrected: float, max_dist: float) -> float:
@@ -127,9 +180,145 @@ def wall_shade(side: int, corrected: float, max_dist: float) -> float:
     return max(MIN_SHADE, side_factor * dist_factor)
 
 
+def face_shade(corrected: float, max_dist: float, facing: float) -> float:
+    """Brightness for a HORIZONTAL face (top/bottom) at a given distance.
+
+    Same fog curve as wall_shade so a stack's vertical and horizontal faces
+    recede together, but with the top/bottom light constant in place of the
+    x/y side hint. Clamped to 1.0 at the top so TOP_SHADE brightens a near
+    face without blowing it out."""
+    t = corrected / max_dist if max_dist > 0 else 0.0
+    t = max(0.0, min(1.0, t))
+    return max(MIN_SHADE, min(1.0, facing * (1.0 - FOG_STRENGTH * t)))
+
+
+_AVG_COLOR_CACHE = {}
+
+
+def face_average_color(path):
+    """The average colour of a face texture, cached.
+
+    Phase 2b draws horizontal faces as flat colour rather than mapping the
+    texture per pixel. Per-pixel floor casting is the expensive step the
+    raycast arc deliberately deferred on two of its three targets, and a
+    step or a pit reads correctly without it -- what matters is that the top
+    of a block is a distinct surface at the right screen position, not that
+    its grain is visible. Textured tops belong with 2c's real 3D marching.
+    """
+    color = _AVG_COLOR_CACHE.get(path)
+    if color is None:
+        surface = _load_texture(path)
+        try:
+            color = pygame.transform.average_color(surface, consider_alpha=True)
+        except TypeError:  # pygame < 2.1.3 has no consider_alpha
+            color = pygame.transform.average_color(surface)
+        color = tuple(int(c) for c in color[:3])
+        _AVG_COLOR_CACHE[path] = color
+    return color
+
+
+def _occupied(stack, z):
+    """Is layer z present in this cell's stack? Stacks are a handful of
+    entries, so a scan beats building a set per cell per column."""
+    for entry_z, _block_type in stack:
+        if entry_z == z:
+            return True
+    return False
+
+
+def _fully_covers(stack, eye_z, half_h, screen_h, px_per_cell):
+    """Does this cell's stack hide everything behind it in this column?
+
+    Only true for a GAPLESS stack -- a column with a hole in it can be seen
+    through, and stopping the march there would erase whatever is visible
+    beyond the gap. Cheap enough to check per cell, and it turns the common
+    case (a wall close ahead) from a full-distance march into a few steps."""
+    lowest, highest = stack[0][0], stack[-1][0]
+    if len(stack) != highest - lowest + 1:
+        return False
+    return (half_h + (eye_z - (highest + 1)) * px_per_cell <= 0
+            and half_h + (eye_z - lowest) * px_per_cell >= screen_h)
+
+
+def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
+                     texture_path, tex_u, flat_color):
+    """One block's vertical face in one column."""
+    screen_h = screen.get_height()
+    y0 = max(0, int(math.floor(y_top)))
+    y1 = min(screen_h, int(math.ceil(y_top + full_h)))
+    vis_h = y1 - y0
+    if vis_h <= 0:
+        return
+
+    if texture_path is None:
+        screen.fill(tuple(int(c * shade) for c in flat_color),
+                    (x0, y0, strip_w, vis_h))
+        return
+
+    frame = _load_texture(texture_path)
+    tw, th = frame.get_width(), frame.get_height()
+    tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+    # Sub-texel crop (see raycast_2_5d.renderer's identical comment):
+    # rounding src_y per column would snap adjacent columns to different
+    # texels on a close wall, so crop to the floor texel and carry the
+    # remainder as a blit offset instead.
+    texels_per_px = th / full_h
+    src_y_f = (y0 - y_top) * texels_per_px
+    src_y = max(0, min(th - 1, int(math.floor(src_y_f))))
+    frac_px = (src_y_f - src_y) / texels_per_px
+    need = int(math.ceil(vis_h * texels_per_px)) + 2
+    src_h = max(1, min(th - src_y, need))
+    dest_h = max(1, int(round(src_h / texels_per_px)))
+    col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
+    strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
+    if shade < 1.0:
+        v = int(shade * 255)
+        strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+    off = max(0, min(dest_h - 1, int(round(frac_px))))
+    covered = min(vis_h, dest_h - off)
+    screen.blit(strip, (x0, y0), (0, off, strip_w, covered))
+    if covered < vis_h:
+        # dest_h ROUNDS the scaled column height while vis_h CEILS the span
+        # it has to fill, so the two disagree by a pixel often enough to
+        # leave a seam along the bottom of a wall -- 2a showed the flat floor
+        # colour there, and 2b would show whatever block stands behind. Repeat
+        # the strip's last row into the shortfall rather than rescaling the
+        # whole strip to fit: rescaling shifts every texel above the seam too,
+        # which recolours the entire wall to patch one row.
+        last_row = strip.subsurface((0, dest_h - 1, strip_w, 1))
+        screen.blit(pygame.transform.scale(last_row, (strip_w, vis_h - covered)),
+                    (x0, y0 + covered))
+
+
+def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color):
+    """A block's top or bottom face in one column: the span between its near
+    edge (the cell's entry distance) and its far edge (the exit)."""
+    screen_h = screen.get_height()
+    y0 = max(0, int(math.floor(min(y_a, y_b))))
+    y1 = min(screen_h, int(math.ceil(max(y_a, y_b))))
+    if y1 > y0:
+        screen.fill(color, (x0, y0, strip_w, y1 - y0))
+
+
 def render_block_world_view(room, screen: pygame.Surface):
-    """Render the room as a flat, single-layer first-person voxel view.
-    See this module's docstring for Phase 2a's scope."""
+    """Render the room as a first-person voxel view with stacked layers.
+
+    Projection (Phase 2b). The camera's pitch is level, so a world height of
+    ``zval`` cells projects to a single screen row:
+
+        y = horizon + (eye_z - zval) * (screen_h * cell_size / distance)
+
+    where ``eye_z`` is the camera's own height in cells. That is the whole of
+    the vertical maths -- a block at layer z spans z..z+1, its top face sits
+    at z+1, and everything else follows. Phase 2a is the special case
+    eye_z = 0.5 with one layer at z = 0: the block's top lands at
+    ``horizon - P/2`` and its bottom at ``horizon + P/2``, a cube centred on
+    the horizon, which is exactly what 2a drew. A single-layer world renders
+    pixel-identically through this code.
+
+    Still 2b, not 2c: pitch is fixed level, and horizontal faces are flat
+    shaded rather than texture-mapped per pixel (see face_average_color).
+    """
     st = block_world_state(room)
     cfg = st["camera"]
     cell_size = int(cfg.get("cell_size", 32))
@@ -155,12 +344,16 @@ def render_block_world_view(room, screen: pygame.Surface):
     _cx, _cy = room._sprite_top_left(camera)
     cam_x = _cx + camera._cached_width / 2
     cam_y = _cy + camera._cached_height / 2
-    z_layer = int(cfg.get("z_layer", 0))
+    # z_layer is the layer the camera's body OCCUPIES; the eye sits partway
+    # up it. Walking up a step is that number going up by one.
+    eye_z = (int(cfg.get("z_layer", 0))
+             + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT)))
 
     wall_color = room.parse_color(cfg.get("wall_color", "#8a8a8a"))
     fov_deg = cfg.get("fov", 66)
     fov_rad = math.radians(fov_deg)
     render_distance_cells = int(cfg.get("render_distance", 20))
+    max_dist = render_distance_cells * cell_size
     num_columns = int(cfg.get("columns", min(w, 320)))
     col_width = w / num_columns
 
@@ -171,56 +364,66 @@ def render_block_world_view(room, screen: pygame.Surface):
     # comment on why: uniform-angle sampling bends straight walls.
     plane_tan = math.tan(fov_rad / 2)
     textured = bool(cfg.get("wall_textured", True))
+    columns = column_index(room)
 
     for col in range(num_columns):
         camera_x = 2.0 * (col + 0.5) / num_columns - 1.0
         ray_offset = math.atan(plane_tan * camera_x)
         ray_angle = facing_screen_rad + ray_offset
-        dist, side, hit, tex_u, block_type = cast_ray(
-            room, cam_x, cam_y, z_layer, ray_angle, cell_size, render_distance_cells)
-        if not hit:
-            # No block within render distance -- leave the floor/ceiling
-            # fill showing for this column rather than a bogus sliver.
-            continue
-        corrected = dist * math.cos(ray_offset)  # fisheye correction
-        # A block projects as a genuine cube (1 cell tall == 1 cell wide at
-        # the same distance) -- unlike raycast_2_5d's deliberately-taller
-        # corridor look, there is no height multiplier here.
-        full_h = h * cell_size / max(corrected, 1e-4)
-        y_top = half_h - full_h / 2.0
+        cos_off = math.cos(ray_offset)  # fisheye correction
         x0 = int(col * col_width)
         x1 = int((col + 1) * col_width)
         strip_w = max(1, x1 - x0)
-        y0 = max(0, int(math.floor(y_top)))
-        y1 = min(h, int(math.ceil(y_top + full_h)))
-        vis_h = y1 - y0
-        if vis_h <= 0:
-            continue
 
-        shade = wall_shade(side, corrected, render_distance_cells * cell_size)
-        if textured:
-            faces = block_face_textures(block_type)
-            frame = _load_texture(faces["side"])
-            tw, th = frame.get_width(), frame.get_height()
-            tex_x = min(tw - 1, max(0, int(tex_u * tw)))
-            # Sub-texel crop (see raycast_2_5d.renderer's identical comment):
-            # rounding src_y per column would snap adjacent columns to
-            # different texels on a close wall, so crop to the floor texel
-            # and carry the remainder as a blit offset instead.
-            texels_per_px = th / full_h
-            src_y_f = (y0 - y_top) * texels_per_px
-            src_y = max(0, min(th - 1, int(math.floor(src_y_f))))
-            frac_px = (src_y_f - src_y) / texels_per_px
-            need = int(math.ceil(vis_h * texels_per_px)) + 2
-            src_h = max(1, min(th - src_y, need))
-            dest_h = max(1, int(round(src_h / texels_per_px)))
-            col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
-            strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
-            if shade < 1.0:
-                v = int(shade * 255)
-                strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
-            off = max(0, min(dest_h - 1, int(round(frac_px))))
-            screen.blit(strip, (x0, y0), (0, off, strip_w, min(vis_h, dest_h - off)))
-        else:
-            color = tuple(int(c * shade) for c in wall_color)
-            screen.fill(color, (x0, y0, strip_w, vis_h))
+        # Collect near->far so the occlusion early-out can stop the march,
+        # then paint far->near.
+        hits = []
+        for map_x, map_y, d_entry, d_exit, side, tex_u in march_ray(
+                room, cam_x, cam_y, ray_angle, cell_size, render_distance_cells):
+            stack = columns.get((map_x, map_y))
+            if not stack:
+                continue  # air column -- floor/ceiling fill shows through
+            near = max(d_entry * cos_off, 1e-4)
+            far = max(d_exit * cos_off, near)
+            hits.append((near, far, side, tex_u, stack))
+            if _fully_covers(stack, eye_z, half_h, h, h * cell_size / near):
+                break
+
+        # Painter's algorithm. Every face is opaque, and within one cell the
+        # faces of a stack tile the column without overlapping (a block's top
+        # face sits directly above its own vertical face, and the next block
+        # up starts exactly where this one ends), so the ordering only has to
+        # be right BETWEEN cells.
+        for near, far, side, tex_u, stack in reversed(hits):
+            px_per_cell = h * cell_size / near
+            px_per_cell_far = h * cell_size / far
+            shade = wall_shade(side, near, max_dist)
+            mid = (near + far) / 2.0
+            for z, block_type in stack:
+                faces = block_face_textures(block_type) if textured else None
+                _draw_wall_strip(
+                    screen, x0, strip_w,
+                    half_h + (eye_z - (z + 1)) * px_per_cell, px_per_cell,
+                    shade, faces["side"] if faces else None, tex_u, wall_color)
+
+                # Top face: visible only from above it, and only when nothing
+                # is stacked on top.
+                if eye_z > z + 1 and not _occupied(stack, z + 1):
+                    base = face_average_color(faces["top"]) if faces else wall_color
+                    lit = face_shade(mid, max_dist, TOP_SHADE)
+                    _draw_horizontal_face(
+                        screen, x0, strip_w,
+                        half_h + (eye_z - (z + 1)) * px_per_cell_far,
+                        half_h + (eye_z - (z + 1)) * px_per_cell,
+                        tuple(int(c * lit) for c in base))
+                # Underside: only reachable by standing below an overhang,
+                # which a pure heightmap never has -- but a hand-built world
+                # can, and a missing face there is a hole straight to the sky.
+                elif eye_z < z and not _occupied(stack, z - 1):
+                    base = face_average_color(faces["bottom"]) if faces else wall_color
+                    lit = face_shade(mid, max_dist, BOTTOM_SHADE)
+                    _draw_horizontal_face(
+                        screen, x0, strip_w,
+                        half_h + (eye_z - z) * px_per_cell,
+                        half_h + (eye_z - z) * px_per_cell_far,
+                        tuple(int(c * lit) for c in base))
