@@ -63,6 +63,17 @@ PLUGIN_ACTIONS = {
                 param_type="boolean", default_value=True, required=False,
                 description="Off forces flat block colours even though real "
                             "textures are available"),
+            ActionParameter(name="top_cast_res", display_name="Top/Bottom Detail",
+                param_type="number", default_value=4, required=False,
+                description="Top/bottom face texture detail: rows sampled per N "
+                            "screen rows (higher = faster + chunkier, 0 = flat "
+                            "average colour instead of texture)"),
+            ActionParameter(name="eye_height", display_name="Eye Height",
+                param_type="number", default_value=1.5, required=False,
+                description="Camera height above the layer it stands on, in "
+                            "cells (1.5 = a two-block-tall body, needed to see "
+                            "the top of a block on your own layer and stack "
+                            "onto it)"),
         ]
     ),
 

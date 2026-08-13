@@ -84,6 +84,8 @@ class TestEnableBlockWorldView:
         assert cfg["fov"] == 66
         assert cfg["cell_size"] == 32
         assert cfg["z_layer"] == 0
+        assert cfg["top_cast_res"] == 4
+        assert cfg["eye_height"] == 1.5
 
     def test_enable_honors_overrides(self):
         executor = _bw_executor(game_runner=MockGameRunner())
@@ -91,6 +93,7 @@ class TestEnableBlockWorldView:
         _dispatch(executor, "enable_block_world_view", instance, {
             "camera_object": "obj_camera", "fov": 90, "render_distance": 10,
             "cell_size": 16, "wall_color": "#123456", "z_layer": 2,
+            "top_cast_res": 8, "eye_height": 0.5,
         })
         cfg = block_world_state(executor.game_runner.current_room)["camera"]
         assert cfg["camera_object"] == "obj_camera"
@@ -99,6 +102,27 @@ class TestEnableBlockWorldView:
         assert cfg["cell_size"] == 16
         assert cfg["wall_color"] == "#123456"
         assert cfg["z_layer"] == 2
+        assert cfg["top_cast_res"] == 8
+        assert cfg["eye_height"] == 0.5
+
+    def test_every_written_config_key_has_a_matching_action_parameter(self):
+        """General guard for the class of bug eye_height/top_cast_res were:
+        a config key the handler writes (so it clearly matters) but with no
+        ActionParameter, so no author can ever reach it through the IDE. Not
+        exhaustive of every read-only default, but every key this action
+        itself sets should be a real, documented, settable parameter."""
+        from extensions.block_world.actions import PLUGIN_ACTIONS
+
+        executor = _bw_executor(game_runner=MockGameRunner())
+        instance = MockInstance()
+        _dispatch(executor, "enable_block_world_view", instance, {})
+        cfg = block_world_state(executor.game_runner.current_room)["camera"]
+
+        param_names = {p.name for p in PLUGIN_ACTIONS["enable_block_world_view"].parameters}
+        # "enabled" is the stored/derived form of the "enable" parameter.
+        written_keys = set(cfg) - {"enabled"}
+        missing = written_keys - param_names
+        assert not missing, f"config keys with no matching ActionParameter: {missing}"
 
     def test_disable_clears_config(self):
         runner = MockGameRunner()

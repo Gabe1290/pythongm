@@ -693,23 +693,35 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
 
 
 def render_block_world_view(room, screen: pygame.Surface):
-    """Render the room as a first-person voxel view with stacked layers.
+    """Render the room as a first-person voxel view with stacked, pitchable
+    layers (Phases 2b and 2c).
 
-    Projection (Phase 2b). The camera's pitch is level, so a world height of
-    ``zval`` cells projects to a single screen row:
+    Projection. A world height of ``zval`` cells projects to a single screen
+    row:
 
         y = horizon + (eye_z - zval) * (screen_h * cell_size / distance)
 
-    where ``eye_z`` is the camera's own height in cells. That is the whole of
-    the vertical maths -- a block at layer z spans z..z+1, its top face sits
-    at z+1, and everything else follows. Phase 2a is the special case
-    eye_z = 0.5 with one layer at z = 0: the block's top lands at
-    ``horizon - P/2`` and its bottom at ``horizon + P/2``, a cube centred on
-    the horizon, which is exactly what 2a drew. A single-layer world renders
-    pixel-identically through this code.
+    where ``eye_z`` is the camera's own height in cells and ``horizon`` is
+    ``horizon_for(screen_h, pitch)`` -- looking up or down (2c) is a Y-shear
+    on that one term, so this formula does not otherwise change with pitch.
+    That is the whole of the vertical maths -- a block at layer z spans
+    z..z+1, its top face sits at z+1, and everything else follows.
 
-    Still 2b, not 2c: pitch is fixed level, and horizontal faces are flat
-    shaded rather than texture-mapped per pixel (see face_average_color).
+    Phase 2a is the special case pitch = 0, eye_z = 0.5, one layer at z = 0:
+    the block's top lands at ``horizon - P/2`` and its bottom at
+    ``horizon + P/2``, a cube centred on the horizon, exactly what 2a drew.
+    That makes a single-layer, level, eye_z = 0.5 world pixel-identical
+    through this code -- the compatibility proof this renderer was checked
+    against. It is not a claim about what any real game looks like: the
+    shipped default is DEFAULT_EYE_HEIGHT = 1.5 (a two-block-tall camera,
+    needed for stacking -- see docs/VOXEL_WORLD_PLAN.md), under which even a
+    single-layer world draws a top face 2a never had reason to draw. Nothing
+    exposes eye_height as low as 0.5 through the action system; the geometry
+    tests pin it there deliberately, to keep their closed-form numbers simple.
+
+    Horizontal faces are flat shaded rather than texture-mapped per pixel by
+    default (see face_average_color); top_cast_res turns per-pixel top/bottom
+    texturing on.
     """
     st = block_world_state(room)
     cfg = st["camera"]

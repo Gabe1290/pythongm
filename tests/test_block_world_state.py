@@ -177,3 +177,31 @@ def test_solid_and_transparent_flags_are_sane():
     assert BLOCK_TYPES["glass"]["transparent"] is True
     assert BLOCK_TYPES["stone"]["solid"] is True
     assert "transparent" not in BLOCK_TYPES["stone"]
+
+
+def test_every_texture_with_real_alpha_is_flagged_transparent():
+    """A general version of the spot-check above: any face texture with real
+    per-pixel alpha holes must belong to a block type flagged "transparent",
+    or the renderer's occlusion early-out (_fully_covers) can treat a stack
+    of it as a full opaque occluder and hide whatever should show through the
+    holes -- the exact point-blank bug found and fixed for glass/water/ice,
+    and then found again (leaves, grass's side face) by auditing every
+    imported texture with this same check rather than trusting a hand-picked
+    list. Catches the next imported texture with real alpha too, not just
+    these two."""
+    from PIL import Image
+    from extensions.block_world.state import BLOCK_TYPES, block_face_textures, is_transparent
+
+    checked_paths = set()
+    for block_type, faces_spec in BLOCK_TYPES.items():
+        for path in block_face_textures(block_type).values():
+            if path in checked_paths:
+                continue
+            checked_paths.add(path)
+            img = Image.open(path).convert("RGBA")
+            has_real_alpha = any(px[3] < 250 for px in img.getdata())
+            if has_real_alpha:
+                assert is_transparent(block_type), (
+                    f"{block_type}'s texture {path} has real alpha but "
+                    f"BLOCK_TYPES[{block_type!r}] is not flagged transparent"
+                )

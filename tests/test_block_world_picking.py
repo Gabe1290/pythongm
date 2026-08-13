@@ -269,47 +269,66 @@ class TestDefaultEyeHeight:
         from extensions.block_world.renderer import DEFAULT_EYE_HEIGHT
         assert DEFAULT_EYE_HEIGHT == 1.5
 
-    def test_you_can_see_the_top_of_a_block_beside_you(self):
+    # A prior version of these two tests hardcoded horizon_for(sh, 0) --
+    # commit 068d5ba's own message claimed the 1.5 default was verified by
+    # "sweeping the whole screen at pitch 0, -20 and -45," but the code never
+    # actually varied pitch, so that claim had zero regression coverage.
+    # Parametrised here so it is now literally what runs.
+    @pytest.mark.parametrize("pitch", [0, -20, -45])
+    def test_you_can_see_the_top_of_a_block_beside_you(self, pitch):
         """The whole point: from the ground, aiming at a neighbouring block's
-        top face must offer the cell above it."""
+        top face must offer the cell above it, at any of the pitches the
+        original playtest is on record as having checked."""
         from extensions.block_world.renderer import (screen_ray, pick_voxel,
                                                      horizon_for,
                                                      DEFAULT_EYE_HEIGHT)
         room, camera = _world()
         block_world_state(room)["camera"].pop("eye_height", None)
-        set_block(room, 3, 0, 0, "stone")
+        # x=1, not further out: a steep enough downward pitch makes the ray
+        # dive past a distant column's z=1 span before it gets there --
+        # correct behaviour (docs/VOXEL_WORLD_PLAN.md's "26 degrees" vertical
+        # FOV note), not a bug, but it means "can stack" is only a fair claim
+        # to test close up, where the block's top still subtends the ray at
+        # every pitch actually being swept here.
+        set_block(room, 1, 0, 0, "stone")
         cx, cy = room._sprite_top_left(camera)
         sw, sh = 800, 600
+        horizon = horizon_for(sh, pitch)
 
         found = set()
-        for sy in range(sh // 2, sh, 10):
+        for sy in range(0, sh, 10):
             angle, z_per_px = screen_ray(sw / 2, sy, 0.0, math.radians(66),
-                                         sw, sh, CELL, horizon_for(sh, 0))
+                                         sw, sh, CELL, horizon)
             _target, build = pick_voxel(
                 room, cx + CELL / 2, cy + CELL / 2, DEFAULT_EYE_HEIGHT,
                 angle, z_per_px, CELL, 6)
             if build:
                 found.add(build)
-        assert (3, 0, 1) in found, "cannot stack onto a block at your own level"
+        assert (1, 0, 1) in found, \
+            f"cannot stack onto a block at your own level (pitch={pitch})"
 
-    def test_an_eye_inside_the_block_layer_cannot(self):
+    @pytest.mark.parametrize("pitch", [0, -20, -45])
+    def test_an_eye_inside_the_block_layer_cannot(self, pitch):
         """The control that makes the test above meaningful: at 0.5 the same
-        aim never offers that cell, which is exactly the bug reported."""
+        aim never offers that cell, which is exactly the bug reported --
+        at any pitch, not just level. Same x=1 placement as the test above,
+        for a like-for-like comparison."""
         from extensions.block_world.renderer import (screen_ray, pick_voxel,
                                                      horizon_for)
         room, camera = _world()
-        set_block(room, 3, 0, 0, "stone")
+        set_block(room, 1, 0, 0, "stone")
         cx, cy = room._sprite_top_left(camera)
         sw, sh = 800, 600
+        horizon = horizon_for(sh, pitch)
         found = set()
-        for sy in range(sh // 2, sh, 10):
+        for sy in range(0, sh, 10):
             angle, z_per_px = screen_ray(sw / 2, sy, 0.0, math.radians(66),
-                                         sw, sh, CELL, horizon_for(sh, 0))
+                                         sw, sh, CELL, horizon)
             _target, build = pick_voxel(room, cx + CELL / 2, cy + CELL / 2,
                                         0.5, angle, z_per_px, CELL, 6)
             if build:
                 found.add(build)
-        assert (3, 0, 1) not in found
+        assert (1, 0, 1) not in found, f"pitch={pitch}"
 
     def test_the_actions_address_the_layer_the_eye_is_in(self):
         """A level crosshair points at eye height. With feet on layer 0 and a
@@ -660,6 +679,30 @@ class TestPitchAffectsPicking:
         _run(room, "set_look_pitch", pitch=0)
         _run(room, "break_block")
         assert get_block(room, 3, 0, 0) is None
+
+
+class TestEyeHeightOverride:
+    """Was a real bug, found the same review pass as the pitch one above:
+    eye_height was read (with a DEFAULT_EYE_HEIGHT fallback) everywhere it
+    mattered, but enable_block_world_view never actually WROTE it into the
+    config -- no authored game could ever change it from the default. Proves
+    the round trip end to end through the real action + _pick, not just that
+    the config dict happens to carry the key afterward."""
+
+    def test_default_eye_height_cannot_reach_the_layer_above(self):
+        room, _camera = _world(eye_height=0.5)
+        set_block(room, 1, 0, 1, "stone")
+        _run(room, "break_block")
+        assert get_block(room, 1, 0, 1) == "stone"
+
+    def test_overriding_it_through_the_action_reaches_it(self):
+        room, camera = _world(eye_height=0.5)
+        set_block(room, 1, 0, 1, "stone")
+        _run(room, "enable_block_world_view", eye_height=1.5,
+             camera_object="obj_person")
+        _run(room, "break_block")
+        assert get_block(room, 1, 0, 1) is None, \
+            "eye_height override never reached picking"
 
 
 class TestUnbreakableBlocks:
