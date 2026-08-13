@@ -355,6 +355,44 @@ is justified. A visual world editor (paint blocks in 3D inside the Room
 Editor, mirroring the Room Editor's existing tile painter) is a legitimate
 later phase, not Phase 3.
 
+## Edit mode vs play mode — open design question (raised 2026-08-13)
+
+Raised from playtesting Phase 3: breaking is instant and unbounded, so it is
+far too easy to wreck a world by accident. The obvious framing is a global
+"edit mode / play mode" switch. **Recommend not building that**, because the
+concern is really two concerns living at different layers:
+
+- **Authoring** — someone building a world. This is the deferred visual world
+  editor (see Phase 3's note), and it is where undo/redo belongs. Note this
+  repo has already reasoned about destructive edits twice and landed in two
+  different places: `QUndoStack`/`QUndoCommand` for live in-memory canvas
+  edits, and the soft-delete Trash for file-level asset deletion (the
+  2026-08-09 session note explains why an undo stack was the wrong tool
+  there). A block edit is squarely the first kind — one live object, no file
+  I/O — so `QUndoCommand` is right here, and `editors/room_undo_commands.py`
+  is the pattern to copy.
+- **Playing** — whether the player can break anything at all is the AUTHOR's
+  decision, expressed by binding `break_block` to an input event or not
+  binding it. There is nothing for the engine to switch. The walkaround feels
+  dangerous only because it is a harness with no event system and wires the
+  mouse up unconditionally.
+
+A global engine mode would add a concept without adding capability: the
+author would still have to decide when to flip it, which is the same decision
+as whether to bind the action.
+
+**What the engine genuinely lacks**, independent of any mode, is a way to say
+*this block cannot be broken* — so a player cannot dig out through the world
+boundary, and so an author can protect scenery. `BLOCK_TYPES` already carries
+`solid` and `transparent`; `breakable` (default True) is the natural third,
+checked in `break_block` only. Cheap, and it composes with everything else.
+An optional protected *region* (a bounding box the actions refuse to modify)
+is the follow-up if per-type turns out too coarse — do per-type first.
+
+Sequencing: the `breakable` flag can land any time; the editor and its undo
+stack are their own phase after Phase 5, when there is a real world worth
+editing.
+
 ## Phase 4 — collision, gravity, HUD
 
 - Player collision against voxel occupancy (extends the "check the grid cell

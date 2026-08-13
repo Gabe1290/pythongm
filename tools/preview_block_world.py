@@ -281,17 +281,42 @@ def walk(size):
 
     from extensions.block_world.renderer import render_block_world_view
     from extensions.block_world.state import (block_world_state, set_block,
-                                              remove_block)
+                                              remove_block, get_block)
     from extensions.block_world.renderer import pick_block
 
     room, camera = make_room()
     view_i = 0
     place(room, camera, *VIEWPOINTS[view_i][1:5])
     collide = True
+    building = False
     shot_n = 0
     slot = 0
     reach = 5
     move_speed, turn_speed = 110.0, 120.0  # px/sec, deg/sec
+
+    # Every edit records what the cell held before it, so Ctrl+Z can put it
+    # back. Building is also OFF until you ask for it -- one stray click
+    # should not cost you a wall. Both are demo affordances: the engine has
+    # no undo and no modes, and per docs/VOXEL_WORLD_PLAN.md it should not
+    # grow modes; undo belongs to the eventual world editor.
+    history = []
+
+    def edit(cell, block_type):
+        """Set (or clear, with None) a cell, remembering the old contents."""
+        history.append((cell, get_block(room, *cell)))
+        if block_type is None:
+            remove_block(room, *cell)
+        else:
+            set_block(room, *cell, block_type)
+
+    def undo():
+        if not history:
+            return
+        cell, previous = history.pop()
+        if previous is None:
+            remove_block(room, *cell)
+        else:
+            set_block(room, *cell, previous)
 
     def aim():
         """What the middle of the screen is pointing at.
@@ -310,7 +335,8 @@ def walk(size):
 
     hud_lines = [
         "WASD/arrows move+turn   Q,E strafe   [ ] viewpoint (1-9 direct)",
-        "LMB break   RMB place   , . change block   C collision   P shot   ESC quit",
+        "B build mode   LMB break   RMB place   , . block   Ctrl+Z undo",
+        "C collision   P screenshot   ESC quit",
     ]
     running = True
     while running:
@@ -335,17 +361,21 @@ def walk(size):
                     view_i = (view_i + (1 if event.key == pygame.K_RIGHTBRACKET
                                         else -1)) % len(VIEWPOINTS)
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
+                elif event.key == pygame.K_b:
+                    building = not building
+                elif event.key == pygame.K_z and (event.mod & pygame.KMOD_CTRL):
+                    undo()
                 elif event.key in (pygame.K_COMMA, pygame.K_PERIOD):
                     slot = (slot + (1 if event.key == pygame.K_PERIOD else -1)) % len(HOTBAR)
                 elif pygame.K_1 <= event.key < pygame.K_1 + min(9, len(VIEWPOINTS)):
                     view_i = event.key - pygame.K_1
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN and building:
                 target, placement = aim()
                 if event.button == 1 and target is not None:
-                    remove_block(room, *target)
+                    edit(target, None)
                 elif event.button == 3 and placement is not None:
-                    set_block(room, *placement, HOTBAR[slot])
+                    edit(placement, HOTBAR[slot])
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -391,7 +421,10 @@ def walk(size):
         # way to spot picking drifting away from what is drawn.
         target, placement = aim()
         w, h = screen.get_size()
-        cross = (235, 235, 235) if target else (120, 120, 120)
+        if not building:
+            cross = (110, 110, 110)          # dim: clicks do nothing
+        else:
+            cross = (235, 235, 235) if target else (150, 150, 150)
         pygame.draw.line(screen, cross, (w // 2 - 7, h // 2), (w // 2 + 7, h // 2))
         pygame.draw.line(screen, cross, (w // 2, h // 2 - 7), (w // 2, h // 2 + 7))
 
@@ -399,10 +432,12 @@ def walk(size):
         status = "cell %s  layer %d  angle %6.1f  fps %4.1f  collision %s" % (
             cell, standing, camera.facing_angle % 360, clock.get_fps(),
             "ON" if collide else "OFF")
-        aiming = "holding %s   aim %s   build %s" % (
+        aiming = "%s   holding %s   aim %s   build %s   undo %d" % (
+            "BUILD MODE" if building else "build off (B)",
             HOTBAR[slot],
             "%s,%s,%s" % target if target else "-",
-            "%s,%s,%s" % placement if placement else "-")
+            "%s,%s,%s" % placement if placement else "-",
+            len(history))
         label, _cx, _cy, _fa, _cz, note = VIEWPOINTS[view_i]
         legend = "[%d/%d] %s -- %s" % (view_i + 1, len(VIEWPOINTS), label, note)
         for i, line in enumerate(hud_lines + [status, aiming, legend]):
