@@ -7,15 +7,101 @@ instance.action_executor (the plugins/audio_actions pattern), not through
 ActionExecutor directly.
 """
 
-from .state import block_world_state
+import math
+
+from .state import BLOCK_TYPES, block_world_state, peek_camera, remove_block, set_block
 
 
 class PluginExecutor:
-    """Handles execution of the Block World setup action."""
+    """Handles execution of the Block World actions."""
 
     @staticmethod
     def _executor(instance):
         return getattr(instance, "action_executor", None)
+
+    def _pick(self, instance, parameters):
+        """Resolve the camera and ask what its centre ray is pointing at.
+
+        Returns ``(room, target, placement)`` or None when there is nothing
+        to act on -- no room, no block-world view, or no camera instance.
+
+        Every number here is read back from the SAME camera config the
+        renderer projects from, and the angle uses the renderer's own
+        ``radians(-facing_angle)`` conversion. Recomputing either
+        independently is how picking drifts away from the crosshair.
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return None
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return None
+        camera = room._find_first_instance(cfg.get("camera_object", ""))
+        if camera is None:
+            return None
+
+        try:
+            reach = int(float(ae._parse_value(parameters.get("reach", 5), instance)))
+        except (TypeError, ValueError):
+            reach = 5
+        reach = max(1, reach)
+
+        cell_size = int(cfg.get("cell_size", 32))
+        cx, cy = room._sprite_top_left(camera)
+        from .renderer import pick_block  # lazy: keeps pygame out of IDE imports
+        target, placement = pick_block(
+            room,
+            cx + camera._cached_width / 2,
+            cy + camera._cached_height / 2,
+            int(cfg.get("z_layer", 0)),
+            math.radians(-camera.facing_angle),
+            cell_size, reach)
+        return room, target, placement
+
+    def execute_place_block_action(self, instance, parameters):
+        """Put a block in the empty cell the camera's centre ray reaches.
+
+        A no-op when there is nowhere to put one -- the camera is flush
+        against a block, or the target cell is already occupied. Silent
+        rather than an error: holding the build key against a wall is
+        ordinary play, not a mistake worth reporting.
+
+        Parameters:
+            block: which block type to place (default "stone")
+            reach: how many cells ahead you can build (default 5)
+        """
+        picked = self._pick(instance, parameters)
+        if picked is None:
+            return
+        room, _target, placement = picked
+        if placement is None:
+            return
+
+        ae = self._executor(instance)
+        block = ae._parse_value(parameters.get("block", "stone"), instance)
+        block = str(block) if block else "stone"
+        if block not in BLOCK_TYPES:
+            return
+
+        # No "is this cell empty?" check: pick_block guarantees it. It only
+        # ever returns a cell it has already read as air (see its docstring),
+        # so a guard here would be unreachable code pretending to be a safety
+        # net.
+        set_block(room, *placement, block)
+
+    def execute_break_block_action(self, instance, parameters):
+        """Remove the block the camera's centre ray hits first.
+
+        Parameters:
+            reach: how many cells ahead you can reach (default 5)
+        """
+        picked = self._pick(instance, parameters)
+        if picked is None:
+            return
+        _room, target, _placement = picked
+        if target is not None:
+            remove_block(_room, *target)
 
     def execute_enable_block_world_view_action(self, instance, parameters):
         """Switch the current room to a first-person voxel view (single

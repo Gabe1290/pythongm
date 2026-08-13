@@ -5,12 +5,12 @@ strings, or docs — see the naming section of `docs/VOXEL_WORLD_PLAN.md`. This
 is "inspired by," the same territory Luanti/Minetest itself occupies, not a
 clone wearing someone else's name.
 
-**Status: Phase 2b of `docs/VOXEL_WORLD_PLAN.md` done; Phase 3 next.** A room
-with the view enabled renders as a textured first-person world whose blocks
-**stack** — walls can be several blocks high, you can stand on top of things
-and see over what's below you, and blocks show their top faces. There is
-still no way to place or break a block, no collision, and no gravity — see
-"What's not here yet" below.
+**Status: Phase 2b done; Phase 3 under way (picking + place/break landed
+2026-08-13).** A room with the view enabled renders as a textured
+first-person world whose blocks **stack** — walls several blocks high, you
+can stand on things and see over what's below you, blocks show their top
+faces — and you can now build and dig at your own layer. Still no hotbar
+action, no collision and no gravity — see "What's not here yet" below.
 
 ## What exists so far
 
@@ -20,7 +20,7 @@ still no way to place or break a block, no collision, and no gravity — see
 | `__init__.py` | The entry point — declares `PLUGIN_ACTIONS`, `PluginExecutor` and `PLUGIN_ROOM_RENDERERS`, and `render_room` claims a room only when its camera config says `enabled`. |
 | `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store plus a camera config, both under `room.extension_state["block_world"]`, and the `BLOCK_TYPES` registry mapping block type ids to face textures. Also the derived `column_index` / `stack_top` heightmap queries the renderer reads. |
 | `renderer.py` | The renderer: `march_ray` (the one cell-occupancy DDA, yielding each cell's entry and exit distance), `cast_ray` (first-hit wrapper over it), and `render_block_world_view` (camera-plane projection, stacked textured wall columns, texture-mapped top/bottom faces). |
-| `actions.py` / `handlers.py` | One action, `enable_block_world_view` — camera/config plumbing, mirroring `enable_raycast_view`. |
+| `actions.py` / `handlers.py` | Three actions: `enable_block_world_view` (camera/config plumbing, mirroring `enable_raycast_view`), plus `place_block` and `break_block`, which act on whatever the camera's centre ray reaches. |
 | `textures/source_hand_painted_expanded/` | The CC0-licensed block textures (Phase 0), 32 files. |
 | `ASSETS.md` | The licensing audit — read this before adding or swapping any texture. |
 
@@ -40,6 +40,24 @@ whether the textures actually read well — which is the whole point of
 staging 2a first. Its movement, footing and collision are the script's own,
 not engine features (the engine gets none until Phase 4), though the
 step-up rule it uses is built on the real `stack_top` heightmap query.
+
+## Building and digging (Phase 3)
+
+`place_block` and `break_block` both act on whatever the camera's centre ray
+reaches, via `renderer.pick_block` — the *same* march the renderer runs, at
+the same angle the centre column is drawn from, so you break exactly what
+sits under the crosshair. A second raycast for picking would be a second
+thing to keep in step.
+
+What the level camera implies, and it is not a bug: the ray runs horizontally
+at eye height, so **only your own layer is reachable**. You build outwards at
+your feet and climb what you build; digging down or placing onto ground below
+you needs Phase 2c's free look. Standing flush against a wall there is
+genuinely nowhere to build at your layer, and the action does nothing.
+
+A placement cell returned by `pick_block` is **always air** — the march only
+advances past cells it has read as empty. `place_block` relies on that and
+deliberately does not re-check.
 
 ## The data model (`state.py`)
 
@@ -88,7 +106,7 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
   blending model, no per-block opacity, and a transparent block still costs
   a full textured strip. `solid` is likewise still unread until Phase 4
   gives it collision to gate.
-- `place_block` / `break_block` actions, a hotbar (Phase 3).
+- A hotbar action, and a committed world generator (rest of Phase 3).
 - Collision, gravity, a HUD (Phase 4).
 - A sample game (Phase 5).
 - HTML5 / Kivy export parity (Phase 6).

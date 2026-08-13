@@ -312,6 +312,33 @@ will need to reproduce it exactly later.
 
 ## Phase 3 — placing and breaking blocks
 
+**Unit 1 done (2026-08-13): picking + `place_block` / `break_block`.**
+`renderer.pick_block` marches the SAME `march_ray` at the SAME angle the
+centre column is drawn from, and returns both the cell to break and the cell
+to build in. Notes worth carrying:
+
+- **`place_block` needs no "is this cell empty?" check** and deliberately
+  has none. `pick_block` only advances past cells it has read as air, and an
+  occupied first cell returns immediately with no placement, so a returned
+  placement is air *by construction* — the invariant is stated in its
+  docstring and pinned by a parametrised test. The guard shipped in the first
+  draft and mutation testing exposed it as unreachable code posing as a
+  safety net.
+- **Phase 2b's level camera bounds what picking can mean.** The ray runs
+  horizontally at eye height, so only the camera's OWN layer is reachable:
+  you build outwards at your feet and climb what you built. Digging down or
+  placing onto ground below you needs 2c. Flush against a wall there is
+  legitimately nowhere to build, and the action is a silent no-op.
+- Picking does NOT consult `transparent` — glass has to be breakable, so it
+  is picked like anything else, unlike the renderer's occlusion test.
+- **Three mutants survived the first test pass**, all for the same reason:
+  the test helper had its own copy of the handler's camera resolution, and
+  every action test faced angle 0 on layer 0 — where a sign flip and a
+  hardcoded layer are both invisible. Any test for this action pair must
+  drive the handler at a non-zero facing AND a non-zero layer.
+
+Still open in this phase: the hotbar, and a committed world generator.
+
 Two new actions (`place_block`, `break_block`), mouse-bound, operating on
 whichever cube the camera's centre ray currently hits (reuse the DDA hit-test
 from Phase 2, don't write a second raycast for picking). A **hotbar**:

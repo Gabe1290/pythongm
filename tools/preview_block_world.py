@@ -257,6 +257,12 @@ def save_shots(out_dir, size):
 
 MAX_STEP_UP = 1
 
+# A proto-hotbar for the walkaround. Phase 3's real hotbar is an instance
+# variable on the player; this is just enough selection to test building by
+# hand, the same way the movement here stands in for Phase 4's footing.
+HOTBAR = ["cobble", "brick", "wood_plank", "glass", "wool_red", "sandstone",
+          "gold_block", "leaves"]
+
 
 def _can_enter(room, cell_x, cell_y, standing_layer):
     """Walk onto a cell if its surface is at most one block higher than the
@@ -274,18 +280,37 @@ def walk(size):
     font = pygame.font.SysFont("consolas,couriernew,monospace", 15)
 
     from extensions.block_world.renderer import render_block_world_view
-    from extensions.block_world.state import block_world_state
+    from extensions.block_world.state import (block_world_state, set_block,
+                                              remove_block)
+    from extensions.block_world.renderer import pick_block
 
     room, camera = make_room()
     view_i = 0
     place(room, camera, *VIEWPOINTS[view_i][1:5])
     collide = True
     shot_n = 0
+    slot = 0
+    reach = 5
     move_speed, turn_speed = 110.0, 120.0  # px/sec, deg/sec
 
+    def aim():
+        """What the middle of the screen is pointing at.
+
+        Calls the same pick_block the place_block / break_block actions call,
+        resolved the same way. The walkaround has no ActionExecutor to
+        dispatch real actions through, so it drives the layer underneath
+        them -- which is also where a picking-vs-rendering disagreement would
+        show up first."""
+        cfg = block_world_state(room)["camera"]
+        cx, cy = room._sprite_top_left(camera)
+        return pick_block(room, cx + camera._cached_width / 2,
+                          cy + camera._cached_height / 2,
+                          int(cfg["z_layer"]),
+                          math.radians(-camera.facing_angle), CELL, reach)
+
     hud_lines = [
-        "WASD/arrows move+turn   Q,E strafe   [ ] prev/next viewpoint (1-9 direct)",
-        "C collision   P screenshot   ESC quit",
+        "WASD/arrows move+turn   Q,E strafe   [ ] viewpoint (1-9 direct)",
+        "LMB break   RMB place   , . change block   C collision   P shot   ESC quit",
     ]
     running = True
     while running:
@@ -310,9 +335,17 @@ def walk(size):
                     view_i = (view_i + (1 if event.key == pygame.K_RIGHTBRACKET
                                         else -1)) % len(VIEWPOINTS)
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
+                elif event.key in (pygame.K_COMMA, pygame.K_PERIOD):
+                    slot = (slot + (1 if event.key == pygame.K_PERIOD else -1)) % len(HOTBAR)
                 elif pygame.K_1 <= event.key < pygame.K_1 + min(9, len(VIEWPOINTS)):
                     view_i = event.key - pygame.K_1
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                target, placement = aim()
+                if event.button == 1 and target is not None:
+                    remove_block(room, *target)
+                elif event.button == 3 and placement is not None:
+                    set_block(room, *placement, HOTBAR[slot])
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -354,13 +387,25 @@ def walk(size):
 
         render_block_world_view(room, screen)
 
+        # Crosshair, and a readout of what it is actually on -- the fastest
+        # way to spot picking drifting away from what is drawn.
+        target, placement = aim()
+        w, h = screen.get_size()
+        cross = (235, 235, 235) if target else (120, 120, 120)
+        pygame.draw.line(screen, cross, (w // 2 - 7, h // 2), (w // 2 + 7, h // 2))
+        pygame.draw.line(screen, cross, (w // 2, h // 2 - 7), (w // 2, h // 2 + 7))
+
         cell = (cell_of(camera.x), cell_of(camera.y))
         status = "cell %s  layer %d  angle %6.1f  fps %4.1f  collision %s" % (
             cell, standing, camera.facing_angle % 360, clock.get_fps(),
             "ON" if collide else "OFF")
+        aiming = "holding %s   aim %s   build %s" % (
+            HOTBAR[slot],
+            "%s,%s,%s" % target if target else "-",
+            "%s,%s,%s" % placement if placement else "-")
         label, _cx, _cy, _fa, _cz, note = VIEWPOINTS[view_i]
         legend = "[%d/%d] %s -- %s" % (view_i + 1, len(VIEWPOINTS), label, note)
-        for i, line in enumerate(hud_lines + [status, legend]):
+        for i, line in enumerate(hud_lines + [status, aiming, legend]):
             surf = font.render(line, True, (255, 255, 255))
             shadow = font.render(line, True, (0, 0, 0))
             screen.blit(shadow, (9, 9 + i * 18))
