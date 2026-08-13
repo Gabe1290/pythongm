@@ -5,20 +5,38 @@ strings, or docs — see the naming section of `docs/VOXEL_WORLD_PLAN.md`. This
 is "inspired by," the same territory Luanti/Minetest itself occupies, not a
 clone wearing someone else's name.
 
-**Status: Phase 1 of `docs/VOXEL_WORLD_PLAN.md`.** This extension currently
-has a data model and a texture set. It has **no room renderer and no
-actions yet** — loading it changes nothing about a running game. Follow the
-plan doc for what's next.
+**Status: Phase 2a of `docs/VOXEL_WORLD_PLAN.md` done; Phase 2b next.** A room
+with the view enabled renders as a flat, single-layer textured first-person
+world. There is still no way to place or break a block, no collision, and no
+gravity — see "What's not here yet" below.
 
 ## What exists so far
 
 | File | What's in it |
 |---|---|
-| `extension.json` | The manifest. `provides_actions: []` — genuinely none yet. |
-| `__init__.py` | The entry point. No `PLUGIN_ACTIONS` / `PLUGIN_ROOM_RENDERERS` declared (both are optional to `events/plugin_loader.py`, checked via `hasattr`) — declaring empty placeholders for features that don't exist yet would just be dead code. |
-| `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store under `room.extension_state["block_world"]`, plus the `BLOCK_TYPES` registry mapping block type ids to face textures. |
+| `extension.json` | The manifest. |
+| `__init__.py` | The entry point — declares `PLUGIN_ACTIONS`, `PluginExecutor` and `PLUGIN_ROOM_RENDERERS`, and `render_room` claims a room only when its camera config says `enabled`. |
+| `state.py` | The per-room world data model: a sparse `(x, y, z) -> block type id` store plus a camera config, both under `room.extension_state["block_world"]`, and the `BLOCK_TYPES` registry mapping block type ids to face textures. |
+| `renderer.py` | Phase 2a's renderer: `cast_ray` (cell-occupancy DDA) and `render_block_world_view` (camera-plane projection, textured wall columns, flat floor/ceiling). |
+| `actions.py` / `handlers.py` | One action, `enable_block_world_view` — camera/config plumbing, mirroring `enable_raycast_view`. |
 | `textures/source_hand_painted_expanded/` | The CC0-licensed block textures (Phase 0), 32 files. |
 | `ASSETS.md` | The licensing audit — read this before adding or swapping any texture. |
+
+## Looking at it
+
+`tools/preview_block_world.py` renders a hand-built showcase world through
+the real `render_block_world_view`, so what it shows is what the engine
+draws:
+
+```
+py -3.12 tools/preview_block_world.py              # walk around (needs a display)
+py -3.12 tools/preview_block_world.py --shots out  # 9 fixed frames as PNGs (headless)
+```
+
+The pixel-sampling tests prove a strip got drawn; this is how you judge
+whether the textures actually read well — which is the whole point of
+staging 2a first. Its movement and collision are the script's own, not
+engine features.
 
 ## The data model (`state.py`)
 
@@ -43,7 +61,8 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
 
 ## What's not here yet
 
-- A room renderer (Phase 2) — nothing draws a block world.
+- Stacked blocks / multiple visible z-layers (Phase 2b); free vertical look
+  (Phase 2c).
 - `place_block` / `break_block` actions, a hotbar (Phase 3).
 - Collision, gravity, a HUD (Phase 4).
 - A sample game (Phase 5).
