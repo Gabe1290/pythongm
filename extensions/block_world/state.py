@@ -121,7 +121,23 @@ def _key(x, y, z):
 
 
 def _fresh():
-    return {"blocks": {}, "camera": {"enabled": False}}
+    # "_columns" is a DERIVED cache (see column_index) -- the leading
+    # underscore marks it as not part of the saved world shape, the same way
+    # raycast_2_5d's per-room state separates its camera config from the wall
+    # -edge caches it derives.
+    return {"blocks": {}, "camera": {"enabled": False}, "_columns": None}
+
+
+def _invalidate_columns(room):
+    """Drop the derived per-column cache. Called by every mutator here.
+
+    Code that reaches around these helpers and edits ``state["blocks"]``
+    directly MUST call this too, or the renderer keeps drawing the old world.
+    """
+    es = getattr(room, "extension_state", None)
+    st = es.get(BLOCK_WORLD_KEY) if es else None
+    if st is not None:
+        st["_columns"] = None
 
 
 def block_world_state(room):
@@ -178,6 +194,7 @@ def set_block(room, x, y, z, block_type):
     if block_type not in BLOCK_TYPES:
         raise KeyError(block_type)
     block_world_state(room)["blocks"][_key(x, y, z)] = block_type
+    _invalidate_columns(room)
 
 
 def remove_block(room, x, y, z):
@@ -186,6 +203,7 @@ def remove_block(room, x, y, z):
     blocks = peek_blocks(room)
     if blocks is not None:
         blocks.pop(_key(x, y, z), None)
+        _invalidate_columns(room)
 
 
 def iter_blocks(room):
@@ -236,3 +254,38 @@ def load_block_list(room, block_list):
             raise KeyError(block_type)
         blocks[_key(entry["x"], entry["y"], entry["z"])] = block_type
     block_world_state(room)["blocks"] = blocks
+    _invalidate_columns(room)
+
+
+def column_index(room):
+    """``{(x, y): [(z, block_type), ...]}`` -- every non-empty column of the
+    world, each sorted lowest z first. Built once and cached until a mutator
+    calls _invalidate_columns.
+
+    Phase 2b's renderer needs the whole vertical STACK at each cell it steps
+    into, and the backing store is keyed by a formatted ``"x,y,z"`` string.
+    Probing that per candidate layer means a string format per lookup, which
+    at 320 columns x 24 cells x a handful of layers is tens of thousands of
+    formats per frame -- comfortably the most expensive thing in the render
+    path. One tuple-keyed dict lookup per cell instead, rebuilt only when the
+    world actually changes, which for a built world is approximately never.
+    """
+    st = block_world_state(room)
+    index = st.get("_columns")
+    if index is None:
+        index = {}
+        for x, y, z, block_type in iter_blocks(room):
+            index.setdefault((x, y), []).append((z, block_type))
+        for column in index.values():
+            column.sort()
+        st["_columns"] = index
+    return index
+
+
+def stack_top(room, x, y):
+    """The z of the highest block at (x, y), or None for an empty column.
+
+    The heightmap query Phase 2b's "stand on top of things" needs, and Phase
+    4's collision will want the same answer."""
+    column = column_index(room).get((x, y))
+    return column[-1][0] if column else None

@@ -1,6 +1,7 @@
 # Voxel World extension — plan
 
-Status: **Phase 0, 1, and 2a done (2026-08-12); Phase 2b not started.**
+Status: **Phase 0, 1, 2a and 2b done (2b: 2026-08-13); Phase 2c deferred as
+planned, Phase 3 is next.**
 This doc is the worked
 plan for a Minecraft-*inspired* block-building extension, built the same way
 `extensions/raycast_2_5d/` was (see `docs/RAYCAST_EXTENSION_PLAN.md`) — except
@@ -185,6 +186,67 @@ per-unit discipline:
   short walls. Still no free vertical camera look — pitch stays level, like
   raycast_1-4. This is enough for "build a little house," "dig a pit,"
   "stack blocks to reach a ledge" — most of what students will actually want.
+
+  **Done (2026-08-13).** The whole vertical projection is one line, and
+  `render_block_world_view`'s docstring is where it lives:
+  `y = horizon + (eye_z - zval) * (screen_h * cell_size / distance)`. Phase
+  2a turns out to be exactly the `eye_z = 0.5`, one-layer case of it, which
+  is what made the compatibility proof possible.
+  - **The DDA is now one function.** `march_ray` yields every cell entered,
+    with its ENTRY *and* EXIT distance — the exit is what a top face needs,
+    since a horizontal surface runs from the near vertical face back to the
+    far one. `cast_ray` is a thin first-hit wrapper over it and stays as the
+    single-layer query for Phase 3 picking. Do not grow a third copy.
+  - **Painter's algorithm, far→near, with a gapless-stack early-out.** A
+    column can be seen *through* where a stack has a hole in it, so the
+    early-out only fires for a contiguous stack that covers the screen —
+    getting that wrong erases whatever is visible beyond the gap.
+  - **Horizontal faces are flat-shaded**, coloured by the texture's average
+    (`face_average_color`). Per-pixel floor casting is the expensive step
+    the raycast arc deferred on two of three targets; a step or a pit reads
+    correctly without it. Textured tops belong with 2c.
+  - **A derived per-column index** (`state.column_index`, invalidated by
+    every mutator) replaces per-layer probing of the `"x,y,z"` string keys.
+    Without it the render path spends tens of thousands of string formats a
+    frame. `stack_top` is the heightmap query Phase 4's footing will reuse.
+  - **Pre-existing seam bug found and fixed en route.** A textured strip
+    scales its texture column to a ROUNDED height while the span it fills is
+    CEILED, so it could fall a row short — 2a showed the flat floor colour
+    along the bottom edge of walls. Fixed by repeating the strip's last row
+    into the shortfall. Note the first attempt (growing the scale target to
+    fit) recoloured *every* texel above the seam to patch one row — the
+    proof harness caught that immediately, at 2.7M differing pixels.
+  - **Compatibility proof:** a single-layer OPAQUE world renders identically
+    to 2a across a 160-frame camera matrix (10 positions × 8 angles ×
+    textured/flat) — every one of the 51,649 differing pixels out of 76.8M
+    is a seam row 2a left unpainted, with no vertical run over 2px, checked
+    per pixel rather than eyeballed. Two deliberate exceptions, each with
+    its own test: the seam fill, and **alpha textures now compositing with
+    the block behind them** instead of the flat sky (2a drew one hit per
+    column, so glass and leaves showed sky through their gaps — the very
+    thing the 2a preview review flagged; it falls out of painting far→near).
+  - Landmine that nearly cost a bogus "identical" claim: 2a recovered the
+    entry distance as `(side + delta) - delta` after stepping, which differs
+    by an ULP from capturing `side` before it. That is enough to move a
+    strip edge a pixel in the odd column. `march_ray` reproduces 2a's
+    arithmetic deliberately — a comment says so, so nobody "cleans it up".
+  - **Mutation-checked**, not just green: breaking each of the five 2b
+    behaviours in turn (no horizontal faces, nearest-cell-only, eye height
+    ignored, gapped stacks treated as opaque, seam left unpainted) each
+    makes a test fail. The first seam test did NOT fail against the bug — it
+    scanned for background rows *between* a wall's first and last drawn row,
+    and the shortfall is at the bottom edge, so it was structurally blind.
+    Rewritten to assert the exact last painted row. Same lesson as the
+    minimap marker: assert WHERE an edge lands, not that something drew.
+  - 29 tests in `tests/test_block_world_layers.py`; geometry tests use
+    `columns: 1` so ray_offset is exactly 0 and the projection has a closed
+    form to assert against. Suite 2563 → 2592, 0 failed.
+  - `tools/preview_block_world.py` gained the multi-layer half of the scene
+    (staircase, terrace, pit, tower) and step-up movement, so 2b is
+    eyeballable: five new viewpoints, `--shots` now writes 14 frames. The
+    **pit viewpoint is deliberately kept as evidence of the 2c limitation** —
+    a level camera cannot look down, so a pit at your feet falls below the
+    frame; from a few cells back it reads correctly as a recess.
 - **2c — free look (stretch, likely deferred).** Full 3D DDA with pitch
   (looking up/down), needed for tall builds or deep pits to read correctly
   from up close. This is the expensive step (real 3D ray marching, not the
