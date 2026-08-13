@@ -158,11 +158,24 @@ def pick_block(room, cam_x, cam_y, layer, angle_rad, cell_size, reach):
 
     - ``target`` is the first cell along the ray that holds a block -- what
       breaking removes.
-    - ``placement`` is the empty cell a new block should occupy: the one
-      immediately before the target, or, when the ray reaches nothing within
-      ``reach``, the cell directly ahead. None when there is nowhere valid
-      (the camera is already up against a block, so the only cell "before"
-      the target is the one the camera is standing in).
+    - ``placement`` is the empty cell a new block should occupy. In order of
+      preference: the first GAP the ray passes through, else the cell
+      immediately before the target, else — when the ray reaches nothing
+      within ``reach`` — the cell directly ahead. None when there is nowhere
+      valid (the camera is already up against a block, so the only cell
+      "before" the target is the one the camera is standing in).
+
+    A **gap** is an empty cell at the camera's layer with a block resting on
+    top of it: the hole left by knocking a block out of a wall. It gets
+    priority because otherwise such a hole can never be refilled — a
+    one-cell-thick wall has no cell "before the hit" that IS the hole, from
+    either side, so the block always lands somewhere past it. That was a real
+    dead end found by playtesting, not a theoretical one. An open doorway is
+    not a gap (nothing above it) and so is never blocked up by accident.
+
+    Note the target still reaches PAST a gap, so the crosshair lights up on
+    whatever is really behind the hole and can still be broken. Only where
+    the new block goes changes.
 
     **A returned placement is always air**, and callers may rely on it: the
     march only advances past cells it has read as empty, and a first cell
@@ -184,14 +197,20 @@ def pick_block(room, cam_x, cam_y, layer, angle_rad, cell_size, reach):
     """
     first = None
     prev = None
+    gap = None
     for map_x, map_y, _entry, _exit, _side, _tex_u in march_ray(
             room, cam_x, cam_y, angle_rad, cell_size, reach):
         if first is None:
             first = (map_x, map_y)
         if get_block(room, map_x, map_y, layer) is not None:
-            placement = (prev[0], prev[1], layer) if prev else None
-            return (map_x, map_y, layer), placement
+            if gap is not None:
+                return (map_x, map_y, layer), gap
+            return (map_x, map_y, layer), (prev[0], prev[1], layer) if prev else None
+        if gap is None and get_block(room, map_x, map_y, layer + 1) is not None:
+            gap = (map_x, map_y, layer)   # a hole with a block resting on it
         prev = (map_x, map_y)
+    if gap is not None:
+        return None, gap
     return None, (first[0], first[1], layer) if first else None
 
 

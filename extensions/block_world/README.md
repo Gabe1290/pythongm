@@ -59,6 +59,14 @@ A placement cell returned by `pick_block` is **always air** — the march only
 advances past cells it has read as empty. `place_block` relies on that and
 deliberately does not re-check.
 
+**A gap beats a surface.** If the ray passes through a hole — an empty cell
+at your layer with a block resting on top of it — the new block goes *there*,
+rather than against whatever the crosshair finds beyond. Without that rule a
+hole knocked in a one-block-thick wall can never be refilled from either
+side, because no cell "before the hit" is ever the hole itself. Breaking is
+unaffected: the crosshair still reaches past the hole. An open doorway has
+nothing resting on it, so it is never bricked up by accident.
+
 **`obsidian` cannot be broken.** It is the designated boundary material:
 line a world's edges with it and a player cannot dig out. `break_block`
 consults `state.is_breakable` (default True, so a type says nothing unless it
