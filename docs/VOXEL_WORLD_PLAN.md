@@ -337,6 +337,18 @@ to build in. Notes worth carrying:
   legitimately nowhere to build, and the action is a silent no-op.
 - Picking does NOT consult `transparent` — glass has to be breakable, so it
   is picked like anything else, unlike the renderer's occlusion test.
+- **A gap beats a surface.** Placement prefers the first GAP the ray passes
+  through — an empty cell at the camera's layer with a block resting on top
+  — over the cell before the target. Found by playtesting: knock a block out
+  of a wall and, with the plain "build against what you hit" rule, *you can
+  never put it back*. A one-cell-thick wall has no cell "before the hit"
+  that IS the hole, from either side, so the block always lands somewhere
+  past it. The target still reaches past a gap, so the crosshair stays on
+  what is really behind the hole and that block is still breakable; only
+  where a new block lands changes. An open doorway has nothing resting on it
+  and so is never bricked up by accident. The remaining hole this does not
+  cover is one knocked out of the TOP of a wall, which has nothing above it
+  — reachable only from a layer where 2c's free look would be the real fix.
 - **Three mutants survived the first test pass**, all for the same reason:
   the test helper had its own copy of the handler's camera resolution, and
   every action test faced angle 0 on layer 0 — where a sign flip and a

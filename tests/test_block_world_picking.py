@@ -248,6 +248,84 @@ class TestBreakBlock:
         assert get_block(room, 3, 0, 0) == "stone", "broke the wrong layer"
 
 
+class TestRefillingHoles:
+    """Reported from a playtest: break a block out of a wall and you can
+    never put it back.
+
+    A one-cell-thick wall has no cell "before the hit" that IS the hole --
+    from either side the ray passes straight through and targets whatever
+    stands beyond, so the block always lands past the hole. `pick_block`
+    therefore prefers a GAP: an empty cell at the camera's layer with a block
+    resting on top of it."""
+
+    # Layout, along the x = 5 column: a wall at y = 5 whose bottom block has
+    # been knocked out (only the lintel at z 1-2 remains), and a brick at
+    # y = 2 and y = 8 for the ray to reach beyond the hole. Cameras stand at
+    # y = 6 (looking north) and y = 4 (looking south) -- both four cells from
+    # the brick they face, inside the default reach of five, and neither
+    # standing on the other approach's brick.
+    NORTH = ((5, 6), 90)
+    SOUTH = ((5, 4), 270)
+
+    def _holed_wall(self, approach):
+        camera_cell, facing = approach
+        room, camera = _world(camera_cell=camera_cell, facing=facing)
+        for z in (1, 2):
+            set_block(room, 5, 5, z, "cobble")   # lintel over the hole
+        set_block(room, 5, 2, 0, "brick")
+        set_block(room, 5, 8, 0, "brick")
+        return room, camera
+
+    def test_the_hole_is_where_the_block_goes(self):
+        room, camera = self._holed_wall(self.NORTH)
+        _target, placement = _pick(room, camera)
+        assert placement == (5, 5, 0)
+
+    def test_refillable_from_the_other_side_too(self):
+        room, camera = self._holed_wall(self.SOUTH)
+        _target, placement = _pick(room, camera)
+        assert placement == (5, 5, 0)
+
+    def test_place_block_actually_refills_it(self):
+        room, _camera = self._holed_wall(self.NORTH)
+        _run(room, "place_block", block="cobble")
+        assert get_block(room, 5, 5, 0) == "cobble"
+
+    def test_the_target_still_reaches_past_the_hole(self):
+        """The crosshair stays on whatever is really behind the gap, and that
+        block is still breakable. Only where a NEW block lands changes."""
+        room, camera = self._holed_wall(self.NORTH)
+        target, _placement = _pick(room, camera)
+        assert target == (5, 2, 0)
+        _run(room, "break_block")
+        assert get_block(room, 5, 2, 0) is None
+
+    def test_an_open_doorway_is_not_a_gap(self):
+        """Nothing rests on it, so it is a way through rather than damage,
+        and must never be bricked up by accident."""
+        room, camera = _world(camera_cell=(5, 6), facing=90)
+        set_block(room, 4, 5, 0, "cobble")   # jambs either side, no lintel
+        set_block(room, 6, 5, 0, "cobble")
+        set_block(room, 5, 2, 0, "brick")    # something beyond, through the door
+        target, placement = _pick(room, camera)
+        assert target == (5, 2, 0)
+        assert placement == (5, 3, 0), "filled in the doorway"
+
+    def test_an_ordinary_wall_still_gets_built_against(self):
+        """No gap in the way means the old rule stands."""
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        _target, placement = _pick(room, camera)
+        assert placement == (2, 0, 0)
+
+    def test_the_nearest_gap_wins(self):
+        room, camera = _world()
+        for x in (3, 6):
+            set_block(room, x, 0, 1, "cobble")   # two holes, both roofed
+        _target, placement = _pick(room, camera, reach=8)
+        assert placement == (3, 0, 0)
+
+
 class TestUnbreakableBlocks:
     """`breakable` is the protection model in full: no modes, no regions,
     one flag consulted in one place. See the edit-mode/play-mode section of
