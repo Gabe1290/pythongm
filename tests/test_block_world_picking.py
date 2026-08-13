@@ -509,6 +509,43 @@ class TestPickVoxel:
             z_min=-4, z_max=4)
         assert target == (2, 0, -2)
 
+    def test_a_total_miss_places_directly_ahead_not_at_the_reach_limit(self):
+        """Was a real bug this session fixed: a level ray that finds nothing
+        used to place at the LAST empty voxel visited (near the reach limit)
+        instead of the first one (directly in front of the camera) --
+        pick_block has always placed directly ahead on a miss; pick_voxel did
+        not, until it was ported to match."""
+        room, camera = _world()
+        _target, placement = self._pv(room, camera, 0.0, reach=6)
+        assert placement == (1, 0, 0), \
+            "should build directly ahead, not near the reach limit"
+
+    def test_prefers_the_gap_the_same_way_pick_block_does(self):
+        """Ports TestRefillingHoles' scenario to pick_voxel directly at
+        z_per_px == 0, where it must behave exactly like pick_block: a hole
+        in a wall (an empty voxel with a block resting on it) wins over
+        whatever empty voxel merely precedes the eventual hit."""
+        room, camera = _world(camera_cell=(5, 6), facing=90)  # facing north
+        set_block(room, 5, 5, 1, "cobble")   # lintel over the hole at z=1
+        set_block(room, 5, 2, 0, "brick")    # something beyond the hole
+        _target, placement = self._pv(room, camera, 0.0, reach=6)
+        assert placement == (5, 5, 0), "should refill the hole, not build past it"
+
+    def test_gap_preference_holds_on_a_tilted_ray_too(self):
+        """The same gap rule, but the ray also has real vertical slope --
+        confirms gap detection is per-VOXEL and does not depend on the ray
+        being level, unlike pick_block which only ever had one layer.
+        z_per_px chosen empirically (verified against pick_voxel directly):
+        gentle enough that the climb from the hole (y=5) to the far block
+        (y=2) stays on layer 1 the whole way, instead of climbing into the
+        lintel at y=5 or overshooting past the target by y=2."""
+        room, camera = _world(camera_cell=(5, 6), facing=90, z_layer=1)
+        set_block(room, 5, 5, 2, "cobble")   # lintel over the hole at z=1
+        set_block(room, 5, 2, 1, "brick")    # something beyond, same layer
+        target, placement = self._pv(room, camera, 0.002, reach=6)
+        assert target == (5, 2, 1)
+        assert placement == (5, 5, 1), "should refill the hole, not build past it"
+
 
 class TestRefillingHoles:
     """Reported from a playtest: break a block out of a wall and you can
@@ -586,6 +623,43 @@ class TestRefillingHoles:
             set_block(room, x, 0, 1, "cobble")   # two holes, both roofed
         _target, placement = _pick(room, camera, reach=8)
         assert placement == (3, 0, 0)
+
+
+class TestPitchAffectsPicking:
+    """The bug fixed this session: `_pick` (the method backing place_block/
+    break_block) used to build its ray from facing_angle alone and never
+    read `cfg["pitch"]` at all, so `set_look_pitch` changed what a game
+    SHOWED without changing what the actions TARGETED. Geometry below is
+    verified empirically against the real handlers, not hand-derived --
+    these run through `_run`, i.e. the actual action dispatch, with no
+    window size configured on the mock game runner (falls back to the
+    640x480 default `_pick` uses when `game_runner.window_width/height`
+    are absent)."""
+
+    def test_level_pitch_cannot_reach_a_block_on_the_layer_above(self):
+        room, _camera = _world()
+        set_block(room, 1, 0, 1, "stone")   # one layer above the camera's own
+        _run(room, "break_block")
+        assert get_block(room, 1, 0, 1) == "stone", \
+            "should be unreachable at pitch 0 -- nothing on layer 0 to hit"
+
+    def test_tilting_up_reaches_it(self):
+        room, _camera = _world()
+        set_block(room, 1, 0, 1, "stone")
+        _run(room, "set_look_pitch", pitch=30)
+        _run(room, "break_block")
+        assert get_block(room, 1, 0, 1) is None, \
+            "tilting up should have reached the block on the layer above"
+
+    def test_tilting_back_down_restores_the_original_target(self):
+        """Absolute, not relative: pitch=0 after pitch=30 must be genuinely
+        level again, not merely closer to it."""
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")   # the camera's own layer
+        _run(room, "set_look_pitch", pitch=30)
+        _run(room, "set_look_pitch", pitch=0)
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 0) is None
 
 
 class TestUnbreakableBlocks:

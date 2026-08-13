@@ -38,6 +38,15 @@ class PluginExecutor:
         renderer projects from, and the angle uses the renderer's own
         ``radians(-facing_angle)`` conversion. Recomputing either
         independently is how picking drifts away from the crosshair.
+
+        The ray follows the camera's look pitch (Phase 2c), not just its
+        facing angle: the crosshair is fixed at screen centre, but a tilted
+        view puts the horizon somewhere else on screen, so the ray through
+        screen centre has real vertical slope whenever pitch != 0.
+        ``screen_ray``/``pick_voxel`` are exactly what the mouse-aim preview
+        tool already uses for this -- at pitch 0 they reduce to the same
+        level walk ``pick_block`` does, so this is not a behaviour change for
+        an unpitched view.
         """
         ae = self._executor(instance)
         if ae is None or not ae.game_runner or not ae.game_runner.current_room:
@@ -58,20 +67,39 @@ class PluginExecutor:
 
         cell_size = int(cfg.get("cell_size", 32))
         cx, cy = room._sprite_top_left(camera)
-        from .renderer import pick_block, DEFAULT_EYE_HEIGHT  # lazy: pygame
+        from .renderer import pick_voxel, screen_ray, horizon_for, DEFAULT_EYE_HEIGHT  # lazy: pygame
         # The layer the EYE is in, not the layer the feet are on. With the
         # default two-block-tall body those differ, and a level crosshair
         # addresses whatever is at eye height -- picking the feet layer would
-        # break blocks the crosshair is not on.
-        eye_z = (float(cfg.get("z_layer", 0))
+        # break blocks the crosshair is not on. Matches renderer.py's own
+        # eye_z expression exactly -- z_layer through int(), same as the
+        # render path -- so the two never disagree on a non-integer layer.
+        eye_z = (int(cfg.get("z_layer", 0))
                  + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT)))
-        target, placement = pick_block(
+
+        gr = ae.game_runner
+        screen_w = getattr(gr, "window_width", 0) or 0
+        screen_h = getattr(gr, "window_height", 0) or 0
+        if not screen_w or not screen_h:
+            screen = getattr(gr, "screen", None)
+            if screen is not None:
+                screen_w, screen_h = screen.get_size()
+        screen_w = screen_w or 640
+        screen_h = screen_h or 480
+
+        fov_rad = math.radians(cfg.get("fov", 66))
+        pitch = float(cfg.get("pitch", 0.0))
+        horizon = horizon_for(screen_h, pitch)
+        angle_rad, z_per_px = screen_ray(
+            screen_w / 2.0, screen_h / 2.0,
+            math.radians(-camera.facing_angle), fov_rad, screen_w, screen_h,
+            cell_size, horizon=horizon)
+
+        target, placement = pick_voxel(
             room,
             cx + camera._cached_width / 2,
             cy + camera._cached_height / 2,
-            int(math.floor(eye_z)),
-            math.radians(-camera.facing_angle),
-            cell_size, reach)
+            eye_z, angle_rad, z_per_px, cell_size, reach)
         return room, target, placement
 
     def execute_set_look_pitch_action(self, instance, parameters):
@@ -127,7 +155,7 @@ class PluginExecutor:
         if block not in BLOCK_TYPES:
             return
 
-        # No "is this cell empty?" check: pick_block guarantees it. It only
+        # No "is this cell empty?" check: pick_voxel guarantees it. It only
         # ever returns a cell it has already read as air (see its docstring),
         # so a guard here would be unreachable code pretending to be a safety
         # net.

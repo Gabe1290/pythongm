@@ -278,23 +278,35 @@ def pick_voxel(room, cam_x, cam_y, eye_z, angle_rad, z_per_px, cell_size,
                reach, z_min=-64, z_max=256):
     """March a 3D ray and return ``(target, placement)``.
 
-    ``target`` is the first solid voxel it enters; ``placement`` is the last
-    empty voxel before that, which is the cell on the near side of whichever
-    FACE the ray came through -- so pointing at a block's top face places on
-    top of it, and at a side face places beside it. No special cases: the
-    face falls out of tracking the previous voxel.
+    ``target`` is the first solid voxel it enters. ``placement`` prefers the
+    same GAP pick_block prefers -- an empty voxel with a solid one directly
+    above it (x, y, z+1) -- generalised from "cell" to "voxel": whichever
+    empty voxel the ray reaches first that has something resting on it is
+    remembered and preferred over whatever voxel merely happens to be next
+    to the eventual hit. Without that, a hole punched through a wall stops
+    being refillable the moment open space follows it before the ray hits
+    something else -- see pick_block's docstring for the playtest that found
+    this. Absent a gap, placement is the voxel on the near side of whichever
+    FACE the ray came through, so pointing at a top face places on top and a
+    side face places beside it -- no case analysis, it falls out of tracking
+    the previous voxel. On a total miss (nothing within reach and no gap
+    seen), placement is the FIRST voxel entered: build directly ahead, not
+    wherever the march gave up.
 
-    This is the general form of pick_block. That one walks a single layer at
-    eye height and needs a heuristic to make a hole in a wall refillable;
-    with a real 3D ray you simply point at the hole. The two coexist because
-    the ACTIONS have a crosshair and no mouse: their ray is the centre column
-    at the horizon, where z_per_px is 0 and this reduces to the same walk.
+    This is the general form of pick_block, and now literally: at
+    z_per_px == 0 every voxel visited sits on the one layer eye_z floors to,
+    one per cell, in the same order gap-then-hit-then-fallback -- the same
+    walk, with the same result. The two coexist because the ACTIONS have a
+    crosshair and no mouse: their ray is the centre column at the horizon,
+    where z_per_px is 0 and this reduces to that walk exactly.
 
     Reuses the one DDA for the horizontal steps and tracks height across each
     cell's entry and exit distance, so a column the ray passes through
     diagonally has every layer it clips checked in ray order.
     """
+    first = None
     prev = None
+    gap = None
     for map_x, map_y, entry, exit_d, _side, _tex_u in march_ray(
             room, cam_x, cam_y, angle_rad, cell_size, reach):
         z_entry = eye_z + z_per_px * entry
@@ -306,10 +318,18 @@ def pick_voxel(room, cam_x, cam_y, eye_z, angle_rad, z_per_px, cell_size,
             continue                      # the ray left the world vertically
         layers = range(low, high + 1) if z_per_px >= 0 else range(high, low - 1, -1)
         for layer in layers:
+            if first is None:
+                first = (map_x, map_y, layer)
             if get_block(room, map_x, map_y, layer) is not None:
+                if gap is not None:
+                    return (map_x, map_y, layer), gap
                 return (map_x, map_y, layer), prev
+            if gap is None and get_block(room, map_x, map_y, layer + 1) is not None:
+                gap = (map_x, map_y, layer)   # a hole with a block resting on it
             prev = (map_x, map_y, layer)
-    return None, prev
+    if gap is not None:
+        return None, gap
+    return None, first
 
 
 def unproject_to_plane(sx, sy, plane_z, cam_x, cam_y, eye_z,

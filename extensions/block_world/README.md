@@ -63,28 +63,35 @@ step-up rule it uses is built on the real `stack_top` heightmap query.
 ## Building and digging (Phase 3)
 
 `place_block` and `break_block` both act on whatever the camera's centre ray
-reaches, via `renderer.pick_block` — the *same* march the renderer runs, at
-the same angle the centre column is drawn from, so you break exactly what
-sits under the crosshair. A second raycast for picking would be a second
-thing to keep in step.
+reaches, via `renderer.pick_voxel` (the mouse-aim primitive, fed the ray
+through screen centre) — the *same* march the renderer runs, at the same
+angle and pitch the centre column is drawn from, so you break exactly what
+sits under the crosshair, tilted view or not. A second raycast for picking
+would be a second thing to keep in step.
 
-What the level camera implies, and it is not a bug: the ray runs horizontally
-at eye height, so **only your own layer is reachable**. You build outwards at
-your feet and climb what you build; digging down or placing onto ground below
-you needs Phase 2c's free look. Standing flush against a wall there is
-genuinely nowhere to build at your layer, and the action does nothing.
+`pick_voxel` follows the look pitch (Phase 2c) as well as the facing angle:
+the crosshair is fixed at screen centre, but a tilted view puts the horizon
+somewhere else on screen, so the ray through that point has real vertical
+slope whenever `pitch != 0` — reachable layers are not just "your own" once
+you look up or down. At level pitch it reduces to exactly the walk the
+simpler single-layer `pick_block` still does (kept for its own tests and as
+the easiest-to-read reference case); a level camera still means a level
+*ray*, so standing flush against a wall on your own layer is genuinely
+nowhere to build at that pitch, and the action does nothing.
 
-A placement cell returned by `pick_block` is **always air** — the march only
+A placement cell returned by `pick_voxel` is **always air** — the march only
 advances past cells it has read as empty. `place_block` relies on that and
 deliberately does not re-check.
 
-**A gap beats a surface.** If the ray passes through a hole — an empty cell
-at your layer with a block resting on top of it — the new block goes *there*,
-rather than against whatever the crosshair finds beyond. Without that rule a
-hole knocked in a one-block-thick wall can never be refilled from either
-side, because no cell "before the hit" is ever the hole itself. Breaking is
-unaffected: the crosshair still reaches past the hole. An open doorway has
-nothing resting on it, so it is never bricked up by accident.
+**A gap beats a surface.** If the ray passes through a hole — an empty voxel
+with a block resting directly on top of it (same x, y, one layer up) — the
+new block goes *there*, rather than against whatever the crosshair finds
+beyond. Without that rule a hole knocked in a one-block-thick wall can never
+be refilled from either side, because no cell "before the hit" is ever the
+hole itself. Breaking is unaffected: the crosshair still reaches past the
+hole. An open doorway has nothing resting on it, so it is never bricked up by
+accident. The rule is per-voxel, not tied to a fixed layer, so it holds the
+same way whether the ray is level or pitched.
 
 **`obsidian` cannot be broken.** It is the designated boundary material:
 line a world's edges with it and a player cannot dig out. `break_block`
