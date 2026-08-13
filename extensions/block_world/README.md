@@ -5,7 +5,7 @@ strings, or docs — see the naming section of `docs/VOXEL_WORLD_PLAN.md`. This
 is "inspired by," the same territory Luanti/Minetest itself occupies, not a
 clone wearing someone else's name.
 
-**Status: Phase 2b done; Phase 3 under way (picking + place/break landed
+**Status: Phases 0-2c done; Phase 3 under way (picking + place/break landed
 2026-08-13).** A room with the view enabled renders as a textured
 first-person world whose blocks **stack** — walls several blocks high, you
 can stand on things and see over what's below you, blocks show their top
@@ -41,10 +41,14 @@ right-click places, Ctrl+Z undoes. Building is off until you ask for it so a
 stray click costs nothing.
 
 **To stack blocks**, aim at the top face of one and place: the new block goes
-on top. You have to stand a couple of cells back for the ray to reach down to
-another layer — the vertical field of view is about 26 degrees, so a block on
-your OWN layer never shows you its top (that top is half a cell above your
-eye). Otherwise, build outwards and climb what you built.
+on top. Scroll the wheel (or R/F) to look up and down — at a level view the
+steepest ray only drops about 26 degrees, so a block on your own layer never
+shows you its top; tilt down and it does.
+
+Looking up and down is a **y-shear**, not a rotated camera: vertical edges
+stay vertical rather than converging, the way Doom worked. For a world of
+cubes that arguably reads better, but it is an approximation, not true
+perspective.
 
 The pixel-sampling tests prove a strip got drawn; this is how you judge
 whether the textures actually read well — which is the whole point of
@@ -117,10 +121,6 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
 
 ## What's not here yet
 
-- Free vertical camera look (Phase 2c, deliberately deferred). Pitch is
-  fixed level, so you cannot look down into a pit at your feet or up at the
-  top of a tower you are standing against — run the preview's `pit`
-  viewpoint to see exactly what that costs.
 - A fast renderer. A frame marches ~19 cells and draws ~38 wall strips per
   column for a handful of visible surfaces, because painting far→near
   rasterises everything hidden too; deck-heavy views run ~18 fps at 800x600

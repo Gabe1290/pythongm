@@ -13,6 +13,14 @@ from .state import (BLOCK_TYPES, block_world_state, get_block, is_breakable,
                     peek_camera, remove_block, set_block)
 
 
+def _truthy(raw):
+    """Coerce an action parameter to a bool. Strings matter: project JSON
+    stores "false", which is truthy under a bare bool()."""
+    if isinstance(raw, str):
+        return raw.strip().lower() in ("true", "1", "yes")
+    return bool(raw)
+
+
 class PluginExecutor:
     """Handles execution of the Block World actions."""
 
@@ -59,6 +67,34 @@ class PluginExecutor:
             math.radians(-camera.facing_angle),
             cell_size, reach)
         return room, target, placement
+
+    def execute_set_look_pitch_action(self, instance, parameters):
+        """Tilt the view up or down (Phase 2c).
+
+        Clamped by the renderer, so holding a look control against the limit
+        just stops rather than folding the view inside out.
+
+        Parameters:
+            pitch: degrees, positive up
+            relative: add to the current angle instead of replacing it
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        cfg = peek_camera(ae.game_runner.current_room)
+        if not cfg:
+            return
+        try:
+            pitch = float(ae._parse_value(parameters.get("pitch", 0), instance))
+        except (TypeError, ValueError):
+            return
+        if _truthy(parameters.get("relative", False)):
+            pitch += float(cfg.get("pitch", 0.0))
+        # Clamp at the setter, not just in the renderer: a held look control
+        # accumulating past the limit would have to be wound all the way back
+        # before the view responded again.
+        from .renderer import MAX_PITCH_DEGREES  # lazy: keeps pygame out of the IDE
+        cfg["pitch"] = max(-MAX_PITCH_DEGREES, min(MAX_PITCH_DEGREES, pitch))
 
     def execute_place_block_action(self, instance, parameters):
         """Put a block in the empty cell the camera's centre ray reaches.
@@ -150,10 +186,7 @@ class PluginExecutor:
                 return default
 
         def _bool(key, default):
-            raw = parameters.get(key, default)
-            if isinstance(raw, str):
-                return raw.strip().lower() in ("true", "1", "yes")
-            return bool(raw)
+            return _truthy(parameters.get(key, default))
 
         block_world_state(room)["camera"] = {
             "enabled": True,
@@ -167,6 +200,8 @@ class PluginExecutor:
             "floor_color": str(parameters.get("floor_color", "#3a2f1c")),
             "ceiling_color": str(parameters.get("ceiling_color", "#87CEEB")),
             "wall_textured": _bool("wall_textured", True),
+            # Look angle in degrees, positive up (Phase 2c).
+            "pitch": _num("pitch", 0),
             # Horizontal (top/bottom) faces cast every Nth screen row and
             # upscale the result; 0 falls back to a flat average colour,
             # which is cheaper on a scene showing a lot of deck.

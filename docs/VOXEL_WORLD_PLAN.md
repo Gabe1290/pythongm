@@ -1,7 +1,8 @@
 # Voxel World extension — plan
 
-Status: **Phase 0, 1, 2a and 2b done (2b: 2026-08-13); Phase 2c deferred as
-planned, Phase 3 is next.**
+Status: **Phases 0, 1, 2a, 2b and 2c all done (2026-08-13); Phase 3 under
+way — picking, place/break and unbreakable blocks landed, hotbar and world
+generator still open.**
 This doc is the worked
 plan for a Minecraft-*inspired* block-building extension, built the same way
 `extensions/raycast_2_5d/` was (see `docs/RAYCAST_EXTENSION_PLAN.md`) — except
@@ -305,12 +306,49 @@ per-unit discipline:
   that range), and a scene has to be laid out deliberately to afford one.
   Worth knowing before Phase 5 designs a sample around a build the player is
   supposed to admire.
-- **2c — free look (stretch, likely deferred).** Full 3D DDA with pitch
-  (looking up/down), needed for tall builds or deep pits to read correctly
-  from up close. This is the expensive step (real 3D ray marching, not the
-  2D-plus-height approximation of 2b) — treat it the way the raycast plan
-  treated floor-casting on HTML5/Kivy: land 2a/2b for real, defer 2c behind
-  an explicit follow-up decision once students have actually used 2b.
+- **2c — free look.** Looking up and down, needed for tall builds and deep
+  pits to read correctly from up close.
+
+  **Done (2026-08-13) — and this plan's cost estimate for it was wrong.**
+  The text below is left as written, because being wrong in a specific,
+  checkable way is the useful part:
+
+  > *Full 3D DDA with pitch (looking up/down) … This is the expensive step
+  > (real 3D ray marching, not the 2D-plus-height approximation of 2b) —
+  > treat it the way the raycast plan treated floor-casting on HTML5/Kivy:
+  > land 2a/2b for real, defer 2c behind an explicit follow-up decision.*
+
+  No 3D ray marching was needed in the renderer at all. Two facts, either of
+  which is easy to miss:
+
+  1. **`half_h` appeared 16 times and every one was the horizon reference in
+     the projection.** Nothing horizontal depended on it. Grepping for it
+     before designing anything is what turned this from a rewrite into a
+     rename.
+  2. **Pitch does not change AZIMUTH.** A screen column still corresponds to
+     the same ray, so the horizontal DDA never has to learn about it.
+
+  So looking up and down is a **Y-SHEAR**: `horizon_for()` slides the horizon
+  and every other formula is left alone. `horizon = screen_h/2 + screen_h *
+  tan(pitch)` — the vertical focal length works out to exactly `screen_h`
+  pixels. Clamped at 70°, past which the stretch stops convincing and `tan`
+  runs away.
+
+  It is a shear, not a rotated camera: **vertical edges stay vertical instead
+  of converging.** Doom did the same. For a world made of cubes the parallel
+  edges arguably read better than true perspective would, but say so plainly
+  rather than claiming a full 3D camera.
+
+  `project_point` / `unproject_to_plane` / `screen_ray` / `draw_cell_outline`
+  all take `horizon` as an optional argument defaulting to screen centre, so
+  every existing call site kept working untouched and the 162 Block World
+  tests passed through the change. Picking follows the pitched view for free,
+  because `screen_ray` reads its slope from `sy - horizon`.
+
+  What it buys, measured: the steepest ray goes from **0.5 cells per cell
+  (~26°) at level to ~2.2 (~65°) at −60° pitch**, so digging down and
+  building overhead now work. `set_look_pitch` (absolute or relative, for a
+  held look control) is the action; the walkaround binds the wheel and R/F.
 
 Each stage gets a `render.md`-style writeup of its own math the way
 `RAYCAST_2_5D_PLAN.md` did, since three more codebases (HTML5/Kivy in Phase 6)

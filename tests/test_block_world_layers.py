@@ -475,6 +475,93 @@ class TestTexturedHorizontalFaces:
             "underside was rasterised from a texture other than the bottom one"
 
 
+class TestPitch:
+    """Phase 2c. Looking up and down is a Y-SHEAR: the horizon slides and
+    every other formula is untouched. That works because the renderer states
+    height as one line through `horizon`, and because pitch does not change
+    azimuth -- a screen column is still the same ray, so the horizontal DDA
+    never learns about it."""
+
+    def test_level_puts_the_horizon_at_the_middle(self):
+        from extensions.block_world.renderer import horizon_for
+        assert horizon_for(H, 0) == pytest.approx(H / 2)
+
+    def test_looking_up_pushes_the_horizon_down_the_screen(self):
+        """Look up and you see more sky, so the horizon appears LOWER."""
+        from extensions.block_world.renderer import horizon_for
+        assert horizon_for(H, 20) > H / 2
+        assert horizon_for(H, -20) < H / 2
+
+    def test_the_shift_is_screen_height_times_tan(self):
+        """The vertical focal length works out to exactly screen_h pixels."""
+        from extensions.block_world.renderer import horizon_for
+        assert horizon_for(H, 30) == pytest.approx(H / 2 + H * math.tan(math.radians(30)))
+
+    def test_it_is_clamped(self):
+        from extensions.block_world.renderer import horizon_for, MAX_PITCH_DEGREES
+        assert horizon_for(H, 5000) == pytest.approx(horizon_for(H, MAX_PITCH_DEGREES))
+        assert horizon_for(H, -5000) == pytest.approx(horizon_for(H, -MAX_PITCH_DEGREES))
+
+    def _sky_rows(self, room):
+        """How many rows of the empty view are ceiling rather than floor."""
+        screen = _render(room)
+        ceil_rgb = tuple(room.parse_color(CEILING))
+        return sum(1 for y in range(H)
+                   if screen.get_at((W // 2, y))[:3] == ceil_rgb)
+
+    def test_the_rendered_horizon_follows_the_pitch(self):
+        room = _room()
+        _camera(room)
+        _configure(room)
+        level = self._sky_rows(room)
+        _configure(room, pitch=20)
+        assert self._sky_rows(room) > level, "looking up should show more sky"
+        _configure(room, pitch=-20)
+        assert self._sky_rows(room) < level, "looking down should show less sky"
+
+    def test_a_level_view_is_unchanged_by_the_feature(self):
+        """Backward compatibility: an absent pitch and an explicit zero must
+        render the same frame, so every world built before 2c is untouched."""
+        room = _room()
+        _camera(room)
+        set_block(room, 6, 0, 0, "stone")
+        _configure(room)
+        block_world_state(room)["camera"].pop("pitch", None)
+        absent = pygame.image.tostring(_render(room), "RGB")
+        _configure(room, pitch=0)
+        assert pygame.image.tostring(_render(room), "RGB") == absent
+
+    def test_the_overlay_maths_follows_the_pitched_horizon(self):
+        """project_point and unproject_to_plane take the horizon explicitly.
+        If an overlay kept assuming screen centre, the placement outline
+        would slide off the geometry the moment you looked up or down."""
+        from extensions.block_world.renderer import (project_point, horizon_for,
+                                                     unproject_to_plane)
+        horizon = horizon_for(H, -25)
+        common = dict(cam_x=16, cam_y=16, eye_z=0.5, facing_screen_rad=0.3,
+                      fov_rad=math.radians(66), screen_w=W, screen_h=H,
+                      cell_size=CELL, horizon=horizon)
+        sx, sy = project_point(240, 90, 0, **common)
+        assert unproject_to_plane(sx, sy, 0, **common) == pytest.approx((240, 90))
+        # And the pitched projection really does differ from the level one.
+        level = project_point(240, 90, 0, **dict(common, horizon=None))
+        assert level[1] != pytest.approx(sy)
+
+    def test_pitch_deepens_how_steeply_you_can_aim(self):
+        """The point of the whole phase: at level the steepest ray drops
+        about half a cell per cell (~26 deg). Looking down lifts that, which
+        is what makes digging down possible."""
+        from extensions.block_world.renderer import screen_ray, horizon_for
+        def steepest(pitch):
+            _angle, z_per_px = screen_ray(
+                W / 2, H - 1, 0.0, math.radians(66), W, H, CELL,
+                horizon_for(H, pitch))
+            return -z_per_px * CELL
+        assert steepest(0) == pytest.approx(0.5, abs=0.05)
+        assert steepest(-30) > 1.0
+        assert steepest(-60) > steepest(-30)
+
+
 class TestPointProjection:
     """project_point is the inverse of what the render loop does per column.
     Anything overlaid on the view -- the placement outline today, a selection

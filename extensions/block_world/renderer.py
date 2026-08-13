@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Block World renderer -- Phase 2b of docs/VOXEL_WORLD_PLAN.md: a
-first-person view of a world whose blocks STACK.
+"""Block World renderer -- Phases 2a-2c of docs/VOXEL_WORLD_PLAN.md: a
+first-person view of a world whose blocks STACK, which you can look up and
+down in.
 
 Reuses the SHAPE of extensions/raycast_2_5d/renderer.py (DDA ray marching,
 per-column screen strips, camera-plane projection, fisheye correction) but
@@ -16,10 +17,9 @@ be climbed, and standing on a ledge lets you see over things. The vertical
 projection is one line of maths, spelled out in render_block_world_view's
 own docstring.
 
-Still 2b, not 2c: the camera's pitch is fixed level (no looking up or down),
-and horizontal faces are flat-shaded rather than per-pixel texture mapped.
-No sky, no billboards -- later-phase work, mirroring how raycast staged its
-own texturing in over several phases.
+Looking up and down (2c) is a Y-shear -- see horizon_for -- so it costs the
+horizontal DDA nothing. No sky, no billboards: later-phase work, mirroring
+how raycast staged its own texturing in over several phases.
 
 What ``room`` must provide is ordinary GameRoom API, none of it owned by
 this extension: ``parse_color()``, ``_find_first_instance()``,
@@ -215,7 +215,7 @@ def pick_block(room, cam_x, cam_y, layer, angle_rad, cell_size, reach):
 
 
 def project_point(wx, wy, wz, cam_x, cam_y, eye_z, facing_screen_rad,
-                  fov_rad, screen_w, screen_h, cell_size):
+                  fov_rad, screen_w, screen_h, cell_size, horizon=None):
     """Screen (x, y) for a world point, or None if it is at or behind the
     camera plane.
 
@@ -243,12 +243,14 @@ def project_point(wx, wy, wz, cam_x, cam_y, eye_z, facing_screen_rad,
     lateral = rel_x * -dir_y + rel_y * dir_x
     plane_tan = math.tan(fov_rad / 2)
     sx = screen_w * 0.5 * (1.0 + lateral / (depth * plane_tan))
-    sy = screen_h * 0.5 + (eye_z - wz) * (screen_h * cell_size / depth)
+    if horizon is None:
+        horizon = screen_h * 0.5
+    sy = horizon + (eye_z - wz) * (screen_h * cell_size / depth)
     return sx, sy
 
 
 def screen_ray(sx, sy, facing_screen_rad, fov_rad, screen_w, screen_h,
-               cell_size):
+               cell_size, horizon=None):
     """The 3D ray through a screen pixel, as ``(angle_rad, z_per_px)``.
 
     A level camera constrains the forward AXIS to horizontal; it does not
@@ -266,7 +268,9 @@ def screen_ray(sx, sy, facing_screen_rad, fov_rad, screen_w, screen_h,
     """
     camera_x = 2.0 * sx / screen_w - 1.0
     offset = math.atan(math.tan(fov_rad / 2) * camera_x)
-    z_per_px = -(sy - screen_h * 0.5) * math.cos(offset) / (screen_h * cell_size)
+    if horizon is None:
+        horizon = screen_h * 0.5
+    z_per_px = -(sy - horizon) * math.cos(offset) / (screen_h * cell_size)
     return facing_screen_rad + offset, z_per_px
 
 
@@ -310,7 +314,7 @@ def pick_voxel(room, cam_x, cam_y, eye_z, angle_rad, z_per_px, cell_size,
 
 def unproject_to_plane(sx, sy, plane_z, cam_x, cam_y, eye_z,
                        facing_screen_rad, fov_rad, screen_w, screen_h,
-                       cell_size):
+                       cell_size, horizon=None):
     """Where a screen point lands on the horizontal plane at height
     ``plane_z``: returns world ``(x, y)`` in pixels, or None if that ray
     never meets the plane.
@@ -329,7 +333,8 @@ def unproject_to_plane(sx, sy, plane_z, cam_x, cam_y, eye_z,
     for the plane -- looking at or above it never meets a floor below you,
     and the divide would run away to infinity as it is approached.
     """
-    horizon = screen_h * 0.5
+    if horizon is None:
+        horizon = screen_h * 0.5
     drop = sy - horizon
     height = eye_z - plane_z
     if height == 0 or (drop > 0) != (height > 0) or abs(drop) < 1e-6:
@@ -343,7 +348,7 @@ def unproject_to_plane(sx, sy, plane_z, cam_x, cam_y, eye_z,
 
 def draw_cell_outline(screen, cell, cam_x, cam_y, eye_z, facing_screen_rad,
                       fov_rad, cell_size, color=(255, 255, 255), alpha=95,
-                      width=1):
+                      width=1, horizon=None):
     """Outline the FLOOR square of a world cell -- the footprint a block
     would occupy if it were placed there.
 
@@ -365,7 +370,8 @@ def draw_cell_outline(screen, cell, cam_x, cam_y, eye_z, facing_screen_rad,
     points = []
     for wx, wy in corners:
         projected = project_point(wx, wy, z, cam_x, cam_y, eye_z,
-                                  facing_screen_rad, fov_rad, w, h, cell_size)
+                                  facing_screen_rad, fov_rad, w, h, cell_size,
+                                  horizon)
         if projected is None:
             return False
         points.append(projected)
@@ -411,6 +417,31 @@ DEFAULT_EYE_HEIGHT = 0.5
 # slow in pure Python, and on a horizontal plane the rows between samples
 # differ too little for the interpolation to show.
 DEFAULT_TOP_CAST_RES = 4
+
+# Looking up and down (Phase 2c) is a Y-SHEAR: the horizon slides along the
+# screen and every other formula is left alone. That works because the whole
+# renderer expresses height as
+#     y = horizon + (eye_z - zval) * (screen_h * cell_size / distance)
+# and because pitch does not change AZIMUTH -- a screen column still
+# corresponds to the same ray, so the horizontal DDA is untouched.
+#
+# It is a shear, not a rotated camera: vertical edges stay vertical instead
+# of converging. Doom did the same, and for a world made of cubes the
+# parallel edges arguably read better than true perspective would. Past
+# roughly this clamp the stretch stops being convincing, and tan() runs away.
+MAX_PITCH_DEGREES = 70.0
+
+
+def horizon_for(screen_h, pitch_degrees):
+    """Screen row the horizon sits on for a given look angle.
+
+    Positive pitch looks UP, which pushes the horizon DOWN the screen. The
+    vertical focal length works out to exactly screen_h pixels -- a point one
+    cell above the eye at one cell away lands screen_h * (cell/cell) from the
+    horizon -- so the shift is simply ``screen_h * tan(pitch)``.
+    """
+    pitch = max(-MAX_PITCH_DEGREES, min(MAX_PITCH_DEGREES, float(pitch_degrees)))
+    return screen_h * 0.5 + screen_h * math.tan(math.radians(pitch))
 
 
 def wall_shade(side: int, corrected: float, max_dist: float) -> float:
@@ -468,7 +499,7 @@ def _occupied(stack, z):
     return False
 
 
-def _fully_covers(stack, eye_z, half_h, screen_h, px_per_cell):
+def _fully_covers(stack, eye_z, horizon, screen_h, px_per_cell):
     """Does this cell's stack hide everything behind it in this column?
 
     Only true for a GAPLESS stack of OPAQUE blocks. Two ways to be seen
@@ -491,8 +522,8 @@ def _fully_covers(stack, eye_z, half_h, screen_h, px_per_cell):
     for _z, block_type in stack:
         if is_transparent(block_type):
             return False
-    return (half_h + (eye_z - (highest + 1)) * px_per_cell <= 0
-            and half_h + (eye_z - lowest) * px_per_cell >= screen_h)
+    return (horizon + (eye_z - (highest + 1)) * px_per_cell <= 0
+            and horizon + (eye_z - lowest) * px_per_cell >= screen_h)
 
 
 def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
@@ -558,7 +589,7 @@ def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color):
 
 def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
                                    cam_x, cam_y, dir_x, dir_y, cos_off,
-                                   plane_z, eye_z, half_h, cell_size,
+                                   plane_z, eye_z, horizon, cell_size,
                                    shade, res):
     """The same face, texture-mapped.
 
@@ -598,7 +629,7 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
     inv_cell = 1.0 / cell_size
 
     def _texel(y):
-        denom = y + 0.5 - half_h
+        denom = y + 0.5 - horizon
         if -1e-6 < denom < 1e-6:
             denom = 1e-6 if denom >= 0 else -1e-6
         ray_dist = (k / denom) / cos_off
@@ -657,12 +688,12 @@ def render_block_world_view(room, screen: pygame.Surface):
 
     camera = room._find_first_instance(cfg.get("camera_object", ""))
     w, h = screen.get_size()
-    half_h = h / 2
+    horizon = horizon_for(h, cfg.get("pitch", 0.0))
 
     floor_color = room.parse_color(cfg.get("floor_color", "#3a2f1c"))
     ceiling_color = room.parse_color(cfg.get("ceiling_color", "#87CEEB"))
-    screen.fill(ceiling_color, (0, 0, w, int(half_h)))
-    screen.fill(floor_color, (0, int(half_h), w, h - int(half_h)))
+    screen.fill(ceiling_color, (0, 0, w, int(horizon)))
+    screen.fill(floor_color, (0, int(horizon), w, h - int(horizon)))
 
     if camera is None:
         return  # nothing to render from -- flat floor/ceiling only
@@ -724,7 +755,7 @@ def render_block_world_view(room, screen: pygame.Surface):
             near = max(d_entry * cos_off, 1e-4)
             far = max(d_exit * cos_off, near)
             hits.append((near, far, side, tex_u, stack))
-            if _fully_covers(stack, eye_z, half_h, h, h * cell_size / near):
+            if _fully_covers(stack, eye_z, horizon, h, h * cell_size / near):
                 break
 
         # Painter's algorithm. Every face is opaque, and within one cell the
@@ -741,20 +772,20 @@ def render_block_world_view(room, screen: pygame.Surface):
                 faces = block_face_textures(block_type) if textured else None
                 _draw_wall_strip(
                     screen, x0, strip_w,
-                    half_h + (eye_z - (z + 1)) * px_per_cell, px_per_cell,
+                    horizon + (eye_z - (z + 1)) * px_per_cell, px_per_cell,
                     shade, faces["side"] if faces else None, tex_u, wall_color)
 
                 # Top face: visible only from above it, and only when nothing
                 # is stacked on top.
                 if eye_z > z + 1 and not _occupied(stack, z + 1):
                     lit = face_shade(mid, max_dist, TOP_SHADE)
-                    y_far = half_h + (eye_z - (z + 1)) * px_per_cell_far
-                    y_near = half_h + (eye_z - (z + 1)) * px_per_cell
+                    y_far = horizon + (eye_z - (z + 1)) * px_per_cell_far
+                    y_near = horizon + (eye_z - (z + 1)) * px_per_cell
                     if top_textured:
                         _draw_horizontal_face_textured(
                             screen, x0, strip_w, y_far, y_near,
                             _load_texture(faces["top"]), cam_x, cam_y,
-                            dir_x, dir_y, cos_off, z + 1, eye_z, half_h,
+                            dir_x, dir_y, cos_off, z + 1, eye_z, horizon,
                             cell_size, lit, top_res)
                     else:
                         base = face_average_color(faces["top"]) if faces else wall_color
@@ -766,13 +797,13 @@ def render_block_world_view(room, screen: pygame.Surface):
                 # can, and a missing face there is a hole straight to the sky.
                 elif eye_z < z and not _occupied(stack, z - 1):
                     lit = face_shade(mid, max_dist, BOTTOM_SHADE)
-                    y_near = half_h + (eye_z - z) * px_per_cell
-                    y_far = half_h + (eye_z - z) * px_per_cell_far
+                    y_near = horizon + (eye_z - z) * px_per_cell
+                    y_far = horizon + (eye_z - z) * px_per_cell_far
                     if top_textured:
                         _draw_horizontal_face_textured(
                             screen, x0, strip_w, y_near, y_far,
                             _load_texture(faces["bottom"]), cam_x, cam_y,
-                            dir_x, dir_y, cos_off, z, eye_z, half_h,
+                            dir_x, dir_y, cos_off, z, eye_z, horizon,
                             cell_size, lit, top_res)
                     else:
                         base = face_average_color(faces["bottom"]) if faces else wall_color

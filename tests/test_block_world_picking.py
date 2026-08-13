@@ -248,6 +248,62 @@ class TestBreakBlock:
         assert get_block(room, 3, 0, 0) == "stone", "broke the wrong layer"
 
 
+class TestSetLookPitch:
+    """The Phase 2c action. Authored games have no mouse wheel, so tilting
+    the view has to be something an event can do."""
+
+    def _pitch(self, room):
+        return block_world_state(room)["camera"].get("pitch", 0.0)
+
+    def test_it_sets_the_angle(self):
+        room, _camera = _world()
+        _run(room, "set_look_pitch", pitch=25)
+        assert self._pitch(room) == pytest.approx(25)
+
+    def test_relative_accumulates(self):
+        """What a held look-up control needs."""
+        room, _camera = _world()
+        for _ in range(3):
+            _run(room, "set_look_pitch", pitch=10, relative=True)
+        assert self._pitch(room) == pytest.approx(30)
+
+    def test_absolute_replaces_rather_than_adds(self):
+        room, _camera = _world()
+        _run(room, "set_look_pitch", pitch=30)
+        _run(room, "set_look_pitch", pitch=-10)
+        assert self._pitch(room) == pytest.approx(-10)
+
+    def test_it_clamps_at_the_setter(self):
+        """Not only in the renderer: an accumulating control that ran past
+        the limit would have to be wound all the way back before the view
+        moved again."""
+        from extensions.block_world.renderer import MAX_PITCH_DEGREES
+        room, _camera = _world()
+        for _ in range(50):
+            _run(room, "set_look_pitch", pitch=10, relative=True)
+        assert self._pitch(room) == pytest.approx(MAX_PITCH_DEGREES)
+
+    def test_a_string_false_is_not_relative(self):
+        """Project JSON stores booleans as strings, and "false" is truthy
+        under a bare bool()."""
+        room, _camera = _world()
+        _run(room, "set_look_pitch", pitch=15)
+        _run(room, "set_look_pitch", pitch=5, relative="false")
+        assert self._pitch(room) == pytest.approx(5)
+
+    def test_rubbish_is_ignored_rather_than_raising(self):
+        room, _camera = _world()
+        _run(room, "set_look_pitch", pitch=20)
+        _run(room, "set_look_pitch", pitch="sideways")
+        assert self._pitch(room) == pytest.approx(20)
+
+    def test_it_is_registered_with_a_schema(self):
+        from events.action_types import get_action_type
+        load_all_plugins()
+        schema = get_action_type("set_look_pitch")
+        assert schema is not None and schema.category == "3D View"
+
+
 class TestScreenRay:
     """A level camera constrains the forward AXIS to horizontal; it does not
     make every ray horizontal. screen_ray reads out the real 3D ray through

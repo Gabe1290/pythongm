@@ -283,9 +283,10 @@ def walk(size):
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
                                               is_breakable)
-    from extensions.block_world.renderer import (draw_cell_outline, march_ray,
-                                                 pick_voxel, screen_ray,
-                                                 unproject_to_plane)
+    from extensions.block_world.renderer import (MAX_PITCH_DEGREES,
+                                                 draw_cell_outline, horizon_for,
+                                                 march_ray, pick_voxel,
+                                                 screen_ray, unproject_to_plane)
 
     room, camera = make_room()
     view_i = 0
@@ -351,7 +352,9 @@ def walk(size):
         sw, sh = screen.get_size()
         mx, my = mouse_pos
 
-        ray_angle, z_per_px = screen_ray(mx, my, facing, fov, sw, sh, CELL)
+        horizon = horizon_for(sh, cfg.get("pitch", 0.0))
+        ray_angle, z_per_px = screen_ray(mx, my, facing, fov, sw, sh, CELL,
+                                         horizon)
         target, build = pick_voxel(room, px, py, layer + 0.5, ray_angle,
                                    z_per_px, CELL, reach)
 
@@ -363,7 +366,7 @@ def walk(size):
             # across empty ground work at all.
             build = None
             ground = unproject_to_plane(mx, my, layer, px, py, layer + 0.5,
-                                        facing, fov, sw, sh, CELL)
+                                        facing, fov, sw, sh, CELL, horizon)
             if ground is not None:
                 cell = (int(ground[0] // CELL), int(ground[1] // CELL), layer)
                 within = math.hypot(ground[0] - px, ground[1] - py) / CELL <= reach
@@ -380,6 +383,7 @@ def walk(size):
     hud_lines = [
         "WASD/arrows move+turn   Q,E strafe   [ ] viewpoint (1-9 direct)",
         "B build mode   point with the MOUSE   LMB break   RMB place   Ctrl+Z undo",
+        "wheel or R/F look up and down",
         "C collision   P screenshot   ESC quit",
     ]
     running = True
@@ -409,11 +413,22 @@ def walk(size):
                     building = not building
                 elif event.key == pygame.K_z and (event.mod & pygame.KMOD_CTRL):
                     undo()
+                elif event.key in (pygame.K_r, pygame.K_f):
+                    step = 6.0 if event.key == pygame.K_r else -6.0
+                    cfg = block_world_state(room)["camera"]
+                    cfg["pitch"] = max(-MAX_PITCH_DEGREES,
+                                       min(MAX_PITCH_DEGREES,
+                                           cfg.get("pitch", 0.0) + step))
                 elif event.key in (pygame.K_COMMA, pygame.K_PERIOD):
                     slot = (slot + (1 if event.key == pygame.K_PERIOD else -1)) % len(HOTBAR)
                 elif pygame.K_1 <= event.key < pygame.K_1 + min(9, len(VIEWPOINTS)):
                     view_i = event.key - pygame.K_1
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
+            elif event.type == pygame.MOUSEWHEEL:
+                cfg = block_world_state(room)["camera"]
+                cfg["pitch"] = max(-MAX_PITCH_DEGREES,
+                                   min(MAX_PITCH_DEGREES,
+                                       cfg.get("pitch", 0.0) + event.y * 4.0))
             elif event.type == pygame.MOUSEBUTTONDOWN and building:
                 target, placement = aim(event.pos)
                 if event.button == 1 and target is not None:
@@ -478,7 +493,8 @@ def walk(size):
                 screen, placement,
                 ccx + camera._cached_width / 2, ccy + camera._cached_height / 2,
                 int(cfg["z_layer"]) + 0.5, math.radians(-camera.facing_angle),
-                math.radians(cfg.get("fov", 66)), CELL)
+                math.radians(cfg.get("fov", 66)), CELL,
+                horizon=horizon_for(h, cfg.get("pitch", 0.0)))
 
         # The crosshair sits on the MOUSE, not the screen centre -- the mouse
         # is what aims now, and a fixed centre mark would point at a cell
@@ -492,9 +508,10 @@ def walk(size):
         pygame.draw.line(screen, cross, (mx, my - 7), (mx, my + 7))
 
         cell = (cell_of(camera.x), cell_of(camera.y))
-        status = "cell %s  layer %d  angle %6.1f  fps %4.1f  collision %s" % (
-            cell, standing, camera.facing_angle % 360, clock.get_fps(),
-            "ON" if collide else "OFF")
+        status = "cell %s  layer %d  angle %6.1f  pitch %+5.1f  fps %4.1f  collision %s" % (
+            cell, standing, camera.facing_angle % 360,
+            block_world_state(room)["camera"].get("pitch", 0.0),
+            clock.get_fps(), "ON" if collide else "OFF")
         aiming = "%s   holding %s   aim %s   build %s   undo %d" % (
             "BUILD MODE" if building else "build off (B)",
             HOTBAR[slot],
