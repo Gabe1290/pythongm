@@ -15,6 +15,7 @@ import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import math
 import sys
 from pathlib import Path
 
@@ -472,6 +473,136 @@ class TestTexturedHorizontalFaces:
         expected = R._load_texture(faces["bottom"])
         assert all(t is expected for t in seen), \
             "underside was rasterised from a texture other than the bottom one"
+
+
+class TestPointProjection:
+    """project_point is the inverse of what the render loop does per column.
+    Anything overlaid on the view -- the placement outline today, a selection
+    box or a marker later -- rides on it, so it has to agree with the
+    rasteriser exactly, not approximately."""
+
+    FOV = math.radians(66)
+
+    def _project(self, wx, wy, wz, eye_z=0.5, facing=0.0):
+        from extensions.block_world.renderer import project_point
+        return project_point(wx, wy, wz, 16, 16, eye_z, facing, self.FOV,
+                             W, H, CELL)
+
+    def test_straight_ahead_at_eye_height_is_the_screen_centre(self):
+        assert self._project(16 + 5 * CELL, 16, 0.5) == pytest.approx((W / 2, H / 2))
+
+    def test_behind_the_camera_is_none(self):
+        assert self._project(16 - 5 * CELL, 16, 0.5) is None
+
+    def test_on_the_camera_plane_is_none(self):
+        """Exactly at zero depth the divide would blow up."""
+        assert self._project(16, 16 + 3 * CELL, 0.5) is None
+
+    @pytest.mark.parametrize("eye_z", [0.5, 1.5, 3.5, 5.5])
+    @pytest.mark.parametrize("zval", [0, 1, 2, 3])
+    def test_vertical_mapping_matches_the_renderer_formula(self, eye_z, zval):
+        """Parametrised over EYE HEIGHT as well as block height: with only
+        eye_z = 0.5 covered, hardcoding that constant in the projection
+        passes every test and then misplaces every overlay the moment the
+        player stands on anything."""
+        got = self._project(16 + 5 * CELL, 16, zval, eye_z=eye_z)[1]
+        assert got == pytest.approx(_project(eye_z, zval, 5.0))
+
+    def test_fov_edges_map_to_the_screen_edges(self):
+        depth = 5 * CELL
+        lateral = depth * math.tan(self.FOV / 2)
+        assert self._project(16 + depth, 16 - lateral, 0.5)[0] == pytest.approx(0)
+        assert self._project(16 + depth, 16 + lateral, 0.5)[0] == pytest.approx(W)
+
+    def test_it_lands_on_geometry_the_renderer_actually_drew(self):
+        """The test that matters: project the top edge of a wall and check
+        the wall really is drawn there. Everything above could agree with the
+        formula while both drifted from the picture."""
+        room = _room()
+        _camera(room)
+        set_block(room, 6, 0, 0, "stone")
+        _configure(room)
+        drawn_top, _bottom = _drawn_span(room, _render(room))
+        # Near face of that block, at its top (z = 1).
+        projected = self._project(6 * CELL, 16, 1)[1]
+        assert abs(projected - drawn_top) <= 1
+
+
+class TestCellOutline:
+    def test_outlines_a_cell_and_reports_it(self):
+        from extensions.block_world.renderer import draw_cell_outline
+        screen = pygame.Surface((W, H))
+        screen.fill((0, 0, 0))
+        drew = draw_cell_outline(screen, (4, 0, 0), 16, 16, 0.5, 0.0,
+                                 math.radians(66), CELL)
+        assert drew is True
+        lit = [(x, y) for y in range(H) for x in range(W)
+               if screen.get_at((x, y))[:3] != (0, 0, 0)]
+        assert lit, "nothing was drawn"
+
+    def test_the_outline_sits_below_the_horizon(self):
+        """It marks a floor square at the camera's own layer, and the eye is
+        half a block above that floor -- so it belongs under the horizon. An
+        outline drawn above it would be projecting from the wrong height."""
+        from extensions.block_world.renderer import draw_cell_outline
+        screen = pygame.Surface((W, H))
+        screen.fill((0, 0, 0))
+        draw_cell_outline(screen, (4, 0, 0), 16, 16, 0.5, 0.0,
+                          math.radians(66), CELL)
+        ys = [y for y in range(H) for x in range(W)
+              if screen.get_at((x, y))[:3] != (0, 0, 0)]
+        assert min(ys) > HORIZON
+
+    def test_all_four_corners_of_the_square_are_drawn(self):
+        """Pins the SHAPE, not just that ink landed. Checking only that
+        something was drawn, or only its bounding box, lets a quad collapse
+        to a triangle unnoticed -- one wrong corner still paints roughly the
+        right region of screen."""
+        from extensions.block_world.renderer import draw_cell_outline, project_point
+        screen = pygame.Surface((W, H))
+        screen.fill((0, 0, 0))
+        draw_cell_outline(screen, (4, 0, 0), 16, 16, 0.5, 0.0,
+                          math.radians(66), CELL)
+        lit = {(x, y) for y in range(H) for x in range(W)
+               if screen.get_at((x, y))[:3] != (0, 0, 0)}
+        assert lit
+
+        for wx, wy in ((4 * CELL, 0), (5 * CELL, 0),
+                       (5 * CELL, CELL), (4 * CELL, CELL)):
+            sx, sy = project_point(wx, wy, 0, 16, 16, 0.5, 0.0,
+                                   math.radians(66), W, H, CELL)
+            near = [(x, y) for (x, y) in lit
+                    if abs(x - sx) <= 2 and abs(y - sy) <= 2]
+            assert near, "corner (%d, %d) of the square was never drawn" % (wx, wy)
+
+    def test_a_cell_behind_the_camera_is_skipped(self):
+        """Half a quad projected from behind the camera is nonsense, and
+        worse than drawing nothing."""
+        from extensions.block_world.renderer import draw_cell_outline
+        screen = pygame.Surface((W, H))
+        screen.fill((0, 0, 0))
+        assert draw_cell_outline(screen, (-6, 0, 0), 16, 16, 0.5, 0.0,
+                                 math.radians(66), CELL) is False
+        assert screen.get_at((W // 2, H // 2))[:3] == (0, 0, 0)
+
+    def test_a_cell_far_off_to_the_side_is_skipped_cleanly(self):
+        from extensions.block_world.renderer import draw_cell_outline
+        screen = pygame.Surface((W, H))
+        screen.fill((0, 0, 0))
+        # In front, but way outside the field of view.
+        draw_cell_outline(screen, (2, -40, 0), 16, 16, 0.5, 0.0,
+                          math.radians(66), CELL)  # must not raise
+        assert screen.get_at((W // 2, H // 2))[:3] == (0, 0, 0)
+
+    def test_it_tracks_the_facing_angle(self):
+        from extensions.block_world.renderer import draw_cell_outline
+        def render(facing):
+            screen = pygame.Surface((W, H))
+            screen.fill((0, 0, 0))
+            draw_cell_outline(screen, (4, 0, 0), 16, 16, 0.5, facing,
+                              math.radians(66), CELL)
+            return pygame.image.tostring(screen, "RGB")
+        assert render(0.0) != render(math.radians(20))
 
 
 class TestFaceTexturePathsAreCached:

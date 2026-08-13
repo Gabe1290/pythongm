@@ -195,6 +195,84 @@ def pick_block(room, cam_x, cam_y, layer, angle_rad, cell_size, reach):
     return None, (first[0], first[1], layer) if first else None
 
 
+def project_point(wx, wy, wz, cam_x, cam_y, eye_z, facing_screen_rad,
+                  fov_rad, screen_w, screen_h, cell_size):
+    """Screen (x, y) for a world point, or None if it is at or behind the
+    camera plane.
+
+    The inverse of what the render loop does per column, and deliberately
+    built from the same two facts, so an overlay lands exactly on the
+    geometry underneath it:
+
+    - depth is the CAMERA-PLANE distance (the component along the facing
+      direction), the same already-fisheye-corrected quantity the wall pass
+      shades and scales by;
+    - the vertical mapping is render_block_world_view's one line,
+      ``y = horizon + (eye_z - wz) * (screen_h * cell_size / depth)``.
+
+    Horizontally, a column's ray offset satisfies
+    ``lateral / depth == tan(fov/2) * camera_x`` with camera_x running -1 to
+    +1 across the screen, so inverting that gives the column a point falls
+    in. Screen-right is the facing direction turned +90 degrees in this
+    y-down frame, i.e. ``(-dir_y, dir_x)``.
+    """
+    dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+    rel_x, rel_y = wx - cam_x, wy - cam_y
+    depth = rel_x * dir_x + rel_y * dir_y
+    if depth <= 1e-6:
+        return None
+    lateral = rel_x * -dir_y + rel_y * dir_x
+    plane_tan = math.tan(fov_rad / 2)
+    sx = screen_w * 0.5 * (1.0 + lateral / (depth * plane_tan))
+    sy = screen_h * 0.5 + (eye_z - wz) * (screen_h * cell_size / depth)
+    return sx, sy
+
+
+def draw_cell_outline(screen, cell, cam_x, cam_y, eye_z, facing_screen_rad,
+                      fov_rad, cell_size, color=(255, 255, 255), alpha=95,
+                      width=1):
+    """Outline the FLOOR square of a world cell -- the footprint a block
+    would occupy if it were placed there.
+
+    Returns True if anything was drawn. Skips silently when a corner falls at
+    or behind the camera plane: a partly-behind quad projects to nonsense,
+    and half an outline is worse than none.
+
+    Drawn through a small translucent surface sized to the outline's own
+    bounding box rather than a full-screen overlay, so a faint line costs a
+    few hundred pixels a frame instead of a screen-sized allocation.
+    """
+    x, y, z = cell
+    w, h = screen.get_size()
+    corners = [(x * cell_size, y * cell_size),
+               ((x + 1) * cell_size, y * cell_size),
+               ((x + 1) * cell_size, (y + 1) * cell_size),
+               (x * cell_size, (y + 1) * cell_size)]
+
+    points = []
+    for wx, wy in corners:
+        projected = project_point(wx, wy, z, cam_x, cam_y, eye_z,
+                                  facing_screen_rad, fov_rad, w, h, cell_size)
+        if projected is None:
+            return False
+        points.append(projected)
+
+    xs = [p[0] for p in points]
+    ys = [p[1] for p in points]
+    left, top = int(math.floor(min(xs))) - width, int(math.floor(min(ys))) - width
+    right, bottom = int(math.ceil(max(xs))) + width, int(math.ceil(max(ys))) + width
+    left, top = max(0, left), max(0, top)
+    right, bottom = min(w, right), min(h, bottom)
+    if right <= left or bottom <= top:
+        return False  # entirely off-screen
+
+    overlay = pygame.Surface((right - left, bottom - top), pygame.SRCALPHA)
+    pygame.draw.lines(overlay, tuple(color) + (alpha,), True,
+                      [(px - left, py - top) for px, py in points], width)
+    screen.blit(overlay, (left, top))
+    return True
+
+
 # --- wall shading -----------------------------------------------------
 # A smaller, self-contained copy of raycast_2_5d.renderer's shading formula
 # -- deliberately duplicated rather than imported, so each extension stays
