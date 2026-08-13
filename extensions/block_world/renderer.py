@@ -247,6 +247,39 @@ def project_point(wx, wy, wz, cam_x, cam_y, eye_z, facing_screen_rad,
     return sx, sy
 
 
+def unproject_to_plane(sx, sy, plane_z, cam_x, cam_y, eye_z,
+                       facing_screen_rad, fov_rad, screen_w, screen_h,
+                       cell_size):
+    """Where a screen point lands on the horizontal plane at height
+    ``plane_z``: returns world ``(x, y)`` in pixels, or None if that ray
+    never meets the plane.
+
+    The exact inverse of project_point, which is what makes a mouse cursor
+    land on the cell it appears to be over. Rearranging that function's two
+    mappings:
+
+        depth   = (eye_z - plane_z) * screen_h * cell_size / (sy - horizon)
+        lateral = depth * tan(fov/2) * (2 * sx / screen_w - 1)
+
+    and the world point is the camera plus ``depth`` along the facing
+    direction plus ``lateral`` along screen-right.
+
+    Returns None when the screen point is on the wrong side of the horizon
+    for the plane -- looking at or above it never meets a floor below you,
+    and the divide would run away to infinity as it is approached.
+    """
+    horizon = screen_h * 0.5
+    drop = sy - horizon
+    height = eye_z - plane_z
+    if height == 0 or (drop > 0) != (height > 0) or abs(drop) < 1e-6:
+        return None
+    depth = height * screen_h * cell_size / drop
+    lateral = depth * math.tan(fov_rad / 2) * (2.0 * sx / screen_w - 1.0)
+    dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+    return (cam_x + dir_x * depth + -dir_y * lateral,
+            cam_y + dir_y * depth + dir_x * lateral)
+
+
 def draw_cell_outline(screen, cell, cam_x, cam_y, eye_z, facing_screen_rad,
                       fov_rad, cell_size, color=(255, 255, 255), alpha=95,
                       width=1):

@@ -528,6 +528,88 @@ class TestPointProjection:
         assert abs(projected - drawn_top) <= 1
 
 
+class TestUnprojectToPlane:
+    """The inverse of project_point onto a horizontal plane -- what turns a
+    mouse position into the floor square it appears to be over. Being an
+    EXACT inverse is the whole point: a cursor that lands a cell away from
+    where it looks is worse than no cursor."""
+
+    FOV = math.radians(66)
+
+    def _common(self, facing=0.4):
+        return dict(cam_x=16, cam_y=16, eye_z=0.5, facing_screen_rad=facing,
+                    fov_rad=self.FOV, screen_w=W, screen_h=H, cell_size=CELL)
+
+    @pytest.mark.parametrize("world", [
+        (200, 40), (90, 300), (400, -120), (64, 64), (700, 500),
+    ])
+    def test_round_trips_with_project_point(self, world):
+        from extensions.block_world.renderer import project_point, unproject_to_plane
+        wx, wy = world
+        common = self._common()
+        sx, sy = project_point(wx, wy, 0, **common)
+        back = unproject_to_plane(sx, sy, 0, **common)
+        assert back == pytest.approx((wx, wy))
+
+    @pytest.mark.parametrize("eye_z,plane_z", [
+        (0.5, 0),    # standing on the ground
+        (2.5, 2),    # standing on a two-high stack
+        (5.5, 5),    # up on the terrace deck
+        (3.5, 0),    # looking down at the ground from a ledge
+        (0.5, 3),    # looking up at an overhang
+    ])
+    def test_round_trips_at_any_eye_height(self, eye_z, plane_z):
+        """Parametrised over the eye-to-plane DISTANCE, not just eye height.
+        Every case above with a difference of exactly 0.5 would still pass
+        with that value hardcoded -- (3.5, 0) and (0.5, 3) are the ones that
+        actually exercise it, and without them the cursor would drift the
+        moment the player stood on anything."""
+        from extensions.block_world.renderer import project_point, unproject_to_plane
+        common = dict(cam_x=16, cam_y=16, eye_z=eye_z, facing_screen_rad=0.4,
+                      fov_rad=self.FOV, screen_w=W, screen_h=H, cell_size=CELL)
+        sx, sy = project_point(200, 40, plane_z, **common)
+        assert unproject_to_plane(sx, sy, plane_z, **common) == pytest.approx((200, 40))
+
+    def test_above_the_horizon_never_meets_the_floor(self):
+        from extensions.block_world.renderer import unproject_to_plane
+        assert unproject_to_plane(400, HORIZON - 40, 0, **self._common()) is None
+
+    def test_exactly_on_the_horizon_is_none(self):
+        """The divide runs away to infinity as the horizon is approached."""
+        from extensions.block_world.renderer import unproject_to_plane
+        assert unproject_to_plane(400, HORIZON, 0, **self._common()) is None
+
+    def test_lower_on_the_screen_is_nearer(self):
+        from extensions.block_world.renderer import unproject_to_plane
+        common = self._common(facing=0.0)
+        near = unproject_to_plane(W / 2, HORIZON + 90, 0, **common)
+        far = unproject_to_plane(W / 2, HORIZON + 10, 0, **common)
+        assert near[0] < far[0], "moving down the screen should come closer"
+
+    def test_the_screen_centre_is_straight_ahead(self):
+        from extensions.block_world.renderer import unproject_to_plane
+        wx, wy = unproject_to_plane(W / 2, HORIZON + 60, 0, **self._common(facing=0.0))
+        assert wy == pytest.approx(16)   # no lateral offset
+        assert wx > 16                   # in front
+
+    def test_right_of_centre_lands_to_the_right(self):
+        """Screen-right is the facing direction turned +90 degrees in this
+        y-down frame, so facing east it is south (+y)."""
+        from extensions.block_world.renderer import unproject_to_plane
+        common = self._common(facing=0.0)
+        left = unproject_to_plane(W * 0.25, HORIZON + 60, 0, **common)
+        right = unproject_to_plane(W * 0.75, HORIZON + 60, 0, **common)
+        assert left[1] < 16 < right[1]
+
+    def test_a_ceiling_plane_works_the_other_way_up(self):
+        """Symmetric: a plane above the eye is met by rays above the horizon
+        and never by ones below it."""
+        from extensions.block_world.renderer import unproject_to_plane
+        common = self._common(facing=0.0)
+        assert unproject_to_plane(400, HORIZON - 40, 3, **common) is not None
+        assert unproject_to_plane(400, HORIZON + 40, 3, **common) is None
+
+
 class TestCellOutline:
     def test_outlines_a_cell_and_reports_it(self):
         from extensions.block_world.renderer import draw_cell_outline
