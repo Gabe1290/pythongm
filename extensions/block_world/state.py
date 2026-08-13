@@ -49,6 +49,11 @@ BLOCK_TYPES = {
         "bottom": "default_dirt.png",
         "side": "default_grass_side.png",
         "solid": True,
+        # default_grass_side.png has real alpha holes (~44% of its pixels
+        # below full opacity) -- untagged, a gapless grass stack satisfied
+        # the occlusion early-out and hid whatever should show through the
+        # holes, the same point-blank bug found and fixed for glass/water/ice.
+        "transparent": True,
     },
     "stone": {"all": "default_stone.png", "solid": True},
     "cobble": {"all": "default_cobble.png", "solid": True},
@@ -66,7 +71,9 @@ BLOCK_TYPES = {
     "wood_plank": {"all": "default_wood.png", "solid": True},
     "jungle_plank": {"all": "default_junglewood.png", "solid": True},
     "pine_plank": {"all": "default_pine_wood.png", "solid": True},
-    "leaves": {"all": "default_leaves.png", "solid": True},
+    # default_leaves.png has real alpha holes (~19% of its pixels below full
+    # opacity) -- same reasoning as grass's side face, above.
+    "leaves": {"all": "default_leaves.png", "solid": True, "transparent": True},
     "glass": {"all": "default_glass.png", "solid": True, "transparent": True},
     "water": {
         "all": "default_water_source_animated.png",

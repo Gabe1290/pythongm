@@ -222,6 +222,8 @@ class PluginExecutor:
         def _bool(key, default):
             return _truthy(parameters.get(key, default))
 
+        from .renderer import DEFAULT_EYE_HEIGHT  # lazy: pygame
+
         block_world_state(room)["camera"] = {
             "enabled": True,
             "camera_object": camera_object,
@@ -240,4 +242,9 @@ class PluginExecutor:
             # upscale the result; 0 falls back to a flat average colour,
             # which is cheaper on a scene showing a lot of deck.
             "top_cast_res": int(_num("top_cast_res", 4)),
+            # Camera height in cells (Phase 3's two-block-tall body by
+            # default). Was previously read everywhere with this same
+            # fallback but never actually written here, so no authored
+            # action could ever change it -- see docs/VOXEL_WORLD_PLAN.md.
+            "eye_height": _num("eye_height", DEFAULT_EYE_HEIGHT),
         }

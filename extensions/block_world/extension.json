@@ -2,7 +2,12 @@
     "name": "Block World",
     "version": "0.1.0",
     "author": "PyGameMaker",
-    "description": "Voxel block-building world: place/break cube blocks with a CC0 hand-painted texture set (see ASSETS.md). Phase 1 of docs/VOXEL_WORLD_PLAN.md -- no actions or renderer yet.",
+    "description": "Voxel block-building world: place/break cube blocks with a CC0 hand-painted texture set (see ASSETS.md). Phases 0-2c of docs/VOXEL_WORLD_PLAN.md; Phase 3 (place/break) under way.",
     "enabled": true,
-    "provides_actions": []
+    "provides_actions": [
+        "enable_block_world_view",
+        "place_block",
+        "break_block",
+        "set_look_pitch"
+    ]
 }
