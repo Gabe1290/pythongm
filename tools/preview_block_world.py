@@ -283,11 +283,11 @@ def walk(size):
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
                                               is_breakable)
-    from extensions.block_world.renderer import (DEFAULT_EYE_HEIGHT,
-                                                 MAX_PITCH_DEGREES,
-                                                 draw_cell_outline, horizon_for,
-                                                 march_ray, pick_voxel,
-                                                 screen_ray, unproject_to_plane)
+    from extensions.block_world.renderer import (clamp_pitch,
+                                                 draw_cell_outline, eye_z_for,
+                                                 horizon_for, march_ray,
+                                                 pick_voxel, screen_ray,
+                                                 unproject_to_plane)
 
     room, camera = make_room()
     view_i = 0
@@ -353,7 +353,7 @@ def walk(size):
         sw, sh = screen.get_size()
         mx, my = mouse_pos
 
-        eye_z = layer + cfg.get("eye_height", DEFAULT_EYE_HEIGHT)
+        eye_z = eye_z_for(cfg)
         horizon = horizon_for(sh, cfg.get("pitch", 0.0))
         ray_angle, z_per_px = screen_ray(mx, my, facing, fov, sw, sh, CELL,
                                          horizon)
@@ -418,9 +418,7 @@ def walk(size):
                 elif event.key in (pygame.K_r, pygame.K_f):
                     step = 6.0 if event.key == pygame.K_r else -6.0
                     cfg = block_world_state(room)["camera"]
-                    cfg["pitch"] = max(-MAX_PITCH_DEGREES,
-                                       min(MAX_PITCH_DEGREES,
-                                           cfg.get("pitch", 0.0) + step))
+                    cfg["pitch"] = clamp_pitch(cfg.get("pitch", 0.0) + step)
                 elif event.key in (pygame.K_COMMA, pygame.K_PERIOD):
                     slot = (slot + (1 if event.key == pygame.K_PERIOD else -1)) % len(HOTBAR)
                 elif pygame.K_1 <= event.key < pygame.K_1 + min(9, len(VIEWPOINTS)):
@@ -428,9 +426,7 @@ def walk(size):
                     place(room, camera, *VIEWPOINTS[view_i][1:5])
             elif event.type == pygame.MOUSEWHEEL:
                 cfg = block_world_state(room)["camera"]
-                cfg["pitch"] = max(-MAX_PITCH_DEGREES,
-                                   min(MAX_PITCH_DEGREES,
-                                       cfg.get("pitch", 0.0) + event.y * 4.0))
+                cfg["pitch"] = clamp_pitch(cfg.get("pitch", 0.0) + event.y * 4.0)
             elif event.type == pygame.MOUSEBUTTONDOWN and building:
                 target, placement = aim(event.pos)
                 if event.button == 1 and target is not None:
@@ -494,7 +490,7 @@ def walk(size):
             draw_cell_outline(
                 screen, placement,
                 ccx + camera._cached_width / 2, ccy + camera._cached_height / 2,
-                int(cfg["z_layer"]) + cfg.get("eye_height", DEFAULT_EYE_HEIGHT),
+                eye_z_for(cfg),
                 math.radians(-camera.facing_angle),
                 math.radians(cfg.get("fov", 66)), CELL,
                 horizon=horizon_for(h, cfg.get("pitch", 0.0)))
