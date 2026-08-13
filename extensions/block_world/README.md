@@ -59,6 +59,14 @@ A placement cell returned by `pick_block` is **always air** — the march only
 advances past cells it has read as empty. `place_block` relies on that and
 deliberately does not re-check.
 
+**`obsidian` cannot be broken.** It is the designated boundary material:
+line a world's edges with it and a player cannot dig out. `break_block`
+consults `state.is_breakable` (default True, so a type says nothing unless it
+wants to be indestructible) and **nothing else does** — an unbreakable block
+is still aimed at, still occludes, still gets built against, and can still be
+placed. Swinging at one does nothing. That one flag is the whole protection
+model; the engine has no edit/play modes, and the plan doc explains why.
+
 ## The data model (`state.py`)
 
 Mirrors `extensions/raycast_2_5d/state.py`'s pattern exactly: nothing
@@ -104,8 +112,11 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
   block from being treated as an occluder, so the march never skips what is
   behind one. But that much falls out of painting far→near; there is no
   blending model, no per-block opacity, and a transparent block still costs
-  a full textured strip. `solid` is likewise still unread until Phase 4
-  gives it collision to gate.
+  a full textured strip. `solid` is still unread until Phase 4 gives it
+  collision to gate.
+- Protected *regions*. Protection is per block TYPE only (`breakable`); a
+  bounding box the actions refuse to touch is the follow-up if that turns
+  out too coarse.
 - A hotbar action, and a committed world generator (rest of Phase 3).
 - Collision, gravity, a HUD (Phase 4).
 - A sample game (Phase 5).

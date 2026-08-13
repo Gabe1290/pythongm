@@ -248,6 +248,71 @@ class TestBreakBlock:
         assert get_block(room, 3, 0, 0) == "stone", "broke the wrong layer"
 
 
+class TestUnbreakableBlocks:
+    """`breakable` is the protection model in full: no modes, no regions,
+    one flag consulted in one place. See the edit-mode/play-mode section of
+    docs/VOXEL_WORLD_PLAN.md."""
+
+    def test_obsidian_is_the_boundary_material(self):
+        from extensions.block_world.state import is_breakable
+        assert not is_breakable("obsidian")
+        for ordinary in ("stone", "dirt", "glass", "brick", "wool_red"):
+            assert is_breakable(ordinary)
+
+    def test_unknown_ids_count_as_breakable(self):
+        """A typo must not silently produce indestructible scenery."""
+        from extensions.block_world.state import is_breakable
+        assert is_breakable("unobtainium")
+
+    def test_break_leaves_an_unbreakable_block_alone(self):
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "obsidian")
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 0) == "obsidian"
+
+    def test_the_same_swing_removes_an_ordinary_block(self):
+        """Control: proves the test above is about the flag, not about the
+        break action having quietly stopped working."""
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "stone")
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 0) is None
+
+    def test_an_unbreakable_block_still_shields_what_is_behind_it(self):
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "obsidian")
+        set_block(room, 5, 0, 0, "stone")
+        _run(room, "break_block")
+        _run(room, "break_block")
+        assert get_block(room, 3, 0, 0) == "obsidian"
+        assert get_block(room, 5, 0, 0) == "stone", "broke through the boundary"
+
+    def test_you_can_still_build_against_one(self):
+        """Only breaking is restricted. An unbreakable block is ordinary in
+        every other respect -- including being a wall you can build onto."""
+        room, _camera = _world()
+        set_block(room, 3, 0, 0, "obsidian")
+        _run(room, "place_block", block="brick")
+        assert get_block(room, 2, 0, 0) == "brick"
+
+    def test_an_unbreakable_type_can_still_be_placed(self):
+        """`breakable` is checked in break_block and NOWHERE else. Lining a
+        world's edge with the stuff means an author has to be able to put it
+        there in the first place."""
+        room, _camera = _world()
+        _run(room, "place_block", block="obsidian")
+        assert get_block(room, 1, 0, 0) == "obsidian"
+
+    def test_it_is_still_targeted(self):
+        """The crosshair has to light up on it -- that is the feedback that
+        says 'this is here and solid', as opposed to aiming at nothing."""
+        room, camera = _world()
+        set_block(room, 3, 0, 0, "obsidian")
+        target, placement = _pick(room, camera)
+        assert target == (3, 0, 0)
+        assert placement == (2, 0, 0)
+
+
 class TestPlacementIsAlwaysAir:
     """place_block writes without re-checking the cell, which is only safe
     because pick_block never returns an occupied one. Pin the invariant."""
