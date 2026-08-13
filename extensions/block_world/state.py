@@ -116,6 +116,15 @@ def block_face_textures(block_type):
     }
 
 
+def is_transparent(block_type):
+    """True for a block you can see THROUGH -- glass, water, ice.
+
+    A renderer must not treat one as an occluder: anything behind it is still
+    visible, so it can neither stop a ray nor be used to decide that whatever
+    is further away can be skipped."""
+    return bool(BLOCK_TYPES.get(block_type, {}).get("transparent"))
+
+
 def _key(x, y, z):
     return "%d,%d,%d" % (x, y, z)
 

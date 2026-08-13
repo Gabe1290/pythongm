@@ -78,11 +78,14 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
   viewpoint to see exactly what that costs.
 - Textured horizontal faces. Tops and undersides are flat-shaded with their
   texture's average colour; per-pixel floor casting is 2c work.
-- Transparency as a real feature. `BLOCK_TYPES` carries a `transparent`
-  flag that nothing reads, and a ray still stops at the first occupied
-  cell. Alpha textures (glass, leaves) do now composite over whatever the
-  ray reaches behind them, but that falls out of painting far→near rather
-  than being a designed see-through path.
+- Transparency as a designed feature. Alpha textures (glass, water, ice,
+  leaves) do composite over whatever stands behind them, and `BLOCK_TYPES`'
+  `transparent` flag is read in exactly one place — it stops a see-through
+  block from being treated as an occluder, so the march never skips what is
+  behind one. But that much falls out of painting far→near; there is no
+  blending model, no per-block opacity, and a transparent block still costs
+  a full textured strip. `solid` is likewise still unread until Phase 4
+  gives it collision to gate.
 - `place_block` / `break_block` actions, a hotbar (Phase 3).
 - Collision, gravity, a HUD (Phase 4).
 - A sample game (Phase 5).
