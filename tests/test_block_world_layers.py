@@ -368,6 +368,53 @@ class TestTexturedSeams:
         assert _drawn_span(room, _render(room)) == flat
 
 
+class TestTransparentBlocksNeverOcclude:
+    """Reported from a playtest: a glass block looked right from the side and
+    at a distance, then showed raw sky and floor through itself when walked
+    up to face-on.
+
+    Cause was the occlusion early-out, not the compositing. Close up, the
+    glass grew big enough to satisfy "this stack covers the whole column",
+    which stopped the march -- so the blocks it should have composited
+    against were never drawn at all. Being distance-dependent is what made it
+    read as a texture glitch."""
+
+    def test_a_transparent_stack_never_stops_the_march(self):
+        big = 10_000  # far bigger than any screen: covers by any measure
+        assert not _fully_covers([(0, "glass")], 0.5, HORIZON, H, big)
+        assert not _fully_covers([(0, "water"), (1, "ice")], 0.5, HORIZON, H, big)
+        # One transparent block in an otherwise solid stack is enough.
+        assert not _fully_covers([(0, "stone"), (1, "glass")], 0.5, HORIZON, H, big)
+
+    def test_an_opaque_stack_still_stops_it(self):
+        """The guard must not have simply disabled the optimisation."""
+        assert _fully_covers([(0, "stone")], 0.5, HORIZON, H, 10_000)
+
+    def test_point_blank_glass_still_shows_what_is_behind_it(self):
+        """The playtest case end to end: camera one cell from the glass,
+        looking straight at it, close enough that the early-out used to
+        fire."""
+        room = _room()
+        _camera(room)
+        set_block(room, 1, 0, 0, "glass")  # half a cell away -- fills the view
+        _configure(room, wall_textured=True, columns=64)
+        glass_only = pygame.image.tostring(_render(room), "RGB")
+
+        set_block(room, 3, 0, 0, "brick")
+        assert pygame.image.tostring(_render(room), "RGB") != glass_only, \
+            "point-blank glass hid the block behind it"
+
+    def test_point_blank_stone_still_hides_what_is_behind_it(self):
+        room = _room()
+        _camera(room)
+        set_block(room, 1, 0, 0, "stone")
+        _configure(room, wall_textured=True, columns=64)
+        stone_only = pygame.image.tostring(_render(room), "RGB")
+
+        set_block(room, 3, 0, 0, "brick")
+        assert pygame.image.tostring(_render(room), "RGB") == stone_only
+
+
 class TestTransparentTextures:
     def test_an_alpha_texture_shows_the_block_behind_it(self):
         """2a drew one hit per column, so a glass block's transparent pixels

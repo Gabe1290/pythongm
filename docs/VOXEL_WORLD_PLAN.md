@@ -197,10 +197,20 @@ per-unit discipline:
     since a horizontal surface runs from the near vertical face back to the
     far one. `cast_ray` is a thin first-hit wrapper over it and stays as the
     single-layer query for Phase 3 picking. Do not grow a third copy.
-  - **Painter's algorithm, far→near, with a gapless-stack early-out.** A
-    column can be seen *through* where a stack has a hole in it, so the
-    early-out only fires for a contiguous stack that covers the screen —
-    getting that wrong erases whatever is visible beyond the gap.
+  - **Painter's algorithm, far→near, with a gapless-opaque early-out.** A
+    column can be seen *through* two ways — a hole in the stack, or a
+    transparent block — so the early-out fires only for a contiguous stack
+    of opaque blocks that covers the screen. Getting that wrong erases
+    whatever is visible beyond. The hole case was handled from the start;
+    **the transparent case was missed and shipped, and a playtest caught
+    it**: a glass block looked right side-on and at range, then showed raw
+    sky and floor through itself when walked up to face-on, because getting
+    close made it big enough to satisfy the covers-the-screen test and stop
+    the march. Being distance-dependent made it read as a texture glitch
+    rather than an occlusion bug. `BLOCK_TYPES`' `transparent` flag — until
+    then carried but unread — is what fixed it. **Generalise this before
+    2c/Phase 6 re-derive the same logic: any occlusion shortcut must ask
+    whether a block can be seen through, not just whether it is present.**
   - **Horizontal faces are flat-shaded**, coloured by the texture's average
     (`face_average_color`). Per-pixel floor casting is the expensive step
     the raycast arc deferred on two of three targets; a step or a pit reads

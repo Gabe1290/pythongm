@@ -32,7 +32,7 @@ import math
 import pygame
 
 from .state import (block_world_state, get_block, block_face_textures,
-                    column_index)
+                    column_index, is_transparent)
 
 _TEXTURE_CACHE = {}
 
@@ -229,13 +229,26 @@ def _occupied(stack, z):
 def _fully_covers(stack, eye_z, half_h, screen_h, px_per_cell):
     """Does this cell's stack hide everything behind it in this column?
 
-    Only true for a GAPLESS stack -- a column with a hole in it can be seen
-    through, and stopping the march there would erase whatever is visible
-    beyond the gap. Cheap enough to check per cell, and it turns the common
-    case (a wall close ahead) from a full-distance march into a few steps."""
+    Only true for a GAPLESS stack of OPAQUE blocks. Two ways to be seen
+    through, and both have to be excluded:
+
+    - a hole in the stack, so the ray passes between blocks;
+    - a transparent block (glass, water, ice), so the ray passes THROUGH one.
+
+    Missing the second cost a real bug, reported from a playtest: a glass
+    block looked right from the side and from a distance, then showed raw sky
+    and floor through itself when you walked up to it face-on. Nothing was
+    wrong with the compositing -- getting close simply made the glass big
+    enough to satisfy the covers-the-screen test, which stopped the march, so
+    the blocks it should have been compositing against were never drawn.
+    Distance-dependent, which is why it read as a rendering glitch rather
+    than an occlusion one."""
     lowest, highest = stack[0][0], stack[-1][0]
     if len(stack) != highest - lowest + 1:
         return False
+    for _z, block_type in stack:
+        if is_transparent(block_type):
+            return False
     return (half_h + (eye_z - (highest + 1)) * px_per_cell <= 0
             and half_h + (eye_z - lowest) * px_per_cell >= screen_h)
 
