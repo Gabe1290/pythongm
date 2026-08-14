@@ -737,7 +737,7 @@ class ProjectManager(QObject):
 
             # Create a copy of project data without room instance data for main file
             # (room metadata stays in project.json, instance data goes to room files)
-            project_data_for_save = self._prepare_project_data_for_save()
+            project_data_for_save = self._prepare_project_data_for_save(save_path)
 
             # Save main project file (without room instance data)
             _atomic_write_json(project_file, project_data_for_save)
@@ -926,7 +926,7 @@ class ProjectManager(QObject):
             _atomic_write_json(pg_file, pg_data)
             logger.debug(f"Saved playground: {pg_name}")
 
-    def _prepare_project_data_for_save(self) -> dict:
+    def _prepare_project_data_for_save(self, save_path: Optional[Path] = None) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
         from copy import deepcopy
 
@@ -943,6 +943,31 @@ class ProjectManager(QObject):
                     room_data['instance_count'] = len(room_data['instances'])
                     room_data['instances'] = []  # Clear instances from main file
                     room_data['_external_file'] = f"rooms/{room_name}.json"
+
+        # For objects, strip the one genuinely heavy field (events -- nested
+        # action trees; can be the bulk of a large project.json) the same
+        # way rooms strip instances. Everything else (sprite/visible/solid/
+        # persistent/depth/parent/mask/dates) stays embedded as lightweight
+        # browsable metadata -- deliberately NOT the same as rooms, whose
+        # only heavy field IS instances. Gated on the objects/ dir existing,
+        # matching _save_objects_to_files' own gate: _save_objects_to_files
+        # already ran above and wrote every object's full body (including
+        # events) to its own file whenever that's true, so every loader
+        # that merges objects/<name>.json (core/project_manager.py,
+        # runtime/game_runner.py, export/base_exporter.py,
+        # export/HTML5/html5_exporter.py, export/android/android_exporter.py,
+        # export/ios/ios_exporter.py, export/Aseba/aseba_exporter.py,
+        # utils/resource_packager.py, editors/playground_editor/__init__.py,
+        # widgets/asset_tree/asset_operations.py's legacy delete path --
+        # audited 2026-08-14, see TODO.md) already restores it. A project
+        # with no objects/ dir (legacy/embedded-only) is left untouched.
+        if (save_path is not None and (Path(save_path) / "objects").exists()
+                and 'assets' in data and 'objects' in data['assets']):
+            objects = data['assets']['objects']
+            for object_name, object_data in objects.items():
+                if isinstance(object_data, dict) and 'events' in object_data:
+                    object_data['events'] = {}
+                    object_data['_external_file'] = f"objects/{object_name}.json"
 
         # For playgrounds, strip detail data (walls/robots go to separate files)
         if 'assets' in data and 'playgrounds' in data['assets']:

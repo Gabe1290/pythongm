@@ -657,7 +657,7 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Project format / persistence
 
-### Manifest-ify objects & sprites in project.json (pre-1.0-final)
+### ~~Manifest-ify objects & sprites in project.json~~ (DONE 2026-08-14, objects only)
 - **Do this carefully, with a round-trip test, just before the final
   validation pass before the 1.0 release.** It changes the on-disk save
   format for every project, so it is deliberately scheduled late.
@@ -725,31 +725,72 @@ existed. Regenerated; 0 untranslated strings reported now.
        already had to be fixed once, for rooms, in this same file).
        Stripping `events` would ship `.gmobj` packages with no events —
        silently broken object sharing.
-  - **A further, NOT-yet-individually-verified surface: at least 6 more
-    call sites read `project.json` directly as a fallback** (asset-manager-
-    cache-miss paths, mostly) — `widgets/asset_tree/asset_tree_item.py`,
-    `widgets/asset_tree/asset_tree_widget.py`, `editors/base_editor.py`,
-    `editors/playground_editor/__init__.py`, `editors/room_editor/__init__.py`,
-    `editors/object_editor/blockly_widget.py`,
-    `editors/object_editor/object_editor_main.py`. These are UI fallback
-    paths (exercised when the in-memory asset-manager cache doesn't have
-    an asset yet), not part of the load/save cycle the "round-trip test"
-    below would exercise at all — meaning the round-trip test this entry
-    already calls "mandatory" is **necessary but not sufficient**; each of
-    these needs individual reading to confirm whether it can actually be
-    hit with a stripped `events` field before this is safe.
-  - **Not implemented this pass.** Two confirmed regressions (Aseba export,
-    `.gmobj` object export) plus 6 unverified fallback paths is a bigger,
-    riskier unit of work than fits a single confident pass — and this is
-    exactly the risk profile the "just before 1.0 final" scheduling note
-    above was already anticipating; this investigation confirms rather than
-    overrides that caution. Real next step, scoped smaller than the
-    original TODO: (1) fix Aseba export + `ResourcePackager.export_object`
-    to merge `objects/<name>.json` first (matching `export_room`'s existing
-    pattern) — safe, valuable independent of timing; (2) individually clear
-    the 6 fallback-path call sites; (3) THEN strip only `events` (not
-    sprites, not the rest of the object body) with the round-trip test
-    below.
+  - **The 7 fallback call sites — all individually cleared (2026-08-14),
+    2 were real bugs, fixed:**
+    - `widgets/asset_tree/asset_tree_item.py` — only reads a sprite's
+      `file_path` (sprites untouched). Safe as-is.
+    - `widgets/asset_tree/asset_tree_widget.py` — its `objects` category
+      only routes to the already-fixed `ResourcePackager.export_object`/
+      `import_object`; its own direct read (`get_room_list`) only touches
+      room names. Safe as-is.
+    - `editors/base_editor.py` (`load_project_data()`) — its one real
+      caller (`object_editor_main.py`, next) only reads `sprites`/
+      `settings`. Safe as-is.
+    - `editors/object_editor/object_editor_main.py` — `load_project_assets`
+      reads only the sprite list + Blockly preset for the sprite combo and
+      "Parent" object dropdown (`object_data.keys()`/`.sprite` only, never
+      `.events`). Safe as-is.
+    - `editors/room_editor/__init__.py` (`load_available_objects`) — the
+      object palette only reads `object_data.get('sprite')` for icons.
+      Safe as-is.
+    - `editors/object_editor/blockly_widget.py` — both hits only touch
+      `settings.blockly_preset`, never `assets.objects`. Safe as-is.
+    - `editors/playground_editor/__init__.py` (`_refresh_linkable_objects`)
+      — **real bug, fixed.** Detected Thymio objects via
+      `event_name.startswith('thymio_')` reading straight off the
+      unmerged disk copy; an object identifiable as Thymio only by its
+      events (no `thymio`-prefixed name, no explicit `is_thymio` flag)
+      would have silently vanished from the "linkable objects" list. Now
+      reuses `run_playground`'s own `_load_external_objects` merge helper
+      (right below it in the same file, which already did this correctly)
+      instead of a second, incomplete copy of the same logic.
+      `tests/test_playground_linkable_objects_merge.py` (2 tests,
+      confirmed to fail without the fix).
+  - **A third real bug found beyond the original 9-site list, also fixed:**
+    `widgets/asset_tree/asset_operations.py`'s `remove_asset_from_project`
+    legacy fallback (no `project_manager` attached to the tree) read
+    `assets[asset_category][asset_name]` straight off disk and handed it
+    to `trash_asset` — whose own docstring requires "the FULL project.json
+    entry... recorded verbatim so restore_asset can hand it straight
+    back." **This exact bug already existed for rooms today**, independent
+    of this change (rooms have been manifest-ified all along) — extending
+    the same treatment to objects just made it apply there too. Fixed by
+    merging the `<type>/<name>.json` side file into the snapshot before
+    trashing, for both rooms and objects.
+    `tests/test_audit_asset_operations_sidefiles.py::
+    test_legacy_fallback_delete_merges_side_file_before_trashing`
+    (confirmed to fail without the fix — a genuine pre-existing gap, not
+    speculative).
+  - **Implemented.** `core/project_manager.py`'s `_prepare_project_data_for_save`
+    now takes the target `save_path` and, when `<save_path>/objects/`
+    exists (mirroring `_save_objects_to_files`'s own gate — by this point
+    it has already written every object's full body there this save), sets
+    `events: {}` + `_external_file` on each object's project.json entry.
+    A project with no `objects/` dir (legacy/embedded-only) is left fully
+    embedded, unchanged. Sprites are untouched (see above).
+  - **Round-trip test, done** (mandatory per the note below):
+    `tests/test_manifest_ify_objects_round_trip.py` (7 tests) — a fresh
+    project (save strips `events` to the side file; full load→save→reload
+    cycle proves `current_project_data` gets every field back, not just
+    `events`; a second save/load cycle is stable/idempotent), a legacy
+    embedded-only project (no `objects/` dir — save leaves `events` fully
+    embedded, byte-for-byte unchanged from before this feature existed),
+    a `.zip` export/import round-trip, and a real bundled sample
+    (`samples/maze_1`, copied to a temp dir first — `_save_to_folder`
+    itself refuses to write into `samples/`) proving every real object's
+    actual events survive a save→reload cycle, not just a synthetic
+    fixture's. Full suite 2903 → 2913 passed, 0 failed across this
+    session's commits.
 - Round-trip test is mandatory: load a representative project → save → reload,
   and assert the in-memory `current_project_data` is byte-for-byte equivalent
   (no events/sprite-frames/params lost), for both a fresh project and a legacy

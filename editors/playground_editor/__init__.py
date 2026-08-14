@@ -286,6 +286,14 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
             if project_file.exists():
                 with open(project_file, 'r', encoding='utf-8') as f:
                     project_data = json.load(f)
+                # project.json's embedded 'events' can be a stripped manifest
+                # stub (the real payload lives in objects/<name>.json) --
+                # without this merge, a Thymio object detectable only by its
+                # thymio_* events (not a 'thymio'-prefixed name or an
+                # explicit is_thymio flag) would silently vanish from the
+                # linkable-objects list. Reuses run_playground's own merge
+                # helper rather than a second copy of the same logic.
+                self._load_external_objects(project_data)
                 objects = project_data.get('assets', {}).get('objects', {})
                 for name, obj_data in objects.items():
                     # Only show objects that look like Thymio objects
