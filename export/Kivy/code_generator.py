@@ -1466,10 +1466,200 @@ if dist > 0:
             return (f"self.destroy_at_position({x}, {y}, {radius}, "
                     f"{obj_filter!r}, relative={relative})")
 
-        elif action_type == 'set_direction_speed':
+        elif action_type in ('set_direction_speed', 'move_free'):
+            # move_free is the same "exact direction + speed" primitive as
+            # set_direction_speed (identical params) -- runtime/
+            # action_handlers/movement_handlers.py's handle_move_free
+            # delegates to execute_set_direction_speed_action directly, so
+            # this codegen can too (docs/DEFERRED_GAPS_2026_PLAN.md Tier 3).
             direction = _num_code(params.get('direction', 0))
             speed = _num_code(params.get('speed', 4))
             return f"self.direction = {direction}; self.speed = {speed}"
+
+        elif action_type == 'move_towards_point':
+            # Direct Kivy-space port (Tier 3): target x/y are interpreted in
+            # the SAME coordinate space self.x/self.y already live in, same
+            # convention jump_to_position uses (no GM-y-down flip) -- so
+            # this needs no sign correction the way block_world's
+            # move_and_collide did for its own dy parameter.
+            #
+            # Each line below must stand alone with NO nested indentation --
+            # process_action's multi-line handling calls line.strip() on
+            # every line before re-indenting it at the SAME base level, so a
+            # literal "if:\n    body" here would silently lose its
+            # indentation (caught by a real export + compile check, not
+            # assumed). Ternaries avoid needing a block at all.
+            tx = _num_code(params.get('x', 0))
+            ty = _num_code(params.get('y', 0))
+            speed = _num_code(params.get('speed', 4))
+            return (
+                f"_mtp_dx = ({tx}) - self.x\n"
+                f"_mtp_dy = ({ty}) - self.y\n"
+                f"_mtp_dist = (_mtp_dx ** 2 + _mtp_dy ** 2) ** 0.5\n"
+                f"self.hspeed = 0 if _mtp_dist == 0 else _mtp_dx / _mtp_dist * ({speed})\n"
+                f"self.vspeed = 0 if _mtp_dist == 0 else _mtp_dy / _mtp_dist * ({speed})"
+            )
+
+        elif action_type == 'bounce':
+            # Faithful port of ONLY execute_bounce_action's own "no
+            # collision-block-axis info available" fallback branch (Tier 3):
+            # Kivy's collision model has no h_blocked/v_blocked equivalent
+            # to reverse a specific axis against, so this always takes the
+            # larger-magnitude-component path desktop itself falls back to
+            # outside a live collision context. A single ternary-based
+            # tuple assignment avoids the same nested-indentation trap
+            # move_towards_point's comment explains.
+            return ("self.hspeed, self.vspeed = "
+                    "(-self.hspeed, self.vspeed) if abs(self.hspeed) >= abs(self.vspeed) "
+                    "else (self.hspeed, -self.vspeed)")
+
+        elif action_type == 'stop_sound':
+            sound = params.get('sound', params.get('sound_name', ''))
+            path = self.sound_paths.get(sound)
+            if path:
+                return f"from main import stop_sound; stop_sound('{path}')"
+            return f"pass  # stop_sound: sound '{sound}' not found in export"
+
+        elif action_type == 'check_sound':
+            sound = params.get('sound', params.get('sound_name', ''))
+            not_flag = params.get('not_flag', False)
+            if isinstance(not_flag, str):
+                not_flag = not_flag.strip().lower() in ('true', '1', 'yes')
+            path = self.sound_paths.get(sound)
+            if not path:
+                # Unknown sound: matches the desktop no-sound-specified
+                # fallback (not not_flag -- "is playing" is False, "is NOT
+                # playing" is True).
+                self._open_guard(f"if {not bool(not_flag)}:")
+                return
+            self.add_line("from main import is_sound_playing as _cs_playing")
+            cond = (f"if not _cs_playing('{path}'):" if not_flag
+                   else f"if _cs_playing('{path}'):")
+            self._open_guard(cond)
+            return
+
+        elif action_type == 'draw_scaled_text':
+            text = str(params.get('text', ''))
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            xscale = _num_code(params.get('xscale', 1.0), 1.0)
+            yscale = _num_code(params.get('yscale', 1.0), 1.0)
+            return (f"self._draw_queue.append(dict(type='scaled_text', text={text!r}, "
+                    f"x={x}, y={y}, xscale={xscale}, yscale={yscale}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'fill_color':
+            color = str(params.get('color', '#000000'))
+            return f"self._draw_queue.append(dict(type='fill', color={color!r}))"
+
+        elif action_type == 'set_alpha':
+            alpha = _num_code(params.get('alpha', 1.0), 1.0)
+            return (f"self.image_alpha = max(0.0, min(1.0, float({alpha})))")
+
+        elif action_type == 'set_color':
+            color = str(params.get('color', '#FFFFFF')).lstrip('#')
+            alpha = _num_code(params.get('alpha', 1.0), 1.0)
+            try:
+                r, g, b = (int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16))
+            except (ValueError, IndexError):
+                r, g, b = 255, 255, 255
+            return (f"self.image_blend = ({r}, {g}, {b}); "
+                    f"self.image_alpha = max(0.0, min(1.0, float({alpha})))")
+
+        elif action_type == 'set_image_index':
+            frame = _num_code(params.get('frame', 0), 0)
+            return f"self.image_index = float({frame})"
+
+        elif action_type == 'set_image_speed':
+            speed = _num_code(params.get('speed', 1.0), 1.0)
+            return f"self.image_speed = float({speed})"
+
+        elif action_type == 'start_animation':
+            return "self.image_speed = 1.0"
+
+        elif action_type == 'stop_animation':
+            return "self.image_speed = 0.0"
+
+        elif action_type == 'set_room_caption':
+            # Reuses set_window_caption's own generated function -- same
+            # underlying effect (game_runner.window_caption + update_caption
+            # on desktop), just without the score/lives/health toggle
+            # parameters set_window_caption itself exposes.
+            caption = params.get('caption', '')
+            return (f"from main import set_window_caption; "
+                    f"set_window_caption(caption={caption!r})")
+
+        elif action_type == 'check_room':
+            room_param = str(params.get('room', ''))
+            not_flag = params.get('not_flag', False)
+            if isinstance(not_flag, str):
+                not_flag = not_flag.strip().lower() in ('true', '1', 'yes')
+            self.add_line("from main import get_game_app as _cr_ga, ROOM_ORDER as _cr_ro")
+            self.add_line("_cr_app = _cr_ga()")
+            self.add_line("_cr_idx = _cr_app.current_room_index if _cr_app else -1")
+            self.add_line(f"_cr_target = {room_param!r}")
+            self.add_line("if _cr_target == '__current__': _cr_match = True")
+            self.add_line("elif _cr_target == '__next__': _cr_match = 0 <= _cr_idx and _cr_idx + 1 < len(_cr_ro)")
+            self.add_line("elif _cr_target == '__prev__': _cr_match = _cr_idx - 1 >= 0")
+            self.add_line("else: _cr_match = _cr_idx >= 0 and _cr_ro[_cr_idx] == _cr_target")
+            cond = "if not _cr_match:" if not_flag else "if _cr_match:"
+            self._open_guard(cond)
+            return
+
+        elif action_type == 'show_info':
+            # Builds the same "Name / Version: x / By: y / description"
+            # message shape execute_show_info_action does, from PROJECT_META
+            # (baked at export time -- kivy_exporter.py's _generate_main_app).
+            self.add_line("from main import PROJECT_META as _si_meta, show_message as _si_show")
+            self.add_line("_si_msg = _si_meta['name'] + '\\nVersion: ' + _si_meta['version'] + '\\nBy: ' + _si_meta['author']")
+            self.add_line("if _si_meta['description']: _si_msg += '\\n\\n' + _si_meta['description']")
+            self.add_line("_si_show(_si_msg)")
+            return
+
+        elif action_type == 'show_video':
+            # Opens in the system's video player, same as the desktop
+            # runtime -- not in-engine playback. The video file itself is
+            # NOT copied into the export bundle (no video-asset pipeline
+            # exists), so this only works if `filename` resolves to a real
+            # path at runtime (e.g. an absolute path) -- an honest, narrower
+            # scope than desktop's project-relative resolution.
+            filename = params.get('filename', '')
+            return f"from main import show_video_file; show_video_file({filename!r})"
+
+        elif action_type == 'open_webpage':
+            url = params.get('url', '')
+            return f"from main import open_webpage as _ow; _ow({url!r})"
+
+        elif action_type == 'splash_show_text':
+            text = str(params.get('text', ''))
+            return f"from main import show_message; show_message({text!r})"
+
+        elif action_type == 'splash_show_image':
+            image = params.get('image', '')
+            path = self.sprite_paths.get(image)
+            if path:
+                return f"from main import show_splash_image; show_splash_image('{path}')"
+            return f"pass  # splash_show_image: sprite '{image}' not found in export"
+
+        elif action_type == 'save_game':
+            filename = params.get('filename', 'savegame.sav')
+            return f"from savegame import save_game as _sg; _sg({filename!r})"
+
+        elif action_type == 'load_game':
+            filename = params.get('filename', 'savegame.sav')
+            return f"from savegame import load_game as _lg; _lg({filename!r})"
+
+        elif action_type == 'test_question':
+            # Kivy's dialogs are callback-driven (see show_message), not a
+            # blocking call that can hand back an immediate bool the way
+            # desktop's Qt QMessageBox.exec() does -- there is no
+            # synchronous "wait for the click" primitive to build a real
+            # Yes/No gate on here. Defaults to True (proceed), matching the
+            # desktop handler's OWN documented fallback for when a modal
+            # can't be shown ("Qt not available, defaulting to True") rather
+            # than silently dropping the action or guessing False.
+            self._open_guard("if True:  # test_question: Kivy has no blocking Yes/No dialog; defaults to Yes")
+            return
 
         elif action_type == 'set_window_caption':
             # repr() the caption (free text) so an apostrophe/newline/backslash
