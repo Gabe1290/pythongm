@@ -414,6 +414,29 @@ Deseja salvar mesmo assim?</translation>
         <source>The bundled sample could not be imported. See the console output for details.</source>
         <translation>Não foi possível importar o exemplo incluído. Veja a saída do console para mais detalhes.</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="214"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  Guias dos exemplos</translation>
+    </message>
+</context>
+<context>
+    <name>SampleDocsDialog</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="515"/>
+        <source>Sample guides</source>
+        <translation>Guias dos exemplos</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="552"/>
+        <source>_No bundled samples were found in this build._</source>
+        <translation>_Nenhum exemplo incluído foi encontrado nesta versão._</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="623"/>
+        <source>_No documentation is bundled for **{0}**._</source>
+        <translation>_Nenhuma documentação está incluída para **{0}**._</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
