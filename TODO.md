@@ -633,22 +633,29 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Export
 
-### iOS exporter has no app icon (resources/ios/ ready, not wired) — 2026-08-10
-- `export/ios/ios_exporter.py` builds a game into an iOS IPA via kivy-ios +
-  xcodebuild but never touches an app icon at all — unlike `exe_exporter.py`/
-  `macos_exporter.py`, which both accept an `icon_path` export setting.
-  Exported iOS games ship with Xcode's blank default icon.
-- `resources/ios/AppIcon.appiconset/` already has a complete, valid Xcode
-  asset-catalog icon set (iPhone + iPad + App Store sizes, `Contents.json` +
-  18 PNGs) built from `resources/icon.png` — it just isn't copied into the
-  generated Xcode project anywhere.
-- TODO: add an `icon_path` export setting (same UI pattern as exe/macos),
-  and on export either (a) copy a user-provided image into a freshly
-  generated `.appiconset` at every required size, or (b) fall back to
-  `resources/ios/AppIcon.appiconset/` as PyGameMaker's own default so
-  exported games aren't icon-less by default. Whichever path, drop the
-  result into the generated Xcode project's `Assets.xcassets/AppIcon.appiconset/`
-  before `xcodebuild` runs.
+### ~~iOS exporter has no app icon~~ (DONE 2026-08-14)
+- Done: `iOSExporter.export_settings['icon_path']` (same key `exe_exporter.py`/
+  `macos_exporter.py` already use) is resized into every AppIcon.appiconset
+  slot via Pillow (`_generate_appiconset_from_image`, flattened onto opaque
+  white first — Apple rejects an alpha-carrying app icon), or, with no
+  `icon_path` set, `resources/ios/AppIcon.appiconset/` is copied in wholesale
+  as PyGameMaker's own default (`_populate_appiconset`) so an export is never
+  icon-less. `_install_app_icon` (new Step 7b, after the Xcode project is
+  created, before `xcodebuild` archives) locates the appiconset kivy-ios's
+  template already ships via `rglob` — robust to the exact folder name/depth
+  rather than hardcoding `Assets.xcassets` — falling back to the conventional
+  `<app>/Images.xcassets/AppIcon.appiconset` location if the template ships
+  none. Deliberately never fails the whole export: a bad/missing `icon_path`
+  or an unexpected project layout logs a warning and falls back, since an
+  icon-less build (the pre-existing behaviour) is still a successful one.
+- No macOS/Xcode/kivy-ios available to run the real IPA build end-to-end
+  (matches this module's pre-existing zero test coverage) — verified instead
+  with pure filesystem + Pillow tests that don't need either: exact pixel
+  dimensions per manifest slot, RGB (no alpha) output, white-flattened
+  transparency, graceful fallback on a missing/corrupt source image, and
+  `_find_appiconset_dir`/`_install_app_icon` against hand-built fake project
+  trees. `tests/test_ios_exporter_icon.py` (11 tests). Suite 2872 → 2883
+  passed, 0 failed.
 
 ### Kivy/Android export — remaining parity gaps (draw-queue + mouse LANDED)
 - Found while validating the `match3_1` bundled sample (2026-07-03) for

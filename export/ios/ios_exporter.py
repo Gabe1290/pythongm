@@ -38,6 +38,22 @@ class iOSExporter(QObject):
     progress_update = Signal(int, str)   # (percent, message)
     export_complete = Signal(bool, str)  # (success, message)
 
+    # AppIcon.appiconset image slots: (filename, point size, scale).
+    # Pixel size = point size * scale (rounded — 83.5@2x -> 167px).
+    # Mirrors resources/ios/AppIcon.appiconset/Contents.json, which stays
+    # the single source of truth for the manifest itself.
+    _APPICON_SPECS = [
+        ("Icon-20@2x.png", 20, 2), ("Icon-20@3x.png", 20, 3),
+        ("Icon-29@2x.png", 29, 2), ("Icon-29@3x.png", 29, 3),
+        ("Icon-40@2x.png", 40, 2), ("Icon-40@3x.png", 40, 3),
+        ("Icon-60@2x.png", 60, 2), ("Icon-60@3x.png", 60, 3),
+        ("Icon-20.png", 20, 1), ("Icon-29.png", 29, 1),
+        ("Icon-40.png", 40, 1),
+        ("Icon-76.png", 76, 1), ("Icon-76@2x.png", 76, 2),
+        ("Icon-83.5@2x.png", 83.5, 2),
+        ("Icon-1024.png", 1024, 1),
+    ]
+
     def __init__(self):
         super().__init__()
         self.project_path = None
@@ -160,6 +176,10 @@ class iOSExporter(QObject):
                 self.export_complete.emit(
                     False, "Failed to create Xcode project:\n\n{}".format(result))
                 return False
+
+            # ---- Step 7b: install app icon --------------------------------
+            self.progress_update.emit(71, "Installing app icon...")
+            self._install_app_icon(build_dir)
 
             # ---- Step 8: build + archive ----------------------------------
             self.progress_update.emit(72, "Building with Xcode (this may take a few minutes)...")
@@ -404,6 +424,93 @@ class iOSExporter(QObject):
             return ("Xcode project not found at expected path:\n"
                     "{}".format(self._xcode_proj))
         return True
+
+    # ------------------------------------------------------------------
+    # App icon
+    # ------------------------------------------------------------------
+
+    def _default_appiconset_dir(self) -> Path:
+        """PyGameMaker's own bundled default icon set."""
+        return (Path(__file__).resolve().parents[2] / "resources" / "ios"
+                / "AppIcon.appiconset")
+
+    def _find_appiconset_dir(self, xcode_proj_dir: Path):
+        """Locate the AppIcon.appiconset kivy-ios's template already ships
+        inside the generated project, wherever it lives. Returns None if
+        the template has no such folder at all."""
+        matches = list(xcode_proj_dir.rglob("AppIcon.appiconset"))
+        return matches[0] if matches else None
+
+    def _populate_appiconset(self, dest_dir: Path) -> bool:
+        """Write Contents.json + every required PNG into dest_dir, either
+        resized from a user-supplied icon_path or copied from
+        PyGameMaker's bundled default. Returns True on success."""
+        icon_path = self.export_settings.get('icon_path')
+        if icon_path:
+            try:
+                self._generate_appiconset_from_image(Path(icon_path), dest_dir)
+                return True
+            except Exception as e:
+                logger.warning(
+                    "Could not build an iOS app icon from %s (%s) — "
+                    "falling back to PyGameMaker's default icon.",
+                    icon_path, e)
+
+        default_dir = self._default_appiconset_dir()
+        if not default_dir.exists():
+            logger.warning(
+                "Default iOS AppIcon.appiconset not found at %s", default_dir)
+            return False
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        for item in default_dir.iterdir():
+            shutil.copy2(item, dest_dir / item.name)
+        return True
+
+    def _generate_appiconset_from_image(self, source: Path, dest_dir: Path) -> None:
+        """Resize a user-provided image into every AppIcon.appiconset slot.
+
+        Flattens onto an opaque white background first — Apple rejects
+        (and Xcode warns on) app icons carrying an alpha channel.
+        """
+        if not source.exists():
+            raise FileNotFoundError(str(source))
+
+        from PIL import Image
+        try:
+            resample = Image.Resampling.LANCZOS
+        except AttributeError:
+            resample = Image.LANCZOS  # Pillow < 9.1
+
+        src = Image.open(source).convert('RGBA')
+        flattened = Image.new('RGB', src.size, (255, 255, 255))
+        flattened.paste(src, mask=src.split()[3])
+
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        for filename, size_pt, scale in self._APPICON_SPECS:
+            px = round(size_pt * scale)
+            flattened.resize((px, px), resample).save(
+                dest_dir / filename, format='PNG')
+
+        shutil.copy2(self._default_appiconset_dir() / "Contents.json",
+                     dest_dir / "Contents.json")
+
+    def _install_app_icon(self, build_dir: Path) -> None:
+        """Best-effort: install the app icon into the generated Xcode
+        project. Never fails the export — an icon-less build (the
+        pre-existing behaviour) is still a successful one."""
+        try:
+            appiconset_dir = self._find_appiconset_dir(self._xcode_proj_dir)
+            if appiconset_dir is None:
+                # kivy-ios's template shipped no AppIcon.appiconset at all —
+                # create the conventional location so Xcode's asset catalog
+                # compiler still picks it up (ASSETCATALOG_COMPILER_APPICON_NAME
+                # defaults to "AppIcon" in kivy-ios's generated project).
+                appiconset_dir = (self._xcode_proj_dir / self._app_name
+                                  / "Images.xcassets" / "AppIcon.appiconset")
+            if not self._populate_appiconset(appiconset_dir):
+                logger.warning("iOS app icon installation skipped.")
+        except Exception as e:
+            logger.warning("iOS app icon installation failed (non-fatal): %s", e)
 
     def _build_and_archive(self, build_dir: Path):
         """Compile and archive the app with xcodebuild.
