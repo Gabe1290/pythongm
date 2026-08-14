@@ -29,6 +29,37 @@ class IDEExporters:
         """
         self.ide = ide_window
 
+    def _ask_offline_pyodide(self) -> bool:
+        """Ask whether to bundle the Python runtime for offline play —
+        only when the project actually uses execute_code (a pure-action
+        game already exports as a fully self-contained, offline-capable
+        file with no prompt needed). See export/HTML5/pyodide_bundle.py.
+        """
+        from export.HTML5.html5_exporter import project_needs_python
+
+        project_data = getattr(self.ide, 'current_project_data', None) or {}
+        if not project_needs_python(project_data):
+            return False
+
+        reply = QMessageBox.question(
+            self.ide,
+            self.ide.tr("Offline Python Runtime?"),
+            self.ide.tr(
+                "This game uses Python code (execute_code), which normally "
+                "loads its runtime from the internet the first time the "
+                "exported game is opened.\n\n"
+                "Bundle it into the .html file instead, so the game works "
+                "with no internet at all (e.g. locked-down school "
+                "networks)?\n\n"
+                "Adds about 15-20 MB to the exported file. Needs internet "
+                "once now, to download and cache it (cached afterwards for "
+                "future exports)."
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        return reply == QMessageBox.Yes
+
     def export_html5(self):
         """Export project as HTML5"""
         # Check if project is open
@@ -42,6 +73,8 @@ class IDEExporters:
 
         from export.HTML5.html5_exporter import HTML5Exporter
 
+        offline_pyodide = self._ask_offline_pyodide()
+
         output_dir = QFileDialog.getExistingDirectory(
             self.ide,
             self.ide.tr("Select Export Directory"),
@@ -54,7 +87,29 @@ class IDEExporters:
             # Show progress
             self.ide.update_status(self.ide.tr("Exporting to HTML5..."))
 
-            if exporter.export(self.ide.current_project_path, Path(output_dir)):
+            export_settings = {'offline_pyodide': offline_pyodide}
+            progress_callback = None
+            if offline_pyodide:
+                progress_callback = lambda frac, msg: self.ide.update_status(msg)
+
+            export_ok = exporter.export(
+                self.ide.current_project_path, Path(output_dir),
+                export_settings=export_settings,
+                progress_callback=progress_callback)
+
+            if not export_ok and exporter.last_error_message:
+                # export() catches every failure internally and returns
+                # False — last_error_message carries a specific, actionable
+                # message (e.g. the offline-bundle download failure) that
+                # would otherwise only reach the console log.
+                QMessageBox.warning(
+                    self.ide,
+                    self.ide.tr("Export Failed"),
+                    exporter.last_error_message)
+                self.ide.update_status(self.ide.tr("Export failed"))
+                return
+
+            if export_ok:
                 # Reuse the exporter's own filename sanitization so the
                 # success message + "Open in browser" point at the file that
                 # was actually written — a name with ':' / '<>' is sanitized
