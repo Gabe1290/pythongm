@@ -2840,6 +2840,55 @@ class ActionExecutor:
         logger.info(f"ℹ️ GAME INFO:\n{info_text}")
         self._show_or_queue_message(instance, info_text)
 
+    def execute_splash_show_text_action(self, instance, parameters: Dict[str, Any]):
+        """Show a blocking text message -- reuses the same modal machinery
+        show_message/show_info already use, rather than the old placeholder
+        that only logged the text and did nothing (see
+        docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.5).
+
+        Parameters:
+            text: the message to show
+        """
+        text = self._parse_value(parameters.get("text", ""), instance)
+        if not text:
+            logger.debug("⚠️ splash_show_text: No text specified")
+            return
+        logger.info(f"💬 SPLASH TEXT: {text}")
+        self._show_or_queue_message(instance, str(text))
+
+    def execute_splash_show_image_action(self, instance, parameters: Dict[str, Any]):
+        """Show a sprite full-screen, blocking until dismissed -- reuses the
+        same sprite registry draw_sprite reads from and
+        GameRunner.show_splash_image's blocking-loop shape (mirrors
+        show_message_dialog). Replaces the old placeholder that only
+        logged the image name (Tier 2.5).
+
+        Parameters:
+            image: name of the sprite to show full-screen
+        """
+        image_name = self._parse_value(parameters.get("image", ""), instance)
+        if not image_name:
+            logger.debug("⚠️ splash_show_image: No image specified")
+            return
+
+        runner = self.game_runner
+        if runner is None or not getattr(runner, 'screen', None):
+            logger.debug("⚠️ splash_show_image: No live screen (headless) -- no-op")
+            return
+
+        sprite = runner.sprites.get(str(image_name))
+        if sprite is None:
+            logger.warning(f"⚠️ splash_show_image: Sprite '{image_name}' not found")
+            return
+
+        surface = sprite.frames[0] if sprite.frames else sprite.surface
+        if surface is None:
+            logger.warning(f"⚠️ splash_show_image: Sprite '{image_name}' has no surface")
+            return
+
+        logger.info(f"🖼️ SPLASH IMAGE: {image_name}")
+        runner.show_splash_image(surface)
+
     def execute_show_video_action(self, instance, parameters: Dict[str, Any]):
         """Play a video file
 

@@ -5106,6 +5106,70 @@ class GameRunner:
                 if id(instance) in saved_speeds:
                     instance.hspeed, instance.vspeed = saved_speeds[id(instance)]
 
+    def show_splash_image(self, surface: pygame.Surface):
+        """Show a sprite full-screen, pausing the game until the player
+        dismisses it (any key or mouse click) -- the image counterpart of
+        show_message_dialog, same blocking-loop shape and speed-pause/
+        restore treatment. Scaled to fit the screen while preserving
+        aspect ratio, letterboxed in black.
+        """
+        logger.debug("🖼️ Showing splash image")
+
+        if not self.screen:
+            logger.debug("⚠️ Cannot show splash image - no screen")
+            return
+
+        pygame.event.clear()
+
+        saved_speeds = {}
+        if self.current_room:
+            for instance in self.current_room.instances:
+                saved_speeds[id(instance)] = (instance.hspeed, instance.vspeed)
+                instance.hspeed = 0
+                instance.vspeed = 0
+
+        screen_w, screen_h = self.screen.get_size()
+        img_w, img_h = surface.get_size()
+        if img_w <= 0 or img_h <= 0:
+            return
+
+        scale = min(screen_w / img_w, screen_h / img_h)
+        if scale <= 0:
+            return
+        draw_w, draw_h = max(1, round(img_w * scale)), max(1, round(img_h * scale))
+        scaled = (surface if (draw_w, draw_h) == (img_w, img_h)
+                 else pygame.transform.smoothscale(surface, (draw_w, draw_h)))
+        dest_x = (screen_w - draw_w) // 2
+        dest_y = (screen_h - draw_h) // 2
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.stop_game()
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    waiting = False
+                elif event.type == pygame.KEYUP:
+                    # Mirrors show_message_dialog's own M54 fix -- don't let
+                    # a key released while the splash is open stay stuck in
+                    # keys_pressed.
+                    self._release_held_key_silent(event.key)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    waiting = False
+
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(scaled, (dest_x, dest_y))
+            pygame.display.flip()
+            if self.clock:
+                self.clock.tick(60)
+
+        # Restore instance speeds after the splash is dismissed
+        if self.current_room:
+            for instance in self.current_room.instances:
+                if id(instance) in saved_speeds:
+                    instance.hspeed, instance.vspeed = saved_speeds[id(instance)]
+
     # ==================== HIGHSCORE SYSTEM ====================
 
     def load_highscores(self):
