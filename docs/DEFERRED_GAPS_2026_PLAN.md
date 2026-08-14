@@ -216,15 +216,53 @@ gap on `block_world_1` today.
   the exec namespace (mirrors a real import) and switching to an absolute
   import. `tests/test_kivy_block_world.py`, `tests/test_html5_block_world.py`.
   Full suite: 2960 passed, 7 skipped, 0 failed. Smoke run 18/18.
-- [ ] **4b. Top/bottom (horizontal) faces.** Port the `top_cast_res`
-  downsampled per-pixel cast — same *category* as raycast's floor casting,
-  different geometry (block quads vs. a single ground plane); template, not
-  a literal port.
-- [x] Parity test for 4a against desktop, mirroring
-  `tests/test_block_world_export_parity.py` (structural, since real texture
-  drawing can't be numerically diffed without a JS/Kivy execution
-  environment) + compile/brace-balance gate. 4b's parity test is still
-  open, pending 4b itself.
+- [x] **4b. Top/bottom (horizontal) faces.** Done (2026-08-15). Ported the
+  `top_cast_res` downsampled per-pixel cast for both targets — genuinely a
+  template, not a literal port of either the wall pass (4a) or raycast's
+  floor caster, since a block face is a bounded quad sampled from a screen
+  COLUMN, not an infinite plane sampled by ROW. `enable_block_world_view`
+  now actually stores `top_cast_res` in the camera config on both targets
+  (previously accepted but silently dropped since neither target had a
+  per-pixel path to control the resolution of).
+  - **HTML5**: `bwTextureData` builds a cached `ImageData` per texture
+    (mirrors raycast's own `_textureData`); `bwDrawHorizontalFaceTextured`
+    samples `ceil(span/res)` texels via the same inverse-projection formula
+    as desktop's `_texel`, into a small offscreen canvas via `putImageData`,
+    then `drawImage`-scales it to fill the face — same trick as the wall
+    pass and raycast's floor caster.
+  - **Kivy**: deliberately AVOIDS `Texture.create()`/`blit_buffer()` (whose
+    row-order convention relative to `tex_coords` needed its own separate
+    reasoning on top of `get_region`'s) — instead each sampled texel is its
+    own `get_region(tx, th-1-ty, 1, 1)` single-pixel region (a 1x1 region
+    has no orientation to get wrong), drawn as its own small `Rectangle`
+    segment. Reuses the `th-1-ty` bottom-left-origin flip
+    `_bw_fill_span_textured` (Tier 4a) already established for reading
+    Kivy texture pixels. A real, deliberate perf-for-simplicity tradeoff:
+    more draw calls than a single scaled blit, accepted for a first
+    correctness-focused pass.
+  - **Real numeric parity, not just structural**: fed the SAME inputs to
+    desktop's actual `_draw_horizontal_face_textured` (via a fake
+    pygame-Surface-like object recording every `get_at()` call) and the
+    Kivy port (via a fake texture recording `get_region()` calls), and
+    proved the two sample the IDENTICAL grid cell at every one of 10 rows
+    (`tx` matches exactly; `ty` matches through the documented `th-1-ty`
+    flip) — the strongest available proof short of watching real pixels.
+    `tests/test_block_world_export_parity.py`
+    (`test_desktop_and_kivy_horizontal_face_texel_grid_matches`).
+  - One real test-authoring bug caught before it shipped (same class as
+    the grid-alignment trap documented elsewhere in this repo): an early
+    draft's point-blank camera-to-block distance combined with a tall
+    `eye_height` pushed the ENTIRE projected face span off-screen (`y0v >
+    y1v` after clamping), making the test pass for the wrong reason (0
+    draws either way) until checking the real render output showed the
+    face genuinely wasn't drawing — fixed by using a realistic multi-cell
+    camera-to-block distance, matching how the actual sample plays.
+  - `tests/test_kivy_block_world.py`, `tests/test_html5_block_world.py`,
+    `tests/test_block_world_export_parity.py`. Full suite: 3019 passed,
+    7 skipped, 0 failed. Smoke run 18/18; real end-to-end export of
+    `block_world_1` verified on both targets. **Tier 4 (both 4a and 4b) is
+    now fully closed** — Block World renders real per-pixel textures on
+    all three faces, on all three targets.
 
 ## Tier 5 — Particle system + timelines (large, greenfield, ~3+ sessions, last of Tiers 1-6)
 

@@ -218,3 +218,35 @@ def test_bw_texture_builds_an_image_from_the_embedded_data_uri():
     assert "gameData._extension_data" in body
     assert "block_textures" in body
     assert "data:image/png;base64," in body
+
+
+# --- Real per-pixel top/bottom textures (Phase 6 Tier 4b) --------------------
+
+def test_horizontal_face_texture_function_ports_the_projection_math():
+    m = re.search(r"function bwDrawHorizontalFaceTextured\([^)]*\)\s*\{(.*)",
+                  BW_JS, re.S)
+    assert m, "bwDrawHorizontalFaceTextured not found"
+    body = m.group(1)[:4000]
+    # k = (eyeZ - planeZ) * H * cellSize, and the inverse-projection texel().
+    assert "(eyeZ - planeZ) * H * cellSize" in body
+    assert "y + 0.5 - horizon" in body
+    assert "rayDist" in body
+    assert "Math.floor(gx)" in body and "Math.floor(gy)" in body
+
+
+def test_top_bottom_faces_call_the_textured_path_with_fallback():
+    m = re.search(r"if \(eyeZ > z \+ 1 && !above\) \{(.*?)\n {16}\} else if \(eyeZ < z && !below\) \{(.*?)\n {16}\}\n",
+                  BW_JS, re.S)
+    assert m, "top/bottom face draw block not found"
+    top_body, bottom_body = m.group(1), m.group(2)
+    for body, face in ((top_body, "top"), (bottom_body, "bottom")):
+        assert "bwTextureData(room._gameRef" in body, face
+        assert f"fileSet.{face}" in body, face
+        assert "bwDrawHorizontalFaceTextured(" in body, face
+        assert "bwShadeColor(color, lit)" in body, face   # the fallback path
+
+
+def test_top_cast_res_disables_texturing_at_zero():
+    m = re.search(r"const topTextured = (.*?);", BW_JS)
+    assert m
+    assert "topRes >= 1" in m.group(1)

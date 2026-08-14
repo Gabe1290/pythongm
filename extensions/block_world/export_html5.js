@@ -5,17 +5,17 @@
 // the mechanism). engine.js itself names nothing here.
 //
 // Mirrors extensions/block_world/state.py + renderer.py + handlers.py +
-// hud.py. Side (wall) faces are real per-pixel textures (Phase 6 Tier 4a,
-// docs/DEFERRED_GAPS_2026_PLAN.md), mirroring the raycast HTML5 wall pass's
-// own drawImage sub-rect technique. Top/bottom faces remain FLAT-COLORED
-// using each block type's precomputed average texture color
-// (BLOCK_FACE_COLORS below) -- Tier 4b, a per-pixel cast over a block quad
-// rather than an infinite plane, is its own follow-up unit (not a literal
-// port of either the wall pass above or raycast's floor caster). Falls back
-// to BLOCK_FACE_COLORS whenever a texture hasn't finished loading yet or
-// `wall_textured` is off. The occlusion early-out (_fully_covers on
-// desktop) is skipped: a pure perf shortcut, since the far-to-near
-// painter's-algorithm draw order is correct without it.
+// hud.py. All three face orientations are real per-pixel textures: side
+// (wall) faces via ctx.drawImage sub-rect slicing (Tier 4a, mirroring the
+// raycast HTML5 wall pass exactly); top/bottom faces via a per-pixel cast
+// over the block's quad (Tier 4b -- NOT a literal port of either the wall
+// pass or raycast's floor caster, since a block face is a bounded quad, not
+// an infinite plane or a flat strip). Both fall back to BLOCK_FACE_COLORS
+// (precomputed average colors) whenever a texture hasn't finished loading
+// yet, `wall_textured` is off, or (top/bottom only) `top_cast_res` is 0.
+// The occlusion early-out (_fully_covers on desktop) is skipped: a pure
+// perf shortcut, since the far-to-near painter's-algorithm draw order is
+// correct without it.
 //
 // `load_block_world`'s data file has no filesystem to read from in a
 // browser -- see extensions/block_world/export_data.py, whose
@@ -116,6 +116,112 @@ function bwTexture(game, filename) {
     return img;
 }
 
+// Cached ImageData for a loaded block texture (Tier 4b: top/bottom
+// per-pixel casting needs raw pixel access, not just an Image to
+// drawImage). Mirrors raycast_2_5d's own _textureData. Only caches once
+// the Image has actually finished loading -- an early call while it's
+// still decoding must NOT cache null, or the face would be stuck flat-
+// colored forever once the image does load.
+const _bwTexDataCache = {};
+function bwTextureData(game, filename) {
+    if (!filename) return null;
+    if (_bwTexDataCache[filename]) return _bwTexDataCache[filename];
+    const img = bwTexture(game, filename);
+    if (!img || !img.complete || !img.width) return null;
+    let data = null;
+    try {
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const g = c.getContext('2d');
+        g.drawImage(img, 0, 0);
+        data = g.getImageData(0, 0, img.width, img.height);
+    } catch (e) {
+        data = null;   // tainted canvas -- keep the flat-color fallback
+    }
+    if (data) _bwTexDataCache[filename] = data;
+    return data;
+}
+
+// Reusable 1xN scratch canvas for bwDrawHorizontalFaceTextured, grown
+// (never shrunk) to fit -- mirrors renderer.py's _horizontal_face_scratch
+// and raycast_2_5d's own _floorSmall, same reasoning: this runs once per
+// exposed top/bottom face per column, so a fresh canvas per call would
+// dominate the frame cost.
+let _bwFaceScratch = null;
+function bwHorizontalFaceScratch(samples) {
+    if (!_bwFaceScratch) _bwFaceScratch = document.createElement('canvas');
+    if (_bwFaceScratch.width !== 1) _bwFaceScratch.width = 1;
+    if (_bwFaceScratch.height < samples) _bwFaceScratch.height = samples;
+    return _bwFaceScratch;
+}
+
+// Real per-pixel top/bottom face texture (Tier 4b). Faithful port of
+// renderer.py's _draw_horizontal_face_textured -- inverting the
+// projection gives the distance to the plane_z-height plane directly for
+// each screen row, so each sampled row's world point gives a texel;
+// sampled every `res` rows into a 1-wide column and upscaled (identical
+// trick to the wall pass and to raycast's floor caster). Shading is a
+// single black-alpha overlay after the scaled draw, not per-texel.
+function bwDrawHorizontalFaceTextured(ctx, x0, stripW, yA, yB, texData,
+                                      camX, camY, dirX, dirY, cosOff,
+                                      planeZ, eyeZ, horizon, cellSize,
+                                      shade, res, H) {
+    const y0 = Math.max(0, Math.floor(Math.min(yA, yB)));
+    const y1 = Math.min(H, Math.ceil(Math.max(yA, yB)));
+    const span = y1 - y0;
+    if (span <= 0) return;
+    const tw = texData.width, th = texData.height;
+    if (tw <= 0 || th <= 0) return;
+    const data = texData.data;
+
+    // Same sign top or bottom: looking down, eyeZ > planeZ and the rows
+    // sit below the horizon; looking up, both flip. The ratio stays
+    // positive either way.
+    const k = (eyeZ - planeZ) * H * cellSize;
+    const invCell = 1.0 / cellSize;
+
+    function texel(y) {
+        let denom = y + 0.5 - horizon;
+        if (denom > -1e-6 && denom < 1e-6) denom = denom >= 0 ? 1e-6 : -1e-6;
+        const rayDist = (k / denom) / cosOff;
+        const gx = (camX + dirX * rayDist) * invCell;
+        const gy = (camY + dirY * rayDist) * invCell;
+        let tx = Math.floor(tw * (gx - Math.floor(gx)));
+        let ty = Math.floor(th * (gy - Math.floor(gy)));
+        if (tx >= tw) tx = tw - 1; else if (tx < 0) tx = 0;
+        if (ty >= th) ty = th - 1; else if (ty < 0) ty = 0;
+        const idx = (ty * tw + tx) * 4;
+        return [data[idx], data[idx + 1], data[idx + 2]];
+    }
+
+    const samples = Math.max(1, Math.ceil(span / res));
+    if (samples === 1) {
+        // Most faces are a handful of rows -- a distant deck is hundreds
+        // of one-sample slivers. A scaled drawImage for a span this short
+        // costs far more than the fill it replaces.
+        const [r, g, b] = texel(y0);
+        const sh = shade < 1.0 ? shade : 1.0;
+        ctx.fillStyle = `rgb(${Math.round(r * sh)},${Math.round(g * sh)},${Math.round(b * sh)})`;
+        ctx.fillRect(x0, y0, stripW, span);
+        return;
+    }
+
+    const small = bwHorizontalFaceScratch(samples);
+    const sctx = small.getContext('2d');
+    const col = sctx.createImageData(1, samples);
+    for (let i = 0; i < samples; i++) {
+        const [r, g, b] = texel(y0 + i * res);
+        const di = i * 4;
+        col.data[di] = r; col.data[di + 1] = g; col.data[di + 2] = b; col.data[di + 3] = 255;
+    }
+    sctx.putImageData(col, 0, 0);
+    ctx.drawImage(small, 0, 0, 1, samples, x0, y0, stripW, span);
+    if (shade < 1.0) {
+        ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(3)})`;
+        ctx.fillRect(x0, y0, stripW, span);
+    }
+}
+
 // The one block type break_block refuses to remove (state.BLOCK_TYPES'
 // single 'breakable': False entry).
 const BW_UNBREAKABLE = new Set(['obsidian']);
@@ -136,6 +242,9 @@ const BW_TOP_SHADE = 1.15;
 const BW_BOTTOM_SHADE = 0.55;
 const BW_DEFAULT_EYE_HEIGHT = 1.5;
 const BW_MAX_PITCH_DEGREES = 70.0;
+// Horizontal faces (top/bottom) are cast every Nth row and upscaled
+// (Tier 4b); 0 disables texturing (flat average-color fallback).
+const BW_DEFAULT_TOP_CAST_RES = 4;
 const BW_DEFAULT_MAX_STEP_UP = 1;
 
 // --- state.py port (free functions taking a GameRoom, mirroring the
@@ -361,6 +470,10 @@ function bwRenderView(room, ctx) {
     const facingScreenRad = -camera.facing_angle * Math.PI / 180;
     const planeTan = Math.tan(fovRad / 2);
     const textured = cfg.wall_textured !== false;
+    // Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
+    // texturing (flat average-color fallback), matching desktop exactly.
+    const topRes = cfg.top_cast_res !== undefined ? cfg.top_cast_res : BW_DEFAULT_TOP_CAST_RES;
+    const topTextured = textured && topRes >= 1;
     const columns = bwColumnIndex(room);
 
     for (let col = 0; col < numColumns; col++) {
@@ -368,6 +481,7 @@ function bwRenderView(room, ctx) {
         const rayOffset = Math.atan(planeTan * cameraX);
         const rayAngle = facingScreenRad + rayOffset;
         const cosOff = Math.cos(rayOffset);   // fisheye correction
+        const dirX = Math.cos(rayAngle), dirY = Math.sin(rayAngle);
         const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
         const stripW = Math.max(1, x1 - x0);
 
@@ -429,23 +543,39 @@ function bwRenderView(room, ctx) {
                     const lit = bwFaceShade(mid, maxDist, BW_TOP_SHADE);
                     const yFar = horizon + (eyeZ - (z + 1)) * pxPerCellFar;
                     const yNear = horizon + (eyeZ - (z + 1)) * pxPerCell;
-                    const color = colorSet ? colorSet.top : wallColorRgb;
-                    const fy0 = Math.max(0, Math.floor(Math.min(yFar, yNear)));
-                    const fy1 = Math.min(h, Math.ceil(Math.max(yFar, yNear)));
-                    if (fy1 > fy0) {
-                        ctx.fillStyle = bwShadeColor(color, lit);
-                        ctx.fillRect(x0, fy0, stripW, fy1 - fy0);
+                    const fileSet = topTextured ? BLOCK_FACE_FILES[blockType] : null;
+                    const texData = fileSet ? bwTextureData(room._gameRef, fileSet.top) : null;
+                    if (texData) {
+                        bwDrawHorizontalFaceTextured(ctx, x0, stripW, yFar, yNear, texData,
+                            camX, camY, dirX, dirY, cosOff, z + 1, eyeZ, horizon,
+                            cellSize, lit, topRes, h);
+                    } else {
+                        const color = colorSet ? colorSet.top : wallColorRgb;
+                        const fy0 = Math.max(0, Math.floor(Math.min(yFar, yNear)));
+                        const fy1 = Math.min(h, Math.ceil(Math.max(yFar, yNear)));
+                        if (fy1 > fy0) {
+                            ctx.fillStyle = bwShadeColor(color, lit);
+                            ctx.fillRect(x0, fy0, stripW, fy1 - fy0);
+                        }
                     }
                 } else if (eyeZ < z && !below) {
                     const lit = bwFaceShade(mid, maxDist, BW_BOTTOM_SHADE);
                     const yNear = horizon + (eyeZ - z) * pxPerCell;
                     const yFar = horizon + (eyeZ - z) * pxPerCellFar;
-                    const color = colorSet ? colorSet.bottom : wallColorRgb;
-                    const fy0 = Math.max(0, Math.floor(Math.min(yNear, yFar)));
-                    const fy1 = Math.min(h, Math.ceil(Math.max(yNear, yFar)));
-                    if (fy1 > fy0) {
-                        ctx.fillStyle = bwShadeColor(color, lit);
-                        ctx.fillRect(x0, fy0, stripW, fy1 - fy0);
+                    const fileSet = topTextured ? BLOCK_FACE_FILES[blockType] : null;
+                    const texData = fileSet ? bwTextureData(room._gameRef, fileSet.bottom) : null;
+                    if (texData) {
+                        bwDrawHorizontalFaceTextured(ctx, x0, stripW, yNear, yFar, texData,
+                            camX, camY, dirX, dirY, cosOff, z, eyeZ, horizon,
+                            cellSize, lit, topRes, h);
+                    } else {
+                        const color = colorSet ? colorSet.bottom : wallColorRgb;
+                        const fy0 = Math.max(0, Math.floor(Math.min(yNear, yFar)));
+                        const fy1 = Math.min(h, Math.ceil(Math.max(yNear, yFar)));
+                        if (fy1 > fy0) {
+                            ctx.fillStyle = bwShadeColor(color, lit);
+                            ctx.fillRect(x0, fy0, stripW, fy1 - fy0);
+                        }
                     }
                 }
             }
@@ -624,6 +754,10 @@ registerExtensionAction('enable_block_world_view', function(obj, params, game) {
         wall_textured: !(params.wall_textured === false || params.wall_textured === 'false'),
         pitch: bwClampPitch(num('pitch', 0)),
         eye_height: num('eye_height', BW_DEFAULT_EYE_HEIGHT),
+        // Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
+        // texturing (flat average-color fallback), matching desktop's
+        // top_cast_res semantics exactly.
+        top_cast_res: Math.trunc(num('top_cast_res', BW_DEFAULT_TOP_CAST_RES)),
     };
     room._bwColumns = null;
 });
