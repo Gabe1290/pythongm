@@ -89,15 +89,23 @@ real work:
   wording change. `tests/test_thymio_sound_honesty.py` (3 tests). Full
   suite: 2969 passed, 7 skipped, 0 failed.
 
-- [ ] **2.4 Register `show_video`; fold `splash_show_video`/`splash_show_webpage` into it.**
-  `execute_show_video_action` (`action_executor.py:2837`) already works (OS
-  default-player shell-out, honest docstring) but has no `ActionType` entry
-  — invisible in the UI despite being functional. Register it with a
-  description that says plainly "opens in your system's video player, not
-  in-engine playback." No new dependency (moviepy/opencv) — flag as a
-  possible future ask if ever wanted. `splash_show_webpage` registers as a
-  thin wrapper over `handle_open_url`/`webbrowser.open`; `splash_show_video`
-  becomes an alias to the newly-registered `show_video` handler.
+- [x] **2.4 Register `show_video`; fold `splash_show_video`/`splash_show_webpage` into it.**
+  Done (2026-08-15). `execute_show_video_action` (`action_executor.py:2837`)
+  already worked (OS default-player shell-out) but had no `ActionType` entry
+  — invisible in the UI. Registered with a description that says plainly it
+  opens as a separate window in the system video player, not in-engine
+  playback. `splash_show_video`/`splash_show_webpage` were both 100% dead
+  code — no `ActionType` ever existed for either name, so nothing could have
+  authored them through the UI — folded into `show_video`/`open_webpage` via
+  `ActionExecutor.ACTION_ALIASES` (alias resolution rewrites the action name
+  before handler lookup, so this is a real fold, not just a UI label); their
+  now-unreachable placeholder handlers deleted from
+  `runtime/action_handlers/extra_handlers.py`. `splash_show_text`/
+  `splash_show_image` deliberately left alone — Tier 2.5's own real
+  implementations, not a fold. `tests/test_show_video_action.py` (8 tests,
+  including an end-to-end dispatch test proving the alias actually reaches
+  the real handler, not just `get_action_type`). Full suite: 2977 passed,
+  7 skipped, 0 failed.
 
 - [ ] **2.5 Register real `splash_show_text` / `splash_show_image`.** Reuse
   the runtime's existing blocking modal-message machinery
