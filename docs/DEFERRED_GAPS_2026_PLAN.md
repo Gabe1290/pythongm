@@ -68,13 +68,26 @@ real work:
   `QTranslator` resolving all 4 strings in all 3 languages and differing from
   the English source. `tests/test_sample_docs_dialog_translations.py`
   (6 tests). Full suite: 2966 passed, 7 skipped, 0 failed.
-- [ ] **2.3 Thymio "play sound".** Investigate first: is real Thymio
-  hardware tone-only, or can the simulator legitimately play a sampled
-  sound? If hardware is tone-only (current docstring already asserts this),
-  narrow the fix to making sure UI/docs never imply sample playback is
-  coming — a documentation-honesty fix, not a feature gap. Only build real
-  sample mixing in `thymio_simulator` if research shows the hardware
-  genuinely supports it.
+- [x] **2.3 Thymio "play sound".** Done (2026-08-15). Investigated first:
+  real Thymio hardware genuinely has no sampled-audio capability (only
+  `sound.freq`/`sound.system` tone primitives) — but the gap turned out
+  narrower than assumed, since it doesn't apply to the whole feature.
+  `export/Aseba/aseba_exporter.py`'s `_translate_play_system_sound` already
+  emits the real `sound.system(id)` Aseba call, so an exported/uploaded
+  program plays the robot's own authentic melody for that sound — no
+  approximation on real hardware at all. Only the in-app SIMULATOR preview
+  (`runtime/thymio_action_handlers.py`) approximates each system sound as a
+  single tone, which could mislead a student testing in the simulator into
+  thinking that's what the real robot sounds like. Fixed by disclosing the
+  simulator/hardware difference in `thymio_play_system_sound`'s user-facing
+  description (`actions/thymio_actions.py`, shown directly in the action
+  config dialog) rather than building anything — there's nothing to build,
+  since hardware has no sampled playback to add. `thymio_play_tone`'s
+  description needed no change (already accurate for both targets — real
+  arbitrary-frequency tones work identically in both). Never had any
+  translations to begin with (0 languages), so no i18n regression from the
+  wording change. `tests/test_thymio_sound_honesty.py` (3 tests). Full
+  suite: 2969 passed, 7 skipped, 0 failed.
 
 - [ ] **2.4 Register `show_video`; fold `splash_show_video`/`splash_show_webpage` into it.**
   `execute_show_video_action` (`action_executor.py:2837`) already works (OS
