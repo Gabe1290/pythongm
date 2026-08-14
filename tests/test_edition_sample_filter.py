@@ -73,11 +73,13 @@ def test_unknown_edition_key_shows_all(monkeypatch):
 
 def test_beginner_whitelist_matches_the_shipped_non_raycast_samples():
     """The beginner list should be exactly the real sample folders minus
-    raycast_*, so no shipped beginner sample is accidentally omitted and no
-    stale folder lingers."""
+    raycast_* and block_world_* (both change the view shape and are the
+    most advanced), so no shipped beginner sample is accidentally omitted
+    and no stale folder lingers."""
     shipped = sorted(p.name for p in (REPO_ROOT / "samples").iterdir()
                      if (p / "project.json").exists())
-    expected = [s for s in shipped if not s.startswith("raycast")]
+    expected = [s for s in shipped
+                if not s.startswith("raycast") and not s.startswith("block_world")]
     assert sorted(EDITIONS["beginner"]["sample_folders"]) == expected
 
 

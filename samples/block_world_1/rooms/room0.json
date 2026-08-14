@@ -1,0 +1,26 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 640,
+  "height": 480,
+  "background_color": "#87CEEB",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 1,
+  "instances": [
+    {
+      "object_name": "obj_person",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 64,
+      "y": 64
+    }
+  ],
+  "created": "2026-08-14T00:00:00.000000",
+  "modified": "2026-08-14T00:00:00.000000",
+  "imported": false,
+  "tiles": []
+}
