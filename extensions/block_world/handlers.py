@@ -392,3 +392,55 @@ class PluginExecutor:
             # Bad path, bad JSON, or an unknown block type in the file --
             # see the docstring above for why this is a silent no-op.
             pass
+
+    def execute_draw_block_world_hud_action(self, instance, parameters):
+        """Draw the Block World HUD: a centre crosshair plus a hotbar strip
+        along the bottom, the selected slot highlighted.
+
+        A MACRO action (see hud.py) -- emits ordinary rectangle/line/text
+        draw-queue commands, so no target needs a new renderer, the same
+        pattern raycast_2_5d's draw_minimap/draw_doom_hud use.
+
+        Reads the selected slot from the CALLING instance's hotbar_index
+        (see select_hotbar_slot, default 0 if never set) -- call this from
+        the player/camera object's own Draw event, the same way a raycast
+        game's HUD actions run on the camera.
+        """
+        from .hud import build_block_world_hud_commands
+
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner:
+            return
+        if not hasattr(instance, "_draw_queue"):
+            instance._draw_queue = []
+
+        gr = ae.game_runner
+        screen_w = getattr(gr, "window_width", 0) or 0
+        screen_h = getattr(gr, "window_height", 0) or 0
+        if not screen_w or not screen_h:
+            screen = getattr(gr, "screen", None)
+            if screen is not None:
+                screen_w, screen_h = screen.get_size()
+        screen_w = screen_w or 640
+        screen_h = screen_h or 480
+
+        def _num(key, default):
+            try:
+                return float(parameters.get(key, default))
+            except (TypeError, ValueError):
+                return float(default)
+
+        cmds = build_block_world_hud_commands(
+            screen_width=screen_w, screen_height=screen_h,
+            hotbar=DEFAULT_HOTBAR,
+            selected_index=int(getattr(instance, "hotbar_index", 0)),
+            slot_size=_num("slot_size", 40), gap=_num("gap", 6),
+            margin_bottom=_num("margin_bottom", 16),
+            back_color=parameters.get("back_color", "#202020"),
+            border_color=parameters.get("border_color", "#ffffff"),
+            selected_color=parameters.get("selected_color", "#ffd040"),
+            text_color=parameters.get("text_color", "#ffffff"),
+            crosshair_size=_num("crosshair_size", 12),
+            crosshair_color=parameters.get("crosshair_color", "#ffffff"),
+        )
+        instance._draw_queue.extend(cmds)
