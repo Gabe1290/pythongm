@@ -100,6 +100,19 @@ BLOCK_TYPES = {
     "wool_black": {"all": "wool_black.png", "solid": True},
 }
 
+# The hotbar (Phase 3 Unit 3): a small FIXED list of block-type slots, not a
+# full inventory/crafting system -- deliberately out of scope, see
+# docs/VOXEL_WORLD_PLAN.md's Phase 3 notes. Selection lives on the PLAYER
+# instance (select_hotbar_slot writes instance.hotbar_index/hotbar_block),
+# not here or in the room's camera config, so it stays per-player rather
+# than per-room -- the natural shape for eventual multiplayer, and simply
+# correct even for one player, since the room's block-world state is not
+# whose hotbar this is. Was the preview tool's own HOTBAR list first,
+# proven there before being promoted here; the preview tool now imports
+# this instead of keeping its own copy.
+DEFAULT_HOTBAR = ["cobble", "brick", "wood_plank", "glass", "wool_red",
+                  "sandstone", "gold_block", "leaves"]
+
 
 def texture_path(filename):
     """Absolute path to a block-face texture file. No image loading here --

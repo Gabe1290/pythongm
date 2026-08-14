@@ -123,6 +123,25 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "select_hotbar_slot": ActionType(
+        name="select_hotbar_slot",
+        display_name="Select Hotbar Slot",
+        description="Choose which block the hotbar has selected, for "
+                    "place_block to build with -- bind Place Block's Block "
+                    "parameter to the expression \"hotbar_block\" to use it",
+        category="3D View",
+        icon="🔢",
+        parameters=[
+            ActionParameter(name="index", display_name="Slot", param_type="number",
+                default_value=0,
+                description="Hotbar slot index, wrapping around at either end"),
+            ActionParameter(name="relative", display_name="Relative",
+                param_type="boolean", default_value=False, required=False,
+                description="On = add to the current slot, for cycling with "
+                            "[ ] / scroll-wheel style controls; off = jump to it"),
+        ]
+    ),
+
     "load_block_world": ActionType(
         name="load_block_world",
         display_name="Load Block World",

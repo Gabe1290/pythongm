@@ -257,11 +257,12 @@ def save_shots(out_dir, size):
 
 MAX_STEP_UP = 1
 
-# A proto-hotbar for the walkaround. Phase 3's real hotbar is an instance
-# variable on the player; this is just enough selection to test building by
-# hand, the same way the movement here stands in for Phase 4's footing.
-HOTBAR = ["cobble", "brick", "wood_plank", "glass", "wool_red", "sandstone",
-          "gold_block", "leaves"]
+# Phase 3 Unit 3 promoted this exact list into the engine as
+# extensions.block_world.state.DEFAULT_HOTBAR (this walkaround's own copy
+# was the original, proven here first); this local `slot` index is still
+# walkaround-only, since select_hotbar_slot writes to a real GameInstance's
+# hotbar_index/hotbar_block, and the walkaround's camera is not one.
+from extensions.block_world.state import DEFAULT_HOTBAR as HOTBAR
 
 
 def _can_enter(room, cell_x, cell_y, standing_layer):
