@@ -187,6 +187,12 @@ class KivyExporter:
             self._create_directory_structure()
             logger.info("Directory structure created")
 
+            # Materialize any binary files an extension's export_data.py
+            # contributed (Block World's texture PNGs -- see
+            # _materialize_extension_textures's own docstring) now that
+            # assets/images/ exists.
+            self._materialize_extension_textures()
+
             # Export assets
             self._export_assets()
             logger.info(f"Exported {self._count_assets()} asset(s)")
@@ -1481,7 +1487,11 @@ if __name__ == '__main__':
             if not data_file.exists():
                 continue
             try:
-                ns = {}
+                # __file__ isn't populated automatically inside an exec()'d
+                # namespace (unlike a real import) -- set it so a
+                # collect_export_data that resolves paths relative to its
+                # own file (e.g. block_world's texture directory) works.
+                ns = {"__file__": str(data_file)}
                 exec(compile(data_file.read_text(encoding="utf-8"),
                              str(data_file), "exec"), ns)
                 collector = ns.get("collect_export_data")
@@ -1493,6 +1503,33 @@ if __name__ == '__main__':
                 logger.error(
                     f"Extension '{info['folder']}' export_data.py failed; "
                     f"its export data is missing from the export: {exc}")
+
+    def _materialize_extension_textures(self) -> None:
+        """Decode ``_extension_data['block_textures']`` (base64 PNG bytes --
+        see extensions/block_world/export_data.py) back into real files
+        under ``assets/images/block_world/``, so the generated scene can
+        load them the same way it loads any other sprite (``Image(path)``).
+
+        Unlike HTML5, which embeds base64 directly into ``gameData`` and
+        builds ``Image()`` objects from data URIs at runtime, Kivy exports
+        have no live project_data at runtime -- everything the generated
+        code touches must be a real file on disk, the same reason
+        load_block_world's world data gets baked in as a source literal
+        instead. Named for this one extension's contribution rather than a
+        fully generic mechanism -- a pragmatic scope call, not a new
+        general extension-asset seam.
+        """
+        textures = self.project_data.get('_extension_data', {}).get('block_textures')
+        if not textures:
+            return
+        out_dir = self.output_path / "game" / "assets" / "images" / "block_world"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        import base64
+        for filename, b64_bytes in textures.items():
+            try:
+                (out_dir / filename).write_bytes(base64.b64decode(b64_bytes))
+            except (OSError, ValueError) as exc:
+                logger.error(f"Could not write block-world texture {filename}: {exc}")
 
     EXTENSION_SCENE_MARKER = "    # __PYGM_EXTENSION_SCENE_CODE__"
 

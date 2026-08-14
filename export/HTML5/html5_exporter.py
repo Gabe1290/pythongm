@@ -363,7 +363,11 @@ class HTML5Exporter:
             # Per-extension guard: one broken extension must not silently
             # drop every other extension's export data.
             try:
-                ns = {}
+                # __file__ isn't populated automatically inside an exec()'d
+                # namespace (unlike a real import) -- set it so a
+                # collect_export_data that resolves paths relative to its
+                # own file (e.g. block_world's texture directory) works.
+                ns = {"__file__": str(data_file)}
                 exec(compile(data_file.read_text(encoding="utf-8"),
                              str(data_file), "exec"), ns)
                 collector = ns.get("collect_export_data")

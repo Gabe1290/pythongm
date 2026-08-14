@@ -182,4 +182,39 @@ def test_export_data_skips_unknown_and_missing_files_silently():
     }
     tmp = Path(tempfile.mkdtemp(prefix="bw_export_data_missing_"))
     result = collect_export_data(tmp, project_data)
-    assert result == {"block_world_files": {}}
+    assert result["block_world_files"] == {}
+    assert len(result["block_textures"]) == 32   # the full bundled set, always embedded
+
+
+# --- Real per-pixel wall textures (Phase 6 Tier 4a) --------------------------
+
+def test_wall_strip_draws_a_real_texture_when_loaded():
+    """Structural check (no JS engine): the wall-strip draw site uses
+    ctx.drawImage with the same sub-rect-slicing shape as the raycast HTML5
+    wall pass, falling back to the flat color only when the Image hasn't
+    finished loading."""
+    m = re.search(r"if \(y1v > y0v\) \{(.*?)\n {16}\}\n", BW_JS, re.S)
+    assert m, "wall-strip draw block not found"
+    body = m.group(1)
+    assert "bwTexture(room._gameRef" in body
+    assert "tex.complete && tex.width > 0" in body
+    assert "ctx.drawImage(tex, texX, srcY, 1, srcH, x0, y0v, stripW" in body
+    assert "bwShadeColor(sideColor, shade)" in body   # the fallback path
+
+
+def test_block_face_files_table_has_every_block_type():
+    from extensions.block_world.state import BLOCK_TYPES
+    m = re.search(r"const BLOCK_FACE_FILES = \{(.*?)\n\};", BW_JS, re.S)
+    assert m
+    body = m.group(1)
+    for block_type in BLOCK_TYPES:
+        assert re.search(rf"\b{re.escape(block_type)}:\s*\{{", body), block_type
+
+
+def test_bw_texture_builds_an_image_from_the_embedded_data_uri():
+    m = re.search(r"function bwTexture\(game, filename\)\s*\{(.*?)\n\}", BW_JS, re.S)
+    assert m
+    body = m.group(1)
+    assert "gameData._extension_data" in body
+    assert "block_textures" in body
+    assert "data:image/png;base64," in body
