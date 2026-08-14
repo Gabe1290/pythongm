@@ -635,6 +635,7 @@ class GameInstance:
         self.previous_room_flag = False
         self.restart_game_flag = False
         self.goto_room_target = None  # Target room name for goto_room action
+        self._pending_load_instances = None  # Instances to restore after a load_game room switch
 
         # Movement intent (set before collision check)
         self.intended_x = float(x)
@@ -3078,6 +3079,13 @@ class GameRunner:
                 transition = getattr(instance, 'goto_room_transition', 'none')
                 logger.info(f"🚪 Going to room: {goto_target}")
                 self.change_room(goto_target, transition=transition)
+                # load_game's cross-room case rides the same deferred flag —
+                # restore the saved instances onto the freshly-built room
+                # now that change_room has returned (synchronous).
+                pending_instances = getattr(instance, '_pending_load_instances', None)
+                if pending_instances is not None:
+                    instance._pending_load_instances = None
+                    instance.action_executor._restore_instances(pending_instances)
                 return
 
             # Apply gravity (instance.gravity is always defined, default 0)

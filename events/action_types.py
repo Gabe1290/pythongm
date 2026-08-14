@@ -2355,6 +2355,30 @@ ACTION_TYPES = {
         parameters=[],
     ),
 
+    # Runtime: execute_save_game_action
+    "save_game": ActionType(
+        name="save_game",
+        display_name="Save Game",
+        description="Save the current room, score/lives/health, global variables, and instance states to a file",
+        category="Game",
+        icon="💾",
+        parameters=[
+            ActionParameter(name="filename", display_name="Filename", param_type="string", default_value="savegame.sav", description="Save file name (written to the project's saves/ folder)"),
+        ],
+    ),
+
+    # Runtime: execute_load_game_action
+    "load_game": ActionType(
+        name="load_game",
+        display_name="Load Game",
+        description="Restore room, score/lives/health, global variables, and instance states from a save file",
+        category="Game",
+        icon="📂",
+        parameters=[
+            ActionParameter(name="filename", display_name="Filename", param_type="string", default_value="savegame.sav", description="Save file name to load (from the project's saves/ folder)"),
+        ],
+    ),
+
     # Runtime: execute_set_room_caption_action
     "set_room_caption": ActionType(
         name="set_room_caption",

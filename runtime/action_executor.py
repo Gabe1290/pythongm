@@ -3035,10 +3035,15 @@ class ActionExecutor:
             saved_room = save_data.get('current_room')
             if saved_room and saved_room != (self.game_runner.current_room.name if self.game_runner.current_room else None):
                 if saved_room in self.game_runner.rooms:
-                    # Set flag to change room (will be handled by game loop)
-                    instance._load_room_name = saved_room
-                    instance._load_instances = save_data.get('instances', [])
+                    # Defer via the same goto_room_target flag every other
+                    # room-changing action uses (GameRunner.update() consumes
+                    # it, calling change_room synchronously, then restores
+                    # _pending_load_instances right after — see there).
+                    instance.goto_room_target = saved_room
+                    instance._pending_load_instances = save_data.get('instances', [])
                     logger.debug(f"📂 Will load room: {saved_room}")
+                else:
+                    logger.warning(f"⚠️ load_game: Saved room '{saved_room}' not found")
             else:
                 # Restore instances in current room
                 self._restore_instances(save_data.get('instances', []))
