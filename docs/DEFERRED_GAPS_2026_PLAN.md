@@ -47,6 +47,13 @@ real work:
 
 ## Tier 2 — small, single-target honesty fixes
 
+- [ ] **2.1 `pygm2_pt.ts`'s `WelcomeTab` context is missing 26 of 48
+  messages** (found 2026-08-11, logged in `TODO.md`'s i18n section —
+  fr/de/it/es/ru/sl/uk all have all 48, pt has 22, including the
+  "📖 Sample guides" button). Investigate first whether `WelcomeTab` grew
+  new strings after pt's original sweep or pt's own sweep missed some of
+  this context, and whether ja/zh (sourced FROM the corrected pt) inherited
+  the same gap before fixing just pt.
 - [ ] **2.3 Thymio "play sound".** Investigate first: is real Thymio
   hardware tone-only, or can the simulator legitimately play a sampled
   sound? If hardware is tone-only (current docstring already asserts this),
@@ -215,6 +222,25 @@ export-loader files; keep as separate clean passes.
   needs a fundamentally different storage model and reworking every
   renderer's "iterate all blocks" assumption on all three export targets —
   comparable in size to a second `VOXEL_WORLD_PLAN.md`.
+
+## Tracked elsewhere — not part of this queue, but genuinely open
+
+Full picture of outstanding work also includes two items big enough to carry
+their own plan docs rather than a line item here:
+
+- **`docs/POST_1_0_REFACTOR.md` — splitting the four giant files.** Status:
+  not started. Filed during the 1.0 stability push specifically so it would
+  survive being set aside; nothing in this queue touches it, and nothing in
+  this queue should be blocked on it either.
+- **`docs/WIKI_COMPLETENESS_PLAN_2026-08-11.md` — per-tutorial-step
+  screenshots.** The one deferred item from an otherwise-closed plan
+  (Phases 0-3 and 5 done, Phase 4 explicitly decided against). Scoped down
+  and logged there, not forgotten; pick up only on an explicit ask.
+
+Both are correctly OUTSIDE this doc's own scope (a small-first, one-commit-
+per-unit queue) — they're multi-session efforts in their own right, the same
+reason Tier 7d/7e above say "needs its own future planning session, do not
+start from this doc."
 
 ## Verification (every tier)
 
