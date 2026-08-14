@@ -69,6 +69,44 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         'wool_yellow': {'top': (236, 162, 0), 'bottom': (236, 162, 0), 'side': (236, 162, 0)},
     }
 
+    # Face -> source PNG filename, mirroring state.BLOCK_TYPES's own top/
+    # bottom/side (or 'all') shorthand. Files are materialized at export
+    # time under assets/images/block_world/ by KivyExporter
+    # ._materialize_extension_textures (decoded from export_data.py's
+    # base64 block_textures).
+    BLOCK_FACE_FILES = {
+        'brick': {'top': 'default_brick.png', 'bottom': 'default_brick.png', 'side': 'default_brick.png'},
+        'clay': {'top': 'default_clay.png', 'bottom': 'default_clay.png', 'side': 'default_clay.png'},
+        'coal_block': {'top': 'default_coal_block.png', 'bottom': 'default_coal_block.png', 'side': 'default_coal_block.png'},
+        'cobble': {'top': 'default_cobble.png', 'bottom': 'default_cobble.png', 'side': 'default_cobble.png'},
+        'desert_sand': {'top': 'default_desert_sand.png', 'bottom': 'default_desert_sand.png', 'side': 'default_desert_sand.png'},
+        'diamond_block': {'top': 'default_diamond_block.png', 'bottom': 'default_diamond_block.png', 'side': 'default_diamond_block.png'},
+        'dirt': {'top': 'default_dirt.png', 'bottom': 'default_dirt.png', 'side': 'default_dirt.png'},
+        'glass': {'top': 'default_glass.png', 'bottom': 'default_glass.png', 'side': 'default_glass.png'},
+        'gold_block': {'top': 'default_gold_block.png', 'bottom': 'default_gold_block.png', 'side': 'default_gold_block.png'},
+        'grass': {'top': 'default_grass.png', 'bottom': 'default_dirt.png', 'side': 'default_grass_side.png'},
+        'gravel': {'top': 'default_gravel.png', 'bottom': 'default_gravel.png', 'side': 'default_gravel.png'},
+        'ice': {'top': 'default_ice.png', 'bottom': 'default_ice.png', 'side': 'default_ice.png'},
+        'jungle_plank': {'top': 'default_junglewood.png', 'bottom': 'default_junglewood.png', 'side': 'default_junglewood.png'},
+        'leaves': {'top': 'default_leaves.png', 'bottom': 'default_leaves.png', 'side': 'default_leaves.png'},
+        'mese_block': {'top': 'default_mese_block.png', 'bottom': 'default_mese_block.png', 'side': 'default_mese_block.png'},
+        'obsidian': {'top': 'default_obsidian.png', 'bottom': 'default_obsidian.png', 'side': 'default_obsidian.png'},
+        'pine_plank': {'top': 'default_pine_wood.png', 'bottom': 'default_pine_wood.png', 'side': 'default_pine_wood.png'},
+        'sand': {'top': 'default_sand.png', 'bottom': 'default_sand.png', 'side': 'default_sand.png'},
+        'sandstone': {'top': 'default_sandstone.png', 'bottom': 'default_sandstone.png', 'side': 'default_sandstone.png'},
+        'snow': {'top': 'default_snow.png', 'bottom': 'default_snow.png', 'side': 'default_snow.png'},
+        'stone': {'top': 'default_stone.png', 'bottom': 'default_stone.png', 'side': 'default_stone.png'},
+        'water': {'top': 'default_water_source_animated.png', 'bottom': 'default_water_source_animated.png', 'side': 'default_water_source_animated.png'},
+        'wood_log': {'top': 'default_tree_top.png', 'bottom': 'default_tree_top.png', 'side': 'default_tree.png'},
+        'wood_plank': {'top': 'default_wood.png', 'bottom': 'default_wood.png', 'side': 'default_wood.png'},
+        'wool_black': {'top': 'wool_black.png', 'bottom': 'wool_black.png', 'side': 'wool_black.png'},
+        'wool_blue': {'top': 'wool_blue.png', 'bottom': 'wool_blue.png', 'side': 'wool_blue.png'},
+        'wool_green': {'top': 'wool_green.png', 'bottom': 'wool_green.png', 'side': 'wool_green.png'},
+        'wool_red': {'top': 'wool_red.png', 'bottom': 'wool_red.png', 'side': 'wool_red.png'},
+        'wool_white': {'top': 'wool_white.png', 'bottom': 'wool_white.png', 'side': 'wool_white.png'},
+        'wool_yellow': {'top': 'wool_yellow.png', 'bottom': 'wool_yellow.png', 'side': 'wool_yellow.png'},
+    }
+
     # The one block type break_block refuses to remove (state.BLOCK_TYPES'
     # single 'breakable': False entry).
     BW_UNBREAKABLE = frozenset({'obsidian'})
@@ -94,6 +132,27 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         self._bw_group = None
         self._bw_blocks = {}
         self._bw_columns = None
+        self._bw_tex_cache = {}
+
+    def _bw_texture(self, filename):
+        """Kivy texture for a block-face PNG filename (cached), materialized
+        under assets/images/block_world/ at export time. Mirrors
+        raycast_2_5d's own _raycast_texture. Returns None (falls back to
+        BLOCK_FACE_COLORS) if the file is missing or hasn't loaded."""
+        if not filename:
+            return None
+        cache = self._bw_tex_cache
+        if filename in cache:
+            return cache[filename]
+        tex = None
+        try:
+            img = load_image('assets/images/block_world/' + filename)
+            if img is not None:
+                tex = img.texture
+        except Exception:
+            tex = None
+        cache[filename] = tex
+        return tex
 
     def _render_extension_overlay(self):
         if getattr(self, 'block_world_camera', None) and self.block_world_camera.get('enabled'):
@@ -170,7 +229,8 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     # ------------------------------------------------------------------
     def _bw_march_ray(self, px, py, angle_rad, cell_size, max_cells):
         """The DDA: yields one entry per cell ENTERED, mirroring march_ray
-        (no tex_u -- this port never texture-maps)."""
+        exactly -- (map_x, map_y, entry, exit, side, tex_u), tex_u added for
+        Tier 4a (real per-pixel wall textures)."""
         import math
         px_cell, py_cell = px / cell_size, py / cell_size
         dx, dy = math.cos(angle_rad), math.sin(angle_rad)
@@ -201,8 +261,19 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                 side = 1
                 entry = side_y - delta_y
             exit_cells = side_x if side_x < side_y else side_y
+            # Texture-U: fractional position along the hit face -- same
+            # derivation as march_ray.py.
+            if side == 0:
+                wall_coord = py_cell + entry * dy
+                if dx > 0:
+                    wall_coord = -wall_coord
+            else:
+                wall_coord = px_cell + entry * dx
+                if dy < 0:
+                    wall_coord = -wall_coord
+            tex_u = wall_coord - math.floor(wall_coord)
             yield (map_x, map_y, max(entry, 1e-4) * cell_size,
-                  exit_cells * cell_size, side)
+                  exit_cells * cell_size, side, tex_u)
 
     def _bw_eye_z_for(self, cfg):
         eye_height = cfg.get('eye_height', self.BW_DEFAULT_EYE_HEIGHT)
@@ -235,7 +306,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         first = None
         prev = None
         gap = None
-        for map_x, map_y, entry, exit_d, _side in self._bw_march_ray(
+        for map_x, map_y, entry, exit_d, _side, _tex_u in self._bw_march_ray(
                 cam_x, cam_y, angle_rad, cell_size, reach):
             z_entry = eye_z + z_per_px * entry
             z_exit = eye_z + z_per_px * exit_d
@@ -300,11 +371,43 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                         rgb[2] / 255.0 * shade, 1))
         group.add(Rectangle(pos=(x0, H - y1), size=(strip_w, y1 - y0)))
 
+    def _bw_fill_span_textured(self, group, x0, strip_w, y0_gm, y1_gm,
+                               full_top_gm, full_h, tex, tex_x, shade, H):
+        """Real per-pixel wall-strip texture (Tier 4a). Same GM-down-then-
+        flip approach as _bw_fill_span, but the v (vertical texture)
+        coordinate must ALSO respect the flip: a normal (non-flipped) Kivy
+        Rectangle shows v=1 at its TOP edge and v=0 at its BOTTOM edge
+        (Kivy's default tex_coords convention -- confirmed against
+        raycast_2_5d's own proven wall-texture v0/v1 derivation), and
+        texel row 0 (top of the source PNG) is the block's GM-TOP edge --
+        which after the flip IS the Kivy-top (high y). So v=1 (Kivy rect
+        top) <-> GM top (full_top_gm) <-> texel row 0, and v=0 (Kivy rect
+        bottom) <-> GM top + full_h <-> texel row (th-1).
+
+        frac0/frac1 are the CLIPPED edges' fraction of the way down from
+        the unclipped strip's GM-top (0 at the top, 1 at the bottom);
+        v_bottom = 1 - frac1, v_top = 1 - frac0 is the resulting Kivy
+        tex_coords pair.
+        """
+        y0 = max(0.0, min(y0_gm, y1_gm))
+        y1 = min(H, max(y0_gm, y1_gm))
+        if y1 <= y0:
+            return
+        frac0 = (y0 - full_top_gm) / full_h
+        frac1 = (y1 - full_top_gm) / full_h
+        v_bottom = 1.0 - frac1
+        v_top = 1.0 - frac0
+        region = tex.get_region(tex_x, 0, 1, tex.height)
+        group.add(Color(shade, shade, shade, 1))
+        group.add(Rectangle(texture=region, pos=(x0, H - y1), size=(strip_w, y1 - y0),
+                            tex_coords=(0.0, v_bottom, 1.0, v_bottom,
+                                        1.0, v_top, 0.0, v_top)))
+
     def _render_block_world(self):
-        """A faithful port of renderer.render_block_world_view, minus
-        texture mapping and the _fully_covers early-out -- see this file's
-        module docstring and export_html5.js's header for why both are
-        scoped out of this first export cut."""
+        """A faithful port of renderer.render_block_world_view. Side (wall)
+        faces are real per-pixel textures (Tier 4a); top/bottom faces and
+        the _fully_covers early-out remain scoped out -- see this file's
+        module docstring and export_html5.js's header."""
         import math
         cfg = self.block_world_camera
         if not cfg or not cfg.get('enabled'):
@@ -362,7 +465,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             strip_w = max(1, x1 - x0)
 
             hits = []
-            for map_x, map_y, entry, exit_d, side in self._bw_march_ray(
+            for map_x, map_y, entry, exit_d, side, tex_u in self._bw_march_ray(
                     cam_x, cam_y, ray_angle, cell_size, render_distance_cells):
                 stack = columns.get((map_x, map_y))
                 if not stack:
@@ -370,9 +473,9 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                 near = max(entry * cos_off, 1e-4)
                 far = max(exit_d * cos_off, near)
                 px_per_cell = H * cell_size / near
-                hits.append((near, far, side, stack, px_per_cell))
+                hits.append((near, far, side, tex_u, stack, px_per_cell))
 
-            for near, far, side, stack, px_per_cell in reversed(hits):
+            for near, far, side, tex_u, stack, px_per_cell in reversed(hits):
                 px_per_cell_far = H * cell_size / far
                 shade = self._bw_wall_shade(side, near, max_dist)
                 mid = (near + far) / 2.0
@@ -381,8 +484,19 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                     side_rgb = color_set['side'] if color_set else wall_rgb
 
                     y_top = horizon_gm + (eye_z - (z + 1)) * px_per_cell
-                    self._bw_fill_span(group, x0, strip_w, y_top,
-                                       y_top + px_per_cell, side_rgb, shade, H)
+                    # Real per-pixel texture (Tier 4a) when loaded; flat
+                    # average-color fallback otherwise.
+                    file_set = self.BLOCK_FACE_FILES.get(block_type) if textured else None
+                    tex = self._bw_texture(file_set['side']) if file_set else None
+                    if tex is not None:
+                        tw = tex.width
+                        tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+                        self._bw_fill_span_textured(
+                            group, x0, strip_w, y_top, y_top + px_per_cell,
+                            y_top, px_per_cell, tex, tex_x, shade, H)
+                    else:
+                        self._bw_fill_span(group, x0, strip_w, y_top,
+                                           y_top + px_per_cell, side_rgb, shade, H)
 
                     above = self._bw_has_neighbor(stack, i, 1)
                     below = self._bw_has_neighbor(stack, i, -1)

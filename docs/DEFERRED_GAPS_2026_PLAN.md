@@ -95,17 +95,44 @@ sub-texel crop + `_draw_horizontal_face_textured` per-pixel cast). HTML5
 orientations from precomputed `BLOCK_FACE_COLORS` — a real, visible fidelity
 gap on `block_world_1` today.
 
-- [ ] **4a. Side (wall) faces.** Reuse the already-proven raycast wall
-  texturing pattern: HTML5 `ctx.drawImage` sub-rect slicing
-  (`export_html5.js`'s raycast wall renderer, ~L228), Kivy
-  `texture.get_region()` (`export_kivy.py`'s raycast renderer, ~L501/585).
-  Highest visual impact, lowest risk.
+- [x] **4a. Side (wall) faces.** Done (2026-08-14). Both targets draw real
+  per-pixel wall textures (HTML5 `ctx.drawImage` sub-rect slicing off a
+  `data:` URI `Image()`; Kivy `texture.get_region()` + `tex_coords`),
+  falling back to `BLOCK_FACE_COLORS` only when a texture hasn't loaded or
+  `wall_textured` is off. New infra both needed: `march_ray`/`_bw_march_ray`
+  gained `tex_u` back (dropped in the original flat-color port);
+  `extensions/block_world/export_data.py`'s `collect_export_data` now also
+  returns `block_textures` (all 32 PNGs, base64) via the same generic
+  `_collect_extension_data` hook Unit 8/9 built for `load_block_world`'s
+  world data — HTML5 embeds them straight into `gameData`, Kivy decodes
+  them back to real files under `assets/images/block_world/` via a new
+  `KivyExporter._materialize_extension_textures`. The Kivy port needed a
+  genuinely new derivation, not a literal raycast port: raycast's wall pass
+  computes entirely in Kivy's native y-up space, so its `v0`/`v1` mapping
+  falls out directly, but block_world's renderer computes in GM y-down
+  space and flips only at the final draw — so real texturing needed the
+  flip to apply to the *texture v-coordinate* too, not just the rectangle
+  position. Verified with dedicated boundary-case tests (an unclipped
+  full-height strip maps exactly v=[0,1]; a strip clipped from below by
+  half its height maps `v_bottom=0.5`), not just visual inspection, since
+  no Kivy/browser execution is available here. Two real bugs found and
+  fixed along the way (both would have silently dropped `load_block_world`
+  data too, not just textures): `export_data.py`'s new texture-collecting
+  code used `Path(__file__)` and a relative `from .state import`, neither
+  of which resolve inside the bare-namespace `exec()` both exporters use to
+  load an extension's `export_data.py` — fixed by seeding `__file__` into
+  the exec namespace (mirrors a real import) and switching to an absolute
+  import. `tests/test_kivy_block_world.py`, `tests/test_html5_block_world.py`.
+  Full suite: 2960 passed, 7 skipped, 0 failed. Smoke run 18/18.
 - [ ] **4b. Top/bottom (horizontal) faces.** Port the `top_cast_res`
   downsampled per-pixel cast — same *category* as raycast's floor casting,
   different geometry (block quads vs. a single ground plane); template, not
   a literal port.
-- [ ] Parity test per half against desktop (mirroring
-  `tests/test_block_world_export_parity.py`) + compile/brace-balance gate.
+- [x] Parity test for 4a against desktop, mirroring
+  `tests/test_block_world_export_parity.py` (structural, since real texture
+  drawing can't be numerically diffed without a JS/Kivy execution
+  environment) + compile/brace-balance gate. 4b's parity test is still
+  open, pending 4b itself.
 
 ## Tier 5 — Particle system + timelines (large, greenfield, ~3+ sessions, last of Tiers 1-6)
 
