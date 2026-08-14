@@ -164,6 +164,45 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "draw_block_world_hud": ActionType(
+        name="draw_block_world_hud",
+        display_name="Draw Block World HUD",
+        description="Draw a crosshair plus a hotbar strip (the selected "
+                    "slot highlighted) -- call from the player/camera "
+                    "object's own Draw event",
+        category="3D View",
+        icon="🧰",
+        parameters=[
+            ActionParameter(name="slot_size", display_name="Slot Size",
+                param_type="number", default_value=40, required=False,
+                description="Width and height of each hotbar slot, in pixels"),
+            ActionParameter(name="gap", display_name="Slot Gap", param_type="number",
+                default_value=6, required=False,
+                description="Space between hotbar slots, in pixels"),
+            ActionParameter(name="margin_bottom", display_name="Bottom Margin",
+                param_type="number", default_value=16, required=False,
+                description="Space between the hotbar and the bottom of the screen"),
+            ActionParameter(name="back_color", display_name="Slot Color",
+                param_type="color", default_value="#202020", required=False,
+                description="Fill colour of an unselected slot"),
+            ActionParameter(name="selected_color", display_name="Selected Slot Color",
+                param_type="color", default_value="#ffd040", required=False,
+                description="Fill colour of the currently selected slot"),
+            ActionParameter(name="border_color", display_name="Border Color",
+                param_type="color", default_value="#ffffff", required=False,
+                description="Outline colour of every slot"),
+            ActionParameter(name="text_color", display_name="Text Color",
+                param_type="color", default_value="#ffffff", required=False,
+                description="Colour of each slot's block-type label"),
+            ActionParameter(name="crosshair_size", display_name="Crosshair Size",
+                param_type="number", default_value=12, required=False,
+                description="Width and height of the centre crosshair, in pixels"),
+            ActionParameter(name="crosshair_color", display_name="Crosshair Color",
+                param_type="color", default_value="#ffffff", required=False,
+                description="Colour of the centre crosshair"),
+        ]
+    ),
+
     "load_block_world": ActionType(
         name="load_block_world",
         display_name="Load Block World",
