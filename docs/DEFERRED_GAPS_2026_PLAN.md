@@ -47,13 +47,27 @@ real work:
 
 ## Tier 2 — small, single-target honesty fixes
 
-- [ ] **2.1 `pygm2_pt.ts`'s `WelcomeTab` context is missing 26 of 48
-  messages** (found 2026-08-11, logged in `TODO.md`'s i18n section —
-  fr/de/it/es/ru/sl/uk all have all 48, pt has 22, including the
-  "📖 Sample guides" button). Investigate first whether `WelcomeTab` grew
-  new strings after pt's original sweep or pt's own sweep missed some of
-  this context, and whether ja/zh (sourced FROM the corrected pt) inherited
-  the same gap before fixing just pt.
+- [x] **2.1 `pygm2_pt.ts`'s `WelcomeTab` context is missing 26 of 48
+  messages.** Done (2026-08-15). Re-verified before fixing (audit-is-a-lead):
+  the "26 of 48" figure was a miscount — 48 counted every `<message>` element
+  in fr's `WelcomeTab` context including 8 historical `vanished` ones and
+  duplicate `<location>`s; the real active-message diff against fr found only
+  **one** truly missing string, `"📖  Sample guides"`. But chasing that one
+  string surfaced the actual bug: `SampleDocsDialog` (the guide-viewer dialog
+  that button opens) was missing as a **whole context** — 3 real active
+  messages (`"Sample guides"` window title, `"_No bundled samples were found
+  in this build._"`, `"_No documentation is bundled for **{0}**._"`) — from
+  pt, ja, **and** zh alike (confirmed ja/zh inherited the same gap, per the
+  investigation note above). The other 3 "missing" contexts a full context-
+  name diff also turned up (`AboutDialog`, `EventActionWidget`,
+  `GM80EventsPanel`) are correctly absent — all have zero active messages in
+  fr too (dead/renamed classes), so pt/ja/zh's "only what's currently used"
+  build already handled them right. Fixed: added the 1 `WelcomeTab` message +
+  the 3-message `SampleDocsDialog` context to all three `.ts` files, real
+  translations (not copies) for each language, verified via a live
+  `QTranslator` resolving all 4 strings in all 3 languages and differing from
+  the English source. `tests/test_sample_docs_dialog_translations.py`
+  (6 tests). Full suite: 2966 passed, 7 skipped, 0 failed.
 - [ ] **2.3 Thymio "play sound".** Investigate first: is real Thymio
   hardware tone-only, or can the simulator legitimately play a sampled
   sound? If hardware is tone-only (current docstring already asserts this),

@@ -2411,6 +2411,29 @@ Do you want to save anyway?</source>
         <source>The bundled sample could not be imported. See the console output for details.</source>
         <translation>无法导入内置示例，详情请查看控制台输出。</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="214"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  示例指南</translation>
+    </message>
+</context>
+<context>
+    <name>SampleDocsDialog</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="515"/>
+        <source>Sample guides</source>
+        <translation>示例指南</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="552"/>
+        <source>_No bundled samples were found in this build._</source>
+        <translation>_在此版本中未找到内置示例。_</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="623"/>
+        <source>_No documentation is bundled for **{0}**._</source>
+        <translation>_未随附 **{0}** 的文档。_</translation>
+    </message>
 </context>
 <context>
     <name>SpriteStripDialog</name>
