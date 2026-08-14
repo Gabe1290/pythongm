@@ -988,5 +988,17 @@ procedural terrain, a full inventory/crafting system, an in-IDE visual
 world editor, per-type block protection beyond the `breakable` flag, and a
 jump mechanic. Real per-pixel texture mapping on the HTML5/Kivy export
 targets (both currently flat-colored) is the one deferred-but-documented
-follow-up, in the same category as raycast's still-open per-target floor-
-casting timing deferral — revisit only on an explicit ask.
+follow-up — revisit only on an explicit ask. (Correction, same day: raycast's
+own per-target floor-casting deferral, once the closest analog for this item,
+turned out to have already been closed hours earlier in the same 2026-07-19
+session — see `CLAUDE.md`'s corrected raycast session note. Not a precedent
+for "stays deferred indefinitely," just for "small enough to close in the
+same session once picked up.")
+
+**2026-08-14 (explicit ask) — all five deferred/out-of-scope items above are
+now scheduled**, not just noted: real texture mapping (side faces then
+top/bottom) and the sprite-manifest work are `docs/DEFERRED_GAPS_2026_PLAN.md`
+Tiers 4 and 6; jump, per-type protection, and inventory-with-counts are Tier
+7a-c there. Procedural terrain and full crafting are flagged in that plan as
+needing their own dedicated design pass — too large to schedule as a unit in
+an existing queue.

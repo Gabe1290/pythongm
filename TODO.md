@@ -252,7 +252,10 @@ it before picking an item to work on.
     either would be exactly the "click it, nothing visibly happens"
     dead end rc.11 (`77e9dbf`) removed; both need a real update+render
     pass built first (a genuinely large feature, not a quick fix) before
-    this entry's "do NOT add UI yet" instruction can be lifted.
+    this entry's "do NOT add UI yet" instruction can be lifted. Scheduled
+    (explicit ask, 2026-08-14): `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 5,
+    phased desktop-engine → UI → export-parity, budgeted 3+ sessions and
+    deliberately last in that plan's queue.
   - **`show_video` — confirmed still genuinely incomplete, correctly
     deferred, NOT touched.** Its own docstring already says so: "Video
     playback requires additional libraries (moviepy/opencv). This
@@ -261,6 +264,14 @@ it before picking an item to work on.
     player (`os.startfile`/`open`/`xdg-open`) — opens an external
     application window, not in-game video playback with any pause/resume
     control. Not what a `show_video` action's UI would honestly promise.
+    **Re-scoped 2026-08-14**: the shell-out itself is honest and working —
+    the actual gap is that it has no `events/action_types.py` entry, so
+    it's invisible in the UI despite being functional. Registering it (with
+    a description that says plainly "opens in your system's video player,
+    not in-engine playback") is a small, real fix, distinct from — and much
+    smaller than — building real in-engine decoding. Scheduled:
+    `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 2.4 (also folds in
+    `splash_show_video`/`splash_show_webpage` as thin wrappers).
 - **Room-background/scrolling actions (set_background*, set_room_speed,
   set_room_persistent) — DONE 2026-08-09.** All four registered in
   `events/action_types.py` (category "Room"), each actually finished
@@ -340,9 +351,10 @@ it before picking an item to work on.
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
   `.scratch_find_missing_actions.py` (removed after the bulk pass).
-- A future cleanup might generalise `get_action_type` to fall back
+- ~~A future cleanup might generalise `get_action_type` to fall back
   through `ActionExecutor.ACTION_ALIASES` so legacy/alternate action
-  names resolve to a single ActionType without duplicate entries.
+  names resolve to a single ActionType without duplicate entries.~~
+  Scheduled: `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 1.2.
 
 ### GMK importer hardening (post-1.0) — ✅ DONE 2026-07-16
 - **Closed.** `treasure` and `maze_4` are back in the bundled set after a
@@ -499,19 +511,37 @@ it before picking an item to work on.
 In `runtime/action_handlers/extra_handlers.py`:
 
 - **Splash text / image / video / webpage** (lines 51, 57, 63, 69) — these are
-  placeholders. Need real implementations using Pygame surfaces / video
-  decoder / `webbrowser` module respectively.
-- **Execute file** / **Execute shell command** (lines 84, 90) — intentionally
-  restricted for security. If we ever expose them, they need to be sandboxed
-  and require explicit user opt-in per project.
+  placeholders, not UI-registered (no `events/action_types.py` entry for any
+  of the four, so there's no dead-end UI path today, just an unbuilt
+  feature). Real implementations, sequencing, and file/line references:
+  `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 2.
+- ~~**Execute file** / **Execute shell command**~~ (lines 84, 90) —
+  **decision confirmed 2026-08-14: stay disabled.** Asked the user directly
+  given the security stakes for this audience (children, per the
+  `extension_compat_2_0` plan's own framing); explicit choice was to leave
+  both as log-and-return placeholders rather than build a sandboxed opt-in
+  model. Neither has an `events/action_types.py` entry, so there is no
+  dead-end UI path — this is an internal placeholder only, not a "lying to
+  users" case. Don't re-propose implementing these without a fresh explicit
+  ask.
 
 Other:
 
-- **Script execution action** — `runtime/action_handlers/control_handlers.py:239` —
+- ~~**Script execution action** — `runtime/action_handlers/control_handlers.py:239` —
   stub only. Decide on the script language (Python? a sandboxed mini-DSL?)
-  before implementing.
+  before implementing.~~ **Investigated 2026-08-14: this is dead code, not
+  an undecided feature.** `handle_script`/`handle_code` register under
+  action names `"script"`/`"code"` — neither has an `events/action_types.py`
+  entry and no sample/importer ever emits either name, so this stub is
+  unreachable from any real project; the "decide on a script language"
+  framing was stale, since the language question was already answered
+  elsewhere. The actually-working, UI-registered, exported feature is the
+  **separately-named** `execute_script`/`execute_code` (real `exec()`-based,
+  `action_executor.py`), not this. Scheduled for removal:
+  `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 1.1.
 - **Thymio "play sound"** — `runtime/thymio_action_handlers.py` — placeholder
   that emits a single tone instead of playing the requested sound resource.
+  Scheduled: `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 2.3.
 
 ## Runtime features called out in code
 
@@ -695,6 +725,10 @@ existed. Regenerated; 0 untranslated strings reported now.
     entirely an **objects** problem (event/action trees, not sprite
     metadata) — `obj_person` in `samples/maze_1` is 1474 bytes serialized
     (2 events) vs. its sprite's 404.
+    **Reopened 2026-08-14 (explicit ask):** scheduled as
+    `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 6, following the objects
+    precedent (this section) exactly, sequenced after the plan's Block World
+    texture tier since both touch the same three export-loader files.
   - **Objects: stripping only `events` (not the full body) is the safe cut.**
     Every one of the six known loaders (`core/project_manager.py`,
     `runtime/game_runner.py`, `export/base_exporter.py`,
@@ -1104,9 +1138,16 @@ existed. Regenerated; 0 untranslated strings reported now.
     `tests/test_kivy_html5_right_middle_mouse_export.py`.
 
 - **Kivy export — long-tail action coverage** —
-  `export/Kivy/code_generator.py:681`. Most actions translate fine; unhandled
-  ones fall through to a no-op `pass`. Each one needs to be ported as we hit
-  it.
+  `export/Kivy/code_generator.py`'s `process_action`/`_convert_simple_action`.
+  Most actions translate fine; unhandled ones fall through to a no-op
+  `pass  # TODO: {action_type}` (with `_UNSUPPORTED_ACTIONS` tracking which).
+  Re-surveyed 2026-08-14: ~18-20 of `ACTION_TYPES`'s 107 entries have no
+  branch (`bounce`, `open_webpage`, `save_game`, `load_game`,
+  `test_question`, `show_info`, `stop_sound`, `check_sound`, `check_room`,
+  `fill_color`, `set_alpha`, `move_towards_point`, `draw_scaled_text`,
+  `set_image_index`, `set_image_speed`, `set_room_caption`,
+  `start_animation`, `stop_animation`, plus a couple more). Being worked in
+  small clusters: `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 3.
 
 ### Export feature-parity matrix (quantified 2026-07-10)
 - `tests/test_export_feature_matrix.py` cross-references every action and
