@@ -534,6 +534,50 @@ def test_render_block_world_draws_a_real_texture_when_loaded(exported):
         assert len(textured) >= 1
 
 
+def test_render_block_world_draws_a_textured_top_face_when_loaded(exported):
+    """Tier 4b: with textures cached for both the side and top faces, a
+    block whose top is exposed (nothing stacked above it, eye above it)
+    must draw a textured top face -- not the flat-color fallback.
+
+    The block sits several cells away from the camera (not point-blank):
+    empirically verified first (a point-blank distance pushed the whole
+    projected wall/face span off-screen entirely at this eye_height, a
+    real test-authoring trap the same class as the grid-alignment one
+    documented elsewhere in this file -- caught by checking actual
+    _render_block_world output, not assumed)."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._bw_blocks = {(5, 1, 0): "stone"}
+        scene._bw_tex_cache = {"default_stone.png": _FakeTex()}
+        cam = _FakeInst(32, scene.room_height - 32 - 32, 32, 32, facing=0.0)
+        scene.instances = [cam]
+        scene.block_world_camera = _default_cfg(eye_height=1.5)
+        scene.block_world_camera["camera_instance"] = cam
+        scene._render_block_world()
+        # Horizontal-face textured rects use a plain `texture=` Rectangle
+        # (no tex_coords, unlike the wall pass) -- distinguish them that way.
+        horiz_textured = [c for c in scene._bw_group.children if getattr(c, "kw", None)
+                         and "texture" in c.kw and "tex_coords" not in c.kw]
+        assert len(horiz_textured) >= 1
+
+
+def test_top_cast_res_zero_falls_back_to_flat_color(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._bw_blocks = {(5, 1, 0): "stone"}
+        scene._bw_tex_cache = {"default_stone.png": _FakeTex()}
+        cam = _FakeInst(32, scene.room_height - 32 - 32, 32, 32, facing=0.0)
+        scene.instances = [cam]
+        scene.block_world_camera = _default_cfg(eye_height=1.5, top_cast_res=0)
+        scene.block_world_camera["camera_instance"] = cam
+        scene._render_block_world()
+        horiz_textured = [c for c in scene._bw_group.children if getattr(c, "kw", None)
+                         and "texture" in c.kw and "tex_coords" not in c.kw]
+        assert horiz_textured == []
+
+
 def test_kivy_owns_the_texture_loader_and_materialization():
     export_kivy_src = (REPO_ROOT / "extensions" / "block_world" / "export_kivy.py").read_text(encoding="utf-8")
     assert "def _bw_texture(self, filename):" in export_kivy_src

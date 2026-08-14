@@ -9,10 +9,11 @@ port's own established convention -- see that file's header for the exact
 mechanism).
 
 A faithful port of extensions/block_world/state.py + renderer.py +
-handlers.py + hud.py, with the SAME scope reduction the HTML5 port makes
-(see extensions/block_world/export_html5.js's header): flat-colored faces
-via the precomputed BLOCK_FACE_COLORS table, no real texture mapping, no
-_fully_covers early-out.
+handlers.py + hud.py. All three face orientations are real per-pixel
+textures (side: Tier 4a; top/bottom: Tier 4b, docs/DEFERRED_GAPS_2026_PLAN.md),
+falling back to the precomputed BLOCK_FACE_COLORS table only when a texture
+hasn't loaded, `wall_textured` is off, or (top/bottom) `top_cast_res` is 0.
+Only the _fully_covers early-out (a pure perf shortcut) remains scoped out.
 
 Coordinate convention -- mirrors extensions/raycast_2_5d/export_kivy.py's
 own solution to the same problem exactly: Kivy instance positions are y-UP
@@ -403,11 +404,71 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                             tex_coords=(0.0, v_bottom, 1.0, v_bottom,
                                         1.0, v_top, 0.0, v_top)))
 
+    def _bw_draw_horizontal_face_textured(self, group, x0, strip_w, y0_gm, y1_gm,
+                                          tex, cam_x, cam_y, dir_x, dir_y, cos_off,
+                                          plane_z, eye_z, horizon_gm, cell_size,
+                                          shade, res, H):
+        """Real per-pixel top/bottom face texture (Tier 4b). Faithful port
+        of renderer.py's _draw_horizontal_face_textured's projection math
+        (inverting y = horizon + (eye_z - zval) * (H*cell/dist) gives the
+        world point straight from a screen row), but samples each texel as
+        its OWN 1x1 get_region() draw rather than building a raw pixel
+        buffer via Texture.create()/blit_buffer() -- that would need
+        reasoning about blit_buffer's own row-order convention on top of
+        get_region's; a single-pixel region has no orientation to get
+        wrong, reusing get_region's bottom-left-origin behaviour (per
+        _bw_fill_span_textured's own derivation above: get_region's y is
+        GL/bottom-up, so an image-top-relative ty needs the same
+        `th - 1 - ty` flip raycast_2_5d's _floor_buffer already established
+        for reading Kivy texture pixels) for the read side only.
+
+        n = ceil(span/res) equal-height segments tile the span exactly
+        (matching what scaling a res-sampled column to fit span would do),
+        each sampled at approximately the row the original per-row
+        algorithm would have used.
+        """
+        import math
+        y0 = max(0.0, min(y0_gm, y1_gm))
+        y1 = min(H, max(y0_gm, y1_gm))
+        span = y1 - y0
+        if span <= 0:
+            return
+        tw, th = tex.width, tex.height
+        if tw <= 0 or th <= 0:
+            return
+
+        k = (eye_z - plane_z) * H * cell_size
+        inv_cell = 1.0 / cell_size
+
+        def texel_region(y):
+            denom = y + 0.5 - horizon_gm
+            if -1e-6 < denom < 1e-6:
+                denom = 1e-6 if denom >= 0 else -1e-6
+            ray_dist = (k / denom) / cos_off
+            gx = (cam_x + dir_x * ray_dist) * inv_cell
+            gy = (cam_y + dir_y * ray_dist) * inv_cell
+            tx = min(tw - 1, max(0, int(tw * (gx - math.floor(gx)))))
+            ty = min(th - 1, max(0, int(th * (gy - math.floor(gy)))))
+            return tex.get_region(tx, th - 1 - ty, 1, 1)
+
+        n = max(1, int(math.ceil(span / res)))
+        seg_h = span / n
+        shade_rgb = (shade, shade, shade, 1) if shade < 1.0 else (1, 1, 1, 1)
+        for i in range(n):
+            seg_y0 = y0 + i * seg_h
+            seg_y1 = y0 + (i + 1) * seg_h
+            sample_y = min(y0 + i * res, y1 - 1e-6)
+            region = texel_region(sample_y)
+            group.add(Color(*shade_rgb))
+            group.add(Rectangle(texture=region, pos=(x0, H - seg_y1),
+                                size=(strip_w, seg_y1 - seg_y0)))
+
     def _render_block_world(self):
-        """A faithful port of renderer.render_block_world_view. Side (wall)
-        faces are real per-pixel textures (Tier 4a); top/bottom faces and
-        the _fully_covers early-out remain scoped out -- see this file's
-        module docstring and export_html5.js's header."""
+        """A faithful port of renderer.render_block_world_view. All three
+        face orientations are real per-pixel textures (side: Tier 4a;
+        top/bottom: Tier 4b). Only the _fully_covers early-out remains
+        scoped out (a pure perf shortcut) -- see this file's module
+        docstring and export_html5.js's header."""
         import math
         cfg = self.block_world_camera
         if not cfg or not cfg.get('enabled'):
@@ -453,6 +514,10 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         facing_screen_rad = math.radians(-float(getattr(camera, 'facing_angle', 0)))
         plane_tan = math.tan(fov_rad / 2)
         textured = bool(cfg.get('wall_textured', True))
+        # Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
+        # texturing (flat average-color fallback), matching desktop exactly.
+        top_res = int(cfg.get('top_cast_res', 4))
+        top_textured = textured and top_res >= 1
         columns = self._bw_column_index()
 
         for col in range(num_columns):
@@ -460,6 +525,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             ray_offset = math.atan(plane_tan * camera_x)
             ray_angle = facing_screen_rad + ray_offset
             cos_off = math.cos(ray_offset)
+            dir_x, dir_y = math.cos(ray_angle), math.sin(ray_angle)
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
@@ -505,14 +571,30 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                         lit = self._bw_face_shade(mid, max_dist, self.BW_TOP_SHADE)
                         y_far = horizon_gm + (eye_z - (z + 1)) * px_per_cell_far
                         y_near = horizon_gm + (eye_z - (z + 1)) * px_per_cell
-                        color = color_set['top'] if color_set else wall_rgb
-                        self._bw_fill_span(group, x0, strip_w, y_far, y_near, color, lit, H)
+                        top_tex = (self._bw_texture(file_set['top'])
+                                  if top_textured and file_set else None)
+                        if top_tex is not None:
+                            self._bw_draw_horizontal_face_textured(
+                                group, x0, strip_w, y_far, y_near, top_tex,
+                                cam_x, cam_y, dir_x, dir_y, cos_off,
+                                z + 1, eye_z, horizon_gm, cell_size, lit, top_res, H)
+                        else:
+                            color = color_set['top'] if color_set else wall_rgb
+                            self._bw_fill_span(group, x0, strip_w, y_far, y_near, color, lit, H)
                     elif eye_z < z and not below:
                         lit = self._bw_face_shade(mid, max_dist, self.BW_BOTTOM_SHADE)
                         y_near = horizon_gm + (eye_z - z) * px_per_cell
                         y_far = horizon_gm + (eye_z - z) * px_per_cell_far
-                        color = color_set['bottom'] if color_set else wall_rgb
-                        self._bw_fill_span(group, x0, strip_w, y_near, y_far, color, lit, H)
+                        bottom_tex = (self._bw_texture(file_set['bottom'])
+                                     if top_textured and file_set else None)
+                        if bottom_tex is not None:
+                            self._bw_draw_horizontal_face_textured(
+                                group, x0, strip_w, y_near, y_far, bottom_tex,
+                                cam_x, cam_y, dir_x, dir_y, cos_off,
+                                z, eye_z, horizon_gm, cell_size, lit, top_res, H)
+                        else:
+                            color = color_set['bottom'] if color_set else wall_rgb
+                            self._bw_fill_span(group, x0, strip_w, y_near, y_far, color, lit, H)
 
     # ------------------------------------------------------------------
     # handlers.py port -- each takes the acting GameObject (`obj`) as an
@@ -698,6 +780,9 @@ def _cg_enable_block_world_view(gen, params, event_type):
                               in ('false', '0', 'no')),
         'pitch': max(-70.0, min(70.0, _tofloat(params.get('pitch'), 0))),
         'eye_height': _tofloat(params.get('eye_height'), 1.5),
+        # Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
+        # texturing (flat average-color fallback), matching desktop.
+        'top_cast_res': int(_tofloat(params.get('top_cast_res'), 4)),
     }
     if not cfg['camera_object']:
         # No named camera object -> the acting instance IS the camera.
