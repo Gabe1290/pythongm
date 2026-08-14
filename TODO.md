@@ -201,10 +201,66 @@ it before picking an item to work on.
   start/stop_animation, the test_*/check_* conditionals, stop_sound,
   move_towards_point, open_webpage, show_info, set_room_caption). All
   verified against their runtime handlers' params; edit dialogs round-trip.
-- **Still deferred to post-1.0 (do NOT add UI yet):** particle system
-  (create_emitter/burst_particles/…), timelines (set_timeline/start_timeline/
-  …), save_game/load_game, show_video, execute_script — these need a
-  functional check first.
+- **2026-08-14 — the functional check, done.** Investigated each of the five
+  items this entry named, per its own instruction:
+  - **`execute_script` — already DONE, this entry was stale.** It's been
+    registered in `events/action_types.py` (line ~1517) all along, with a
+    real end-to-end path: the Asset Tree already treats `scripts` as a
+    creatable asset type, `editors/script_editor.py`'s `ScriptEditor` edits
+    a named script's code, and `execute_execute_script_action` runs it via
+    a real `exec()` with `self`/`game`/`argument0-4`/`keyboard` bound —
+    functional, and per this repo's session notes, already ported to Kivy
+    export too (`execute_script` got the same exec()-based rewrite
+    `execute_code` did, 2026-08-09). Nothing to do; corrected here so this
+    entry stops claiming otherwise.
+  - **`save_game`/`load_game` — DONE 2026-08-14, now registered.** Both
+    handlers were already substantially real (real JSON save/restore of
+    room/score/lives/health/global vars/instances, matched by
+    `object_name` with a real fix for the N-same-object-instances collapse
+    bug). One genuine dead path found and fixed: loading a save whose room
+    differed from the current room set `instance._load_room_name`/
+    `_load_instances`, attributes `runtime/game_runner.py` never read —
+    confirmed by grep, so a cross-room load silently did nothing beyond a
+    log line. Fixed by routing through the same deferred
+    `instance.goto_room_target` flag every other room-changing action
+    already uses (`GameRunner.update()`'s existing branch, which calls
+    `change_room` synchronously); a new `_pending_load_instances` rides
+    alongside it and is restored right after `change_room` returns. Now
+    registered in `events/action_types.py` (category "Game", one
+    `filename` string param, matching `open_webpage`/`set_room_caption`).
+    Desktop-runtime-only for now (same as many already-registered
+    actions) — no Kivy/HTML5 export codegen exists yet, and no bundled
+    sample uses either action, so this doesn't regress the export
+    feature-parity matrix; picking up export codegen is ordinary
+    "long-tail action coverage" work, not a blocker for UI registration.
+    `tests/test_save_load_game.py` (6 tests) drives a REAL `GameRunner`
+    through actual frames (same discipline as
+    `test_room_background_scroll_actions.py`'s maze_3 proof) — same-room
+    restore, the previously-dead cross-room restore, a nonexistent-room
+    save (must not crash), and score/lives/health/global-variable
+    round-trip. Suite 2897 → 2903 passed, 0 failed.
+  - **Particle system and timelines — confirmed still genuinely
+    non-functional, correctly deferred, NOT touched.** Grepped
+    `runtime/game_runner.py` for every relevant name
+    (`_particle_system`/`particle_types`/`_timeline`/`active_timeline`/
+    `timeline_position`, etc.): zero hits. The action handlers
+    (`runtime/action_executor.py`, `runtime/action_handlers/
+    particle_handlers.py`) build real-looking data structures
+    (particle type defs, emitter configs, timeline position/speed) but
+    nothing anywhere ever reads them back to spawn/age/draw a particle or
+    advance a timeline step — pure write-only state. Exposing UI for
+    either would be exactly the "click it, nothing visibly happens"
+    dead end rc.11 (`77e9dbf`) removed; both need a real update+render
+    pass built first (a genuinely large feature, not a quick fix) before
+    this entry's "do NOT add UI yet" instruction can be lifted.
+  - **`show_video` — confirmed still genuinely incomplete, correctly
+    deferred, NOT touched.** Its own docstring already says so: "Video
+    playback requires additional libraries (moviepy/opencv). This
+    implementation logs the request but actual playback may be limited."
+    The real implementation just shells out to the OS's default video
+    player (`os.startfile`/`open`/`xdg-open`) — opens an external
+    application window, not in-game video playback with any pause/resume
+    control. Not what a `show_video` action's UI would honestly promise.
 - **Room-background/scrolling actions (set_background*, set_room_speed,
   set_room_persistent) — DONE 2026-08-09.** All four registered in
   `events/action_types.py` (category "Room"), each actually finished
