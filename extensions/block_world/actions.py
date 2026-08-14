@@ -122,4 +122,20 @@ PLUGIN_ACTIONS = {
                 description="How many cells ahead you can reach, in grid cells"),
         ]
     ),
+
+    "load_block_world": ActionType(
+        name="load_block_world",
+        display_name="Load Block World",
+        description="Load a pre-authored world (blocks placed by a generator "
+                    "or hand-authored file) into the current room, replacing "
+                    "whatever blocks are there",
+        category="3D View",
+        icon="📂",
+        parameters=[
+            ActionParameter(name="data_file", display_name="Data File",
+                param_type="string", default_value="",
+                description="Path to a block-world JSON file, relative to the "
+                            "project folder (e.g. blocks/room1.json)"),
+        ]
+    ),
 }

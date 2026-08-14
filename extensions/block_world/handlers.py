@@ -7,10 +7,12 @@ instance.action_executor (the plugins/audio_actions pattern), not through
 ActionExecutor directly.
 """
 
+import json
 import math
+from pathlib import Path
 
 from .state import (BLOCK_TYPES, block_world_state, get_block, is_breakable,
-                    peek_camera, remove_block, set_block)
+                    load_block_list, peek_camera, remove_block, set_block)
 
 
 def _truthy(raw):
@@ -246,3 +248,50 @@ class PluginExecutor:
             # action could ever change it -- see docs/VOXEL_WORLD_PLAN.md.
             "eye_height": _num("eye_height", DEFAULT_EYE_HEIGHT),
         }
+
+    def execute_load_block_world_action(self, instance, parameters):
+        """Load a pre-authored world into the current room from a JSON data
+        file, replacing whatever blocks are there.
+
+        Bind this in `game_start`, not `create` -- `create` re-fires on
+        `restart_room` (see this repo's own landmine notes), and reloading
+        the file back on top of live edits would silently discard whatever
+        the player broke or placed since the room was entered.
+
+        The file holds a flat JSON list in the `state.to_block_list` shape:
+        `[{"x":, "y":, "z":, "type":}, ...]` -- the same shape a generator
+        script (tools/gen_block_world_*.py) or `to_block_list` itself
+        produces. Silently does nothing on a missing file, unreadable JSON,
+        or an unknown block type -- consistent with this extension's other
+        actions (a flush wall, an unbreakable swing) treating bad input as a
+        no-op rather than crashing the game.
+
+        Parameters:
+            data_file: path to the JSON file, relative to the project
+                folder (e.g. "blocks/room1.json")
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+
+        # Not run through _parse_value: a real path ("blocks/room1.json")
+        # contains "/", which _parse_value's expression heuristic reads as
+        # division and mangles -- the same reason wall_color/floor_color
+        # above are read as plain strings, not expressions.
+        data_file = str(parameters.get("data_file", ""))
+        if not data_file:
+            return
+
+        project_path = getattr(ae.game_runner, "project_path", None)
+        if not project_path:
+            return
+
+        try:
+            with open(Path(project_path) / data_file, "r", encoding="utf-8") as f:
+                block_list = json.load(f)
+            load_block_list(room, block_list)
+        except (OSError, ValueError, KeyError, TypeError):
+            # Bad path, bad JSON, or an unknown block type in the file --
+            # see the docstring above for why this is a silent no-op.
+            pass
