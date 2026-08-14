@@ -365,3 +365,48 @@ def stack_top(room, x, y):
     4's collision will want the same answer."""
     column = column_index(room).get((x, y))
     return column[-1][0] if column else None
+
+
+def ground_layer(room, x, y):
+    """The layer a body standing at this cell occupies: one above whatever
+    it is standing on, or 0 over open ground (stack_top None).
+
+    Promoted from tools/preview_block_world.py's own function of the same
+    name (Phase 4 Unit 4) -- proven there first, across every viewpoint the
+    preview tool's own walkaround exercises, before landing here."""
+    top = stack_top(room, x, y)
+    return 0 if top is None else top + 1
+
+
+# How many layers a body can step up onto in one move without it reading as
+# a wall rather than a step. 1, not any other value: a wall in this engine
+# is any obstruction taller than this, by construction -- see
+# docs/VOXEL_WORLD_PLAN.md's Phase 2b notes on why a one-block wall reads as
+# a climbable step rather than an obstacle, and world design (both the
+# tools/gen_block_world_demo.py generator and the preview tool's own demo
+# scene) relies on that meaning consistently.
+DEFAULT_MAX_STEP_UP = 1
+
+
+def can_enter(room, x, y, standing_layer, max_step_up=DEFAULT_MAX_STEP_UP):
+    """Can a body currently standing at ``standing_layer`` walk onto cell
+    (x, y)? True if that cell's own footing is at most ``max_step_up``
+    layers higher -- dropping any distance is always allowed, since this
+    engine has no falling animation yet: a drop is just a step down.
+
+    Promoted from tools/preview_block_world.py's own ``_can_enter`` (Phase 4
+    Unit 4), proven there first."""
+    return ground_layer(room, x, y) - standing_layer <= max_step_up
+
+
+def cell_of(pixel_value, cell_size):
+    """World pixel coordinate -> the grid cell index whose CENTRE it is
+    nearest to (not floor-based). Matches how every body in this engine is
+    positioned -- a camera/instance's centre sits at a cell centre when at
+    rest (see renderer.py's exact-grid-line-coincidence note) -- so movement
+    code that rounds a raw x/y this way agrees with where the renderer and
+    picking already think the body is standing.
+
+    Promoted from tools/preview_block_world.py's own ``cell_of`` lambda
+    (Phase 4 Unit 4), proven there first."""
+    return int((pixel_value + cell_size / 2) // cell_size)

@@ -194,15 +194,6 @@ def place(room, camera, cell_x, cell_y, facing_deg, z_layer=0):
     block_world_state(room)["camera"]["z_layer"] = z_layer
 
 
-def ground_layer(room, cell_x, cell_y):
-    """The layer a body standing at this cell occupies: one above whatever it
-    is standing on, or 0 over open ground. Demo-only -- the engine gets no
-    gravity or footing until Phase 4."""
-    from extensions.block_world.state import stack_top
-    top = stack_top(room, cell_x, cell_y)
-    return 0 if top is None else top + 1
-
-
 # (label, cell_x, cell_y, facing_deg, z_layer, what it's for). GM angles:
 # 0 = +x (right), 90 = up the screen, 180 = left, 270 = down.
 VIEWPOINTS = [
@@ -255,8 +246,6 @@ def save_shots(out_dir, size):
     print("\n%d frames written to %s" % (len(VIEWPOINTS), out.resolve()))
 
 
-MAX_STEP_UP = 1
-
 # Phase 3 Unit 3 promoted this exact list into the engine as
 # extensions.block_world.state.DEFAULT_HOTBAR (this walkaround's own copy
 # was the original, proven here first); this local `slot` index is still
@@ -264,12 +253,11 @@ MAX_STEP_UP = 1
 # hotbar_index/hotbar_block, and the walkaround's camera is not one.
 from extensions.block_world.state import DEFAULT_HOTBAR as HOTBAR
 
-
-def _can_enter(room, cell_x, cell_y, standing_layer):
-    """Walk onto a cell if its surface is at most one block higher than the
-    one underfoot. Dropping any distance is allowed -- this demo has no
-    gravity to fall with, so a drop is just a step down."""
-    return ground_layer(room, cell_x, cell_y) - standing_layer <= MAX_STEP_UP
+# Phase 4 Unit 4 promoted ground_layer/can_enter/cell_of (this walkaround's
+# own copies were the originals, proven here first) into
+# extensions.block_world.state -- imported where used, in walk(), alongside
+# this module's other block_world imports.
+from extensions.block_world.state import DEFAULT_MAX_STEP_UP as MAX_STEP_UP
 
 
 def walk(size):
@@ -283,7 +271,8 @@ def walk(size):
     from extensions.block_world.renderer import render_block_world_view
     from extensions.block_world.state import (block_world_state, set_block,
                                               remove_block, get_block,
-                                              is_breakable)
+                                              is_breakable, ground_layer,
+                                              can_enter, cell_of)
     from extensions.block_world.renderer import (clamp_pitch,
                                                  draw_cell_outline, eye_z_for,
                                                  horizon_for, march_ray,
@@ -459,19 +448,17 @@ def walk(size):
             dx += fwd[1]; dy -= fwd[0]
         if keys[pygame.K_e]:
             dx -= fwd[1]; dy += fwd[0]
-        cell_of = lambda v: int((v + CELL / 2) // CELL)  # noqa: E731
-        standing = ground_layer(room, cell_of(camera.x), cell_of(camera.y))
+        standing = ground_layer(room, cell_of(camera.x, CELL), cell_of(camera.y, CELL))
         if dx or dy:
             mag = math.hypot(dx, dy)
             step = move_speed * dt / mag
             nx, ny = camera.x + dx * step, camera.y + dy * step
-            # Demo-only movement, axis-separated so sliding along a wall
-            # works. The engine has no collision or footing until Phase 4.
-            if not collide or _can_enter(room, cell_of(nx), cell_of(camera.y), standing):
+            # Axis-separated so sliding along a wall works.
+            if not collide or can_enter(room, cell_of(nx, CELL), cell_of(camera.y, CELL), standing):
                 camera.x = nx
-            if not collide or _can_enter(room, cell_of(camera.x), cell_of(ny), standing):
+            if not collide or can_enter(room, cell_of(camera.x, CELL), cell_of(ny, CELL), standing):
                 camera.y = ny
-            standing = ground_layer(room, cell_of(camera.x), cell_of(camera.y))
+            standing = ground_layer(room, cell_of(camera.x, CELL), cell_of(camera.y, CELL))
 
         # Climbing a step is exactly this: the layer underfoot going up by
         # one, which raises the eye and re-projects the whole view.
@@ -507,7 +494,7 @@ def walk(size):
         pygame.draw.line(screen, cross, (mx - 7, my), (mx + 7, my))
         pygame.draw.line(screen, cross, (mx, my - 7), (mx, my + 7))
 
-        cell = (cell_of(camera.x), cell_of(camera.y))
+        cell = (cell_of(camera.x, CELL), cell_of(camera.y, CELL))
         status = "cell %s  layer %d  angle %6.1f  pitch %+5.1f  fps %4.1f  collision %s" % (
             cell, standing, camera.facing_angle % 360,
             block_world_state(room)["camera"].get("pitch", 0.0),
