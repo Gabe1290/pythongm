@@ -131,19 +131,52 @@ real work:
   (6 tests). Full suite: 2983 passed, 7 skipped, 0 failed. **Tier 2 is now
   fully closed.**
 
-## Tier 3 — Kivy long-tail action coverage (several small commits)
-
-- [ ] **3.x** ~18-20 actions in `ACTION_TYPES` have no branch in
-  `export/Kivy/code_generator.py`'s `process_action`/`_convert_simple_action`:
-  `bounce`, `open_webpage`, `save_game`, `load_game`, `test_question`,
-  `show_info`, `stop_sound`, `check_sound`, `check_room`, `fill_color`,
-  `set_alpha`, `move_towards_point`, `draw_scaled_text`, `set_image_index`,
-  `set_image_speed`, `set_room_caption`, `start_animation`,
-  `stop_animation`, plus whatever Tier 2 newly registers. Work in clusters
-  of 3-5 related actions per commit, mirroring the desktop runtime handler;
-  compile-gated regression test per commit
-  (`tests/test_kivy_more_actions_export.py` pattern). Lowest-risk, most
-  mechanical tier — good first thing to ship after Tier 1.
+- [x] **3.x** Done (2026-08-15), all 23 in one commit rather than several
+  small ones — re-verified the list first (audit-is-a-lead: a naive grep
+  first over-matched to 33 "missing" names before checking the real
+  `code_generator.py` source, several of which were already handled via
+  `in (...)` tuple branches the naive pattern missed), confirmed 23 genuinely
+  absent anywhere in `export/Kivy/`, then found most share NEW shared
+  infrastructure this unit had to build once regardless (a `PROJECT_META`
+  constant baked at export time, a new `game/savegame.py` module mirroring
+  `highscore.py`'s verbatim-string generation, `image_alpha`/`image_blend`
+  wired into `_redraw_frame`'s `Color()` call so `set_alpha`/`set_color`
+  have a REAL visible effect instead of an inert instance attribute, a new
+  `'fill'` draw-queue command case, `stop_sound`/`is_sound_playing`/
+  `open_webpage`/`show_video_file`/`show_splash_image` helpers in `main.py`)
+  — splitting into artificial clusters would have meant re-touching the
+  same shared code repeatedly. `bounce`, `open_webpage`, `save_game`,
+  `load_game`, `test_question`, `show_info`, `stop_sound`, `check_sound`,
+  `check_room`, `fill_color`, `set_alpha`, `set_color`, `move_towards_point`,
+  `move_free`, `draw_scaled_text`, `set_image_index`, `set_image_speed`,
+  `set_room_caption`, `start_animation`, `stop_animation`,
+  `splash_show_text`, `splash_show_image`, `show_video` (the last two Tier
+  2's own new registrations) all now generate real code, none fall through
+  to the `pass # TODO` default. Three deliberate, documented scope
+  reductions rather than silent gaps: **`bounce`** ports only
+  `execute_bounce_action`'s own no-collision-info fallback branch (Kivy's
+  collision model has no `h_blocked`/`v_blocked` equivalent to reverse a
+  specific axis against); **`save_game`/`load_game`** persist score/lives/
+  health/current-room only, not full instance positions/custom variables
+  (would need rebuilding a room's instance list from saved data — a much
+  larger change to the room-switching path); **`test_question`** always
+  proceeds (`if True`), since Kivy's popups are callback-driven with no
+  blocking-call equivalent to `desktop`'s `QMessageBox.exec()` to build a
+  real Yes/No gate on — matches the desktop handler's own documented
+  Qt-unavailable fallback rather than guessing False or dropping the
+  action. `show_video`'s video file isn't copied into the export bundle
+  (no video-asset pipeline exists) — same category of honest, narrower
+  scope. One real bug caught by a real export + compile check, not
+  assumed: `process_action`'s multi-line-code handling calls
+  `line.strip()` on every line before re-indenting at a single shared
+  level, so an early draft's nested `if:`/`else:` blocks for
+  `move_towards_point`/`bounce` silently lost their indentation and
+  produced a real `IndentationError` on compile — fixed by rewriting both
+  as flat ternary expressions instead of nested blocks.
+  `tests/test_kivy_tier3_actions_export.py` (27 tests, including one full
+  `KivyExporter().export()` + multi-file compile run, not just isolated
+  codegen strings). Full suite: 3010 passed, 7 skipped, 0 failed.
+  **Tier 3 is now fully closed.**
 
 ## Tier 4 — Block World real texture mapping (large, ~1-2 sessions)
 

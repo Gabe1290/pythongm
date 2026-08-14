@@ -217,6 +217,10 @@ class KivyExporter:
             self._generate_highscore_module()
             logger.info("High-score module generated")
 
+            # Generate the save/load-game module (Tier 3)
+            self._generate_savegame_module()
+            logger.info("Save-game module generated")
+
             # Generate the sprite frame-metadata module
             self._generate_sprite_meta_module()
             logger.info("Sprite metadata module generated")
@@ -382,6 +386,16 @@ class KivyExporter:
         # Generate room list for navigation
         room_list_str = ', '.join([f'"{name}"' for name in room_names])
 
+        # Static project metadata for show_info (docs/DEFERRED_GAPS_2026_PLAN.md
+        # Tier 3) -- baked as a literal at export time since it never changes
+        # during play, mirroring how ROOM_ORDER itself is baked.
+        project_meta_repr = repr({
+            'name': self.project_data.get('name', 'Unknown Game'),
+            'version': self.project_data.get('version', '1.0.0'),
+            'author': self.project_data.get('author', 'Unknown'),
+            'description': self.project_data.get('description', ''),
+        })
+
         # Generate room class mapping
         room_mapping_str = ', '.join([f'"{name}": {cls}' for name, cls in room_class_map.items()])
 
@@ -544,6 +558,7 @@ NEEDS_MAP_BUTTON = {needs_map_button}
 ROOM_ORDER = [{room_list_str}]
 ROOM_CLASSES = {{{room_mapping_str}}}
 ROOM_META = {{{room_meta_str}}}
+PROJECT_META = {project_meta_repr}
 
 # Crash logger - writes to file so we can diagnose Android crashes
 import os as _os, traceback as _tb, datetime as _dt
@@ -599,6 +614,65 @@ def play_sound(path, volume=1.0):
             snd.play()
     except Exception as _e:
         _log(f"play_sound failed for {{path}}: {{_e}}")
+
+
+def stop_sound(path):
+    """Stop a sound by its exported asset path, if it's cached/playing
+    (docs/DEFERRED_GAPS_2026_PLAN.md Tier 3)."""
+    try:
+        snd = _sound_cache.get(path)
+        if snd:
+            snd.stop()
+    except Exception as _e:
+        _log(f"stop_sound failed for {{path}}: {{_e}}")
+
+
+def is_sound_playing(path):
+    """True if the sound at `path` is currently playing -- Tier 3's
+    check_sound. A sound that was never played (never cached) is not
+    playing."""
+    try:
+        snd = _sound_cache.get(path)
+        return bool(snd) and snd.state == 'play'
+    except Exception:
+        return False
+
+
+def open_webpage(url):
+    """Open a URL in the system's default browser (Tier 3's open_webpage /
+    splash_show_webpage). webbrowser.open is desktop-only in practice --
+    Android has no meaningful webbrowser module target, so this is a no-op
+    there rather than a crash."""
+    if IS_ANDROID:
+        _log(f"open_webpage: not supported on Android, ignoring '{{url}}'")
+        return
+    try:
+        import webbrowser
+        webbrowser.open(url)
+    except Exception as _e:
+        _log(f"open_webpage failed for {{url}}: {{_e}}")
+
+
+def show_video_file(path):
+    """Open a video file in the system's default video player -- same
+    external-process approach as the desktop runtime's show_video (a
+    separate window, not in-engine playback). Android has no equivalent,
+    so this is a no-op there."""
+    if IS_ANDROID:
+        _log(f"show_video_file: not supported on Android, ignoring '{{path}}'")
+        return
+    try:
+        import subprocess
+        import sys as _sys
+        if _sys.platform == 'win32':
+            import os as _os
+            _os.startfile(path)
+        elif _sys.platform == 'darwin':
+            subprocess.call(['open', path])
+        else:
+            subprocess.call(['xdg-open', path])
+    except Exception as _e:
+        _log(f"show_video_file failed for {{path}}: {{_e}}")
 
 
 _room_transition_pending = False
@@ -891,6 +965,56 @@ def dismiss_message():
     global _current_popup
     if _current_popup:
         _current_popup.dismiss()
+
+
+def show_splash_image(sprite_path):
+    """Show an exported sprite full-screen in a popup, pausing the game
+    until dismissed -- the image counterpart of show_message (Tier 3 of
+    docs/DEFERRED_GAPS_2026_PLAN.md). Desktop only: the pre-built Android
+    overlay (_msg_overlay) is text-only, so this is a documented no-op on
+    Android rather than new Android-side overlay work.
+    """
+    global _popup_open, _current_popup
+    _log(f"show_splash_image: '{{sprite_path}}'")
+
+    if IS_ANDROID:
+        _log("show_splash_image: not supported on Android, skipping")
+        return
+
+    if _popup_open:
+        _log("show_splash_image: a popup is already open, skipping")
+        return
+    _popup_open = True
+
+    app = get_game_app()
+    if app and app.update_event:
+        Clock.unschedule(app.update_event)
+        app.update_event = None
+
+    from kivy.uix.image import Image as KivyImage
+
+    img = KivyImage(source=sprite_path, allow_stretch=True, keep_ratio=True)
+    popup = Popup(title='', content=img,
+                  size_hint=(0.9, 0.9), auto_dismiss=True)
+
+    def on_key_down(window, key, scancode, codepoint, modifiers):
+        if key in (13, 271, 27):  # Enter, NumPad Enter, Escape
+            popup.dismiss()
+            return True
+
+    def on_dismiss(instance):
+        global _popup_open, _current_popup
+        _popup_open = False
+        _current_popup = None
+        Window.unbind(on_key_down=on_key_down)
+        a2 = get_game_app()
+        if a2 and a2.scene and not a2.update_event:
+            a2.update_event = Clock.schedule_interval(a2.scene.update, 1.0/60.0)
+
+    popup.bind(on_dismiss=on_dismiss)
+    Window.bind(on_key_down=on_key_down)
+    _current_popup = popup
+    popup.open()
 
 
 # --- Virtual D-pad for Android touch controls ---
@@ -1393,6 +1517,7 @@ if __name__ == '__main__':
             room_list_str=room_list_str,
             room_mapping_str=room_mapping_str,
             room_meta_str=room_meta_str,
+            project_meta_repr=project_meta_repr,
             project_name=project_name_literal,
             first_room_class=first_room_class,
             needs_dpad=self._project_uses_keyboard(),
@@ -2879,6 +3004,89 @@ def show_highscore(allow_new_entry=True):
         output_file = self.output_path / "game" / "highscore.py"
         output_file.write_text(code, encoding="utf-8")
 
+    def _generate_savegame_module(self):
+        """Write game/savegame.py -- save_game/load_game (Tier 3 of
+        docs/DEFERRED_GAPS_2026_PLAN.md).
+
+        Deliberately narrower scope than the desktop runtime's save_game/
+        load_game (execute_save_game_action / execute_load_game_action,
+        runtime/action_executor.py): score, lives, health, and the current
+        room name only -- NOT full instance positions/custom variables.
+        Reconstructing arbitrary instance state on load would mean rebuilding
+        a room's instance list from saved data, a much larger change to the
+        room-switching path; this covers the "resume where you left off"
+        case honestly rather than silently dropping the action entirely.
+
+        Written verbatim (like highscore.py), so its literal braces need no
+        escaping.
+        """
+        code = r'''#!/usr/bin/env python3
+"""Save/load game state for the exported game.
+
+Persists score/lives/health/current-room to savegame.json next to the game
+(or under ANDROID_APP_PATH on Android) -- NOT full instance state (see this
+module's own docstring in kivy_exporter.py for why). Mirrors the shape of
+highscore.py's file-path convention.
+"""
+
+import os
+import json
+
+_FILE = os.path.join(os.environ.get('ANDROID_APP_PATH', '.'), 'savegame.json')
+
+
+def save_game(filename=None):
+    """Save score/lives/health/current room to disk. `filename` is accepted
+    for parity with the desktop action's parameter but ignored in favour of
+    a single fixed save slot -- multiple named save files are out of scope
+    for this narrower port."""
+    from main import get_score, get_lives, get_health, get_game_app, ROOM_ORDER
+
+    app = get_game_app()
+    room_name = None
+    if app is not None and 0 <= app.current_room_index < len(ROOM_ORDER):
+        room_name = ROOM_ORDER[app.current_room_index]
+
+    data = {
+        'version': '1.0',
+        'score': get_score(),
+        'lives': get_lives(),
+        'health': get_health(),
+        'current_room': room_name,
+    }
+    try:
+        with open(_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f)
+    except Exception as e:
+        print('save_game failed:', e)
+
+
+def load_game(filename=None):
+    """Restore score/lives/health/current room from disk. A missing or
+    unreadable save file is a silent no-op, matching the desktop action's
+    own "no save file found" behaviour."""
+    from main import set_score, set_lives, set_health, get_game_app, ROOM_ORDER
+
+    try:
+        with open(_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception:
+        return
+
+    set_score(int(data.get('score', 0)))
+    set_lives(int(data.get('lives', 3)))
+    set_health(int(data.get('health', 100)))
+
+    room_name = data.get('current_room')
+    app = get_game_app()
+    if app is not None and room_name in ROOM_ORDER:
+        target_index = ROOM_ORDER.index(room_name)
+        if target_index != app.current_room_index:
+            app._switch_to_room(target_index)
+'''
+        output_file = self.output_path / "game" / "savegame.py"
+        output_file.write_text(code, encoding="utf-8")
+
     def _generate_base_object(self):
         """Generate the base GameObject class"""
         code = '''#!/usr/bin/env python3
@@ -2990,6 +3198,12 @@ class GameObject(Widget):
         # image_speed can be fractional); a single-frame sprite never animates.
         self.image_index = 0.0
         self.image_speed = 1.0
+        # set_alpha / set_color (docs/DEFERRED_GAPS_2026_PLAN.md Tier 3):
+        # image_alpha is a 0..1 float, image_blend an (r, g, b) 0..255
+        # tuple -- same instance-attribute shape the desktop runtime uses.
+        # Read by _redraw_frame's Color() call below.
+        self.image_alpha = 1.0
+        self.image_blend = (255, 255, 255)
         self._sprite_frames = 1
         self._frame_w = 0
         self._frame_h = 0
@@ -3161,7 +3375,8 @@ class GameObject(Widget):
             texture = self._sprite_texture
         self.canvas.clear()
         with self.canvas:
-            Color(1, 1, 1, 1)
+            br, bg, bb = self.image_blend
+            Color(br / 255.0, bg / 255.0, bb / 255.0, self.image_alpha)
             self.rect = Rectangle(texture=texture, pos=self.pos, size=self.size)
         self._last_frame_drawn = frame
 
@@ -3675,7 +3890,12 @@ class GameObject(Widget):
         """Render one draw-queue command dict into ``group``."""
         ctype = cmd.get('type')
         color = self._dq_color(cmd.get('color', '#FFFFFF'))
-        if ctype == 'rectangle':
+        if ctype == 'fill':
+            # fill_color (Tier 3): whole-viewport fill, no room-coordinate
+            # translation needed (the same rect either way).
+            group.add(Color(*color))
+            group.add(Rectangle(pos=(0, 0), size=(Window.width, Window.height)))
+        elif ctype == 'rectangle':
             x1 = float(cmd.get('x1', 0))
             y1 = float(cmd.get('y1', 0))
             x2 = float(cmd.get('x2', 100))
