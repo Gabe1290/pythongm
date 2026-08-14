@@ -482,6 +482,12 @@ class ActionExecutor:
         "game_restart": "restart_game",
         "else_block": "else_action",
         "change_sprite": "set_sprite",
+        # Folded into the real (now-registered) actions they duplicated --
+        # docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.4. splash_show_text/
+        # splash_show_image are NOT aliased here: they get their own real
+        # implementations (Tier 2.5), not a fold into an existing action.
+        "splash_show_video": "show_video",
+        "splash_show_webpage": "open_webpage",
     }
 
     # Legacy add_score/add_lives/add_health were consolidated into the set_*

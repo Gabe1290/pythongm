@@ -2345,6 +2345,22 @@ ACTION_TYPES = {
         ],
     ),
 
+    # Runtime: execute_show_video_action. Was functional but unregistered
+    # (invisible in the UI) -- docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.4.
+    "show_video": ActionType(
+        name="show_video",
+        display_name="Show Video",
+        description="Play a video file in your system's default video "
+                    "player -- opens as a separate window, not rendered "
+                    "inside the game itself",
+        category="Game",
+        icon="🎬",
+        parameters=[
+            ActionParameter(name="filename", display_name="Video File", param_type="string", default_value="", description="Path to the video file"),
+            ActionParameter(name="fullscreen", display_name="Fullscreen", param_type="boolean", default_value=False, required=False, description="Request fullscreen playback (support depends on your system's player)"),
+        ],
+    ),
+
     # Runtime: execute_show_info_action — no parameters
     "show_info": ActionType(
         name="show_info",
