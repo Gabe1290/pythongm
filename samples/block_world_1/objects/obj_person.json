@@ -1,0 +1,242 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "spr_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "enable_block_world_view",
+          "parameters": {
+            "camera_object": "obj_person",
+            "z_layer": "1",
+            "fov": "66",
+            "cell_size": "32",
+            "render_distance": "16",
+            "wall_color": "#8a8a8a",
+            "floor_color": "#3a2f1c",
+            "ceiling_color": "#87CEEB"
+          }
+        },
+        {
+          "action": "select_hotbar_slot",
+          "parameters": {
+            "index": "0"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "won",
+            "value": "0",
+            "scope": "self"
+          }
+        }
+      ]
+    },
+    "game_start": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": false
+          }
+        },
+        {
+          "action": "load_block_world",
+          "parameters": {
+            "data_file": "blocks/room0.json"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "won == 0 and abs(x - 336) < 24 and abs(y - 80) < 24",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "won",
+                  "value": "1",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "100",
+                  "relative": true
+                }
+              },
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "You reached the beacon! You win!"
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "w": {
+        "actions": [
+          {
+            "action": "move_and_collide",
+            "parameters": {
+              "dx": "0",
+              "dy": "-4"
+            }
+          }
+        ]
+      },
+      "s": {
+        "actions": [
+          {
+            "action": "move_and_collide",
+            "parameters": {
+              "dx": "0",
+              "dy": "4"
+            }
+          }
+        ]
+      },
+      "a": {
+        "actions": [
+          {
+            "action": "move_and_collide",
+            "parameters": {
+              "dx": "-4",
+              "dy": "0"
+            }
+          }
+        ]
+      },
+      "d": {
+        "actions": [
+          {
+            "action": "move_and_collide",
+            "parameters": {
+              "dx": "4",
+              "dy": "0"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_facing_angle",
+            "parameters": {
+              "angle": "-3",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_look_pitch",
+            "parameters": {
+              "pitch": "2",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_look_pitch",
+            "parameters": {
+              "pitch": "-2",
+              "relative": true
+            }
+          }
+        ]
+      }
+    },
+    "keyboard_press": {
+      "space": {
+        "actions": [
+          {
+            "action": "break_block",
+            "parameters": {
+              "reach": "5"
+            }
+          }
+        ]
+      },
+      "shift": {
+        "actions": [
+          {
+            "action": "place_block",
+            "parameters": {
+              "block": "hotbar_block",
+              "reach": "5"
+            }
+          }
+        ]
+      },
+      "q": {
+        "actions": [
+          {
+            "action": "select_hotbar_slot",
+            "parameters": {
+              "index": "-1",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "e": {
+        "actions": [
+          {
+            "action": "select_hotbar_slot",
+            "parameters": {
+              "index": "1",
+              "relative": true
+            }
+          }
+        ]
+      }
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_block_world_hud",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imported": false,
+  "created": "2026-08-14T00:00:00.000000",
+  "modified": "2026-08-14T00:00:00.000000",
+  "parent": "",
+  "remember_destroyed": false
+}

@@ -16,9 +16,10 @@ EDITIONS = {
             "04_breakout",
         ],
         # Welcome-tab sample games shown in this edition, by folder name under
-        # samples/ (None = show all). Beginner hides the raycast_* samples,
-        # which change the view shape and are the most advanced; everything
-        # else (maze / platform / match3 / views / treasure) stays.
+        # samples/ (None = show all). Beginner hides the raycast_* and
+        # block_world_* samples, which change the view shape and are the
+        # most advanced; everything else (maze / platform / match3 / views /
+        # treasure) stays.
         "sample_folders": [
             "maze_1", "maze_2", "maze_3", "maze_4",
             "plateforme_1", "plateforme_2", "plateforme_3",
