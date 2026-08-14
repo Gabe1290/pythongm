@@ -2570,12 +2570,22 @@ def migrate_legacy_actions(node) -> int:
 
 
 def get_action_type(action_name: str) -> Optional[ActionType]:
-    """Get action type by name. Follows ACTION_TYPE_ALIASES for legacy names."""
+    """Get action type by name. Follows ACTION_TYPE_ALIASES for legacy names,
+    then falls back to runtime/action_executor.py's ACTION_ALIASES (the
+    dispatch-time alias table) so a name doesn't need a duplicate entry in
+    both tables to resolve to an ActionType."""
     if action_name in ACTION_TYPES:
         return ACTION_TYPES[action_name]
     aliased = ACTION_TYPE_ALIASES.get(action_name)
     if aliased:
         return ACTION_TYPES.get(aliased)
+    # Local import: runtime.action_executor pulls in pygame at module scope,
+    # which every get_action_type call shouldn't pay for -- only this rarely
+    # hit fallback path needs it.
+    from runtime.action_executor import ActionExecutor
+    runtime_aliased = ActionExecutor.ACTION_ALIASES.get(action_name)
+    if runtime_aliased:
+        return ACTION_TYPES.get(runtime_aliased)
     return None
 
 
