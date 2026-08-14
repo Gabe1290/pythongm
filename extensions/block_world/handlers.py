@@ -11,8 +11,9 @@ import json
 import math
 from pathlib import Path
 
-from .state import (BLOCK_TYPES, block_world_state, get_block, is_breakable,
-                    load_block_list, peek_camera, remove_block, set_block)
+from .state import (BLOCK_TYPES, DEFAULT_HOTBAR, block_world_state, get_block,
+                    is_breakable, load_block_list, peek_camera, remove_block,
+                    set_block)
 
 
 def _truthy(raw):
@@ -129,6 +130,38 @@ class PluginExecutor:
         # before the view responded again.
         from .renderer import clamp_pitch  # lazy: keeps pygame out of the IDE
         cfg["pitch"] = clamp_pitch(pitch)
+
+    def execute_select_hotbar_slot_action(self, instance, parameters):
+        """Choose the hotbar's selected block, for place_block to build with.
+
+        Sets two plain instance attributes: `hotbar_index` (wrapped into
+        range) and `hotbar_block` (the resolved block type id). Bind
+        place_block's `block` parameter to the literal expression
+        `"hotbar_block"` to use it -- place_block itself needs no change,
+        since its `block` parameter already resolves a bare instance-
+        variable-name expression (see ActionExecutor._parse_value).
+
+        Works even outside an active block-world view: this only touches
+        the calling instance, not room state, so a menu/inventory screen
+        can set the starting slot before the 3D view is ever enabled.
+
+        Parameters:
+            index: hotbar slot index, wrapping around at either end
+            relative: add to the current slot instead of jumping to it, for
+                cycling with a "[ ]"-style control
+        """
+        ae = self._executor(instance)
+        if ae is None:
+            return
+        try:
+            index = int(float(ae._parse_value(parameters.get("index", 0), instance)))
+        except (TypeError, ValueError):
+            return
+        if _truthy(parameters.get("relative", False)):
+            index += int(getattr(instance, "hotbar_index", 0))
+        index %= len(DEFAULT_HOTBAR)
+        instance.hotbar_index = index
+        instance.hotbar_block = DEFAULT_HOTBAR[index]
 
     def execute_place_block_action(self, instance, parameters):
         """Put a block in the empty cell the camera's centre ray reaches.
