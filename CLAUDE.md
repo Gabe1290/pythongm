@@ -603,12 +603,26 @@ Kivy `export/Kivy/kivy_exporter.py`), so a parity test locks the DDA core.
 - Suite 1864 → **1912 passed, 0 failed**. New tests: `test_kivy_raycast.py`
   (14, incl. a stub-kivy headless harness that drives the real generated
   renderer via `cls.__new__` + controlled geometry), `test_raycast_export_parity.py` (3).
-- **DEFERRED, both blocked on the same thing — a per-target GL/browser timing
-  spike for the low-res per-pixel floor cast, which can't be measured
+- ~~**DEFERRED, both blocked on the same thing — a per-target GL/browser
+  timing spike for the low-res per-pixel floor cast, which can't be measured
   headlessly:** unit 3b (HTML5 floor, JS `ImageData`) and 5b (Kivy floor,
   `blit_buffer`). Until then HTML5/Kivy fall back to the flat `floor_color`
-  fill (walls, sky, billboards are all real there). Everything else in the plan
-  doc is closed; those two are the only open raycast items.
+  fill (walls, sky, billboards are all real there). Everything else in the
+  plan doc is closed; those two are the only open raycast items.~~ **DONE,
+  same day (2026-07-19).** The throwaway timing spike (`70f0d0de`) cleared
+  the concern; unit 3b landed in `031cc1e1` (HTML5, `castFloorPlane()` /
+  `ImageData`) and unit 5b in `796daea9` (Kivy, `_floor_buffer()` /
+  `blit_buffer`), both same-day follow-ons to this note, which was written
+  mid-session before they landed and never updated afterward — a stale-doc
+  gap, not a real regression. `4021c95d` dropped `raycast_1`'s README
+  "floor is desktop-only" caveat once both landed. Confirmed still current as
+  of 2026-08-14: both are tested (`tests/test_html5_raycast.py`,
+  `tests/test_kivy_raycast.py`, `tests/test_raycast_view.py::TestFloorCasting`)
+  and exercised by every bundled raycast sample (`floor_texture` is set on
+  every camera object in `raycast_1`–`4`) — the flat `floor_color` fill that
+  remains in both exporters is only the fallback for a camera with no
+  `floor_texture` configured, not the default path. The raycast 2.5D arc has
+  no open items.
 - Landmine confirmed: the Kivy scene class is a `.format()` template
   (`kivy_exporter.py` ~line 1430-1990) — every literal `{`/`}` in added code
   must be doubled. Commit messages with double-quotes/parens must go through
