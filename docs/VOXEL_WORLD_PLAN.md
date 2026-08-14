@@ -1,8 +1,7 @@
 # Voxel World extension — plan
 
-Status: **Phases 0, 1, 2a, 2b and 2c all done (2026-08-13); Phase 3 under
-way — picking, place/break and unbreakable blocks landed, hotbar and world
-generator still open.**
+Status: **Phases 0 through 4 all done (2026-08-14). Phase 5 (sample game)
+and Phase 6 (export parity) remain.**
 
 This doc is the worked plan for a Minecraft-*inspired* block-building
 extension, built the same way
@@ -529,11 +528,6 @@ deliberately, because their closed-form assertions are 1:1 with layer numbers
 that way. `TestDefaultEyeHeight` is what covers the shipped value, including
 a control proving the old one genuinely could not stack.
 
-Still open in this phase: the hotbar, and a committed world generator. Also
-worth doing eventually: exposing the outline to authored games as an action,
-so a building game does not have to reimplement it — it is currently drawn
-only by the walkaround.
-
 Two new actions (`place_block`, `break_block`), mouse-bound, operating on
 whichever cube the camera's centre ray currently hits (reuse the DDA hit-test
 from Phase 2, don't write a second raycast for picking). A **hotbar**:
@@ -549,6 +543,13 @@ starting layout, so there's something to playtest before any editor UI work
 is justified. A visual world editor (paint blocks in 3D inside the Room
 Editor, mirroring the Room Editor's existing tile painter) is a legitimate
 later phase, not Phase 3.
+
+**Phase 3 fully closed (2026-08-14).** See "Finishing the plan" below for
+Units 1-3 (world data loading, the generator, and the hotbar) — the
+"Still open" note that used to live here is now the historical record of
+what those units closed. Still not done: exposing the placement outline to
+authored games as an action (it is currently drawn only by the walkaround)
+— a small, low-priority nice-to-have, not blocking anything.
 
 ## Edit mode vs play mode — open design question (raised 2026-08-13)
 
@@ -607,6 +608,11 @@ and its undo stack are their own phase after Phase 5, when there is a real
 world worth editing.
 
 ## Phase 4 — collision, gravity, HUD
+
+**Done (2026-08-14) — see Units 4-6 under "Finishing the plan" below for
+what actually shipped and how it diverged from the bullets here** (no jump
+mechanic — the "proven demo logic" had none; HUD slots are coloured
+rectangles, not sprites).
 
 - Player collision against voxel occupancy (extends the "check the grid cell
   ahead" approach the maze samples already use, one dimension richer).
@@ -687,9 +693,13 @@ units, in order.
 
 ## Finishing the plan — remaining units (2026-08-14)
 
-Phases 0–2c are done. Phase 3 has picking, `place_block`/`break_block`,
-unbreakable blocks, and pitch-aware picking landed; two units remain to
-close it. Phases 4–6 haven't started. In dependency order:
+**Units 1–6 all done (2026-08-14), closing Phase 3 and all of Phase 4 in one
+session.** Phases 0–4 are now fully closed; Phase 5 (the sample) and Phase 6
+(export) are what remain, in that order (Unit 7 then Units 8–10 below).
+Original planning text for each unit is left as written, with a dated "Done"
+note under each recording what actually shipped and where it diverged from
+the plan — several units resolved open design questions differently than
+either option the plan itself offered.
 
 **Unit 1 — world data loading (closes a Phase 1 deferral, blocks everything
 below it).** `state.py`'s own docstring has said since Phase 1 that "wiring
@@ -704,6 +714,17 @@ loads: a small new action (working name `load_block_world`, mirroring how
 asset in the `to_block_list` shape and calls `state.load_block_list` —
 bound in `game_start`, not `create`, per this doc's own landmine list below.
 
+**Done.** `load_block_world` exists exactly as planned, with one real bug
+found while testing it: `data_file` was first read through
+`ae._parse_value` like every other action parameter, but `_parse_value`'s
+expression heuristic reads `/` as division — `"blocks/room1.json"` silently
+evaluated to garbage instead of staying a path. Fixed by reading it as a
+plain string, matching how `wall_color`/`floor_color` already do the same
+thing elsewhere in this file. Silent no-op on a missing file, bad JSON, or
+an unknown block type (the whole file is rejected atomically, not
+partially loaded — `load_block_list`'s own existing behaviour). 8 tests in
+`tests/test_block_world_worldgen.py`.
+
 **Unit 2 — a committed world generator (closes Phase 3).** Same pattern as
 `tools/gen_raycast_3_maze.py`: a script under `tools/`, checked in (not
 throwaway), that emits a `to_block_list`-shaped JSON file rather than
@@ -711,6 +732,16 @@ placing blocks by hand. Depends on Unit 1 to actually be loadable by a game.
 Scope: reuse a maze/room generator's shape (walls + floor) translated into
 block placements, sized for a Phase 5-sized sample rather than a full
 game — this generator IS most of Phase 5's world, not a separate artifact.
+
+**Done.** `tools/gen_block_world_demo.py` → `tools/generated/
+block_world_demo.json` (455 blocks): a grass floor, a 3-block cobble
+perimeter (not 1 — see the Phase 2b playtest note on why a one-block wall
+reads as a step), and a one-block-per-step wood-plank staircase to a brick
+terrace, matching `DEFAULT_MAX_STEP_UP` exactly so Unit 4/5's footing has
+real terrain to climb. Pinned against its own committed output, the same
+discipline `tools/gen_raycast_3_maze.py` established. 6 tests in
+`tests/test_block_world_worldgen.py`, including one that loads the
+generator's real output through Unit 1's action end to end.
 
 **Unit 3 — the hotbar (closes Phase 3).** Re-examine the original scope
 before building it: `execute_place_block_action`'s `block` parameter already
@@ -727,6 +758,20 @@ times, that is the signal to add the action. Whichever way it goes, the HUD
 macro action (Unit 6) needs a stable parameter shape for "slots + selected
 index" decided here first, since it consumes whatever this unit produces.
 
+**Done.** Landed the small convenience action after all, but not for the
+"three lines of set_variable" reason above — for Unit 6, which needed a
+*stable, known* attribute name to read a selection from, not "however each
+author happens to organise their own variables." `select_hotbar_slot`
+(absolute or relative, mirroring `set_look_pitch`'s shape) writes two
+plain instance attributes, `hotbar_index` and `hotbar_block` — and
+`place_block` needed **no change at all**: its `block` parameter already
+resolves a bare instance-variable-name expression, so binding it to the
+literal string `"hotbar_block"` is the whole integration, exactly the
+mechanism this unit's own text predicted. `DEFAULT_HOTBAR` (8 slots)
+promotes the preview tool's own proven list verbatim; the walkaround now
+imports it instead of keeping a duplicate. 10 tests in
+`tests/test_block_world_hotbar.py`.
+
 **Unit 4 — collision (Phase 4).** Extends the "check the grid cell ahead"
 approach the maze samples already use, one dimension richer: a moving
 instance's next position must be checked against `get_block`/`BLOCK_TYPES
@@ -740,6 +785,19 @@ already established the pattern of layering picking on top of `march_ray`
 without a second DDA — collision should reuse `get_block`/`stack_top`, not
 grow a third occupancy query.
 
+**Done.** Split cleaner than the open question above implied: this unit
+became the PRIMITIVE (`ground_layer`/`can_enter`/`cell_of` in `state.py`),
+Unit 5 became the ACTION built on it — not "primitive vs. full action,"
+both, in dependency order. All three are promoted verbatim from
+`tools/preview_block_world.py`'s own functions of the same name/shape,
+proven there first across every viewpoint the walkaround exercises.
+`DEFAULT_MAX_STEP_UP = 1` is now an engine constant, not a demo-tool local.
+13 tests in `tests/test_block_world_collision.py`; two of my own test-
+authoring mistakes caught before they shipped by checking the real
+function's output first (`cell_of` rounds to the nearest grid line, which
+only agrees with "which cell contains this point" for the first half of
+each cell — `cell_of(CELL-1)` is 1, not the 0 first assumed).
+
 **Unit 5 — gravity/jump (Phase 4, depends on Unit 4).** The step-up logic
 already exists, just not as an engine feature: the preview tool's own
 movement script already builds falling/stepping on `stack_top(room, x, y)`
@@ -749,6 +807,22 @@ already-proven demo-tool logic into a real, tested engine primitive (action
 or documented pattern, same open question as Unit 4) rather than inventing
 new physics.
 
+**Done, and "gravity/jump" turned out to overstate what actually exists.**
+The preview tool has no jump at all — no vertical velocity, no jump key,
+just footing that snaps to `ground_layer` every frame. Staying faithful to
+"promote what's proven, don't invent new physics" (this unit's own
+instruction) meant NOT adding a jump mechanic. `move_and_collide` is the
+promoted action: axis-separated movement (sliding along walls works),
+collision via Unit 4's `can_enter`, and if the mover IS the room's
+block-world camera, its footing after moving becomes `cfg["z_layer"]` —
+climbing a step is exactly that number going up by one. One deliberate
+improvement over the demo it promotes: uses `room._sprite_top_left`
+(origin-aware), not raw x/y — the demo camera never had a sprite origin
+offset, so its shortcut never surfaced there; a dedicated test with a
+centred-origin sprite proves the fix is real, not just claimed. 13 tests in
+`tests/test_block_world_collision.py` (23 total in that file, alongside
+Unit 4's).
+
 **Unit 6 — HUD (Phase 4, depends on Unit 3 for the hotbar's parameter
 shape).** `build_block_world_hud_commands()`, a macro action in the same
 family as `raycast_2_5d.hud.build_minimap_commands`/
@@ -756,6 +830,17 @@ family as `raycast_2_5d.hud.build_minimap_commands`/
 geometry needed) plus a hotbar strip (reads whatever shape Unit 3 settled
 on). No new draw-queue primitive; emits ordinary rectangle/sprite/text
 commands like its raycast siblings.
+
+**Done, minus the sprite icons this text assumed.** `extensions/
+block_world/hud.py::build_block_world_hud_commands` emits rectangle/line/
+text only, not sprite: block textures are extension-bundled PNG files, not
+project `room._all_sprites` entries a `'sprite'` draw command can reference
+by name, and building that bridge was out of scope for this unit. A slot
+is a coloured rectangle (highlighted when selected) plus a short text
+label instead of an icon — the honest option available, not a placeholder
+for a future icon pass. Reads the selection from `instance.hotbar_index`
+(Unit 3), falling back to the same window-size resolution chain `_pick`
+already established. 14 tests in `tests/test_block_world_hud.py`.
 
 **Unit 7 — the `block_world_1` sample (Phase 5, depends on Units 1–6).** A
 small world via Unit 2's generator, a handful of block types from the Phase
@@ -796,9 +881,17 @@ completeness since they're easy to accidentally scope back in while
 building Units 4–7): infinite/procedural terrain, a full inventory/crafting
 system, an in-IDE visual world editor, and the optional protected-region
 follow-up to the `breakable` flag (build only if per-type protection proves
-too coarse once the sample exists to test it against).
+too coarse once the sample exists to test it against). Add, found while
+actually building Unit 5: a jump mechanic — the demo-tool logic Unit 5
+promoted never had one (no vertical velocity, no jump key), and "promote
+what's proven" meant not inventing one. Revisit only on an explicit ask,
+same bar as the other items on this list.
 
 Sequencing note: Units 1–3 can be done in almost any relative order (1
 before 2 is the only hard dependency), but Units 4–10 are a straight
 dependency chain as written. One commit per unit, full suite + smoke test
 each time, same discipline as every prior unit in this plan.
+
+**Units 1–6 done 2026-08-14** (see the dated notes under each unit above);
+Units 7–10 (Phase 5 sample, Phase 6 export) remain, in the dependency order
+already given.
