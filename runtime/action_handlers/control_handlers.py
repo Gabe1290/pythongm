@@ -183,62 +183,6 @@ def handle_if_key_pressed(ctx: HandlerContext, instance: Instance, params: Param
 
 
 
-def handle_code(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Execute inline code (limited GML support)."""
-    code = params.get("code", "")
-
-    if not code:
-        return
-
-    logger.debug(f"💻 Execute code: {code[:50]}...")
-
-    # Simple assignment pattern
-    if '=' in code and not any(op in code for op in ['==', '!=', '<=', '>=']):
-        lines = code.split(';')
-        for line in lines:
-            line = line.strip()
-            if '=' in line:
-                parts = line.split('=', 1)
-                if len(parts) == 2:
-                    var_name = parts[0].strip()
-                    value_expr = parts[1].strip()
-                    parsed_value = ctx._parse_value(value_expr, instance)
-
-                    if '.' in var_name:
-                        scope, name = var_name.split('.', 1)
-                        if scope.lower() == 'self':
-                            setattr(instance, name, parsed_value)
-                        elif scope.lower() == 'global' and ctx.game_runner:
-                            ctx.game_runner.global_variables[name] = parsed_value
-                    else:
-                        setattr(instance, var_name, parsed_value)
-
-
-def handle_script(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Execute a named script."""
-    script_name = params.get("script", params.get("name", ""))
-    arguments = params.get("arguments", params.get("args", []))
-
-    if not script_name:
-        logger.debug("⚠️ execute_script: No script specified")
-        return
-
-    if ctx.game_runner and hasattr(ctx.game_runner, 'scripts'):
-        script = ctx.game_runner.scripts.get(script_name)
-        if script:
-            try:
-                # Execute script with arguments
-                if callable(script):
-                    script(instance, *arguments)
-                logger.debug(f"📜 Executed script: {script_name}")
-            except Exception as e:
-                logger.error(f"❌ Script error in {script_name}: {e}")
-        else:
-            logger.debug(f"⚠️ Script not found: {script_name}")
-    else:
-        logger.debug(f"📜 Script execution (stub): {script_name}")
-
-
 # =============================================================================
 # Handler Registry
 # =============================================================================
@@ -255,9 +199,13 @@ CONTROL_HANDLERS: Dict[str, Any] = {
     # but ActionExecutor.execute_test_variable_action wins by Phase-1 priority
     # and uses incompatible operation strings ("equal" vs "equals"). The alias
     # was dead code and has been removed.
-    # Code execution
-    "code": handle_code,
-    "script": handle_script,
+    # Note: 'code'/'script' handlers (handle_code/handle_script) were removed
+    # 2026-08-14 -- confirmed dead code. Neither action name ever had an
+    # events/action_types.py entry, so neither was reachable from the UI, and
+    # no sample/importer ever emitted either name (the GMK importer's
+    # action_execute_script maps to the real, working 'execute_script'
+    # instead). The actual working feature is the separately-named
+    # execute_script/execute_code (real exec()-based, action_executor.py).
     # Aliases
     "collision": handle_if_collision,
 }
