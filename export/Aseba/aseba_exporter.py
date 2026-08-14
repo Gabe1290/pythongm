@@ -42,6 +42,12 @@ class AsebaExporter:
         with open(project_path, 'r', encoding='utf-8') as f:
             project_data = json.load(f)
 
+        # project.json's embedded object bodies can be stale — the modular
+        # project format keeps the authoritative copy in objects/<name>.json
+        # (see utils/project_file_merge.py). Without this merge, an object
+        # edited since its last full project save exports its OLD events.
+        self._load_object_files(project_path.parent, project_data)
+
         # Determine output directory
         if output_path is None:
             output_path = project_path.parent / "aseba_export"
@@ -94,6 +100,31 @@ class AsebaExporter:
         logger.info(f"See {readme_path} for instructions")
 
         return True
+
+    def _load_object_files(self, project_dir: Path, project_data: Dict) -> None:
+        """Merge objects/<name>.json side files into project_data (file wins),
+        matching the project loader's precedence (merge_object_file) — same
+        helper HTML5Exporter._load_object_files already does for the same
+        reason."""
+        from utils.project_file_merge import merge_object_file
+
+        objects_data = project_data.get('assets', {}).get('objects', {})
+        objects_dir = project_dir / "objects"
+        if not objects_dir.exists():
+            return
+
+        for object_name, object_data in list(objects_data.items()):
+            if isinstance(object_data, str):
+                object_data = {"name": object_name, "asset_type": "object"}
+                objects_data[object_name] = object_data
+            object_file = objects_dir / f"{object_name}.json"
+            if object_file.exists():
+                try:
+                    with open(object_file, 'r', encoding='utf-8') as f:
+                        file_object_data = json.load(f)
+                    merge_object_file(object_data, file_object_data)
+                except Exception as e:
+                    logger.warning(f"Failed to load object file {object_file}: {e}")
 
     def _find_thymio_objects(self, project_data: Dict) -> Dict[str, Dict]:
         """Find all Thymio robot objects in project"""

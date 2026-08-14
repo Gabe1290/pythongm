@@ -622,6 +622,78 @@ existed. Regenerated; 0 untranslated strings reported now.
   file. The loader already tolerates string-reference entries (`isinstance(
   object_data, str)` branches in `_load_objects_from_files` /
   `_load_sprites_from_files`), so the read path mostly works already.
+- **2026-08-14 investigation (audit-is-a-lead correction — re-verified before
+  touching anything, per this doc's own discipline; blast radius is bigger
+  than this entry originally described, so scope changed rather than the risk
+  being absorbed silently):**
+  - **Sprites carry no real "heavy" payload worth stripping.** Sprite pixel
+    data lives in a sibling `.png`, never in the JSON; `sprites/<name>.json`
+    is already small (~350-450 bytes in `samples/maze_1`, all scalar
+    metadata — width/height/origin/frame count/animation params). Manifest-
+    ifying sprites would require adding sprite-file loading (currently
+    **absent entirely**) to `export/base_exporter.py` (exe/macos/linux),
+    `export/android/android_exporter.py`, and `export/ios/ios_exporter.py` —
+    real new code in three untestable-here export paths, for near-zero size
+    benefit. **Scope narrowed: sprites are staying dual-stored.** The
+    actual size/diff/conflict pain the top of this entry describes is
+    entirely an **objects** problem (event/action trees, not sprite
+    metadata) — `obj_person` in `samples/maze_1` is 1474 bytes serialized
+    (2 events) vs. its sprite's 404.
+  - **Objects: stripping only `events` (not the full body) is the safe cut.**
+    Every one of the six known loaders (`core/project_manager.py`,
+    `runtime/game_runner.py`, `export/base_exporter.py`,
+    `export/HTML5/html5_exporter.py`, `export/android/android_exporter.py`'s
+    own hand-rolled merge, `export/ios/ios_exporter.py`'s own hand-rolled
+    merge) already correctly restores `events` from `objects/<name>.json` —
+    confirmed by reading each one, not assumed. The other object fields
+    (`sprite`/`visible`/`solid`/`persistent`/`depth`/`parent`/`mask`/dates)
+    can stay embedded as lightweight browsable metadata, mirroring how
+    rooms keep `width`/`height`/`background_color` embedded and only
+    `instances` moves out.
+  - **But two MORE independent readers exist that bypass all six loaders
+    entirely, load `project.json` straight off disk, and read `events`
+    with no merge step at all — found by grep, not in the six-loader
+    survey above, which is exactly why this needed a full sweep before
+    coding:**
+    1. `export/Aseba/aseba_exporter.py` — `AsebaExporter.export()` is
+       handed a raw `project.json` **path** by
+       `core/ide_window.py:export_aseba_code` (not the live merged
+       `current_project_data`) and never reads `objects/*.json` at all.
+       Stripping `events` would silently export **empty** Thymio/Aseba
+       robot programs.
+    2. `utils/resource_packager.py`'s `ResourcePackager.export_object`
+       (Tools → Export Object / single-asset sharing, `.gmobj` packages)
+       also reads `project.json` straight off disk with no object-file
+       merge — `export_room` right next to it already DOES merge
+       `rooms/<name>.json` (proof this exact class of bug is real and
+       already had to be fixed once, for rooms, in this same file).
+       Stripping `events` would ship `.gmobj` packages with no events —
+       silently broken object sharing.
+  - **A further, NOT-yet-individually-verified surface: at least 6 more
+    call sites read `project.json` directly as a fallback** (asset-manager-
+    cache-miss paths, mostly) — `widgets/asset_tree/asset_tree_item.py`,
+    `widgets/asset_tree/asset_tree_widget.py`, `editors/base_editor.py`,
+    `editors/playground_editor/__init__.py`, `editors/room_editor/__init__.py`,
+    `editors/object_editor/blockly_widget.py`,
+    `editors/object_editor/object_editor_main.py`. These are UI fallback
+    paths (exercised when the in-memory asset-manager cache doesn't have
+    an asset yet), not part of the load/save cycle the "round-trip test"
+    below would exercise at all — meaning the round-trip test this entry
+    already calls "mandatory" is **necessary but not sufficient**; each of
+    these needs individual reading to confirm whether it can actually be
+    hit with a stripped `events` field before this is safe.
+  - **Not implemented this pass.** Two confirmed regressions (Aseba export,
+    `.gmobj` object export) plus 6 unverified fallback paths is a bigger,
+    riskier unit of work than fits a single confident pass — and this is
+    exactly the risk profile the "just before 1.0 final" scheduling note
+    above was already anticipating; this investigation confirms rather than
+    overrides that caution. Real next step, scoped smaller than the
+    original TODO: (1) fix Aseba export + `ResourcePackager.export_object`
+    to merge `objects/<name>.json` first (matching `export_room`'s existing
+    pattern) — safe, valuable independent of timing; (2) individually clear
+    the 6 fallback-path call sites; (3) THEN strip only `events` (not
+    sprites, not the rest of the object body) with the round-trip test
+    below.
 - Round-trip test is mandatory: load a representative project → save → reload,
   and assert the in-memory `current_project_data` is byte-for-byte equivalent
   (no events/sprite-frames/params lost), for both a fresh project and a legacy
