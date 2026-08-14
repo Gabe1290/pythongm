@@ -728,7 +728,18 @@ existed. Regenerated; 0 untranslated strings reported now.
     (Node isn't a CI dep, matching `test_draw_queue_background_health_bar.py`'s
     pattern); the desktop `_draw_arrow` fix gets both a `_DRAW_HANDLERS`
     lookup test and a real-pixel render test.
-  - Right/middle mouse events have no touch equivalent and stay unexported.
+  - ~~Right/middle mouse events have no touch equivalent and stay
+    unexported~~ **DONE 2026-08-14.** `on_touch_down`/`on_touch_up` now key
+    off `touch.button` ('left'/'right'/'middle', set by Kivy's mouse
+    motion provider for real mouse input; absent — defaults to 'left' —
+    for a genuine touchscreen tap, unchanged Android behavior), dispatching
+    to the matching `on_mouse_{button}_press`/`_release` method. New flat
+    event keys (`mouse_right_press`/`_button`/`_down`/`_release`, same for
+    `middle`) added to `_get_event_method_name`'s map, mirroring
+    `_FLAT_MOUSE_KEY_ALIASES`. Verified with a real headless click-dispatch
+    run (not just source assertions) via a small synthetic project with an
+    object recording which button fired it.
+    `tests/test_kivy_html5_right_middle_mouse_export.py`.
   - **`execute_code` env parity — DONE 2026-08-09** (commits `c977f1c`,
     later same day). `game` is bound (a `_ScriptGameProxy` exposing
     score/lives/health as plain read/write values, reusing
@@ -813,7 +824,15 @@ existed. Regenerated; 0 untranslated strings reported now.
     **DONE 2026-07-16** — see the matching Kivy entry above; `engine.js`'s
     `executeAction` switch gained the same 8 `case` blocks and
     `renderDrawCommands` gained an `'arrow'` case.
-  - Right/middle mouse events are not implemented.
+  - ~~Right/middle mouse events are not implemented~~ **DONE 2026-08-14.**
+    `setupMouse()`'s `mousedown`/`mouseup` listeners now branch on DOM
+    `MouseEvent.button` (0/1/2 = left/middle/right) into three key-alias
+    arrays (mirroring the existing left-button one), plus a `contextmenu`
+    listener that calls `preventDefault()` so a right-click reaches the
+    game instead of opening the browser's menu. Touch input (no `.button`
+    concept) is unaffected — still always left, matching Kivy/Android's
+    equivalent fallback. See the matching Kivy entry above; both share
+    `tests/test_kivy_html5_right_middle_mouse_export.py`.
 
 - **Kivy export — long-tail action coverage** —
   `export/Kivy/code_generator.py:681`. Most actions translate fine; unhandled

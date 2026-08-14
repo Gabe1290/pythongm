@@ -2533,10 +2533,13 @@ class {class_name}(Widget):
         return x, self.room_height - y
 
     def on_touch_down(self, touch):
-        """Dispatch a touch/click as the GameMaker left-mouse press event.
+        """Dispatch a touch/click as the GameMaker mouse press event.
 
         Matches the IDE runtime: the event fires on EVERY instance that
         has it (no hit-test), with mouse_x/mouse_y set in room coords.
+        touch.button distinguishes left/right/middle for real mouse input;
+        touchscreen touches carry no button attribute and default to
+        'left', matching Android's single-button touch model.
         """
         if super().on_touch_down(touch):
             return True
@@ -2545,18 +2548,25 @@ class {class_name}(Widget):
         if _app is not None and _app.scene is not self:
             return False
         mx, my = self._touch_to_room(touch)
+        button = getattr(touch, 'button', 'left')
+        if button == 'right':
+            method_name = 'on_mouse_right_press'
+        elif button == 'middle':
+            method_name = 'on_mouse_middle_press'
+        else:
+            method_name = 'on_mouse_left_press'
         for instance in list(self.instances):
-            if hasattr(instance, 'on_mouse_left_press'):
+            if hasattr(instance, method_name):
                 instance.mouse_x = mx
                 instance.mouse_y = my
                 try:
-                    instance.on_mouse_left_press()
+                    getattr(instance, method_name)()
                 except Exception as exc:
-                    print(f"[ERROR] on_mouse_left_press: {{exc}}")
+                    print(f"[ERROR] {{method_name}}: {{exc}}")
         return False
 
     def on_touch_up(self, touch):
-        """Dispatch touch release as the GameMaker left-mouse release event."""
+        """Dispatch touch release as the GameMaker mouse release event."""
         if super().on_touch_up(touch):
             return True
         from main import get_game_app
@@ -2564,14 +2574,21 @@ class {class_name}(Widget):
         if _app is not None and _app.scene is not self:
             return False
         mx, my = self._touch_to_room(touch)
+        button = getattr(touch, 'button', 'left')
+        if button == 'right':
+            method_name = 'on_mouse_right_release'
+        elif button == 'middle':
+            method_name = 'on_mouse_middle_release'
+        else:
+            method_name = 'on_mouse_left_release'
         for instance in list(self.instances):
-            if hasattr(instance, 'on_mouse_left_release'):
+            if hasattr(instance, method_name):
                 instance.mouse_x = mx
                 instance.mouse_y = my
                 try:
-                    instance.on_mouse_left_release()
+                    getattr(instance, method_name)()
                 except Exception as exc:
-                    print(f"[ERROR] on_mouse_left_release: {{exc}}")
+                    print(f"[ERROR] {{method_name}}: {{exc}}")
         return False
 '''
 
@@ -4470,11 +4487,21 @@ class {class_name}(GameObject):
             # scene's on_touch_down/on_touch_up dispatch these — press and
             # held variants fire on touch down, matching the IDE runtime,
             # which has no per-frame held-mouse loop either. Right/middle
-            # buttons have no touch equivalent and stay unexported.
+            # are keyed off touch.button (real mouse input only — a
+            # touchscreen touch has no button and is always treated as
+            # left, same as Android's single-button model).
             'mouse_left_press': 'on_mouse_left_press',
             'mouse_left_button': 'on_mouse_left_press',
             'mouse_left_down': 'on_mouse_left_press',
             'mouse_left_release': 'on_mouse_left_release',
+            'mouse_right_press': 'on_mouse_right_press',
+            'mouse_right_button': 'on_mouse_right_press',
+            'mouse_right_down': 'on_mouse_right_press',
+            'mouse_right_release': 'on_mouse_right_release',
+            'mouse_middle_press': 'on_mouse_middle_press',
+            'mouse_middle_button': 'on_mouse_middle_press',
+            'mouse_middle_down': 'on_mouse_middle_press',
+            'mouse_middle_release': 'on_mouse_middle_release',
             'room_start': 'on_room_start',
             'room_end': 'on_room_end',
             'animation_end': 'on_animation_end',

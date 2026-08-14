@@ -3328,6 +3328,10 @@ class Game {
         // in room coordinates. Canvas CSS scaling is inverted.
         const PRESS_KEYS = ['mouse_left_press', 'mouse_left_button', 'mouse_left_down'];
         const RELEASE_KEYS = ['mouse_left_release'];
+        const RIGHT_PRESS_KEYS = ['mouse_right_press', 'mouse_right_button', 'mouse_right_down'];
+        const RIGHT_RELEASE_KEYS = ['mouse_right_release'];
+        const MIDDLE_PRESS_KEYS = ['mouse_middle_press', 'mouse_middle_button', 'mouse_middle_down'];
+        const MIDDLE_RELEASE_KEYS = ['mouse_middle_release'];
 
         const dispatch = (clientX, clientY, eventKeys) => {
             if (!this.currentRoom || this.paused) return;
@@ -3352,12 +3356,20 @@ class Game {
             });
         };
 
+        // DOM MouseEvent.button: 0=left, 1=middle, 2=right.
         this.canvas.addEventListener('mousedown', (e) => {
             if (e.button === 0) dispatch(e.clientX, e.clientY, PRESS_KEYS);
+            else if (e.button === 2) dispatch(e.clientX, e.clientY, RIGHT_PRESS_KEYS);
+            else if (e.button === 1) dispatch(e.clientX, e.clientY, MIDDLE_PRESS_KEYS);
         });
         this.canvas.addEventListener('mouseup', (e) => {
             if (e.button === 0) dispatch(e.clientX, e.clientY, RELEASE_KEYS);
+            else if (e.button === 2) dispatch(e.clientX, e.clientY, RIGHT_RELEASE_KEYS);
+            else if (e.button === 1) dispatch(e.clientX, e.clientY, MIDDLE_RELEASE_KEYS);
         });
+        // Without this, a right-click opens the browser's context menu
+        // instead of (or as well as) reaching mouse_right_press.
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             const t = e.changedTouches[0];
