@@ -216,7 +216,7 @@ class ActionCodeGenerator:
     """
 
     def __init__(self, base_indent=2, sprite_paths=None, sound_paths=None,
-                 background_paths=None, scripts=None):
+                 background_paths=None, scripts=None, extension_data=None):
         """
         Initialize the code generator.
 
@@ -231,11 +231,17 @@ class ActionCodeGenerator:
             background_paths: Optional {background_name: 'assets/images/<file>'}
                 map so the draw_background action can resolve a background name
                 to its exported path.
+            extension_data: Optional project_data['_extension_data'] (see
+                KivyExporter._collect_extension_data) -- an extension's
+                ACTION_CODEGEN function can read this to bake export-time
+                data (e.g. Block World's load_block_world) into the
+                generated code as a literal.
         """
         self.base_indent = base_indent
         self.sprite_paths = sprite_paths or {}
         self.sound_paths = sound_paths or {}
         self.background_paths = background_paths or {}
+        self.extension_data = extension_data or {}
         # {script_name: code} so execute_script can inline a project script's
         # body (mirrors the runtime resolving it from assets.scripts).
         self.scripts = scripts or {}

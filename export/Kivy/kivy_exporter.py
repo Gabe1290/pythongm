@@ -144,6 +144,13 @@ class KivyExporter:
             from export.Kivy.code_generator import reset_unsupported_actions
             reset_unsupported_actions()
 
+            # Stage-C-style generic data hook (mirrors the JS/Kivy code-
+            # injection hooks): an extension needing project-relative files
+            # at runtime (Block World's load_block_world) has no filesystem
+            # to read from once exported, so this reads them now and stashes
+            # them where ACTION_CODEGEN can bake them in as literals.
+            self._collect_extension_data()
+
             logger.info("=" * 60)
             logger.info("Starting Kivy Export")
             logger.info("=" * 60)
@@ -1446,6 +1453,46 @@ if __name__ == '__main__':
                 logger.error(f"  Failed to generate scene {room_name}: {e}")
                 import traceback
                 traceback.print_exc()
+
+    def _collect_extension_data(self) -> None:
+        """Merge each enabled extension's export-time data contribution into
+        ``self.project_data['_extension_data']`` -- the same generic hook
+        html5_exporter.py's own ``_collect_extension_data`` implements
+        (identical ``export_data.py``/``collect_export_data`` contract, so
+        one file -- extensions/block_world/export_data.py -- serves both
+        targets). Called once, early in ``export()``, before
+        ``ActionCodeGenerator`` instances are constructed, since
+        ``load_block_world``'s codegen needs the result to bake the
+        referenced world data in as a literal (Kivy has no live
+        project_data to read a path out of at runtime, unlike HTML5's
+        gameData)."""
+        try:
+            from events.plugin_loader import (
+                list_available_extensions, get_extension_directory)
+            ext_dir = get_extension_directory()
+        except Exception as exc:  # never let extension collection break export
+            logger.warning(f"Could not enumerate extensions for data: {exc}")
+            return
+        merged = self.project_data.setdefault('_extension_data', {})
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            data_file = ext_dir / info["folder"] / "export_data.py"
+            if not data_file.exists():
+                continue
+            try:
+                ns = {}
+                exec(compile(data_file.read_text(encoding="utf-8"),
+                             str(data_file), "exec"), ns)
+                collector = ns.get("collect_export_data")
+                if callable(collector):
+                    extra = collector(self.project_path, self.project_data)
+                    if isinstance(extra, dict):
+                        merged.update(extra)
+            except Exception as exc:
+                logger.error(
+                    f"Extension '{info['folder']}' export_data.py failed; "
+                    f"its export data is missing from the export: {exc}")
 
     EXTENSION_SCENE_MARKER = "    # __PYGM_EXTENSION_SCENE_CODE__"
 
@@ -4146,7 +4193,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map, extension_data=self.project_data.get('_extension_data', {}))
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard')
@@ -4331,7 +4378,7 @@ class {class_name}(GameObject):
 
             if actions:
                 # Generate action code for this key press
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map, extension_data=self.project_data.get('_extension_data', {}))
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_press')
@@ -4369,7 +4416,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map, extension_data=self.project_data.get('_extension_data', {}))
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_release')
@@ -4455,7 +4502,7 @@ class {class_name}(GameObject):
         logger.debug(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
 
         # Use the new ActionCodeGenerator for proper block/indentation handling
-        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map)
+        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map, scripts=self.scripts_map, extension_data=self.project_data.get('_extension_data', {}))
 
         for i, action in enumerate(actions):
             logger.debug(f"          Action {i}: {type(action).__name__}")
