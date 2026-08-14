@@ -71,7 +71,21 @@ class ResourcePackager:
                 print(f"Object '{object_name}' not found")
                 return False
 
-            object_data = objects[object_name]
+            object_data = dict(objects[object_name])  # copy; avoid mutating project_data
+
+            # Load events from the separate object file if it exists
+            # (events live in objects/<name>.json, not necessarily in
+            # project.json — mirrors the room-instances merge just below).
+            object_file = project_path / "objects" / f"{object_name}.json"
+            if object_file.exists():
+                try:
+                    with open(object_file, 'r', encoding='utf-8') as f:
+                        file_object_data = json.load(f)
+                    if 'events' in file_object_data:
+                        object_data['events'] = file_object_data['events']
+                        print(f"  Loaded events from object file: {object_name}")
+                except Exception as e:
+                    print(f"  ⚠️ Failed to load object file: {e}")
 
             # Collect dependencies (sprites)
             dependencies = ResourcePackager._collect_object_dependencies(
