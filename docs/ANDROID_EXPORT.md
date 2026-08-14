@@ -119,9 +119,10 @@ not accepted by the Play Store. To install:
 
 Sprite/action games and draw-queue + mouse/touch games (like the
 bundled `match3_1` sample) are supported: taps are delivered as the
-left-mouse-press event and draw-queue rendering works. Remaining
-limitations (right/middle mouse, a few draw-queue command types,
-`execute_code` environment differences) are listed under
+left-mouse-press event (right/middle-click on a mouse-equipped device
+work too), and draw-queue rendering works. Remaining limitations (a real
+on-device/buildozer end-to-end test doesn't exist; long-tail actions are
+ported opportunistically as they're hit) are listed under
 "Kivy/Android export" in `TODO.md`.
 
 ## Troubleshooting
