@@ -94,6 +94,7 @@ class HTML5Exporter:
                 # exporting without the merge shipped outdated events.
                 self._load_room_instances(project_path, project_data)
                 self._load_object_files(project_path, project_data)
+                self._collect_extension_data(project_path, project_data)
 
                 # A nameless (malformed/hand-edited) project.json must not
                 # KeyError the whole export — default to 'game' (finding #4).
@@ -229,6 +230,54 @@ class HTML5Exporter:
                         logger.debug(f"  Loaded {len(room_data['instances'])} instances for room: {room_name}")
                 except Exception as e:
                     logger.warning(f"  Failed to load room file {room_file}: {e}")
+
+    def _collect_extension_data(self, project_path: Path, project_data: Dict) -> None:
+        """Merge each enabled extension's export-time data contribution into
+        ``project_data['_extension_data']`` (Stage C-style, generalising the
+        JS-code injection hook to DATA rather than code).
+
+        An extension that needs project-relative files at runtime (Block
+        World's ``load_block_world`` reads a JSON world file the desktop
+        runtime opens directly off disk -- a browser export has no
+        filesystem) ships an optional ``export_data.py`` exposing
+        ``collect_export_data(project_path, project_data) -> dict``. Its
+        return value is merged in here, at export time, so the exported page
+        stays a single self-contained HTML file exactly like sprites/sounds
+        already are (base64-embedded, never a second file the browser would
+        have to fetch). engine.js never names a specific extension; this
+        method doesn't either -- ``project_data['_extension_data']`` is
+        reached at runtime via ``game.gameData._extension_data``, keyed
+        however each extension's own JS chooses to key it.
+        """
+        try:
+            from events.plugin_loader import (
+                list_available_extensions, get_extension_directory)
+            ext_dir = get_extension_directory()
+        except Exception as exc:  # never let extension collection break export
+            logger.warning(f"Could not enumerate extensions for data: {exc}")
+            return
+        merged = project_data.setdefault('_extension_data', {})
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            data_file = ext_dir / info["folder"] / "export_data.py"
+            if not data_file.exists():
+                continue
+            # Per-extension guard: one broken extension must not silently
+            # drop every other extension's export data.
+            try:
+                ns = {}
+                exec(compile(data_file.read_text(encoding="utf-8"),
+                             str(data_file), "exec"), ns)
+                collector = ns.get("collect_export_data")
+                if callable(collector):
+                    extra = collector(project_path, project_data)
+                    if isinstance(extra, dict):
+                        merged.update(extra)
+            except Exception as exc:
+                logger.error(
+                    f"Extension '{info['folder']}' export_data.py failed; "
+                    f"its export data is missing from the export: {exc}")
 
     def _load_object_files(self, project_path: Path, project_data: Dict) -> None:
         """Merge objects/<name>.json side files into project_data (file wins),
