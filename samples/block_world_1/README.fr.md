@@ -65,7 +65,12 @@ construire vos propres ajouts est là pour explorer, pas pour finir.
 
 ## État du moteur
 
-Cet exemple fonctionne sur le moteur de bureau (pygame) de Monde de
-Blocs — les phases 0 à 5 de `docs/VOXEL_WORLD_PLAN.md`. La prise en charge
-de l'export HTML5 et Kivy (phase 6) est suivie séparément dans le même
-document de plan.
+Cet exemple fonctionne sur les trois cibles de Monde de Blocs — le bureau
+(pygame), HTML5 et Kivy (export Android/application de bureau). Les moteurs
+HTML5 et Kivy dessinent chaque face de bloc en couleur unie (la couleur
+moyenne de la texture de chaque type de bloc) plutôt qu'avec les vraies
+textures par pixel du bureau — une réduction de portée délibérée et
+documentée pour les exports (voir les notes de la phase 6 dans
+`docs/VOXEL_WORLD_PLAN.md`) ; tout le reste — le monde, le but, le
+déplacement, casser/placer, la barre d'outils et le réticule — fonctionne
+à l'identique sur les trois cibles.

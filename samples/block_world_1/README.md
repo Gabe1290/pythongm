@@ -59,6 +59,11 @@ there to explore, not required to finish.
 
 ## Engine status
 
-This sample runs on Block World's desktop (pygame) engine —
-Phases 0 through 5 of `docs/VOXEL_WORLD_PLAN.md`. HTML5 and Kivy export
-support (Phase 6) is tracked separately in that same plan doc.
+This sample runs on all three of Block World's targets — desktop (pygame),
+HTML5, and Kivy (Android/desktop app export). The HTML5 and Kivy renderers
+draw every block face as a flat color (each block type's average texture
+color) rather than the desktop's real per-pixel textures — a deliberate,
+documented scope reduction for the export ports (see
+`docs/VOXEL_WORLD_PLAN.md`'s Phase 6 notes); everything else — the world,
+the goal, movement, breaking/placing, the hotbar and crosshair HUD — works
+identically on all three.

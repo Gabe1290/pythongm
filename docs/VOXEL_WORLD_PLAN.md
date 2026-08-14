@@ -1,7 +1,8 @@
 # Voxel World extension — plan
 
-Status: **Phases 0 through 4 all done (2026-08-14). Phase 5 (sample game)
-and Phase 6 (export parity) remain.**
+Status: **Phases 0 through 6 all done (2026-08-14). The plan is complete** —
+see "Finishing the plan" below for Units 7-10 (the sample + HTML5/Kivy export
+parity), the last pieces to land.
 
 This doc is the worked plan for a Minecraft-*inspired* block-building
 extension, built the same way
@@ -854,6 +855,23 @@ Phase 3 note above, changing a default is free only *before* a sample
 ships; audit defaults one more time in this unit, before Phase 6 makes
 changing them a three-target migration too.
 
+**Done (2026-08-14).** `samples/block_world_1`: a 14×14 grass floor behind a
+3-block cobble perimeter wall, a one-block-per-step wood-plank staircase
+(via `tools/gen_block_world_1_room.py`, 370 blocks) up to a brick terrace
+with a `gold_block` goal marker. Goal is "walk to the beacon" — a bridge-
+building goal was drafted and deliberately rejected (see the sample's own
+README) as too fiddly to guarantee completable on a first try. Welcome-tab
+entry + English and French guides (translation infra already existed from
+the raycast arc's i18n pass). Full end-to-end proof through the real
+`GameRunner` loop, including a 100-frame walk from spawn to the goal
+(`tests/test_block_world_1_sample.py`). One real cross-test-file bug found
+and fixed along the way: `GameRunner.cleanup()` calls `pygame.quit()` at
+the end of `run()`, which tore down the display mode
+`tests/test_block_world_layers.py`'s module-level `pygame.display.set_mode()`
+had set up — invisible running the file alone, only surfacing in full-suite
+order since `test_block_world_1_sample.py` sorts first alphabetically; fixed
+by reinitializing the display in the sample test's own run helper.
+
 **Unit 8 — HTML5 export (Phase 6, depends on Unit 7 — port a real,
 finished sample, not a moving target).** Follow
 `extensions/raycast_2_5d/export_html5.js`'s injection-marker pattern from
@@ -862,6 +880,30 @@ day one: a generic room-renderer/action registry seam already exists in
 rebuilding it. Port `march_ray`/`pick_voxel`/`render_block_world_view`'s
 JS equivalents plus all Phase 3/4 actions.
 
+**Done (2026-08-14), with one deliberate, documented scope reduction.**
+`extensions/block_world/export_html5.js` ports the full DDA/stacking/
+occlusion pipeline and all 8 actions, but walls and top/bottom faces are
+FLAT-COLORED using each block type's precomputed average texture color
+(`tools/gen_block_world_face_colors.py`) rather than real per-pixel PNG
+texture mapping — porting desktop's texture-cropping pipeline to a second
+hand-written renderer wasn't judged worth it for a first export cut, same
+category as raycast's still-open per-target floor-casting deferral. The
+`_fully_covers` occlusion early-out (a pure perf shortcut) is also skipped.
+`load_block_world` needed new infrastructure neither target had: a browser
+export has no filesystem to read a project-relative JSON file from, so
+`html5_exporter.py` gained a Stage-C-style generic `_collect_extension_data`
+hook (mirrors the JS/Kivy code-injection hooks) — an extension ships an
+optional `export_data.py` exposing `collect_export_data(project_path,
+project_data)`, called at export time and merged into
+`gameData._extension_data`. `extensions/block_world/export_data.py` walks
+every object's actions (recursing into `if_condition` branches) for
+`load_block_world` references. Verified via a real `HTML5Exporter().export()`
+of block_world_1 (`blocks/room0.json`'s 370 blocks confirmed reaching the
+embedded gameData byte-for-byte) plus structural/constant-parity assertions
+— no JS engine in CI, the same standing limitation the raycast HTML5 port
+already carries. `tests/test_html5_block_world.py`,
+`tests/test_block_world_export_face_colors.py`.
+
 **Unit 9 — Kivy export (Phase 6, depends on Unit 7, can run in either order
 relative to Unit 8).** Same seam-reuse principle via `export_kivy.py`'s
 established injection markers. Watch the standing landmine: Kivy scene
@@ -869,12 +911,59 @@ classes are `.format()` templates, so injected Python needs its braces
 un-doubled only after confirming zero `.format()` fields remain in the
 block, the same discipline the raycast Stage C move used.
 
+**Done (2026-08-14).** `extensions/block_world/export_kivy.py`'s SCENE_CODE
+ports the same flat-colored pipeline as Unit 8. Coordinate handling mirrors
+the raycast Kivy port's own solution to Kivy's y-up instance space: the
+whole DDA/projection/collision pipeline runs in GM y-down room space (a
+`_bw_gm_xy` helper converts a Kivy instance position back, mirroring
+`_raycast_gm_xy`), and only the final draw calls flip back
+(`_bw_fill_span`). Unlike raycast's vertically-symmetric wall strips, block
+faces are NOT symmetric around the horizon, so this needed a general-case
+per-span flip rather than raycast's single re-centring trick — verified by
+a dedicated test proving `move_and_collide`'s `dy` sign convention
+empirically (checking the real generated code's behavior, not a hand-
+derived assumption, after the desktop `vspeed` sync formula's own sign
+convention looked backwards enough on paper to be worth distrusting).
+`load_block_world` reuses Unit 8's exact `export_data.py` (one file serves
+both targets) — Kivy's codegen bakes the referenced world data in as a
+literal at export time (no live `project_data` to read a path out of at
+runtime, unlike HTML5's `gameData`), via a new `extension_data` param
+threaded through `ActionCodeGenerator`. Verified via a real
+`KivyExporter().export()` of block_world_1 (all 370 blocks reaching the
+generated code byte-for-byte, every generated file compiles) plus a stub-
+kivy execution harness (mirroring `test_kivy_raycast.py`'s own pattern)
+driving the real DDA, render, collision, place/break, hotbar, and HUD
+methods on controlled geometry. `tests/test_kivy_block_world.py`.
+
 **Unit 10 — resolve the HUD compositing question (Phase 6, during Units 8–9,
 not before).** Whether `viewport_height`-style letterboxing or a
 HUD-over-3D compositing approach fits the hotbar strip is explicitly an
 open question in the Phase 6 section above; the raycast DOOM-HUD precedent
 (a fixed bottom bar, not letterboxing) is the likely answer but should be
 confirmed against Unit 6's actual HUD shape, not assumed.
+
+**Done (2026-08-14), resolved differently than either option offered.**
+Block World's HUD (Unit 6) is a crosshair + a bottom hotbar strip, not a
+full-width DOOM-style bar — `draw_block_world_hud` is a MACRO action
+(ordinary rectangle/line/text draw-queue commands), so it needed **no
+viewport letterboxing and no HUD-over-3D compositing infrastructure at
+all**: both targets already run the draw-queue pass after the room render
+(HTML5's `renderExtensionRoom` returning true still lets the normal
+per-instance draw-event pass run; Kivy's `_render_extension_overlay`
+likewise gates the existing screen-space HUD group), so the hotbar simply
+draws on top for free, identically on all three targets. The open question
+the plan posed never actually applied to this feature — it was scoped for
+a *different* future HUD shape (a full DOOM-style bar) that block_world_1
+doesn't use. Cross-target parity closed the loop:
+`tests/test_block_world_export_parity.py` proves desktop and Kivy's
+`march_ray`/`pick_voxel`/shading functions are numerically IDENTICAL across
+a dense ray matrix (not just structurally similar), with HTML5 checked
+structurally + by shared shading constants (no JS engine in CI).
+`tests/test_export_block_world_ownership.py` pins that `engine.js`/
+`kivy_exporter.py`/`code_generator.py` carry only the generic extension
+seams — a regression re-inlining block-world code into a core export file
+trips it, mirroring `test_export_raycast_ownership.py`. Full suite: 2872
+passed, 0 failed; smoke run 18/18.
 
 **Explicitly not in this plan** (already listed above, restated for
 completeness since they're easy to accidentally scope back in while
@@ -892,6 +981,12 @@ before 2 is the only hard dependency), but Units 4–10 are a straight
 dependency chain as written. One commit per unit, full suite + smoke test
 each time, same discipline as every prior unit in this plan.
 
-**Units 1–6 done 2026-08-14** (see the dated notes under each unit above);
-Units 7–10 (Phase 5 sample, Phase 6 export) remain, in the dependency order
-already given.
+**All ten units done (2026-08-14)** — see the dated notes under each unit
+above. Phases 0 through 6 are fully closed; the plan is complete. Not
+started, and explicitly out of scope for this plan (see above): infinite/
+procedural terrain, a full inventory/crafting system, an in-IDE visual
+world editor, per-type block protection beyond the `breakable` flag, and a
+jump mechanic. Real per-pixel texture mapping on the HTML5/Kivy export
+targets (both currently flat-colored) is the one deferred-but-documented
+follow-up, in the same category as raycast's still-open per-target floor-
+casting timing deferral — revisit only on an explicit ask.
