@@ -142,6 +142,28 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "move_and_collide": ActionType(
+        name="move_and_collide",
+        display_name="Move And Collide",
+        description="Move this step, checked against the block grid, with "
+                    "automatic footing (step up one block, drop any "
+                    "distance) -- the camera's z_layer follows if this is "
+                    "the block-world camera",
+        category="3D View",
+        icon="🚶",
+        parameters=[
+            ActionParameter(name="dx", display_name="Dx", param_type="number",
+                default_value=0,
+                description="How far to move on x this step, in pixels"),
+            ActionParameter(name="dy", display_name="Dy", param_type="number",
+                default_value=0,
+                description="How far to move on y this step, in pixels"),
+            ActionParameter(name="collide", display_name="Collide",
+                param_type="boolean", default_value=True, required=False,
+                description="Off ignores the block grid entirely (flying/debug)"),
+        ]
+    ),
+
     "load_block_world": ActionType(
         name="load_block_world",
         display_name="Load Block World",

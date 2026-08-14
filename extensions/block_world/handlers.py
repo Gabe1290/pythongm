@@ -11,9 +11,9 @@ import json
 import math
 from pathlib import Path
 
-from .state import (BLOCK_TYPES, DEFAULT_HOTBAR, block_world_state, get_block,
-                    is_breakable, load_block_list, peek_camera, remove_block,
-                    set_block)
+from .state import (BLOCK_TYPES, DEFAULT_HOTBAR, block_world_state, can_enter,
+                    cell_of, get_block, ground_layer, is_breakable,
+                    load_block_list, peek_camera, remove_block, set_block)
 
 
 def _truthy(raw):
@@ -162,6 +162,70 @@ class PluginExecutor:
         index %= len(DEFAULT_HOTBAR)
         instance.hotbar_index = index
         instance.hotbar_block = DEFAULT_HOTBAR[index]
+
+    def execute_move_and_collide_action(self, instance, parameters):
+        """Move (dx, dy) this step, collision-checked against the block
+        grid, with automatic footing: standing on the highest block at the
+        mover's own (x, y), stepping up onto anything at most
+        state.DEFAULT_MAX_STEP_UP higher, and dropping onto anything lower
+        (there is no falling animation yet -- a drop is just a step down).
+        Movement is axis-separated (x then y checked independently) so
+        sliding along a wall works, the same as every other collision-aware
+        sample in this repo.
+
+        If the calling instance IS the room's block-world camera, its
+        footing after moving becomes the camera's z_layer -- climbing a
+        step is exactly the layer underfoot going up by one, which raises
+        the eye and re-projects the whole view. A non-camera instance still
+        moves and collides correctly; it just has nowhere engine-level to
+        store its own layer yet (a limitation worth lifting later, not one
+        this action tries to work around).
+
+        Promoted from tools/preview_block_world.py's own movement code
+        (which this extension's Phase 4 Unit 4 already promoted the
+        ground_layer/can_enter/cell_of half of into state.py), with one
+        deliberate improvement over the demo: this uses the instance's true
+        sprite top-left (room._sprite_top_left), not its raw x/y, so a
+        mover with a non-zero sprite origin collides correctly -- the demo
+        camera never had one, so the shortcut never showed up there.
+
+        Parameters:
+            dx, dy: how far to move this step, in pixels
+            collide: off ignores the block grid entirely (flying/debug),
+                default True
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return
+
+        try:
+            dx = float(ae._parse_value(parameters.get("dx", 0), instance))
+            dy = float(ae._parse_value(parameters.get("dy", 0), instance))
+        except (TypeError, ValueError):
+            return
+        collide = _truthy(parameters.get("collide", True))
+        cell_size = int(cfg.get("cell_size", 32))
+
+        tl_x, tl_y = room._sprite_top_left(instance)
+        standing = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+
+        nx = tl_x + dx
+        if not collide or can_enter(room, cell_of(nx, cell_size), cell_of(tl_y, cell_size), standing):
+            instance.x += dx
+            tl_x = nx
+        ny = tl_y + dy
+        if not collide or can_enter(room, cell_of(tl_x, cell_size), cell_of(ny, cell_size), standing):
+            instance.y += dy
+            tl_y = ny
+
+        standing = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+        camera = room._find_first_instance(cfg.get("camera_object", ""))
+        if camera is instance:
+            cfg["z_layer"] = standing
 
     def execute_place_block_action(self, instance, parameters):
         """Put a block in the empty cell the camera's centre ray reaches.

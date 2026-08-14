@@ -133,3 +133,126 @@ class TestCellOf:
     def test_negative_coordinates(self):
         assert cell_of(-1, CELL) == 0
         assert cell_of(-CELL / 2 - 1, CELL) == -1
+
+
+# ---------------------------------------------------------------------------
+# move_and_collide (Unit 5)
+# ---------------------------------------------------------------------------
+
+class MockRunner:
+    def __init__(self, room):
+        self.current_room = room
+        self.global_variables = {}
+
+
+def _world(z_layer=0):
+    room = _room()
+    camera = GameInstance("obj_person", 0, 0, {}, action_executor=None)
+    camera._cached_object_data = {"solid": False}
+    camera._cached_width = camera._cached_height = CELL
+    camera.facing_angle = 0.0
+    room.instances.append(camera)
+    cfg = block_world_state(room)["camera"]
+    cfg.update({"enabled": True, "camera_object": "obj_person",
+                "cell_size": CELL, "z_layer": z_layer})
+    return room, camera
+
+
+def _run(room, instance, action, **params):
+    ex = ActionExecutor(game_runner=MockRunner(room))
+    load_all_plugins(ex)
+    instance.action_executor = ex
+    return ex.action_handlers[action](instance, params)
+
+
+class TestMoveAndCollide:
+    def test_moves_freely_on_open_ground(self):
+        room, camera = _world()
+        _run(room, camera, "move_and_collide", dx=10, dy=5)
+        assert (camera.x, camera.y) == (10.0, 5.0)
+
+    def test_a_tall_obstruction_blocks_movement(self):
+        room, camera = _world()
+        set_block(room, 1, 0, 0, "stone")
+        set_block(room, 1, 0, 1, "stone")   # 2 tall -- a wall, not a step
+        _run(room, camera, "move_and_collide", dx=40, dy=0)
+        assert camera.x == 0.0
+
+    def test_a_single_block_is_climbed_as_a_step(self):
+        room, camera = _world()
+        set_block(room, 1, 0, 0, "stone")
+        _run(room, camera, "move_and_collide", dx=40, dy=0)
+        assert camera.x == 40.0
+        assert block_world_state(room)["camera"]["z_layer"] == 1
+
+    def test_walking_off_a_ledge_drops_the_footing(self):
+        room, camera = _world(z_layer=3)
+        camera.x, camera.y = 1 * CELL, 0
+        set_block(room, 1, 0, 0, "stone")
+        set_block(room, 1, 0, 1, "stone")
+        set_block(room, 1, 0, 2, "stone")   # standing on top, layer 3
+        # Open ground one cell over -- a big drop, but always allowed.
+        _run(room, camera, "move_and_collide", dx=40, dy=0)
+        assert block_world_state(room)["camera"]["z_layer"] == 0
+
+    def test_sliding_along_a_wall(self):
+        """Blocked on x, open on y -- axis-separated movement lets the
+        unblocked axis through, the same as every collision-aware sample
+        in this repo."""
+        room, camera = _world()
+        set_block(room, 1, 0, 0, "stone")
+        set_block(room, 1, 0, 1, "stone")
+        _run(room, camera, "move_and_collide", dx=40, dy=20)
+        assert camera.x == 0.0
+        assert camera.y == 20.0
+
+    def test_collide_off_ignores_the_grid(self):
+        room, camera = _world()
+        set_block(room, 1, 0, 0, "stone")
+        set_block(room, 1, 0, 1, "stone")
+        _run(room, camera, "move_and_collide", dx=40, dy=0, collide=False)
+        assert camera.x == 40.0
+
+    def test_a_non_camera_mover_does_not_touch_the_cameras_z_layer(self):
+        """Moves and collides correctly; it just has nowhere engine-level
+        to store its own footing yet (see the handler's own docstring)."""
+        room, camera = _world()
+        npc = GameInstance("obj_npc", 5 * CELL, 5 * CELL, {}, action_executor=None)
+        npc._cached_object_data = {"solid": False}
+        npc._cached_width = npc._cached_height = CELL
+        room.instances.append(npc)
+        set_block(room, 6, 5, 0, "stone")
+        _run(room, npc, "move_and_collide", dx=40, dy=0)
+        assert npc.x == 5 * CELL + 40
+        assert block_world_state(room)["camera"]["z_layer"] == 0
+
+    def test_respects_a_movers_true_sprite_origin(self):
+        """Deliberate improvement over the preview tool's own shortcut
+        (raw x/y): a sprite with a non-zero origin must collide by its true
+        top-left (room._sprite_top_left), not its raw position."""
+        from runtime.game_runner import GameSprite
+        room, camera = _world()
+        spr = GameSprite.__new__(GameSprite)
+        spr.frames = [pygame.Surface((32, 32))]
+        spr.origin_x = 16
+        spr.origin_y = 16
+        camera.sprite = spr
+        camera.x = 16   # raw x=16, true top-left = 16-16 = 0 -> cell 0
+        camera.y = 16
+        set_block(room, 1, 0, 0, "stone")
+        set_block(room, 1, 0, 1, "stone")
+        _run(room, camera, "move_and_collide", dx=40, dy=0)
+        assert camera.x == 16, "should still be blocked using the TRUE top-left"
+
+    def test_no_active_view_is_a_noop(self):
+        room, camera = _world()
+        block_world_state(room)["camera"]["enabled"] = False
+        _run(room, camera, "move_and_collide", dx=40, dy=0)
+        assert camera.x == 0.0
+
+    def test_no_current_room_does_not_raise(self):
+        camera = GameInstance("obj_person", 0, 0, {}, action_executor=None)
+        ex = ActionExecutor(game_runner=MockRunner(None))
+        load_all_plugins(ex)
+        camera.action_executor = ex
+        ex.action_handlers["move_and_collide"](camera, {"dx": 5, "dy": 5})
