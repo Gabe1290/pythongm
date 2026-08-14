@@ -651,7 +651,6 @@ the DOOM HUD, not letterboxing.
 - Crafting/inventory beyond a fixed hotbar (Phase 3 note).
 - A visual block-placing world editor in the IDE (Phase 3 note) — start with
   generator scripts.
-- Free vertical camera look (Phase 2c) unless a later decision reopens it.
 - Multiplayer. There's a separate, already-decided plan to rebuild LAN
   multiplayer as its own folder extension (see the `multiplayer-network-stash`
   memory) — if a shared block world is ever wanted, that's a pairing between
@@ -678,9 +677,128 @@ the DOOM HUD, not letterboxing.
 
 ## Suggested sequencing
 
-Phase 0 → 1 → 2a → 2b → 3 → 4 → 5, one commit-worthy unit at a time, each
-gated on the full test suite + a smoke run, matching this repo's established
-session-limit discipline (one task ≈ one commit, pushed immediately). Phase
-2c and Phase 6 are the two genuinely optional/deferrable-until-asked-for
-stages — everything through Phase 5 is enough for a real, playable, legally
-clean sample.
+Phase 0 → 1 → 2a → 2b → 2c → 3 → 4 → 5 → 6, one commit-worthy unit at a
+time, each gated on the full test suite + a smoke run, matching this repo's
+established session-limit discipline (one task ≈ one commit, pushed
+immediately). Phase 6 remains the one genuinely deferrable-until-asked-for
+stage — everything through Phase 5 is enough for a real, playable, legally
+clean sample. See "Finishing the plan" below for the concrete remaining
+units, in order.
+
+## Finishing the plan — remaining units (2026-08-14)
+
+Phases 0–2c are done. Phase 3 has picking, `place_block`/`break_block`,
+unbreakable blocks, and pitch-aware picking landed; two units remain to
+close it. Phases 4–6 haven't started. In dependency order:
+
+**Unit 1 — world data loading (closes a Phase 1 deferral, blocks everything
+below it).** `state.py`'s own docstring has said since Phase 1 that "wiring
+an actual load path is Phase 3+" — it still isn't wired. `to_block_list`/
+`load_block_list` can round-trip a Python list in memory, but nothing reads
+a world from a file at `create`/`game_start`, so there is no way to author a
+world once and ship it — every world that exists right now (the preview
+tool's demo scene) is hand-built Python, not data. Needed before the
+generator (Unit 2) or the sample (Phase 5) can produce anything a real game
+loads: a small new action (working name `load_block_world`, mirroring how
+`enable_block_world_view` reads its own config) that reads a bundled JSON
+asset in the `to_block_list` shape and calls `state.load_block_list` —
+bound in `game_start`, not `create`, per this doc's own landmine list below.
+
+**Unit 2 — a committed world generator (closes Phase 3).** Same pattern as
+`tools/gen_raycast_3_maze.py`: a script under `tools/`, checked in (not
+throwaway), that emits a `to_block_list`-shaped JSON file rather than
+placing blocks by hand. Depends on Unit 1 to actually be loadable by a game.
+Scope: reuse a maze/room generator's shape (walls + floor) translated into
+block placements, sized for a Phase 5-sized sample rather than a full
+game — this generator IS most of Phase 5's world, not a separate artifact.
+
+**Unit 3 — the hotbar (closes Phase 3).** Re-examine the original scope
+before building it: `execute_place_block_action`'s `block` parameter already
+resolves through `ae._parse_value`, so an author can already bind it to
+their own instance variable and cycle it with ordinary `set_variable` /
+key-press actions — a hotbar may need **no new action at all**, just a
+documented pattern (a `hotbar_index`/`hotbar_slot` instance-variable
+convention) plus the HUD (Unit 6) actually drawing it. Decide during
+implementation, not before, whether a small convenience action
+(`select_hotbar_slot`, absolute or relative like `set_look_pitch`) earns its
+keep over the author writing three lines of `set_variable`/conditional
+themselves — if the sample in Phase 5 needs it written out longhand three
+times, that is the signal to add the action. Whichever way it goes, the HUD
+macro action (Unit 6) needs a stable parameter shape for "slots + selected
+index" decided here first, since it consumes whatever this unit produces.
+
+**Unit 4 — collision (Phase 4).** Extends the "check the grid cell ahead"
+approach the maze samples already use, one dimension richer: a moving
+instance's next position must be checked against `get_block`/`BLOCK_TYPES
+[...]['solid']` at its own z-layer, not just x/y. Open design question to
+settle here, not deferred: expose this as a full opinionated movement
+action (a `move_and_collide`-style action, closer to how the maze samples'
+built-in movement works), or as a smaller helper an author's own movement
+code calls before applying a move (closer to how raycast's picking exposes
+primitives rather than a full controller). Whichever is chosen, `_pick`
+already established the pattern of layering picking on top of `march_ray`
+without a second DDA — collision should reuse `get_block`/`stack_top`, not
+grow a third occupancy query.
+
+**Unit 5 — gravity/jump (Phase 4, depends on Unit 4).** The step-up logic
+already exists, just not as an engine feature: the preview tool's own
+movement script already builds falling/stepping on `stack_top(room, x, y)`
+(the plan doc's Phase 2b notes call this out explicitly as "the heightmap
+query Phase 4's footing will reuse"). This unit is mostly *promoting* that
+already-proven demo-tool logic into a real, tested engine primitive (action
+or documented pattern, same open question as Unit 4) rather than inventing
+new physics.
+
+**Unit 6 — HUD (Phase 4, depends on Unit 3 for the hotbar's parameter
+shape).** `build_block_world_hud_commands()`, a macro action in the same
+family as `raycast_2_5d.hud.build_minimap_commands`/
+`build_doom_hud_commands` — crosshair (a fixed screen-centre mark, no
+geometry needed) plus a hotbar strip (reads whatever shape Unit 3 settled
+on). No new draw-queue primitive; emits ordinary rectangle/sprite/text
+commands like its raycast siblings.
+
+**Unit 7 — the `block_world_1` sample (Phase 5, depends on Units 1–6).** A
+small world via Unit 2's generator, a handful of block types from the Phase
+0 audit, place/break bound to real input, a goal ("build a bridge to reach
+the flag" per the original Phase 5 note, or similar). Welcome-tab entry +
+an English guide; translations stay a separate, explicitly budgeted
+follow-up per this repo's established i18n cost note, not part of this
+unit. This is also where the "camera is a two-block-tall body" default and
+every other block-world default gets genuinely load-bearing — per the
+Phase 3 note above, changing a default is free only *before* a sample
+ships; audit defaults one more time in this unit, before Phase 6 makes
+changing them a three-target migration too.
+
+**Unit 8 — HTML5 export (Phase 6, depends on Unit 7 — port a real,
+finished sample, not a moving target).** Follow
+`extensions/raycast_2_5d/export_html5.js`'s injection-marker pattern from
+day one: a generic room-renderer/action registry seam already exists in
+`engine.js` from the raycast arc, so this should be *using* that seam, not
+rebuilding it. Port `march_ray`/`pick_voxel`/`render_block_world_view`'s
+JS equivalents plus all Phase 3/4 actions.
+
+**Unit 9 — Kivy export (Phase 6, depends on Unit 7, can run in either order
+relative to Unit 8).** Same seam-reuse principle via `export_kivy.py`'s
+established injection markers. Watch the standing landmine: Kivy scene
+classes are `.format()` templates, so injected Python needs its braces
+un-doubled only after confirming zero `.format()` fields remain in the
+block, the same discipline the raycast Stage C move used.
+
+**Unit 10 — resolve the HUD compositing question (Phase 6, during Units 8–9,
+not before).** Whether `viewport_height`-style letterboxing or a
+HUD-over-3D compositing approach fits the hotbar strip is explicitly an
+open question in the Phase 6 section above; the raycast DOOM-HUD precedent
+(a fixed bottom bar, not letterboxing) is the likely answer but should be
+confirmed against Unit 6's actual HUD shape, not assumed.
+
+**Explicitly not in this plan** (already listed above, restated for
+completeness since they're easy to accidentally scope back in while
+building Units 4–7): infinite/procedural terrain, a full inventory/crafting
+system, an in-IDE visual world editor, and the optional protected-region
+follow-up to the `breakable` flag (build only if per-type protection proves
+too coarse once the sample exists to test it against).
+
+Sequencing note: Units 1–3 can be done in almost any relative order (1
+before 2 is the only hard dependency), but Units 4–10 are a straight
+dependency chain as written. One commit per unit, full suite + smoke test
+each time, same discipline as every prior unit in this plan.
