@@ -25,7 +25,7 @@ real work:
 
 ## Tier 1 — small, safe cleanups
 
-- [ ] **1.1 Remove the dead "script"/"code" action stub.**
+- [x] **1.1 Remove the dead "script"/"code" action stub.** Done `3b099735`.
   `runtime/action_handlers/control_handlers.py`'s `handle_script` (L217-239)
   and `handle_code` (L186-215), registered as `"script"`/`"code"` in
   `CONTROL_HANDLERS` (L259-260). Confirmed unreachable: neither name has an
@@ -35,7 +35,7 @@ real work:
   entries. Test: assert `"script"`/`"code"` absent from `CONTROL_HANDLERS`
   and `get_action_type` still returns `None` for both (no behavior change).
 
-- [ ] **1.2 Unify `get_action_type` alias resolution with `ActionExecutor.ACTION_ALIASES`.**
+- [x] **1.2 Unify `get_action_type` alias resolution with `ActionExecutor.ACTION_ALIASES`.** Done `e08c09d1`.
   Two independently-maintained alias tables exist today: `events/action_types.py`'s
   `ACTION_TYPE_ALIASES` (L2516, consulted by `get_action_type`, L2572-2579)
   and `runtime/action_executor.py`'s `ACTION_ALIASES` (L467-485, 10 entries,
