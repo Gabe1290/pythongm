@@ -9,10 +9,44 @@ import base64
 import gzip
 import html
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+def project_needs_python(project_data: Dict) -> bool:
+    """True if any object event (top level, nested branches, keyboard
+    sub-maps) contains an execute_code action. Python port of
+    engine.js's PythonBridge.projectNeedsPython, kept in exact sync with
+    it — used here only to decide whether the offline Pyodide bundle is
+    worth embedding (~17 MB); the JS copy still runs at play time to
+    decide whether to load Pyodide at all in the first place."""
+    def scan_actions(actions):
+        for a in (actions or []):
+            if not isinstance(a, dict):
+                continue
+            if a.get('action') == 'execute_code' or a.get('action_type') == 'execute_code':
+                return True
+            p = a.get('parameters') or {}
+            if (scan_actions(p.get('then_actions')) or scan_actions(p.get('else_actions'))
+                    or scan_actions(p.get('actions')) or scan_actions(a.get('sub_actions'))):
+                return True
+        return False
+
+    objects = (project_data.get('assets') or {}).get('objects') or {}
+    for obj in objects.values():
+        if not isinstance(obj, dict):
+            continue
+        for ev in (obj.get('events') or {}).values():
+            if not isinstance(ev, dict):
+                continue
+            if scan_actions(ev.get('actions')):
+                return True
+            for sub in ev.values():
+                if isinstance(sub, dict) and scan_actions(sub.get('actions')):
+                    return True
+    return False
 
 
 def _sanitize_filename(name: str) -> str:
@@ -34,10 +68,25 @@ class HTML5Exporter:
     EXTENSION_JS_MARKER = "// __PYGM_EXTENSION_JS__"
 
     def __init__(self):
+        # export()'s outer try/except is intentionally broad (catches and
+        # logs any failure, returns False) — this preserves a specific,
+        # actionable message (e.g. the offline-bundle download failure's
+        # "internet access... uncheck it to..." text) for the caller to
+        # surface in the UI instead of it being lost to the console log.
+        self.last_error_message = None
+
         # Load templates from files
         template_dir = Path(__file__).parent / "templates"
         self.template_html = (template_dir / "game_template.html").read_text(encoding='utf-8')
         engine_code = (template_dir / "engine.js").read_text(encoding='utf-8')
+        # Vendored inline (not loaded from a CDN <script src>) so every
+        # HTML5 export is a genuinely self-contained single .html file --
+        # gzip decompression of game_data/sprites_data/sounds_data needs it
+        # unconditionally, so unlike the Pyodide bundle below this is never
+        # optional. resources/vendor/pako.min.js is MIT+Zlib licensed
+        # (license comment preserved verbatim on embed).
+        pako_path = Path(__file__).resolve().parents[2] / "resources" / "vendor" / "pako.min.js"
+        self.pako_code = pako_path.read_text(encoding='utf-8')
         # Stage C: concatenate each enabled extension's export_html5.js at the
         # marker, so engine.js stays extension-agnostic (the raycast renderer
         # and its actions ship from extensions/raycast_2_5d/export_html5.js).
@@ -77,8 +126,43 @@ class HTML5Exporter:
                     f"read; it is missing from the export: {exc}")
         return "\n".join(parts)
 
-    def export(self, project_path: Path, output_path: Path) -> bool:
+    EMBEDDED_PYODIDE_MARKER = "const EMBEDDED_PYODIDE = null; // __PYGM_EMBEDDED_PYODIDE_MARKER__"
+
+    def _build_offline_pyodide_engine_code(self, progress_callback=None) -> str:
+        """self.engine_code with EMBEDDED_PYODIDE filled in from the
+        (downloaded-once, then cached) Pyodide core files -- see
+        export/HTML5/pyodide_bundle.py. Raises RuntimeError (propagated
+        to the caller, matching every other export failure path) if the
+        files can't be obtained."""
+        from export.HTML5.pyodide_bundle import ensure_pyodide_files, MIME_TYPES
+
+        files = ensure_pyodide_files(progress_callback=progress_callback)
+        embedded = {}
+        for filename, data in files.items():
+            if MIME_TYPES.get(filename, '').startswith('text/'):
+                # Plain JS text compresses well; the exact inverse of
+                # engine.js's PythonBridge._b64GzipToText.
+                embedded[filename] = base64.b64encode(
+                    gzip.compress(data, compresslevel=9)).decode('ascii')
+            else:
+                # pyodide.asm.wasm / pyodide-lock.json / python_stdlib.zip
+                # are already-compressed formats; embedded as-is (the
+                # latter two double as the literal payload of a
+                # data:...;base64,<this> URI on the JS side, so they must
+                # stay plain base64, not gzip-then-base64).
+                embedded[filename] = base64.b64encode(data).decode('ascii')
+
+        embedded_json = json.dumps(embedded, separators=(',', ':'))
+        return self.engine_code.replace(
+            self.EMBEDDED_PYODIDE_MARKER,
+            f"const EMBEDDED_PYODIDE = {embedded_json};")
+
+    def export(self, project_path: Path, output_path: Path,
+               export_settings: Optional[Dict] = None,
+               progress_callback=None) -> bool:
             """Export project to HTML5"""
+            export_settings = export_settings or {}
+            self.last_error_message = None
             try:
                 logger.info(f"Exporting {project_path.name} to HTML5...")
 
@@ -100,6 +184,17 @@ class HTML5Exporter:
                 # KeyError the whole export — default to 'game' (finding #4).
                 project_name = project_data.get('name', 'game')
                 logger.info(f"  Loaded project: {project_name}")
+
+                # Offline Pyodide bundle (TODO.md: "Pyodide loads from the
+                # jsDelivr CDN — a Python-using game needs internet on
+                # first open"). Opt-in and only worth the ~17 MB it adds
+                # when the project actually uses execute_code — a pure-
+                # action game gets the default engine_code unchanged.
+                engine_code_for_export = self.engine_code
+                if export_settings.get('offline_pyodide') and project_needs_python(project_data):
+                    logger.info("  Bundling offline Python runtime (Pyodide)...")
+                    engine_code_for_export = self._build_offline_pyodide_engine_code(
+                        progress_callback)
 
                 # Encode sprites as base64
                 logger.info("  Encoding sprites...")
@@ -173,7 +268,8 @@ class HTML5Exporter:
                 html_content = html_content.replace('{game_data}', f'"{game_data_compressed}"')
                 html_content = html_content.replace('{sprites_data}', f'"{sprites_data_compressed}"')
                 html_content = html_content.replace('{sounds_data}', f'"{sounds_data_compressed}"')
-                html_content = html_content.replace('{engine_code}', self.engine_code)
+                html_content = html_content.replace('{pako_code}', self.pako_code)
+                html_content = html_content.replace('{engine_code}', engine_code_for_export)
 
                 # Write output. Sanitize the name for the FILENAME —
                 # characters legal in a project name but illegal in a
@@ -199,6 +295,7 @@ class HTML5Exporter:
                 logger.error(f"Export failed: {e}")
                 import traceback
                 traceback.print_exc()
+                self.last_error_message = str(e)
                 return False
 
     def _load_room_instances(self, project_path: Path, project_data: Dict) -> None:

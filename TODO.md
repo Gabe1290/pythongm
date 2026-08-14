@@ -969,10 +969,110 @@ existed. Regenerated; 0 untranslated strings reported now.
   match3_1 (`tests/test_html5_python_export.py` pins the codegen; the
   Playwright harness lives in the session notes).
 - Still open:
-  - Pyodide loads from the jsDelivr CDN — a Python-using game needs
-    internet on first open. An "offline bundle" export option (ship
-    pyodide files next to the .html) would fix locked-down school
-    networks. Pure-action games are unaffected (no Pyodide load at all).
+  - ~~Pyodide loads from the jsDelivr CDN — a Python-using game needs
+    internet on first open~~ **DONE 2026-08-14, embedded rather than
+    "shipped next to the .html"** — the user's explicit requirement was
+    that HTML5 export stay a single self-contained file (no sibling
+    files), so this embeds Pyodide's core files as base64 directly in the
+    .html instead of the originally-sketched "ship files alongside it"
+    approach.
+    - **Bonus fix found along the way: `pako.min.js` (gzip decompression
+      for game_data/sprites_data/sounds_data — needed by EVERY export,
+      Python or not) was ALSO CDN-loaded** (`cdnjs.cloudflare.com`),
+      meaning even a pure-action game wasn't actually the fully
+      self-contained/offline-capable file this doc's own "Pure-action
+      games are unaffected" line assumed. Fixed unconditionally (not
+      gated behind any option): `resources/vendor/pako.min.js` (MIT+Zlib,
+      ~47 KB, license comment preserved) is now vendored and always
+      embedded inline (`game_template.html`'s `<script src=...>` →
+      `<script>{pako_code}</script>`). Every HTML5 export is now
+      genuinely offline-capable by default; Pyodide is the only opt-in
+      part, since it's the only piece with a real size cost (~17 MB).
+    - **Design, verified against Pyodide's actual source (not
+      guessed)**: `loadPyodide()` already supports everything needed
+      without protocol-level hacks — `stdLibURL`/`lockFileURL` accept
+      `data:` URIs directly (fetch() supports `data:` natively); if
+      `_createPyodideModule` already exists globally, `loadPyodide()`
+      skips its own `pyodide.asm.js` fetch entirely (its own source
+      comment: "If the pyodide.asm.js script has been imported, we can
+      skip the dynamic import") — so embedding `pyodide.js`/
+      `pyodide.asm.js` as inline `<script>` tags removes those two
+      network requests outright. Only `pyodide.asm.wasm` has no direct
+      option (computed internally as `indexURL + 'pyodide.asm.wasm'`,
+      fetched via plain `fetch()` in browser mode — confirmed by reading
+      `compat.ts`'s `browser_getBinaryResponse`, not XHR as a stray
+      grep first suggested) — `engine.js`'s `PythonBridge._initEmbedded`
+      temporarily overrides `window.fetch` to serve the embedded bytes
+      for that one request, restored in a `finally` regardless of
+      success/failure.
+    - `export/HTML5/pyodide_bundle.py`: downloads (once) and caches
+      Pyodide's 5 core files (`pyodide.js`/`pyodide.asm.js`/
+      `pyodide.asm.wasm`/`pyodide-lock.json`/`python_stdlib.zip` — NOT
+      the full distribution with numpy/pandas/etc.; `PY_BOOTSTRAP` only
+      ever imports stdlib json/math/random) under
+      `~/.pygamemaker/pyodide_cache/<version>/`, not vendored into git
+      (unlike pako's ~47 KB, these are multi-MB third-party binaries).
+    - `HTML5Exporter`: new `export_settings={'offline_pyodide': True}` +
+      `progress_callback` params (both optional, default off — every
+      existing `.export(path, path)` call keeps working unchanged).
+      `project_needs_python()` (a Python port of `engine.js`'s
+      `PythonBridge.projectNeedsPython`, kept in exact sync) gates
+      whether the ~17 MB is worth embedding at all — a pure-action game
+      gets the unchanged default output even with the option checked.
+      Text files (`pyodide.js`/`pyodide.asm.js`) are gzip-then-base64
+      (compress well, matching the existing game_data/sprites_data
+      pattern); the three already-compressed binary formats
+      (`pyodide.asm.wasm`/`pyodide-lock.json`/`python_stdlib.zip`) are
+      plain base64 — the latter two double as the literal payload of a
+      `data:...;base64,<this>` URI, so gzipping them would need an
+      extra JS-side inflate-then-re-base64 step (chunked, to dodge
+      `String.fromCharCode(...)` spread limits on multi-MB arrays) for
+      near-zero benefit on data that barely compresses further anyway.
+      `last_error_message` (new): `export()`'s outer try/except is
+      intentionally broad (catches anything, logs, returns `False`) —
+      this preserves pyodide_bundle's specific, actionable failure
+      message (e.g. "no internet — uncheck the option or check your
+      connection") for the UI instead of it being lost to the console.
+    - UI: `core/ide_exporters.py`'s `_ask_offline_pyodide()` — a
+      Yes/No prompt shown ONLY when `project_needs_python()` is true (a
+      pure-action game isn't asked at all), defaulting to No (so
+      Enter/Esc never silently commits +17 MB the user didn't choose).
+    - **Verified as thoroughly as possible without a real browser**
+      (matches this codebase's established "no Node.js in CI" ceiling —
+      except this session, uniquely, had a portable Node available, so
+      the bar was raised): `tests/test_html5_offline_pyodide_js_execution.py`
+      REALLY EXECUTES the extracted `PythonBridge` class under Node
+      (skips cleanly if `node` isn't on PATH — never a hard CI
+      dependency) against small fake "pyodide" fixtures, proving script
+      injection genuinely runs, the wasm fetch-intercept serves the
+      exact embedded bytes, `window.fetch` is restored byte-identical
+      afterward (a real bug — `.bind(window)` produced a
+      non-identical-but-functionally-equivalent wrapper — caught and
+      fixed by this exact test before it ever shipped), the `data:` URIs
+      are byte-exact, and the CDN-vs-embedded branch selection is
+      correct. A one-off manual check (not committed — same category as
+      the ad hoc Playwright verification other sessions have done) then
+      round-tripped the REAL downloaded ~13.6 MB Pyodide v0.26.4 files
+      through the exact same encode path this exporter uses and
+      confirmed byte-for-byte fidelity + valid JS syntax post-decompress
+      for all three non-trivial files. **What remains genuinely
+      unverified: an actual browser calling the real `loadPyodide()`
+      against this embedded bundle end-to-end.** Node.js has its own
+      `IN_NODE` environment-detection branch inside pyodide.js itself
+      that takes a materially different (fs/require-based) code path
+      than a real browser's `fetch()`-based one — confirmed by hitting
+      it directly (a `ReferenceError: require is not defined` when the
+      real `loadPyodide()` was actually called under Node), which is
+      exactly why this doc doesn't claim Node execution as proof of the
+      browser path and stops at the boundary where only a real browser
+      would tell the difference.
+    - `tests/test_pyodide_bundle.py` (11 tests — download/cache logic,
+      no real network), `tests/test_html5_offline_pyodide_export.py`
+      (17 tests — `project_needs_python`, pako embedding, the full
+      export→embed pipeline with mocked downloads, error propagation),
+      `tests/test_ide_exporters_offline_pyodide_prompt.py` (5 tests —
+      the UI gate). Suite 2953 passed / 7 skipped-without-Node, 0
+      failed.
   - ~~The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
     is None — no score/lives bridge~~ **DONE 2026-08-09.** `game` is now
     a fresh `_Game(score, lives, health)` snapshot built each

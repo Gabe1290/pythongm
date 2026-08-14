@@ -109,6 +109,15 @@ function getTranslation(key, language = 'en') {
 // ============================================================================
 const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
 
+// Replaced per-export by HTML5Exporter (TODO.md: "Pyodide loads from the
+// jsDelivr CDN") when the offline-bundle option is chosen AND the project
+// actually uses execute_code: an object of
+// {"pyodide.js": b64, "pyodide.asm.js": b64 (both gzip-then-base64),
+//  "pyodide.asm.wasm": b64, "pyodide-lock.json": b64, "python_stdlib.zip": b64
+//  (these three plain base64, already-compressed formats)}.
+// null (default) keeps the CDN path below, unchanged.
+const EMBEDDED_PYODIDE = null; // __PYGM_EMBEDDED_PYODIDE_MARKER__
+
 // Python-side runtime: mirrors the IDE's execute_code environment
 // (runtime/action_executor.py execute_execute_code_action): `self` with
 // persistent attributes, `math`/`random` modules, a `keyboard.check()`
@@ -281,8 +290,37 @@ class PythonBridge {
         return false;
     }
 
+    _b64ToBytes(b64) {
+        const bin = atob(b64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes;
+    }
+
+    // pyodide.js/pyodide.asm.js are gzip-then-base64'd by the exporter
+    // (plain JS text, compresses well); inflate then UTF-8-decode -- NOT
+    // a naive atob()-as-string, which mangles any non-ASCII byte.
+    _b64GzipToText(b64) {
+        const inflated = pako.inflate(this._b64ToBytes(b64));
+        return new TextDecoder('utf-8').decode(inflated);
+    }
+
     async init(statusCallback) {
         statusCallback('Loading Python runtime…');
+        if (EMBEDDED_PYODIDE) {
+            await this._initEmbedded();
+        } else {
+            await this._initFromCDN();
+        }
+        this.pyodide.runPython(PY_BOOTSTRAP);
+        this._runCode = this.pyodide.globals.get('run_code');
+        this._runDraw = this.pyodide.globals.get('run_draw');
+        this.ready = true;
+        statusCallback('');
+        console.log('✅ Python runtime ready');
+    }
+
+    async _initFromCDN() {
         await new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = PYODIDE_URL;
@@ -294,12 +332,56 @@ class PythonBridge {
             document.head.appendChild(script);
         });
         this.pyodide = await loadPyodide();
-        this.pyodide.runPython(PY_BOOTSTRAP);
-        this._runCode = this.pyodide.globals.get('run_code');
-        this._runDraw = this.pyodide.globals.get('run_draw');
-        this.ready = true;
-        statusCallback('');
-        console.log('✅ Python runtime ready');
+    }
+
+    // Offline path: every file needed to boot Pyodide is embedded in this
+    // very .html, so no network request happens at all. pyodide.js/
+    // pyodide.asm.js run as inline <script> text instead of being
+    // fetched -- loadPyodide() already skips its own dynamic
+    // pyodide.asm.js fetch once `_createPyodideModule` exists globally
+    // (its own source comment: "If the pyodide.asm.js script has been
+    // imported, we can skip the dynamic import"). pyodide.asm.wasm has
+    // no direct loadPyodide() option, so it's the one file window.fetch
+    // is temporarily intercepted for (matched by filename, not the exact
+    // indexURL, since indexURL is just a placeholder here);
+    // pyodide-lock.json/python_stdlib.zip go through loadPyodide()'s own
+    // documented lockFileURL/stdLibURL options as data: URIs -- fetch()
+    // supports data: natively, no interception needed for those two.
+    async _initEmbedded() {
+        const files = EMBEDDED_PYODIDE;
+
+        const loaderScript = document.createElement('script');
+        loaderScript.textContent = this._b64GzipToText(files['pyodide.js']);
+        document.head.appendChild(loaderScript);
+
+        const asmScript = document.createElement('script');
+        asmScript.textContent = this._b64GzipToText(files['pyodide.asm.js']);
+        document.head.appendChild(asmScript);
+
+        const wasmBytes = this._b64ToBytes(files['pyodide.asm.wasm']);
+        // Not .bind(window) -- fetch doesn't need a `this`, and binding
+        // would produce a wrapper !== the original reference, so
+        // restoring below couldn't put window.fetch literally back the
+        // way it was found.
+        const originalFetch = window.fetch;
+        window.fetch = (input, init) => {
+            const url = typeof input === 'string' ? input : (input && input.url) || '';
+            if (url.endsWith('pyodide.asm.wasm')) {
+                return Promise.resolve(new Response(wasmBytes, {
+                    status: 200, headers: { 'Content-Type': 'application/wasm' }
+                }));
+            }
+            return originalFetch(input, init);
+        };
+        try {
+            this.pyodide = await loadPyodide({
+                indexURL: 'pygm-embedded-pyodide/',
+                lockFileURL: 'data:application/json;base64,' + files['pyodide-lock.json'],
+                stdLibURL: 'data:application/zip;base64,' + files['python_stdlib.zip'],
+            });
+        } finally {
+            window.fetch = originalFetch;
+        }
     }
 
     _syncJson(inst, game) {

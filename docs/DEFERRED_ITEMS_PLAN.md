@@ -313,11 +313,11 @@ discipline as the match3_2/3 and views sessions:
   sandboxing story.
 - **Thymio "play sound" placeholder** — niche (Thymio-specific), low
   general priority relative to everything else here.
-- **Pyodide offline bundle, Kivy long-tail action coverage, on-device
-  Android/buildozer end-to-end test** — real but each is either
-  open-ended ("port actions as we hit them") or needs infrastructure this
-  repo doesn't have in a headless CI sense (a real phone, a real buildozer
-  build). Pick up opportunistically, not as a scheduled item.
+- **Kivy long-tail action coverage, on-device Android/buildozer
+  end-to-end test** — real but each is either open-ended ("port actions
+  as we hit them") or needs infrastructure this repo doesn't have in a
+  headless CI sense (a real phone, a real buildozer build). Pick up
+  opportunistically, not as a scheduled item.
   **Right/middle mouse export is DONE (2026-08-14)** — see `TODO.md`'s
   Kivy/Android and HTML5 export sections.
 
