@@ -165,3 +165,49 @@ def test_legacy_fallback_delete_is_also_a_soft_delete(tmp_path):
     restored = restore_asset(tmp_path, entries["spr_old"]["id"])
     assert restored is not None
     assert (tmp_path / restored["file_path"]).exists()
+
+
+def test_legacy_fallback_delete_merges_side_file_before_trashing(tmp_path):
+    """A manifest-ified room/object entry in project.json (heavy payload —
+    instances/events — stripped out to the <type>/<name>.json side file,
+    a stub `_external_file`-style manifest left behind) must still trash a
+    COMPLETE snapshot. asset_trash.trash_asset's own docstring requires
+    asset_data to be "the FULL project.json entry... recorded verbatim so
+    restore_asset can hand it straight back" — without merging the side
+    file first, a restore would silently come back with no
+    instances/events, even though the physical side file itself is
+    correctly preserved and restored."""
+    from utils.asset_trash import list_trash, restore_asset
+
+    _write_project(tmp_path, {
+        "rooms": {"level3": {"name": "level3", "width": 320, "height": 240,
+                             "instances": []}},  # manifest stub: no instances
+        "objects": {"obj_hero": {"name": "obj_hero"}},  # manifest stub: no events
+    })
+    rooms_dir = tmp_path / "rooms"
+    rooms_dir.mkdir()
+    (rooms_dir / "level3.json").write_text(json.dumps({
+        "name": "level3", "width": 320, "height": 240,
+        "instances": [{"object_name": "obj_hero", "x": 5, "y": 5}],
+    }), encoding="utf-8")
+
+    objects_dir = tmp_path / "objects"
+    objects_dir.mkdir()
+    (objects_dir / "obj_hero.json").write_text(json.dumps({
+        "name": "obj_hero",
+        "events": {"create": {"actions": [{"action": "set_hspeed",
+                                           "parameters": {"speed": 4}}]}},
+    }), encoding="utf-8")
+
+    ops = AssetOperations(_FakeTree(tmp_path))
+    assert ops.remove_asset_from_project("rooms", "level3") is True
+    assert ops.remove_asset_from_project("objects", "obj_hero") is True
+
+    entries = {e["asset_name"]: e for e in list_trash(tmp_path)}
+
+    room_restored = restore_asset(tmp_path, entries["level3"]["id"])
+    assert room_restored["instances"] == [
+        {"object_name": "obj_hero", "x": 5, "y": 5}]
+
+    obj_restored = restore_asset(tmp_path, entries["obj_hero"]["id"])
+    assert obj_restored["events"]["create"]["actions"][0]["action"] == "set_hspeed"

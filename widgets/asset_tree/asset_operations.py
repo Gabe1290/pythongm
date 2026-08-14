@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 
 from .asset_dialogs import AssetRenameDialog
 from .asset_utils import validate_asset_name, load_project_data, save_project_data
+from utils.project_file_merge import merge_object_file, merge_room_file
 
 
 class AssetOperations:
@@ -466,6 +467,25 @@ class AssetOperations:
 
             # Get asset info before deleting
             asset_data = assets[asset_category][asset_name]
+            # This reads project.json raw, so a manifest-ified room/object
+            # entry (instances/events live in the <type>/<name>.json side
+            # file, not here) would otherwise hand trash_asset an incomplete
+            # snapshot — merge the side file in first so a later restore
+            # (asset_trash.restore_asset returns this recorded snapshot
+            # verbatim for direct re-insertion into the live model) doesn't
+            # come back missing instances/events.
+            if asset_category in ("rooms", "objects"):
+                side_file = Path(self.tree.project_path) / asset_category / f"{asset_name}.json"
+                if side_file.exists():
+                    try:
+                        with open(side_file, 'r', encoding='utf-8') as f:
+                            file_data = json.load(f)
+                        if asset_category == "rooms":
+                            merge_room_file(asset_data, file_data)
+                        else:
+                            merge_object_file(asset_data, file_data)
+                    except (OSError, ValueError) as e:
+                        logger.warning(f"Could not merge {side_file} before delete: {e}")
             # Check both 'file_path' (sprites/sounds) and 'project_path' (legacy)
             rel_file_path = asset_data.get('file_path') or asset_data.get('project_path')
             logger.debug(f"Found asset data: {rel_file_path or 'No path'}")
