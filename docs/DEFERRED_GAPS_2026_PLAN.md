@@ -107,12 +107,29 @@ real work:
   the real handler, not just `get_action_type`). Full suite: 2977 passed,
   7 skipped, 0 failed.
 
-- [ ] **2.5 Register real `splash_show_text` / `splash_show_image`.** Reuse
-  the runtime's existing blocking modal-message machinery
-  (`_show_or_queue_message`, used by `show_info`/`show_message`) for text;
-  a full-screen sprite blit + wait-for-input loop (existing
-  `draw_sprite`/`draw_background` primitives) for image. Register both in
-  `events/action_types.py`.
+- [x] **2.5 Register real `splash_show_text` / `splash_show_image`.**
+  Done (2026-08-15). `splash_show_text` reuses `_show_or_queue_message`
+  directly (the same blocking modal `show_message`/`show_info` already use).
+  `splash_show_image` resolves its sprite through `runner.sprites` (the same
+  registry `draw_sprite` reads from) and blits it full-screen via a new
+  `GameRunner.show_splash_image` — a genuinely new blocking loop, not a
+  `draw_sprite`/`draw_background` reuse (those only *queue* a draw-event
+  command, they don't block; `show_splash_image` mirrors
+  `show_message_dialog`'s own pygame-event loop, speed-pause/restore, and
+  `KEYUP`/M54 silent-release handling instead), scaled to fit the screen
+  preserving aspect ratio, letterboxed in black. Both registered in
+  `events/action_types.py`. Auto-discovery means both executor methods take
+  priority over the old placeholder handlers, which are now unreachable —
+  deleted from `runtime/action_handlers/extra_handlers.py`. One real bug
+  caught by the tests, not assumed: an early draft's fake-runner test
+  fixtures were missing `global_variables`, which `_parse_value`'s bare-name
+  fallback reads unconditionally — `execute_action`'s generic
+  `except AttributeError` swallowed it silently, making a broken fixture
+  look like a passing "no-op" test for the wrong reason; fixed by completing
+  the fixtures and calling the handler directly where the test's whole point
+  is proving no exception occurs. `tests/test_splash_show_actions.py`
+  (6 tests). Full suite: 2983 passed, 7 skipped, 0 failed. **Tier 2 is now
+  fully closed.**
 
 ## Tier 3 — Kivy long-tail action coverage (several small commits)
 

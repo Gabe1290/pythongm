@@ -2371,6 +2371,34 @@ ACTION_TYPES = {
         parameters=[],
     ),
 
+    # Runtime: execute_splash_show_text_action. Was a placeholder that only
+    # logged the text (no dead-end UI, since it wasn't registered before) --
+    # docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.5. Now a real blocking message,
+    # same modal machinery as show_message/show_info.
+    "splash_show_text": ActionType(
+        name="splash_show_text",
+        display_name="Splash: Show Text",
+        description="Show a message and pause the game until the player dismisses it",
+        category="Game",
+        icon="💬",
+        parameters=[
+            ActionParameter(name="text", display_name="Text", param_type="string", default_value="", description="Message to display"),
+        ],
+    ),
+
+    # Runtime: execute_splash_show_image_action. Same "was an unregistered
+    # placeholder" story as splash_show_text -- Tier 2.5.
+    "splash_show_image": ActionType(
+        name="splash_show_image",
+        display_name="Splash: Show Image",
+        description="Show a sprite full-screen and pause the game until the player dismisses it",
+        category="Game",
+        icon="🖼️",
+        parameters=[
+            ActionParameter(name="image", display_name="Sprite", param_type="sprite", default_value="", description="Sprite to display full-screen"),
+        ],
+    ),
+
     # Runtime: execute_save_game_action
     "save_game": ActionType(
         name="save_game",
