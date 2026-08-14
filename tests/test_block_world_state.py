@@ -28,6 +28,24 @@ def test_extension_is_discovered_and_enabled_by_default():
     assert found["block_world"]["enabled"] is True
 
 
+def test_manifest_provides_actions_matches_the_real_actions():
+    """extension.json's provides_actions is read WITHOUT importing the
+    extension (list_available_extensions/extension_for_action), so it has
+    to be kept in sync by hand -- and it silently drifted out of sync
+    across Units 3/5/6 (four real actions landed with nobody updating the
+    manifest). This is the general guard so the next action doesn't repeat
+    it: the manifest and the real PLUGIN_ACTIONS dict must name exactly the
+    same set."""
+    import json
+    from pathlib import Path
+    from extensions.block_world.actions import PLUGIN_ACTIONS
+
+    manifest = json.loads(
+        (Path(__file__).resolve().parent.parent
+         / "extensions" / "block_world" / "extension.json").read_text())
+    assert set(manifest["provides_actions"]) == set(PLUGIN_ACTIONS)
+
+
 def test_loading_all_plugins_does_not_raise():
     """No PLUGIN_ACTIONS / PLUGIN_ROOM_RENDERERS declared yet -- the loader
     must skip both via its hasattr guards without error."""
