@@ -1747,3 +1747,14 @@ caveat attached to every completed i18n arc.
 - Suite 2493 → 2496 passed, 0 failed. Screenshot spike scripts were
   throwaway (scratchpad, not committed), matching this repo's established
   treatment of Playwright/ad hoc verification tooling.
+- **Closed the same day, later in this session: `docs/I18N_UNFINISHED_2026-08-10.md`.**
+  The "unbounded until someone runs the count" gap above was counted and
+  fully fixed for all 7 languages (de/es/fr/it/ru/sl/uk), not just German —
+  1101 real empty-`unfinished` entries across all seven, verified zero
+  remain via `tests/test_i18n_unfinished_{de,es,fr,it,ru,sl,uk}.py` (every
+  source has a real non-empty translation, resolves via a live
+  `QTranslator`). **Re-confirmed still true 2026-08-15**
+  (`docs/REMAINING_WORK_2026-08-15.md` Section E): zero empty
+  `<translation type="unfinished">` entries anywhere in the 7 files as of
+  that date. Don't re-flag this as an open gap without re-running the
+  count first — the number above is fully historical.

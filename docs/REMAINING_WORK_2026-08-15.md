@@ -195,19 +195,34 @@ PWA manifest, export presets) are more plausibly pickup-able later, but
 still have zero sizing/design done — genuinely start from scratch, not a
 resume point.
 
-## E. Translation completeness gap (real, unbounded until swept)
+## E. Translation completeness gap — [x] ALREADY CLOSED, re-verified 2026-08-15
 
-Noted but not chased during the 2026-08-10 Extensions-tab i18n fix: the six
-"older maintained" languages (de/es/fr/it/ru/sl/uk minus fr, which ships
-monolithic) were never verified at 100% completeness the way pt/ja/zh were
-built to be. Confirmed concretely for German alone: `pygm2_de_core.ts` +
-`_editors.ts` carry **151** `type="unfinished"` empty-translation entries
-between just those two split files, with likely similar-scale gaps in the
-other five languages, uncounted. Real user-facing gap (untranslated strings
-silently fall back to English), but the size is unknown until someone runs
-the same completeness count `scripts/gen_translation_ts.py`'s pt/ja/zh work
-established against each of the six. Natural next step: run the count
-first (cheap), then decide whether to schedule filling them as a tier.
+**This section's own premise was stale.** It was written from a CLAUDE.md
+note dated 2026-08-10 describing an unclosed gap (151 empty
+`type="unfinished"` entries in German alone, likely similar elsewhere,
+"unbounded until someone runs the count"). Running that count first, per
+this section's own prescribed next step, immediately surfaced
+`docs/I18N_UNFINISHED_2026-08-10.md` — a full plan doc, already marked
+**"CLOSED — all 7/7 done: fr, de, it, ru, sl, uk, es,"** from later the
+same day the gap was found. 1101 real empty entries across all seven
+languages (not just the six this section named — es was included too) were
+filled with real, non-machine-copied translations and verified via a live
+`QTranslator` per language (`tests/test_i18n_unfinished_{de,es,fr,it,ru,sl,uk}.py`,
+84 tests total, all passing).
+
+**Re-confirmed independently 2026-08-15** (not just trusting the doc's own
+claim): grepped every shipped `.ts` file for `de/es/fr/it/ru/sl/uk` for both
+`<translation type="unfinished"></translation>` (empty, closing-tag form)
+and `<translation type="unfinished"/>` (empty, self-closing form) —
+**zero hits across all 7 languages.** The 92 remaining non-empty
+`type="unfinished"` entries found in a few `_editors`/`_dialogs` files (and
+`es`/`fr`) all carry real translated text; compiled a fresh `.qm` from one
+with `lrelease` and confirmed via a live `QTranslator` that Qt's
+"unfinished" flag has zero effect on compilation or runtime resolution —
+it's a Linguist review-workflow marker, not an untranslated-string marker,
+so these are not a gap at all. `CLAUDE.md`'s original note corrected in
+place to point at the closure instead of describing a gap that no longer
+exists.
 
 ## F. Large — each needs its own future planning session, not this doc
 
