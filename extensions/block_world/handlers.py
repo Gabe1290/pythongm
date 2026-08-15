@@ -425,6 +425,14 @@ class PluginExecutor:
         inventory side effect at all, matching every project that predates
         Tier 7c.
 
+        A block type registered via set_block_protection (Tier 7b) also
+        needs its required key present in the calling instance's inventory
+        -- checked after is_breakable (an absolutely unbreakable block stays
+        that way regardless), before removal. Possessing the key only GATES
+        the break; it is not itself consumed (a tool, not a one-time key).
+        Requires Inventory to be on, or the check can never be satisfied --
+        see set_block_protection's own docstring.
+
         Parameters:
             reach: how many cells ahead you can reach (default 5)
         """
@@ -437,13 +445,62 @@ class PluginExecutor:
         block_type = get_block(room, *target)
         if not is_breakable(block_type):
             return
-        remove_block(room, *target)
 
         cfg = peek_camera(room)
+        protection = cfg.get("protection", {}) if cfg else {}
+        required_key = protection.get(block_type)
+        if required_key:
+            inventory = getattr(instance, "block_inventory", None) or {}
+            if inventory.get(required_key, 0) <= 0:
+                return
+
+        remove_block(room, *target)
+
         if cfg and _truthy(cfg.get("inventory", False)):
             inventory = getattr(instance, "block_inventory", None) or {}
             inventory[block_type] = inventory.get(block_type, 0) + 1
             instance.block_inventory = inventory
+
+    def execute_set_block_protection_action(self, instance, parameters):
+        """Require a specific block type to be present in inventory before
+        a protected block type can be broken (Tier 7b) -- a tool/key gate,
+        layered on top of (not a replacement for) state.is_breakable's
+        absolute unbreakable flag.
+
+        Call once per protected type; each call adds/overwrites one entry
+        rather than replacing the whole set, so authoring several
+        protections is several calls (e.g. all in the room's create event,
+        right after enable_block_world_view -- protection lives on the
+        camera config the same way gravity/inventory do, so it resets
+        whenever the view is re-enabled and needs re-registering then, same
+        as those two).
+
+        Needs Enable Block World View's Inventory parameter on. Without it,
+        the calling instance never has a block_inventory to check against,
+        so a registered protection makes that block type permanently
+        unbreakable -- an honest, if probably unintended, consequence
+        rather than a special-cased no-op.
+
+        Parameters:
+            block_type: which block type becomes protected
+            required_key: which block type must be in inventory to break it
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return
+
+        block_type = ae._parse_value(parameters.get("block_type", ""), instance)
+        block_type = str(block_type) if block_type else ""
+        required_key = ae._parse_value(parameters.get("required_key", ""), instance)
+        required_key = str(required_key) if required_key else ""
+        if block_type not in BLOCK_TYPES or required_key not in BLOCK_TYPES:
+            return
+
+        cfg.setdefault("protection", {})[block_type] = required_key
 
     def execute_enable_block_world_view_action(self, instance, parameters):
         """Switch the current room to a first-person voxel view (single

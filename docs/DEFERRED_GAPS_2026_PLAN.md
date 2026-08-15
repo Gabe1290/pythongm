@@ -450,12 +450,43 @@ today, just unbuilt).
   HTML5/Kivy export codegen for `apply_gravity`/`jump`/the `gravity` param,
   and updating `block_world_1` (or a new sample) to actually demo jumping —
   same "wait for a real sample" discipline as Tier 5.3.
-- [ ] **7b. Per-type block protection beyond `breakable` (small, needs a
-  definition first).** `state.py`'s `is_breakable` (L160-174) is already a
-  single boolean per block type — a second flag is the same shape.
-  **Underspecified: confirm with the user what "protection" means**
-  (unbreakable only? un-placeable-on? requires a specific hotbar item?)
-  before implementing.
+- [x] **7b. Per-type block protection — DONE 2026-08-15.** Confirmed with
+  the user which of three discussed designs (un-placeable-on, a required-
+  key/tool gate, or a per-player permission list — the last explicitly
+  discussed as harder to justify now: it needs a real multiplayer identity
+  system this engine doesn't have yet, and a world-storage-format change
+  that would likely need re-doing once that identity system exists)
+  — **chose the required-key/tool gate.**
+  New `set_block_protection` action registers `{protected_type:
+  required_key_type}` pairs on the room's camera config — a runtime action
+  rather than a static field in `state.py`'s `BLOCK_TYPES` (unlike
+  `is_breakable`), since `BLOCK_TYPES` is one shared registry across every
+  project using this extension and which blocks are protected by what is a
+  per-game design choice, not a fixed property of a texture; `ActionParameter`
+  also has no dict/mapping `param_type` to bake a fixed pairing into
+  `enable_block_world_view` directly. Call it once per protected type
+  (typically right after `enable_block_world_view` in `create`, since
+  `cfg["protection"]` resets whenever the view re-enables, same as
+  `gravity`/`inventory`). `break_block` checks the pairing AFTER
+  `is_breakable` — an absolutely unbreakable block (e.g. obsidian) is
+  unaffected either way, protection layers on top rather than replacing it
+  — and requires the calling instance's Tier 7c `block_inventory` to hold
+  at least one of the required key; possessing it only GATES the break, it
+  is not consumed (a tool, not a one-time key). Needs Inventory on (Tier
+  7c) or the requirement can never be satisfied, making a protected type
+  permanently unbreakable — documented as an intentional, honest
+  consequence rather than special-cased around. Every project that never
+  calls `set_block_protection` sees zero change to `break_block`, same
+  backward-compatibility contract as `gravity`/`inventory` before it.
+  `tests/test_block_world_protection.py` (13 tests): registration
+  (including invalid block-type/key names and no-active-view being no-ops),
+  breaking refused without the key and allowed with it, the key surviving
+  unconsumed, a wrong key type not satisfying a different requirement,
+  unprotected types staying unaffected, `is_breakable` still winning over
+  protection, the permanently-unbreakable-without-Inventory consequence,
+  and the no-registration backward-compatibility case. Suite 3104 → 3117
+  passed, 0 failed. Not done (deliberately, per scope): HTML5/Kivy export
+  codegen — same "wait for a real sample" discipline as 7a/7c.
 - [x] **7c. Inventory with counts — DONE 2026-08-15.** Desktop-engine only,
   same scoping as 7a (no HTML5/Kivy codegen this pass). Opt-in via a new
   `inventory` parameter on `enable_block_world_view` (boolean, default
