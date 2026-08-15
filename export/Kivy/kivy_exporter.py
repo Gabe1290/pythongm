@@ -2482,6 +2482,15 @@ class {class_name}(Widget):
                 if hasattr(instance, 'on_nokey'):
                     instance.on_nokey()
 
+        # 3d. PARTICLES & TIMELINE (Tier 5.1/5.3) -- runs every frame
+        # regardless of step-event authoring, mirroring GameInstance.
+        # update_particle_system/update_timeline in runtime/game_runner.py.
+        for instance in _live:
+            if hasattr(instance, 'update_particle_system'):
+                instance.update_particle_system()
+                instance.update_timeline()
+                instance.render_particles()
+
         # 4. NORMAL STEP EVENTS
         for instance in _live:
             if hasattr(instance, 'on_update'):
@@ -3219,6 +3228,11 @@ class GameObject(Widget):
         self._draw_queue = []
         self._dq_group = None
 
+        # Particle system state (Tier 5.1/5.3) -- see update_particle_system/
+        # render_particles. None until create_particle_system is called.
+        self._particle_system = None
+        self._particle_group = None
+
         # Sounds queued from execute_code via self._sound_queue.append('snd_x')
         # (or {{'sound': name, 'volume': v}}). execute_code has no live `game`
         # object here to call game.sounds[...].play() on directly (unlike the
@@ -3819,6 +3833,237 @@ class GameObject(Widget):
             elif self.y > rh:
                 self.y = float(-h)
         self._update_position()
+
+    # ---- Particle system + timelines (Tier 5.1/5.3) ----
+    # Mirrors runtime/game_runner.py's GameInstance.update_particle_system/
+    # update_timeline/render_particles and action_executor.py's
+    # ActionExecutor._spawn_particles. Called every frame from the scene's
+    # update(dt) loop (3d. PARTICLES & TIMELINE), not gated on step-event
+    # authoring, so particles animate and timelines advance even for an
+    # object with no Step event at all.
+
+    def update_particle_system(self):
+        ps = getattr(self, '_particle_system', None)
+        if not ps:
+            return
+        for emitter in ps['emitters'].values():
+            stream_type = emitter.get('stream_type')
+            stream_count = emitter.get('stream_count', 0)
+            if stream_type is None or not (stream_count > 0):
+                continue
+            ptype = ps['particle_types'].get(stream_type)
+            if ptype is None:
+                continue
+            self._spawn_particles(ps, emitter, ptype, stream_count)
+
+        surviving = []
+        for particle in ps['particles']:
+            particle['life'] -= 1
+            if particle['life'] <= 0:
+                continue
+            angle_rad = math.radians(particle['direction'])
+            particle['x'] += math.cos(angle_rad) * particle['speed']
+            particle['y'] -= math.sin(angle_rad) * particle['speed']
+            particle['size'] = max(0.0, particle['size'] + particle['size_increase'])
+            surviving.append(particle)
+        ps['particles'] = surviving
+
+    def _spawn_particles(self, ps, emitter, ptype, number):
+        import random
+        for _ in range(int(number)):
+            if emitter['shape'] == 'rectangle':
+                px = emitter['x'] + random.uniform(-emitter['width'] / 2, emitter['width'] / 2)
+                py = emitter['y'] + random.uniform(-emitter['height'] / 2, emitter['height'] / 2)
+            elif emitter['shape'] == 'ellipse':
+                angle = random.uniform(0, 360)
+                radius_x = random.uniform(0, emitter['width'] / 2)
+                radius_y = random.uniform(0, emitter['height'] / 2)
+                px = emitter['x'] + radius_x * math.cos(math.radians(angle))
+                py = emitter['y'] + radius_y * math.sin(math.radians(angle))
+            elif emitter['shape'] == 'diamond':
+                t = random.uniform(-1, 1)
+                s = random.uniform(-1, 1) * (1 - abs(t))
+                px = emitter['x'] + t * emitter['width'] / 2
+                py = emitter['y'] + s * emitter['height'] / 2
+            else:  # line
+                t = random.uniform(-0.5, 0.5)
+                px = emitter['x'] + t * emitter['width']
+                py = emitter['y']
+            size = random.uniform(ptype['size_min'], ptype['size_max'])
+            speed = random.uniform(ptype['speed_min'], ptype['speed_max'])
+            direction = random.uniform(ptype['direction_min'], ptype['direction_max'])
+            life = random.randint(int(ptype['life_min']), int(ptype['life_max']))
+            ps['particles'].append({{
+                'x': px, 'y': py, 'size': size, 'size_increase': ptype['size_increase'],
+                'speed': speed, 'direction': direction, 'life': life, 'max_life': life,
+                'sprite': ptype['sprite'], 'color': ptype['color'], 'alpha': ptype['alpha'],
+            }})
+
+    def update_timeline(self):
+        if getattr(self, 'timeline_running', False):
+            speed = getattr(self, 'timeline_speed', 1.0)
+            self.timeline_position = getattr(self, 'timeline_position', 0) + speed
+
+    # ---- Particle + timeline ACTIONS (called from generated code, one
+    # call per action -- codegen emits a single method call rather than
+    # inline dict manipulation, mirroring _draw_minimap's own precedent for
+    # actions too big for a one-line expression). Each mirrors the matching
+    # execute_*_action in runtime/action_executor.py exactly. ----
+
+    def create_particle_system(self, depth=0):
+        self._particle_system = {{
+            'depth': depth, 'particle_types': {{}}, 'emitters': {{}},
+            'particles': [], 'next_type_id': 0, 'next_emitter_id': 0,
+        }}
+
+    def destroy_particle_system(self):
+        self._particle_system = None
+
+    def clear_particles(self):
+        if self._particle_system:
+            self._particle_system['particles'] = []
+
+    def create_particle_type(self, sprite=None, size_min=1.0, size_max=1.0,
+                             size_increase=0, color='#FFFFFF', alpha=1.0,
+                             speed_min=0, speed_max=0, direction_min=0,
+                             direction_max=360, life_min=100, life_max=100):
+        if not self._particle_system:
+            self._last_particle_type_id = -1
+            return -1
+        rgb = (255, 255, 255)
+        if isinstance(color, str) and color.startswith('#'):
+            try:
+                hexc = color.lstrip('#')
+                rgb = (int(hexc[0:2], 16), int(hexc[2:4], 16), int(hexc[4:6], 16))
+            except (ValueError, IndexError):
+                pass
+        type_id = self._particle_system['next_type_id']
+        self._particle_system['next_type_id'] += 1
+        self._particle_system['particle_types'][type_id] = {{
+            'sprite': sprite, 'size_min': size_min, 'size_max': size_max,
+            'size_increase': size_increase, 'color': rgb, 'alpha': alpha,
+            'speed_min': speed_min, 'speed_max': speed_max,
+            'direction_min': direction_min, 'direction_max': direction_max,
+            'life_min': life_min, 'life_max': life_max,
+        }}
+        self._last_particle_type_id = type_id
+        return type_id
+
+    def create_emitter(self, x=0, y=0, width=0, height=0, shape='rectangle'):
+        if not self._particle_system:
+            self._last_emitter_id = None
+            return -1
+        if shape not in ('rectangle', 'ellipse', 'diamond', 'line'):
+            shape = 'rectangle'
+        emitter_id = self._particle_system['next_emitter_id']
+        self._particle_system['next_emitter_id'] += 1
+        self._particle_system['emitters'][emitter_id] = {{
+            'x': x, 'y': y, 'width': width, 'height': height, 'shape': shape,
+            'stream_type': None, 'stream_count': 0,
+        }}
+        self._last_emitter_id = emitter_id
+        return emitter_id
+
+    def destroy_emitter(self):
+        if not self._particle_system:
+            return
+        last_id = getattr(self, '_last_emitter_id', None)
+        if last_id is not None and last_id in self._particle_system['emitters']:
+            del self._particle_system['emitters'][last_id]
+        self._last_emitter_id = None
+
+    def burst_particles(self, particle_type=0, number=10):
+        if not self._particle_system:
+            return
+        ptype = self._particle_system['particle_types'].get(particle_type)
+        if ptype is None:
+            return
+        last_id = getattr(self, '_last_emitter_id', None)
+        if last_id is None:
+            return
+        emitter = self._particle_system['emitters'].get(last_id)
+        if emitter is None:
+            return
+        self._spawn_particles(self._particle_system, emitter, ptype, number)
+
+    def stream_particles(self, particle_type=0, number=1):
+        if not self._particle_system:
+            return
+        if particle_type not in self._particle_system['particle_types']:
+            return
+        last_id = getattr(self, '_last_emitter_id', None)
+        if last_id is None:
+            return
+        emitter = self._particle_system['emitters'].get(last_id)
+        if emitter is None:
+            return
+        emitter['stream_type'] = particle_type
+        emitter['stream_count'] = number
+
+    def set_timeline(self, timeline=None):
+        self.timeline_index = timeline
+        self.timeline_position = 0
+        if not hasattr(self, 'timeline_speed'):
+            self.timeline_speed = 1.0
+        if not hasattr(self, 'timeline_running'):
+            self.timeline_running = False
+
+    def set_timeline_position(self, position=0, relative=False):
+        current = getattr(self, 'timeline_position', 0)
+        self.timeline_position = current + position if relative else position
+        if self.timeline_position < 0:
+            self.timeline_position = 0
+
+    def set_timeline_speed(self, speed=1.0):
+        self.timeline_speed = speed
+
+    def start_timeline(self):
+        self.timeline_running = True
+
+    def pause_timeline(self):
+        self.timeline_running = False
+
+    def stop_timeline(self):
+        self.timeline_running = False
+        self.timeline_position = 0
+
+    def render_particles(self):
+        """Draw this instance's live particles via a dedicated
+        InstructionGroup on self.canvas.after -- NOT self.canvas, which
+        _redraw_frame clears and rebuilds on every sprite animation frame
+        (the same reason _dq_group lives in .after too, right below)."""
+        if self._particle_group is None:
+            self._particle_group = InstructionGroup()
+            self.canvas.after.add(self._particle_group)
+        group = self._particle_group
+        group.clear()
+        ps = getattr(self, '_particle_system', None)
+        if not ps or not ps['particles']:
+            return
+        room_h = self.scene.room_height if self.scene else 0
+        for particle in ps['particles']:
+            x = particle['x']
+            y = room_h - particle['y']
+            alpha = max(0.0, min(1.0, particle.get('alpha', 1.0)))
+            sprite_name = particle.get('sprite')
+            tex = None
+            if sprite_name:
+                path = SPRITE_PATHS.get(sprite_name, '')
+                if path:
+                    img = load_image(path)
+                    if img is not None:
+                        tex = img.texture
+            if tex is not None:
+                scale = max(0.01, particle.get('size', 1.0))
+                w = max(1, tex.width * scale)
+                h = max(1, tex.height * scale)
+                group.add(Color(1, 1, 1, alpha))
+                group.add(Rectangle(texture=tex, pos=(x - w / 2, y - h / 2), size=(w, h)))
+            else:
+                radius = max(1, particle.get('size', 1.0))
+                color = particle.get('color', (255, 255, 255))
+                group.add(Color(color[0] / 255.0, color[1] / 255.0, color[2] / 255.0, alpha))
+                group.add(Ellipse(pos=(x - radius, y - radius), size=(radius * 2, radius * 2)))
 
     # ---- Draw-queue rendering (GameMaker draw event parity) ----
 
