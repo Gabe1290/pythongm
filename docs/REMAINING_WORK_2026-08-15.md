@@ -296,6 +296,16 @@ from THIS doc; open the linked plan first and work from it.
   solves: every other extension is configured by design-time actions, but
   "who hosts, who joins" is inherently a per-launch player choice — laid
   out three ways to reconcile it with a recommendation.
+  **UPDATE (2026-08-15, same day): fully implemented, all four phases.**
+  This checkbox originally meant only "the plan is written" — it now also
+  means the plan was executed end to end the same session: the generic
+  frame-update hook (Phase 0), the `extensions/multiplayer_lan/` folder
+  extension with a TCP/JSON-lines wire protocol (Phase 1), the
+  `set_network_mode` action plus `run_game.py --net-host`/`--net-client`
+  CLI flags (Phase 2), and the `multiplayer_lan_1` sample (Phase 3). See
+  `docs/MULTIPLAYER_LAN_PLAN.md`'s own per-phase DONE notes for the full
+  record. Only the manual two-window visual playtest remains (needs a
+  real display, out of scope for automation).
 
 ---
 
