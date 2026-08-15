@@ -6,6 +6,16 @@ time, one commit per unit, full suite green + push after each (this repo's
 standing session-limit discipline — see `CLAUDE.md`'s "Standing preferences &
 landmines"). Flip checkboxes as units land.
 
+**Status as of 2026-08-15: every actionable item in this doc's own queue
+(Tiers 1–7c) is closed.** All that remains is Tier 7d and 7e, both of which
+this doc's own text says "needs its own future planning session, do not
+start from this doc" — they are large enough (7d comparable to building a
+whole new editor pane, 7e comparable to a second `VOXEL_WORLD_PLAN.md`) that
+starting them here would defeat the point of scoping this queue to small,
+one-commit units. Pick either up only via an explicit new planning pass, not
+by resuming this document. The "Tracked elsewhere" section below names the
+other genuinely-open work outside this queue's scope.
+
 ## Corrections made before scheduling anything (audit-is-a-lead discipline)
 
 Two of the original 9 "documented deferred engine gaps" turned out not to be
