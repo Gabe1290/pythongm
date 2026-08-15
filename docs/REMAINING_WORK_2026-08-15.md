@@ -1,0 +1,195 @@
+# Plan: everything remaining for pygm2
+
+Written 2026-08-15, right after `docs/DEFERRED_GAPS_2026_PLAN.md`'s queue
+(Tiers 1–7c) closed. That doc is done; this one is the next resume point —
+a full survey of every other planning doc in `docs/` plus `TODO.md`, so a
+future session has one place to start instead of re-deriving "what's left"
+from scratch. Verified against current doc state, not assumed — see the
+per-section sourcing below.
+
+Sized loosely as **small** (a session or less), **medium** (1–3 sessions),
+**large** (its own multi-session plan doc), or **manual QA** (not code —
+needs a human/real device, can't be closed by an agent).
+
+---
+
+## A. Blocked on "a sample uses it first" (small–medium each)
+
+Same deliberate pattern already used for Tier 5.3 and Tier 7a/7b/7c's export
+halves: land the desktop engine + UI first, defer HTML5/Kivy codegen until a
+real sample exercises the feature, so parity work isn't spent on dead
+scope. All of these are desktop-complete and export-incomplete:
+
+- **Particle system + timeline HTML5/Kivy codegen** (Tier 5.3). 14 actions,
+  desktop-real since Tier 5.1/5.2. No sample uses them yet.
+- **Block World jump/gravity HTML5+Kivy codegen** (Tier 7a's deferred half).
+  `apply_gravity`/`jump`/the `gravity` param.
+- **Block World inventory HTML5+Kivy codegen** (Tier 7c's deferred half).
+  The `inventory` param + consume/pickup logic.
+- **Block World protection HTML5+Kivy codegen** (Tier 7b's deferred half).
+  `set_block_protection` + the required-key gate.
+
+Natural next step for any of these: build/update a Block World sample that
+actually uses jump+inventory+protection together (a small platforming-with-
+scavenging demo), which would motivate and validate all three export halves
+in one pass rather than three separate ones.
+
+## B. Small, narrow, unscheduled fixes
+
+- **Kivy camera FBO is build-time-only** (`TODO.md`, Views/camera section).
+  A room's Fbo render target is allocated at room construction from
+  `views_enabled` in its config; enabling views purely via a runtime action
+  on a room that didn't have `views_enabled` set won't retrofit the Fbo.
+  Fix = lazy Fbo allocation on first `enable_views`/`set_view` call instead
+  of only at construction. No known blocked use case yet.
+- **`TODO.md` doc-hygiene**: the Views/camera section header still reads "IN
+  PROGRESS" — stale; `docs/VIEWS_SAMPLES_PLAN.md` has said "done, Phase 1+2
+  complete" since 2026-07-15. The pt `WelcomeTab` gap entry is also stale —
+  fixed 2026-08-15 by `DEFERRED_GAPS_2026_PLAN.md` Tier 2.1, just never
+  reflected back into `TODO.md`. Both are a five-minute edit, not real work.
+- **`docs/EXPORT_SYSTEM_STATUS.md` reconciliation**: already banner-marked
+  superseded/historical, but still carries unchecked boxes that read as live
+  work at a glance. Worth either archiving the file outright or adding the
+  same "wishlist, not backlog" framing this plan gives it in section D.
+
+## C. Manual QA — not code work, needs a human or real device
+
+Real, standing gaps this session (or any agent session) structurally cannot
+close:
+
+- **Kivy/Android on-device test.** The stub-kivy execution harness covers
+  logic, not the real Kivy/GL layer or a real APK build+install+run.
+- **HTML5 embedded-Pyodide real-browser verification.** Everything
+  verifiable without a browser is verified (Node structural checks, byte-
+  fidelity round-trips, one ad hoc Playwright/Chromium spike during the
+  HTML5 `execute_code` work) — a real browser calling the real
+  `loadPyodide()` end-to-end has never been watched.
+- **Raycast samples' shape changes, never watched rendering.** Standing
+  caveat repeated across several 2026-07-2x session notes: nobody has
+  watched `raycast_3`'s corner-overlay HUD, `raycast_4`'s letterboxed
+  viewport + DOOM status bar, or `plateforme_3` after its depth-order export
+  fix actually render in a browser or on Android. Structure/codegen/parity
+  numbers are all verified; pixels are not.
+- **pt/ja/zh visual spot-check beyond the Preferences dialog.** The
+  offscreen-`QApplication` + `QWidget.grab()` screenshot technique
+  (established 2026-08-10) has only been pointed at one dialog. Extending it
+  to the main window and a few more dialogs per language is cheap per
+  screenshot but open-ended in aggregate — pick a handful of the busiest
+  dialogs (Room Editor, Object Editor, Export dialog) rather than trying to
+  cover everything.
+- **Published GitHub wiki spot-check.** Nobody has viewed the live pages on
+  github.com since the 2026-07-29 accuracy/translation sweep — worth
+  confirming accents render (not mojibake), language-switcher banners
+  resolve, and accented-header ToC anchors land correctly.
+- **Device/browser matrix from `EXPORT_SYSTEM_STATUS.md`**: antivirus false-
+  positive scan on the Windows `.exe`, mobile-browser/touch testing for the
+  HTML5 export. Same category as the two bullets above — real, but needs
+  hardware/services this environment doesn't have.
+
+## D. Open-ended export wishlist — aspirational, not scheduled
+
+From `docs/EXPORT_SYSTEM_STATUS.md`'s reconciliation banner. No plan doc, no
+tier, no sizing anywhere — listed here so it's not lost, not because it's
+imminent:
+
+HTML5: external-asset loading (today everything embeds inline), a PWA
+manifest, service workers for offline play. Desktop `.exe`: code signing,
+version-info embedding, an auto-updater, crash reporting, analytics. Kivy/
+mobile: debug vs. release export presets, in-app purchases, mobile ads, push
+notifications, cloud saves. Further out still: Steam/itch.io/console export
+targets. None of this should be picked up without an explicit ask — it's
+the kind of scope a school-focused educational IDE may never need.
+
+## E. Translation completeness gap (real, unbounded until swept)
+
+Noted but not chased during the 2026-08-10 Extensions-tab i18n fix: the six
+"older maintained" languages (de/es/fr/it/ru/sl/uk minus fr, which ships
+monolithic) were never verified at 100% completeness the way pt/ja/zh were
+built to be. Confirmed concretely for German alone: `pygm2_de_core.ts` +
+`_editors.ts` carry **151** `type="unfinished"` empty-translation entries
+between just those two split files, with likely similar-scale gaps in the
+other five languages, uncounted. Real user-facing gap (untranslated strings
+silently fall back to English), but the size is unknown until someone runs
+the same completeness count `scripts/gen_translation_ts.py`'s pt/ja/zh work
+established against each of the six. Natural next step: run the count
+first (cheap), then decide whether to schedule filling them as a tier.
+
+## F. Large — each needs its own future planning session, not this doc
+
+Explicitly named as too large for a "small unit, one commit" queue like
+`DEFERRED_GAPS_2026_PLAN.md`. Do not start any of these from a resume-state
+doc; each deserves its own `docs/<NAME>_PLAN.md` the way `VOXEL_WORLD_PLAN.md`
+and `RAYCAST_2_5D_PLAN.md` got one.
+
+- **`docs/POST_1_0_REFACTOR.md` — splitting the four giant files.** Not
+  started. `runtime/action_executor.py` (5,593 lines), `runtime/game_runner.py`
+  (4,680), `core/ide_window.py` (4,153), `editors/object_editor/
+  object_events_panel.py` (1,880). The doc already has a full proposed
+  split-target module list per file, a deliberate difficulty-ascending
+  order (events panel → ide_window → game_runner → action_executor, each
+  behind a stabilization pause), an explicit proof methodology (offscreen-Qt
+  harness diffing observable state against pre-refactor HEAD, one cluster
+  per commit — this repo's standing audit discipline), and abort criteria.
+  Its own estimate: **~3 months of focused work** including stabilization
+  windows. Five smaller "companion cleanups" (consolidate the 3-copy
+  `ACTION_ALIASES` table, delete the dead `CollisionMixin`, prune audit-era
+  debug comments, demote noisy `logger.info` calls, cross-check
+  `docs/CODE_AUDIT.md` §4) are listed as worth doing alongside it, not
+  requiring the full refactor to start.
+- **Block World Tier 7d — in-IDE visual world editor.** No `editors/`
+  scaffolding exists for it at all; called out in
+  `docs/DEFERRED_GAPS_2026_PLAN.md` as "the largest item in the whole
+  queue — larger than Tier 5 [particles/timelines, itself sized 3+
+  sessions]." `VOXEL_WORLD_PLAN.md`'s own Phase 3 notes add: paint blocks in
+  3D inside the Room Editor, mirroring the Room Editor's existing tile
+  painter; a 2026-08-13 design note already leans toward `QUndoStack`/
+  `QUndoCommand` (matching `editors/room_undo_commands.py`) over any global
+  engine-level edit/play-mode toggle, since whether a player can break
+  blocks is already just "whether the author bound `break_block` to an
+  input" — no separate mode concept needed.
+- **Block World Tier 7e — procedural/infinite terrain.** World storage today
+  is a single in-memory sparse dict per room, no chunking/streaming.
+  `VOXEL_WORLD_PLAN.md` deliberately scoped this OUT up front (Phase 1):
+  "infinite chunk streaming is a much bigger engineering problem (chunk
+  loading/unloading, seed-based generation, LOD) with limited teaching
+  payoff" for bounded, author-sized worlds. Sized as "comparable to a second
+  `VOXEL_WORLD_PLAN.md`."
+- **Wiki per-tutorial-step screenshots** (`docs/WIKI_COMPLETENESS_PLAN_2026-08-11.md`'s
+  one open item). Needs up to 5 more scratch sample projects (one matching
+  each of the 6 build-along tutorials' own taught object names — Phase 1's
+  existing screenshots all come from one `plateforme_3` copy whose French
+  names don't match the tutorials' English-named samples, so they can't be
+  reused) plus per-step capture through each. Sized as "comparable to all of
+  Phase 1 combined, for lower-traffic pages" — deliberately deferred in
+  favor of finishing translation instead.
+- **Full crafting system.** Explicitly split out of Tier 7c's inventory-with-
+  counts work: no recipes, no UI, zero scaffold exists. Needs its own
+  dedicated planning pass if wanted.
+- **LAN multiplayer.** A 2026-05-02 git stash holds unfinished work, blocked
+  on missing `runtime/network/` source files (only stale `.pyc` remain).
+  Decided 2026-08-08 to rebuild as a folder extension (matching the
+  raycast/block-world pattern) rather than touch core — the stash itself is
+  not recoverable as a starting point, this would be a fresh build. See the
+  `multiplayer-network-stash` memory entry for the full decision record.
+
+---
+
+## Suggested order, if picking this up fresh
+
+1. **Section E's count-first step** (run the completeness sweep across the
+   six older languages) — cheap, and determines whether a real translation
+   gap needs scheduling at all.
+2. **Section B** — the two/three small fixes, an easy single session.
+3. **Section A** — build the combined jump+inventory+protection Block World
+   sample, which unlocks motivating all three export-parity units at once
+   rather than three separate low-context passes.
+4. **Section C** — opportunistic, whenever there's real device/browser
+   access available; not blocking anything else.
+5. **Section F** — pick ONE, write it its own dedicated plan doc first
+   (mirroring `VOXEL_WORLD_PLAN.md`'s shape), then work it the same
+   one-commit-per-unit way this repo already does everything else. Don't
+   start code before that doc exists — these are all large enough that
+   skipping the planning step is how a "small first step" quietly turns
+   into an unreviewable multi-thousand-line change.
+
+Section D is intentionally last/optional — pick up only on explicit ask.
