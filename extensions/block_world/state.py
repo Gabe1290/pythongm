@@ -8,21 +8,31 @@ touches core's GameRoom. A room's block layout lives under
 ``peek_blocks(room)`` (needed once a room renderer exists in Phase 2, so it
 doesn't stamp block-world state onto every room in the game).
 
-Storage is a **sparse dict**, keyed by an ``"x,y,z"`` string, value the block
-type id string. Absence of a key means air; there is no stored "air" block.
-This keeps a mostly-empty world cheap -- the same reasoning
-docs/VOXEL_WORLD_PLAN.md gives for not using a dense 3D array.
+Storage is **chunked** (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md, Tier 7e
+Phase 1): ``{(chunk_x, chunk_y): {"x,y,z": block_type}}``, one sparse dict
+per CHUNK_SIZE x CHUNK_SIZE column of (x, y) space, z unbounded within a
+chunk. Absence of a key (chunk missing, or block key missing within a
+present chunk) means air; there is no stored "air" block. Splitting by
+chunk (rather than one flat world-wide dict, Phase 0-6's original shape)
+is what makes a mutator's cache invalidation (see ``_chunk_columns``
+below) proportional to the ONE chunk it touched instead of the whole
+world -- necessary once Phase 2 adds generation and a world can have far
+more chunks loaded than get edited in any given frame. This phase adds
+no generation and no new gameplay: every public function below returns
+byte-identical results for byte-identical inputs versus the pre-chunking
+implementation, proven by the full pre-existing block_world test suite
+staying green across the change.
 
-``to_block_list`` / ``load_block_list`` round-trip the sparse dict to/from a
-flat list of ``{"x", "y", "z", "type"}`` dicts -- the shape convention room
-JSON already uses for tile layers (see the "tiles" key rooms save under
-today) -- so a future world-authoring path (a generator script, an action
-that seeds a room from a bundled data file) has an established shape to
-target rather than inventing its own. Nothing in this module reads or writes
-room JSON directly: extension_state is transient runtime state, same as
-raycast's camera config (rebuilt by an action each run, never persisted by
-core -- see extensions/raycast_2_5d/state.py's own docstring). Wiring an
-actual load path is Phase 3+.
+``to_block_list`` / ``load_block_list`` round-trip the chunked storage
+to/from a flat list of ``{"x", "y", "z", "type"}`` dicts -- the shape
+convention room JSON already uses for tile layers (see the "tiles" key
+rooms save under today), and the exact shape ``blocks/<room>.json``
+sibling files (editors/block_world_editor/io.py, load_block_world) already
+use on disk -- chunking is purely an in-memory concern; the file format
+is untouched. Nothing in this module reads or writes room JSON directly:
+extension_state is transient runtime state, same as raycast's camera
+config (rebuilt by an action each run, never persisted by core -- see
+extensions/raycast_2_5d/state.py's own docstring).
 """
 
 import os
@@ -191,18 +201,30 @@ def _key(x, y, z):
     return "%d,%d,%d" % (x, y, z)
 
 
+# Columns per chunk side (x, y); z is unbounded within a chunk, matching how
+# the world was already column-indexed by (x, y) before chunking. A starting
+# guess per docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md, not a tuned constant --
+# revisit once there's a real generated world to profile against.
+CHUNK_SIZE = 16
+
+
+def _chunk_key(x, y):
+    return (x // CHUNK_SIZE, y // CHUNK_SIZE)
+
+
 def _fresh():
-    # "_columns" is a DERIVED cache (see column_index) -- the leading
-    # underscore marks it as not part of the saved world shape, the same way
-    # raycast_2_5d's per-room state separates its camera config from the wall
-    # -edge caches it derives.
-    return {"blocks": {}, "camera": {"enabled": False}, "_columns": None}
+    # "_chunk_columns" and "_merged_columns" are DERIVED caches (see
+    # column_index) -- the leading underscore marks them as not part of the
+    # saved world shape, the same way raycast_2_5d's per-room state
+    # separates its camera config from the wall-edge caches it derives.
+    return {"chunks": {}, "camera": {"enabled": False},
+            "_chunk_columns": {}, "_merged_columns": None}
 
 
 def _peek_state(room):
     """This room's block-world state dict if it already exists, else None.
 
-    Does NOT create it -- the one shared lookup ``_invalidate_columns``,
+    Does NOT create it -- the one shared lookup ``_invalidate_chunk_columns``,
     ``peek_blocks`` and ``peek_camera`` all build on, so a future change to
     how state is namespaced (the key name, the getattr guard for bare test
     objects) has exactly one place to update instead of three copies that
@@ -211,15 +233,21 @@ def _peek_state(room):
     return es.get(BLOCK_WORLD_KEY) if es else None
 
 
-def _invalidate_columns(room):
-    """Drop the derived per-column cache. Called by every mutator here.
+def _invalidate_chunk_columns(room, chunk_key):
+    """Drop the derived per-column cache for ONE chunk, and the merged
+    cache column_index() returns (cheap to rebuild -- see column_index --
+    but must not go stale). Called by every mutator here, scoped to
+    whichever chunk it touched -- a chunk nobody edited keeps its own
+    cached column data, which is the whole point of chunking the cache
+    (see this module's docstring).
 
-    Code that reaches around these helpers and edits ``state["blocks"]``
-    directly MUST call this too, or the renderer keeps drawing the old world.
-    """
+    Code that reaches around these helpers and edits ``state["chunks"]``
+    directly MUST call this too, or the renderer keeps drawing the old
+    world for that chunk."""
     st = _peek_state(room)
     if st is not None:
-        st["_columns"] = None
+        st.get("_chunk_columns", {}).pop(chunk_key, None)
+        st["_merged_columns"] = None
 
 
 def block_world_state(room):
@@ -239,14 +267,18 @@ def block_world_state(room):
 
 
 def peek_blocks(room):
-    """This room's block dict if it already has block-world state, else None.
+    """This room's ``{(chunk_x, chunk_y): {"x,y,z": type}}`` chunk dict if
+    it already has block-world state, else None.
 
     Does NOT create state -- once a room renderer exists (Phase 2) it will
     run for every room, block-world or not, and must not stamp block-world
     state onto rooms that never used it. Mirrors
-    extensions.raycast_2_5d.state.peek_camera."""
+    extensions.raycast_2_5d.state.peek_camera. Callers that just want "does
+    this room have any blocks at all" should prefer ``next(iter_blocks(room),
+    None) is not None`` over inspecting this dict's shape directly -- it
+    stays correct regardless of how chunking is implemented internally."""
     st = _peek_state(room)
-    return st["blocks"] if st else None
+    return st["chunks"] if st else None
 
 
 def peek_camera(room):
@@ -261,10 +293,13 @@ def peek_camera(room):
 def get_block(room, x, y, z):
     """The block type id at (x, y, z), or None for air. Does not create
     state -- a room nobody has touched yet is simply all air."""
-    blocks = peek_blocks(room)
-    if blocks is None:
+    chunks = peek_blocks(room)
+    if chunks is None:
         return None
-    return blocks.get(_key(x, y, z))
+    chunk = chunks.get(_chunk_key(x, y))
+    if chunk is None:
+        return None
+    return chunk.get(_key(x, y, z))
 
 
 def set_block(room, x, y, z, block_type):
@@ -273,28 +308,34 @@ def set_block(room, x, y, z, block_type):
     data."""
     if block_type not in BLOCK_TYPES:
         raise KeyError(block_type)
-    block_world_state(room)["blocks"][_key(x, y, z)] = block_type
-    _invalidate_columns(room)
+    ck = _chunk_key(x, y)
+    st = block_world_state(room)
+    st["chunks"].setdefault(ck, {})[_key(x, y, z)] = block_type
+    _invalidate_chunk_columns(room, ck)
 
 
 def remove_block(room, x, y, z):
     """Break/clear the block at (x, y, z). A no-op if it's already air or the
     room has no world state yet."""
-    blocks = peek_blocks(room)
-    if blocks is not None:
-        blocks.pop(_key(x, y, z), None)
-        _invalidate_columns(room)
+    chunks = peek_blocks(room)
+    if chunks is None:
+        return
+    ck = _chunk_key(x, y)
+    chunk = chunks.get(ck)
+    if chunk is not None and chunk.pop(_key(x, y, z), None) is not None:
+        _invalidate_chunk_columns(room, ck)
 
 
 def iter_blocks(room):
     """Yield (x, y, z, block_type) for every placed block in the room, in no
     particular order. Empty for an all-air / not-yet-touched room."""
-    blocks = peek_blocks(room)
-    if not blocks:
+    chunks = peek_blocks(room)
+    if not chunks:
         return
-    for key, block_type in blocks.items():
-        x, y, z = (int(part) for part in key.split(","))
-        yield x, y, z, block_type
+    for chunk in chunks.values():
+        for key, block_type in chunk.items():
+            x, y, z = (int(part) for part in key.split(","))
+            yield x, y, z, block_type
 
 
 def bounds(room):
@@ -327,39 +368,64 @@ def load_block_list(room, block_list):
     to_block_list shape). Overwrites whatever was there -- callers that want
     to layer blocks onto an existing world should call set_block per entry
     instead."""
-    blocks = {}
+    chunks = {}
     for entry in block_list:
         block_type = entry["type"]
         if block_type not in BLOCK_TYPES:
             raise KeyError(block_type)
-        blocks[_key(entry["x"], entry["y"], entry["z"])] = block_type
-    block_world_state(room)["blocks"] = blocks
-    _invalidate_columns(room)
+        x, y, z = entry["x"], entry["y"], entry["z"]
+        chunks.setdefault(_chunk_key(x, y), {})[_key(x, y, z)] = block_type
+    st = block_world_state(room)
+    st["chunks"] = chunks
+    st["_chunk_columns"] = {}   # a full reload invalidates every chunk
+    st["_merged_columns"] = None
+
+
+def _chunk_column_index(room, chunk_key):
+    """The column index for ONE chunk, cached until that chunk's own cache
+    entry is invalidated (see _invalidate_chunk_columns)."""
+    st = block_world_state(room)
+    cache = st.setdefault("_chunk_columns", {})
+    index = cache.get(chunk_key)
+    if index is None:
+        index = {}
+        chunk = st["chunks"].get(chunk_key, {})
+        for key, block_type in chunk.items():
+            x, y, z = (int(part) for part in key.split(","))
+            index.setdefault((x, y), []).append((z, block_type))
+        for column in index.values():
+            column.sort()
+        cache[chunk_key] = index
+    return index
 
 
 def column_index(room):
-    """``{(x, y): [(z, block_type), ...]}`` -- every non-empty column of the
-    world, each sorted lowest z first. Built once and cached until a mutator
-    calls _invalidate_columns.
+    """``{(x, y): [(z, block_type), ...]}`` -- every non-empty column across
+    every loaded chunk of the world, each sorted lowest z first. The SAME
+    dict object is returned across repeat calls until something actually
+    invalidates it (a real cache, not just memoized content).
+
+    Rebuilt by merging each chunk's own cached column index (see
+    _chunk_column_index) -- a chunk nobody touched keeps its cached columns
+    rather than the whole world rebuilding on any single edit -- and the
+    merge itself is cached too, so a mutation forces exactly one merge on
+    the NEXT call rather than one per call until something changes again.
 
     Phase 2b's renderer needs the whole vertical STACK at each cell it steps
     into, and the backing store is keyed by a formatted ``"x,y,z"`` string.
     Probing that per candidate layer means a string format per lookup, which
     at 320 columns x 24 cells x a handful of layers is tens of thousands of
     formats per frame -- comfortably the most expensive thing in the render
-    path. One tuple-keyed dict lookup per cell instead, rebuilt only when the
-    world actually changes, which for a built world is approximately never.
+    path. One tuple-keyed dict lookup per cell instead.
     """
     st = block_world_state(room)
-    index = st.get("_columns")
-    if index is None:
-        index = {}
-        for x, y, z, block_type in iter_blocks(room):
-            index.setdefault((x, y), []).append((z, block_type))
-        for column in index.values():
-            column.sort()
-        st["_columns"] = index
-    return index
+    merged = st.get("_merged_columns")
+    if merged is None:
+        merged = {}
+        for chunk_key in list(st["chunks"].keys()):
+            merged.update(_chunk_column_index(room, chunk_key))
+        st["_merged_columns"] = merged
+    return merged
 
 
 def stack_top(room, x, y):

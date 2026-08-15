@@ -50,7 +50,7 @@ from extensions.block_world.renderer import (
     render_block_world_view, clamp_pitch, draw_cell_outline, eye_z_for,
     horizon_for, march_ray, pick_voxel, screen_ray, unproject_to_plane,
 )
-from extensions.block_world.state import get_block, is_breakable, peek_blocks, DEFAULT_HOTBAR
+from extensions.block_world.state import get_block, is_breakable, iter_blocks, DEFAULT_HOTBAR
 from core.logger import get_logger
 
 from .io import load_room_blocks, save_room_blocks
@@ -169,8 +169,10 @@ class BlockWorldEditorWindow(QMainWindow):
         """Remove every block in the room, with confirmation -- routed
         through the undo stack (ClearWorldCommand) so it's reversible,
         matching editors/room_editor's own Clear All Instances."""
-        blocks = peek_blocks(self.session.room)
-        if not blocks:
+        # iter_blocks, not peek_blocks -- a chunk emptied by remove_block
+        # can still exist as a stale {} entry, which would make peek_blocks'
+        # chunk dict truthy even though there's nothing left to clear.
+        if next(iter_blocks(self.session.room), None) is None:
             QMessageBox.information(self, self.tr("Block World"),
                                      self.tr("There are no blocks to clear."))
             return

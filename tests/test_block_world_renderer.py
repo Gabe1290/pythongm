@@ -317,7 +317,7 @@ def test_render_room_claims_a_block_world_room_and_declines_others():
 
     class _Room:
         def __init__(self, cfg):
-            self.extension_state = {"block_world": {"camera": cfg, "blocks": {}}} \
+            self.extension_state = {"block_world": {"camera": cfg, "chunks": {}}} \
                 if cfg is not None else {}
 
     drew = {"n": 0}

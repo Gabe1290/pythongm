@@ -39,9 +39,19 @@ EXPORT_HTML5 = (REPO_ROOT / "extensions" / "block_world" / "export_html5.js").re
 class _DesktopRoom:
     """A bare state bag matching what march_ray/pick_voxel read off `room`
     via extension_state -- mirrors GameRoom.__new__'s role in the raycast
-    parity test, without needing a real GameRoom."""
+    parity test, without needing a real GameRoom.
+
+    Buckets the flat {"x,y,z": type} dict into per-chunk sub-dicts (Tier 7e
+    Phase 1's chunked storage, docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md) via
+    state.py's own _chunk_key, so this stays in sync with CHUNK_SIZE rather
+    than duplicating it."""
     def __init__(self, blocks):
-        self.extension_state = {"block_world": {"blocks": blocks, "camera": {}, "_columns": None}}
+        from extensions.block_world.state import _chunk_key
+        chunks = {}
+        for key, block_type in blocks.items():
+            x, y, _z = (int(part) for part in key.split(","))
+            chunks.setdefault(_chunk_key(x, y), {})[key] = block_type
+        self.extension_state = {"block_world": {"chunks": chunks, "camera": {}, "_chunk_columns": {}}}
 
 
 def _shared_world():
