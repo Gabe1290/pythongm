@@ -100,16 +100,20 @@ BLOCK_TYPES = {
     "wool_black": {"all": "wool_black.png", "solid": True},
 }
 
-# The hotbar (Phase 3 Unit 3): a small FIXED list of block-type slots, not a
-# full inventory/crafting system -- deliberately out of scope, see
-# docs/VOXEL_WORLD_PLAN.md's Phase 3 notes. Selection lives on the PLAYER
-# instance (select_hotbar_slot writes instance.hotbar_index/hotbar_block),
-# not here or in the room's camera config, so it stays per-player rather
-# than per-room -- the natural shape for eventual multiplayer, and simply
-# correct even for one player, since the room's block-world state is not
-# whose hotbar this is. Was the preview tool's own HOTBAR list first,
-# proven there before being promoted here; the preview tool now imports
-# this instead of keeping its own copy.
+# The hotbar (Phase 3 Unit 3): a small FIXED list of block-type SLOTS, not a
+# full inventory/crafting system -- crafting is still deliberately out of
+# scope, see docs/VOXEL_WORLD_PLAN.md's Phase 3 notes and Tier 7c's own
+# notes in docs/DEFERRED_GAPS_2026_PLAN.md. Real per-block-type COUNTS
+# (pickup-on-break, consume-on-place) were added on top of this fixed slot
+# list in Tier 7c -- opt-in via enable_block_world_view's `inventory`
+# parameter, stored the same way selection already was: on the PLAYER
+# instance (instance.block_inventory, a {block_type: count} dict lazily
+# created by break_block/place_block), not here or in the room's camera
+# config, so it stays per-player rather than per-room -- the natural shape
+# for eventual multiplayer, and simply correct even for one player, since
+# the room's block-world state is not whose inventory this is. Was the
+# preview tool's own HOTBAR list first, proven there before being promoted
+# here; the preview tool now imports this instead of keeping its own copy.
 DEFAULT_HOTBAR = ["cobble", "brick", "wood_plank", "glass", "wool_red",
                   "sandstone", "gold_block", "leaves"]
 

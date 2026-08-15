@@ -456,14 +456,42 @@ today, just unbuilt).
   **Underspecified: confirm with the user what "protection" means**
   (unbreakable only? un-placeable-on? requires a specific hotbar item?)
   before implementing.
-- [ ] **7c. Inventory with counts (medium; crafting split out).** Today's
-  hotbar (`state.py`'s `DEFAULT_HOTBAR`, `handlers.py`'s
-  `select_hotbar_slot`) is a fixed list, no counts/stacking (documented as
-  deliberately out of scope creative-mode selection). Add real counts
-  (pickup-on-break, consume-on-place, persisted in room state, real
-  slot-count rendering in the hotbar HUD macro action). **Crafting has zero
-  existing scaffold** (no recipes, no UI) — needs its own dedicated
-  planning pass, not bundled here.
+- [x] **7c. Inventory with counts — DONE 2026-08-15.** Desktop-engine only,
+  same scoping as 7a (no HTML5/Kivy codegen this pass). Opt-in via a new
+  `inventory` parameter on `enable_block_world_view` (boolean, default
+  **False**) — every project that predates this tier keeps `place_block`'s
+  original unlimited creative-mode placing and `break_block`'s original
+  "just removes it" behaviour completely unchanged when left off.
+  `inventory=True` switches on real counts: `break_block` adds the broken
+  type to the calling instance's `block_inventory` (a lazily-created
+  `{block_type: count}` dict); `place_block` requires and consumes 1 from
+  it, refusing (silent no-op, matching this extension's established
+  convention for "nowhere to place"/"can't reach"/"unbreakable") when the
+  count is 0. Storage is **per-instance** (`instance.block_inventory`), not
+  per-room — deliberately mirrors `select_hotbar_slot`'s own existing
+  choice (`state.py`'s `DEFAULT_HOTBAR` comment already documents why:
+  the natural shape for eventual multiplayer, and simply correct even for
+  one player since the room's block-world state isn't whose inventory this
+  is) rather than inventing a second, inconsistent storage convention.
+  `hud.py`'s `build_block_world_hud_commands` gained an optional `counts`
+  param — draws a small number on each hotbar slot when given a dict, and
+  is byte-for-byte the same output as before when `None` (the default);
+  `draw_block_world_hud` passes `getattr(instance, "block_inventory",
+  None)`, so a creative-mode game (inventory never touched) never shows
+  counts at all — no separate on/off check needed there, the attribute's
+  mere presence is the gate. **Crafting remains fully out of scope** (no
+  recipes, no UI, zero scaffold added) — only counts on the existing fixed
+  hotbar slots, per the plan's own explicit split.
+  `tests/test_block_world_inventory.py` (16 tests): legacy behaviour
+  provably unchanged with `inventory=False` (no `block_inventory` attribute
+  ever created, placing stays unlimited), pickup accumulates per block
+  type and skips unbreakable blocks, consume-on-place refuses at 0 without
+  going negative and doesn't let one block type's count satisfy another's
+  placement, a full break-then-place round trip, and the HUD builder/action
+  both with and without counts. Suite 3088 → 3104 passed, 0 failed. Not
+  done (deliberately, per scope): HTML5/Kivy export codegen for `inventory`/
+  the two changed actions, and updating `block_world_1` (or a new sample)
+  to demo it — same "wait for a real sample" discipline as Tier 5.3/7a.
 - [ ] **7d. In-IDE visual world editor — needs its own future planning
   session, do not start from this doc.** No `editors/` scaffolding exists;
   building one is a new editor pane on the scale of
