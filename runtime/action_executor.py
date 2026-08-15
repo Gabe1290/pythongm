@@ -6199,9 +6199,19 @@ class ActionExecutor:
         emitter = instance._particle_system['emitters'][emitter_id]
         ptype = instance._particle_system['particle_types'][particle_type]
 
+        self._spawn_particles(instance, emitter, ptype, number)
+
+        logger.debug(f"💥 Burst {number} particles of type {particle_type} from emitter {emitter_id}")
+
+    def _spawn_particles(self, instance, emitter: Dict[str, Any], ptype: Dict[str, Any], number: int) -> None:
+        """Spawn ``number`` particles from ``emitter`` using ``ptype``'s
+        random ranges. Shared by burst_particles (once) and the per-frame
+        streaming-emitter update in game_runner.py (continuous) so both
+        paths sample particle position/size/speed/direction/life exactly
+        the same way (runtime/game_runner.py's step loop, see
+        _update_instance_particles)."""
         import random
 
-        # Create particles
         for _ in range(number):
             # Random position within emitter area
             if emitter['shape'] == 'rectangle':
@@ -6243,8 +6253,6 @@ class ActionExecutor:
                 'alpha': ptype['alpha']
             }
             instance._particle_system['particles'].append(particle)
-
-        logger.debug(f"💥 Burst {number} particles of type {particle_type} from emitter {emitter_id}")
 
     def execute_stream_particles_action(self, instance, parameters: Dict[str, Any]):
         """Set up continuous particle emission

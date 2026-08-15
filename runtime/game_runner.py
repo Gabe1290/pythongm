@@ -770,6 +770,108 @@ class GameInstance:
             # to match GameMaker 7.0 event execution order
             self.action_executor.execute_event(self, "step", self.object_data["events"])
 
+    def update_particle_system(self):
+        """Per-frame particle system update: spawn from streaming emitters,
+        then age/move/cull every live particle.
+
+        Write side lives in action_executor.py's create_particle_system/
+        create_particle_type/create_emitter/burst_particles/stream_particles
+        actions (Tier 5.1, docs/DEFERRED_GAPS_2026_PLAN.md) — those only
+        ever populated `_particle_system`; nothing previously read it.
+        """
+        ps = getattr(self, '_particle_system', None)
+        if not ps:
+            return
+
+        # Spawn from any emitter with active streaming (stream_particles
+        # action sets stream_type/stream_count on the emitter itself).
+        for emitter in ps['emitters'].values():
+            stream_type = emitter.get('stream_type')
+            stream_count = emitter.get('stream_count', 0)
+            if stream_type is None or stream_count <= 0:
+                continue
+            ptype = ps['particle_types'].get(stream_type)
+            if ptype is None:
+                continue
+            self.action_executor._spawn_particles(self, emitter, ptype, stream_count)
+
+        # Age, move and cull particles. Movement mirrors set_direction_speed's
+        # convention (0 deg = right, 90 deg = up, y grows downward).
+        surviving = []
+        for particle in ps['particles']:
+            particle['life'] -= 1
+            if particle['life'] <= 0:
+                continue
+            angle_rad = math.radians(particle['direction'])
+            particle['x'] += math.cos(angle_rad) * particle['speed']
+            particle['y'] -= math.sin(angle_rad) * particle['speed']
+            particle['size'] = max(0.0, particle['size'] + particle['size_increase'])
+            surviving.append(particle)
+        ps['particles'] = surviving
+
+    def update_timeline(self):
+        """Advance timeline_position by timeline_speed while timeline_running
+        is set (set_timeline/start_timeline/pause_timeline/set_timeline_speed/
+        set_timeline_position in action_executor.py). There is no separate
+        Timeline resource/moments table in this engine (unlike GameMaker) --
+        an author reacts to specific positions the same way they'd react to
+        any other counter: a test_variable/conditional check on
+        timeline_position in the object's own step event. This mirrors how
+        alarms are authored as ordinary object events, just without a
+        dedicated per-position event bucket.
+        """
+        if getattr(self, 'timeline_running', False):
+            speed = getattr(self, 'timeline_speed', 1.0)
+            self.timeline_position = getattr(self, 'timeline_position', 0) + speed
+
+    def render_particles(self, screen: pygame.Surface, view_offset=(0, 0)):
+        """Draw this instance's live particles (world-space, same view_offset
+        as the instance's own sprite). Sprite-typed particles blit a scaled
+        copy of the named sprite's first frame; colorless/no-sprite particles
+        draw as a filled, alpha-blended circle. Called from render() BEFORE
+        the visibility check and the instance's own sprite, so an invisible
+        "particle controller" instance (a common pattern -- one instance that
+        only holds emitters) still draws its particles. Known simplification:
+        this instance's particles are not independently depth-sorted against
+        every OTHER instance using the particle system's own `depth` field --
+        there is no room-global particle layer in this engine, only
+        per-instance ones.
+        """
+        ps = getattr(self, '_particle_system', None)
+        if not ps or not ps['particles']:
+            return
+
+        runner = getattr(getattr(self, 'action_executor', None), 'game_runner', None)
+        sprites = getattr(runner, 'sprites', None) or {}
+
+        for particle in ps['particles']:
+            x = int(particle['x'] + view_offset[0])
+            y = int(particle['y'] + view_offset[1])
+            alpha = max(0, min(255, int(particle.get('alpha', 1.0) * 255)))
+            sprite_name = particle.get('sprite')
+            sprite = sprites.get(sprite_name) if sprite_name else None
+            frame = None
+            if sprite is not None:
+                frame = sprite.frames[0] if sprite.frames else sprite.surface
+            if frame is not None:
+                scale = max(0.01, particle.get('size', 1.0))
+                w = max(1, int(frame.get_width() * scale))
+                h = max(1, int(frame.get_height() * scale))
+                scaled = pygame.transform.scale(frame, (w, h))
+                if alpha < 255:
+                    scaled = scaled.copy()
+                    scaled.set_alpha(alpha)
+                screen.blit(scaled, (x - w // 2, y - h // 2))
+            else:
+                radius = max(1, int(particle.get('size', 1.0)))
+                color = particle.get('color', (255, 255, 255))
+                if alpha < 255:
+                    temp = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+                    pygame.draw.circle(temp, (*color, alpha), (radius, radius), radius)
+                    screen.blit(temp, (x - radius, y - radius))
+                else:
+                    pygame.draw.circle(screen, color, (x, y), radius)
+
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
         self.sprite = sprite
@@ -817,6 +919,12 @@ class GameInstance:
         appears at the correct screen pixel under the active view. Defaults to
         (0, 0), which preserves identical behavior when views are disabled.
         """
+        # Particles draw even when the owning instance is invisible -- an
+        # invisible "particle controller" instance holding only emitters is
+        # a common pattern, and GM particle systems are independent of the
+        # instance's own visibility.
+        self.render_particles(screen, view_offset)
+
         if not self.visible:
             return
 
@@ -2583,6 +2691,10 @@ class GameRunner:
                         # Remove completed delayed actions (in reverse order to preserve indices)
                         for i in reversed(completed):
                             instance._delayed_actions.pop(i)
+
+                    # 2c. PARTICLES & TIMELINE (Tier 5.1)
+                    instance.update_particle_system()
+                    instance.update_timeline()
 
                     # 3. STEP EVENT (always call - handles nokey internally)
                     instance.step()

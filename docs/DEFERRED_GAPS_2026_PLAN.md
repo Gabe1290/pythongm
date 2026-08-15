@@ -272,17 +272,63 @@ gap on `block_world_1` today.
 spawns/ages/moves/draws/advances. Zero `ActionType` entries (no dead-end UI
 today, just unbuilt).
 
-- [ ] **5.1 Phase 1 (desktop engine).** Per-frame update step in
-  `game_runner.py`: age/move/cull particles, spawn from armed emitters, new
-  `_render_particles` draw step. Timelines: advance `timeline_position` by
-  `timeline_speed` when running, firing whatever's scheduled — investigate
-  the actual "moments" storage shape the write-side handlers already
-  produce before designing the read side. Verify with a real `GameRunner`
-  driven through frames, not a hand-rolled harness.
+- [x] **5.1 Phase 1 (desktop engine) — DONE 2026-08-15.** Per-frame update
+  in `runtime/game_runner.py`: `GameInstance.update_particle_system()`
+  (spawns from streaming emitters via a new shared `ActionExecutor.
+  _spawn_particles` helper factored out of `execute_burst_particles_action`
+  so burst/stream sample position/size/speed/direction/life identically;
+  ages/moves/culls every live particle — movement mirrors
+  `set_direction_speed`'s convention, 0°=right/90°=up/y grows downward) and
+  `GameInstance.update_timeline()`, both called from the main loop's
+  per-instance step (`game_runner.py`, right after delayed actions, before
+  the step event — new "2c. PARTICLES & TIMELINE"). New
+  `GameInstance.render_particles()`: sprite-typed particles blit a scaled
+  copy of the sprite's first frame (looked up by name via
+  `action_executor.game_runner.sprites`, same pattern `_draw_sprite` uses);
+  colorless particles draw as an alpha-blended filled circle. Called from
+  `render()` **before** the `if not self.visible: return` guard, so an
+  invisible "particle controller" instance (a common real pattern) still
+  draws its particles — confirmed this would otherwise be a real gap by
+  writing the test first. Known, documented simplification: a particle
+  system's own `depth` field is unused; particles draw immediately
+  alongside their owning instance's position in the existing depth-sorted
+  instance list, not independently re-sorted against every other instance
+  in the room (there's no room-global particle layer here, only
+  per-instance ones).
+  **Timeline "moments" finding (audit-is-a-lead correction to this plan's
+  own text): no moments/storage shape exists to investigate.** Read every
+  write-side timeline handler — `timeline_index` is set to an opaque
+  string never looked up anywhere; there is no Timeline resource, no
+  project.json asset category, no action that attaches an action list to a
+  position. The plan's premise that such a structure already existed
+  write-side was wrong. Resolution: `timeline_position`/`timeline_speed`/
+  `timeline_running` becoming real, per-frame-advancing, `getattr`-able
+  instance state (mirrored by `test_variable`'s `scope='sel'` reading via
+  plain `getattr(instance, variable, 0)`) is by itself a complete, honest
+  reading of "firing whatever's scheduled" — an author reacts to a
+  specific position with an ordinary `test_variable` conditional in their
+  own step event, exactly how alarms are authored as ordinary object
+  events rather than through a dedicated resource. Inventing a new
+  Timeline resource/asset type + editor UI would be genuine new scope
+  belonging to 5.2 (UI), not 5.1 (engine), and no existing action supports
+  authoring one — deliberately not done here.
+  Tests: `tests/test_particle_timeline_engine.py` (18 tests) — real
+  `GameInstance`/`ActionExecutor` pair (not a hand-rolled harness) driven
+  across simulated frames: burst age/cull, directional movement (both
+  axes), size_increase floor, streaming spawn-per-frame, stream binds to
+  the emitter it was armed on (not `_last_emitter_id` at spawn time),
+  color + sprite rendering (real pixel assertions on a real
+  `pygame.Surface`), the invisible-controller case, timeline
+  advance/pause/speed-scaling/stop-resets, and a combined integration test
+  driving `update_particle_system`/`update_timeline`/`step()` together.
+  Suite 3036 → 3054 passed, 0 failed.
 - [ ] **5.2 Phase 2 (UI).** Register in `events/action_types.py` (2026-06-05
   "safe bucket" precedent). Check whether the existing `multi_choice`
   pattern suffices for a timeline "moments" editor before inventing a new
-  `param_type`.
+  `param_type` — per the 5.1 finding above, this repo doesn't have a
+  moments concept to build an editor for unless 5.2 explicitly decides to
+  invent one; the 8 particle actions + 5 timeline control actions
+  (position/speed/start/pause/stop) are what's real to expose.
 - [ ] **5.3 Phase 3 (export parity).** HTML5/Kivy, deferred until Phase 1-2
   are proven and at least one sample uses them (match3_1 lesson: don't chase
   parity for a feature nothing uses yet).
