@@ -969,6 +969,31 @@ class ProjectManager(QObject):
                     object_data['events'] = {}
                     object_data['_external_file'] = f"objects/{object_name}.json"
 
+        # For sprites, strip the WHOLE body to a lightweight stub -- unlike
+        # objects (which keep everything except events), sprites have no
+        # single risky subfield; they're small pure metadata with no pixel
+        # data, so nothing is worth keeping embedded. Same gate/pattern as
+        # objects above: _save_sprites_to_files already wrote every sprite's
+        # full body to sprites/<name>.json (whenever sprites/ exists -- true
+        # for every project created since sprites/ is part of
+        # DEFAULT_PROJECT_STRUCTURE, false only for a legacy project that
+        # predates it), and every loader that merges sprites/<name>.json
+        # (core/project_manager.py's and runtime/game_runner.py's own
+        # _load_sprites_from_files, export/HTML5/html5_exporter.py,
+        # export/base_exporter.py's BaseKivyExporter, export/ios/ios_exporter.py,
+        # utils/resource_packager.py -- audited 2026-08-15, see TODO.md)
+        # already restores it.
+        if (save_path is not None and (Path(save_path) / "sprites").exists()
+                and 'assets' in data and 'sprites' in data['assets']):
+            sprites = data['assets']['sprites']
+            for sprite_name, sprite_data in sprites.items():
+                if isinstance(sprite_data, dict):
+                    sprites[sprite_name] = {
+                        'name': sprite_data.get('name', sprite_name),
+                        'asset_type': sprite_data.get('asset_type', 'sprite'),
+                        '_external_file': f"sprites/{sprite_name}.json",
+                    }
+
         # For playgrounds, strip detail data (walls/robots go to separate files)
         if 'assets' in data and 'playgrounds' in data['assets']:
             playgrounds = data['assets']['playgrounds']

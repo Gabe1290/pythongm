@@ -178,6 +178,7 @@ class HTML5Exporter:
                 # exporting without the merge shipped outdated events.
                 self._load_room_instances(project_path, project_data)
                 self._load_object_files(project_path, project_data)
+                self._load_sprite_files(project_path, project_data)
                 self._collect_extension_data(project_path, project_data)
 
                 # A nameless (malformed/hand-edited) project.json must not
@@ -403,6 +404,36 @@ class HTML5Exporter:
                     logger.debug(f"  Merged object file: {object_name}")
                 except Exception as e:
                     logger.warning(f"  Failed to load object file {object_file}: {e}")
+
+    def _load_sprite_files(self, project_path: Path, project_data: Dict) -> None:
+        """Merge sprites/<name>.json side files into project_data (file wins),
+        matching the project loader's precedence (merge_sprite_file).
+
+        project.json's embedded sprite entries are stubs since sprites were
+        manifest-ified (Tier 6) -- without this merge, encode_sprites (below)
+        and every sprite field the shipped gameData carries for engine.js at
+        browser runtime (frame_width/origin_x/animation_type/collision_mask/
+        etc.) would silently go missing from every export."""
+        from utils.project_file_merge import merge_sprite_file
+
+        sprites_data = project_data.get('assets', {}).get('sprites', {})
+        sprites_dir = project_path / "sprites"
+        if not sprites_dir.exists():
+            return
+
+        for sprite_name, sprite_data in list(sprites_data.items()):
+            if isinstance(sprite_data, str):
+                sprite_data = {"name": sprite_name, "asset_type": "sprite"}
+                sprites_data[sprite_name] = sprite_data
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        file_sprite_data = json.load(f)
+                    merge_sprite_file(sprite_data, file_sprite_data)
+                    logger.debug(f"  Merged sprite file: {sprite_name}")
+                except Exception as e:
+                    logger.warning(f"  Failed to load sprite file {sprite_file}: {e}")
 
     # Formats browsers can decode via <audio>/Audio(); .mid/.midi have no
     # browser support and are skipped with a warning.

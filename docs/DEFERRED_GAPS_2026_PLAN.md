@@ -287,30 +287,54 @@ today, just unbuilt).
   are proven and at least one sample uses them (match3_1 lesson: don't chase
   parity for a feature nothing uses yet).
 
-## Tier 6 — Manifest-ify sprites in `project.json` (medium, ~1 session)
+## Tier 6 — Manifest-ify sprites in `project.json` (medium, ~1 session) — CLOSED 2026-08-15
 
-Follow the objects precedent (`core/project_manager.py::_prepare_project_data_for_save`,
-L947-970) exactly. Sequence **after** Tier 4 — both touch the same three
-export-loader files; keep as separate clean passes.
-
-- [ ] Strip the **whole** sprite body on save (unlike objects, which
+- [x] Strip the **whole** sprite body on save (unlike objects, which
   stripped just `events` — sprites have no single risky subfield to
   isolate; small pure metadata, no pixel data).
-- [ ] No new loader code needed for core/runtime —
+- [x] No new loader code needed for core/runtime —
   `core/project_manager.py::_load_sprites_from_files` and
   `runtime/game_runner.py::_load_sprites_from_files` already have working
-  `merge_sprite_file` logic, currently a no-op since nothing strips yet.
-- [ ] Add sprite-file loading to the three export paths that have **zero**
-  today: `export/base_exporter.py`, `export/android/android_exporter.py`,
-  `export/ios/ios_exporter.py` — mirror the existing merge pattern.
-- [ ] Route `export/HTML5/html5_exporter.py::encode_sprites` and
-  `export/Kivy/kivy_exporter.py::_export_sprite` through a sprite-file merge
-  (currently read embedded data directly).
-- [ ] Mandatory round-trip test mirroring
-  `tests/test_manifest_ify_objects_round_trip.py`: fresh project
-  (byte-identical reload), legacy embedded-only project (unchanged), `.zip`
-  export/import round-trip, one real bundled sample. One test per
-  newly-sprite-aware export path.
+  `merge_sprite_file` logic, now actually exercised now that saves strip.
+- [x] Add sprite-file loading to the three export paths that had **zero**:
+  `export/base_exporter.py` (covers exe/linux/macos + Android via
+  inheritance), `export/ios/ios_exporter.py` — mirror the existing merge
+  pattern.
+- [x] Route `export/HTML5/html5_exporter.py::encode_sprites` through a
+  sprite-file merge (new `_load_sprite_files`, called before both
+  `encode_sprites` and the `gameData` embed — engine.js reads sprite
+  metadata straight from that embed at browser runtime too, not just the
+  export-time PNG encoding). `export/Kivy/kivy_exporter.py::_export_sprite`
+  needed **no** change — `KivyExporter` only ever receives `project_data`
+  already merged by its caller (`base_exporter.py`/`ios_exporter.py`), never
+  reloads `project.json` itself.
+- [x] Mandatory round-trip test mirroring
+  `tests/test_manifest_ify_objects_round_trip.py`:
+  `tests/test_manifest_ify_sprites_round_trip.py` (10 tests — fresh project
+  byte-identical reload, legacy embedded-only project unchanged, `.zip`
+  export/import round-trip, real bundled sample `maze_1`).
+- [x] **A full sprite-read-site survey (not scoped by the plan text above,
+  done before implementing per this repo's audit-is-a-lead discipline) found
+  6 real gaps beyond the three export paths named above**, each fixed with
+  its own regression test in `tests/test_manifest_ify_sprites_export_paths.py`
+  (10 tests): the HTML5 exporter had **zero** sprite merge (bigger than just
+  `encode_sprites` — the whole unmerged `project_data` is embedded as
+  `gameData`); `editors/room_editor/__init__.py`'s detached/floated-editor
+  disk fallback; `widgets/asset_tree/asset_tree_item.py`'s object-sprite-
+  thumbnail disk fallback (a *second*, separate fallback from the
+  already-safe sprite-category thumbnail path); `utils/resource_packager.py`'s
+  `export_object`/`export_room` (object *events* were already merged there
+  from the 2026-08-14 objects work; sprites had no equivalent, so a shared
+  `.gmobj`/`.gmroom` package would ship a stub with no `file_path`); and the
+  trash/rollback gate in both `core/asset_manager.py::delete_asset` and
+  `widgets/asset_tree/asset_operations.py`'s legacy fallback (`"sprites"` was
+  missing from the `("rooms", "objects", "playgrounds")` side-file gate,
+  same orphan hazard M59 already fixed for the other three types). Also
+  added `thumbnail`/`image_file` to `utils/project_file_merge.py`'s
+  `_SPRITE_FILE_KEYS` — both are real, read fields that were missing from
+  the merge whitelist and would have silently vanished on the first
+  stub round-trip. Full writeup: `TODO.md`'s "Manifest-ify objects &
+  sprites" entry, 2026-08-15 addendum. Suite 3036 passed, 0 failed.
 
 ## Tier 7 — Block World big features (large, multi-part)
 

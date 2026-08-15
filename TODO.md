@@ -687,7 +687,7 @@ existed. Regenerated; 0 untranslated strings reported now.
 
 ## Project format / persistence
 
-### ~~Manifest-ify objects & sprites in project.json~~ (DONE 2026-08-14, objects only)
+### ~~Manifest-ify objects & sprites in project.json~~ (DONE 2026-08-14 objects, DONE 2026-08-15 sprites)
 - **Do this carefully, with a round-trip test, just before the final
   validation pass before the 1.0 release.** It changes the on-disk save
   format for every project, so it is deliberately scheduled late.
@@ -833,6 +833,53 @@ existed. Regenerated; 0 untranslated strings reported now.
 - Why it matters long-term: smaller `project.json`, clean per-asset git diffs,
   and far less Dropbox "conflicted copy" / merge risk across the multi-machine
   workflow.
+- **2026-08-15 — sprites done too** (`docs/DEFERRED_GAPS_2026_PLAN.md` Tier 6).
+  The 2026-08-14 "scope narrowed: sprites are staying dual-stored" call above
+  was **reopened by explicit ask**, not overturned on the merits — the actual
+  implementation strips the *whole* sprite body (not just one field, since
+  sprites have no single risky subfield the way objects have `events`) to a
+  `{name, asset_type, _external_file}` stub in `_prepare_project_data_for_save`,
+  gated on `sprites/` existing (same pattern as objects). A fresh survey (not
+  the stale 2026-08-14 one, which never got past "would need new code, scope
+  narrowed") found **6 real gaps**, all fixed with regression tests:
+  1. `export/HTML5/html5_exporter.py` had **zero** sprite-file merge at all —
+     new `_load_sprite_files` (mirrors `_load_object_files`), called before
+     both `encode_sprites` and the `gameData` embed (engine.js reads sprite
+     metadata straight from that embed at browser runtime, not just at
+     export-encode time — this was the biggest of the six).
+  2. `export/base_exporter.py`'s `BaseKivyExporter._load_project` (covers
+     exe/linux/macos **and** Android via inheritance — Android overrides the
+     room/object loaders but not this one) and `export/ios/ios_exporter.py`'s
+     own hand-rolled loader both had zero sprite merge; both got one, using
+     `utils/project_file_merge.merge_sprite_file`.
+  3. `editors/room_editor/__init__.py::load_available_objects`'s disk fallback
+     (detached/floated room editor with no reachable `current_project_data`)
+     fed the object palette an unmerged stub — new `_merge_sprite_files_into`
+     helper.
+  4. `widgets/asset_tree/asset_tree_item.py::load_object_sprite_thumbnail`'s
+     own separate disk-fallback (distinct from the sprite-category thumbnail
+     path, which was already safe) — merged inline.
+  5. `utils/resource_packager.py`'s `export_object`/`export_room` had zero
+     sprite merge (object *events* were already merged here from the 2026-08-14
+     work; sprites got no equivalent) — a shared `.gmobj`/`.gmroom` package
+     would ship (and an importing project would permanently receive) a bare
+     stub with no `file_path`/dimensions/frames/origin. New
+     `_merge_sprite_files` static helper, called in both export functions.
+  6. The trash/rollback gate: `core/asset_manager.py::delete_asset` (preferred
+     path) and `widgets/asset_tree/asset_operations.py::remove_asset_from_project`
+     (legacy fallback) only recorded a `<type>/<name>.json` side file for
+     `("rooms", "objects", "playgrounds")` — `"sprites"` was missing from both,
+     so deleting a sprite left `sprites/<name>.json` orphaned on disk instead
+     of moving it to `.trash/` (same hazard class as the already-fixed M59).
+  Also added `thumbnail`/`image_file` to `utils/project_file_merge.py`'s
+  `_SPRITE_FILE_KEYS` whitelist — both appear in real sprite dicts
+  (`thumbnail` is read by `core/asset_manager.py`/`utils/asset_trash.py`) but
+  were missing from the merge, which would have silently dropped them on the
+  very first stub round-trip. Round-trip tests:
+  `tests/test_manifest_ify_sprites_round_trip.py` (10 tests, mirrors the
+  objects suite exactly — fresh/legacy/zip/real-sample) and
+  `tests/test_manifest_ify_sprites_export_paths.py` (10 tests, one per fixed
+  gap above). Full suite 3036 passed, 0 failed, 7 skipped (env-dependent).
 
 ## Export
 
