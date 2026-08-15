@@ -322,13 +322,32 @@ today, just unbuilt).
   advance/pause/speed-scaling/stop-resets, and a combined integration test
   driving `update_particle_system`/`update_timeline`/`step()` together.
   Suite 3036 → 3054 passed, 0 failed.
-- [ ] **5.2 Phase 2 (UI).** Register in `events/action_types.py` (2026-06-05
-  "safe bucket" precedent). Check whether the existing `multi_choice`
-  pattern suffices for a timeline "moments" editor before inventing a new
-  `param_type` — per the 5.1 finding above, this repo doesn't have a
-  moments concept to build an editor for unless 5.2 explicitly decides to
-  invent one; the 8 particle actions + 5 timeline control actions
-  (position/speed/start/pause/stop) are what's real to expose.
+- [x] **5.2 Phase 2 (UI) — DONE 2026-08-15.** All 14 actions registered in
+  `events/action_types.py`, new "Particles" category (8: create/destroy
+  particle system, clear_particles, create_particle_type, create/destroy
+  emitter, burst/stream particles) + 6 more in the existing "Timing"
+  category (set_timeline, set_timeline_position, set_timeline_speed,
+  start/pause/stop_timeline) — matches the 2026-06-05 "safe bucket"
+  precedent's own pattern (one `ActionType` per runtime handler, params
+  mirroring exactly what `parameters.get(...)` reads). No `multi_choice`/
+  new `param_type` needed — per 5.1's finding there is no moments concept
+  to build an editor for; `set_timeline`'s `timeline` param stayed a plain
+  `string` (bookkeeping label, not a resource picker — there's no Timeline
+  resource to pick from). Confirmed the new "Particles" category needs no
+  extra registration beyond `ACTION_TYPES` itself — actions with no
+  `ACTION_TO_BLOCKLY_MAP` entry take the same "include if unmapped" path
+  already established for basic Audio actions (see `CLAUDE.md`), so they
+  surface in the events-panel action picker without touching
+  `config/blockly_config.py`'s `BLOCK_REGISTRY`; Blockly-specific block
+  generation was deliberately left unwired, mirroring that same precedent.
+  Tests: `tests/test_particle_timeline_action_registration.py` (22 tests
+  — every action resolves in its category, full param sets match the
+  runtime reads, the sprite/shape/relative/string param-type choices are
+  pinned, every registered name has a real `execute_*_action` handler).
+  Suite 3054 → 3076 passed, 0 failed. Not done (deliberately, separate
+  follow-up): regenerating the localized wiki Full-Action-Reference pages
+  (`tools/gen_action_reference.py`) to include these 14 — real but
+  unrelated documentation work, same class as any other action addition.
 - [ ] **5.3 Phase 3 (export parity).** HTML5/Kivy, deferred until Phase 1-2
   are proven and at least one sample uses them (match3_1 lesson: don't chase
   parity for a feature nothing uses yet).
