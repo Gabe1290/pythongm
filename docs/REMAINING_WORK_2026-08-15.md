@@ -242,30 +242,29 @@ from THIS doc; open the linked plan first and work from it.
   companion-cleanup finding was added: `runtime/action_handlers/
   particle_handlers.py` is now confirmed fully dead code, shadowed by
   `ActionExecutor`'s own `execute_*_action` methods.
-- [x] **Block World Tier 7d — in-IDE visual world editor.** New plan:
-  `docs/BLOCK_WORLD_EDITOR_PLAN.md`. De-risks the two biggest unknowns with
-  real working precedent already in this codebase: rendering a pygame
-  surface inside a Qt widget (`widgets/thymio_playground.py` already does
-  this — same technique the editor's 3D canvas should reuse) and
-  undo/redo (`editors/room_undo_commands.py`'s exact shape). Phases: raw
-  navigable 3D view in a QWidget first (no editing) → place/break + undo →
-  save/load to a per-room `blocks/<room>.json` sibling file → polish. Flags
-  one real open question (asset-management wiring for the saved block
-  file) with a recommendation rather than a guess.
-- [x] **Block World Tier 7e — procedural/infinite terrain.** New plan:
-  `docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md`. Narrows the problem
-  precisely: rendering is already distance-bounded (`march_ray` caps at
-  `render_distance`), so this is a **storage + generation** problem, not
-  primarily a rendering one — three separate missing pieces (chunking,
-  procedural generation, a bounded working set replacing the
-  whole-world `column_index` rebuild) are all required together. Flags
-  chunk size, the generation algorithm, and — the one worth deciding
-  explicitly — whether generated terrain needs to be byte-identical across
-  desktop/HTML5/Kivy at all (recommendation: no, cutting the generation
-  work roughly to a third) as open questions with recommendations, not
-  guesses. Sequenced to land after Tier 7d, since both touch
-  `state.py`'s storage model and the editor's simpler, better-understood
-  format shouldn't be designed concurrently with a moving chunking target.
+- [x] **Block World Tier 7d — in-IDE visual world editor.**
+  **UPDATE (2026-08-15, same day): fully implemented, all four phases.**
+  `docs/BLOCK_WORLD_EDITOR_PLAN.md`. `editors/block_world_editor/`: a
+  QWidget fly-camera view (reusing `widgets/thymio_playground.py`'s
+  pygame-in-Qt plumbing verbatim), left-click place / right-click break
+  routed through a `QUndoStack` (`editors/room_undo_commands.py`'s exact
+  shape), save/load to a per-room `blocks/<room>.json` sibling file, a
+  "🧱 Block Edit" Room Editor toolbar entry, and a Clear World action.
+  Found and fixed a real PySide6/shiboken segfault along the way (a
+  `destroyed`-signal connection creating a teardown-order hazard) — see
+  the plan doc's own status header for the full record.
+- [x] **Block World Tier 7e — procedural/infinite terrain.**
+  **UPDATE (2026-08-15, same day): fully implemented, all four phases.**
+  `docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md`. Chunked storage
+  (`CHUNK_SIZE=16`, a two-level per-chunk + merged column-index cache),
+  a hand-rolled deterministic value-noise heightmap (no cross-target
+  determinism requirement, per the plan's own recommendation), seed-based
+  generation on all three targets (desktop `state.py`, `export_html5.js`,
+  `export_kivy.py` — the latter two skip the chunked-storage/eviction
+  rework as a documented scope cut, since an exported game has no
+  long-lived IDE session to bound memory for), and the
+  `samples/block_world_2` sample demonstrating real boundary-free
+  exploration with zero pre-authored world data.
 - [x] **Wiki per-tutorial-step screenshots.** New plan:
   `docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md`. Confirmed (not assumed) that
   **all six** tutorials need from-scratch scratch projects, not just
