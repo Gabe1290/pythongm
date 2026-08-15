@@ -14,17 +14,24 @@ tools/preview_block_world.py's aim() already proves works outside a real
 running game -- routed through a QUndoStack so building is reversible,
 matching editors/room_undo_commands.py's established shape.
 
-Phase 3 (this file): loads a room's existing blocks/<room>.json on open
-(io.py) and saves back to it (Ctrl+S / a Save toolbar action) -- the
-exact sibling-file shape load_block_world already reads at runtime, so
-nothing further is needed to make a saved world playable. Also the Room
-Editor toolbar entry that actually opens this window for a real project
-room (see editors/room_editor/__init__.py's open_block_world_editor).
+Phase 3: loads a room's existing blocks/<room>.json on open (io.py) and
+saves back to it (Ctrl+S / a Save toolbar action) -- the exact
+sibling-file shape load_block_world already reads at runtime, so nothing
+further is needed to make a saved world playable. Also the Room Editor
+toolbar entry that actually opens this window for a real project room
+(see editors/room_editor/__init__.py's open_block_world_editor).
+
+Phase 4 (this file): a Clear World toolbar action (ClearWorldCommand,
+undoable, with confirmation -- mirrors Room Editor's own Clear All
+Instances), and Delete as a keyboard alternative to right-click for
+breaking whatever the crosshair is aimed at (Room Editor's Delete
+removes the selected instance; this editor has no selection concept, so
+"whatever's under the crosshair" is the natural analogue).
 
 Controls: WASD fly (no gravity/collision -- build-mode, not play-mode),
 middle-mouse-drag to look (yaw + pitch), wheel to pitch, Space/Shift to
-step the z-layer, left-click place / right-click break (using the
-palette's current block + a fixed reach), Ctrl+Z / Ctrl+Y undo/redo,
+step the z-layer, left-click place / right-click or Delete break (using
+the palette's current block + a fixed reach), Ctrl+Z / Ctrl+Y undo/redo,
 Ctrl+S save.
 """
 import math
@@ -43,13 +50,13 @@ from extensions.block_world.renderer import (
     render_block_world_view, clamp_pitch, draw_cell_outline, eye_z_for,
     horizon_for, march_ray, pick_voxel, screen_ray, unproject_to_plane,
 )
-from extensions.block_world.state import get_block, is_breakable, DEFAULT_HOTBAR
+from extensions.block_world.state import get_block, is_breakable, peek_blocks, DEFAULT_HOTBAR
 from core.logger import get_logger
 
 from .io import load_room_blocks, save_room_blocks
 from .palette import BlockPalette
 from .session import BlockWorldEditSession, make_empty_room
-from .undo_commands import make_set_block_command
+from .undo_commands import ClearWorldCommand, make_set_block_command
 
 logger = get_logger(__name__)
 
@@ -158,6 +165,24 @@ class BlockWorldEditorWindow(QMainWindow):
         logger.info(f"Block World: saved {path}")
         return True
 
+    def clear_world(self):
+        """Remove every block in the room, with confirmation -- routed
+        through the undo stack (ClearWorldCommand) so it's reversible,
+        matching editors/room_editor's own Clear All Instances."""
+        blocks = peek_blocks(self.session.room)
+        if not blocks:
+            QMessageBox.information(self, self.tr("Block World"),
+                                     self.tr("There are no blocks to clear."))
+            return
+        reply = QMessageBox.question(
+            self, self.tr("Clear World"),
+            self.tr("Remove every block in this room? This can be undone."),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply != QMessageBox.Yes:
+            return
+        self.undo_stack.push(ClearWorldCommand(self.session.room))
+        self._update_status()
+
     def _setup_ui(self):
         central = QWidget()
         self.setCentralWidget(central)
@@ -176,8 +201,8 @@ class BlockWorldEditorWindow(QMainWindow):
 
         hint = QLabel(self.tr(
             "WASD fly | middle-drag to look | wheel to pitch | "
-            "Space/Shift layer up/down | left-click place | right-click break | "
-            "Ctrl+Z / Ctrl+Y undo/redo"))
+            "Space/Shift layer up/down | left-click place | right-click / Delete break | "
+            "Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save"))
         hint.setStyleSheet("color: #666; font-size: 11px;")
         hint.setWordWrap(True)
         left.addWidget(hint)
@@ -200,6 +225,13 @@ class BlockWorldEditorWindow(QMainWindow):
         save_action.setToolTip(self.tr("Save blocks (Ctrl+S)"))
         save_action.triggered.connect(self.save)
         save_action.setEnabled(self.can_save())
+
+        toolbar.addSeparator()
+
+        clear_action = toolbar.addAction(self.tr("🗑️ Clear World"))
+        clear_action.setToolTip(self.tr("Remove every block in this room"))
+        clear_action.triggered.connect(self.clear_world)
+
         self.addToolBar(toolbar)
 
     def _setup_statusbar(self):
@@ -228,6 +260,12 @@ class BlockWorldEditorWindow(QMainWindow):
             self._nudge_layer(1)
         elif key == Qt.Key_Shift:
             self._nudge_layer(-1)
+        elif key == Qt.Key_Delete:
+            # Room Editor's Delete removes the selected instance; this
+            # editor has no selection concept, so the natural analogue is
+            # breaking whatever the crosshair is currently aimed at --
+            # a keyboard-only alternative to right-click.
+            self._break_block(self._mouse_pos)
 
     def _on_key_released(self, key):
         self._held_keys.discard(key)
