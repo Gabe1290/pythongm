@@ -2629,6 +2629,12 @@ class GameRunner:
 
             # Main game loop
             while self.running:
+                # Extension frame updates that must run every frame,
+                # unconditional on any authored action (e.g. LAN
+                # multiplayer applying inbound network state before Step
+                # runs against it) -- see runtime/extension_hooks.py.
+                extension_hooks.run_frame_updates(self, "before_step")
+
                 # ========== GameMaker 7.0 Event Execution Order ==========
                 # Merged loop: begin_step -> alarms -> step (per instance)
                 # This reduces 3 separate instance iterations to 1.
@@ -2755,6 +2761,12 @@ class GameRunner:
                     room.instances = kept
                     room._depth_dirty = True
                     room.invalidate_collision_listened_types()
+
+                # Extension frame updates that must run every frame after
+                # this frame's state has settled (e.g. LAN multiplayer
+                # broadcasting the post-update/collision/destroy snapshot)
+                # -- see runtime/extension_hooks.py.
+                extension_hooks.run_frame_updates(self, "after_update")
 
                 # Clear screen
                 self.screen.fill((135, 206, 235))  # Sky blue
