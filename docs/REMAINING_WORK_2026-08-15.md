@@ -142,13 +142,21 @@ close:
   viewport + DOOM status bar, or `plateforme_3` after its depth-order export
   fix actually render in a browser or on Android. Structure/codegen/parity
   numbers are all verified; pixels are not.
-- **pt/ja/zh visual spot-check beyond the Preferences dialog.** The
-  offscreen-`QApplication` + `QWidget.grab()` screenshot technique
-  (established 2026-08-10) has only been pointed at one dialog. Extending it
-  to the main window and a few more dialogs per language is cheap per
-  screenshot but open-ended in aggregate — pick a handful of the busiest
-  dialogs (Room Editor, Object Editor, Export dialog) rather than trying to
-  cover everything.
+- [~] **pt/ja/zh visual spot-check beyond the Preferences dialog — extended
+  2026-08-15, still open-ended.** `NewProjectDialog` screenshotted (the same
+  offscreen-`QApplication` + `QWidget.grab()` technique) across pt/ja/zh:
+  all three render cleanly, no mojibake, no truncation, no leftover English
+  in any of the app's own strings. One real but out-of-scope-here finding:
+  the dialog's OK/Cancel button box falls back to **Qt's own base
+  translations** (`qtbase_<lang>.qm`), not this app's `.ts` catalog — ja's
+  Qt install had one bundled (`キャンセル`), pt/zh's didn't (`Cancel` stayed
+  English). This is a Qt-framework-string gap, not an app-string one, so it
+  sits outside everything this repo's whole i18n effort has targeted so
+  far; would need bundling additional Qt locale data (a packaging
+  decision) to close, not a code fix. Two dialogs now checked (Preferences,
+  New Project) across the three newest languages; the main window and the
+  rest of the busiest dialogs (Room Editor, Object Editor, Export dialog)
+  remain unchecked — still genuinely open-ended, pick up opportunistically.
 - **Published GitHub wiki spot-check.** Nobody has viewed the live pages on
   github.com since the 2026-07-29 accuracy/translation sweep — worth
   confirming accents render (not mojibake), language-switcher banners
