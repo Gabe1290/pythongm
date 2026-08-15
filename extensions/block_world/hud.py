@@ -18,7 +18,8 @@ def build_block_world_hud_commands(screen_width, screen_height, hotbar,
                                    selected_index, slot_size, gap,
                                    margin_bottom, back_color, border_color,
                                    selected_color, text_color,
-                                   crosshair_size, crosshair_color):
+                                   crosshair_size, crosshair_color,
+                                   counts=None):
     """Compose the Block World HUD -- a centre crosshair plus a hotbar strip
     centred along the bottom, the selected slot highlighted -- as ordinary
     draw-queue commands.
@@ -31,6 +32,11 @@ def build_block_world_hud_commands(screen_width, screen_height, hotbar,
 
     hotbar: the list of block type ids to draw (state.DEFAULT_HOTBAR).
     selected_index: which slot to highlight (instance.hotbar_index).
+    counts: Tier 7c inventory-with-counts -- a {block_type: count} dict
+        (instance.block_inventory) to overlay a count on each slot, or None
+        to draw the hotbar exactly as before (creative mode, Inventory off
+        on enable_block_world_view -- the calling instance never even has
+        the attribute, so passing None here is the natural default).
     """
     cmds = []
 
@@ -59,4 +65,7 @@ def build_block_world_hud_commands(screen_width, screen_height, hotbar,
         cmds.append({'type': 'text', 'text': block_type[:4],
                      'x': sx + 2, 'y': y0 + slot_size - 14,
                      'color': text_color})
+        if counts is not None:
+            cmds.append({'type': 'text', 'text': str(counts.get(block_type, 0)),
+                         'x': sx + 2, 'y': y0 + 2, 'color': text_color})
     return cmds

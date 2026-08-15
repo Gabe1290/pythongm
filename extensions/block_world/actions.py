@@ -81,13 +81,22 @@ PLUGIN_ACTIONS = {
                             "(default) keeps Move And Collide's original "
                             "instant-footing behaviour with no jumping; a "
                             "typical value is around 0.04"),
+            ActionParameter(name="inventory", display_name="Inventory",
+                param_type="boolean", default_value=False, required=False,
+                description="On = Break Block picks up what it breaks and "
+                            "Place Block consumes from that inventory "
+                            "(Tier 7c); off (default) = unlimited creative-"
+                            "mode placing, unchanged from before Tier 7c"),
         ]
     ),
 
     "place_block": ActionType(
         name="place_block",
         display_name="Place Block",
-        description="Put a block in the empty cell the camera is looking at",
+        description="Put a block in the empty cell the camera is looking at "
+                    "-- unlimited unless Enable Block World View's "
+                    "Inventory is on, which draws from what Break Block "
+                    "has picked up",
         category="3D View",
         icon="🧱",
         parameters=[
@@ -120,7 +129,9 @@ PLUGIN_ACTIONS = {
     "break_block": ActionType(
         name="break_block",
         display_name="Break Block",
-        description="Remove the block the camera is looking at",
+        description="Remove the block the camera is looking at -- also "
+                    "picks it up into the calling instance's inventory if "
+                    "Enable Block World View's Inventory is on",
         category="3D View",
         icon="⛏️",
         parameters=[
@@ -205,7 +216,8 @@ PLUGIN_ACTIONS = {
         name="draw_block_world_hud",
         display_name="Draw Block World HUD",
         description="Draw a crosshair plus a hotbar strip (the selected "
-                    "slot highlighted) -- call from the player/camera "
+                    "slot highlighted, with a count on each slot once "
+                    "Inventory is on) -- call from the player/camera "
                     "object's own Draw event",
         category="3D View",
         icon="🧰",

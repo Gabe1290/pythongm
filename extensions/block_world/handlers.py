@@ -374,6 +374,11 @@ class PluginExecutor:
         rather than an error: holding the build key against a wall is
         ordinary play, not a mistake worth reporting.
 
+        With Enable Block World View's Inventory parameter on (Tier 7c),
+        also a no-op if the calling instance's inventory has none of the
+        chosen block type left -- creative-mode unlimited placing (the
+        default, Inventory off) is otherwise completely unchanged.
+
         Parameters:
             block: which block type to place (default "stone")
             reach: how many cells ahead you can build (default 5)
@@ -391,6 +396,14 @@ class PluginExecutor:
         if block not in BLOCK_TYPES:
             return
 
+        cfg = peek_camera(room)
+        if cfg and _truthy(cfg.get("inventory", False)):
+            inventory = getattr(instance, "block_inventory", None) or {}
+            if inventory.get(block, 0) <= 0:
+                return
+            inventory[block] -= 1
+            instance.block_inventory = inventory
+
         # No "is this cell empty?" check: pick_voxel guarantees it. It only
         # ever returns a cell it has already read as air (see its docstring),
         # so a guard here would be unreachable code pretending to be a safety
@@ -406,6 +419,12 @@ class PluginExecutor:
         against. Swinging at one is a silent no-op, the same as swinging at
         thin air.
 
+        With Enable Block World View's Inventory parameter on (Tier 7c),
+        the broken block type is added to the calling instance's inventory
+        (place_block then draws from it); off (the default), breaking has no
+        inventory side effect at all, matching every project that predates
+        Tier 7c.
+
         Parameters:
             reach: how many cells ahead you can reach (default 5)
         """
@@ -415,9 +434,16 @@ class PluginExecutor:
         room, target, _placement = picked
         if target is None:
             return
-        if not is_breakable(get_block(room, *target)):
+        block_type = get_block(room, *target)
+        if not is_breakable(block_type):
             return
         remove_block(room, *target)
+
+        cfg = peek_camera(room)
+        if cfg and _truthy(cfg.get("inventory", False)):
+            inventory = getattr(instance, "block_inventory", None) or {}
+            inventory[block_type] = inventory.get(block_type, 0) + 1
+            instance.block_inventory = inventory
 
     def execute_enable_block_world_view_action(self, instance, parameters):
         """Switch the current room to a first-person voxel view (single
@@ -493,6 +519,11 @@ class PluginExecutor:
             # falling -- see apply_gravity and jump.
             "gravity": _num("gravity", 0.0),
             "vz": 0.0,
+            # Tier 7c inventory-with-counts. Off (default) = every project
+            # that predates Tier 7c: place_block/break_block completely
+            # unchanged, unlimited creative-mode placing. On = break_block
+            # picks up what it breaks, place_block consumes from it.
+            "inventory": _bool("inventory", False),
         }
 
     def execute_load_block_world_action(self, instance, parameters):
@@ -554,6 +585,12 @@ class PluginExecutor:
         (see select_hotbar_slot, default 0 if never set) -- call this from
         the player/camera object's own Draw event, the same way a raycast
         game's HUD actions run on the camera.
+
+        Also reads the calling instance's block_inventory (Tier 7c) if it
+        has one -- only present once Enable Block World View's Inventory
+        parameter is on and something has actually been broken/placed, so
+        a creative-mode game (Inventory off, the default) never shows
+        counts at all.
         """
         from .hud import build_block_world_hud_commands
 
@@ -591,5 +628,6 @@ class PluginExecutor:
             text_color=parameters.get("text_color", "#ffffff"),
             crosshair_size=_num("crosshair_size", 12),
             crosshair_color=parameters.get("crosshair_color", "#ffffff"),
+            counts=getattr(instance, "block_inventory", None),
         )
         instance._draw_queue.extend(cmds)
