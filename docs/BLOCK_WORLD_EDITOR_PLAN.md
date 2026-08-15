@@ -1,10 +1,25 @@
 # Plan: in-IDE visual Block World editor (Tier 7d)
 
-Status: **not started.** Written 2026-08-15 per
+Status: **ALL FOUR PHASES DONE (2026-08-15).** Written 2026-08-15 per
 `docs/REMAINING_WORK_2026-08-15.md` Section F. Called out there as "the
 largest item in the whole queue" — larger than the entire particle/timeline
-system. This doc exists so a future session can start from a concrete plan
-instead of a blank page.
+system. Implemented the same day it was written, one phase per commit,
+full-suite-green gate each: `editors/block_world_editor/` (session.py,
+window.py, palette.py, undo_commands.py, io.py), wired into the Room
+Editor toolbar. Real, working, camera-fly + place/break + undo/redo +
+save/load + Clear World, matching this plan's own phase breakdown below
+almost exactly — see each phase heading for what changed vs. what was
+guessed here. One genuine deviation, corrected against the real code
+before it was built: `render_block_world_view`'s actual calling
+convention needs a `GameInstance`-shaped camera in `room.instances`
+(looked up by name), not the "no GameInstance at all" idea floated
+below — `tools/preview_block_world.py`'s own proven `make_room()`/
+`place()` shape was followed instead. One real bug found and fixed along
+the way, unrelated to the plan's own content: connecting a Qt window's
+`destroyed` signal to a bound method on its opener (the Room Editor)
+segfaults if both get garbage-collected together with no Qt event loop
+having run — reproduced reliably, fixed by removing the connection
+entirely (see the Phase 3 commit for the full writeup).
 
 ## What exists today, and what doesn't
 

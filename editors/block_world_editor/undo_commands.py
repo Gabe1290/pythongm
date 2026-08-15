@@ -12,7 +12,9 @@ duplicating that logic for no behavioural difference.
 """
 from PySide6.QtGui import QUndoCommand
 
-from extensions.block_world.state import get_block, set_block, remove_block
+from extensions.block_world.state import (
+    get_block, set_block, remove_block, to_block_list, load_block_list,
+)
 
 
 def _apply(room, x, y, z, block_type):
@@ -53,3 +55,24 @@ def make_set_block_command(room, x, y, z, new_type, description=None):
     old_type)."""
     old_type = get_block(room, x, y, z)
     return SetBlockCommand(room, x, y, z, new_type, old_type, description=description)
+
+
+class ClearWorldCommand(QUndoCommand):
+    """Reversibly remove every block in the room -- mirrors
+    editors/room_undo_commands.py's BatchRemoveInstancesCommand shape
+    (Clear All routed through undo rather than mutating state directly,
+    so it doesn't become the one destructive op Ctrl+Z can't revert).
+    Captures the whole world via to_block_list/load_block_list rather
+    than per-cell SetBlockCommands, since a world can have far more
+    blocks than a user would want as individual undo steps."""
+
+    def __init__(self, room, description="Clear World"):
+        super().__init__(description)
+        self.room = room
+        self.previous_blocks = to_block_list(room)
+
+    def undo(self):
+        load_block_list(self.room, self.previous_blocks)
+
+    def redo(self):
+        load_block_list(self.room, [])
