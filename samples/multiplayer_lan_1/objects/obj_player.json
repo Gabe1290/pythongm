@@ -1,0 +1,138 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "sprite": "spr_player",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "step": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "x < 16",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "x",
+                  "value": "16",
+                  "scope": "self"
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "x > 624",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "x",
+                  "value": "624",
+                  "scope": "self"
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "y < 16",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "y",
+                  "value": "16",
+                  "scope": "self"
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "y > 464",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "y",
+                  "value": "464",
+                  "scope": "self"
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "up": {
+        "actions": [
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "up",
+              "speed": "5"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "down",
+              "speed": "5"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "left",
+              "speed": "5"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "right",
+              "speed": "5"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": false,
+  "created": "2026-08-15T00:00:00.000000",
+  "modified": "2026-08-15T00:00:00.000000",
+  "parent": "",
+  "remember_destroyed": false
+}
