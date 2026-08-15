@@ -2023,22 +2023,7 @@ class {class_name}(Widget):
         self._fbo = None
         self._view_group = None
         if self.views_enabled:
-            self.size = (self.display_width, self.display_height)
-            self._fbo = Fbo(size=(self.room_width, self.room_height),
-                            with_stencilbuffer=True)
-            with self._fbo:
-                self._fbo_clear = ClearColor({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
-                ClearBuffers()
-                self._draw_bg_image()
-                # Captured dynamically (not a hardcoded index) so a room WITH
-                # a baked background image (which adds its own instructions
-                # above) still repositions _bg_image_group to the correct
-                # "just behind instances" slot later, not a stale fixed one.
-                self._bg_fbo_behind_index = len(self._fbo.children)
-                self._fbo.add(self._bg_image_group)
-            self.canvas.add(self._fbo)
-            self._view_group = InstructionGroup()
-            self.canvas.add(self._view_group)
+            self._ensure_views_fbo()
 
         # Keyboard state tracking
         self.keys_pressed = {{}}
@@ -2063,6 +2048,36 @@ class {class_name}(Widget):
         # First extension-overlay frame (a create event may have enabled it
         # during create_instances), so frame 0 already shows it.
         self._render_extension_overlay()
+
+    def _ensure_views_fbo(self):
+        """Build the multi-view Fbo render target + view_group if they don't
+        exist yet. Called from __init__ when views_enabled starts True, and
+        from set_views_enabled (Tier: Kivy camera FBO build-time-only fix,
+        docs/REMAINING_WORK_2026-08-15.md Section B) so enabling views at
+        runtime on a room that started WITHOUT them now retrofits the
+        camera instead of silently doing nothing -- previously the Fbo was
+        only ever built here, at construction, gated on the room's baked
+        views_enabled config.
+        """
+        if self._fbo is not None:
+            return
+        self.display_width, self.display_height = self.window_width, self.window_height
+        self.size = (self.display_width, self.display_height)
+        self._fbo = Fbo(size=(self.room_width, self.room_height),
+                        with_stencilbuffer=True)
+        with self._fbo:
+            self._fbo_clear = ClearColor({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
+            ClearBuffers()
+            self._draw_bg_image()
+            # Captured dynamically (not a hardcoded index) so a room WITH
+            # a baked background image (which adds its own instructions
+            # above) still repositions _bg_image_group to the correct
+            # "just behind instances" slot later, not a stale fixed one.
+            self._bg_fbo_behind_index = len(self._fbo.children)
+            self._fbo.add(self._bg_image_group)
+        self.canvas.add(self._fbo)
+        self._view_group = InstructionGroup()
+        self.canvas.add(self._view_group)
 
     def _draw_background(self):
         """Draw the room background color + image under the camera transform.
@@ -2122,11 +2137,15 @@ class {class_name}(Widget):
                 tex_coords=tc))
 
     def set_views_enabled(self, flag):
-        """Runtime enable_views action. Flips the flag; the multi-view render
-        needs the Fbo built at construction (baked views_enabled), so enabling
-        views on a room that started without them won't retro-fit the camera —
-        set views_enabled in the room config for the camera to render."""
+        """Runtime enable_views action. Flips the flag; if the room started
+        WITHOUT views the Fbo/view_group don't exist yet -- _ensure_views_fbo
+        lazily builds them (docs/REMAINING_WORK_2026-08-15.md Section B),
+        so this now retrofits the camera instead of leaving it dark."""
         self.views_enabled = bool(flag)
+        if self.views_enabled and self._fbo is None:
+            self._ensure_views_fbo()
+            self.update_views()
+            self._render_views()
 
     def apply_set_view(self, index, updates):
         """Runtime set_view action: patch view `index`'s fields and re-blit.

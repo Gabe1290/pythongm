@@ -86,12 +86,27 @@ scope.
 
 ## B. Small, narrow, unscheduled fixes
 
-- **Kivy camera FBO is build-time-only** (`TODO.md`, Views/camera section).
-  A room's Fbo render target is allocated at room construction from
-  `views_enabled` in its config; enabling views purely via a runtime action
-  on a room that didn't have `views_enabled` set won't retrofit the Fbo.
-  Fix = lazy Fbo allocation on first `enable_views`/`set_view` call instead
-  of only at construction. No known blocked use case yet.
+- [x] **Kivy camera FBO is build-time-only — DONE 2026-08-15.** Extracted
+  the constructor's Fbo/`_view_group` construction block into a new
+  `_ensure_views_fbo()` method (a no-op once `self._fbo` already exists);
+  `set_views_enabled(True)` now calls it when the room started without
+  views, then runs `update_views()`/`_render_views()` for an immediately
+  correct frame — previously `self._fbo` stayed permanently `None` and the
+  camera silently never rendered. Known, documented limitation left as-is
+  (matches the item's own "no known blocked use case yet"): retrofitting
+  doesn't clean up the room's original non-views rendering path (the
+  `canvas.before` background + child-widget instances added at
+  construction for a non-views room), so a room that starts non-views and
+  is later switched to views risks both paths drawing at once — full
+  correctness there would mean tearing down the non-views path too, out of
+  scope for what was asked (fixing the FBO allocation gap specifically).
+  `tests/test_kivy_views_fbo_retrofit.py` (5 tests, reusing
+  `test_kivy_views.py`'s own stub-kivy harness via sibling import): a
+  non-views room starts with `_fbo is None`, `set_views_enabled(True)`
+  builds a real Fbo/view_group and actually renders without crashing,
+  repeated enable/disable toggles reuse the same Fbo (no leak), and the
+  legacy construction-time path (room already `views_enabled` at export)
+  is unchanged byte-for-byte. Suite 3173 → 3178 passed, 0 failed.
 - **`TODO.md` doc-hygiene**: the Views/camera section header still reads "IN
   PROGRESS" — stale; `docs/VIEWS_SAMPLES_PLAN.md` has said "done, Phase 1+2
   complete" since 2026-07-15. The pt `WelcomeTab` gap entry is also stale —
