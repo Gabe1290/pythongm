@@ -50,9 +50,39 @@ scope.
   identical `z_layer`/`vz` at every step of a full jump arc (mirrors
   `test_raycast_export_parity.py`'s established two-tier HTML5 approach).
   Suite 3117 → 3143 passed, 0 failed.
-- [ ] **Particle system + timeline HTML5/Kivy codegen** (Tier 5.3). 14
-  actions, desktop-real since Tier 5.1/5.2. No sample uses them yet — next
-  item in this section's queue.
+- [x] **Particle system + timeline HTML5/Kivy codegen (Tier 5.3) — DONE
+  2026-08-15. Section A is now fully closed.** All 14 actions registered on
+  both targets. **HTML5**: `case` branches added directly to `executeAction`
+  (these are core actions, not an extension, so no `registerExtensionAction`
+  involved); a new module-level `spawnParticles()` helper (mirrors
+  `ActionExecutor._spawn_particles`) shared by `burst_particles` and the
+  per-frame streaming-emitter spawn in the new `GameObject.
+  updateParticleSystem()`; `updateTimeline()` advances position; `render
+  Particles()` draws sprite- or color-circle particles via Canvas2D, called
+  from `onDraw` **before** the visibility-gated `render()` (invisible
+  particle-controller parity, same as desktop). Both update methods run
+  every frame from the room step loop's new "3d. Particles & timeline"
+  phase, unconditional on step-event authoring. **Kivy**: same 14 actions
+  as real `GameObject` methods (`create_particle_system`, `burst_particles`,
+  `set_timeline`, etc. — multi-field/dict logic emits a single method call
+  from codegen, mirroring the established `_draw_minimap` precedent, not
+  inline expressions); `render_particles()` uses its own
+  `InstructionGroup` on `self.canvas.after` (**not** `self.canvas`, which
+  `_redraw_frame` clears every sprite-animation frame — the same reason
+  `_dq_group` already lives in `.after`). Every method lives inside the
+  `.format()`-templated `BASE_OBJECT_CODE` string, so every literal
+  `{`/`}` (dict/set literals) is doubled throughout.
+  Tests: `tests/test_kivy_particle_timeline_export.py` (20 tests) imports
+  the REAL generated `objects/base_object.py` under the established
+  stub-kivy harness (mirrors `test_kivy_parity_batch.py`'s
+  `test_base_object_helpers_behave`) and drives real spawn/age/cull,
+  streaming, and timeline advance/pause/stop — not a reimplementation.
+  `tests/test_html5_particle_timeline_export.py` (10 tests): structural
+  checks plus an exact numeric parity test reimplementing the deterministic
+  half of the JS aging formula (fixed speed/direction, no RNG spread) and
+  driving it step-for-step against the real desktop
+  `update_particle_system`, matching Block World's own two-tier HTML5
+  approach. Suite 3143 → 3173 passed, 0 failed.
 
 ## B. Small, narrow, unscheduled fixes
 

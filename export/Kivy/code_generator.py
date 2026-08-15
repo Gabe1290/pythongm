@@ -1074,6 +1074,89 @@ if dist > 0:
                 ms = 1000
             return f"import time; time.sleep({ms / 1000.0})"
 
+        # PARTICLES + TIMELINES (Tier 5.1/5.3) -- each emits a single call
+        # to the matching GameObject method (kivy_exporter.py's
+        # BASE_OBJECT_CODE), mirroring runtime/action_executor.py's
+        # execute_*_action signatures. Multi-field/dict-building logic is
+        # too big for a one-line expression, the same reason _draw_minimap
+        # is a call rather than inline code.
+        elif action_type == 'create_particle_system':
+            depth = _num_code(params.get('depth', 0))
+            return f"self.create_particle_system({depth})"
+
+        elif action_type == 'destroy_particle_system':
+            return "self.destroy_particle_system()"
+
+        elif action_type == 'clear_particles':
+            return "self.clear_particles()"
+
+        elif action_type == 'create_particle_type':
+            sprite = params.get('sprite') or None
+            color = str(params.get('color', '#FFFFFF'))
+            return (
+                "self.create_particle_type("
+                f"sprite={sprite!r}, "
+                f"size_min={_num_code(params.get('size_min', 1.0))}, "
+                f"size_max={_num_code(params.get('size_max', 1.0))}, "
+                f"size_increase={_num_code(params.get('size_increase', 0))}, "
+                f"color={color!r}, "
+                f"alpha={_num_code(params.get('alpha', 1.0))}, "
+                f"speed_min={_num_code(params.get('speed_min', 0))}, "
+                f"speed_max={_num_code(params.get('speed_max', 0))}, "
+                f"direction_min={_num_code(params.get('direction_min', 0))}, "
+                f"direction_max={_num_code(params.get('direction_max', 360))}, "
+                f"life_min={_num_code(params.get('life_min', 100))}, "
+                f"life_max={_num_code(params.get('life_max', 100))})"
+            )
+
+        elif action_type == 'create_emitter':
+            shape = str(params.get('shape', 'rectangle'))
+            return (
+                "self.create_emitter("
+                f"x={_num_code(params.get('x', 0))}, "
+                f"y={_num_code(params.get('y', 0))}, "
+                f"width={_num_code(params.get('width', 0))}, "
+                f"height={_num_code(params.get('height', 0))}, "
+                f"shape={shape!r})"
+            )
+
+        elif action_type == 'destroy_emitter':
+            return "self.destroy_emitter()"
+
+        elif action_type == 'burst_particles':
+            particle_type = _num_code(params.get('particle_type', 0))
+            number = _num_code(params.get('number', 10))
+            return f"self.burst_particles({particle_type}, {number})"
+
+        elif action_type == 'stream_particles':
+            particle_type = _num_code(params.get('particle_type', 0))
+            number = _num_code(params.get('number', 1))
+            return f"self.stream_particles({particle_type}, {number})"
+
+        elif action_type == 'set_timeline':
+            timeline = str(params.get('timeline', ''))
+            return f"self.set_timeline({timeline!r})"
+
+        elif action_type == 'set_timeline_position':
+            position = _num_code(params.get('position', 0))
+            relative = params.get('relative', False)
+            if isinstance(relative, str):
+                relative = relative.strip().lower() in ('true', '1', 'yes')
+            return f"self.set_timeline_position({position}, {bool(relative)!r})"
+
+        elif action_type == 'set_timeline_speed':
+            speed = _num_code(params.get('speed', 1.0))
+            return f"self.set_timeline_speed({speed})"
+
+        elif action_type == 'start_timeline':
+            return "self.start_timeline()"
+
+        elif action_type == 'pause_timeline':
+            return "self.pause_timeline()"
+
+        elif action_type == 'stop_timeline':
+            return "self.stop_timeline()"
+
         # ROOM ACTIONS
         elif action_type == 'next_room' or action_type == 'room_goto_next':
             return "from main import goto_next_room; goto_next_room()"
