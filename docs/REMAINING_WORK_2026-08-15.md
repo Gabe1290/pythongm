@@ -180,6 +180,21 @@ notifications, cloud saves. Further out still: Steam/itch.io/console export
 targets. None of this should be picked up without an explicit ask — it's
 the kind of scope a school-focused educational IDE may never need.
 
+**Reviewed 2026-08-15, deliberately not implemented.** Several of these
+(in-app purchases, mobile ads, push notifications, analytics, crash
+reporting) are product/business/data-practice decisions for software used
+by children, not well-defined engineering tasks — there's no spec here for
+what gets monetized, what data gets collected, or what consent flow would
+be needed, and guessing at any of that would be the wrong kind of
+"proceeding without asking." A blanket instruction to work through a
+numbered list of sections is not the same as an explicit ask for any one
+specific item on this particular list; each of these needs its own
+deliberate go-ahead naming the item, not a pass-through. The purely
+technical, lower-stakes items here (code signing, version-info embedding,
+PWA manifest, export presets) are more plausibly pickup-able later, but
+still have zero sizing/design done — genuinely start from scratch, not a
+resume point.
+
 ## E. Translation completeness gap (real, unbounded until swept)
 
 Noted but not chased during the 2026-08-10 Extensions-tab i18n fix: the six
