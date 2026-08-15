@@ -18,21 +18,41 @@ needs a human/real device, can't be closed by an agent).
 Same deliberate pattern already used for Tier 5.3 and Tier 7a/7b/7c's export
 halves: land the desktop engine + UI first, defer HTML5/Kivy codegen until a
 real sample exercises the feature, so parity work isn't spent on dead
-scope. All of these are desktop-complete and export-incomplete:
+scope.
 
-- **Particle system + timeline HTML5/Kivy codegen** (Tier 5.3). 14 actions,
-  desktop-real since Tier 5.1/5.2. No sample uses them yet.
-- **Block World jump/gravity HTML5+Kivy codegen** (Tier 7a's deferred half).
-  `apply_gravity`/`jump`/the `gravity` param.
-- **Block World inventory HTML5+Kivy codegen** (Tier 7c's deferred half).
-  The `inventory` param + consume/pickup logic.
-- **Block World protection HTML5+Kivy codegen** (Tier 7b's deferred half).
-  `set_block_protection` + the required-key gate.
-
-Natural next step for any of these: build/update a Block World sample that
-actually uses jump+inventory+protection together (a small platforming-with-
-scavenging demo), which would motivate and validate all three export halves
-in one pass rather than three separate ones.
+- [x] **Block World jump/gravity + inventory + protection HTML5+Kivy
+  codegen — DONE 2026-08-15.** All three of Tier 7a/7b/7c's deferred export
+  halves landed in one pass (they share the same `move_and_collide`/
+  `place_block`/`break_block`/`enable_block_world_view` call sites on both
+  targets, so splitting them into three separate passes would have meant
+  re-touching the same functions three times). `apply_gravity`/`jump`/
+  `set_block_protection` registered on both targets; `move_and_collide`/
+  `place_block`/`break_block` made gravity/inventory/protection-aware,
+  matching desktop's exact backward-compatible gating (0/off defaults =
+  zero behaviour change). `eye_z_for`'s HTML5 (`bwEyeZFor`) and Kivy
+  (`_bw_eye_z_for`) copies both dropped their `Math.trunc()`/`int()`
+  truncation to match desktop's float `z_layer`, needed for a smooth
+  jump arc — the existing multi-layer renderers on both targets already
+  project every block relative to continuous eye height, so (as on
+  desktop) this needed zero other renderer changes. HUD builders on both
+  targets gained an optional `counts` param.
+  Tests: `tests/test_kivy_block_world_jump_inventory.py` (17 tests) drives
+  the real generated `_bw_apply_gravity`/`_bw_jump`/`_bw_place_block`/
+  `_bw_break_block`/`_bw_set_block_protection` methods through the
+  established stub-Kivy execution harness — a real jump arc, refused
+  double-jump, falling off a ledge without an instant snap, break/place
+  inventory round-trips, and protection gating, all executed, not just
+  string-matched. `tests/test_html5_block_world_jump_inventory.py`
+  (9 tests): structural checks (no JS engine available) plus one **exact
+  numeric parity** test that reimplements the JS gravity formula in Python
+  and drives it step-for-step against the real desktop
+  `execute_apply_gravity_action`/`execute_jump_action` handlers, asserting
+  identical `z_layer`/`vz` at every step of a full jump arc (mirrors
+  `test_raycast_export_parity.py`'s established two-tier HTML5 approach).
+  Suite 3117 → 3143 passed, 0 failed.
+- [ ] **Particle system + timeline HTML5/Kivy codegen** (Tier 5.3). 14
+  actions, desktop-real since Tier 5.1/5.2. No sample uses them yet — next
+  item in this section's queue.
 
 ## B. Small, narrow, unscheduled fixes
 

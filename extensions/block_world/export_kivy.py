@@ -126,6 +126,12 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     BW_MAX_PITCH_DEGREES = 70.0
     BW_DEFAULT_MAX_STEP_UP = 1
 
+    # Jump mechanic (Tier 7a) -- mirror handlers.py's own constants exactly.
+    BW_DEFAULT_GRAVITY = 0.04
+    BW_DEFAULT_JUMP_SPEED = 0.35
+    BW_TERMINAL_FALL_SPEED = -0.9
+    BW_JUMP_GROUND_EPS = 1e-6
+
     def _init_extensions(self):
         # Per-scene block-world state (mirrors raycast_2_5d's own
         # _init_extensions -- was in the scene __init__ before Stage C2b).
@@ -277,8 +283,11 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                   exit_cells * cell_size, side, tex_u)
 
     def _bw_eye_z_for(self, cfg):
+        # Not truncated -- z_layer carries sub-layer precision mid-jump/fall
+        # once gravity is configured (Tier 7a), the same reasoning as
+        # renderer.py's own eye_z_for after that change.
         eye_height = cfg.get('eye_height', self.BW_DEFAULT_EYE_HEIGHT)
-        return int(cfg.get('z_layer', 0)) + float(eye_height)
+        return float(cfg.get('z_layer', 0)) + float(eye_height)
 
     def _bw_clamp_pitch(self, pitch_degrees):
         return max(-self.BW_MAX_PITCH_DEGREES,
@@ -633,6 +642,15 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         block = str(block) if block else 'stone'
         if block not in self.BLOCK_FACE_COLORS:
             return
+
+        cfg = self.block_world_camera
+        if cfg and cfg.get('inventory'):
+            inventory = getattr(obj, 'block_inventory', None) or {}
+            if inventory.get(block, 0) <= 0:
+                return
+            inventory[block] -= 1
+            obj.block_inventory = inventory
+
         self._bw_set_block(placement[0], placement[1], placement[2], block)
 
     def _bw_break_block(self, obj, reach):
@@ -642,7 +660,31 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         bt = self._bw_get_block(target[0], target[1], target[2])
         if bt is not None and bt in self.BW_UNBREAKABLE:
             return
+
+        cfg = self.block_world_camera
+        protection = (cfg.get('protection') if cfg else None) or {}
+        required_key = protection.get(bt)
+        if required_key:
+            inventory = getattr(obj, 'block_inventory', None) or {}
+            if inventory.get(required_key, 0) <= 0:
+                return
+
         self._bw_remove_block(target[0], target[1], target[2])
+
+        if cfg and cfg.get('inventory'):
+            inventory = getattr(obj, 'block_inventory', None) or {}
+            inventory[bt] = inventory.get(bt, 0) + 1
+            obj.block_inventory = inventory
+
+    def _bw_set_block_protection(self, block_type, required_key):
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        block_type = str(block_type) if block_type else ''
+        required_key = str(required_key) if required_key else ''
+        if block_type not in self.BLOCK_FACE_COLORS or required_key not in self.BLOCK_FACE_COLORS:
+            return
+        cfg.setdefault('protection', {})[block_type] = required_key
 
     def _bw_select_hotbar_slot(self, obj, index, relative):
         index = int(index)
@@ -665,14 +707,25 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     def _bw_move_and_collide(self, obj, dx, dy, collide):
         """Mirrors handlers.execute_move_and_collide_action. dx/dy are GM
         y-DOWN pixel deltas; applied to Kivy's y-UP obj.y with the axis
-        flipped (obj.x is unaffected -- x isn't flipped by either frame)."""
+        flipped (obj.x is unaffected -- x isn't flipped by either frame).
+
+        Vertical behaviour (Tier 7a) depends on cfg['gravity']: 0 (default)
+        keeps the original instant-footing snap in both directions; >0
+        still snaps instantly stepping UP (can_enter already refused
+        anything taller than DEFAULT_MAX_STEP_UP) but leaves stepping down/
+        being airborne to _bw_apply_gravity."""
         cfg = self.block_world_camera
         if not cfg or not cfg.get('enabled'):
             return
         cell_size = int(cfg.get('cell_size', 32))
+        camera = self._find_block_world_camera(cfg)
+        is_camera = camera is obj
+        gravity_on = is_camera and float(cfg.get('gravity', 0.0)) > 0
+
         tl_x, tl_y = self._bw_gm_xy(obj)
-        standing = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
-                                         self._bw_cell_of(tl_y, cell_size))
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+        standing = float(cfg.get('z_layer', ground)) if gravity_on else ground
 
         nx = tl_x + dx
         if not collide or self._bw_can_enter(
@@ -685,11 +738,75 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             obj.y -= dy   # GM y-down delta -> Kivy y-up
             tl_y = ny
 
-        standing = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
-                                         self._bw_cell_of(tl_y, cell_size))
+        if not is_camera:
+            return
+
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+        if not gravity_on:
+            cfg['z_layer'] = float(ground)
+            return
+        if float(cfg.get('vz', 0.0)) == 0.0 and ground > standing:
+            cfg['z_layer'] = float(ground)
+        # Otherwise: airborne, or grounded with lower/equal footing ahead --
+        # _bw_apply_gravity owns z_layer from here.
+
+    def _bw_apply_gravity(self, obj):
+        """Mirrors handlers.execute_apply_gravity_action. Bind in the Step
+        event (fires every frame regardless of input) so falling continues
+        even without movement input. No-op unless gravity > 0."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        gravity = float(cfg.get('gravity', 0.0))
+        if gravity <= 0:
+            return
         camera = self._find_block_world_camera(cfg)
-        if camera is obj:
-            cfg['z_layer'] = standing
+        if camera is not obj:
+            return
+
+        cell_size = int(cfg.get('cell_size', 32))
+        tl_x, tl_y = self._bw_gm_xy(obj)
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+
+        z = float(cfg.get('z_layer', ground))
+        vz = float(cfg.get('vz', 0.0)) - gravity
+        vz = max(vz, self.BW_TERMINAL_FALL_SPEED)
+        z += vz
+        if z <= ground:
+            z = float(ground)
+            vz = 0.0
+
+        cfg['z_layer'] = z
+        cfg['vz'] = vz
+
+    def _bw_jump(self, obj, speed):
+        """Mirrors handlers.execute_jump_action -- only while grounded, so
+        no double/air jumps. No-op unless gravity > 0."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        if float(cfg.get('gravity', 0.0)) <= 0:
+            return
+        camera = self._find_block_world_camera(cfg)
+        if camera is not obj:
+            return
+
+        cell_size = int(cfg.get('cell_size', 32))
+        tl_x, tl_y = self._bw_gm_xy(obj)
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+        z = float(cfg.get('z_layer', ground))
+        vz = float(cfg.get('vz', 0.0))
+        if vz != 0.0 or z > ground + self.BW_JUMP_GROUND_EPS:
+            return
+
+        try:
+            speed = float(speed)
+        except (TypeError, ValueError):
+            speed = self.BW_DEFAULT_JUMP_SPEED
+        cfg['vz'] = speed
 
     def _bw_load_block_world(self, block_list):
         """Atomic: an unknown block type rejects the whole list, mirroring
@@ -712,11 +829,12 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     # ------------------------------------------------------------------
     def _bw_build_hud_commands(self, selected_index, slot_size, gap, margin_bottom,
                                back_color, border_color, selected_color, text_color,
-                               crosshair_size, crosshair_color):
+                               crosshair_size, crosshair_color, counts=None):
         """Mirrors hud.build_block_world_hud_commands exactly. Coordinates
         are screen-space y-down; the shared draw-queue path flips once for
         Kivy (see kivy_exporter.py's EXTENSION OVERLAY / HUD compositing
-        comment)."""
+        comment). counts (Tier 7c): a {block_type: count} dict to overlay a
+        count on each slot, or None to draw exactly as before."""
         W = float(self.display_width)
         H = float(self.display_height)
         cmds = []
@@ -743,6 +861,9 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                              y2=y0 + slot_size, color=border_color, filled=False))
             cmds.append(dict(type='text', text=block_type[:4], x=sx + 2,
                              y=y0 + slot_size - 14, color=text_color))
+            if counts is not None:
+                cmds.append(dict(type='text', text=str(counts.get(block_type, 0)),
+                                 x=sx + 2, y=y0 + 2, color=text_color))
         return cmds
 '''
 
@@ -768,7 +889,8 @@ def _cg_enable_block_world_view(gen, params, event_type):
     cfg = {
         'enabled': True,
         'camera_object': str(params.get('camera_object') or ''),
-        'z_layer': int(_tofloat(params.get('z_layer'), 0)),
+        # A float from Tier 7a on -- still a clean whole number at rest.
+        'z_layer': _tofloat(params.get('z_layer'), 0),
         'fov': _tofloat(params.get('fov'), 66),
         'render_distance': int(_tofloat(params.get('render_distance'), 20)),
         'cell_size': int(_tofloat(params.get('cell_size'), 32)),
@@ -783,6 +905,13 @@ def _cg_enable_block_world_view(gen, params, event_type):
         # Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
         # texturing (flat average-color fallback), matching desktop.
         'top_cast_res': int(_tofloat(params.get('top_cast_res'), 4)),
+        # Tier 7a jump mechanic. 0 (default) = move_and_collide's original
+        # instant-footing behaviour, unchanged.
+        'gravity': _tofloat(params.get('gravity'), 0.0),
+        'vz': 0.0,
+        # Tier 7c inventory-with-counts. Off (default) = unlimited
+        # creative-mode placing/breaking, unchanged.
+        'inventory': str(params.get('inventory', 'false')).strip().lower() in ('true', '1', 'yes'),
     }
     if not cfg['camera_object']:
         # No named camera object -> the acting instance IS the camera.
@@ -836,6 +965,19 @@ def _cg_break_block(gen, params, event_type):
     reach = int(_tofloat(params.get('reach', 5), 5))
     return f"self.scene._bw_break_block(self, {reach})"
 
+def _cg_apply_gravity(gen, params, event_type):
+    return "self.scene._bw_apply_gravity(self)"
+
+def _cg_jump(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code
+    speed = _num_code(params.get('speed', 0.35), 0.35)
+    return f"self.scene._bw_jump(self, {speed})"
+
+def _cg_set_block_protection(gen, params, event_type):
+    block_type = str(params.get('block_type', ''))
+    required_key = str(params.get('required_key', ''))
+    return f"self.scene._bw_set_block_protection({block_type!r}, {required_key!r})"
+
 def _cg_load_block_world(gen, params, event_type):
     data_file = str(params.get('data_file', ''))
     if not data_file:
@@ -859,7 +1001,8 @@ def _cg_draw_block_world_hud(gen, params, event_type):
         f"{_s('back_color', '#202020')!r}, {_s('border_color', '#ffffff')!r}, "
         f"{_s('selected_color', '#ffd040')!r}, {_s('text_color', '#ffffff')!r}, "
         f"{_num_code(params.get('crosshair_size', 12), 12)}, "
-        f"{_s('crosshair_color', '#ffffff')!r}))"
+        f"{_s('crosshair_color', '#ffffff')!r}, "
+        "getattr(self, 'block_inventory', None)))"
     )
 
 
@@ -869,6 +1012,9 @@ ACTION_CODEGEN = {
     'break_block': _cg_break_block,
     'select_hotbar_slot': _cg_select_hotbar_slot,
     'move_and_collide': _cg_move_and_collide,
+    'apply_gravity': _cg_apply_gravity,
+    'jump': _cg_jump,
+    'set_block_protection': _cg_set_block_protection,
     'draw_block_world_hud': _cg_draw_block_world_hud,
     'load_block_world': _cg_load_block_world,
     'set_look_pitch': _cg_set_look_pitch,
