@@ -269,12 +269,128 @@ function bwSetBlock(room, x, y, z, blockType) {
     if (!room._bwBlocks) room._bwBlocks = {};
     room._bwBlocks[bwKey(x, y, z)] = blockType;
     room._bwColumns = null;
+    bwMarkChunkPresent(room, x, y);   // see bwGenerateChunk's own guard
 }
 
 function bwRemoveBlock(room, x, y, z) {
     if (!room._bwBlocks) return;
     delete room._bwBlocks[bwKey(x, y, z)];
     room._bwColumns = null;
+    bwMarkChunkPresent(room, x, y);
+}
+
+// --- Tier 7e Phase 2/3 procedural terrain
+// (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md) -- an independent JS port of
+// state.py's generate_chunk/ensure_chunks_loaded, NOT required to produce
+// numerically identical terrain to desktop or Kivy (the plan's own
+// recommendation: internally consistent per-target, not cross-target
+// byte-identical). No eviction/unloading here (unlike desktop's
+// unload_distant_chunks) -- a deliberate, documented scope cut: an
+// exported game has no long-lived IDE session to bound memory for, and a
+// typical classroom play session never explores far enough for the
+// unbounded _bwBlocks dict to matter. Revisit only if that stops being
+// true in practice.
+
+const BW_CHUNK_SIZE = 16;
+
+function bwChunkKey(x, y) {
+    return Math.floor(x / BW_CHUNK_SIZE) + ',' + Math.floor(y / BW_CHUNK_SIZE);
+}
+
+// Marks a chunk as "has real content" -- set by every direct edit AND by
+// generation itself, so generation can never run twice over the same
+// chunk and can never silently overwrite a player's edit, even one made
+// in a chunk generation hasn't reached yet. Mirrors state.py's own
+// `if key in st["chunks"]: return` guard (chunk PRESENCE, not a separate
+// touched flag) -- including its one real quirk: a single manual edit in
+// an ungenerated chunk permanently opts that whole chunk out of terrain
+// generation. Reproducing that quirk here (rather than a subtly different
+// rule) is deliberate -- same behaviour as desktop, not just similar.
+function bwMarkChunkPresent(room, x, y) {
+    if (!room._bwGenerated) room._bwGenerated = {};
+    room._bwGenerated[bwChunkKey(x, y)] = true;
+}
+
+// Integer-only bit-mixing hash -> a float from 0 up to (not including) 1.
+// Deliberately NOT a transliteration
+// of state.py's _hash01 (Python's `& 0xFFFFFFFF` unsigned masking has no
+// cheap JS equivalent that stays fast; `Math.imul` + `>>> 0` is the
+// idiomatic JS version of the same "mix these bits deterministically" goal)
+// -- see this section's header for why bit-identical output isn't required.
+function bwHash01(seed, x, y) {
+    let h = (seed * 374761393 + x * 668265263 + y * 2147483647) | 0;
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    h = (h ^ (h >>> 16)) >>> 0;
+    return (h % 100000) / 100000.0;
+}
+
+function bwSmoothstep(t) { return t * t * (3.0 - 2.0 * t); }
+
+// Bilinear-interpolated value noise at world cell (x, y), 0 up to (not
+// including) 1 --
+// mirrors state.py's _value_noise's algorithm shape (not its exact bits).
+function bwValueNoise(seed, x, y, scale) {
+    const fx = x / scale, fy = y / scale;
+    const x0 = Math.floor(fx), y0 = Math.floor(fy);
+    const x1 = x0 + 1, y1 = y0 + 1;
+    const tx = bwSmoothstep(fx - x0), ty = bwSmoothstep(fy - y0);
+    const v00 = bwHash01(seed, x0, y0), v10 = bwHash01(seed, x1, y0);
+    const v01 = bwHash01(seed, x0, y1), v11 = bwHash01(seed, x1, y1);
+    const top = v00 + tx * (v10 - v00);
+    const bottom = v01 + tx * (v11 - v01);
+    return top + ty * (bottom - top);
+}
+
+// Terrain shape constants -- matches state.py's own (rolling hills, not
+// tuned against anything; see that module's comment).
+const BW_TERRAIN_BASE_HEIGHT = 3;
+const BW_TERRAIN_AMPLITUDE = 6;
+const BW_TERRAIN_NOISE_SCALE = 24.0;
+
+function bwTerrainHeight(seed, x, y) {
+    const n = bwValueNoise(seed, x, y, BW_TERRAIN_NOISE_SCALE);
+    return BW_TERRAIN_BASE_HEIGHT + Math.trunc(n * BW_TERRAIN_AMPLITUDE);
+}
+
+// Deterministically fill chunk (cx, cy) from room._bwSeed, if any and if
+// this chunk has no content yet (see bwMarkChunkPresent). Grass-on-top,
+// dirt-below columns -- "rolling hills with variety," this plan's own
+// explicit bar for a first cut.
+function bwGenerateChunk(room, cx, cy) {
+    const seed = room._bwSeed;
+    if (seed === undefined || seed === null) return;
+    const key = cx + ',' + cy;
+    if (room._bwGenerated && room._bwGenerated[key]) return;
+    if (!room._bwBlocks) room._bwBlocks = {};
+    for (let lx = 0; lx < BW_CHUNK_SIZE; lx++) {
+        for (let ly = 0; ly < BW_CHUNK_SIZE; ly++) {
+            const x = cx * BW_CHUNK_SIZE + lx, y = cy * BW_CHUNK_SIZE + ly;
+            const height = bwTerrainHeight(seed, x, y);
+            for (let z = 0; z < height; z++) {
+                room._bwBlocks[bwKey(x, y, z)] = (z === height - 1) ? 'grass' : 'dirt';
+            }
+        }
+    }
+    if (!room._bwGenerated) room._bwGenerated = {};
+    room._bwGenerated[key] = true;
+    room._bwColumns = null;
+}
+
+// Generate every chunk within radiusCells (cell units, not pixels) of
+// world CELL position (centerX, centerY) that isn't already present. A
+// cheap no-op if the room has no seed. Call once per frame from the
+// render path, before the column index is fetched.
+function bwEnsureChunksLoaded(room, centerX, centerY, radiusCells) {
+    if (room._bwSeed === undefined || room._bwSeed === null) return;
+    const cx0 = Math.floor((centerX - radiusCells) / BW_CHUNK_SIZE);
+    const cy0 = Math.floor((centerY - radiusCells) / BW_CHUNK_SIZE);
+    const cx1 = Math.floor((centerX + radiusCells) / BW_CHUNK_SIZE);
+    const cy1 = Math.floor((centerY + radiusCells) / BW_CHUNK_SIZE);
+    for (let cx = cx0; cx <= cx1; cx++) {
+        for (let cy = cy0; cy <= cy1; cy++) {
+            bwGenerateChunk(room, cx, cy);
+        }
+    }
 }
 
 // {(x,y): [[z, blockType], ...]} sorted lowest z first, cached until a
@@ -484,6 +600,13 @@ function bwRenderView(room, ctx) {
     // texturing (flat average-color fallback), matching desktop exactly.
     const topRes = cfg.top_cast_res !== undefined ? cfg.top_cast_res : BW_DEFAULT_TOP_CAST_RES;
     const topTextured = textured && topRes >= 1;
+
+    // Tier 7e Phase 2/3: generate chunks around the camera before marching
+    // rays through them, so a chunk exists by the time a ray reaches it.
+    // No-op entirely for a room with no seed (every pre-Phase-2 project).
+    bwEnsureChunksLoaded(room, camX / cellSize, camY / cellSize,
+                         renderDistanceCells + BW_CHUNK_SIZE);
+
     const columns = bwColumnIndex(room);
 
     for (let col = 0; col < numColumns; col++) {
@@ -891,6 +1014,14 @@ registerExtensionAction('enable_block_world_view', function(obj, params, game) {
         inventory: boolTrue(params.inventory),
     };
     room._bwColumns = null;
+
+    // Tier 7e Phase 2/3 procedural terrain. Off (default) = every project
+    // that predates Tier 7e: room._bwSeed stays null, so
+    // bwEnsureChunksLoaded/bwGenerateChunk are permanent no-ops. Stored
+    // OUTSIDE room.blockWorldCamera (which this action wholesale replaces
+    // every call) so generated terrain survives toggling the view off and
+    // back on -- mirrors state.py's _fresh() docstring on the same point.
+    room._bwSeed = boolTrue(params.generate) ? Math.trunc(num('seed', 0)) : null;
 });
 
 registerExtensionAction('load_block_world', function(obj, params, game) {
@@ -900,20 +1031,39 @@ registerExtensionAction('load_block_world', function(obj, params, game) {
 
     const extData = (game.gameData && game.gameData._extension_data) || {};
     const files = extData.block_world_files || {};
-    const blockList = files[dataFile];
-    if (!Array.isArray(blockList)) return;   // missing/unbundled file -- no-op
+    const fileData = files[dataFile];
+
+    // Tier 7e Phase 2/3: a seeded-world save is {"seed":, "blocks":[...]}
+    // instead of a bare list -- same format detection as
+    // extensions/block_world/handlers.py's load_block_world action and
+    // editors/block_world_editor/io.py.
+    let seed = null, blockList;
+    if (Array.isArray(fileData)) {
+        blockList = fileData;
+    } else if (fileData && typeof fileData === 'object' && Array.isArray(fileData.blocks)) {
+        seed = (fileData.seed === undefined) ? null : fileData.seed;
+        blockList = fileData.blocks;
+    } else {
+        return;   // missing/unbundled/malformed file -- no-op
+    }
 
     // Atomic: an unknown block type rejects the WHOLE file, mirroring
     // state.load_block_list's KeyError (which the desktop action's own
     // no-op-on-bad-input handling then swallows).
     const blocks = {};
+    const generated = {};
     for (const entry of blockList) {
         const bt = entry && entry.type;
         if (!BLOCK_FACE_COLORS.hasOwnProperty(bt)) return;
         blocks[entry.x + ',' + entry.y + ',' + entry.z] = bt;
+        generated[bwChunkKey(entry.x, entry.y)] = true;
     }
     game.currentRoom._bwBlocks = blocks;
+    // Loaded (touched) chunks must never be regenerated over -- mirrors
+    // bwMarkChunkPresent's own guard.
+    game.currentRoom._bwGenerated = generated;
     game.currentRoom._bwColumns = null;
+    game.currentRoom._bwSeed = seed;
 });
 
 registerExtensionAction('draw_block_world_hud', function(obj, params, game) {
