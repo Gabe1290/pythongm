@@ -247,6 +247,12 @@ const BW_MAX_PITCH_DEGREES = 70.0;
 const BW_DEFAULT_TOP_CAST_RES = 4;
 const BW_DEFAULT_MAX_STEP_UP = 1;
 
+// Jump mechanic (Tier 7a) -- mirror handlers.py's own constants exactly.
+const BW_DEFAULT_GRAVITY = 0.04;
+const BW_DEFAULT_JUMP_SPEED = 0.35;
+const BW_TERMINAL_FALL_SPEED = -0.9;
+const BW_JUMP_GROUND_EPS = 1e-6;
+
 // --- state.py port (free functions taking a GameRoom, mirroring the
 // desktop module's own free-function style over `room`) -----------------
 
@@ -358,8 +364,12 @@ function* bwMarchRay(px, py, angleRad, cellSize, maxCells) {
 }
 
 function bwEyeZFor(cfg) {
+    // Not truncated -- z_layer is a whole number at rest (every project
+    // that leaves gravity at 0, the default) but carries sub-layer
+    // precision mid-jump/fall once gravity is configured (Tier 7a), the
+    // same reasoning as renderer.py's own eye_z_for after that change.
     const eyeHeight = cfg.eye_height !== undefined ? cfg.eye_height : BW_DEFAULT_EYE_HEIGHT;
-    return Math.trunc(cfg.z_layer || 0) + eyeHeight;
+    return (cfg.z_layer || 0) + eyeHeight;
 }
 
 function bwClampPitch(pitchDegrees) {
@@ -595,7 +605,8 @@ registerRoomRenderer(function(room, ctx) {
 
 function bwBuildHudCommands(screenWidth, screenHeight, hotbar, selectedIndex,
                              slotSize, gap, marginBottom, backColor, borderColor,
-                             selectedColor, textColor, crosshairSize, crosshairColor) {
+                             selectedColor, textColor, crosshairSize, crosshairColor,
+                             counts) {
     const cmds = [];
     const ccx = screenWidth / 2.0, ccy = screenHeight / 2.0;
     const half = crosshairSize / 2.0;
@@ -614,6 +625,10 @@ function bwBuildHudCommands(screenWidth, screenHeight, hotbar, selectedIndex,
         cmds.push({ type: 'rectangle', x1: sx, y1: y0, x2: sx + slotSize, y2: y0 + slotSize, color: fill, filled: true });
         cmds.push({ type: 'rectangle', x1: sx, y1: y0, x2: sx + slotSize, y2: y0 + slotSize, color: borderColor, filled: false });
         cmds.push({ type: 'text', text: blockType.slice(0, 4), x: sx + 2, y: y0 + slotSize - 14, color: textColor });
+        if (counts) {
+            const c = counts[blockType] || 0;
+            cmds.push({ type: 'text', text: String(c), x: sx + 2, y: y0 + 2, color: textColor });
+        }
     }
     return cmds;
 }
@@ -687,9 +702,18 @@ registerExtensionAction('move_and_collide', function(obj, params, game) {
                        params.collide === 0 || params.collide === '0');
     const cellSize = cfg.cell_size || 32;
 
+    const camera = room.findFirstInstance(cfg.camera_object || '');
+    const isCamera = camera === obj;
+    const gravityOn = isCamera && (cfg.gravity || 0) > 0;
+
     const tl = GameRoom.spriteTopLeft(obj);
     let tlX = tl.x, tlY = tl.y;
-    let standing = bwGroundLayer(room, bwCellOf(tlX, cellSize), bwCellOf(tlY, cellSize));
+    let ground = bwGroundLayer(room, bwCellOf(tlX, cellSize), bwCellOf(tlY, cellSize));
+    // can_enter's step-up gate compares against where the mover actually
+    // IS. Grounded (legacy mode, or gravity mode at rest) that's the
+    // ground below it; airborne in gravity mode it's the camera's own
+    // tracked height instead -- see handlers.py's own comment on why.
+    const standing = gravityOn ? (cfg.z_layer !== undefined ? cfg.z_layer : ground) : ground;
 
     const nx = tlX + dx;
     if (!collide || bwCanEnter(room, bwCellOf(nx, cellSize), bwCellOf(tlY, cellSize), standing)) {
@@ -700,9 +724,62 @@ registerExtensionAction('move_and_collide', function(obj, params, game) {
         obj.y += dy; tlY = ny;
     }
 
-    standing = bwGroundLayer(room, bwCellOf(tlX, cellSize), bwCellOf(tlY, cellSize));
+    if (!isCamera) return;
+
+    ground = bwGroundLayer(room, bwCellOf(tlX, cellSize), bwCellOf(tlY, cellSize));
+    if (!gravityOn) {
+        cfg.z_layer = ground;
+        return;
+    }
+    if ((cfg.vz || 0) === 0 && ground > standing) {
+        cfg.z_layer = ground;
+    }
+    // Otherwise: airborne, or grounded with lower/equal footing ahead --
+    // the apply_gravity action (bound in Step) owns z_layer from here.
+});
+
+registerExtensionAction('apply_gravity', function(obj, params, game) {
+    if (!game || !game.currentRoom) return;
+    const room = game.currentRoom;
+    const cfg = room.blockWorldCamera;
+    if (!cfg || !cfg.enabled) return;
+    const gravity = cfg.gravity || 0;
+    if (gravity <= 0) return;
     const camera = room.findFirstInstance(cfg.camera_object || '');
-    if (camera === obj) cfg.z_layer = standing;
+    if (camera !== obj) return;
+
+    const cellSize = cfg.cell_size || 32;
+    const tl = GameRoom.spriteTopLeft(obj);
+    const ground = bwGroundLayer(room, bwCellOf(tl.x, cellSize), bwCellOf(tl.y, cellSize));
+
+    let z = cfg.z_layer !== undefined ? cfg.z_layer : ground;
+    let vz = (cfg.vz || 0) - gravity;
+    vz = Math.max(vz, BW_TERMINAL_FALL_SPEED);
+    z += vz;
+    if (z <= ground) { z = ground; vz = 0; }
+
+    cfg.z_layer = z;
+    cfg.vz = vz;
+});
+
+registerExtensionAction('jump', function(obj, params, game) {
+    if (!game || !game.currentRoom) return;
+    const room = game.currentRoom;
+    const cfg = room.blockWorldCamera;
+    if (!cfg || !cfg.enabled) return;
+    if ((cfg.gravity || 0) <= 0) return;
+    const camera = room.findFirstInstance(cfg.camera_object || '');
+    if (camera !== obj) return;
+
+    const cellSize = cfg.cell_size || 32;
+    const tl = GameRoom.spriteTopLeft(obj);
+    const ground = bwGroundLayer(room, bwCellOf(tl.x, cellSize), bwCellOf(tl.y, cellSize));
+    const z = cfg.z_layer !== undefined ? cfg.z_layer : ground;
+    const vz = cfg.vz || 0;
+    if (vz !== 0 || z > ground + BW_JUMP_GROUND_EPS) return;  // already airborne
+
+    const speed = parseNumParam(params.speed, obj, BW_DEFAULT_JUMP_SPEED);
+    cfg.vz = (typeof speed === 'number' && isFinite(speed)) ? speed : BW_DEFAULT_JUMP_SPEED;
 });
 
 registerExtensionAction('place_block', function(obj, params, game) {
@@ -718,6 +795,15 @@ registerExtensionAction('place_block', function(obj, params, game) {
         if (resolved !== undefined && resolved !== null) block = String(resolved);
     }
     if (!BLOCK_FACE_COLORS.hasOwnProperty(block)) return;
+
+    const cfg = picked.room.blockWorldCamera;
+    if (cfg && cfg.inventory) {
+        const inv = obj.block_inventory || {};
+        if (!(inv[block] > 0)) return;
+        inv[block] -= 1;
+        obj.block_inventory = inv;
+    }
+
     bwSetBlock(picked.room, picked.placement[0], picked.placement[1], picked.placement[2], block);
 });
 
@@ -726,7 +812,36 @@ registerExtensionAction('break_block', function(obj, params, game) {
     if (!picked || !picked.target) return;
     const bt = bwGetBlock(picked.room, picked.target[0], picked.target[1], picked.target[2]);
     if (bt !== null && BW_UNBREAKABLE.has(bt)) return;
+
+    const cfg = picked.room.blockWorldCamera;
+    const protection = (cfg && cfg.protection) || {};
+    const requiredKey = protection[bt];
+    if (requiredKey) {
+        const inv = obj.block_inventory || {};
+        if (!(inv[requiredKey] > 0)) return;
+    }
+
     bwRemoveBlock(picked.room, picked.target[0], picked.target[1], picked.target[2]);
+
+    if (cfg && cfg.inventory) {
+        const inv = obj.block_inventory || {};
+        inv[bt] = (inv[bt] || 0) + 1;
+        obj.block_inventory = inv;
+    }
+});
+
+registerExtensionAction('set_block_protection', function(obj, params, game) {
+    if (!game || !game.currentRoom) return;
+    const cfg = game.currentRoom.blockWorldCamera;
+    if (!cfg || !cfg.enabled) return;
+
+    const blockType = params.block_type !== undefined ? String(params.block_type) : '';
+    const requiredKey = params.required_key !== undefined ? String(params.required_key) : '';
+    if (!BLOCK_FACE_COLORS.hasOwnProperty(blockType) ||
+        !BLOCK_FACE_COLORS.hasOwnProperty(requiredKey)) return;
+
+    if (!cfg.protection) cfg.protection = {};
+    cfg.protection[blockType] = requiredKey;
 });
 
 registerExtensionAction('enable_block_world_view', function(obj, params, game) {
@@ -740,10 +855,18 @@ registerExtensionAction('enable_block_world_view', function(obj, params, game) {
         const n = parseNumParam(params[k], obj, d);
         return (typeof n === 'number' && isFinite(n)) ? n : d;
     };
+    // Truthy-string coercion for a boolean parameter that defaults to
+    // FALSE (mirrors the `rel`/`relative` pattern above -- absent/anything
+    // else reads as false, only an explicit true/'true'/1/'1' flips it).
+    const boolTrue = (v) => v === true || v === 'true' || v === 1 || v === '1';
+
     room.blockWorldCamera = {
         enabled: true,
         camera_object: params.camera_object || obj.name,
-        z_layer: Math.trunc(num('z_layer', 0)),
+        // A float from Tier 7a on (see bwEyeZFor) -- still a clean whole
+        // number at rest, unchanged for every project that leaves gravity
+        // at 0.
+        z_layer: num('z_layer', 0),
         fov: num('fov', 66),
         render_distance: Math.trunc(num('render_distance', 20)),
         cell_size: Math.trunc(num('cell_size', 32)),
@@ -758,6 +881,14 @@ registerExtensionAction('enable_block_world_view', function(obj, params, game) {
         // texturing (flat average-color fallback), matching desktop's
         // top_cast_res semantics exactly.
         top_cast_res: Math.trunc(num('top_cast_res', BW_DEFAULT_TOP_CAST_RES)),
+        // Tier 7a jump mechanic. 0 (default) = move_and_collide's original
+        // instant-footing behaviour, completely unchanged. >0 switches on
+        // real gravity/falling -- see the apply_gravity/jump actions.
+        gravity: num('gravity', 0.0),
+        vz: 0.0,
+        // Tier 7c inventory-with-counts. Off (default) = unlimited
+        // creative-mode placing/breaking, completely unchanged.
+        inventory: boolTrue(params.inventory),
     };
     room._bwColumns = null;
 });
@@ -798,6 +929,7 @@ registerExtensionAction('draw_block_world_hud', function(obj, params, game) {
         num('slot_size', 40), num('gap', 6), num('margin_bottom', 16),
         params.back_color || '#202020', params.border_color || '#ffffff',
         params.selected_color || '#ffd040', params.text_color || '#ffffff',
-        num('crosshair_size', 12), params.crosshair_color || '#ffffff');
+        num('crosshair_size', 12), params.crosshair_color || '#ffffff',
+        obj.block_inventory || null);
     obj._draw_queue.push(...cmds);
 });
