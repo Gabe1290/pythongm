@@ -1,10 +1,11 @@
 # Plan: LAN multiplayer (folder extension)
 
-Status: **not started.** Written 2026-08-15 per
+Status: **Phases 0-2 DONE (2026-08-15).** Written 2026-08-15 per
 `docs/REMAINING_WORK_2026-08-15.md` Section F's instruction that this item
 needs its own dedicated plan doc before any code lands. Supersedes nothing —
 the only prior record was the `multiplayer-network-stash` memory entry,
-folded in here.
+folded in here. Only Phase 3 (sample + the manual two-machine playtest)
+remains; see the per-phase notes below for exactly what landed and where.
 
 ## Where this comes from
 
@@ -89,6 +90,17 @@ too.
 
 ## Phase 0 — generic per-frame extension hook (small, core change)
 
+**DONE (2026-08-15).** Landed exactly as designed: `register_frame_update`/
+`get_frame_updates`/`clear_frame_updates`/`run_frame_updates` in
+`runtime/extension_hooks.py`, two call sites in `GameRunner.run_game_loop`
+(`before_step` right after `while self.running:`, `after_update` right after
+the destroy-cleanup block, unconditional), and `PluginLoader._load_frame_updates`
+wired into all three of the existing `PLUGIN_ROOM_RENDERERS` call sites.
+`tests/test_extension_frame_update_hook.py` (12 tests): registry unit tests,
+loader-wiring tests, and two real-`GameRunner`-over-`maze_1` integration
+tests (via the established `_FakeClock` pattern) proving exact call order/
+count per frame and that a raising hook doesn't stop the game loop.
+
 This is the one piece of this plan that touches core, and it's
 infrastructure, not multiplayer logic — keep the commit scoped to exactly
 this.
@@ -126,6 +138,23 @@ this.
   `render_room`'s existing crash-isolation test).
 
 ## Phase 1 — `extensions/multiplayer_lan/` skeleton + wire protocol
+
+**DONE (2026-08-15).** Landed as designed, TCP + JSON-lines + multi-client
+host from day one, exactly per this section's own recommendations. One
+deviation worth recording: per-room state lives at
+`room.extension_state["multiplayer_lan"]` via `state.py`'s
+`multiplayer_state(room)` (get-or-create) / `peek_multiplayer(room)`
+(non-creating peek, since the frame-update hooks run for every room and
+must not stamp state onto a room that never opted in) — confirming the
+"check this" note below was right: this is room-scoped, not
+`GameRunner`-scoped, and `GameRunner` stays completely unaware networking
+exists. The Phase-3 loopback test was pulled forward as instructed:
+`tests/test_multiplayer_lan.py`'s `TestNetworkLoopback` (real
+`NetworkHost`/`NetworkClient` over `127.0.0.1`, port 0 so the OS picks a
+free ephemeral port) plus a stronger `TestEndToEndSync` that drives a full
+host→client position sync purely through `_frame_update_broadcast`/
+`_frame_update_apply_inbound` — the exact functions the real game loop
+calls every frame, not just the raw transport in isolation.
 
 New folder extension, mirroring `extensions/block_world/`'s file layout:
 
@@ -178,6 +207,22 @@ New folder extension, mirroring `extensions/block_world/`'s file layout:
   room has active network state.
 
 ## Phase 2 — `set_network_mode` action + how a player actually launches host/client
+
+**DONE (2026-08-15).** Option 3 (both), exactly per this section's
+recommendation. `actions.py` defines `set_network_mode` (mode choice
+host/client, host string, port number defaulting to `DEFAULT_PORT`);
+`handlers.py`'s `PluginExecutor.execute_set_network_mode_action` and the two
+frame-update hooks share `_env_config()`, which reads `PYGM_NET_MODE`/
+`PYGM_NET_HOST_ADDR`/`PYGM_NET_PORT` as a fallback when no action ever ran.
+`runtime/run_game.py` gained `--net-host`/`--net-client HOST`/`--net-port
+PORT` via a small hand-rolled `_parse_args` (not argparse, deliberately —
+the one existing caller, `core/ide_window.py`'s `subprocess.Popen`, always
+passes exactly `[project_json, language]` positionally with no flags, and
+hand-rolling keeps that path's exact behaviour, error messages, and exit
+code untouched rather than risking an argparse migration changing them);
+it sets the three env vars and never imports the extension.
+`tests/test_multiplayer_lan.py`'s `TestSetNetworkModeAction` and
+`TestEnvVarFallback` cover both paths.
 
 **Open design question, needs a decision before this phase starts**: every
 other extension is configured entirely by in-project **actions** (author
