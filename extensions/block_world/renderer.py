@@ -449,10 +449,18 @@ def eye_z_for(cfg):
     all need this exact number and must never disagree on it -- a mismatch
     is how picking drifts away from the crosshair. This is the one place it
     is computed; call it rather than re-deriving ``z_layer`` + ``eye_height``
-    inline. ``z_layer`` goes through ``int()`` -- the layer a body occupies
-    is discrete even though the eye's offset within it is not.
+    inline.
+
+    ``z_layer`` is a clean whole number at rest (still true for every
+    project that doesn't configure gravity -- move_and_collide's legacy
+    footing always snaps to an exact layer). Tier 7a's gravity mode
+    (handlers.execute_apply_gravity_action) needs it to carry sub-layer
+    precision mid-jump/fall so the eye rises and falls smoothly instead of
+    snapping between whole layers -- read as a plain float, not through
+    ``int()``, for exactly that reason. World-grid lookups (which cell a
+    ray is in) are unaffected: those key off x/y columns only, never z_layer.
     """
-    return int(cfg.get("z_layer", 0)) + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT))
+    return float(cfg.get("z_layer", 0)) + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT))
 
 # Horizontal faces are cast every Nth screen row and the column upscaled.
 # 4 matches raycast_2_5d's floor_cast_res default, chosen there by the same

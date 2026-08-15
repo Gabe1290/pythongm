@@ -24,6 +24,26 @@ def _truthy(raw):
     return bool(raw)
 
 
+# Jump mechanic (Tier 7a, docs/DEFERRED_GAPS_2026_PLAN.md). Tuning defaults
+# in cells/step (cells/step^2 for gravity) -- a game-feel choice, freely
+# overridden per project via enable_block_world_view's `gravity` param and
+# jump's own `speed` param. DEFAULT_JUMP_SPEED^2 / (2*DEFAULT_GRAVITY) gives
+# a peak height of ~1.5 cells (clears a one-block obstacle with headroom to
+# spare) over ~8-9 steps to the top of the arc.
+DEFAULT_GRAVITY = 0.04
+DEFAULT_JUMP_SPEED = 0.35
+# Falling never accelerates past this many cells/step. A discrete per-step
+# simulation can tunnel through a thin floor if a single step's fall
+# distance exceeds it -- every placed block is exactly one layer thick, so
+# capping well under 1.0 keeps the ground <= check (in apply_gravity) able
+# to always catch the crossing frame.
+TERMINAL_FALL_SPEED = -0.9
+# Tolerance for "close enough to the ground to count as grounded" -- guards
+# against float drift from repeated +=/-= on z_layer/vz ever leaving jump
+# permanently unusable by a hair's width.
+JUMP_GROUND_EPS = 1e-6
+
+
 class PluginExecutor:
     """Handles execution of the Block World actions."""
 
@@ -167,11 +187,9 @@ class PluginExecutor:
         """Move (dx, dy) this step, collision-checked against the block
         grid, with automatic footing: standing on the highest block at the
         mover's own (x, y), stepping up onto anything at most
-        state.DEFAULT_MAX_STEP_UP higher, and dropping onto anything lower
-        (there is no falling animation yet -- a drop is just a step down).
-        Movement is axis-separated (x then y checked independently) so
-        sliding along a wall works, the same as every other collision-aware
-        sample in this repo.
+        state.DEFAULT_MAX_STEP_UP higher. Movement is axis-separated (x then
+        y checked independently) so sliding along a wall works, the same as
+        every other collision-aware sample in this repo.
 
         If the calling instance IS the room's block-world camera, its
         footing after moving becomes the camera's z_layer -- climbing a
@@ -180,6 +198,20 @@ class PluginExecutor:
         moves and collides correctly; it just has nowhere engine-level to
         store its own layer yet (a limitation worth lifting later, not one
         this action tries to work around).
+
+        Vertical behaviour depends on whether gravity is configured
+        (enable_block_world_view's `gravity` param, Tier 7a):
+          - gravity <= 0 (default -- every project predating Tier 7a):
+            UNCHANGED legacy behaviour. Footing snaps to ground instantly in
+            both directions; there is no falling animation, a drop is just
+            a step down.
+          - gravity > 0: stepping UP still snaps instantly when grounded
+            (can_enter already refused anything taller than
+            state.DEFAULT_MAX_STEP_UP). Stepping onto lower/open ground, or
+            already being airborne, is left alone here -- apply_gravity
+            (bind it in the STEP event, which fires every frame regardless
+            of movement input, unlike this action's usual keyboard-held
+            binding) carries the camera down for real.
 
         Promoted from tools/preview_block_world.py's own movement code
         (which this extension's Phase 4 Unit 4 already promoted the
@@ -210,8 +242,20 @@ class PluginExecutor:
         collide = _truthy(parameters.get("collide", True))
         cell_size = int(cfg.get("cell_size", 32))
 
+        camera = room._find_first_instance(cfg.get("camera_object", ""))
+        is_camera = camera is instance
+        gravity_on = is_camera and float(cfg.get("gravity", 0.0)) > 0
+
         tl_x, tl_y = room._sprite_top_left(instance)
-        standing = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+        ground = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+        # can_enter's step-up gate compares against where the mover
+        # actually IS. Grounded (legacy mode, or gravity mode at rest)
+        # that's the ground below it; airborne in gravity mode it's the
+        # camera's own tracked height instead -- the two differ once a
+        # jump/fall is in progress, and a mid-air body should not suddenly
+        # be allowed to "step up" onto a tall block just because the ground
+        # far below it happens to be low.
+        standing = float(cfg.get("z_layer", ground)) if gravity_on else ground
 
         nx = tl_x + dx
         if not collide or can_enter(room, cell_of(nx, cell_size), cell_of(tl_y, cell_size), standing):
@@ -222,10 +266,105 @@ class PluginExecutor:
             instance.y += dy
             tl_y = ny
 
-        standing = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+        if not is_camera:
+            return
+
+        ground = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+        if not gravity_on:
+            cfg["z_layer"] = float(ground)
+            return
+        if float(cfg.get("vz", 0.0)) == 0.0 and ground > standing:
+            cfg["z_layer"] = float(ground)
+        # Otherwise: airborne, or grounded with lower/equal footing ahead --
+        # apply_gravity owns z_layer from here.
+
+    def execute_apply_gravity_action(self, instance, parameters):
+        """Continuous vertical physics for the block-world camera: gravity
+        accelerates it downward each step, a positive vz (set by `jump`)
+        carries it up first, and it lands cleanly -- vz zeroed, z_layer
+        clamped to the exact block top -- once its height reaches the
+        ground below it.
+
+        Bind this in the object's STEP event, not a keyboard-held event:
+        step fires every frame regardless of input, so falling continues
+        even while no movement key is held -- move_and_collide (usually
+        keyboard-bound, horizontal-only) and this action are deliberately
+        independent for exactly that reason.
+
+        A no-op unless enable_block_world_view's `gravity` parameter is set
+        above 0 -- keeps every project that predates Tier 7a completely
+        unaffected, and calling this without configuring gravity is itself
+        a no-op rather than a confusing half-behaviour.
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return
+        gravity = float(cfg.get("gravity", 0.0))
+        if gravity <= 0:
+            return
         camera = room._find_first_instance(cfg.get("camera_object", ""))
-        if camera is instance:
-            cfg["z_layer"] = standing
+        if camera is not instance:
+            return
+
+        cell_size = int(cfg.get("cell_size", 32))
+        tl_x, tl_y = room._sprite_top_left(instance)
+        ground = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+
+        z = float(cfg.get("z_layer", ground))
+        vz = float(cfg.get("vz", 0.0)) - gravity
+        vz = max(vz, TERMINAL_FALL_SPEED)
+        z += vz
+        if z <= ground:
+            z = float(ground)
+            vz = 0.0
+
+        cfg["z_layer"] = z
+        cfg["vz"] = vz
+
+    def execute_jump_action(self, instance, parameters):
+        """Give the block-world camera upward velocity -- only while it is
+        grounded (not already mid-jump or falling), so holding/mashing the
+        jump key cannot double-jump or fly.
+
+        Needs gravity configured (enable_block_world_view's `gravity`
+        parameter) and apply_gravity bound in the step event, or there is
+        no physics to carry the camera back down; a no-op without both, the
+        same guard apply_gravity itself uses.
+
+        Parameters:
+            speed: initial upward velocity, in cells/step
+                (default handlers.DEFAULT_JUMP_SPEED)
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return
+        if float(cfg.get("gravity", 0.0)) <= 0:
+            return
+        camera = room._find_first_instance(cfg.get("camera_object", ""))
+        if camera is not instance:
+            return
+
+        cell_size = int(cfg.get("cell_size", 32))
+        tl_x, tl_y = room._sprite_top_left(instance)
+        ground = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
+        z = float(cfg.get("z_layer", ground))
+        vz = float(cfg.get("vz", 0.0))
+        if vz != 0.0 or z > ground + JUMP_GROUND_EPS:
+            return  # already airborne -- no double/air jump
+
+        try:
+            speed = float(ae._parse_value(parameters.get("speed", DEFAULT_JUMP_SPEED), instance))
+        except (TypeError, ValueError):
+            speed = DEFAULT_JUMP_SPEED
+        cfg["vz"] = speed
 
     def execute_place_block_action(self, instance, parameters):
         """Put a block in the empty cell the camera's centre ray reaches.
@@ -322,7 +461,11 @@ class PluginExecutor:
         block_world_state(room)["camera"] = {
             "enabled": True,
             "camera_object": camera_object,
-            "z_layer": int(_num("z_layer", 0)),
+            # A float from Tier 7a on: gravity mode (see execute_apply_gravity_
+            # action) needs sub-layer positions mid-jump/fall. Still an exact
+            # whole number at rest, so nothing downstream that expects a clean
+            # layer index changes when gravity is off (the default).
+            "z_layer": _num("z_layer", 0),
             "fov": _num("fov", 66),
             "render_distance": int(_num("render_distance", 20)),
             "cell_size": int(_num("cell_size", 32)),
@@ -344,6 +487,12 @@ class PluginExecutor:
             # fallback but never actually written here, so no authored
             # action could ever change it -- see docs/VOXEL_WORLD_PLAN.md.
             "eye_height": _num("eye_height", DEFAULT_EYE_HEIGHT),
+            # Tier 7a jump mechanic. 0 (default) = every project that
+            # predates Tier 7a: move_and_collide's original instant-footing
+            # behaviour, completely unchanged. >0 switches on real gravity/
+            # falling -- see apply_gravity and jump.
+            "gravity": _num("gravity", 0.0),
+            "vz": 0.0,
         }
 
     def execute_load_block_world_action(self, instance, parameters):

@@ -403,11 +403,53 @@ today, just unbuilt).
 
 ## Tier 7 — Block World big features (large, multi-part)
 
-- [ ] **7a. Jump mechanic (~1 session).** Vertical velocity (`vz`) in
-  `execute_move_and_collide_action` (`extensions/block_world/handlers.py`,
-  currently pure horizontal + "footing is always `ground_layer`", no
-  gravity anywhere), jump action/key, gravity accumulation, real landing
-  detection. Comparable to Unit 5's original size in `docs/VOXEL_WORLD_PLAN.md`.
+- [x] **7a. Jump mechanic — DONE 2026-08-15.** Desktop-engine only, matching
+  the plan's own Verification section (7a is grouped with Tier 5 as a
+  `GameRunner`-driven-test tier, not an export-parity one) — HTML5/Kivy
+  codegen is a separate, later unit, deliberately not done here.
+  Opt-in and fully backward-compatible: `enable_block_world_view` gained a
+  `gravity` parameter (cells/step², default **0**), and `move_and_collide`'s
+  original instant-footing behaviour (snap to ground in both directions, no
+  falling — "a drop is just a step down") is **completely unchanged** for
+  every project that leaves it at 0, i.e. every project that predates this
+  tier. `gravity > 0` switches on real physics via two new actions:
+  `apply_gravity` (bind in the **Step** event — fires every frame regardless
+  of input, unlike `move_and_collide`'s usual keyboard-held binding, so
+  falling continues even while no movement key is held) integrates
+  `vz`/`z_layer` each step and lands cleanly (`vz` zeroed, `z_layer` clamped
+  to the exact block top) once height reaches the ground below; `jump`
+  (bind to a key press) gives upward velocity, but only while grounded — no
+  double-jump/flying by mashing the key. `z_layer` changed from an
+  always-`int()` field to a float (`renderer.py`'s `eye_z_for` no longer
+  truncates) — safe because the multi-layer renderer already projects every
+  block relative to continuous `eye_z`, so a fractional camera height
+  mid-jump/fall renders as a smooth rise/fall with **zero other renderer
+  changes needed**; world-grid raycasting is unaffected since that keys off
+  x/y columns only, never `z_layer`. One more real bug found and fixed
+  along the way: `move_and_collide`'s step-up gate compared the target cell
+  against the ground *below* the mover, which is only correct while
+  grounded — an airborne body (already above the ground) needs the gate
+  compared against its own actual height instead, or a jump could be
+  wrongly refused/allowed near a tall obstacle depending on what's on the
+  ground far beneath it (covered by a dedicated test for both the airborne
+  and grounded cases). Constants (`DEFAULT_GRAVITY=0.04`,
+  `DEFAULT_JUMP_SPEED=0.35`, `TERMINAL_FALL_SPEED=-0.9` — a discrete-step
+  fall-speed cap so landing detection can't tunnel through a one-layer-thick
+  floor) live in `handlers.py`, freely overridden per project via the new
+  action parameters. `tests/test_block_world_gravity_jump.py` (12 tests,
+  real `GameRoom`/`GameInstance`/`ActionExecutor` harness matching this
+  extension's own established test pattern): legacy behaviour provably
+  unchanged at `gravity=0`, a full jump arc that rises then lands back
+  exactly on flat ground, refused double-jump, terminal-velocity capping,
+  falling off a ledge in gravity mode (no instant snap, real multi-step
+  descent), step-up still instant in gravity mode, and both
+  airborne/grounded cases of the step-up-gate fix. Also fixed
+  `extension.json`'s `provides_actions` list (missing the 2 new action
+  names — caught by an existing manifest-parity test, not assumed).
+  Suite 3054 → 3088 passed, 0 failed. Not done (deliberately, per scope):
+  HTML5/Kivy export codegen for `apply_gravity`/`jump`/the `gravity` param,
+  and updating `block_world_1` (or a new sample) to actually demo jumping —
+  same "wait for a real sample" discipline as Tier 5.3.
 - [ ] **7b. Per-type block protection beyond `breakable` (small, needs a
   definition first).** `state.py`'s `is_breakable` (L160-174) is already a
   single boolean per block type — a second flag is the same shape.
