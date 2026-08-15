@@ -1,38 +1,45 @@
 #!/usr/bin/env python3
-"""BlockWorldEditorWindow -- Phase 1 of Tier 7d
-(docs/BLOCK_WORLD_EDITOR_PLAN.md): embeds the real
-extensions.block_world.renderer.render_block_world_view output in a Qt
-widget, with a free-fly build-mode camera. No place/break editing yet
-(that's Phase 2) -- this phase exists to prove the
-pygame-surface-in-a-QWidget pipeline against the real renderer before
-anything is built on top of it.
+"""BlockWorldEditorWindow (docs/BLOCK_WORLD_EDITOR_PLAN.md, Tier 7d).
 
-Reuses widgets.thymio_playground.PygameWidget verbatim for the
-pygame-surface-to-QPixmap plumbing (it has zero Thymio-specific code --
-see its class body) rather than reinventing that pattern, per the plan
-doc's own "getting a pygame surface onto a Qt canvas is already a solved
-problem in this codebase" note.
+Phase 1: embeds the real extensions.block_world.renderer.
+render_block_world_view output in a Qt widget, with a free-fly build-mode
+camera. Reuses widgets.thymio_playground.PygameWidget verbatim for the
+pygame-surface-to-QPixmap plumbing (it has zero Thymio-specific code)
+rather than reinventing that pattern.
 
-Controls: WASD fly (no gravity/collision -- this is a build-mode camera,
-matching tools/preview_block_world.py's own "press C to fly through
-walls" debug-camera precedent), middle-mouse-drag to look (yaw + pitch),
-wheel to pitch, Space/Shift to step the current z-layer up/down. Look is
-deliberately on the MIDDLE button, not left -- Phase 2 gives left/right
-click their own jobs (place/break), so look needs a button of its own
-that can never collide with an editing click.
+Phase 2 (this file): left-click place / right-click break, reusing
+extensions.block_world.renderer's own picking functions (screen_ray +
+pick_voxel + unproject_to_plane) -- the exact math
+tools/preview_block_world.py's aim() already proves works outside a real
+running game -- routed through a QUndoStack so building is reversible,
+matching editors/room_undo_commands.py's established shape.
+
+Controls: WASD fly (no gravity/collision -- build-mode, not play-mode),
+middle-mouse-drag to look (yaw + pitch), wheel to pitch, Space/Shift to
+step the z-layer, left-click place / right-click break (using the
+palette's current block + a fixed reach), Ctrl+Z / Ctrl+Y undo/redo.
 """
 import math
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QStatusBar
+from PySide6.QtGui import QUndoStack, QShortcut, QKeySequence
+from PySide6.QtWidgets import (
+    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QStatusBar,
+)
 
 import pygame
 
 from widgets.thymio_playground import PygameWidget
-from extensions.block_world.renderer import render_block_world_view, clamp_pitch
+from extensions.block_world.renderer import (
+    render_block_world_view, clamp_pitch, draw_cell_outline, eye_z_for,
+    horizon_for, march_ray, pick_voxel, screen_ray, unproject_to_plane,
+)
+from extensions.block_world.state import get_block, is_breakable, DEFAULT_HOTBAR
 from core.logger import get_logger
 
+from .palette import BlockPalette
 from .session import BlockWorldEditSession, make_empty_room
+from .undo_commands import make_set_block_command
 
 logger = get_logger(__name__)
 
@@ -43,6 +50,12 @@ MOVE_SPEED_PX_PER_SEC = 160.0
 TURN_MOUSE_SENSITIVITY = 0.25    # degrees of yaw per pixel of horizontal drag
 PITCH_MOUSE_SENSITIVITY = 0.25   # degrees of pitch per pixel of vertical drag
 WHEEL_PITCH_STEP = 4.0
+EDITOR_REACH = 8                 # cells -- build-mode reach, not a gameplay value
+DEFAULT_BLOCK = DEFAULT_HOTBAR[0]
+
+CROSSHAIR_SIZE = 7
+CROSSHAIR_COLOR_ACTIVE = (235, 235, 235)
+CROSSHAIR_COLOR_IDLE = (150, 150, 150)
 
 
 class BlockWorldEditorWindow(QMainWindow):
@@ -63,12 +76,16 @@ class BlockWorldEditorWindow(QMainWindow):
         cy = self.session.room.height / (2 * self.session.cell_size)
         self.session.place(cx, cy)
 
+        self.undo_stack = QUndoStack(self)
+
         self._held_keys = set()
         self._dragging = False
         self._drag_last = None
+        self._mouse_pos = (CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
 
         self._setup_ui()
         self._setup_statusbar()
+        self._setup_shortcuts()
 
         if pygame.display.get_surface() is None:
             # extensions/block_world/renderer.py's _load_texture calls
@@ -86,9 +103,10 @@ class BlockWorldEditorWindow(QMainWindow):
     def _setup_ui(self):
         central = QWidget()
         self.setCentralWidget(central)
-        layout = QVBoxLayout(central)
-        layout.setContentsMargins(5, 5, 5, 5)
+        outer = QHBoxLayout(central)
+        outer.setContentsMargins(5, 5, 5, 5)
 
+        left = QVBoxLayout()
         self.canvas = PygameWidget(CANVAS_WIDTH, CANVAS_HEIGHT)
         self.canvas.key_pressed.connect(self._on_key_pressed)
         self.canvas.key_released.connect(self._on_key_released)
@@ -96,14 +114,26 @@ class BlockWorldEditorWindow(QMainWindow):
         self.canvas.mouse_released.connect(self._on_mouse_released)
         self.canvas.mouse_moved.connect(self._on_mouse_moved)
         self.canvas.mouse_wheel.connect(self._on_mouse_wheel)
-        layout.addWidget(self.canvas)
+        left.addWidget(self.canvas)
 
         hint = QLabel(self.tr(
-            "WASD fly | drag with middle mouse button to look | wheel to pitch | "
-            "Space/Shift to step layer up/down"))
+            "WASD fly | middle-drag to look | wheel to pitch | "
+            "Space/Shift layer up/down | left-click place | right-click break | "
+            "Ctrl+Z / Ctrl+Y undo/redo"))
         hint.setStyleSheet("color: #666; font-size: 11px;")
         hint.setWordWrap(True)
-        layout.addWidget(hint)
+        left.addWidget(hint)
+        outer.addLayout(left, 1)
+
+        right = QVBoxLayout()
+        right.addWidget(QLabel(self.tr("Blocks")))
+        self.palette = BlockPalette()
+        self.palette.select(DEFAULT_BLOCK)
+        right.addWidget(self.palette, 1)
+        right_widget = QWidget()
+        right_widget.setLayout(right)
+        right_widget.setMaximumWidth(240)
+        outer.addWidget(right_widget)
 
     def _setup_statusbar(self):
         self.setStatusBar(QStatusBar())
@@ -111,7 +141,17 @@ class BlockWorldEditorWindow(QMainWindow):
         self.statusBar().addWidget(self._status_label)
         self._update_status()
 
-    # ---- input ---------------------------------------------------------
+    def _setup_shortcuts(self):
+        undo_sc = QShortcut(QKeySequence.Undo, self)
+        undo_sc.activated.connect(self.undo_stack.undo)
+        redo_sc = QShortcut(QKeySequence.Redo, self)
+        redo_sc.activated.connect(self.undo_stack.redo)
+        # QKeySequence.Redo is Ctrl+Shift+Z on some platforms; also bind the
+        # Ctrl+Y this repo's own Room Editor convention uses elsewhere.
+        redo_sc_y = QShortcut(QKeySequence("Ctrl+Y"), self)
+        redo_sc_y.activated.connect(self.undo_stack.redo)
+
+    # ---- input -----------------------------------------------------------
 
     def _on_key_pressed(self, key):
         self._held_keys.add(key)
@@ -128,9 +168,14 @@ class BlockWorldEditorWindow(QMainWindow):
         cfg["z_layer"] = max(0, int(cfg.get("z_layer", 0)) + delta)
 
     def _on_mouse_pressed(self, x, y, button):
+        self._mouse_pos = (x, y)
         if button == Qt.MiddleButton:
             self._dragging = True
             self._drag_last = (x, y)
+        elif button == Qt.LeftButton:
+            self._place_block((x, y))
+        elif button == Qt.RightButton:
+            self._break_block((x, y))
 
     def _on_mouse_released(self, x, y, button):
         if button == Qt.MiddleButton:
@@ -138,6 +183,7 @@ class BlockWorldEditorWindow(QMainWindow):
             self._drag_last = None
 
     def _on_mouse_moved(self, x, y):
+        self._mouse_pos = (x, y)
         if not self._dragging or self._drag_last is None:
             return
         last_x, last_y = self._drag_last
@@ -153,13 +199,98 @@ class BlockWorldEditorWindow(QMainWindow):
         step = WHEEL_PITCH_STEP if delta > 0 else -WHEEL_PITCH_STEP
         cfg["pitch"] = clamp_pitch(cfg.get("pitch", 0.0) + step)
 
-    # ---- frame loop ------------------------------------------------------
+    # ---- picking / editing -------------------------------------------------
+
+    def _aim(self, mouse_pos):
+        """(target, placement) for wherever mouse_pos is pointing -- a real
+        3D voxel march against blocks, falling back to the camera's own
+        floor plane over open ground. Ported from
+        tools/preview_block_world.py's aim(), adapted to this session's
+        room/camera instead of the preview tool's globals."""
+        room = self.session.room
+        camera = self.session.camera
+        cell_size = self.session.cell_size
+        cfg = self.session.camera_config
+        layer = int(cfg["z_layer"])
+        fov = math.radians(cfg.get("fov", 66))
+        ox, oy = room._sprite_top_left(camera)
+        px = ox + camera._cached_width / 2
+        py = oy + camera._cached_height / 2
+        facing = math.radians(-camera.facing_angle)
+        sw, sh = CANVAS_WIDTH, CANVAS_HEIGHT
+        mx, my = mouse_pos
+
+        eye_z = eye_z_for(cfg)
+        horizon = horizon_for(sh, cfg.get("pitch", 0.0))
+        ray_angle, z_per_px = screen_ray(mx, my, facing, fov, sw, sh, cell_size, horizon)
+        target, build = pick_voxel(room, px, py, eye_z, ray_angle, z_per_px,
+                                    cell_size, EDITOR_REACH)
+
+        if target is None:
+            build = None
+            ground = unproject_to_plane(mx, my, layer, px, py, eye_z, facing,
+                                         fov, sw, sh, cell_size, horizon)
+            if ground is not None:
+                cell = (int(ground[0] // cell_size), int(ground[1] // cell_size), layer)
+                within = math.hypot(ground[0] - px, ground[1] - py) / cell_size <= EDITOR_REACH
+                if within and get_block(room, *cell) is None:
+                    for cx, cy, *_rest in march_ray(room, px, py, ray_angle,
+                                                     cell_size, EDITOR_REACH + 1):
+                        if (cx, cy) == cell[:2]:
+                            build = cell
+                            break
+                        if get_block(room, cx, cy, layer) is not None:
+                            break  # a wall stands between here and there
+        return target, build
+
+    def _place_block(self, mouse_pos):
+        block_type = self.palette.current_block()
+        if block_type is None:
+            return
+        _target, placement = self._aim(mouse_pos)
+        if placement is None or get_block(self.session.room, *placement) is not None:
+            return
+        command = make_set_block_command(self.session.room, *placement, new_type=block_type)
+        self.undo_stack.push(command)
+        self._update_status()
+
+    def _break_block(self, mouse_pos):
+        target, _placement = self._aim(mouse_pos)
+        if target is None:
+            return
+        if not is_breakable(get_block(self.session.room, *target)):
+            return
+        command = make_set_block_command(self.session.room, *target, new_type=None)
+        self.undo_stack.push(command)
+        self._update_status()
+
+    # ---- frame loop --------------------------------------------------------
 
     def _tick(self):
         self._apply_movement(1.0 / FPS)
-        render_block_world_view(self.session.room, self.canvas.get_surface())
+        surface = self.canvas.get_surface()
+        render_block_world_view(self.session.room, surface)
+        self._draw_aim_overlay(surface)
         self.canvas.update_display()
         self._update_status()
+
+    def _draw_aim_overlay(self, surface):
+        target, placement = self._aim(self._mouse_pos)
+        if placement is not None:
+            camera = self.session.camera
+            cfg = self.session.camera_config
+            ox, oy = self.session.room._sprite_top_left(camera)
+            draw_cell_outline(
+                surface, placement,
+                ox + camera._cached_width / 2, oy + camera._cached_height / 2,
+                eye_z_for(cfg), math.radians(-camera.facing_angle),
+                math.radians(cfg.get("fov", 66)), self.session.cell_size,
+                horizon=horizon_for(CANVAS_HEIGHT, cfg.get("pitch", 0.0)))
+
+        color = CROSSHAIR_COLOR_ACTIVE if target else CROSSHAIR_COLOR_IDLE
+        mx, my = self._mouse_pos
+        pygame.draw.line(surface, color, (mx - CROSSHAIR_SIZE, my), (mx + CROSSHAIR_SIZE, my))
+        pygame.draw.line(surface, color, (mx, my - CROSSHAIR_SIZE), (mx, my + CROSSHAIR_SIZE))
 
     def _apply_movement(self, dt):
         camera = self.session.camera
@@ -186,9 +317,11 @@ class BlockWorldEditorWindow(QMainWindow):
         cell_size = self.session.cell_size
         cell = (int(camera.x // cell_size), int(camera.y // cell_size))
         self._status_label.setText(self.tr(
-            "cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}").format(
+            "cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   "
+            "block {4}   undo {5}").format(
                 cell, cfg.get("z_layer", 0), camera.facing_angle % 360,
-                cfg.get("pitch", 0.0)))
+                cfg.get("pitch", 0.0), self.palette.current_block() or "-",
+                self.undo_stack.count()))
 
     def closeEvent(self, event):
         self.timer.stop()
