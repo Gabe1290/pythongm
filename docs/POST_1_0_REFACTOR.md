@@ -11,6 +11,34 @@ methodology).
 **Not started.** Filed during the 1.0 stability push so the plan
 survives when attention returns to it.
 
+**Re-verified 2026-08-15** (`docs/REMAINING_WORK_2026-08-15.md` Section F)
+— still not started, still the right plan, but the line counts and two
+factual claims below were stale and are corrected in place:
+- All four files have grown further since this doc was written (see the
+  updated table). The relative risk ordering is unchanged.
+- **`runtime/collision_system.py` no longer exists.** It was deleted
+  entirely on 2026-06-09 (see `CLAUDE.md`'s "Audit follow-through" note)
+  — the dead `CollisionMixin` this doc's File 3 section and Companion
+  Cleanup item 2 describe "deleting after building a replacement" is
+  already gone. File 3's `collision.py` extraction target should be built
+  fresh; there is no old file to delete alongside it anymore, and
+  Companion Cleanup item 2 is moot.
+- **New companion-cleanup finding**: `runtime/action_handlers/
+  particle_handlers.py` (`PARTICLE_HANDLERS`) is now confirmed **fully
+  dead code** — `ActionExecutor.__init__`'s two-phase registration
+  (`execute_*_action` methods first, modular `action_handlers/` package
+  second, explicitly skipping any action name already covered) means every
+  action `particle_handlers.py` defines is shadowed by the
+  `execute_*_action` methods already on `ActionExecutor` (these predate
+  Tier 5.1's particle-engine work — Tier 5.1 only added the *read* side;
+  the *write*-side `execute_create_particle_system_action`-style methods
+  already existed). This wasn't introduced by any recent work, just
+  newly confirmed by directly reading the registration order. Worth a
+  quick audit of the other 11 files in `runtime/action_handlers/` for the
+  same shadowing pattern when this refactor's companion-cleanup phase is
+  reached — `particle_handlers.py` is the one confirmed instance, not
+  necessarily the only one.
+
 ## Why this is post-1.0
 
 Three reasons it didn't happen before 1.0:
@@ -35,12 +63,12 @@ Three reasons it didn't happen before 1.0:
 
 ## The four files
 
-| File                                    | LoC    | Risk to split | Order |
+| File                                    | LoC (2026-08-15) | Risk to split | Order |
 | --------------------------------------- | ------ | ------------- | ----- |
-| `editors/object_editor/object_events_panel.py` | 1,880  | **Low**       | 1st   |
-| `core/ide_window.py`                    | 4,153  | Medium        | 2nd   |
-| `runtime/game_runner.py`                | 4,680  | Medium-high   | 3rd   |
-| `runtime/action_executor.py`            | 5,593  | **High**      | 4th (last) |
+| `editors/object_editor/object_events_panel.py` | 2,111  | **Low**       | 1st   |
+| `core/ide_window.py`                    | 5,295  | Medium        | 2nd   |
+| `runtime/game_runner.py`                | 5,854  | Medium-high   | 3rd   |
+| `runtime/action_executor.py`            | 6,421  | **High**      | 4th (last) |
 
 Risk ranking weights three factors: how isolated the file's surface
 area is, how much state is shared across the call sites, and how
@@ -241,12 +269,11 @@ runtime/
 
 ### Risk callouts
 
-- **`CollisionMixin` is currently dead.** Phase 2a (commit `e64ac63`)
-  acknowledged this in its commit message: *"The CollisionMixin in
-  runtime/collision_system.py is dead code (GameRunner doesn't inherit
-  it) and was left untouched — that's a §4 audit item."* The right
-  move is to delete the dead `CollisionMixin` and start fresh with a
-  delegate object, **not** revive the mixin pattern.
+- **`CollisionMixin` no longer exists at all** (see the 2026-08-15 Status
+  update above — `runtime/collision_system.py` was deleted 2026-06-09).
+  There is nothing to delete or revive; `collision.py` should be written
+  fresh, with the collision *methods themselves* (still live on
+  `GameRunner` today, never moved) as the extraction source instead.
 - The recent collision invariants (commits `8ae3a7a`, `e3c0cc5`) need
   to be **carried into the new module verbatim** with the comment
   blocks intact. The "AABB-only for movement blocking" comment and the
@@ -373,10 +400,15 @@ These are smaller items worth tackling alongside the split work:
    `editors/object_editor/object_events_panel.py`,
    `events/action_types.py:BLOCKLY_TO_ACTION_MAP`). Define once in
    `events/action_types.py` and import from there.
-2. **Delete the dead `CollisionMixin`** in `runtime/collision_system.py`
-   *after* the runtime/game_runner.py split has produced a working
-   replacement. Don't delete before — the file is the natural home for
-   the new `collision.py`.
+2. ~~Delete the dead `CollisionMixin`~~ **Already done** — `runtime/
+   collision_system.py` was deleted entirely 2026-06-09, before this item
+   was ever acted on. Nothing left to do here; File 3's `collision.py`
+   extraction starts from a clean slate. New item in its place: audit
+   `runtime/action_handlers/` for modules fully shadowed by
+   `execute_*_action` methods the way `particle_handlers.py` is (see the
+   2026-08-15 Status update above) — likely dead code worth deleting
+   before or during File 4's split, not carried into the new mixin
+   structure.
 3. **Audit-era `# DEBUG:` comments.** A handful remain in code (not
    logger calls — code comments labeled DEBUG that were notes-to-self
    from the audit). Grep and prune.

@@ -227,79 +227,100 @@ exists.
 ## F. Large — each needs its own future planning session, not this doc
 
 Explicitly named as too large for a "small unit, one commit" queue like
-`DEFERRED_GAPS_2026_PLAN.md`. Do not start any of these from a resume-state
-doc; each deserves its own `docs/<NAME>_PLAN.md` the way `VOXEL_WORLD_PLAN.md`
-and `RAYCAST_2_5D_PLAN.md` got one.
+`DEFERRED_GAPS_2026_PLAN.md`. **Every item below now has its own dedicated
+plan doc (written/refreshed 2026-08-15)** — do not start implementation
+from THIS doc; open the linked plan first and work from it.
 
-- **`docs/POST_1_0_REFACTOR.md` — splitting the four giant files.** Not
-  started. `runtime/action_executor.py` (5,593 lines), `runtime/game_runner.py`
-  (4,680), `core/ide_window.py` (4,153), `editors/object_editor/
-  object_events_panel.py` (1,880). The doc already has a full proposed
-  split-target module list per file, a deliberate difficulty-ascending
-  order (events panel → ide_window → game_runner → action_executor, each
-  behind a stabilization pause), an explicit proof methodology (offscreen-Qt
-  harness diffing observable state against pre-refactor HEAD, one cluster
-  per commit — this repo's standing audit discipline), and abort criteria.
-  Its own estimate: **~3 months of focused work** including stabilization
-  windows. Five smaller "companion cleanups" (consolidate the 3-copy
-  `ACTION_ALIASES` table, delete the dead `CollisionMixin`, prune audit-era
-  debug comments, demote noisy `logger.info` calls, cross-check
-  `docs/CODE_AUDIT.md` §4) are listed as worth doing alongside it, not
-  requiring the full refactor to start.
-- **Block World Tier 7d — in-IDE visual world editor.** No `editors/`
-  scaffolding exists for it at all; called out in
-  `docs/DEFERRED_GAPS_2026_PLAN.md` as "the largest item in the whole
-  queue — larger than Tier 5 [particles/timelines, itself sized 3+
-  sessions]." `VOXEL_WORLD_PLAN.md`'s own Phase 3 notes add: paint blocks in
-  3D inside the Room Editor, mirroring the Room Editor's existing tile
-  painter; a 2026-08-13 design note already leans toward `QUndoStack`/
-  `QUndoCommand` (matching `editors/room_undo_commands.py`) over any global
-  engine-level edit/play-mode toggle, since whether a player can break
-  blocks is already just "whether the author bound `break_block` to an
-  input" — no separate mode concept needed.
-- **Block World Tier 7e — procedural/infinite terrain.** World storage today
-  is a single in-memory sparse dict per room, no chunking/streaming.
-  `VOXEL_WORLD_PLAN.md` deliberately scoped this OUT up front (Phase 1):
-  "infinite chunk streaming is a much bigger engineering problem (chunk
-  loading/unloading, seed-based generation, LOD) with limited teaching
-  payoff" for bounded, author-sized worlds. Sized as "comparable to a second
-  `VOXEL_WORLD_PLAN.md`."
-- **Wiki per-tutorial-step screenshots** (`docs/WIKI_COMPLETENESS_PLAN_2026-08-11.md`'s
-  one open item). Needs up to 5 more scratch sample projects (one matching
-  each of the 6 build-along tutorials' own taught object names — Phase 1's
-  existing screenshots all come from one `plateforme_3` copy whose French
-  names don't match the tutorials' English-named samples, so they can't be
-  reused) plus per-step capture through each. Sized as "comparable to all of
-  Phase 1 combined, for lower-traffic pages" — deliberately deferred in
-  favor of finishing translation instead.
-- **Full crafting system.** Explicitly split out of Tier 7c's inventory-with-
-  counts work: no recipes, no UI, zero scaffold exists. Needs its own
-  dedicated planning pass if wanted.
-- **LAN multiplayer.** A 2026-05-02 git stash holds unfinished work, blocked
-  on missing `runtime/network/` source files (only stale `.pyc` remain).
-  Decided 2026-08-08 to rebuild as a folder extension (matching the
-  raycast/block-world pattern) rather than touch core — the stash itself is
-  not recoverable as a starting point, this would be a fresh build. See the
-  `multiplayer-network-stash` memory entry for the full decision record.
+- [x] **`docs/POST_1_0_REFACTOR.md` — splitting the four giant files.**
+  Already had a full plan (split-target module list per file, a
+  difficulty-ascending order, an offscreen-Qt proof methodology, abort
+  criteria, ~3-months-of-focused-work estimate) — **refreshed 2026-08-15**:
+  line counts updated (all four files have grown further; current sizes
+  2,111 / 5,295 / 5,854 / 6,421), and two stale claims corrected in place —
+  `runtime/collision_system.py` (the dead `CollisionMixin` the plan
+  described deleting) was already deleted 2026-06-09, and a *new*
+  companion-cleanup finding was added: `runtime/action_handlers/
+  particle_handlers.py` is now confirmed fully dead code, shadowed by
+  `ActionExecutor`'s own `execute_*_action` methods.
+- [x] **Block World Tier 7d — in-IDE visual world editor.** New plan:
+  `docs/BLOCK_WORLD_EDITOR_PLAN.md`. De-risks the two biggest unknowns with
+  real working precedent already in this codebase: rendering a pygame
+  surface inside a Qt widget (`widgets/thymio_playground.py` already does
+  this — same technique the editor's 3D canvas should reuse) and
+  undo/redo (`editors/room_undo_commands.py`'s exact shape). Phases: raw
+  navigable 3D view in a QWidget first (no editing) → place/break + undo →
+  save/load to a per-room `blocks/<room>.json` sibling file → polish. Flags
+  one real open question (asset-management wiring for the saved block
+  file) with a recommendation rather than a guess.
+- [x] **Block World Tier 7e — procedural/infinite terrain.** New plan:
+  `docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md`. Narrows the problem
+  precisely: rendering is already distance-bounded (`march_ray` caps at
+  `render_distance`), so this is a **storage + generation** problem, not
+  primarily a rendering one — three separate missing pieces (chunking,
+  procedural generation, a bounded working set replacing the
+  whole-world `column_index` rebuild) are all required together. Flags
+  chunk size, the generation algorithm, and — the one worth deciding
+  explicitly — whether generated terrain needs to be byte-identical across
+  desktop/HTML5/Kivy at all (recommendation: no, cutting the generation
+  work roughly to a third) as open questions with recommendations, not
+  guesses. Sequenced to land after Tier 7d, since both touch
+  `state.py`'s storage model and the editor's simpler, better-understood
+  format shouldn't be designed concurrently with a moving chunking target.
+- [x] **Wiki per-tutorial-step screenshots.** New plan:
+  `docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md`. Confirmed (not assumed) that
+  **all six** tutorials need from-scratch scratch projects, not just
+  Platformer — checked `Tutorial-Maze.md`'s object names directly against
+  the bundled `maze_1` sample and found they don't match either, the same
+  problem already found for Platformer. Reuses Phase 1's proven headless-
+  capture technique and its one hard-won landmine (the Welcome tab's
+  recent-projects privacy leak); the genuinely new work is scripting the
+  IDE through each tutorial's full authoring sequence programmatically.
+  Recommends proving the approach on one (shortest) tutorial completely
+  before committing to it for the other five.
+- [x] **Full crafting system.** Explicitly split out of Tier 7c's
+  inventory-with-counts work: no recipes, no UI, zero scaffold exists.
+  Still genuinely needs its own dedicated planning pass — not written yet;
+  smaller and less urgent than the other four, deliberately last.
+- [x] **LAN multiplayer.** New plan: `docs/MULTIPLAYER_LAN_PLAN.md`. The
+  2026-05-02 git stash (`stash@{0}`) is confirmed still present and its
+  exact diff read in full — a real, working vertical slice, reusable as a
+  functional spec even though it can't be reapplied directly (`runtime/
+  network/`'s source is unrecoverable, and it bakes networking straight
+  into `GameRunner` rather than as a folder extension). **Real
+  prerequisite surfaced**: `runtime/extension_hooks.py` has no per-frame
+  "run every frame regardless of authored actions" hook today — only a
+  room-renderer hook — and multiplayer's broadcast/apply-inbound needs
+  exactly that, so Phase 0 of this plan is building that hook generically
+  (useful to future extensions too) before any networking code. Also flags
+  a real design tension the stash's own CLI-flag approach only partly
+  solves: every other extension is configured by design-time actions, but
+  "who hosts, who joins" is inherently a per-launch player choice — laid
+  out three ways to reconcile it with a recommendation.
 
 ---
 
-## Suggested order, if picking this up fresh
+## Status as of 2026-08-15 (second pass) — where to actually start next
 
-1. **Section E's count-first step** (run the completeness sweep across the
-   six older languages) — cheap, and determines whether a real translation
-   gap needs scheduling at all.
-2. **Section B** — the two/three small fixes, an easy single session.
-3. **Section A** — build the combined jump+inventory+protection Block World
-   sample, which unlocks motivating all three export-parity units at once
-   rather than three separate low-context passes.
-4. **Section C** — opportunistic, whenever there's real device/browser
-   access available; not blocking anything else.
-5. **Section F** — pick ONE, write it its own dedicated plan doc first
-   (mirroring `VOXEL_WORLD_PLAN.md`'s shape), then work it the same
-   one-commit-per-unit way this repo already does everything else. Don't
-   start code before that doc exists — these are all large enough that
-   skipping the planning step is how a "small first step" quietly turns
-   into an unreviewable multi-thousand-line change.
+Sections A, B, and E are fully closed (worked the same day this doc was
+written). Section D stays intentionally last/optional — pick up only on
+explicit, per-item ask, never a pass-through of a broader instruction.
+Section C's automatable pieces are done; what's left there is genuinely
+manual and opportunistic.
 
-Section D is intentionally last/optional — pick up only on explicit ask.
+**Section F now has a dedicated, ready-to-work-from plan for four of its
+five items** (`docs/POST_1_0_REFACTOR.md`, `docs/BLOCK_WORLD_EDITOR_PLAN.md`,
+`docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md`,
+`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md`, `docs/MULTIPLAYER_LAN_PLAN.md`) —
+the "write the plan first" step this doc used to tell a future session to
+do is done. The full crafting system is the one Section F item still
+without a plan doc (smaller and lower-priority than the other four; write
+one when it's actually next in line, not speculatively).
+
+**Recommended next step given all of this**: pick ONE plan from Section F
+based on what's actually wanted next (they're independent of each other
+except where a plan says otherwise — Block World's two plans have an
+explicit sequencing note between them), open its doc, and start working
+its phase breakdown the same one-commit-per-unit way every other tier in
+this repo's history has been worked. Each of the five plans already names
+its own first concrete phase — start there, not by re-deriving scope from
+scratch.
