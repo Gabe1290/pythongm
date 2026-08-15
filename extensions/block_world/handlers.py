@@ -13,7 +13,8 @@ from pathlib import Path
 
 from .state import (BLOCK_TYPES, DEFAULT_HOTBAR, block_world_state, can_enter,
                     cell_of, get_block, ground_layer, is_breakable,
-                    load_block_list, peek_camera, remove_block, set_block)
+                    load_block_list, load_world_state, peek_camera,
+                    remove_block, set_block)
 
 
 def _truthy(raw):
@@ -583,6 +584,18 @@ class PluginExecutor:
             "inventory": _bool("inventory", False),
         }
 
+        # Tier 7e Phase 2 procedural terrain. Off (default) = every project
+        # that predates Tier 7e: the room's seed stays None, so
+        # ensure_chunks_loaded/generate_chunk are permanent no-ops and
+        # behaviour is completely unchanged. This is stored OUTSIDE the
+        # "camera" dict above (which this action wholesale replaces every
+        # call) so a room's generated terrain survives toggling the view
+        # off and back on -- see state.py's _fresh() docstring.
+        if _bool("generate", False):
+            block_world_state(room)["seed"] = int(_num("seed", 0))
+        else:
+            block_world_state(room)["seed"] = None
+
     def execute_load_block_world_action(self, instance, parameters):
         """Load a pre-authored world into the current room from a JSON data
         file, replacing whatever blocks are there.
@@ -592,13 +605,20 @@ class PluginExecutor:
         the file back on top of live edits would silently discard whatever
         the player broke or placed since the room was entered.
 
-        The file holds a flat JSON list in the `state.to_block_list` shape:
-        `[{"x":, "y":, "z":, "type":}, ...]` -- the same shape a generator
-        script (tools/gen_block_world_*.py) or `to_block_list` itself
-        produces. Silently does nothing on a missing file, unreadable JSON,
-        or an unknown block type -- consistent with this extension's other
-        actions (a flush wall, an unbreakable swing) treating bad input as a
-        no-op rather than crashing the game.
+        The file holds EITHER a flat JSON list in the `state.to_block_list`
+        shape: `[{"x":, "y":, "z":, "type":}, ...]` -- the same shape a
+        generator script (tools/gen_block_world_*.py) or `to_block_list`
+        itself produces -- OR (Tier 7e Phase 2) a `{"seed": <int|null>,
+        "blocks": [...]}` dict, the shape a generation-enabled room's own
+        save (editors/block_world_editor/io.py) produces once it has a
+        seed; `"blocks"` there is only the TOUCHED chunks (see
+        to_touched_block_list), with everything else regenerating on
+        demand from the seed. Format is detected from the parsed JSON's
+        type (list vs. dict) -- a pre-Phase-2 file, which is always a bare
+        list, is unaffected. Silently does nothing on a missing file,
+        unreadable JSON, or an unknown block type -- consistent with this
+        extension's other actions (a flush wall, an unbreakable swing)
+        treating bad input as a no-op rather than crashing the game.
 
         Parameters:
             data_file: path to the JSON file, relative to the project
@@ -623,8 +643,11 @@ class PluginExecutor:
 
         try:
             with open(Path(project_path) / data_file, "r", encoding="utf-8") as f:
-                block_list = json.load(f)
-            load_block_list(room, block_list)
+                data = json.load(f)
+            if isinstance(data, dict):
+                load_world_state(room, data.get("seed"), data.get("blocks", []))
+            else:
+                load_block_list(room, data)
         except (OSError, ValueError, KeyError, TypeError):
             # Bad path, bad JSON, or an unknown block type in the file --
             # see the docstring above for why this is a silent no-op.
