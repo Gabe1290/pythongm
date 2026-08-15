@@ -278,6 +278,32 @@ use case or eventual HTML5/Kivy support.
 
 ## Phase 3 — sample + manual playtest
 
+**Sample DONE (2026-08-15); the manual two-machine playtest is NOT done
+and can't be from this environment.** `samples/multiplayer_lan_1/`: a
+single `obj_player` square moved with arrow keys, room-bounds-clamped,
+with **zero multiplayer authoring in the project itself** -- it relies
+entirely on the CLI/env-var fallback (Phase 2's "a game with zero
+authored multiplayer UI still works purely from the command line"). This
+also honestly demonstrates the current architecture's real shape: the
+host is authoritative over every synced instance and broadcasts
+unconditionally, so **the client is a pure spectator in this v1** (its
+own input doesn't stick -- the next inbound snapshot overwrites it),
+documented plainly in the sample's own README rather than glossed over.
+Registered in `widgets/welcome_tab.py`'s `SAMPLE_PROJECTS` and
+`tools/smoke_run_samples.py`'s `SAMPLES` list (passes the smoke run: `[OK]`
+across 180 frames). `tests/test_multiplayer_lan_1_sample.py` covers
+standalone single-player play (no networking triggered at all), the room
+clamp, Welcome-tab/guide registration, and -- the strongest automated
+check short of the real two-process playtest -- two real `GameRunner`
+instances over the actual shipped project talking over a real `127.0.0.1`
+socket, proving a host-side position change reaches the client instance
+end to end. Manually verified with two real `run_game.py --net-host` /
+`--net-client 127.0.0.1` subprocesses during this session (both ran
+without error/traceback for several seconds) as a smoke check, but nobody
+has watched the two windows side by side and confirmed the square visibly
+moves in both -- that's the one genuinely manual step left, unautomatable
+by design (needs a display).
+
 - A minimal two-instance sample (or a `multiplayer_lan_1` sample folder,
   matching this repo's convention of shipping a sample alongside a new
   engine capability — see `block_world_1`, `raycast_1`) that moves a synced
