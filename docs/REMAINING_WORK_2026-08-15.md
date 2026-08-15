@@ -107,15 +107,22 @@ scope.
   repeated enable/disable toggles reuse the same Fbo (no leak), and the
   legacy construction-time path (room already `views_enabled` at export)
   is unchanged byte-for-byte. Suite 3173 → 3178 passed, 0 failed.
-- **`TODO.md` doc-hygiene**: the Views/camera section header still reads "IN
-  PROGRESS" — stale; `docs/VIEWS_SAMPLES_PLAN.md` has said "done, Phase 1+2
-  complete" since 2026-07-15. The pt `WelcomeTab` gap entry is also stale —
-  fixed 2026-08-15 by `DEFERRED_GAPS_2026_PLAN.md` Tier 2.1, just never
-  reflected back into `TODO.md`. Both are a five-minute edit, not real work.
-- **`docs/EXPORT_SYSTEM_STATUS.md` reconciliation**: already banner-marked
-  superseded/historical, but still carries unchecked boxes that read as live
-  work at a glance. Worth either archiving the file outright or adding the
-  same "wishlist, not backlog" framing this plan gives it in section D.
+- [x] **`TODO.md` doc-hygiene — DONE 2026-08-15.** Views/camera section
+  header changed from "IN PROGRESS" to a struck-through "DONE," with its
+  "Residual limitation" paragraph updated to point at the FBO fix above
+  instead of describing a now-closed gap. The pt `WelcomeTab` entry struck
+  through and marked done, with a short pointer to `DEFERRED_GAPS_2026_PLAN.md`
+  Tier 2.1 (which actually fixed it 2026-08-15) instead of the stale
+  "not yet fixed" wording.
+- [x] **`docs/EXPORT_SYSTEM_STATUS.md` reconciliation — DONE 2026-08-15,
+  turned out to need almost nothing.** Re-reading the file found its
+  existing 2026-07-19 banner already does the "wishlist, not backlog"
+  framing this plan called for — it explicitly says to treat the body's
+  checkboxes as historical and already buckets the open items into
+  deferred-features / manual-QA / docs. Only real gap: nothing pointed a
+  reader at the freshest version of that same list. Added one banner line
+  cross-referencing this doc's own Section D (wishlist) and Section C
+  (manual QA) as where to check first.
 
 ## C. Manual QA — not code work, needs a human or real device
 
