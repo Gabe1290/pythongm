@@ -131,13 +131,37 @@ PLUGIN_ACTIONS = {
         display_name="Break Block",
         description="Remove the block the camera is looking at -- also "
                     "picks it up into the calling instance's inventory if "
-                    "Enable Block World View's Inventory is on",
+                    "Enable Block World View's Inventory is on, and refuses "
+                    "if the block is protected (Set Block Protection) and "
+                    "the required key isn't in inventory",
         category="3D View",
         icon="⛏️",
         parameters=[
             ActionParameter(name="reach", display_name="Reach", param_type="number",
                 default_value=5, required=False,
                 description="How many cells ahead you can reach, in grid cells"),
+        ]
+    ),
+
+    "set_block_protection": ActionType(
+        name="set_block_protection",
+        display_name="Set Block Protection",
+        description="Require a specific block type in inventory before "
+                    "Break Block can remove a chosen block type -- call "
+                    "once per protected type, needs Enable Block World "
+                    "View's Inventory on or the requirement can never be "
+                    "satisfied",
+        category="3D View",
+        icon="🔒",
+        parameters=[
+            ActionParameter(name="block_type", display_name="Protected Block",
+                param_type="choice", default_value="diamond_block",
+                choices=_BLOCK_CHOICES,
+                description="Which block type becomes protected"),
+            ActionParameter(name="required_key", display_name="Required Key",
+                param_type="choice", default_value="gold_block",
+                choices=_BLOCK_CHOICES,
+                description="Which block type must be in inventory to break it"),
         ]
     ),
 
