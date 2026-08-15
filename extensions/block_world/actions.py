@@ -74,6 +74,13 @@ PLUGIN_ACTIONS = {
                             "cells (1.5 = a two-block-tall body, needed to see "
                             "the top of a block on your own layer and stack "
                             "onto it)"),
+            ActionParameter(name="gravity", display_name="Gravity",
+                param_type="number", default_value=0, required=False,
+                description="Downward acceleration in cells/step^2 for the "
+                            "Jump action + gravity/falling (Tier 7a). 0 "
+                            "(default) keeps Move And Collide's original "
+                            "instant-footing behaviour with no jumping; a "
+                            "typical value is around 0.04"),
         ]
     ),
 
@@ -161,6 +168,36 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="collide", display_name="Collide",
                 param_type="boolean", default_value=True, required=False,
                 description="Off ignores the block grid entirely (flying/debug)"),
+        ]
+    ),
+
+    "apply_gravity": ActionType(
+        name="apply_gravity",
+        display_name="Apply Gravity",
+        description="Continuous falling/landing physics for the block-world "
+                    "camera -- bind in the Step event (not a keyboard-held "
+                    "event) so it runs every frame regardless of movement "
+                    "input. No-op unless Enable Block World View's Gravity "
+                    "parameter is set above 0",
+        category="3D View",
+        icon="⬇️",
+        parameters=[],
+    ),
+
+    "jump": ActionType(
+        name="jump",
+        display_name="Jump",
+        description="Give the block-world camera upward velocity -- only "
+                    "while standing on solid ground (no double/air jumps). "
+                    "Needs Gravity configured (Enable Block World View) and "
+                    "Apply Gravity bound in the Step event, or nothing "
+                    "brings it back down",
+        category="3D View",
+        icon="⬆️",
+        parameters=[
+            ActionParameter(name="speed", display_name="Jump Speed",
+                param_type="number", default_value=0.35, required=False,
+                description="Initial upward velocity, in cells/step"),
         ]
     ),
 

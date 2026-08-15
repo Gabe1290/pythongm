@@ -11,6 +11,8 @@
         "set_look_pitch",
         "select_hotbar_slot",
         "move_and_collide",
+        "apply_gravity",
+        "jump",
         "draw_block_world_hud",
         "load_block_world"
     ]
