@@ -47,12 +47,14 @@ _OBJECT_FILE_KEYS = (
 # sprite file actually carries, or a hand/external edit to the file is ignored
 # at load and reverted on the next save (the merged in-memory copy is rewritten)
 # — 'precise', 'frame_width', 'frame_height', 'animation_type' and 'speed' were
-# missing (L6).
+# missing (L6). 'thumbnail'/'image_file' added when sprites were manifest-ified
+# (Tier 6, 2026-08-15) — project.json entries shrink to a stub afterward, so a
+# key missing here would silently vanish on the very next save.
 _SPRITE_FILE_KEYS = (
     'frames', 'width', 'height', 'origin_x', 'origin_y', 'collision_mask',
     'bbox_left', 'bbox_right', 'bbox_top', 'bbox_bottom',
     'precise', 'frame_width', 'frame_height', 'animation_type', 'speed',
-    'imported', 'created', 'modified', 'file_path',
+    'imported', 'created', 'modified', 'file_path', 'thumbnail', 'image_file',
 )
 
 

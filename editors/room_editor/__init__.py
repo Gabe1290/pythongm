@@ -457,6 +457,12 @@ class RoomEditor(FloatableEditorMixin, QWidget):
                 if project_file.exists():
                     with open(project_file, 'r', encoding='utf-8') as f:
                         project_data = json.load(f)
+                    # project.json's sprite entries are stubs (Tier 6) --
+                    # merge sprites/<name>.json so object_palette's icons
+                    # resolve file_path in this disk-fallback (detached-
+                    # editor) case, matching the in-memory path which
+                    # always has the full merge already.
+                    self._merge_sprite_files_into(project_data)
 
             if project_data:
                 objects = project_data.get('assets', {}).get('objects', {})
@@ -467,6 +473,27 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         except Exception as e:
             logger.error(f"Error loading objects: {e}")
             self.update_status(self.tr("Error loading objects: {0}").format(e), 5000)
+
+    def _merge_sprite_files_into(self, project_data: dict) -> None:
+        """Merge sprites/<name>.json side files into a freshly disk-read
+        project_data (file wins), matching the project loader's precedence."""
+        sprites_dir = self.project_path / "sprites"
+        if not sprites_dir.exists():
+            return
+        sprites_data = project_data.get('assets', {}).get('sprites', {})
+        from utils.project_file_merge import merge_sprite_file
+        for sprite_name, sprite_data in list(sprites_data.items()):
+            if isinstance(sprite_data, str):
+                sprite_data = {"name": sprite_name, "asset_type": "sprite"}
+                sprites_data[sprite_name] = sprite_data
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        file_sprite_data = json.load(f)
+                    merge_sprite_file(sprite_data, file_sprite_data)
+                except Exception as e:
+                    logger.warning(f"Could not load sprite file {sprite_file}: {e}")
 
     def rename_object_in_instances(self, old_name, new_name):
         """Update all room instances that reference a renamed object"""

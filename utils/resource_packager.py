@@ -47,6 +47,33 @@ class ResourcePackager:
         return f"{asset_type}/{asset_name}.png"
 
     @staticmethod
+    def _merge_sprite_files(project_data: Dict, project_path: Path) -> None:
+        """Merge sprites/<name>.json side files into project_data's embedded
+        sprite entries (file wins). project.json sprite entries are stubs
+        since sprites were manifest-ified (Tier 6) -- without this, a
+        packaged .gmobj/.gmroom would ship (and an importing project would
+        permanently receive) a bare {name, asset_type, _external_file} stub
+        with no file_path/dimensions/frames/origin."""
+        from utils.project_file_merge import merge_sprite_file
+
+        sprites_dir = project_path / "sprites"
+        if not sprites_dir.exists():
+            return
+        sprites_data = project_data.get('assets', {}).get('sprites', {})
+        for sprite_name, sprite_data in list(sprites_data.items()):
+            if isinstance(sprite_data, str):
+                sprite_data = {"name": sprite_name, "asset_type": "sprite"}
+                sprites_data[sprite_name] = sprite_data
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        file_sprite_data = json.load(f)
+                    merge_sprite_file(sprite_data, file_sprite_data)
+                except Exception as e:
+                    print(f"  ⚠️ Failed to load sprite file {sprite_file}: {e}")
+
+    @staticmethod
     def export_object(project_path: Path, object_name: str, output_path: Path) -> bool:
         """
         Export an object with all its sprite dependencies
@@ -64,6 +91,8 @@ class ResourcePackager:
             project_file = project_path / "project.json"
             with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f)
+
+            ResourcePackager._merge_sprite_files(project_data, project_path)
 
             # Get object data
             objects = project_data.get('assets', {}).get('objects', {})
@@ -147,6 +176,8 @@ class ResourcePackager:
             project_file = project_path / "project.json"
             with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f)
+
+            ResourcePackager._merge_sprite_files(project_data, project_path)
 
             # Get room data
             rooms = project_data.get('assets', {}).get('rooms', {})
