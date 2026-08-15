@@ -14,10 +14,18 @@ tools/preview_block_world.py's aim() already proves works outside a real
 running game -- routed through a QUndoStack so building is reversible,
 matching editors/room_undo_commands.py's established shape.
 
+Phase 3 (this file): loads a room's existing blocks/<room>.json on open
+(io.py) and saves back to it (Ctrl+S / a Save toolbar action) -- the
+exact sibling-file shape load_block_world already reads at runtime, so
+nothing further is needed to make a saved world playable. Also the Room
+Editor toolbar entry that actually opens this window for a real project
+room (see editors/room_editor/__init__.py's open_block_world_editor).
+
 Controls: WASD fly (no gravity/collision -- build-mode, not play-mode),
 middle-mouse-drag to look (yaw + pitch), wheel to pitch, Space/Shift to
 step the z-layer, left-click place / right-click break (using the
-palette's current block + a fixed reach), Ctrl+Z / Ctrl+Y undo/redo.
+palette's current block + a fixed reach), Ctrl+Z / Ctrl+Y undo/redo,
+Ctrl+S save.
 """
 import math
 
@@ -25,6 +33,7 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QUndoStack, QShortcut, QKeySequence
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QStatusBar,
+    QToolBar, QMessageBox,
 )
 
 import pygame
@@ -37,6 +46,7 @@ from extensions.block_world.renderer import (
 from extensions.block_world.state import get_block, is_breakable, DEFAULT_HOTBAR
 from core.logger import get_logger
 
+from .io import load_room_blocks, save_room_blocks
 from .palette import BlockPalette
 from .session import BlockWorldEditSession, make_empty_room
 from .undo_commands import make_set_block_command
@@ -59,24 +69,40 @@ CROSSHAIR_COLOR_IDLE = (150, 150, 150)
 
 
 class BlockWorldEditorWindow(QMainWindow):
-    """Standalone window hosting the Block World voxel-painter canvas.
-    Phase 3 wires a menu entry that opens this against a real project
-    room; until then it's constructible (and testable) against any
-    GameRoom, including a bare one from make_empty_room()."""
+    """Window hosting the Block World voxel-painter canvas.
 
-    def __init__(self, room=None, parent=None):
+    project_path + room_name (both required together) make this editor
+    load-/save-capable against a real project's blocks/<room_name>.json;
+    omitting both keeps it constructible standalone (demos, tests,
+    make_empty_room()) with Save disabled."""
+
+    def __init__(self, room=None, parent=None, project_path=None, room_name=None):
         super().__init__(parent)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setWindowTitle(self.tr("Block World Editor"))
         self.setMinimumSize(900, 700)
 
+        self.project_path = project_path
+        self.room_name = room_name
+
         self.session = BlockWorldEditSession(room if room is not None else make_empty_room())
+
+        if self.project_path and self.room_name:
+            try:
+                load_room_blocks(self.session.room, self.project_path, self.room_name)
+            except (KeyError, ValueError, OSError) as e:
+                logger.error(f"Failed to load blocks for room '{self.room_name}': {e}")
+                QMessageBox.warning(
+                    self, self.tr("Block World"),
+                    self.tr("Could not load this room's saved blocks ({0}); "
+                            "starting empty.").format(e))
+
         # Start in the middle of the room, standing on the ground layer.
         cx = self.session.room.width / (2 * self.session.cell_size)
         cy = self.session.room.height / (2 * self.session.cell_size)
         self.session.place(cx, cy)
 
         self.undo_stack = QUndoStack(self)
+        self.undo_stack.cleanChanged.connect(self._update_title)
 
         self._held_keys = set()
         self._dragging = False
@@ -84,8 +110,10 @@ class BlockWorldEditorWindow(QMainWindow):
         self._mouse_pos = (CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
 
         self._setup_ui()
+        self._setup_toolbar()
         self._setup_statusbar()
         self._setup_shortcuts()
+        self._update_title()
 
         if pygame.display.get_surface() is None:
             # extensions/block_world/renderer.py's _load_texture calls
@@ -99,6 +127,36 @@ class BlockWorldEditorWindow(QMainWindow):
         self.timer.start(1000 // FPS)
 
         logger.info("Block World editor window created")
+
+    def _update_title(self, *_args):
+        title = self.tr("Block World Editor")
+        if self.room_name:
+            title += f" - {self.room_name}"
+        if self.can_save() and not self.undo_stack.isClean():
+            title += " *"
+        self.setWindowTitle(title)
+
+    def can_save(self) -> bool:
+        return bool(self.project_path and self.room_name)
+
+    def save(self) -> bool:
+        if not self.can_save():
+            QMessageBox.information(
+                self, self.tr("Block World"),
+                self.tr("This room has no project/name to save to."))
+            return False
+        try:
+            path = save_room_blocks(self.session.room, self.project_path, self.room_name)
+        except OSError as e:
+            logger.error(f"Failed to save blocks for room '{self.room_name}': {e}")
+            QMessageBox.critical(
+                self, self.tr("Block World"),
+                self.tr("Failed to save blocks:\n{0}").format(e))
+            return False
+        self.undo_stack.setClean()
+        self._status_label.setText(self.tr("Saved to {0}").format(path))
+        logger.info(f"Block World: saved {path}")
+        return True
 
     def _setup_ui(self):
         central = QWidget()
@@ -135,6 +193,15 @@ class BlockWorldEditorWindow(QMainWindow):
         right_widget.setMaximumWidth(240)
         outer.addWidget(right_widget)
 
+    def _setup_toolbar(self):
+        toolbar = QToolBar(self.tr("Block World Editor"))
+        toolbar.setMovable(False)
+        save_action = toolbar.addAction(self.tr("💾 Save"))
+        save_action.setToolTip(self.tr("Save blocks (Ctrl+S)"))
+        save_action.triggered.connect(self.save)
+        save_action.setEnabled(self.can_save())
+        self.addToolBar(toolbar)
+
     def _setup_statusbar(self):
         self.setStatusBar(QStatusBar())
         self._status_label = QLabel()
@@ -150,6 +217,8 @@ class BlockWorldEditorWindow(QMainWindow):
         # Ctrl+Y this repo's own Room Editor convention uses elsewhere.
         redo_sc_y = QShortcut(QKeySequence("Ctrl+Y"), self)
         redo_sc_y.activated.connect(self.undo_stack.redo)
+        save_sc = QShortcut(QKeySequence.Save, self)
+        save_sc.activated.connect(self.save)
 
     # ---- input -----------------------------------------------------------
 
@@ -324,6 +393,18 @@ class BlockWorldEditorWindow(QMainWindow):
                 self.undo_stack.count()))
 
     def closeEvent(self, event):
+        if self.can_save() and not self.undo_stack.isClean():
+            reply = QMessageBox.question(
+                self, self.tr("Block World"),
+                self.tr("Save changes to this room's blocks before closing?"),
+                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel,
+                QMessageBox.Save)
+            if reply == QMessageBox.Cancel:
+                event.ignore()
+                return
+            if reply == QMessageBox.Save and not self.save():
+                event.ignore()
+                return
         self.timer.stop()
         self.session.close()
         super().closeEvent(event)
