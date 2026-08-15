@@ -217,8 +217,20 @@ def _fresh():
     # column_index) -- the leading underscore marks them as not part of the
     # saved world shape, the same way raycast_2_5d's per-room state
     # separates its camera config from the wall-edge caches it derives.
+    #
+    # "seed": None means no procedural generation -- every room from Phase
+    # 0-1 (hand-placed or load_block_world-loaded, no seed ever set) behaves
+    # completely unchanged (Tier 7e Phase 2,
+    # docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md). "_touched_chunks" is the
+    # set of chunk keys with at least one PLAYER edit (via set_block/
+    # remove_block) since the room was created or loaded -- distinct from
+    # "chunks", which also holds purely-generated, never-edited chunks that
+    # must never be persisted (they're 100% reproducible from
+    # (seed, chunk_coords), so saving them would be redundant and would
+    # defeat the whole point of not storing an unbounded generated world).
     return {"chunks": {}, "camera": {"enabled": False},
-            "_chunk_columns": {}, "_merged_columns": None}
+            "_chunk_columns": {}, "_merged_columns": None,
+            "seed": None, "_touched_chunks": set()}
 
 
 def _peek_state(room):
@@ -305,24 +317,31 @@ def get_block(room, x, y, z):
 def set_block(room, x, y, z, block_type):
     """Place a block, creating world state on first use. block_type must be a
     key in BLOCK_TYPES -- validate before calling if it came from untrusted
-    data."""
+    data. Marks the chunk TOUCHED (see _fresh's docstring) -- this can turn
+    a purely-generated chunk into one with real edits, which must persist."""
     if block_type not in BLOCK_TYPES:
         raise KeyError(block_type)
     ck = _chunk_key(x, y)
     st = block_world_state(room)
     st["chunks"].setdefault(ck, {})[_key(x, y, z)] = block_type
+    st.setdefault("_touched_chunks", set()).add(ck)
     _invalidate_chunk_columns(room, ck)
 
 
 def remove_block(room, x, y, z):
     """Break/clear the block at (x, y, z). A no-op if it's already air or the
-    room has no world state yet."""
+    room has no world state yet. Marks the chunk TOUCHED (see _fresh's
+    docstring) if this actually removed something -- breaking a
+    procedurally-generated block is exactly the kind of edit that must
+    persist (and must stop that chunk from being regenerated over it, see
+    generate_chunk's own guard)."""
     chunks = peek_blocks(room)
     if chunks is None:
         return
     ck = _chunk_key(x, y)
     chunk = chunks.get(ck)
     if chunk is not None and chunk.pop(_key(x, y, z), None) is not None:
+        block_world_state(room).setdefault("_touched_chunks", set()).add(ck)
         _invalidate_chunk_columns(room, ck)
 
 
@@ -367,7 +386,14 @@ def load_block_list(room, block_list):
     """Replace this room's world state with the blocks in block_list (the
     to_block_list shape). Overwrites whatever was there -- callers that want
     to layer blocks onto an existing world should call set_block per entry
-    instead."""
+    instead.
+
+    Every chunk this touches is marked TOUCHED (see _fresh's docstring):
+    explicitly-listed content, however it got here (a hand-authored
+    load_block_world file, or the touched-chunk half of a generated
+    world's save -- see load_world_state), must never be silently
+    overwritten by generate_chunk on a later visit. Does NOT reset seed --
+    callers that need to change it do so separately (load_world_state)."""
     chunks = {}
     for entry in block_list:
         block_type = entry["type"]
@@ -377,6 +403,7 @@ def load_block_list(room, block_list):
         chunks.setdefault(_chunk_key(x, y), {})[_key(x, y, z)] = block_type
     st = block_world_state(room)
     st["chunks"] = chunks
+    st["_touched_chunks"] = set(chunks.keys())
     st["_chunk_columns"] = {}   # a full reload invalidates every chunk
     st["_merged_columns"] = None
 
@@ -480,3 +507,183 @@ def cell_of(pixel_value, cell_size):
     Promoted from tools/preview_block_world.py's own ``cell_of`` lambda
     (Phase 4 Unit 4), proven there first."""
     return int((pixel_value + cell_size / 2) // cell_size)
+
+
+# ---------------------------------------------------------------------------
+# Procedural generation (Tier 7e Phase 2, desktop only --
+# docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md). Deliberately not required to
+# match the HTML5/Kivy ports byte-for-byte (Phase 3, if/when it lands) --
+# the plan's own recommendation is that generation only needs to be
+# internally consistent per-target (same seed -> same world, on whichever
+# target you're running), not identical across targets, since a world is
+# normally experienced on one target per playthrough. A hand-rolled value
+# noise, not a library dependency: this repo has zero existing noise code
+# to build on, and "the ground undulates and has variety" (this plan's own
+# explicit scope -- no biomes, no structures) doesn't need anything fancier.
+# ---------------------------------------------------------------------------
+
+def _hash01(seed, x, y):
+    """A cheap deterministic hash of (seed, x, y) -> float in [0, 1).
+    Integer-only bit-mixing (no trig/floats), so it's exactly reproducible
+    across any Python build -- unlike e.g. sin-based hashes, which can
+    differ in their last bits across platforms/libm versions."""
+    h = (seed * 374761393 + x * 668265263 + y * 2147483647) & 0xFFFFFFFF
+    h = ((h ^ (h >> 13)) * 1274126177) & 0xFFFFFFFF
+    h = (h ^ (h >> 16)) & 0xFFFFFFFF
+    return (h % 100000) / 100000.0
+
+
+def _smoothstep(t):
+    return t * t * (3.0 - 2.0 * t)
+
+
+def _value_noise(seed, x, y, scale):
+    """Smoothly-interpolated value noise at world cell (x, y), in [0, 1).
+    Bilinear interpolation of _hash01 at the surrounding integer lattice
+    points spaced `scale` cells apart -- standard value noise, chosen over
+    Perlin/Simplex for how little code it needs."""
+    fx, fy = x / scale, y / scale
+    x0, y0 = int(fx // 1), int(fy // 1)
+    x1, y1 = x0 + 1, y0 + 1
+    tx, ty = _smoothstep(fx - x0), _smoothstep(fy - y0)
+    v00, v10 = _hash01(seed, x0, y0), _hash01(seed, x1, y0)
+    v01, v11 = _hash01(seed, x0, y1), _hash01(seed, x1, y1)
+    top = v00 + tx * (v10 - v00)
+    bottom = v01 + tx * (v11 - v01)
+    return top + ty * (bottom - top)
+
+
+# Terrain shape constants -- a first cut's worth of "rolling hills", not
+# tuned against anything. BASE_HEIGHT keeps the shortest columns at least a
+# few blocks deep (so there's always solid ground to stand on, never a
+# height-0 column with nothing to walk on); AMPLITUDE is how many extra
+# layers the tallest hills add on top of that.
+TERRAIN_BASE_HEIGHT = 3
+TERRAIN_AMPLITUDE = 6
+TERRAIN_NOISE_SCALE = 24.0   # cells per noise lattice point -- larger = broader hills
+
+
+def terrain_height(seed, x, y):
+    """How many layers tall the generated column at (x, y) is, for `seed`.
+    Pure function of its inputs -- the same (seed, x, y) always yields the
+    same height, on this target, forever (the property the whole "don't
+    need to store unmodified chunks" design depends on)."""
+    n = _value_noise(seed, x, y, TERRAIN_NOISE_SCALE)
+    return TERRAIN_BASE_HEIGHT + int(n * TERRAIN_AMPLITUDE)
+
+
+def generate_chunk(room, chunk_x, chunk_y):
+    """Deterministically fill chunk (chunk_x, chunk_y) from the room's
+    seed, if it has one and this chunk has no content yet (generated
+    already, or touched/loaded) -- a no-op otherwise, so this is always
+    safe to call speculatively (see ensure_chunks_loaded) without risking
+    overwriting a player's edits or redoing work.
+
+    Each column gets a simple two-block-type stack (grass on top, dirt
+    below) up to terrain_height -- "the ground undulates and has variety,"
+    this plan's own explicit bar for a first cut, not villages."""
+    st = block_world_state(room)
+    seed = st.get("seed")
+    if seed is None:
+        return
+    key = (chunk_x, chunk_y)
+    if key in st["chunks"]:
+        return
+    chunk = {}
+    for lx in range(CHUNK_SIZE):
+        for ly in range(CHUNK_SIZE):
+            x, y = chunk_x * CHUNK_SIZE + lx, chunk_y * CHUNK_SIZE + ly
+            height = terrain_height(seed, x, y)
+            for z in range(height):
+                block_type = "grass" if z == height - 1 else "dirt"
+                chunk[_key(x, y, z)] = block_type
+    st["chunks"][key] = chunk
+    # A freshly-generated chunk is NOT touched -- it must stay reproducible
+    # (and therefore unsaved) until a player actually edits it.
+    st["_chunk_columns"].pop(key, None)
+    st["_merged_columns"] = None
+
+
+def ensure_chunks_loaded(room, center_x, center_y, radius_cells):
+    """Generate every chunk within radius_cells of world position
+    (center_x, center_y) that isn't already loaded. A no-op (cheaply --
+    generate_chunk's own guard makes an already-loaded chunk free to
+    re-request) if the room has no seed. Call once per frame from the
+    render path with the camera's own position and render distance, so
+    a chunk is generated before the camera reaches the edge of what's
+    already there."""
+    if block_world_state(room).get("seed") is None:
+        return
+    cx0, cy0 = _chunk_key(int(center_x - radius_cells), int(center_y - radius_cells))
+    cx1, cy1 = _chunk_key(int(center_x + radius_cells), int(center_y + radius_cells))
+    for cx in range(cx0, cx1 + 1):
+        for cy in range(cy0, cy1 + 1):
+            generate_chunk(room, cx, cy)
+
+
+def unload_distant_chunks(room, center_x, center_y, keep_radius_cells):
+    """Evict any GENERATED-BUT-UNTOUCHED chunk more than keep_radius_cells
+    (in world cells, not chunks) from (center_x, center_y) -- bounds the
+    resident memory of an otherwise-unbounded generated world. Touched
+    chunks are NEVER evicted: an evicted touched chunk would look
+    "ungenerated" to generate_chunk's presence check and get silently
+    overwritten by fresh generation on the next visit, discarding whatever
+    was edited there. Call this less often than ensure_chunks_loaded (it's
+    a cleanup pass, not per-frame-critical) with a radius comfortably
+    larger than ensure_chunks_loaded's, or the two would fight -- generate
+    just after evicting the same chunk next frame."""
+    st = _peek_state(room)
+    if st is None or st.get("seed") is None:
+        return
+    keep_radius_chunks = keep_radius_cells / CHUNK_SIZE + 1
+    center_cx, center_cy = _chunk_key(int(center_x), int(center_y))
+    touched = st.get("_touched_chunks", set())
+    to_remove = [
+        ck for ck in st["chunks"]
+        if ck not in touched
+        and (abs(ck[0] - center_cx) > keep_radius_chunks
+             or abs(ck[1] - center_cy) > keep_radius_chunks)
+    ]
+    for ck in to_remove:
+        del st["chunks"][ck]
+        st["_chunk_columns"].pop(ck, None)
+    if to_remove:
+        st["_merged_columns"] = None
+
+
+def to_touched_block_list(room):
+    """Like to_block_list, but only chunks with at least one real edit
+    (see _fresh's docstring) -- what a generation-aware world save should
+    persist. For a room with no seed, every loaded chunk is touched (see
+    load_block_list), so this is equivalent to to_block_list.
+
+    Saves a touched chunk's FULL current content, not a true cell-level
+    diff against what generate_chunk would produce fresh -- a deliberate
+    simplification (a true diff would also need a way to represent "this
+    generated cell was removed," which to_block_list's {"x","y","z","type"}
+    shape has no sentinel for). This still solves the actual scalability
+    problem infinite terrain needs solved: file size is bounded by (touched
+    chunk count x chunk volume), not by how much of the world has been
+    explored -- a chunk is at most CHUNK_SIZE^2 columns, so even a handful
+    of fully-saved touched chunks stays small. Revisit only if a real
+    profiled world shows this mattering in practice."""
+    st = _peek_state(room)
+    if st is None:
+        return []
+    out = []
+    for ck in st.get("_touched_chunks", set()):
+        chunk = st["chunks"].get(ck, {})
+        for key, block_type in chunk.items():
+            x, y, z = (int(part) for part in key.split(","))
+            out.append({"x": x, "y": y, "z": z, "type": block_type})
+    return out
+
+
+def load_world_state(room, seed, touched_block_list):
+    """Restore a room's seed plus its touched (player-edited) chunks.
+    Generated-but-never-touched chunks are deliberately NOT restored --
+    they'll regenerate identically on demand (ensure_chunks_loaded /
+    generate_chunk) from (seed, chunk_coords), since by definition nothing
+    about them was ever edited."""
+    load_block_list(room, touched_block_list)   # populates chunks + touched set
+    block_world_state(room)["seed"] = seed

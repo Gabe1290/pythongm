@@ -32,7 +32,8 @@ import math
 import pygame
 
 from .state import (block_world_state, get_block, block_face_textures,
-                    column_index, is_transparent)
+                    column_index, is_transparent, CHUNK_SIZE,
+                    ensure_chunks_loaded, unload_distant_chunks)
 
 _TEXTURE_CACHE = {}
 
@@ -821,6 +822,19 @@ def render_block_world_view(room, screen: pygame.Surface):
     max_dist = render_distance_cells * cell_size
     num_columns = int(cfg.get("columns", min(w, 320)))
     col_width = w / num_columns
+
+    # Tier 7e Phase 2 (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md): generate
+    # chunks around the camera before marching rays through them, so a
+    # chunk exists by the time a ray reaches it rather than reading as
+    # empty air for one frame. No-ops entirely for a room with no seed
+    # (every pre-Phase-2 project, unchanged). Eviction radius is
+    # deliberately larger than the generation radius so the two passes
+    # don't fight (generate a chunk one frame, evict it the next).
+    cell_cam_x, cell_cam_y = cam_x / cell_size, cam_y / cell_size
+    ensure_chunks_loaded(room, cell_cam_x, cell_cam_y,
+                         render_distance_cells + CHUNK_SIZE)
+    unload_distant_chunks(room, cell_cam_x, cell_cam_y,
+                          render_distance_cells + 3 * CHUNK_SIZE)
 
     # GM angle convention (0=right, 90=up, ...) -> screen-space radians,
     # matching raycast_2_5d's facing_angle-to-ray-space conversion.

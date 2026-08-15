@@ -87,6 +87,18 @@ PLUGIN_ACTIONS = {
                             "Place Block consumes from that inventory "
                             "(Tier 7c); off (default) = unlimited creative-"
                             "mode placing, unchanged from before Tier 7c"),
+            ActionParameter(name="generate", display_name="Generate Terrain",
+                param_type="boolean", default_value=False, required=False,
+                description="On = procedurally generate rolling terrain "
+                            "around the camera as it explores (Tier 7e), "
+                            "using Seed below; off (default) = only "
+                            "hand-placed/loaded blocks exist, unchanged "
+                            "from before Tier 7e"),
+            ActionParameter(name="seed", display_name="Seed",
+                param_type="number", default_value=0, required=False,
+                description="World seed for Generate Terrain -- the same "
+                            "seed always produces the same terrain on this "
+                            "target. Ignored unless Generate Terrain is on"),
         ]
     ),
 
