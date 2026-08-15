@@ -1,14 +1,23 @@
 # Plan: procedural / infinite Block World terrain (Tier 7e)
 
-Status: **not started — and deliberately still not fully speced.** Written
-2026-08-15 per `docs/REMAINING_WORK_2026-08-15.md` Section F, which sizes
-this as "comparable to a second `docs/VOXEL_WORLD_PLAN.md`." That
-comparison is the honest framing to keep: this doc lays out the shape of
-the problem and a real phase breakdown, but — like `VOXEL_WORLD_PLAN.md`
-itself did at Phase 0 — several load-bearing design calls below are
-flagged as open rather than guessed at, because guessing wrong here means
-redoing storage-format work three times (desktop + HTML5 + Kivy) instead
-of once.
+Status: **ALL FOUR PHASES DONE (2026-08-15).** Written 2026-08-15 per
+`docs/REMAINING_WORK_2026-08-15.md` Section F, which sizes this as
+"comparable to a second `docs/VOXEL_WORLD_PLAN.md`." Implemented the same
+day it was written, one phase per commit, full-suite-green gate each,
+resolving every open design question below with the recommendation this
+doc itself already leaned toward: chunk size 16 (the plan's own starting
+guess, never revisited since nothing has needed to yet), no cross-target
+determinism requirement, and "touched chunks persist their full current
+content" rather than a true cell-level diff (a deliberate simplification
+over the plan's literal "diff" wording -- still solves the real
+scalability problem, documented in state.py's to_touched_block_list
+docstring). `samples/block_world_2` demonstrates it end to end: a room
+with no `load_block_world` call at all, purely `enable_block_world_view`'s
+`generate`/`seed` params, that generates real rolling terrain in every
+direction with no boundary. See each phase heading below for exactly what
+landed; docs/BLOCK_WORLD_EDITOR_PLAN.md's own status header (Tier 7d, the
+prerequisite this plan's own "why this is sequenced last" section
+named) records that it finished first, the same day.
 
 ## Why this is out of reach today, precisely
 
