@@ -49,6 +49,7 @@ class RoomEditor(FloatableEditorMixin, QWidget):
             'tiles': []
         }
         self.is_modified = False
+        self._block_world_window = None
 
         self.auto_save_timer = QTimer(self)
         self.auto_save_timer.setSingleShot(True)
@@ -204,6 +205,15 @@ class RoomEditor(FloatableEditorMixin, QWidget):
 
         self.toolbar.addSeparator()
 
+        # Block World voxel editor (Tier 7d, docs/BLOCK_WORLD_EDITOR_PLAN.md) --
+        # opens per-room; only meaningful once the room is a saved asset, since
+        # blocks/<room>.json is keyed by the room's name.
+        self.block_world_action = self.toolbar.addAction(self.tr("🧱 Block Edit"))
+        self.block_world_action.setToolTip(self.tr("Edit this room's Block World voxels"))
+        self.block_world_action.triggered.connect(self.open_block_world_editor)
+
+        self.toolbar.addSeparator()
+
         # Float / Attach — pop the room editor into its own window. The IDE
         # listens on float_requested to do the reparent; the label flips
         # via set_floating_state() once detached.
@@ -230,6 +240,51 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         """Toggle snap to grid"""
         if hasattr(self, 'room_canvas'):
             self.room_canvas.snap_to_grid = checked
+
+    def open_block_world_editor(self):
+        """Open the Block World voxel editor (Tier 7d) for this room --
+        reuses an already-open window for the same room instead of
+        spawning a second one, matching the "one editor per room" mental
+        model the rest of the IDE follows.
+
+        Deliberately does NOT connect to the window's `destroyed` signal
+        to clear the cached reference -- that seemed like the obvious way
+        to notice the window closing, but connecting a QObject's
+        `destroyed` signal to a bound method on another QObject (this
+        editor) creates a teardown-order hazard: if both objects end up
+        being garbage-collected together with no Qt event loop having run
+        (WA_DeleteOnClose's deleteLater() never gets processed without
+        one), PySide6/shiboken can segfault tearing down the connection.
+        Reproduced reliably in a throwaway harness during this session;
+        the try/except RuntimeError below on the reuse path already
+        covers "the window's C++ object is gone" without needing a signal
+        connection at all."""
+        if not self.asset_name:
+            QMessageBox.information(
+                self, self.tr("Block World"),
+                self.tr("Save this room first, so its blocks have a name to save under."))
+            return
+
+        if self._block_world_window is not None:
+            try:
+                self._block_world_window.show()
+                self._block_world_window.raise_()
+                self._block_world_window.activateWindow()
+                return
+            except RuntimeError:
+                self._block_world_window = None   # C++ object already deleted
+
+        from runtime.game_runner import GameRoom
+        from editors.block_world_editor.window import BlockWorldEditorWindow
+
+        room = GameRoom(self.asset_name, {
+            'width': self.current_room_properties.get('width', 1024),
+            'height': self.current_room_properties.get('height', 768),
+        }, action_executor=None)
+
+        self._block_world_window = BlockWorldEditorWindow(
+            room, project_path=self.project_path, room_name=self.asset_name)
+        self._block_world_window.show()
 
     def clear_all_instances(self):
         """Clear all object instances with confirmation"""
