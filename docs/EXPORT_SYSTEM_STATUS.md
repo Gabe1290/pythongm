@@ -28,6 +28,13 @@
 >   export subsystem has dozens of dedicated test files now; the full suite is
 >   **1947 passing**.
 >
+> **2026-08-15 update:** re-confirmed this file needs no further reconciliation
+> beyond what's already below — the banner already correctly frames everything
+> as historical/wishlist, not live backlog. The wishlist bucket is re-listed
+> (unchanged) in [`REMAINING_WORK_2026-08-15.md`](REMAINING_WORK_2026-08-15.md)
+> Section D and the two manual-QA buckets in that same doc's Section C — check
+> there first for the freshest version of "what's actually still open."
+>
 > **The "Improvements Needed" / "Future Enhancements" lists, reconciled:**
 > - ✅ **Done since this snapshot:** HTML5 **sound embedding** (`encode_sounds`,
 >   base64 data URLs); EXE **UPX compression** (wired to the `optimize` export
