@@ -273,6 +273,9 @@ def _blank_scene(cls, room_w=448, room_h=448, disp_w=640, disp_h=480):
     scene._bw_blocks = {}
     scene._bw_columns = None
     scene._bw_tex_cache = {}
+    # Tier 7e Phase 2/3 -- mirrors _init_extensions's own defaults.
+    scene._bw_seed = None
+    scene._bw_generated = {}
     scene.room_width = room_w
     scene.room_height = room_h
     scene.display_width = disp_w

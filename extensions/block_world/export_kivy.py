@@ -140,6 +140,11 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         self._bw_blocks = {}
         self._bw_columns = None
         self._bw_tex_cache = {}
+        # Tier 7e Phase 2/3 procedural terrain -- _bw_seed stays None
+        # (permanent no-op for _bw_ensure_chunks_loaded/_bw_generate_chunk)
+        # for every project that predates Tier 7e.
+        self._bw_seed = None
+        self._bw_generated = {}
 
     def _bw_texture(self, filename):
         """Kivy texture for a block-face PNG filename (cached), materialized
@@ -196,10 +201,112 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     def _bw_set_block(self, x, y, z, block_type):
         self._bw_blocks[(x, y, z)] = block_type
         self._bw_columns = None
+        self._bw_mark_chunk_present(x, y)   # see _bw_generate_chunk's own guard
 
     def _bw_remove_block(self, x, y, z):
         self._bw_blocks.pop((x, y, z), None)
         self._bw_columns = None
+        self._bw_mark_chunk_present(x, y)
+
+    # --- Tier 7e Phase 2/3 procedural terrain
+    # (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md) -- an independent Python
+    # port of state.py's generate_chunk/ensure_chunks_loaded, NOT required
+    # to produce numerically identical terrain to desktop or the HTML5
+    # port (the plan's own recommendation: internally consistent
+    # per-target, not cross-target byte-identical). No eviction/unloading
+    # here (unlike desktop's unload_distant_chunks) -- the same deliberate,
+    # documented scope cut export_html5.js's bwEnsureChunksLoaded makes:
+    # an exported game has no long-lived IDE session to bound memory for.
+
+    BW_CHUNK_SIZE = 16
+
+    def _bw_chunk_key(self, x, y):
+        return (x // self.BW_CHUNK_SIZE, y // self.BW_CHUNK_SIZE)
+
+    def _bw_mark_chunk_present(self, x, y):
+        """Marks a chunk as "has real content" -- called by every direct
+        edit AND by generation itself, so generation can never run twice
+        over the same chunk and can never silently overwrite a player's
+        edit, even one made in a chunk generation hasn't reached yet.
+        Mirrors state.py's own `if key in st["chunks"]: return` guard
+        (chunk PRESENCE, not a separate touched flag) -- including its one
+        real quirk: a single manual edit in an ungenerated chunk
+        permanently opts that whole chunk out of terrain generation.
+        Reproducing that quirk here (rather than a subtly different rule)
+        is deliberate -- same behaviour as desktop, not just similar."""
+        self._bw_generated[self._bw_chunk_key(x, y)] = True
+
+    def _bw_hash01(self, seed, x, y):
+        """Integer-only bit-mixing hash -> a float from 0 up to (not
+        including) 1. Deliberately NOT a transliteration of state.py's
+        _hash01 -- see this section's header for why bit-identical output
+        across targets isn't required; Python here happens to already
+        support the same unsigned masking desktop uses, so this IS the
+        same formula, just not a requirement to keep it that way."""
+        h = (seed * 374761393 + x * 668265263 + y * 2147483647) & 0xFFFFFFFF
+        h = ((h ^ (h >> 13)) * 1274126177) & 0xFFFFFFFF
+        h = (h ^ (h >> 16)) & 0xFFFFFFFF
+        return (h % 100000) / 100000.0
+
+    def _bw_smoothstep(self, t):
+        return t * t * (3.0 - 2.0 * t)
+
+    def _bw_value_noise(self, seed, x, y, scale):
+        """Bilinear-interpolated value noise at world cell (x, y), 0 up to
+        (not including) 1 -- mirrors state.py's _value_noise."""
+        fx, fy = x / scale, y / scale
+        x0, y0 = int(fx // 1), int(fy // 1)
+        x1, y1 = x0 + 1, y0 + 1
+        tx, ty = self._bw_smoothstep(fx - x0), self._bw_smoothstep(fy - y0)
+        v00, v10 = self._bw_hash01(seed, x0, y0), self._bw_hash01(seed, x1, y0)
+        v01, v11 = self._bw_hash01(seed, x0, y1), self._bw_hash01(seed, x1, y1)
+        top = v00 + tx * (v10 - v00)
+        bottom = v01 + tx * (v11 - v01)
+        return top + ty * (bottom - top)
+
+    # Terrain shape constants -- matches state.py's own (rolling hills,
+    # not tuned against anything; see that module's comment).
+    BW_TERRAIN_BASE_HEIGHT = 3
+    BW_TERRAIN_AMPLITUDE = 6
+    BW_TERRAIN_NOISE_SCALE = 24.0
+
+    def _bw_terrain_height(self, seed, x, y):
+        n = self._bw_value_noise(seed, x, y, self.BW_TERRAIN_NOISE_SCALE)
+        return self.BW_TERRAIN_BASE_HEIGHT + int(n * self.BW_TERRAIN_AMPLITUDE)
+
+    def _bw_generate_chunk(self, cx, cy):
+        """Deterministically fill chunk (cx, cy) from self._bw_seed, if any
+        and if this chunk has no content yet (see _bw_mark_chunk_present).
+        Grass-on-top, dirt-below columns -- "rolling hills with variety,"
+        this plan's own explicit bar for a first cut."""
+        seed = self._bw_seed
+        if seed is None:
+            return
+        key = (cx, cy)
+        if self._bw_generated.get(key):
+            return
+        for lx in range(self.BW_CHUNK_SIZE):
+            for ly in range(self.BW_CHUNK_SIZE):
+                x, y = cx * self.BW_CHUNK_SIZE + lx, cy * self.BW_CHUNK_SIZE + ly
+                height = self._bw_terrain_height(seed, x, y)
+                for z in range(height):
+                    self._bw_blocks[(x, y, z)] = 'grass' if z == height - 1 else 'dirt'
+        self._bw_generated[key] = True
+        self._bw_columns = None
+
+    def _bw_ensure_chunks_loaded(self, center_x, center_y, radius_cells):
+        """Generate every chunk within radius_cells (cell units, not
+        pixels) of world CELL position (center_x, center_y) that isn't
+        already present. A cheap no-op if the scene has no seed. Call once
+        per frame from the render path, before the column index is
+        fetched."""
+        if self._bw_seed is None:
+            return
+        cx0, cy0 = self._bw_chunk_key(int(center_x - radius_cells), int(center_y - radius_cells))
+        cx1, cy1 = self._bw_chunk_key(int(center_x + radius_cells), int(center_y + radius_cells))
+        for cx in range(cx0, cx1 + 1):
+            for cy in range(cy0, cy1 + 1):
+                self._bw_generate_chunk(cx, cy)
 
     def _bw_column_index(self):
         """{(x,y): [(z, block_type), ...]} sorted lowest z first, cached
@@ -527,6 +634,14 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         # texturing (flat average-color fallback), matching desktop exactly.
         top_res = int(cfg.get('top_cast_res', 4))
         top_textured = textured and top_res >= 1
+
+        # Tier 7e Phase 2/3: generate chunks around the camera before
+        # marching rays through them, so a chunk exists by the time a ray
+        # reaches it. No-op entirely for a scene with no seed (every
+        # pre-Phase-2 project).
+        self._bw_ensure_chunks_loaded(cam_x / cell_size, cam_y / cell_size,
+                                      render_distance_cells + self.BW_CHUNK_SIZE)
+
         columns = self._bw_column_index()
 
         for col in range(num_columns):
@@ -808,21 +923,39 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             speed = self.BW_DEFAULT_JUMP_SPEED
         cfg['vz'] = speed
 
-    def _bw_load_block_world(self, block_list):
+    def _bw_load_block_world(self, data):
         """Atomic: an unknown block type rejects the whole list, mirroring
-        state.load_block_list's KeyError. block_list is embedded as a
-        Python literal at export time (Kivy has no live project_data to
-        read a path out of at runtime) by the load_block_world action
-        codegen below, sourced from extensions/block_world/export_data.py's
-        collect_export_data via KivyExporter's generic extension-data hook."""
+        state.load_block_list's KeyError. `data` is embedded as a Python
+        literal at export time (Kivy has no live project_data to read a
+        path out of at runtime) by the load_block_world action codegen
+        below, sourced from extensions/block_world/export_data.py's
+        collect_export_data via KivyExporter's generic extension-data hook.
+
+        Tier 7e Phase 2/3: `data` is EITHER the old bare list shape, or the
+        new {"seed":, "blocks":[...]} dict a generation-enabled room's save
+        produces -- detected from `data`'s own type, mirroring
+        handlers.py's load_block_world action and
+        editors/block_world_editor/io.py."""
+        if isinstance(data, dict):
+            seed = data.get('seed')
+            block_list = data.get('blocks') or []
+        else:
+            seed = None
+            block_list = data
         blocks = {}
+        generated = {}
         for entry in block_list:
             bt = entry.get('type')
             if bt not in self.BLOCK_FACE_COLORS:
                 return
             blocks[(entry['x'], entry['y'], entry['z'])] = bt
+            generated[self._bw_chunk_key(entry['x'], entry['y'])] = True
         self._bw_blocks = blocks
+        # Loaded (touched) chunks must never be regenerated over -- mirrors
+        # _bw_mark_chunk_present's own guard.
+        self._bw_generated = generated
         self._bw_columns = None
+        self._bw_seed = seed
 
     # ------------------------------------------------------------------
     # hud.py port
@@ -913,12 +1046,23 @@ def _cg_enable_block_world_view(gen, params, event_type):
         # creative-mode placing/breaking, unchanged.
         'inventory': str(params.get('inventory', 'false')).strip().lower() in ('true', '1', 'yes'),
     }
+    # Tier 7e Phase 2/3 procedural terrain. Off (default) = every project
+    # that predates Tier 7e: self.scene._bw_seed stays None, so
+    # _bw_ensure_chunks_loaded/_bw_generate_chunk are permanent no-ops.
+    # Computed OUTSIDE cfg (which block_world_camera wholesale replaces
+    # every call) so generated terrain survives toggling the view off and
+    # back on -- mirrors state.py's _fresh() docstring on the same point.
+    generate = str(params.get('generate', 'false')).strip().lower() in ('true', '1', 'yes')
+    seed_value = int(_tofloat(params.get('seed'), 0)) if generate else None
     if not cfg['camera_object']:
         # No named camera object -> the acting instance IS the camera.
         return (f"self.scene.block_world_camera = {cfg!r}; "
                 f"self.scene.block_world_camera['camera_instance'] = self; "
-                f"self.scene._bw_columns = None")
-    return f"self.scene.block_world_camera = {cfg!r}; self.scene._bw_columns = None"
+                f"self.scene._bw_columns = None; "
+                f"self.scene._bw_seed = {seed_value!r}")
+    return (f"self.scene.block_world_camera = {cfg!r}; "
+            f"self.scene._bw_columns = None; "
+            f"self.scene._bw_seed = {seed_value!r}")
 
 def _cg_set_look_pitch(gen, params, event_type):
     from export.Kivy.code_generator import _num_code
