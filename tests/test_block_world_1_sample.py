@@ -149,10 +149,18 @@ class TestBlockWorld1WelcomeTabAndGuide:
         from widgets.welcome_tab import SAMPLE_PROJECTS
         assert ("samples/block_world_1", "Block World — Level 1") in SAMPLE_PROJECTS
 
-    def test_guide_is_listed_and_renders(self):
+    def test_guide_is_listed_and_renders(self, monkeypatch):
         from PySide6.QtWidgets import QApplication
         QApplication.instance() or QApplication([])
         from widgets.welcome_tab import SampleDocsDialog, SAMPLE_PROJECTS
+
+        # Pin the guide language. guide_path() resolves README.<lang>.md next
+        # to README.md, so on a French-configured machine this dialog
+        # correctly shows README.fr.md and the English assertions below fail
+        # for entirely the wrong reason. Every guide-rendering test has to do
+        # this -- see tests/test_sample_docs_dialog.py, which already does.
+        monkeypatch.setattr(SampleDocsDialog, "_guide_language",
+                            staticmethod(lambda: "en"))
 
         dlg = SampleDocsDialog(SAMPLE_PROJECTS, REPO_ROOT)
         labels = dlg.sample_labels()
