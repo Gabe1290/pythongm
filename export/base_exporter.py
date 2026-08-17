@@ -22,6 +22,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Signal
 
 from core.logger import get_logger
+from export.message_localizer import resolve_translations
 from utils.project_file_merge import merge_room_file, merge_object_file, merge_sprite_file
 
 logger = get_logger(__name__)
@@ -103,6 +104,14 @@ class BaseKivyExporter(QObject):
         # Load sprite data from external files (project.json sprite entries
         # are stubs since sprites were manifest-ified -- Tier 6).
         self._load_sprites_from_files(project_dir)
+
+        # Bake authored translations into the plain parameters. Must come
+        # AFTER the side-file merges above, or the objects loaded from
+        # objects/*.json would keep their untouched dicts. See
+        # export/message_localizer.py for why the engines are not taught to
+        # read them instead.
+        self.project_data = resolve_translations(
+            self.project_data, (settings or {}).get('language', 'en'))
 
         return project_dir
 

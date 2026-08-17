@@ -356,9 +356,32 @@ currently broken. Remaining units:
 - [ ] **D2b** — the French strings themselves (34 across the samples), which
       also means replacing `test_goal_messages_are_plain_english` with a test
       of the new intent rather than the old one.
-- [ ] **D2c** — export-time resolution, **a prerequisite for issue 2 being
-      fixed on HTML5**. Without it, translations are desktop-only and a French
-      student's exported game still reads English.
+- [x] **D2c** — done. `export/message_localizer.py`'s `resolve_translations()`
+      bakes the chosen language into the plain parameter and drops the dict, so
+      the exported project contains ordinary one-language strings and neither
+      export engine needs to learn about translations at all.
+
+      Hooked at the two funnels: `HTML5Exporter.export()` and
+      `BaseKivyExporter._load_project()` — the latter covers exe, Linux, macOS
+      and Android together. **Both hooks must sit after the side-file merge**,
+      since `objects/*.json` overwrites the embedded objects; a test pins that
+      ordering, and my first fixture got it wrong in exactly that way.
+
+      Language comes from the IDE's current language by default
+      (`core.language_manager.current_language_code()`), because an author's
+      language is their students' language. Made a module-level function rather
+      than a method: several tests drive `_current_export_options` unbound on a
+      stub, and requiring `self` there put the language lookup into every
+      stub's contract for no benefit — that mistake broke 10 tests before it
+      was cleaned up.
+
+      **A vacuous test caught here, worth remembering:** the HTML5 assertions
+      first searched the exported HTML for the sentinel strings. gameData is
+      gzip+base64 compressed into the page, so no project string ever appears
+      as text — meaning "no translation dict survives into the export" was
+      passing while proving nothing. The tests now inflate the embedded
+      gameData and assert on the real shipped JSON. All four hook mutants are
+      caught.
 
 ## Decisions needed before starting
 
