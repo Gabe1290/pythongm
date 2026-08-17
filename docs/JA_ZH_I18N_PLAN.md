@@ -1,5 +1,16 @@
 # Plan: ja + zh UI translation (Section H's remaining tiers)
 
+> **STATUS: COMPLETE — ja 2026-08-09, zh 2026-08-09.** Both languages were
+> built to this plan and finished it; `docs/I18N_CLEANUP_2026-08-06.md`
+> Section H is closed. Verified 2026-08-17: `pygm2_ja.ts` and `pygm2_zh.ts`
+> each carry 62 contexts / 1388 messages, matching `pygm2_pt.ts` exactly.
+>
+> What follows is kept as the worked methodology (the source-string decision,
+> the generator-script pattern, the per-batch verification discipline, and the
+> landmines each language hit) — it is the reference for any *future* language,
+> not a queue of pending work. The unticked boxes further down are a **template
+> to copy**, inside a code fence; they are not open items.
+
 Companion to `docs/I18N_CLEANUP_2026-08-06.md` Section H, which this
 plan implements the ja/zh half of. **pt is done** (2026-08-08, commit
 `c461528` and the checkbox trail before it) — this doc exists so ja and
