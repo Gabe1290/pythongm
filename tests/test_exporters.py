@@ -997,7 +997,7 @@ class TestActionCodeGeneratorBlocks:
             'parameters': {'object': 'obj_wall', 'x': 0, 'y': 0}
         }, 'step')
         code = code_generator.get_code()
-        assert "if self.check_collision_at(self.x + (0), self.y + (0), 'obj_wall')" in code
+        assert "if self.check_collision_at(self.x + (0), self.y - (0), 'obj_wall')" in code
 
     def test_if_collision_at_generates_if(self, code_generator):
         """if_collision_at uses offset-from-self coordinates (M34)."""
@@ -1006,7 +1006,7 @@ class TestActionCodeGeneratorBlocks:
             'parameters': {'target': 'obj_enemy', 'x': 50, 'y': 50}
         }, 'step')
         code = code_generator.get_code()
-        assert "if self.check_collision_at(self.x + (50), self.y + (50), 'obj_enemy')" in code
+        assert "if self.check_collision_at(self.x + (50), self.y - (50), 'obj_enemy')" in code
 
     def test_block_action_indentation(self, code_generator):
         """Block actions should properly handle indentation"""

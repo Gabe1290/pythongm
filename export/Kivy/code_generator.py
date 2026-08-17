@@ -156,6 +156,40 @@ def _num_code(value, default=0):
 # skips it. We accumulate those names so the exporter can SURFACE them to the
 # user ("N actions couldn't be exported and were skipped") instead of the export
 # looking fully successful. Reset at the start of each export.
+def _sprite_frame_code(params) -> list:
+    """Statements for set_sprite's `subimage` / `speed`, expressions included.
+
+    A literal below zero (or absent) is GameMaker's "leave it alone" sentinel
+    and emits nothing. A non-numeric value is an authored expression --
+    `random(image_number)` is the common one -- and is emitted through
+    _num_code, which binds bare names to self.
+    """
+    statements = []
+
+    for name, attribute, cast in (("subimage", "image_index", "int"),
+                                  ("speed", "image_speed", "float")):
+        raw = params.get(name, -1)
+        text = str(raw).strip()
+        if not text:
+            continue
+        try:
+            numeric = float(text)
+        except (TypeError, ValueError):
+            expression = _num_code(text, -1)
+            # _num_code falls back to the default for anything unparseable,
+            # which here means "no change" -- same as before, minus the silence
+            # for expressions that DO parse.
+            if expression != "-1":
+                statements.append("self.%s = %s(%s)"
+                                  % (attribute, cast, expression))
+            continue
+        if numeric >= 0:
+            value = int(numeric) if cast == "int" else numeric
+            statements.append("self.%s = %s" % (attribute, value))
+
+    return statements
+
+
 def _direction_names(value) -> list:
     """Normalise a `directions` parameter to a list of direction names.
 
@@ -496,7 +530,12 @@ class ActionCodeGenerator:
             # here instead of passing them as absolute coordinates.
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
-            cond = f"self.check_collision_at(self.x + ({x}), self.y + ({y}), {obj_name!r})"
+            # The y offset is SUBTRACTED: the author writes GameMaker offsets,
+            # where +y is downward, but instance coordinates here are Kivy's
+            # (y up). Adding it probed the opposite side -- a platformer's
+            # "is there ground just below me?" (y = 1) asked about the ceiling,
+            # so the jump never found the floor.
+            cond = f"self.check_collision_at(self.x + ({x}), self.y - ({y}), {obj_name!r})"
             # GM stores the NOT checkbox as not_flag (older JSON: negate/not)
             if params.get('not_flag', params.get('negate', params.get('not', False))):
                 cond = f"not {cond}"
@@ -510,7 +549,8 @@ class ActionCodeGenerator:
             # relative parameter means offset from current position
             relative = params.get('relative', False)
             if relative:
-                self._open_guard(f"if not self.check_collision_at(self.x + {x}, self.y + {y}):")
+                # Same GM-offset-to-Kivy flip as if_collision above.
+                self._open_guard(f"if not self.check_collision_at(self.x + {x}, self.y - ({y})):")
             else:
                 self._open_guard(f"if not self.check_collision_at({x}, {y}):")
             return
@@ -1885,21 +1925,19 @@ if dist > 0:
                     parts.append(f"self.set_sprite('{path}')")
                 else:
                     parts.append(f"pass  # set_sprite: '{sprite_name}' not found in export")
-            # subimage / speed default to -1 ("don't change"); only emit when
-            # the author set a real value. Non-numeric (expression) values are
-            # skipped rather than emitted verbatim.
-            try:
-                subimage = int(params.get('subimage', -1))
-                if subimage >= 0:
-                    parts.append(f"self.image_index = {subimage}")
-            except (ValueError, TypeError):
-                pass
-            try:
-                anim_speed = float(params.get('speed', -1))
-                if anim_speed >= 0:
-                    parts.append(f"self.image_speed = {anim_speed}")
-            except (ValueError, TypeError):
-                pass
+            # subimage / speed default to -1 ("don't change"), so a literal
+            # below zero is skipped. An EXPRESSION is emitted rather than
+            # dropped: these used to go through int()/float(), and anything
+            # non-numeric raised and was silently discarded. plateforme_3 gives
+            # every bonus a random frame with `subimage=random(image_number)`,
+            # so all 52 of them showed frame 0 (issue 8). The base object
+            # provides `image_number`, `random` and `irandom` for exactly these
+            # expressions; _num_code binds the bare names to self.
+            #
+            # The -1 sentinel stays a LITERAL convention: an expression's value
+            # is not known at export time, and evaluating it twice to test for
+            # -1 would draw a different random frame than it assigned.
+            parts.extend(_sprite_frame_code(params))
             return "; ".join(parts) if parts else "pass  # set_sprite: no change"
 
         elif action_type == 'restart_game':
