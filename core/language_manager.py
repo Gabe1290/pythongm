@@ -283,6 +283,20 @@ class LanguageManager:
 # Global language manager instance
 _language_manager = None
 
+def current_language_code() -> str:
+    """The active UI language code, or 'en' if unavailable.
+
+    A module-level function rather than a method on any window: callers like
+    the export paths only need the code, and several tests drive those paths
+    with stub objects. Depending on `self` there would make the language
+    lookup part of every stub's contract for no benefit.
+    """
+    try:
+        return get_language_manager().get_current_language() or 'en'
+    except Exception:
+        return 'en'
+
+
 def get_language_manager():
     """Get the global language manager instance"""
     global _language_manager

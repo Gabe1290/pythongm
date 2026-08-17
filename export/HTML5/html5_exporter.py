@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from core.logger import get_logger
+from export.message_localizer import resolve_translations
 logger = get_logger(__name__)
 
 
@@ -180,6 +181,13 @@ class HTML5Exporter:
                 self._load_object_files(project_path, project_data)
                 self._load_sprite_files(project_path, project_data)
                 self._collect_extension_data(project_path, project_data)
+
+                # Bake authored translations into the plain parameters, AFTER
+                # the side-file merges above. engine.js has no notion of
+                # translation dicts and deliberately is not being given one --
+                # see export/message_localizer.py.
+                project_data = resolve_translations(
+                    project_data, export_settings.get('language', 'en'))
 
                 # A nameless (malformed/hand-edited) project.json must not
                 # KeyError the whole export — default to 'game' (finding #4).
