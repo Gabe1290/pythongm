@@ -2552,12 +2552,39 @@ class GameRunner:
         self.current_room = self.rooms[starting_room]
         self._visited_rooms.add(starting_room)
 
-        # Set window size based on room
-        self.window_width = self.current_room.width
-        self.window_height = self.current_room.height
+        self.window_width, self.window_height = self._window_size_for(
+            self.current_room)
 
         # Run the game (sprites will be loaded after pygame.display is ready)
         return self.run_game_loop()
+
+    def _window_size_for(self, room) -> tuple:
+        """Window size for a room: the room's own size, UNLESS the room is too
+        big to show at once, in which case the size the project declares.
+
+        Sizing the window to the room is right for the ordinary case, and is
+        what every sample except views_* relies on. But when a room is LARGER
+        than the declared window, sizing to the room shows the entire room at
+        once -- which contradicts the author's setting and makes a scrolling
+        camera pointless. views_1 rendered its whole 2400x800 room in one
+        window, so the camera-scrolling the sample exists to demonstrate was
+        invisible; "what is this sample supposed to do?" was the reasonable
+        reaction.
+
+        Clamped per axis, and only downwards. A room smaller than or equal to
+        the declared window keeps the previous behaviour exactly -- which is
+        why raycast_* (640x480 declared, 480x480 rooms) and maze_2/maze_3
+        (rooms of differing heights) are unaffected.
+        """
+        width, height = room.width, room.height
+        settings = (self.project_data or {}).get('settings') or {}
+        declared_w = settings.get('window_width')
+        declared_h = settings.get('window_height')
+        if isinstance(declared_w, (int, float)) and 0 < declared_w < width:
+            width = int(declared_w)
+        if isinstance(declared_h, (int, float)) and 0 < declared_h < height:
+            height = int(declared_h)
+        return width, height
 
     def run_game_loop(self) -> bool:
         """Main game loop"""
@@ -4617,8 +4644,7 @@ class GameRunner:
 
             # Resize window if needed
             if self.screen:
-                room_width = new_room.width
-                room_height = new_room.height
+                room_width, room_height = self._window_size_for(new_room)
                 current_width, current_height = self.screen.get_size()
                 if room_width != current_width or room_height != current_height:
                     logger.debug(f"  📐 Resizing window to {room_width}x{room_height}")
@@ -4894,8 +4920,8 @@ class GameRunner:
 
             # Resize the window if room size is different
             if self.screen:
-                room_width = self.current_room.width
-                room_height = self.current_room.height
+                room_width, room_height = self._window_size_for(
+                    self.current_room)
                 current_width, current_height = self.screen.get_size()
 
                 if room_width != current_width or room_height != current_height:
@@ -5064,9 +5090,8 @@ class GameRunner:
         self.current_room = self.rooms[starting_room]
         self._visited_rooms.add(starting_room)
 
-        # Set window size based on room
-        self.window_width = self.current_room.width
-        self.window_height = self.current_room.height
+        self.window_width, self.window_height = self._window_size_for(
+            self.current_room)
 
         # Run the game loop
         return self.run_game_loop()
