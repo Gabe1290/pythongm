@@ -126,14 +126,21 @@ def test_the_frozen_launcher_diagnostics_named_are_the_real_ones():
     assert "highscores.json" in text
 
 
-def test_it_records_that_mobile_is_still_broken():
-    """Stating this plainly is what stops a known gap being re-reported as a
-    new regression -- and it is honest about what the desktop rework did not
-    do."""
+def test_it_covers_the_four_repaired_mobile_subsystems():
+    """Mobile's four gaps were fixed on 2026-08-17, so this section changed from
+    "expect it broken" to "check each repair". It must still name all four, so a
+    regression is recognisable rather than a vague feeling, and it must say
+    plainly that nobody has played an exported mobile build -- every fix was
+    verified by executing generated code, which is not the same thing."""
     text = _text()
+    lower = text.lower()
     assert "Kivy" in text
-    for subsystem in ("tiles", "keyboard", "collision"):
-        assert subsystem in text.lower()
+    for subsystem in ("tiles", "arrow", "collision", "jump"):
+        assert subsystem in lower, subsystem
+    # The specific symptoms, so the reader knows what "fixed" looked like.
+    assert "falls, not rises" in lower or "falls, not rises" in text.lower()
+    assert "maze_4 starts" in text
+    assert "never yet played" in lower or "nobody has actually" in lower
 
 
 def test_platform_columns_are_used_consistently():

@@ -121,8 +121,42 @@ Desktop no longer depends on this engine, so A2 is now purely the
       resolution **plus** a slide-to-contact port. Its test needs to cover a
       platformer walking along the ground, not just "a wall blocks", or it will
       pass while the game is unplayable.
-- [ ] **A2.4 physics / sub-images** — not started (**issue 8**: bonus objects
-      all show sub-image 0; Pingus starts mid-air).
+- [x] **A2.4 physics / sub-images — FIXED (`50edb24e`).** Two findings.
+
+      **The vertical sign convention was applied inconsistently.** Instance
+      coordinates in a generated Kivy game are KIVY coordinates (y up) — the
+      exporter establishes that when it places instances, turning
+      plateforme_2's authored GM y=576 in a 640-tall room into y=32. Most of
+      the exporter knew it (`move_grid`'s map is commented "Kivy Y is
+      inverted", `set_vspeed`'s codegen negates, `move_to_collision` steps by
+      `+sin`); the physics layer did not, having been copied from the desktop
+      runtime where y grows downward. So `gravity_direction` 270 pulled
+      everything **up** ("Pingus rises"), every direction-driven vertical move
+      was inverted (an up arrow moved down), and `if_collision`'s y offset
+      probed the ceiling instead of the floor, so a platformer's jump never
+      found ground.
+
+      **`set_sprite` silently discarded expression sub-images.** It ran
+      `int(params['subimage'])` and dropped the assignment in the except
+      branch, so plateforme_3's `subimage=random(image_number)` left all 52
+      bonuses on frame 0. The desktop runtime hit the same class of bug and
+      documented the fix, so this mirrors it: the base object now provides
+      `image_number`, `random`, `irandom` and `choose`, and the parameter goes
+      through `_num_code`.
+
+      Every test asserts **screen direction**, not stored values — because a
+      test of mine did the opposite and passed while the motion was inverted
+      (see the correction noted in the commit).
+
+### A2 complete: all four Kivy subsystems closed (2026-08-17)
+
+Mobile export no longer has the four known gaps. **What is still not done:**
+nobody has run an exported Kivy build on an Android device through any of these
+four fixes. The generated code is executed under stub kivy modules and every
+sample's output compiles, but Kivy itself cannot run in CI, so the on-device
+playtest remains eyes-only work — section 6 of
+`docs/PLATFORM_DISPLAY_CHECKLIST.md`, which should now be updated to expect
+mobile to WORK rather than recording it as known-broken.
 
 - [x] **A0** — decide A1 vs A2. Nothing else in this group starts first.
       *Resolved: A1 (see below).*

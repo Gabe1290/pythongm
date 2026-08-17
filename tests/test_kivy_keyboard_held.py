@@ -249,8 +249,12 @@ def test_each_arrow_moves_its_own_way(maze_1, key, degrees):
     direction 0 and the player only ever moved right, until a wall, and then
     appeared stuck.
 
-    Kivy keeps x/y in GameMaker room coords (y down) and derives
-    vspeed = -speed*sin(direction), so 90 is up, exactly as on the desktop.
+    This checks the direction VALUE only. The stored value being right does not
+    mean the motion is: when this test was written the export also inverted
+    every vertical move, so direction 90 dutifully moved the player DOWN and
+    this test passed anyway. Instance coordinates here are KIVY coordinates
+    (y up), not GameMaker's -- see tests/test_kivy_vertical_convention.py,
+    which asserts the resulting screen direction.
     """
     cls = _load_object_namespace(maze_1, "obj_person")["cls"]
     instance = cls.__new__(cls)
