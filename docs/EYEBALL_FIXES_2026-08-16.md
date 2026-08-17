@@ -303,10 +303,21 @@ mobile is priority 4 — but it is not fixed as a side effect.
 
 Checked before estimating, and the estimate was wrong in both directions.
 
-**There is no mechanism to localise authored strings at all.** The runtime
-translates its own UI (window caption, high-score table) but `show_message`
-text comes straight out of `project.json` as a literal. So issue 2 cannot be
-fixed by typing French — the engine has no place to put it.
+~~**There is no mechanism to localise authored strings at all.**~~
+**CORRECTION (2026-08-17): partly wrong.** A mechanism exists and predates
+this plan:
+
+- `events/action_editor.py` has offered a translation dialog for **any**
+  string parameter since it was written, storing `<param>_translations` dicts.
+- But the runtime read **only `message_translations`, only for
+  `show_message`** — so an author could enter translations for a `draw_text`
+  and the engine would silently ignore them. The IDE promised what the engine
+  did not deliver.
+
+`localize_param()` now honours the convention for every display string
+(`message`, `text`, `caption`), which is **D2a, done**. What was genuinely
+missing was never the storage — it was the runtime honouring it, and the
+exports.
 
 **The content, on the other hand, is almost nothing.** Every visible authored
 string in all 15 samples:
@@ -321,18 +332,33 @@ string in all 15 samples:
 So this is ~90% mechanism and ~10% typing, and "all samples" costs barely more
 than "raycast_4 only". Scope by language, not by sample.
 
-Recommended mechanism, because it reuses a pattern already proven here: a
-per-sample catalogue (`samples/<name>/messages.fr.json`) mapping the English
-source string to the translation, resolved through the active language with
-**fallback to the literal** — exactly how `SampleDocsDialog.guide_path()`
-already handles `README.fr.md`. A missing translation degrades to English
-instead of breaking, so languages can land one at a time.
+No new catalogue file format is needed after all — the existing
+`<param>_translations` convention is the mechanism, and it keeps each
+translation next to the string it translates.
 
-One design note with a sequencing consequence: **exports can resolve the
-strings at export time** rather than looking them up at runtime. If so,
-neither the HTML5 nor the Kivy engine needs to learn about catalogues at all —
-which is a large saving, and means **D2 should be designed before A1** so the
-exporter only gets written once.
+**The export half is now the whole problem, and it is confirmed, not
+suspected.** Neither export engine reads these dicts: `engine.js`'s
+`show_message` uses `params.message` only, and `export/Kivy/` contains no
+mention of translations at all. `tests/test_raycast_2_sample.py`'s
+`test_goal_messages_are_plain_english` even encodes this as a reason not to
+translate samples — *"keeping the sample free of a translation dict means it
+behaves identically on every export target"* — and on the facts it was right.
+
+So **resolve translations at EXPORT time** (D2c): the exporter bakes the
+chosen language's string into the exported project's plain parameter. Then
+neither engine needs translation support, they cannot diverge from the
+desktop, and — importantly — this touches neither of the two engines that are
+currently broken. Remaining units:
+
+- [x] **D2a** — runtime honours `<param>_translations` for every display
+      string. 16 tests; all four mutants caught, including one that needed a
+      dict *containing* an `en` key to expose the English short-circuit.
+- [ ] **D2b** — the French strings themselves (34 across the samples), which
+      also means replacing `test_goal_messages_are_plain_english` with a test
+      of the new intent rather than the old one.
+- [ ] **D2c** — export-time resolution, **a prerequisite for issue 2 being
+      fixed on HTML5**. Without it, translations are desktop-only and a French
+      student's exported game still reads English.
 
 ## Decisions needed before starting
 

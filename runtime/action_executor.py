@@ -1844,16 +1844,38 @@ class ActionExecutor:
             instance.pending_messages = []
         instance.pending_messages.append(message)
 
+    def localize_param(self, parameters: Dict[str, Any], name: str, default=""):
+        """A display parameter's value, in the runner's language.
+
+        Honours the `<param>_translations` convention: a dict of
+        {language_code: text} stored alongside the parameter. The IDE has
+        offered this for ANY string parameter since action_editor.py's
+        translation dialog was added -- but the runtime only ever read
+        `message_translations`, so an author could enter translations for a
+        draw_text and the engine would silently ignore them. This closes that.
+
+        Falls back to the base (English) value whenever there is no dict, no
+        entry for the language, or no runner -- so an untranslated string
+        keeps working exactly as before.
+
+        NOTE the export targets do NOT read these dicts (engine.js's
+        show_message reads params.message only; Kivy has no support at all).
+        Exported games are meant to get their strings resolved at EXPORT time
+        instead, so a translated project cannot behave differently once
+        exported. Until that lands, translations are a desktop-only feature.
+        """
+        value = parameters.get(name, default)
+        translations = parameters.get("%s_translations" % name)
+        if not isinstance(translations, dict) or not self.game_runner:
+            return value
+        lang = getattr(self.game_runner, "language", "en") or "en"
+        if lang != "en" and lang in translations and translations[lang]:
+            return translations[lang]
+        return value
+
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):
         """Execute show message action with optional translation support."""
-        message = parameters.get("message", "")
-
-        # Resolve translation if available
-        translations = parameters.get("message_translations")
-        if translations and self.game_runner:
-            lang = getattr(self.game_runner, 'language', 'en')
-            if lang != 'en' and lang in translations:
-                message = translations[lang]
+        message = self.localize_param(parameters, "message", "")
 
         logger.info(f"💬 MESSAGE: {message}")
         self._show_or_queue_message(instance, message)
@@ -2543,7 +2565,7 @@ class ActionExecutor:
         if self._is_relative(parameters):
             x += int(instance.x)
             y += int(instance.y)
-        caption = parameters.get("caption", "Score: ")
+        caption = self.localize_param(parameters, "caption", "Score: ")
 
         # Store draw command for rendering
         if not hasattr(instance, '_draw_queue'):
@@ -3621,7 +3643,8 @@ class ActionExecutor:
         if self._is_relative(parameters):
             x += instance.x
             y += instance.y
-        text = str(self._parse_value(parameters.get("text", ""), instance))
+        text = str(self._parse_value(
+            self.localize_param(parameters, "text", ""), instance))
 
         # Get the active drawing colour (instance, then global, then black).
         color = self._resolve_draw_color(instance, (0, 0, 0))
@@ -3653,7 +3676,8 @@ class ActionExecutor:
         # Parse parameters with expression support
         x = self._parse_value(parameters.get("x", 0), instance)
         y = self._parse_value(parameters.get("y", 0), instance)
-        text = str(self._parse_value(parameters.get("text", ""), instance))
+        text = str(self._parse_value(
+            self.localize_param(parameters, "text", ""), instance))
         xscale = self._parse_value(parameters.get("xscale", 1.0), instance)
         yscale = self._parse_value(parameters.get("yscale", 1.0), instance)
 
