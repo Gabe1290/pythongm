@@ -162,26 +162,118 @@ let one pass complete the issue list before any fixing starts.
 
 ---
 
+## Priorities as stated (2026-08-17), and what they decide
+
+Stated order:
+
+1. **The desktop edition must be absolutely bug free.** The extension
+   framework exists so new features don't force core rewrites.
+2. **HTML5 export must work for every sample.** A student can always play an
+   HTML version of their game.
+3. **Linux, Windows and macOS executables** — school labs run Debian, and
+   there is a Mac lab too.
+4. **Mobile export**, which uses Kivy, is needed as well.
+
+Mapping the groups onto that:
+
+| Priority | Work | Current state |
+|---|---|---|
+| 1 · desktop edition | C1–C4, D1, D2 | Works; rough edges |
+| 2 · HTML5 | Group B | **Totally broken** — every sample black |
+| 3 · Win/Linux/macOS exe | Group A | **Broken** — 5 of the 12 issues |
+| 4 · mobile | Kivy repair | Broken in the same four subsystems as (3) |
+
+### A0 resolved: freeze the pygame runtime for desktop (A1); keep Kivy for mobile
+
+Priority 4 settles what looked like the hard part: **Kivy has to be repaired
+regardless**, because nothing else targets Android/iOS. So the question was
+never "Kivy or pygame" — it is only "which engine do the *desktop* executables
+ship?"
+
+Given priorities 1 and 3, A1:
+
+- Priority 3 is delivered by *packaging* an engine that is already proven
+  (3327 tests), not by bringing a second engine up to parity. Under A2, the
+  Debian and Mac labs wait on four subsystem rewrites in an engine that
+  **cannot be executed in CI at all** — so its parity could only ever be
+  asserted, never demonstrated. That sits badly with "absolutely bug free".
+- It decouples priority 3 from priority 4. Kivy's repair then happens at
+  mobile's own priority instead of blocking the school labs.
+- `runtime/run_game.py` already takes `(project_json, language)` and sets
+  `runner.language`, so the entry point needs no redesign.
+
+**Be clear about what A1 does not do:** the four broken subsystems (tiles,
+keyboard, collision, physics/sub-images) are *mobile* bugs too. After A1,
+mobile exports remain as broken as they are today. That is accepted, because
+mobile is priority 4 — but it is not fixed as a side effect.
+
+### D2 re-scoped: this is engine work, not translation work
+
+Checked before estimating, and the estimate was wrong in both directions.
+
+**There is no mechanism to localise authored strings at all.** The runtime
+translates its own UI (window caption, high-score table) but `show_message`
+text comes straight out of `project.json` as a literal. So issue 2 cannot be
+fixed by typing French — the engine has no place to put it.
+
+**The content, on the other hand, is almost nothing.** Every visible authored
+string in all 15 samples:
+
+| Action | Count |
+|---|---|
+| `show_message` | 11 |
+| `draw_text` | 6 |
+| `draw_doom_hud` | 1 |
+| **Total** | **18** |
+
+So this is ~90% mechanism and ~10% typing, and "all samples" costs barely more
+than "raycast_4 only". Scope by language, not by sample.
+
+Recommended mechanism, because it reuses a pattern already proven here: a
+per-sample catalogue (`samples/<name>/messages.fr.json`) mapping the English
+source string to the translation, resolved through the active language with
+**fallback to the literal** — exactly how `SampleDocsDialog.guide_path()`
+already handles `README.fr.md`. A missing translation degrades to English
+instead of breaking, so languages can land one at a time.
+
+One design note with a sequencing consequence: **exports can resolve the
+strings at export time** rather than looking them up at runtime. If so,
+neither the HTML5 nor the Kivy engine needs to learn about catalogues at all —
+which is a large saving, and means **D2 should be designed before A1** so the
+exporter only gets written once.
+
 ## Decisions needed before starting
 
-1. **A0 — desktop export engine.** Freeze the pygame runtime (A1, recommended)
-   or repair the Kivy runtime (A2)?
-2. **D1 — the short name.** "2.5 D" was suggested. It is short and accurate,
-   and needs no translation in any language — a real advantage across 9
-   locales. Worth checking it does not read as jargon to a 10-year-old either;
-   alternatives worth a moment: "3D", "Labyrinthe 3D" / "3D Maze", "Vue 3D".
-   Whatever is picked applies to all four raycast samples.
-3. **D2 — message translation scope.** Reverse the 2026-07-20 decision for all
-   samples, or just the 3D ones a French student is most likely to open?
-4. **E1 ordering.** Checklist first (to complete the issue list) or last (to
-   verify fixes)?
+**A0 and D2's shape are resolved above.** What is genuinely still open:
 
-## Suggested order once decided
+1. **D1 — the short name.** Applies to all four raycast samples. "2.5 D" is
+   technically honest and needs no translation in any of the 9 locales. "3D"
+   is shorter still, instantly meaningful to a 10-year-old, and also needs no
+   translation; the cost is that it overstates what the engine does, which the
+   guide can explain. Note **"Views" has the same problem** and is arguably
+   worse (it is engine jargon, and issue 10 says nobody can tell what that
+   sample is for) — worth renaming in the same pass.
+2. **D2 — which languages.** French only, or all 9? The content is 18 strings
+   either way; the multiplier is purely translation effort.
+3. **E1 ordering.** Checklist first (completes the issue list before any
+   fixing, and is the instrument for "absolutely bug free") or last (verifies
+   the fixes)?
 
-`E1` (if going first) → `C1` → `C3` → `C4` → `C2` → `D1` → `B1` → `B2`/`B3` →
-`A1.1` … `A1.5` → `D2`.
+## Order, revised against the stated priorities
 
-Rationale: the cheap, self-contained sample fixes first, so there is visible
-progress and the samples are worth demoing; then diagnosis-led HTML5; then the
-big export rework, which is the one item likely to span sessions. D2 last
-because it is bulk translation work that is easy to resume and easy to park.
+1. **E1** — the checklist. Cheap, and it is the instrument for priority 1. You
+   expect more issues; this is what finds them before effort is spent.
+2. **B1** — HTML5 diagnosis. Priority 2 and *totally* broken, and one headless
+   Chromium run tells us whether the fix is a line or a month. That answer
+   changes everything after it, so buy it early and cheaply.
+3. **B2 / B3** — fix HTML5 + a smoke test that loads a real export.
+4. **C1 → C3 → C4 → C2**, then **D1** — priority 1 polish. Cheap, visible,
+   makes the samples demoable.
+5. **D2** — the message-localisation mechanism. Before A1, so the exporter is
+   written once (see the design note above).
+6. **A1.1 … A1.5** — desktop executables. Priority 3, and the item most likely
+   to span sessions.
+7. **Kivy repair** — priority 4, for mobile. Tiles, keyboard, collision,
+   physics/sub-images, one subsystem per commit.
+
+The one hard ordering constraint is D2 before A1. Everything else can move.
