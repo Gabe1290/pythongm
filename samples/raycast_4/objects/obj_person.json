@@ -307,7 +307,11 @@
             "size": "260",
             "back_color": "#101018",
             "wall_color": "#8080a0",
-            "player_color": "#ffd040"
+            "player_color": "#ffffff",
+            "mark_object": "obj_key",
+            "mark_color": "#ffd040",
+            "mark_object_2": "obj_monster",
+            "mark_color_2": "#ff4040"
           }
         },
         {

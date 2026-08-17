@@ -46,7 +46,7 @@ escolha própria desta amostra.
   sala reinicia. **Se as vidas acabarem** → o jogo reinicia.
 - **Alcance a saída** uma vez que tiver encontrado **as três chaves**.
   Tocá-la cedo só te diz que o portão está trancado.
-- **Pressione `M`** para exibir um **minimapa** das paredes (desligado
+- **Pressione `M`** para exibir um **minimapa** que mostra as paredes, as chaves douradas que faltam e os monstros em vermelho (desligado
   por padrão). É desenhado dentro da visão 3D, acima da barra de
   status, e alterna ligado/desligado — o mesmo mapa sob demanda que
   `raycast_3` usa, aqui mantido longe da barra.

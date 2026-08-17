@@ -41,7 +41,7 @@ choice.
   **Run out of lives** → the game restarts.
 - **Reach the exit** once you've found **all three keys**. Touching it early
   just tells you the gate is locked.
-- **Press `M`** to bring up a **minimap** of the walls (off by default). It's
+- **Press `M`** to bring up a **minimap** (off by default) showing the walls, the gold keys still to find and the monsters in red. It's
   drawn inside the 3D view, above the status bar, and toggles on/off — the same
   on-demand map `raycast_3` uses, kept clear of the bar here.
 
