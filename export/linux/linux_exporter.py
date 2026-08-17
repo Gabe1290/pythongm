@@ -1,385 +1,57 @@
 #!/usr/bin/env python3
-"""
-Linux Binary Exporter for PyGameMaker
-Uses Kivy runtime (80% GameMaker 7.0 compatible) bundled with PyInstaller
+"""Linux binary export: freezes the real pygame engine with PyInstaller.
+
+Previously this bundled the Kivy code generator -- a second, incomplete engine
+-- so the exported binary was not the game the author had tested. See
+export/desktop/pygame_desktop_exporter.py for the full reasoning.
+
+Linux matters more than the download count suggests: most of the school
+computer labs this software targets run Debian, so this is the export those
+students actually get.
+
+Almost nothing here is Linux-specific. What is: PyInstaller writes the output
+without the executable bit set when the destination filesystem loses it (a
+FAT/exFAT USB stick, the usual way a binary travels between lab machines), so
+the copy restores it -- a binary a student cannot launch is indistinguishable
+from a broken export.
 """
 
-import subprocess
-import shutil
-import platform
 from pathlib import Path
-from typing import Dict
 
 from core.logger import get_logger
-from export.base_exporter import BaseKivyExporter
+from export.desktop.pygame_desktop_exporter import BasePygameDesktopExporter
 
 logger = get_logger(__name__)
 
 
-class LinuxExporter(BaseKivyExporter):
-    """Handles exporting games as Linux binaries using Kivy runtime"""
+class LinuxExporter(BasePygameDesktopExporter):
+    """Export the project as a standalone Linux binary."""
 
-    def export_project(self, project_path: str, output_path: str, settings: Dict) -> bool:
+    platform_label = "Linux exporter"
+    build_tag = "linux"
+    executable_suffix = ""
+    required_host_platform = "Linux"
+    required_host_hint = (
+        "To create a Linux binary, run this export on a Linux machine.\n\n")
+
+    def _copy_to_output(self, build_dir: Path) -> bool:
+        copied = super()._copy_to_output(build_dir)
+        if copied:
+            self._restore_executable_bit()
+        return copied
+
+    def _restore_executable_bit(self) -> None:
+        """Make sure the delivered binary can actually be run.
+
+        shutil.copy2 preserves mode, but only if the destination filesystem
+        stores one; copying onto a FAT-formatted USB stick silently drops it.
         """
-        Export the project as a Linux binary with Kivy runtime
-
-        Args:
-            project_path: Path to the .pgm project file
-            output_path: Directory where the binary will be created
-            settings: Export settings dictionary
-
-        Returns:
-            True if export successful, False otherwise
-        """
+        name = self.app_name() + self.executable_suffix
+        target = self.output_path / name
+        if not target.is_file():
+            return
         try:
-            self._load_project(project_path, output_path, settings)
-
-            # Step 1: Verify we're on Linux
-            self.progress_update.emit(5, "Checking platform...")
-
-            if platform.system() != 'Linux':
-                self.export_complete.emit(
-                    False,
-                    "Linux export must be run on a Linux system.\n\n"
-                    "PyInstaller creates binaries for the platform it runs on.\n"
-                    "To create a Linux binary, run this export on Linux."
-                )
-                return False
-
-            # Step 2: Verify dependencies are available
-            self.progress_update.emit(10, "Checking dependencies...")
-
-            if not self._require_kivy_dependencies("Linux exporter"):
-                return False
-
-            # Step 3: Create temporary build directory
-            self.progress_update.emit(20, "Creating build directory...")
-            build_dir = self._create_build_directory()
-
-            # Step 4: Generate Kivy game using KivyExporter
-            self.progress_update.emit(30, "Generating Kivy game...")
-            if not self._generate_kivy_game(build_dir):
-                self.export_complete.emit(False, "Failed to generate Kivy game")
-                return False
-
-            # Step 5: Create launcher script
-            self.progress_update.emit(50, "Creating launcher script...")
-            launcher_script = self._create_launcher_script(build_dir)
-
-            # Step 6: Create PyInstaller spec file
-            self.progress_update.emit(60, "Creating PyInstaller spec...")
-            spec_file = self._create_spec_file(build_dir, launcher_script)
-
-            # Step 7: Run PyInstaller
-            self.progress_update.emit(70, "Building executable (this may take a while)...")
-            if not self._run_pyinstaller(spec_file):
-                self.export_complete.emit(False, "PyInstaller build failed")
-                return False
-
-            # Step 8: Copy output to final location
-            self.progress_update.emit(90, "Copying to output directory...")
-            self._copy_to_output(build_dir)
-
-            # Step 9: Cleanup (if not in debug mode)
-            if not settings.get('include_debug', False):
-                self.progress_update.emit(95, "Cleaning up temporary files...")
-                self._cleanup(build_dir)
-
-            self.progress_update.emit(100, "Export complete!")
-            self.export_complete.emit(True, f"Game exported successfully to:\n{self.output_path}")
-            return True
-
-        except Exception as e:
-            error_msg = f"Export failed: {str(e)}"
-            self.export_complete.emit(False, error_msg)
-            import traceback
-            traceback.print_exc()
-            return False
-
-    def _create_build_directory(self) -> Path:
-        """Create a temporary build directory"""
-        project_dir = self.project_path.parent
-        build_dir = project_dir / "build_temp_linux"
-
-        # Clean if exists
-        if build_dir.exists():
-            shutil.rmtree(build_dir)
-
-        build_dir.mkdir(parents=True, exist_ok=True)
-        return build_dir
-
-    def _create_launcher_script(self, build_dir: Path) -> Path:
-        """
-        Create the launcher script that runs the Kivy game
-
-        This script handles PyInstaller frozen executable paths and
-        launches the Kivy game.
-        """
-        launcher_script = build_dir / "game_launcher.py"
-
-        game_name = self.project_data.get('name', 'Game')
-
-        script_content = f'''#!/usr/bin/env python3
-"""
-Standalone Game Launcher for {game_name}
-Generated by PyGameMaker IDE
-Kivy-based runtime (80% GameMaker 7.0 compatible)
-"""
-
-import os
-import sys
-from pathlib import Path
-
-def main():
-    """Main game entry point"""
-    try:
-        # Set up paths for PyInstaller frozen executable
-        if getattr(sys, 'frozen', False):
-            # Running as compiled executable
-            base_path = sys._MEIPASS
-        else:
-            # Running as script
-            base_path = os.path.dirname(os.path.abspath(__file__))
-
-        # Change to game directory
-        game_dir = os.path.join(base_path, 'game')
-
-        if not os.path.exists(game_dir):
-            print(f"Error: Game directory not found at {{game_dir}}")
-            sys.exit(1)
-
-        os.chdir(game_dir)
-        sys.path.insert(0, game_dir)
-
-        # Import and run the Kivy game
-        from main import GameApp
-
-        # Run the game
-        GameApp().run()
-
-    except Exception as e:
-        print(f"Game error: {{e}}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()
-'''
-
-        with open(launcher_script, 'w', encoding='utf-8') as f:
-            f.write(script_content)
-
-        return launcher_script
-
-    def _create_spec_file(self, build_dir: Path, launcher_script: Path) -> Path:
-        """
-        Create PyInstaller spec file for bundling Kivy game on Linux
-
-        This spec file includes:
-        - The launcher script
-        - The entire game/ directory (generated by KivyExporter)
-        - All Kivy dependencies
-        - All game assets (images, sounds)
-        """
-        import os
-        import re
-        spec_file = build_dir / "game.spec"
-
-        # Sanitize to a safe token: the name is interpolated unescaped into a
-        # single-quoted Python literal in the spec, so an apostrophe would be a
-        # SyntaxError when PyInstaller execs it (M38).
-        game_name = re.sub(r'[^A-Za-z0-9_]', '_', self.project_data.get('name', 'Game')) or 'Game'
-
-        # Collect ALL files from the game directory recursively
-        # This ensures images, sounds, and all assets are included
-        game_dir = build_dir / "game"
-        datas = []
-
-        for root, dirs, files in os.walk(game_dir):
-            # Skip __pycache__ directories
-            dirs[:] = [d for d in dirs if d != '__pycache__']
-
-            for file in files:
-                # Skip .pyc files
-                if file.endswith('.pyc'):
-                    continue
-
-                # Get the full source path
-                src_path = os.path.join(root, file)
-                # Get the relative path from build_dir
-                rel_path = os.path.relpath(src_path, build_dir)
-                # Get the destination directory (relative to bundle)
-                dest_dir = os.path.dirname(rel_path)
-
-                datas.append((rel_path, dest_dir))
-
-        # Format datas for spec file. The .spec is exec()'d by PyInstaller, so
-        # each path must be a valid Python literal: forward-slash separators and
-        # repr() so an asset filename with an apostrophe (French "épée d'or.png")
-        # or a Windows backslash can't break the literal.
-        datas_str = ',\n        '.join(
-            [f"({d[0].replace(chr(92), '/')!r}, {d[1].replace(chr(92), '/')!r})"
-             for d in datas])
-
-        # Hidden imports for Kivy
-        hidden_imports = [
-            'kivy',
-            'kivy.app',
-            'kivy.core.window',
-            'kivy.core.image',
-            'kivy.uix.widget',
-            'kivy.graphics',
-            'kivy.clock',
-            'kivy.core.text',
-            'kivy.core.audio',
-            'PIL',  # Pillow for image loading
-        ]
-
-        hidden_imports_str = ',\n        '.join([f"'{imp}'" for imp in hidden_imports])
-
-        # Create spec content (Linux-specific)
-        spec_content = f'''# -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec file for {game_name} (Linux)
-# Generated by PyGameMaker IDE - Linux Exporter
-
-block_cipher = None
-
-a = Analysis(
-    ['{launcher_script.name}'],
-    pathex=[],
-    binaries=[],
-    datas=[
-        {datas_str}
-    ],
-    hiddenimports=[
-        {hidden_imports_str}
-    ],
-    hookspath=[],
-    hooksconfig={{}},
-    runtime_hooks=[],
-    excludes=[
-        'PySide6',
-        'PyQt5',
-        'PyQt6',
-        'tkinter',
-        'matplotlib',
-        'numpy',
-    ],
-    noarchive=False,
-    cipher=block_cipher,
-)
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    [],
-    name='{game_name}',
-    debug={self.export_settings.get('include_debug', False)},
-    bootloader_ignore_signals=False,
-    strip={not self.export_settings.get('include_debug', False)},
-    upx={self.export_settings.get('optimize', False)},
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console={self.export_settings.get('include_debug', False)},
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-)
-'''
-
-        with open(spec_file, 'w', encoding='utf-8') as f:
-            f.write(spec_content)
-
-        return spec_file
-
-    def _run_pyinstaller(self, spec_file: Path) -> bool:
-        """Run PyInstaller to build the executable"""
-        # Defined so the timeout / generic-except branches can safely
-        # check `if process:` even if Popen never ran.
-        process = None
-        try:
-            logger.info("=" * 60)
-            logger.info("Running PyInstaller (this may take 5-10 minutes)...")
-            logger.info("Building with Kivy is memory-intensive.")
-            logger.info("If the process is killed, try closing other applications.")
-            logger.info("=" * 60)
-
-            # Use the same Python interpreter that's running this script
-            # This ensures we use the venv's pyinstaller
-            import sys
-            python_exe = sys.executable
-
-            # Run PyInstaller as a module to ensure we use the venv's version
-            process = subprocess.Popen(
-                [python_exe, '-m', 'PyInstaller', '--clean', str(spec_file)],
-                cwd=spec_file.parent,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1
-            )
-
-            # Stream output in real-time
-            for line in process.stdout:
-                logger.debug(line.rstrip())
-
-            # Wait for completion with longer timeout (10 minutes)
-            process.wait(timeout=600)
-
-            if process.returncode != 0:
-                logger.error(f"PyInstaller failed with return code: {process.returncode}")
-                return False
-
-            logger.info("PyInstaller build completed successfully!")
-            return True
-
-        except subprocess.TimeoutExpired:
-            logger.error("PyInstaller timed out after 10 minutes")
-            logger.error("This usually means the build is too memory-intensive for your system.")
-            logger.info("Try:")
-            logger.info("1. Close other applications to free up memory")
-            logger.info("2. Increase system swap space")
-            logger.info("3. Build on a machine with more RAM (recommended: 8GB+)")
-            if process:
-                process.kill()
-            return False
-        except Exception as e:
-            logger.error(f"Error running PyInstaller: {e}")
-            import traceback
-            traceback.print_exc()
-            return False
-
-    def _copy_to_output(self, build_dir: Path):
-        """Copy the built executable to the output directory"""
-        dist_dir = build_dir / "dist"
-
-        # Create output directory
-        self.output_path.mkdir(parents=True, exist_ok=True)
-
-        # Copy all files from dist to output
-        if dist_dir.exists():
-            for item in dist_dir.iterdir():
-                dest = self.output_path / item.name
-                if item.is_file():
-                    shutil.copy2(item, dest)
-                    # Make the binary executable
-                    if not item.suffix:  # No extension means it's likely the binary
-                        dest.chmod(dest.stat().st_mode | 0o111)
-                elif item.is_dir():
-                    shutil.copytree(item, dest, dirs_exist_ok=True)
-
-    def _cleanup(self, build_dir: Path):
-        """Clean up temporary build files"""
-        try:
-            if build_dir.exists():
-                shutil.rmtree(build_dir)
-        except Exception as e:
-            logger.warning(f"Could not clean up build directory: {e}")
+            mode = target.stat().st_mode
+            target.chmod(mode | 0o111)
+        except OSError as exc:
+            logger.warning("Could not mark %s executable: %s", target, exc)

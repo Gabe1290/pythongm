@@ -34,7 +34,7 @@ def _build_dir_with_hostile_asset(tmp_path):
     game = tmp_path / "game" / "assets" / "images"
     game.mkdir(parents=True)
     (game / HOSTILE_ASSET).write_bytes(b"\x89PNG\r\n")  # any bytes; name is the point
-    (tmp_path / "game" / "main.py").write_text("# launcher\n", encoding="utf-8")
+    (tmp_path / "game" / "project.json").write_text("{}", encoding="utf-8")
     return tmp_path
 
 
@@ -45,7 +45,7 @@ def test_spec_with_apostrophe_asset_compiles(cls, tmp_path):
     exporter.export_settings = {"icon_path": r"C:\Users\gthul\pics\icon.ico"}
 
     build_dir = _build_dir_with_hostile_asset(tmp_path)
-    spec_file = exporter._create_spec_file(build_dir, Path("launcher.py"))
+    spec_file = exporter._write_spec(build_dir, Path("launcher.py"))
 
     spec_src = spec_file.read_text(encoding="utf-8")
     # The load-bearing assertion: PyInstaller exec()s this, so it must parse.
@@ -61,7 +61,7 @@ def test_exe_spec_icon_path_backslashes_are_safe(tmp_path):
     exporter.export_settings = {"icon_path": r"C:\Users\gthul\pics\icon.ico"}
 
     build_dir = _build_dir_with_hostile_asset(tmp_path)
-    spec_file = exporter._create_spec_file(build_dir, Path("launcher.py"))
+    spec_file = exporter._write_spec(build_dir, Path("launcher.py"))
     spec_src = spec_file.read_text(encoding="utf-8")
 
     compile(spec_src, str(spec_file), "exec")
@@ -76,5 +76,5 @@ def test_exe_spec_without_icon_still_compiles(tmp_path):
     exporter.export_settings = {}   # no icon_path
 
     build_dir = _build_dir_with_hostile_asset(tmp_path)
-    spec_file = exporter._create_spec_file(build_dir, Path("launcher.py"))
+    spec_file = exporter._write_spec(build_dir, Path("launcher.py"))
     compile(spec_file.read_text(encoding="utf-8"), str(spec_file), "exec")
