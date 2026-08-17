@@ -2586,6 +2586,47 @@ class GameRunner:
             height = int(declared_h)
         return width, height
 
+    @staticmethod
+    def _frame_budget() -> int:
+        """Frames to render before quitting, from PYGM_MAX_FRAMES. 0 = forever.
+
+        This exists so a built export can be *verified*. A game with no
+        budget runs until the player quits, and a headless harness cannot
+        press a key, so the only signal available was "it had not crashed
+        yet after N seconds" -- which cannot distinguish a game that renders
+        from one stuck on a black screen before its first frame. With a
+        budget the process renders N real frames and exits 0, printing
+        PYGM_FRAMES_COMPLETED=N for the harness to match.
+
+        Absent or unparseable means no budget, so a player's game is never
+        affected: the loop below does not even count frames unless asked.
+        See tests/test_desktop_export_end_to_end.py and
+        docs/EYEBALL_FIXES_2026-08-16.md item A1.5.
+        """
+        raw = os.environ.get("PYGM_MAX_FRAMES", "")
+        try:
+            budget = int(raw)
+        except (TypeError, ValueError):
+            return 0
+        return budget if budget > 0 else 0
+
+    def _save_final_frame(self) -> None:
+        """Write the last rendered frame to PYGM_SCREENSHOT, if set.
+
+        Pairs with the frame budget above to make "the export runs the same
+        engine" a measurable claim rather than an argument: run the source
+        engine and the built export for the same number of frames and compare
+        the two images (tools/verify_desktop_export.py --compare). Nothing
+        happens unless the variable is set.
+        """
+        destination = os.environ.get("PYGM_SCREENSHOT", "")
+        if not destination or not self.screen:
+            return
+        try:
+            pygame.image.save(self.screen, destination)
+        except (pygame.error, OSError) as exc:
+            logger.warning("Could not save frame to %s: %s", destination, exc)
+
     def run_game_loop(self) -> bool:
         """Main game loop"""
         try:
@@ -2653,6 +2694,8 @@ class GameRunner:
             self.trigger_room_start_event()
 
             self.running = True
+            frame_budget = self._frame_budget()
+            frames_rendered = 0
 
             # Main game loop
             while self.running:
@@ -2806,6 +2849,15 @@ class GameRunner:
 
                 # Control framerate
                 self.clock.tick(self.fps)
+
+                # Opt-in frame budget: see _frame_budget().
+                if frame_budget:
+                    frames_rendered += 1
+                    if frames_rendered >= frame_budget:
+                        self.running = False
+                        self._save_final_frame()
+                        print("PYGM_FRAMES_COMPLETED=%d" % frames_rendered,
+                              flush=True)
 
             return True
 
