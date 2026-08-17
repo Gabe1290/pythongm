@@ -1770,3 +1770,84 @@ caveat attached to every completed i18n arc.
   `<translation type="unfinished">` entries anywhere in the 7 files as of
   that date. Don't re-flag this as an open gap without re-running the
   count first — the number above is fully historical.
+
+**2026-08-17 — Desktop export now freezes the REAL pygame engine (was Kivy).
+The single most important thing to know about `export/` going forward.**
+Closes `docs/EYEBALL_FIXES_2026-08-16.md` Group A (issues 4–8) and Phase E.
+The exe/linux/macos exporters used to bundle the **Kivy code generator** — a
+second engine, self-described "80% GameMaker 7.0 compatible" — so an exported
+`.exe` was never the game the author had just tested with Test Game. One manual
+pass over the built files found five bugs at once (no tiles, a keyboard that
+jammed at the first wall, no wall collision, a player drifting upward,
+sub-images stuck on frame 0), with a green suite behind every one of them.
+- **Architecture now:** `export/desktop/pygame_desktop_exporter.py` holds the
+  whole pipeline; `export/{exe,linux,macos}/*.py` are thin subclasses carrying
+  only what is genuinely platform-specific (`.exe` suffix + DPI manifest; the
+  Linux executable bit; macOS onedir+`BUNDLE`, quarantine strip,
+  symlink-resolving copy). **Kivy remains for Android/iOS only** — its four
+  known gaps are unfixed there, which is the next priority.
+- **The project is copied VERBATIM into the bundle.** Not regenerated. That is
+  the invariant the whole rework rests on, so don't add a transformation step.
+  Consequence worth remembering: authored `<param>_translations` are resolved
+  at runtime via `GameRunner.language`, NOT baked in as HTML5/Kivy must —
+  and baking here would silently fail anyway, because `GameRunner` re-merges
+  `objects/*.json` over the embedded data.
+- **Landmines, all of them cost real time this session:**
+  1. `plugin_loader` must resolve `plugins/`/`extensions/` at `sys._MEIPASS`
+     when frozen (`get_app_root()`, `555efd49`). Failure is **silent** — the
+     glob finds nothing, "Loaded 0 plugin(s)", and a 2.5D game draws as a flat
+     2D room.
+  2. **Pillow is NOT optional**: `runtime/game_runner.py` imports PIL at module
+     level, so excluding it builds cleanly then dies with `ModuleNotFoundError`
+     on first launch. pygame is required; **Kivy is not** — don't reuse
+     `_require_kivy_dependencies` here.
+  3. The build directory must live OUTSIDE the project folder (it now holds a
+     copy of the project, so inside it recurses into itself).
+  4. `.trash` is excluded from the copy — shipping soft-deleted assets would
+     undo the author's deletion.
+  5. One-file bundles unpack to a temp dir deleted on exit, so the launcher
+     redirects `highscores.json` next to the executable or every score is lost
+     silently.
+  6. Killing a one-file PyInstaller process is awkward — the bootloader spawns
+     a child that keeps the pipes open, so `subprocess.run`'s post-timeout
+     `communicate()` hangs forever. Use the frame budget below instead of a
+     kill.
+- **New engine hooks for verifying an export (both opt-in, env-var gated, zero
+  cost to a player):** `PYGM_MAX_FRAMES=N` renders N frames, prints
+  `PYGM_FRAMES_COMPLETED=N` and exits 0; `PYGM_SCREENSHOT=<path>` saves that
+  final frame. They exist because a compiled binary **cannot** be measured the
+  way `tools/smoke_run_samples.py` measures the samples (it imports
+  `GameRunner` and installs a tick hook), and "still running after N seconds"
+  cannot distinguish a running game from one stuck on a black screen before its
+  first frame.
+- **`tools/verify_desktop_export.py`** builds a real export for the host,
+  launches it, and with `--compare` diffs its rendered frame against the engine
+  the IDE runs. **Result: 5/5 samples verified on Windows, four
+  pixel-identical.** plateforme_3's 1.74% is its own non-determinism — two
+  source-engine runs differ by 2.14%, checked rather than assumed.
+  `PYGM_E2E_EXPORT=1` enables the real-build test in
+  `tests/test_desktop_export_end_to_end.py`.
+- **Also fixed en route (unrelated, user-facing):** emoji in log messages
+  crashed the log handler on a cp1252 Windows console, so an asset-import
+  failure printed a logging traceback *instead of* the reason. New
+  `core/logger.ConsoleSafeHandler` sanitizes in `format()` — `emit()` catches
+  its own exceptions, so a subclass cannot intercept there. Text the console
+  CAN encode passes through untouched, so French accents survive exactly.
+- **Deliverable for the user:** `docs/PLATFORM_DISPLAY_CHECKLIST.md` — the
+  eyes-only cross-platform pass, deliberately NOT an extension of
+  `docs/test_checklist.md` (the exhaustive 1.0.0 feature list). It opens with
+  the automated commands so no human time goes on what a script can check, and
+  it records mobile/Kivy as known-broken so that isn't re-reported as new.
+  `tests/test_platform_display_checklist.py` pins every concrete claim it makes
+  (named tools exist, samples exist, views_1 really is 800×600 over 2400×800,
+  the overlay really has 7 lines, 11 languages) — writing those tests caught two
+  wrong claims in the first draft.
+- **Testing lesson worth carrying:** a first draft asserted
+  `"runner.language = LANGUAGE" in source`, which a mutation that **commented
+  the line out** still satisfied — the text was right there in the comment.
+  Launcher assertions now parse the AST. Mutation-test string-presence
+  assertions; they are the easiest kind to write blind.
+- Suite 3483 → **3558 passed, 0 failed**. All 19 items in
+  `docs/EYEBALL_FIXES_2026-08-16.md` are closed. **Still needs human eyes:**
+  nobody has *played* an exported build — the runs prove it renders the same
+  frames, not that it feels right to hold a key down on.
