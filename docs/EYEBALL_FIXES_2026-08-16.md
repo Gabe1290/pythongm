@@ -134,11 +134,22 @@ fetch. Do not pre-emptively "fix" any of these.
       `draw_minimap` rather than hardcoding, so raycast_2's reasoning still
       holds for raycast_2. Note this touches 3 targets (desktop/HTML5/Kivy)
       and their parity test.
-- [ ] **C3 (issue 9)** — block_world_1: add an `H`-toggled help overlay
-      listing the controls. Buildable from existing actions (`draw_text` plus
-      a toggle variable); `maze_3`, `maze_4`, `raycast_2`, `raycast_3` already
-      use `draw_text`. **Worth making the pattern reusable** — every 3D sample
-      has the same problem.
+- [x] **C3 (issue 9)** — done. `H` toggles a 7-line control panel, **shown on
+      the first frame** so the keys answer themselves before you have to ask.
+      Built from existing standard actions only (`draw_rectangle`, `draw_text`,
+      `set_draw_color`, `test_variable`, `start_block`/`end_block`), copying
+      raycast_3's proven `map_on` toggle idiom — so no new action, and nothing
+      for the HTML5/Kivy engines to learn. Applied to both the embedded and
+      side-file copies; `H` row added to the en + fr guides (this sample has
+      only those two).
+
+      **Real trap hit and now recorded in CLAUDE.md:** on-screen text must be
+      QUOTED in the JSON or `_parse_value` evaluates it — the first render
+      showed six lines of `0`, because a string containing `-` or `/` goes to
+      the expression evaluator. Existing sample text had only escaped this by
+      accident (`Lives:`, `M = map` use non-operators). Guarded by
+      `tests/test_sample_visible_text.py`, which scans every sample for
+      displayed text that would be evaluated rather than printed.
 - [ ] **C4 (issue 10)** — views_1 does not communicate its purpose *in-game*.
       The README is clear ("room 3× wider than the window, collect 18 coins");
       the running game says nothing. Add an opening message and a coin

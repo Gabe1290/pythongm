@@ -102,6 +102,18 @@ before that machine was reformatted. They apply on every machine.
   **committing and pushing after each** so a mid-session limit loses nothing
   and the next session resumes from clean `main`. Checkbox registries (e.g.
   `docs/EXPORT_AUDIT_2026-07.md`) are the resume state.
+- **On-screen text in a project must be QUOTED or it gets evaluated.**
+  `ActionExecutor._parse_value` routes any string containing `* + - / %` to the
+  expression evaluator, so a `draw_text` reading `W A S D - Move` renders as
+  `0`. Wrapping it in double quotes inside the JSON (`"\"W A S D - Move\""`)
+  makes `_parse_value` return it verbatim — that check is explicitly
+  `not value_str.startswith('"')`. Existing sample text only ever escaped this
+  by accident (`Lives:` and `M = map` use `:` and `=`, which are not
+  operators); block_world_1's help overlay was the first sample text to
+  contain a dash and the first to break. Guarded now by
+  `tests/test_sample_visible_text.py`, which fails on any displayed string
+  `_parse_value` would evaluate.
+
 - **Audio actions are plugin-owned.** `play_sound`/`stop_sound`/`play_music`/
   `stop_music`/`set_volume` live in `plugins/audio_actions.py` (category
   "Audio"), NOT in the static `ACTION_TYPES` dict in `events/action_types.py`;
