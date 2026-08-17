@@ -1,4 +1,4 @@
-# Raycast — Level 4
+# 2.5 D — Level 4
 
 The fourth Doom/Wolfenstein-style first-person level, and the first built
 **around a permanent bottom status bar** — the DOOM aesthetic rather than

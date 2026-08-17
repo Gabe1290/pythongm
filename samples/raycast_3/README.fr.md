@@ -1,4 +1,4 @@
-# Lancer de rayons — Niveau 3
+# 2.5 D — Niveau 3
 
 Le troisième niveau à la première personne façon Doom ou Wolfenstein, construit
 sur le même **moteur de lancer de rayons 2,5D** que
@@ -26,7 +26,7 @@ Un jeu complet en deux niveaux : traverse chaque labyrinthe à la première
 personne, ramasse toutes les gemmes en survivant aux monstres et atteins la
 sortie verrouillée par les gemmes — la première salle (brique chaude) mène à une
 seconde (caverne de cristal), et la terminer gagne la partie. Disponible depuis
-l'onglet d'accueil de l'IDE (« Lancer de rayons — Niveau 3 »).
+l'onglet d'accueil de l'IDE (« 2.5 D — Niveau 3 »).
 
 **Sons et musique :** aucun — aucun fichier sonore n'est fourni avec cet exemple.
 

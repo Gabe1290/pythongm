@@ -2582,23 +2582,23 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 <context>
     <name>WelcomeTab</name>
         <message>
-            <source>Raycast — Level 4</source>
-            <translation>Рейкастинг — Уровень 4</translation>
+            <source>2.5 D — Level 4</source>
+            <translation>2.5 D — Уровень 4</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 3</source>
-            <translation>Рейкастинг — Уровень 3</translation>
+            <source>2.5 D — Level 3</source>
+            <translation>2.5 D — Уровень 3</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 2</source>
-            <translation>Рейкастинг — Уровень 2</translation>
+            <source>2.5 D — Level 2</source>
+            <translation>2.5 D — Уровень 2</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 1</source>
-            <translation>Рейкастинг — Уровень 1</translation>
+            <source>2.5 D — Level 1</source>
+            <translation>2.5 D — Уровень 1</translation>
         </message>
 
         <message>

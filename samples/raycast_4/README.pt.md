@@ -1,4 +1,4 @@
-# Raycast — Nível 4
+# 2.5 D — Nível 4
 
 O quarto nível em primeira pessoa ao estilo Doom/Wolfenstein, e o
 primeiro construído **ao redor de uma barra de status permanente

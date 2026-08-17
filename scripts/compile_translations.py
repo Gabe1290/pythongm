@@ -10,6 +10,7 @@ Usage:
     python scripts/compile_translations.py
 """
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -39,7 +40,33 @@ def find_lrelease() -> str:
     script_dir = Path(__file__).parent.parent
     home_dir = Path.home()
 
-    pyside_candidates = [
+    pyside_candidates = []
+
+    # Ask the PySide6 that is actually installed for this interpreter where it
+    # lives. This is the only probe that works regardless of platform or how
+    # PySide6 was installed -- the hand-listed paths below assume a project
+    # venv or a Linux ~/.local layout, so a plain `pip install --user` on
+    # Windows (the documented low-friction path in this repo) was invisible to
+    # them and translation work simply could not be compiled on such a box.
+    try:
+        import PySide6
+        pyside_dir = Path(PySide6.__file__).parent
+        pyside_candidates += [
+            pyside_dir / 'lrelease.exe',
+            pyside_dir / 'lrelease',
+            pyside_dir / 'Qt' / 'bin' / 'lrelease.exe',
+            pyside_dir / 'Qt' / 'bin' / 'lrelease',
+        ]
+        # The console-script wrapper sits beside the interpreter's scripts.
+        import sysconfig
+        scripts = sysconfig.get_path('scripts')
+        if scripts:
+            pyside_candidates += [Path(scripts) / 'pyside6-lrelease.exe',
+                                  Path(scripts) / 'pyside6-lrelease']
+    except Exception:
+        pass
+
+    pyside_candidates += [
         # User-local PySide6 installations
         home_dir / '.local' / 'lib' / 'python3.11' / 'site-packages' / 'PySide6' / 'lrelease',
         home_dir / '.local' / 'lib' / 'python3.12' / 'site-packages' / 'PySide6' / 'lrelease',
@@ -62,6 +89,13 @@ def find_lrelease() -> str:
         'pyside6-lrelease',
         'lrelease',  # Last resort, may be broken Qt5 wrapper
     ]
+
+    # shutil.which honours PATHEXT on Windows; the `which` subprocess below
+    # is kept as a last resort for environments where PATH lookup differs.
+    for cmd in candidates:
+        found = shutil.which(cmd)
+        if found:
+            return found
 
     for cmd in candidates:
         try:

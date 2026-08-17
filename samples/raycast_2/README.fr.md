@@ -1,11 +1,11 @@
-# Lancer de rayons — Niveau 2
+# 2.5 D — Niveau 2
 
 Un jeu complet à deux niveaux : parcours chaque labyrinthe à la première
 personne, ramasse toutes les gemmes en évitant les monstres qui patrouillent, et
 atteins la sortie — verrouillée tant qu'il reste des gemmes. La première salle
 (briques chaudes) mène à une seconde salle (caverne de cristal), et la terminer
 gagne la partie. Disponible depuis l'onglet d'accueil de l'IDE
-(*« Lancer de rayons — Niveau 2 »*) et exportable vers les trois cibles
+(*« 2.5 D — Niveau 2 »*) et exportable vers les trois cibles
 (bureau, HTML5, natif/Kivy).
 
 Ce niveau est construit sur le même **moteur de lancer de rayons 2.5D** que

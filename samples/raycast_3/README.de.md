@@ -1,4 +1,4 @@
-# Raycast — Level 3
+# 2.5 D — Level 3
 
 Das dritte Ich-Perspektive-Level im Doom-/Wolfenstein-Stil, gebaut auf
 derselben **Raycast-2,5D-Engine** wie [`raycast_1`](../raycast_1/README.md)
@@ -28,7 +28,7 @@ Ich-Perspektive, sammle jeden Edelstein, während du die Monster
 überlebst, und erreiche den edelsteingesperrten Ausgang — der erste
 (warme Ziegel-)Raum führt zu einem zweiten (kühlen Kristallhöhlen-)
 Raum, und diesen abzuschließen gewinnt das Spiel. Verfügbar über den
-Willkommens-Tab der IDE (*"Raycast — Level 3"*).
+Willkommens-Tab der IDE (*"2.5 D — Level 3"*).
 
 **Sound & Musik:** keine — diesem Beispiel liegen keine Sounddateien bei.
 
