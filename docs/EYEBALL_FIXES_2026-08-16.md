@@ -89,11 +89,72 @@ if Android parity is the priority**, since Android has no alternative.
       pins it, because the failure is silent — the glob finds nothing, the
       loader logs "Loaded 0 plugin(s)" and a raycast game quietly draws as a
       flat 2D room.
-- [ ] **A1.3** — rewrite `exe_exporter` on the pygame runtime.
-- [ ] **A1.4** — same for `linux_exporter`, `macos_exporter`.
-- [ ] **A1.5** — end-to-end test: build an export, launch it headless, assert
+- [x] **A1.3** — rewrite `exe_exporter` on the pygame runtime.
+- [x] **A1.4** — same for `linux_exporter`, `macos_exporter`.
+      **Both done 2026-08-17 (`0c5116b6`).** New
+      `export/desktop/pygame_desktop_exporter.py` holds the whole pipeline and
+      the three platform modules shrink to what is genuinely
+      platform-specific — the `.exe` suffix + DPI manifest; the Linux
+      executable bit; macOS's onedir+`BUNDLE`, quarantine strip and
+      symlink-resolving copy. The three targets drifting apart is how the Kivy
+      exporters reached this state, so sharing the build is the point.
+      Decisions worth keeping: **the project is copied verbatim** (no
+      transformation step in which the export and the tested game can
+      diverge), so authored `<param>_translations` are resolved by the runtime
+      via `GameRunner.language` rather than baked in — and baking would not
+      work here anyway, since `GameRunner` re-merges `objects/*.json` over the
+      embedded data and would silently overwrite it. `.trash` is excluded so
+      soft-deleted assets are not shipped back to the player. The launcher
+      redirects `highscores.json` next to the executable, because in a
+      one-file bundle the project folder is a temp directory deleted on exit
+      and every score would have been lost silently. The build directory moved
+      out of the project folder — it now holds a copy of the project, so
+      inside it would recurse into itself.
+- [x] **A1.5** — end-to-end test: build an export, launch it headless, assert
       it reaches frame N without crashing. The test that would have caught all
-      five issues.
+      five issues. **Done 2026-08-17 (`3ad078b8`).** The obstacle was
+      measurement: a game runs until the player quits, a headless harness
+      cannot press a key, and "the process had not died yet after N seconds"
+      cannot tell a running game from one stuck on a black screen before its
+      first frame. `tools/smoke_run_samples.py` measures the samples by
+      importing `GameRunner` and installing a tick hook, which is impossible
+      for a compiled binary. So the engine gained two opt-in env-var hooks —
+      `PYGM_MAX_FRAMES` (render N frames, print `PYGM_FRAMES_COMPLETED=N`,
+      exit 0) and `PYGM_SCREENSHOT` — that cost a player nothing, and
+      `tools/verify_desktop_export.py` builds a real export, launches it, and
+      with `--compare` diffs its frame against the engine the IDE runs. That
+      turns "the export is the same engine" from an argument into a
+      measurement. `tests/test_desktop_export_end_to_end.py` is layered by
+      cost, with the real PyInstaller build behind `PYGM_E2E_EXPORT=1`.
+
+### Issues 4–8 closed with evidence (2026-08-17)
+
+All five reported samples were built as real `.exe` files on Windows,
+launched, and compared against the IDE's own rendering — `5/5 verified`,
+90 frames each, every one exiting 0:
+
+| sample | frames | pixels differing from the IDE |
+| --- | --- | --- |
+| maze_1 (issue 5) | 90 | 0.00% |
+| maze_4 (issue 6) | 90 | 0.00% |
+| plateforme_2 (issue 7) | 90 | 0.00% |
+| plateforme_3 (issue 8) | 90 | 1.74% |
+| raycast_4 (issue 4) | 90 | 0.00% |
+
+plateforme_3's 1.74% is **the sample's own non-determinism, not an export
+difference**: two runs of the *source* engine differ from each other by 2.14%,
+so the export is closer to the IDE than the IDE is to itself. Checked rather
+than assumed, because "close enough" is how a real divergence would hide.
+
+The guarantee is structural, which is the point — the four broken subsystems
+(tiles, keyboard, collision, physics/sub-images) are not fixed one by one, they
+never existed in this engine. Anything the desktop suite already covers now
+covers the export too.
+
+**Still worth the user's own eyes:** nobody has *played* an exported build —
+these runs prove it renders the same frames, not that it feels right, and
+input in particular is only exercised by the samples' own scripted paths. That
+is what the Phase E checklist is for.
 
 ## Group B — HTML5 exports show a black window (issue 1)
 
