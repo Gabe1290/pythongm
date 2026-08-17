@@ -1870,6 +1870,12 @@ if __name__ == '__main__':
         tile_horizontal = room_data.get('tile_horizontal', False)
         tile_vertical = room_data.get('tile_vertical', False)
 
+        # The room's static tile layer. This was ignored entirely before
+        # 2026-08-17, which is why plateforme_2/3 exported with no tiles at
+        # all (the only previous mention of "tiles" in this file was about
+        # repeating a background IMAGE, a different feature).
+        tiles_repr = self._tiles_repr(room_data)
+
         # Generate background image loading code (if background image is set).
         # Emitted as the body of _draw_bg_image(self) (8-space method indent) so
         # the same instructions can render into either the legacy canvas.before
@@ -1932,9 +1938,15 @@ from kivy.core.window import Window
 from utils import load_image
 
 try:
-    from asset_paths import SPRITE_PATHS
+    from asset_paths import SPRITE_PATHS, BACKGROUND_PATHS
 except ImportError:
     SPRITE_PATHS = {{}}
+    BACKGROUND_PATHS = {{}}
+
+# The room's static tile layer: (background_name, room_x, room_y, crop_x,
+# crop_y, width, height), pre-sorted back-to-front. Room coordinates are
+# GameMaker's (y down from the top-left); _draw_tiles flips them.
+ROOM_TILES = {tiles_repr}
 
 # Import object types
 {import_lines}
@@ -2075,6 +2087,9 @@ class {class_name}(Widget):
             # "just behind instances" slot later, not a stale fixed one.
             self._bg_fbo_behind_index = len(self._fbo.children)
             self._fbo.add(self._bg_image_group)
+            # After the background groups, before the instances: the desktop
+            # engine's order is colour, image, tiles, instances.
+            self._draw_tiles()
         self.canvas.add(self._fbo)
         self._view_group = InstructionGroup()
         self.canvas.add(self._view_group)
@@ -2095,6 +2110,7 @@ class {class_name}(Widget):
             self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
             self._draw_bg_image()
             self.canvas.before.add(self._bg_image_group)
+            self._draw_tiles()
         with self.canvas.after:
             PopMatrix()
 
@@ -2105,6 +2121,49 @@ class {class_name}(Widget):
         (views) block, so the instructions land in whichever is active.
         """
 {bg_image_body}
+
+    def _draw_tiles(self):
+        """Draw the room's static tile layer.
+
+        Each tile is a crop of a background image, and TWO independent y-flips
+        are involved -- getting either wrong puts the art in the wrong place
+        rather than failing:
+
+        1. the tile's position in the ROOM is GameMaker's y-down from the
+           top-left, so it flips against room_height (like every instance);
+        2. the crop offset WITHIN the source image is measured from the image's
+           top, while Kivy's `texture.get_region` measures from the bottom, so
+           it flips against the texture's own height.
+
+        Drawn after both the baked and the runtime (`set_background`)
+        backgrounds, because that is the order the desktop engine uses:
+        background colour, background image, tiles, then instances. Called
+        inside the same `with` block as _draw_bg_image, so the instructions land
+        in whichever canvas/Fbo is active.
+
+        ROOM_TILES is already sorted back-to-front at export time.
+        """
+        if not ROOM_TILES:
+            return
+
+        regions = {{}}
+        Color(1, 1, 1, 1)  # untinted, like the background
+        for name, room_x, room_y, crop_x, crop_y, tile_w, tile_h in ROOM_TILES:
+            key = (name, crop_x, crop_y, tile_w, tile_h)
+            region = regions.get(key)
+            if region is None:
+                path = BACKGROUND_PATHS.get(name, '')
+                image = load_image(path) if path else None
+                if image is None:
+                    continue  # missing background: skip, don't crash the game
+                texture = image.texture
+                region = texture.get_region(crop_x,
+                                           texture.height - crop_y - tile_h,
+                                           tile_w, tile_h)
+                regions[key] = region
+            Rectangle(texture=region,
+                      pos=(room_x, self.room_height - room_y - tile_h),
+                      size=(tile_w, tile_h))
 
     def _render_views(self):
         """Blit each visible view's room region into its screen port.
@@ -2800,13 +2859,62 @@ class {class_name}(Widget):
             bg_r=r,
             bg_g=g,
             bg_b=b,
-            bg_image_body=bg_image_body
+            bg_image_body=bg_image_body,
+            tiles_repr=tiles_repr
         )
         code_formatted = self._inject_extension_scene_code(code_formatted)
 
         output_file = (self.output_path / "game" / "scenes" /
                        f"{self._get_room_module_name(room_name)}.py")
         output_file.write_text(code_formatted, encoding="utf-8")
+
+    @staticmethod
+    def _tiles_repr(room_data: dict) -> str:
+        """The room's tile layer as a Python literal for the scene module.
+
+        One tuple per tile: (background_name, room_x, room_y, crop_x, crop_y,
+        width, height). Coordinates stay in GameMaker's top-left-origin space
+        exactly as authored -- the two y-flips Kivy needs are done at draw
+        time, where the room height and the source texture height are both
+        known. Baking a flip in here would need the texture size, which the
+        exporter does not have.
+
+        Sorted by depth DESCENDING at export time so the furthest-back tile is
+        drawn first, matching `GameRoom._sorted_tiles`. Tiles never change at
+        runtime, so sorting once here saves doing it in the generated game.
+
+        NOT ported from the desktop renderer: per-layer scrolling of tiles
+        (`GameRoom.render_tiles`'s `bg_layer_scroll` branch, which wraps tiles
+        on a moving background layer). No bundled sample uses it, and it needs
+        the background-layer system the Kivy scene does not have.
+        """
+        tiles = room_data.get('tiles') or []
+        if not isinstance(tiles, list):
+            return "[]"
+
+        rows = []
+        for tile in sorted(tiles,
+                           key=lambda t: t.get('depth', 1000000) if isinstance(t, dict) else 0,
+                           reverse=True):
+            if not isinstance(tile, dict):
+                continue
+            name = tile.get('background_name') or ''
+            if not name:
+                continue  # a tile with no source image cannot be drawn
+            try:
+                row = (str(name),
+                       int(tile.get('x', 0)), int(tile.get('y', 0)),
+                       int(tile.get('tile_x', 0)), int(tile.get('tile_y', 0)),
+                       int(tile.get('width', 0)), int(tile.get('height', 0)))
+            except (TypeError, ValueError):
+                continue  # corrupt tile: skip it rather than fail the export
+            if row[5] <= 0 or row[6] <= 0:
+                continue  # a zero-sized crop draws nothing
+            rows.append(row)
+
+        if not rows:
+            return "[]"
+        return "[\n" + "".join("    %r,\n" % (row,) for row in rows) + "]"
 
     def _generate_objects(self):
         """Generate object class files"""
