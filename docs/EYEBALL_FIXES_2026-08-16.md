@@ -127,13 +127,28 @@ fetch. Do not pre-emptively "fix" any of these.
       standing trap. Sprite inventory line updated in all 10 guides.
       `tests/test_raycast_4_gate_sprite.py` (6) includes a check that the
       generator still reproduces the committed PNG, so the two cannot drift.
-- [ ] **C2 (issue 12)** — minimap shows walls + player only. That was a
-      deliberate call in `docs/RAYCAST_MINIMAP_PLAN.md` ("showing pickups
-      trivialises a gem-gated maze") — but raycast_4 is *key*-gated, where
-      finding keys is the whole task. Add an **opt-in parameter** to
-      `draw_minimap` rather than hardcoding, so raycast_2's reasoning still
-      holds for raycast_2. Note this touches 3 targets (desktop/HTML5/Kivy)
-      and their parity test.
+- [x] **C2 (issue 12)** — done, opt-in as planned, so
+      `docs/RAYCAST_MINIMAP_PLAN.md`'s reasoning still holds where it applies:
+      four new `draw_minimap` parameters (`mark_object`/`mark_color` and a
+      second pair) dot named objects onto the map. raycast_4 marks keys gold
+      and monsters red; its player marker moved to **white**, since gold keys
+      and a gold player on a key-hunting map is the same confusion C1 fixed in
+      the 3D view.
+
+      Mirrored across all three engines with the parity test extended (dot
+      size, sorted points, opt-in-ness, and dots drawn *under* the player so a
+      pickup can never hide it). Verified on the rendered frame by counting
+      pixels: 27 gold = 3 dots = 3 keys, 36 red = 4 dots = 4 monsters, matching
+      the room exactly.
+
+      **Kivy y-flip trap, hit and caught:** I first wrote the marker points
+      from raw instance positions. Kivy is y-UP while the whole raycast
+      pipeline is y-down, so every dot would have been mirrored vertically —
+      the standing trap on that target. It must go through
+      `scene._raycast_gm_xy()`, as the camera marker already did. The parity
+      test now asserts the *result* is used, not merely that the helper is
+      named: the first version of that assertion passed against the broken
+      code.
 - [x] **C3 (issue 9)** — done. `H` toggles a 7-line control panel, **shown on
       the first frame** so the keys answer themselves before you have to ask.
       Built from existing standard actions only (`draw_rectangle`, `draw_text`,

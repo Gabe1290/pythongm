@@ -49,7 +49,7 @@ questo esempio.
   stanza riavvia. **Se finiscono le vite** → il gioco riavvia.
 - **Raggiungi l'uscita** una volta trovate **tutte e tre le chiavi**.
   Toccarla presto ti dice solo che il cancello è chiuso a chiave.
-- **Premi `M`** per far apparire una **minimappa** dei muri (spenta
+- **Premi `M`** per far apparire una **minimappa** che mostra i muri, le chiavi dorate ancora da trovare e i mostri in rosso (spenta
   per default). È disegnata dentro la vista 3D, sopra la barra di
   stato, e si attiva/disattiva — la stessa mappa a richiesta che usa
   `raycast_3`, qui tenuta lontana dalla barra.

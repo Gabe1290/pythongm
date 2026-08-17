@@ -45,8 +45,9 @@ zidove; strop je lastna izbira tega vzorca.
   ponovno zažene.
 - **Dosezite izhod**, ko najdete **vse tri ključe**. Dotik prezgodaj
   vam le pove, da so vrata zaklenjena.
-- **Pritisnite `M`**, da prikličete **minimapo** zidov (privzeto
-  izklopljena). Izrisana je znotraj 3D pogleda, nad statusno vrstico,
+- **Pritisnite `M`**, da prikličete **minimapo** (privzeto
+  izklopljeno), ki prikazuje zidove, zlate ključe, ki jih še morate
+  najti, in pošasti v rdeči barvi. Izrisana je znotraj 3D pogleda, nad statusno vrstico,
   in se preklaplja vklop/izklop — enaka na zahtevo dostopna zemljevid,
   ki jo uporablja `raycast_3`, tukaj ohranjena stran od vrstice.
 

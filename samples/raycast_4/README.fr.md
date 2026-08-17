@@ -44,8 +44,8 @@ choix propre à cet exemple.
   **Plus de vies** → la partie recommence.
 - **Atteins la sortie** une fois les **trois clés** trouvées. La toucher trop tôt
   t'indique seulement que la porte est verrouillée.
-- **Appuie sur `M`** pour afficher une **minicarte** des murs (masquée par
-  défaut). Elle est dessinée dans la vue 3D, au-dessus de la barre d'état, et
+- **Appuie sur `M`** pour afficher une **minicarte** (masquée par
+  défaut) montrant les murs, les clés dorées qu'il te reste à trouver et les monstres en rouge. Elle est dessinée dans la vue 3D, au-dessus de la barre d'état, et
   s'active ou se masque — la même carte à la demande que celle de `raycast_3`,
   ici tenue à l'écart de la barre.
 

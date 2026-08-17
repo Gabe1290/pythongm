@@ -48,7 +48,7 @@ altos; el techo es la elección propia de esta muestra.
   la sala reinicia. **Si se agotan las vidas** → el juego reinicia.
 - **Alcanza la salida** una vez que hayas encontrado **las tres
   llaves**. Tocarla pronto solo te dice que la puerta está cerrada con llave.
-- **Presiona `M`** para mostrar un **minimapa** de los muros (apagado
+- **Presiona `M`** para mostrar un **minimapa** que muestra los muros, las llaves doradas que faltan y los monstruos en rojo (apagado
   por defecto). Se dibuja dentro de la vista 3D, sobre la barra de
   estado, y se activa/desactiva — el mismo mapa a petición que usa
   `raycast_3`, aquí mantenido lejos de la barra.

@@ -45,7 +45,12 @@ def test_action_is_registered():
     at = get_action_type("draw_minimap")
     assert at.category == "3D View"
     names = [p.name for p in at.parameters]
-    assert names == ["x", "y", "size", "back_color", "wall_color", "player_color"]
+    # Order matters: it is the order the fields appear in the IDE dialog. The
+    # four mark_* parameters are opt-in object dots, added after the original
+    # six so an existing project's saved parameters keep their positions.
+    assert names == ["x", "y", "size", "back_color", "wall_color",
+                     "player_color", "mark_object", "mark_color",
+                     "mark_object_2", "mark_color_2"]
 
 
 def test_handler_is_registered_from_the_extension():

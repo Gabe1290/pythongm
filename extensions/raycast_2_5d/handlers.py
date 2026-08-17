@@ -137,6 +137,30 @@ class PluginExecutor:
         # next render instead of reusing a stale cache.
         st["v_walls"] = None
 
+    @staticmethod
+    def _mark_points(room, object_name):
+        """World centres of every instance of `object_name` in the room.
+
+        Uses the SAME centre-of-cell convention as the camera marker above
+        (sprite top-left plus half the cached size): a raycast room is
+        grid-aligned, so a raw x/y would park every dot half a sprite
+        north-west of where the thing actually is.
+        """
+        if not object_name:
+            return []
+        points = []
+        top_left = getattr(room, "_sprite_top_left", None)
+        for inst in getattr(room, "instances", ()) or ():
+            if getattr(inst, "object_name", None) != object_name:
+                continue
+            if callable(top_left):
+                ix, iy = top_left(inst)
+            else:
+                ix, iy = getattr(inst, "x", 0), getattr(inst, "y", 0)
+            points.append((ix + (getattr(inst, "_cached_width", 0) or 0) / 2.0,
+                           iy + (getattr(inst, "_cached_height", 0) or 0) / 2.0))
+        return points
+
     def execute_draw_minimap_action(self, instance, parameters):
         """Draw a north-up minimap of the raycast room's wall edges.
 
@@ -204,6 +228,14 @@ class PluginExecutor:
             back_color=parameters.get("back_color", "#101018"),
             wall_color=parameters.get("wall_color", "#8080a0"),
             player_color=parameters.get("player_color", "#ffd040"),
+            marks=[
+                {"color": parameters.get("mark_color", "#40e0ff"),
+                 "points": self._mark_points(
+                     room, str(parameters.get("mark_object", "") or ""))},
+                {"color": parameters.get("mark_color_2", "#ff5050"),
+                 "points": self._mark_points(
+                     room, str(parameters.get("mark_object_2", "") or ""))},
+            ],
         )
         instance._draw_queue.extend(cmds)
 

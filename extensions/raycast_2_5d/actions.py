@@ -55,6 +55,22 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="player_color", display_name="Player Color",
                 param_type="color", default_value="#ffd040", required=False,
                 description="Colour of the camera marker and its heading line"),
+            # Opt-in: a map that reveals pickups trivialises a collect-them-all
+            # maze, but hides the point of a key-gated one. Two slots so a
+            # sample can mark what to find AND what to avoid, in two colours.
+            ActionParameter(name="mark_object", display_name="Mark Object",
+                param_type="object", default_value="", required=False,
+                description="Also dot every instance of this object onto the "
+                            "map (blank = show walls and player only)"),
+            ActionParameter(name="mark_color", display_name="Mark Color",
+                param_type="color", default_value="#40e0ff", required=False,
+                description="Colour of the Mark Object dots"),
+            ActionParameter(name="mark_object_2", display_name="Mark Object 2",
+                param_type="object", default_value="", required=False,
+                description="A second object to dot on, in its own colour"),
+            ActionParameter(name="mark_color_2", display_name="Mark Color 2",
+                param_type="color", default_value="#ff5050", required=False,
+                description="Colour of the Mark Object 2 dots"),
         ],
     ),
     "enable_raycast_view": ActionType(

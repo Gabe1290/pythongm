@@ -577,6 +577,75 @@ def test_all_three_use_the_ray_origin_for_the_marker():
     assert "GameRoom.spriteTopLeft(mmCam)" in ENGINE and "boxWidth()" in ENGINE
 
 
+def test_all_three_can_mark_objects_on_the_minimap():
+    """Opt-in object dots (raycast_4's keys and monsters). Three hand-written
+    engines, so the parameters and the dot size have to agree or the same
+    sample draws a different map per target."""
+    from events.action_types import ACTION_TYPES
+    from extensions.raycast_2_5d.hud import MINIMAP_MARK_HALF
+    params = {p.name for p in ACTION_TYPES["draw_minimap"].parameters}
+    assert {"mark_object", "mark_color",
+            "mark_object_2", "mark_color_2"} <= params
+
+    kx, kg = KIVY, KG
+    assert MINIMAP_MARK_HALF == 1.5
+    # The dot half-size, spelled out in each target.
+    assert "MINIMAP_MARK_HALF = 1.5" in HUD
+    assert "MM_MARK_HALF = 1.5" in ENGINE
+    assert "x1=mx - 1.5" in kx, "Kivy uses a different marker size"
+    # Each target resolves the named object's instances.
+    assert "mark_object" in kg, "Kivy codegen does not pass mark_object"
+    assert "def _mark_points(" in kx and "_mark_points(" in HANDLERS
+    assert "mmMarkPoints" in ENGINE
+
+
+def test_all_three_sort_the_marker_points():
+    """Instance order is not guaranteed stable, and the dots are compared
+    element by element -- the same reason the wall sets are sorted."""
+    assert "for (wx, wy) in sorted(points)" in HUD
+    assert "return sorted(pts)" in KIVY
+    assert "pts.sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]))" in ENGINE
+
+
+def test_marks_convert_to_gm_space_on_kivy():
+    """Kivy is y-UP while the raycast pipeline is y-DOWN. Reading a raw
+    instance position here would mirror every dot vertically -- the standing
+    trap on this target, and one this port hit while being written."""
+    block = KIVY[KIVY.index("def _mark_points("):][:1200]
+    # Not merely that the helper is looked up -- that its RESULT is what the
+    # point is built from. Checking only for the name passes even if the
+    # conversion is fetched and then ignored in favour of a raw position.
+    assert "gx, gy = to_gm(inst)" in block,         "Kivy marker points are not built from the y-flipped coordinates"
+    assert "getattr(inst, 'x', 0)" not in block,         "Kivy marker points read a raw Kivy y-up position"
+
+
+def test_the_player_marker_is_drawn_after_the_object_dots():
+    """A pickup sharing the player's cell must not hide the player. Assert the
+    emitted ORDER, not the source layout."""
+    from extensions.raycast_2_5d import hud
+    cmds = hud.build_minimap_commands(
+        v_walls=set(), h_walls=set(), cell_size=32, room_width=320,
+        room_height=320, cam_x=48, cam_y=48, facing_angle=0,
+        x=0, y=0, size=100, back_color="#000000", wall_color="#ffffff",
+        player_color="#ffff00",
+        marks=[{"color": "#00ffff", "points": [(48, 48)]}])
+    colours = [c.get("color") for c in cmds]
+    assert colours.index("#00ffff") < colours.index("#ffff00")
+
+
+def test_marks_are_opt_in():
+    """No mark parameters means the old picture, exactly: walls and player.
+    raycast_2's gem hunt would be trivialised by a map that showed pickups."""
+    from extensions.raycast_2_5d import hud
+    common = dict(v_walls={(1, 1)}, h_walls=set(), cell_size=32,
+                  room_width=320, room_height=320, cam_x=48, cam_y=48,
+                  facing_angle=0, x=0, y=0, size=100, back_color="#000000",
+                  wall_color="#ffffff", player_color="#ffff00")
+    assert hud.build_minimap_commands(**common) ==         hud.build_minimap_commands(marks=None, **common)
+    assert hud.build_minimap_commands(
+        marks=[{"color": "#00ffff", "points": []}], **common) ==         hud.build_minimap_commands(**common)
+
+
 def test_kivy_minimap_geometry_matches_the_desktop_reference_exactly():
     """The real parity check: run the desktop reference and a stand-in for the
     Kivy port over identical wall data and compare every emitted command.
