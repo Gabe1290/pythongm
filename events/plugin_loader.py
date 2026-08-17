@@ -310,16 +310,29 @@ class PluginLoader:
         """Get information about all loaded plugins"""
         return self.loaded_plugins.copy()
 
+def get_app_root() -> Path:
+    """Directory that holds `plugins/` and `extensions/`.
+
+    Normally the repo root, resolved from this file. Under a PyInstaller
+    bundle it is `sys._MEIPASS` instead: plugins and extensions are read off
+    disk with `spec_from_file_location`, so they ship as DATA files rather
+    than frozen modules, and `__file__` for a frozen module is not a reliable
+    way back to them. Getting this wrong does not raise -- the globs simply
+    find nothing and every plugin action silently disappears.
+    """
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
+    return Path(__file__).resolve().parent.parent
+
+
 def get_plugin_directory() -> Path:
     """Get the default plugin directory"""
-    # Look for plugins directory next to this file
-    plugin_dir = Path(__file__).parent.parent / "plugins"
-    return plugin_dir
+    return get_app_root() / "plugins"
 
 
 def get_extension_directory() -> Path:
     """Folder-based extensions live in extensions/ at the repo root."""
-    return Path(__file__).parent.parent / "extensions"
+    return get_app_root() / "extensions"
 
 
 # Config key holding per-extension on/off overrides: {folder_name: bool}.
