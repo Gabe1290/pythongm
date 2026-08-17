@@ -353,9 +353,36 @@ currently broken. Remaining units:
 - [x] **D2a** — runtime honours `<param>_translations` for every display
       string. 16 tests; all four mutants caught, including one that needed a
       dict *containing* an `en` key to expose the English short-circuit.
-- [ ] **D2b** — the French strings themselves (34 across the samples), which
-      also means replacing `test_goal_messages_are_plain_english` with a test
-      of the new intent rather than the old one.
+- [x] **D2b** — done. French for all 24 distinct on-screen strings across the
+      samples, attached as `<param>_translations` and keyed by the exact
+      English source, so an English edit shows up as an unmatched entry rather
+      than being silently skipped. Verified end to end: raycast_4's HUD reads
+      **VIE / SCORE / CLÉS** on the desktop, and a French HTML5 export carries
+      `('VIE', 'CLÉS ')` with no translation dicts left.
+
+      `test_goal_messages_are_plain_english` is replaced by
+      `test_goal_messages_are_english_with_a_french_translation`, which keeps
+      the half of the old reasoning that still holds — the BASE string stays
+      plain English, so a student reads and edits ordinary authored text — and
+      records that the export-parity objection was removed by D2c rather than
+      overruled.
+
+      **DOOM HUD labels** needed the extension handler routed through
+      `localize_param` too; they were read straight from the parameters.
+
+      **Two bugs fixed on the way, both found by running the game rather than
+      by reading it:**
+      1. `maze_4`'s win message was `"CONGRATULATIONSYou finished all
+         levels."` — a missing `#`, GameMaker's line break, so it rendered as
+         one run-on word.
+      2. My own C4 quoting was wrong in the *other* direction. Only
+         `draw_text` runs through `_parse_value`; `show_message`,
+         `draw_score`'s caption and the DOOM labels are used verbatim, so the
+         defensive quotes I added to views_1's messages were **drawn on
+         screen**. `tests/test_sample_visible_text.py` now checks both
+         directions — quoting required where a string is evaluated, forbidden
+         where it is not — and covers translation values as well, since French
+         prose contains hyphens far more often than the English did.
 - [x] **D2c** — done. `export/message_localizer.py`'s `resolve_translations()`
       bakes the chosen language into the plain parameter and drops the dict, so
       the exported project contains ordinary one-language strings and neither

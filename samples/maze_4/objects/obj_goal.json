@@ -50,7 +50,10 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "CONGRATULATIONSYou finished all levels."
+            "message": "CONGRATULATIONS#You finished all levels.",
+            "message_translations": {
+              "fr": "FÉLICITATIONS#Tu as terminé tous les niveaux."
+            }
           }
         },
         {

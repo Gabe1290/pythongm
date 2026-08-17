@@ -46,7 +46,10 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "Collect all the gems before you leave!"
+            "message": "Collect all the gems before you leave!",
+            "message_translations": {
+              "fr": "Ramasse toutes les gemmes avant de partir !"
+            }
           }
         },
         {

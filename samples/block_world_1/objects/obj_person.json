@@ -89,7 +89,10 @@
               {
                 "action": "show_message",
                 "parameters": {
-                  "message": "You reached the beacon! You win!"
+                  "message": "You reached the beacon! You win!",
+                  "message_translations": {
+                    "fr": "Tu as atteint la balise ! Tu as gagné !"
+                  }
                 }
               }
             ],
@@ -322,7 +325,10 @@
           "parameters": {
             "text": "\"CONTROLS            H = hide\"",
             "x": "26",
-            "y": "20"
+            "y": "20",
+            "text_translations": {
+              "fr": "\"COMMANDES          H = masquer\""
+            }
           }
         },
         {
@@ -336,7 +342,10 @@
           "parameters": {
             "text": "\"W A S D   -  Move\"",
             "x": "26",
-            "y": "48"
+            "y": "48",
+            "text_translations": {
+              "fr": "\"W A S D   -  Se déplacer\""
+            }
           }
         },
         {
@@ -344,7 +353,10 @@
           "parameters": {
             "text": "\"Left / Right  -  Turn\"",
             "x": "26",
-            "y": "76"
+            "y": "76",
+            "text_translations": {
+              "fr": "\"Gauche / Droite  -  Tourner\""
+            }
           }
         },
         {
@@ -352,7 +364,10 @@
           "parameters": {
             "text": "\"Up / Down   -  Look up / down\"",
             "x": "26",
-            "y": "104"
+            "y": "104",
+            "text_translations": {
+              "fr": "\"Haut / Bas   -  Regarder en haut / en bas\""
+            }
           }
         },
         {
@@ -360,7 +375,10 @@
           "parameters": {
             "text": "\"Space   -  Break block\"",
             "x": "26",
-            "y": "132"
+            "y": "132",
+            "text_translations": {
+              "fr": "\"Espace   -  Casser un bloc\""
+            }
           }
         },
         {
@@ -368,7 +386,10 @@
           "parameters": {
             "text": "\"Shift   -  Place block\"",
             "x": "26",
-            "y": "160"
+            "y": "160",
+            "text_translations": {
+              "fr": "\"Maj   -  Poser un bloc\""
+            }
           }
         },
         {
@@ -376,7 +397,10 @@
           "parameters": {
             "text": "\"Q / E   -  Change block\"",
             "x": "26",
-            "y": "188"
+            "y": "188",
+            "text_translations": {
+              "fr": "\"Q / E   -  Changer de bloc\""
+            }
           }
         },
         {

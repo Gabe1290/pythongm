@@ -29,6 +29,14 @@ OPERATORS = ("*", "+", "-", "/", "%")
 TEXT_PARAMS = ("text", "message", "caption", "health_label", "score_label",
                "objective_label")
 
+# ...of which only these are run through _parse_value, and so only these need
+# the defensive quoting. Verified against the handlers: draw_text and
+# draw_scaled_text parse their `text`; show_message, draw_score's caption and
+# the DOOM labels are used verbatim. Quoting one of THOSE is a bug in the
+# other direction -- the quote characters get drawn on screen, which is
+# exactly what happened to views_1's opening message.
+EVALUATED_PARAMS = ("text",)
+
 # `comment` is authoring metadata -- never drawn, never parsed.
 NOT_DISPLAYED = {"comment"}
 
@@ -41,8 +49,17 @@ def _displayed_strings(node, out):
         action = node.get("action")
         if action and action not in NOT_DISPLAYED:
             for key, value in (node.get("parameters") or {}).items():
-                if key in TEXT_PARAMS and isinstance(value, str) and value.strip():
+                if key in EVALUATED_PARAMS and isinstance(value, str) and value.strip():
                     out.append((action, key, value))
+                # Translations reach the screen through exactly the same path,
+                # so they face exactly the same trap -- and French prose is far
+                # more likely to contain a hyphen than the English was.
+                if (key.endswith("_translations")
+                        and key[:-len("_translations")] in EVALUATED_PARAMS
+                        and isinstance(value, dict)):
+                    for lang, translated in value.items():
+                        if isinstance(translated, str) and translated.strip():
+                            out.append(("%s[%s]" % (action, lang), key, translated))
         for value in node.values():
             _displayed_strings(value, out)
     elif isinstance(node, list):
@@ -100,3 +117,46 @@ def test_the_side_files_agree_too(sample):
                       for action, key, value in _displayed_strings(data, [])
                       if _would_be_evaluated(value)]
     assert not offenders, "\n  ".join(offenders)
+
+
+def _verbatim_strings(node, out):
+    """Display params used verbatim, plus their translations."""
+    verbatim = tuple(p for p in TEXT_PARAMS if p not in EVALUATED_PARAMS)
+    if isinstance(node, dict):
+        action = node.get("action")
+        if action and action not in NOT_DISPLAYED:
+            for key, value in (node.get("parameters") or {}).items():
+                if key in verbatim and isinstance(value, str):
+                    out.append((action, key, value))
+                if (key.endswith("_translations")
+                        and key[:-len("_translations")] in verbatim
+                        and isinstance(value, dict)):
+                    for lang, t in value.items():
+                        if isinstance(t, str):
+                            out.append(("%s[%s]" % (action, lang), key, t))
+        for value in node.values():
+            _verbatim_strings(value, out)
+    elif isinstance(node, list):
+        for value in node:
+            _verbatim_strings(value, out)
+    return out
+
+
+@pytest.mark.parametrize("sample", SAMPLES)
+def test_verbatim_text_is_not_defensively_quoted(sample):
+    """The opposite trap. show_message, draw_score's caption and the DOOM
+    labels are NOT expression-evaluated, so wrapping them in double quotes
+    does not protect anything -- it draws the quote characters on screen.
+    views_1's opening message shipped like that for exactly one commit."""
+    offenders = []
+    for path in [REPO_ROOT / "samples" / sample / "project.json"] + sorted(
+            (REPO_ROOT / "samples" / sample / "objects").glob("*.json")
+            if (REPO_ROOT / "samples" / sample / "objects").is_dir() else []):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for action, key, value in _verbatim_strings(data, []):
+            v = value.strip()
+            if len(v) > 1 and v.startswith('"') and v.endswith('"'):
+                offenders.append("%s: %s.%s = %r" % (path.name, action, key, value))
+    assert not offenders, (
+        "verbatim display text wrapped in quotes; the quotes get drawn:\n  "
+        + "\n  ".join(offenders))

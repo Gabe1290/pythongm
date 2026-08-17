@@ -24,7 +24,10 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "You found every key. The gate opens!"
+            "message": "You found every key. The gate opens!",
+            "message_translations": {
+              "fr": "Tu as trouvé toutes les clés. La porte s'ouvre !"
+            }
           }
         },
         {
@@ -50,7 +53,10 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "The gate is locked. Find all the keys first!"
+            "message": "The gate is locked. Find all the keys first!",
+            "message_translations": {
+              "fr": "La porte est verrouillée. Trouve d'abord toutes les clés !"
+            }
           }
         },
         {

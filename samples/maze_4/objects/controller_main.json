@@ -84,7 +84,10 @@
             "x": "300",
             "y": "4",
             "caption": "Score: ",
-            "relative": true
+            "relative": true,
+            "caption_translations": {
+              "fr": "Score : "
+            }
           }
         },
         {
@@ -93,7 +96,10 @@
             "text": "Lives:",
             "x": "8",
             "y": "4",
-            "relative": true
+            "relative": true,
+            "text_translations": {
+              "fr": "Vies :"
+            }
           }
         },
         {
