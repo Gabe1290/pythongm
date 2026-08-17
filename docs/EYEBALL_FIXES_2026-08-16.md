@@ -83,11 +83,33 @@ The first step is to capture the browser console. Precedent exists: the
 2026-08-09 session installed Playwright + headless Chromium ad hoc to run real
 Pyodide, and that is the right tool again.
 
-- [ ] **B1** — export maze_1 to HTML5, open under headless Chromium, capture
-      console + network errors. **Deliverable is the error, not a fix.**
-- [ ] **B2** — fix whatever B1 finds.
-- [ ] **B3** — smoke test: export a sample, load it, assert the canvas is not
-      uniformly black after N frames. Same shape as A1.5.
+- [x] **B1** — diagnosed (`3b7cf9a`). **Two missing commas** in
+      `extensions/raycast_2_5d/export_html5.js`, lines 105 and 317. Those
+      files are `Object.assign(GameRoom.prototype, { … })` object literals, so
+      a member without a trailing comma is a **syntax error** — the whole of
+      `engine.js` then fails to parse. Chromium reported
+      `Unexpected identifier 'wallShade'`; every engine global was
+      `undefined` and the canvas was a single colour, `0,0,0`.
+      **Why every sample was black:** extension JS is injected
+      unconditionally, so maze_1 — which contains no raycast content at all —
+      was broken by raycast's syntax error.
+- [x] **B2** — fixed: two commas. maze_1, maze_4 and raycast_4 verified in
+      headless Chromium: no page errors, and 8–13 distinct canvas colours
+      instead of 1.
+- [x] **B3** — `tests/test_export_html5_extension_syntax.py`. CI has no
+      JavaScript parser, so it checks the *structure*: every `Object.assign`
+      member is comma-separated, braces balance, each extension's JS actually
+      reaches a real export (exercised via **maze_1**, deliberately — a
+      project using no extension features, which is how this reached
+      everything), and the export is UTF-8 with a declared charset.
+      Verified it fails when the original bug is reintroduced.
+
+**False alarm worth recording so nobody re-investigates it:** the diagnostic
+appeared to show mojibake (`�`) in the exported HTML. That was the *Windows
+console* rendering an em-dash through cp1252, not the export. Checked on the
+bytes: source, read, write are all UTF-8, `<meta charset="utf-8">` is present,
+and there is no U+FFFD anywhere in the output. Encoding is sound, which
+matters because French message text is coming.
 
 Likely suspects to confirm or eliminate in B1, in order of cheapness: a JS
 exception during load; asset paths failing under `file://`; Pyodide failing to
@@ -244,7 +266,24 @@ exporter only gets written once.
 
 ## Decisions needed before starting
 
-**A0 and D2's shape are resolved above.** What is genuinely still open:
+### Decided (2026-08-17)
+
+- **D1 — the family is called "2.5 D".** So "2.5 D — Level 1" … "Level 4".
+  Technically honest, short, and identical in all 9 locales so it never needs
+  translating. **"Views" is left alone for now** — it has the same jargon
+  problem, but renaming it was not asked for; issue 10 is being fixed by making
+  the sample explain itself in-game instead.
+- **D2 — French only for now.** The mechanism carries an English fallback, so
+  any other language can be added later with no rework.
+- **E1 — checklist last**, verifying the fixes. Fix the known twelve first.
+
+### Resolved earlier, recorded above
+
+- **A0** — freeze the pygame runtime for desktop; Kivy stays for mobile.
+- **D2's shape** — engine mechanism, not translation work.
+
+Nothing is left open. Original wording of the questions kept below for the
+record:
 
 1. **D1 — the short name.** Applies to all four raycast samples. "2.5 D" is
    technically honest and needs no translation in any of the 9 locales. "3D"
