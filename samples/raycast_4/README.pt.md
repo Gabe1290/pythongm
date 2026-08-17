@@ -102,7 +102,7 @@ janela de qualquer forma; o motor trata a inversão.)
 | `objects/obj_monster.json` | Inimigo billboard em patrulha |
 | `objects/obj_goal.json` | Saída bloqueada por chaves (abre quando nenhuma `obj_key` restar) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segmentos de parede finos |
-| `sprites/` | Arte de parede/chão/pessoa/monstro reutilizada, um novo **`spr_ceiling`** (teto de pedra de interior, substituindo o céu), mais novos `spr_face` (retrato de 4 quadros) e `spr_key` |
+| `sprites/` | Arte de parede/chão/pessoa/monstro reutilizada, um novo **`spr_ceiling`** (teto de pedra de interior, substituindo o céu), mais novos `spr_face` (retrato de 4 quadros), `spr_key` e `spr_gate` (a saída trancada) |
 
 ## O labirinto é gerado
 

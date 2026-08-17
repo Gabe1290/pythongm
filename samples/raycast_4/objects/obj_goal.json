@@ -1,7 +1,7 @@
 {
   "name": "obj_goal",
   "asset_type": "object",
-  "sprite": "spr_key",
+  "sprite": "spr_gate",
   "visible": true,
   "solid": false,
   "persistent": false,

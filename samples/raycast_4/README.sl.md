@@ -99,7 +99,7 @@ pas vseeno na dnu okna; motor obravnava inverzijo.)
 | `objects/obj_monster.json` | Patruljni panojski sovražnik |
 | `objects/obj_goal.json` | Izhod, pogojen s ključi (odpre se, ko ne ostane noben `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Tanki segmenti zidu |
-| `sprites/` | Ponovno uporabljena umetnost zidu/tal/osebe/pošasti, nov **`spr_ceiling`** (notranji kamniti strop, nadomešča nebo), plus nova `spr_face` (portret s 4 sličicami) in `spr_key` |
+| `sprites/` | Ponovno uporabljena umetnost zidu/tal/osebe/pošasti, nov **`spr_ceiling`** (notranji kamniti strop, nadomešča nebo), plus nova `spr_face` (portret s 4 sličicami), `spr_key` in `spr_gate` (zaklenjen izhod) |
 
 ## Labirint je generiran
 

@@ -90,6 +90,25 @@
         "modified": "2026-06-16T15:12:34.811782",
         "thumbnail": ""
       },
+      "spr_gate": {
+        "name": "spr_key",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_gate.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-16T15:12:34.811782",
+        "thumbnail": ""
+      },
       "spr_monster": {
         "name": "spr_monster",
         "asset_type": "sprite",
@@ -191,7 +210,7 @@
       "obj_goal": {
         "name": "obj_goal",
         "asset_type": "object",
-        "sprite": "spr_key",
+        "sprite": "spr_gate",
         "visible": true,
         "solid": false,
         "persistent": false,
