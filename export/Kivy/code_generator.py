@@ -156,6 +156,28 @@ def _num_code(value, default=0):
 # skips it. We accumulate those names so the exporter can SURFACE them to the
 # user ("N actions couldn't be exported and were skipped") instead of the export
 # looking fully successful. Reset at the start of each export.
+def _direction_names(value) -> list:
+    """Normalise a `directions` parameter to a list of direction names.
+
+    Three shapes reach here and all are legitimate:
+      * a list, from the events panel's 3x3 checkbox picker (`multi_choice`);
+      * a single name as a plain string -- what the bundled samples and GMK
+        imports store (`"right"`);
+      * a comma- or space-separated string, from hand-edited project JSON.
+
+    Iterating a bare string as if it were a list yields its characters, which
+    is how `"right"` silently became five unrecognised directions.
+    """
+    if isinstance(value, str):
+        separated = [part.strip() for part in value.replace(',', ' ').split()]
+        return [part for part in separated if part]
+    if isinstance(value, (list, tuple, set)):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if value is None:
+        return []
+    return [str(value).strip()]
+
+
 _UNSUPPORTED_ACTIONS: set = set()
 
 
@@ -956,20 +978,33 @@ class ActionCodeGenerator:
             # named directions + a speed; one is chosen at random, 'stop'
             # halts). Numeric-angle / expression directions aren't covered
             # here — the named-direction case is what the events panel emits.
-            directions = params.get('directions', ['right'])
+            # `directions` may be a LIST (what the events panel's 3x3 checkbox
+            # picker emits) or a plain STRING naming one direction (what the
+            # bundled samples and GMK imports store). Treating a string as a
+            # list of directions iterates its CHARACTERS: "right" became five
+            # unknown names, each mapped to 0, so every arrow key moved the
+            # player right until a wall and then stuck -- issue 5 of the
+            # 2026-08-16 pass, on every sample using start_moving_direction.
+            directions = _direction_names(params.get('directions', ['right']))
             speed = params.get('speed', 4)
             dir_map = {
                 'right': 0, 'up-right': 45, 'up': 90, 'up-left': 135,
                 'left': 180, 'down-left': 225, 'down': 270, 'down-right': 315,
                 'stop': -1
             }
+            # Exact membership, not a substring test: `'stop' in "unstoppable"`
+            # is True for a raw string.
             if 'stop' in directions:
                 return "self.speed = 0"
-            elif len(directions) == 1:
-                deg = dir_map.get(directions[0], 0)
+            movable = [d for d in directions if d != 'stop']
+            if not movable:
+                return "self.speed = 0"
+            elif len(movable) == 1:
+                deg = dir_map.get(movable[0], 0)
                 return f"self.direction = {deg}; self.speed = {speed}"
             else:
-                dirs = [str(dir_map.get(d, 0)) for d in directions if d != 'stop']
+                # GameMaker picks one of the checked directions at random.
+                dirs = [str(dir_map.get(d, 0)) for d in movable]
                 return f"import random; self.direction = random.choice([{', '.join(dirs)}]); self.speed = {speed}"
 
         elif action_type == 'stop_movement':
