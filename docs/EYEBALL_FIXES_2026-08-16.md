@@ -63,10 +63,32 @@ four separate investigations in an engine with no way to execute it in CI, and
 the gap reopens every time the pygame engine gains a feature. **Only worth it
 if Android parity is the priority**, since Android has no alternative.
 
-- [ ] **A0** — decide A1 vs A2. Nothing else in this group starts first.
-- [ ] **A1.1** — spike: freeze `run_game.py` + one sample, confirm it launches
+- [x] **A0** — decide A1 vs A2. Nothing else in this group starts first.
+      *Resolved: A1 (see below).*
+- [x] **A1.1** — spike: freeze `run_game.py` + one sample, confirm it launches
       and plugin actions resolve. Timebox; this de-risks everything after.
-- [ ] **A1.2** — `_MEIPASS`-aware plugin/extension roots + ship as data.
+      **Done 2026-08-17 — the answer is yes, and better than hoped.** A
+      throwaway spec froze `runtime/run_game.py`; all four bundled
+      plugins/extensions load inside the bundle (Audio Actions, Block World,
+      LAN Multiplayer, 2.5D Raycast View), and **every sample the user
+      reported broken as a Kivy `.exe` runs on it**: maze_1, maze_4,
+      plateforme_2, plateforme_3, block_world_1, views_1, raycast_4 all launch
+      and keep running headlessly. Two findings carried into A1.3:
+      **Pillow is not optional** (`runtime/game_runner.py` imports PIL at
+      module level, so excluding it builds clean then dies with
+      ModuleNotFoundError on first run), and `pathex=[repo]` lets PyInstaller
+      pull the whole engine in by import analysis — only `plugins/`,
+      `extensions/` and `translations/` must be declared as datas.
+      Also shook out a real, unrelated user-facing bug: emoji in log messages
+      crashed the log handler on a cp1252 Windows console, so an asset-import
+      failure printed a logging traceback *instead of* the reason
+      (`fbbecfd0`).
+- [x] **A1.2** — `_MEIPASS`-aware plugin/extension roots + ship as data.
+      **Done 2026-08-17 (`555efd49`).** `plugin_loader.get_app_root()` returns
+      `sys._MEIPASS` when frozen; `tests/test_frozen_plugin_discovery.py`
+      pins it, because the failure is silent — the glob finds nothing, the
+      loader logs "Loaded 0 plugin(s)" and a raycast game quietly draws as a
+      flat 2D room.
 - [ ] **A1.3** — rewrite `exe_exporter` on the pygame runtime.
 - [ ] **A1.4** — same for `linux_exporter`, `macos_exporter`.
 - [ ] **A1.5** — end-to-end test: build an export, launch it headless, assert
