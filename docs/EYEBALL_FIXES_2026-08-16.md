@@ -150,10 +150,30 @@ fetch. Do not pre-emptively "fix" any of these.
       accident (`Lives:`, `M = map` use non-operators). Guarded by
       `tests/test_sample_visible_text.py`, which scans every sample for
       displayed text that would be evaluated rather than printed.
-- [ ] **C4 (issue 10)** — views_1 does not communicate its purpose *in-game*.
-      The README is clear ("room 3× wider than the window, collect 18 coins");
-      the running game says nothing. Add an opening message and a coin
-      counter. Fix the game, not the doc.
+- [x] **C4 (issue 10)** — done, and **my diagnosis in this plan was wrong.**
+      I assumed the sample simply failed to explain itself. The real cause is
+      an engine bug: `GameRunner` sized the window to the ROOM
+      unconditionally, so views_1 rendered its whole 2400×800 room in one
+      window. Views were enabled and correct (an 800×600 port), but the entire
+      room was already visible, so the scrolling camera the sample exists to
+      demonstrate had nothing to do. "What is this supposed to do?" was the
+      right question to ask.
+
+      New `GameRunner._window_size_for()` clamps to the declared window size,
+      **per axis and only downwards**, used by all four sizing sites. Blast
+      radius was the real risk and is pinned by a test: a blanket "honour the
+      setting" would have resized raycast_1–4 (640×480 declared, 480×480
+      rooms) and moved raycast_4's tuned DOOM HUD. Measured across all 20
+      samples: only views_1 and views_2 change.
+
+      Verified by holding the right-arrow and watching `view_x` go 0 → 304 as
+      the player crosses the 240px border — the camera genuinely scrolls now.
+
+      The in-game explanation landed too, since it was worth having anyway:
+      an opening message, a `draw_gui` HUD (score + "Collect all 18 coins"),
+      and a win message when the last coin goes. **`draw_gui`, not `draw`** —
+      it is in screen coordinates and unaffected by the camera, so the HUD
+      stays put while the room scrolls underneath.
 
 ## Group D — naming and language (issues 2, 3)
 
