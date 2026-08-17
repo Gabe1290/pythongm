@@ -102,7 +102,7 @@ Object.assign(GameRoom.prototype, {
         const g = Math.round(parseInt(h.slice(2, 4), 16) * f);
         const b = Math.round(parseInt(h.slice(4, 6), 16) * f);
         return `rgb(${r},${g},${b})`;
-    }
+    },
 
     // Wall shading model — MUST match game_runner.GameRoom._wall_shade and the
     // Kivy scene's _wall_shade (pinned by tests/test_raycast_export_parity.py).
@@ -314,7 +314,7 @@ Object.assign(GameRoom.prototype, {
         }
         this._texDataCache.set(sprite, data);
         return data;
-    }
+    },
 
     // Low-res floor/ceiling texture casting (faithful port of
     // game_runner._cast_floor_plane). Fills a downsampled ImageData per-pixel
