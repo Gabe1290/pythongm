@@ -18,6 +18,19 @@ caches) lives under ``room.extension_state["raycast"]`` (Stage B3b), reached via
 from .state import raycast_state
 
 
+def _label(executor, parameters, name, default):
+    """A HUD label in the player's language.
+
+    The DOOM bar's labels are on-screen text like any other, so they honour
+    the same `<param>_translations` convention. Routed through the executor's
+    localize_param rather than reimplemented, so the extension cannot drift
+    from the core rule. Falls back to a plain read when there is no executor.
+    """
+    if executor is not None and hasattr(executor, "localize_param"):
+        return executor.localize_param(parameters, name, default)
+    return parameters.get(name, default)
+
+
 class PluginExecutor:
     """Handles execution of the raycast setup actions."""
 
@@ -285,16 +298,16 @@ class PluginExecutor:
             back_color=parameters.get("back_color", "#101010"),
             divider_color=parameters.get("divider_color", "#505050"),
             text_color=parameters.get("text_color", "#ffffff"),
-            health_label=parameters.get("health_label", "Health"),
+            health_label=_label(ae, parameters, "health_label", "Health"),
             health_bar_width=_num("health_bar_width", 90),
             health_bar_height=_num("health_bar_height", 14),
             bar_color=parameters.get("bar_color", "#20c020"),
             face_sprite=parameters.get("face_sprite", ""),
             face_frames=int(_num("face_frames", 4)),
-            score_label=parameters.get("score_label", "Score: "),
+            score_label=_label(ae, parameters, "score_label", "Score: "),
             lives_sprite=parameters.get("lives_sprite", ""),
             lives_scale=_num("lives_scale", 1.0),
             objective_value=ae._parse_value(parameters.get("objective_value", "0"), instance),
-            objective_label=parameters.get("objective_label", "Keys: "),
+            objective_label=_label(ae, parameters, "objective_label", "Keys: "),
         )
         instance._draw_queue.extend(cmds)

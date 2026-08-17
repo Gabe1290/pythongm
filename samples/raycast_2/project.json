@@ -307,7 +307,10 @@
               {
                 "action": "show_message",
                 "parameters": {
-                  "message": "Collect all the gems before you leave!"
+                  "message": "Collect all the gems before you leave!",
+                  "message_translations": {
+                    "fr": "Ramasse toutes les gemmes avant de partir !"
+                  }
                 }
               },
               {
@@ -593,7 +596,10 @@
               {
                 "action": "show_message",
                 "parameters": {
-                  "message": "Well done! You finished both levels with all the gems."
+                  "message": "Well done! You finished both levels with all the gems.",
+                  "message_translations": {
+                    "fr": "Bravo ! Tu as terminé les deux niveaux avec toutes les gemmes."
+                  }
                 }
               },
               {
@@ -619,7 +625,10 @@
               {
                 "action": "show_message",
                 "parameters": {
-                  "message": "Collect all the gems before you leave!"
+                  "message": "Collect all the gems before you leave!",
+                  "message_translations": {
+                    "fr": "Ramasse toutes les gemmes avant de partir !"
+                  }
                 }
               },
               {
@@ -657,7 +666,10 @@
                 "parameters": {
                   "x": "8",
                   "y": "8",
-                  "caption": "Score: "
+                  "caption": "Score: ",
+                  "caption_translations": {
+                    "fr": "Score : "
+                  }
                 }
               },
               {
@@ -665,7 +677,10 @@
                 "parameters": {
                   "text": "Lives:",
                   "x": "500",
-                  "y": "8"
+                  "y": "8",
+                  "text_translations": {
+                    "fr": "Vies :"
+                  }
                 }
               },
               {

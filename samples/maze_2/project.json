@@ -567,7 +567,10 @@
                 "parameters": {
                   "x": "8",
                   "y": "488",
-                  "caption": "Score: "
+                  "caption": "Score: ",
+                  "caption_translations": {
+                    "fr": "Score : "
+                  }
                 }
               }
             ]

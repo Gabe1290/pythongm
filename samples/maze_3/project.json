@@ -491,7 +491,10 @@
                     {
                       "action": "show_message",
                       "parameters": {
-                        "message": "CONGRATULATIONS#You finished all levels!!!"
+                        "message": "CONGRATULATIONS#You finished all levels!!!",
+                        "message_translations": {
+                          "fr": "FÉLICITATIONS#Tu as terminé tous les niveaux !!!"
+                        }
                       }
                     },
                     {
@@ -985,7 +988,10 @@
                 "parameters": {
                   "x": "8",
                   "y": "488",
-                  "caption": "Score: "
+                  "caption": "Score: ",
+                  "caption_translations": {
+                    "fr": "Score : "
+                  }
                 }
               },
               {
@@ -993,7 +999,10 @@
                 "parameters": {
                   "text": "Lives:",
                   "x": "128",
-                  "y": "488"
+                  "y": "488",
+                  "text_translations": {
+                    "fr": "Vies :"
+                  }
                 }
               },
               {

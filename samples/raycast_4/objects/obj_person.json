@@ -283,7 +283,16 @@
             "lives_sprite": "spr_person",
             "lives_scale": "1.0",
             "objective_value": "keys",
-            "objective_label": "KEYS "
+            "objective_label": "KEYS ",
+            "health_label_translations": {
+              "fr": "VIE"
+            },
+            "score_label_translations": {
+              "fr": "SCORE "
+            },
+            "objective_label_translations": {
+              "fr": "CLÉS "
+            }
           }
         },
         {

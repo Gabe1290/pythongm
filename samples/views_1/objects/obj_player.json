@@ -165,7 +165,10 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "\"This room is three screens wide, so you cannot see it all at once. The camera follows you as you walk. Collect all 18 coins!\""
+            "message": "This room is three screens wide, so you cannot see it all at once. The camera follows you as you walk. Collect all 18 coins!",
+            "message_translations": {
+              "fr": "Cette salle fait trois écrans de large, tu ne peux donc pas tout voir d'un coup. La caméra te suit quand tu marches. Ramasse les 18 pièces !"
+            }
           }
         }
       ]
@@ -183,7 +186,10 @@
           "parameters": {
             "x": "8",
             "y": "8",
-            "caption": "Score: "
+            "caption": "Score: ",
+            "caption_translations": {
+              "fr": "Score : "
+            }
           }
         },
         {
@@ -191,7 +197,10 @@
           "parameters": {
             "text": "\"Collect all 18 coins\"",
             "x": "8",
-            "y": "36"
+            "y": "36",
+            "text_translations": {
+              "fr": "\"Ramasse les 18 pièces\""
+            }
           }
         }
       ]
@@ -234,7 +243,10 @@
         {
           "action": "show_message",
           "parameters": {
-            "message": "\"All 18 coins collected. You explored the whole room!\""
+            "message": "All 18 coins collected. You explored the whole room!",
+            "message_translations": {
+              "fr": "Les 18 pièces sont ramassées. Tu as exploré toute la salle !"
+            }
           }
         },
         {
