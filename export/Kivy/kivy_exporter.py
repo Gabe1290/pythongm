@@ -2559,6 +2559,26 @@ class {class_name}(Widget):
             for instance in _live:
                 if hasattr(instance, 'on_nokey'):
                     instance.on_nokey()
+        else:
+            # GameMaker's `keyboard` event fires EVERY FRAME while the key is
+            # held (runtime/game_runner.py's _process_held_keys), so held keys
+            # are dispatched here rather than from Window's on_key_down --
+            # which fires once per press plus the OS auto-repeat, giving
+            # stuttering movement instead of continuous motion.
+            #
+            # Objects whose keyboard events drive GRID movement have no
+            # on_keyboard_held at all: their codegen emits an on_update that
+            # polls keys_pressed itself, which is also what provides the
+            # grid-move guard _process_held_keys applies on the desktop.
+            _held = list(self.keys_pressed)
+            for instance in _live:
+                handler = getattr(instance, 'on_keyboard_held', None)
+                if handler is not None:
+                    for _key in _held:
+                        handler(_key)
+                anykey = getattr(instance, 'on_keyboard_anykey', None)
+                if anykey is not None:
+                    anykey()
 
         # 3d. PARTICLES & TIMELINE (Tier 5.1/5.3) -- runs every frame
         # regardless of step-event authoring, mirroring GameInstance.
@@ -2721,7 +2741,12 @@ class {class_name}(Widget):
             self.instances_to_destroy.append(instance)
 
     def on_keyboard(self, window, key, scancode, codepoint, modifier):
-        """Handle keyboard press events"""
+        """Handle a key going down: record it, and fire one-shot press events.
+
+        Only `keyboard_press` handlers run here. Held `keyboard` events fire
+        once per frame from update() instead, because that is what GameMaker
+        does -- see the keyboard section there.
+        """
         # Ignore if this scene is no longer the active one (after room switch)
         from main import get_game_app
         _app = get_game_app()
@@ -4823,14 +4848,34 @@ class {class_name}(GameObject):
         if uses_grid_movement:
             return self._generate_grid_keyboard_handler(keyboard_events)
 
-        # Otherwise, generate normal keyboard handler
+        # Otherwise, generate the normal HELD keyboard handler.
+        #
+        # Named on_keyboard_held, not on_keyboard, for two reasons:
+        #   1. GameMaker's `keyboard` event fires every FRAME while the key is
+        #      down (runtime/game_runner.py's _process_held_keys). Kivy's
+        #      on_key_down fires once per press plus OS auto-repeat, so binding
+        #      these actions there gave stuttering, repeat-rate movement instead
+        #      of continuous motion. The scene now calls this once per held key
+        #      per frame.
+        #   2. `keyboard_press` (one-shot) ALSO generated a method called
+        #      on_keyboard, so an object with both a held and a press event had
+        #      one silently shadow the other -- last def wins.
         key_map = _KIVY_KEY_MAP
 
-        code_lines = []
-        code_lines.append("    def on_keyboard(self, key, scancode, codepoint, modifier):")
-        code_lines.append('        """Handle keyboard press events"""')
+        anykey_events = [e for e in keyboard_events
+                         if str(e.get('key_name', '')).lower() == 'anykey']
+        keyed_events = [e for e in keyboard_events
+                        if str(e.get('key_name', '')).lower() != 'anykey']
 
-        for i, event in enumerate(keyboard_events):
+        code_lines = []
+        if keyed_events:
+            # Emitted only when there is a specific key to match. An object
+            # that listens on anykey alone would otherwise get an empty
+            # handler called once per held key per frame, forever.
+            code_lines.append("    def on_keyboard_held(self, key):")
+            code_lines.append('        """Handle a key that is currently held down (fires every frame)"""')
+
+        for i, event in enumerate(keyed_events):
             key_name = event.get('key_name', '')
             actions = event.get('actions', [])
             key_code = key_map.get(str(key_name).lower(), '0')  # case-insensitive: samples write 'N'/'P' as well as 'r'
@@ -4853,6 +4898,36 @@ class {class_name}(GameObject):
                     code_lines.append("            pass")
             else:
                 code_lines.append("            pass")
+
+        # `anykey` fires every frame while ANY key is held -- the mirror of
+        # nokey. It used to fall through key_map.get(..., '0') and compile to
+        # `if key == 0:`, which no real keycode ever matches, so the handler was
+        # dead code. That is issue 6 of the 2026-08-16 pass: maze_4's start
+        # screen advances on `anykey -> next_room`, so the exported game showed
+        # its background and no key would start it.
+        if anykey_events:
+            if code_lines:
+                code_lines.append("")
+            code_lines.append("    def on_keyboard_anykey(self):")
+            code_lines.append('        """Handle any key being held (fires every frame)"""')
+            actions = anykey_events[0].get('actions', [])
+            if actions:
+                generator = ActionCodeGenerator(
+                    base_indent=2, sprite_paths=self.sprite_path_map,
+                    sound_paths=self.sound_path_map,
+                    background_paths=self.background_path_map,
+                    scripts=self.scripts_map,
+                    extension_data=self.project_data.get('_extension_data', {}))
+                for action in actions:
+                    if isinstance(action, dict):
+                        generator.process_action(action, 'keyboard')
+                    elif isinstance(action, str) and action.strip():
+                        generator.add_line(action)
+                action_code = generator.get_code()
+                code_lines.append(action_code if action_code.strip()
+                                  else "        pass")
+            else:
+                code_lines.append("        pass")
 
         return '\n'.join(code_lines)
 

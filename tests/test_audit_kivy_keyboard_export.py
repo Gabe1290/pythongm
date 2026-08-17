@@ -103,8 +103,12 @@ def test_m36_plain_speed_keyboard_is_not_grid_movement(tmp_path):
     ]
     handler = exp._generate_keyboard_handler(keyboard_events)
 
-    # Must produce a real on_keyboard handler, NOT the synthesized grid on_update.
-    assert "def on_keyboard(" in handler, handler
+    # Must produce a real key handler, NOT the synthesized grid on_update.
+    # Renamed to on_keyboard_held on 2026-08-17, when held keyboard events
+    # moved to per-frame dispatch (GameMaker semantics) and stopped colliding
+    # with keyboard_press's on_keyboard. M36's intent is unchanged: a
+    # plain-speed keyboard event must not be rewritten as grid movement.
+    assert "def on_keyboard_held(" in handler, handler
     assert "def on_update(" not in handler, handler
     # Grid-only scaffolding must be absent.
     assert "_grid_target_x" not in handler, handler

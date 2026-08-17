@@ -35,7 +35,9 @@ def _if_on_grid(then):
 class TestGridHeuristic:  # M36
     def test_plain_speed_keyboard_uses_normal_handler(self, exporter):
         code = exporter._generate_keyboard_handler([_kb("left", [_hspeed(-4)])])
-        assert "def on_keyboard(" in code
+        # on_keyboard_held since 2026-08-17: held keyboard events fire once per
+        # frame now, and no longer share a method name with keyboard_press.
+        assert "def on_keyboard_held(" in code
         assert "def on_update(" not in code
 
     def test_if_on_grid_keyboard_uses_grid_handler(self, exporter):
