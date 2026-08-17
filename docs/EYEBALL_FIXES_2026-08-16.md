@@ -297,7 +297,9 @@ fetch. Do not pre-emptively "fix" any of these.
       `~/.local` layout and then shelled out to `which`. It now asks the
       installed `PySide6` where it lives and uses `shutil.which` — relevant
       well beyond this item, given the three-platform goal.
-- [ ] **D2 (issue 2)** — raycast_4's in-game messages are English.
+- [x] **D2 (issue 2)** — done via D2a–D2c below (French only, all samples; the
+      decision recorded 2026-08-17). Left open here as the statement of the
+      problem:
       **This contradicts a recorded decision** (CLAUDE.md, 2026-07-20): sample
       *messages* were deliberately left English because they are written with
       ordinary `show_message` actions, so translating them would be
@@ -328,7 +330,30 @@ macOS yourself. Planned coverage:
 
 Structured one row per check, with platform columns and a notes field.
 
-- [ ] **E1** — write the checklist.
+- [x] **E1** — write the checklist. **Done 2026-08-17:
+      `docs/PLATFORM_DISPLAY_CHECKLIST.md`.** Deliberately NOT an extension of
+      `docs/test_checklist.md`, which is the exhaustive 1.0.0 feature-regression
+      list — this is the eyes-only pass: display and layout, accents, each
+      sample played, each export target **built *and* played** as separate
+      ticks, HTML5 in a real browser from both `file://` and a served
+      directory, and the per-platform traps (macOS quarantine, Windows
+      SmartScreen and cp1252, Linux SDL drivers and the lost executable bit).
+
+      Two decisions about its shape. It **opens with the automated commands**
+      (`pytest`, `smoke_run_samples.py`,
+      `verify_desktop_export.py --all --compare`) so no human time is spent on
+      anything a script can check — attention is the scarce resource. And it
+      **records that mobile/Kivy is still broken**, with its four known gaps
+      named, so a failure there is not re-reported as a new regression.
+
+      `tests/test_platform_display_checklist.py` (11 tests) pins every concrete
+      claim it makes — the named tools and documents exist, every named sample
+      exists, the 2.5 D display names match `welcome_tab.SAMPLE_PROJECTS`,
+      views_1 really is 800×600 over 2400×800, block_world_1's overlay really
+      has 7 lines, the language list really has 11 entries, and the launcher
+      really writes `game_error.log`/`highscores.json`. A checklist that names
+      something which no longer exists is worse than none: the reader either
+      chases a phantom or learns to ignore it.
 
 **Sequencing note:** the checklist is listed last because it verifies the
 fixes. But you expect there are more issues, and the checklist is what would
