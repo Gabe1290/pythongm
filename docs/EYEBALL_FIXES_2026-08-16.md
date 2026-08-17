@@ -86,9 +86,17 @@ Desktop no longer depends on this engine, so A2 is now purely the
       and could never match — that is **issue 6**, maze_4's start screen
       advancing on `anykey -> next_room`.
       `tests/test_kivy_keyboard_held.py`.
-- [ ] **A2.3 collision — DIAGNOSED, not fixed.** Root cause found; the fix is
-      bigger than it first looks, so it is written down here rather than
-      half-landed.
+- [x] **A2.3 collision — FIXED (`e2cf7797`).** The diagnosis below held up, and
+      the fix was built to it: the either-is-solid pair rule (plus the second
+      condition it turned out to need — a collision event between the pair),
+      per-axis resolution, and a slide-to-contact port. The
+      walking-along-the-ground test is the one that matters: a genuine
+      both-axes-revert mutant is caught by exactly the three per-axis tests, so
+      the naive fix this entry warned about would not have shipped.
+      One thing the diagnosis missed: blocked moves must FIRE the pair's
+      collision handlers, because blocking prevents the overlap the post-move
+      detection pass looks for, so plateforme_2's authored `move_to_contact` +
+      `set_hspeed(0)` would never have run. Original diagnosis, kept:
 
       `GameObject._process_movement` (`export/Kivy/kivy_exporter.py`, the
       `if self.solid and self.scene:` branch) only blocks movement when **the
