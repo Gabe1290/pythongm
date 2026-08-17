@@ -533,18 +533,23 @@ today, just unbuilt).
   done (deliberately, per scope): HTML5/Kivy export codegen for `inventory`/
   the two changed actions, and updating `block_world_1` (or a new sample)
   to demo it — same "wait for a real sample" discipline as Tier 5.3/7a.
-- [ ] **7d. In-IDE visual world editor — needs its own future planning
-  session, do not start from this doc.** No `editors/` scaffolding exists;
-  building one is a new editor pane on the scale of
-  `editors/room_editor/`/`editors/playground_editor/`. Largest item in the
-  whole queue — larger than Tier 5. Do last, once 7a-7c settle the
-  interaction model it needs to expose.
-- [ ] **7e. Procedural/infinite terrain — needs its own future planning
-  session, do not start from this doc.** World storage today is a single
-  in-memory sparse dict per room, no chunking/streaming. "Infinite" terrain
-  needs a fundamentally different storage model and reworking every
-  renderer's "iterate all blocks" assumption on all three export targets —
-  comparable in size to a second `VOXEL_WORLD_PLAN.md`.
+- [x] **7d. In-IDE visual world editor.** **DONE 2026-08-15** — this entry's
+  "needs its own future planning session" call was correct, that session
+  happened, and all four phases shipped: `docs/BLOCK_WORLD_EDITOR_PLAN.md`,
+  `editors/block_world_editor/`. Full record in
+  `docs/REMAINING_WORK_2026-08-15.md`.
+  *Original scoping, kept for the estimate's sake:* no `editors/` scaffolding
+  existed; building one was a new editor pane on the scale of
+  `editors/room_editor/`/`editors/playground_editor/` — the largest item in
+  the whole queue.
+- [x] **7e. Procedural/infinite terrain.** **DONE 2026-08-15** — likewise got
+  its own plan (`docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md`) and shipped in
+  four phases: chunked storage, a deterministic value-noise heightmap,
+  seed-based generation on all three targets, and the `block_world_2` sample.
+  Full record in `docs/REMAINING_WORK_2026-08-15.md`.
+  *Original scoping, kept:* world storage was a single in-memory sparse dict
+  per room with no chunking/streaming, so this needed a different storage
+  model and a rework of every renderer's "iterate all blocks" assumption.
 
 ## Tracked elsewhere — not part of this queue, but genuinely open
 
