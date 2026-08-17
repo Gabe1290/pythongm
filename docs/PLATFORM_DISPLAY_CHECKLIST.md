@@ -188,17 +188,35 @@ more than one sample.
   until the user interacts)
 - L [ ] M [ ] W [ ] Accented text renders in the game canvas
 
-## 6. Mobile (Kivy) — expect this to be broken
+## 6. Mobile (Kivy) — newly repaired, never yet played
 
-Recorded honestly so a failure here is not mistaken for a new regression.
-Desktop export moved off Kivy; **Android and iOS still use it**, and its known
-gaps are unfixed: tiles, keyboard handling, collision, and physics /
-sub-images. This is the next priority after the three desktop platforms.
+Desktop export moved off Kivy, but **Android and iOS still use it**, and its
+four known gaps — tiles, keyboard handling, collision, and physics /
+sub-images — were all fixed on 2026-08-17. Every fix was verified by executing
+the generated code, because Kivy cannot run in CI, so **nobody has actually
+played an exported mobile build**. This section is where that gets found out.
+
+Each row names what specifically used to be wrong, so a regression is
+recognisable rather than a vague feeling.
 
 - L [ ] M [ ] W [ ] Build → Mobile export produces a project/APK without
   crashing the IDE
-- L [ ] M [ ] W [ ] If you run it: note which of tiles / input / collision /
-  animation misbehave, and add them here rather than filing them as new
+- L [ ] M [ ] W [ ] **Tiles are visible** in plateforme_2 and plateforme_3
+  (they used to be absent entirely — the tile layer was never exported)
+- L [ ] M [ ] W [ ] **The player falls, not rises**, and lands ON the ground
+  rather than hovering above it
+- L [ ] M [ ] W [ ] **Jump works** — it needs the ground probe below the
+  player, which used to check above
+- L [ ] M [ ] W [ ] **Walls block** the player, and you can still walk while
+  standing on the ground
+- L [ ] M [ ] W [ ] **Each arrow moves its own way** — up goes up. All four
+  used to move right, and vertical was inverted on top of that
+- L [ ] M [ ] W [ ] **maze_4 starts** when you press a key (its start screen
+  advances on "any key", which never fired)
+- L [ ] M [ ] W [ ] **plateforme_3's bonuses show different pictures**, not all
+  the same one
+- L [ ] M [ ] W [ ] Anything still wrong: note it here rather than filing it as
+  new, and say which of the eight rows above it belongs to
 
 ## 7. Per-platform gotchas worth knowing
 
