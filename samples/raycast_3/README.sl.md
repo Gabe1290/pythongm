@@ -1,4 +1,4 @@
-# Lansiranje žarkov — 3. stopnja
+# 2.5 D — 3. stopnja
 
 Tretja stopnja v prvi osebi v slogu Doom/Wolfenstein, zgrajena na
 istem **motorju lansiranja žarkov 2,5D** kot
@@ -26,7 +26,7 @@ Popolna igra z dvema stopnjama: prečkajte vsak labirint v prvi osebi,
 zberite vsak dragi kamen, medtem ko preživite pošasti, in dosezite
 izhod, pogojen z dragimi kamni — prva (topla opečna) soba vodi v
 drugo (hladno kristalno-jamsko) sobo, in dokončanje te zmaga. Na
-voljo v zavihku Welcome urejevalnika (*"Raycast — Level 3"*).
+voljo v zavihku Welcome urejevalnika (*"2.5 D — Level 3"*).
 
 **Zvok in glasba:** nič — nobena zvočna datoteka ni priložena temu vzorcu.
 

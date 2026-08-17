@@ -1,4 +1,4 @@
-# Lansiranje žarkov — 4. stopnja
+# 2.5 D — 4. stopnja
 
 Četrta stopnja v prvi osebi v slogu Doom/Wolfenstein, in prva,
 zgrajena **okoli trajne spodnje statusne vrstice** — estetika DOOM

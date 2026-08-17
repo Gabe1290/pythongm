@@ -2582,23 +2582,23 @@ Qualsiasi azione proveniente da esse verrà ignorata e il progetto potrebbe appa
 <context>
     <name>WelcomeTab</name>
         <message>
-            <source>Raycast — Level 4</source>
-            <translation>Raycasting — Livello 4</translation>
+            <source>2.5 D — Level 4</source>
+            <translation>2.5 D — Livello 4</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 3</source>
-            <translation>Raycasting — Livello 3</translation>
+            <source>2.5 D — Level 3</source>
+            <translation>2.5 D — Livello 3</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 2</source>
-            <translation>Raycasting — Livello 2</translation>
+            <source>2.5 D — Level 2</source>
+            <translation>2.5 D — Livello 2</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 1</source>
-            <translation>Raycasting — Livello 1</translation>
+            <source>2.5 D — Level 1</source>
+            <translation>2.5 D — Livello 1</translation>
         </message>
 
         <message>

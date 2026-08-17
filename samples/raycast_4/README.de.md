@@ -1,4 +1,4 @@
-# Raycast — Level 4
+# 2.5 D — Level 4
 
 Das vierte Ich-Perspektive-Level im Doom-/Wolfenstein-Stil, und das
 erste, das **um eine dauerhafte untere Statusleiste** herum gebaut ist

@@ -1,4 +1,4 @@
-# Lansiranje žarkov — 1. stopnja
+# 2.5 D — 1. stopnja
 
 Pogled v prvi osebi v slogu Doom/Wolfenstein na **isto postavitev
 labirinta kot `maze_1`** — enake sobe, enak cilj, enake rešljive poti.
@@ -143,6 +143,6 @@ ločljivost-nato-povečava (`floor_cast_res`, privzeto 4); meritve
 (brskalnik ~0,4 ms pri res=2; Kivy/AMD 840M ~5 ms pri res=4). Projekt
 lahko še vedno počisti `floor_texture` za ploska tla `floor_color`.
 
-Na voljo v zavihku Welcome urejevalnika — izberite **"Raycast — Level
+Na voljo v zavihku Welcome urejevalnika — izberite **"2.5 D — Level
 1"** v spustnem meniju *Choose a sample* (odpiranje vzorca ga kopira
 v vaše Documents, tako da priloženi izvirnik ostane nedotaknjen).

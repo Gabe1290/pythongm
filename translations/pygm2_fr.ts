@@ -8711,23 +8711,23 @@ Voulez-vous quand même enregistrer ?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
-            <source>Raycast — Level 4</source>
-            <translation>Lancer de rayons — Niveau 4</translation>
+            <source>2.5 D — Level 4</source>
+            <translation>2.5 D — Niveau 4</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 3</source>
-            <translation>Lancer de rayons — Niveau 3</translation>
+            <source>2.5 D — Level 3</source>
+            <translation>2.5 D — Niveau 3</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 2</source>
-            <translation>Lancer de rayons — Niveau 2</translation>
+            <source>2.5 D — Level 2</source>
+            <translation>2.5 D — Niveau 2</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 1</source>
-            <translation>Lancer de rayons — Niveau 1</translation>
+            <source>2.5 D — Level 1</source>
+            <translation>2.5 D — Niveau 1</translation>
         </message>
 
         <message>

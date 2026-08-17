@@ -1,4 +1,4 @@
-# Raycast — Level 3
+# 2.5 D — Level 3
 
 The third Doom/Wolfenstein-style first-person level, built on the same **raycast
 2.5D engine** as [`raycast_1`](../raycast_1/README.md) and
@@ -22,7 +22,7 @@ and [`docs/RAYCAST_2_5D_PLAN.md`](../../docs/RAYCAST_2_5D_PLAN.md) for the engin
 A complete two-level game: cross each maze in first person, collect every gem
 while surviving the monsters, and reach the gem-gated exit — the first (warm
 brick) room leads to a second (cool crystal-cavern) room, and clearing that
-wins. Available from the IDE's Welcome tab (*"Raycast — Level 3"*).
+wins. Available from the IDE's Welcome tab (*"2.5 D — Level 3"*).
 
 **Sound & music:** none — no sound files are bundled with this sample.
 

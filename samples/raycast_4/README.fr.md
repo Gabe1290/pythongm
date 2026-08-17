@@ -1,4 +1,4 @@
-# Lancer de rayons — Niveau 4
+# 2.5 D — Niveau 4
 
 Le quatrième niveau à la première personne façon Doom ou Wolfenstein, et le
 premier construit **autour d'une barre d'état permanente en bas de l'écran** —

@@ -2582,23 +2582,23 @@ Alle Aktionen daraus werden übersprungen, und das Projekt sieht möglicherweise
 <context>
     <name>WelcomeTab</name>
         <message>
-            <source>Raycast — Level 4</source>
-            <translation>Raycasting — Level 4</translation>
+            <source>2.5 D — Level 4</source>
+            <translation>2.5 D — Level 4</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 3</source>
-            <translation>Raycasting — Level 3</translation>
+            <source>2.5 D — Level 3</source>
+            <translation>2.5 D — Level 3</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 2</source>
-            <translation>Raycasting — Level 2</translation>
+            <source>2.5 D — Level 2</source>
+            <translation>2.5 D — Level 2</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 1</source>
-            <translation>Raycasting — Level 1</translation>
+            <source>2.5 D — Level 1</source>
+            <translation>2.5 D — Level 1</translation>
         </message>
 
         <message>

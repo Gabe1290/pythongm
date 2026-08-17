@@ -1,4 +1,4 @@
-# Raycast — Nivel 3
+# 2.5 D — Nivel 3
 
 El tercer nivel en primera persona al estilo Doom/Wolfenstein,
 construido sobre el mismo **motor raycast 2,5D** que
@@ -30,7 +30,7 @@ persona, recolecta cada gema mientras sobrevives a los monstruos, y
 alcanza la salida bloqueada por gemas — la primera sala (ladrillo
 cálido) lleva a una segunda sala (caverna de cristal fría), y
 completarla gana. Disponible desde la pestaña Welcome del IDE
-(*"Raycast — Level 3"*).
+(*"2.5 D — Level 3"*).
 
 **Sonido y música:** ninguno — no se incluyen archivos de sonido con esta muestra.
 

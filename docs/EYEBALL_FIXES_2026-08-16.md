@@ -192,10 +192,28 @@ fetch. Do not pre-emptively "fix" any of these.
 
 ## Group D — naming and language (issues 2, 3)
 
-- [ ] **D1 (issue 3)** — "Lancer de rayons" is too long and means nothing to a
-      student. **Needs a decision** (see below). Display names only: the
-      folders stay `raycast_1..4`, so no project files move. Touches
-      `widgets/welcome_tab.py` + the 9 language `.ts` files.
+- [x] **D1 (issue 3)** — done. The family is **"2.5 D"**: `2.5 D — Level 1`,
+      `2.5 D — Niveau 1`, `2.5 D — Уровень 1` … Folders stay `raycast_1..4`,
+      so no project files moved.
+
+      Renamed in `widgets/welcome_tab.py`, the 7 `.ts` catalogues that carry
+      the names (pt/ja/zh translate no sample names at all — pre-existing, and
+      the rename leaves them clearer than before), all 36 guide titles, and the
+      27 guides that *instruct* the reader to pick a Welcome-tab entry by name,
+      which would otherwise have named something that no longer exists.
+      Each language kept **its own** word for "level" by rewriting only the
+      name half of the string, rather than my inventing translations.
+
+      **The technique is still raycasting** and prose saying so was left alone
+      — only the display name changed. Verified per language with a live
+      `QTranslator` after recompiling.
+
+      **Tooling bug fixed en route:** `scripts/compile_translations.py` could
+      not find `lrelease` on this Windows box at all, so no translation work
+      was compilable here. Its search list assumed a project venv or a Linux
+      `~/.local` layout and then shelled out to `which`. It now asks the
+      installed `PySide6` where it lives and uses `shutil.which` — relevant
+      well beyond this item, given the three-platform goal.
 - [ ] **D2 (issue 2)** — raycast_4's in-game messages are English.
       **This contradicts a recorded decision** (CLAUDE.md, 2026-07-20): sample
       *messages* were deliberately left English because they are written with
