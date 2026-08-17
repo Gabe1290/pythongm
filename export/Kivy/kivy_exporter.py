@@ -3632,28 +3632,143 @@ class GameObject(Widget):
         new_x = self._x + float(self._hspeed * speed_factor)
         new_y = self._y + float(self._vspeed * speed_factor)
 
-        # PERFORMANCE FIX: Optimized solid collision checking
-        # Only check solid-to-solid collisions to prevent overlap
-        # Other collision events are handled by _check_collisions method
-        can_move = True
-        if self.solid and self.scene:
-            old_x, old_y = self.x, self.y
-            self.x, self.y = new_x, new_y
-
-            # Only check against other solid objects (much smaller set)
-            for other in self.scene.instances:
-                if other != self and other.solid and self.check_collision(other):
-                    can_move = False
-                    break
-
-            if not can_move:
-                self.x, self.y = old_x, old_y
-            else:
-                self._update_position()
-        else:
-            self.x = new_x
-            self.y = new_y
+        if self.scene is None:
+            self._x, self._y = new_x, new_y
             self._update_position()
+            return
+
+        # Resolve the two axes INDEPENDENTLY, as the desktop engine's
+        # hspeed/vspeed step does. Reverting both axes on any collision looks
+        # equivalent and is not: gravity pushes an instance into the floor
+        # every frame, so a both-axes revert cancels horizontal movement too
+        # and the player cannot walk at all.
+        blockers = []
+
+        # Horizontal is all-or-nothing, matching the desktop engine, which
+        # deliberately leaves it that way: hspeed is small in practice, and
+        # sliding would change how maze and bouncing movers rest against walls.
+        if new_x != self._x:
+            blocker = self._movement_blocker(new_x, self._y)
+            if blocker is None:
+                self._x = new_x
+            else:
+                blockers.append(blocker)
+
+        # Vertical slides flush against the blocker instead of cancelling.
+        # All-or-nothing left a fast faller up to |vspeed| px above the floor;
+        # past the 1px ground probe platformers use, the character hangs in
+        # mid-air with its walk animation still cycling.
+        if new_y != self._y:
+            blocker = self._movement_blocker(self._x, new_y)
+            if blocker is None:
+                self._y = new_y
+            else:
+                blockers.append(blocker)
+                self._slide_axis_to_contact('y', new_y - self._y)
+
+        self._update_position()
+
+        # The desktop engine fires the pair's collision events from its blocked
+        # branch. It has to: blocking prevents the overlap, so the post-move
+        # detection pass never sees the pair, and an authored handler like
+        # plateforme_2's move_to_contact + set_hspeed(0) would never run --
+        # leaving the instance pressed against the wall with speed still set.
+        # Deduplicated by identity: a corner collision blocks both axes against
+        # the same wall, and the handler should run once. The desktop engine
+        # keys its blocked-collisions map by instance for the same reason.
+        fired = []
+        for blocker in blockers:
+            if any(blocker is seen for seen in fired):
+                continue
+            fired.append(blocker)
+            self._fire_blocked_collision(blocker)
+
+    def _movement_blocker(self, x, y):
+        """The first instance that would stop this one occupying (x, y).
+
+        GameMaker 7.0's rule, as the desktop engine applies it in
+        GameRunner.check_movement_collision_with_blocker:
+
+          1. a collision event must exist between the two object types, in
+             EITHER direction, and
+          2. at least ONE of the two must be marked `solid`.
+
+        Both conditions matter. This used to require the MOVING instance to be
+        solid, but a player is normally not solid and the walls are, so nothing
+        ever blocked a player and it walked straight through the level.
+
+        Two non-solid objects never block each other -- they overlap and fire
+        their collision events afterwards, which is how a maze monster runs
+        through the player instead of standing on its head.
+        """
+        old_x, old_y = self._x, self._y
+        self._x, self._y = x, y
+        try:
+            for other in self.scene.instances:
+                if other is self or getattr(other, '_destroyed', False):
+                    continue
+                if not (self.solid or getattr(other, 'solid', False)):
+                    continue
+                if not self._collision_event_exists_with(other):
+                    continue
+                if self.check_collision(other):
+                    return other
+        finally:
+            self._x, self._y = old_x, old_y
+        return None
+
+    def _collision_event_exists_with(self, other):
+        """True if either object handles a collision with the other's type."""
+        scene = self.scene
+        if scene is None:
+            return False
+        mine = 'on_collision_' + scene._class_name_to_snake_case(
+            other.__class__.__name__)
+        if hasattr(self, mine):
+            return True
+        theirs = 'on_collision_' + scene._class_name_to_snake_case(
+            self.__class__.__name__)
+        return hasattr(other, theirs)
+
+    def _slide_axis_to_contact(self, axis, delta):
+        """Advance one pixel at a time along `axis` until flush against the
+        blocker, instead of cancelling the whole move.
+
+        Ported from GameRunner._slide_axis_to_contact. O(|speed|) checks per
+        blocked instance per frame, which is negligible for the handful of fast
+        movers in a scene.
+        """
+        step = 1.0 if delta > 0 else -1.0
+        remaining = abs(delta)
+        moved = 0.0
+        while moved + 1.0 <= remaining:
+            if axis == 'y':
+                if self._movement_blocker(self._x, self._y + step) is not None:
+                    break
+                self._y += step
+            else:
+                if self._movement_blocker(self._x + step, self._y) is not None:
+                    break
+                self._x += step
+            moved += 1.0
+
+    def _fire_blocked_collision(self, other):
+        """Run the pair's collision handlers after a blocked move."""
+        scene = self.scene
+        if scene is None:
+            return
+        self._collision_other = other
+        other._collision_other = self
+        mine = 'on_collision_' + scene._class_name_to_snake_case(
+            other.__class__.__name__)
+        handler = getattr(self, mine, None)
+        if handler is not None:
+            handler(other)
+        theirs = 'on_collision_' + scene._class_name_to_snake_case(
+            self.__class__.__name__)
+        handler = getattr(other, theirs, None)
+        if handler is not None:
+            handler(self)
 
     def _update_position(self):
         """Update visual position with sub-pixel precision for smooth rendering"""
