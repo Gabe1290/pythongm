@@ -117,10 +117,16 @@ fetch. Do not pre-emptively "fix" any of these.
 
 ## Group C — samples that do not explain themselves
 
-- [ ] **C1 (issue 11)** — raycast_4: `obj_goal` and `obj_key` both use
-      `spr_key`. Confirmed in `samples/raycast_4/project.json`. Draw a
-      distinct `spr_gate` (the sample already ships its own art: `spr_face`,
-      `spr_key`) and repoint `obj_goal`.
+- [x] **C1 (issue 11)** — done. New `spr_gate`: a stone portcullis, drawn by
+      the committed `tools/gen_raycast_4_gate.py` (following
+      `gen_block_world_face_colors.py`'s precedent, so the art is reviewable
+      as intent and regenerable). Deliberately **grey, not gold** — another
+      gold object in a key-hunting level is the mistake being fixed. Repointed
+      `obj_goal` in **both** `project.json` and `objects/obj_goal.json`; this
+      repo's samples carry object definitions twice and updating one is a
+      standing trap. Sprite inventory line updated in all 10 guides.
+      `tests/test_raycast_4_gate_sprite.py` (6) includes a check that the
+      generator still reproduces the committed PNG, so the two cannot drift.
 - [ ] **C2 (issue 12)** — minimap shows walls + player only. That was a
       deliberate call in `docs/RAYCAST_MINIMAP_PLAN.md` ("showing pickups
       trivialises a gem-gated maze") — but raycast_4 is *key*-gated, where

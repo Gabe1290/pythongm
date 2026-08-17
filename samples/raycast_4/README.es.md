@@ -104,7 +104,7 @@ ventana; el motor maneja la inversión.)
 | `objects/obj_monster.json` | Enemigo billboard en patrulla |
 | `objects/obj_goal.json` | Salida bloqueada por llaves (se abre cuando no queda ninguna `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segmentos de muro finos |
-| `sprites/` | Arte de muro/suelo/persona/monstruo reutilizado, un nuevo **`spr_ceiling`** (techo de piedra de interior, reemplazando el cielo), más nuevos `spr_face` (retrato de 4 fotogramas) y `spr_key` |
+| `sprites/` | Arte de muro/suelo/persona/monstruo reutilizado, un nuevo **`spr_ceiling`** (techo de piedra de interior, reemplazando el cielo), más nuevos `spr_face` (retrato de 4 fotogramas), `spr_key` y `spr_gate` (la salida cerrada) |
 
 ## El laberinto es generado
 

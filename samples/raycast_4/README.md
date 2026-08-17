@@ -92,7 +92,7 @@ handles the inversion.)
 | `objects/obj_monster.json` | Patrolling billboard enemy |
 | `objects/obj_goal.json` | Key-gated exit (opens when no `obj_key` remains) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Thin wall segments |
-| `sprites/` | Reused wall/floor/person/monster art, a new **`spr_ceiling`** (indoor stone ceiling, replacing the sky), plus new `spr_face` (4-frame portrait) and `spr_key` |
+| `sprites/` | Reused wall/floor/person/monster art, a new **`spr_ceiling`** (indoor stone ceiling, replacing the sky), plus new `spr_face` (4-frame portrait), `spr_key` and `spr_gate` (the locked exit) |
 
 ## The maze is generated
 

@@ -106,7 +106,7 @@ finestra; il motore gestisce l'inversione.)
 | `objects/obj_monster.json` | Nemico billboard in pattuglia |
 | `objects/obj_goal.json` | Uscita bloccata dalle chiavi (si apre quando non resta nessun `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segmenti muro sottili |
-| `sprites/` | Grafica muro/pavimento/persona/mostro riusata, un nuovo **`spr_ceiling`** (soffitto di pietra da interno, in sostituzione del cielo), più nuovi `spr_face` (ritratto a 4 frame) e `spr_key` |
+| `sprites/` | Grafica muro/pavimento/persona/mostro riusata, un nuovo **`spr_ceiling`** (soffitto di pietra da interno, in sostituzione del cielo), più nuovi `spr_face` (ritratto a 4 frame), `spr_key` e `spr_gate` (l'uscita chiusa) |
 
 ## Il labirinto è generato
 
