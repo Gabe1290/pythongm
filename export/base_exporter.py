@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """
-Shared base class for the Kivy-based platform exporters.
+Shared base class for the platform exporters.
 
-ExeExporter, LinuxExporter, MacOSExporter and AndroidExporter all wrap the
-KivyExporter and share project loading, dependency checks and Kivy game
-generation. This base holds the parts that were verified byte-identical
-across the exe/linux/macos exporters; platform-specific build and packaging
-steps stay in the subclasses.
+Holds what every target needs regardless of engine: project loading (including
+the rooms/objects/sprites side-file merge and translation baking) and
+dependency checks.
+
+AndroidExporter and iOSExporter still wrap the KivyExporter. The three DESKTOP
+targets no longer do -- as of 2026-08-17 they freeze the real pygame engine via
+export/desktop/pygame_desktop_exporter.py, which subclasses this. Bundling a
+second, incomplete engine ("80% GameMaker 7.0 compatible") is what made an
+exported .exe differ from the game the author had just tested, and that
+produced five separate user-reported bugs in one pass. The Kivy helpers below
+(_check_kivy, _require_kivy_dependencies, _generate_kivy_game) therefore serve
+the mobile targets only.
 
 Notes:
 - AndroidExporter inherits this base but overrides _load_rooms_from_files,
@@ -32,7 +39,8 @@ def _missing_dependency_message(dependency: str, pip_name: str, platform_label: 
     """Build a user-facing 'dependency missing' message for the desktop/mobile
     exporters.
 
-    These exports bundle a Kivy runtime via PyInstaller, so the packages must
+    These exports freeze a game engine via PyInstaller (pygame for the desktop
+    targets since 2026-08-17; Kivy still for Android/iOS), so the packages must
     live in the *same* Python that runs the IDE. The message stresses that no
     admin rights are needed (per-user / virtualenv installs go into the user's
     own home directory), gives both the venv and the ``--user`` command, and
