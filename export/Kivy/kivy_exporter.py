@@ -3476,22 +3476,69 @@ class GameObject(Widget):
         self._gravity_direction = float(value)
 
     def _sync_speed_direction_from_components(self):
-        """Update speed/direction when hspeed/vspeed change (GM 7.0 behavior)"""
+        """Update speed/direction when hspeed/vspeed change (GM 7.0 behavior).
+
+        No minus on vspeed, unlike the desktop runtime: instance coordinates in
+        this generated game are KIVY coordinates, y up, so a positive vspeed
+        moves up the screen. See _sync_components_from_speed_direction.
+        """
         if self._hspeed != 0 or self._vspeed != 0:
             self._speed = math.sqrt(self._hspeed**2 + self._vspeed**2)
-            self._direction = math.degrees(math.atan2(-self._vspeed, self._hspeed))
+            self._direction = math.degrees(math.atan2(self._vspeed, self._hspeed))
         else:
             self._speed = 0
 
     def _sync_components_from_speed_direction(self):
-        """Update hspeed/vspeed when speed/direction change (GM 7.0 behavior)"""
+        """Update hspeed/vspeed when speed/direction change (GM 7.0 behavior).
+
+        `direction` keeps GameMaker's values -- 0 right, 90 up -- but instance
+        coordinates here are KIVY coordinates (y up), which the exporter
+        establishes when it places instances: an authored GM y of 576 in a
+        640-tall room becomes y=32. So GM 90 ("up") must produce a POSITIVE
+        vspeed, and the sin term carries no minus.
+
+        It used to, copied from the desktop runtime where y grows downward.
+        Every direction-driven vertical move therefore went the wrong way: an
+        up arrow moved the player down. The rest of this exporter already used
+        the Kivy convention (move_grid's dir_map is commented "Kivy Y is
+        inverted", set_vspeed's codegen negates, move_to_collision steps by
+        +sin) -- the physics layer was the odd one out.
+        """
         if self._speed != 0:
             rad = math.radians(self._direction)
             self._hspeed = self._speed * math.cos(rad)
-            self._vspeed = -self._speed * math.sin(rad)
+            self._vspeed = self._speed * math.sin(rad)
         else:
             self._hspeed = 0
             self._vspeed = 0
+
+    @property
+    def image_number(self):
+        """GameMaker's read-only count of subimages in this instance's sprite.
+
+        Mirrors GameInstance.image_number in the desktop runtime, and exists for
+        the same reason: authored expressions reference it by name, so without
+        it the token cannot bind. plateforme_3 gives each bonus a random frame
+        with `set_sprite(subimage=random(image_number))`.
+        """
+        return self._sprite_frames if self.has_sprite else 0
+
+    def random(self, upper):
+        """GameMaker's random(n): a real in [0, n)."""
+        import random as _random
+        return _random.uniform(0, float(upper))
+
+    def irandom(self, upper):
+        """GameMaker's irandom(n): an integer in [0, n] INCLUSIVE."""
+        import random as _random
+        return _random.randint(0, int(upper))
+
+    def choose(self, *options):
+        """GameMaker's choose(a, b, ...): one argument at random."""
+        import random as _random
+        if not options:
+            return 0
+        return _random.choice(options)
 
     def set_sprite(self, sprite_path):
         """Set the object's sprite - enables collision detection.
@@ -3601,7 +3648,11 @@ class GameObject(Widget):
             grav_rad = math.radians(self._gravity_direction)
             # Directly modify internal values to avoid triggering sync multiple times
             self._hspeed += self._gravity * math.cos(grav_rad)
-            self._vspeed += -self._gravity * math.sin(grav_rad)
+            # No minus: y is up here (Kivy coordinates), so the usual
+            # gravity_direction of 270 has to yield a NEGATIVE vspeed. With the
+            # desktop runtime's minus it yielded a positive one and gravity
+            # pulled everything upward -- plateforme_2's "Pingus rises".
+            self._vspeed += self._gravity * math.sin(grav_rad)
             # Sync once after both changes
             self._sync_speed_direction_from_components()
 
