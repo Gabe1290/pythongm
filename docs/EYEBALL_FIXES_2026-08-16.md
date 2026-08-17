@@ -63,6 +63,59 @@ four separate investigations in an engine with no way to execute it in CI, and
 the gap reopens every time the pygame engine gains a feature. **Only worth it
 if Android parity is the priority**, since Android has no alternative.
 
+#### A2 progress (started 2026-08-17, after A1 closed)
+
+Desktop no longer depends on this engine, so A2 is now purely the
+**mobile** (Android/iOS) repair — stated priority 4. Two of four done:
+
+- [x] **A2.1 tiles** (`0d8196de`). `room['tiles']` was never read at all: 127
+      tiles in plateforme_2, 125 in plateforme_3, none exported. Baked into the
+      scene as `ROOM_TILES`, pre-sorted by depth; the generated `_draw_tiles`
+      applies **two** independent y-flips (room position against `room_height`,
+      crop offset against the source texture height, because `get_region`
+      measures from the bottom). `tests/test_kivy_tiles.py`.
+- [x] **A2.2 keyboard** (`0359d3f1`). Three bugs, and the decisive one was not
+      the one the symptom suggested. `start_moving_direction` iterated its
+      direction parameter as a list when samples store a plain string, so
+      `"right"` became five unrecognised characters each defaulting to 0 — every
+      arrow key set direction 0, so the player only moved right, hit a wall and
+      looked stuck (**issue 5**, character counts match exactly). Plus: held
+      `keyboard` events fired on Kivy's key-down instead of every frame; and
+      held/`keyboard_press` both generated `on_keyboard`, so one silently
+      shadowed the other. Also fixed `anykey`, which compiled to `if key == 0:`
+      and could never match — that is **issue 6**, maze_4's start screen
+      advancing on `anykey -> next_room`.
+      `tests/test_kivy_keyboard_held.py`.
+- [ ] **A2.3 collision — DIAGNOSED, not fixed.** Root cause found; the fix is
+      bigger than it first looks, so it is written down here rather than
+      half-landed.
+
+      `GameObject._process_movement` (`export/Kivy/kivy_exporter.py`, the
+      `if self.solid and self.scene:` branch) only blocks movement when **the
+      moving instance itself is solid**. The desktop rule is that **at least
+      one of the pair** must be solid
+      (`GameRunner.check_movement_collision_with_blocker`'s docstring states
+      it explicitly). Players are normally *not* solid and walls are, so in a
+      Kivy export a player passes straight through every wall — that is
+      **issue 4** (raycast_4 has no wall collision) and half of **issue 7**
+      (plateforme_2's Pingus flies off screen).
+
+      **Why the one-line fix is wrong.** Kivy reverts *both* axes when a move
+      collides. Desktop resolves movement **per axis**, and on a blocked axis
+      calls `_slide_axis_to_contact` (`runtime/game_runner.py`) to advance
+      pixel-by-pixel until flush against the blocker. That difference is
+      load-bearing for platformers: gravity pushes into the floor every frame,
+      so a both-axes revert would cancel horizontal movement too and the player
+      could not walk at all — trading "falls through the floor" for "cannot
+      move", which is not an improvement.
+
+      So the unit is: the either-is-solid pair rule **plus** per-axis
+      resolution **plus** a slide-to-contact port. Its test needs to cover a
+      platformer walking along the ground, not just "a wall blocks", or it will
+      pass while the game is unplayable.
+- [ ] **A2.4 physics / sub-images** — not started (**issue 8**: bonus objects
+      all show sub-image 0; Pingus starts mid-air).
+
 - [x] **A0** — decide A1 vs A2. Nothing else in this group starts first.
       *Resolved: A1 (see below).*
 - [x] **A1.1** — spike: freeze `run_game.py` + one sample, confirm it launches
