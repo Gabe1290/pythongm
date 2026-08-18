@@ -195,13 +195,24 @@ PWA manifest, export presets) are more plausibly pickup-able later, but
 still have zero sizing/design done — genuinely start from scratch, not a
 resume point.
 
-**UPDATE (2026-08-18): the technical half now has a plan.**
-`docs/EXPORT_POLISH_PLAN.md` sizes HTML5 external-asset loading/PWA
+**UPDATE (2026-08-18): the technical half is now built.**
+`docs/EXPORT_POLISH_PLAN.md` sized HTML5 external-asset loading/PWA
 manifest/service worker, desktop version-info embedding/code signing/
 auto-update, and Kivy debug-vs-release export presets against the
-current (post-`EYEBALL_FIXES_2026-08-16.md`) export pipeline — not
-implemented yet, but no longer a from-scratch item. The product/business/
-data-practice items above remain untouched, on request.
+current (post-`EYEBALL_FIXES_2026-08-16.md`) export pipeline, then all
+of it was implemented the same day, one commit each: version-info
+embedding (`7744c2e`), HTML5 external-asset export
+(`747ee45`), Kivy/Android debug-vs-release build presets (`e33af4d`),
+HTML5 PWA manifest + service worker (`06ea1c2`), desktop code signing
+mechanism (`60a1504`). The one item NOT built is the auto-updater
+(2c) — deliberately skipped per the plan's own written recommendation
+(no concrete driving scenario for an exported student game phoning
+home to check for updates). Neither the signing mechanism nor the
+Android release-build mechanism has UI yet to actually set their
+settings (keystore, certificate, notarization credentials) — every
+real export today behaves exactly as before unless those settings are
+supplied programmatically. The product/business/data-practice items
+above remain untouched, on request.
 
 ## E. Translation completeness gap — [x] ALREADY CLOSED, re-verified 2026-08-15
 

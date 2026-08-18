@@ -1,6 +1,9 @@
 # Plan: export-system polish (technical half of Section D)
 
-Status: **not started.** Written 2026-08-18 per `docs/REMAINING_WORK_2026-08-15.md`
+Status: **done, except item 2c (deliberately skipped — see its own
+section).** Items 2a, 1 (all 4 phases), 3, and 2b all landed
+2026-08-18, one commit each, in the "Suggested order" below. Written
+2026-08-18 per `docs/REMAINING_WORK_2026-08-15.md`
 Section D, scoped down on explicit instruction to the **purely technical**
 items only. Section D's product/business/data-practice items (analytics,
 ads, in-app purchases, push notifications, crash reporting, cloud saves)
@@ -242,6 +245,15 @@ exports the way a long-lived deployed application does. If **the IDE
 application itself** having an update-check were wanted, that's a
 different, separately-scoped feature outside what Section D listed here.
 Recommend not sizing this further without a concrete driving scenario.
+
+**Status (2026-08-18): deliberately skipped, not built.** Reached in
+"Suggested order" after items 1-5 all landed; re-read against the
+reasoning above and it still holds — nothing in this session surfaced
+a concrete driving scenario for an exported student game phoning home
+to check for updates. Left as-is rather than built speculatively. If
+this is wanted, it needs its own explicit go-ahead (and a decision on
+whether it's actually about the IDE application itself, per the note
+above) before any code gets written.
 
 ---
 
