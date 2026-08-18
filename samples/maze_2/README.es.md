@@ -20,7 +20,7 @@ para cómo esto se compara con `plateforme_*` (añade fondos en teselas)
 y `match3_*` (script puro, sin acciones integradas).
 
 **Sonido y música:** se incluyen 4 archivos de sonido
-(`sound_background.mid`, `sound_diamond`/`door`/`goal.wav`) pero
+(`sound_background.ogg`, `sound_diamond`/`door`/`goal.wav`) pero
 **ninguno está realmente conectado** — ningún objeto referencia
 `play_sound`/`play_music` en ninguna parte, así que el juego es
 silencioso en la práctica a pesar de llevar recursos de audio. (En
@@ -80,7 +80,7 @@ contraste con `maze_3`, donde el mismo conjunto de sonidos sí se reproduce.)
 
 7 sprites (32×32, un solo fotograma, colisión precisa a nivel de
 píxel excepto `sprite_goal` que no tiene una bandera `precise`
-explícita), 2 fondos, 4 sonidos (`sound_background.mid`,
+explícita), 2 fondos, 4 sonidos (`sound_background.ogg`,
 `sound_diamond.wav`, `sound_door.wav`, `sound_goal.wav`). La
 licencia/procedencia de todos los recursos de esta muestra está **sin
 documentar** — ver `CREDITS.txt` en esta carpeta, que remite al TODO

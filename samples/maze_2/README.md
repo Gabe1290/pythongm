@@ -16,7 +16,7 @@ plus (unlike `maze_1`) a static **background image** per room
 for how this compares to `plateforme_*` (adds tiled backgrounds) and
 `match3_*` (pure-script, no built-in actions).
 
-**Sound & music:** 4 sound files are bundled (`sound_background.mid`,
+**Sound & music:** 4 sound files are bundled (`sound_background.ogg`,
 `sound_diamond`/`door`/`goal.wav`) but **none of them are actually wired
 up** — no object references `play_sound`/`play_music` anywhere, so the
 game is silent in practice despite carrying audio assets. (Contrast with
@@ -73,7 +73,7 @@ game is silent in practice despite carrying audio assets. (Contrast with
 
 7 sprites (32×32, single-frame, pixel-precise collision except `sprite_goal`
 which has no explicit `precise` flag), 2 backgrounds, 4 sounds
-(`sound_background.mid`, `sound_diamond.wav`, `sound_door.wav`,
+(`sound_background.ogg`, `sound_diamond.wav`, `sound_door.wav`,
 `sound_goal.wav`). Licensing/provenance for all of this sample's assets is
 **undocumented** — see `CREDITS.txt` in this folder, which points to the
 "Remaining maze assets" TODO in `docs/ASSET_LICENSES.md`. Do not assume CC0
