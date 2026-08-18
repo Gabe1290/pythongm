@@ -195,6 +195,14 @@ PWA manifest, export presets) are more plausibly pickup-able later, but
 still have zero sizing/design done — genuinely start from scratch, not a
 resume point.
 
+**UPDATE (2026-08-18): the technical half now has a plan.**
+`docs/EXPORT_POLISH_PLAN.md` sizes HTML5 external-asset loading/PWA
+manifest/service worker, desktop version-info embedding/code signing/
+auto-update, and Kivy debug-vs-release export presets against the
+current (post-`EYEBALL_FIXES_2026-08-16.md`) export pipeline — not
+implemented yet, but no longer a from-scratch item. The product/business/
+data-practice items above remain untouched, on request.
+
 ## E. Translation completeness gap — [x] ALREADY CLOSED, re-verified 2026-08-15
 
 **This section's own premise was stale.** It was written from a CLAUDE.md
