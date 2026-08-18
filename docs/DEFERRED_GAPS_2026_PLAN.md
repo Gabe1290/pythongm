@@ -358,9 +358,32 @@ today, just unbuilt).
   follow-up): regenerating the localized wiki Full-Action-Reference pages
   (`tools/gen_action_reference.py`) to include these 14 — real but
   unrelated documentation work, same class as any other action addition.
-- [ ] **5.3 Phase 3 (export parity).** HTML5/Kivy, deferred until Phase 1-2
-  are proven and at least one sample uses them (match3_1 lesson: don't chase
-  parity for a feature nothing uses yet).
+- [x] **5.3 Phase 3 (export parity) — DONE 2026-08-15 (`0be0dd58`),
+  checkbox ticked 2026-08-17.** All 14 particle/timeline actions export on
+  both targets, so the "wait for a sample" trigger below was overtaken by
+  events — the work was done for its own sake and closed Section A of
+  `docs/REMAINING_WORK_2026-08-15.md`.
+
+  HTML5: `case` branches in `executeAction` (core actions, no extension
+  mechanism), a shared `spawnParticles()` mirroring
+  `ActionExecutor._spawn_particles`, per-frame `updateParticleSystem`/
+  `updateTimeline` from the room step loop, and `renderParticles()` called
+  before the visibility check so an invisible particle-controller instance
+  still shows its particles. Kivy: the same 14 as real `GameObject` methods
+  (a single method call from codegen rather than an inline expression, the
+  `draw_minimap` precedent), rendering into its own `InstructionGroup` on
+  `canvas.after` because `_redraw_frame` clears the base canvas every
+  sprite-animation frame.
+
+  Tests: `tests/test_html5_particle_timeline_export.py`,
+  `tests/test_kivy_particle_timeline_export.py`,
+  `tests/test_particle_timeline_engine.py` — 48 tests, re-run green
+  2026-08-17.
+
+  *Original deferral, kept because the reasoning is still sound for the
+  next feature:* HTML5/Kivy parity waits until Phase 1-2 are proven and at
+  least one sample uses the feature (the match3_1 lesson — don't chase
+  parity for something nothing exercises yet).
 
 ## Tier 6 — Manifest-ify sprites in `project.json` (medium, ~1 session) — CLOSED 2026-08-15
 
