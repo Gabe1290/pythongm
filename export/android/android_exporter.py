@@ -39,6 +39,12 @@ class AndroidExporter(BaseKivyExporter):
         self.export_settings = {}
         self.project_data = None
         self.cancel_requested = False
+        # Debug vs. release build presets (docs/EXPORT_POLISH_PLAN.md item 3).
+        self._build_type = 'debug'
+        self._keystore_path = None
+        self._keystore_password = None
+        self._key_alias = None
+        self._key_password = None
 
     def _load_rooms_from_files(self, project_dir: Path) -> None:
         """Load room instance data from separate files in rooms/ directory
@@ -140,6 +146,40 @@ class AndroidExporter(BaseKivyExporter):
         """
         try:
             self._load_project(project_path, output_path, settings)
+
+            # Debug vs. release build preset (docs/EXPORT_POLISH_PLAN.md
+            # item 3). Release needs a signing keystore up front -- fail
+            # fast with a clear message rather than letting an unsigned
+            # release build silently proceed or buildozer fail deep into
+            # a 40+ minute build with an opaque gradle error.
+            self._build_type = settings.get('build_type', 'debug')
+            if self._build_type not in ('debug', 'release'):
+                self._build_type = 'debug'
+
+            if self._build_type == 'release':
+                self._keystore_path = settings.get('keystore_path')
+                self._keystore_password = settings.get('keystore_password')
+                self._key_alias = settings.get('key_alias')
+                self._key_password = settings.get('key_password')
+                if not all([self._keystore_path, self._keystore_password,
+                           self._key_alias, self._key_password]):
+                    self.export_complete.emit(
+                        False,
+                        "A release build needs a signing keystore.\n\n"
+                        "Provide 'keystore_path', 'keystore_password', "
+                        "'key_alias' and 'key_password' in the export "
+                        "settings, or export a debug build instead.\n\n"
+                        "Important: once you publish a release build, "
+                        "losing this keystore means the app can never be "
+                        "updated again under the same Play Store listing "
+                        "-- back it up somewhere safe."
+                    )
+                    return False
+            else:
+                self._keystore_path = None
+                self._keystore_password = None
+                self._key_alias = None
+                self._key_password = None
 
             # Step 1: Verify platform (Buildozer only runs on Linux and macOS)
             self.progress_update.emit(5, "Checking platform...")
@@ -446,7 +486,8 @@ class AndroidExporter(BaseKivyExporter):
         try:
             from export.Kivy.buildspec_generator import BuildspecGenerator
 
-            generator = BuildspecGenerator(self.project_data, build_dir)
+            generator = BuildspecGenerator(self.project_data, build_dir,
+                                            build_type=self._build_type)
             success = generator.generate_buildozer_spec()
 
             if not success:
@@ -553,7 +594,12 @@ class AndroidExporter(BaseKivyExporter):
                 logger.info("Using WSL to run buildozer")
                 process = self._wsl_bridge.run_buildozer(
                     str(build_dir),
-                    project_name=(self.project_data or {}).get('name'))
+                    project_name=(self.project_data or {}).get('name'),
+                    build_type=self._build_type,
+                    keystore_path=self._keystore_path,
+                    keystore_password=self._keystore_password,
+                    key_alias=self._key_alias,
+                    key_password=self._key_password)
                 timeout = BUILDOZER_TIMEOUT_WSL
             else:
                 # Native Linux/macOS execution
@@ -572,6 +618,16 @@ class AndroidExporter(BaseKivyExporter):
                 # so pip installs into the venv normally.
                 env['PIP_USER'] = '0'
                 env['VIRTUAL_ENV'] = venv_root
+
+                # Release signing: python-for-android's own established
+                # mechanism (docs/EXPORT_POLISH_PLAN.md item 3) -- no need
+                # to reinvent it, just plumb our settings through.
+                if self._build_type == 'release' and self._keystore_path:
+                    env['P4A_RELEASE_KEYSTORE'] = str(
+                        Path(self._keystore_path).resolve())
+                    env['P4A_RELEASE_KEYSTORE_PASSWD'] = self._keystore_password
+                    env['P4A_RELEASE_KEYALIAS'] = self._key_alias
+                    env['P4A_RELEASE_KEYALIAS_PASSWD'] = self._key_password
 
                 # Build in a persistent per-project directory, same rationale
                 # as the WSL bridge: the temp build_dir is deleted after every
@@ -598,7 +654,7 @@ class AndroidExporter(BaseKivyExporter):
                 # POSIX-only, which is fine — the native path never runs on
                 # Windows (Windows routes through WSL).
                 process = subprocess.Popen(
-                    [python_exe, '-m', 'buildozer', 'android', 'debug'],
+                    [python_exe, '-m', 'buildozer', 'android', self._build_type],
                     cwd=persist_dir,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
@@ -791,29 +847,35 @@ class AndroidExporter(BaseKivyExporter):
             return "Error launching Buildozer: {}".format(e)
 
     def _copy_to_output(self, build_dir: Path) -> bool:
-        """Copy the built APK to the output directory.
+        """Copy the built APK/AAB to the output directory.
+
+        A release build may produce a .aab (Android App Bundle, what
+        Google Play requires for new submissions) instead of, or in
+        addition to, a .apk -- see BuildspecGenerator's
+        android.release_artifact. A debug build always produces a .apk.
 
         Returns:
-            True if an APK was found and copied, False otherwise.
+            True if a build artifact was found and copied, False otherwise.
         """
         # Create output directory
         self.output_path.mkdir(parents=True, exist_ok=True)
 
-        # Buildozer places APKs in the bin/ directory
+        # Buildozer places APKs/AABs in the bin/ directory
         bin_dir = build_dir / "bin"
-        found_apk = False
+        found_artifact = False
 
         if bin_dir.exists():
-            for apk_file in bin_dir.glob("*.apk"):
-                dest = self.output_path / apk_file.name
-                shutil.copy2(apk_file, dest)
-                logger.info("Copied APK: {}".format(apk_file.name))
-                found_apk = True
+            artifacts = list(bin_dir.glob("*.apk")) + list(bin_dir.glob("*.aab"))
+            for artifact_file in artifacts:
+                dest = self.output_path / artifact_file.name
+                shutil.copy2(artifact_file, dest)
+                logger.info("Copied build artifact: {}".format(artifact_file.name))
+                found_artifact = True
 
-        if not found_apk:
-            logger.error("No APK files found in {}".format(bin_dir))
+        if not found_artifact:
+            logger.error("No APK/AAB files found in {}".format(bin_dir))
 
-        return found_apk
+        return found_artifact
 
     @staticmethod
     def _force_remove_readonly(func, path, exc_info):

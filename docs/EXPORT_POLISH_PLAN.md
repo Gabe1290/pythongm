@@ -256,6 +256,36 @@ Sizing: **medium** — buildozer/p4a already solve the hard part
 (signing itself); the real work is a correct, honest UI around keystore
 handling and wiring the existing env-var contract through.
 
+**Status (2026-08-18): plan items 1 and 3 done, item 2 (keystore UI)
+deliberately deferred.** `build_type` ("debug"/"release", default
+"debug") now flows end to end: `AndroidExporter.export_project` reads
+it plus `keystore_path`/`keystore_password`/`key_alias`/`key_password`
+from `export_settings`, refuses a release request missing any keystore
+field before touching platform/dependency checks (with the "losing it
+is permanent" warning inline), passes `build_type` into
+`BuildspecGenerator` (which now emits `android.release_artifact = aab`
+for release / `apk` for debug), replaces the old hardcoded `'debug'` in
+both the native subprocess command and the WSL bridge's generated bash
+script, sets the standard `P4A_RELEASE_*` env vars for a native build
+and as textual `export` lines inside the WSL script (WSL runs as a
+separate process from `wsl.exe`, so a Python-side `subprocess`
+`env=` never reaches it — confirmed by reading `wsl_bridge.py`'s
+`run_buildozer`), and copies back `.aab` alongside `.apk` in
+`_copy_to_output`. Keystore passwords reaching the generated WSL bash
+script are POSIX single-quote-escaped (`WSLBridge._bash_single_quote`)
+against a value containing a literal `'`. No UI dialog exists yet to
+choose "debug" vs. "release" or browse/generate a keystore — the
+mechanism accepts these settings but nothing in `ide_window.py`'s
+Android export flow sets them yet, so every real export today is still
+an ordinary debug build exactly as before. Building that dialog (browse
+existing `.jks` vs. generate one via `keytool -genkeypair`, with the
+mandatory "back this up" warning before the dialog can be dismissed) is
+the one remaining piece of item 3, deferred as its own follow-up rather
+than guessed at without a concrete UI review. Regression coverage:
+`tests/test_android_release_build.py` (20 tests: buildspec artifact
+selection, the keystore gate, native command + env wiring, `.aab`
+copy-back, WSL script text + shell-quoting).
+
 ---
 
 ## Suggested order
