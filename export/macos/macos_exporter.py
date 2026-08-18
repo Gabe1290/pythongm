@@ -51,6 +51,14 @@ class MacOSExporter(BasePygameDesktopExporter):
         # repr() so an apostrophe in the display name survives into
         # CFBundleDisplayName (M38, the "L'aventure" case).
         display_name = repr(str(self.project_data.get("name", "Game")))
+        # repr() for the same reason -- was hardcoded '1.0.0' regardless of
+        # the project's own version, so every exported .app claimed to be
+        # version 1.0.0 forever. CFBundleVersion (the internal build
+        # string, can be any format) and CFBundleShortVersionString (the
+        # user-visible version, e.g. shown in Finder's Get Info) both take
+        # the project's version string directly -- unlike Windows'
+        # VSVersionInfo, macOS does not require a numeric tuple.
+        version_literal = repr(str(self.project_data.get("version") or "1.0.0"))
 
         return f'''
 app = BUNDLE(
@@ -61,8 +69,8 @@ app = BUNDLE(
     info_plist={{
         'CFBundleName': {app_name!r},
         'CFBundleDisplayName': {display_name},
-        'CFBundleVersion': '1.0.0',
-        'CFBundleShortVersionString': '1.0.0',
+        'CFBundleVersion': {version_literal},
+        'CFBundleShortVersionString': {version_literal},
         # False on purpose: the engine renders to a fixed-size pygame surface,
         # so claiming Retina support would shrink the window to half its
         # authored size in points rather than sharpen it.

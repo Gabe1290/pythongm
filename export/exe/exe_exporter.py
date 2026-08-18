@@ -35,6 +35,68 @@ DPI_MANIFEST = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 </assembly>'''
 
 
+def _parse_version_tuple(version_str, parts: int = 4) -> tuple:
+    """Best-effort parse of a project version string like "1.2.3" into a
+    tuple of `parts` non-negative ints, padded with 0s. Never raises -- an
+    unparsable or missing version degrades to all-zeros rather than
+    failing the whole export (the .exe still gets a version RESOURCE,
+    it's just 0.0.0.0, which is honest for a project that never set one)."""
+    nums = []
+    for piece in str(version_str or "").split("."):
+        digits = "".join(ch for ch in piece if ch.isdigit())
+        nums.append(int(digits) if digits else 0)
+    nums = (nums + [0] * parts)[:parts]
+    return tuple(nums)
+
+
+def _version_info_text(app_name: str, version_str: str) -> str:
+    """A PyInstaller version-info resource file (the text format its
+    `EXE(version=...)` / `--version-file` option reads -- PyInstaller
+    evals this file itself at build time with VSVersionInfo/FixedFileInfo/
+    StringFileInfo/StringTable/StringStruct/VarFileInfo/VarStruct already
+    in scope, so this module does not need to import
+    PyInstaller.utils.win32.versioninfo just to generate the text).
+
+    This is what Explorer's file Properties -> Details tab reads --
+    currently nothing populates it at all, so every exported .exe shows
+    blank File/Product version fields regardless of the project's own
+    version."""
+    ver_tuple = _parse_version_tuple(version_str, 4)
+    ver_str = ".".join(str(n) for n in ver_tuple)
+
+    def esc(s):
+        return str(s).replace("\\", "\\\\").replace("'", "\\'")
+
+    return f"""# UTF-8
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers={ver_tuple!r},
+    prodvers={ver_tuple!r},
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        u'040904B0',
+        [StringStruct(u'FileDescription', u'{esc(app_name)}'),
+        StringStruct(u'FileVersion', u'{esc(ver_str)}'),
+        StringStruct(u'InternalName', u'{esc(app_name)}'),
+        StringStruct(u'OriginalFilename', u'{esc(app_name)}.exe'),
+        StringStruct(u'ProductName', u'{esc(app_name)}'),
+        StringStruct(u'ProductVersion', u'{esc(ver_str)}')])
+      ]),
+    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
+  ]
+)
+"""
+
+
 class ExeExporter(BasePygameDesktopExporter):
     """Export the project as a standalone Windows .exe."""
 
@@ -48,15 +110,20 @@ class ExeExporter(BasePygameDesktopExporter):
     def __init__(self):
         super().__init__()
         self._manifest_path: Optional[Path] = None
+        self._version_info_path: Optional[Path] = None
 
     def _write_spec(self, build_dir: Path, launcher: Path) -> Path:
         # The manifest has to exist before PyInstaller reads the spec.
         self._manifest_path = build_dir / "game.manifest"
         self._manifest_path.write_text(DPI_MANIFEST, encoding="utf-8")
+        self._version_info_path = build_dir / "version_info.txt"
+        self._version_info_path.write_text(
+            _version_info_text(self.app_name(), self.project_data.get("version", "")),
+            encoding="utf-8")
         return super()._write_spec(build_dir, launcher)
 
     def _spec_exe_options(self) -> str:
-        options = ["manifest='game.manifest',"]
+        options = ["manifest='game.manifest',", "version='version_info.txt',"]
         icon = (self.export_settings or {}).get("icon_path")
         if icon:
             options.append(f"icon={_literal(icon)},")
