@@ -63,6 +63,97 @@ def _sanitize_filename(name: str) -> str:
     return cleaned.strip(' .')
 
 
+_GENERIC_ICON_PATH = Path(__file__).resolve().parent.parent.parent / "resources" / "icon.png"
+
+
+def _write_pwa_icons(output_path: Path, icon_source: Optional[Path]) -> list:
+    """Resize icon_source (or the generic pygm2 icon as fallback) into the
+    two sizes a PWA manifest needs, written under assets/icons/. Returns
+    the manifest.json "icons" list, or [] if no usable source image exists
+    (a missing/corrupt icon must not fail the whole export -- the manifest
+    just omits icons, and installability degrades gracefully)."""
+    source = icon_source if (icon_source and icon_source.exists()) else _GENERIC_ICON_PATH
+    if not source.exists():
+        return []
+    try:
+        from PIL import Image
+        img = Image.open(source).convert("RGBA")
+    except Exception:
+        logger.warning("PWA icon source %s could not be read; skipping icons", source)
+        return []
+
+    icons_dir = output_path / "assets" / "icons"
+    icons_dir.mkdir(parents=True, exist_ok=True)
+    icons = []
+    for size in (192, 512):
+        resized = img.resize((size, size), Image.LANCZOS)
+        dest = icons_dir / f"icon-{size}.png"
+        resized.save(dest, "PNG")
+        icons.append({
+            "src": f"assets/icons/icon-{size}.png",
+            "sizes": f"{size}x{size}",
+            "type": "image/png",
+        })
+    return icons
+
+
+def _write_pwa_manifest(output_path: Path, project_name: str, html_filename: str,
+                        icon_source: Optional[Path]) -> None:
+    """Write manifest.json for an installable PWA (docs/EXPORT_POLISH_PLAN.md
+    item 1 Phase 4). Only meaningful alongside external_assets folder mode
+    -- the single-file inline export is already fully offline the instant
+    it's downloaded, nothing to install/cache in front of it."""
+    icons = _write_pwa_icons(output_path, icon_source)
+    manifest = {
+        "name": str(project_name),
+        "short_name": str(project_name)[:30],
+        "start_url": f"./{html_filename}",
+        "scope": "./",
+        "display": "standalone",
+        "background_color": "#667eea",
+        "theme_color": "#764ba2",
+        "icons": icons,
+    }
+    (output_path / "manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding='utf-8')
+
+
+def _write_pwa_service_worker(output_path: Path, html_filename: str,
+                              external_files: list) -> None:
+    """Write sw.js: a minimal cache-first service worker so the exported
+    folder keeps working offline after the first successful load (the
+    thing a PWA install is actually for). Cache-first, not
+    network-first -- a classroom game shouldn't re-fetch assets it
+    already has just because the network happens to be flaky that day."""
+    cache_list = ['"./"', f'"./{html_filename}"'] + [
+        json.dumps(f) for f in external_files
+    ]
+    sw_js = (
+        "const CACHE_NAME = 'pygm-game-v1';\n"
+        "const ASSETS_TO_CACHE = [\n    " + ",\n    ".join(cache_list) + "\n];\n\n"
+        "self.addEventListener('install', event => {\n"
+        "    event.waitUntil(\n"
+        "        caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))\n"
+        "    );\n"
+        "    self.skipWaiting();\n"
+        "});\n\n"
+        "self.addEventListener('activate', event => {\n"
+        "    event.waitUntil(\n"
+        "        caches.keys().then(names => Promise.all(\n"
+        "            names.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))\n"
+        "        ))\n"
+        "    );\n"
+        "    self.clients.claim();\n"
+        "});\n\n"
+        "self.addEventListener('fetch', event => {\n"
+        "    event.respondWith(\n"
+        "        caches.match(event.request).then(cached => cached || fetch(event.request))\n"
+        "    );\n"
+        "});\n"
+    )
+    (output_path / "sw.js").write_text(sw_js, encoding='utf-8')
+
+
 def _copy_asset_file(full_path: Path, dest_dir: Path, asset_name: str,
                       url_prefix: str) -> str:
     """Copy full_path into dest_dir (creating it if needed), named after
@@ -313,6 +404,16 @@ class HTML5Exporter:
                 html_content = html_content.replace('{sprites_data}', f'"{sprites_data_compressed}"')
                 html_content = html_content.replace('{sounds_data}', f'"{sounds_data_compressed}"')
 
+                # Sanitize the name for the FILENAME — characters legal in a
+                # project name but illegal in a filename (< > : " / \ | ? *
+                # and control chars) otherwise crash the write on Windows
+                # (e.g. a name like "Level 1: Go" or "Tom & <Jerry>"). The
+                # in-page title keeps the real (HTML-escaped) name; only the
+                # file on disk is sanitized. Computed here (not just before
+                # writing) because the PWA manifest's start_url needs it too.
+                safe_name = _sanitize_filename(str(project_name)) or "game"
+                html_filename = f"{safe_name}.html"
+
                 # pako/engine.js: inlined (default) or written as their own
                 # files and referenced by <script src=...> (external_assets).
                 # engine.js itself needs no changes for this switch -- it
@@ -333,14 +434,43 @@ class HTML5Exporter:
                 html_content = html_content.replace('{pako_script_tag}', pako_script_tag)
                 html_content = html_content.replace('{engine_script_tag}', engine_script_tag)
 
-                # Write output. Sanitize the name for the FILENAME —
-                # characters legal in a project name but illegal in a
-                # filename (< > : " / \ | ? * and control chars) otherwise
-                # crash the write on Windows (e.g. a name like "Level 1: Go"
-                # or "Tom & <Jerry>"). The in-page title keeps the real
-                # (HTML-escaped) name; only the file on disk is sanitized.
-                safe_name = _sanitize_filename(str(project_name)) or "game"
-                output_file = output_path / f"{safe_name}.html"
+                # PWA manifest + service worker (docs/EXPORT_POLISH_PLAN.md
+                # item 1 Phase 4): opt-in, and only meaningful alongside
+                # external_assets -- the single-file inline export is
+                # already fully offline the instant it's downloaded, so
+                # there's nothing a service worker would add in front of it.
+                pwa = bool(export_settings.get('pwa')) and external_assets
+                if pwa:
+                    icon_setting = export_settings.get('icon_path')
+                    icon_source = Path(icon_setting) if icon_setting else None
+                    _write_pwa_manifest(output_path, project_name, html_filename, icon_source)
+                    external_files = [
+                        f"./{p.relative_to(output_path).as_posix()}"
+                        for p in sorted(output_path.rglob('*')) if p.is_file()
+                    ]
+                    _write_pwa_service_worker(output_path, html_filename, external_files)
+                    pwa_head_tags = (
+                        '<link rel="manifest" href="manifest.json">\n'
+                        '    <meta name="theme-color" content="#764ba2">'
+                    )
+                    pwa_sw_register_script = (
+                        "<script>\n"
+                        "        if ('serviceWorker' in navigator) {\n"
+                        "            window.addEventListener('load', () => {\n"
+                        "                navigator.serviceWorker.register('./sw.js').catch(err =>\n"
+                        "                    console.warn('Service worker registration failed:', err));\n"
+                        "            });\n"
+                        "        }\n"
+                        "    </script>"
+                    )
+                else:
+                    pwa_head_tags = ''
+                    pwa_sw_register_script = ''
+                html_content = html_content.replace('{pwa_head_tags}', pwa_head_tags)
+                html_content = html_content.replace('{pwa_sw_register_script}', pwa_sw_register_script)
+
+                # Write output.
+                output_file = output_path / html_filename
                 with open(output_file, 'w', encoding='utf-8') as f:
                     f.write(html_content)
 

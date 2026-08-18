@@ -100,6 +100,30 @@ probably much smaller than "external asset loading" sounds.
 
 Sizing: **small** (Phases 1-3), plus a **small** follow-on for Phase 4.
 
+**Status (2026-08-18): all four phases done.** Phases 1-3 landed first
+(commit `747ee45`): `external_assets` opt-in folder export (sprites +
+sounds copied as real files, `engine.js`/`pako.min.js` as their own
+`<script src>`-referenced files, unchanged when off), plus the
+hosting-requirements `README-hosting.txt`. Phase 4's icon-generation
+question was put to the user rather than guessed, per this doc's own
+note above — decided: reuse `export_settings['icon_path']` (the same
+key desktop exports already use) when the author set one, else fall
+back to the bundled `resources/icon.png`. New opt-in `pwa` setting
+(default off, only takes effect alongside `external_assets`) writes
+`manifest.json` (name/icons/`display: standalone`, `start_url` pointing
+at the real exported filename), 192×192 + 512×512 icons resized via
+PIL under `assets/icons/`, and a cache-first `sw.js` that lists every
+file the export actually wrote (walked via `Path.rglob` after all
+other files are written, so it can't drift from what's really there) —
+registered from the page via a `<link rel="manifest">` + a
+`navigator.serviceWorker.register()` snippet, both new template
+placeholders that resolve to nothing when `pwa` is off. A
+missing/unreadable `icon_path` degrades to the generic icon rather than
+failing the export. Regression coverage: `tests/test_html5_pwa_export.py`
+(11 tests — default/opt-out shape, manifest contents, icon dimensions
+and custom-icon-path override, service-worker cache list and cache-first
+ordering, graceful fallback on a bad icon path).
+
 ---
 
 ## 2. Desktop (.exe/Linux/macOS) — version-info, code signing, auto-update
