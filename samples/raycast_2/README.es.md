@@ -1,4 +1,4 @@
-# Raycast — Nivel 2
+# 2.5 D — Nivel 2
 
 Un segundo nivel en primera persona al estilo Doom/Wolfenstein,
 construido sobre el mismo **motor raycast 2,5D** que
@@ -20,7 +20,7 @@ persona, recolecta cada gema esquivando monstruos en patrulla, y
 alcanza la salida bloqueada por gemas — la primera sala (ladrillo
 cálido) lleva a una segunda sala (caverna de cristal fría), y
 completarla gana. Disponible desde la pestaña Welcome del IDE
-(*"Raycast — Level 2"*) y se exporta a los tres destinos (escritorio,
+(*"2.5 D — Level 2"*) y se exporta a los tres destinos (escritorio,
 HTML5, nativo/Kivy).
 
 ## Cómo se juega

@@ -146,6 +146,7 @@ class iOSExporter(QObject):
 
             self._load_rooms_from_files(project_dir)
             self._load_objects_from_files(project_dir)
+            self._load_sprites_from_files(project_dir)
 
             # ---- Step 4: create temp build directory ----------------------
             self.progress_update.emit(16, "Creating build directory...")
@@ -325,6 +326,29 @@ class iOSExporter(QObject):
                         obj_data['events'] = file_obj_data['events']
                 except Exception as e:
                     logger.warning("Could not load object {}: {}".format(obj_name, e))
+
+    def _load_sprites_from_files(self, project_dir: Path) -> None:
+        """project.json sprite entries are stubs since sprites were
+        manifest-ified (Tier 6); the full metadata lives in
+        sprites/<sprite_name>.json."""
+        from utils.project_file_merge import merge_sprite_file
+
+        sprites_dir = project_dir / "sprites"
+        if not sprites_dir.exists():
+            return
+        sprites_data = self.project_data.get('assets', {}).get('sprites', {})
+        for sprite_name, sprite_data in list(sprites_data.items()):
+            if isinstance(sprite_data, str):
+                sprite_data = {"name": sprite_name, "asset_type": "sprite"}
+                sprites_data[sprite_name] = sprite_data
+            sprite_file = sprites_dir / "{}.json".format(sprite_name)
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        file_sprite_data = json.load(f)
+                    merge_sprite_file(sprite_data, file_sprite_data)
+                except Exception as e:
+                    logger.warning("Could not load sprite {}: {}".format(sprite_name, e))
 
     # ------------------------------------------------------------------
     # Build steps

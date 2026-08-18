@@ -1,4 +1,4 @@
-# Lansiranje žarkov — 2. stopnja
+# 2.5 D — 2. stopnja
 
 Druga stopnja v prvi osebi v slogu Doom/Wolfenstein, zgrajena na
 istem **motorju lansiranja žarkov 2,5D** kot
@@ -20,7 +20,7 @@ osebi, zberite vsak dragi kamen, medtem ko se izogibate patruljnim
 pošastim, in dosezite izhod, pogojen z dragimi kamni — prva (topla
 opečna) soba vodi v drugo (hladno kristalno-jamsko) sobo, in
 dokončanje te zmaga. Na voljo v zavihku Welcome urejevalnika
-(*"Raycast — Level 2"*) in se izvozi na vse tri cilje (namizje, HTML5,
+(*"2.5 D — Level 2"*) in se izvozi na vse tri cilje (namizje, HTML5,
 nativno/Kivy).
 
 ## Kako igrati

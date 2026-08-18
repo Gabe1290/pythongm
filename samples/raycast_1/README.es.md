@@ -1,4 +1,4 @@
-# Raycast — Nivel 1
+# 2.5 D — Nivel 1
 
 Una vista en primera persona al estilo Doom/Wolfenstein del **mismo
 trazado de laberinto que `maze_1`** — mismas salas, mismo objetivo,
@@ -153,6 +153,6 @@ confirmaron que cabe en el presupuesto (navegador ~0,4 ms a res=2;
 Kivy/AMD 840M ~5 ms a res=4). Un proyecto aún puede vaciar
 `floor_texture` para un suelo plano de `floor_color`.
 
-Disponible desde la pestaña Welcome del IDE — elige **"Raycast —
+Disponible desde la pestaña Welcome del IDE — elige **"2.5 D —
 Level 1"** del menú desplegable *Choose a sample* (abrir una muestra
 la copia a tus Documentos, así el original incluido permanece intacto).

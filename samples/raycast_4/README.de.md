@@ -1,4 +1,4 @@
-# Raycast — Level 4
+# 2.5 D — Level 4
 
 Das vierte Ich-Perspektive-Level im Doom-/Wolfenstein-Stil, und das
 erste, das **um eine dauerhafte untere Statusleiste** herum gebaut ist
@@ -108,7 +108,7 @@ unten im Fenster; die Engine übernimmt die Umkehrung.)
 | `objects/obj_monster.json` | Patrouillierender Billboard-Gegner |
 | `objects/obj_goal.json` | Schlüsselgesperrter Ausgang (öffnet sich, wenn kein `obj_key` mehr übrig ist) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Dünne Wandsegmente |
-| `sprites/` | Wiederverwendete Wand-/Boden-/Spieler-/Monster-Grafik, eine neue **`spr_ceiling`** (Innenraum-Steindecke, ersetzt den Himmel), plus neue `spr_face` (4-Frame-Porträt) und `spr_key` |
+| `sprites/` | Wiederverwendete Wand-/Boden-/Spieler-/Monster-Grafik, eine neue **`spr_ceiling`** (Innenraum-Steindecke, ersetzt den Himmel), plus neue `spr_face` (4-Frame-Porträt), `spr_key` und `spr_gate` (der verschlossene Ausgang) |
 
 ## Das Labyrinth ist erzeugt
 

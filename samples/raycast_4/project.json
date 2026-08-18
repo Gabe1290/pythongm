@@ -90,6 +90,25 @@
         "modified": "2026-06-16T15:12:34.811782",
         "thumbnail": ""
       },
+      "spr_gate": {
+        "name": "spr_key",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_gate.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:54.961536",
+        "modified": "2026-06-16T15:12:34.811782",
+        "thumbnail": ""
+      },
       "spr_monster": {
         "name": "spr_monster",
         "asset_type": "sprite",
@@ -191,7 +210,7 @@
       "obj_goal": {
         "name": "obj_goal",
         "asset_type": "object",
-        "sprite": "spr_key",
+        "sprite": "spr_gate",
         "visible": true,
         "solid": false,
         "persistent": false,
@@ -214,7 +233,10 @@
               {
                 "action": "show_message",
                 "parameters": {
-                  "message": "You found every key. The gate opens!"
+                  "message": "You found every key. The gate opens!",
+                  "message_translations": {
+                    "fr": "Tu as trouvé toutes les clés. La porte s'ouvre !"
+                  }
                 }
               },
               {
@@ -240,7 +262,10 @@
               {
                 "action": "show_message",
                 "parameters": {
-                  "message": "The gate is locked. Find all the keys first!"
+                  "message": "The gate is locked. Find all the keys first!",
+                  "message_translations": {
+                    "fr": "La porte est verrouillée. Trouve d'abord toutes les clés !"
+                  }
                 }
               },
               {
@@ -593,7 +618,16 @@
                   "lives_sprite": "spr_person",
                   "lives_scale": "1.0",
                   "objective_value": "keys",
-                  "objective_label": "KEYS "
+                  "objective_label": "KEYS ",
+                  "health_label_translations": {
+                    "fr": "VIE"
+                  },
+                  "score_label_translations": {
+                    "fr": "SCORE "
+                  },
+                  "objective_label_translations": {
+                    "fr": "CLÉS "
+                  }
                 }
               },
               {
@@ -617,7 +651,11 @@
                   "size": "260",
                   "back_color": "#101018",
                   "wall_color": "#8080a0",
-                  "player_color": "#ffd040"
+                  "player_color": "#ffffff",
+                  "mark_object": "obj_key",
+                  "mark_color": "#ffd040",
+                  "mark_object_2": "obj_monster",
+                  "mark_color_2": "#ff4040"
                 }
               },
               {

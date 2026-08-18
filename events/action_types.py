@@ -2345,6 +2345,22 @@ ACTION_TYPES = {
         ],
     ),
 
+    # Runtime: execute_show_video_action. Was functional but unregistered
+    # (invisible in the UI) -- docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.4.
+    "show_video": ActionType(
+        name="show_video",
+        display_name="Show Video",
+        description="Play a video file in your system's default video "
+                    "player -- opens as a separate window, not rendered "
+                    "inside the game itself",
+        category="Game",
+        icon="🎬",
+        parameters=[
+            ActionParameter(name="filename", display_name="Video File", param_type="string", default_value="", description="Path to the video file"),
+            ActionParameter(name="fullscreen", display_name="Fullscreen", param_type="boolean", default_value=False, required=False, description="Request fullscreen playback (support depends on your system's player)"),
+        ],
+    ),
+
     # Runtime: execute_show_info_action — no parameters
     "show_info": ActionType(
         name="show_info",
@@ -2353,6 +2369,34 @@ ACTION_TYPES = {
         category="Game",
         icon="ℹ️",
         parameters=[],
+    ),
+
+    # Runtime: execute_splash_show_text_action. Was a placeholder that only
+    # logged the text (no dead-end UI, since it wasn't registered before) --
+    # docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.5. Now a real blocking message,
+    # same modal machinery as show_message/show_info.
+    "splash_show_text": ActionType(
+        name="splash_show_text",
+        display_name="Splash: Show Text",
+        description="Show a message and pause the game until the player dismisses it",
+        category="Game",
+        icon="💬",
+        parameters=[
+            ActionParameter(name="text", display_name="Text", param_type="string", default_value="", description="Message to display"),
+        ],
+    ),
+
+    # Runtime: execute_splash_show_image_action. Same "was an unregistered
+    # placeholder" story as splash_show_text -- Tier 2.5.
+    "splash_show_image": ActionType(
+        name="splash_show_image",
+        display_name="Splash: Show Image",
+        description="Show a sprite full-screen and pause the game until the player dismisses it",
+        category="Game",
+        icon="🖼️",
+        parameters=[
+            ActionParameter(name="image", display_name="Sprite", param_type="sprite", default_value="", description="Sprite to display full-screen"),
+        ],
     ),
 
     # Runtime: execute_save_game_action
@@ -2398,6 +2442,198 @@ ACTION_TYPES = {
         description="Clear all high-score entries",
         category="Score",
         icon="🗑️🏆",
+        parameters=[],
+    ),
+
+    # ---------------------------------------------------------------------
+    # Particles + timelines (Tier 5.2, docs/DEFERRED_GAPS_2026_PLAN.md,
+    # 2026-08-15). One of the "deferred buckets" the 2026-06-05 sweep above
+    # explicitly left out; Tier 5.1 made the runtime side of both real
+    # (game_runner.py's GameInstance.update_particle_system/update_timeline/
+    # render_particles) before this UI registration.
+    #
+    # Timeline note: there is no separate Timeline resource in this engine
+    # (confirmed while building 5.1 — timeline_index is just an opaque
+    # label, never looked up). `set_timeline`'s `timeline` param is
+    # bookkeeping text for the author, not a resource picker; an author
+    # reacts to a specific timeline_position with an ordinary test_variable
+    # conditional in their own step event.
+    # ---------------------------------------------------------------------
+
+    # Runtime: execute_create_particle_system_action
+    "create_particle_system": ActionType(
+        name="create_particle_system",
+        display_name="Create Particle System",
+        description="Create a particle system attached to this instance (replaces any existing one)",
+        category="Particles",
+        icon="✨",
+        parameters=[
+            ActionParameter(name="depth", display_name="Depth", param_type="number", default_value=0,
+                             description="Drawing depth for the particle system (not yet used for cross-instance sort order)"),
+        ],
+    ),
+
+    # Runtime: execute_destroy_particle_system_action — no parameters
+    "destroy_particle_system": ActionType(
+        name="destroy_particle_system",
+        display_name="Destroy Particle System",
+        description="Remove this instance's particle system, clearing all particles and emitters",
+        category="Particles",
+        icon="💥",
+        parameters=[],
+    ),
+
+    # Runtime: execute_clear_particles_action — no parameters
+    "clear_particles": ActionType(
+        name="clear_particles",
+        display_name="Clear Particles",
+        description="Remove all active particles but keep particle types and emitters",
+        category="Particles",
+        icon="🧹",
+        parameters=[],
+    ),
+
+    # Runtime: execute_create_particle_type_action
+    "create_particle_type": ActionType(
+        name="create_particle_type",
+        display_name="Create Particle Type",
+        description="Define a new particle appearance/behavior (returned type id is stored for the next particle_type-using action)",
+        category="Particles",
+        icon="⚙️",
+        parameters=[
+            ActionParameter(name="sprite", display_name="Sprite", param_type="sprite", default_value="", required=False,
+                             description="Sprite to draw each particle as; leave empty for a plain colored circle"),
+            ActionParameter(name="size_min", display_name="Size Min", param_type="float", default_value=1.0, description="Minimum particle size (scale factor)"),
+            ActionParameter(name="size_max", display_name="Size Max", param_type="float", default_value=1.0, description="Maximum particle size (scale factor)"),
+            ActionParameter(name="size_increase", display_name="Size Change/Step", param_type="float", default_value=0.0, description="Size change per step (negative shrinks, floored at 0)"),
+            ActionParameter(name="color", display_name="Color", param_type="color", default_value="#FFFFFF", description="Particle color (used when no sprite is set)"),
+            ActionParameter(name="alpha", display_name="Alpha", param_type="float", default_value=1.0, min_value=0, max_value=1, description="Transparency (0=invisible, 1=opaque)"),
+            ActionParameter(name="speed_min", display_name="Speed Min", param_type="float", default_value=0.0, description="Minimum movement speed"),
+            ActionParameter(name="speed_max", display_name="Speed Max", param_type="float", default_value=0.0, description="Maximum movement speed"),
+            ActionParameter(name="direction_min", display_name="Direction Min", param_type="number", default_value=0, min_value=0, max_value=360, description="Minimum direction angle (0=right, 90=up)"),
+            ActionParameter(name="direction_max", display_name="Direction Max", param_type="number", default_value=360, min_value=0, max_value=360, description="Maximum direction angle"),
+            ActionParameter(name="life_min", display_name="Life Min (steps)", param_type="number", default_value=100, description="Minimum lifetime in steps"),
+            ActionParameter(name="life_max", display_name="Life Max (steps)", param_type="number", default_value=100, description="Maximum lifetime in steps"),
+        ],
+    ),
+
+    # Runtime: execute_create_emitter_action
+    "create_emitter": ActionType(
+        name="create_emitter",
+        display_name="Create Emitter",
+        description="Create a particle emitter area (returned id is stored for the next emitter-using action)",
+        category="Particles",
+        icon="🌀",
+        parameters=[
+            ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="Emitter center X (room coordinates)"),
+            ActionParameter(name="y", display_name="Y", param_type="number", default_value=0, description="Emitter center Y (room coordinates)"),
+            ActionParameter(name="width", display_name="Width", param_type="number", default_value=0, description="Emitter area width"),
+            ActionParameter(name="height", display_name="Height", param_type="number", default_value=0, description="Emitter area height"),
+            ActionParameter(name="shape", display_name="Shape", param_type="choice", default_value="rectangle",
+                             choices=["rectangle", "ellipse", "diamond", "line"], description="Shape of the emitter area particles spawn within"),
+        ],
+    ),
+
+    # Runtime: execute_destroy_emitter_action — no parameters (destroys the most recently created emitter)
+    "destroy_emitter": ActionType(
+        name="destroy_emitter",
+        display_name="Destroy Emitter",
+        description="Destroy the most recently created emitter",
+        category="Particles",
+        icon="💥",
+        parameters=[],
+    ),
+
+    # Runtime: execute_burst_particles_action
+    "burst_particles": ActionType(
+        name="burst_particles",
+        display_name="Burst Particles",
+        description="Emit a one-time burst of particles from the most recently created emitter",
+        category="Particles",
+        icon="💥",
+        parameters=[
+            ActionParameter(name="particle_type", display_name="Particle Type", param_type="number", default_value=0, description="Particle type id (from Create Particle Type)"),
+            ActionParameter(name="number", display_name="Number", param_type="number", default_value=10, description="Number of particles to emit"),
+        ],
+    ),
+
+    # Runtime: execute_stream_particles_action
+    "stream_particles": ActionType(
+        name="stream_particles",
+        display_name="Stream Particles",
+        description="Continuously emit particles every step from the most recently created emitter (0 to stop)",
+        category="Particles",
+        icon="🌊",
+        parameters=[
+            ActionParameter(name="particle_type", display_name="Particle Type", param_type="number", default_value=0, description="Particle type id (from Create Particle Type)"),
+            ActionParameter(name="number", display_name="Number/Step", param_type="number", default_value=1, description="Particles to emit per step (0 stops streaming)"),
+        ],
+    ),
+
+    # Runtime: execute_set_timeline_action
+    "set_timeline": ActionType(
+        name="set_timeline",
+        display_name="Set Timeline",
+        description="Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)",
+        category="Timing",
+        icon="⏱️",
+        parameters=[
+            ActionParameter(name="timeline", display_name="Timeline", param_type="string", default_value="", description="A label for your own reference; not a resource lookup"),
+        ],
+    ),
+
+    # Runtime: execute_set_timeline_position_action
+    "set_timeline_position": ActionType(
+        name="set_timeline_position",
+        display_name="Set Timeline Position",
+        description="Set (or offset) this instance's timeline position",
+        category="Timing",
+        icon="⏱️",
+        parameters=[
+            ActionParameter(name="position", display_name="Position", param_type="number", default_value=0, description="Position in steps"),
+            ActionParameter(name="relative", display_name="Relative", param_type="boolean", default_value=False, description="Add to the current position instead of setting it absolutely"),
+        ],
+    ),
+
+    # Runtime: execute_set_timeline_speed_action
+    "set_timeline_speed": ActionType(
+        name="set_timeline_speed",
+        display_name="Set Timeline Speed",
+        description="Set the timeline playback speed multiplier",
+        category="Timing",
+        icon="⏱️",
+        parameters=[
+            ActionParameter(name="speed", display_name="Speed", param_type="float", default_value=1.0, description="1.0=normal, 0.5=half speed, 2.0=double speed"),
+        ],
+    ),
+
+    # Runtime: execute_start_timeline_action — no parameters
+    "start_timeline": ActionType(
+        name="start_timeline",
+        display_name="Start Timeline",
+        description="Begin or resume timeline playback from the current position",
+        category="Timing",
+        icon="▶️",
+        parameters=[],
+    ),
+
+    # Runtime: execute_pause_timeline_action — no parameters
+    "pause_timeline": ActionType(
+        name="pause_timeline",
+        display_name="Pause Timeline",
+        description="Pause timeline playback at the current position",
+        category="Timing",
+        icon="⏸️",
+        parameters=[],
+    ),
+
+    # Runtime: execute_stop_timeline_action — no parameters
+    "stop_timeline": ActionType(
+        name="stop_timeline",
+        display_name="Stop Timeline",
+        description="Stop timeline playback and reset the position to 0",
+        category="Timing",
+        icon="⏹️",
         parameters=[],
     ),
 }

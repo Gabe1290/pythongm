@@ -65,7 +65,10 @@
           "parameters": {
             "x": "8",
             "y": "488",
-            "caption": "Score: "
+            "caption": "Score: ",
+            "caption_translations": {
+              "fr": "Score : "
+            }
           }
         },
         {
@@ -73,7 +76,10 @@
           "parameters": {
             "text": "Lives:",
             "x": "128",
-            "y": "488"
+            "y": "488",
+            "text_translations": {
+              "fr": "Vies :"
+            }
           }
         },
         {

@@ -44,6 +44,8 @@ SAMPLES = ["maze_1", "maze_2", "maze_3", "maze_4",
            "views_1", "views_2",
            "raycast_1", "raycast_2", "raycast_3", "raycast_4",
            "block_world_1",
+           "block_world_2",
+           "multiplayer_lan_1",
            "treasure"]
 
 

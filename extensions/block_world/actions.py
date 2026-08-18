@@ -74,13 +74,41 @@ PLUGIN_ACTIONS = {
                             "cells (1.5 = a two-block-tall body, needed to see "
                             "the top of a block on your own layer and stack "
                             "onto it)"),
+            ActionParameter(name="gravity", display_name="Gravity",
+                param_type="number", default_value=0, required=False,
+                description="Downward acceleration in cells/step^2 for the "
+                            "Jump action + gravity/falling (Tier 7a). 0 "
+                            "(default) keeps Move And Collide's original "
+                            "instant-footing behaviour with no jumping; a "
+                            "typical value is around 0.04"),
+            ActionParameter(name="inventory", display_name="Inventory",
+                param_type="boolean", default_value=False, required=False,
+                description="On = Break Block picks up what it breaks and "
+                            "Place Block consumes from that inventory "
+                            "(Tier 7c); off (default) = unlimited creative-"
+                            "mode placing, unchanged from before Tier 7c"),
+            ActionParameter(name="generate", display_name="Generate Terrain",
+                param_type="boolean", default_value=False, required=False,
+                description="On = procedurally generate rolling terrain "
+                            "around the camera as it explores (Tier 7e), "
+                            "using Seed below; off (default) = only "
+                            "hand-placed/loaded blocks exist, unchanged "
+                            "from before Tier 7e"),
+            ActionParameter(name="seed", display_name="Seed",
+                param_type="number", default_value=0, required=False,
+                description="World seed for Generate Terrain -- the same "
+                            "seed always produces the same terrain on this "
+                            "target. Ignored unless Generate Terrain is on"),
         ]
     ),
 
     "place_block": ActionType(
         name="place_block",
         display_name="Place Block",
-        description="Put a block in the empty cell the camera is looking at",
+        description="Put a block in the empty cell the camera is looking at "
+                    "-- unlimited unless Enable Block World View's "
+                    "Inventory is on, which draws from what Break Block "
+                    "has picked up",
         category="3D View",
         icon="🧱",
         parameters=[
@@ -113,13 +141,39 @@ PLUGIN_ACTIONS = {
     "break_block": ActionType(
         name="break_block",
         display_name="Break Block",
-        description="Remove the block the camera is looking at",
+        description="Remove the block the camera is looking at -- also "
+                    "picks it up into the calling instance's inventory if "
+                    "Enable Block World View's Inventory is on, and refuses "
+                    "if the block is protected (Set Block Protection) and "
+                    "the required key isn't in inventory",
         category="3D View",
         icon="⛏️",
         parameters=[
             ActionParameter(name="reach", display_name="Reach", param_type="number",
                 default_value=5, required=False,
                 description="How many cells ahead you can reach, in grid cells"),
+        ]
+    ),
+
+    "set_block_protection": ActionType(
+        name="set_block_protection",
+        display_name="Set Block Protection",
+        description="Require a specific block type in inventory before "
+                    "Break Block can remove a chosen block type -- call "
+                    "once per protected type, needs Enable Block World "
+                    "View's Inventory on or the requirement can never be "
+                    "satisfied",
+        category="3D View",
+        icon="🔒",
+        parameters=[
+            ActionParameter(name="block_type", display_name="Protected Block",
+                param_type="choice", default_value="diamond_block",
+                choices=_BLOCK_CHOICES,
+                description="Which block type becomes protected"),
+            ActionParameter(name="required_key", display_name="Required Key",
+                param_type="choice", default_value="gold_block",
+                choices=_BLOCK_CHOICES,
+                description="Which block type must be in inventory to break it"),
         ]
     ),
 
@@ -164,11 +218,42 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "apply_gravity": ActionType(
+        name="apply_gravity",
+        display_name="Apply Gravity",
+        description="Continuous falling/landing physics for the block-world "
+                    "camera -- bind in the Step event (not a keyboard-held "
+                    "event) so it runs every frame regardless of movement "
+                    "input. No-op unless Enable Block World View's Gravity "
+                    "parameter is set above 0",
+        category="3D View",
+        icon="⬇️",
+        parameters=[],
+    ),
+
+    "jump": ActionType(
+        name="jump",
+        display_name="Jump",
+        description="Give the block-world camera upward velocity -- only "
+                    "while standing on solid ground (no double/air jumps). "
+                    "Needs Gravity configured (Enable Block World View) and "
+                    "Apply Gravity bound in the Step event, or nothing "
+                    "brings it back down",
+        category="3D View",
+        icon="⬆️",
+        parameters=[
+            ActionParameter(name="speed", display_name="Jump Speed",
+                param_type="number", default_value=0.35, required=False,
+                description="Initial upward velocity, in cells/step"),
+        ]
+    ),
+
     "draw_block_world_hud": ActionType(
         name="draw_block_world_hud",
         display_name="Draw Block World HUD",
         description="Draw a crosshair plus a hotbar strip (the selected "
-                    "slot highlighted) -- call from the player/camera "
+                    "slot highlighted, with a count on each slot once "
+                    "Inventory is on) -- call from the player/camera "
                     "object's own Draw event",
         category="3D View",
         icon="🧰",

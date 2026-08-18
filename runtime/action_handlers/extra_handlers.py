@@ -48,30 +48,6 @@ def handle_set_fps(ctx: HandlerContext, instance: Instance, params: Parameters) 
     logger.debug(f"  ⏱️ Set FPS: {fps}")
 
 
-def handle_splash_show_text(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show splash text (placeholder)."""
-    text = params.get("text", "")
-    logger.debug(f"  💬 Splash text: '{text[:30]}...'")
-
-
-def handle_splash_show_image(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show splash image (placeholder)."""
-    image = params.get("image", "")
-    logger.debug(f"  🖼️ Splash image: '{image}'")
-
-
-def handle_splash_show_video(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show splash video (placeholder)."""
-    video = params.get("video", "")
-    logger.debug(f"  🎬 Splash video: '{video}'")
-
-
-def handle_splash_show_webpage(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show webpage in splash (placeholder)."""
-    url = params.get("url", "")
-    logger.debug(f"  🌐 Splash webpage: '{url}'")
-
-
 def handle_open_url(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
     """Open a URL in the default browser."""
     import webbrowser
@@ -148,10 +124,14 @@ EXTRA_HANDLERS: Dict[str, Any] = {
     "show_cursor": handle_show_cursor,
     "screenshot": handle_screenshot,
     "set_fps": handle_set_fps,
-    "splash_show_text": handle_splash_show_text,
-    "splash_show_image": handle_splash_show_image,
-    "splash_show_video": handle_splash_show_video,
-    "splash_show_webpage": handle_splash_show_webpage,
+    # splash_show_text / splash_show_image now have real implementations
+    # (ActionExecutor.execute_splash_show_text_action /
+    # execute_splash_show_image_action, Tier 2.5) which take priority over
+    # any modular handler of the same name -- these placeholders are gone.
+    # splash_show_video / splash_show_webpage folded into show_video /
+    # open_webpage via ActionExecutor.ACTION_ALIASES (Tier 2.4) -- their
+    # placeholder handlers are gone, unreachable now that the alias table
+    # rewrites the action name before handler lookup.
     "open_url": handle_open_url,
     "execute_file": handle_execute_file,
     "execute_shell": handle_execute_shell,

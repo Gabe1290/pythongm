@@ -605,15 +605,20 @@ class TestExeExporterDependencyChecks:
             assert args[0] is False
             assert "PyInstaller" in args[1]
 
-    def test_export_fails_without_kivy(self, exe_exporter, temp_project_dir, temp_dir):
-        """export_project should fail if Kivy is not installed"""
+    def test_export_fails_without_pygame(self, exe_exporter, temp_project_dir, temp_dir):
+        """export_project should fail if pygame is not installed.
+
+        Desktop export freezes the real pygame engine (2026-08-17), so pygame
+        is the required dependency and Kivy is NOT: demanding Kivy here would
+        block an export that would otherwise have worked.
+        """
         project_file = temp_project_dir / "project.json"
         with open(project_file, 'w', encoding='utf-8') as f:
             json.dump({'name': 'Test'}, f, ensure_ascii=False)
 
         with patch('platform.system', return_value='Windows'):
             with patch.object(exe_exporter, '_check_pyinstaller', return_value=True):
-                with patch.object(exe_exporter, '_check_kivy', return_value=False):
+                with patch.object(exe_exporter, '_check_pygame', return_value=False):
                     signal_spy = MagicMock()
                     exe_exporter.export_complete.connect(signal_spy)
 
@@ -626,7 +631,31 @@ class TestExeExporterDependencyChecks:
                     assert result is False
                     signal_spy.assert_called_once()
                     args = signal_spy.call_args[0]
-                    assert "Kivy" in args[1]
+                    assert "pygame" in args[1]
+
+    def test_export_does_not_require_kivy(self, exe_exporter, temp_project_dir, temp_dir):
+        """The inverse, and the point of the rework: a machine with no Kivy
+        installed must still be able to build a Windows .exe."""
+        project_file = temp_project_dir / "project.json"
+        with open(project_file, 'w', encoding='utf-8') as f:
+            json.dump({'name': 'Test'}, f, ensure_ascii=False)
+
+        messages = []
+        exe_exporter.export_complete.connect(lambda ok, msg: messages.append(msg))
+
+        with patch('platform.system', return_value='Windows'):
+            with patch.object(exe_exporter, '_check_kivy', return_value=False):
+                with patch.object(exe_exporter, '_run_pyinstaller', return_value=False):
+                    exe_exporter.export_project(
+                        str(temp_project_dir),
+                        str(temp_dir / "output"),
+                        {}
+                    )
+
+        assert messages, "export_complete must be emitted"
+        assert "Kivy" not in messages[-1], (
+            "the desktop exporter must not ask for Kivy any more: %s"
+            % messages[-1])
 
 
 @pytest.mark.skipif(not HAS_PYSIDE6, reason="PySide6 not available")
@@ -642,30 +671,42 @@ class TestExeExporterBuildDirectory:
         return exporter
 
     def test_create_build_directory_creates_dir(self, exe_exporter, temp_project_dir):
-        """_create_build_directory should create build directory"""
+        """_create_build_directory should create an empty build directory"""
         build_dir = exe_exporter._create_build_directory()
 
         assert build_dir.exists()
         assert build_dir.is_dir()
-        assert "build_temp_exe" in str(build_dir)
+        assert "exe" in build_dir.name, build_dir
 
         # Cleanup
         shutil.rmtree(build_dir)
 
-    def test_create_build_directory_cleans_existing(self, exe_exporter, temp_project_dir):
-        """_create_build_directory should clean existing build directory"""
-        # Create an existing build directory with content
-        existing_build = temp_project_dir / "build_temp_exe"
-        existing_build.mkdir()
-        (existing_build / "old_file.txt").write_text("old content")
-
+    def test_build_directory_is_outside_the_project(self, exe_exporter, temp_project_dir):
+        """It has to be outside: the project tree is now copied wholesale into
+        the build directory, so a build directory inside the project would
+        recurse into itself. (It also keeps the author's project folder clean
+        and dodges the Dropbox/antivirus locks the old in-project build
+        directory needed retry loops for.)"""
+        exe_exporter.project_path = temp_project_dir
         build_dir = exe_exporter._create_build_directory()
+        try:
+            assert temp_project_dir.resolve() not in build_dir.resolve().parents
+        finally:
+            shutil.rmtree(build_dir, ignore_errors=True)
 
-        assert build_dir.exists()
-        assert not (build_dir / "old_file.txt").exists()
-
-        # Cleanup
-        shutil.rmtree(build_dir)
+    def test_create_build_directory_is_always_fresh(self, exe_exporter, temp_project_dir):
+        """Stale content from an earlier export must never leak into a build.
+        A unique temp directory gives this by construction, where the old
+        fixed-name directory needed an rmtree + retry loop."""
+        first = exe_exporter._create_build_directory()
+        (first / "old_file.txt").write_text("old content")
+        second = exe_exporter._create_build_directory()
+        try:
+            assert second != first
+            assert not any(second.iterdir())
+        finally:
+            shutil.rmtree(first, ignore_errors=True)
+            shutil.rmtree(second, ignore_errors=True)
 
 
 # ============================================================================
@@ -956,7 +997,7 @@ class TestActionCodeGeneratorBlocks:
             'parameters': {'object': 'obj_wall', 'x': 0, 'y': 0}
         }, 'step')
         code = code_generator.get_code()
-        assert "if self.check_collision_at(self.x + (0), self.y + (0), 'obj_wall')" in code
+        assert "if self.check_collision_at(self.x + (0), self.y - (0), 'obj_wall')" in code
 
     def test_if_collision_at_generates_if(self, code_generator):
         """if_collision_at uses offset-from-self coordinates (M34)."""
@@ -965,7 +1006,7 @@ class TestActionCodeGeneratorBlocks:
             'parameters': {'target': 'obj_enemy', 'x': 50, 'y': 50}
         }, 'step')
         code = code_generator.get_code()
-        assert "if self.check_collision_at(self.x + (50), self.y + (50), 'obj_enemy')" in code
+        assert "if self.check_collision_at(self.x + (50), self.y - (50), 'obj_enemy')" in code
 
     def test_block_action_indentation(self, code_generator):
         """Block actions should properly handle indentation"""

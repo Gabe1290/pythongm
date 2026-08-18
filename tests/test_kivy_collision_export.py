@@ -24,7 +24,7 @@ class TestIfCollisionCodegen:
     def test_uses_check_collision_at_with_offsets(self):
         code = _gen({"action": "if_collision",
                      "parameters": {"x": "0", "y": "1", "object": "solid"}})
-        assert "check_collision_at(self.x + (0), self.y + (1), 'solid')" in code
+        assert "check_collision_at(self.x + (0), self.y - (1), 'solid')" in code
 
     def test_not_flag_inverts(self):
         code = _gen({"action": "if_collision",
@@ -35,7 +35,7 @@ class TestIfCollisionCodegen:
     def test_default_offsets_zero(self):
         code = _gen({"action": "if_collision",
                      "parameters": {"object": "obj_wall"}})
-        assert "self.x + (0)" in code and "self.y + (0)" in code
+        assert "self.x + (0)" in code and "self.y - (0)" in code
 
 
 def test_base_object_defines_check_collision_at(tmp_path):

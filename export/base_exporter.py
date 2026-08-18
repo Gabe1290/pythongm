@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """
-Shared base class for the Kivy-based platform exporters.
+Shared base class for the platform exporters.
 
-ExeExporter, LinuxExporter, MacOSExporter and AndroidExporter all wrap the
-KivyExporter and share project loading, dependency checks and Kivy game
-generation. This base holds the parts that were verified byte-identical
-across the exe/linux/macos exporters; platform-specific build and packaging
-steps stay in the subclasses.
+Holds what every target needs regardless of engine: project loading (including
+the rooms/objects/sprites side-file merge and translation baking) and
+dependency checks.
+
+AndroidExporter and iOSExporter still wrap the KivyExporter. The three DESKTOP
+targets no longer do -- as of 2026-08-17 they freeze the real pygame engine via
+export/desktop/pygame_desktop_exporter.py, which subclasses this. Bundling a
+second, incomplete engine ("80% GameMaker 7.0 compatible") is what made an
+exported .exe differ from the game the author had just tested, and that
+produced five separate user-reported bugs in one pass. The Kivy helpers below
+(_check_kivy, _require_kivy_dependencies, _generate_kivy_game) therefore serve
+the mobile targets only.
 
 Notes:
 - AndroidExporter inherits this base but overrides _load_rooms_from_files,
@@ -22,7 +29,8 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Signal
 
 from core.logger import get_logger
-from utils.project_file_merge import merge_room_file, merge_object_file
+from export.message_localizer import resolve_translations
+from utils.project_file_merge import merge_room_file, merge_object_file, merge_sprite_file
 
 logger = get_logger(__name__)
 
@@ -31,7 +39,8 @@ def _missing_dependency_message(dependency: str, pip_name: str, platform_label: 
     """Build a user-facing 'dependency missing' message for the desktop/mobile
     exporters.
 
-    These exports bundle a Kivy runtime via PyInstaller, so the packages must
+    These exports freeze a game engine via PyInstaller (pygame for the desktop
+    targets since 2026-08-17; Kivy still for Android/iOS), so the packages must
     live in the *same* Python that runs the IDE. The message stresses that no
     admin rights are needed (per-user / virtualenv installs go into the user's
     own home directory), gives both the venv and the ``--user`` command, and
@@ -100,6 +109,17 @@ class BaseKivyExporter(QObject):
         self._load_rooms_from_files(project_dir)
         # Load object data from external files (events are stored separately).
         self._load_objects_from_files(project_dir)
+        # Load sprite data from external files (project.json sprite entries
+        # are stubs since sprites were manifest-ified -- Tier 6).
+        self._load_sprites_from_files(project_dir)
+
+        # Bake authored translations into the plain parameters. Must come
+        # AFTER the side-file merges above, or the objects loaded from
+        # objects/*.json would keep their untouched dicts. See
+        # export/message_localizer.py for why the engines are not taught to
+        # read them instead.
+        self.project_data = resolve_translations(
+            self.project_data, (settings or {}).get('language', 'en'))
 
         return project_dir
 
@@ -180,6 +200,45 @@ class BaseKivyExporter(QObject):
                     logger.debug(f"Object {object_name}: using embedded events")
                 else:
                     logger.warning(f"Object {object_name}: no events found")
+
+    def _load_sprites_from_files(self, project_dir: Path) -> None:
+        """Load sprite data from separate files in sprites/ directory
+
+        The main project.json stores only a lightweight sprite stub
+        (name/asset_type/_external_file); the full metadata (file_path,
+        dimensions, frames, origin, collision mask, ...) lives in
+        sprites/<sprite_name>.json since sprites were manifest-ified
+        (Tier 6). Not overridden by AndroidExporter, so this base
+        implementation covers Android too via inheritance.
+        """
+        sprites_dir = project_dir / "sprites"
+
+        if not sprites_dir.exists():
+            logger.debug("No sprites/ directory found, using embedded sprite data")
+            return
+
+        sprites_data = self.project_data.get('assets', {}).get('sprites', {})
+
+        for sprite_name, sprite_data in list(sprites_data.items()):
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+
+            if isinstance(sprite_data, str):
+                sprite_data = {"name": sprite_name, "asset_type": "sprite"}
+                sprites_data[sprite_name] = sprite_data
+
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        file_sprite_data = json.load(f)
+
+                    merge_sprite_file(sprite_data, file_sprite_data)
+                    logger.debug(f"Loaded sprite: {sprite_name}")
+
+                except Exception as e:
+                    logger.warning(f"Could not load sprite file {sprite_file}: {e}")
+            else:
+                if not sprite_data.get('file_path'):
+                    logger.warning(f"Sprite {sprite_name}: no file_path found")
 
     def _check_pyinstaller(self) -> bool:
         """Check if PyInstaller is installed"""

@@ -1,4 +1,4 @@
-# Lancer de rayons — Niveau 1
+# 2.5 D — Niveau 1
 
 Une vue à la première personne, à la manière de Doom ou Wolfenstein, du **même
 tracé de labyrinthe que `maze_1`** — mêmes salles, même arrivée, mêmes chemins de
@@ -147,6 +147,6 @@ de temps sur le matériel réel ont confirmé que cela tient dans le budget
 (navigateur ≈ 0,4 ms à res=2 ; Kivy sur AMD 840M ≈ 5 ms à res=4). Un projet peut
 toujours vider `floor_texture` pour obtenir un sol plat en `floor_color`.
 
-Disponible depuis l'onglet d'accueil de l'IDE — choisis **« Lancer de rayons —
+Disponible depuis l'onglet d'accueil de l'IDE — choisis **« 2.5 D —
 Niveau 1 »** dans la liste déroulante *Choisir un exemple* (ouvrir un exemple le
 copie dans tes Documents, l'original fourni reste donc intact).

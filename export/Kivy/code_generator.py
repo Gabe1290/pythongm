@@ -156,6 +156,62 @@ def _num_code(value, default=0):
 # skips it. We accumulate those names so the exporter can SURFACE them to the
 # user ("N actions couldn't be exported and were skipped") instead of the export
 # looking fully successful. Reset at the start of each export.
+def _sprite_frame_code(params) -> list:
+    """Statements for set_sprite's `subimage` / `speed`, expressions included.
+
+    A literal below zero (or absent) is GameMaker's "leave it alone" sentinel
+    and emits nothing. A non-numeric value is an authored expression --
+    `random(image_number)` is the common one -- and is emitted through
+    _num_code, which binds bare names to self.
+    """
+    statements = []
+
+    for name, attribute, cast in (("subimage", "image_index", "int"),
+                                  ("speed", "image_speed", "float")):
+        raw = params.get(name, -1)
+        text = str(raw).strip()
+        if not text:
+            continue
+        try:
+            numeric = float(text)
+        except (TypeError, ValueError):
+            expression = _num_code(text, -1)
+            # _num_code falls back to the default for anything unparseable,
+            # which here means "no change" -- same as before, minus the silence
+            # for expressions that DO parse.
+            if expression != "-1":
+                statements.append("self.%s = %s(%s)"
+                                  % (attribute, cast, expression))
+            continue
+        if numeric >= 0:
+            value = int(numeric) if cast == "int" else numeric
+            statements.append("self.%s = %s" % (attribute, value))
+
+    return statements
+
+
+def _direction_names(value) -> list:
+    """Normalise a `directions` parameter to a list of direction names.
+
+    Three shapes reach here and all are legitimate:
+      * a list, from the events panel's 3x3 checkbox picker (`multi_choice`);
+      * a single name as a plain string -- what the bundled samples and GMK
+        imports store (`"right"`);
+      * a comma- or space-separated string, from hand-edited project JSON.
+
+    Iterating a bare string as if it were a list yields its characters, which
+    is how `"right"` silently became five unrecognised directions.
+    """
+    if isinstance(value, str):
+        separated = [part.strip() for part in value.replace(',', ' ').split()]
+        return [part for part in separated if part]
+    if isinstance(value, (list, tuple, set)):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if value is None:
+        return []
+    return [str(value).strip()]
+
+
 _UNSUPPORTED_ACTIONS: set = set()
 
 
@@ -474,7 +530,12 @@ class ActionCodeGenerator:
             # here instead of passing them as absolute coordinates.
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
-            cond = f"self.check_collision_at(self.x + ({x}), self.y + ({y}), {obj_name!r})"
+            # The y offset is SUBTRACTED: the author writes GameMaker offsets,
+            # where +y is downward, but instance coordinates here are Kivy's
+            # (y up). Adding it probed the opposite side -- a platformer's
+            # "is there ground just below me?" (y = 1) asked about the ceiling,
+            # so the jump never found the floor.
+            cond = f"self.check_collision_at(self.x + ({x}), self.y - ({y}), {obj_name!r})"
             # GM stores the NOT checkbox as not_flag (older JSON: negate/not)
             if params.get('not_flag', params.get('negate', params.get('not', False))):
                 cond = f"not {cond}"
@@ -488,7 +549,8 @@ class ActionCodeGenerator:
             # relative parameter means offset from current position
             relative = params.get('relative', False)
             if relative:
-                self._open_guard(f"if not self.check_collision_at(self.x + {x}, self.y + {y}):")
+                # Same GM-offset-to-Kivy flip as if_collision above.
+                self._open_guard(f"if not self.check_collision_at(self.x + {x}, self.y - ({y})):")
             else:
                 self._open_guard(f"if not self.check_collision_at({x}, {y}):")
             return
@@ -956,20 +1018,33 @@ class ActionCodeGenerator:
             # named directions + a speed; one is chosen at random, 'stop'
             # halts). Numeric-angle / expression directions aren't covered
             # here — the named-direction case is what the events panel emits.
-            directions = params.get('directions', ['right'])
+            # `directions` may be a LIST (what the events panel's 3x3 checkbox
+            # picker emits) or a plain STRING naming one direction (what the
+            # bundled samples and GMK imports store). Treating a string as a
+            # list of directions iterates its CHARACTERS: "right" became five
+            # unknown names, each mapped to 0, so every arrow key moved the
+            # player right until a wall and then stuck -- issue 5 of the
+            # 2026-08-16 pass, on every sample using start_moving_direction.
+            directions = _direction_names(params.get('directions', ['right']))
             speed = params.get('speed', 4)
             dir_map = {
                 'right': 0, 'up-right': 45, 'up': 90, 'up-left': 135,
                 'left': 180, 'down-left': 225, 'down': 270, 'down-right': 315,
                 'stop': -1
             }
+            # Exact membership, not a substring test: `'stop' in "unstoppable"`
+            # is True for a raw string.
             if 'stop' in directions:
                 return "self.speed = 0"
-            elif len(directions) == 1:
-                deg = dir_map.get(directions[0], 0)
+            movable = [d for d in directions if d != 'stop']
+            if not movable:
+                return "self.speed = 0"
+            elif len(movable) == 1:
+                deg = dir_map.get(movable[0], 0)
                 return f"self.direction = {deg}; self.speed = {speed}"
             else:
-                dirs = [str(dir_map.get(d, 0)) for d in directions if d != 'stop']
+                # GameMaker picks one of the checked directions at random.
+                dirs = [str(dir_map.get(d, 0)) for d in movable]
                 return f"import random; self.direction = random.choice([{', '.join(dirs)}]); self.speed = {speed}"
 
         elif action_type == 'stop_movement':
@@ -1073,6 +1148,89 @@ if dist > 0:
             except (ValueError, TypeError):
                 ms = 1000
             return f"import time; time.sleep({ms / 1000.0})"
+
+        # PARTICLES + TIMELINES (Tier 5.1/5.3) -- each emits a single call
+        # to the matching GameObject method (kivy_exporter.py's
+        # BASE_OBJECT_CODE), mirroring runtime/action_executor.py's
+        # execute_*_action signatures. Multi-field/dict-building logic is
+        # too big for a one-line expression, the same reason _draw_minimap
+        # is a call rather than inline code.
+        elif action_type == 'create_particle_system':
+            depth = _num_code(params.get('depth', 0))
+            return f"self.create_particle_system({depth})"
+
+        elif action_type == 'destroy_particle_system':
+            return "self.destroy_particle_system()"
+
+        elif action_type == 'clear_particles':
+            return "self.clear_particles()"
+
+        elif action_type == 'create_particle_type':
+            sprite = params.get('sprite') or None
+            color = str(params.get('color', '#FFFFFF'))
+            return (
+                "self.create_particle_type("
+                f"sprite={sprite!r}, "
+                f"size_min={_num_code(params.get('size_min', 1.0))}, "
+                f"size_max={_num_code(params.get('size_max', 1.0))}, "
+                f"size_increase={_num_code(params.get('size_increase', 0))}, "
+                f"color={color!r}, "
+                f"alpha={_num_code(params.get('alpha', 1.0))}, "
+                f"speed_min={_num_code(params.get('speed_min', 0))}, "
+                f"speed_max={_num_code(params.get('speed_max', 0))}, "
+                f"direction_min={_num_code(params.get('direction_min', 0))}, "
+                f"direction_max={_num_code(params.get('direction_max', 360))}, "
+                f"life_min={_num_code(params.get('life_min', 100))}, "
+                f"life_max={_num_code(params.get('life_max', 100))})"
+            )
+
+        elif action_type == 'create_emitter':
+            shape = str(params.get('shape', 'rectangle'))
+            return (
+                "self.create_emitter("
+                f"x={_num_code(params.get('x', 0))}, "
+                f"y={_num_code(params.get('y', 0))}, "
+                f"width={_num_code(params.get('width', 0))}, "
+                f"height={_num_code(params.get('height', 0))}, "
+                f"shape={shape!r})"
+            )
+
+        elif action_type == 'destroy_emitter':
+            return "self.destroy_emitter()"
+
+        elif action_type == 'burst_particles':
+            particle_type = _num_code(params.get('particle_type', 0))
+            number = _num_code(params.get('number', 10))
+            return f"self.burst_particles({particle_type}, {number})"
+
+        elif action_type == 'stream_particles':
+            particle_type = _num_code(params.get('particle_type', 0))
+            number = _num_code(params.get('number', 1))
+            return f"self.stream_particles({particle_type}, {number})"
+
+        elif action_type == 'set_timeline':
+            timeline = str(params.get('timeline', ''))
+            return f"self.set_timeline({timeline!r})"
+
+        elif action_type == 'set_timeline_position':
+            position = _num_code(params.get('position', 0))
+            relative = params.get('relative', False)
+            if isinstance(relative, str):
+                relative = relative.strip().lower() in ('true', '1', 'yes')
+            return f"self.set_timeline_position({position}, {bool(relative)!r})"
+
+        elif action_type == 'set_timeline_speed':
+            speed = _num_code(params.get('speed', 1.0))
+            return f"self.set_timeline_speed({speed})"
+
+        elif action_type == 'start_timeline':
+            return "self.start_timeline()"
+
+        elif action_type == 'pause_timeline':
+            return "self.pause_timeline()"
+
+        elif action_type == 'stop_timeline':
+            return "self.stop_timeline()"
 
         # ROOM ACTIONS
         elif action_type == 'next_room' or action_type == 'room_goto_next':
@@ -1466,10 +1624,200 @@ if dist > 0:
             return (f"self.destroy_at_position({x}, {y}, {radius}, "
                     f"{obj_filter!r}, relative={relative})")
 
-        elif action_type == 'set_direction_speed':
+        elif action_type in ('set_direction_speed', 'move_free'):
+            # move_free is the same "exact direction + speed" primitive as
+            # set_direction_speed (identical params) -- runtime/
+            # action_handlers/movement_handlers.py's handle_move_free
+            # delegates to execute_set_direction_speed_action directly, so
+            # this codegen can too (docs/DEFERRED_GAPS_2026_PLAN.md Tier 3).
             direction = _num_code(params.get('direction', 0))
             speed = _num_code(params.get('speed', 4))
             return f"self.direction = {direction}; self.speed = {speed}"
+
+        elif action_type == 'move_towards_point':
+            # Direct Kivy-space port (Tier 3): target x/y are interpreted in
+            # the SAME coordinate space self.x/self.y already live in, same
+            # convention jump_to_position uses (no GM-y-down flip) -- so
+            # this needs no sign correction the way block_world's
+            # move_and_collide did for its own dy parameter.
+            #
+            # Each line below must stand alone with NO nested indentation --
+            # process_action's multi-line handling calls line.strip() on
+            # every line before re-indenting it at the SAME base level, so a
+            # literal "if:\n    body" here would silently lose its
+            # indentation (caught by a real export + compile check, not
+            # assumed). Ternaries avoid needing a block at all.
+            tx = _num_code(params.get('x', 0))
+            ty = _num_code(params.get('y', 0))
+            speed = _num_code(params.get('speed', 4))
+            return (
+                f"_mtp_dx = ({tx}) - self.x\n"
+                f"_mtp_dy = ({ty}) - self.y\n"
+                f"_mtp_dist = (_mtp_dx ** 2 + _mtp_dy ** 2) ** 0.5\n"
+                f"self.hspeed = 0 if _mtp_dist == 0 else _mtp_dx / _mtp_dist * ({speed})\n"
+                f"self.vspeed = 0 if _mtp_dist == 0 else _mtp_dy / _mtp_dist * ({speed})"
+            )
+
+        elif action_type == 'bounce':
+            # Faithful port of ONLY execute_bounce_action's own "no
+            # collision-block-axis info available" fallback branch (Tier 3):
+            # Kivy's collision model has no h_blocked/v_blocked equivalent
+            # to reverse a specific axis against, so this always takes the
+            # larger-magnitude-component path desktop itself falls back to
+            # outside a live collision context. A single ternary-based
+            # tuple assignment avoids the same nested-indentation trap
+            # move_towards_point's comment explains.
+            return ("self.hspeed, self.vspeed = "
+                    "(-self.hspeed, self.vspeed) if abs(self.hspeed) >= abs(self.vspeed) "
+                    "else (self.hspeed, -self.vspeed)")
+
+        elif action_type == 'stop_sound':
+            sound = params.get('sound', params.get('sound_name', ''))
+            path = self.sound_paths.get(sound)
+            if path:
+                return f"from main import stop_sound; stop_sound('{path}')"
+            return f"pass  # stop_sound: sound '{sound}' not found in export"
+
+        elif action_type == 'check_sound':
+            sound = params.get('sound', params.get('sound_name', ''))
+            not_flag = params.get('not_flag', False)
+            if isinstance(not_flag, str):
+                not_flag = not_flag.strip().lower() in ('true', '1', 'yes')
+            path = self.sound_paths.get(sound)
+            if not path:
+                # Unknown sound: matches the desktop no-sound-specified
+                # fallback (not not_flag -- "is playing" is False, "is NOT
+                # playing" is True).
+                self._open_guard(f"if {not bool(not_flag)}:")
+                return
+            self.add_line("from main import is_sound_playing as _cs_playing")
+            cond = (f"if not _cs_playing('{path}'):" if not_flag
+                   else f"if _cs_playing('{path}'):")
+            self._open_guard(cond)
+            return
+
+        elif action_type == 'draw_scaled_text':
+            text = str(params.get('text', ''))
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            xscale = _num_code(params.get('xscale', 1.0), 1.0)
+            yscale = _num_code(params.get('yscale', 1.0), 1.0)
+            return (f"self._draw_queue.append(dict(type='scaled_text', text={text!r}, "
+                    f"x={x}, y={y}, xscale={xscale}, yscale={yscale}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'fill_color':
+            color = str(params.get('color', '#000000'))
+            return f"self._draw_queue.append(dict(type='fill', color={color!r}))"
+
+        elif action_type == 'set_alpha':
+            alpha = _num_code(params.get('alpha', 1.0), 1.0)
+            return (f"self.image_alpha = max(0.0, min(1.0, float({alpha})))")
+
+        elif action_type == 'set_color':
+            color = str(params.get('color', '#FFFFFF')).lstrip('#')
+            alpha = _num_code(params.get('alpha', 1.0), 1.0)
+            try:
+                r, g, b = (int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16))
+            except (ValueError, IndexError):
+                r, g, b = 255, 255, 255
+            return (f"self.image_blend = ({r}, {g}, {b}); "
+                    f"self.image_alpha = max(0.0, min(1.0, float({alpha})))")
+
+        elif action_type == 'set_image_index':
+            frame = _num_code(params.get('frame', 0), 0)
+            return f"self.image_index = float({frame})"
+
+        elif action_type == 'set_image_speed':
+            speed = _num_code(params.get('speed', 1.0), 1.0)
+            return f"self.image_speed = float({speed})"
+
+        elif action_type == 'start_animation':
+            return "self.image_speed = 1.0"
+
+        elif action_type == 'stop_animation':
+            return "self.image_speed = 0.0"
+
+        elif action_type == 'set_room_caption':
+            # Reuses set_window_caption's own generated function -- same
+            # underlying effect (game_runner.window_caption + update_caption
+            # on desktop), just without the score/lives/health toggle
+            # parameters set_window_caption itself exposes.
+            caption = params.get('caption', '')
+            return (f"from main import set_window_caption; "
+                    f"set_window_caption(caption={caption!r})")
+
+        elif action_type == 'check_room':
+            room_param = str(params.get('room', ''))
+            not_flag = params.get('not_flag', False)
+            if isinstance(not_flag, str):
+                not_flag = not_flag.strip().lower() in ('true', '1', 'yes')
+            self.add_line("from main import get_game_app as _cr_ga, ROOM_ORDER as _cr_ro")
+            self.add_line("_cr_app = _cr_ga()")
+            self.add_line("_cr_idx = _cr_app.current_room_index if _cr_app else -1")
+            self.add_line(f"_cr_target = {room_param!r}")
+            self.add_line("if _cr_target == '__current__': _cr_match = True")
+            self.add_line("elif _cr_target == '__next__': _cr_match = 0 <= _cr_idx and _cr_idx + 1 < len(_cr_ro)")
+            self.add_line("elif _cr_target == '__prev__': _cr_match = _cr_idx - 1 >= 0")
+            self.add_line("else: _cr_match = _cr_idx >= 0 and _cr_ro[_cr_idx] == _cr_target")
+            cond = "if not _cr_match:" if not_flag else "if _cr_match:"
+            self._open_guard(cond)
+            return
+
+        elif action_type == 'show_info':
+            # Builds the same "Name / Version: x / By: y / description"
+            # message shape execute_show_info_action does, from PROJECT_META
+            # (baked at export time -- kivy_exporter.py's _generate_main_app).
+            self.add_line("from main import PROJECT_META as _si_meta, show_message as _si_show")
+            self.add_line("_si_msg = _si_meta['name'] + '\\nVersion: ' + _si_meta['version'] + '\\nBy: ' + _si_meta['author']")
+            self.add_line("if _si_meta['description']: _si_msg += '\\n\\n' + _si_meta['description']")
+            self.add_line("_si_show(_si_msg)")
+            return
+
+        elif action_type == 'show_video':
+            # Opens in the system's video player, same as the desktop
+            # runtime -- not in-engine playback. The video file itself is
+            # NOT copied into the export bundle (no video-asset pipeline
+            # exists), so this only works if `filename` resolves to a real
+            # path at runtime (e.g. an absolute path) -- an honest, narrower
+            # scope than desktop's project-relative resolution.
+            filename = params.get('filename', '')
+            return f"from main import show_video_file; show_video_file({filename!r})"
+
+        elif action_type == 'open_webpage':
+            url = params.get('url', '')
+            return f"from main import open_webpage as _ow; _ow({url!r})"
+
+        elif action_type == 'splash_show_text':
+            text = str(params.get('text', ''))
+            return f"from main import show_message; show_message({text!r})"
+
+        elif action_type == 'splash_show_image':
+            image = params.get('image', '')
+            path = self.sprite_paths.get(image)
+            if path:
+                return f"from main import show_splash_image; show_splash_image('{path}')"
+            return f"pass  # splash_show_image: sprite '{image}' not found in export"
+
+        elif action_type == 'save_game':
+            filename = params.get('filename', 'savegame.sav')
+            return f"from savegame import save_game as _sg; _sg({filename!r})"
+
+        elif action_type == 'load_game':
+            filename = params.get('filename', 'savegame.sav')
+            return f"from savegame import load_game as _lg; _lg({filename!r})"
+
+        elif action_type == 'test_question':
+            # Kivy's dialogs are callback-driven (see show_message), not a
+            # blocking call that can hand back an immediate bool the way
+            # desktop's Qt QMessageBox.exec() does -- there is no
+            # synchronous "wait for the click" primitive to build a real
+            # Yes/No gate on here. Defaults to True (proceed), matching the
+            # desktop handler's OWN documented fallback for when a modal
+            # can't be shown ("Qt not available, defaulting to True") rather
+            # than silently dropping the action or guessing False.
+            self._open_guard("if True:  # test_question: Kivy has no blocking Yes/No dialog; defaults to Yes")
+            return
 
         elif action_type == 'set_window_caption':
             # repr() the caption (free text) so an apostrophe/newline/backslash
@@ -1577,21 +1925,19 @@ if dist > 0:
                     parts.append(f"self.set_sprite('{path}')")
                 else:
                     parts.append(f"pass  # set_sprite: '{sprite_name}' not found in export")
-            # subimage / speed default to -1 ("don't change"); only emit when
-            # the author set a real value. Non-numeric (expression) values are
-            # skipped rather than emitted verbatim.
-            try:
-                subimage = int(params.get('subimage', -1))
-                if subimage >= 0:
-                    parts.append(f"self.image_index = {subimage}")
-            except (ValueError, TypeError):
-                pass
-            try:
-                anim_speed = float(params.get('speed', -1))
-                if anim_speed >= 0:
-                    parts.append(f"self.image_speed = {anim_speed}")
-            except (ValueError, TypeError):
-                pass
+            # subimage / speed default to -1 ("don't change"), so a literal
+            # below zero is skipped. An EXPRESSION is emitted rather than
+            # dropped: these used to go through int()/float(), and anything
+            # non-numeric raised and was silently discarded. plateforme_3 gives
+            # every bonus a random frame with `subimage=random(image_number)`,
+            # so all 52 of them showed frame 0 (issue 8). The base object
+            # provides `image_number`, `random` and `irandom` for exactly these
+            # expressions; _num_code binds the bare names to self.
+            #
+            # The -1 sentinel stays a LITERAL convention: an expression's value
+            # is not known at export time, and evaluating it twice to test for
+            # -1 would draw a different random frame than it assigned.
+            parts.extend(_sprite_frame_code(params))
             return "; ".join(parts) if parts else "pass  # set_sprite: no change"
 
         elif action_type == 'restart_game':

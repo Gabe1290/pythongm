@@ -354,7 +354,10 @@ THYMIO_ACTIONS = {
         display_name="Play System Sound",
         category="thymio_sound",
         tab="thymio",
-        description="Play a built-in system sound",
+        description="Play one of the robot's built-in system sounds. On real "
+                    "hardware this plays the robot's own melody for that sound; "
+                    "the in-app simulator only approximates it as a single tone, "
+                    "so it won't sound the same as the real robot.",
         icon="🔔",
         parameters=[
             ActionParameter(

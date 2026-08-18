@@ -1,4 +1,4 @@
-# Raycast — Livello 1
+# 2.5 D — Livello 1
 
 Una vista in prima persona in stile Doom/Wolfenstein dello **stesso
 layout labirinto di `maze_1`** — stesse stanze, stesso obiettivo,
@@ -151,6 +151,6 @@ nel budget (browser ~0,4 ms a res=2; Kivy/AMD 840M ~5 ms a res=4). Un
 progetto può ancora svuotare `floor_texture` per un pavimento
 `floor_color` piatto.
 
-Disponibile dalla scheda Welcome dell'IDE — scegli **"Raycast — Level
+Disponibile dalla scheda Welcome dell'IDE — scegli **"2.5 D — Level
 1"** dal menu a tendina *Choose a sample* (aprire un esempio lo copia
 nei tuoi Documenti, così l'originale in bundle rimane intatto).

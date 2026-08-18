@@ -329,13 +329,22 @@ def test_goal_is_gated_on_collecting_all_gems():
     assert runner.current_room.name == "room0"
 
 
-def test_goal_messages_are_plain_english():
-    """Sample messages are plain ENGLISH, authored with the standard
-    show_message action — no message_translations. A student edits the text to
-    their own language exactly as they would in their own game; the per-language
-    explanation of what these messages do lives in the sample GUIDE (README),
-    which is what gets translated. Keeping the sample free of a translation dict
-    also means it behaves identically on every export target."""
+def test_goal_messages_are_english_with_a_french_translation():
+    """The base message stays plain ENGLISH; the French rides alongside it.
+
+    This test used to assert the OPPOSITE -- that samples carry no
+    `message_translations` at all -- for two stated reasons. One still holds
+    and is kept: the base string is plain ASCII English, so a student reads
+    ordinary authored text and edits it exactly as they would in their own
+    game. The other was *"keeping the sample free of a translation dict also
+    means it behaves identically on every export target"*, which was true only
+    while the export targets ignored the dicts. `export/message_localizer.py`
+    now resolves them at export time, so an exported game carries one
+    language's strings and cannot disagree with the desktop -- which removes
+    that objection rather than overruling it.
+
+    The reversal was requested after a French pupil met raycast_4 in English.
+    """
     import json
     root = REPO_ROOT / "samples" / "raycast_2" / "objects"
     seen_win = False
@@ -348,10 +357,12 @@ def test_goal_messages_are_plain_english():
             if a["action"] != "show_message":
                 continue
             p = a["parameters"]
-            assert p["message"].isascii(), f"{name}: sample messages are English"
-            assert "message_translations" not in p, (
-                f"{name}: samples don't carry a translation dict — the guide is "
-                f"what gets translated")
+            assert p["message"].isascii(), (
+                f"{name}: the BASE message stays English -- a student should "
+                f"see ordinary authored text they can edit")
+            french = (p.get("message_translations") or {}).get("fr")
+            assert french, f"{name}: no French translation for {p['message']!r}"
+            assert french != p["message"], f"{name}: French is a copy of English"
             if "Well done" in p["message"]:
                 seen_win = True
     assert seen_win, "the win message should exist on obj_goal_final"

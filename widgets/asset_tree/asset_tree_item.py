@@ -212,6 +212,20 @@ class AssetTreeItem(QTreeWidgetItem):
                         with open(project_file, 'r', encoding='utf-8') as f:
                             project_data = json.load(f)
                         sprite_data = project_data.get('assets', {}).get('sprites', {}).get(sprite_name)
+                        # project.json's sprite entry is a stub since sprites
+                        # were manifest-ified (Tier 6) -- merge the side file
+                        # so file_path/animation_type/frame_width/frame_height
+                        # resolve here too, not just via the asset-manager path.
+                        if isinstance(sprite_data, dict):
+                            sprite_file = project_root / "sprites" / f"{sprite_name}.json"
+                            if sprite_file.exists():
+                                try:
+                                    with open(sprite_file, 'r', encoding='utf-8') as sf:
+                                        file_sprite_data = json.load(sf)
+                                    from utils.project_file_merge import merge_sprite_file
+                                    merge_sprite_file(sprite_data, file_sprite_data)
+                                except (OSError, json.JSONDecodeError):
+                                    pass
                         if sprite_data:
                             sprite_file_path = sprite_data.get('file_path', '')
                     except (OSError, json.JSONDecodeError):

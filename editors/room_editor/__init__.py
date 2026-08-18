@@ -49,6 +49,7 @@ class RoomEditor(FloatableEditorMixin, QWidget):
             'tiles': []
         }
         self.is_modified = False
+        self._block_world_window = None
 
         self.auto_save_timer = QTimer(self)
         self.auto_save_timer.setSingleShot(True)
@@ -204,6 +205,15 @@ class RoomEditor(FloatableEditorMixin, QWidget):
 
         self.toolbar.addSeparator()
 
+        # Block World voxel editor (Tier 7d, docs/BLOCK_WORLD_EDITOR_PLAN.md) --
+        # opens per-room; only meaningful once the room is a saved asset, since
+        # blocks/<room>.json is keyed by the room's name.
+        self.block_world_action = self.toolbar.addAction(self.tr("🧱 Block Edit"))
+        self.block_world_action.setToolTip(self.tr("Edit this room's Block World voxels"))
+        self.block_world_action.triggered.connect(self.open_block_world_editor)
+
+        self.toolbar.addSeparator()
+
         # Float / Attach — pop the room editor into its own window. The IDE
         # listens on float_requested to do the reparent; the label flips
         # via set_floating_state() once detached.
@@ -230,6 +240,51 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         """Toggle snap to grid"""
         if hasattr(self, 'room_canvas'):
             self.room_canvas.snap_to_grid = checked
+
+    def open_block_world_editor(self):
+        """Open the Block World voxel editor (Tier 7d) for this room --
+        reuses an already-open window for the same room instead of
+        spawning a second one, matching the "one editor per room" mental
+        model the rest of the IDE follows.
+
+        Deliberately does NOT connect to the window's `destroyed` signal
+        to clear the cached reference -- that seemed like the obvious way
+        to notice the window closing, but connecting a QObject's
+        `destroyed` signal to a bound method on another QObject (this
+        editor) creates a teardown-order hazard: if both objects end up
+        being garbage-collected together with no Qt event loop having run
+        (WA_DeleteOnClose's deleteLater() never gets processed without
+        one), PySide6/shiboken can segfault tearing down the connection.
+        Reproduced reliably in a throwaway harness during this session;
+        the try/except RuntimeError below on the reuse path already
+        covers "the window's C++ object is gone" without needing a signal
+        connection at all."""
+        if not self.asset_name:
+            QMessageBox.information(
+                self, self.tr("Block World"),
+                self.tr("Save this room first, so its blocks have a name to save under."))
+            return
+
+        if self._block_world_window is not None:
+            try:
+                self._block_world_window.show()
+                self._block_world_window.raise_()
+                self._block_world_window.activateWindow()
+                return
+            except RuntimeError:
+                self._block_world_window = None   # C++ object already deleted
+
+        from runtime.game_runner import GameRoom
+        from editors.block_world_editor.window import BlockWorldEditorWindow
+
+        room = GameRoom(self.asset_name, {
+            'width': self.current_room_properties.get('width', 1024),
+            'height': self.current_room_properties.get('height', 768),
+        }, action_executor=None)
+
+        self._block_world_window = BlockWorldEditorWindow(
+            room, project_path=self.project_path, room_name=self.asset_name)
+        self._block_world_window.show()
 
     def clear_all_instances(self):
         """Clear all object instances with confirmation"""
@@ -457,6 +512,12 @@ class RoomEditor(FloatableEditorMixin, QWidget):
                 if project_file.exists():
                     with open(project_file, 'r', encoding='utf-8') as f:
                         project_data = json.load(f)
+                    # project.json's sprite entries are stubs (Tier 6) --
+                    # merge sprites/<name>.json so object_palette's icons
+                    # resolve file_path in this disk-fallback (detached-
+                    # editor) case, matching the in-memory path which
+                    # always has the full merge already.
+                    self._merge_sprite_files_into(project_data)
 
             if project_data:
                 objects = project_data.get('assets', {}).get('objects', {})
@@ -467,6 +528,27 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         except Exception as e:
             logger.error(f"Error loading objects: {e}")
             self.update_status(self.tr("Error loading objects: {0}").format(e), 5000)
+
+    def _merge_sprite_files_into(self, project_data: dict) -> None:
+        """Merge sprites/<name>.json side files into a freshly disk-read
+        project_data (file wins), matching the project loader's precedence."""
+        sprites_dir = self.project_path / "sprites"
+        if not sprites_dir.exists():
+            return
+        sprites_data = project_data.get('assets', {}).get('sprites', {})
+        from utils.project_file_merge import merge_sprite_file
+        for sprite_name, sprite_data in list(sprites_data.items()):
+            if isinstance(sprite_data, str):
+                sprite_data = {"name": sprite_name, "asset_type": "sprite"}
+                sprites_data[sprite_name] = sprite_data
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        file_sprite_data = json.load(f)
+                    merge_sprite_file(sprite_data, file_sprite_data)
+                except Exception as e:
+                    logger.warning(f"Could not load sprite file {sprite_file}: {e}")
 
     def rename_object_in_instances(self, old_name, new_name):
         """Update all room instances that reference a renamed object"""

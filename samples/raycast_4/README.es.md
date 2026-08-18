@@ -1,4 +1,4 @@
-# Raycast — Nivel 4
+# 2.5 D — Nivel 4
 
 El cuarto nivel en primera persona al estilo Doom/Wolfenstein, y el
 primero construido **alrededor de una barra de estado permanente
@@ -48,7 +48,7 @@ altos; el techo es la elección propia de esta muestra.
   la sala reinicia. **Si se agotan las vidas** → el juego reinicia.
 - **Alcanza la salida** una vez que hayas encontrado **las tres
   llaves**. Tocarla pronto solo te dice que la puerta está cerrada con llave.
-- **Presiona `M`** para mostrar un **minimapa** de los muros (apagado
+- **Presiona `M`** para mostrar un **minimapa** que muestra los muros, las llaves doradas que faltan y los monstruos en rojo (apagado
   por defecto). Se dibuja dentro de la vista 3D, sobre la barra de
   estado, y se activa/desactiva — el mismo mapa a petición que usa
   `raycast_3`, aquí mantenido lejos de la barra.
@@ -104,7 +104,7 @@ ventana; el motor maneja la inversión.)
 | `objects/obj_monster.json` | Enemigo billboard en patrulla |
 | `objects/obj_goal.json` | Salida bloqueada por llaves (se abre cuando no queda ninguna `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segmentos de muro finos |
-| `sprites/` | Arte de muro/suelo/persona/monstruo reutilizado, un nuevo **`spr_ceiling`** (techo de piedra de interior, reemplazando el cielo), más nuevos `spr_face` (retrato de 4 fotogramas) y `spr_key` |
+| `sprites/` | Arte de muro/suelo/persona/monstruo reutilizado, un nuevo **`spr_ceiling`** (techo de piedra de interior, reemplazando el cielo), más nuevos `spr_face` (retrato de 4 fotogramas), `spr_key` y `spr_gate` (la salida cerrada) |
 
 ## El laberinto es generado
 

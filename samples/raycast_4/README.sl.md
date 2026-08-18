@@ -1,4 +1,4 @@
-# Lansiranje žarkov — 4. stopnja
+# 2.5 D — 4. stopnja
 
 Četrta stopnja v prvi osebi v slogu Doom/Wolfenstein, in prva,
 zgrajena **okoli trajne spodnje statusne vrstice** — estetika DOOM
@@ -45,8 +45,9 @@ zidove; strop je lastna izbira tega vzorca.
   ponovno zažene.
 - **Dosezite izhod**, ko najdete **vse tri ključe**. Dotik prezgodaj
   vam le pove, da so vrata zaklenjena.
-- **Pritisnite `M`**, da prikličete **minimapo** zidov (privzeto
-  izklopljena). Izrisana je znotraj 3D pogleda, nad statusno vrstico,
+- **Pritisnite `M`**, da prikličete **minimapo** (privzeto
+  izklopljeno), ki prikazuje zidove, zlate ključe, ki jih še morate
+  najti, in pošasti v rdeči barvi. Izrisana je znotraj 3D pogleda, nad statusno vrstico,
   in se preklaplja vklop/izklop — enaka na zahtevo dostopna zemljevid,
   ki jo uporablja `raycast_3`, tukaj ohranjena stran od vrstice.
 
@@ -99,7 +100,7 @@ pas vseeno na dnu okna; motor obravnava inverzijo.)
 | `objects/obj_monster.json` | Patruljni panojski sovražnik |
 | `objects/obj_goal.json` | Izhod, pogojen s ključi (odpre se, ko ne ostane noben `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Tanki segmenti zidu |
-| `sprites/` | Ponovno uporabljena umetnost zidu/tal/osebe/pošasti, nov **`spr_ceiling`** (notranji kamniti strop, nadomešča nebo), plus nova `spr_face` (portret s 4 sličicami) in `spr_key` |
+| `sprites/` | Ponovno uporabljena umetnost zidu/tal/osebe/pošasti, nov **`spr_ceiling`** (notranji kamniti strop, nadomešča nebo), plus nova `spr_face` (portret s 4 sličicami), `spr_key` in `spr_gate` (zaklenjen izhod) |
 
 ## Labirint je generiran
 

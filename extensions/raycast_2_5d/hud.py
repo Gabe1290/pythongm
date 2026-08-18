@@ -24,11 +24,14 @@ import math
 # numbers.
 MINIMAP_HEADING_LEN = 7.0
 MINIMAP_MARKER_HALF = 2.0
+# Half-size of an object marker dot. Deliberately smaller than the player's
+# cross so the player stays the thing your eye finds first.
+MINIMAP_MARK_HALF = 1.5
 
 
 def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
                            cam_x, cam_y, facing_angle, x, y, size,
-                           back_color, wall_color, player_color):
+                           back_color, wall_color, player_color, marks=None):
     """Project raycast wall edges to a north-up minimap; return draw commands.
 
     THE single source for the minimap's geometry. The HTML5 (engine.js) and
@@ -43,6 +46,13 @@ def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
     command; Kivy's y-flip happens once, later, in its shared draw-queue path.
 
     v_walls: {(line_x, row)} vertical edges; h_walls: {(col, line_y)}.
+
+    marks: optional [{'color': str, 'points': [(world_x, world_y), ...]}] --
+    object positions to dot onto the map. OPT-IN, because
+    docs/RAYCAST_MINIMAP_PLAN.md deliberately showed walls and the player
+    only: revealing pickups trivialises a gem-gated maze like raycast_2. But
+    raycast_4 is KEY-gated, where finding the keys IS the task and a map that
+    hides them is just a worse map. A parameter lets both samples be right.
     """
     cmds = [{
         'type': 'rectangle',
@@ -69,6 +79,23 @@ def build_minimap_commands(v_walls, h_walls, cell_size, room_width, room_height,
         x2, y2 = px((col + 1) * cs, line_y * cs)
         cmds.append({'type': 'line', 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2,
                      'color': wall_color})
+
+    # Object dots go under the player marker, so the player is never hidden
+    # by a pickup sitting on the same cell.
+    for group in (marks or ()):
+        colour = group.get('color') if isinstance(group, dict) else None
+        points = group.get('points') if isinstance(group, dict) else None
+        if not colour or not points:
+            continue
+        mh = MINIMAP_MARK_HALF
+        # Sorted: instance order is not guaranteed stable, and the parity test
+        # compares command lists element by element across three engines.
+        for (wx, wy) in sorted(points):
+            mx, my = px(float(wx), float(wy))
+            cmds.append({'type': 'rectangle',
+                         'x1': mx - mh, 'y1': my - mh,
+                         'x2': mx + mh, 'y2': my + mh,
+                         'color': colour, 'filled': True})
 
     if cam_x is None or cam_y is None:
         return cmds                      # no camera in this room yet

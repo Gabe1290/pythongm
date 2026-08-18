@@ -1,4 +1,4 @@
-# Raycast — Livello 3
+# 2.5 D — Livello 3
 
 Il terzo livello in prima persona in stile Doom/Wolfenstein,
 costruito sullo stesso **motore raycast 2,5D** di
@@ -29,7 +29,7 @@ Un gioco completo a due livelli: attraversa ogni labirinto in prima
 persona, raccogli ogni gemma sopravvivendo ai mostri, e raggiungi
 l'uscita bloccata dalle gemme — la prima stanza (mattoni caldi) porta
 a una seconda stanza (caverna di cristallo fredda), e completarla
-vince. Disponibile dalla scheda Welcome dell'IDE (*"Raycast — Level 3"*).
+vince. Disponibile dalla scheda Welcome dell'IDE (*"2.5 D — Level 3"*).
 
 **Audio e musica:** nessuno — nessun file audio è fornito con questo esempio.
 

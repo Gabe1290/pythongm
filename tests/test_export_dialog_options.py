@@ -51,8 +51,13 @@ def test_current_export_options_returns_dialog_choices():
             "include_assets": False, "optimize": False, "include_debug": True}
 
     options = PyGameMakerIDE._current_export_options(Stub())
-    assert options == {
+    assert {k: options[k] for k in
+            ("include_assets", "optimize", "include_debug")} == {
         "include_assets": False, "optimize": False, "include_debug": True}
+    # `language` also rides along (it tells the exporter which authored
+    # translations to bake in). Its VALUE is whatever this machine is
+    # configured to, so pin the contract, not the locale.
+    assert isinstance(options["language"], str) and options["language"]
 
 
 def test_current_export_options_defaults_without_dialog():
@@ -63,8 +68,10 @@ def test_current_export_options_defaults_without_dialog():
         _export_options = None
 
     options = PyGameMakerIDE._current_export_options(Stub())
-    assert options == {
+    assert {k: options[k] for k in
+            ("include_assets", "optimize", "include_debug")} == {
         "include_assets": True, "optimize": True, "include_debug": False}
+    assert isinstance(options["language"], str) and options["language"]
 
 
 def test_runner_shells_use_the_options_not_hardcoded_dicts():

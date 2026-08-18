@@ -7,10 +7,10 @@ entry calls mandatory, for both a fresh (objects/ dir present) and a legacy
 embedded-only (no objects/ dir) project, plus a .zip export/import
 round-trip.
 
-Sprites are NOT touched (see TODO.md's 2026-08-14 investigation note: no
-heavy payload worth stripping, would need new sprite-file-loading code in
-three untestable-here export paths for near-zero benefit) -- only the
-`events` field on objects.
+Sprites got the same treatment later (Tier 6, 2026-08-15) -- see
+tests/test_manifest_ify_sprites_round_trip.py for that mirror-image suite
+(the whole sprite body strips to a stub, not just one field, since sprites
+have no single heavy field the way objects have `events`).
 """
 import json
 from pathlib import Path

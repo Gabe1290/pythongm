@@ -2705,9 +2705,16 @@ class PyGameMakerIDE(QMainWindow):
         checkbox states must reach the exporter settings — the shells used
         to hardcode this dict)."""
         options = getattr(self, '_export_options', None)
-        if isinstance(options, dict):
-            return dict(options)
-        return {'include_assets': True, 'optimize': True, 'include_debug': False}
+        options = dict(options) if isinstance(options, dict) else {
+            'include_assets': True, 'optimize': True, 'include_debug': False}
+        # Language to bake authored <param>_translations into. The author's
+        # language is their students' language, and the export engines cannot
+        # read translation dicts themselves -- see export/message_localizer.py.
+        # Module-level, not a method: several tests drive this unbound on a
+        # stub object, and the language lookup has no need of `self`.
+        from core.language_manager import current_language_code
+        options.setdefault('language', current_language_code())
+        return options
 
     def export_windows_exe(self):
         """Handle Windows EXE export with progress dialog."""

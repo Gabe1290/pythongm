@@ -43,13 +43,15 @@ class TestSpecNameSanitization:  # M38
     def test_apostrophe_name_produces_valid_spec(self, _qapp, tmp_path):
         build_dir = tmp_path / "build"
         (build_dir / "game").mkdir(parents=True)
-        (build_dir / "game" / "main.py").write_text("# game\n", encoding="utf-8")
+        (build_dir / "game" / "project.json").write_text("{}", encoding="utf-8")
         launcher = build_dir / "game_launcher.py"
         launcher.write_text("# launcher\n", encoding="utf-8")
 
         ex = _exporter(_qapp, "L'aventure")
         ex.output_path = tmp_path / "out"
-        spec_file = ex._create_spec_file(build_dir, launcher)
+        # Renamed from _create_spec_file when desktop export moved onto the
+        # frozen pygame engine (2026-08-17); the hazard is unchanged.
+        spec_file = ex._write_spec(build_dir, launcher)
         spec_src = Path(spec_file).read_text(encoding="utf-8")
 
         # The headline failure: an apostrophe must not leak into a literal.
@@ -60,8 +62,8 @@ class TestSpecNameSanitization:  # M38
 
 class TestCopyToOutputFailure:  # M39
     def test_copy_failure_returns_false(self, _qapp, tmp_path, monkeypatch):
+        import shutil
         import time
-        import export.exe.exe_exporter as mod
 
         ex = _exporter(_qapp, "Game")
         build_dir = tmp_path / "build"
@@ -73,7 +75,10 @@ class TestCopyToOutputFailure:  # M39
         # Simulate a perpetually locked destination.
         def _locked(*a, **k):
             raise PermissionError("locked by antivirus")
-        monkeypatch.setattr(mod.shutil, "copy2", _locked)
+        # The copy lives in the shared base now, which does `import shutil`
+        # and resolves the attribute at call time, so patching the module
+        # object still intercepts it.
+        monkeypatch.setattr(shutil, "copy2", _locked)
         monkeypatch.setattr(time, "sleep", lambda *_: None)
 
         assert ex._copy_to_output(build_dir) is False

@@ -1,4 +1,4 @@
-# Lancer de rayons — Niveau 4
+# 2.5 D — Niveau 4
 
 Le quatrième niveau à la première personne façon Doom ou Wolfenstein, et le
 premier construit **autour d'une barre d'état permanente en bas de l'écran** —
@@ -44,8 +44,8 @@ choix propre à cet exemple.
   **Plus de vies** → la partie recommence.
 - **Atteins la sortie** une fois les **trois clés** trouvées. La toucher trop tôt
   t'indique seulement que la porte est verrouillée.
-- **Appuie sur `M`** pour afficher une **minicarte** des murs (masquée par
-  défaut). Elle est dessinée dans la vue 3D, au-dessus de la barre d'état, et
+- **Appuie sur `M`** pour afficher une **minicarte** (masquée par
+  défaut) montrant les murs, les clés dorées qu'il te reste à trouver et les monstres en rouge. Elle est dessinée dans la vue 3D, au-dessus de la barre d'état, et
   s'active ou se masque — la même carte à la demande que celle de `raycast_3`,
   ici tenue à l'écart de la barre.
 
@@ -98,7 +98,7 @@ est malgré tout en bas de la fenêtre ; le moteur gère l'inversion.)
 | `objects/obj_monster.json` | Ennemi en panneau, en patrouille |
 | `objects/obj_goal.json` | Sortie verrouillée (s'ouvre quand il ne reste aucune `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segments de murs fins |
-| `sprites/` | Graphismes de murs/sol/personnage/monstre réutilisés, un nouveau **`spr_ceiling`** (plafond de pierre intérieur, en remplacement du ciel), plus les nouveaux `spr_face` (portrait de 4 images) et `spr_key` |
+| `sprites/` | Graphismes de murs/sol/personnage/monstre réutilisés, un nouveau **`spr_ceiling`** (plafond de pierre intérieur, en remplacement du ciel), plus les nouveaux `spr_face` (portrait de 4 images), `spr_key` et `spr_gate` (la sortie verrouillée) |
 
 ## Le labyrinthe est généré
 

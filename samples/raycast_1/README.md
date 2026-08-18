@@ -1,4 +1,4 @@
-# Raycast — Level 1
+# 2.5 D — Level 1
 
 A Doom/Wolfenstein-style first-person view of **the same maze layout as
 `maze_1`** — same rooms, same goal, same solvable paths. Where `maze_1`
@@ -127,6 +127,6 @@ Floor casting uses the same low-res-cast-then-upscale approach on every target
 budget (browser ~0.4 ms at res=2; Kivy/AMD 840M ~5 ms at res=4). A project can
 still clear `floor_texture` for a flat `floor_color` floor.
 
-Available from the IDE's Welcome tab — pick **"Raycast — Level 1"** from the
+Available from the IDE's Welcome tab — pick **"2.5 D — Level 1"** from the
 *Choose a sample* dropdown (opening a sample copies it into your Documents so
 the bundled original stays pristine).
