@@ -32,7 +32,8 @@ import math
 import pygame
 
 from .state import (block_world_state, get_block, block_face_textures,
-                    column_index, is_transparent)
+                    column_index, is_transparent, CHUNK_SIZE,
+                    ensure_chunks_loaded, unload_distant_chunks)
 
 _TEXTURE_CACHE = {}
 
@@ -449,10 +450,18 @@ def eye_z_for(cfg):
     all need this exact number and must never disagree on it -- a mismatch
     is how picking drifts away from the crosshair. This is the one place it
     is computed; call it rather than re-deriving ``z_layer`` + ``eye_height``
-    inline. ``z_layer`` goes through ``int()`` -- the layer a body occupies
-    is discrete even though the eye's offset within it is not.
+    inline.
+
+    ``z_layer`` is a clean whole number at rest (still true for every
+    project that doesn't configure gravity -- move_and_collide's legacy
+    footing always snaps to an exact layer). Tier 7a's gravity mode
+    (handlers.execute_apply_gravity_action) needs it to carry sub-layer
+    precision mid-jump/fall so the eye rises and falls smoothly instead of
+    snapping between whole layers -- read as a plain float, not through
+    ``int()``, for exactly that reason. World-grid lookups (which cell a
+    ray is in) are unaffected: those key off x/y columns only, never z_layer.
     """
-    return int(cfg.get("z_layer", 0)) + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT))
+    return float(cfg.get("z_layer", 0)) + float(cfg.get("eye_height", DEFAULT_EYE_HEIGHT))
 
 # Horizontal faces are cast every Nth screen row and the column upscaled.
 # 4 matches raycast_2_5d's floor_cast_res default, chosen there by the same
@@ -813,6 +822,19 @@ def render_block_world_view(room, screen: pygame.Surface):
     max_dist = render_distance_cells * cell_size
     num_columns = int(cfg.get("columns", min(w, 320)))
     col_width = w / num_columns
+
+    # Tier 7e Phase 2 (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md): generate
+    # chunks around the camera before marching rays through them, so a
+    # chunk exists by the time a ray reaches it rather than reading as
+    # empty air for one frame. No-ops entirely for a room with no seed
+    # (every pre-Phase-2 project, unchanged). Eviction radius is
+    # deliberately larger than the generation radius so the two passes
+    # don't fight (generate a chunk one frame, evict it the next).
+    cell_cam_x, cell_cam_y = cam_x / cell_size, cam_y / cell_size
+    ensure_chunks_loaded(room, cell_cam_x, cell_cam_y,
+                         render_distance_cells + CHUNK_SIZE)
+    unload_distant_chunks(room, cell_cam_x, cell_cam_y,
+                          render_distance_cells + 3 * CHUNK_SIZE)
 
     # GM angle convention (0=right, 90=up, ...) -> screen-space radians,
     # matching raycast_2_5d's facing_angle-to-ray-space conversion.

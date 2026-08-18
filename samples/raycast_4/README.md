@@ -1,4 +1,4 @@
-# Raycast — Level 4
+# 2.5 D — Level 4
 
 The fourth Doom/Wolfenstein-style first-person level, and the first built
 **around a permanent bottom status bar** — the DOOM aesthetic rather than
@@ -41,7 +41,7 @@ choice.
   **Run out of lives** → the game restarts.
 - **Reach the exit** once you've found **all three keys**. Touching it early
   just tells you the gate is locked.
-- **Press `M`** to bring up a **minimap** of the walls (off by default). It's
+- **Press `M`** to bring up a **minimap** (off by default) showing the walls, the gold keys still to find and the monsters in red. It's
   drawn inside the 3D view, above the status bar, and toggles on/off — the same
   on-demand map `raycast_3` uses, kept clear of the bar here.
 
@@ -92,7 +92,7 @@ handles the inversion.)
 | `objects/obj_monster.json` | Patrolling billboard enemy |
 | `objects/obj_goal.json` | Key-gated exit (opens when no `obj_key` remains) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Thin wall segments |
-| `sprites/` | Reused wall/floor/person/monster art, a new **`spr_ceiling`** (indoor stone ceiling, replacing the sky), plus new `spr_face` (4-frame portrait) and `spr_key` |
+| `sprites/` | Reused wall/floor/person/monster art, a new **`spr_ceiling`** (indoor stone ceiling, replacing the sky), plus new `spr_face` (4-frame portrait), `spr_key` and `spr_gate` (the locked exit) |
 
 ## The maze is generated
 

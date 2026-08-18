@@ -56,6 +56,33 @@ class PyGMFormatter(logging.Formatter):
         return formatter.format(record)
 
 
+class ConsoleSafeHandler(logging.StreamHandler):
+    """StreamHandler that survives a console which cannot encode the message.
+
+    Log messages across this codebase carry emoji (``❌ IMPORT ERROR``,
+    ``⚠️``, ``📦``). A Windows console is cp1252 by default, so writing one
+    raises UnicodeEncodeError inside ``StreamHandler.emit``, which swallows it
+    and prints ``--- Logging error ---`` plus a traceback *instead of* the
+    message. The net effect was that on Windows an asset-import failure showed
+    the user logging noise rather than the reason the import failed -- the one
+    line they actually needed.
+
+    Sanitizing in ``format`` rather than catching in ``emit`` is deliberate:
+    ``emit`` already catches Exception internally and routes to
+    ``handleError``, so a subclass cannot intercept the failure there.
+    """
+
+    def format(self, record):
+        text = super().format(record)
+        encoding = getattr(self.stream, "encoding", None) or "utf-8"
+        try:
+            text.encode(encoding)
+        except (UnicodeEncodeError, LookupError):
+            # 'replace' degrades the emoji to '?' and keeps the words.
+            text = text.encode(encoding, "replace").decode(encoding, "replace")
+        return text
+
+
 def configure_logging(level: Optional[int] = None, stream=None) -> None:
     """
     Configure the root logger for PyGameMaker.
@@ -89,7 +116,7 @@ def configure_logging(level: Optional[int] = None, stream=None) -> None:
     root_logger.handlers.clear()
 
     # Add console handler
-    handler = logging.StreamHandler(stream)
+    handler = ConsoleSafeHandler(stream)
     handler.setLevel(level)
     handler.setFormatter(PyGMFormatter())
     root_logger.addHandler(handler)

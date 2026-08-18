@@ -1,4 +1,4 @@
-# Raycast — Level 2
+# 2.5 D — Level 2
 
 A second Doom/Wolfenstein-style first-person level, built on the same **raycast
 2.5D engine** as [`raycast_1`](../raycast_1/README.md) — which is complete on all
@@ -15,7 +15,7 @@ this sample's design and unit plan.
 A complete two-level game: navigate each maze in first person, collect every
 gem while dodging patrolling monsters, and reach the gem-gated exit — the first
 (warm brick) room leads to a second (cool crystal-cavern) room, and clearing
-that wins. Available from the IDE's Welcome tab (*"Raycast — Level 2"*) and
+that wins. Available from the IDE's Welcome tab (*"2.5 D — Level 2"*) and
 exports to all three targets (desktop, HTML5, native/Kivy).
 
 ## How to play

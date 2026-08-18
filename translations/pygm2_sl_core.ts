@@ -2582,23 +2582,23 @@ Vsa dejanja iz njih bodo preskočena in projekt se lahko prikazuje ali obnaša n
 <context>
     <name>WelcomeTab</name>
         <message>
-            <source>Raycast — Level 4</source>
-            <translation>Raycasting — Stopnja 4</translation>
+            <source>2.5 D — Level 4</source>
+            <translation>2.5 D — Stopnja 4</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 3</source>
-            <translation>Raycasting — Stopnja 3</translation>
+            <source>2.5 D — Level 3</source>
+            <translation>2.5 D — Stopnja 3</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 2</source>
-            <translation>Raycasting — Stopnja 2</translation>
+            <source>2.5 D — Level 2</source>
+            <translation>2.5 D — Stopnja 2</translation>
         </message>
 
         <message>
-            <source>Raycast — Level 1</source>
-            <translation>Raycasting — Stopnja 1</translation>
+            <source>2.5 D — Level 1</source>
+            <translation>2.5 D — Stopnja 1</translation>
         </message>
 
         <message>

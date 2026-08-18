@@ -17,9 +17,23 @@ returns ``{"block_world_files": {data_file: block_list}}`` -- exactly the
 ``to_block_list`` shape ``state.load_block_list`` already expects, so both
 export ports can hand the result straight to their own load_block_list port
 with no reshaping.
+
+It also returns ``{"block_textures": {filename: base64_png_bytes}}`` --
+every one of the 32 CC0 block-face textures (extensions/block_world/
+textures/source_hand_painted_expanded/), base64-encoded, so the real
+per-pixel wall/top/bottom rendering added in Phase 6 Tier 4
+(docs/DEFERRED_GAPS_2026_PLAN.md) has real pixels to draw on HTML5 (data
+URIs, no filesystem) and Kivy (decoded back to real files at export time
+by KivyExporter -- see its own docstring). Embedded unconditionally
+(~1.2MB total) rather than scanning which block types a given project
+actually uses -- the same simplicity/bound tradeoff BLOCK_FACE_COLORS
+already makes on both export ports for all 30 block types.
 """
+import base64
 import json
 from pathlib import Path
+
+_TEXTURE_DIR = Path(__file__).parent / "textures" / "source_hand_painted_expanded"
 
 
 def _iter_action_lists(events):
@@ -75,10 +89,35 @@ def _load_block_world_data_files(project_data):
     return files
 
 
-def collect_export_data(project_path, project_data):
-    """Read every referenced block-world data file and return it embeddable.
+def _collect_block_textures():
+    """{filename: base64_bytes} for every unique texture file
+    state.BLOCK_TYPES references. ABSOLUTE import (not `from .state import`)
+    -- both exporters exec() this module in a bare namespace dict with no
+    __name__/__package__, and a relative import needs __package__ to
+    resolve; an absolute import works fine off sys.path either way."""
+    from extensions.block_world.state import BLOCK_TYPES
 
-    Silently skips a missing/unreadable/malformed file (mirrors
+    filenames = set()
+    for faces in BLOCK_TYPES.values():
+        for key, value in faces.items():
+            if key in ("top", "bottom", "side", "all"):
+                filenames.add(value)
+
+    textures = {}
+    for filename in filenames:
+        try:
+            with open(_TEXTURE_DIR / filename, "rb") as f:
+                textures[filename] = base64.b64encode(f.read()).decode("ascii")
+        except OSError:
+            continue   # a missing texture file degrades to the flat-color fallback
+    return textures
+
+
+def collect_export_data(project_path, project_data):
+    """Read every referenced block-world data file plus the full texture set,
+    returning both embeddable.
+
+    Silently skips a missing/unreadable/malformed world-data file (mirrors
     handlers.execute_load_block_world_action's own no-op-on-bad-input
     behaviour) rather than failing the whole export over one bad path.
     """
@@ -92,4 +131,4 @@ def collect_export_data(project_path, project_data):
                 result[data_file] = block_list
         except (OSError, ValueError):
             continue
-    return {"block_world_files": result}
+    return {"block_world_files": result, "block_textures": _collect_block_textures()}

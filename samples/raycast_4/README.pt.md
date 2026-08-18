@@ -1,4 +1,4 @@
-# Raycast — Nível 4
+# 2.5 D — Nível 4
 
 O quarto nível em primeira pessoa ao estilo Doom/Wolfenstein, e o
 primeiro construído **ao redor de uma barra de status permanente
@@ -46,7 +46,7 @@ escolha própria desta amostra.
   sala reinicia. **Se as vidas acabarem** → o jogo reinicia.
 - **Alcance a saída** uma vez que tiver encontrado **as três chaves**.
   Tocá-la cedo só te diz que o portão está trancado.
-- **Pressione `M`** para exibir um **minimapa** das paredes (desligado
+- **Pressione `M`** para exibir um **minimapa** que mostra as paredes, as chaves douradas que faltam e os monstros em vermelho (desligado
   por padrão). É desenhado dentro da visão 3D, acima da barra de
   status, e alterna ligado/desligado — o mesmo mapa sob demanda que
   `raycast_3` usa, aqui mantido longe da barra.
@@ -102,7 +102,7 @@ janela de qualquer forma; o motor trata a inversão.)
 | `objects/obj_monster.json` | Inimigo billboard em patrulha |
 | `objects/obj_goal.json` | Saída bloqueada por chaves (abre quando nenhuma `obj_key` restar) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segmentos de parede finos |
-| `sprites/` | Arte de parede/chão/pessoa/monstro reutilizada, um novo **`spr_ceiling`** (teto de pedra de interior, substituindo o céu), mais novos `spr_face` (retrato de 4 quadros) e `spr_key` |
+| `sprites/` | Arte de parede/chão/pessoa/monstro reutilizada, um novo **`spr_ceiling`** (teto de pedra de interior, substituindo o céu), mais novos `spr_face` (retrato de 4 quadros), `spr_key` e `spr_gate` (a saída trancada) |
 
 ## O labirinto é gerado
 

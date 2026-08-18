@@ -182,4 +182,71 @@ def test_export_data_skips_unknown_and_missing_files_silently():
     }
     tmp = Path(tempfile.mkdtemp(prefix="bw_export_data_missing_"))
     result = collect_export_data(tmp, project_data)
-    assert result == {"block_world_files": {}}
+    assert result["block_world_files"] == {}
+    assert len(result["block_textures"]) == 32   # the full bundled set, always embedded
+
+
+# --- Real per-pixel wall textures (Phase 6 Tier 4a) --------------------------
+
+def test_wall_strip_draws_a_real_texture_when_loaded():
+    """Structural check (no JS engine): the wall-strip draw site uses
+    ctx.drawImage with the same sub-rect-slicing shape as the raycast HTML5
+    wall pass, falling back to the flat color only when the Image hasn't
+    finished loading."""
+    m = re.search(r"if \(y1v > y0v\) \{(.*?)\n {16}\}\n", BW_JS, re.S)
+    assert m, "wall-strip draw block not found"
+    body = m.group(1)
+    assert "bwTexture(room._gameRef" in body
+    assert "tex.complete && tex.width > 0" in body
+    assert "ctx.drawImage(tex, texX, srcY, 1, srcH, x0, y0v, stripW" in body
+    assert "bwShadeColor(sideColor, shade)" in body   # the fallback path
+
+
+def test_block_face_files_table_has_every_block_type():
+    from extensions.block_world.state import BLOCK_TYPES
+    m = re.search(r"const BLOCK_FACE_FILES = \{(.*?)\n\};", BW_JS, re.S)
+    assert m
+    body = m.group(1)
+    for block_type in BLOCK_TYPES:
+        assert re.search(rf"\b{re.escape(block_type)}:\s*\{{", body), block_type
+
+
+def test_bw_texture_builds_an_image_from_the_embedded_data_uri():
+    m = re.search(r"function bwTexture\(game, filename\)\s*\{(.*?)\n\}", BW_JS, re.S)
+    assert m
+    body = m.group(1)
+    assert "gameData._extension_data" in body
+    assert "block_textures" in body
+    assert "data:image/png;base64," in body
+
+
+# --- Real per-pixel top/bottom textures (Phase 6 Tier 4b) --------------------
+
+def test_horizontal_face_texture_function_ports_the_projection_math():
+    m = re.search(r"function bwDrawHorizontalFaceTextured\([^)]*\)\s*\{(.*)",
+                  BW_JS, re.S)
+    assert m, "bwDrawHorizontalFaceTextured not found"
+    body = m.group(1)[:4000]
+    # k = (eyeZ - planeZ) * H * cellSize, and the inverse-projection texel().
+    assert "(eyeZ - planeZ) * H * cellSize" in body
+    assert "y + 0.5 - horizon" in body
+    assert "rayDist" in body
+    assert "Math.floor(gx)" in body and "Math.floor(gy)" in body
+
+
+def test_top_bottom_faces_call_the_textured_path_with_fallback():
+    m = re.search(r"if \(eyeZ > z \+ 1 && !above\) \{(.*?)\n {16}\} else if \(eyeZ < z && !below\) \{(.*?)\n {16}\}\n",
+                  BW_JS, re.S)
+    assert m, "top/bottom face draw block not found"
+    top_body, bottom_body = m.group(1), m.group(2)
+    for body, face in ((top_body, "top"), (bottom_body, "bottom")):
+        assert "bwTextureData(room._gameRef" in body, face
+        assert f"fileSet.{face}" in body, face
+        assert "bwDrawHorizontalFaceTextured(" in body, face
+        assert "bwShadeColor(color, lit)" in body, face   # the fallback path
+
+
+def test_top_cast_res_disables_texturing_at_zero():
+    m = re.search(r"const topTextured = (.*?);", BW_JS)
+    assert m
+    assert "topRes >= 1" in m.group(1)

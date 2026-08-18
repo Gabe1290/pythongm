@@ -39,9 +39,19 @@ EXPORT_HTML5 = (REPO_ROOT / "extensions" / "block_world" / "export_html5.js").re
 class _DesktopRoom:
     """A bare state bag matching what march_ray/pick_voxel read off `room`
     via extension_state -- mirrors GameRoom.__new__'s role in the raycast
-    parity test, without needing a real GameRoom."""
+    parity test, without needing a real GameRoom.
+
+    Buckets the flat {"x,y,z": type} dict into per-chunk sub-dicts (Tier 7e
+    Phase 1's chunked storage, docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md) via
+    state.py's own _chunk_key, so this stays in sync with CHUNK_SIZE rather
+    than duplicating it."""
     def __init__(self, blocks):
-        self.extension_state = {"block_world": {"blocks": blocks, "camera": {}, "_columns": None}}
+        from extensions.block_world.state import _chunk_key
+        chunks = {}
+        for key, block_type in blocks.items():
+            x, y, _z = (int(part) for part in key.split(","))
+            chunks.setdefault(_chunk_key(x, y), {})[key] = block_type
+        self.extension_state = {"block_world": {"chunks": chunks, "camera": {}, "_chunk_columns": {}}}
 
 
 def _shared_world():
@@ -174,3 +184,104 @@ def test_html5_shading_constants_match_desktop():
         m = re.search(rf"const {name} = ([0-9.]+);", EXPORT_HTML5)
         assert m, name
         assert float(m.group(1)) == value, name
+
+
+# --- Tier 4b: top/bottom per-pixel face texturing ----------------------------
+
+def test_desktop_and_kivy_horizontal_face_texel_grid_matches():
+    """Exact numeric parity for the Tier 4b projection math: feed the SAME
+    inputs to desktop's real _draw_horizontal_face_textured (via a fake
+    pygame-Surface-like texture that records every get_at() call) and the
+    Kivy port's _bw_draw_horizontal_face_textured (via a fake texture
+    recording get_region() calls), and assert the two sample the SAME grid
+    cell (tx, ty) at every row -- ty compared through the th-1-ty flip
+    _bw_fill_span_textured's own docstring derives for Kivy's bottom-left
+    get_region origin. This is the strongest available proof the two
+    renderers agree, short of literally watching pixels on screen."""
+    import pygame
+    pygame.init()
+    screen = pygame.Surface((320, 240))
+
+    from extensions.block_world.renderer import _draw_horizontal_face_textured
+
+    class _FakeDesktopTex:
+        def __init__(self, w, h):
+            self._w, self._h = w, h
+            self.calls = []
+
+        def get_width(self):
+            return self._w
+
+        def get_height(self):
+            return self._h
+
+        def get_at(self, pos):
+            self.calls.append(tuple(pos))
+            return (10, 20, 30, 255)
+
+    tw, th = 128, 128
+    cam_x, cam_y = 48.0, 48.0
+    dir_x, dir_y = math.cos(math.radians(20)), math.sin(math.radians(20))
+    cos_off = math.cos(math.radians(5))
+    plane_z = 1.0
+    eye_z = 1.5
+    cell_size = 32
+    horizon = 130.0
+    shade = 1.0
+    res = 4
+    y_a, y_b = 60.0, 100.0   # a clean 40px span, evenly divisible by res
+
+    desktop_tex = _FakeDesktopTex(tw, th)
+    _draw_horizontal_face_textured(
+        screen, 10, 5, y_a, y_b, desktop_tex,
+        cam_x, cam_y, dir_x, dir_y, cos_off, plane_z, eye_z, horizon,
+        cell_size, shade, res)
+    desktop_calls = desktop_tex.calls
+    assert len(desktop_calls) == 10   # span/res
+
+    with _stub_kivy_env(_export_block_world_1()):
+        cls = _scene_class(_export_block_world_1())
+        scene = _blank_scene(cls, disp_h=240)
+
+        class _FakeKivyTex:
+            def __init__(self, w, h):
+                self.width, self.height = w, h
+                self.calls = []
+
+            def get_region(self, x, y, w, h):
+                self.calls.append((x, y, w, h))
+                return self
+
+        kivy_tex = _FakeKivyTex(tw, th)
+        from test_kivy_block_world import _Group as KivyGroup
+        group = KivyGroup()
+        scene._bw_draw_horizontal_face_textured(
+            group, 10, 5, y_a, y_b, kivy_tex,
+            cam_x, cam_y, dir_x, dir_y, cos_off, plane_z, eye_z, horizon,
+            cell_size, shade, res, 240.0)
+        kivy_calls = kivy_tex.calls
+        assert len(kivy_calls) == 10
+
+        for (dtx, dty), (ktx, kty, kw, kh) in zip(desktop_calls, kivy_calls):
+            assert ktx == dtx, (dtx, dty, ktx, kty)
+            assert kty == th - 1 - dty, (dtx, dty, ktx, kty)
+
+
+def test_top_cast_res_stored_in_camera_config_both_targets():
+    """Tier 4b needed enable_block_world_view to actually store
+    top_cast_res (previously accepted but silently dropped on both export
+    targets)."""
+    kivy_src = (REPO_ROOT / "extensions" / "block_world" / "export_kivy.py").read_text(encoding="utf-8")
+    assert "'top_cast_res':" in kivy_src
+    html5_src = EXPORT_HTML5
+    assert "top_cast_res:" in html5_src
+
+
+def test_html5_owns_the_horizontal_face_texture_functions():
+    assert "function bwDrawHorizontalFaceTextured(" in EXPORT_HTML5
+    assert "function bwTextureData(" in EXPORT_HTML5
+
+
+def test_kivy_owns_the_horizontal_face_texture_method():
+    kivy_src = (REPO_ROOT / "extensions" / "block_world" / "export_kivy.py").read_text(encoding="utf-8")
+    assert "def _bw_draw_horizontal_face_textured(self" in kivy_src

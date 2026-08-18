@@ -1,0 +1,10 @@
+{
+    "name": "LAN Multiplayer",
+    "version": "0.1.0",
+    "author": "PyGameMaker",
+    "description": "Authoritative-host position sync over LAN TCP -- see one other player move in real time. Vertical slice: position/rotation/frame/visibility only, no prediction/interpolation, no NAT traversal. See docs/MULTIPLAYER_LAN_PLAN.md for the full design.",
+    "enabled": true,
+    "provides_actions": [
+        "set_network_mode"
+    ]
+}

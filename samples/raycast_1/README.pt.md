@@ -1,4 +1,4 @@
-# Raycast — Nível 1
+# 2.5 D — Nível 1
 
 Uma visão em primeira pessoa ao estilo Doom/Wolfenstein do **mesmo
 layout de labirinto que `maze_1`** — mesmas salas, mesmo objetivo,
@@ -147,6 +147,6 @@ resolução-depois-escalar em cada destino (`floor_cast_res`, padrão
 orçamento (navegador ~0,4 ms a res=2; Kivy/AMD 840M ~5 ms a res=4).
 Um projeto ainda pode esvaziar `floor_texture` para um chão plano de `floor_color`.
 
-Disponível a partir da aba Welcome do IDE — escolha **"Raycast —
+Disponível a partir da aba Welcome do IDE — escolha **"2.5 D —
 Level 1"** no menu suspenso *Choose a sample* (abrir uma amostra a
 copia para seus Documentos, então o original incluído permanece intacto).

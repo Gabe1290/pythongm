@@ -87,7 +87,13 @@ class IDEExporters:
             # Show progress
             self.ide.update_status(self.ide.tr("Exporting to HTML5..."))
 
-            export_settings = {'offline_pyodide': offline_pyodide}
+            # Language to bake authored <param>_translations into: the
+            # author's language is their students' language, so a French
+            # teacher's export should carry the French strings without being
+            # asked. See export/message_localizer.py.
+            from core.language_manager import current_language_code
+            export_settings = {'offline_pyodide': offline_pyodide,
+                               'language': current_language_code()}
             progress_callback = None
             if offline_pyodide:
                 progress_callback = lambda frac, msg: self.ide.update_status(msg)

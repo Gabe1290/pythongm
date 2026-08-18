@@ -78,6 +78,14 @@
                   "value": "0",
                   "scope": "self"
                 }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "help_on",
+                  "value": "1",
+                  "scope": "self"
+                }
               }
             ]
           },
@@ -124,7 +132,10 @@
                     {
                       "action": "show_message",
                       "parameters": {
-                        "message": "You reached the beacon! You win!"
+                        "message": "You reached the beacon! You win!",
+                        "message_translations": {
+                          "fr": "Tu as atteint la balise ! Tu as gagné !"
+                        }
                       }
                     }
                   ],
@@ -266,12 +277,177 @@
                   }
                 }
               ]
+            },
+            "h": {
+              "actions": [
+                {
+                  "action": "test_variable",
+                  "parameters": {
+                    "variable": "help_on",
+                    "value": "0",
+                    "scope": "instance",
+                    "operation": "equal"
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "help_on",
+                    "value": "1",
+                    "scope": "instance",
+                    "relative": false
+                  }
+                },
+                {
+                  "action": "exit_event",
+                  "parameters": {}
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "help_on",
+                    "value": "0",
+                    "scope": "instance",
+                    "relative": false
+                  }
+                }
+              ]
             }
           },
           "draw": {
             "actions": [
               {
                 "action": "draw_block_world_hud",
+                "parameters": {}
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "help_on",
+                  "value": "1",
+                  "scope": "instance",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#101018"
+                }
+              },
+              {
+                "action": "draw_rectangle",
+                "parameters": {
+                  "x1": "14",
+                  "y1": "12",
+                  "x2": "506",
+                  "y2": "226",
+                  "filled": true
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#ffd040"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"CONTROLS            H = hide\"",
+                  "x": "26",
+                  "y": "20",
+                  "text_translations": {
+                    "fr": "\"COMMANDES          H = masquer\""
+                  }
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"W A S D   -  Move\"",
+                  "x": "26",
+                  "y": "48",
+                  "text_translations": {
+                    "fr": "\"W A S D   -  Se déplacer\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Left / Right  -  Turn\"",
+                  "x": "26",
+                  "y": "76",
+                  "text_translations": {
+                    "fr": "\"Gauche / Droite  -  Tourner\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Up / Down   -  Look up / down\"",
+                  "x": "26",
+                  "y": "104",
+                  "text_translations": {
+                    "fr": "\"Haut / Bas   -  Regarder en haut / en bas\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Space   -  Break block\"",
+                  "x": "26",
+                  "y": "132",
+                  "text_translations": {
+                    "fr": "\"Espace   -  Casser un bloc\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Shift   -  Place block\"",
+                  "x": "26",
+                  "y": "160",
+                  "text_translations": {
+                    "fr": "\"Maj   -  Poser un bloc\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Q / E   -  Change block\"",
+                  "x": "26",
+                  "y": "188",
+                  "text_translations": {
+                    "fr": "\"Q / E   -  Changer de bloc\""
+                  }
+                }
+              },
+              {
+                "action": "end_block",
                 "parameters": {}
               }
             ]

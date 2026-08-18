@@ -9,10 +9,11 @@ port's own established convention -- see that file's header for the exact
 mechanism).
 
 A faithful port of extensions/block_world/state.py + renderer.py +
-handlers.py + hud.py, with the SAME scope reduction the HTML5 port makes
-(see extensions/block_world/export_html5.js's header): flat-colored faces
-via the precomputed BLOCK_FACE_COLORS table, no real texture mapping, no
-_fully_covers early-out.
+handlers.py + hud.py. All three face orientations are real per-pixel
+textures (side: Tier 4a; top/bottom: Tier 4b, docs/DEFERRED_GAPS_2026_PLAN.md),
+falling back to the precomputed BLOCK_FACE_COLORS table only when a texture
+hasn't loaded, `wall_textured` is off, or (top/bottom) `top_cast_res` is 0.
+Only the _fully_covers early-out (a pure perf shortcut) remains scoped out.
 
 Coordinate convention -- mirrors extensions/raycast_2_5d/export_kivy.py's
 own solution to the same problem exactly: Kivy instance positions are y-UP
@@ -69,6 +70,44 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         'wool_yellow': {'top': (236, 162, 0), 'bottom': (236, 162, 0), 'side': (236, 162, 0)},
     }
 
+    # Face -> source PNG filename, mirroring state.BLOCK_TYPES's own top/
+    # bottom/side (or 'all') shorthand. Files are materialized at export
+    # time under assets/images/block_world/ by KivyExporter
+    # ._materialize_extension_textures (decoded from export_data.py's
+    # base64 block_textures).
+    BLOCK_FACE_FILES = {
+        'brick': {'top': 'default_brick.png', 'bottom': 'default_brick.png', 'side': 'default_brick.png'},
+        'clay': {'top': 'default_clay.png', 'bottom': 'default_clay.png', 'side': 'default_clay.png'},
+        'coal_block': {'top': 'default_coal_block.png', 'bottom': 'default_coal_block.png', 'side': 'default_coal_block.png'},
+        'cobble': {'top': 'default_cobble.png', 'bottom': 'default_cobble.png', 'side': 'default_cobble.png'},
+        'desert_sand': {'top': 'default_desert_sand.png', 'bottom': 'default_desert_sand.png', 'side': 'default_desert_sand.png'},
+        'diamond_block': {'top': 'default_diamond_block.png', 'bottom': 'default_diamond_block.png', 'side': 'default_diamond_block.png'},
+        'dirt': {'top': 'default_dirt.png', 'bottom': 'default_dirt.png', 'side': 'default_dirt.png'},
+        'glass': {'top': 'default_glass.png', 'bottom': 'default_glass.png', 'side': 'default_glass.png'},
+        'gold_block': {'top': 'default_gold_block.png', 'bottom': 'default_gold_block.png', 'side': 'default_gold_block.png'},
+        'grass': {'top': 'default_grass.png', 'bottom': 'default_dirt.png', 'side': 'default_grass_side.png'},
+        'gravel': {'top': 'default_gravel.png', 'bottom': 'default_gravel.png', 'side': 'default_gravel.png'},
+        'ice': {'top': 'default_ice.png', 'bottom': 'default_ice.png', 'side': 'default_ice.png'},
+        'jungle_plank': {'top': 'default_junglewood.png', 'bottom': 'default_junglewood.png', 'side': 'default_junglewood.png'},
+        'leaves': {'top': 'default_leaves.png', 'bottom': 'default_leaves.png', 'side': 'default_leaves.png'},
+        'mese_block': {'top': 'default_mese_block.png', 'bottom': 'default_mese_block.png', 'side': 'default_mese_block.png'},
+        'obsidian': {'top': 'default_obsidian.png', 'bottom': 'default_obsidian.png', 'side': 'default_obsidian.png'},
+        'pine_plank': {'top': 'default_pine_wood.png', 'bottom': 'default_pine_wood.png', 'side': 'default_pine_wood.png'},
+        'sand': {'top': 'default_sand.png', 'bottom': 'default_sand.png', 'side': 'default_sand.png'},
+        'sandstone': {'top': 'default_sandstone.png', 'bottom': 'default_sandstone.png', 'side': 'default_sandstone.png'},
+        'snow': {'top': 'default_snow.png', 'bottom': 'default_snow.png', 'side': 'default_snow.png'},
+        'stone': {'top': 'default_stone.png', 'bottom': 'default_stone.png', 'side': 'default_stone.png'},
+        'water': {'top': 'default_water_source_animated.png', 'bottom': 'default_water_source_animated.png', 'side': 'default_water_source_animated.png'},
+        'wood_log': {'top': 'default_tree_top.png', 'bottom': 'default_tree_top.png', 'side': 'default_tree.png'},
+        'wood_plank': {'top': 'default_wood.png', 'bottom': 'default_wood.png', 'side': 'default_wood.png'},
+        'wool_black': {'top': 'wool_black.png', 'bottom': 'wool_black.png', 'side': 'wool_black.png'},
+        'wool_blue': {'top': 'wool_blue.png', 'bottom': 'wool_blue.png', 'side': 'wool_blue.png'},
+        'wool_green': {'top': 'wool_green.png', 'bottom': 'wool_green.png', 'side': 'wool_green.png'},
+        'wool_red': {'top': 'wool_red.png', 'bottom': 'wool_red.png', 'side': 'wool_red.png'},
+        'wool_white': {'top': 'wool_white.png', 'bottom': 'wool_white.png', 'side': 'wool_white.png'},
+        'wool_yellow': {'top': 'wool_yellow.png', 'bottom': 'wool_yellow.png', 'side': 'wool_yellow.png'},
+    }
+
     # The one block type break_block refuses to remove (state.BLOCK_TYPES'
     # single 'breakable': False entry).
     BW_UNBREAKABLE = frozenset({'obsidian'})
@@ -87,6 +126,12 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     BW_MAX_PITCH_DEGREES = 70.0
     BW_DEFAULT_MAX_STEP_UP = 1
 
+    # Jump mechanic (Tier 7a) -- mirror handlers.py's own constants exactly.
+    BW_DEFAULT_GRAVITY = 0.04
+    BW_DEFAULT_JUMP_SPEED = 0.35
+    BW_TERMINAL_FALL_SPEED = -0.9
+    BW_JUMP_GROUND_EPS = 1e-6
+
     def _init_extensions(self):
         # Per-scene block-world state (mirrors raycast_2_5d's own
         # _init_extensions -- was in the scene __init__ before Stage C2b).
@@ -94,6 +139,32 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         self._bw_group = None
         self._bw_blocks = {}
         self._bw_columns = None
+        self._bw_tex_cache = {}
+        # Tier 7e Phase 2/3 procedural terrain -- _bw_seed stays None
+        # (permanent no-op for _bw_ensure_chunks_loaded/_bw_generate_chunk)
+        # for every project that predates Tier 7e.
+        self._bw_seed = None
+        self._bw_generated = {}
+
+    def _bw_texture(self, filename):
+        """Kivy texture for a block-face PNG filename (cached), materialized
+        under assets/images/block_world/ at export time. Mirrors
+        raycast_2_5d's own _raycast_texture. Returns None (falls back to
+        BLOCK_FACE_COLORS) if the file is missing or hasn't loaded."""
+        if not filename:
+            return None
+        cache = self._bw_tex_cache
+        if filename in cache:
+            return cache[filename]
+        tex = None
+        try:
+            img = load_image('assets/images/block_world/' + filename)
+            if img is not None:
+                tex = img.texture
+        except Exception:
+            tex = None
+        cache[filename] = tex
+        return tex
 
     def _render_extension_overlay(self):
         if getattr(self, 'block_world_camera', None) and self.block_world_camera.get('enabled'):
@@ -130,10 +201,112 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     def _bw_set_block(self, x, y, z, block_type):
         self._bw_blocks[(x, y, z)] = block_type
         self._bw_columns = None
+        self._bw_mark_chunk_present(x, y)   # see _bw_generate_chunk's own guard
 
     def _bw_remove_block(self, x, y, z):
         self._bw_blocks.pop((x, y, z), None)
         self._bw_columns = None
+        self._bw_mark_chunk_present(x, y)
+
+    # --- Tier 7e Phase 2/3 procedural terrain
+    # (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md) -- an independent Python
+    # port of state.py's generate_chunk/ensure_chunks_loaded, NOT required
+    # to produce numerically identical terrain to desktop or the HTML5
+    # port (the plan's own recommendation: internally consistent
+    # per-target, not cross-target byte-identical). No eviction/unloading
+    # here (unlike desktop's unload_distant_chunks) -- the same deliberate,
+    # documented scope cut export_html5.js's bwEnsureChunksLoaded makes:
+    # an exported game has no long-lived IDE session to bound memory for.
+
+    BW_CHUNK_SIZE = 16
+
+    def _bw_chunk_key(self, x, y):
+        return (x // self.BW_CHUNK_SIZE, y // self.BW_CHUNK_SIZE)
+
+    def _bw_mark_chunk_present(self, x, y):
+        """Marks a chunk as "has real content" -- called by every direct
+        edit AND by generation itself, so generation can never run twice
+        over the same chunk and can never silently overwrite a player's
+        edit, even one made in a chunk generation hasn't reached yet.
+        Mirrors state.py's own `if key in st["chunks"]: return` guard
+        (chunk PRESENCE, not a separate touched flag) -- including its one
+        real quirk: a single manual edit in an ungenerated chunk
+        permanently opts that whole chunk out of terrain generation.
+        Reproducing that quirk here (rather than a subtly different rule)
+        is deliberate -- same behaviour as desktop, not just similar."""
+        self._bw_generated[self._bw_chunk_key(x, y)] = True
+
+    def _bw_hash01(self, seed, x, y):
+        """Integer-only bit-mixing hash -> a float from 0 up to (not
+        including) 1. Deliberately NOT a transliteration of state.py's
+        _hash01 -- see this section's header for why bit-identical output
+        across targets isn't required; Python here happens to already
+        support the same unsigned masking desktop uses, so this IS the
+        same formula, just not a requirement to keep it that way."""
+        h = (seed * 374761393 + x * 668265263 + y * 2147483647) & 0xFFFFFFFF
+        h = ((h ^ (h >> 13)) * 1274126177) & 0xFFFFFFFF
+        h = (h ^ (h >> 16)) & 0xFFFFFFFF
+        return (h % 100000) / 100000.0
+
+    def _bw_smoothstep(self, t):
+        return t * t * (3.0 - 2.0 * t)
+
+    def _bw_value_noise(self, seed, x, y, scale):
+        """Bilinear-interpolated value noise at world cell (x, y), 0 up to
+        (not including) 1 -- mirrors state.py's _value_noise."""
+        fx, fy = x / scale, y / scale
+        x0, y0 = int(fx // 1), int(fy // 1)
+        x1, y1 = x0 + 1, y0 + 1
+        tx, ty = self._bw_smoothstep(fx - x0), self._bw_smoothstep(fy - y0)
+        v00, v10 = self._bw_hash01(seed, x0, y0), self._bw_hash01(seed, x1, y0)
+        v01, v11 = self._bw_hash01(seed, x0, y1), self._bw_hash01(seed, x1, y1)
+        top = v00 + tx * (v10 - v00)
+        bottom = v01 + tx * (v11 - v01)
+        return top + ty * (bottom - top)
+
+    # Terrain shape constants -- matches state.py's own (rolling hills,
+    # not tuned against anything; see that module's comment).
+    BW_TERRAIN_BASE_HEIGHT = 3
+    BW_TERRAIN_AMPLITUDE = 6
+    BW_TERRAIN_NOISE_SCALE = 24.0
+
+    def _bw_terrain_height(self, seed, x, y):
+        n = self._bw_value_noise(seed, x, y, self.BW_TERRAIN_NOISE_SCALE)
+        return self.BW_TERRAIN_BASE_HEIGHT + int(n * self.BW_TERRAIN_AMPLITUDE)
+
+    def _bw_generate_chunk(self, cx, cy):
+        """Deterministically fill chunk (cx, cy) from self._bw_seed, if any
+        and if this chunk has no content yet (see _bw_mark_chunk_present).
+        Grass-on-top, dirt-below columns -- "rolling hills with variety,"
+        this plan's own explicit bar for a first cut."""
+        seed = self._bw_seed
+        if seed is None:
+            return
+        key = (cx, cy)
+        if self._bw_generated.get(key):
+            return
+        for lx in range(self.BW_CHUNK_SIZE):
+            for ly in range(self.BW_CHUNK_SIZE):
+                x, y = cx * self.BW_CHUNK_SIZE + lx, cy * self.BW_CHUNK_SIZE + ly
+                height = self._bw_terrain_height(seed, x, y)
+                for z in range(height):
+                    self._bw_blocks[(x, y, z)] = 'grass' if z == height - 1 else 'dirt'
+        self._bw_generated[key] = True
+        self._bw_columns = None
+
+    def _bw_ensure_chunks_loaded(self, center_x, center_y, radius_cells):
+        """Generate every chunk within radius_cells (cell units, not
+        pixels) of world CELL position (center_x, center_y) that isn't
+        already present. A cheap no-op if the scene has no seed. Call once
+        per frame from the render path, before the column index is
+        fetched."""
+        if self._bw_seed is None:
+            return
+        cx0, cy0 = self._bw_chunk_key(int(center_x - radius_cells), int(center_y - radius_cells))
+        cx1, cy1 = self._bw_chunk_key(int(center_x + radius_cells), int(center_y + radius_cells))
+        for cx in range(cx0, cx1 + 1):
+            for cy in range(cy0, cy1 + 1):
+                self._bw_generate_chunk(cx, cy)
 
     def _bw_column_index(self):
         """{(x,y): [(z, block_type), ...]} sorted lowest z first, cached
@@ -170,7 +343,8 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     # ------------------------------------------------------------------
     def _bw_march_ray(self, px, py, angle_rad, cell_size, max_cells):
         """The DDA: yields one entry per cell ENTERED, mirroring march_ray
-        (no tex_u -- this port never texture-maps)."""
+        exactly -- (map_x, map_y, entry, exit, side, tex_u), tex_u added for
+        Tier 4a (real per-pixel wall textures)."""
         import math
         px_cell, py_cell = px / cell_size, py / cell_size
         dx, dy = math.cos(angle_rad), math.sin(angle_rad)
@@ -201,12 +375,26 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                 side = 1
                 entry = side_y - delta_y
             exit_cells = side_x if side_x < side_y else side_y
+            # Texture-U: fractional position along the hit face -- same
+            # derivation as march_ray.py.
+            if side == 0:
+                wall_coord = py_cell + entry * dy
+                if dx > 0:
+                    wall_coord = -wall_coord
+            else:
+                wall_coord = px_cell + entry * dx
+                if dy < 0:
+                    wall_coord = -wall_coord
+            tex_u = wall_coord - math.floor(wall_coord)
             yield (map_x, map_y, max(entry, 1e-4) * cell_size,
-                  exit_cells * cell_size, side)
+                  exit_cells * cell_size, side, tex_u)
 
     def _bw_eye_z_for(self, cfg):
+        # Not truncated -- z_layer carries sub-layer precision mid-jump/fall
+        # once gravity is configured (Tier 7a), the same reasoning as
+        # renderer.py's own eye_z_for after that change.
         eye_height = cfg.get('eye_height', self.BW_DEFAULT_EYE_HEIGHT)
-        return int(cfg.get('z_layer', 0)) + float(eye_height)
+        return float(cfg.get('z_layer', 0)) + float(eye_height)
 
     def _bw_clamp_pitch(self, pitch_degrees):
         return max(-self.BW_MAX_PITCH_DEGREES,
@@ -235,7 +423,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         first = None
         prev = None
         gap = None
-        for map_x, map_y, entry, exit_d, _side in self._bw_march_ray(
+        for map_x, map_y, entry, exit_d, _side, _tex_u in self._bw_march_ray(
                 cam_x, cam_y, angle_rad, cell_size, reach):
             z_entry = eye_z + z_per_px * entry
             z_exit = eye_z + z_per_px * exit_d
@@ -300,11 +488,103 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                         rgb[2] / 255.0 * shade, 1))
         group.add(Rectangle(pos=(x0, H - y1), size=(strip_w, y1 - y0)))
 
+    def _bw_fill_span_textured(self, group, x0, strip_w, y0_gm, y1_gm,
+                               full_top_gm, full_h, tex, tex_x, shade, H):
+        """Real per-pixel wall-strip texture (Tier 4a). Same GM-down-then-
+        flip approach as _bw_fill_span, but the v (vertical texture)
+        coordinate must ALSO respect the flip: a normal (non-flipped) Kivy
+        Rectangle shows v=1 at its TOP edge and v=0 at its BOTTOM edge
+        (Kivy's default tex_coords convention -- confirmed against
+        raycast_2_5d's own proven wall-texture v0/v1 derivation), and
+        texel row 0 (top of the source PNG) is the block's GM-TOP edge --
+        which after the flip IS the Kivy-top (high y). So v=1 (Kivy rect
+        top) <-> GM top (full_top_gm) <-> texel row 0, and v=0 (Kivy rect
+        bottom) <-> GM top + full_h <-> texel row (th-1).
+
+        frac0/frac1 are the CLIPPED edges' fraction of the way down from
+        the unclipped strip's GM-top (0 at the top, 1 at the bottom);
+        v_bottom = 1 - frac1, v_top = 1 - frac0 is the resulting Kivy
+        tex_coords pair.
+        """
+        y0 = max(0.0, min(y0_gm, y1_gm))
+        y1 = min(H, max(y0_gm, y1_gm))
+        if y1 <= y0:
+            return
+        frac0 = (y0 - full_top_gm) / full_h
+        frac1 = (y1 - full_top_gm) / full_h
+        v_bottom = 1.0 - frac1
+        v_top = 1.0 - frac0
+        region = tex.get_region(tex_x, 0, 1, tex.height)
+        group.add(Color(shade, shade, shade, 1))
+        group.add(Rectangle(texture=region, pos=(x0, H - y1), size=(strip_w, y1 - y0),
+                            tex_coords=(0.0, v_bottom, 1.0, v_bottom,
+                                        1.0, v_top, 0.0, v_top)))
+
+    def _bw_draw_horizontal_face_textured(self, group, x0, strip_w, y0_gm, y1_gm,
+                                          tex, cam_x, cam_y, dir_x, dir_y, cos_off,
+                                          plane_z, eye_z, horizon_gm, cell_size,
+                                          shade, res, H):
+        """Real per-pixel top/bottom face texture (Tier 4b). Faithful port
+        of renderer.py's _draw_horizontal_face_textured's projection math
+        (inverting y = horizon + (eye_z - zval) * (H*cell/dist) gives the
+        world point straight from a screen row), but samples each texel as
+        its OWN 1x1 get_region() draw rather than building a raw pixel
+        buffer via Texture.create()/blit_buffer() -- that would need
+        reasoning about blit_buffer's own row-order convention on top of
+        get_region's; a single-pixel region has no orientation to get
+        wrong, reusing get_region's bottom-left-origin behaviour (per
+        _bw_fill_span_textured's own derivation above: get_region's y is
+        GL/bottom-up, so an image-top-relative ty needs the same
+        `th - 1 - ty` flip raycast_2_5d's _floor_buffer already established
+        for reading Kivy texture pixels) for the read side only.
+
+        n = ceil(span/res) equal-height segments tile the span exactly
+        (matching what scaling a res-sampled column to fit span would do),
+        each sampled at approximately the row the original per-row
+        algorithm would have used.
+        """
+        import math
+        y0 = max(0.0, min(y0_gm, y1_gm))
+        y1 = min(H, max(y0_gm, y1_gm))
+        span = y1 - y0
+        if span <= 0:
+            return
+        tw, th = tex.width, tex.height
+        if tw <= 0 or th <= 0:
+            return
+
+        k = (eye_z - plane_z) * H * cell_size
+        inv_cell = 1.0 / cell_size
+
+        def texel_region(y):
+            denom = y + 0.5 - horizon_gm
+            if -1e-6 < denom < 1e-6:
+                denom = 1e-6 if denom >= 0 else -1e-6
+            ray_dist = (k / denom) / cos_off
+            gx = (cam_x + dir_x * ray_dist) * inv_cell
+            gy = (cam_y + dir_y * ray_dist) * inv_cell
+            tx = min(tw - 1, max(0, int(tw * (gx - math.floor(gx)))))
+            ty = min(th - 1, max(0, int(th * (gy - math.floor(gy)))))
+            return tex.get_region(tx, th - 1 - ty, 1, 1)
+
+        n = max(1, int(math.ceil(span / res)))
+        seg_h = span / n
+        shade_rgb = (shade, shade, shade, 1) if shade < 1.0 else (1, 1, 1, 1)
+        for i in range(n):
+            seg_y0 = y0 + i * seg_h
+            seg_y1 = y0 + (i + 1) * seg_h
+            sample_y = min(y0 + i * res, y1 - 1e-6)
+            region = texel_region(sample_y)
+            group.add(Color(*shade_rgb))
+            group.add(Rectangle(texture=region, pos=(x0, H - seg_y1),
+                                size=(strip_w, seg_y1 - seg_y0)))
+
     def _render_block_world(self):
-        """A faithful port of renderer.render_block_world_view, minus
-        texture mapping and the _fully_covers early-out -- see this file's
-        module docstring and export_html5.js's header for why both are
-        scoped out of this first export cut."""
+        """A faithful port of renderer.render_block_world_view. All three
+        face orientations are real per-pixel textures (side: Tier 4a;
+        top/bottom: Tier 4b). Only the _fully_covers early-out remains
+        scoped out (a pure perf shortcut) -- see this file's module
+        docstring and export_html5.js's header."""
         import math
         cfg = self.block_world_camera
         if not cfg or not cfg.get('enabled'):
@@ -350,6 +630,18 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         facing_screen_rad = math.radians(-float(getattr(camera, 'facing_angle', 0)))
         plane_tan = math.tan(fov_rad / 2)
         textured = bool(cfg.get('wall_textured', True))
+        # Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
+        # texturing (flat average-color fallback), matching desktop exactly.
+        top_res = int(cfg.get('top_cast_res', 4))
+        top_textured = textured and top_res >= 1
+
+        # Tier 7e Phase 2/3: generate chunks around the camera before
+        # marching rays through them, so a chunk exists by the time a ray
+        # reaches it. No-op entirely for a scene with no seed (every
+        # pre-Phase-2 project).
+        self._bw_ensure_chunks_loaded(cam_x / cell_size, cam_y / cell_size,
+                                      render_distance_cells + self.BW_CHUNK_SIZE)
+
         columns = self._bw_column_index()
 
         for col in range(num_columns):
@@ -357,12 +649,13 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             ray_offset = math.atan(plane_tan * camera_x)
             ray_angle = facing_screen_rad + ray_offset
             cos_off = math.cos(ray_offset)
+            dir_x, dir_y = math.cos(ray_angle), math.sin(ray_angle)
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             strip_w = max(1, x1 - x0)
 
             hits = []
-            for map_x, map_y, entry, exit_d, side in self._bw_march_ray(
+            for map_x, map_y, entry, exit_d, side, tex_u in self._bw_march_ray(
                     cam_x, cam_y, ray_angle, cell_size, render_distance_cells):
                 stack = columns.get((map_x, map_y))
                 if not stack:
@@ -370,9 +663,9 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                 near = max(entry * cos_off, 1e-4)
                 far = max(exit_d * cos_off, near)
                 px_per_cell = H * cell_size / near
-                hits.append((near, far, side, stack, px_per_cell))
+                hits.append((near, far, side, tex_u, stack, px_per_cell))
 
-            for near, far, side, stack, px_per_cell in reversed(hits):
+            for near, far, side, tex_u, stack, px_per_cell in reversed(hits):
                 px_per_cell_far = H * cell_size / far
                 shade = self._bw_wall_shade(side, near, max_dist)
                 mid = (near + far) / 2.0
@@ -381,8 +674,19 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                     side_rgb = color_set['side'] if color_set else wall_rgb
 
                     y_top = horizon_gm + (eye_z - (z + 1)) * px_per_cell
-                    self._bw_fill_span(group, x0, strip_w, y_top,
-                                       y_top + px_per_cell, side_rgb, shade, H)
+                    # Real per-pixel texture (Tier 4a) when loaded; flat
+                    # average-color fallback otherwise.
+                    file_set = self.BLOCK_FACE_FILES.get(block_type) if textured else None
+                    tex = self._bw_texture(file_set['side']) if file_set else None
+                    if tex is not None:
+                        tw = tex.width
+                        tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+                        self._bw_fill_span_textured(
+                            group, x0, strip_w, y_top, y_top + px_per_cell,
+                            y_top, px_per_cell, tex, tex_x, shade, H)
+                    else:
+                        self._bw_fill_span(group, x0, strip_w, y_top,
+                                           y_top + px_per_cell, side_rgb, shade, H)
 
                     above = self._bw_has_neighbor(stack, i, 1)
                     below = self._bw_has_neighbor(stack, i, -1)
@@ -391,14 +695,30 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                         lit = self._bw_face_shade(mid, max_dist, self.BW_TOP_SHADE)
                         y_far = horizon_gm + (eye_z - (z + 1)) * px_per_cell_far
                         y_near = horizon_gm + (eye_z - (z + 1)) * px_per_cell
-                        color = color_set['top'] if color_set else wall_rgb
-                        self._bw_fill_span(group, x0, strip_w, y_far, y_near, color, lit, H)
+                        top_tex = (self._bw_texture(file_set['top'])
+                                  if top_textured and file_set else None)
+                        if top_tex is not None:
+                            self._bw_draw_horizontal_face_textured(
+                                group, x0, strip_w, y_far, y_near, top_tex,
+                                cam_x, cam_y, dir_x, dir_y, cos_off,
+                                z + 1, eye_z, horizon_gm, cell_size, lit, top_res, H)
+                        else:
+                            color = color_set['top'] if color_set else wall_rgb
+                            self._bw_fill_span(group, x0, strip_w, y_far, y_near, color, lit, H)
                     elif eye_z < z and not below:
                         lit = self._bw_face_shade(mid, max_dist, self.BW_BOTTOM_SHADE)
                         y_near = horizon_gm + (eye_z - z) * px_per_cell
                         y_far = horizon_gm + (eye_z - z) * px_per_cell_far
-                        color = color_set['bottom'] if color_set else wall_rgb
-                        self._bw_fill_span(group, x0, strip_w, y_near, y_far, color, lit, H)
+                        bottom_tex = (self._bw_texture(file_set['bottom'])
+                                     if top_textured and file_set else None)
+                        if bottom_tex is not None:
+                            self._bw_draw_horizontal_face_textured(
+                                group, x0, strip_w, y_near, y_far, bottom_tex,
+                                cam_x, cam_y, dir_x, dir_y, cos_off,
+                                z, eye_z, horizon_gm, cell_size, lit, top_res, H)
+                        else:
+                            color = color_set['bottom'] if color_set else wall_rgb
+                            self._bw_fill_span(group, x0, strip_w, y_near, y_far, color, lit, H)
 
     # ------------------------------------------------------------------
     # handlers.py port -- each takes the acting GameObject (`obj`) as an
@@ -437,6 +757,15 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         block = str(block) if block else 'stone'
         if block not in self.BLOCK_FACE_COLORS:
             return
+
+        cfg = self.block_world_camera
+        if cfg and cfg.get('inventory'):
+            inventory = getattr(obj, 'block_inventory', None) or {}
+            if inventory.get(block, 0) <= 0:
+                return
+            inventory[block] -= 1
+            obj.block_inventory = inventory
+
         self._bw_set_block(placement[0], placement[1], placement[2], block)
 
     def _bw_break_block(self, obj, reach):
@@ -446,7 +775,31 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         bt = self._bw_get_block(target[0], target[1], target[2])
         if bt is not None and bt in self.BW_UNBREAKABLE:
             return
+
+        cfg = self.block_world_camera
+        protection = (cfg.get('protection') if cfg else None) or {}
+        required_key = protection.get(bt)
+        if required_key:
+            inventory = getattr(obj, 'block_inventory', None) or {}
+            if inventory.get(required_key, 0) <= 0:
+                return
+
         self._bw_remove_block(target[0], target[1], target[2])
+
+        if cfg and cfg.get('inventory'):
+            inventory = getattr(obj, 'block_inventory', None) or {}
+            inventory[bt] = inventory.get(bt, 0) + 1
+            obj.block_inventory = inventory
+
+    def _bw_set_block_protection(self, block_type, required_key):
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        block_type = str(block_type) if block_type else ''
+        required_key = str(required_key) if required_key else ''
+        if block_type not in self.BLOCK_FACE_COLORS or required_key not in self.BLOCK_FACE_COLORS:
+            return
+        cfg.setdefault('protection', {})[block_type] = required_key
 
     def _bw_select_hotbar_slot(self, obj, index, relative):
         index = int(index)
@@ -469,14 +822,25 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
     def _bw_move_and_collide(self, obj, dx, dy, collide):
         """Mirrors handlers.execute_move_and_collide_action. dx/dy are GM
         y-DOWN pixel deltas; applied to Kivy's y-UP obj.y with the axis
-        flipped (obj.x is unaffected -- x isn't flipped by either frame)."""
+        flipped (obj.x is unaffected -- x isn't flipped by either frame).
+
+        Vertical behaviour (Tier 7a) depends on cfg['gravity']: 0 (default)
+        keeps the original instant-footing snap in both directions; >0
+        still snaps instantly stepping UP (can_enter already refused
+        anything taller than DEFAULT_MAX_STEP_UP) but leaves stepping down/
+        being airborne to _bw_apply_gravity."""
         cfg = self.block_world_camera
         if not cfg or not cfg.get('enabled'):
             return
         cell_size = int(cfg.get('cell_size', 32))
+        camera = self._find_block_world_camera(cfg)
+        is_camera = camera is obj
+        gravity_on = is_camera and float(cfg.get('gravity', 0.0)) > 0
+
         tl_x, tl_y = self._bw_gm_xy(obj)
-        standing = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
-                                         self._bw_cell_of(tl_y, cell_size))
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+        standing = float(cfg.get('z_layer', ground)) if gravity_on else ground
 
         nx = tl_x + dx
         if not collide or self._bw_can_enter(
@@ -489,38 +853,121 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             obj.y -= dy   # GM y-down delta -> Kivy y-up
             tl_y = ny
 
-        standing = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
-                                         self._bw_cell_of(tl_y, cell_size))
-        camera = self._find_block_world_camera(cfg)
-        if camera is obj:
-            cfg['z_layer'] = standing
+        if not is_camera:
+            return
 
-    def _bw_load_block_world(self, block_list):
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+        if not gravity_on:
+            cfg['z_layer'] = float(ground)
+            return
+        if float(cfg.get('vz', 0.0)) == 0.0 and ground > standing:
+            cfg['z_layer'] = float(ground)
+        # Otherwise: airborne, or grounded with lower/equal footing ahead --
+        # _bw_apply_gravity owns z_layer from here.
+
+    def _bw_apply_gravity(self, obj):
+        """Mirrors handlers.execute_apply_gravity_action. Bind in the Step
+        event (fires every frame regardless of input) so falling continues
+        even without movement input. No-op unless gravity > 0."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        gravity = float(cfg.get('gravity', 0.0))
+        if gravity <= 0:
+            return
+        camera = self._find_block_world_camera(cfg)
+        if camera is not obj:
+            return
+
+        cell_size = int(cfg.get('cell_size', 32))
+        tl_x, tl_y = self._bw_gm_xy(obj)
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+
+        z = float(cfg.get('z_layer', ground))
+        vz = float(cfg.get('vz', 0.0)) - gravity
+        vz = max(vz, self.BW_TERMINAL_FALL_SPEED)
+        z += vz
+        if z <= ground:
+            z = float(ground)
+            vz = 0.0
+
+        cfg['z_layer'] = z
+        cfg['vz'] = vz
+
+    def _bw_jump(self, obj, speed):
+        """Mirrors handlers.execute_jump_action -- only while grounded, so
+        no double/air jumps. No-op unless gravity > 0."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        if float(cfg.get('gravity', 0.0)) <= 0:
+            return
+        camera = self._find_block_world_camera(cfg)
+        if camera is not obj:
+            return
+
+        cell_size = int(cfg.get('cell_size', 32))
+        tl_x, tl_y = self._bw_gm_xy(obj)
+        ground = self._bw_ground_layer(self._bw_cell_of(tl_x, cell_size),
+                                       self._bw_cell_of(tl_y, cell_size))
+        z = float(cfg.get('z_layer', ground))
+        vz = float(cfg.get('vz', 0.0))
+        if vz != 0.0 or z > ground + self.BW_JUMP_GROUND_EPS:
+            return
+
+        try:
+            speed = float(speed)
+        except (TypeError, ValueError):
+            speed = self.BW_DEFAULT_JUMP_SPEED
+        cfg['vz'] = speed
+
+    def _bw_load_block_world(self, data):
         """Atomic: an unknown block type rejects the whole list, mirroring
-        state.load_block_list's KeyError. block_list is embedded as a
-        Python literal at export time (Kivy has no live project_data to
-        read a path out of at runtime) by the load_block_world action
-        codegen below, sourced from extensions/block_world/export_data.py's
-        collect_export_data via KivyExporter's generic extension-data hook."""
+        state.load_block_list's KeyError. `data` is embedded as a Python
+        literal at export time (Kivy has no live project_data to read a
+        path out of at runtime) by the load_block_world action codegen
+        below, sourced from extensions/block_world/export_data.py's
+        collect_export_data via KivyExporter's generic extension-data hook.
+
+        Tier 7e Phase 2/3: `data` is EITHER the old bare list shape, or the
+        new {"seed":, "blocks":[...]} dict a generation-enabled room's save
+        produces -- detected from `data`'s own type, mirroring
+        handlers.py's load_block_world action and
+        editors/block_world_editor/io.py."""
+        if isinstance(data, dict):
+            seed = data.get('seed')
+            block_list = data.get('blocks') or []
+        else:
+            seed = None
+            block_list = data
         blocks = {}
+        generated = {}
         for entry in block_list:
             bt = entry.get('type')
             if bt not in self.BLOCK_FACE_COLORS:
                 return
             blocks[(entry['x'], entry['y'], entry['z'])] = bt
+            generated[self._bw_chunk_key(entry['x'], entry['y'])] = True
         self._bw_blocks = blocks
+        # Loaded (touched) chunks must never be regenerated over -- mirrors
+        # _bw_mark_chunk_present's own guard.
+        self._bw_generated = generated
         self._bw_columns = None
+        self._bw_seed = seed
 
     # ------------------------------------------------------------------
     # hud.py port
     # ------------------------------------------------------------------
     def _bw_build_hud_commands(self, selected_index, slot_size, gap, margin_bottom,
                                back_color, border_color, selected_color, text_color,
-                               crosshair_size, crosshair_color):
+                               crosshair_size, crosshair_color, counts=None):
         """Mirrors hud.build_block_world_hud_commands exactly. Coordinates
         are screen-space y-down; the shared draw-queue path flips once for
         Kivy (see kivy_exporter.py's EXTENSION OVERLAY / HUD compositing
-        comment)."""
+        comment). counts (Tier 7c): a {block_type: count} dict to overlay a
+        count on each slot, or None to draw exactly as before."""
         W = float(self.display_width)
         H = float(self.display_height)
         cmds = []
@@ -547,6 +994,9 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                              y2=y0 + slot_size, color=border_color, filled=False))
             cmds.append(dict(type='text', text=block_type[:4], x=sx + 2,
                              y=y0 + slot_size - 14, color=text_color))
+            if counts is not None:
+                cmds.append(dict(type='text', text=str(counts.get(block_type, 0)),
+                                 x=sx + 2, y=y0 + 2, color=text_color))
         return cmds
 '''
 
@@ -572,7 +1022,8 @@ def _cg_enable_block_world_view(gen, params, event_type):
     cfg = {
         'enabled': True,
         'camera_object': str(params.get('camera_object') or ''),
-        'z_layer': int(_tofloat(params.get('z_layer'), 0)),
+        # A float from Tier 7a on -- still a clean whole number at rest.
+        'z_layer': _tofloat(params.get('z_layer'), 0),
         'fov': _tofloat(params.get('fov'), 66),
         'render_distance': int(_tofloat(params.get('render_distance'), 20)),
         'cell_size': int(_tofloat(params.get('cell_size'), 32)),
@@ -584,13 +1035,34 @@ def _cg_enable_block_world_view(gen, params, event_type):
                               in ('false', '0', 'no')),
         'pitch': max(-70.0, min(70.0, _tofloat(params.get('pitch'), 0))),
         'eye_height': _tofloat(params.get('eye_height'), 1.5),
+        # Top/bottom per-pixel cast resolution (Tier 4b) -- 0 disables
+        # texturing (flat average-color fallback), matching desktop.
+        'top_cast_res': int(_tofloat(params.get('top_cast_res'), 4)),
+        # Tier 7a jump mechanic. 0 (default) = move_and_collide's original
+        # instant-footing behaviour, unchanged.
+        'gravity': _tofloat(params.get('gravity'), 0.0),
+        'vz': 0.0,
+        # Tier 7c inventory-with-counts. Off (default) = unlimited
+        # creative-mode placing/breaking, unchanged.
+        'inventory': str(params.get('inventory', 'false')).strip().lower() in ('true', '1', 'yes'),
     }
+    # Tier 7e Phase 2/3 procedural terrain. Off (default) = every project
+    # that predates Tier 7e: self.scene._bw_seed stays None, so
+    # _bw_ensure_chunks_loaded/_bw_generate_chunk are permanent no-ops.
+    # Computed OUTSIDE cfg (which block_world_camera wholesale replaces
+    # every call) so generated terrain survives toggling the view off and
+    # back on -- mirrors state.py's _fresh() docstring on the same point.
+    generate = str(params.get('generate', 'false')).strip().lower() in ('true', '1', 'yes')
+    seed_value = int(_tofloat(params.get('seed'), 0)) if generate else None
     if not cfg['camera_object']:
         # No named camera object -> the acting instance IS the camera.
         return (f"self.scene.block_world_camera = {cfg!r}; "
                 f"self.scene.block_world_camera['camera_instance'] = self; "
-                f"self.scene._bw_columns = None")
-    return f"self.scene.block_world_camera = {cfg!r}; self.scene._bw_columns = None"
+                f"self.scene._bw_columns = None; "
+                f"self.scene._bw_seed = {seed_value!r}")
+    return (f"self.scene.block_world_camera = {cfg!r}; "
+            f"self.scene._bw_columns = None; "
+            f"self.scene._bw_seed = {seed_value!r}")
 
 def _cg_set_look_pitch(gen, params, event_type):
     from export.Kivy.code_generator import _num_code
@@ -637,6 +1109,19 @@ def _cg_break_block(gen, params, event_type):
     reach = int(_tofloat(params.get('reach', 5), 5))
     return f"self.scene._bw_break_block(self, {reach})"
 
+def _cg_apply_gravity(gen, params, event_type):
+    return "self.scene._bw_apply_gravity(self)"
+
+def _cg_jump(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code
+    speed = _num_code(params.get('speed', 0.35), 0.35)
+    return f"self.scene._bw_jump(self, {speed})"
+
+def _cg_set_block_protection(gen, params, event_type):
+    block_type = str(params.get('block_type', ''))
+    required_key = str(params.get('required_key', ''))
+    return f"self.scene._bw_set_block_protection({block_type!r}, {required_key!r})"
+
 def _cg_load_block_world(gen, params, event_type):
     data_file = str(params.get('data_file', ''))
     if not data_file:
@@ -660,7 +1145,8 @@ def _cg_draw_block_world_hud(gen, params, event_type):
         f"{_s('back_color', '#202020')!r}, {_s('border_color', '#ffffff')!r}, "
         f"{_s('selected_color', '#ffd040')!r}, {_s('text_color', '#ffffff')!r}, "
         f"{_num_code(params.get('crosshair_size', 12), 12)}, "
-        f"{_s('crosshair_color', '#ffffff')!r}))"
+        f"{_s('crosshair_color', '#ffffff')!r}, "
+        "getattr(self, 'block_inventory', None)))"
     )
 
 
@@ -670,6 +1156,9 @@ ACTION_CODEGEN = {
     'break_block': _cg_break_block,
     'select_hotbar_slot': _cg_select_hotbar_slot,
     'move_and_collide': _cg_move_and_collide,
+    'apply_gravity': _cg_apply_gravity,
+    'jump': _cg_jump,
+    'set_block_protection': _cg_set_block_protection,
     'draw_block_world_hud': _cg_draw_block_world_hud,
     'load_block_world': _cg_load_block_world,
     'set_look_pitch': _cg_set_look_pitch,

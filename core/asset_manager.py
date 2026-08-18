@@ -390,7 +390,7 @@ class AssetManager(QObject):
             # for M59) — trash_asset moves it alongside the main file/thumbnail
             # rather than leaving it on disk.
             side_file_rel = None
-            if asset_type in ("rooms", "objects", "playgrounds"):
+            if asset_type in ("rooms", "objects", "playgrounds", "sprites"):
                 side_file = self.project_directory / asset_type / f"{asset_name}.json"
                 if side_file.exists():
                     side_file_rel = f"{asset_type}/{asset_name}.json"

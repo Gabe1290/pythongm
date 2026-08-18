@@ -187,6 +187,12 @@ class KivyExporter:
             self._create_directory_structure()
             logger.info("Directory structure created")
 
+            # Materialize any binary files an extension's export_data.py
+            # contributed (Block World's texture PNGs -- see
+            # _materialize_extension_textures's own docstring) now that
+            # assets/images/ exists.
+            self._materialize_extension_textures()
+
             # Export assets
             self._export_assets()
             logger.info(f"Exported {self._count_assets()} asset(s)")
@@ -210,6 +216,10 @@ class KivyExporter:
             # Generate the high-score table module
             self._generate_highscore_module()
             logger.info("High-score module generated")
+
+            # Generate the save/load-game module (Tier 3)
+            self._generate_savegame_module()
+            logger.info("Save-game module generated")
 
             # Generate the sprite frame-metadata module
             self._generate_sprite_meta_module()
@@ -376,6 +386,16 @@ class KivyExporter:
         # Generate room list for navigation
         room_list_str = ', '.join([f'"{name}"' for name in room_names])
 
+        # Static project metadata for show_info (docs/DEFERRED_GAPS_2026_PLAN.md
+        # Tier 3) -- baked as a literal at export time since it never changes
+        # during play, mirroring how ROOM_ORDER itself is baked.
+        project_meta_repr = repr({
+            'name': self.project_data.get('name', 'Unknown Game'),
+            'version': self.project_data.get('version', '1.0.0'),
+            'author': self.project_data.get('author', 'Unknown'),
+            'description': self.project_data.get('description', ''),
+        })
+
         # Generate room class mapping
         room_mapping_str = ', '.join([f'"{name}": {cls}' for name, cls in room_class_map.items()])
 
@@ -538,6 +558,7 @@ NEEDS_MAP_BUTTON = {needs_map_button}
 ROOM_ORDER = [{room_list_str}]
 ROOM_CLASSES = {{{room_mapping_str}}}
 ROOM_META = {{{room_meta_str}}}
+PROJECT_META = {project_meta_repr}
 
 # Crash logger - writes to file so we can diagnose Android crashes
 import os as _os, traceback as _tb, datetime as _dt
@@ -593,6 +614,65 @@ def play_sound(path, volume=1.0):
             snd.play()
     except Exception as _e:
         _log(f"play_sound failed for {{path}}: {{_e}}")
+
+
+def stop_sound(path):
+    """Stop a sound by its exported asset path, if it's cached/playing
+    (docs/DEFERRED_GAPS_2026_PLAN.md Tier 3)."""
+    try:
+        snd = _sound_cache.get(path)
+        if snd:
+            snd.stop()
+    except Exception as _e:
+        _log(f"stop_sound failed for {{path}}: {{_e}}")
+
+
+def is_sound_playing(path):
+    """True if the sound at `path` is currently playing -- Tier 3's
+    check_sound. A sound that was never played (never cached) is not
+    playing."""
+    try:
+        snd = _sound_cache.get(path)
+        return bool(snd) and snd.state == 'play'
+    except Exception:
+        return False
+
+
+def open_webpage(url):
+    """Open a URL in the system's default browser (Tier 3's open_webpage /
+    splash_show_webpage). webbrowser.open is desktop-only in practice --
+    Android has no meaningful webbrowser module target, so this is a no-op
+    there rather than a crash."""
+    if IS_ANDROID:
+        _log(f"open_webpage: not supported on Android, ignoring '{{url}}'")
+        return
+    try:
+        import webbrowser
+        webbrowser.open(url)
+    except Exception as _e:
+        _log(f"open_webpage failed for {{url}}: {{_e}}")
+
+
+def show_video_file(path):
+    """Open a video file in the system's default video player -- same
+    external-process approach as the desktop runtime's show_video (a
+    separate window, not in-engine playback). Android has no equivalent,
+    so this is a no-op there."""
+    if IS_ANDROID:
+        _log(f"show_video_file: not supported on Android, ignoring '{{path}}'")
+        return
+    try:
+        import subprocess
+        import sys as _sys
+        if _sys.platform == 'win32':
+            import os as _os
+            _os.startfile(path)
+        elif _sys.platform == 'darwin':
+            subprocess.call(['open', path])
+        else:
+            subprocess.call(['xdg-open', path])
+    except Exception as _e:
+        _log(f"show_video_file failed for {{path}}: {{_e}}")
 
 
 _room_transition_pending = False
@@ -885,6 +965,56 @@ def dismiss_message():
     global _current_popup
     if _current_popup:
         _current_popup.dismiss()
+
+
+def show_splash_image(sprite_path):
+    """Show an exported sprite full-screen in a popup, pausing the game
+    until dismissed -- the image counterpart of show_message (Tier 3 of
+    docs/DEFERRED_GAPS_2026_PLAN.md). Desktop only: the pre-built Android
+    overlay (_msg_overlay) is text-only, so this is a documented no-op on
+    Android rather than new Android-side overlay work.
+    """
+    global _popup_open, _current_popup
+    _log(f"show_splash_image: '{{sprite_path}}'")
+
+    if IS_ANDROID:
+        _log("show_splash_image: not supported on Android, skipping")
+        return
+
+    if _popup_open:
+        _log("show_splash_image: a popup is already open, skipping")
+        return
+    _popup_open = True
+
+    app = get_game_app()
+    if app and app.update_event:
+        Clock.unschedule(app.update_event)
+        app.update_event = None
+
+    from kivy.uix.image import Image as KivyImage
+
+    img = KivyImage(source=sprite_path, allow_stretch=True, keep_ratio=True)
+    popup = Popup(title='', content=img,
+                  size_hint=(0.9, 0.9), auto_dismiss=True)
+
+    def on_key_down(window, key, scancode, codepoint, modifiers):
+        if key in (13, 271, 27):  # Enter, NumPad Enter, Escape
+            popup.dismiss()
+            return True
+
+    def on_dismiss(instance):
+        global _popup_open, _current_popup
+        _popup_open = False
+        _current_popup = None
+        Window.unbind(on_key_down=on_key_down)
+        a2 = get_game_app()
+        if a2 and a2.scene and not a2.update_event:
+            a2.update_event = Clock.schedule_interval(a2.scene.update, 1.0/60.0)
+
+    popup.bind(on_dismiss=on_dismiss)
+    Window.bind(on_key_down=on_key_down)
+    _current_popup = popup
+    popup.open()
 
 
 # --- Virtual D-pad for Android touch controls ---
@@ -1387,6 +1517,7 @@ if __name__ == '__main__':
             room_list_str=room_list_str,
             room_mapping_str=room_mapping_str,
             room_meta_str=room_meta_str,
+            project_meta_repr=project_meta_repr,
             project_name=project_name_literal,
             first_room_class=first_room_class,
             needs_dpad=self._project_uses_keyboard(),
@@ -1481,7 +1612,11 @@ if __name__ == '__main__':
             if not data_file.exists():
                 continue
             try:
-                ns = {}
+                # __file__ isn't populated automatically inside an exec()'d
+                # namespace (unlike a real import) -- set it so a
+                # collect_export_data that resolves paths relative to its
+                # own file (e.g. block_world's texture directory) works.
+                ns = {"__file__": str(data_file)}
                 exec(compile(data_file.read_text(encoding="utf-8"),
                              str(data_file), "exec"), ns)
                 collector = ns.get("collect_export_data")
@@ -1493,6 +1628,33 @@ if __name__ == '__main__':
                 logger.error(
                     f"Extension '{info['folder']}' export_data.py failed; "
                     f"its export data is missing from the export: {exc}")
+
+    def _materialize_extension_textures(self) -> None:
+        """Decode ``_extension_data['block_textures']`` (base64 PNG bytes --
+        see extensions/block_world/export_data.py) back into real files
+        under ``assets/images/block_world/``, so the generated scene can
+        load them the same way it loads any other sprite (``Image(path)``).
+
+        Unlike HTML5, which embeds base64 directly into ``gameData`` and
+        builds ``Image()`` objects from data URIs at runtime, Kivy exports
+        have no live project_data at runtime -- everything the generated
+        code touches must be a real file on disk, the same reason
+        load_block_world's world data gets baked in as a source literal
+        instead. Named for this one extension's contribution rather than a
+        fully generic mechanism -- a pragmatic scope call, not a new
+        general extension-asset seam.
+        """
+        textures = self.project_data.get('_extension_data', {}).get('block_textures')
+        if not textures:
+            return
+        out_dir = self.output_path / "game" / "assets" / "images" / "block_world"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        import base64
+        for filename, b64_bytes in textures.items():
+            try:
+                (out_dir / filename).write_bytes(base64.b64decode(b64_bytes))
+            except (OSError, ValueError) as exc:
+                logger.error(f"Could not write block-world texture {filename}: {exc}")
 
     EXTENSION_SCENE_MARKER = "    # __PYGM_EXTENSION_SCENE_CODE__"
 
@@ -1708,6 +1870,12 @@ if __name__ == '__main__':
         tile_horizontal = room_data.get('tile_horizontal', False)
         tile_vertical = room_data.get('tile_vertical', False)
 
+        # The room's static tile layer. This was ignored entirely before
+        # 2026-08-17, which is why plateforme_2/3 exported with no tiles at
+        # all (the only previous mention of "tiles" in this file was about
+        # repeating a background IMAGE, a different feature).
+        tiles_repr = self._tiles_repr(room_data)
+
         # Generate background image loading code (if background image is set).
         # Emitted as the body of _draw_bg_image(self) (8-space method indent) so
         # the same instructions can render into either the legacy canvas.before
@@ -1770,9 +1938,15 @@ from kivy.core.window import Window
 from utils import load_image
 
 try:
-    from asset_paths import SPRITE_PATHS
+    from asset_paths import SPRITE_PATHS, BACKGROUND_PATHS
 except ImportError:
     SPRITE_PATHS = {{}}
+    BACKGROUND_PATHS = {{}}
+
+# The room's static tile layer: (background_name, room_x, room_y, crop_x,
+# crop_y, width, height), pre-sorted back-to-front. Room coordinates are
+# GameMaker's (y down from the top-left); _draw_tiles flips them.
+ROOM_TILES = {tiles_repr}
 
 # Import object types
 {import_lines}
@@ -1861,22 +2035,7 @@ class {class_name}(Widget):
         self._fbo = None
         self._view_group = None
         if self.views_enabled:
-            self.size = (self.display_width, self.display_height)
-            self._fbo = Fbo(size=(self.room_width, self.room_height),
-                            with_stencilbuffer=True)
-            with self._fbo:
-                self._fbo_clear = ClearColor({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
-                ClearBuffers()
-                self._draw_bg_image()
-                # Captured dynamically (not a hardcoded index) so a room WITH
-                # a baked background image (which adds its own instructions
-                # above) still repositions _bg_image_group to the correct
-                # "just behind instances" slot later, not a stale fixed one.
-                self._bg_fbo_behind_index = len(self._fbo.children)
-                self._fbo.add(self._bg_image_group)
-            self.canvas.add(self._fbo)
-            self._view_group = InstructionGroup()
-            self.canvas.add(self._view_group)
+            self._ensure_views_fbo()
 
         # Keyboard state tracking
         self.keys_pressed = {{}}
@@ -1902,6 +2061,39 @@ class {class_name}(Widget):
         # during create_instances), so frame 0 already shows it.
         self._render_extension_overlay()
 
+    def _ensure_views_fbo(self):
+        """Build the multi-view Fbo render target + view_group if they don't
+        exist yet. Called from __init__ when views_enabled starts True, and
+        from set_views_enabled (Tier: Kivy camera FBO build-time-only fix,
+        docs/REMAINING_WORK_2026-08-15.md Section B) so enabling views at
+        runtime on a room that started WITHOUT them now retrofits the
+        camera instead of silently doing nothing -- previously the Fbo was
+        only ever built here, at construction, gated on the room's baked
+        views_enabled config.
+        """
+        if self._fbo is not None:
+            return
+        self.display_width, self.display_height = self.window_width, self.window_height
+        self.size = (self.display_width, self.display_height)
+        self._fbo = Fbo(size=(self.room_width, self.room_height),
+                        with_stencilbuffer=True)
+        with self._fbo:
+            self._fbo_clear = ClearColor({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
+            ClearBuffers()
+            self._draw_bg_image()
+            # Captured dynamically (not a hardcoded index) so a room WITH
+            # a baked background image (which adds its own instructions
+            # above) still repositions _bg_image_group to the correct
+            # "just behind instances" slot later, not a stale fixed one.
+            self._bg_fbo_behind_index = len(self._fbo.children)
+            self._fbo.add(self._bg_image_group)
+            # After the background groups, before the instances: the desktop
+            # engine's order is colour, image, tiles, instances.
+            self._draw_tiles()
+        self.canvas.add(self._fbo)
+        self._view_group = InstructionGroup()
+        self.canvas.add(self._view_group)
+
     def _draw_background(self):
         """Draw the room background color + image under the camera transform.
 
@@ -1918,6 +2110,7 @@ class {class_name}(Widget):
             self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
             self._draw_bg_image()
             self.canvas.before.add(self._bg_image_group)
+            self._draw_tiles()
         with self.canvas.after:
             PopMatrix()
 
@@ -1928,6 +2121,49 @@ class {class_name}(Widget):
         (views) block, so the instructions land in whichever is active.
         """
 {bg_image_body}
+
+    def _draw_tiles(self):
+        """Draw the room's static tile layer.
+
+        Each tile is a crop of a background image, and TWO independent y-flips
+        are involved -- getting either wrong puts the art in the wrong place
+        rather than failing:
+
+        1. the tile's position in the ROOM is GameMaker's y-down from the
+           top-left, so it flips against room_height (like every instance);
+        2. the crop offset WITHIN the source image is measured from the image's
+           top, while Kivy's `texture.get_region` measures from the bottom, so
+           it flips against the texture's own height.
+
+        Drawn after both the baked and the runtime (`set_background`)
+        backgrounds, because that is the order the desktop engine uses:
+        background colour, background image, tiles, then instances. Called
+        inside the same `with` block as _draw_bg_image, so the instructions land
+        in whichever canvas/Fbo is active.
+
+        ROOM_TILES is already sorted back-to-front at export time.
+        """
+        if not ROOM_TILES:
+            return
+
+        regions = {{}}
+        Color(1, 1, 1, 1)  # untinted, like the background
+        for name, room_x, room_y, crop_x, crop_y, tile_w, tile_h in ROOM_TILES:
+            key = (name, crop_x, crop_y, tile_w, tile_h)
+            region = regions.get(key)
+            if region is None:
+                path = BACKGROUND_PATHS.get(name, '')
+                image = load_image(path) if path else None
+                if image is None:
+                    continue  # missing background: skip, don't crash the game
+                texture = image.texture
+                region = texture.get_region(crop_x,
+                                           texture.height - crop_y - tile_h,
+                                           tile_w, tile_h)
+                regions[key] = region
+            Rectangle(texture=region,
+                      pos=(room_x, self.room_height - room_y - tile_h),
+                      size=(tile_w, tile_h))
 
     def _render_views(self):
         """Blit each visible view's room region into its screen port.
@@ -1960,11 +2196,15 @@ class {class_name}(Widget):
                 tex_coords=tc))
 
     def set_views_enabled(self, flag):
-        """Runtime enable_views action. Flips the flag; the multi-view render
-        needs the Fbo built at construction (baked views_enabled), so enabling
-        views on a room that started without them won't retro-fit the camera —
-        set views_enabled in the room config for the camera to render."""
+        """Runtime enable_views action. Flips the flag; if the room started
+        WITHOUT views the Fbo/view_group don't exist yet -- _ensure_views_fbo
+        lazily builds them (docs/REMAINING_WORK_2026-08-15.md Section B),
+        so this now retrofits the camera instead of leaving it dark."""
         self.views_enabled = bool(flag)
+        if self.views_enabled and self._fbo is None:
+            self._ensure_views_fbo()
+            self.update_views()
+            self._render_views()
 
     def apply_set_view(self, index, updates):
         """Runtime set_view action: patch view `index`'s fields and re-blit.
@@ -2319,6 +2559,35 @@ class {class_name}(Widget):
             for instance in _live:
                 if hasattr(instance, 'on_nokey'):
                     instance.on_nokey()
+        else:
+            # GameMaker's `keyboard` event fires EVERY FRAME while the key is
+            # held (runtime/game_runner.py's _process_held_keys), so held keys
+            # are dispatched here rather than from Window's on_key_down --
+            # which fires once per press plus the OS auto-repeat, giving
+            # stuttering movement instead of continuous motion.
+            #
+            # Objects whose keyboard events drive GRID movement have no
+            # on_keyboard_held at all: their codegen emits an on_update that
+            # polls keys_pressed itself, which is also what provides the
+            # grid-move guard _process_held_keys applies on the desktop.
+            _held = list(self.keys_pressed)
+            for instance in _live:
+                handler = getattr(instance, 'on_keyboard_held', None)
+                if handler is not None:
+                    for _key in _held:
+                        handler(_key)
+                anykey = getattr(instance, 'on_keyboard_anykey', None)
+                if anykey is not None:
+                    anykey()
+
+        # 3d. PARTICLES & TIMELINE (Tier 5.1/5.3) -- runs every frame
+        # regardless of step-event authoring, mirroring GameInstance.
+        # update_particle_system/update_timeline in runtime/game_runner.py.
+        for instance in _live:
+            if hasattr(instance, 'update_particle_system'):
+                instance.update_particle_system()
+                instance.update_timeline()
+                instance.render_particles()
 
         # 4. NORMAL STEP EVENTS
         for instance in _live:
@@ -2472,7 +2741,12 @@ class {class_name}(Widget):
             self.instances_to_destroy.append(instance)
 
     def on_keyboard(self, window, key, scancode, codepoint, modifier):
-        """Handle keyboard press events"""
+        """Handle a key going down: record it, and fire one-shot press events.
+
+        Only `keyboard_press` handlers run here. Held `keyboard` events fire
+        once per frame from update() instead, because that is what GameMaker
+        does -- see the keyboard section there.
+        """
         # Ignore if this scene is no longer the active one (after room switch)
         from main import get_game_app
         _app = get_game_app()
@@ -2610,13 +2884,62 @@ class {class_name}(Widget):
             bg_r=r,
             bg_g=g,
             bg_b=b,
-            bg_image_body=bg_image_body
+            bg_image_body=bg_image_body,
+            tiles_repr=tiles_repr
         )
         code_formatted = self._inject_extension_scene_code(code_formatted)
 
         output_file = (self.output_path / "game" / "scenes" /
                        f"{self._get_room_module_name(room_name)}.py")
         output_file.write_text(code_formatted, encoding="utf-8")
+
+    @staticmethod
+    def _tiles_repr(room_data: dict) -> str:
+        """The room's tile layer as a Python literal for the scene module.
+
+        One tuple per tile: (background_name, room_x, room_y, crop_x, crop_y,
+        width, height). Coordinates stay in GameMaker's top-left-origin space
+        exactly as authored -- the two y-flips Kivy needs are done at draw
+        time, where the room height and the source texture height are both
+        known. Baking a flip in here would need the texture size, which the
+        exporter does not have.
+
+        Sorted by depth DESCENDING at export time so the furthest-back tile is
+        drawn first, matching `GameRoom._sorted_tiles`. Tiles never change at
+        runtime, so sorting once here saves doing it in the generated game.
+
+        NOT ported from the desktop renderer: per-layer scrolling of tiles
+        (`GameRoom.render_tiles`'s `bg_layer_scroll` branch, which wraps tiles
+        on a moving background layer). No bundled sample uses it, and it needs
+        the background-layer system the Kivy scene does not have.
+        """
+        tiles = room_data.get('tiles') or []
+        if not isinstance(tiles, list):
+            return "[]"
+
+        rows = []
+        for tile in sorted(tiles,
+                           key=lambda t: t.get('depth', 1000000) if isinstance(t, dict) else 0,
+                           reverse=True):
+            if not isinstance(tile, dict):
+                continue
+            name = tile.get('background_name') or ''
+            if not name:
+                continue  # a tile with no source image cannot be drawn
+            try:
+                row = (str(name),
+                       int(tile.get('x', 0)), int(tile.get('y', 0)),
+                       int(tile.get('tile_x', 0)), int(tile.get('tile_y', 0)),
+                       int(tile.get('width', 0)), int(tile.get('height', 0)))
+            except (TypeError, ValueError):
+                continue  # corrupt tile: skip it rather than fail the export
+            if row[5] <= 0 or row[6] <= 0:
+                continue  # a zero-sized crop draws nothing
+            rows.append(row)
+
+        if not rows:
+            return "[]"
+        return "[\n" + "".join("    %r,\n" % (row,) for row in rows) + "]"
 
     def _generate_objects(self):
         """Generate object class files"""
@@ -2842,6 +3165,89 @@ def show_highscore(allow_new_entry=True):
         output_file = self.output_path / "game" / "highscore.py"
         output_file.write_text(code, encoding="utf-8")
 
+    def _generate_savegame_module(self):
+        """Write game/savegame.py -- save_game/load_game (Tier 3 of
+        docs/DEFERRED_GAPS_2026_PLAN.md).
+
+        Deliberately narrower scope than the desktop runtime's save_game/
+        load_game (execute_save_game_action / execute_load_game_action,
+        runtime/action_executor.py): score, lives, health, and the current
+        room name only -- NOT full instance positions/custom variables.
+        Reconstructing arbitrary instance state on load would mean rebuilding
+        a room's instance list from saved data, a much larger change to the
+        room-switching path; this covers the "resume where you left off"
+        case honestly rather than silently dropping the action entirely.
+
+        Written verbatim (like highscore.py), so its literal braces need no
+        escaping.
+        """
+        code = r'''#!/usr/bin/env python3
+"""Save/load game state for the exported game.
+
+Persists score/lives/health/current-room to savegame.json next to the game
+(or under ANDROID_APP_PATH on Android) -- NOT full instance state (see this
+module's own docstring in kivy_exporter.py for why). Mirrors the shape of
+highscore.py's file-path convention.
+"""
+
+import os
+import json
+
+_FILE = os.path.join(os.environ.get('ANDROID_APP_PATH', '.'), 'savegame.json')
+
+
+def save_game(filename=None):
+    """Save score/lives/health/current room to disk. `filename` is accepted
+    for parity with the desktop action's parameter but ignored in favour of
+    a single fixed save slot -- multiple named save files are out of scope
+    for this narrower port."""
+    from main import get_score, get_lives, get_health, get_game_app, ROOM_ORDER
+
+    app = get_game_app()
+    room_name = None
+    if app is not None and 0 <= app.current_room_index < len(ROOM_ORDER):
+        room_name = ROOM_ORDER[app.current_room_index]
+
+    data = {
+        'version': '1.0',
+        'score': get_score(),
+        'lives': get_lives(),
+        'health': get_health(),
+        'current_room': room_name,
+    }
+    try:
+        with open(_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f)
+    except Exception as e:
+        print('save_game failed:', e)
+
+
+def load_game(filename=None):
+    """Restore score/lives/health/current room from disk. A missing or
+    unreadable save file is a silent no-op, matching the desktop action's
+    own "no save file found" behaviour."""
+    from main import set_score, set_lives, set_health, get_game_app, ROOM_ORDER
+
+    try:
+        with open(_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception:
+        return
+
+    set_score(int(data.get('score', 0)))
+    set_lives(int(data.get('lives', 3)))
+    set_health(int(data.get('health', 100)))
+
+    room_name = data.get('current_room')
+    app = get_game_app()
+    if app is not None and room_name in ROOM_ORDER:
+        target_index = ROOM_ORDER.index(room_name)
+        if target_index != app.current_room_index:
+            app._switch_to_room(target_index)
+'''
+        output_file = self.output_path / "game" / "savegame.py"
+        output_file.write_text(code, encoding="utf-8")
+
     def _generate_base_object(self):
         """Generate the base GameObject class"""
         code = '''#!/usr/bin/env python3
@@ -2953,6 +3359,12 @@ class GameObject(Widget):
         # image_speed can be fractional); a single-frame sprite never animates.
         self.image_index = 0.0
         self.image_speed = 1.0
+        # set_alpha / set_color (docs/DEFERRED_GAPS_2026_PLAN.md Tier 3):
+        # image_alpha is a 0..1 float, image_blend an (r, g, b) 0..255
+        # tuple -- same instance-attribute shape the desktop runtime uses.
+        # Read by _redraw_frame's Color() call below.
+        self.image_alpha = 1.0
+        self.image_blend = (255, 255, 255)
         self._sprite_frames = 1
         self._frame_w = 0
         self._frame_h = 0
@@ -2967,6 +3379,11 @@ class GameObject(Widget):
         # _render_draw_queue converts and renders them each frame.
         self._draw_queue = []
         self._dq_group = None
+
+        # Particle system state (Tier 5.1/5.3) -- see update_particle_system/
+        # render_particles. None until create_particle_system is called.
+        self._particle_system = None
+        self._particle_group = None
 
         # Sounds queued from execute_code via self._sound_queue.append('snd_x')
         # (or {{'sound': name, 'volume': v}}). execute_code has no live `game`
@@ -3059,22 +3476,69 @@ class GameObject(Widget):
         self._gravity_direction = float(value)
 
     def _sync_speed_direction_from_components(self):
-        """Update speed/direction when hspeed/vspeed change (GM 7.0 behavior)"""
+        """Update speed/direction when hspeed/vspeed change (GM 7.0 behavior).
+
+        No minus on vspeed, unlike the desktop runtime: instance coordinates in
+        this generated game are KIVY coordinates, y up, so a positive vspeed
+        moves up the screen. See _sync_components_from_speed_direction.
+        """
         if self._hspeed != 0 or self._vspeed != 0:
             self._speed = math.sqrt(self._hspeed**2 + self._vspeed**2)
-            self._direction = math.degrees(math.atan2(-self._vspeed, self._hspeed))
+            self._direction = math.degrees(math.atan2(self._vspeed, self._hspeed))
         else:
             self._speed = 0
 
     def _sync_components_from_speed_direction(self):
-        """Update hspeed/vspeed when speed/direction change (GM 7.0 behavior)"""
+        """Update hspeed/vspeed when speed/direction change (GM 7.0 behavior).
+
+        `direction` keeps GameMaker's values -- 0 right, 90 up -- but instance
+        coordinates here are KIVY coordinates (y up), which the exporter
+        establishes when it places instances: an authored GM y of 576 in a
+        640-tall room becomes y=32. So GM 90 ("up") must produce a POSITIVE
+        vspeed, and the sin term carries no minus.
+
+        It used to, copied from the desktop runtime where y grows downward.
+        Every direction-driven vertical move therefore went the wrong way: an
+        up arrow moved the player down. The rest of this exporter already used
+        the Kivy convention (move_grid's dir_map is commented "Kivy Y is
+        inverted", set_vspeed's codegen negates, move_to_collision steps by
+        +sin) -- the physics layer was the odd one out.
+        """
         if self._speed != 0:
             rad = math.radians(self._direction)
             self._hspeed = self._speed * math.cos(rad)
-            self._vspeed = -self._speed * math.sin(rad)
+            self._vspeed = self._speed * math.sin(rad)
         else:
             self._hspeed = 0
             self._vspeed = 0
+
+    @property
+    def image_number(self):
+        """GameMaker's read-only count of subimages in this instance's sprite.
+
+        Mirrors GameInstance.image_number in the desktop runtime, and exists for
+        the same reason: authored expressions reference it by name, so without
+        it the token cannot bind. plateforme_3 gives each bonus a random frame
+        with `set_sprite(subimage=random(image_number))`.
+        """
+        return self._sprite_frames if self.has_sprite else 0
+
+    def random(self, upper):
+        """GameMaker's random(n): a real in [0, n)."""
+        import random as _random
+        return _random.uniform(0, float(upper))
+
+    def irandom(self, upper):
+        """GameMaker's irandom(n): an integer in [0, n] INCLUSIVE."""
+        import random as _random
+        return _random.randint(0, int(upper))
+
+    def choose(self, *options):
+        """GameMaker's choose(a, b, ...): one argument at random."""
+        import random as _random
+        if not options:
+            return 0
+        return _random.choice(options)
 
     def set_sprite(self, sprite_path):
         """Set the object's sprite - enables collision detection.
@@ -3124,7 +3588,8 @@ class GameObject(Widget):
             texture = self._sprite_texture
         self.canvas.clear()
         with self.canvas:
-            Color(1, 1, 1, 1)
+            br, bg, bb = self.image_blend
+            Color(br / 255.0, bg / 255.0, bb / 255.0, self.image_alpha)
             self.rect = Rectangle(texture=texture, pos=self.pos, size=self.size)
         self._last_frame_drawn = frame
 
@@ -3183,7 +3648,11 @@ class GameObject(Widget):
             grav_rad = math.radians(self._gravity_direction)
             # Directly modify internal values to avoid triggering sync multiple times
             self._hspeed += self._gravity * math.cos(grav_rad)
-            self._vspeed += -self._gravity * math.sin(grav_rad)
+            # No minus: y is up here (Kivy coordinates), so the usual
+            # gravity_direction of 270 has to yield a NEGATIVE vspeed. With the
+            # desktop runtime's minus it yielded a positive one and gravity
+            # pulled everything upward -- plateforme_2's "Pingus rises".
+            self._vspeed += self._gravity * math.sin(grav_rad)
             # Sync once after both changes
             self._sync_speed_direction_from_components()
 
@@ -3214,28 +3683,143 @@ class GameObject(Widget):
         new_x = self._x + float(self._hspeed * speed_factor)
         new_y = self._y + float(self._vspeed * speed_factor)
 
-        # PERFORMANCE FIX: Optimized solid collision checking
-        # Only check solid-to-solid collisions to prevent overlap
-        # Other collision events are handled by _check_collisions method
-        can_move = True
-        if self.solid and self.scene:
-            old_x, old_y = self.x, self.y
-            self.x, self.y = new_x, new_y
-
-            # Only check against other solid objects (much smaller set)
-            for other in self.scene.instances:
-                if other != self and other.solid and self.check_collision(other):
-                    can_move = False
-                    break
-
-            if not can_move:
-                self.x, self.y = old_x, old_y
-            else:
-                self._update_position()
-        else:
-            self.x = new_x
-            self.y = new_y
+        if self.scene is None:
+            self._x, self._y = new_x, new_y
             self._update_position()
+            return
+
+        # Resolve the two axes INDEPENDENTLY, as the desktop engine's
+        # hspeed/vspeed step does. Reverting both axes on any collision looks
+        # equivalent and is not: gravity pushes an instance into the floor
+        # every frame, so a both-axes revert cancels horizontal movement too
+        # and the player cannot walk at all.
+        blockers = []
+
+        # Horizontal is all-or-nothing, matching the desktop engine, which
+        # deliberately leaves it that way: hspeed is small in practice, and
+        # sliding would change how maze and bouncing movers rest against walls.
+        if new_x != self._x:
+            blocker = self._movement_blocker(new_x, self._y)
+            if blocker is None:
+                self._x = new_x
+            else:
+                blockers.append(blocker)
+
+        # Vertical slides flush against the blocker instead of cancelling.
+        # All-or-nothing left a fast faller up to |vspeed| px above the floor;
+        # past the 1px ground probe platformers use, the character hangs in
+        # mid-air with its walk animation still cycling.
+        if new_y != self._y:
+            blocker = self._movement_blocker(self._x, new_y)
+            if blocker is None:
+                self._y = new_y
+            else:
+                blockers.append(blocker)
+                self._slide_axis_to_contact('y', new_y - self._y)
+
+        self._update_position()
+
+        # The desktop engine fires the pair's collision events from its blocked
+        # branch. It has to: blocking prevents the overlap, so the post-move
+        # detection pass never sees the pair, and an authored handler like
+        # plateforme_2's move_to_contact + set_hspeed(0) would never run --
+        # leaving the instance pressed against the wall with speed still set.
+        # Deduplicated by identity: a corner collision blocks both axes against
+        # the same wall, and the handler should run once. The desktop engine
+        # keys its blocked-collisions map by instance for the same reason.
+        fired = []
+        for blocker in blockers:
+            if any(blocker is seen for seen in fired):
+                continue
+            fired.append(blocker)
+            self._fire_blocked_collision(blocker)
+
+    def _movement_blocker(self, x, y):
+        """The first instance that would stop this one occupying (x, y).
+
+        GameMaker 7.0's rule, as the desktop engine applies it in
+        GameRunner.check_movement_collision_with_blocker:
+
+          1. a collision event must exist between the two object types, in
+             EITHER direction, and
+          2. at least ONE of the two must be marked `solid`.
+
+        Both conditions matter. This used to require the MOVING instance to be
+        solid, but a player is normally not solid and the walls are, so nothing
+        ever blocked a player and it walked straight through the level.
+
+        Two non-solid objects never block each other -- they overlap and fire
+        their collision events afterwards, which is how a maze monster runs
+        through the player instead of standing on its head.
+        """
+        old_x, old_y = self._x, self._y
+        self._x, self._y = x, y
+        try:
+            for other in self.scene.instances:
+                if other is self or getattr(other, '_destroyed', False):
+                    continue
+                if not (self.solid or getattr(other, 'solid', False)):
+                    continue
+                if not self._collision_event_exists_with(other):
+                    continue
+                if self.check_collision(other):
+                    return other
+        finally:
+            self._x, self._y = old_x, old_y
+        return None
+
+    def _collision_event_exists_with(self, other):
+        """True if either object handles a collision with the other's type."""
+        scene = self.scene
+        if scene is None:
+            return False
+        mine = 'on_collision_' + scene._class_name_to_snake_case(
+            other.__class__.__name__)
+        if hasattr(self, mine):
+            return True
+        theirs = 'on_collision_' + scene._class_name_to_snake_case(
+            self.__class__.__name__)
+        return hasattr(other, theirs)
+
+    def _slide_axis_to_contact(self, axis, delta):
+        """Advance one pixel at a time along `axis` until flush against the
+        blocker, instead of cancelling the whole move.
+
+        Ported from GameRunner._slide_axis_to_contact. O(|speed|) checks per
+        blocked instance per frame, which is negligible for the handful of fast
+        movers in a scene.
+        """
+        step = 1.0 if delta > 0 else -1.0
+        remaining = abs(delta)
+        moved = 0.0
+        while moved + 1.0 <= remaining:
+            if axis == 'y':
+                if self._movement_blocker(self._x, self._y + step) is not None:
+                    break
+                self._y += step
+            else:
+                if self._movement_blocker(self._x + step, self._y) is not None:
+                    break
+                self._x += step
+            moved += 1.0
+
+    def _fire_blocked_collision(self, other):
+        """Run the pair's collision handlers after a blocked move."""
+        scene = self.scene
+        if scene is None:
+            return
+        self._collision_other = other
+        other._collision_other = self
+        mine = 'on_collision_' + scene._class_name_to_snake_case(
+            other.__class__.__name__)
+        handler = getattr(self, mine, None)
+        if handler is not None:
+            handler(other)
+        theirs = 'on_collision_' + scene._class_name_to_snake_case(
+            self.__class__.__name__)
+        handler = getattr(other, theirs, None)
+        if handler is not None:
+            handler(self)
 
     def _update_position(self):
         """Update visual position with sub-pixel precision for smooth rendering"""
@@ -3568,6 +4152,237 @@ class GameObject(Widget):
                 self.y = float(-h)
         self._update_position()
 
+    # ---- Particle system + timelines (Tier 5.1/5.3) ----
+    # Mirrors runtime/game_runner.py's GameInstance.update_particle_system/
+    # update_timeline/render_particles and action_executor.py's
+    # ActionExecutor._spawn_particles. Called every frame from the scene's
+    # update(dt) loop (3d. PARTICLES & TIMELINE), not gated on step-event
+    # authoring, so particles animate and timelines advance even for an
+    # object with no Step event at all.
+
+    def update_particle_system(self):
+        ps = getattr(self, '_particle_system', None)
+        if not ps:
+            return
+        for emitter in ps['emitters'].values():
+            stream_type = emitter.get('stream_type')
+            stream_count = emitter.get('stream_count', 0)
+            if stream_type is None or not (stream_count > 0):
+                continue
+            ptype = ps['particle_types'].get(stream_type)
+            if ptype is None:
+                continue
+            self._spawn_particles(ps, emitter, ptype, stream_count)
+
+        surviving = []
+        for particle in ps['particles']:
+            particle['life'] -= 1
+            if particle['life'] <= 0:
+                continue
+            angle_rad = math.radians(particle['direction'])
+            particle['x'] += math.cos(angle_rad) * particle['speed']
+            particle['y'] -= math.sin(angle_rad) * particle['speed']
+            particle['size'] = max(0.0, particle['size'] + particle['size_increase'])
+            surviving.append(particle)
+        ps['particles'] = surviving
+
+    def _spawn_particles(self, ps, emitter, ptype, number):
+        import random
+        for _ in range(int(number)):
+            if emitter['shape'] == 'rectangle':
+                px = emitter['x'] + random.uniform(-emitter['width'] / 2, emitter['width'] / 2)
+                py = emitter['y'] + random.uniform(-emitter['height'] / 2, emitter['height'] / 2)
+            elif emitter['shape'] == 'ellipse':
+                angle = random.uniform(0, 360)
+                radius_x = random.uniform(0, emitter['width'] / 2)
+                radius_y = random.uniform(0, emitter['height'] / 2)
+                px = emitter['x'] + radius_x * math.cos(math.radians(angle))
+                py = emitter['y'] + radius_y * math.sin(math.radians(angle))
+            elif emitter['shape'] == 'diamond':
+                t = random.uniform(-1, 1)
+                s = random.uniform(-1, 1) * (1 - abs(t))
+                px = emitter['x'] + t * emitter['width'] / 2
+                py = emitter['y'] + s * emitter['height'] / 2
+            else:  # line
+                t = random.uniform(-0.5, 0.5)
+                px = emitter['x'] + t * emitter['width']
+                py = emitter['y']
+            size = random.uniform(ptype['size_min'], ptype['size_max'])
+            speed = random.uniform(ptype['speed_min'], ptype['speed_max'])
+            direction = random.uniform(ptype['direction_min'], ptype['direction_max'])
+            life = random.randint(int(ptype['life_min']), int(ptype['life_max']))
+            ps['particles'].append({{
+                'x': px, 'y': py, 'size': size, 'size_increase': ptype['size_increase'],
+                'speed': speed, 'direction': direction, 'life': life, 'max_life': life,
+                'sprite': ptype['sprite'], 'color': ptype['color'], 'alpha': ptype['alpha'],
+            }})
+
+    def update_timeline(self):
+        if getattr(self, 'timeline_running', False):
+            speed = getattr(self, 'timeline_speed', 1.0)
+            self.timeline_position = getattr(self, 'timeline_position', 0) + speed
+
+    # ---- Particle + timeline ACTIONS (called from generated code, one
+    # call per action -- codegen emits a single method call rather than
+    # inline dict manipulation, mirroring _draw_minimap's own precedent for
+    # actions too big for a one-line expression). Each mirrors the matching
+    # execute_*_action in runtime/action_executor.py exactly. ----
+
+    def create_particle_system(self, depth=0):
+        self._particle_system = {{
+            'depth': depth, 'particle_types': {{}}, 'emitters': {{}},
+            'particles': [], 'next_type_id': 0, 'next_emitter_id': 0,
+        }}
+
+    def destroy_particle_system(self):
+        self._particle_system = None
+
+    def clear_particles(self):
+        if self._particle_system:
+            self._particle_system['particles'] = []
+
+    def create_particle_type(self, sprite=None, size_min=1.0, size_max=1.0,
+                             size_increase=0, color='#FFFFFF', alpha=1.0,
+                             speed_min=0, speed_max=0, direction_min=0,
+                             direction_max=360, life_min=100, life_max=100):
+        if not self._particle_system:
+            self._last_particle_type_id = -1
+            return -1
+        rgb = (255, 255, 255)
+        if isinstance(color, str) and color.startswith('#'):
+            try:
+                hexc = color.lstrip('#')
+                rgb = (int(hexc[0:2], 16), int(hexc[2:4], 16), int(hexc[4:6], 16))
+            except (ValueError, IndexError):
+                pass
+        type_id = self._particle_system['next_type_id']
+        self._particle_system['next_type_id'] += 1
+        self._particle_system['particle_types'][type_id] = {{
+            'sprite': sprite, 'size_min': size_min, 'size_max': size_max,
+            'size_increase': size_increase, 'color': rgb, 'alpha': alpha,
+            'speed_min': speed_min, 'speed_max': speed_max,
+            'direction_min': direction_min, 'direction_max': direction_max,
+            'life_min': life_min, 'life_max': life_max,
+        }}
+        self._last_particle_type_id = type_id
+        return type_id
+
+    def create_emitter(self, x=0, y=0, width=0, height=0, shape='rectangle'):
+        if not self._particle_system:
+            self._last_emitter_id = None
+            return -1
+        if shape not in ('rectangle', 'ellipse', 'diamond', 'line'):
+            shape = 'rectangle'
+        emitter_id = self._particle_system['next_emitter_id']
+        self._particle_system['next_emitter_id'] += 1
+        self._particle_system['emitters'][emitter_id] = {{
+            'x': x, 'y': y, 'width': width, 'height': height, 'shape': shape,
+            'stream_type': None, 'stream_count': 0,
+        }}
+        self._last_emitter_id = emitter_id
+        return emitter_id
+
+    def destroy_emitter(self):
+        if not self._particle_system:
+            return
+        last_id = getattr(self, '_last_emitter_id', None)
+        if last_id is not None and last_id in self._particle_system['emitters']:
+            del self._particle_system['emitters'][last_id]
+        self._last_emitter_id = None
+
+    def burst_particles(self, particle_type=0, number=10):
+        if not self._particle_system:
+            return
+        ptype = self._particle_system['particle_types'].get(particle_type)
+        if ptype is None:
+            return
+        last_id = getattr(self, '_last_emitter_id', None)
+        if last_id is None:
+            return
+        emitter = self._particle_system['emitters'].get(last_id)
+        if emitter is None:
+            return
+        self._spawn_particles(self._particle_system, emitter, ptype, number)
+
+    def stream_particles(self, particle_type=0, number=1):
+        if not self._particle_system:
+            return
+        if particle_type not in self._particle_system['particle_types']:
+            return
+        last_id = getattr(self, '_last_emitter_id', None)
+        if last_id is None:
+            return
+        emitter = self._particle_system['emitters'].get(last_id)
+        if emitter is None:
+            return
+        emitter['stream_type'] = particle_type
+        emitter['stream_count'] = number
+
+    def set_timeline(self, timeline=None):
+        self.timeline_index = timeline
+        self.timeline_position = 0
+        if not hasattr(self, 'timeline_speed'):
+            self.timeline_speed = 1.0
+        if not hasattr(self, 'timeline_running'):
+            self.timeline_running = False
+
+    def set_timeline_position(self, position=0, relative=False):
+        current = getattr(self, 'timeline_position', 0)
+        self.timeline_position = current + position if relative else position
+        if self.timeline_position < 0:
+            self.timeline_position = 0
+
+    def set_timeline_speed(self, speed=1.0):
+        self.timeline_speed = speed
+
+    def start_timeline(self):
+        self.timeline_running = True
+
+    def pause_timeline(self):
+        self.timeline_running = False
+
+    def stop_timeline(self):
+        self.timeline_running = False
+        self.timeline_position = 0
+
+    def render_particles(self):
+        """Draw this instance's live particles via a dedicated
+        InstructionGroup on self.canvas.after -- NOT self.canvas, which
+        _redraw_frame clears and rebuilds on every sprite animation frame
+        (the same reason _dq_group lives in .after too, right below)."""
+        if self._particle_group is None:
+            self._particle_group = InstructionGroup()
+            self.canvas.after.add(self._particle_group)
+        group = self._particle_group
+        group.clear()
+        ps = getattr(self, '_particle_system', None)
+        if not ps or not ps['particles']:
+            return
+        room_h = self.scene.room_height if self.scene else 0
+        for particle in ps['particles']:
+            x = particle['x']
+            y = room_h - particle['y']
+            alpha = max(0.0, min(1.0, particle.get('alpha', 1.0)))
+            sprite_name = particle.get('sprite')
+            tex = None
+            if sprite_name:
+                path = SPRITE_PATHS.get(sprite_name, '')
+                if path:
+                    img = load_image(path)
+                    if img is not None:
+                        tex = img.texture
+            if tex is not None:
+                scale = max(0.01, particle.get('size', 1.0))
+                w = max(1, tex.width * scale)
+                h = max(1, tex.height * scale)
+                group.add(Color(1, 1, 1, alpha))
+                group.add(Rectangle(texture=tex, pos=(x - w / 2, y - h / 2), size=(w, h)))
+            else:
+                radius = max(1, particle.get('size', 1.0))
+                color = particle.get('color', (255, 255, 255))
+                group.add(Color(color[0] / 255.0, color[1] / 255.0, color[2] / 255.0, alpha))
+                group.add(Ellipse(pos=(x - radius, y - radius), size=(radius * 2, radius * 2)))
+
     # ---- Draw-queue rendering (GameMaker draw event parity) ----
 
     @staticmethod
@@ -3638,7 +4453,12 @@ class GameObject(Widget):
         """Render one draw-queue command dict into ``group``."""
         ctype = cmd.get('type')
         color = self._dq_color(cmd.get('color', '#FFFFFF'))
-        if ctype == 'rectangle':
+        if ctype == 'fill':
+            # fill_color (Tier 3): whole-viewport fill, no room-coordinate
+            # translation needed (the same rect either way).
+            group.add(Color(*color))
+            group.add(Rectangle(pos=(0, 0), size=(Window.width, Window.height)))
+        elif ctype == 'rectangle':
             x1 = float(cmd.get('x1', 0))
             y1 = float(cmd.get('y1', 0))
             x2 = float(cmd.get('x2', 100))
@@ -4194,14 +5014,34 @@ class {class_name}(GameObject):
         if uses_grid_movement:
             return self._generate_grid_keyboard_handler(keyboard_events)
 
-        # Otherwise, generate normal keyboard handler
+        # Otherwise, generate the normal HELD keyboard handler.
+        #
+        # Named on_keyboard_held, not on_keyboard, for two reasons:
+        #   1. GameMaker's `keyboard` event fires every FRAME while the key is
+        #      down (runtime/game_runner.py's _process_held_keys). Kivy's
+        #      on_key_down fires once per press plus OS auto-repeat, so binding
+        #      these actions there gave stuttering, repeat-rate movement instead
+        #      of continuous motion. The scene now calls this once per held key
+        #      per frame.
+        #   2. `keyboard_press` (one-shot) ALSO generated a method called
+        #      on_keyboard, so an object with both a held and a press event had
+        #      one silently shadow the other -- last def wins.
         key_map = _KIVY_KEY_MAP
 
-        code_lines = []
-        code_lines.append("    def on_keyboard(self, key, scancode, codepoint, modifier):")
-        code_lines.append('        """Handle keyboard press events"""')
+        anykey_events = [e for e in keyboard_events
+                         if str(e.get('key_name', '')).lower() == 'anykey']
+        keyed_events = [e for e in keyboard_events
+                        if str(e.get('key_name', '')).lower() != 'anykey']
 
-        for i, event in enumerate(keyboard_events):
+        code_lines = []
+        if keyed_events:
+            # Emitted only when there is a specific key to match. An object
+            # that listens on anykey alone would otherwise get an empty
+            # handler called once per held key per frame, forever.
+            code_lines.append("    def on_keyboard_held(self, key):")
+            code_lines.append('        """Handle a key that is currently held down (fires every frame)"""')
+
+        for i, event in enumerate(keyed_events):
             key_name = event.get('key_name', '')
             actions = event.get('actions', [])
             key_code = key_map.get(str(key_name).lower(), '0')  # case-insensitive: samples write 'N'/'P' as well as 'r'
@@ -4224,6 +5064,36 @@ class {class_name}(GameObject):
                     code_lines.append("            pass")
             else:
                 code_lines.append("            pass")
+
+        # `anykey` fires every frame while ANY key is held -- the mirror of
+        # nokey. It used to fall through key_map.get(..., '0') and compile to
+        # `if key == 0:`, which no real keycode ever matches, so the handler was
+        # dead code. That is issue 6 of the 2026-08-16 pass: maze_4's start
+        # screen advances on `anykey -> next_room`, so the exported game showed
+        # its background and no key would start it.
+        if anykey_events:
+            if code_lines:
+                code_lines.append("")
+            code_lines.append("    def on_keyboard_anykey(self):")
+            code_lines.append('        """Handle any key being held (fires every frame)"""')
+            actions = anykey_events[0].get('actions', [])
+            if actions:
+                generator = ActionCodeGenerator(
+                    base_indent=2, sprite_paths=self.sprite_path_map,
+                    sound_paths=self.sound_path_map,
+                    background_paths=self.background_path_map,
+                    scripts=self.scripts_map,
+                    extension_data=self.project_data.get('_extension_data', {}))
+                for action in actions:
+                    if isinstance(action, dict):
+                        generator.process_action(action, 'keyboard')
+                    elif isinstance(action, str) and action.strip():
+                        generator.add_line(action)
+                action_code = generator.get_code()
+                code_lines.append(action_code if action_code.strip()
+                                  else "        pass")
+            else:
+                code_lines.append("        pass")
 
         return '\n'.join(code_lines)
 

@@ -733,8 +733,13 @@ def _cg_draw_minimap(gen, params, event_type):
     back = str(params.get('back_color', '#101018'))
     wall = str(params.get('wall_color', '#8080a0'))
     player = str(params.get('player_color', '#ffd040'))
+    mark_obj = str(params.get('mark_object', '') or '')
+    mark_col = str(params.get('mark_color', '#40e0ff'))
+    mark_obj2 = str(params.get('mark_object_2', '') or '')
+    mark_col2 = str(params.get('mark_color_2', '#ff5050'))
     return (f"self._draw_minimap({x}, {y}, {size}, "
-            f"{back!r}, {wall!r}, {player!r})")
+            f"{back!r}, {wall!r}, {player!r}, "
+            f"{mark_obj!r}, {mark_col!r}, {mark_obj2!r}, {mark_col2!r})")
 
 
 ACTION_CODEGEN = {
@@ -750,7 +755,9 @@ ACTION_CODEGEN = {
 # __PYGM_EXTENSION_BASE_CODE__ marker (post-.format(), so { } are single). The
 # draw_minimap action codegen emits a call to this _draw_minimap method.
 # ---------------------------------------------------------------------------
-BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall_color, player_color):
+BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall_color, player_color,
+                      mark_object='', mark_color='#40e0ff',
+                      mark_object_2='', mark_color_2='#ff5050'):
         """Queue a north-up minimap of the raycast room's wall edges.
 
         A MACRO action: appends ordinary rectangle/line draw-queue commands, so
@@ -791,6 +798,36 @@ BASE_OBJECT_CODE = '''\n    def _draw_minimap(self, x, y, size, back_color, wall
             x2, y2 = _px((col + 1) * cs, line_y * cs)
             self._draw_queue.append(dict(type='line', x1=x1, y1=y1, x2=x2,
                                          y2=y2, color=wall_color))
+
+        # Opt-in object dots, under the player marker so a pickup sharing a
+        # cell never hides it. Mirrors hud.py's marks loop.
+        def _mark_points(object_name):
+            if not object_name:
+                return []
+            pts = []
+            to_gm = getattr(scene, '_raycast_gm_xy', None)
+            if not callable(to_gm):
+                return []
+            for inst in (getattr(scene, 'instances', None) or ()):
+                if getattr(inst, 'object_name', None) != object_name:
+                    continue
+                # Kivy is y-UP; the whole raycast pipeline works in GM's
+                # y-down frame, so convert exactly as the camera marker below
+                # does. Reading a raw position here would mirror every dot.
+                gx, gy = to_gm(inst)
+                pts.append((gx + float(getattr(inst, 'image_width', 0) or 0) / 2.0,
+                            gy + float(getattr(inst, 'image_height', 0) or 0) / 2.0))
+            return sorted(pts)
+
+        for _colour, _pts in ((mark_color, _mark_points(mark_object)),
+                              (mark_color_2, _mark_points(mark_object_2))):
+            if not _colour or not _pts:
+                continue
+            for (wx, wy) in _pts:
+                mx, my = _px(wx, wy)
+                self._draw_queue.append(dict(
+                    type='rectangle', x1=mx - 1.5, y1=my - 1.5,
+                    x2=mx + 1.5, y2=my + 1.5, color=_colour, filled=True))
 
         cfg = getattr(scene, 'raycast_camera', None) or {}
         camera = None

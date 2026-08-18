@@ -1,4 +1,4 @@
-# Raycast — Livello 4
+# 2.5 D — Livello 4
 
 Il quarto livello in prima persona in stile Doom/Wolfenstein, e il
 primo costruito **attorno a una barra di stato permanente in basso**
@@ -49,7 +49,7 @@ questo esempio.
   stanza riavvia. **Se finiscono le vite** → il gioco riavvia.
 - **Raggiungi l'uscita** una volta trovate **tutte e tre le chiavi**.
   Toccarla presto ti dice solo che il cancello è chiuso a chiave.
-- **Premi `M`** per far apparire una **minimappa** dei muri (spenta
+- **Premi `M`** per far apparire una **minimappa** che mostra i muri, le chiavi dorate ancora da trovare e i mostri in rosso (spenta
   per default). È disegnata dentro la vista 3D, sopra la barra di
   stato, e si attiva/disattiva — la stessa mappa a richiesta che usa
   `raycast_3`, qui tenuta lontana dalla barra.
@@ -106,7 +106,7 @@ finestra; il motore gestisce l'inversione.)
 | `objects/obj_monster.json` | Nemico billboard in pattuglia |
 | `objects/obj_goal.json` | Uscita bloccata dalle chiavi (si apre quando non resta nessun `obj_key`) |
 | `objects/obj_wall_h.json`, `obj_wall_v.json` | Segmenti muro sottili |
-| `sprites/` | Grafica muro/pavimento/persona/mostro riusata, un nuovo **`spr_ceiling`** (soffitto di pietra da interno, in sostituzione del cielo), più nuovi `spr_face` (ritratto a 4 frame) e `spr_key` |
+| `sprites/` | Grafica muro/pavimento/persona/mostro riusata, un nuovo **`spr_ceiling`** (soffitto di pietra da interno, in sostituzione del cielo), più nuovi `spr_face` (ritratto a 4 frame), `spr_key` e `spr_gate` (l'uscita chiusa) |
 
 ## Il labirinto è generato
 

@@ -158,16 +158,25 @@ and Stage C is genuinely optional/deferrable.
 
 ### Stage A — the extension mechanism (no raycast moved)
 
-- [ ] **A1 — one load point, used by IDE and runtime.** Extract plugin/extension
+*Stage A shipped, and these boxes went unticked while Stages B and C were
+worked. Verified against current code on 2026-08-17 rather than assumed.*
+
+- [x] **A1 — one load point, used by IDE and runtime.** Extract plugin/extension
   loading so the IDE populates `ACTION_TYPES` the same way `GameRunner` does.
   Test: `play_sound` is visible in `ACTION_TYPES` after the IDE's startup path,
-  and audio actions still work at runtime.
-- [ ] **A2 — folder extensions + manifest.** Loader supports `extensions/<name>/`
+  and audio actions still work at runtime. — `tests/test_plugin_loading_in_ide.py`.
+- [x] **A2 — folder extensions + manifest.** Loader supports `extensions/<name>/`
   with `extension.json`, alongside existing single-file plugins. Test: a
   fixture extension loads; `plugins/audio_actions.py` still loads unchanged.
-- [ ] **A3 — enable/disable.** Config-driven on/off per extension, surfaced
+  — three shipped folder extensions carry a manifest (`block_world`,
+  `multiplayer_lan`, `raycast_2_5d`); `tests/test_folder_extensions.py`.
+- [x] **A3 — enable/disable.** Config-driven on/off per extension, surfaced
   where the editions/sample curation lives. Test: a disabled extension
-  contributes nothing.
+  contributes nothing. — `is_extension_enabled` gates the load in
+  `events/plugin_loader.py`, `set_extension_enabled` is wired to the
+  Preferences → Extensions tab (`dialogs/preferences_dialog.py`);
+  `tests/test_preferences_extensions_tab.py`,
+  `tests/test_extension_dependency_warning.py`.
 
 *Cut line: the mechanism is usable by any optional feature even if raycast never
 moves.*

@@ -8,7 +8,7 @@ valid Python literal in every case.
 
 The collision tests below pin the call-site CONTRACT for if_collision. OUR
 authoritative implementation (audit M34) emits the probe as an OFFSET from the
-instance position — self.check_collision_at(self.x + (x), self.y + (y), obj) —
+instance position — self.check_collision_at(self.x + (x), self.y - (y), obj) —
 matching the pygame runtime's if_collision semantics (check_x = instance.x +
 x_offset) and locked in by tests/test_exporters.py. These tests are retargeted
 to that offset form. M34's actual runtime defect — check_collision_at being
@@ -43,7 +43,7 @@ def test_if_collision_uses_explicit_coords():
         {"action": "set_vspeed", "parameters": {"speed": "-10"}},
     ])
     # OUR M34 semantics: x/y are offsets from the instance position.
-    assert "self.check_collision_at(self.x + (50), self.y + (50), 'solid')" in code
+    assert "self.check_collision_at(self.x + (50), self.y - (50), 'solid')" in code
 
 
 def test_if_collision_defaults_to_self_position():
@@ -51,7 +51,7 @@ def test_if_collision_defaults_to_self_position():
     code = _gen([
         {"action": "check_collision", "parameters": {"object": "wall"}},
     ])
-    assert "self.check_collision_at(self.x + (0), self.y + (0), 'wall')" in code
+    assert "self.check_collision_at(self.x + (0), self.y - (0), 'wall')" in code
 
 
 def test_if_collision_not_flag_inverts():
@@ -60,7 +60,7 @@ def test_if_collision_not_flag_inverts():
          "parameters": {"x": "50", "y": "50", "object": "solid",
                         "not_flag": True}},
     ])
-    assert "if not self.check_collision_at(self.x + (50), self.y + (50), 'solid'):" in code
+    assert "if not self.check_collision_at(self.x + (50), self.y - (50), 'solid'):" in code
 
 
 def test_generated_collision_block_is_valid_python():

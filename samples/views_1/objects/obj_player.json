@@ -144,6 +144,116 @@
           }
         ]
       }
+    },
+    "game_start": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "won",
+            "value": "0",
+            "scope": "self"
+          }
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "This room is three screens wide, so you cannot see it all at once. The camera follows you as you walk. Collect all 18 coins!",
+            "message_translations": {
+              "fr": "Cette salle fait trois écrans de large, tu ne peux donc pas tout voir d'un coup. La caméra te suit quand tu marches. Ramasse les 18 pièces !"
+            }
+          }
+        }
+      ]
+    },
+    "draw_gui": {
+      "actions": [
+        {
+          "action": "set_draw_color",
+          "parameters": {
+            "color": "#ffffff"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "8",
+            "y": "8",
+            "caption": "Score: ",
+            "caption_translations": {
+              "fr": "Score : "
+            }
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Collect all 18 coins\"",
+            "x": "8",
+            "y": "36",
+            "text_translations": {
+              "fr": "\"Ramasse les 18 pièces\""
+            }
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "won",
+            "value": "1",
+            "scope": "instance",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "exit_event",
+          "parameters": {}
+        },
+        {
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_coin",
+            "number": "0",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "won",
+            "value": "1",
+            "scope": "self"
+          }
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "All 18 coins collected. You explored the whole room!",
+            "message_translations": {
+              "fr": "Les 18 pièces sont ramassées. Tu as exploré toute la salle !"
+            }
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
     }
   },
   "imported": true,

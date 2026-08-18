@@ -133,7 +133,10 @@ class TestEnableBlockWorldView:
 
         param_names = {p.name for p in PLUGIN_ACTIONS["enable_block_world_view"].parameters}
         # "enabled" is the stored/derived form of the "enable" parameter.
-        written_keys = set(cfg) - {"enabled"}
+        # "vz" (Tier 7a) is pure internal runtime state -- always starts at
+        # 0.0 here, only ever written afterward by jump/apply_gravity, never
+        # something an author sets through enable_block_world_view itself.
+        written_keys = set(cfg) - {"enabled", "vz"}
         missing = written_keys - param_names
         assert not missing, f"config keys with no matching ActionParameter: {missing}"
 
@@ -314,7 +317,7 @@ def test_render_room_claims_a_block_world_room_and_declines_others():
 
     class _Room:
         def __init__(self, cfg):
-            self.extension_state = {"block_world": {"camera": cfg, "blocks": {}}} \
+            self.extension_state = {"block_world": {"camera": cfg, "chunks": {}}} \
                 if cfg is not None else {}
 
     drew = {"n": 0}

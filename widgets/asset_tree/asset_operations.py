@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 from .asset_dialogs import AssetRenameDialog
 from .asset_utils import validate_asset_name, load_project_data, save_project_data
-from utils.project_file_merge import merge_object_file, merge_room_file
+from utils.project_file_merge import merge_object_file, merge_room_file, merge_sprite_file
 
 
 class AssetOperations:
@@ -474,7 +474,7 @@ class AssetOperations:
             # (asset_trash.restore_asset returns this recorded snapshot
             # verbatim for direct re-insertion into the live model) doesn't
             # come back missing instances/events.
-            if asset_category in ("rooms", "objects"):
+            if asset_category in ("rooms", "objects", "sprites"):
                 side_file = Path(self.tree.project_path) / asset_category / f"{asset_name}.json"
                 if side_file.exists():
                     try:
@@ -482,8 +482,10 @@ class AssetOperations:
                             file_data = json.load(f)
                         if asset_category == "rooms":
                             merge_room_file(asset_data, file_data)
-                        else:
+                        elif asset_category == "objects":
                             merge_object_file(asset_data, file_data)
+                        else:
+                            merge_sprite_file(asset_data, file_data)
                     except (OSError, ValueError) as e:
                         logger.warning(f"Could not merge {side_file} before delete: {e}")
             # Check both 'file_path' (sprites/sounds) and 'project_path' (legacy)
@@ -498,7 +500,7 @@ class AssetOperations:
             # read it back) — trash_asset moves it alongside the main file/
             # thumbnail rather than leaving it behind (audit M59).
             side_file_rel = None
-            if asset_category in ("rooms", "objects"):
+            if asset_category in ("rooms", "objects", "sprites"):
                 side_file = Path(self.tree.project_path) / asset_category / f"{asset_name}.json"
                 if side_file.exists():
                     side_file_rel = f"{asset_category}/{asset_name}.json"

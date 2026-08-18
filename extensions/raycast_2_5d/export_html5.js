@@ -102,7 +102,7 @@ Object.assign(GameRoom.prototype, {
         const g = Math.round(parseInt(h.slice(2, 4), 16) * f);
         const b = Math.round(parseInt(h.slice(4, 6), 16) * f);
         return `rgb(${r},${g},${b})`;
-    }
+    },
 
     // Wall shading model — MUST match game_runner.GameRoom._wall_shade and the
     // Kivy scene's _wall_shade (pinned by tests/test_raycast_export_parity.py).
@@ -314,7 +314,7 @@ Object.assign(GameRoom.prototype, {
         }
         this._texDataCache.set(sprite, data);
         return data;
-    }
+    },
 
     // Low-res floor/ceiling texture casting (faithful port of
     // game_runner._cast_floor_plane). Fills a downsampled ImageData per-pixel
@@ -503,6 +503,38 @@ registerExtensionAction('draw_minimap', function(obj, params, game) {
                     const [x1, y1] = mmPx(col * mmCS, lineY * mmCS);
                     const [x2, y2] = mmPx((col + 1) * mmCS, lineY * mmCS);
                     obj._draw_queue.push({type: 'line', x1, y1, x2, y2, color: wallColor});
+                }
+
+                // Opt-in object dots, under the player marker so a pickup
+                // sharing a cell never hides it. Mirrors hud.py's marks loop.
+                const MM_MARK_HALF = 1.5;
+                const mmMarkPoints = (objectName) => {
+                    if (!objectName) return [];
+                    const pts = [];
+                    for (const inst of (room.instances || [])) {
+                        if (inst.object_name !== objectName) continue;
+                        const tl = GameRoom.spriteTopLeft(inst);
+                        pts.push([tl.x + inst.boxWidth() / 2,
+                                  tl.y + inst.boxHeight() / 2]);
+                    }
+                    // Sorted for the same reason the wall sets are.
+                    return pts.sort((a, b) => (a[0] - b[0]) || (a[1] - b[1]));
+                };
+                for (const grp of [
+                        {color: params.mark_color || '#40e0ff',
+                         points: mmMarkPoints(params.mark_object || '')},
+                        {color: params.mark_color_2 || '#ff5050',
+                         points: mmMarkPoints(params.mark_object_2 || '')}]) {
+                    if (!grp.color || !grp.points.length) continue;
+                    for (const [wx, wy] of grp.points) {
+                        const [mx, my] = mmPx(wx, wy);
+                        obj._draw_queue.push({
+                            type: 'rectangle',
+                            x1: mx - MM_MARK_HALF, y1: my - MM_MARK_HALF,
+                            x2: mx + MM_MARK_HALF, y2: my + MM_MARK_HALF,
+                            color: grp.color, filled: true,
+                        });
+                    }
                 }
 
                 const mmCfg = room.raycastCamera || {};

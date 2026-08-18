@@ -770,6 +770,108 @@ class GameInstance:
             # to match GameMaker 7.0 event execution order
             self.action_executor.execute_event(self, "step", self.object_data["events"])
 
+    def update_particle_system(self):
+        """Per-frame particle system update: spawn from streaming emitters,
+        then age/move/cull every live particle.
+
+        Write side lives in action_executor.py's create_particle_system/
+        create_particle_type/create_emitter/burst_particles/stream_particles
+        actions (Tier 5.1, docs/DEFERRED_GAPS_2026_PLAN.md) — those only
+        ever populated `_particle_system`; nothing previously read it.
+        """
+        ps = getattr(self, '_particle_system', None)
+        if not ps:
+            return
+
+        # Spawn from any emitter with active streaming (stream_particles
+        # action sets stream_type/stream_count on the emitter itself).
+        for emitter in ps['emitters'].values():
+            stream_type = emitter.get('stream_type')
+            stream_count = emitter.get('stream_count', 0)
+            if stream_type is None or stream_count <= 0:
+                continue
+            ptype = ps['particle_types'].get(stream_type)
+            if ptype is None:
+                continue
+            self.action_executor._spawn_particles(self, emitter, ptype, stream_count)
+
+        # Age, move and cull particles. Movement mirrors set_direction_speed's
+        # convention (0 deg = right, 90 deg = up, y grows downward).
+        surviving = []
+        for particle in ps['particles']:
+            particle['life'] -= 1
+            if particle['life'] <= 0:
+                continue
+            angle_rad = math.radians(particle['direction'])
+            particle['x'] += math.cos(angle_rad) * particle['speed']
+            particle['y'] -= math.sin(angle_rad) * particle['speed']
+            particle['size'] = max(0.0, particle['size'] + particle['size_increase'])
+            surviving.append(particle)
+        ps['particles'] = surviving
+
+    def update_timeline(self):
+        """Advance timeline_position by timeline_speed while timeline_running
+        is set (set_timeline/start_timeline/pause_timeline/set_timeline_speed/
+        set_timeline_position in action_executor.py). There is no separate
+        Timeline resource/moments table in this engine (unlike GameMaker) --
+        an author reacts to specific positions the same way they'd react to
+        any other counter: a test_variable/conditional check on
+        timeline_position in the object's own step event. This mirrors how
+        alarms are authored as ordinary object events, just without a
+        dedicated per-position event bucket.
+        """
+        if getattr(self, 'timeline_running', False):
+            speed = getattr(self, 'timeline_speed', 1.0)
+            self.timeline_position = getattr(self, 'timeline_position', 0) + speed
+
+    def render_particles(self, screen: pygame.Surface, view_offset=(0, 0)):
+        """Draw this instance's live particles (world-space, same view_offset
+        as the instance's own sprite). Sprite-typed particles blit a scaled
+        copy of the named sprite's first frame; colorless/no-sprite particles
+        draw as a filled, alpha-blended circle. Called from render() BEFORE
+        the visibility check and the instance's own sprite, so an invisible
+        "particle controller" instance (a common pattern -- one instance that
+        only holds emitters) still draws its particles. Known simplification:
+        this instance's particles are not independently depth-sorted against
+        every OTHER instance using the particle system's own `depth` field --
+        there is no room-global particle layer in this engine, only
+        per-instance ones.
+        """
+        ps = getattr(self, '_particle_system', None)
+        if not ps or not ps['particles']:
+            return
+
+        runner = getattr(getattr(self, 'action_executor', None), 'game_runner', None)
+        sprites = getattr(runner, 'sprites', None) or {}
+
+        for particle in ps['particles']:
+            x = int(particle['x'] + view_offset[0])
+            y = int(particle['y'] + view_offset[1])
+            alpha = max(0, min(255, int(particle.get('alpha', 1.0) * 255)))
+            sprite_name = particle.get('sprite')
+            sprite = sprites.get(sprite_name) if sprite_name else None
+            frame = None
+            if sprite is not None:
+                frame = sprite.frames[0] if sprite.frames else sprite.surface
+            if frame is not None:
+                scale = max(0.01, particle.get('size', 1.0))
+                w = max(1, int(frame.get_width() * scale))
+                h = max(1, int(frame.get_height() * scale))
+                scaled = pygame.transform.scale(frame, (w, h))
+                if alpha < 255:
+                    scaled = scaled.copy()
+                    scaled.set_alpha(alpha)
+                screen.blit(scaled, (x - w // 2, y - h // 2))
+            else:
+                radius = max(1, int(particle.get('size', 1.0)))
+                color = particle.get('color', (255, 255, 255))
+                if alpha < 255:
+                    temp = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+                    pygame.draw.circle(temp, (*color, alpha), (radius, radius), radius)
+                    screen.blit(temp, (x - radius, y - radius))
+                else:
+                    pygame.draw.circle(screen, color, (x, y), radius)
+
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
         self.sprite = sprite
@@ -817,6 +919,12 @@ class GameInstance:
         appears at the correct screen pixel under the active view. Defaults to
         (0, 0), which preserves identical behavior when views are disabled.
         """
+        # Particles draw even when the owning instance is invisible -- an
+        # invisible "particle controller" instance holding only emitters is
+        # a common pattern, and GM particle systems are independent of the
+        # instance's own visibility.
+        self.render_particles(screen, view_offset)
+
         if not self.visible:
             return
 
@@ -2444,12 +2552,80 @@ class GameRunner:
         self.current_room = self.rooms[starting_room]
         self._visited_rooms.add(starting_room)
 
-        # Set window size based on room
-        self.window_width = self.current_room.width
-        self.window_height = self.current_room.height
+        self.window_width, self.window_height = self._window_size_for(
+            self.current_room)
 
         # Run the game (sprites will be loaded after pygame.display is ready)
         return self.run_game_loop()
+
+    def _window_size_for(self, room) -> tuple:
+        """Window size for a room: the room's own size, UNLESS the room is too
+        big to show at once, in which case the size the project declares.
+
+        Sizing the window to the room is right for the ordinary case, and is
+        what every sample except views_* relies on. But when a room is LARGER
+        than the declared window, sizing to the room shows the entire room at
+        once -- which contradicts the author's setting and makes a scrolling
+        camera pointless. views_1 rendered its whole 2400x800 room in one
+        window, so the camera-scrolling the sample exists to demonstrate was
+        invisible; "what is this sample supposed to do?" was the reasonable
+        reaction.
+
+        Clamped per axis, and only downwards. A room smaller than or equal to
+        the declared window keeps the previous behaviour exactly -- which is
+        why raycast_* (640x480 declared, 480x480 rooms) and maze_2/maze_3
+        (rooms of differing heights) are unaffected.
+        """
+        width, height = room.width, room.height
+        settings = (self.project_data or {}).get('settings') or {}
+        declared_w = settings.get('window_width')
+        declared_h = settings.get('window_height')
+        if isinstance(declared_w, (int, float)) and 0 < declared_w < width:
+            width = int(declared_w)
+        if isinstance(declared_h, (int, float)) and 0 < declared_h < height:
+            height = int(declared_h)
+        return width, height
+
+    @staticmethod
+    def _frame_budget() -> int:
+        """Frames to render before quitting, from PYGM_MAX_FRAMES. 0 = forever.
+
+        This exists so a built export can be *verified*. A game with no
+        budget runs until the player quits, and a headless harness cannot
+        press a key, so the only signal available was "it had not crashed
+        yet after N seconds" -- which cannot distinguish a game that renders
+        from one stuck on a black screen before its first frame. With a
+        budget the process renders N real frames and exits 0, printing
+        PYGM_FRAMES_COMPLETED=N for the harness to match.
+
+        Absent or unparseable means no budget, so a player's game is never
+        affected: the loop below does not even count frames unless asked.
+        See tests/test_desktop_export_end_to_end.py and
+        docs/EYEBALL_FIXES_2026-08-16.md item A1.5.
+        """
+        raw = os.environ.get("PYGM_MAX_FRAMES", "")
+        try:
+            budget = int(raw)
+        except (TypeError, ValueError):
+            return 0
+        return budget if budget > 0 else 0
+
+    def _save_final_frame(self) -> None:
+        """Write the last rendered frame to PYGM_SCREENSHOT, if set.
+
+        Pairs with the frame budget above to make "the export runs the same
+        engine" a measurable claim rather than an argument: run the source
+        engine and the built export for the same number of frames and compare
+        the two images (tools/verify_desktop_export.py --compare). Nothing
+        happens unless the variable is set.
+        """
+        destination = os.environ.get("PYGM_SCREENSHOT", "")
+        if not destination or not self.screen:
+            return
+        try:
+            pygame.image.save(self.screen, destination)
+        except (pygame.error, OSError) as exc:
+            logger.warning("Could not save frame to %s: %s", destination, exc)
 
     def run_game_loop(self) -> bool:
         """Main game loop"""
@@ -2518,9 +2694,17 @@ class GameRunner:
             self.trigger_room_start_event()
 
             self.running = True
+            frame_budget = self._frame_budget()
+            frames_rendered = 0
 
             # Main game loop
             while self.running:
+                # Extension frame updates that must run every frame,
+                # unconditional on any authored action (e.g. LAN
+                # multiplayer applying inbound network state before Step
+                # runs against it) -- see runtime/extension_hooks.py.
+                extension_hooks.run_frame_updates(self, "before_step")
+
                 # ========== GameMaker 7.0 Event Execution Order ==========
                 # Merged loop: begin_step -> alarms -> step (per instance)
                 # This reduces 3 separate instance iterations to 1.
@@ -2584,6 +2768,10 @@ class GameRunner:
                         for i in reversed(completed):
                             instance._delayed_actions.pop(i)
 
+                    # 2c. PARTICLES & TIMELINE (Tier 5.1)
+                    instance.update_particle_system()
+                    instance.update_timeline()
+
                     # 3. STEP EVENT (always call - handles nokey internally)
                     instance.step()
 
@@ -2644,6 +2832,12 @@ class GameRunner:
                     room._depth_dirty = True
                     room.invalidate_collision_listened_types()
 
+                # Extension frame updates that must run every frame after
+                # this frame's state has settled (e.g. LAN multiplayer
+                # broadcasting the post-update/collision/destroy snapshot)
+                # -- see runtime/extension_hooks.py.
+                extension_hooks.run_frame_updates(self, "after_update")
+
                 # Clear screen
                 self.screen.fill((135, 206, 235))  # Sky blue
 
@@ -2655,6 +2849,15 @@ class GameRunner:
 
                 # Control framerate
                 self.clock.tick(self.fps)
+
+                # Opt-in frame budget: see _frame_budget().
+                if frame_budget:
+                    frames_rendered += 1
+                    if frames_rendered >= frame_budget:
+                        self.running = False
+                        self._save_final_frame()
+                        print("PYGM_FRAMES_COMPLETED=%d" % frames_rendered,
+                              flush=True)
 
             return True
 
@@ -4493,8 +4696,7 @@ class GameRunner:
 
             # Resize window if needed
             if self.screen:
-                room_width = new_room.width
-                room_height = new_room.height
+                room_width, room_height = self._window_size_for(new_room)
                 current_width, current_height = self.screen.get_size()
                 if room_width != current_width or room_height != current_height:
                     logger.debug(f"  📐 Resizing window to {room_width}x{room_height}")
@@ -4770,8 +4972,8 @@ class GameRunner:
 
             # Resize the window if room size is different
             if self.screen:
-                room_width = self.current_room.width
-                room_height = self.current_room.height
+                room_width, room_height = self._window_size_for(
+                    self.current_room)
                 current_width, current_height = self.screen.get_size()
 
                 if room_width != current_width or room_height != current_height:
@@ -4940,9 +5142,8 @@ class GameRunner:
         self.current_room = self.rooms[starting_room]
         self._visited_rooms.add(starting_room)
 
-        # Set window size based on room
-        self.window_width = self.current_room.width
-        self.window_height = self.current_room.height
+        self.window_width, self.window_height = self._window_size_for(
+            self.current_room)
 
         # Run the game loop
         return self.run_game_loop()
@@ -5101,6 +5302,70 @@ class GameRunner:
                 self.clock.tick(60)
 
         # Restore instance speeds after dialog is dismissed
+        if self.current_room:
+            for instance in self.current_room.instances:
+                if id(instance) in saved_speeds:
+                    instance.hspeed, instance.vspeed = saved_speeds[id(instance)]
+
+    def show_splash_image(self, surface: pygame.Surface):
+        """Show a sprite full-screen, pausing the game until the player
+        dismisses it (any key or mouse click) -- the image counterpart of
+        show_message_dialog, same blocking-loop shape and speed-pause/
+        restore treatment. Scaled to fit the screen while preserving
+        aspect ratio, letterboxed in black.
+        """
+        logger.debug("🖼️ Showing splash image")
+
+        if not self.screen:
+            logger.debug("⚠️ Cannot show splash image - no screen")
+            return
+
+        pygame.event.clear()
+
+        saved_speeds = {}
+        if self.current_room:
+            for instance in self.current_room.instances:
+                saved_speeds[id(instance)] = (instance.hspeed, instance.vspeed)
+                instance.hspeed = 0
+                instance.vspeed = 0
+
+        screen_w, screen_h = self.screen.get_size()
+        img_w, img_h = surface.get_size()
+        if img_w <= 0 or img_h <= 0:
+            return
+
+        scale = min(screen_w / img_w, screen_h / img_h)
+        if scale <= 0:
+            return
+        draw_w, draw_h = max(1, round(img_w * scale)), max(1, round(img_h * scale))
+        scaled = (surface if (draw_w, draw_h) == (img_w, img_h)
+                 else pygame.transform.smoothscale(surface, (draw_w, draw_h)))
+        dest_x = (screen_w - draw_w) // 2
+        dest_y = (screen_h - draw_h) // 2
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.stop_game()
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    waiting = False
+                elif event.type == pygame.KEYUP:
+                    # Mirrors show_message_dialog's own M54 fix -- don't let
+                    # a key released while the splash is open stay stuck in
+                    # keys_pressed.
+                    self._release_held_key_silent(event.key)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    waiting = False
+
+            self.screen.fill((0, 0, 0))
+            self.screen.blit(scaled, (dest_x, dest_y))
+            pygame.display.flip()
+            if self.clock:
+                self.clock.tick(60)
+
+        # Restore instance speeds after the splash is dismissed
         if self.current_room:
             for instance in self.current_room.instances:
                 if id(instance) in saved_speeds:

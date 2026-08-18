@@ -21,6 +21,7 @@ victoire ne l'exige.
 | `Espace` | Casser le bloc visé |
 | `Maj` | Placer un bloc depuis votre barre d'outils |
 | `Q` / `E` | Faire défiler votre sélection dans la barre d'outils |
+| `H` | Afficher ou masquer les commandes (affichées au démarrage) |
 
 **Le déplacement suit la carte, pas le regard.** Appuyer sur `D` vous
 déplace toujours vers l'est, quelle que soit la direction dans laquelle

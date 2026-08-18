@@ -20,6 +20,7 @@ requires it.
 | `Space` | Break the block you're aiming at |
 | `Shift` | Place a block from your hotbar |
 | `Q` / `E` | Cycle your hotbar selection |
+| `H` | Show or hide the controls (shown when you start) |
 
 **Movement is map-direction, not look-direction.** Pressing `D` always
 walks east, whichever way you're currently facing — turning the camera

@@ -1,4 +1,4 @@
-# Raycast — Level 1
+# 2.5 D — Level 1
 
 Eine Ansicht aus der Ich-Perspektive im Doom-/Wolfenstein-Stil vom
 **gleichen Labyrinth-Layout wie `maze_1`** — gleiche Räume, gleiches
@@ -152,7 +152,7 @@ ins Budget passt (Browser ~0,4 ms bei res=2; Kivy/AMD 840M ~5 ms bei
 res=4). Ein Projekt kann weiterhin `floor_texture` leeren für einen
 flachen `floor_color`-Boden.
 
-Verfügbar über den Willkommens-Tab der IDE — wähle **"Raycast — Level
+Verfügbar über den Willkommens-Tab der IDE — wähle **"2.5 D — Level
 1"** aus dem Dropdown *Choose a sample* (das Öffnen eines Beispiels
 kopiert es in deine Dokumente, sodass das mitgelieferte Original
 unberührt bleibt).

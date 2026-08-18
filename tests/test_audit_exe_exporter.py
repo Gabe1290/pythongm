@@ -5,6 +5,12 @@ M38 — project names containing an apostrophe/quote must not break the
 M39 — EXE export must NOT report success and delete the only built copy when
        copying to the output folder fails.
 
+Both findings predate the 2026-08-17 rework that moved desktop export off the
+Kivy code generator and onto the frozen pygame engine, so these tests were
+ported to the new pipeline rather than dropped — the hazards are unchanged
+(the .spec is still a Python file PyInstaller exec()s, and dist/ is still the
+only copy of a build).
+
 Constructs a real (offscreen) QApplication rather than using pytest-qt so the
 tests run on Python 3.11 too. ExeExporter is a QObject (it declares Qt
 Signals), so a QApplication must exist before instances are created.
@@ -37,12 +43,10 @@ def _make_exporter(qapp):
 # ---------------------------------------------------------------------------
 # M38 — name sanitization
 #
-# OUR implementation performs the sanitization inline in _create_spec_file
-# (re.sub(r'[^A-Za-z0-9_]', '_', name) or 'Game') rather than via a standalone
-# _sanitize_exe_name helper. These tests exercise the same INTENT — an
-# apostrophe/quote/separator in the project name must not break the generated
-# PyInstaller spec — through the real entry point, asserting the spec parses as
-# valid Python (which is exactly what PyInstaller's exec does).
+# The name reaches the generated spec as a single-quoted Python literal, so an
+# apostrophe would close it early and PyInstaller's exec() would raise a
+# SyntaxError. These tests go through the real entry point and assert the spec
+# parses as Python — exactly what PyInstaller does with it.
 # ---------------------------------------------------------------------------
 
 def _spec_for_name(qapp, tmp_path, name):
@@ -55,12 +59,12 @@ def _spec_for_name(qapp, tmp_path, name):
     # Helper may be called more than once per test (different names share the
     # one tmp_path), so tolerate an existing dir.
     game_dir.mkdir(parents=True, exist_ok=True)
-    (game_dir / "main.py").write_text("print('hi')\n", encoding="utf-8")
+    (game_dir / "project.json").write_text('{"name": "x"}\n', encoding="utf-8")
 
     launcher = build_dir / "game_launcher.py"
     launcher.write_text("# launcher\n", encoding="utf-8")
 
-    spec_file = exporter._create_spec_file(build_dir, launcher)
+    spec_file = exporter._write_spec(build_dir, launcher)
     return spec_file.read_text(encoding="utf-8")
 
 
@@ -109,6 +113,28 @@ def test_spec_with_apostrophe_name_is_valid_python(qapp, tmp_path):
     ast.parse(spec_src)
 
 
+def test_spec_with_apostrophe_in_an_asset_filename_is_valid_python(qapp, tmp_path):
+    """The same hazard one level down: the app name was fixed for M38, but
+    every bundled asset path is also a literal in that spec. A French sprite
+    called "épée d'or.png" must not break the build either."""
+    exporter = _make_exporter(qapp)
+    exporter.project_data = {"name": "Jeu"}
+    exporter.export_settings = {}
+
+    build_dir = tmp_path / "build_apostrophe"
+    sprites = build_dir / "game" / "sprites"
+    sprites.mkdir(parents=True)
+    (build_dir / "game" / "project.json").write_text("{}", encoding="utf-8")
+    (sprites / "épée d'or.png").write_bytes(b"\x89PNG")
+    launcher = build_dir / "game_launcher.py"
+    launcher.write_text("# launcher\n", encoding="utf-8")
+
+    spec_src = exporter._write_spec(build_dir, launcher).read_text(
+        encoding="utf-8")
+    ast.parse(spec_src)
+    assert "épée d" in spec_src, "the asset should still be bundled"
+
+
 # ---------------------------------------------------------------------------
 # M39 — copy-failure must not be reported as success / must not delete build
 # ---------------------------------------------------------------------------
@@ -148,6 +174,18 @@ def test_copy_to_output_returns_true_on_success(qapp, tmp_path):
     assert (exporter.output_path / "game.exe").exists()
 
 
+def test_copy_to_output_fails_when_pyinstaller_produced_nothing(qapp, tmp_path):
+    """A missing dist/ used to be indistinguishable from a clean copy: the
+    loop simply had nothing to iterate and returned True, so the export
+    reported success with an empty output folder."""
+    exporter = _make_exporter(qapp)
+    exporter.output_path = tmp_path / "out"
+    build_dir = tmp_path / "build_empty"
+    build_dir.mkdir()
+
+    assert exporter._copy_to_output(build_dir) is False
+
+
 def test_export_reports_failure_and_keeps_build_on_copy_failure(qapp, tmp_path, monkeypatch):
     """End-to-end of M39: when the copy fails, export_project must emit
     export_complete(False, ...) and must NOT run _cleanup (which would delete
@@ -164,11 +202,12 @@ def test_export_reports_failure_and_keeps_build_on_copy_failure(qapp, tmp_path, 
 
     # Stub out all the heavy real steps.
     monkeypatch.setattr(exporter, "_load_project", lambda *a, **k: None)
-    monkeypatch.setattr(exporter, "_require_kivy_dependencies", lambda *a, **k: True)
+    monkeypatch.setattr(exporter, "_require_pygame_dependencies",
+                        lambda *a, **k: True)
     monkeypatch.setattr(exporter, "_create_build_directory", lambda: build_dir)
-    monkeypatch.setattr(exporter, "_generate_kivy_game", lambda *a, **k: True)
-    monkeypatch.setattr(exporter, "_create_launcher_script", lambda *a, **k: build_dir / "l.py")
-    monkeypatch.setattr(exporter, "_create_spec_file", lambda *a, **k: build_dir / "game.spec")
+    monkeypatch.setattr(exporter, "_stage_game", lambda *a, **k: build_dir / "game")
+    monkeypatch.setattr(exporter, "_write_launcher", lambda *a, **k: build_dir / "l.py")
+    monkeypatch.setattr(exporter, "_write_spec", lambda *a, **k: build_dir / "game.spec")
     monkeypatch.setattr(exporter, "_run_pyinstaller", lambda *a, **k: True)
     exporter.output_path = tmp_path / "out"
 

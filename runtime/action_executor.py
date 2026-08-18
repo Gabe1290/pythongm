@@ -482,6 +482,12 @@ class ActionExecutor:
         "game_restart": "restart_game",
         "else_block": "else_action",
         "change_sprite": "set_sprite",
+        # Folded into the real (now-registered) actions they duplicated --
+        # docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.4. splash_show_text/
+        # splash_show_image are NOT aliased here: they get their own real
+        # implementations (Tier 2.5), not a fold into an existing action.
+        "splash_show_video": "show_video",
+        "splash_show_webpage": "open_webpage",
     }
 
     # Legacy add_score/add_lives/add_health were consolidated into the set_*
@@ -1838,16 +1844,38 @@ class ActionExecutor:
             instance.pending_messages = []
         instance.pending_messages.append(message)
 
+    def localize_param(self, parameters: Dict[str, Any], name: str, default=""):
+        """A display parameter's value, in the runner's language.
+
+        Honours the `<param>_translations` convention: a dict of
+        {language_code: text} stored alongside the parameter. The IDE has
+        offered this for ANY string parameter since action_editor.py's
+        translation dialog was added -- but the runtime only ever read
+        `message_translations`, so an author could enter translations for a
+        draw_text and the engine would silently ignore them. This closes that.
+
+        Falls back to the base (English) value whenever there is no dict, no
+        entry for the language, or no runner -- so an untranslated string
+        keeps working exactly as before.
+
+        NOTE the export targets do NOT read these dicts (engine.js's
+        show_message reads params.message only; Kivy has no support at all).
+        Exported games are meant to get their strings resolved at EXPORT time
+        instead, so a translated project cannot behave differently once
+        exported. Until that lands, translations are a desktop-only feature.
+        """
+        value = parameters.get(name, default)
+        translations = parameters.get("%s_translations" % name)
+        if not isinstance(translations, dict) or not self.game_runner:
+            return value
+        lang = getattr(self.game_runner, "language", "en") or "en"
+        if lang != "en" and lang in translations and translations[lang]:
+            return translations[lang]
+        return value
+
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):
         """Execute show message action with optional translation support."""
-        message = parameters.get("message", "")
-
-        # Resolve translation if available
-        translations = parameters.get("message_translations")
-        if translations and self.game_runner:
-            lang = getattr(self.game_runner, 'language', 'en')
-            if lang != 'en' and lang in translations:
-                message = translations[lang]
+        message = self.localize_param(parameters, "message", "")
 
         logger.info(f"💬 MESSAGE: {message}")
         self._show_or_queue_message(instance, message)
@@ -2537,7 +2565,7 @@ class ActionExecutor:
         if self._is_relative(parameters):
             x += int(instance.x)
             y += int(instance.y)
-        caption = parameters.get("caption", "Score: ")
+        caption = self.localize_param(parameters, "caption", "Score: ")
 
         # Store draw command for rendering
         if not hasattr(instance, '_draw_queue'):
@@ -2833,6 +2861,55 @@ class ActionExecutor:
 
         logger.info(f"ℹ️ GAME INFO:\n{info_text}")
         self._show_or_queue_message(instance, info_text)
+
+    def execute_splash_show_text_action(self, instance, parameters: Dict[str, Any]):
+        """Show a blocking text message -- reuses the same modal machinery
+        show_message/show_info already use, rather than the old placeholder
+        that only logged the text and did nothing (see
+        docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.5).
+
+        Parameters:
+            text: the message to show
+        """
+        text = self._parse_value(parameters.get("text", ""), instance)
+        if not text:
+            logger.debug("⚠️ splash_show_text: No text specified")
+            return
+        logger.info(f"💬 SPLASH TEXT: {text}")
+        self._show_or_queue_message(instance, str(text))
+
+    def execute_splash_show_image_action(self, instance, parameters: Dict[str, Any]):
+        """Show a sprite full-screen, blocking until dismissed -- reuses the
+        same sprite registry draw_sprite reads from and
+        GameRunner.show_splash_image's blocking-loop shape (mirrors
+        show_message_dialog). Replaces the old placeholder that only
+        logged the image name (Tier 2.5).
+
+        Parameters:
+            image: name of the sprite to show full-screen
+        """
+        image_name = self._parse_value(parameters.get("image", ""), instance)
+        if not image_name:
+            logger.debug("⚠️ splash_show_image: No image specified")
+            return
+
+        runner = self.game_runner
+        if runner is None or not getattr(runner, 'screen', None):
+            logger.debug("⚠️ splash_show_image: No live screen (headless) -- no-op")
+            return
+
+        sprite = runner.sprites.get(str(image_name))
+        if sprite is None:
+            logger.warning(f"⚠️ splash_show_image: Sprite '{image_name}' not found")
+            return
+
+        surface = sprite.frames[0] if sprite.frames else sprite.surface
+        if surface is None:
+            logger.warning(f"⚠️ splash_show_image: Sprite '{image_name}' has no surface")
+            return
+
+        logger.info(f"🖼️ SPLASH IMAGE: {image_name}")
+        runner.show_splash_image(surface)
 
     def execute_show_video_action(self, instance, parameters: Dict[str, Any]):
         """Play a video file
@@ -3566,7 +3643,8 @@ class ActionExecutor:
         if self._is_relative(parameters):
             x += instance.x
             y += instance.y
-        text = str(self._parse_value(parameters.get("text", ""), instance))
+        text = str(self._parse_value(
+            self.localize_param(parameters, "text", ""), instance))
 
         # Get the active drawing colour (instance, then global, then black).
         color = self._resolve_draw_color(instance, (0, 0, 0))
@@ -3598,7 +3676,8 @@ class ActionExecutor:
         # Parse parameters with expression support
         x = self._parse_value(parameters.get("x", 0), instance)
         y = self._parse_value(parameters.get("y", 0), instance)
-        text = str(self._parse_value(parameters.get("text", ""), instance))
+        text = str(self._parse_value(
+            self.localize_param(parameters, "text", ""), instance))
         xscale = self._parse_value(parameters.get("xscale", 1.0), instance)
         yscale = self._parse_value(parameters.get("yscale", 1.0), instance)
 
@@ -6144,9 +6223,19 @@ class ActionExecutor:
         emitter = instance._particle_system['emitters'][emitter_id]
         ptype = instance._particle_system['particle_types'][particle_type]
 
+        self._spawn_particles(instance, emitter, ptype, number)
+
+        logger.debug(f"💥 Burst {number} particles of type {particle_type} from emitter {emitter_id}")
+
+    def _spawn_particles(self, instance, emitter: Dict[str, Any], ptype: Dict[str, Any], number: int) -> None:
+        """Spawn ``number`` particles from ``emitter`` using ``ptype``'s
+        random ranges. Shared by burst_particles (once) and the per-frame
+        streaming-emitter update in game_runner.py (continuous) so both
+        paths sample particle position/size/speed/direction/life exactly
+        the same way (runtime/game_runner.py's step loop, see
+        _update_instance_particles)."""
         import random
 
-        # Create particles
         for _ in range(number):
             # Random position within emitter area
             if emitter['shape'] == 'rectangle':
@@ -6188,8 +6277,6 @@ class ActionExecutor:
                 'alpha': ptype['alpha']
             }
             instance._particle_system['particles'].append(particle)
-
-        logger.debug(f"💥 Burst {number} particles of type {particle_type} from emitter {emitter_id}")
 
     def execute_stream_particles_action(self, instance, parameters: Dict[str, Any]):
         """Set up continuous particle emission

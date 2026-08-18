@@ -477,6 +477,46 @@ function parseNumParam(value, inst, fallback) {
     return fallback;
 }
 
+// Particle system (Tier 5.1/5.3, docs/DEFERRED_GAPS_2026_PLAN.md). Spawns
+// `number` particles from `emitter` using `ptype`'s random ranges --
+// mirrors runtime/action_executor.py's ActionExecutor._spawn_particles,
+// shared by burst_particles (once) and the per-frame streaming-emitter
+// update in GameRoom.step (continuous) so both paths sample identically.
+function spawnParticles(system, emitter, ptype, number) {
+    for (let i = 0; i < number; i++) {
+        let px, py;
+        if (emitter.shape === 'rectangle') {
+            px = emitter.x + (Math.random() * emitter.width - emitter.width / 2);
+            py = emitter.y + (Math.random() * emitter.height - emitter.height / 2);
+        } else if (emitter.shape === 'ellipse') {
+            const angle = Math.random() * 360;
+            const radiusX = Math.random() * emitter.width / 2;
+            const radiusY = Math.random() * emitter.height / 2;
+            px = emitter.x + radiusX * Math.cos(angle * Math.PI / 180);
+            py = emitter.y + radiusY * Math.sin(angle * Math.PI / 180);
+        } else if (emitter.shape === 'diamond') {
+            const t = Math.random() * 2 - 1;
+            const s = (Math.random() * 2 - 1) * (1 - Math.abs(t));
+            px = emitter.x + t * emitter.width / 2;
+            py = emitter.y + s * emitter.height / 2;
+        } else {  // line
+            const t = Math.random() - 0.5;
+            px = emitter.x + t * emitter.width;
+            py = emitter.y;
+        }
+
+        const size = ptype.sizeMin + Math.random() * (ptype.sizeMax - ptype.sizeMin);
+        const speed = ptype.speedMin + Math.random() * (ptype.speedMax - ptype.speedMin);
+        const direction = ptype.directionMin + Math.random() * (ptype.directionMax - ptype.directionMin);
+        const life = Math.floor(ptype.lifeMin + Math.random() * (ptype.lifeMax - ptype.lifeMin + 1));
+
+        system.particles.push({
+            x: px, y: py, size, sizeIncrease: ptype.sizeIncrease, speed, direction,
+            life, maxLife: life, sprite: ptype.sprite, color: ptype.color, alpha: ptype.alpha,
+        });
+    }
+}
+
 // Evaluate a GameMaker/Python-style expression against the instance +
 // game-state scope, mirroring the IDE runtime's _eval_bool_expression
 // (runtime/action_executor.py): Python operators (and/or/not,
@@ -906,11 +946,15 @@ class GameObject {
     }
 
     onDraw(ctx) {
-        // Sprite first, then the draw event's queue on top — same order as
-        // the IDE runtime (GameRunner draws the sprite, then processes the
-        // instance's draw queue). The draw event runs through the normal
-        // action executor (so conditionals like test_lives work inside it);
-        // draw_* actions queue runtime-schema commands, rendered at the end.
+        // Particles draw even when this instance is invisible -- an
+        // invisible "particle controller" instance holding only emitters is
+        // a common pattern (Tier 5.1). Sprite first, then the draw event's
+        // queue on top — same order as the IDE runtime (GameRunner draws
+        // the sprite, then processes the instance's draw queue). The draw
+        // event runs through the normal action executor (so conditionals
+        // like test_lives work inside it); draw_* actions queue
+        // runtime-schema commands, rendered at the end.
+        this.renderParticles(ctx);
         this.render(ctx);
         this.runDrawEvent(ctx);
     }
@@ -2695,7 +2739,143 @@ class GameObject {
                 this.speed = parseNumParam(params.speed, this, 4);
                 break;
 
+            // --- Particle system + timelines (Tier 5.1/5.3) -----------------
+            // Mirrors runtime/action_executor.py's Particles-tab and
+            // Timing-tab actions exactly. updateParticleSystem/
+            // updateTimeline (called every step from GameRoom.step, not
+            // gated on any action here) and renderParticles (called from
+            // onDraw, before the visibility check) do the per-frame work --
+            // see those methods for the read side.
 
+            case 'create_particle_system': {
+                const depth = Math.trunc(parseNumParam(params.depth, this, 0));
+                this._particleSystem = {
+                    depth, particleTypes: {}, emitters: {}, particles: [],
+                    nextTypeId: 0, nextEmitterId: 0,
+                };
+                break;
+            }
+
+            case 'destroy_particle_system':
+                this._particleSystem = null;
+                break;
+
+            case 'clear_particles':
+                if (this._particleSystem) this._particleSystem.particles = [];
+                break;
+
+            case 'create_particle_type': {
+                if (!this._particleSystem) { this._lastParticleTypeId = -1; break; }
+                const sizeMin = parseNumParam(params.size_min, this, 1.0);
+                const sizeMax = parseNumParam(params.size_max, this, 1.0);
+                const sizeIncrease = parseNumParam(params.size_increase, this, 0);
+                const colorParam = params.color !== undefined ? String(params.color) : '#FFFFFF';
+                const alpha = parseNumParam(params.alpha, this, 1.0);
+                const speedMin = parseNumParam(params.speed_min, this, 0);
+                const speedMax = parseNumParam(params.speed_max, this, 0);
+                const directionMin = parseNumParam(params.direction_min, this, 0);
+                const directionMax = parseNumParam(params.direction_max, this, 360);
+                const lifeMin = Math.trunc(parseNumParam(params.life_min, this, 100));
+                const lifeMax = Math.trunc(parseNumParam(params.life_max, this, 100));
+                let color = [255, 255, 255];
+                if (colorParam.startsWith('#') && colorParam.length >= 7) {
+                    const r = parseInt(colorParam.slice(1, 3), 16);
+                    const g = parseInt(colorParam.slice(3, 5), 16);
+                    const b = parseInt(colorParam.slice(5, 7), 16);
+                    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) color = [r, g, b];
+                }
+                const typeId = this._particleSystem.nextTypeId++;
+                this._particleSystem.particleTypes[typeId] = {
+                    sprite: params.sprite || null, sizeMin, sizeMax, sizeIncrease, color, alpha,
+                    speedMin, speedMax, directionMin, directionMax, lifeMin, lifeMax,
+                };
+                this._lastParticleTypeId = typeId;
+                break;
+            }
+
+            case 'create_emitter': {
+                if (!this._particleSystem) { this._lastEmitterId = null; break; }
+                const x = Math.trunc(parseNumParam(params.x, this, 0));
+                const y = Math.trunc(parseNumParam(params.y, this, 0));
+                const width = Math.trunc(parseNumParam(params.width, this, 0));
+                const height = Math.trunc(parseNumParam(params.height, this, 0));
+                let shape = params.shape !== undefined ? String(params.shape) : 'rectangle';
+                if (!['rectangle', 'ellipse', 'diamond', 'line'].includes(shape)) shape = 'rectangle';
+                const emitterId = this._particleSystem.nextEmitterId++;
+                this._particleSystem.emitters[emitterId] = {
+                    x, y, width, height, shape, streamType: null, streamCount: 0,
+                };
+                this._lastEmitterId = emitterId;
+                break;
+            }
+
+            case 'destroy_emitter':
+                if (this._particleSystem && this._lastEmitterId !== null &&
+                    this._lastEmitterId !== undefined) {
+                    delete this._particleSystem.emitters[this._lastEmitterId];
+                    this._lastEmitterId = null;
+                }
+                break;
+
+            case 'burst_particles': {
+                if (!this._particleSystem) break;
+                const particleType = Math.trunc(parseNumParam(params.particle_type, this, 0));
+                const number = Math.trunc(parseNumParam(params.number, this, 10));
+                const ptype = this._particleSystem.particleTypes[particleType];
+                if (!ptype) break;
+                if (this._lastEmitterId === null || this._lastEmitterId === undefined) break;
+                const emitter = this._particleSystem.emitters[this._lastEmitterId];
+                if (!emitter) break;
+                spawnParticles(this._particleSystem, emitter, ptype, number);
+                break;
+            }
+
+            case 'stream_particles': {
+                if (!this._particleSystem) break;
+                const particleType = Math.trunc(parseNumParam(params.particle_type, this, 0));
+                const number = Math.trunc(parseNumParam(params.number, this, 1));
+                if (!this._particleSystem.particleTypes[particleType]) break;
+                if (this._lastEmitterId === null || this._lastEmitterId === undefined) break;
+                const emitter = this._particleSystem.emitters[this._lastEmitterId];
+                if (!emitter) break;
+                emitter.streamType = particleType;
+                emitter.streamCount = number;
+                break;
+            }
+
+            case 'set_timeline':
+                this.timelineIndex = params.timeline !== undefined ? params.timeline : null;
+                this.timelinePosition = 0;
+                if (this.timelineSpeed === undefined) this.timelineSpeed = 1.0;
+                if (this.timelineRunning === undefined) this.timelineRunning = false;
+                break;
+
+            case 'set_timeline_position': {
+                const position = Math.trunc(parseNumParam(params.position, this, 0));
+                const relative = params.relative === true || params.relative === 'true' ||
+                                  params.relative === 1 || params.relative === '1';
+                if (this.timelinePosition === undefined) this.timelinePosition = 0;
+                this.timelinePosition = relative ? this.timelinePosition + position : position;
+                if (this.timelinePosition < 0) this.timelinePosition = 0;
+                break;
+            }
+
+            case 'set_timeline_speed':
+                this.timelineSpeed = parseNumParam(params.speed, this, 1.0);
+                break;
+
+            case 'start_timeline':
+                this.timelineRunning = true;
+                break;
+
+            case 'pause_timeline':
+                this.timelineRunning = false;
+                break;
+
+            case 'stop_timeline':
+                this.timelineRunning = false;
+                this.timelinePosition = 0;
+                break;
 
             default:
                 if (_extActions[actionType]) {
@@ -2813,6 +2993,80 @@ class GameObject {
             }
         }
         return false;
+    }
+
+    // Per-frame particle update (Tier 5.1): spawn from streaming emitters,
+    // then age/move/cull every live particle. Mirrors
+    // GameInstance.update_particle_system in runtime/game_runner.py.
+    updateParticleSystem() {
+        const ps = this._particleSystem;
+        if (!ps) return;
+
+        for (const emitter of Object.values(ps.emitters)) {
+            if (emitter.streamType === null || emitter.streamType === undefined) continue;
+            if (!(emitter.streamCount > 0)) continue;
+            const ptype = ps.particleTypes[emitter.streamType];
+            if (!ptype) continue;
+            spawnParticles(ps, emitter, ptype, emitter.streamCount);
+        }
+
+        const surviving = [];
+        for (const p of ps.particles) {
+            p.life -= 1;
+            if (p.life <= 0) continue;
+            const angleRad = p.direction * Math.PI / 180;
+            p.x += Math.cos(angleRad) * p.speed;
+            p.y -= Math.sin(angleRad) * p.speed;
+            p.size = Math.max(0.0, p.size + p.sizeIncrease);
+            surviving.push(p);
+        }
+        ps.particles = surviving;
+    }
+
+    // Advance timelinePosition by timelineSpeed while timelineRunning is
+    // set. Mirrors GameInstance.update_timeline -- see that method's
+    // docstring for why there is no separate "moments" table: an author
+    // reacts to a specific position with an ordinary conditional in Step.
+    updateTimeline() {
+        if (this.timelineRunning) {
+            const speed = this.timelineSpeed !== undefined ? this.timelineSpeed : 1.0;
+            this.timelinePosition = (this.timelinePosition || 0) + speed;
+        }
+    }
+
+    // Draw this instance's live particles. Called from onDraw BEFORE the
+    // visibility check (mirrors render_particles in runtime/game_runner.py)
+    // so an invisible "particle controller" instance still shows its
+    // particles.
+    renderParticles(ctx) {
+        const ps = this._particleSystem;
+        if (!ps || !ps.particles.length) return;
+
+        for (const p of ps.particles) {
+            const x = p.x, y = p.y;
+            const alpha = Math.max(0, Math.min(1, p.alpha !== undefined ? p.alpha : 1.0));
+            const sprite = p.sprite && this._gameRef && this._gameRef.sprites
+                ? this._gameRef.sprites[p.sprite] : null;
+            if (sprite && sprite.complete) {
+                const scale = Math.max(0.01, p.size || 1.0);
+                const w = Math.max(1, sprite.width * scale);
+                const h = Math.max(1, sprite.height * scale);
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.drawImage(sprite, x - w / 2, y - h / 2, w, h);
+                ctx.restore();
+            } else {
+                const radius = Math.max(1, p.size || 1.0);
+                const color = p.color || [255, 255, 255];
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
     }
 
     render(ctx) {
@@ -3120,6 +3374,13 @@ class GameRoom {
             if (wrapped && inst.events && inst.events.animation_end) {
                 inst.executeActions(inst.events.animation_end.actions || [], game);
             }
+        });
+
+        // 3d. Particles & timeline (Tier 5.1)
+        this.instances.forEach(inst => {
+            if (inst.toDestroy) return;
+            inst.updateParticleSystem();
+            inst.updateTimeline();
         });
 
         // 4. Step events

@@ -239,6 +239,19 @@ class _FakeInst:
         self.visible = True
 
 
+class _FakeTex:
+    """A stand-in Kivy texture (Tier 4a) -- get_region records the
+    requested slice and returns self, mirroring test_kivy_raycast.py's own
+    _FakeTex."""
+    def __init__(self, w=128, h=128):
+        self.width, self.height = w, h
+        self.regions = []
+
+    def get_region(self, x, y, w, h):
+        self.regions.append((x, y, w, h))
+        return self
+
+
 def _scene_class(game_dir):
     scene_file = next(f for f in (game_dir / "scenes").glob("*.py")
                       if "_render_block_world" in f.read_text(encoding="utf-8"))
@@ -259,6 +272,10 @@ def _blank_scene(cls, room_w=448, room_h=448, disp_w=640, disp_h=480):
     scene._bw_group = None
     scene._bw_blocks = {}
     scene._bw_columns = None
+    scene._bw_tex_cache = {}
+    # Tier 7e Phase 2/3 -- mirrors _init_extensions's own defaults.
+    scene._bw_seed = None
+    scene._bw_generated = {}
     scene.room_width = room_w
     scene.room_height = room_h
     scene.display_width = disp_w
@@ -450,3 +467,124 @@ def test_build_hud_commands_crosshair_and_hotbar(exported):
         texts = [c for c in cmds if c["type"] == "text"]
         assert len(texts) == n
         assert texts[0]["text"] == scene.BW_DEFAULT_HOTBAR[0][:4]
+
+
+# --- Real per-pixel wall textures (Phase 6 Tier 4a) --------------------------
+
+def test_fill_span_textured_full_height_maps_v_zero_to_one(exported):
+    """Boundary sanity for the GM-down-to-Kivy-up v-coordinate flip
+    (_bw_fill_span_textured's own docstring derivation): an UNCLIPPED
+    full-height strip must map exactly v=[0,1], texel row 0 (top of the PNG)
+    at the Kivy-TOP of the rect (v=1) -- the same orientation desktop and
+    HTML5 use."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls, disp_h=200)
+        group = _Group()
+        tex = _FakeTex()
+        scene._bw_fill_span_textured(
+            group, x0=10, strip_w=5, y0_gm=40.0, y1_gm=100.0,
+            full_top_gm=40.0, full_h=60.0, tex=tex, tex_x=3, shade=1.0, H=200.0)
+        rects = [c for c in group.children if getattr(c, "kw", None)
+                and "tex_coords" in c.kw]
+        assert len(rects) == 1
+        tc = rects[0].kw["tex_coords"]
+        # (u0,v_bottom, u1,v_bottom, u1,v_top, u0,v_top)
+        assert abs(tc[1] - 0.0) < 1e-9   # v_bottom
+        assert abs(tc[5] - 1.0) < 1e-9   # v_top
+        assert rects[0].kw["pos"] == (10, 100.0)   # H - y1
+        assert rects[0].kw["size"] == (5, 60.0)
+        assert tex.regions == [(3, 0, 1, tex.height)]
+
+
+def test_fill_span_textured_clipped_from_below_maps_partial_v(exported):
+    """A strip clipped to its upper half (y1_gm cut short of the block's
+    true bottom) must show only the texture's TOP half -- v_bottom lands at
+    0.5, not 0, confirming the clip/flip interacts correctly."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls, disp_h=200)
+        group = _Group()
+        tex = _FakeTex()
+        # Full block spans GM [40,100]; only [40,70] is visible (clipped at
+        # 70, i.e. the screen cuts off the bottom half).
+        scene._bw_fill_span_textured(
+            group, x0=0, strip_w=1, y0_gm=40.0, y1_gm=70.0,
+            full_top_gm=40.0, full_h=60.0, tex=tex, tex_x=0, shade=1.0, H=200.0)
+        tc = group.children[-1].kw["tex_coords"]
+        assert abs(tc[1] - 0.5) < 1e-9   # v_bottom: half the texture's height was clipped away
+        assert abs(tc[5] - 1.0) < 1e-9   # v_top: the true top edge is still fully visible
+
+
+def test_render_block_world_draws_a_real_texture_when_loaded(exported):
+    """With a texture pre-populated in the cache (bypassing load_image/
+    CoreImage, which the stub env can't provide -- mirrors
+    test_kivy_raycast.py's own texture-cache-injection pattern),
+    _render_block_world draws a TEXTURED rectangle for the wall face
+    instead of the flat-color fallback."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._bw_blocks = {(2, 1, 0): "stone"}
+        scene._bw_tex_cache = {"default_stone.png": _FakeTex()}
+        cam = _FakeInst(32, scene.room_height - 32 - 32, 32, 32, facing=0.0)
+        scene.instances = [cam]
+        scene.block_world_camera = _default_cfg(eye_height=0.5)
+        scene.block_world_camera["camera_instance"] = cam
+        scene._render_block_world()
+        textured = [c for c in scene._bw_group.children if getattr(c, "kw", None)
+                   and "tex_coords" in c.kw]
+        assert len(textured) >= 1
+
+
+def test_render_block_world_draws_a_textured_top_face_when_loaded(exported):
+    """Tier 4b: with textures cached for both the side and top faces, a
+    block whose top is exposed (nothing stacked above it, eye above it)
+    must draw a textured top face -- not the flat-color fallback.
+
+    The block sits several cells away from the camera (not point-blank):
+    empirically verified first (a point-blank distance pushed the whole
+    projected wall/face span off-screen entirely at this eye_height, a
+    real test-authoring trap the same class as the grid-alignment one
+    documented elsewhere in this file -- caught by checking actual
+    _render_block_world output, not assumed)."""
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._bw_blocks = {(5, 1, 0): "stone"}
+        scene._bw_tex_cache = {"default_stone.png": _FakeTex()}
+        cam = _FakeInst(32, scene.room_height - 32 - 32, 32, 32, facing=0.0)
+        scene.instances = [cam]
+        scene.block_world_camera = _default_cfg(eye_height=1.5)
+        scene.block_world_camera["camera_instance"] = cam
+        scene._render_block_world()
+        # Horizontal-face textured rects use a plain `texture=` Rectangle
+        # (no tex_coords, unlike the wall pass) -- distinguish them that way.
+        horiz_textured = [c for c in scene._bw_group.children if getattr(c, "kw", None)
+                         and "texture" in c.kw and "tex_coords" not in c.kw]
+        assert len(horiz_textured) >= 1
+
+
+def test_top_cast_res_zero_falls_back_to_flat_color(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene._bw_blocks = {(5, 1, 0): "stone"}
+        scene._bw_tex_cache = {"default_stone.png": _FakeTex()}
+        cam = _FakeInst(32, scene.room_height - 32 - 32, 32, 32, facing=0.0)
+        scene.instances = [cam]
+        scene.block_world_camera = _default_cfg(eye_height=1.5, top_cast_res=0)
+        scene.block_world_camera["camera_instance"] = cam
+        scene._render_block_world()
+        horiz_textured = [c for c in scene._bw_group.children if getattr(c, "kw", None)
+                         and "texture" in c.kw and "tex_coords" not in c.kw]
+        assert horiz_textured == []
+
+
+def test_kivy_owns_the_texture_loader_and_materialization():
+    export_kivy_src = (REPO_ROOT / "extensions" / "block_world" / "export_kivy.py").read_text(encoding="utf-8")
+    assert "def _bw_texture(self, filename):" in export_kivy_src
+    assert "BLOCK_FACE_FILES = {" in export_kivy_src
+    kivy_exporter_src = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(encoding="utf-8")
+    assert "_materialize_extension_textures" in kivy_exporter_src
+    assert "block_textures" in kivy_exporter_src

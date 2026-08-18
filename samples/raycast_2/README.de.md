@@ -1,4 +1,4 @@
-# Raycast — Level 2
+# 2.5 D — Level 2
 
 Ein zweites Ich-Perspektive-Level im Doom-/Wolfenstein-Stil, gebaut auf
 derselben **Raycast-2,5D-Engine** wie [`raycast_1`](../raycast_1/README.md)
@@ -21,7 +21,7 @@ Ich-Perspektive, sammle jeden Edelstein, während du patrouillierenden
 Monstern ausweichst, und erreiche den edelsteingesperrten Ausgang —
 der erste (warme Ziegel-)Raum führt zu einem zweiten (kühlen
 Kristallhöhlen-)Raum, und diesen abzuschließen gewinnt das Spiel.
-Verfügbar über den Willkommens-Tab der IDE (*"Raycast — Level 2"*) und
+Verfügbar über den Willkommens-Tab der IDE (*"2.5 D — Level 2"*) und
 exportiert auf alle drei Ziele (Desktop, HTML5, nativ/Kivy).
 
 ## Wie man spielt
