@@ -86,7 +86,11 @@ def test_pako_vendored_file_exists_and_is_mit_licensed():
 def test_html5_export_never_references_the_pako_cdn(tmp_path):
     exporter = HTML5Exporter()
     assert "cdnjs.cloudflare.com" not in exporter.template_html
-    assert "{pako_code}" in exporter.template_html  # placeholder present pre-export
+    # placeholder present pre-export (docs/EXPORT_POLISH_PLAN.md item 1
+    # renamed this from {pako_code} to {pako_script_tag} so the same slot
+    # can hold either an inline <script> or a <script src="pako.min.js">,
+    # depending on the external_assets export option)
+    assert "{pako_script_tag}" in exporter.template_html
 
 
 def test_exported_html_embeds_pako_inline():
