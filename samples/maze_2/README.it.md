@@ -19,7 +19,7 @@ stanza. Vedi
 per come questo si confronta con `plateforme_*` (aggiunge sfondi a
 tessere) e `match3_*` (puro script, nessuna azione integrata).
 
-**Audio e musica:** 4 file audio sono forniti (`sound_background.mid`,
+**Audio e musica:** 4 file audio sono forniti (`sound_background.ogg`,
 `sound_diamond`/`door`/`goal.wav`) ma **nessuno di essi è
 effettivamente collegato** — nessun oggetto fa riferimento a
 `play_sound`/`play_music` da nessuna parte, quindi il gioco è
@@ -82,7 +82,7 @@ riprodotto.)
 
 7 sprite (32×32, singolo frame, collisione precisa al pixel eccetto
 `sprite_goal` che non ha un flag `precise` esplicito), 2 sfondi, 4
-suoni (`sound_background.mid`, `sound_diamond.wav`, `sound_door.wav`,
+suoni (`sound_background.ogg`, `sound_diamond.wav`, `sound_door.wav`,
 `sound_goal.wav`). Licenza/provenienza per tutte le risorse di questo
 esempio è **non documentata** — vedi `CREDITS.txt` in questa cartella,
 che rimanda al TODO "Remaining maze assets" in

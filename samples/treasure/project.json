@@ -254,7 +254,7 @@
       "music": {
         "name": "music",
         "asset_type": "sound",
-        "file_path": "sounds/music.mid",
+        "file_path": "sounds/music.ogg",
         "volume": 1.0,
         "loop": false,
         "imported": true,

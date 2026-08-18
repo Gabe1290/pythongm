@@ -18,7 +18,7 @@ za primerjavo s `plateforme_*` (doda tlakovana ozadja) in `match3_*`
 (čist skript, brez vgrajenih dejanj).
 
 **Zvok in glasba:** priložene so 4 zvočne datoteke
-(`sound_background.mid`, `sound_diamond`/`door`/`goal.wav`), a
+(`sound_background.ogg`, `sound_diamond`/`door`/`goal.wav`), a
 **nobena od njih dejansko ni priklopljena** — noben objekt se nikjer
 ne sklicuje na `play_sound`/`play_music`, tako da je igra v praksi
 tiha kljub temu, da nosi zvočne vire. (Za primerjavo z `maze_3`, kjer
@@ -78,7 +78,7 @@ je enako oblikovan nabor zvokov dejansko predvajan.)
 
 7 sprite-ov (32×32, en sličica, pikselno natančen trk razen
 `sprite_goal`, ki nima izrecne zastavice `precise`), 2 ozadji, 4 zvoki
-(`sound_background.mid`, `sound_diamond.wav`, `sound_door.wav`,
+(`sound_background.ogg`, `sound_diamond.wav`, `sound_door.wav`,
 `sound_goal.wav`). Licenciranje/poreklo vseh virov tega vzorca je
 **nedokumentirano** — glejte `CREDITS.txt` v tej mapi, ki kaže na
 opravilo "Remaining maze assets" v `docs/ASSET_LICENSES.md`. Za te

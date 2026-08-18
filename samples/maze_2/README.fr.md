@@ -17,7 +17,7 @@ salle (`background_main`), sans tuiles au niveau de la salle. Voir
 pour la comparaison avec `plateforme_*` (qui ajoute les arrière-plans en tuiles)
 et `match3_*` (entièrement scripté, sans actions intégrées).
 
-**Sons et musique :** 4 fichiers sonores sont fournis (`sound_background.mid`,
+**Sons et musique :** 4 fichiers sonores sont fournis (`sound_background.ogg`,
 `sound_diamond`/`door`/`goal.wav`) mais **aucun n'est réellement utilisé** —
 aucun objet n'appelle `play_sound` ni `play_music`, le jeu est donc silencieux en
 pratique malgré la présence de ces ressources. (À comparer avec `maze_3`, où le
@@ -74,7 +74,7 @@ même ensemble de sons est bel et bien joué.)
 
 7 sprites (32×32, une seule image, collision au pixel près sauf `sprite_goal`
 qui n'a pas d'indicateur `precise` explicite), 2 arrière-plans, 4 sons
-(`sound_background.mid`, `sound_diamond.wav`, `sound_door.wav`,
+(`sound_background.ogg`, `sound_diamond.wav`, `sound_door.wav`,
 `sound_goal.wav`). L'origine et la licence de toutes les ressources de cet
 exemple sont **non documentées** — voir `CREDITS.txt` dans ce dossier, qui
 renvoie à la tâche « Remaining maze assets » de `docs/ASSET_LICENSES.md`. Ne

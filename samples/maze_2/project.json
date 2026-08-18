@@ -148,7 +148,7 @@
       "sound_background": {
         "name": "sound_background",
         "asset_type": "sound",
-        "file_path": "sounds/sound_background.mid",
+        "file_path": "sounds/sound_background.ogg",
         "volume": 1.0,
         "loop": false,
         "imported": true,

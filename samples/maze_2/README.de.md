@@ -18,7 +18,7 @@ pro Raum (`background_main`), keine Kacheln auf Raumebene. Siehe
 für den Vergleich mit `plateforme_*` (fügt gekachelte Hintergründe
 hinzu) und `match3_*` (reines Skript, keine eingebauten Aktionen).
 
-**Sound & Musik:** 4 Sounddateien liegen bei (`sound_background.mid`,
+**Sound & Musik:** 4 Sounddateien liegen bei (`sound_background.ogg`,
 `sound_diamond`/`door`/`goal.wav`), aber **keine davon ist tatsächlich
 verdrahtet** — kein Objekt ruft irgendwo `play_sound`/`play_music`
 auf, sodass das Spiel in der Praxis stumm ist, obwohl es Audio-Assets
@@ -79,7 +79,7 @@ abgespielt wird.)
 
 7 Sprites (32×32, ein Frame, pixelgenaue Kollision außer bei
 `sprite_goal`, das kein explizites `precise`-Flag hat), 2 Hintergründe,
-4 Sounds (`sound_background.mid`, `sound_diamond.wav`,
+4 Sounds (`sound_background.ogg`, `sound_diamond.wav`,
 `sound_door.wav`, `sound_goal.wav`). Lizenz/Herkunft für alle Assets
 dieses Beispiels ist **nicht dokumentiert** — siehe `CREDITS.txt` in
 diesem Ordner, das auf das "Remaining maze assets"-TODO in

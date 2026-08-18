@@ -17,7 +17,7 @@ This includes (non-exhaustive):
   sprites/sprite_wall_vertical.png
   backgrounds/background_start.png
   backgrounds/background_tiles.png
-  sounds/sound_background.mid
+  sounds/sound_background.ogg
   sounds/sound_diamond.wav
   sounds/sound_door.wav
   sounds/sound_goal.wav

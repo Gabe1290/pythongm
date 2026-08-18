@@ -18,7 +18,7 @@
 щодо порівняння з `plateforme_*` (додає тайлові фони) та `match3_*`
 (чистий скрипт, без вбудованих дій).
 
-**Звук і музика:** додано 4 звукові файли (`sound_background.mid`,
+**Звук і музика:** додано 4 звукові файли (`sound_background.ogg`,
 `sound_diamond`/`door`/`goal.wav`), але **жоден з них насправді не
 підключений** — жоден об'єкт ніде не посилається на
 `play_sound`/`play_music`, тому гра насправді безмовна, попри
@@ -79,7 +79,7 @@
 
 7 спрайтів (32×32, один кадр, точне до пікселя зіткнення, крім
 `sprite_goal`, який не має явного прапорця `precise`), 2 фони, 4
-звуки (`sound_background.mid`, `sound_diamond.wav`, `sound_door.wav`,
+звуки (`sound_background.ogg`, `sound_diamond.wav`, `sound_door.wav`,
 `sound_goal.wav`). Ліцензування/походження всіх ресурсів цього
 зразка **не задокументовано** — див. `CREDITS.txt` у цій папці, який
 вказує на TODO "Remaining maze assets" у `docs/ASSET_LICENSES.md`. Не

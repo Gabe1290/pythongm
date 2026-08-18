@@ -19,7 +19,7 @@ para como isso se compara a `plateforme_*` (adiciona fundos em tiles)
 e `match3_*` (script puro, sem ações integradas).
 
 **Som e música:** 4 arquivos de som são incluídos
-(`sound_background.mid`, `sound_diamond`/`door`/`goal.wav`) mas
+(`sound_background.ogg`, `sound_diamond`/`door`/`goal.wav`) mas
 **nenhum deles está realmente conectado** — nenhum objeto referencia
 `play_sound`/`play_music` em lugar nenhum, então o jogo é silencioso
 na prática apesar de carregar recursos de áudio. (Em contraste com
@@ -78,7 +78,7 @@ na prática apesar de carregar recursos de áudio. (Em contraste com
 
 7 sprites (32×32, um único quadro, colisão precisa em nível de pixel
 exceto `sprite_goal` que não tem uma bandeira `precise` explícita), 2
-fundos, 4 sons (`sound_background.mid`, `sound_diamond.wav`,
+fundos, 4 sons (`sound_background.ogg`, `sound_diamond.wav`,
 `sound_door.wav`, `sound_goal.wav`). Licença/procedência para todos
 os recursos desta amostra está **não documentada** — veja
 `CREDITS.txt` nesta pasta, que aponta para o TODO
