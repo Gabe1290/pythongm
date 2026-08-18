@@ -193,6 +193,33 @@ Windows half first if/when picked up (a signing cert is more commonly
 available than an Apple notarization workflow) and treating macOS
 notarization as its own follow-on.
 
+**Status (2026-08-18): mechanism done for both platforms, unverified
+against a real certificate (as expected — see above).**
+`BasePygameDesktopExporter` gained a `_sign_build(build_dir)` hook,
+called after `_copy_to_output` succeeds; the base implementation is a
+no-op (`LinuxExporter` never overrides it — ELF has no signing-metadata
+concept). A signing failure now fails the whole export with the
+signing tool's own stdout/stderr surfaced, rather than silently
+shipping an unsigned build the author believes is signed. **Windows**
+(`ExeExporter._sign_build`): no-ops unless `signing_certificate_path`
+is set, then runs `signtool sign /f <cert> /p <password> /fd SHA256 /t
+<timestamp-url> <exe>` (`signing_certificate_password` optional,
+`signing_timestamp_url` defaults to DigiCert's public RFC3161
+authority), with a clear message if `signtool` isn't on PATH.
+**macOS** (`MacOSExporter._sign_build`): no-ops unless
+`signing_identity` is set, then runs `codesign --deep --force --options
+runtime --sign <identity> <app>`; if `notarize: true` is also set, it
+further needs `apple_id` / `apple_id_password` (an app-specific
+password, not the real Apple ID password) / `apple_team_id`, zips the
+`.app` via `ditto`, runs `xcrun notarytool submit --wait`, and staples
+the ticket via `xcrun stapler staple` — a notarization failure stops
+before stapling. No UI exists yet for any of these settings (matching
+Kivy/Android's item-3 keystore UI, deferred the same way) — every real
+export today is still unsigned exactly as before, since nothing sets
+these keys yet. Regression coverage:
+`tests/test_desktop_export_signing.py` (17 tests, all subprocess calls
+mocked — no real signtool/codesign/notarytool/stapler invoked).
+
 ### 2c. Auto-updater — recommend deferring; weakest-justified item on this list
 
 **What it would need**: a hosted version-check endpoint (e.g. polling

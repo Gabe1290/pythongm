@@ -13,6 +13,8 @@ Windows-specific: the .exe suffix, the DPI-awareness manifest, a .ico icon,
 and the refusal to build anywhere but Windows.
 """
 
+import shutil
+import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -21,6 +23,11 @@ from export.desktop.pygame_desktop_exporter import (
     BasePygameDesktopExporter, _literal)
 
 logger = get_logger(__name__)
+
+# A public RFC3161 timestamp authority, used unless the caller supplies
+# their own. Timestamping means the signature stays valid after the signing
+# certificate itself expires -- signtool's own recommended practice.
+DEFAULT_SIGNING_TIMESTAMP_URL = "http://timestamp.digicert.com"
 
 # Without this, Windows scales the game window on a high-DPI display and the
 # result is a blurry upscale of a smaller surface.
@@ -128,3 +135,54 @@ class ExeExporter(BasePygameDesktopExporter):
         if icon:
             options.append(f"icon={_literal(icon)},")
         return "\n    ".join(options)
+
+    # --- signing (docs/EXPORT_POLISH_PLAN.md item 2b) ---------------------
+    def _sign_build(self, build_dir: Path) -> Optional[str]:
+        """Authenticode-sign the built .exe via signtool, if configured.
+
+        A real Authenticode certificate is a purchased asset this repo
+        cannot supply or test with -- see EXPORT_POLISH_PLAN.md's own
+        reasoning. This wires the mechanism only: when
+        'signing_certificate_path' is absent (the default), nothing
+        changes and the build ships unsigned exactly as before.
+        """
+        settings = self.export_settings or {}
+        cert_path = settings.get("signing_certificate_path")
+        if not cert_path:
+            return None
+
+        exe_path = self.output_path / (self.app_name() + self.executable_suffix)
+        if not exe_path.exists():
+            return f"Could not find the built executable to sign: {exe_path}"
+
+        signtool = shutil.which("signtool") or shutil.which("signtool.exe")
+        if not signtool:
+            return (
+                "signtool.exe was not found on PATH. It ships with the "
+                "Windows SDK -- install it (or the standalone Windows SDK "
+                "Signing Tools), or add its folder to PATH, then export "
+                "again.")
+
+        cmd = [
+            signtool, "sign",
+            "/f", str(cert_path),
+            "/p", str(settings.get("signing_certificate_password", "")),
+            "/fd", "SHA256",
+            "/t", str(settings.get("signing_timestamp_url")
+                      or DEFAULT_SIGNING_TIMESTAMP_URL),
+            str(exe_path),
+        ]
+        try:
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=120)
+        except subprocess.TimeoutExpired:
+            return "signtool timed out after 120 seconds."
+        except Exception as exc:  # noqa: BLE001
+            return f"Could not run signtool: {exc}"
+
+        if result.returncode != 0:
+            return (f"signtool exited with code {result.returncode}:\n"
+                    f"{result.stdout}\n{result.stderr}")
+
+        logger.info("Signed %s with signtool", exe_path.name)
+        return None

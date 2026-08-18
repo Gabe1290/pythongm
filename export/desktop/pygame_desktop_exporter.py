@@ -196,6 +196,20 @@ class BasePygameDesktopExporter(BaseKivyExporter):
                     f"The build is available at:\n{build_dir / 'dist'}")
                 return False
 
+            self.progress_update.emit(92, "Signing build...")
+            sign_error = self._sign_build(build_dir)
+            if sign_error:
+                # Signing was explicitly requested (see _sign_build's own
+                # no-op-when-unconfigured contract) -- a failure here must
+                # fail the export rather than silently ship an unsigned
+                # build the author believes is signed.
+                self.export_complete.emit(
+                    False,
+                    "The build itself succeeded, but code signing failed:\n\n"
+                    f"{sign_error}\n\n"
+                    f"The unsigned build is available at:\n{self.output_path}")
+                return False
+
             if not settings.get("include_debug", False):
                 self.progress_update.emit(95, "Cleaning up temporary files...")
                 self._cleanup(build_dir)
@@ -466,6 +480,19 @@ class BasePygameDesktopExporter(BaseKivyExporter):
             shutil.rmtree(build_dir)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Could not clean up %s: %s", build_dir, exc)
+
+    # --- signing -----------------------------------------------------------
+    def _sign_build(self, build_dir: Path) -> Optional[str]:
+        """Post-build code signing hook (docs/EXPORT_POLISH_PLAN.md item 2b).
+
+        No-op by default -- every export stays unsigned exactly as before
+        unless a subclass overrides this AND the relevant export settings
+        are actually provided. Returns None on success (including "not
+        configured, nothing to do"), or a human-readable error message on
+        failure. Neither Linux binary carries this concept (ELF has no
+        signing metadata), so LinuxExporter never overrides this.
+        """
+        return None
 
 
 # The launcher is what actually runs inside the bundle. Kept small on purpose:
