@@ -168,3 +168,34 @@ def test_it_puts_the_automated_checks_first():
     automated = text.index("verify_desktop_export.py --all")
     manual = text.index("## 1. The IDE window itself")
     assert automated < manual
+
+
+def test_every_command_has_a_windows_form():
+    """Bare `python3` does not work on Windows.
+
+    It hits the Microsoft Store stub ("Python was not found"), or, if that stub
+    is disabled, an unsupported 3.14 -- which is worse, because it runs and then
+    fails oddly. CLAUDE.md records this, and the checklist still shipped
+    `python3 tools/smoke_run_samples.py` with no Windows equivalent; the user
+    hit it on the first command they tried.
+
+    So every tool the checklist tells you to run must appear in a `py -3.12`
+    form as well as a `python3` one.
+    """
+    text = _text()
+    tools = ("-m pytest", "tools/smoke_run_samples.py",
+             "tools/verify_desktop_export.py")
+    for tool in tools:
+        assert "py -3.12 %s" % tool in text, (
+            "%s has no `py -3.12` form; a Windows reader cannot run it" % tool)
+        assert "python3 %s" % tool in text, (
+            "%s has no `python3` form for Linux/macOS" % tool)
+
+
+def test_it_warns_about_bare_python3_on_windows():
+    """Naming the failure mode is what stops the reader assuming their install
+    is broken when they see "Python was not found"."""
+    text = _text()
+    assert "py -3.12" in text and "python3" in text
+    assert "Microsoft Store" in text, (
+        "the checklist should name the stub the user actually sees")
