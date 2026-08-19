@@ -346,6 +346,89 @@ def test_exe_spec_carries_the_dpi_manifest(qapp, project, tmp_path):
     assert "dpiAware" in manifest.read_text(encoding="utf-8")
 
 
+def test_exe_spec_carries_a_version_info_file(qapp, project, tmp_path):
+    """Explorer's Properties -> Details tab reads this -- previously nothing
+    populated it at all, so every exported .exe showed blank version fields
+    regardless of the project's own version (docs/EXPORT_POLISH_PLAN.md 2a)."""
+    exporter, build_dir = _stage("exe", project, tmp_path)
+    exporter.project_data["version"] = "2.3.1"
+    spec = exporter._write_spec(build_dir, build_dir / "game_launcher.py")
+    assert "version='version_info.txt'" in spec.read_text(encoding="utf-8")
+
+    version_info = build_dir / "version_info.txt"
+    assert version_info.exists(), "the spec references a version file that must exist"
+    text = version_info.read_text(encoding="utf-8")
+    assert "VSVersionInfo(" in text
+    assert "filevers=(2, 3, 1, 0)" in text
+    assert "prodvers=(2, 3, 1, 0)" in text
+    assert "StringStruct(u'FileVersion', u'2.3.1.0')" in text
+    assert "StringStruct(u'ProductVersion', u'2.3.1.0')" in text
+
+
+def test_exe_version_info_falls_back_to_zeros_without_a_project_version(qapp, project, tmp_path):
+    """The fixture project.json has no "version" key at all -- must degrade
+    to 0.0.0.0 rather than fail the export."""
+    exporter, build_dir = _stage("exe", project, tmp_path)
+    exporter._write_spec(build_dir, build_dir / "game_launcher.py")
+    text = (build_dir / "version_info.txt").read_text(encoding="utf-8")
+    assert "filevers=(0, 0, 0, 0)" in text
+
+
+def test_macos_spec_uses_the_projects_own_version(qapp, project, tmp_path):
+    """Was hardcoded '1.0.0' regardless of the project's actual version
+    (docs/EXPORT_POLISH_PLAN.md 2a) -- every exported .app claimed to be
+    version 1.0.0 forever."""
+    exporter, build_dir = _stage("macos", project, tmp_path)
+    exporter.project_data["version"] = "2.3.1"
+    source = exporter._write_spec(
+        build_dir, build_dir / "game_launcher.py").read_text(encoding="utf-8")
+    assert "'CFBundleVersion': '2.3.1'" in source
+    assert "'CFBundleShortVersionString': '2.3.1'" in source
+
+
+def test_macos_spec_falls_back_to_1_0_0_without_a_project_version(qapp, project, tmp_path):
+    exporter, build_dir = _stage("macos", project, tmp_path)
+    source = exporter._write_spec(
+        build_dir, build_dir / "game_launcher.py").read_text(encoding="utf-8")
+    assert "'CFBundleVersion': '1.0.0'" in source
+    assert "'CFBundleShortVersionString': '1.0.0'" in source
+
+
+# --- version-string parsing edge cases -------------------------------------
+
+def test_parse_version_tuple_pads_short_versions():
+    from export.exe.exe_exporter import _parse_version_tuple
+    assert _parse_version_tuple("1.2") == (1, 2, 0, 0)
+    assert _parse_version_tuple("5") == (5, 0, 0, 0)
+
+
+def test_parse_version_tuple_truncates_long_versions():
+    from export.exe.exe_exporter import _parse_version_tuple
+    assert _parse_version_tuple("1.2.3.4.5") == (1, 2, 3, 4)
+
+
+def test_parse_version_tuple_never_raises_on_garbage():
+    from export.exe.exe_exporter import _parse_version_tuple
+    assert _parse_version_tuple("") == (0, 0, 0, 0)
+    assert _parse_version_tuple(None) == (0, 0, 0, 0)
+    # No "." to split on, so the whole string is one part -- its digits
+    # ("1") are pulled out rather than raising.
+    assert _parse_version_tuple("beta-rc1") == (1, 0, 0, 0)
+    assert _parse_version_tuple("v1.0.0") == (1, 0, 0, 0)
+
+
+def test_version_info_text_escapes_a_single_quote_in_the_app_name():
+    """Mirrors the display_name escaping already established for macOS
+    (M38, the "L'aventure" case) -- an unescaped apostrophe in the app name
+    would break out of the u'...' string in the generated version file."""
+    from export.exe.exe_exporter import _version_info_text
+    text = _version_info_text("L'aventure", "1.0.0")
+    assert "L\\'aventure" in text
+    # The file must stay syntactically evaluable Python (PyInstaller evals
+    # it as-is): balanced quotes are the concrete way to check that.
+    assert text.count("'") % 2 == 0
+
+
 def test_hosts_cannot_cross_compile(qapp):
     """PyInstaller builds for the host only, so each target refuses elsewhere
     with an explanation rather than emitting a binary for the wrong OS."""

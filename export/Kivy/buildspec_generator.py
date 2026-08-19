@@ -18,16 +18,23 @@ class BuildspecGenerator:
     Creates buildozer.spec for Android and configuration for iOS.
     """
 
-    def __init__(self, project_data: Dict[str, Any], output_path: Path):
+    def __init__(self, project_data: Dict[str, Any], output_path: Path,
+                 build_type: str = "debug"):
         """
         Initialize the buildspec generator.
 
         Args:
             project_data: Complete project data dictionary
             output_path: Path to the export output directory
+            build_type: "debug" (default) or "release"
+                (docs/EXPORT_POLISH_PLAN.md item 3). Only changes what
+                buildozer.spec DECLARES (android.release_artifact) --
+                which build command actually runs is the caller's
+                decision (android_exporter.py), not this generator's.
         """
         self.project_data = project_data
         self.output_path = output_path
+        self.build_type = build_type if build_type == "release" else "debug"
 
         # Extract project metadata
         self.project_name = project_data.get("name", "KivyGame")
@@ -94,6 +101,12 @@ class BuildspecGenerator:
         app_metadata = self._get_app_metadata()
         requirements = self._get_requirements_list()
         permissions = self._get_permissions_list()
+        # AAB (Android App Bundle) is what Google Play now requires for new
+        # app submissions; a debug build always produces an installable APK
+        # regardless of this setting (buildozer only reads it for
+        # `buildozer android release`), so it's harmless to declare either
+        # way -- docs/EXPORT_POLISH_PLAN.md item 3.
+        release_artifact = "aab" if self.build_type == "release" else "apk"
 
         spec_content = f"""[app]
 
@@ -352,6 +365,23 @@ android.enable_androidx = True
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
 android.archs = arm64-v8a, armeabi-v7a
+
+# (str) Format to package a release build as: apk (sideload/direct install)
+# or aab (Android App Bundle, required by Google Play for new app
+# submissions). Only consulted by `buildozer android release`; a debug
+# build always produces an apk regardless of this value.
+android.release_artifact = {release_artifact}
+
+# (str) Format to package a debug build as -- always apk, so it can be
+# installed directly on a test device with no store involved.
+android.debug_artifact = apk
+
+# Release signing (docs/EXPORT_POLISH_PLAN.md item 3): buildozer/
+# python-for-android read the keystore/alias/passwords for a release build
+# from the standard P4A_RELEASE_KEYSTORE / P4A_RELEASE_KEYSTORE_PASSWD /
+# P4A_RELEASE_KEYALIAS / P4A_RELEASE_KEYALIAS_PASSWD environment variables
+# (set by the caller for a release build -- see android_exporter.py), not
+# from this file. Nothing to declare here.
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
