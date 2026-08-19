@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{game_name}</title>
-    <script>{pako_code}</script>
+    {pwa_head_tags}
+    {pako_script_tag}
     <style>
         * {
             margin: 0;
@@ -181,8 +182,8 @@
         console.log('📊 Loaded ' + Object.keys(gameData.assets.rooms).length + ' rooms, ' +
                     Object.keys(gameData.assets.objects).length + ' objects');
 
-        // Game engine code
-        {engine_code}
     </script>
+    {engine_script_tag}
+    {pwa_sw_register_script}
 </body>
 </html>

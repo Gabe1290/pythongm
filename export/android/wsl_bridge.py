@@ -298,7 +298,24 @@ class WSLBridge:
         key = re.sub(r'[^a-z0-9_]+', '_', str(project_name or '').lower()).strip('_')
         return key or 'project'
 
-    def _build_script_text(self, wsl_src: str, project_key: str) -> str:
+    @staticmethod
+    def _bash_single_quote(value) -> str:
+        """Safely single-quote a value for embedding in a bash script.
+
+        Standard POSIX trick: close the quote, emit an escaped literal
+        quote, reopen the quote -- '\\'' -- since a single-quoted string
+        can't contain an escaped single quote itself. Used for keystore
+        passwords/paths, which are untrusted-ish user input reaching a
+        generated shell script (docs/EXPORT_POLISH_PLAN.md item 3).
+        """
+        return "'" + str(value).replace("'", "'\\''") + "'"
+
+    def _build_script_text(self, wsl_src: str, project_key: str,
+                           build_type: str = "debug",
+                           keystore_wsl_path=None,
+                           keystore_password=None,
+                           key_alias=None,
+                           key_password=None) -> str:
         """Compose the bash script that runs buildozer inside WSL.
 
         The build runs in a PERSISTENT per-project directory
@@ -315,7 +332,27 @@ class WSLBridge:
         whose ABSOLUTE path has a component starting with '.', so a build
         under e.g. ``~/.pygm/`` silently copies zero sources into the app
         dir and p4a fails with "No main.py found in your app directory".
+
+        For a release build with keystore info, the P4A_RELEASE_* env vars
+        (python-for-android's own established signing mechanism) are
+        exported inside the script text itself -- a Python-side
+        ``subprocess`` ``env=`` kwarg does NOT propagate across the
+        ``wsl.exe`` process boundary, since WSL invocation is a separate
+        process, not a child inheriting the caller's environment.
         """
+        env_lines = ""
+        if build_type == "release" and keystore_wsl_path:
+            env_lines = (
+                "export P4A_RELEASE_KEYSTORE={ks}\n"
+                "export P4A_RELEASE_KEYSTORE_PASSWD={ksp}\n"
+                "export P4A_RELEASE_KEYALIAS={alias}\n"
+                "export P4A_RELEASE_KEYALIAS_PASSWD={aliaspw}\n"
+            ).format(
+                ks=self._bash_single_quote(keystore_wsl_path),
+                ksp=self._bash_single_quote(keystore_password or ""),
+                alias=self._bash_single_quote(key_alias or ""),
+                aliaspw=self._bash_single_quote(key_password or ""),
+            )
         return (
             '#!/bin/bash\n'
             'set -e\n'
@@ -349,16 +386,25 @@ class WSLBridge:
             'fi\n'
             '\n'
             # Capture buildozer's exit without letting `set -e` abort first,
-            # so the APK copy-back still runs on success and the real exit
-            # code propagates. (The EXIT trap deletes this script regardless.)
-            'python3 -m buildozer android debug && EXIT_CODE=0 || EXIT_CODE=$?\n'
+            # so the artifact copy-back still runs on success and the real
+            # exit code propagates. (The EXIT trap deletes this script
+            # regardless.)
+            '{env_lines}'
+            'python3 -m buildozer android {build_type} && EXIT_CODE=0 || EXIT_CODE=$?\n'
             'mkdir -p "{src}/bin"\n'
             'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null || true\n'
+            'cp "$BUILD_DIR"/bin/*.aab "{src}/bin/" 2>/dev/null || true\n'
             'exit $EXIT_CODE\n'
-        ).format(src=wsl_src, key=project_key)
+        ).format(src=wsl_src, key=project_key, build_type=build_type,
+                 env_lines=env_lines)
 
     def run_buildozer(self, build_dir_windows: str,
-                      project_name=None) -> subprocess.Popen:
+                      project_name=None,
+                      build_type: str = "debug",
+                      keystore_path=None,
+                      keystore_password=None,
+                      key_alias=None,
+                      key_password=None) -> subprocess.Popen:
         """Launch buildozer inside WSL as a streaming subprocess.
 
         Copies the game files from the Windows temp directory into a
@@ -375,11 +421,26 @@ class WSLBridge:
         - ``wsl bash -c`` strips ``$`` variable references
         - Piping via stdin produces Windows ``\\r\\n`` line endings
 
+        ``build_type`` is "debug" (the default) or "release". A release
+        build needs ``keystore_path`` (a Windows-side path to the .keystore
+        file, translated to its WSL equivalent here the same way the build
+        directory itself is), ``keystore_password``, ``key_alias`` and
+        ``key_password`` -- passed through to python-for-android's own
+        P4A_RELEASE_* signing mechanism. Without them a "release" build
+        proceeds unsigned (buildozer's own default), matching how a caller
+        that never asked for signing gets ordinary debug-shaped behavior.
+
         Returns a :class:`subprocess.Popen` with ``stdout`` piped.
         """
         wsl_src = self.windows_to_wsl_path(build_dir_windows)
         project_key = self._project_build_key(project_name)
-        build_script = self._build_script_text(wsl_src, project_key)
+        keystore_wsl_path = (
+            self.windows_to_wsl_path(keystore_path) if keystore_path else None)
+        build_script = self._build_script_text(
+            wsl_src, project_key, build_type=build_type,
+            keystore_wsl_path=keystore_wsl_path,
+            keystore_password=keystore_password,
+            key_alias=key_alias, key_password=key_password)
 
         # Write the script to a file inside WSL with Unix line endings.
         # Use binary mode (no text=True) so Python won't convert \n to \r\n.

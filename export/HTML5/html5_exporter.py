@@ -63,6 +63,121 @@ def _sanitize_filename(name: str) -> str:
     return cleaned.strip(' .')
 
 
+_GENERIC_ICON_PATH = Path(__file__).resolve().parent.parent.parent / "resources" / "icon.png"
+
+
+def _write_pwa_icons(output_path: Path, icon_source: Optional[Path]) -> list:
+    """Resize icon_source (or the generic pygm2 icon as fallback) into the
+    two sizes a PWA manifest needs, written under assets/icons/. Returns
+    the manifest.json "icons" list, or [] if no usable source image exists
+    (a missing/corrupt icon must not fail the whole export -- the manifest
+    just omits icons, and installability degrades gracefully)."""
+    source = icon_source if (icon_source and icon_source.exists()) else _GENERIC_ICON_PATH
+    if not source.exists():
+        return []
+    try:
+        from PIL import Image
+        img = Image.open(source).convert("RGBA")
+    except Exception:
+        logger.warning("PWA icon source %s could not be read; skipping icons", source)
+        return []
+
+    icons_dir = output_path / "assets" / "icons"
+    icons_dir.mkdir(parents=True, exist_ok=True)
+    icons = []
+    for size in (192, 512):
+        resized = img.resize((size, size), Image.LANCZOS)
+        dest = icons_dir / f"icon-{size}.png"
+        resized.save(dest, "PNG")
+        icons.append({
+            "src": f"assets/icons/icon-{size}.png",
+            "sizes": f"{size}x{size}",
+            "type": "image/png",
+        })
+    return icons
+
+
+def _write_pwa_manifest(output_path: Path, project_name: str, html_filename: str,
+                        icon_source: Optional[Path]) -> None:
+    """Write manifest.json for an installable PWA (docs/EXPORT_POLISH_PLAN.md
+    item 1 Phase 4). Only meaningful alongside external_assets folder mode
+    -- the single-file inline export is already fully offline the instant
+    it's downloaded, nothing to install/cache in front of it."""
+    icons = _write_pwa_icons(output_path, icon_source)
+    manifest = {
+        "name": str(project_name),
+        "short_name": str(project_name)[:30],
+        "start_url": f"./{html_filename}",
+        "scope": "./",
+        "display": "standalone",
+        "background_color": "#667eea",
+        "theme_color": "#764ba2",
+        "icons": icons,
+    }
+    (output_path / "manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding='utf-8')
+
+
+def _write_pwa_service_worker(output_path: Path, html_filename: str,
+                              external_files: list) -> None:
+    """Write sw.js: a minimal cache-first service worker so the exported
+    folder keeps working offline after the first successful load (the
+    thing a PWA install is actually for). Cache-first, not
+    network-first -- a classroom game shouldn't re-fetch assets it
+    already has just because the network happens to be flaky that day."""
+    cache_list = ['"./"', f'"./{html_filename}"'] + [
+        json.dumps(f) for f in external_files
+    ]
+    sw_js = (
+        "const CACHE_NAME = 'pygm-game-v1';\n"
+        "const ASSETS_TO_CACHE = [\n    " + ",\n    ".join(cache_list) + "\n];\n\n"
+        "self.addEventListener('install', event => {\n"
+        "    event.waitUntil(\n"
+        "        caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))\n"
+        "    );\n"
+        "    self.skipWaiting();\n"
+        "});\n\n"
+        "self.addEventListener('activate', event => {\n"
+        "    event.waitUntil(\n"
+        "        caches.keys().then(names => Promise.all(\n"
+        "            names.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))\n"
+        "        ))\n"
+        "    );\n"
+        "    self.clients.claim();\n"
+        "});\n\n"
+        "self.addEventListener('fetch', event => {\n"
+        "    event.respondWith(\n"
+        "        caches.match(event.request).then(cached => cached || fetch(event.request))\n"
+        "    );\n"
+        "});\n"
+    )
+    (output_path / "sw.js").write_text(sw_js, encoding='utf-8')
+
+
+def _copy_asset_file(full_path: Path, dest_dir: Path, asset_name: str,
+                      url_prefix: str) -> str:
+    """Copy full_path into dest_dir (creating it if needed), named after
+    the sanitized asset_name with its original extension kept, and return
+    the URL path (always forward slashes -- this is a URL, not an OS path,
+    so str(Path(...)) would silently break on Windows) the exported page
+    should reference it by.
+
+    Two different asset names that happen to sanitize to the same
+    filesystem-safe name must not silently overwrite each other and lose
+    one asset's data -- disambiguated with a numeric suffix instead."""
+    import shutil
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    safe_name = _sanitize_filename(asset_name) or "asset"
+    suffix = full_path.suffix.lower()
+    dest_path = dest_dir / f"{safe_name}{suffix}"
+    n = 1
+    while dest_path.exists():
+        dest_path = dest_dir / f"{safe_name}_{n}{suffix}"
+        n += 1
+    shutil.copy2(full_path, dest_path)
+    return f"{url_prefix}/{dest_path.name}"
+
+
 class HTML5Exporter:
     """Export PyGameMaker projects to HTML5"""
 
@@ -205,13 +320,24 @@ class HTML5Exporter:
                     engine_code_for_export = self._build_offline_pyodide_engine_code(
                         progress_callback)
 
-                # Encode sprites as base64
+                # External-asset export mode (docs/EXPORT_POLISH_PLAN.md item
+                # 1): opt-in, default off -- every existing export keeps
+                # producing one self-contained .html file that works via
+                # double-click with no server (a real, load-bearing property:
+                # relative-path assets need real HTTP, file:// blocks fetch/
+                # Image.src/Audio.src for a separate-origin-looking file in
+                # most browsers). When on, sprites/sounds are copied as real
+                # files under assets/ instead of base64-embedded.
+                external_assets = bool(export_settings.get('external_assets'))
+                assets_dir = (output_path / "assets") if external_assets else None
+
+                # Encode sprites (base64, or copied as files -- see above)
                 logger.info("  Encoding sprites...")
-                sprites_data = self.encode_sprites(project_path, project_data)
+                sprites_data = self.encode_sprites(project_path, project_data, assets_dir)
                 logger.info(f"  Encoded {len(sprites_data)} sprites")
 
-                # Encode sounds as base64 (browser-playable formats only)
-                sounds_data = self.encode_sounds(project_path, project_data)
+                # Encode sounds (browser-playable formats only)
+                sounds_data = self.encode_sounds(project_path, project_data, assets_dir)
                 logger.info(f"  Encoded {len(sounds_data)} sounds")
 
                 # Get window size from settings or room dimensions
@@ -277,17 +403,74 @@ class HTML5Exporter:
                 html_content = html_content.replace('{game_data}', f'"{game_data_compressed}"')
                 html_content = html_content.replace('{sprites_data}', f'"{sprites_data_compressed}"')
                 html_content = html_content.replace('{sounds_data}', f'"{sounds_data_compressed}"')
-                html_content = html_content.replace('{pako_code}', self.pako_code)
-                html_content = html_content.replace('{engine_code}', engine_code_for_export)
 
-                # Write output. Sanitize the name for the FILENAME —
-                # characters legal in a project name but illegal in a
-                # filename (< > : " / \ | ? * and control chars) otherwise
-                # crash the write on Windows (e.g. a name like "Level 1: Go"
-                # or "Tom & <Jerry>"). The in-page title keeps the real
-                # (HTML-escaped) name; only the file on disk is sanitized.
+                # Sanitize the name for the FILENAME — characters legal in a
+                # project name but illegal in a filename (< > : " / \ | ? *
+                # and control chars) otherwise crash the write on Windows
+                # (e.g. a name like "Level 1: Go" or "Tom & <Jerry>"). The
+                # in-page title keeps the real (HTML-escaped) name; only the
+                # file on disk is sanitized. Computed here (not just before
+                # writing) because the PWA manifest's start_url needs it too.
                 safe_name = _sanitize_filename(str(project_name)) or "game"
-                output_file = output_path / f"{safe_name}.html"
+                html_filename = f"{safe_name}.html"
+
+                # pako/engine.js: inlined (default) or written as their own
+                # files and referenced by <script src=...> (external_assets).
+                # engine.js itself needs no changes for this switch -- it
+                # only reads gameData/spritesData/soundsData/pako as
+                # already-set globals, which a later <script> (external or
+                # not) can see identically; see this module's docstring.
+                if external_assets:
+                    (output_path / "pako.min.js").write_text(
+                        self.pako_code, encoding='utf-8')
+                    (output_path / "engine.js").write_text(
+                        engine_code_for_export, encoding='utf-8')
+                    pako_script_tag = '<script src="pako.min.js"></script>'
+                    engine_script_tag = '<script src="engine.js"></script>'
+                    self._write_external_assets_readme(output_path)
+                else:
+                    pako_script_tag = f'<script>{self.pako_code}</script>'
+                    engine_script_tag = f'<script>\n{engine_code_for_export}\n</script>'
+                html_content = html_content.replace('{pako_script_tag}', pako_script_tag)
+                html_content = html_content.replace('{engine_script_tag}', engine_script_tag)
+
+                # PWA manifest + service worker (docs/EXPORT_POLISH_PLAN.md
+                # item 1 Phase 4): opt-in, and only meaningful alongside
+                # external_assets -- the single-file inline export is
+                # already fully offline the instant it's downloaded, so
+                # there's nothing a service worker would add in front of it.
+                pwa = bool(export_settings.get('pwa')) and external_assets
+                if pwa:
+                    icon_setting = export_settings.get('icon_path')
+                    icon_source = Path(icon_setting) if icon_setting else None
+                    _write_pwa_manifest(output_path, project_name, html_filename, icon_source)
+                    external_files = [
+                        f"./{p.relative_to(output_path).as_posix()}"
+                        for p in sorted(output_path.rglob('*')) if p.is_file()
+                    ]
+                    _write_pwa_service_worker(output_path, html_filename, external_files)
+                    pwa_head_tags = (
+                        '<link rel="manifest" href="manifest.json">\n'
+                        '    <meta name="theme-color" content="#764ba2">'
+                    )
+                    pwa_sw_register_script = (
+                        "<script>\n"
+                        "        if ('serviceWorker' in navigator) {\n"
+                        "            window.addEventListener('load', () => {\n"
+                        "                navigator.serviceWorker.register('./sw.js').catch(err =>\n"
+                        "                    console.warn('Service worker registration failed:', err));\n"
+                        "            });\n"
+                        "        }\n"
+                        "    </script>"
+                    )
+                else:
+                    pwa_head_tags = ''
+                    pwa_sw_register_script = ''
+                html_content = html_content.replace('{pwa_head_tags}', pwa_head_tags)
+                html_content = html_content.replace('{pwa_sw_register_script}', pwa_sw_register_script)
+
+                # Write output.
+                output_file = output_path / html_filename
                 with open(output_file, 'w', encoding='utf-8') as f:
                     f.write(html_content)
 
@@ -306,6 +489,31 @@ class HTML5Exporter:
                 traceback.print_exc()
                 self.last_error_message = str(e)
                 return False
+
+    def _write_external_assets_readme(self, output_path: Path) -> None:
+        """external_assets mode writes a folder, not one file -- unlike the
+        default export, opening index.html straight off disk (file://)
+        will NOT work in most browsers, since a relative-path fetch/
+        Image.src/Audio.src from a file:// page is blocked by the
+        same-origin policy. That surprise needs to be caught before a
+        teacher tries it and gets a blank page, not after."""
+        readme = (
+            "This export is a FOLDER, not a single file -- it needs a real "
+            "web server, not double-clicking the .html file.\n\n"
+            "Opening it directly from disk (a file:// URL) will show a "
+            "blank page in most browsers: the game's sprites and sounds "
+            "are separate files next to the HTML, and browsers block a "
+            "page loaded from disk from fetching its own neighboring "
+            "files for security reasons.\n\n"
+            "To play it locally, run this in the folder and then open the "
+            "printed address in a browser:\n\n"
+            "    python -m http.server\n\n"
+            "To publish it, upload the whole folder (the .html file, "
+            "engine.js, pako.min.js, and the assets/ folder) to any web "
+            "host -- GitHub Pages, itch.io, or your school's site all "
+            "work.\n"
+        )
+        (output_path / "README-hosting.txt").write_text(readme, encoding='utf-8')
 
     def _load_room_instances(self, project_path: Path, project_data: Dict) -> None:
         """Load room instances from external room files into project_data"""
@@ -452,9 +660,16 @@ class HTML5Exporter:
         '.m4a': 'audio/mp4',
     }
 
-    def encode_sounds(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
-        """Encode project sounds as base64 data URLs for the play_sound action."""
+    def encode_sounds(self, project_path: Path, project_data: Dict,
+                      assets_output_dir: Optional[Path] = None) -> Dict[str, str]:
+        """Sound name -> either a base64 data URL (default, assets_output_dir
+        omitted -- every existing caller), or (docs/EXPORT_POLISH_PLAN.md
+        item 1, external_assets export option) a relative URL under
+        assets_output_dir/sounds/ when assets_output_dir is given. engine.js
+        needs no change either way: `new Audio(src)` accepts a data: URI or
+        an ordinary relative URL identically."""
         encoded = {}
+        sound_dir = (assets_output_dir / "sounds") if assets_output_dir else None
         sounds_data = project_data.get('assets', {}).get('sounds', {})
         for sound_name, sound_info in sounds_data.items():
             if not isinstance(sound_info, dict):
@@ -473,15 +688,27 @@ class HTML5Exporter:
                     f"browser playback support")
                 continue
             try:
-                b64 = base64.b64encode(full_path.read_bytes()).decode('utf-8')
-                encoded[sound_name] = f"data:{mime};base64,{b64}"
+                if sound_dir is not None:
+                    encoded[sound_name] = _copy_asset_file(
+                        full_path, sound_dir, sound_name, "assets/sounds")
+                else:
+                    b64 = base64.b64encode(full_path.read_bytes()).decode('utf-8')
+                    encoded[sound_name] = f"data:{mime};base64,{b64}"
             except Exception as e:
                 logger.warning(f"  Failed to encode sound {sound_name}: {e}")
         return encoded
 
-    def encode_sprites(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
-        """Encode sprites and backgrounds as base64 data URLs"""
+    def encode_sprites(self, project_path: Path, project_data: Dict,
+                       assets_output_dir: Optional[Path] = None) -> Dict[str, str]:
+        """Sprite/background name -> either a base64 data URL (default,
+        assets_output_dir omitted -- every existing caller), or
+        (docs/EXPORT_POLISH_PLAN.md item 1, external_assets export option)
+        a relative URL under assets_output_dir/sprites/ when
+        assets_output_dir is given. engine.js needs no change either way:
+        `img.src = spritesData[name]` accepts a data: URI or an ordinary
+        relative URL identically."""
         encoded = {}
+        sprite_dir = (assets_output_dir / "sprites") if assets_output_dir else None
 
         # Encode sprites
         sprites_data = project_data.get('assets', {}).get('sprites', {})
@@ -504,23 +731,29 @@ class HTML5Exporter:
                 logger.warning(f"  Sprite file not found for '{sprite_name}': {full_path}")
                 continue
             try:
-                with open(full_path, 'rb') as f:
-                    sprite_bytes = f.read()
-                    b64 = base64.b64encode(sprite_bytes).decode('utf-8')
+                if sprite_dir is not None:
+                    encoded[sprite_name] = _copy_asset_file(
+                        full_path, sprite_dir, sprite_name, "assets/sprites")
+                else:
+                    with open(full_path, 'rb') as f:
+                        sprite_bytes = f.read()
+                        b64 = base64.b64encode(sprite_bytes).decode('utf-8')
 
-                    # Detect image type
-                    ext = full_path.suffix.lower()
-                    mime_type = 'image/png'
-                    if ext == '.jpg' or ext == '.jpeg':
-                        mime_type = 'image/jpeg'
-                    elif ext == '.gif':
-                        mime_type = 'image/gif'
+                        # Detect image type
+                        ext = full_path.suffix.lower()
+                        mime_type = 'image/png'
+                        if ext == '.jpg' or ext == '.jpeg':
+                            mime_type = 'image/jpeg'
+                        elif ext == '.gif':
+                            mime_type = 'image/gif'
 
-                    encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
+                        encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
             except Exception as e:
                 logger.warning(f"  Failed to encode {sprite_name}: {e}")
 
-        # Encode backgrounds (same guards/logging as sprites, #1/#2)
+        # Encode backgrounds (same guards/logging as sprites, #1/#2). Shares
+        # sprite_dir/assets/sprites -- a background is drawn the same way a
+        # sprite is (Image().src), no reason for its own top-level folder.
         backgrounds_data = project_data.get('assets', {}).get('backgrounds', {})
         for bg_name, bg_info in backgrounds_data.items():
             if not isinstance(bg_info, dict):
@@ -535,16 +768,20 @@ class HTML5Exporter:
                 logger.warning(f"  Background file not found for '{bg_name}': {full_path}")
                 continue
             try:
-                with open(full_path, 'rb') as f:
-                    bg_bytes = f.read()
-                    b64 = base64.b64encode(bg_bytes).decode('utf-8')
+                if sprite_dir is not None:
+                    encoded[bg_name] = _copy_asset_file(
+                        full_path, sprite_dir, bg_name, "assets/sprites")
+                else:
+                    with open(full_path, 'rb') as f:
+                        bg_bytes = f.read()
+                        b64 = base64.b64encode(bg_bytes).decode('utf-8')
 
-                    ext = full_path.suffix.lower()
-                    mime_type = 'image/png'
-                    if ext == '.jpg' or ext == '.jpeg':
-                        mime_type = 'image/jpeg'
+                        ext = full_path.suffix.lower()
+                        mime_type = 'image/png'
+                        if ext == '.jpg' or ext == '.jpeg':
+                            mime_type = 'image/jpeg'
 
-                    encoded[bg_name] = f"data:{mime_type};base64,{b64}"
+                        encoded[bg_name] = f"data:{mime_type};base64,{b64}"
             except Exception as e:
                 logger.warning(f"  Failed to encode background {bg_name}: {e}")
 

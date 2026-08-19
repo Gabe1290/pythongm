@@ -29,12 +29,27 @@ attention on eyes-only checks.
 
 From the repo root, on the machine you are checking:
 
+**On Windows, use `py -3.12` for every command.** Bare `python3` there hits the
+Microsoft Store stub ("Python was not found") — and if that stub is disabled it
+resolves to an unsupported 3.14 instead, which is worse, because it runs and
+then fails oddly.
+
 ```
-py -3.12 -m pytest tests/ -q                        # Windows
-python3 -m pytest tests/ -q                         # Linux / macOS
-python3 tools/smoke_run_samples.py                  # every sample's real game loop
+:: Windows
+py -3.12 -m pytest tests/ -q
+py -3.12 tools/smoke_run_samples.py
+py -3.12 tools/verify_desktop_export.py --all --compare
+```
+
+```
+# Linux / macOS
+python3 -m pytest tests/ -q
+python3 tools/smoke_run_samples.py
 python3 tools/verify_desktop_export.py --all --compare
 ```
+
+`smoke_run_samples.py` drives every sample's real game loop for 180 frames
+under SDL's dummy drivers, so it needs no window and takes seconds.
 
 The last one builds a real export **for this platform**, launches it, and
 compares its rendering against the IDE's, sample by sample. It takes about a
@@ -175,7 +190,8 @@ more than one sample.
 - L [ ] M [ ] W [ ] Open it by **double-clicking** (a `file://` URL) — the game
   draws and plays, no black window
 - L [ ] M [ ] W [ ] Open it from a **served** directory
-  (`python3 -m http.server`) — same result
+  (`python3 -m http.server`, or `py -3.12 -m http.server` on Windows) —
+  same result
 - L [ ] M [ ] W [ ] Browser console shows **no** JavaScript error (a syntax
   error in the injected extension code is what caused issue 1, and it broke
   every export at once)
