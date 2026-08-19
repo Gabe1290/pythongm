@@ -120,6 +120,24 @@ def test_reported_samples_render_frames(sample):
     assert result.returncode == 0
 
 
+def test_a_sample_with_a_startup_message_does_not_hang(tmp_path):
+    """views_1's game_start event calls show_message. show_message_dialog()
+    blocks in a real event loop waiting for a KEYDOWN/click/QUIT -- under the
+    dummy SDL driver this harness (and any headless verification) uses, no
+    such event ever arrives. A py-spy dump of a hung run showed the stack
+    parked in show_message_dialog (game_runner.py), called from
+    trigger_game_start_event -- confirmed reproducible even with no export
+    involved at all, i.e. a real engine bug, not a PyInstaller artifact.
+    Fixed by having show_message_dialog auto-dismiss when the frame budget
+    is active, the same "no real input, so don't wait for it" contract
+    _frame_budget() already documents. A short timeout here is the guard:
+    before the fix this genuinely never returned."""
+    result, output = _run_sample("views_1", 20, timeout=30)
+    assert MARKER in output, output[-2000:]
+    assert int(output.split(MARKER)[1].split()[0]) == 20
+    assert result.returncode == 0, output[-2000:]
+
+
 def test_screenshot_hook_writes_a_real_frame(tmp_path):
     """Comparing the export against the IDE needs a picture from each side."""
     shot = tmp_path / "frame.png"

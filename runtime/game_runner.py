@@ -5171,6 +5171,19 @@ class GameRunner:
             logger.debug("⚠️ Cannot show message dialog - no screen")
             return
 
+        # Under the opt-in frame budget (see _frame_budget()), there is no
+        # real input to dismiss this with -- a headless verification run
+        # (tools/verify_desktop_export.py) drives SDL's dummy driver, so no
+        # KEYDOWN/mouse event can ever arrive and the wait loop below spins
+        # forever. Auto-dismiss immediately, matching the frame budget's own
+        # "a player's game is never affected" contract: this only ever
+        # triggers when PYGM_MAX_FRAMES is explicitly set, never in a normal
+        # build. Both the exported binary and the reference source-engine
+        # render skip it identically, so --compare stays apples-to-apples.
+        if self._frame_budget():
+            logger.debug(f"📢 Message dialog auto-dismissed (frame budget mode): {message}")
+            return
+
         # Clear any pending events to prevent accidental dismissal
         pygame.event.clear()
 
