@@ -303,16 +303,10 @@ def test_an_unseeded_random_sample_differs_from_itself(tmp_path):
         "match3_1 was expected to be non-deterministic without a seed")
 
 
-def test_a_game_that_opens_with_a_message_still_reaches_its_frames():
-    """views_1 shows a message in game_start. Without the budget-mode
-    dismissal the dialog's own event loop waits forever for an OK nobody can
-    press, and the run could only ever report "stuck before its first frame"."""
-    result, output = _run_sample("views_1", 40)
-    assert MARKER in output, output[-2000:]
-    assert int(output.split(MARKER)[1].split()[0]) == 40
-    assert result.returncode == 0
-
-
+# The "a startup message must not hang the run" case is covered above by
+# test_a_sample_with_a_startup_message_does_not_hang, which landed from
+# another session while this was in flight. Only the other DIRECTION is
+# kept here -- that a real player still gets a real dialog.
 def test_the_dialog_is_only_dismissed_under_a_budget(monkeypatch):
     """The other half: a real player must still get a real dialog.
 
