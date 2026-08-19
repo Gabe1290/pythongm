@@ -110,13 +110,15 @@ def build(sample: str, output_dir: Path, language: str) -> str:
 
 
 def launch(executable: Path, frames: int, timeout: int,
-           screenshot: Path = None) -> str:
+           screenshot: Path = None, seed: int = None) -> str:
     """Run the built game for `frames` frames. Returns "" on success."""
     env = dict(os.environ,
                SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy",
                PYGM_MAX_FRAMES=str(frames))
     if screenshot:
         env["PYGM_SCREENSHOT"] = str(screenshot)
+    if seed is not None:
+        env["PYGM_SEED"] = str(seed)
     # A crash inside a windowed build is silent, so the launcher writes it here.
     error_log = executable.parent / "game_error.log"
     if error_log.exists():
@@ -156,11 +158,14 @@ def launch(executable: Path, frames: int, timeout: int,
 
 
 def render_with_source_engine(sample: str, frames: int, timeout: int,
-                              language: str, screenshot: Path) -> str:
+                              language: str, screenshot: Path,
+                              seed: int = None) -> str:
     """Render the same frame with the engine the IDE runs, for comparison."""
     env = dict(os.environ,
                SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy",
                PYGM_MAX_FRAMES=str(frames), PYGM_SCREENSHOT=str(screenshot))
+    if seed is not None:
+        env["PYGM_SEED"] = str(seed)
     project = SAMPLES_DIR / sample / "project.json"
     try:
         result = subprocess.run(
@@ -219,7 +224,7 @@ def compare_frames(exported: Path, reference: Path, tolerance: float) -> str:
 
 def verify(sample: str, frames: int, timeout: int, language: str,
            keep: bool, compare: bool = False,
-           tolerance: float = 0.02) -> str:
+           tolerance: float = 0.02, seed: int = None) -> str:
     output_dir = Path(tempfile.mkdtemp(prefix="pygm_verify_%s_" % sample))
     try:
         problem = build(sample, output_dir, language)
@@ -230,7 +235,7 @@ def verify(sample: str, frames: int, timeout: int, language: str,
             return "the build produced no executable in %s" % output_dir
 
         exported_frame = output_dir / "exported_frame.png" if compare else None
-        problem = launch(executable, frames, timeout, exported_frame)
+        problem = launch(executable, frames, timeout, exported_frame, seed)
         if problem or not compare:
             return problem
 
@@ -238,7 +243,7 @@ def verify(sample: str, frames: int, timeout: int, language: str,
             return "the exported game saved no frame to compare"
         reference = output_dir / "ide_frame.png"
         problem = render_with_source_engine(sample, frames, timeout, language,
-                                            reference)
+                                            reference, seed)
         if problem:
             return problem
         return compare_frames(exported_frame, reference, tolerance)
@@ -268,8 +273,12 @@ def main() -> int:
                              "against the engine the IDE runs")
     parser.add_argument("--tolerance", type=float, default=0.02,
                         help="fraction of pixels allowed to differ with "
-                             "--compare (default 0.02); samples that call "
-                             "random() are not deterministic")
+                             "--compare (default 0.02)")
+    parser.add_argument("--seed", type=int, default=1234,
+                        help="RNG seed given to BOTH the export and the IDE "
+                             "engine, so a sample that calls random() still "
+                             "compares meaningfully (match3, treasure, "
+                             "plateforme_3). Use --seed 0 to disable.")
     args = parser.parse_args()
 
     if args.all:
@@ -285,7 +294,8 @@ def main() -> int:
     for sample in samples:
         print("\n=== %s ===" % sample, flush=True)
         problem = verify(sample, args.frames, args.timeout, args.language,
-                         args.keep, args.compare, args.tolerance)
+                         args.keep, args.compare, args.tolerance,
+                         args.seed or None)
         if problem:
             failures[sample] = problem
             print("  FAILED: %s" % problem, flush=True)

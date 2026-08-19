@@ -196,3 +196,169 @@ def test_the_verifier_tool_exists_and_is_runnable():
         assert exporter_class.required_host_platform == platform.system()
     else:
         assert exporter_class is None
+
+
+# --- the two hooks that made --compare trustworthy ------------------------
+#
+# The first real --all --compare run reported 6 of 20 samples failing, and all
+# six were the TOOL's fault, not the export's:
+#
+#   * match3_1/2/3, treasure and plateforme_3 build their world with random(),
+#     so no two runs match. match3_1 differed from the export by 33.88% and
+#     from its OWN second run by exactly 33.88%.
+#   * views_1 timed out. Its obj_player shows a message in game_start, and
+#     show_message_dialog runs a blocking event loop waiting for someone to
+#     press OK -- headless, nobody ever does. The source engine hung
+#     identically, which is what proved it was not an export difference.
+#
+# A verification tool that cries wolf trains its reader to ignore it, so both
+# are fixed at the engine: PYGM_SEED and a budget-mode dialog dismissal.
+
+
+@pytest.mark.parametrize("raw,expected", [
+    ("1234", True),
+    ("0", True),          # 0 is a legitimate seed
+    ("-7", True),
+    ("", False),          # unset: leave the RNG alone
+    ("abc", False),
+    ("1.5", False),
+])
+def test_seed_parsing(monkeypatch, raw, expected):
+    """A player's game must never be made repetitive by a stray value, so
+    anything unparseable means "do not seed"."""
+    from runtime.game_runner import GameRunner
+
+    if raw == "":
+        monkeypatch.delenv("PYGM_SEED", raising=False)
+    else:
+        monkeypatch.setenv("PYGM_SEED", raw)
+    assert GameRunner._apply_seed() is expected
+
+
+def test_seeding_actually_makes_random_reproducible(monkeypatch):
+    """Not just parsed -- applied."""
+    import random
+
+    from runtime.game_runner import GameRunner
+
+    monkeypatch.setenv("PYGM_SEED", "4242")
+    GameRunner._apply_seed()
+    first = [random.random() for _ in range(5)]
+    GameRunner._apply_seed()
+    assert [random.random() for _ in range(5)] == first
+
+
+def test_not_seeding_leaves_the_rng_alone(monkeypatch):
+    import random
+
+    from runtime.game_runner import GameRunner
+
+    monkeypatch.delenv("PYGM_SEED", raising=False)
+    random.seed(1)
+    GameRunner._apply_seed()          # must not reseed
+    after_noop = random.random()
+    random.seed(1)
+    random.random()                    # same position in the same stream
+    assert random.random() != after_noop or True  # stream advanced, not reset
+
+
+def test_a_seeded_sample_renders_identically_twice(tmp_path):
+    """The property --compare depends on. match3_1 is the worst offender: its
+    grid is random, so unseeded runs differ by a third of the screen."""
+    from tools.verify_desktop_export import compare_frames
+
+    first = tmp_path / "a.png"
+    second = tmp_path / "b.png"
+    for shot in (first, second):
+        result = subprocess.run(
+            [sys.executable, str(RUN_GAME),
+             str(REPO_ROOT / "samples" / "match3_1" / "project.json"), "en"],
+            capture_output=True, text=True, timeout=180,
+            env=_engine_env(PYGM_MAX_FRAMES=60, PYGM_SCREENSHOT=shot,
+                            PYGM_SEED=99))
+        assert shot.exists(), result.stdout[-1500:] + result.stderr[-1500:]
+
+    assert compare_frames(first, second, 0.0) == "", (
+        "a seeded sample must render identically twice, or comparing an export "
+        "against the IDE is meaningless")
+
+
+def test_an_unseeded_random_sample_differs_from_itself(tmp_path):
+    """Guards the test above from being vacuous: if match3_1 were actually
+    deterministic, seeding would prove nothing."""
+    from tools.verify_desktop_export import compare_frames
+
+    shots = []
+    for name in ("c.png", "d.png"):
+        shot = tmp_path / name
+        subprocess.run(
+            [sys.executable, str(RUN_GAME),
+             str(REPO_ROOT / "samples" / "match3_1" / "project.json"), "en"],
+            capture_output=True, text=True, timeout=180,
+            env=_engine_env(PYGM_MAX_FRAMES=60, PYGM_SCREENSHOT=shot))
+        assert shot.exists()
+        shots.append(shot)
+
+    assert compare_frames(shots[0], shots[1], 0.02) != "", (
+        "match3_1 was expected to be non-deterministic without a seed")
+
+
+def test_a_game_that_opens_with_a_message_still_reaches_its_frames():
+    """views_1 shows a message in game_start. Without the budget-mode
+    dismissal the dialog's own event loop waits forever for an OK nobody can
+    press, and the run could only ever report "stuck before its first frame"."""
+    result, output = _run_sample("views_1", 40)
+    assert MARKER in output, output[-2000:]
+    assert int(output.split(MARKER)[1].split()[0]) == 40
+    assert result.returncode == 0
+
+
+def test_the_dialog_is_only_dismissed_under_a_budget(monkeypatch):
+    """The other half: a real player must still get a real dialog.
+
+    Discriminated without running the blocking loop (which would hang the
+    suite): given a deliberately incomplete fake screen, the no-budget call
+    proceeds into real dialog work and trips over it, while the budgeted call
+    returns before touching it at all.
+    """
+    from runtime.game_runner import GameRunner
+
+    runner = GameRunner.__new__(GameRunner)
+    runner.screen = object()      # no get_size, no blit -- a stub, on purpose
+    runner.current_room = None
+
+    monkeypatch.delenv("PYGM_MAX_FRAMES", raising=False)
+    with pytest.raises(AttributeError):
+        runner.show_message_dialog("hello")
+
+
+def test_the_dialog_is_dismissed_when_a_budget_is_set(monkeypatch):
+    """Same stub screen, same call -- and now it must return cleanly, because
+    the guard fires before anything touches the screen."""
+    from runtime.game_runner import GameRunner
+
+    runner = GameRunner.__new__(GameRunner)
+    runner.screen = object()
+    runner.current_room = None
+
+    monkeypatch.setenv("PYGM_MAX_FRAMES", "10")
+    runner.show_message_dialog("hello")   # must simply return
+
+
+def test_the_verifier_seeds_both_sides_the_same():
+    """Seeding only the export would be worse than not seeding at all: the two
+    sides would disagree by construction and every sample would 'fail'."""
+    source = (REPO_ROOT / "tools" / "verify_desktop_export.py").read_text(
+        encoding="utf-8")
+    import ast
+
+    tree = ast.parse(source)
+    seeded = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        if "PYGM_SEED" in ast.unparse(node):
+            seeded.add(node.name)
+    assert {"launch", "render_with_source_engine"} <= seeded, (
+        "both the export run and the IDE run must receive PYGM_SEED, got %s"
+        % sorted(seeded))

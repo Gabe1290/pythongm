@@ -2610,6 +2610,34 @@ class GameRunner:
             return 0
         return budget if budget > 0 else 0
 
+    @staticmethod
+    def _apply_seed() -> bool:
+        """Seed the RNG from PYGM_SEED, so a run can be reproduced.
+
+        Several samples build their world with random(): match3 fills its grid,
+        treasure scatters its loot, plateforme_3 gives each bonus a random
+        frame. Two unseeded runs of those never match, which made comparing an
+        exported game against the IDE meaningless -- the first --compare pass
+        reported five "failures" that were all just the samples disagreeing
+        with themselves (match3_1 differed from its own second run by exactly
+        the 33.88% it differed from the export by).
+
+        Seeding both sides identically turns that comparison back into real
+        signal. Absent or unparseable means "leave the RNG alone", so a
+        player's game is never made repetitive.
+        """
+        raw = os.environ.get("PYGM_SEED", "")
+        if not raw:
+            return False
+        try:
+            seed = int(raw)
+        except (TypeError, ValueError):
+            return False
+        import random
+        random.seed(seed)
+        logger.info("RNG seeded from PYGM_SEED=%d", seed)
+        return True
+
     def _save_final_frame(self) -> None:
         """Write the last rendered frame to PYGM_SCREENSHOT, if set.
 
@@ -2677,6 +2705,10 @@ class GameRunner:
             logger.debug("Instance summary:")
             for obj_name, count in sorted(instance_counts.items()):
                 logger.debug(f"  {obj_name}: {count}")
+
+            # Seed before any authored code runs -- create events fire just
+            # below and that is where match3 builds its random grid.
+            self._apply_seed()
 
             # IMPORTANT: Execute create events for starting room instances
             logger.info(f"\n🎬 Triggering create events for starting room: {self.current_room.name}")
@@ -5171,6 +5203,8 @@ class GameRunner:
             logger.debug("⚠️ Cannot show message dialog - no screen")
             return
 
+        # views_1 is the sample that exposed this: its obj_player shows a
+        # message in game_start, so the run hung before its first frame.
         # Under the opt-in frame budget (see _frame_budget()), there is no
         # real input to dismiss this with -- a headless verification run
         # (tools/verify_desktop_export.py) drives SDL's dummy driver, so no
