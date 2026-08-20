@@ -1136,14 +1136,140 @@ class GameObject {
             }
         }
 
-        // Apply hspeed/vspeed - always move, collision events will handle response.
+        // Apply hspeed/vspeed, blocked by solid instances the way the desktop
+        // and Kivy engines already do: an object marked `solid` with a
+        // collision event registered against this object type (in EITHER
+        // direction — an empty actions list still counts) stops movement
+        // into it. Resolved per axis independently, matching
+        // GameRunner.check_movement_collision_with_blocker /
+        // GameObject._movement_blocker (Kivy) — this used to always move
+        // unconditionally and rely entirely on the object's own collision
+        // ACTIONS to stop itself, which left samples that lean on the
+        // implicit "solid blocks movement" rule (e.g. the raycast_1..4
+        // player, whose wall collision events are deliberately empty) able
+        // to walk straight through walls only on this export target.
         // Scaled by roomSpeed/60 (set_room_speed) — see GameRoom's roomSpeed
         // comment for what this does and doesn't cover (gravity/friction
         // accumulation above is NOT scaled, only this final delta).
         if (this._hspeed !== 0 || this._vspeed !== 0) {
             const roomSpeedFactor = (game && game.currentRoom) ? game.currentRoom.roomSpeed / 60 : 1;
-            this.x += this._hspeed * roomSpeedFactor;
-            this.y += this._vspeed * roomSpeedFactor;
+            const newX = this.x + this._hspeed * roomSpeedFactor;
+            const newY = this.y + this._vspeed * roomSpeedFactor;
+
+            if (!game || !game.currentRoom) {
+                // No room context to check blockers against (shouldn't
+                // normally happen) — fall back to the old unconditional move.
+                this.x = newX;
+                this.y = newY;
+            } else {
+                const blockers = [];
+
+                if (newX !== this.x) {
+                    const blocker = this._movementBlocker(newX, this.y, game);
+                    if (blocker === null) {
+                        this.x = newX;
+                    } else {
+                        blockers.push(blocker);
+                    }
+                }
+
+                if (newY !== this.y) {
+                    const blocker = this._movementBlocker(this.x, newY, game);
+                    if (blocker === null) {
+                        this.y = newY;
+                    } else {
+                        blockers.push(blocker);
+                    }
+                }
+
+                // The desktop/Kivy engines fire the pair's collision events
+                // from the blocked branch: blocking prevents the overlap, so
+                // the normal per-frame checkCollisions() overlap scan never
+                // sees this pair, and a handler like "stop + snap_to_grid"
+                // would otherwise never run. Deduplicated by identity — a
+                // corner collision blocks both axes against the same wall,
+                // and the handler should fire once.
+                const fired = [];
+                for (const blocker of blockers) {
+                    if (fired.indexOf(blocker) !== -1) continue;
+                    fired.push(blocker);
+                    this._fireBlockedCollision(blocker, game);
+                }
+            }
+        }
+    }
+
+    // The first instance that would stop this one occupying (x, y).
+    //
+    // Blocking rule (matches GameMaker 7.0, ported from the desktop/Kivy
+    // engines): a collision event must be registered between the two object
+    // types (in either direction), AND at least one of them must be `solid`.
+    // Two non-solid objects never block each other — they overlap and fire
+    // their collision events afterwards instead (e.g. a maze monster running
+    // through the player rather than getting stuck on top of it).
+    _movementBlocker(x, y, game) {
+        if (!game || !game.currentRoom) return null;
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+        const testRect = { x: x - originX, y: y - originY, width: this.boxWidth(), height: this.boxHeight() };
+        const curRect = this.getBoundingBox();
+
+        for (const other of game.currentRoom.instances) {
+            if (other === this || other.toDestroy) continue;
+            if (!(this.solid || other.solid)) continue;
+            if (!this._collisionEventExistsWith(other)) continue;
+
+            const otherRect = other.getBoundingBox();
+            if (!this.rectsCollide(testRect, otherRect)) continue;
+
+            // Already overlapping at the current position: let it escape
+            // rather than freezing in place (e.g. right after spawning).
+            if (this.rectsCollide(curRect, otherRect)) continue;
+
+            return other;
+        }
+        return null;
+    }
+
+    // True if a collision event is defined between this object type and
+    // other's, in either direction. Existence only — an empty actions list
+    // still counts, since a wall's own collision handler is often
+    // intentionally empty and blocks purely through the `solid` flag.
+    _collisionEventExistsWith(other) {
+        if (this.events && this.events['collision_with_' + other.name]) return true;
+        if (other.events && other.events['collision_with_' + this.name]) return true;
+        return false;
+    }
+
+    // Runs the pair's collision handlers directly after a blocked move,
+    // since blocking prevents the overlap checkCollisions() would otherwise
+    // have detected this frame. Mirrors checkCollisions()'s own
+    // _collision_other/_collision_speeds context so action handlers that
+    // read `other` behave identically whether they fired via a blocked move
+    // or a normal overlap.
+    _fireBlockedCollision(other, game) {
+        const selfHspeed = this.hspeed || 0;
+        const selfVspeed = this.vspeed || 0;
+        const otherHspeed = other.hspeed || 0;
+        const otherVspeed = other.vspeed || 0;
+
+        const mine = this.events && this.events['collision_with_' + other.name];
+        if (mine) {
+            this._collision_other = other;
+            this._collision_speeds = { selfHspeed, selfVspeed, otherHspeed, otherVspeed };
+            this.executeActions(mine.actions || [], game);
+            this._collision_speeds = null;
+        }
+
+        const theirs = other.events && other.events['collision_with_' + this.name];
+        if (theirs) {
+            other._collision_other = this;
+            other._collision_speeds = {
+                selfHspeed: otherHspeed, selfVspeed: otherVspeed,
+                otherHspeed: selfHspeed, otherVspeed: selfVspeed
+            };
+            other.executeActions(theirs.actions || [], game);
+            other._collision_speeds = null;
         }
     }
 
