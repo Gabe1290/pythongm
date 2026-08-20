@@ -130,8 +130,12 @@ def test_process_movement_scales_by_room_speed_factor():
     assert m, "processMovement not found"
     body = m.group(1)
     assert "game.currentRoom.roomSpeed / 60" in body
-    assert "this.x += this._hspeed * roomSpeedFactor;" in body
-    assert "this.y += this._vspeed * roomSpeedFactor;" in body
+    # Movement now resolves through _movementBlocker (see
+    # test_html5_solid_movement_blocking.py) rather than an unconditional
+    # `this.x +=` — the roomSpeed-scaled delta still feeds the same
+    # newX/newY the blocking check is applied against.
+    assert "const newX = this.x + this._hspeed * roomSpeedFactor;" in body
+    assert "const newY = this.y + this._vspeed * roomSpeedFactor;" in body
 
 
 # ---------------------------------------------------------------------------
