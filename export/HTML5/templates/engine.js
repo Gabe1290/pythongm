@@ -1360,6 +1360,22 @@ class GameObject {
 
             if (skipNext) {
                 skipNext = false;
+                // A skipped QUESTION takes its own guarded unit down with
+                // it too (recursively -- question chains skip as one
+                // unit), matching the IDE runtime's
+                // _execute_action_list_inner. Without this, a chain of 2+
+                // consecutive flat questions gating one action (e.g. a
+                // bounding-box click test: 4 test_variable checks ANDed
+                // before a goto_room) "used up" the skip on the first
+                // skipped question and let a LATER question in the same
+                // chain re-arm/execute independently -- found via a real
+                // click test where every one of several bounding-box
+                // buttons fired on the same click, the last-processed
+                // instance always winning regardless of which box the
+                // click actually landed in.
+                if (GameObject.isConditionalAction(actionType)) {
+                    skipNext = true;
+                }
                 i++;
                 continue;
             }
@@ -4172,9 +4188,19 @@ class Game {
 window.addEventListener('load', async () => {
     try {
         window.game = new Game();
-        // Loads Pyodide only for projects that contain execute_code actions,
-        // so create events written in Python run on the very first frame.
-        await window.game.initPython();
+        // Loads Pyodide (only for projects that contain execute_code
+        // actions) in the BACKGROUND rather than blocking start() on it --
+        // a project mixing Python and non-Python rooms would otherwise
+        // show a black screen on EVERY room, including ones that never
+        // call execute_code at all, until a CDN fetch of the ~10MB+
+        // runtime finishes. execute_code already no-ops gracefully with a
+        // one-time console.warn (see the 'execute_code' case) when
+        // game.python isn't ready yet, so this is safe: non-Python rooms
+        // are unaffected, and a room whose CREATE event needs Python
+        // should re-check readiness on a later frame (e.g. a step-event
+        // lazy-init guard) rather than assume the very first frame has it.
+        window.game.initPython().catch(err =>
+            console.error('❌ Python runtime failed to load:', err));
         window.game.start();
         console.log('✅ Game started!');
     } catch (error) {
