@@ -1211,7 +1211,10 @@ class GameObject {
         if (!game || !game.currentRoom) return null;
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        const testRect = { x: x - originX, y: y - originY, width: this.boxWidth(), height: this.boxHeight() };
+        const testRect = {
+            x: x - originX + this.bboxLeft(), y: y - originY + this.bboxTop(),
+            width: this.collisionWidth(), height: this.collisionHeight()
+        };
         const curRect = this.getBoundingBox();
 
         for (const other of game.currentRoom.instances) {
@@ -3047,13 +3050,16 @@ class GameObject {
     }
 
     checkCollisionAt(x, y, game) {
-        // Get my bounding box dimensions and origin
-        const myW = this.boxWidth();
-        const myH = this.boxHeight();
+        // Get my collision box dimensions and origin
+        const myW = this.collisionWidth();
+        const myH = this.collisionHeight();
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        // Test rect at position (x, y) accounting for origin
-        const testRect = { x: x - originX, y: y - originY, width: myW, height: myH };
+        // Test rect at position (x, y) accounting for origin + bbox offset
+        const testRect = {
+            x: x - originX + this.bboxLeft(), y: y - originY + this.bboxTop(),
+            width: myW, height: myH
+        };
         if (!game.currentRoom) return false;
 
         for (const other of game.currentRoom.instances) {
@@ -3069,13 +3075,16 @@ class GameObject {
     getObjectAt(x, y, game) {
         if (!game.currentRoom) return null;
 
-        // Get my bounding box dimensions and origin
-        const myW = this.boxWidth();
-        const myH = this.boxHeight();
+        // Get my collision box dimensions and origin
+        const myW = this.collisionWidth();
+        const myH = this.collisionHeight();
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        // Test rect at position (x, y) accounting for origin
-        const testRect = { x: x - originX, y: y - originY, width: myW, height: myH };
+        // Test rect at position (x, y) accounting for origin + bbox offset
+        const testRect = {
+            x: x - originX + this.bboxLeft(), y: y - originY + this.bboxTop(),
+            width: myW, height: myH
+        };
         const colliding = [];
 
         for (const other of game.currentRoom.instances) {
@@ -3116,14 +3125,46 @@ class GameObject {
         return this.sprite ? this.sprite.height : 32;
     }
 
+    // Collision box, distinct from the render/frame box above: bbox_left/
+    // top/right/bottom (Game.makeSpriteInfo), in sprite-local pixel coords,
+    // defaulting to the full frame when a sprite has no explicit override
+    // (matches runtime/game_runner.py's Sprite bbox fields). A sprite like
+    // spr_person defines an 8x8 collision box centered in its 16x16 frame —
+    // using the full frame here made the HTML5 player's effective collision
+    // footprint twice desktop's, which was enough to start a level already
+    // overlapping a nearby wall and trigger the "already overlapping, let
+    // it escape" rule in _movementBlocker below, walking the player through
+    // the wall with no way back in.
+    bboxLeft() {
+        return this.spriteInfo ? (this.spriteInfo.bbox_left || 0) : 0;
+    }
+
+    bboxTop() {
+        return this.spriteInfo ? (this.spriteInfo.bbox_top || 0) : 0;
+    }
+
+    collisionWidth() {
+        if (this.spriteInfo && this.spriteInfo.bbox_right !== undefined) {
+            return this.spriteInfo.bbox_right - this.bboxLeft();
+        }
+        return this.boxWidth();
+    }
+
+    collisionHeight() {
+        if (this.spriteInfo && this.spriteInfo.bbox_bottom !== undefined) {
+            return this.spriteInfo.bbox_bottom - this.bboxTop();
+        }
+        return this.boxHeight();
+    }
+
     getBoundingBox() {
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
         return {
-            x: this.x - originX,
-            y: this.y - originY,
-            width: this.boxWidth(),
-            height: this.boxHeight()
+            x: this.x - originX + this.bboxLeft(),
+            y: this.y - originY + this.bboxTop(),
+            width: this.collisionWidth(),
+            height: this.collisionHeight()
         };
     }
 
@@ -3136,8 +3177,8 @@ class GameObject {
     placeMeetsCollision(atX, atY, filter, game, excludePartner = true) {
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        const left = atX - originX, top = atY - originY;
-        const w = this.boxWidth(), h = this.boxHeight();
+        const left = atX - originX + this.bboxLeft(), top = atY - originY + this.bboxTop();
+        const w = this.collisionWidth(), h = this.collisionHeight();
         const exclude = excludePartner ? (this._collision_other || null) : null;
         const insts = game.currentRoom ? game.currentRoom.instances : [];
         for (const inst of insts) {
@@ -3777,12 +3818,25 @@ class Game {
         const fw = parseInt(meta.frame_width) ||
                    (frames > 1 ? Math.floor(stripW / frames) : stripW);
         const fh = parseInt(meta.frame_height) || meta.height || img.height || 32;
+        // Collision box (bbox_left/top/right/bottom): an explicit override
+        // in the sprite data when all four are present, else the full
+        // frame -- matches runtime/game_runner.py's Sprite bbox fields
+        // (Sprite._resolve_bbox's "no override" fallback). A sprite like
+        // spr_person can define an 8x8 box centered in a 16x16 frame, which
+        // desktop's collision math already honors; without this the
+        // collision box here silently defaulted to the full frame.
+        const hasBbox = ['bbox_left', 'bbox_top', 'bbox_right', 'bbox_bottom']
+            .every(k => meta[k] !== undefined && meta[k] !== null);
         return {
             origin_x: meta.origin_x || 0,
             origin_y: meta.origin_y || 0,
             width: fw,
             height: fh,
             frames: frames,
+            bbox_left: hasBbox ? parseInt(meta.bbox_left) : 0,
+            bbox_top: hasBbox ? parseInt(meta.bbox_top) : 0,
+            bbox_right: hasBbox ? parseInt(meta.bbox_right) : fw,
+            bbox_bottom: hasBbox ? parseInt(meta.bbox_bottom) : fh,
         };
     }
 
