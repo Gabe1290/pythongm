@@ -1,0 +1,35 @@
+{
+  "name": "obj_enemy_plane",
+  "asset_type": "object",
+  "sprite": "spr_enemy_plane",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_vspeed",
+          "parameters": {
+            "speed": "3"
+          }
+        },
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "speed": "irandom(2) - 1"
+          }
+        }
+      ]
+    },
+    "outside_room": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        }
+      ]
+    }
+  }
+}

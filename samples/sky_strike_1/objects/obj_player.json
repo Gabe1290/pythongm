@@ -1,0 +1,448 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "sprite": "spr_player",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -10,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "fire_cooldown",
+            "value": "0",
+            "scope": "self"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "bomb_cooldown",
+            "value": "0",
+            "scope": "self"
+          }
+        }
+      ]
+    },
+    "game_start": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "3",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_background",
+          "parameters": {
+            "background": "bg_ground",
+            "visible": true,
+            "foreground": false,
+            "tiled_h": true,
+            "tiled_v": true,
+            "hspeed": "0",
+            "vspeed": "2"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm_number": "0",
+            "steps": "40"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm_number": "1",
+            "steps": "70"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "self.fire_cooldown > 0",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "fire_cooldown",
+                  "value": "-1",
+                  "scope": "self",
+                  "relative": true
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "self.bomb_cooldown > 0",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "bomb_cooldown",
+                  "value": "-1",
+                  "scope": "self",
+                  "relative": true
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "self.x < 4",
+            "then_actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "4",
+                  "y": "self.y",
+                  "relative": false
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "self.x > 452",
+            "then_actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "452",
+                  "y": "self.y",
+                  "relative": false
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "self.y < 4",
+            "then_actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "self.x",
+                  "y": "4",
+                  "relative": false
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "self.y > 612",
+            "then_actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "self.x",
+                  "y": "612",
+                  "relative": false
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "-5",
+              "y": "0",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "a": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "-5",
+              "y": "0",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "5",
+              "y": "0",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "d": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "5",
+              "y": "0",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "0",
+              "y": "-5",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "w": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "0",
+              "y": "-5",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "0",
+              "y": "5",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "s": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "0",
+              "y": "5",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "space": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "expression",
+              "expression": "self.fire_cooldown <= 0",
+              "then_actions": [
+                {
+                  "action": "create_instance",
+                  "parameters": {
+                    "object": "obj_bullet",
+                    "x": "self.x + 10",
+                    "y": "self.y - 10",
+                    "relative": false
+                  }
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "fire_cooldown",
+                    "value": "8",
+                    "scope": "self"
+                  }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      },
+      "z": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "expression",
+              "expression": "self.bomb_cooldown <= 0",
+              "then_actions": [
+                {
+                  "action": "create_instance",
+                  "parameters": {
+                    "object": "obj_bomb",
+                    "x": "self.x + 9",
+                    "y": "self.y + 20",
+                    "relative": false
+                  }
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "bomb_cooldown",
+                    "value": "24",
+                    "scope": "self"
+                  }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      }
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "create_instance",
+          "parameters": {
+            "object": "obj_enemy_plane",
+            "x": "irandom(448) + 4",
+            "y": "-20",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm_number": "0",
+            "steps": "40"
+          }
+        }
+      ]
+    },
+    "alarm_1": {
+      "actions": [
+        {
+          "action": "create_instance",
+          "parameters": {
+            "object": "obj_ground_target",
+            "x": "irandom(444) + 4",
+            "y": "-24",
+            "relative": false
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm_number": "1",
+            "steps": "70"
+          }
+        }
+      ]
+    },
+    "collision_with_obj_enemy_plane": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_enemy_plane"
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "Game Over!",
+            "message_translations": {
+              "fr": "Partie terminée !"
+            }
+          }
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "10",
+            "y": "10",
+            "caption": "Score: ",
+            "caption_translations": {
+              "fr": "Score : "
+            }
+          }
+        },
+        {
+          "action": "draw_lives",
+          "parameters": {
+            "x": "380",
+            "y": "10",
+            "sprite": "spr_player",
+            "scale": "0.6"
+          }
+        }
+      ]
+    }
+  }
+}

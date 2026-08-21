@@ -1,0 +1,16 @@
+{
+  "name": "spr_ground_target",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_ground_target.png",
+  "width": 28,
+  "height": 28,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 28,
+  "frame_height": 28,
+  "animation_type": "single",
+  "speed": 0.0,
+  "imported": true
+}

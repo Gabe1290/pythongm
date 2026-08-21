@@ -1,0 +1,27 @@
+{
+  "name": "room0",
+  "asset_type": "room",
+  "width": 480,
+  "height": 640,
+  "background_color": "#87CEEB",
+  "background_image": "",
+  "backgrounds": [
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false},
+    {"visible": false, "foreground": false, "background_image": "", "x": 0, "y": 0, "tile_h": true, "tile_v": true, "hspeed": 0, "vspeed": 0, "stretch": false}
+  ],
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instances": [
+    {"object_name": "obj_player", "x": 228, "y": 580}
+  ],
+  "tiles": [],
+  "creation_code": "",
+  "views_enabled": false,
+  "views": []
+}
