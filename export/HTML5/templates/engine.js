@@ -2797,6 +2797,22 @@ class GameObject {
 
             // ---- Instance creation / destruction cluster ----
 
+            case 'create_instance': {
+                // Matches the desktop runtime's execute_create_instance_action
+                // (runtime/action_executor.py): object/x/y, with x/y relative
+                // to the caller when `relative` is set. Spawning goes through
+                // game.spawnInstance, which marks the new instance's create
+                // event pending -- it fires on the main loop's next pass over
+                // instances (the same path create_moving_instance relies on),
+                // not synchronously here.
+                const relative = params.relative === true || params.relative === 'true';
+                let px = parseNumParam(params.x, this, 0);
+                let py = parseNumParam(params.y, this, 0);
+                if (relative) { px += this.x; py += this.y; }
+                game.spawnInstance(params.object || '', px, py);
+                break;
+            }
+
             case 'create_moving_instance': {
                 const inst = game.spawnInstance(
                     params.object || '',
