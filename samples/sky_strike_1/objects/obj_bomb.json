@@ -12,7 +12,7 @@
         {
           "action": "set_vspeed",
           "parameters": {
-            "speed": "6"
+            "speed": "-4"
           }
         }
       ]

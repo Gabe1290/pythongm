@@ -183,7 +183,7 @@ def test_declining_renderer_leaves_normal_rendering_intact():
     extension_hooks.register_room_renderer(lambda r, s: False)
     drew = {"bg": False}
     room._render_bg_layers = lambda *a, **k: drew.update(bg=True)
-    room.bg_layers = [{"background": "x"}]
+    room.bg_layers = [{"background": "x", "visible": True}]
 
     room._render_room(pygame.Surface((320, 240)), (0, 0))
     assert drew["bg"], "engine should render normally when no extension claims the room"
@@ -196,6 +196,6 @@ def test_no_renderers_registered_is_the_untouched_path():
     room = _room()
     drew = {"bg": False}
     room._render_bg_layers = lambda *a, **k: drew.update(bg=True)
-    room.bg_layers = [{"background": "x"}]
+    room.bg_layers = [{"background": "x", "visible": True}]
     room._render_room(pygame.Surface((320, 240)), (0, 0))
     assert drew["bg"]

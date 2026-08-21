@@ -129,12 +129,16 @@ class TestSkyStrike1Smoke:
                        for i in runner.current_room.instances)
 
     def test_bomb_destroys_ground_target_and_scores(self):
+        # Bombs move forward (up-screen, negative vspeed) to meet a target
+        # scrolling down toward the player -- so the target has to be
+        # spawned AHEAD of (above, smaller y than) the bomb for the two to
+        # ever converge, matching how they'd actually meet in play.
         def place(f, runner):
             if f == 3:
-                _spawn(runner, "obj_ground_target", 100, 300)
+                _spawn(runner, "obj_ground_target", 100, 250)
                 _spawn(runner, "obj_bomb", 100, 295)
 
-        runner = _run(15, on_tick=place)
+        runner = _run(20, on_tick=place)
         assert runner.score == 100
         assert not any(i.object_name == "obj_ground_target"
                        for i in runner.current_room.instances)

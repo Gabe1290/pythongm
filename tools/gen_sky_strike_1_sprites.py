@@ -93,6 +93,23 @@ def draw_ground_target():
     img.save(SPRITES / "spr_ground_target.png")
 
 
+def draw_crosshair():
+    """18x18 bombing reticle -- drawn ahead of the ship every frame so the
+    player can see which column a dropped bomb will travel straight up,
+    matching the classic arcade-shooter targeting-ring convention. An open
+    ring + tick marks (not a filled shape) so it never obscures a ground
+    target sitting under it."""
+    img = _new((18, 18))
+    d = ImageDraw.Draw(img)
+    ring = (255, 210, 40, 255)
+    d.ellipse([1, 1, 16, 16], outline=ring, width=2)
+    d.line([(9, 0), (9, 4)], fill=ring, width=2)
+    d.line([(9, 13), (9, 17)], fill=ring, width=2)
+    d.line([(0, 9), (4, 9)], fill=ring, width=2)
+    d.line([(13, 9), (17, 9)], fill=ring, width=2)
+    img.save(SPRITES / "spr_crosshair.png")
+
+
 def draw_ground_background():
     """64x64 tiling scroll-ground texture -- a coarse grid over a green
     field, so continuous downward scroll (set_background's vspeed) reads
@@ -117,5 +134,6 @@ if __name__ == "__main__":
     draw_bomb()
     draw_enemy_plane()
     draw_ground_target()
+    draw_crosshair()
     draw_ground_background()
     print("Wrote sprites + background to", ROOT)
