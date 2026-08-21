@@ -39,7 +39,9 @@ from extensions.block_world.state import (  # noqa: E402
 )
 from extensions.block_world.renderer import (  # noqa: E402
     march_ray, render_block_world_view, _fully_covers, _has_neighbor,
+    _stack_opaque_spans, _merge_covered, _is_covered,
 )
+import extensions.block_world.renderer as bw_renderer  # noqa: E402
 
 CELL = 32
 W, H = 320, 240
@@ -238,6 +240,128 @@ class TestOcclusionHelpers:
 
     def test_a_short_stack_does_not_cover(self):
         assert not _fully_covers([(0, "s")], 0.5, HORIZON, H, 20)
+
+
+class TestCumulativeCoverage:
+    """The perf-only occlusion-culling helpers the column loop in
+    render_block_world_view uses to skip cells that are guaranteed hidden
+    by nearer, already-collected opaque geometry -- a multi-cell
+    generalization of _fully_covers's single-stack check above."""
+
+    def test_stack_opaque_spans_one_per_block(self):
+        stack = [(0, "s"), (1, "s"), (2, "s")]
+        spans = _stack_opaque_spans(stack, 0.5, HORIZON, 40, H)
+        assert len(spans) == 3
+        for y0, y1 in spans:
+            assert y1 - y0 == pytest.approx(40)
+
+    def test_stack_opaque_spans_skips_transparent_blocks(self):
+        stack = [(0, "s"), (1, "glass"), (2, "s")]
+        spans = _stack_opaque_spans(stack, 0.5, HORIZON, 40, H)
+        assert len(spans) == 2  # the glass block contributes nothing
+
+    def test_stack_opaque_spans_clips_to_the_screen(self):
+        # A close, tall stack whose projection runs off both edges of the
+        # screen -- each block's span must still be clipped to [0, H].
+        stack = [(0, "s"), (1, "s")]
+        spans = _stack_opaque_spans(stack, 0.5, HORIZON, 10_000, H)
+        assert all(0.0 <= y0 and y1 <= H for y0, y1 in spans)
+
+    def test_merge_covered_joins_overlapping_ranges(self):
+        covered = []
+        _merge_covered(covered, 10, 50)
+        _merge_covered(covered, 40, 80)
+        assert covered == [(10, 80)]
+
+    def test_merge_covered_joins_touching_ranges(self):
+        covered = []
+        _merge_covered(covered, 10, 50)
+        _merge_covered(covered, 50, 80)
+        assert covered == [(10, 80)]
+
+    def test_merge_covered_keeps_disjoint_ranges_separate(self):
+        covered = []
+        _merge_covered(covered, 10, 20)
+        _merge_covered(covered, 40, 50)
+        assert covered == [(10, 20), (40, 50)]
+
+    def test_merge_covered_bridges_a_gap_it_fills(self):
+        covered = []
+        _merge_covered(covered, 10, 20)
+        _merge_covered(covered, 40, 50)
+        _merge_covered(covered, 15, 45)
+        assert covered == [(10, 50)]
+
+    def test_is_covered_true_inside_a_single_range(self):
+        assert _is_covered([(10, 50)], 20, 30)
+
+    def test_is_covered_false_when_partially_outside(self):
+        assert not _is_covered([(10, 50)], 20, 60)
+
+    def test_is_covered_false_across_a_gap_between_ranges(self):
+        # Even though the union of two ranges spans the query, containment
+        # requires a SINGLE covering range -- correct, because two
+        # disjoint (unmerged) ranges by definition have a gap between them.
+        assert not _is_covered([(10, 20), (30, 40)], 15, 35)
+
+    def test_empty_span_is_trivially_covered(self):
+        assert _is_covered([], 10, 10)
+
+
+class TestOcclusionCullingSkipsHiddenCells:
+    """Integration: a farther cell whose whole projected span is already
+    guaranteed covered by nearer, gapless opaque geometry along the SAME
+    ray is dropped before it ever reaches _draw_wall_strip -- proving the
+    perf shortcut actually fires, on top of TestPainterOrdering's proof
+    (above, in this same file) that skipping it never changes a pixel."""
+
+    def _wall_strip_call_count(self, monkeypatch, room):
+        calls = {"n": 0}
+        real = bw_renderer._draw_wall_strip
+
+        def spy(*a, **k):
+            calls["n"] += 1
+            return real(*a, **k)
+
+        monkeypatch.setattr(bw_renderer, "_draw_wall_strip", spy)
+        _render(room)
+        return calls["n"]
+
+    def test_a_fully_covering_near_wall_drops_the_far_ones(self, monkeypatch):
+        room = _room()
+        _camera(room)
+        # A close, tall, gapless wall -- projects far enough to fill the
+        # whole screen height at this distance -- directly in front of two
+        # more (redundant) walls further down the same ray.
+        for z in range(0, 8):
+            set_block(room, 2, 0, z, "stone")
+        set_block(room, 6, 0, 0, "stone")
+        set_block(room, 10, 0, 0, "stone")
+        _configure(room, wall_color="#ff0000")
+        with_far_walls = self._wall_strip_call_count(monkeypatch, room)
+
+        room2 = _room()
+        _camera(room2)
+        for z in range(0, 8):
+            set_block(room2, 2, 0, z, "stone")
+        _configure(room2, wall_color="#ff0000")
+        without_far_walls = self._wall_strip_call_count(monkeypatch, room2)
+
+        assert with_far_walls == without_far_walls, \
+            "the two farther, fully-hidden walls should cost zero extra draws"
+
+    def test_an_open_sightline_still_draws_every_visible_cell(self, monkeypatch):
+        """The culling must not over-reach: cells that are genuinely
+        visible (nothing gapless/opaque in front of them along this ray)
+        still get drawn, one hit per occupied cell crossed."""
+        room = _room()
+        _camera(room)
+        set_block(room, 6, 0, 0, "stone")   # short -- doesn't fill the screen
+        set_block(room, 10, 0, 4, "stone")  # tall, but far enough to sit
+                                              # above the near block's span
+        _configure(room, wall_color="#ff0000", z_layer=3)
+        calls = self._wall_strip_call_count(monkeypatch, room)
+        assert calls == 2
 
 
 # ---------------------------------------------------------------------------
