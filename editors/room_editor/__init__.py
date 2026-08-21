@@ -668,7 +668,14 @@ class RoomEditor(FloatableEditorMixin, QWidget):
 
         if selection_count > 0:
             if selection_count == 1:
-                self.update_status(self.tr("Selected {0} at ({1}, {2})").format(instance.object_name, instance.x, instance.y))
+                pile = self.room_canvas.last_click_pile
+                if instance in pile and len(pile) > 1:
+                    self.update_status(self.tr(
+                        "Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})"
+                    ).format(instance.object_name, instance.x, instance.y,
+                             len(pile), pile.index(instance) + 1, len(pile)), timeout=6000)
+                else:
+                    self.update_status(self.tr("Selected {0} at ({1}, {2})").format(instance.object_name, instance.x, instance.y))
             else:
                 self.update_status(self.tr("Selected {0} instances").format(selection_count))
         else:
