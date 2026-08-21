@@ -462,6 +462,47 @@ class PluginExecutor:
             inventory[block_type] = inventory.get(block_type, 0) + 1
             instance.block_inventory = inventory
 
+        rewards = cfg.get("rewards", {}) if cfg else {}
+        points = rewards.get(block_type)
+        if points:
+            ae = self._executor(instance)
+            if ae is not None and ae.game_runner:
+                ae.game_runner.score += int(points)
+                ae.game_runner.show_score_in_caption = True
+
+    def execute_set_block_reward_action(self, instance, parameters):
+        """Award score when break_block successfully removes a chosen block
+        type (mine-to-collect ore/gem) -- a scored counterpart to
+        set_block_protection's tool/key gate, same call-once-per-type
+        pattern, same camera-config storage.
+
+        Runs AFTER remove_block succeeds (protection/is_breakable already
+        passed), so a protected or unbreakable rewarded block only pays out
+        once actually mined, not on a swing that silently no-ops.
+
+        Parameters:
+            block_type: which block type awards score when broken
+            points: score awarded per block of this type broken
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return
+
+        block_type = ae._parse_value(parameters.get("block_type", ""), instance)
+        block_type = str(block_type) if block_type else ""
+        if block_type not in BLOCK_TYPES:
+            return
+        try:
+            points = float(ae._parse_value(parameters.get("points", 0), instance))
+        except (TypeError, ValueError):
+            return
+
+        cfg.setdefault("rewards", {})[block_type] = points
+
     def execute_set_block_protection_action(self, instance, parameters):
         """Require a specific block type to be present in inventory before
         a protected block type can be broken (Tier 7b) -- a tool/key gate,
