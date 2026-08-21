@@ -1,4 +1,6 @@
 {
+  "name": "sky_strike_1",
+  "version": "1.0.0",
   "settings": {
     "window_title": "Sky Strike",
     "window_width": 480,
