@@ -177,6 +177,28 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "set_block_reward": ActionType(
+        name="set_block_reward",
+        display_name="Set Block Reward",
+        description="Award score when Break Block successfully removes a "
+                    "chosen block type -- call once per rewarded type "
+                    "(e.g. in the room's create event, right after Enable "
+                    "Block World View). A mine-to-collect ore/gem block: "
+                    "place it in the terrain, register its reward, and "
+                    "breaking it awards the points automatically.",
+        category="3D View",
+        icon="💎",
+        parameters=[
+            ActionParameter(name="block_type", display_name="Rewarded Block",
+                param_type="choice", default_value="diamond_block",
+                choices=_BLOCK_CHOICES,
+                description="Which block type awards score when broken"),
+            ActionParameter(name="points", display_name="Points",
+                param_type="number", default_value=10,
+                description="Score awarded per block of this type broken"),
+        ]
+    ),
+
     "select_hotbar_slot": ActionType(
         name="select_hotbar_slot",
         display_name="Select Hotbar Slot",

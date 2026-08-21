@@ -9,6 +9,7 @@
         "place_block",
         "break_block",
         "set_block_protection",
+        "set_block_reward",
         "set_look_pitch",
         "select_hotbar_slot",
         "move_and_collide",
