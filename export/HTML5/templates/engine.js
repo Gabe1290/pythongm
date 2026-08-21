@@ -569,6 +569,24 @@ function gmExpressionValue(expr, inst, game) {
     }
 }
 
+// Symbol ("==", "<", ...) AND word ("equal", "less", ...) operators, mirroring
+// runtime/action_executor.py's ActionExecutor._compare -- if_condition's own
+// condition-type branches (variable_compare/instance_count/position_check)
+// use the symbol form.
+function gmCompareOp(left, operator, right) {
+    const lf = parseFloat(left), rf = parseFloat(right);
+    if (!isNaN(lf) && !isNaN(rf)) { left = lf; right = rf; }
+    switch (operator) {
+        case '==': case 'equal': return left == right;
+        case '!=': case 'not_equal': return left != right;
+        case '<': case 'less': return left < right;
+        case '>': case 'greater': return left > right;
+        case '<=': case 'less_equal': return left <= right;
+        case '>=': case 'greater_equal': return left >= right;
+        default: return false;
+    }
+}
+
 function renderDrawCommands(ctx, cmds, game) {
     for (const cmd of (cmds || [])) {
         const color = drawCommandColor(cmd.color);
@@ -1413,6 +1431,60 @@ class GameObject {
         const params = action.parameters || {};
 
         switch (actionType) {
+            case 'if_condition':
+            case 'if_variable': {
+                // Was a no-op (no case matched -> fell through to the
+                // switch's end, implicitly returning undefined/falsy), so
+                // every if_condition (a first-class registered action;
+                // runtime/action_executor.py's execute_if_condition_action
+                // fully implements it) silently always took the else
+                // branch on this export target only -- condition_type was
+                // never read at all. Mirrors ActionExecutor.
+                // _evaluate_if_condition's dispatch; key_pressed/
+                // mouse_check are the two condition_types NOT ported here
+                // (no held-key-set or mouse-button state tracked anywhere
+                // in this engine) -- they fall through to false, same as
+                // every condition_type did before this fix.
+                const conditionType = params.condition_type || 'instance_count';
+                switch (conditionType) {
+                    case 'expression': {
+                        const val = gmExpressionValue(params.expression, this, game);
+                        return val === undefined ? false : !!val;
+                    }
+                    case 'variable_compare': {
+                        const variable = params.variable || '';
+                        if (!variable) return false;
+                        const current = this[variable] !== undefined ? this[variable] : 0;
+                        return gmCompareOp(current, params.operator || '==', params.value);
+                    }
+                    case 'instance_count': {
+                        const objectName = params.object_name || '';
+                        if (!objectName || !game.currentRoom) return false;
+                        const count = game.currentRoom.instances.filter(
+                            inst => inst.name === objectName && !inst.toDestroy).length;
+                        return gmCompareOp(count, params.operator || '==', parseInt(params.value) || 0);
+                    }
+                    case 'position_check': {
+                        const checkType = (params.check_type || 'x position').toLowerCase();
+                        const current = checkType.includes('x') ? this.x : this.y;
+                        return gmCompareOp(current, params.operator || '==', parseInt(params.value) || 0);
+                    }
+                    case 'random_chance': {
+                        const chance = parseInt(params.chance) || 50;
+                        return (Math.random() * 100) < chance;
+                    }
+                    case 'collision_check': {
+                        const obj = params.object || '';
+                        if (!obj || !game.currentRoom) return false;
+                        const checkX = this.x + (parseFloat(params.offset_x) || 0);
+                        const checkY = this.y + (parseFloat(params.offset_y) || 0);
+                        return this.placeMeetsCollision(checkX, checkY, obj, game, false);
+                    }
+                    default:
+                        return false;
+                }
+            }
+
             case 'test_alignment': {
                 // Snapped to the grid? (GM "if aligned with grid" question)
                 const hsnap = parseInt(params.hsnap) || 32;
@@ -2124,7 +2196,12 @@ class GameObject {
 
             case 'if_condition':
             case 'if_variable':
-                // Variable checking logic (existing code)
+                // Unreachable in practice: the nested-format branch at the
+                // top of executeAction (isConditionalAction + non-empty
+                // then_actions/else_actions) intercepts this action and
+                // calls evaluateCondition directly before this switch is
+                // ever reached. The real condition_type dispatch lives
+                // there, not here.
                 break;
 
             case 'destroy_instance':
