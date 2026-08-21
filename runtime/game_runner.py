@@ -1804,7 +1804,7 @@ class GameRoom:
         # — a legacy background configured with foreground=True (set_background's
         # `foreground` param) is skipped here and drawn after instances instead
         # (below), mirroring bg_layers' own foreground pass.
-        if self.bg_layers:
+        if self._bg_layers_active:
             self._render_bg_layers(screen, foreground=False, view_offset=offset)
         elif self.background_surface and not self.background_foreground:
             self._render_legacy_background(screen, view_offset=offset)
@@ -1824,7 +1824,7 @@ class GameRoom:
                 instance.render(screen, view_offset=offset)
 
         # Draw foreground background layers
-        if self.bg_layers:
+        if self._bg_layers_active:
             self._render_bg_layers(screen, foreground=True, view_offset=offset)
         elif self.background_surface and self.background_foreground:
             self._render_legacy_background(screen, view_offset=offset)
@@ -2008,6 +2008,28 @@ class GameRoom:
                 screen.blit(self.tile_surfaces[key], (base_x + ox, base_y + oy))
             else:
                 screen.blit(self.tile_surfaces[key], (tx + ox, ty + oy))
+
+    @property
+    def _bg_layers_active(self):
+        """Is at least one multi-layer background actually visible?
+
+        A GMK-imported room ships all 8 layer slots present but every one
+        disabled (visible=False) -- the room editor's own natively-authored
+        default is an empty list, but plenty of shipped rooms carry the
+        fuller GMK shape. `bg_layers` being non-EMPTY must not by itself be
+        treated as "has a background": _render_room picks the bg_layers
+        path over the legacy single-background one (set_background's own
+        scroll/tiling) whenever this is true, and a non-empty-but-all-
+        disabled list would silently swallow set_background's rendering
+        entirely -- exactly what happened to samples/sky_strike_1's
+        scrolling ground before this fix (its room0.json copied the 8-slot
+        shape from an unrelated sample; set_background's vspeed was set and
+        ticking every frame, but nothing ever reached the code that
+        actually draws with it). A property, not a value cached at
+        construction, because `bg_layers` can be reassigned after the room
+        is built (e.g. tests/test_extension_render_hook.py pokes it
+        directly) and a stale cache would silently ignore that."""
+        return any(layer.get('visible') for layer in self.bg_layers)
 
     def set_backgrounds_ref(self, backgrounds_dict):
         """Store reference to loaded backgrounds for tile rendering and multi-layer bg"""

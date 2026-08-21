@@ -423,6 +423,14 @@
     "draw": {
       "actions": [
         {
+          "action": "draw_sprite",
+          "parameters": {
+            "sprite": "spr_crosshair",
+            "x": "self.x + 3",
+            "y": "self.y - 89"
+          }
+        },
+        {
           "action": "draw_score",
           "parameters": {
             "x": "10",

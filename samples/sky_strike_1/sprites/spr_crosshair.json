@@ -1,0 +1,16 @@
+{
+  "name": "spr_crosshair",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_crosshair.png",
+  "width": 18,
+  "height": 18,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 18,
+  "frame_height": 18,
+  "animation_type": "single",
+  "speed": 0.0,
+  "imported": true
+}
