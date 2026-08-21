@@ -735,6 +735,19 @@ existed. Regenerated; 0 untranslated strings reported now.
   visible quality/speed tradeoff, not free), or a different rendering
   approach entirely (e.g. numpy-vectorized column compositing) — a larger,
   riskier effort than this session's scope.
+- **Follow-up decision, same day: the block_world extension's further work
+  is set aside** (not deleted — `extensions/block_world/`, both samples,
+  and all their tests remain and stay green) in favor of a cheaper vertical
+  shooter, `samples/sky_strike_1` (see its own README for the design and a
+  real spawn-off-screen `outside_room` bug this session's authoring hit).
+  `block_world_1`/`block_world_2` were removed from the Welcome tab's
+  `SAMPLE_PROJECTS` list (`widgets/welcome_tab.py`); the beginner edition's
+  sample whitelist (`config/editions.py`) was unaffected, since both
+  already sat outside it via the `_advanced_prefixes` filter
+  (`tests/test_edition_sample_filter.py`) — `sky_strike_1` was added to
+  that whitelist instead, being simple enough for a beginner. Re-add the
+  two Welcome tab tuples to bring block_world back into view if work on it
+  resumes later.
 
 ## Project format / persistence
 

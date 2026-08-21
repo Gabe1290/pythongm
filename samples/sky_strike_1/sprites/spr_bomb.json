@@ -1,0 +1,16 @@
+{
+  "name": "spr_bomb",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_bomb.png",
+  "width": 6,
+  "height": 8,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 6,
+  "frame_height": 8,
+  "animation_type": "single",
+  "speed": 0.0,
+  "imported": true
+}
