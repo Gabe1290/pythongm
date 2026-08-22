@@ -2564,8 +2564,17 @@ class GameObject {
                 const name = params.variable || params.variable_name || '';
                 if (!name) break;
                 let value = params.value;
-                const num = parseFloat(value);
-                if (!isNaN(num) && String(num) === String(value).trim()) value = num;
+                // Built-in game-state readouts (score/lives/health) as a bare
+                // token — matches desktop's _parse_value, which resolves
+                // these off game_runner. Lets a level copy its final score
+                // into a global (e.g. the promo hub's per-level totals)
+                // without a new dedicated action.
+                if (value === 'score' || value === 'lives' || value === 'health') {
+                    value = game[value];
+                } else {
+                    const num = parseFloat(value);
+                    if (!isNaN(num) && String(num) === String(value).trim()) value = num;
+                }
                 const scope = params.scope || 'sel';
                 const target = scope === 'global' ? game.globalVariables
                     : (scope === 'other' ? this._collision_other : this);
@@ -2797,16 +2806,44 @@ class GameObject {
                 });
                 break;
 
-            case 'draw_text':
+            case 'draw_text': {
+                // A bare "global.<name>" reference resolves to that global's
+                // value (matching desktop's _parse_value, which routes
+                // draw_text's text through the same dotted-scope resolution
+                // every other action gets) — e.g. the promo hub's per-level
+                // score readouts. Anything else (including any string with
+                // its own dots/operators) is drawn as literal text, same as
+                // before; this is deliberately narrower than desktop's full
+                // expression support to avoid changing existing samples'
+                // rendered text.
+                let text = params.text !== undefined ? params.text : '';
+                if (typeof text === 'string') {
+                    const trimmed = text.trim();
+                    const gmatch = trimmed.match(/^global\.(\w+)$/);
+                    if (gmatch && game.globalVariables && gmatch[1] in game.globalVariables) {
+                        text = game.globalVariables[gmatch[1]];
+                    } else if (/^global\.\w+(\s*\+\s*global\.\w+)+$/.test(trimmed)) {
+                        // A "+"-joined sum of bare global references (e.g. the
+                        // promo hub's cross-level total) — still no general
+                        // expression evaluator, just this one safe shape.
+                        text = trimmed.split('+').reduce((sum, term) => {
+                            const name = term.trim().slice('global.'.length);
+                            const v = game.globalVariables && name in game.globalVariables
+                                ? game.globalVariables[name] : 0;
+                            return sum + v;
+                        }, 0);
+                    }
+                }
                 this._draw_queue.push({
                     type: 'text',
-                    text: String(params.text !== undefined ? params.text : ''),
+                    text: String(text),
                     x: parseNumParam(params.x, this, this.x),
                     y: parseNumParam(params.y, this, this.y),
                     // runtime: active draw colour, defaulting to black
                     color: this.draw_color || game.draw_color || [0, 0, 0],
                 });
                 break;
+            }
 
             case 'draw_lives':
                 this._draw_queue.push({
