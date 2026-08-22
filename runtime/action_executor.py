@@ -2080,6 +2080,12 @@ class ActionExecutor:
             # Try to get instance variable
             if hasattr(instance, value_str):
                 return getattr(instance, value_str)
+            # Built-in game-state readouts (score/lives/health) — mirrors the
+            # namespace _eval_bool_expression already exposes for conditions;
+            # this lets an action's value (e.g. set_variable copying the
+            # current score into a global) reference them by bare name too.
+            if self.game_runner and value_str in ('score', 'lives', 'health'):
+                return getattr(self.game_runner, value_str, 0)
             # Try global variable
             if self.game_runner and value_str in self.game_runner.global_variables:
                 return self.game_runner.global_variables[value_str]
