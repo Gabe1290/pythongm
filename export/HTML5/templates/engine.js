@@ -907,6 +907,14 @@ class GameObject {
         // Collision tracking
         this._collision_other = null;
         this._collision_speeds = null; // Stores speeds at moment of collision
+        // Which (otherInstanceId, eventName) pairs were overlapping LAST
+        // frame, and a short post-fire cooldown per pair -- matches desktop's
+        // GameRunner.detect_collisions_for_instance (_active_collisions /
+        // _collision_cooldowns). Without this, checkCollisions() re-fires a
+        // collision_with_X handler every single frame the overlap persists,
+        // not just once when it starts.
+        this._activeCollisions = new Set();
+        this._collisionCooldowns = new Map();
 
         // Store game reference for later
         this._pendingCreateEvent = true;
@@ -3530,8 +3538,15 @@ class GameObject {
         // Use bounding box that accounts for sprite origin
         const myRect = this.getBoundingBox();
 
+        // Decrement cooldowns (mirrors desktop's per-frame pass).
+        for (const [key, frames] of this._collisionCooldowns) {
+            if (frames <= 1) this._collisionCooldowns.delete(key);
+            else this._collisionCooldowns.set(key, frames - 1);
+        }
+
         // First pass: Detect all collisions and capture speeds BEFORE any events run
         const collisionsToProcess = [];
+        const currentCollisions = new Set();
 
         for (const other of game.currentRoom.instances) {
             if (other === this || other.toDestroy) continue;
@@ -3542,19 +3557,34 @@ class GameObject {
                 const collisionKey = `collision_with_${other.name}`;
 
                 if (this.events[collisionKey]) {
-                    // Store collision data with speeds captured NOW
-                    collisionsToProcess.push({
-                        event: this.events[collisionKey],
-                        other: other,
-                        // Capture speeds at moment of collision detection
-                        selfHspeed: this.hspeed || 0,
-                        selfVspeed: this.vspeed || 0,
-                        otherHspeed: other.hspeed || 0,
-                        otherVspeed: other.vspeed || 0
-                    });
+                    // Fire only on a NEW overlap (not every frame it
+                    // persists), matching desktop's _active_collisions —
+                    // otherwise a handler that nudges position on contact
+                    // (e.g. move_to_contact, which moves a step before it
+                    // checks for contact) re-fires every frame the pair
+                    // keeps touching and walks the instance further in each
+                    // time, since starting already-overlapping it never
+                    // sees a fresh "just touched" transition to stop at.
+                    const pairKey = `${other._pyId}:${collisionKey}`;
+                    currentCollisions.add(pairKey);
+                    const isNew = !this._activeCollisions.has(pairKey);
+                    const inCooldown = this._collisionCooldowns.has(pairKey);
+                    if (isNew && !inCooldown) {
+                        collisionsToProcess.push({
+                            event: this.events[collisionKey],
+                            other: other,
+                            // Capture speeds at moment of collision detection
+                            selfHspeed: this.hspeed || 0,
+                            selfVspeed: this.vspeed || 0,
+                            otherHspeed: other.hspeed || 0,
+                            otherVspeed: other.vspeed || 0
+                        });
+                        this._collisionCooldowns.set(pairKey, 5);
+                    }
                 }
             }
         }
+        this._activeCollisions = currentCollisions;
 
         // Second pass: Process all collision events with stored speeds
         for (const collision of collisionsToProcess) {
