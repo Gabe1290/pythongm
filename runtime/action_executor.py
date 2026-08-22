@@ -3664,7 +3664,17 @@ class ActionExecutor:
             'x': x,
             'y': y,
             'text': text,
-            'color': color
+            'color': color,
+            # Captured at QUEUE time, not render time — the whole draw event's
+            # actions run before _process_draw_queue renders any of them, so
+            # reading instance.draw_halign at render time would apply
+            # whatever set_draw_font call happened to run LAST in the event
+            # to every queued text command, not the alignment that was
+            # active when each one was actually drawn (a real bug: a draw
+            # event with "set_draw_font center, draw_text A, set_draw_font
+            # left, draw_text B" rendered BOTH A and B left-aligned).
+            'halign': getattr(instance, 'draw_halign', 'left'),
+            'valign': getattr(instance, 'draw_valign', 'top'),
         })
 
         logger.debug(f"📝 Queued draw_text: '{text}' at ({x}, {y}) with color {color}")
@@ -3709,7 +3719,11 @@ class ActionExecutor:
             'text': text,
             'xscale': xscale,
             'yscale': yscale,
-            'color': color
+            'color': color,
+            # See execute_draw_text_action's comment: must be captured at
+            # queue time, not read from the instance at render time.
+            'halign': getattr(instance, 'draw_halign', 'left'),
+            'valign': getattr(instance, 'draw_valign', 'top'),
         })
 
         logger.debug(f"📝 Queued draw_scaled_text: '{text}' at ({x}, {y}) scale ({xscale}, {yscale})")
