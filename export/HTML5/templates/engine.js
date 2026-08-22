@@ -4001,6 +4001,16 @@ class Game {
         inst._gameRef = this;
         inst._startX = x;
         inst._startY = y;
+        // xstart/ystart: GameMaker's own (and the desktop runtime's,
+        // runtime/game_runner.py's GameInstance.xstart/ystart) canonical
+        // names for these, so an authored expression referencing
+        // self.xstart/self.ystart resolves identically on both export
+        // targets — unlike _startX/_startY, an HTML5-only internal
+        // convention gmExpressionValue's scope never exposed as a bare
+        // name anyway (its leading underscore excludes it), so no
+        // existing authored content could have relied on that name.
+        inst.xstart = x;
+        inst.ystart = y;
         if (objectData.sprite && this.sprites[objectData.sprite]) {
             inst.sprite = this.sprites[objectData.sprite];
             inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
@@ -4206,6 +4216,11 @@ class Game {
             // Store starting position for jump_to_start
             inst._startX = instData.x;
             inst._startY = instData.y;
+            // xstart/ystart: GameMaker's/desktop's canonical names for the
+            // same thing, so an authored expression works identically on
+            // both export targets — see spawnInstance's matching comment.
+            inst.xstart = instData.x;
+            inst.ystart = instData.y;
 
             if (objectData && objectData.sprite && sprites[objectData.sprite]) {
                 inst.sprite = sprites[objectData.sprite];
