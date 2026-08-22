@@ -1177,24 +1177,48 @@ class GameObject {
 
     // GAMEMAKER 7.0: Movement processing
     processMovement(game) {
+        // Desktop's gravity/friction accumulate ONCE PER REAL STEP, at
+        // exactly settings.room_speed steps/second (GameRunner.fps — the
+        // pygame clock's real tick rate; see runtime/game_runner.py). This
+        // loop is NOT clocked to room_speed — it runs at the browser's true,
+        // uncapped rate (~60fps via requestAnimationFrame) — so accumulating
+        // gravity/friction at their raw per-step magnitude here would make
+        // them accrue at whatever the real frame rate happens to be, not at
+        // room_speed. When room_speed < 60 (this promo game's rooms are all
+        // 30) that shrinks the discretized area under the velocity curve —
+        // concretely, HALVES a jump's peak height, since a jump's arc is a
+        // fixed number of STEPS regardless of real fps, and running twice as
+        // many of those steps per real second (60 vs the intended 30) means
+        // reaching peak velocity in half the real time, over half the
+        // accumulated distance. Scaling accumulation by the SAME factor
+        // roomSpeedFactor below scales the final position delta by fixes
+        // this: over any span of real time, this loop then accrues exactly
+        // as much velocity, over exactly as much distance, as the same span
+        // running at the room's configured room_speed would — reproducing
+        // desktop's real-world jump height (and fall/friction curves)
+        // exactly, not just its real-world constant-velocity walk speed
+        // (which the position-delta scaling alone already got right).
+        const roomSpeedFactor = (game && game.currentRoom) ? game.currentRoom.roomSpeed / 60 : 1;
+
         // Apply gravity (GM 7.0: adds to speed each step)
         if (this._gravity !== 0) {
             const gravRad = this._gravity_direction * Math.PI / 180;
-            this._hspeed += this._gravity * Math.cos(gravRad);
-            this._vspeed += -this._gravity * Math.sin(gravRad);
+            this._hspeed += this._gravity * Math.cos(gravRad) * roomSpeedFactor;
+            this._vspeed += -this._gravity * Math.sin(gravRad) * roomSpeedFactor;
             this.syncSpeedDirectionFromComponents();
         }
 
         // Apply friction (GM 7.0: reduces speed towards zero)
         if (this._friction !== 0) {
-            if (Math.abs(this._hspeed) > this._friction) {
-                this._hspeed -= this._friction * Math.sign(this._hspeed);
+            const scaledFriction = this._friction * roomSpeedFactor;
+            if (Math.abs(this._hspeed) > scaledFriction) {
+                this._hspeed -= scaledFriction * Math.sign(this._hspeed);
             } else {
                 this._hspeed = 0;
             }
 
-            if (Math.abs(this._vspeed) > this._friction) {
-                this._vspeed -= this._friction * Math.sign(this._vspeed);
+            if (Math.abs(this._vspeed) > scaledFriction) {
+                this._vspeed -= scaledFriction * Math.sign(this._vspeed);
             } else {
                 this._vspeed = 0;
             }
@@ -1230,11 +1254,12 @@ class GameObject {
         // implicit "solid blocks movement" rule (e.g. the raycast_1..4
         // player, whose wall collision events are deliberately empty) able
         // to walk straight through walls only on this export target.
-        // Scaled by roomSpeed/60 (set_room_speed) — see GameRoom's roomSpeed
-        // comment for what this does and doesn't cover (gravity/friction
-        // accumulation above is NOT scaled, only this final delta).
+        // Scaled by roomSpeedFactor (set_room_speed) — see GameRoom's
+        // roomSpeed comment and this method's own opening comment (gravity/
+        // friction accumulation above uses the SAME factor now, so a jump's
+        // real-world height matches desktop, not just a walk's real-world
+        // speed).
         if (this._hspeed !== 0 || this._vspeed !== 0) {
-            const roomSpeedFactor = (game && game.currentRoom) ? game.currentRoom.roomSpeed / 60 : 1;
             const newX = this.x + this._hspeed * roomSpeedFactor;
             const newY = this.y + this._vspeed * roomSpeedFactor;
 
@@ -3626,13 +3651,14 @@ class GameRoom {
         // fresh (see Game.changeRoom/buildRoom below — HTML5 previously
         // always reused every room forever, the opposite default from
         // Kivy, and the same bug shape the desktop runtime had before its
-        // own fix). `roomSpeed` scales hspeed/vspeed's final per-tick
-        // position delta (GameObject.processMovement) — NOT the game loop's
-        // call rate, which stays uncapped/rAF-driven — so this is a
-        // documented approximation of the desktop runtime's true
-        // step-rate model: gravity/friction accumulation is unaffected by
-        // roomSpeed here, only the resulting hspeed/vspeed's translation
-        // into position.
+        // own fix). `roomSpeed` scales hspeed/vspeed's per-tick position
+        // delta AND gravity/friction's per-tick accumulation
+        // (GameObject.processMovement) by the same factor — NOT the game
+        // loop's call rate, which stays uncapped/rAF-driven — reproducing
+        // desktop's true step-rate model (GameRunner.fps real steps/sec)
+        // at whatever real frame rate this loop actually runs at, for both
+        // constant-velocity motion (walking) and accelerating motion
+        // (a jump's real-world peak height).
         this.persistent = !!data.persistent;
         this.roomSpeed = 60;
         this.showBackgroundColor = true;
