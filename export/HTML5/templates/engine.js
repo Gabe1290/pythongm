@@ -468,9 +468,24 @@ function parseNumParam(value, inst, fallback) {
             // so set_direction_speed(direction="facing_angle"[+180]) — the
             // raycast_1 FPS controls — resolves, matching the desktop runtime.
             .replace(/facing_angle/g, `(${inst.facing_angle || 0})`)
-            .replace(/view_[a-z]+/g, '0');
-        if (/^[-+*/(). 0-9]+$/.test(expr)) {
-            const result = Function(`"use strict"; return (${expr});`)();
+            .replace(/view_[a-z]+/g, '0')
+            // GameMaker-style random calls (irandom/random/choose), matching
+            // runtime/action_executor.py's _evaluate_expression — e.g. a
+            // spawn action's `x: "irandom(444) + 4"`. Only the bare token is
+            // substituted; the call's own opening paren is left as literal
+            // text right after it, so the real gmIrandom/gmRandom/gmChoose
+            // function names reach the whitelist check below unambiguously —
+            // it strips exactly those three names, not arbitrary
+            // identifiers, so this can't become a general eval().
+            .replace(/\birandom\b/g, 'gmIrandom')
+            .replace(/\brandom\b/g, 'gmRandom')
+            .replace(/\bchoose\b/g, 'gmChoose');
+        const stripped = expr.replace(/\bgmIrandom\b|\bgmRandom\b|\bgmChoose\b/g, '');
+        if (/^[-+*/(). ,0-9]+$/.test(stripped)) {
+            const result = Function(
+                'gmIrandom', 'gmRandom', 'gmChoose',
+                `"use strict"; return (${expr});`
+            )(gmIrandom, gmRandom, gmChoose);
             if (typeof result === 'number' && isFinite(result)) return result;
         }
     } catch (e) { /* fall through */ }
@@ -585,6 +600,31 @@ function gmCompareOp(left, operator, right) {
         case '>=': case 'greater_equal': return left >= right;
         default: return false;
     }
+}
+
+// GameMaker-style random functions, mirroring
+// runtime/action_executor.py's _evaluate_expression (gm_random/gm_irandom/
+// gm_choose): irandom(n) is a random INTEGER 0..n inclusive, random(n) a
+// random FLOAT 0..n exclusive, choose(a,b,...) one of its arguments.
+// Referenced (as gmIrandom/gmRandom/gmChoose) from parseNumParam below —
+// the numeric-parameter path was the one place these authored calls
+// (e.g. create_instance's `x: "irandom(444) + 4"`) silently always
+// evaluated to the caller's fallback, since parseNumParam's own
+// expression whitelist has no letters in it at all.
+function gmIrandom(n) {
+    n = Math.trunc(Number(n));
+    if (!isFinite(n) || n < 0) return 0;
+    return Math.floor(Math.random() * (n + 1));
+}
+
+function gmRandom(n) {
+    n = Number(n);
+    return isFinite(n) ? Math.random() * n : 0;
+}
+
+function gmChoose(...args) {
+    if (!args.length) return 0;
+    return args[Math.floor(Math.random() * args.length)];
 }
 
 function renderDrawCommands(ctx, cmds, game) {
@@ -1779,11 +1819,19 @@ class GameObject {
         switch(actionType) {
             // GAMEMAKER 7.0: Movement actions
             case 'set_hspeed':
-                this.hspeed = parseFloat(params.hspeed ?? params.speed ?? params.value ?? 0);
+                // parseNumParam (not a bare parseFloat): supports
+                // self.x/other.x/facing_angle and irandom()/random()/
+                // choose() expressions, and — critically — never returns
+                // NaN the way parseFloat("irandom(2) - 1") silently did
+                // (NaN hspeed poisons this.x on the very next movement
+                // step and never recovers, rendering the instance nowhere
+                // — sky_strike_1's enemy planes, whose hspeed is exactly
+                // such an expression, were invisible for this reason).
+                this.hspeed = parseNumParam(params.hspeed ?? params.speed ?? params.value, this, 0);
                 break;
 
             case 'set_vspeed':
-                this.vspeed = parseFloat(params.vspeed ?? params.speed ?? params.value ?? 0);
+                this.vspeed = parseNumParam(params.vspeed ?? params.speed ?? params.value, this, 0);
                 break;
 
             case 'set_speed':
