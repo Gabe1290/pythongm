@@ -3886,6 +3886,10 @@ class ActionExecutor:
         x = self._parse_value(parameters.get("x", 0), instance)
         y = self._parse_value(parameters.get("y", 0), instance)
         subimage = self._parse_value(parameters.get("subimage", 0), instance)
+        try:
+            scale = float(parameters.get("scale", 1.0))
+        except (ValueError, TypeError):
+            scale = 1.0
 
         # Queue drawing command for draw event
         if not hasattr(instance, '_draw_queue'):
@@ -3896,7 +3900,8 @@ class ActionExecutor:
             'sprite_name': sprite_name,
             'x': x,
             'y': y,
-            'subimage': subimage
+            'subimage': subimage,
+            'scale': scale
         })
 
         logger.debug(f"🖼️ Queued draw_sprite: '{sprite_name}' at ({x}, {y}) frame {subimage}")
