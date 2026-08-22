@@ -457,6 +457,18 @@ function parseNumParam(value, inst, fallback) {
     const s = String(value).trim();
     const direct = parseFloat(s);
     if (!isNaN(direct) && /^[-+]?[0-9.]+$/.test(s)) return direct;
+    // A bare instance attribute name (e.g. "direction", "speed",
+    // "image_index"), matching desktop's _parse_value
+    // (hasattr(instance, value_str) -> getattr(...)), checked before the
+    // expression path below — move_to_contact's own `direction: "direction"`
+    // parameter (GameMaker's "current direction of travel" keyword) needs
+    // this to resolve to the instance's live direction getter, not fall
+    // through to parseFloat("direction") === NaN -> the caller's fallback
+    // (0 here always meant "move right", regardless of which way the
+    // instance actually approached the obstacle it collided with).
+    if (/^[a-zA-Z_]\w*$/.test(s) && typeof inst[s] === 'number' && isFinite(inst[s])) {
+        return inst[s];
+    }
     try {
         const other = inst._collision_other;
         const expr = s
@@ -862,8 +874,20 @@ class GameObject {
         // GAMEMAKER 7.0: 12 alarm clocks per instance
         this.alarms = new Array(12).fill(-1);  // -1 = inactive, >= 0 = countdown
 
-        // Depth-based rendering (lower = back, higher = front)
-        this.depth = this.getDepthForObject(name);
+        // Depth-based rendering: the authored value from the object's own
+        // data, matching runtime/game_runner.py's GameInstance.set_object_data
+        // (object_data.get('depth', 0)). Lower depth draws in front, higher
+        // draws behind (see GameRoom._renderContents's sort). This used to
+        // call a hardcoded name-substring heuristic (getDepthForObject,
+        // matching "wall"/"box"/"soko"/etc. — leftover from an early
+        // Sokoban-style prototype) that never read objectData.depth at all,
+        // silently overriding every project's authored depth with whichever
+        // bucket its object NAME happened to fall into. E.g. obj_quit (no
+        // matching substring, default bucket 10) drew behind mz_obj_wall
+        // (substring "wall", bucket 5) regardless of their real authored
+        // depths (-1000 and 0), so a maze level's "Quitter" overlay button
+        // rendered underneath the maze walls.
+        this.depth = (objectData && objectData.depth !== undefined) ? objectData.depth : 0;
 
         // Grid movement helpers
         this.targetX = null;
@@ -936,24 +960,6 @@ class GameObject {
         } else {
             this._hspeed = 0;
             this._vspeed = 0;
-        }
-    }
-
-    getDepthForObject(name) {
-        name = name || '';
-        // Define rendering order layers
-        if (name.includes('store') && !name.includes('box')) {
-            return 0;  // Floor/store tiles at the bottom
-        } else if (name.includes('ground') || name.includes('floor')) {
-            return 0;
-        } else if (name.includes('wall')) {
-            return 5;
-        } else if (name.includes('box')) {
-            return 10;
-        } else if (name.includes('soko') || name.includes('player')) {
-            return 20;
-        } else {
-            return 10;
         }
     }
 
@@ -2620,9 +2626,18 @@ class GameObject {
             case 'move_to_contact': {
                 // Move pixel-by-pixel toward `direction` (degrees, 0=right,
                 // 90=up) until touching `object` ("all"/"solid"/<name>) or
-                // max_distance — the platformer landing action.
-                const dirDeg = parseFloat(params.direction) || 0;
-                const maxDist = parseFloat(params.max_distance ?? params.maximum ?? 1000) || 1000;
+                // max_distance — the platformer landing action. parseNumParam
+                // (not a bare parseFloat): a project commonly authors
+                // `direction: "direction"` (GameMaker's own convention for
+                // "my current direction of travel"), which parseFloat cannot
+                // parse at all (NaN -> the old `|| 0` fallback silently
+                // meant "always push right", REGARDLESS of which way the
+                // instance actually approached whatever it collided with —
+                // walking left, up, or down into a solid all got pushed
+                // further right instead of separated, eventually punching
+                // straight through it one blocked frame at a time).
+                const dirDeg = parseNumParam(params.direction, this, 0);
+                const maxDist = parseNumParam(params.max_distance ?? params.maximum, this, 1000);
                 const target = params.object || 'all';
                 const rad = dirDeg * Math.PI / 180;
                 const dx = Math.cos(rad), dy = -Math.sin(rad);
@@ -2728,7 +2743,7 @@ class GameObject {
                     inst.events = objectData.events || {};
                     inst.solid = objectData.solid || false;
                     inst.visible = objectData.visible !== false;
-                    inst.depth = inst.getDepthForObject(newName);
+                    inst.depth = (objectData && objectData.depth !== undefined) ? objectData.depth : 0;
                     const sprName = objectData.sprite;
                     inst.sprite = (sprName && game.sprites[sprName]) || null;
                     inst.spriteInfo = sprName ? game.makeSpriteInfo(sprName) : null;
