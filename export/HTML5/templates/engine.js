@@ -567,6 +567,10 @@ function gmExpressionValue(expr, inst, game) {
     const scope = {
         self: inst,
         other: inst._collision_other || null,
+        // Matches desktop's _evaluate_expression scoped_var_pattern
+        // ((self|other|global)\.\w+) — a plain object so "global.foo"
+        // resolves via normal property access, same as self.x/other.x.
+        global: (game && game.globalVariables) || {},
         x: inst.x, y: inst.y,
         hspeed: inst.hspeed || 0, vspeed: inst.vspeed || 0,
         speed: inst.speed || 0, direction: inst.direction || 0,
@@ -2617,9 +2621,27 @@ class GameObject {
                 // without a new dedicated action.
                 if (value === 'score' || value === 'lives' || value === 'health') {
                     value = game[value];
-                } else {
-                    const num = parseFloat(value);
-                    if (!isNaN(num) && String(num) === String(value).trim()) value = num;
+                } else if (typeof value === 'string') {
+                    const trimmed = value.trim();
+                    const num = parseFloat(trimmed);
+                    if (!isNaN(num) && String(num) === trimmed) {
+                        value = num;
+                    } else if (!trimmed.startsWith('"') &&
+                               (/[+\-*/%]/.test(trimmed) ||
+                                /\b(?:max|min|abs|round|irandom|random|choose)\b/.test(trimmed))) {
+                        // A real expression (has an operator or a known
+                        // function call) — e.g. a high-water-mark sync
+                        // like "max(global.score_skystrike, score)", so a
+                        // mid-level restart's score reset doesn't wipe out
+                        // a global that already reflects a better run.
+                        // Matches desktop's _parse_value routing
+                        // (has_operator or has_function). gmExpressionValue
+                        // already exposes self/other/global/score/lives/
+                        // health/max/min/abs/round — the same evaluator
+                        // if_condition uses.
+                        const evaluated = gmExpressionValue(trimmed, this, game);
+                        if (typeof evaluated === 'number' && !isNaN(evaluated)) value = evaluated;
+                    }
                 }
                 const scope = params.scope || 'sel';
                 const target = scope === 'global' ? game.globalVariables
