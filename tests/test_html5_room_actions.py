@@ -166,12 +166,18 @@ def test_restart_room_forces_rebuild():
     assert "game.changeRoom(game.currentRoom.name, true);" in ENGINE
 
 
-def test_restart_game_still_reloads_the_page_no_change_needed():
-    # A full reload already discards every room's state — more thorough
-    # than an explicit cache clear, so this needed no engine change.
+def test_restart_game_rebuilds_every_room_in_process():
+    # No longer a page reload (tests/test_restart_game_preserves_globals.py
+    # covers why: a full reload also wiped game.globalVariables, the
+    # promo hub's cross-level score badges). The in-process replacement
+    # still discards every room's state unconditionally, same as the
+    # reload did and same as desktop's restart_game — so persistence
+    # semantics are unaffected.
     m = re.search(r"case 'restart_game':(.*?)break;", ENGINE, re.S)
     assert m
-    assert "window.location.reload();" in m.group(1)
+    body = m.group(1)
+    assert "window.location.reload();" not in body
+    assert "game.rooms[roomName] = game.buildRoom(roomName);" in body
 
 
 def test_first_room_seeded_as_visited_at_startup():

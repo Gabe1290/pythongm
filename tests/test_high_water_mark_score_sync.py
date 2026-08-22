@@ -103,10 +103,16 @@ def test_desktop_a_genuinely_higher_score_still_updates():
 # ---------------------------------------------------------------------------
 
 def test_html5_gm_expression_value_exposes_global():
+    # global is a defaulting Proxy over game.globalVariables (see
+    # test_html5_undefined_global_in_expressions.py for why: a bare
+    # `|| {}` read left a never-set global as `undefined`, and JS
+    # arithmetic on `undefined` produces NaN rather than Python's
+    # graceful default-to-0).
     m = re.search(r"function gmExpressionValue\(expr, inst, game\) \{(.*?)\n\}", ENGINE, re.S)
     assert m
     body = m.group(1)
-    assert "global: (game && game.globalVariables) || {}" in body
+    assert "global: new Proxy(" in body
+    assert "game.globalVariables" in body
 
 
 def test_html5_set_variable_routes_expressions_through_gm_expression_value():

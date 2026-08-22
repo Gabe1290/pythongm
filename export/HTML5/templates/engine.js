@@ -568,9 +568,19 @@ function gmExpressionValue(expr, inst, game) {
         self: inst,
         other: inst._collision_other || null,
         // Matches desktop's _evaluate_expression scoped_var_pattern
-        // ((self|other|global)\.\w+) — a plain object so "global.foo"
-        // resolves via normal property access, same as self.x/other.x.
-        global: (game && game.globalVariables) || {},
+        // ((self|other|global)\.\w+) — a Proxy so "global.foo" resolves
+        // via normal property access (like self.x/other.x), but defaults
+        // a never-set global to 0 instead of undefined — critically
+        // different from a plain object in JS: Math.max(undefined, 650)
+        // is NaN (arithmetic on undefined always is), while desktop's
+        // _get_variable_value already defaults a missing global to a
+        // real 0 there, so e.g. a high-water-mark sync
+        // "max(global.score_x, score)" evaluated fine on desktop the
+        // very first time a level ever ran, but NaN'd on this target
+        // until the global happened to be set some other way first.
+        global: new Proxy((game && game.globalVariables) || {}, {
+            get: (target, prop) => (prop in target ? target[prop] : 0),
+        }),
         x: inst.x, y: inst.y,
         hspeed: inst.hspeed || 0, vspeed: inst.vspeed || 0,
         speed: inst.speed || 0, direction: inst.direction || 0,
@@ -2554,10 +2564,42 @@ class GameObject {
                 this.speed = 0;
                 break;
 
-            case 'restart_game':
-                // Reload the page to restart
-                window.location.reload();
+            case 'restart_game': {
+                // Was window.location.reload() -- a full page reload wipes
+                // EVERYTHING, including game.globalVariables. Desktop's
+                // restart_game only resets score/lives/health and rebuilds
+                // rooms in-process; global variables are untouched there,
+                // so a project that tracks state across a "game over"
+                // restart (the promo hub's per-level score badges) keeps
+                // it on desktop but lost it all here. Matches desktop's
+                // semantics instead: a real in-process reset.
+                const settings = game.gameData.settings || {};
+                game.score = settings.starting_score || 0;
+                game.lives = settings.starting_lives || 3;
+                game.health = settings.starting_health || 100;
+
+                // Full reset: rebuild every room fresh (a persistent room
+                // must NOT survive this, unlike an ordinary changeRoom
+                // revisit) -- matches desktop's restart_game, which
+                // rebuilds rooms 2..N unconditionally so a level's mutated
+                // state (destroyed instances, moved positions) can't leak
+                // into the next playthrough.
+                game._visitedRooms.clear();
+                for (const roomName of Object.keys(game.gameData.assets.rooms)) {
+                    game.rooms[roomName] = game.buildRoom(roomName);
+                }
+
+                const firstRoomName = Object.keys(game.gameData.assets.rooms)[0];
+                if (firstRoomName) {
+                    // A game restart re-fires game_start (after Create,
+                    // before Room Start), matching GameMaker and desktop's
+                    // own restart_game -- startup setup re-applies on a
+                    // fresh playthrough.
+                    game._gameStartFired = false;
+                    game.changeRoom(firstRoomName, true);
+                }
                 break;
+            }
 
             case 'end_game':
             case 'game_end':
@@ -2888,8 +2930,18 @@ class GameObject {
                 if (typeof text === 'string') {
                     const trimmed = text.trim();
                     const gmatch = trimmed.match(/^global\.(\w+)$/);
-                    if (gmatch && game.globalVariables && gmatch[1] in game.globalVariables) {
-                        text = game.globalVariables[gmatch[1]];
+                    if (gmatch) {
+                        // Defaults to 0 for a global that was never set,
+                        // matching desktop's _get_variable_value (and the
+                        // sum-of-globals branch just below) — otherwise a
+                        // level's score badge shows the literal
+                        // "global.score_x" text until that level has been
+                        // visited at least once. Deliberately does NOT
+                        // require the key to exist first (an earlier
+                        // version did); a level's own score-sync writing
+                        // the real value is what most players will see.
+                        text = (game.globalVariables && gmatch[1] in game.globalVariables)
+                            ? game.globalVariables[gmatch[1]] : 0;
                     } else if (/^global\.\w+(\s*\+\s*global\.\w+)+$/.test(trimmed)) {
                         // A "+"-joined sum of bare global references (e.g. the
                         // promo hub's cross-level total) — still no general
