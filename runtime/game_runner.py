@@ -1750,6 +1750,23 @@ class GameRoom:
                 # else: No sprite assigned - instance.sprite remains None
                 # The render method will skip instances with no sprite
 
+        # __init__'s rebuild_spatial_grid() ran before any of the above --
+        # every instance was indexed under its GameInstance.__init__ default
+        # 32x32 placeholder (_cached_width/_cached_height), not its real
+        # sprite size, and set_sprite() above updates those caches without
+        # touching the grid (no _grid_dirty flag, no re-add). An object
+        # whose real collision size exceeds 32px in either dimension is then
+        # only ever found by a query inside its placeholder-sized cell
+        # range -- e.g. a 480x32 ground strip registered as if it were
+        # 32x32 stops blocking a player who has walked more than about a
+        # cell-width away from its origin, who then falls straight through.
+        # Rebuilding once more here, now that every instance's cached
+        # dimensions are the real ones, is the general fix (not just a
+        # patch for this one object): every instance in the room is
+        # correctly indexed by its true collision size before the first
+        # frame runs.
+        self.rebuild_spatial_grid()
+
 
     def render(self, screen: pygame.Surface):
         """Render the room and all its instances.

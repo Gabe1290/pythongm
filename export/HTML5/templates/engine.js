@@ -2424,29 +2424,21 @@ class GameObject {
 
             case 'display_message':
             case 'show_message':
-                // Display a message dialog
+                // Display a message dialog. Desktop's equivalent
+                // (_show_or_queue_message, runtime/action_executor.py) has
+                // NO side effects beyond showing the dialog — this used to
+                // also zero hspeed/vspeed/speed and snap x/y to a hardcoded
+                // 32px grid ("prevents drifting off-grid during collision
+                // events"), which only ever made sense for a grid-based
+                // game like the maze sample. Applied unconditionally to
+                // EVERY show_message call on every exported game, it
+                // silently teleported any free-movement instance up to 16px
+                // toward the nearest grid line — the promo game's
+                // side-scroller hit this at the very first frame (its intro
+                // show_message, fired from create, snapped the player 16px
+                // down, deep enough to land it inside/through the ground).
                 const message = params.message || params.text || '';
-                if (message) {
-                    // Stop movement and snap to grid before showing message
-                    // This prevents the player from drifting off-grid during collision events
-                    this.hspeed = 0;
-                    this.vspeed = 0;
-                    this.speed = 0;
-                    const msgGridSize = 32;
-                    this.x = Math.round(this.x / msgGridSize) * msgGridSize;
-                    this.y = Math.round(this.y / msgGridSize) * msgGridSize;
-
-                    // Also stop and snap the collision "other" object if applicable
-                    if (this._collision_other) {
-                        this._collision_other.hspeed = 0;
-                        this._collision_other.vspeed = 0;
-                        this._collision_other.speed = 0;
-                        this._collision_other.x = Math.round(this._collision_other.x / msgGridSize) * msgGridSize;
-                        this._collision_other.y = Math.round(this._collision_other.y / msgGridSize) * msgGridSize;
-                    }
-
-                    alert(message);
-                }
+                if (message) alert(message);
                 break;
 
             // GAMEMAKER 7.0: Score, Lives, Health actions
