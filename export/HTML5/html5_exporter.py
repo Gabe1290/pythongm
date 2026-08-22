@@ -651,6 +651,65 @@ class HTML5Exporter:
                 except Exception as e:
                     logger.warning(f"  Failed to load sprite file {sprite_file}: {e}")
 
+            self._fill_auto_collision_bbox(project_path, sprite_data)
+
+    def _fill_auto_collision_bbox(self, project_path: Path, sprite_data: Dict) -> None:
+        """Auto-derive bbox_left/top/right/bottom (frame 0's opaque-pixel
+        bounds) when the author hasn't set an explicit override, mirroring
+        runtime/game_runner.py's GameSprite._compute_collision_bbox (a
+        pygame.mask bounding-rect union) -- but via PIL, the image library
+        this exporter already imports, so no pygame dependency here.
+
+        Without this, engine.js's makeSpriteInfo (export/HTML5/templates/
+        engine.js) always fell back to the full sprite frame as the
+        collision box (its own comment already flagged the gap: "without
+        this the collision box here silently defaulted to the full frame"
+        -- the reading side existed, nothing ever populated it). Any sprite
+        with transparent padding then had a taller/wider real-world hitbox
+        on HTML5 than on desktop -- found via the promo game's platform
+        level: desktop's penguin sprite auto-trims to a 30px collision
+        height (1px transparent padding top AND bottom of a 32px frame),
+        letting it pass through a 32px gap and rest flush on the ground;
+        HTML5's untrimmed 32px box couldn't fit the same gap, and rendered
+        the sprite hovering ~1px above a flush landing (the collision
+        box's bottom, at the frame's true edge, sits below where the
+        sprite's own opaque pixels actually end).
+        """
+        if all(k in sprite_data for k in ('bbox_left', 'bbox_top', 'bbox_right', 'bbox_bottom')):
+            return  # explicit author override -- already correct, don't touch
+        file_path = sprite_data.get('file_path') or sprite_data.get('image_file')
+        if not file_path:
+            return
+        full_path = project_path / file_path
+        if not full_path.exists():
+            return
+        try:
+            from PIL import Image
+            img = Image.open(full_path).convert("RGBA")
+        except Exception as e:
+            logger.debug(f"  bbox auto-derive: could not open {full_path}: {e}")
+            return
+
+        width = int(sprite_data.get('width') or img.width)
+        height = int(sprite_data.get('height') or img.height)
+        frames = max(1, int(sprite_data.get('frames') or 1))
+        frame_width = int(sprite_data.get('frame_width') or (width // frames if frames > 1 else width))
+        frame_height = int(sprite_data.get('frame_height') or height)
+        # Frame 0 is always the top-left frame_width x frame_height region,
+        # regardless of animation_type (single/strip_h/strip_v/grid) --
+        # clamped so a stale/mismatched metadata field can't crop outside
+        # the actual image.
+        frame_width = max(1, min(frame_width, img.width))
+        frame_height = max(1, min(frame_height, img.height))
+        frame0 = img.crop((0, 0, frame_width, frame_height))
+        bbox = frame0.split()[-1].getbbox()  # alpha channel's non-zero bounds
+        if bbox is None:
+            return  # fully transparent frame -- leave unset, engine.js falls back to full frame
+        sprite_data['bbox_left'] = bbox[0]
+        sprite_data['bbox_top'] = bbox[1]
+        sprite_data['bbox_right'] = bbox[2]
+        sprite_data['bbox_bottom'] = bbox[3]
+
     # Formats browsers can decode via <audio>/Audio(); .mid/.midi have no
     # browser support and are skipped with a warning.
     _SOUND_MIME = {
