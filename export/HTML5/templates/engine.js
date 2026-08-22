@@ -711,8 +711,15 @@ function renderDrawCommands(ctx, cmds, game) {
             case 'scaled_text': {
                 ctx.fillStyle = color;
                 ctx.font = '18px Arial';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
+                // GameMaker's draw_set_halign/valign promise (mirrors
+                // desktop's set_draw_font + _align_text_pos): x/y become
+                // the alignment anchor, not always the top-left corner.
+                // Canvas's own textAlign/textBaseline do the measurement,
+                // so no manual width/height math is needed here.
+                const halign = cmd.halign || 'left';
+                ctx.textAlign = (halign === 'center' || halign === 'right') ? halign : 'left';
+                const valign = cmd.valign || 'top';
+                ctx.textBaseline = (valign === 'middle' || valign === 'bottom') ? valign : 'top';
                 const tx = cmd.x || 0, ty = cmd.y || 0;
                 if (cmd.type === 'scaled_text' && (cmd.xscale !== 1 || cmd.yscale !== 1)) {
                     ctx.save();
@@ -2844,6 +2851,8 @@ class GameObject {
                     y: parseNumParam(params.y, this, this.y),
                     // runtime: active draw colour, defaulting to black
                     color: this.draw_color || game.draw_color || [0, 0, 0],
+                    halign: this.draw_halign || 'left',
+                    valign: this.draw_valign || 'top',
                 });
                 break;
             }
@@ -2973,12 +2982,25 @@ class GameObject {
                 game.draw_color = this.draw_color;
                 break;
 
-            case 'set_draw_font':
-                // Stored for parity; the canvas renderer uses one font, the
-                // same as the pygame runtime's _draw_text (alignment is
-                // stored there too but never applied).
+            case 'set_draw_font': {
+                // Font is stored for parity only (the canvas renderer uses
+                // one font); halign/valign ARE applied, by draw_text's
+                // render case below — matching desktop's set_draw_font +
+                // _align_text_pos (GameMaker's draw_set_halign/valign
+                // promise: x/y become the alignment anchor, not always the
+                // top-left corner). GM's numeric `align` (0/1/2) fallback,
+                // same mapping as _GM_FONT_ALIGN_FALLBACK on desktop.
                 this.draw_font = params.font || null;
+                const alignFallback = { 0: 'left', 1: 'center', 2: 'right' };
+                let halign = params.halign;
+                if (halign === undefined && params.align !== undefined) {
+                    halign = alignFallback[params.align] || 'left';
+                }
+                this.draw_halign = ['left', 'center', 'right'].includes(halign) ? halign : 'left';
+                const valign = params.valign;
+                this.draw_valign = ['top', 'middle', 'bottom'].includes(valign) ? valign : 'top';
                 break;
+            }
 
             // ---- Instance creation / destruction cluster ----
 
