@@ -3477,6 +3477,13 @@ class GameRoom {
         this.roomSpeed = 60;
         this.showBackgroundColor = true;
 
+        // room_start fires once per room ENTRY (not once per room object,
+        // unlike create's per-instance _pendingCreateEvent) -- consumed at
+        // the top of step() and re-armed by Game.changeRoom on every visit,
+        // including a persistent-room reuse where no instance gets a fresh
+        // create at all. See step()'s "0c" block.
+        this._pendingRoomStart = true;
+
         // set_background's dynamic background image. Drawn directly each
         // frame from this state (immediate-mode canvas rendering, unlike
         // Kivy's retained instruction graph — no separate group/instruction
@@ -3602,6 +3609,22 @@ class GameRoom {
             [...this.instances].forEach(inst => {
                 if (!inst.toDestroy && inst.events && inst.events.game_start) {
                     inst.executeActions(inst.events.game_start.actions || [], game);
+                }
+            });
+        }
+
+        // 0c. room_start fires every time this room becomes active, after
+        // create (and after game_start on the very first room) — matching
+        // runtime/game_runner.py's trigger_room_start_event. Unlike
+        // create's per-instance _pendingCreateEvent flag, this is a
+        // per-ROOM flag re-armed by Game.changeRoom on every entry, so it
+        // also fires for a persistent room reused wholesale (whose
+        // instances never got a fresh create at all in the loop above).
+        if (this._pendingRoomStart) {
+            this._pendingRoomStart = false;
+            [...this.instances].forEach(inst => {
+                if (!inst.toDestroy && inst.events && inst.events.room_start) {
+                    inst.executeActions(inst.events.room_start.actions || [], game);
                 }
             });
         }
@@ -4314,6 +4337,11 @@ class Game {
             }
             this._visitedRooms.add(roomName);
             this.currentRoom = this.rooms[roomName];
+            // Re-arm room_start on every entry, including a persistent-room
+            // reuse (a freshly built room already has this true from its own
+            // constructor, but re-asserting it here is harmless and covers
+            // the reuse branch, which skips buildRoom entirely).
+            this.currentRoom._pendingRoomStart = true;
 
             // Resize canvas
             this.canvas.width = this.currentRoom.width;
