@@ -1079,13 +1079,14 @@ class GameInstance:
         italic = bool(font_asset.get('italic', False))
         return self._get_cached_font(size, family, bold, italic)
 
-    def _align_text_pos(self, x, y, width, height):
-        """Shift (x, y) per self.draw_halign/draw_valign (also set by
-        set_draw_font, also never previously read) so x/y become the
-        alignment anchor GameMaker's draw_set_halign/draw_set_valign
+    def _align_text_pos(self, x, y, width, height, halign='left', valign='top'):
+        """Shift (x, y) per halign/valign (captured on the draw-queue command
+        at queue time by execute_draw_text_action/execute_draw_scaled_text_action
+        — NOT read from self here, since by render time the whole draw
+        event has already run and self.draw_halign only reflects whatever
+        set_draw_font call happened to run LAST in that event) so x/y
+        become the alignment anchor GameMaker's draw_set_halign/valign
         promise, not always the top-left corner."""
-        halign = getattr(self, 'draw_halign', 'left')
-        valign = getattr(self, 'draw_valign', 'top')
         if halign == 'center':
             x = x - width / 2
         elif halign == 'right':
@@ -1106,7 +1107,8 @@ class GameInstance:
         color = self._parse_color(cmd.get('color', '#FFFFFF'))
 
         text_surface = font.render(str(text), True, color)
-        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height())
+        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height(),
+                                     cmd.get('halign', 'left'), cmd.get('valign', 'top'))
         screen.blit(text_surface, (x, y))
 
     def _draw_scaled_text(self, screen: pygame.Surface, cmd: dict):
@@ -1138,7 +1140,8 @@ class GameInstance:
 
         # Align against the FINAL (post-scale) size — alignment is a
         # visual anchor, so it should track what's actually on screen.
-        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height())
+        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height(),
+                                     cmd.get('halign', 'left'), cmd.get('valign', 'top'))
         screen.blit(text_surface, (int(x), int(y)))
 
     def _draw_lives(self, screen: pygame.Surface, cmd: dict):

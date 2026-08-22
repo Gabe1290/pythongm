@@ -59,9 +59,10 @@ def test_desktop_center_halign_shifts_x_left_by_half_the_text_width():
     assert inst.draw_halign == "center"
 
     real_inst = GameInstance.__new__(GameInstance)
-    real_inst.draw_halign = "center"
-    real_inst.draw_valign = "top"
-    x, y = real_inst._align_text_pos(240, 12, width=100, height=20)
+    # halign/valign are passed explicitly (captured at draw_text's queue
+    # time, per tests/test_draw_text_halign_capture_timing.py) — not read
+    # off the instance, so these two lines are deliberately NOT set here.
+    x, y = real_inst._align_text_pos(240, 12, width=100, height=20, halign="center", valign="top")
     assert x == 240 - 50  # shifted left by half the (real) text width
 
 
