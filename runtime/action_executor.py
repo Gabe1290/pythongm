@@ -2071,9 +2071,26 @@ class ActionExecutor:
                                 # GameMaker convention: 0° = right, 90° = up
                                 # vspeed is negated because screen y increases downward
                                 return math.degrees(math.atan2(-vspeed, hspeed)) % 360
-                elif scope == 'global' and self.game_runner:
-                    if var_name in self.game_runner.global_variables:
-                        return self.game_runner.global_variables[var_name]
+                elif scope == 'global' and self.game_runner and not any(
+                    op in value_str for op in ('*', '+', '-', '/', '%')
+                ):
+                    # Defaults to 0 for a global that was never set, matching
+                    # _get_variable_value's own default (used by the
+                    # arithmetic-expression path for the exact same dotted
+                    # reference when it appears inside an operator
+                    # expression) — a bare "global.foo" with no operator
+                    # used to fall through to the raw-string return at the
+                    # bottom of this function instead, e.g. a draw_text
+                    # showing a never-yet-set score global rendered the
+                    # literal text "global.score_maze" rather than "0".
+                    # Guarded to a truly bare reference (no operator
+                    # anywhere in the string): a compound expression like
+                    # "global.a + global.b" must fall through to the
+                    # has_operator routing below instead, since the naive
+                    # split('.', 1) above would otherwise capture
+                    # "a + global.b" as var_name and look that up as a
+                    # single (nonexistent) key, silently returning 0.
+                    return self.game_runner.global_variables.get(var_name, 0)
 
         # Check for simple variable reference (no dot)
         if instance and not value_str.startswith('"') and not value_str.startswith("'"):
