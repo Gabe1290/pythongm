@@ -2098,7 +2098,7 @@ class ActionExecutor:
         # calling action as a literal string and silently fail to parse.
         import re as _re
         has_operator = any(op in value_str for op in ['*', '+', '-', '/', '%'])
-        has_function = _re.search(r'\b(?:random|irandom|choose)\s*\(', value_str) is not None
+        has_function = _re.search(r'\b(?:random|irandom|choose|max|min|abs|round)\s*\(', value_str) is not None
         if (has_operator or has_function) and not value_str.startswith('"'):
             # Evaluate arithmetic / function expression
             return self._evaluate_expression(value_str, instance)
