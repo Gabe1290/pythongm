@@ -2144,13 +2144,24 @@ class GameObject {
                 break;
 
             // GAMEMAKER 7.0: Alarm actions
-            case 'set_alarm':
+            case 'set_alarm': {
                 const alarmNum = params.alarm_number || 0;
-                const steps = params.steps || 30;
+                // Bare params.steps (e.g. a difficulty ramp like
+                // "40 - score/50") is a string — desktop's execute_
+                // set_alarm_action already routes it through the real
+                // expression evaluator (_parse_value); this used to just
+                // take the raw truthy value, so a expression string was
+                // stored as-is (never evaluated) and any legitimate
+                // decrement WITH ONE didn't run at all. gmExpressionValue
+                // already exposes score/lives/health, self.<var>, and
+                // arithmetic — the same evaluator if_condition uses.
+                let steps = gmExpressionValue(String(params.steps ?? '30'), this, game);
+                if (typeof steps !== 'number' || isNaN(steps)) steps = 30;
                 if (alarmNum >= 0 && alarmNum < 12) {
-                    this.alarms[alarmNum] = steps;
+                    this.alarms[alarmNum] = Math.trunc(steps);
                 }
                 break;
+            }
 
             // GAMEMAKER 7.0: Control actions
             // NOTE: test_expression / check_empty / check_collision are

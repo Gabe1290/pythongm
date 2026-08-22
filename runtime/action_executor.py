@@ -2136,7 +2136,7 @@ class ActionExecutor:
         # Bare tokens that are function names (substituted further below), not
         # instance variables — these legitimately don't resolve to an attribute,
         # so they must be excluded from the "unresolved token" warning.
-        _known_functions = {'random', 'irandom', 'choose'}
+        _known_functions = {'random', 'irandom', 'choose', 'max', 'min', 'abs', 'round'}
 
         # Replace bare variable names (hspeed, vspeed, x, y, etc.) with their instance values
         def replace_bare_var(match):
@@ -2153,6 +2153,14 @@ class ActionExecutor:
                 elif var_name == 'vspeed' and 'self_vspeed' in collision_speeds:
                     return str(collision_speeds['self_vspeed'])
                 return str(getattr(instance, var_name))
+            # Built-in game-state readouts (score/lives/health) — mirrors
+            # _parse_value's own bare-token support for these (and
+            # _eval_bool_expression's namespace), so an arithmetic
+            # expression like a difficulty ramp ("40 - score/50") can
+            # reference score directly without first copying it into an
+            # instance variable.
+            if self.game_runner and var_name in ('score', 'lives', 'health'):
+                return str(getattr(self.game_runner, var_name, 0))
             # Token didn't resolve to a number, a function name, or an instance
             # attribute. It will reach eval() unbound and raise NameError, so the
             # whole expression silently defaults to 0 (see the except below).
@@ -2199,6 +2207,10 @@ class ActionExecutor:
                     'gm_irandom': gm_irandom,
                     'gm_choose': gm_choose,
                     'random': random_module,  # Allow Python random module access
+                    # Matches _eval_bool_expression's own namespace (and
+                    # HTML5's gmExpressionValue) — needed for e.g. a
+                    # difficulty ramp clamped with max(15, 40 - score/50).
+                    'max': max, 'min': min, 'abs': abs, 'round': round,
                 }
                 result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)  # nosec B307 - builtins stripped + regex whitelist (:2006) gates input; literal_eval would break random()/choose()
                 return result
