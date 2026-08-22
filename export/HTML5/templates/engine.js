@@ -2842,6 +2842,17 @@ class GameObject {
                                 ? game.globalVariables[name] : 0;
                             return sum + v;
                         }, 0);
+                    } else if (text.length >= 2 && text.startsWith('"') && text.endsWith('"')) {
+                        // Desktop's _parse_value routes any text containing an
+                        // operator character (+ - * / %) through its arithmetic
+                        // expression evaluator UNLESS it's wrapped in quotes —
+                        // authors quote text like "W A S D - Move" to keep it
+                        // literal (this repo's own documented landmine).
+                        // engine.js never evaluates plain draw_text, so it never
+                        // needed the workaround, but it must still strip the
+                        // quotes an author added FOR desktop's sake, or the
+                        // literal quote characters render on screen.
+                        text = text.slice(1, -1);
                     }
                 }
                 this._draw_queue.push({
