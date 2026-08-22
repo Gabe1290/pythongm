@@ -4299,6 +4299,21 @@ class Game {
         const room = new GameRoom(roomData);
         room._gameRef = this;  // so renderRaycastView can resolve textures
 
+        // Desktop's GameRunner reads settings.room_speed ONCE, globally, into
+        // self.fps -- the pygame clock's real tick rate, so hspeed/vspeed
+        // apply at exactly that many real steps per second (no per-tick
+        // scaling there). HTML5's game loop is uncapped/rAF-driven instead,
+        // so GameRoom.roomSpeed exists purely to reproduce the same real-
+        // world speed by scaling the per-frame position delta (see its
+        // constructor comment) -- but it was hardcoded to 60 regardless of
+        // what the project actually configured, so any project with
+        // room_speed != 60 played at the wrong real-world speed on this
+        // target only (e.g. the promo game's room_speed: 30 made HTML5 run
+        // exactly 2x desktop's real speed). set_room_speed can still change
+        // it at runtime same as before; this only fixes the STARTING value.
+        const configuredSpeed = parseFloat(this.gameData.settings && this.gameData.settings.room_speed);
+        room.roomSpeed = (!isNaN(configuredSpeed) && configuredSpeed > 0) ? configuredSpeed : 60;
+
         if (room.bgImage && sprites[room.bgImage]) {
             room.backgroundSprite = sprites[room.bgImage];
         }
