@@ -1316,15 +1316,26 @@ class GameInstance:
 
         sprite = sprites[sprite_name]
 
+        # Optional uniform scale (e.g. the promo hub's shrunk level icons),
+        # matching _draw_lives's existing pygame.transform.scale pattern.
+        scale = cmd.get('scale', 1.0) or 1.0
+
+        def _scaled(surface):
+            if scale == 1.0:
+                return surface
+            w = max(1, int(surface.get_width() * scale))
+            h = max(1, int(surface.get_height() * scale))
+            return pygame.transform.scale(surface, (w, h))
+
         # Handle animated sprites (multiple frames)
         if len(sprite.frames) > 0:
             # Use the specified subimage (frame index)
             frame_index = int(subimage) % len(sprite.frames)
-            frame_surface = sprite.frames[frame_index]
+            frame_surface = _scaled(sprite.frames[frame_index])
             screen.blit(frame_surface, (int(x), int(y)))
         elif sprite.surface:
             # Single frame sprite
-            screen.blit(sprite.surface, (int(x), int(y)))
+            screen.blit(_scaled(sprite.surface), (int(x), int(y)))
         else:
             logger.warning(f"⚠️ Warning: Sprite '{sprite_name}' has no surface to draw")
 

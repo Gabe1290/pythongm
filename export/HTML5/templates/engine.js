@@ -734,10 +734,13 @@ function renderDrawCommands(ctx, cmds, game) {
                 if (img && img.complete) {
                     const info = game.makeSpriteInfo ? game.makeSpriteInfo(cmd.sprite_name) : null;
                     const frames = info ? (info.frames || 1) : 1;
+                    const scale = cmd.scale || 1;
                     if (frames > 1) {
                         const fw = info.width, fh = info.height;
                         const srcX = ((Math.floor(cmd.subimage || 0) % frames) + frames) % frames * fw;
-                        ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw, fh);
+                        ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw * scale, fh * scale);
+                    } else if (scale !== 1) {
+                        ctx.drawImage(img, cmd.x || 0, cmd.y || 0, img.width * scale, img.height * scale);
                     } else {
                         ctx.drawImage(img, cmd.x || 0, cmd.y || 0);
                     }
@@ -2861,6 +2864,8 @@ class GameObject {
                     sprite_name: params.sprite || params.sprite_name || '',
                     x: parseNumParam(params.x, this, this.x),
                     y: parseNumParam(params.y, this, this.y),
+                    subimage: parseNumParam(params.subimage, this, 0),
+                    scale: parseNumParam(params.scale, this, 1.0),
                 });
                 break;
 

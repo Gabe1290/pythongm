@@ -36,7 +36,10 @@ def test_html5_sprite_crops_the_requested_frame():
     assert "makeSpriteInfo(cmd.sprite_name)" in case, "frame metadata not resolved"
     assert "info.frames" in case
     # 9-arg drawImage (source crop) when multi-frame; whole-image blit otherwise.
-    assert "ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw, fh)" in case
+    # Destination width/height carry the optional uniform `scale` (the promo
+    # hub's shrunk level icons) — 1 when unset, so this is unchanged for
+    # every pre-existing draw_sprite call.
+    assert "ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw * scale, fh * scale)" in case
     assert "cmd.subimage" in case
     # single-frame path preserved
     assert "ctx.drawImage(img, cmd.x || 0, cmd.y || 0)" in case
