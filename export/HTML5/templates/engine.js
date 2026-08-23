@@ -4173,6 +4173,7 @@ class Game {
 
         this.setupKeyboard();
         this.setupMouse();
+        this.setupTouchControls();
         this.loadGame();
     }
 
@@ -4340,6 +4341,65 @@ class Game {
         window.addEventListener('keyup', (e) => {
             this.keys[e.key] = false;
             this.keysReleased[e.key] = true;
+        });
+    }
+
+    // On-screen d-pad / action buttons (the exporter only emits the
+    // #touchControls markup at all when the project binds a keyboard
+    // event -- see html5_exporter.py's _detect_keyboard_controls). Button
+    // presses feed the SAME this.keys/keysPressed/keysReleased state a
+    // real keydown/keyup does, via the canonical pygm2 key name each
+    // button carries in data-key (e.g. "left", "space", "z") mapped to
+    // the matching KeyboardEvent.key value -- so every existing
+    // keyboard/keyboard_press/keyboard_release handler works unmodified,
+    // exactly as if a physical key were held.
+    setupTouchControls() {
+        const panel = document.getElementById('touchControls');
+        if (!panel) return;
+
+        // Only reveal the overlay on an actual touchscreen -- a mouse-only
+        // desktop visitor already has a keyboard and doesn't need it
+        // cluttering the page (this is also why the buttons still bind
+        // mousedown/mouseup below: it makes the panel usable while testing
+        // with a mouse, without being shown unprompted on desktop).
+        const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        if (isTouchDevice) {
+            panel.style.display = 'flex';
+        }
+
+        const CANONICAL_TO_JS_KEY = {
+            left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown',
+            space: ' ', enter: 'Enter', escape: 'Escape', tab: 'Tab',
+            backspace: 'Backspace', delete: 'Delete',
+        };
+
+        const press = (jsKey) => {
+            if (!this.keys[jsKey]) {
+                this.keysPressed[jsKey] = true;
+            }
+            this.keys[jsKey] = true;
+        };
+        const release = (jsKey) => {
+            this.keys[jsKey] = false;
+            this.keysReleased[jsKey] = true;
+        };
+
+        panel.querySelectorAll('[data-key]').forEach((btn) => {
+            const canonical = btn.getAttribute('data-key');
+            const jsKey = CANONICAL_TO_JS_KEY[canonical] || canonical;
+
+            const onPress = (e) => { e.preventDefault(); press(jsKey); };
+            const onRelease = (e) => { e.preventDefault(); release(jsKey); };
+
+            btn.addEventListener('touchstart', onPress, { passive: false });
+            btn.addEventListener('touchend', onRelease, { passive: false });
+            btn.addEventListener('touchcancel', onRelease, { passive: false });
+            // Mouse fallback so the panel is also usable/testable without a
+            // touchscreen; harmless alongside the touch listeners since a
+            // browser that fires both would just re-set the same state.
+            btn.addEventListener('mousedown', onPress);
+            btn.addEventListener('mouseup', onRelease);
+            btn.addEventListener('mouseleave', onRelease);
         });
     }
 

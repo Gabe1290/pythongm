@@ -149,6 +149,78 @@
             max-width: 600px;
         }
 
+        /* On-screen d-pad / action buttons -- only present in the markup
+           when the project actually binds a keyboard event (see
+           html5_exporter.py's _detect_keyboard_controls), and even then
+           hidden by default: engine.js's setupTouchControls() reveals it
+           only on an actual touchscreen, so a desktop visitor with a
+           keyboard never sees it. */
+        #touchControls {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: {width}px;
+            gap: 20px;
+            margin-top: 4px;
+        }
+
+        #dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 56px);
+            grid-template-rows: repeat(3, 56px);
+            gap: 4px;
+        }
+
+        .dpad-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            touch-action: none;
+            padding: 0;
+        }
+
+        .dpad-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .dpad-up { grid-column: 2; grid-row: 1; }
+        .dpad-left { grid-column: 1; grid-row: 2; }
+        .dpad-right { grid-column: 3; grid-row: 2; }
+        .dpad-down { grid-column: 2; grid-row: 3; }
+
+        #actionButtons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            touch-action: none;
+            padding: 0;
+        }
+
+        .action-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
         /* Phones: tighten spacing/fonts so the whole layout fits the
            viewport width instead of relying on scale alone. */
         @media (max-width: 480px) {
@@ -198,6 +270,7 @@
             <button onclick="game.restart()">🔄 Restart</button>
             <span id="fps">FPS: 60</span>
         </div>
+        {touch_controls_html}
     </div>
 
     <script>

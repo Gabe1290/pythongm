@@ -469,6 +469,15 @@ class HTML5Exporter:
                 html_content = html_content.replace('{pwa_head_tags}', pwa_head_tags)
                 html_content = html_content.replace('{pwa_sw_register_script}', pwa_sw_register_script)
 
+                # On-screen d-pad / action buttons (reported: HTML5-exported
+                # games were unplayable on a phone -- no keyboard, and
+                # nothing to tap). Only emitted when the project actually
+                # binds a keyboard event; engine.js's setupTouchControls()
+                # additionally only ever reveals it on a real touchscreen.
+                needs_dpad, action_keys = self._detect_keyboard_controls(project_data)
+                touch_controls_html = self._build_touch_controls_html(needs_dpad, action_keys)
+                html_content = html_content.replace('{touch_controls_html}', touch_controls_html)
+
                 # Write output.
                 output_file = output_path / html_filename
                 with open(output_file, 'w', encoding='utf-8') as f:
@@ -709,6 +718,79 @@ class HTML5Exporter:
         sprite_data['bbox_top'] = bbox[1]
         sprite_data['bbox_right'] = bbox[2]
         sprite_data['bbox_bottom'] = bbox[3]
+
+    # left/right/up/down cover both arrow keys and their WASD equivalents --
+    # either binding means the game has directional movement, so the on-
+    # screen control is a single d-pad either way, matching the (arrows-
+    # only) virtual D-pad export/Kivy/kivy_exporter.py already ships for
+    # Android (VirtualDPad / NEEDS_DPAD).
+    _MOVEMENT_KEY_NAMES = {'left', 'right', 'up', 'down', 'w', 'a', 's', 'd'}
+    # GM event markers, not physical keys -- never a button.
+    _PSEUDO_KEY_NAMES = {'nokey', 'anykey'}
+    _ACTION_KEY_LABELS = {
+        'space': '⎵', 'enter': '⏎', 'escape': 'Esc', 'tab': 'Tab',
+        'backspace': '⌫', 'delete': 'Del',
+    }
+
+    def _detect_keyboard_controls(self, project_data: Dict):
+        """Scan every object's keyboard/keyboard_press/keyboard_release
+        events for the key names actually bound anywhere in the project.
+
+        Returns (needs_dpad, action_keys): needs_dpad is True if any
+        movement key (arrows or WASD) is bound anywhere; action_keys is
+        the sorted list of every OTHER real key bound (e.g. "space", "z"),
+        each becoming its own on-screen button -- e.g. Sky Strike binds
+        space (shoot) and z (bomb) on top of its arrow/WASD movement, so
+        it gets a d-pad plus two action buttons; a project with no
+        keyboard events at all (e.g. a mouse/touch-only puzzle) gets
+        neither, and _build_touch_controls_html then emits nothing.
+        """
+        used = set()
+        for obj_data in project_data.get('assets', {}).get('objects', {}).values():
+            if not isinstance(obj_data, dict):
+                continue
+            events = obj_data.get('events', {})
+            if not isinstance(events, dict):
+                continue
+            for event_name in ('keyboard', 'keyboard_press', 'keyboard_release'):
+                event_data = events.get(event_name)
+                if isinstance(event_data, dict):
+                    for key in event_data.keys():
+                        used.add(str(key).lower())
+        used -= self._PSEUDO_KEY_NAMES
+        needs_dpad = bool(used & self._MOVEMENT_KEY_NAMES)
+        action_keys = sorted(used - self._MOVEMENT_KEY_NAMES)
+        return needs_dpad, action_keys
+
+    def _build_touch_controls_html(self, needs_dpad: bool, action_keys) -> str:
+        """Builds the #touchControls markup engine.js's setupTouchControls()
+        wires up and reveals on a real touchscreen. Empty string (nothing
+        rendered) when the project binds no keyboard event at all."""
+        if not needs_dpad and not action_keys:
+            return ''
+        parts = ['<div id="touchControls">']
+        if needs_dpad:
+            parts.append(
+                '<div id="dpad">'
+                '<button class="dpad-btn dpad-up" data-key="up" aria-label="Up">▲</button>'
+                '<button class="dpad-btn dpad-left" data-key="left" aria-label="Left">◀</button>'
+                '<button class="dpad-btn dpad-right" data-key="right" aria-label="Right">▶</button>'
+                '<button class="dpad-btn dpad-down" data-key="down" aria-label="Down">▼</button>'
+                '</div>'
+            )
+        if action_keys:
+            parts.append('<div id="actionButtons">')
+            for key in action_keys:
+                label = self._ACTION_KEY_LABELS.get(key, key.upper())
+                safe_key = html.escape(key)
+                safe_label = html.escape(label)
+                parts.append(
+                    f'<button class="action-btn" data-key="{safe_key}" '
+                    f'aria-label="{safe_key}">{safe_label}</button>'
+                )
+            parts.append('</div>')
+        parts.append('</div>')
+        return ''.join(parts)
 
     # Formats browsers can decode via <audio>/Audio(); .mid/.midi have no
     # browser support and are skipped with a warning.
