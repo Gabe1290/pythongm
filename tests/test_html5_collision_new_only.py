@@ -60,15 +60,22 @@ def test_check_collisions_gates_on_new_pair_only():
 # ---------------------------------------------------------------------------
 
 def test_end_to_end_handler_fires_once_per_continuous_overlap():
-    """Executes the actual PY_BOOTSTRAP-adjacent JS via a stub-free path is
-    not available for engine.js (no embedded Python here, unlike the HTML5
-    execute_code bootstrap) -- so this proves the fix the same way the
-    repo's other engine.js behavioural tests do when Node isn't available:
-    a real HTML5Exporter export, loaded and driven with Node if present,
-    else skipped. Node is genuinely absent in this repo's CI (see other
-    engine.js tests' own "no Node in CI" notes), so this is a best-effort
-    dynamic check that skips cleanly rather than a required gate -- the
-    source-level assertions above are the enforced regression guard.
+    """Executes the real engine.js (class declarations and all) under Node's
+    vm module, then drives GameObject.checkCollisions directly -- the same
+    approach the repo's other engine.js behavioural tests use when Node is
+    available, skipping cleanly when it isn't (see other engine.js tests'
+    "no Node in CI" notes for the general convention this follows; CI here
+    happens to have Node installed, so this runs for real there).
+
+    The driver code below is concatenated onto engine.js's source and run
+    as a SINGLE vm.runInContext call, rather than run separately and then
+    read back via `sandbox.GameObject`: top-level `class`/`let`/`const`
+    declarations in a vm-executed script are NOT reflected as properties
+    on the contextified sandbox object (the same "let x; window.x is still
+    undefined" behavior real browsers have) -- only `var`/function
+    declarations are. Concatenating means the driver code shares the same
+    top-level lexical scope engine.js's `class GameObject` was declared
+    in, so it can reference `GameObject` directly.
     """
     import shutil
     if shutil.which("node") is None:
@@ -78,14 +85,7 @@ def test_end_to_end_handler_fires_once_per_continuous_overlap():
     import subprocess
     import tempfile
 
-    script = """
-    const vm = require('vm');
-    const fs = require('fs');
-    const src = fs.readFileSync(process.argv[2], 'utf8');
-    const sandbox = { console, Math, Set, Map, window: {} };
-    vm.createContext(sandbox);
-    vm.runInContext(src, sandbox);
-    const GameObject = sandbox.GameObject;
+    driver = """
     const fireCount = { n: 0 };
     class Room {
       constructor() { this.instances = []; }
@@ -105,11 +105,24 @@ def test_end_to_end_handler_fires_once_per_continuous_overlap():
     for (let i = 0; i < 10; i++) player.checkCollisions(game);
     console.log(JSON.stringify({fireCount: fireCount.n}));
     """
+
+    script = """
+    const vm = require('vm');
+    const fs = require('fs');
+    const src = fs.readFileSync(process.argv[2], 'utf8');
+    const driver = fs.readFileSync(process.argv[3], 'utf8');
+    const sandbox = { console, Math, Set, Map, window: { addEventListener: () => {} } };
+    vm.createContext(sandbox);
+    vm.runInContext(src + "\\n" + driver, sandbox);
+    """
     with tempfile.NamedTemporaryFile(suffix=".js", mode="w", delete=False) as f:
         f.write(script)
         script_path = f.name
+    with tempfile.NamedTemporaryFile(suffix=".js", mode="w", delete=False) as f:
+        f.write(driver)
+        driver_path = f.name
     result = subprocess.run(
-        ["node", script_path, str(REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js")],
+        ["node", script_path, str(REPO_ROOT / "export" / "HTML5" / "templates" / "engine.js"), driver_path],
         capture_output=True, text=True, timeout=30
     )
     assert result.returncode == 0, result.stderr
