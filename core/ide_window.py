@@ -4540,6 +4540,20 @@ class PyGameMakerIDE(QMainWindow):
                 # ones) refreshes its asset dropdowns. Cheap and idempotent.
                 self._refresh_blockly_asset_lists()
 
+                # A sprite save (new art, frame count, or an origin_x/
+                # origin_y change) previously left every already-open room
+                # editor's RoomCanvas.sprite_cache/origin_cache holding
+                # stale data for any object using this sprite -- only an
+                # object's sprite *assignment* changing (object editor)
+                # triggered this refresh, not the sprite's own metadata
+                # changing underneath it. refresh_object_sprites' real work
+                # is a full RoomCanvas.set_project_info() re-point (which
+                # clears both caches); the object_name arg only drives an
+                # already-redundant single-key eviction, so reusing it here
+                # with the sprite's own name is safe.
+                if asset_category == 'sprites':
+                    self.refresh_object_sprites(asset_name, None, None)
+
                 logger.info(f"✅ Save completed successfully for {asset_name}")
 
             else:

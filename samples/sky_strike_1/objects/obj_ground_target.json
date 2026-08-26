@@ -1,0 +1,29 @@
+{
+  "name": "obj_ground_target",
+  "asset_type": "object",
+  "sprite": "spr_ground_target",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 10,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_vspeed",
+          "parameters": {
+            "speed": "2"
+          }
+        }
+      ]
+    },
+    "outside_room": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        }
+      ]
+    }
+  }
+}

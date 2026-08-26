@@ -1079,13 +1079,14 @@ class GameInstance:
         italic = bool(font_asset.get('italic', False))
         return self._get_cached_font(size, family, bold, italic)
 
-    def _align_text_pos(self, x, y, width, height):
-        """Shift (x, y) per self.draw_halign/draw_valign (also set by
-        set_draw_font, also never previously read) so x/y become the
-        alignment anchor GameMaker's draw_set_halign/draw_set_valign
+    def _align_text_pos(self, x, y, width, height, halign='left', valign='top'):
+        """Shift (x, y) per halign/valign (captured on the draw-queue command
+        at queue time by execute_draw_text_action/execute_draw_scaled_text_action
+        — NOT read from self here, since by render time the whole draw
+        event has already run and self.draw_halign only reflects whatever
+        set_draw_font call happened to run LAST in that event) so x/y
+        become the alignment anchor GameMaker's draw_set_halign/valign
         promise, not always the top-left corner."""
-        halign = getattr(self, 'draw_halign', 'left')
-        valign = getattr(self, 'draw_valign', 'top')
         if halign == 'center':
             x = x - width / 2
         elif halign == 'right':
@@ -1106,7 +1107,8 @@ class GameInstance:
         color = self._parse_color(cmd.get('color', '#FFFFFF'))
 
         text_surface = font.render(str(text), True, color)
-        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height())
+        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height(),
+                                     cmd.get('halign', 'left'), cmd.get('valign', 'top'))
         screen.blit(text_surface, (x, y))
 
     def _draw_scaled_text(self, screen: pygame.Surface, cmd: dict):
@@ -1138,7 +1140,8 @@ class GameInstance:
 
         # Align against the FINAL (post-scale) size — alignment is a
         # visual anchor, so it should track what's actually on screen.
-        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height())
+        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height(),
+                                     cmd.get('halign', 'left'), cmd.get('valign', 'top'))
         screen.blit(text_surface, (int(x), int(y)))
 
     def _draw_lives(self, screen: pygame.Surface, cmd: dict):
@@ -1316,15 +1319,26 @@ class GameInstance:
 
         sprite = sprites[sprite_name]
 
+        # Optional uniform scale (e.g. the promo hub's shrunk level icons),
+        # matching _draw_lives's existing pygame.transform.scale pattern.
+        scale = cmd.get('scale', 1.0) or 1.0
+
+        def _scaled(surface):
+            if scale == 1.0:
+                return surface
+            w = max(1, int(surface.get_width() * scale))
+            h = max(1, int(surface.get_height() * scale))
+            return pygame.transform.scale(surface, (w, h))
+
         # Handle animated sprites (multiple frames)
         if len(sprite.frames) > 0:
             # Use the specified subimage (frame index)
             frame_index = int(subimage) % len(sprite.frames)
-            frame_surface = sprite.frames[frame_index]
+            frame_surface = _scaled(sprite.frames[frame_index])
             screen.blit(frame_surface, (int(x), int(y)))
         elif sprite.surface:
             # Single frame sprite
-            screen.blit(sprite.surface, (int(x), int(y)))
+            screen.blit(_scaled(sprite.surface), (int(x), int(y)))
         else:
             logger.warning(f"⚠️ Warning: Sprite '{sprite_name}' has no surface to draw")
 
@@ -1736,6 +1750,23 @@ class GameRoom:
                 # else: No sprite assigned - instance.sprite remains None
                 # The render method will skip instances with no sprite
 
+        # __init__'s rebuild_spatial_grid() ran before any of the above --
+        # every instance was indexed under its GameInstance.__init__ default
+        # 32x32 placeholder (_cached_width/_cached_height), not its real
+        # sprite size, and set_sprite() above updates those caches without
+        # touching the grid (no _grid_dirty flag, no re-add). An object
+        # whose real collision size exceeds 32px in either dimension is then
+        # only ever found by a query inside its placeholder-sized cell
+        # range -- e.g. a 480x32 ground strip registered as if it were
+        # 32x32 stops blocking a player who has walked more than about a
+        # cell-width away from its origin, who then falls straight through.
+        # Rebuilding once more here, now that every instance's cached
+        # dimensions are the real ones, is the general fix (not just a
+        # patch for this one object): every instance in the room is
+        # correctly indexed by its true collision size before the first
+        # frame runs.
+        self.rebuild_spatial_grid()
+
 
     def render(self, screen: pygame.Surface):
         """Render the room and all its instances.
@@ -1804,7 +1835,7 @@ class GameRoom:
         # — a legacy background configured with foreground=True (set_background's
         # `foreground` param) is skipped here and drawn after instances instead
         # (below), mirroring bg_layers' own foreground pass.
-        if self.bg_layers:
+        if self._bg_layers_active:
             self._render_bg_layers(screen, foreground=False, view_offset=offset)
         elif self.background_surface and not self.background_foreground:
             self._render_legacy_background(screen, view_offset=offset)
@@ -1824,7 +1855,7 @@ class GameRoom:
                 instance.render(screen, view_offset=offset)
 
         # Draw foreground background layers
-        if self.bg_layers:
+        if self._bg_layers_active:
             self._render_bg_layers(screen, foreground=True, view_offset=offset)
         elif self.background_surface and self.background_foreground:
             self._render_legacy_background(screen, view_offset=offset)
@@ -2008,6 +2039,28 @@ class GameRoom:
                 screen.blit(self.tile_surfaces[key], (base_x + ox, base_y + oy))
             else:
                 screen.blit(self.tile_surfaces[key], (tx + ox, ty + oy))
+
+    @property
+    def _bg_layers_active(self):
+        """Is at least one multi-layer background actually visible?
+
+        A GMK-imported room ships all 8 layer slots present but every one
+        disabled (visible=False) -- the room editor's own natively-authored
+        default is an empty list, but plenty of shipped rooms carry the
+        fuller GMK shape. `bg_layers` being non-EMPTY must not by itself be
+        treated as "has a background": _render_room picks the bg_layers
+        path over the legacy single-background one (set_background's own
+        scroll/tiling) whenever this is true, and a non-empty-but-all-
+        disabled list would silently swallow set_background's rendering
+        entirely -- exactly what happened to samples/sky_strike_1's
+        scrolling ground before this fix (its room0.json copied the 8-slot
+        shape from an unrelated sample; set_background's vspeed was set and
+        ticking every frame, but nothing ever reached the code that
+        actually draws with it). A property, not a value cached at
+        construction, because `bg_layers` can be reassigned after the room
+        is built (e.g. tests/test_extension_render_hook.py pokes it
+        directly) and a stale cache would silently ignore that."""
+        return any(layer.get('visible') for layer in self.bg_layers)
 
     def set_backgrounds_ref(self, backgrounds_dict):
         """Store reference to loaded backgrounds for tile rendering and multi-layer bg"""

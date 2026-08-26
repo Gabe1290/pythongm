@@ -1,11 +1,18 @@
 # Plan: LAN multiplayer (folder extension)
 
-Status: **Phases 0-2 DONE (2026-08-15).** Written 2026-08-15 per
-`docs/REMAINING_WORK_2026-08-15.md` Section F's instruction that this item
-needs its own dedicated plan doc before any code lands. Supersedes nothing —
-the only prior record was the `multiplayer-network-stash` memory entry,
-folded in here. Only Phase 3 (sample + the manual two-machine playtest)
-remains; see the per-phase notes below for exactly what landed and where.
+Status: **Phases 0-3 DONE (2026-08-15), except the one thing that can't be
+automated.** Written 2026-08-15 per `docs/REMAINING_WORK_2026-08-15.md`
+Section F's instruction that this item needs its own dedicated plan doc
+before any code lands. Supersedes nothing — the only prior record was the
+`multiplayer-network-stash` memory entry, folded in here. Every phase
+(generic frame-update hook, network extension + wire protocol, the
+`set_network_mode` action/CLI, and the `multiplayer_lan_1` sample) has
+landed and is covered by automated tests, including a loopback test that
+drives two real `GameRunner` instances over a real `127.0.0.1` socket. The
+one thing that remains and genuinely cannot be done from this environment:
+a human watching two real windows side by side to confirm the square
+visibly moves in both — see Phase 3's own notes for exactly what was and
+wasn't possible to verify without a display.
 
 ## Where this comes from
 

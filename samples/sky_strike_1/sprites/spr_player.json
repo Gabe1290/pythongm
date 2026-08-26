@@ -1,0 +1,16 @@
+{
+  "name": "spr_player",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_player.png",
+  "width": 24,
+  "height": 24,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 24,
+  "frame_height": 24,
+  "animation_type": "single",
+  "speed": 0.0,
+  "imported": true
+}

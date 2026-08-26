@@ -416,6 +416,80 @@ class TestBackgroundForeground:
                 f"got {room.bg_scroll_x}")
 
 
+class TestAllDisabledBgLayersDoNotShadowSetBackground:
+    """A GMK-imported room ships all 8 background-layer slots present but
+    every one visible=False; the room editor's own natively-authored default
+    is an empty list. `_render_room` picks the bg_layers path over the
+    legacy single-background one (set_background's own scroll/tiling)
+    whenever `bg_layers` is non-empty -- so a room carrying the disabled
+    8-slot shape silently swallowed set_background's rendering entirely,
+    even with a real background_surface and a nonzero vspeed ticking every
+    frame. Found via samples/sky_strike_1's scrolling ground never actually
+    scrolling despite bg_scroll_y being correctly wired everywhere else.
+    Every prior test in this file that exercises _render_legacy_background
+    happened to construct its GameRoom without a 'backgrounds' key at all,
+    which defaults to [] (see GameRoom.__init__: room_data.get('backgrounds',
+    [])) -- an empty list was never distinguished from a non-empty-but-
+    disabled one until this class."""
+
+    def _room_with_disabled_layers_and_bg(self, foreground=False):
+        from runtime.game_runner import GameRoom
+        room = GameRoom('r', {
+            'width': 64, 'height': 64,
+            'background_foreground': foreground,
+            'backgrounds': [
+                {'visible': False, 'foreground': False, 'background_image': '',
+                 'x': 0, 'y': 0, 'tile_h': True, 'tile_v': True,
+                 'hspeed': 0, 'vspeed': 0, 'stretch': False}
+                for _ in range(8)
+            ],
+        }, action_executor=MagicMock())
+        bg = pygame.Surface((64, 64))
+        bg.fill((0, 0, 255))
+        room.background_surface = bg
+        room.background_image_name = 'bg'
+        return room
+
+    def test_all_disabled_layers_are_not_active(self):
+        room = self._room_with_disabled_layers_and_bg()
+        assert room.bg_layers, "sanity: the list itself must be non-empty"
+        assert room._bg_layers_active is False
+
+    def test_a_visible_layer_is_active(self):
+        # _bg_layers_active is a live property, not a value cached at
+        # construction -- flipping one layer's visibility is enough.
+        room = self._room_with_disabled_layers_and_bg()
+        room.bg_layers[3]['visible'] = True
+        assert room._bg_layers_active is True
+
+    def test_legacy_background_still_renders_behind_the_disabled_layers(self):
+        room = self._room_with_disabled_layers_and_bg(foreground=False)
+        screen = pygame.Surface((64, 64))
+        screen.fill((0, 0, 0))
+        room._render_room(screen, (0, 0))
+        assert screen.get_at((4, 4))[:3] == (0, 0, 255), (
+            "set_background's legacy render was shadowed by an all-disabled "
+            "bg_layers list")
+
+    def test_legacy_background_still_renders_in_front_when_foreground(self):
+        room = self._room_with_disabled_layers_and_bg(foreground=True)
+        screen = pygame.Surface((64, 64))
+        screen.fill((0, 0, 0))
+        room._render_room(screen, (0, 0))
+        assert screen.get_at((4, 4))[:3] == (0, 0, 255)
+
+    def test_scroll_offset_still_advances(self):
+        """The rendering path being reachable is necessary but not
+        sufficient -- confirm bg_scroll_y (the actual visible-motion state)
+        advances too, matching the sibling scroll-speed test above."""
+        room = self._room_with_disabled_layers_and_bg()
+        room.bg_vspeed = 3.0
+        screen = pygame.Surface((64, 64))
+        room._render_room(screen, (0, 0))
+        room._render_room(screen, (0, 0))
+        assert room.bg_scroll_y == 6.0
+
+
 # ---------------------------------------------------------------------------
 # End-to-end regression proof: maze_3's real sample data, real GameRunner
 # ---------------------------------------------------------------------------

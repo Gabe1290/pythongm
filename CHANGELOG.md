@@ -7,6 +7,146 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-24
+
+**The Block World, multiplayer, and real-desktop-export release.** The
+largest release since 1.0: a new 3D voxel sandbox extension with full
+cross-platform export parity, a LAN multiplayer extension, a rewrite of
+the desktop export pipeline to freeze the actual pygame engine instead of
+a second, less-compatible Kivy-based one, the raycast/2.5D system
+maturing into its own extension with a DOOM-style HUD and minimap, three
+new samples, full UI translation for three more languages plus a sweep
+that filled in over 1,100 previously-empty translations across the seven
+already-shipped ones, a wiki completeness pass (screenshots, split pages,
+all 9 languages), an Asset Manager/Clean Project/Trash workflow for
+managing a project's files safely, and — the work immediately behind this
+release — HTML5-exported games are now genuinely playable on a phone
+browser (responsive layout + on-screen touch controls), not just on
+desktop.
+
+### Added
+- **Block World**, a new 3D voxel-sandbox extension
+  (`extensions/block_world/`): place/break blocks, gravity and jump
+  physics, an inventory with per-type block protection, seed-based
+  procedural terrain (including an infinite-terrain mode), real
+  per-pixel wall/top/bottom textures, occlusion culling, and a HUD
+  (crosshair + hotbar). Full HTML5 and Kivy/Android export parity, an
+  in-IDE editor (place/break, undo/redo, save/load through the Room
+  Editor), and two shipped samples (`block_world_1`, `block_world_2`).
+- **LAN multiplayer**, a new extension (`extensions/multiplayer_lan/`):
+  real network play over a local network, plus the `multiplayer_lan_1`
+  sample.
+- **Desktop exports (`.exe`/Linux/macOS) now freeze the real pygame
+  engine**, not a second Kivy-based one — the exported build is now
+  provably the same game Test Game runs, not an ~80%-compatible
+  reimplementation. Verified pixel-identical against the IDE's own
+  renderer across all five bundled samples.
+- **The 2.5D raycast system matured into `extensions/raycast_2_5d/`**
+  with a DOOM-style status bar (`draw_doom_hud`: health bar + reactive
+  face, score, lives, objective counter), a minimap (`draw_minimap`),
+  and a letterboxed viewport (`viewport_height`) — shipped across
+  desktop, HTML5, and Kivy. Two new samples, `raycast_3` (health/medkit
+  survival) and `raycast_4` (DOOM-style status bar showcase), plus
+  `raycast_2`'s two-level dungeon crawl.
+- **New sample: `sky_strike_1`**, a Xevious-style vertical shooter
+  (bombing crosshair, forward-falling bombs, scrolling terrain).
+- **Full UI translation for Portuguese, Japanese, and Chinese** — all
+  1,369 real distinct UI strings, matching the existing 7 languages'
+  coverage exactly.
+- **Asset Manager / Clean Project workflow**: usage tracking (which
+  assets are actually referenced, and where), a name filter on the
+  Asset Tree, bulk multi-select delete, orphaned `.tmp`/physical-file
+  detection, and a soft-delete **Trash** (Tools → Restore Deleted
+  Assets…) so a deletion — bulk or single — can be undone instead of
+  being immediately permanent.
+- **On-screen touch controls for HTML5 exports.** The exporter now scans
+  a project's keyboard events and auto-generates a d-pad (for arrow/WASD
+  movement) plus one action button per other bound key (e.g. space to
+  shoot, a letter to use an item) — shown only on an actual touchscreen,
+  never to a desktop visitor with a keyboard. A game with no keyboard
+  events (pure tap/click) gets no panel.
+- **HTML5-exported games are now responsive on a phone browser.** The
+  canvas and HUD used to be pinned to the room's exact native pixel
+  size and simply overflowed a narrow viewport; they now scale down
+  together (preserving aspect ratio and crisp pixel art) while staying
+  at exact 1:1 scale on desktop.
+- **Export polish**: PWA manifest + service worker (opt-in, installable
+  HTML5 exports), an HTML5 external-asset export mode, a fully
+  self-contained offline Pyodide bundle for `execute_code` games, Kivy
+  debug-vs-release Android build presets, desktop code signing (Windows
+  `signtool`, macOS `codesign`/notarization), and app-icon wiring across
+  Windows/macOS/HTML5/iOS.
+- **Room editor**: click a stacked instance repeatedly to cycle through
+  every instance under the cursor, instead of only ever selecting the
+  topmost one.
+- **Extensions on/off settings UI**, completing the two-tier warning
+  (disabled-but-present vs. not-installed-at-all) for a project that
+  references an extension this install doesn't have active.
+
+### Fixed
+- **HTML5 export completeness sweep** (dozens of parity gaps against the
+  desktop runtime, found mostly via the raycast/Block World/promo-game
+  work): collision events now fire once per overlap instead of every
+  frame an instance keeps touching another (a real "player sinks through
+  the floor" bug); gravity/friction now accumulate at the room's
+  configured `room_speed`, not the browser's real, uncapped frame rate;
+  a sprite's collision box is now auto-derived from its opaque pixels
+  instead of defaulting to the full frame; `create_instance`,
+  `if_condition`'s condition-type dispatch, `xstart`/`ystart`,
+  `set_draw_font` halign/valign, authored depth, and `move_to_contact`'s
+  direction were all previously silent no-ops or wrong; `draw_text` no
+  longer leaks the desktop quote-escaping convention into displayed
+  text; score/lives/health and global-variable readouts now resolve
+  correctly inside `set_variable`/`draw_text` expressions, including
+  `max()`/`min()`.
+- **HTML5's `restart_game` no longer wipes global variables.** It was a
+  full `window.location.reload()`, which also destroyed
+  `game.globalVariables` (any cross-level score tracking) — now an
+  in-process reset matching desktop's actual semantics. This also
+  surfaced and fixed a latent bug present on **both** engines: a
+  `game_start` handler meant to run once at first load was silently
+  re-firing (and re-zeroing state) on every `restart_game`, since
+  `restart_game` correctly re-fires `game_start` to match real
+  GameMaker.
+- **Kivy/Android export parity sweep**: held keyboard events, `anykey`,
+  and named-direction keys now dispatch correctly; solid-object
+  collision now blocks movement per axis instead of both at once;
+  sub-image expressions and vertical-sign convention bugs fixed; the 4
+  Room actions (`set_room_speed`, `set_background_color`,
+  `set_room_persistent`, `set_background`) now have working codegen;
+  `execute_code`/`execute_script` now bind a real `game` object and copy
+  locals back onto the instance, matching desktop.
+- **1,101 previously-empty (`type="unfinished"`) translation entries
+  filled in** across German, Spanish, French, Italian, Russian,
+  Slovenian, and Ukrainian — strings that had simply never been
+  translated despite those languages otherwise being "done."
+- **Two real dead-translation bugs fixed, present in every shipped
+  language**: a translation context named `"self.ide"` that Qt's
+  `tr()` never actually resolves at runtime (the context comes from the
+  runtime class name, not the call-site text) orphaned 18 real,
+  correctly-translated strings; and `self.tr(f"...")` f-strings in the
+  Thymio Playground window were fully interpolated before `tr()` ever
+  saw them, so their (correct, human-written) translations could never
+  match at runtime either.
+- **The extension-system UI (Preferences' Extensions tab, unrecognized-
+  action warnings) was 100% untranslated in all 10 languages** — the
+  session that added those 15 strings never touched a translation
+  catalog. Fixed for every shipped language.
+- A room bigger than the game window is no longer shown all at once
+  (viewport clipping was missing for oversized rooms).
+- Two missing commas were blacking out every HTML5 export under certain
+  project shapes.
+
+### Changed
+- **Wiki completeness pass**: real screenshots throughout, large pages
+  (Full-Action-Reference, Event-Reference) split into an index plus
+  per-category pages for readability, and an accuracy + diacritics pass
+  across all 9 languages.
+- Sample guides (README-style in-app documentation) translated into all
+  languages that have them; sample game *content* (in-game messages)
+  deliberately stays English, since students author and read those in
+  their own language via ordinary `show_message` actions.
+
 ## [1.1.2] - 2026-08-09
 
 **The extension-compatibility release.** Ships the concrete, provable

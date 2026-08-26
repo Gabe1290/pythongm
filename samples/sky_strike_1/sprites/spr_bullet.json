@@ -1,0 +1,16 @@
+{
+  "name": "spr_bullet",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_bullet.png",
+  "width": 4,
+  "height": 10,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 4,
+  "frame_height": 10,
+  "animation_type": "single",
+  "speed": 0.0,
+  "imported": true
+}

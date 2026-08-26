@@ -95,16 +95,15 @@ class TestAlignTextPos:
         assert inst._align_text_pos(10, 20, 100, 40) == (10, 20)
 
     def test_center_middle_shifts_by_half(self):
+        # halign/valign are passed explicitly now — captured at draw_text's
+        # queue time (tests/test_draw_text_halign_capture_timing.py), not
+        # read off the instance at render time.
         inst = _instance()
-        inst.draw_halign = "center"
-        inst.draw_valign = "middle"
-        assert inst._align_text_pos(10, 20, 100, 40) == (10 - 50, 20 - 20)
+        assert inst._align_text_pos(10, 20, 100, 40, halign="center", valign="middle") == (10 - 50, 20 - 20)
 
     def test_right_bottom_shifts_by_full(self):
         inst = _instance()
-        inst.draw_halign = "right"
-        inst.draw_valign = "bottom"
-        assert inst._align_text_pos(10, 20, 100, 40) == (10 - 100, 20 - 40)
+        assert inst._align_text_pos(10, 20, 100, 40, halign="right", valign="bottom") == (10 - 100, 20 - 40)
 
 
 def _bbox_of_non_background(screen, bg=(0, 0, 0)):
@@ -147,19 +146,19 @@ class TestDrawTextEndToEnd:
         assert 20 <= bbox[1] < 35
 
     def test_center_alignment_shifts_the_render_left(self):
+        # halign lives on the cmd (captured at draw_text's queue time), not
+        # the instance — see tests/test_draw_text_halign_capture_timing.py.
         inst = _instance()
-        inst.draw_halign = "center"
         unaligned = self._render(_instance(), {"text": "Hello World", "x": 100, "y": 20, "color": "#FFFFFF"})
-        centered = self._render(inst, {"text": "Hello World", "x": 100, "y": 20, "color": "#FFFFFF"})
+        centered = self._render(inst, {"text": "Hello World", "x": 100, "y": 20, "color": "#FFFFFF", "halign": "center"})
         left_unaligned = _bbox_of_non_background(unaligned)[0]
         left_centered = _bbox_of_non_background(centered)[0]
         assert left_centered < left_unaligned  # shifted left, per anchor=center
 
     def test_scaled_text_aligns_against_post_scale_size(self):
         inst = _instance()
-        inst.draw_halign = "right"
         screen = self._render(
-            inst, {"text": "Hi", "x": 150, "y": 20, "xscale": 3.0, "yscale": 1.0, "color": "#FFFFFF"},
+            inst, {"text": "Hi", "x": 150, "y": 20, "xscale": 3.0, "yscale": 1.0, "color": "#FFFFFF", "halign": "right"},
             method="_draw_scaled_text", size=(300, 100))
         bbox = _bbox_of_non_background(screen)
         assert bbox is not None

@@ -687,6 +687,68 @@ existed. Regenerated; 0 untranslated strings reported now.
   runtime), fixed separately. Full writeup, per-language notes, and the
   regression-test registry: `docs/I18N_UNFINISHED_2026-08-10.md`.
 
+### Block World renderer — occlusion culling for the first-person view (DONE 2026-08-21, partial)
+- Investigated after a report that movement in the bundled block_world
+  samples "feels quite slow." Measured, not assumed: `block_world_1` ran at
+  ~8.0 fps and `block_world_2` at ~4.35 fps against their project-configured
+  30fps room speed (headless, real `GameRunner.run()` timing) — movement
+  itself (`move_and_collide`) is correct; the renderer
+  (`extensions/block_world/renderer.py`) can't keep up, so held-key movement
+  only advances once per actual rendered frame — far less often than the
+  sample authors intended (~3x slower than the designed speed on
+  `block_world_1`).
+- Root cause (profiled): `render_block_world_view`'s per-column DDA march
+  draws a `_draw_wall_strip`/`_draw_horizontal_face_textured` pygame Surface
+  op for every occupied cell the ray crosses, including cells entirely
+  hidden behind nearer opaque geometry — painter's-algorithm overdraw with
+  no occlusion culling at all.
+- Fix: `_stack_opaque_spans`/`_merge_covered`/`_is_covered` track cumulative
+  screen-row coverage from nearer, already-collected opaque blocks as the
+  march proceeds near-to-far; a farther cell whose whole projected span is
+  already covered is dropped before it costs a single draw call. Proven
+  PIXEL-IDENTICAL against the pre-fix renderer across 72 (seed, camera
+  angle) combinations spanning open floor, walls, and gaps (three rounds,
+  across two design revisions) — this only removes provably-invisible
+  draws, never changes what's on screen. `tests/test_block_world_layers.py`
+  `TestCumulativeCoverage` + `TestOcclusionCullingSkipsHiddenCells`.
+- **Real, measured trade-off, not a clean win — known and accepted, not a
+  bug in the implementation.** `block_world_1` (maze-like, lots of walls)
+  improved ~+20% (~8.0 → ~9.6 fps); `block_world_2` (procedurally-generated
+  open terrain) got ~-12% WORSE (~4.35 → ~3.85 fps). Walled/maze-style
+  worlds get long sightlines that terminate against solid geometry, where
+  the coverage bookkeeping pays for itself many times over; open rolling
+  terrain rarely has anything that fully occludes, so every column pays the
+  bookkeeping cost without triggering enough skips to offset it. Two design
+  revisions were tried (whole-stack-only spans, cheaper but weaker; a
+  no-genexpr per-block variant) — the trade-off held in both, so it's
+  structural to the approach, not an implementation bug to fix further.
+  Shipped anyway (explicit user decision, 2026-08-21) since walled/
+  structured worlds are the more common authored style for this feature,
+  and neither sample is anywhere near its 30fps target regardless.
+- **Still open — neither sample reaches its target fps.** The deeper
+  bottleneck is per-draw-call Surface-allocation overhead itself
+  (`pygame.transform.scale`/`subsurface`/`blit`, ~10,700 calls/frame on
+  `block_world_1` even after this fix) — occlusion culling only avoids
+  calls that were entirely wasted; it doesn't make a genuinely-visible draw
+  any cheaper. A real fix needs either batching per-column draws into fewer
+  Surface operations, a lower default `columns`/`render_distance` (a
+  visible quality/speed tradeoff, not free), or a different rendering
+  approach entirely (e.g. numpy-vectorized column compositing) — a larger,
+  riskier effort than this session's scope.
+- **Follow-up decision, same day: the block_world extension's further work
+  is set aside** (not deleted — `extensions/block_world/`, both samples,
+  and all their tests remain and stay green) in favor of a cheaper vertical
+  shooter, `samples/sky_strike_1` (see its own README for the design and a
+  real spawn-off-screen `outside_room` bug this session's authoring hit).
+  `block_world_1`/`block_world_2` were removed from the Welcome tab's
+  `SAMPLE_PROJECTS` list (`widgets/welcome_tab.py`); the beginner edition's
+  sample whitelist (`config/editions.py`) was unaffected, since both
+  already sat outside it via the `_advanced_prefixes` filter
+  (`tests/test_edition_sample_filter.py`) — `sky_strike_1` was added to
+  that whitelist instead, being simple enough for a beginner. Re-add the
+  two Welcome tab tuples to bring block_world back into view if work on it
+  resumes later.
+
 ## Project format / persistence
 
 ### ~~Manifest-ify objects & sprites in project.json~~ (DONE 2026-08-14 objects, DONE 2026-08-15 sprites)
@@ -1167,6 +1229,24 @@ existed. Regenerated; 0 untranslated strings reported now.
     the `set_lives`/`set_health` ACTIONS trigger `no_more_lives`/
     `no_more_health`). `tests/test_html5_execute_code_game_binding.py`.
     See `docs/DEFERRED_ITEMS_PLAN.md` item 9.
+  - **Follow-up limitation on the item above, found 2026-08-21, not yet
+    fixed:** the per-call `_Game(score, lives, health)` snapshot means any
+    custom attribute set on `game` from `execute_code` (e.g.
+    `game.wave_count = 5`) is discarded the instant that call returns —
+    it's a fresh object every call, never cached. Desktop diverges here:
+    `execute_execute_code_action` binds `game` to the literal live
+    `GameRunner` (`self.game_runner`), so a custom attribute set there
+    persists for the rest of the game, visible to every later
+    `execute_code` call from any instance — real, working desktop idiom
+    for ad hoc shared game state. `game.score`/`lives`/`health` themselves
+    are unaffected by this gap (they're the intentionally-whitelisted
+    fields that already round-trip through the patch mechanism); only
+    attributes outside that whitelist vanish silently, with no error or
+    warning. Fix would be caching the `_Game` instance at module scope
+    (like `_instances` already does for `self` via `_get_inst`) instead of
+    reconstructing it fresh in `run_code`/`run_draw`, syncing score/lives/
+    health into it before each call rather than replacing it outright.
+    Not yet scoped for Kivy (untouched, not investigated this session).
   - ~~Draw-queue `background`/`health_bar` commands... not implemented~~
     **DONE 2026-07-15** — `case 'background'` (reuses the `game.sprites`
     map backgrounds already share with sprites, per `encode_sprites`) and

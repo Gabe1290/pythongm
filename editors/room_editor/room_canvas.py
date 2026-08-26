@@ -55,6 +55,12 @@ class RoomCanvas(QWidget):
         self.instances = []
         # CHANGED: Support multiple selected instances
         self.selected_instances = []  # List of selected instances
+        # Click-to-cycle state (find_instances_at): the topmost-first list of
+        # every instance under the LAST regular click, so a repeated click at
+        # the same spot can advance to the next one underneath instead of
+        # always re-picking the top of the pile. Reset whenever a click
+        # lands on a different pile (see mousePressEvent).
+        self.last_click_pile = []
         self.dragging = False
         self.drag_offset = QPoint(0, 0)
         self.current_object_type = None
@@ -394,11 +400,22 @@ class RoomCanvas(QWidget):
         return pos
 
     def find_instance_at(self, pos):
-        """Find instance at given position"""
-        for instance in reversed(self.instances):
-            if self._instance_footprint(instance).contains(pos):
-                return instance
-        return None
+        """Find the TOPMOST instance at given position (unchanged behaviour
+        for erase/paint callers -- see find_instances_at for the full pile,
+        used by click-to-cycle selection)."""
+        pile = self.find_instances_at(pos)
+        return pile[0] if pile else None
+
+    def find_instances_at(self, pos):
+        """Every instance whose footprint contains pos, topmost-drawn first.
+
+        Instances paint in list order (later entries on top), so the
+        topmost-first pile is self.instances reversed, filtered to those
+        actually containing pos -- same ordering find_instance_at always
+        used, just not stopping at the first match.
+        """
+        return [instance for instance in reversed(self.instances)
+                if self._instance_footprint(instance).contains(pos)]
 
     def _instance_footprint(self, instance):
         """The instance's drawn footprint as a QRect, accounting for scale.
@@ -943,7 +960,8 @@ class RoomCanvas(QWidget):
                 self.update()
                 return
 
-            clicked_instance = self.find_instance_at(pos)
+            pile = self.find_instances_at(pos)
+            clicked_instance = pile[0] if pile else None
 
             # Check for Shift key modifier
             shift_pressed = event.modifiers() & Qt.ShiftModifier
@@ -961,12 +979,29 @@ class RoomCanvas(QWidget):
                         self.selected_instances[0] if self.selected_instances else None
                     )
 
+                    # Shift-click builds a multi-selection, not a pile pick --
+                    # doesn't participate in click-to-cycle.
+                    self.last_click_pile = []
                     # Don't start dragging on Shift+click - only toggle selection
                     # This prevents the jump behavior
                     self.update()
                     return
                 else:
-                    # Regular click: select only this instance (or keep multi-selection if already selected)
+                    # Regular click on a pile of 2+ overlapping instances,
+                    # repeated at the same spot with the previous pick still
+                    # the sole selection: advance to the next instance
+                    # underneath instead of re-picking the topmost every
+                    # time (piled-up instances, e.g. several room-editor
+                    # buttons all placed at (0,0), were otherwise
+                    # unreachable below the top one).
+                    if (len(pile) > 1 and pile == self.last_click_pile
+                            and len(self.selected_instances) == 1
+                            and self.selected_instances[0] in pile):
+                        idx = (pile.index(self.selected_instances[0]) + 1) % len(pile)
+                        clicked_instance = pile[idx]
+                    self.last_click_pile = pile
+
+                    # Select only this instance (or keep multi-selection if already selected)
                     if clicked_instance not in self.selected_instances:
                         self.selected_instances.clear()
                         self.selected_instances.append(clicked_instance)
