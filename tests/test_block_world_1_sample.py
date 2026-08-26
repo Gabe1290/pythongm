@@ -140,34 +140,9 @@ class TestBlockWorld1Smoke:
         runner = _run_with_keys(pygame.K_F1, 10, extra_post=press_space_once)
         assert runner is not None   # must not have crashed
 
-
-class TestBlockWorld1WelcomeTabAndGuide:
-    """Registration + guide lookup, mirroring test_sample_docs_dialog.py's
-    own pattern -- a real offscreen QApplication, not pytest-qt."""
-
-    def test_registered_in_the_welcome_tab(self):
-        from widgets.welcome_tab import SAMPLE_PROJECTS
-        assert ("samples/block_world_1", "Block World — Level 1") in SAMPLE_PROJECTS
-
-    def test_guide_is_listed_and_renders(self, monkeypatch):
-        from PySide6.QtWidgets import QApplication
-        QApplication.instance() or QApplication([])
-        from widgets.welcome_tab import SampleDocsDialog, SAMPLE_PROJECTS
-
-        # Pin the guide language. guide_path() resolves README.<lang>.md next
-        # to README.md, so on a French-configured machine this dialog
-        # correctly shows README.fr.md and the English assertions below fail
-        # for entirely the wrong reason. Every guide-rendering test has to do
-        # this -- see tests/test_sample_docs_dialog.py, which already does.
-        monkeypatch.setattr(SampleDocsDialog, "_guide_language",
-                            staticmethod(lambda: "en"))
-
-        dlg = SampleDocsDialog(SAMPLE_PROJECTS, REPO_ROOT)
-        labels = dlg.sample_labels()
-        assert "Block World — Level 1" in labels
-
-        row = labels.index("Block World — Level 1")
-        dlg._show_row(row)
-        text = dlg._viewer.toPlainText()
-        assert "Block World" in text
-        assert "staircase" in text.lower()
+# Welcome-tab-registration + guide-listing coverage for this sample was
+# removed 2026-08-21: block_world_1 was de-showcased from the Welcome tab
+# (still ships under samples/ and every gameplay test above still runs
+# against it) when the user set the block_world extension's further work
+# aside in favor of samples/sky_strike_1 -- see TODO.md's "Block World
+# renderer" entry and tests/test_sky_strike_1_sample.py.

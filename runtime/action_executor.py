@@ -2071,15 +2071,38 @@ class ActionExecutor:
                                 # GameMaker convention: 0° = right, 90° = up
                                 # vspeed is negated because screen y increases downward
                                 return math.degrees(math.atan2(-vspeed, hspeed)) % 360
-                elif scope == 'global' and self.game_runner:
-                    if var_name in self.game_runner.global_variables:
-                        return self.game_runner.global_variables[var_name]
+                elif scope == 'global' and self.game_runner and not any(
+                    op in value_str for op in ('*', '+', '-', '/', '%')
+                ):
+                    # Defaults to 0 for a global that was never set, matching
+                    # _get_variable_value's own default (used by the
+                    # arithmetic-expression path for the exact same dotted
+                    # reference when it appears inside an operator
+                    # expression) — a bare "global.foo" with no operator
+                    # used to fall through to the raw-string return at the
+                    # bottom of this function instead, e.g. a draw_text
+                    # showing a never-yet-set score global rendered the
+                    # literal text "global.score_maze" rather than "0".
+                    # Guarded to a truly bare reference (no operator
+                    # anywhere in the string): a compound expression like
+                    # "global.a + global.b" must fall through to the
+                    # has_operator routing below instead, since the naive
+                    # split('.', 1) above would otherwise capture
+                    # "a + global.b" as var_name and look that up as a
+                    # single (nonexistent) key, silently returning 0.
+                    return self.game_runner.global_variables.get(var_name, 0)
 
         # Check for simple variable reference (no dot)
         if instance and not value_str.startswith('"') and not value_str.startswith("'"):
             # Try to get instance variable
             if hasattr(instance, value_str):
                 return getattr(instance, value_str)
+            # Built-in game-state readouts (score/lives/health) — mirrors the
+            # namespace _eval_bool_expression already exposes for conditions;
+            # this lets an action's value (e.g. set_variable copying the
+            # current score into a global) reference them by bare name too.
+            if self.game_runner and value_str in ('score', 'lives', 'health'):
+                return getattr(self.game_runner, value_str, 0)
             # Try global variable
             if self.game_runner and value_str in self.game_runner.global_variables:
                 return self.game_runner.global_variables[value_str]
@@ -2092,7 +2115,7 @@ class ActionExecutor:
         # calling action as a literal string and silently fail to parse.
         import re as _re
         has_operator = any(op in value_str for op in ['*', '+', '-', '/', '%'])
-        has_function = _re.search(r'\b(?:random|irandom|choose)\s*\(', value_str) is not None
+        has_function = _re.search(r'\b(?:random|irandom|choose|max|min|abs|round)\s*\(', value_str) is not None
         if (has_operator or has_function) and not value_str.startswith('"'):
             # Evaluate arithmetic / function expression
             return self._evaluate_expression(value_str, instance)
@@ -2130,7 +2153,7 @@ class ActionExecutor:
         # Bare tokens that are function names (substituted further below), not
         # instance variables — these legitimately don't resolve to an attribute,
         # so they must be excluded from the "unresolved token" warning.
-        _known_functions = {'random', 'irandom', 'choose'}
+        _known_functions = {'random', 'irandom', 'choose', 'max', 'min', 'abs', 'round'}
 
         # Replace bare variable names (hspeed, vspeed, x, y, etc.) with their instance values
         def replace_bare_var(match):
@@ -2147,6 +2170,14 @@ class ActionExecutor:
                 elif var_name == 'vspeed' and 'self_vspeed' in collision_speeds:
                     return str(collision_speeds['self_vspeed'])
                 return str(getattr(instance, var_name))
+            # Built-in game-state readouts (score/lives/health) — mirrors
+            # _parse_value's own bare-token support for these (and
+            # _eval_bool_expression's namespace), so an arithmetic
+            # expression like a difficulty ramp ("40 - score/50") can
+            # reference score directly without first copying it into an
+            # instance variable.
+            if self.game_runner and var_name in ('score', 'lives', 'health'):
+                return str(getattr(self.game_runner, var_name, 0))
             # Token didn't resolve to a number, a function name, or an instance
             # attribute. It will reach eval() unbound and raise NameError, so the
             # whole expression silently defaults to 0 (see the except below).
@@ -2193,6 +2224,10 @@ class ActionExecutor:
                     'gm_irandom': gm_irandom,
                     'gm_choose': gm_choose,
                     'random': random_module,  # Allow Python random module access
+                    # Matches _eval_bool_expression's own namespace (and
+                    # HTML5's gmExpressionValue) — needed for e.g. a
+                    # difficulty ramp clamped with max(15, 40 - score/50).
+                    'max': max, 'min': min, 'abs': abs, 'round': round,
                 }
                 result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)  # nosec B307 - builtins stripped + regex whitelist (:2006) gates input; literal_eval would break random()/choose()
                 return result
@@ -3658,7 +3693,17 @@ class ActionExecutor:
             'x': x,
             'y': y,
             'text': text,
-            'color': color
+            'color': color,
+            # Captured at QUEUE time, not render time — the whole draw event's
+            # actions run before _process_draw_queue renders any of them, so
+            # reading instance.draw_halign at render time would apply
+            # whatever set_draw_font call happened to run LAST in the event
+            # to every queued text command, not the alignment that was
+            # active when each one was actually drawn (a real bug: a draw
+            # event with "set_draw_font center, draw_text A, set_draw_font
+            # left, draw_text B" rendered BOTH A and B left-aligned).
+            'halign': getattr(instance, 'draw_halign', 'left'),
+            'valign': getattr(instance, 'draw_valign', 'top'),
         })
 
         logger.debug(f"📝 Queued draw_text: '{text}' at ({x}, {y}) with color {color}")
@@ -3703,7 +3748,11 @@ class ActionExecutor:
             'text': text,
             'xscale': xscale,
             'yscale': yscale,
-            'color': color
+            'color': color,
+            # See execute_draw_text_action's comment: must be captured at
+            # queue time, not read from the instance at render time.
+            'halign': getattr(instance, 'draw_halign', 'left'),
+            'valign': getattr(instance, 'draw_valign', 'top'),
         })
 
         logger.debug(f"📝 Queued draw_scaled_text: '{text}' at ({x}, {y}) scale ({xscale}, {yscale})")
@@ -3880,6 +3929,10 @@ class ActionExecutor:
         x = self._parse_value(parameters.get("x", 0), instance)
         y = self._parse_value(parameters.get("y", 0), instance)
         subimage = self._parse_value(parameters.get("subimage", 0), instance)
+        try:
+            scale = float(parameters.get("scale", 1.0))
+        except (ValueError, TypeError):
+            scale = 1.0
 
         # Queue drawing command for draw event
         if not hasattr(instance, '_draw_queue'):
@@ -3890,7 +3943,8 @@ class ActionExecutor:
             'sprite_name': sprite_name,
             'x': x,
             'y': y,
-            'subimage': subimage
+            'subimage': subimage,
+            'scale': scale
         })
 
         logger.debug(f"🖼️ Queued draw_sprite: '{sprite_name}' at ({x}, {y}) frame {subimage}")

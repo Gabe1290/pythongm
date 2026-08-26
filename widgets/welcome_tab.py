@@ -54,10 +54,9 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/raycast_2", "2.5 D — Level 2"),
     ("samples/raycast_3", "2.5 D — Level 3"),
     ("samples/raycast_4", "2.5 D — Level 4"),
-    ("samples/block_world_1", "Block World — Level 1"),
-    ("samples/block_world_2", "Block World — Infinite Terrain"),
     ("samples/multiplayer_lan_1", "LAN Multiplayer — Demo"),
     ("samples/treasure", "Treasure"),
+    ("samples/sky_strike_1", "Sky Strike — Level 1"),
     # `treasure` and `maze_4` were dropped after rc.12 user testing, then
     # RE-ADDED 2026-07-16 once the GMK importer hardening closed the bugs
     # that had made them unreliable (GM "Applies to" targeting, sprite
@@ -69,6 +68,12 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     # vs GM revert-on-block, the maze_1 precedent); it is a genuine gameplay
     # fix, documented in that sample's README. plateforme_1 was likewise
     # added back once its actions round-tripped cleanly.
+    # `block_world_1`/`block_world_2` were REMOVED 2026-08-21 (still ship
+    # under samples/, just de-showcased) -- the block_world extension's
+    # rendering overhead (see TODO.md's "Block World renderer" entry) made
+    # the user decide to set that work aside in favor of `sky_strike_1`, a
+    # much cheaper vertical shooter with a similar "flying over a world"
+    # feel. Not a deletion; re-add the two tuples to bring them back.
 ]
 
 

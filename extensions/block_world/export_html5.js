@@ -951,6 +951,26 @@ registerExtensionAction('break_block', function(obj, params, game) {
         inv[bt] = (inv[bt] || 0) + 1;
         obj.block_inventory = inv;
     }
+
+    const rewards = (cfg && cfg.rewards) || {};
+    const points = rewards[bt];
+    if (points) {
+        game.score += points;
+    }
+});
+
+registerExtensionAction('set_block_reward', function(obj, params, game) {
+    if (!game || !game.currentRoom) return;
+    const cfg = game.currentRoom.blockWorldCamera;
+    if (!cfg || !cfg.enabled) return;
+
+    const blockType = params.block_type !== undefined ? String(params.block_type) : '';
+    if (!BLOCK_FACE_COLORS.hasOwnProperty(blockType)) return;
+    const points = parseNumParam(params.points, obj, 0);
+    if (typeof points !== 'number' || !isFinite(points)) return;
+
+    if (!cfg.rewards) cfg.rewards = {};
+    cfg.rewards[blockType] = points;
 });
 
 registerExtensionAction('set_block_protection', function(obj, params, game) {

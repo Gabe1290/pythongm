@@ -1,0 +1,51 @@
+{
+  "name": "obj_bomb",
+  "asset_type": "object",
+  "sprite": "spr_bomb",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -5,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_vspeed",
+          "parameters": {
+            "speed": "-4"
+          }
+        }
+      ]
+    },
+    "outside_room": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        }
+      ]
+    },
+    "collision_with_obj_ground_target": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "100",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_ground_target"
+    }
+  }
+}

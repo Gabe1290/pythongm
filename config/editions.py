@@ -28,6 +28,7 @@ EDITIONS = {
             "match3_1", "match3_2", "match3_3",
             "views_1", "views_2",
             "treasure",
+            "sky_strike_1",
         ],
     },
     "advanced": {

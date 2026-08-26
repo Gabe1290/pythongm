@@ -457,6 +457,18 @@ function parseNumParam(value, inst, fallback) {
     const s = String(value).trim();
     const direct = parseFloat(s);
     if (!isNaN(direct) && /^[-+]?[0-9.]+$/.test(s)) return direct;
+    // A bare instance attribute name (e.g. "direction", "speed",
+    // "image_index"), matching desktop's _parse_value
+    // (hasattr(instance, value_str) -> getattr(...)), checked before the
+    // expression path below — move_to_contact's own `direction: "direction"`
+    // parameter (GameMaker's "current direction of travel" keyword) needs
+    // this to resolve to the instance's live direction getter, not fall
+    // through to parseFloat("direction") === NaN -> the caller's fallback
+    // (0 here always meant "move right", regardless of which way the
+    // instance actually approached the obstacle it collided with).
+    if (/^[a-zA-Z_]\w*$/.test(s) && typeof inst[s] === 'number' && isFinite(inst[s])) {
+        return inst[s];
+    }
     try {
         const other = inst._collision_other;
         const expr = s
@@ -468,9 +480,24 @@ function parseNumParam(value, inst, fallback) {
             // so set_direction_speed(direction="facing_angle"[+180]) — the
             // raycast_1 FPS controls — resolves, matching the desktop runtime.
             .replace(/facing_angle/g, `(${inst.facing_angle || 0})`)
-            .replace(/view_[a-z]+/g, '0');
-        if (/^[-+*/(). 0-9]+$/.test(expr)) {
-            const result = Function(`"use strict"; return (${expr});`)();
+            .replace(/view_[a-z]+/g, '0')
+            // GameMaker-style random calls (irandom/random/choose), matching
+            // runtime/action_executor.py's _evaluate_expression — e.g. a
+            // spawn action's `x: "irandom(444) + 4"`. Only the bare token is
+            // substituted; the call's own opening paren is left as literal
+            // text right after it, so the real gmIrandom/gmRandom/gmChoose
+            // function names reach the whitelist check below unambiguously —
+            // it strips exactly those three names, not arbitrary
+            // identifiers, so this can't become a general eval().
+            .replace(/\birandom\b/g, 'gmIrandom')
+            .replace(/\brandom\b/g, 'gmRandom')
+            .replace(/\bchoose\b/g, 'gmChoose');
+        const stripped = expr.replace(/\bgmIrandom\b|\bgmRandom\b|\bgmChoose\b/g, '');
+        if (/^[-+*/(). ,0-9]+$/.test(stripped)) {
+            const result = Function(
+                'gmIrandom', 'gmRandom', 'gmChoose',
+                `"use strict"; return (${expr});`
+            )(gmIrandom, gmRandom, gmChoose);
             if (typeof result === 'number' && isFinite(result)) return result;
         }
     } catch (e) { /* fall through */ }
@@ -540,6 +567,20 @@ function gmExpressionValue(expr, inst, game) {
     const scope = {
         self: inst,
         other: inst._collision_other || null,
+        // Matches desktop's _evaluate_expression scoped_var_pattern
+        // ((self|other|global)\.\w+) — a Proxy so "global.foo" resolves
+        // via normal property access (like self.x/other.x), but defaults
+        // a never-set global to 0 instead of undefined — critically
+        // different from a plain object in JS: Math.max(undefined, 650)
+        // is NaN (arithmetic on undefined always is), while desktop's
+        // _get_variable_value already defaults a missing global to a
+        // real 0 there, so e.g. a high-water-mark sync
+        // "max(global.score_x, score)" evaluated fine on desktop the
+        // very first time a level ever ran, but NaN'd on this target
+        // until the global happened to be set some other way first.
+        global: new Proxy((game && game.globalVariables) || {}, {
+            get: (target, prop) => (prop in target ? target[prop] : 0),
+        }),
         x: inst.x, y: inst.y,
         hspeed: inst.hspeed || 0, vspeed: inst.vspeed || 0,
         speed: inst.speed || 0, direction: inst.direction || 0,
@@ -567,6 +608,49 @@ function gmExpressionValue(expr, inst, game) {
         console.warn('expression eval failed:', expr, e);
         return undefined;
     }
+}
+
+// Symbol ("==", "<", ...) AND word ("equal", "less", ...) operators, mirroring
+// runtime/action_executor.py's ActionExecutor._compare -- if_condition's own
+// condition-type branches (variable_compare/instance_count/position_check)
+// use the symbol form.
+function gmCompareOp(left, operator, right) {
+    const lf = parseFloat(left), rf = parseFloat(right);
+    if (!isNaN(lf) && !isNaN(rf)) { left = lf; right = rf; }
+    switch (operator) {
+        case '==': case 'equal': return left == right;
+        case '!=': case 'not_equal': return left != right;
+        case '<': case 'less': return left < right;
+        case '>': case 'greater': return left > right;
+        case '<=': case 'less_equal': return left <= right;
+        case '>=': case 'greater_equal': return left >= right;
+        default: return false;
+    }
+}
+
+// GameMaker-style random functions, mirroring
+// runtime/action_executor.py's _evaluate_expression (gm_random/gm_irandom/
+// gm_choose): irandom(n) is a random INTEGER 0..n inclusive, random(n) a
+// random FLOAT 0..n exclusive, choose(a,b,...) one of its arguments.
+// Referenced (as gmIrandom/gmRandom/gmChoose) from parseNumParam below —
+// the numeric-parameter path was the one place these authored calls
+// (e.g. create_instance's `x: "irandom(444) + 4"`) silently always
+// evaluated to the caller's fallback, since parseNumParam's own
+// expression whitelist has no letters in it at all.
+function gmIrandom(n) {
+    n = Math.trunc(Number(n));
+    if (!isFinite(n) || n < 0) return 0;
+    return Math.floor(Math.random() * (n + 1));
+}
+
+function gmRandom(n) {
+    n = Number(n);
+    return isFinite(n) ? Math.random() * n : 0;
+}
+
+function gmChoose(...args) {
+    if (!args.length) return 0;
+    return args[Math.floor(Math.random() * args.length)];
 }
 
 function renderDrawCommands(ctx, cmds, game) {
@@ -641,8 +725,15 @@ function renderDrawCommands(ctx, cmds, game) {
             case 'scaled_text': {
                 ctx.fillStyle = color;
                 ctx.font = '18px Arial';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
+                // GameMaker's draw_set_halign/valign promise (mirrors
+                // desktop's set_draw_font + _align_text_pos): x/y become
+                // the alignment anchor, not always the top-left corner.
+                // Canvas's own textAlign/textBaseline do the measurement,
+                // so no manual width/height math is needed here.
+                const halign = cmd.halign || 'left';
+                ctx.textAlign = (halign === 'center' || halign === 'right') ? halign : 'left';
+                const valign = cmd.valign || 'top';
+                ctx.textBaseline = (valign === 'middle' || valign === 'bottom') ? valign : 'top';
                 const tx = cmd.x || 0, ty = cmd.y || 0;
                 if (cmd.type === 'scaled_text' && (cmd.xscale !== 1 || cmd.yscale !== 1)) {
                     ctx.save();
@@ -664,10 +755,13 @@ function renderDrawCommands(ctx, cmds, game) {
                 if (img && img.complete) {
                     const info = game.makeSpriteInfo ? game.makeSpriteInfo(cmd.sprite_name) : null;
                     const frames = info ? (info.frames || 1) : 1;
+                    const scale = cmd.scale || 1;
                     if (frames > 1) {
                         const fw = info.width, fh = info.height;
                         const srcX = ((Math.floor(cmd.subimage || 0) % frames) + frames) % frames * fw;
-                        ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw, fh);
+                        ctx.drawImage(img, srcX, 0, fw, fh, cmd.x || 0, cmd.y || 0, fw * scale, fh * scale);
+                    } else if (scale !== 1) {
+                        ctx.drawImage(img, cmd.x || 0, cmd.y || 0, img.width * scale, img.height * scale);
                     } else {
                         ctx.drawImage(img, cmd.x || 0, cmd.y || 0);
                     }
@@ -804,8 +898,20 @@ class GameObject {
         // GAMEMAKER 7.0: 12 alarm clocks per instance
         this.alarms = new Array(12).fill(-1);  // -1 = inactive, >= 0 = countdown
 
-        // Depth-based rendering (lower = back, higher = front)
-        this.depth = this.getDepthForObject(name);
+        // Depth-based rendering: the authored value from the object's own
+        // data, matching runtime/game_runner.py's GameInstance.set_object_data
+        // (object_data.get('depth', 0)). Lower depth draws in front, higher
+        // draws behind (see GameRoom._renderContents's sort). This used to
+        // call a hardcoded name-substring heuristic (getDepthForObject,
+        // matching "wall"/"box"/"soko"/etc. — leftover from an early
+        // Sokoban-style prototype) that never read objectData.depth at all,
+        // silently overriding every project's authored depth with whichever
+        // bucket its object NAME happened to fall into. E.g. obj_quit (no
+        // matching substring, default bucket 10) drew behind mz_obj_wall
+        // (substring "wall", bucket 5) regardless of their real authored
+        // depths (-1000 and 0), so a maze level's "Quitter" overlay button
+        // rendered underneath the maze walls.
+        this.depth = (objectData && objectData.depth !== undefined) ? objectData.depth : 0;
 
         // Grid movement helpers
         this.targetX = null;
@@ -815,6 +921,14 @@ class GameObject {
         // Collision tracking
         this._collision_other = null;
         this._collision_speeds = null; // Stores speeds at moment of collision
+        // Which (otherInstanceId, eventName) pairs were overlapping LAST
+        // frame, and a short post-fire cooldown per pair -- matches desktop's
+        // GameRunner.detect_collisions_for_instance (_active_collisions /
+        // _collision_cooldowns). Without this, checkCollisions() re-fires a
+        // collision_with_X handler every single frame the overlap persists,
+        // not just once when it starts.
+        this._activeCollisions = new Set();
+        this._collisionCooldowns = new Map();
 
         // Store game reference for later
         this._pendingCreateEvent = true;
@@ -878,24 +992,6 @@ class GameObject {
         } else {
             this._hspeed = 0;
             this._vspeed = 0;
-        }
-    }
-
-    getDepthForObject(name) {
-        name = name || '';
-        // Define rendering order layers
-        if (name.includes('store') && !name.includes('box')) {
-            return 0;  // Floor/store tiles at the bottom
-        } else if (name.includes('ground') || name.includes('floor')) {
-            return 0;
-        } else if (name.includes('wall')) {
-            return 5;
-        } else if (name.includes('box')) {
-            return 10;
-        } else if (name.includes('soko') || name.includes('player')) {
-            return 20;
-        } else {
-            return 10;
         }
     }
 
@@ -1095,24 +1191,48 @@ class GameObject {
 
     // GAMEMAKER 7.0: Movement processing
     processMovement(game) {
+        // Desktop's gravity/friction accumulate ONCE PER REAL STEP, at
+        // exactly settings.room_speed steps/second (GameRunner.fps — the
+        // pygame clock's real tick rate; see runtime/game_runner.py). This
+        // loop is NOT clocked to room_speed — it runs at the browser's true,
+        // uncapped rate (~60fps via requestAnimationFrame) — so accumulating
+        // gravity/friction at their raw per-step magnitude here would make
+        // them accrue at whatever the real frame rate happens to be, not at
+        // room_speed. When room_speed < 60 (this promo game's rooms are all
+        // 30) that shrinks the discretized area under the velocity curve —
+        // concretely, HALVES a jump's peak height, since a jump's arc is a
+        // fixed number of STEPS regardless of real fps, and running twice as
+        // many of those steps per real second (60 vs the intended 30) means
+        // reaching peak velocity in half the real time, over half the
+        // accumulated distance. Scaling accumulation by the SAME factor
+        // roomSpeedFactor below scales the final position delta by fixes
+        // this: over any span of real time, this loop then accrues exactly
+        // as much velocity, over exactly as much distance, as the same span
+        // running at the room's configured room_speed would — reproducing
+        // desktop's real-world jump height (and fall/friction curves)
+        // exactly, not just its real-world constant-velocity walk speed
+        // (which the position-delta scaling alone already got right).
+        const roomSpeedFactor = (game && game.currentRoom) ? game.currentRoom.roomSpeed / 60 : 1;
+
         // Apply gravity (GM 7.0: adds to speed each step)
         if (this._gravity !== 0) {
             const gravRad = this._gravity_direction * Math.PI / 180;
-            this._hspeed += this._gravity * Math.cos(gravRad);
-            this._vspeed += -this._gravity * Math.sin(gravRad);
+            this._hspeed += this._gravity * Math.cos(gravRad) * roomSpeedFactor;
+            this._vspeed += -this._gravity * Math.sin(gravRad) * roomSpeedFactor;
             this.syncSpeedDirectionFromComponents();
         }
 
         // Apply friction (GM 7.0: reduces speed towards zero)
         if (this._friction !== 0) {
-            if (Math.abs(this._hspeed) > this._friction) {
-                this._hspeed -= this._friction * Math.sign(this._hspeed);
+            const scaledFriction = this._friction * roomSpeedFactor;
+            if (Math.abs(this._hspeed) > scaledFriction) {
+                this._hspeed -= scaledFriction * Math.sign(this._hspeed);
             } else {
                 this._hspeed = 0;
             }
 
-            if (Math.abs(this._vspeed) > this._friction) {
-                this._vspeed -= this._friction * Math.sign(this._vspeed);
+            if (Math.abs(this._vspeed) > scaledFriction) {
+                this._vspeed -= scaledFriction * Math.sign(this._vspeed);
             } else {
                 this._vspeed = 0;
             }
@@ -1136,14 +1256,144 @@ class GameObject {
             }
         }
 
-        // Apply hspeed/vspeed - always move, collision events will handle response.
-        // Scaled by roomSpeed/60 (set_room_speed) — see GameRoom's roomSpeed
-        // comment for what this does and doesn't cover (gravity/friction
-        // accumulation above is NOT scaled, only this final delta).
+        // Apply hspeed/vspeed, blocked by solid instances the way the desktop
+        // and Kivy engines already do: an object marked `solid` with a
+        // collision event registered against this object type (in EITHER
+        // direction — an empty actions list still counts) stops movement
+        // into it. Resolved per axis independently, matching
+        // GameRunner.check_movement_collision_with_blocker /
+        // GameObject._movement_blocker (Kivy) — this used to always move
+        // unconditionally and rely entirely on the object's own collision
+        // ACTIONS to stop itself, which left samples that lean on the
+        // implicit "solid blocks movement" rule (e.g. the raycast_1..4
+        // player, whose wall collision events are deliberately empty) able
+        // to walk straight through walls only on this export target.
+        // Scaled by roomSpeedFactor (set_room_speed) — see GameRoom's
+        // roomSpeed comment and this method's own opening comment (gravity/
+        // friction accumulation above uses the SAME factor now, so a jump's
+        // real-world height matches desktop, not just a walk's real-world
+        // speed).
         if (this._hspeed !== 0 || this._vspeed !== 0) {
-            const roomSpeedFactor = (game && game.currentRoom) ? game.currentRoom.roomSpeed / 60 : 1;
-            this.x += this._hspeed * roomSpeedFactor;
-            this.y += this._vspeed * roomSpeedFactor;
+            const newX = this.x + this._hspeed * roomSpeedFactor;
+            const newY = this.y + this._vspeed * roomSpeedFactor;
+
+            if (!game || !game.currentRoom) {
+                // No room context to check blockers against (shouldn't
+                // normally happen) — fall back to the old unconditional move.
+                this.x = newX;
+                this.y = newY;
+            } else {
+                const blockers = [];
+
+                if (newX !== this.x) {
+                    const blocker = this._movementBlocker(newX, this.y, game);
+                    if (blocker === null) {
+                        this.x = newX;
+                    } else {
+                        blockers.push(blocker);
+                    }
+                }
+
+                if (newY !== this.y) {
+                    const blocker = this._movementBlocker(this.x, newY, game);
+                    if (blocker === null) {
+                        this.y = newY;
+                    } else {
+                        blockers.push(blocker);
+                    }
+                }
+
+                // The desktop/Kivy engines fire the pair's collision events
+                // from the blocked branch: blocking prevents the overlap, so
+                // the normal per-frame checkCollisions() overlap scan never
+                // sees this pair, and a handler like "stop + snap_to_grid"
+                // would otherwise never run. Deduplicated by identity — a
+                // corner collision blocks both axes against the same wall,
+                // and the handler should fire once.
+                const fired = [];
+                for (const blocker of blockers) {
+                    if (fired.indexOf(blocker) !== -1) continue;
+                    fired.push(blocker);
+                    this._fireBlockedCollision(blocker, game);
+                }
+            }
+        }
+    }
+
+    // The first instance that would stop this one occupying (x, y).
+    //
+    // Blocking rule (matches GameMaker 7.0, ported from the desktop/Kivy
+    // engines): a collision event must be registered between the two object
+    // types (in either direction), AND at least one of them must be `solid`.
+    // Two non-solid objects never block each other — they overlap and fire
+    // their collision events afterwards instead (e.g. a maze monster running
+    // through the player rather than getting stuck on top of it).
+    _movementBlocker(x, y, game) {
+        if (!game || !game.currentRoom) return null;
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+        const testRect = {
+            x: x - originX + this.bboxLeft(), y: y - originY + this.bboxTop(),
+            width: this.collisionWidth(), height: this.collisionHeight()
+        };
+        const curRect = this.getBoundingBox();
+
+        for (const other of game.currentRoom.instances) {
+            if (other === this || other.toDestroy) continue;
+            if (!(this.solid || other.solid)) continue;
+            if (!this._collisionEventExistsWith(other)) continue;
+
+            const otherRect = other.getBoundingBox();
+            if (!this.rectsCollide(testRect, otherRect)) continue;
+
+            // Already overlapping at the current position: let it escape
+            // rather than freezing in place (e.g. right after spawning).
+            if (this.rectsCollide(curRect, otherRect)) continue;
+
+            return other;
+        }
+        return null;
+    }
+
+    // True if a collision event is defined between this object type and
+    // other's, in either direction. Existence only — an empty actions list
+    // still counts, since a wall's own collision handler is often
+    // intentionally empty and blocks purely through the `solid` flag.
+    _collisionEventExistsWith(other) {
+        if (this.events && this.events['collision_with_' + other.name]) return true;
+        if (other.events && other.events['collision_with_' + this.name]) return true;
+        return false;
+    }
+
+    // Runs the pair's collision handlers directly after a blocked move,
+    // since blocking prevents the overlap checkCollisions() would otherwise
+    // have detected this frame. Mirrors checkCollisions()'s own
+    // _collision_other/_collision_speeds context so action handlers that
+    // read `other` behave identically whether they fired via a blocked move
+    // or a normal overlap.
+    _fireBlockedCollision(other, game) {
+        const selfHspeed = this.hspeed || 0;
+        const selfVspeed = this.vspeed || 0;
+        const otherHspeed = other.hspeed || 0;
+        const otherVspeed = other.vspeed || 0;
+
+        const mine = this.events && this.events['collision_with_' + other.name];
+        if (mine) {
+            this._collision_other = other;
+            this._collision_speeds = { selfHspeed, selfVspeed, otherHspeed, otherVspeed };
+            this.executeActions(mine.actions || [], game);
+            this._collision_speeds = null;
+        }
+
+        const theirs = other.events && other.events['collision_with_' + this.name];
+        if (theirs) {
+            other._collision_other = this;
+            other._collision_speeds = {
+                selfHspeed: otherHspeed, selfVspeed: otherVspeed,
+                otherHspeed: selfHspeed, otherVspeed: selfVspeed
+            };
+            other.executeActions(theirs.actions || [], game);
+            other._collision_speeds = null;
         }
     }
 
@@ -1234,6 +1484,22 @@ class GameObject {
 
             if (skipNext) {
                 skipNext = false;
+                // A skipped QUESTION takes its own guarded unit down with
+                // it too (recursively -- question chains skip as one
+                // unit), matching the IDE runtime's
+                // _execute_action_list_inner. Without this, a chain of 2+
+                // consecutive flat questions gating one action (e.g. a
+                // bounding-box click test: 4 test_variable checks ANDed
+                // before a goto_room) "used up" the skip on the first
+                // skipped question and let a LATER question in the same
+                // chain re-arm/execute independently -- found via a real
+                // click test where every one of several bounding-box
+                // buttons fired on the same click, the last-processed
+                // instance always winning regardless of which box the
+                // click actually landed in.
+                if (GameObject.isConditionalAction(actionType)) {
+                    skipNext = true;
+                }
                 i++;
                 continue;
             }
@@ -1268,6 +1534,60 @@ class GameObject {
         const params = action.parameters || {};
 
         switch (actionType) {
+            case 'if_condition':
+            case 'if_variable': {
+                // Was a no-op (no case matched -> fell through to the
+                // switch's end, implicitly returning undefined/falsy), so
+                // every if_condition (a first-class registered action;
+                // runtime/action_executor.py's execute_if_condition_action
+                // fully implements it) silently always took the else
+                // branch on this export target only -- condition_type was
+                // never read at all. Mirrors ActionExecutor.
+                // _evaluate_if_condition's dispatch; key_pressed/
+                // mouse_check are the two condition_types NOT ported here
+                // (no held-key-set or mouse-button state tracked anywhere
+                // in this engine) -- they fall through to false, same as
+                // every condition_type did before this fix.
+                const conditionType = params.condition_type || 'instance_count';
+                switch (conditionType) {
+                    case 'expression': {
+                        const val = gmExpressionValue(params.expression, this, game);
+                        return val === undefined ? false : !!val;
+                    }
+                    case 'variable_compare': {
+                        const variable = params.variable || '';
+                        if (!variable) return false;
+                        const current = this[variable] !== undefined ? this[variable] : 0;
+                        return gmCompareOp(current, params.operator || '==', params.value);
+                    }
+                    case 'instance_count': {
+                        const objectName = params.object_name || '';
+                        if (!objectName || !game.currentRoom) return false;
+                        const count = game.currentRoom.instances.filter(
+                            inst => inst.name === objectName && !inst.toDestroy).length;
+                        return gmCompareOp(count, params.operator || '==', parseInt(params.value) || 0);
+                    }
+                    case 'position_check': {
+                        const checkType = (params.check_type || 'x position').toLowerCase();
+                        const current = checkType.includes('x') ? this.x : this.y;
+                        return gmCompareOp(current, params.operator || '==', parseInt(params.value) || 0);
+                    }
+                    case 'random_chance': {
+                        const chance = parseInt(params.chance) || 50;
+                        return (Math.random() * 100) < chance;
+                    }
+                    case 'collision_check': {
+                        const obj = params.object || '';
+                        if (!obj || !game.currentRoom) return false;
+                        const checkX = this.x + (parseFloat(params.offset_x) || 0);
+                        const checkY = this.y + (parseFloat(params.offset_y) || 0);
+                        return this.placeMeetsCollision(checkX, checkY, obj, game, false);
+                    }
+                    default:
+                        return false;
+                }
+            }
+
             case 'test_alignment': {
                 // Snapped to the grid? (GM "if aligned with grid" question)
                 const hsnap = parseInt(params.hsnap) || 32;
@@ -1562,11 +1882,19 @@ class GameObject {
         switch(actionType) {
             // GAMEMAKER 7.0: Movement actions
             case 'set_hspeed':
-                this.hspeed = parseFloat(params.hspeed ?? params.speed ?? params.value ?? 0);
+                // parseNumParam (not a bare parseFloat): supports
+                // self.x/other.x/facing_angle and irandom()/random()/
+                // choose() expressions, and — critically — never returns
+                // NaN the way parseFloat("irandom(2) - 1") silently did
+                // (NaN hspeed poisons this.x on the very next movement
+                // step and never recovers, rendering the instance nowhere
+                // — sky_strike_1's enemy planes, whose hspeed is exactly
+                // such an expression, were invisible for this reason).
+                this.hspeed = parseNumParam(params.hspeed ?? params.speed ?? params.value, this, 0);
                 break;
 
             case 'set_vspeed':
-                this.vspeed = parseFloat(params.vspeed ?? params.speed ?? params.value ?? 0);
+                this.vspeed = parseNumParam(params.vspeed ?? params.speed ?? params.value, this, 0);
                 break;
 
             case 'set_speed':
@@ -1830,13 +2158,24 @@ class GameObject {
                 break;
 
             // GAMEMAKER 7.0: Alarm actions
-            case 'set_alarm':
+            case 'set_alarm': {
                 const alarmNum = params.alarm_number || 0;
-                const steps = params.steps || 30;
+                // Bare params.steps (e.g. a difficulty ramp like
+                // "40 - score/50") is a string — desktop's execute_
+                // set_alarm_action already routes it through the real
+                // expression evaluator (_parse_value); this used to just
+                // take the raw truthy value, so a expression string was
+                // stored as-is (never evaluated) and any legitimate
+                // decrement WITH ONE didn't run at all. gmExpressionValue
+                // already exposes score/lives/health, self.<var>, and
+                // arithmetic — the same evaluator if_condition uses.
+                let steps = gmExpressionValue(String(params.steps ?? '30'), this, game);
+                if (typeof steps !== 'number' || isNaN(steps)) steps = 30;
                 if (alarmNum >= 0 && alarmNum < 12) {
-                    this.alarms[alarmNum] = steps;
+                    this.alarms[alarmNum] = Math.trunc(steps);
                 }
                 break;
+            }
 
             // GAMEMAKER 7.0: Control actions
             // NOTE: test_expression / check_empty / check_collision are
@@ -1979,7 +2318,12 @@ class GameObject {
 
             case 'if_condition':
             case 'if_variable':
-                // Variable checking logic (existing code)
+                // Unreachable in practice: the nested-format branch at the
+                // top of executeAction (isConditionalAction + non-empty
+                // then_actions/else_actions) intercepts this action and
+                // calls evaluateCondition directly before this switch is
+                // ever reached. The real condition_type dispatch lives
+                // there, not here.
                 break;
 
             case 'destroy_instance':
@@ -2138,29 +2482,21 @@ class GameObject {
 
             case 'display_message':
             case 'show_message':
-                // Display a message dialog
+                // Display a message dialog. Desktop's equivalent
+                // (_show_or_queue_message, runtime/action_executor.py) has
+                // NO side effects beyond showing the dialog — this used to
+                // also zero hspeed/vspeed/speed and snap x/y to a hardcoded
+                // 32px grid ("prevents drifting off-grid during collision
+                // events"), which only ever made sense for a grid-based
+                // game like the maze sample. Applied unconditionally to
+                // EVERY show_message call on every exported game, it
+                // silently teleported any free-movement instance up to 16px
+                // toward the nearest grid line — the promo game's
+                // side-scroller hit this at the very first frame (its intro
+                // show_message, fired from create, snapped the player 16px
+                // down, deep enough to land it inside/through the ground).
                 const message = params.message || params.text || '';
-                if (message) {
-                    // Stop movement and snap to grid before showing message
-                    // This prevents the player from drifting off-grid during collision events
-                    this.hspeed = 0;
-                    this.vspeed = 0;
-                    this.speed = 0;
-                    const msgGridSize = 32;
-                    this.x = Math.round(this.x / msgGridSize) * msgGridSize;
-                    this.y = Math.round(this.y / msgGridSize) * msgGridSize;
-
-                    // Also stop and snap the collision "other" object if applicable
-                    if (this._collision_other) {
-                        this._collision_other.hspeed = 0;
-                        this._collision_other.vspeed = 0;
-                        this._collision_other.speed = 0;
-                        this._collision_other.x = Math.round(this._collision_other.x / msgGridSize) * msgGridSize;
-                        this._collision_other.y = Math.round(this._collision_other.y / msgGridSize) * msgGridSize;
-                    }
-
-                    alert(message);
-                }
+                if (message) alert(message);
                 break;
 
             // GAMEMAKER 7.0: Score, Lives, Health actions
@@ -2228,10 +2564,42 @@ class GameObject {
                 this.speed = 0;
                 break;
 
-            case 'restart_game':
-                // Reload the page to restart
-                window.location.reload();
+            case 'restart_game': {
+                // Was window.location.reload() -- a full page reload wipes
+                // EVERYTHING, including game.globalVariables. Desktop's
+                // restart_game only resets score/lives/health and rebuilds
+                // rooms in-process; global variables are untouched there,
+                // so a project that tracks state across a "game over"
+                // restart (the promo hub's per-level score badges) keeps
+                // it on desktop but lost it all here. Matches desktop's
+                // semantics instead: a real in-process reset.
+                const settings = game.gameData.settings || {};
+                game.score = settings.starting_score || 0;
+                game.lives = settings.starting_lives || 3;
+                game.health = settings.starting_health || 100;
+
+                // Full reset: rebuild every room fresh (a persistent room
+                // must NOT survive this, unlike an ordinary changeRoom
+                // revisit) -- matches desktop's restart_game, which
+                // rebuilds rooms 2..N unconditionally so a level's mutated
+                // state (destroyed instances, moved positions) can't leak
+                // into the next playthrough.
+                game._visitedRooms.clear();
+                for (const roomName of Object.keys(game.gameData.assets.rooms)) {
+                    game.rooms[roomName] = game.buildRoom(roomName);
+                }
+
+                const firstRoomName = Object.keys(game.gameData.assets.rooms)[0];
+                if (firstRoomName) {
+                    // A game restart re-fires game_start (after Create,
+                    // before Room Start), matching GameMaker and desktop's
+                    // own restart_game -- startup setup re-applies on a
+                    // fresh playthrough.
+                    game._gameStartFired = false;
+                    game.changeRoom(firstRoomName, true);
+                }
                 break;
+            }
 
             case 'end_game':
             case 'game_end':
@@ -2288,8 +2656,35 @@ class GameObject {
                 const name = params.variable || params.variable_name || '';
                 if (!name) break;
                 let value = params.value;
-                const num = parseFloat(value);
-                if (!isNaN(num) && String(num) === String(value).trim()) value = num;
+                // Built-in game-state readouts (score/lives/health) as a bare
+                // token — matches desktop's _parse_value, which resolves
+                // these off game_runner. Lets a level copy its final score
+                // into a global (e.g. the promo hub's per-level totals)
+                // without a new dedicated action.
+                if (value === 'score' || value === 'lives' || value === 'health') {
+                    value = game[value];
+                } else if (typeof value === 'string') {
+                    const trimmed = value.trim();
+                    const num = parseFloat(trimmed);
+                    if (!isNaN(num) && String(num) === trimmed) {
+                        value = num;
+                    } else if (!trimmed.startsWith('"') &&
+                               (/[+\-*/%]/.test(trimmed) ||
+                                /\b(?:max|min|abs|round|irandom|random|choose)\b/.test(trimmed))) {
+                        // A real expression (has an operator or a known
+                        // function call) — e.g. a high-water-mark sync
+                        // like "max(global.score_skystrike, score)", so a
+                        // mid-level restart's score reset doesn't wipe out
+                        // a global that already reflects a better run.
+                        // Matches desktop's _parse_value routing
+                        // (has_operator or has_function). gmExpressionValue
+                        // already exposes self/other/global/score/lives/
+                        // health/max/min/abs/round — the same evaluator
+                        // if_condition uses.
+                        const evaluated = gmExpressionValue(trimmed, this, game);
+                        if (typeof evaluated === 'number' && !isNaN(evaluated)) value = evaluated;
+                    }
+                }
                 const scope = params.scope || 'sel';
                 const target = scope === 'global' ? game.globalVariables
                     : (scope === 'other' ? this._collision_other : this);
@@ -2350,9 +2745,18 @@ class GameObject {
             case 'move_to_contact': {
                 // Move pixel-by-pixel toward `direction` (degrees, 0=right,
                 // 90=up) until touching `object` ("all"/"solid"/<name>) or
-                // max_distance — the platformer landing action.
-                const dirDeg = parseFloat(params.direction) || 0;
-                const maxDist = parseFloat(params.max_distance ?? params.maximum ?? 1000) || 1000;
+                // max_distance — the platformer landing action. parseNumParam
+                // (not a bare parseFloat): a project commonly authors
+                // `direction: "direction"` (GameMaker's own convention for
+                // "my current direction of travel"), which parseFloat cannot
+                // parse at all (NaN -> the old `|| 0` fallback silently
+                // meant "always push right", REGARDLESS of which way the
+                // instance actually approached whatever it collided with —
+                // walking left, up, or down into a solid all got pushed
+                // further right instead of separated, eventually punching
+                // straight through it one blocked frame at a time).
+                const dirDeg = parseNumParam(params.direction, this, 0);
+                const maxDist = parseNumParam(params.max_distance ?? params.maximum, this, 1000);
                 const target = params.object || 'all';
                 const rad = dirDeg * Math.PI / 180;
                 const dx = Math.cos(rad), dy = -Math.sin(rad);
@@ -2458,7 +2862,7 @@ class GameObject {
                     inst.events = objectData.events || {};
                     inst.solid = objectData.solid || false;
                     inst.visible = objectData.visible !== false;
-                    inst.depth = inst.getDepthForObject(newName);
+                    inst.depth = (objectData && objectData.depth !== undefined) ? objectData.depth : 0;
                     const sprName = objectData.sprite;
                     inst.sprite = (sprName && game.sprites[sprName]) || null;
                     inst.spriteInfo = sprName ? game.makeSpriteInfo(sprName) : null;
@@ -2512,16 +2916,67 @@ class GameObject {
                 });
                 break;
 
-            case 'draw_text':
+            case 'draw_text': {
+                // A bare "global.<name>" reference resolves to that global's
+                // value (matching desktop's _parse_value, which routes
+                // draw_text's text through the same dotted-scope resolution
+                // every other action gets) — e.g. the promo hub's per-level
+                // score readouts. Anything else (including any string with
+                // its own dots/operators) is drawn as literal text, same as
+                // before; this is deliberately narrower than desktop's full
+                // expression support to avoid changing existing samples'
+                // rendered text.
+                let text = params.text !== undefined ? params.text : '';
+                if (typeof text === 'string') {
+                    const trimmed = text.trim();
+                    const gmatch = trimmed.match(/^global\.(\w+)$/);
+                    if (gmatch) {
+                        // Defaults to 0 for a global that was never set,
+                        // matching desktop's _get_variable_value (and the
+                        // sum-of-globals branch just below) — otherwise a
+                        // level's score badge shows the literal
+                        // "global.score_x" text until that level has been
+                        // visited at least once. Deliberately does NOT
+                        // require the key to exist first (an earlier
+                        // version did); a level's own score-sync writing
+                        // the real value is what most players will see.
+                        text = (game.globalVariables && gmatch[1] in game.globalVariables)
+                            ? game.globalVariables[gmatch[1]] : 0;
+                    } else if (/^global\.\w+(\s*\+\s*global\.\w+)+$/.test(trimmed)) {
+                        // A "+"-joined sum of bare global references (e.g. the
+                        // promo hub's cross-level total) — still no general
+                        // expression evaluator, just this one safe shape.
+                        text = trimmed.split('+').reduce((sum, term) => {
+                            const name = term.trim().slice('global.'.length);
+                            const v = game.globalVariables && name in game.globalVariables
+                                ? game.globalVariables[name] : 0;
+                            return sum + v;
+                        }, 0);
+                    } else if (text.length >= 2 && text.startsWith('"') && text.endsWith('"')) {
+                        // Desktop's _parse_value routes any text containing an
+                        // operator character (+ - * / %) through its arithmetic
+                        // expression evaluator UNLESS it's wrapped in quotes —
+                        // authors quote text like "W A S D - Move" to keep it
+                        // literal (this repo's own documented landmine).
+                        // engine.js never evaluates plain draw_text, so it never
+                        // needed the workaround, but it must still strip the
+                        // quotes an author added FOR desktop's sake, or the
+                        // literal quote characters render on screen.
+                        text = text.slice(1, -1);
+                    }
+                }
                 this._draw_queue.push({
                     type: 'text',
-                    text: String(params.text !== undefined ? params.text : ''),
+                    text: String(text),
                     x: parseNumParam(params.x, this, this.x),
                     y: parseNumParam(params.y, this, this.y),
                     // runtime: active draw colour, defaulting to black
                     color: this.draw_color || game.draw_color || [0, 0, 0],
+                    halign: this.draw_halign || 'left',
+                    valign: this.draw_valign || 'top',
                 });
                 break;
+            }
 
             case 'draw_lives':
                 this._draw_queue.push({
@@ -2539,6 +2994,8 @@ class GameObject {
                     sprite_name: params.sprite || params.sprite_name || '',
                     x: parseNumParam(params.x, this, this.x),
                     y: parseNumParam(params.y, this, this.y),
+                    subimage: parseNumParam(params.subimage, this, 0),
+                    scale: parseNumParam(params.scale, this, 1.0),
                 });
                 break;
 
@@ -2646,14 +3103,43 @@ class GameObject {
                 game.draw_color = this.draw_color;
                 break;
 
-            case 'set_draw_font':
-                // Stored for parity; the canvas renderer uses one font, the
-                // same as the pygame runtime's _draw_text (alignment is
-                // stored there too but never applied).
+            case 'set_draw_font': {
+                // Font is stored for parity only (the canvas renderer uses
+                // one font); halign/valign ARE applied, by draw_text's
+                // render case below — matching desktop's set_draw_font +
+                // _align_text_pos (GameMaker's draw_set_halign/valign
+                // promise: x/y become the alignment anchor, not always the
+                // top-left corner). GM's numeric `align` (0/1/2) fallback,
+                // same mapping as _GM_FONT_ALIGN_FALLBACK on desktop.
                 this.draw_font = params.font || null;
+                const alignFallback = { 0: 'left', 1: 'center', 2: 'right' };
+                let halign = params.halign;
+                if (halign === undefined && params.align !== undefined) {
+                    halign = alignFallback[params.align] || 'left';
+                }
+                this.draw_halign = ['left', 'center', 'right'].includes(halign) ? halign : 'left';
+                const valign = params.valign;
+                this.draw_valign = ['top', 'middle', 'bottom'].includes(valign) ? valign : 'top';
                 break;
+            }
 
             // ---- Instance creation / destruction cluster ----
+
+            case 'create_instance': {
+                // Matches the desktop runtime's execute_create_instance_action
+                // (runtime/action_executor.py): object/x/y, with x/y relative
+                // to the caller when `relative` is set. Spawning goes through
+                // game.spawnInstance, which marks the new instance's create
+                // event pending -- it fires on the main loop's next pass over
+                // instances (the same path create_moving_instance relies on),
+                // not synchronously here.
+                const relative = params.relative === true || params.relative === 'true';
+                let px = parseNumParam(params.x, this, 0);
+                let py = parseNumParam(params.y, this, 0);
+                if (relative) { px += this.x; py += this.y; }
+                game.spawnInstance(params.object || '', px, py);
+                break;
+            }
 
             case 'create_moving_instance': {
                 const inst = game.spawnInstance(
@@ -2889,13 +3375,16 @@ class GameObject {
     }
 
     checkCollisionAt(x, y, game) {
-        // Get my bounding box dimensions and origin
-        const myW = this.boxWidth();
-        const myH = this.boxHeight();
+        // Get my collision box dimensions and origin
+        const myW = this.collisionWidth();
+        const myH = this.collisionHeight();
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        // Test rect at position (x, y) accounting for origin
-        const testRect = { x: x - originX, y: y - originY, width: myW, height: myH };
+        // Test rect at position (x, y) accounting for origin + bbox offset
+        const testRect = {
+            x: x - originX + this.bboxLeft(), y: y - originY + this.bboxTop(),
+            width: myW, height: myH
+        };
         if (!game.currentRoom) return false;
 
         for (const other of game.currentRoom.instances) {
@@ -2911,13 +3400,16 @@ class GameObject {
     getObjectAt(x, y, game) {
         if (!game.currentRoom) return null;
 
-        // Get my bounding box dimensions and origin
-        const myW = this.boxWidth();
-        const myH = this.boxHeight();
+        // Get my collision box dimensions and origin
+        const myW = this.collisionWidth();
+        const myH = this.collisionHeight();
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        // Test rect at position (x, y) accounting for origin
-        const testRect = { x: x - originX, y: y - originY, width: myW, height: myH };
+        // Test rect at position (x, y) accounting for origin + bbox offset
+        const testRect = {
+            x: x - originX + this.bboxLeft(), y: y - originY + this.bboxTop(),
+            width: myW, height: myH
+        };
         const colliding = [];
 
         for (const other of game.currentRoom.instances) {
@@ -2958,14 +3450,46 @@ class GameObject {
         return this.sprite ? this.sprite.height : 32;
     }
 
+    // Collision box, distinct from the render/frame box above: bbox_left/
+    // top/right/bottom (Game.makeSpriteInfo), in sprite-local pixel coords,
+    // defaulting to the full frame when a sprite has no explicit override
+    // (matches runtime/game_runner.py's Sprite bbox fields). A sprite like
+    // spr_person defines an 8x8 collision box centered in its 16x16 frame —
+    // using the full frame here made the HTML5 player's effective collision
+    // footprint twice desktop's, which was enough to start a level already
+    // overlapping a nearby wall and trigger the "already overlapping, let
+    // it escape" rule in _movementBlocker below, walking the player through
+    // the wall with no way back in.
+    bboxLeft() {
+        return this.spriteInfo ? (this.spriteInfo.bbox_left || 0) : 0;
+    }
+
+    bboxTop() {
+        return this.spriteInfo ? (this.spriteInfo.bbox_top || 0) : 0;
+    }
+
+    collisionWidth() {
+        if (this.spriteInfo && this.spriteInfo.bbox_right !== undefined) {
+            return this.spriteInfo.bbox_right - this.bboxLeft();
+        }
+        return this.boxWidth();
+    }
+
+    collisionHeight() {
+        if (this.spriteInfo && this.spriteInfo.bbox_bottom !== undefined) {
+            return this.spriteInfo.bbox_bottom - this.bboxTop();
+        }
+        return this.boxHeight();
+    }
+
     getBoundingBox() {
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
         return {
-            x: this.x - originX,
-            y: this.y - originY,
-            width: this.boxWidth(),
-            height: this.boxHeight()
+            x: this.x - originX + this.bboxLeft(),
+            y: this.y - originY + this.bboxTop(),
+            width: this.collisionWidth(),
+            height: this.collisionHeight()
         };
     }
 
@@ -2978,8 +3502,8 @@ class GameObject {
     placeMeetsCollision(atX, atY, filter, game, excludePartner = true) {
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
-        const left = atX - originX, top = atY - originY;
-        const w = this.boxWidth(), h = this.boxHeight();
+        const left = atX - originX + this.bboxLeft(), top = atY - originY + this.bboxTop();
+        const w = this.collisionWidth(), h = this.collisionHeight();
         const exclude = excludePartner ? (this._collision_other || null) : null;
         const insts = game.currentRoom ? game.currentRoom.instances : [];
         for (const inst of insts) {
@@ -3124,8 +3648,15 @@ class GameObject {
         // Use bounding box that accounts for sprite origin
         const myRect = this.getBoundingBox();
 
+        // Decrement cooldowns (mirrors desktop's per-frame pass).
+        for (const [key, frames] of this._collisionCooldowns) {
+            if (frames <= 1) this._collisionCooldowns.delete(key);
+            else this._collisionCooldowns.set(key, frames - 1);
+        }
+
         // First pass: Detect all collisions and capture speeds BEFORE any events run
         const collisionsToProcess = [];
+        const currentCollisions = new Set();
 
         for (const other of game.currentRoom.instances) {
             if (other === this || other.toDestroy) continue;
@@ -3136,19 +3667,34 @@ class GameObject {
                 const collisionKey = `collision_with_${other.name}`;
 
                 if (this.events[collisionKey]) {
-                    // Store collision data with speeds captured NOW
-                    collisionsToProcess.push({
-                        event: this.events[collisionKey],
-                        other: other,
-                        // Capture speeds at moment of collision detection
-                        selfHspeed: this.hspeed || 0,
-                        selfVspeed: this.vspeed || 0,
-                        otherHspeed: other.hspeed || 0,
-                        otherVspeed: other.vspeed || 0
-                    });
+                    // Fire only on a NEW overlap (not every frame it
+                    // persists), matching desktop's _active_collisions —
+                    // otherwise a handler that nudges position on contact
+                    // (e.g. move_to_contact, which moves a step before it
+                    // checks for contact) re-fires every frame the pair
+                    // keeps touching and walks the instance further in each
+                    // time, since starting already-overlapping it never
+                    // sees a fresh "just touched" transition to stop at.
+                    const pairKey = `${other._pyId}:${collisionKey}`;
+                    currentCollisions.add(pairKey);
+                    const isNew = !this._activeCollisions.has(pairKey);
+                    const inCooldown = this._collisionCooldowns.has(pairKey);
+                    if (isNew && !inCooldown) {
+                        collisionsToProcess.push({
+                            event: this.events[collisionKey],
+                            other: other,
+                            // Capture speeds at moment of collision detection
+                            selfHspeed: this.hspeed || 0,
+                            selfVspeed: this.vspeed || 0,
+                            otherHspeed: other.hspeed || 0,
+                            otherVspeed: other.vspeed || 0
+                        });
+                        this._collisionCooldowns.set(pairKey, 5);
+                    }
                 }
             }
         }
+        this._activeCollisions = currentCollisions;
 
         // Second pass: Process all collision events with stored speeds
         for (const collision of collisionsToProcess) {
@@ -3190,16 +3736,24 @@ class GameRoom {
         // fresh (see Game.changeRoom/buildRoom below — HTML5 previously
         // always reused every room forever, the opposite default from
         // Kivy, and the same bug shape the desktop runtime had before its
-        // own fix). `roomSpeed` scales hspeed/vspeed's final per-tick
-        // position delta (GameObject.processMovement) — NOT the game loop's
-        // call rate, which stays uncapped/rAF-driven — so this is a
-        // documented approximation of the desktop runtime's true
-        // step-rate model: gravity/friction accumulation is unaffected by
-        // roomSpeed here, only the resulting hspeed/vspeed's translation
-        // into position.
+        // own fix). `roomSpeed` scales hspeed/vspeed's per-tick position
+        // delta AND gravity/friction's per-tick accumulation
+        // (GameObject.processMovement) by the same factor — NOT the game
+        // loop's call rate, which stays uncapped/rAF-driven — reproducing
+        // desktop's true step-rate model (GameRunner.fps real steps/sec)
+        // at whatever real frame rate this loop actually runs at, for both
+        // constant-velocity motion (walking) and accelerating motion
+        // (a jump's real-world peak height).
         this.persistent = !!data.persistent;
         this.roomSpeed = 60;
         this.showBackgroundColor = true;
+
+        // room_start fires once per room ENTRY (not once per room object,
+        // unlike create's per-instance _pendingCreateEvent) -- consumed at
+        // the top of step() and re-armed by Game.changeRoom on every visit,
+        // including a persistent-room reuse where no instance gets a fresh
+        // create at all. See step()'s "0c" block.
+        this._pendingRoomStart = true;
 
         // set_background's dynamic background image. Drawn directly each
         // frame from this state (immediate-mode canvas rendering, unlike
@@ -3326,6 +3880,22 @@ class GameRoom {
             [...this.instances].forEach(inst => {
                 if (!inst.toDestroy && inst.events && inst.events.game_start) {
                     inst.executeActions(inst.events.game_start.actions || [], game);
+                }
+            });
+        }
+
+        // 0c. room_start fires every time this room becomes active, after
+        // create (and after game_start on the very first room) — matching
+        // runtime/game_runner.py's trigger_room_start_event. Unlike
+        // create's per-instance _pendingCreateEvent flag, this is a
+        // per-ROOM flag re-armed by Game.changeRoom on every entry, so it
+        // also fires for a persistent room reused wholesale (whose
+        // instances never got a fresh create at all in the loop above).
+        if (this._pendingRoomStart) {
+            this._pendingRoomStart = false;
+            [...this.instances].forEach(inst => {
+                if (!inst.toDestroy && inst.events && inst.events.room_start) {
+                    inst.executeActions(inst.events.room_start.actions || [], game);
                 }
             });
         }
@@ -3603,6 +4173,7 @@ class Game {
 
         this.setupKeyboard();
         this.setupMouse();
+        this.setupTouchControls();
         this.loadGame();
     }
 
@@ -3619,12 +4190,25 @@ class Game {
         const fw = parseInt(meta.frame_width) ||
                    (frames > 1 ? Math.floor(stripW / frames) : stripW);
         const fh = parseInt(meta.frame_height) || meta.height || img.height || 32;
+        // Collision box (bbox_left/top/right/bottom): an explicit override
+        // in the sprite data when all four are present, else the full
+        // frame -- matches runtime/game_runner.py's Sprite bbox fields
+        // (Sprite._resolve_bbox's "no override" fallback). A sprite like
+        // spr_person can define an 8x8 box centered in a 16x16 frame, which
+        // desktop's collision math already honors; without this the
+        // collision box here silently defaulted to the full frame.
+        const hasBbox = ['bbox_left', 'bbox_top', 'bbox_right', 'bbox_bottom']
+            .every(k => meta[k] !== undefined && meta[k] !== null);
         return {
             origin_x: meta.origin_x || 0,
             origin_y: meta.origin_y || 0,
             width: fw,
             height: fh,
             frames: frames,
+            bbox_left: hasBbox ? parseInt(meta.bbox_left) : 0,
+            bbox_top: hasBbox ? parseInt(meta.bbox_top) : 0,
+            bbox_right: hasBbox ? parseInt(meta.bbox_right) : fw,
+            bbox_bottom: hasBbox ? parseInt(meta.bbox_bottom) : fh,
         };
     }
 
@@ -3641,6 +4225,16 @@ class Game {
         inst._gameRef = this;
         inst._startX = x;
         inst._startY = y;
+        // xstart/ystart: GameMaker's own (and the desktop runtime's,
+        // runtime/game_runner.py's GameInstance.xstart/ystart) canonical
+        // names for these, so an authored expression referencing
+        // self.xstart/self.ystart resolves identically on both export
+        // targets — unlike _startX/_startY, an HTML5-only internal
+        // convention gmExpressionValue's scope never exposed as a bare
+        // name anyway (its leading underscore excludes it), so no
+        // existing authored content could have relied on that name.
+        inst.xstart = x;
+        inst.ystart = y;
         if (objectData.sprite && this.sprites[objectData.sprite]) {
             inst.sprite = this.sprites[objectData.sprite];
             inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
@@ -3750,6 +4344,65 @@ class Game {
         });
     }
 
+    // On-screen d-pad / action buttons (the exporter only emits the
+    // #touchControls markup at all when the project binds a keyboard
+    // event -- see html5_exporter.py's _detect_keyboard_controls). Button
+    // presses feed the SAME this.keys/keysPressed/keysReleased state a
+    // real keydown/keyup does, via the canonical pygm2 key name each
+    // button carries in data-key (e.g. "left", "space", "z") mapped to
+    // the matching KeyboardEvent.key value -- so every existing
+    // keyboard/keyboard_press/keyboard_release handler works unmodified,
+    // exactly as if a physical key were held.
+    setupTouchControls() {
+        const panel = document.getElementById('touchControls');
+        if (!panel) return;
+
+        // Only reveal the overlay on an actual touchscreen -- a mouse-only
+        // desktop visitor already has a keyboard and doesn't need it
+        // cluttering the page (this is also why the buttons still bind
+        // mousedown/mouseup below: it makes the panel usable while testing
+        // with a mouse, without being shown unprompted on desktop).
+        const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        if (isTouchDevice) {
+            panel.style.display = 'flex';
+        }
+
+        const CANONICAL_TO_JS_KEY = {
+            left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown',
+            space: ' ', enter: 'Enter', escape: 'Escape', tab: 'Tab',
+            backspace: 'Backspace', delete: 'Delete',
+        };
+
+        const press = (jsKey) => {
+            if (!this.keys[jsKey]) {
+                this.keysPressed[jsKey] = true;
+            }
+            this.keys[jsKey] = true;
+        };
+        const release = (jsKey) => {
+            this.keys[jsKey] = false;
+            this.keysReleased[jsKey] = true;
+        };
+
+        panel.querySelectorAll('[data-key]').forEach((btn) => {
+            const canonical = btn.getAttribute('data-key');
+            const jsKey = CANONICAL_TO_JS_KEY[canonical] || canonical;
+
+            const onPress = (e) => { e.preventDefault(); press(jsKey); };
+            const onRelease = (e) => { e.preventDefault(); release(jsKey); };
+
+            btn.addEventListener('touchstart', onPress, { passive: false });
+            btn.addEventListener('touchend', onRelease, { passive: false });
+            btn.addEventListener('touchcancel', onRelease, { passive: false });
+            // Mouse fallback so the panel is also usable/testable without a
+            // touchscreen; harmless alongside the touch listeners since a
+            // browser that fires both would just re-set the same state.
+            btn.addEventListener('mousedown', onPress);
+            btn.addEventListener('mouseup', onRelease);
+            btn.addEventListener('mouseleave', onRelease);
+        });
+    }
+
     loadGame() {
         console.log('📦 Loading game data...');
 
@@ -3817,6 +4470,21 @@ class Game {
         const room = new GameRoom(roomData);
         room._gameRef = this;  // so renderRaycastView can resolve textures
 
+        // Desktop's GameRunner reads settings.room_speed ONCE, globally, into
+        // self.fps -- the pygame clock's real tick rate, so hspeed/vspeed
+        // apply at exactly that many real steps per second (no per-tick
+        // scaling there). HTML5's game loop is uncapped/rAF-driven instead,
+        // so GameRoom.roomSpeed exists purely to reproduce the same real-
+        // world speed by scaling the per-frame position delta (see its
+        // constructor comment) -- but it was hardcoded to 60 regardless of
+        // what the project actually configured, so any project with
+        // room_speed != 60 played at the wrong real-world speed on this
+        // target only (e.g. the promo game's room_speed: 30 made HTML5 run
+        // exactly 2x desktop's real speed). set_room_speed can still change
+        // it at runtime same as before; this only fixes the STARTING value.
+        const configuredSpeed = parseFloat(this.gameData.settings && this.gameData.settings.room_speed);
+        room.roomSpeed = (!isNaN(configuredSpeed) && configuredSpeed > 0) ? configuredSpeed : 60;
+
         if (room.bgImage && sprites[room.bgImage]) {
             room.backgroundSprite = sprites[room.bgImage];
         }
@@ -3846,6 +4514,11 @@ class Game {
             // Store starting position for jump_to_start
             inst._startX = instData.x;
             inst._startY = instData.y;
+            // xstart/ystart: GameMaker's/desktop's canonical names for the
+            // same thing, so an authored expression works identically on
+            // both export targets — see spawnInstance's matching comment.
+            inst.xstart = instData.x;
+            inst.ystart = instData.y;
 
             if (objectData && objectData.sprite && sprites[objectData.sprite]) {
                 inst.sprite = sprites[objectData.sprite];
@@ -4025,6 +4698,11 @@ class Game {
             }
             this._visitedRooms.add(roomName);
             this.currentRoom = this.rooms[roomName];
+            // Re-arm room_start on every entry, including a persistent-room
+            // reuse (a freshly built room already has this true from its own
+            // constructor, but re-asserting it here is harmless and covers
+            // the reuse branch, which skips buildRoom entirely).
+            this.currentRoom._pendingRoomStart = true;
 
             // Resize canvas
             this.canvas.width = this.currentRoom.width;
@@ -4046,9 +4724,19 @@ class Game {
 window.addEventListener('load', async () => {
     try {
         window.game = new Game();
-        // Loads Pyodide only for projects that contain execute_code actions,
-        // so create events written in Python run on the very first frame.
-        await window.game.initPython();
+        // Loads Pyodide (only for projects that contain execute_code
+        // actions) in the BACKGROUND rather than blocking start() on it --
+        // a project mixing Python and non-Python rooms would otherwise
+        // show a black screen on EVERY room, including ones that never
+        // call execute_code at all, until a CDN fetch of the ~10MB+
+        // runtime finishes. execute_code already no-ops gracefully with a
+        // one-time console.warn (see the 'execute_code' case) when
+        // game.python isn't ready yet, so this is safe: non-Python rooms
+        // are unaffected, and a room whose CREATE event needs Python
+        // should re-check readiness on a later frame (e.g. a step-event
+        // lazy-init guard) rather than assume the very first frame has it.
+        window.game.initPython().catch(err =>
+            console.error('❌ Python runtime failed to load:', err));
         window.game.start();
         console.log('✅ Game started!');
     } catch (error) {

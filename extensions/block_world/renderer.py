@@ -600,6 +600,76 @@ def _fully_covers(stack, eye_z, horizon, screen_h, px_per_cell):
             and horizon + (eye_z - lowest) * px_per_cell >= screen_h)
 
 
+def _stack_opaque_spans(stack, eye_z, horizon, px_per_cell, screen_h):
+    """Per-block screen-Y spans for this stack's OPAQUE blocks, clipped to
+    the visible screen (gaps and transparent blocks contribute nothing --
+    they let farther geometry show through, so they can never be claimed as
+    occluding it).
+
+    Used by the column loop's cumulative-coverage tracking below: a farther
+    cell whose entire span already falls inside nearer, already-collected
+    coverage is guaranteed to be painted over (painting runs far-to-near,
+    see the loop's own comment) and can be dropped without ever touching a
+    pixel a player could see -- purely a perf shortcut, same guarantee
+    `_fully_covers` already relies on for the single-stack case.
+
+    Deliberately per-BLOCK rather than one merged span per stack: a distant
+    tall wall can be fully hidden by several nearer, shorter cells acting
+    TOGETHER even when no single nearer cell alone covers its whole height
+    (their `covered` contributions land at different screen rows and
+    combine) -- checking each block separately catches that; collapsing to
+    one span per stack does not. Measured on the bundled samples: the
+    coarser one-span-per-stack version was neutral-to-slightly-worse on an
+    open, mostly single-block-tall scene (block_world_2, procedurally
+    generated) and lost block_world_1's entire ~25% win on its maze-like
+    corridors -- the fine-grained check is what actually pays for its own
+    bookkeeping."""
+    spans = []
+    for z, block_type in stack:
+        if is_transparent(block_type):
+            continue
+        y0 = horizon + (eye_z - (z + 1)) * px_per_cell
+        y1 = horizon + (eye_z - z) * px_per_cell
+        if y0 < 0.0:
+            y0 = 0.0
+        if y1 > screen_h:
+            y1 = screen_h
+        if y1 > y0:
+            spans.append((y0, y1))
+    return spans
+
+
+def _merge_covered(covered, y0, y1):
+    """Fold [y0, y1) into `covered`, a sorted list of merged, non-touching
+    screen-Y intervals, in place."""
+    if y1 <= y0:
+        return
+    merged = []
+    placed = False
+    for a, b in covered:
+        if b < y0:
+            merged.append((a, b))
+        elif y1 < a:
+            if not placed:
+                merged.append((y0, y1))
+                placed = True
+            merged.append((a, b))
+        else:
+            y0, y1 = min(y0, a), max(y1, b)
+    if not placed:
+        merged.append((y0, y1))
+    covered[:] = merged
+
+
+def _is_covered(covered, y0, y1):
+    """Is [y0, y1) entirely inside the union of `covered`? `covered`'s
+    entries are already merged/sorted, so containment in any single entry
+    is sufficient -- overlapping or touching spans never stay separate."""
+    if y1 <= y0:
+        return True
+    return any(a <= y0 and y1 <= b for a, b in covered)
+
+
 def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
                      texture_path, tex_u, flat_color):
     """One block's vertical face in one column."""
@@ -862,7 +932,26 @@ def render_block_world_view(room, screen: pygame.Surface):
 
         # Collect near->far so the occlusion early-out can stop the march,
         # then paint far->near.
+        #
+        # `covered` tracks the cumulative screen-Y coverage guaranteed by
+        # already-collected (nearer) opaque geometry. A farther cell whose
+        # own projected span is already entirely inside it can only ever be
+        # painted over -- painting below runs far-to-near, so nearer hits
+        # are drawn LAST, on top -- and is dropped before it costs a single
+        # _draw_wall_strip/_draw_horizontal_face_textured call. This is the
+        # multi-cell generalization of the single-stack `_fully_covers`
+        # check below: a long, open sightline over uniform terrain still
+        # costs one draw per cell crossed (each is genuinely visible, a
+        # distinct thin band -- see the module's perf notes), but a
+        # sightline into a wall or a stack of tall blocks now stops
+        # accumulating draws the moment nearer geometry has already sealed
+        # the column, instead of continuing to build (and then paint) hits
+        # for cells no pixel will ever show. Subsumes the single-stack
+        # `_fully_covers` case (still kept as its own tested function --
+        # this loop's break condition covers the identical scenario the
+        # moment a single gapless stack's own span reaches full coverage).
         hits = []
+        covered = []
         for map_x, map_y, d_entry, d_exit, side, tex_u in march_ray(
                 room, cam_x, cam_y, ray_angle, cell_size, render_distance_cells):
             stack = columns.get((map_x, map_y))
@@ -874,8 +963,24 @@ def render_block_world_view(room, screen: pygame.Surface):
             # recomputed in the paint loop below -- one division per non-air
             # cell the ray enters, every column, every frame otherwise.
             px_per_cell = h * cell_size / near
+            # Nothing can be covered yet on this column's first hit -- skip
+            # the bookkeeping entirely rather than computing spans just to
+            # find `covered` empty every single time.
+            if covered:
+                spans = _stack_opaque_spans(stack, eye_z, horizon, px_per_cell, h)
+                fully_hidden = bool(spans)
+                for y0, y1 in spans:
+                    if not _is_covered(covered, y0, y1):
+                        fully_hidden = False
+                        break
+                if fully_hidden:
+                    continue
+            else:
+                spans = _stack_opaque_spans(stack, eye_z, horizon, px_per_cell, h)
             hits.append((near, far, side, tex_u, stack, px_per_cell))
-            if _fully_covers(stack, eye_z, horizon, h, px_per_cell):
+            for y0, y1 in spans:
+                _merge_covered(covered, y0, y1)
+            if covered and _is_covered(covered, 0.0, float(h)):
                 break
 
         # Painter's algorithm. Every face is opaque, and within one cell the

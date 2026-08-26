@@ -56,8 +56,21 @@ compares its rendering against the IDE's, sample by sample. It takes about a
 minute per sample. Any non-zero exit means stop and read the output — you have
 found something before spending your own time on it.
 
-Recorded on Windows, 2026-08-17: `5/5 verified`, four samples pixel-identical
-to the IDE and plateforme_3 within its own run-to-run noise.
+Recorded on Windows, 2026-08-17: `5/5 verified` (the 5 samples tied to the
+original twelve-issue pass), four pixel-identical to the IDE and
+plateforme_3 within its own run-to-run noise.
+
+**Updated on Linux, 2026-08-19, after fixing `--compare`'s own false
+positives** (unseeded `random()` in match3/treasure/plateforme_3, and
+`show_message_dialog` hanging a headless run in views_1 — both fixed at the
+engine via `PYGM_SEED` and a frame-budget-only dialog bypass, not by
+loosening the tool's tolerance): a full `--all --compare` across every
+bundled sample now reports **`20/20 verified`, every sample 0.00% different
+from the IDE's own rendering**, `multiplayer_lan_1` included. Still only one
+platform (Linux) — Windows/macOS re-runs of the same `--all --compare` are
+still worth doing since PyInstaller builds per-platform binaries, but the
+tool itself is now trustworthy everywhere, not just for the 5 originally
+spot-checked samples.
 
 - L [ ] M [ ] W [ ] Full suite passes (any **failure** count is a real
   regression; the skip count is environment-dependent)
