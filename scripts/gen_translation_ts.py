@@ -139,7 +139,14 @@ class TranslationBuilder:
         """Incrementally add messages to a large context across multiple
         calls/sessions. Only entries present in `translations` AND not
         already in the dest file (matched by <source>) are appended —
-        safe to call repeatedly as more of a huge context gets translated."""
+        safe to call repeatedly as more of a huge context gets translated.
+
+        A `type="vanished"` message does NOT count as "already present":
+        lrelease drops vanished entries from the compiled .qm, so a live
+        source string shadowed only by a stale vanished duplicate would be
+        silently skipped forever, leaving it untranslated at runtime. Bug
+        found and fixed 2026-08-27 (French UI-string gap fill) — it had
+        already caused 5 real, live strings to be silently dropped."""
         entries = self._parse_source_context(name)
         _, content = self._existing()
 
@@ -150,7 +157,14 @@ class TranslationBuilder:
                 content, re.S,
             )
             if block:
-                existing_sources = set(re.findall(r"<source>(.*?)</source>", block.group(0), re.S))
+                for msg in re.findall(r"<message>(.*?)</message>", block.group(0), re.S):
+                    srcm = re.search(r"<source>(.*?)</source>", msg, re.S)
+                    if not srcm:
+                        continue
+                    transm = re.search(r'<translation([^>]*)>', msg)
+                    is_vanished = bool(transm and 'type="vanished"' in transm.group(1))
+                    if not is_vanished:
+                        existing_sources.add(srcm.group(1))
 
         to_add = [(src, locs) for src, locs in entries
                   if src in translations and src not in existing_sources]

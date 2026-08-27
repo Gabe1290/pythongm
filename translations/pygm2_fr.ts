@@ -191,6 +191,21 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <source>Add translations for different languages</source>
         <translation>Ajouter des traductions pour différentes langues</translation>
     </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/events/action_editor.py" line="623"/>
+        <source>Applies to</source>
+        <translation>S'applique à</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/events/action_editor.py" line="632"/>
+        <source>Self</source>
+        <translation>Soi-même</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/events/action_editor.py" line="633"/>
+        <source>Other</source>
+        <translation>Autre</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -643,6 +658,36 @@ Utilisez Fichier → Nouveau projet ou Fichier → Ouvrir un projet pour commenc
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="665"/>
         <source>Enter name for new {0}:</source>
         <translation>Entrez le nom du nouveau {0} :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="380"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ Supprimer les {0} sélectionnés</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="856"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … et {0} de plus</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="859"/>
+        <source>Delete {0} Assets</source>
+        <translation>Supprimer {0} ressources</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="861"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>Supprimer ces {0} ressource(s) ?
+
+{1}
+
+Elles seront déplacées vers la corbeille du projet et pourront être restaurées plus tard.</translation>
     </message>
 </context>
 <context>
@@ -2078,6 +2123,20 @@ Taille : {2}x{3}
         <source>Solid</source>
         <translation>Solide</translation>
     </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="858"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="861"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="864"/>
+        <source>Yes</source>
+        <translation>Oui</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="858"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="861"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="864"/>
+        <source>No</source>
+        <translation>Non</translation>
+    </message>
 </context>
 <context>
     <name>EventActionWidget</name>
@@ -2466,6 +2525,21 @@ Voulez-vous ouvrir le répertoire d&apos;export ?</translation>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="217"/>
         <source>Pick Color</source>
         <translation>Choisir une couleur</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/gm80_action_dialog.py" line="96"/>
+        <source>Applies to</source>
+        <translation>S'applique à</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/gm80_action_dialog.py" line="105"/>
+        <source>Self</source>
+        <translation>Soi-même</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/gm80_action_dialog.py" line="106"/>
+        <source>Other</source>
+        <translation>Autre</translation>
     </message>
 </context>
 <context>
@@ -3341,6 +3415,16 @@ Le code s&apos;exécutera lorsque l&apos;événement se déclenchera pendant le 
         <source>🤖 Thymio</source>
         <translation>🤖 Thymio</translation>
     </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_editor_main.py" line="663"/>
+        <source>▶ Play Object</source>
+        <translation>▶ Tester l'objet</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_editor_main.py" line="665"/>
+        <source>Run this object alone in a small test room</source>
+        <translation>Exécuter cet objet seul dans une petite salle de test</translation>
+    </message>
 </context>
 <context>
     <name>ObjectEventsPanel</name>
@@ -3733,6 +3817,50 @@ L'action elle-même n'est pas affectée et sera conservée telle quelle lors de 
         <source>{0} (needs {1})</source>
         <translation>{0} (nécessite {1})</translation>
     </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="620"/>
+        <source>Paste {0} Actions</source>
+        <translation>Coller {0} actions</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="621"/>
+        <source>Paste Action</source>
+        <translation>Coller l'action</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="630"/>
+        <source>Copy {0} Actions</source>
+        <translation>Copier {0} actions</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="631"/>
+        <source>Copy Action</source>
+        <translation>Copier l'action</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="724"/>
+        <source>Add Key…</source>
+        <translation>Ajouter une touche…</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="729"/>
+        <source>Add Alarm</source>
+        <translation>Ajouter une alarme</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="860"/>
+        <source>Cannot add actions directly to &apos;{0}&apos;.
+
+Right-click on {1} and add the action there instead.</source>
+        <translation>Impossible d'ajouter des actions directement à « {0} ».
+
+Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="1270"/>
+        <source>(empty comment)</source>
+        <translation>(commentaire vide)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
@@ -3819,6 +3947,16 @@ L'action elle-même n'est pas affectée et sera conservée telle quelle lors de 
     <message>
         <source>Show generated code in Code Editor tab</source>
         <translation type="vanished">Afficher le code généré dans l&apos;onglet Éditeur de code</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_properties_panel.py" line="87"/>
+        <source>Stay destroyed</source>
+        <translation>Rester détruit</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_properties_panel.py" line="90"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>Une fois détruit, cet objet reste absent lors du redémarrage de la salle (réinitialisé lors d'un redémarrage complet du jeu)</translation>
     </message>
 </context>
 <context>
@@ -4842,14 +4980,6 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
         <translation>&amp;Dupliquer</translation>
     </message>
     <message>
-        <source>&amp;Find...</source>
-        <translation type="vanished">&amp;Rechercher...</translation>
-    </message>
-    <message>
-        <source>Find and &amp;Replace...</source>
-        <translation type="vanished">Rechercher et &amp;Remplacer...</translation>
-    </message>
-    <message>
         <location filename="../core/ide_window.py" line="230"/>
         <source>Import &amp;Sound...</source>
         <translation>Importer un &amp;son...</translation>
@@ -4897,14 +5027,6 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
         <location filename="../core/ide_window.py" line="266"/>
         <source>&amp;Test Game</source>
         <translation>&amp;Tester le jeu</translation>
-    </message>
-    <message>
-        <source>&amp;Build Game...</source>
-        <translation type="vanished">&amp;Compiler le jeu...</translation>
-    </message>
-    <message>
-        <source>Build and &amp;Run</source>
-        <translation type="vanished">Compiler et &amp;exécuter</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="268"/>
@@ -5954,10 +6076,6 @@ Les modifications s&apos;appliquent immédiatement aux éditeurs actuellement ou
         <translation type="vanished">Veuillez d&apos;abord ouvrir un projet pour nettoyer.</translation>
     </message>
     <message>
-        <source>Clean Project</source>
-        <translation type="vanished">Nettoyer le projet</translation>
-    </message>
-    <message>
         <source>Project cleanup is not yet implemented.
 
 Future features:
@@ -6360,7 +6478,7 @@ Veuillez fermer et redémarrer l&apos;IDE pour que le changement prenne effet.</
     <message>
         <location filename="../core/ide_window.py" line="177"/>
         <source>Export &amp;Aseba (Thymio) code...</source>
-        <translation>Exporter le code &amp;amp;Aseba (Thymio)...</translation>
+        <translation>Exporter le code &amp;Aseba (Thymio)...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="298"/>
@@ -6938,6 +7056,269 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 Toute action provenant de celles-ci sera ignorée et le projet peut sembler ou se comporter de façon incorrecte. Mettez à jour PyGameMaker ou ajoutez le(s) dossier(s) d'extension manquant(s) pour les restaurer.</translation>
     </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="431"/>
+        <source>&amp;Restore Deleted Assets...</source>
+        <translation>&amp;Restaurer les ressources supprimées...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="433"/>
+        <source>Find &amp;Unused Assets...</source>
+        <translation>Rechercher les ressources &amp;inutilisées...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="435"/>
+        <source>Clean &amp;Project</source>
+        <translation>Nettoyer le &amp;projet</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="437"/>
+        <source>Find &amp;Orphaned Files...</source>
+        <translation>Rechercher les fichiers &amp;orphelins...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1098"/>
+        <source>Filter assets…</source>
+        <translation>Filtrer les ressources…</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1561"/>
+        <source>Could not open sample</source>
+        <translation>Impossible d'ouvrir l'exemple</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1562"/>
+        <source>Failed to copy the bundled sample to:
+{0}
+
+Error:
+{1}</source>
+        <translation>Échec de la copie de l'exemple fourni vers :
+{0}
+
+Erreur :
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1570"/>
+        <source>Sample copied to: {0}</source>
+        <translation>Exemple copié vers : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1641"/>
+        <source>Project Too New</source>
+        <translation>Projet trop récent</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1643"/>
+        <source>This project was made with a newer version of PyGameMaker (format {0}.{1}). Please update PyGameMaker to open it.</source>
+        <translation>Ce projet a été créé avec une version plus récente de PyGameMaker (format {0}.{1}). Veuillez mettre à jour PyGameMaker pour l'ouvrir.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="1663"/>
+        <source>Note: {n} action(s) aren&apos;t supported by this export target and were skipped — the exported game will not perform them:
+{actions}</source>
+        <translation>Remarque : {n} action(s) ne sont pas prises en charge par cette cible d'export et ont été ignorées — le jeu exporté ne les exécutera pas :
+{actions}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="2347"/>
+        <source>Please open or create a project first before testing an object.</source>
+        <translation>Veuillez d'abord ouvrir ou créer un projet avant de tester un objet.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="2388"/>
+        <source>Play Object: {0}</source>
+        <translation>Tester l'objet : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="2426"/>
+        <source>Failed to prepare object test: {0}</source>
+        <translation>Échec de la préparation du test de l'objet : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="2657"/>
+        <source>Include Assets</source>
+        <translation>Inclure les ressources</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="2659"/>
+        <source>Optimize for Release</source>
+        <translation>Optimiser pour la publication</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="2661"/>
+        <source>Include Debug Info</source>
+        <translation>Inclure les informations de débogage</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3124"/>
+        <source>Building Game</source>
+        <translation>Construction du jeu</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3125"/>
+        <source>Preparing build...</source>
+        <translation>Préparation de la construction...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3127"/>
+        <source>Build Complete</source>
+        <translation>Construction terminée</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3128"/>
+        <source>Build Failed</source>
+        <translation>Échec de la construction</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3305"/>
+        <source>Find is only available in the code editor</source>
+        <translation>La recherche n'est disponible que dans l'éditeur de code</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3620"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3642"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3671"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3700"/>
+        <source>Please open a project first.</source>
+        <translation>Veuillez d'abord ouvrir un projet.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3630"/>
+        <source>Restored: {0}</source>
+        <translation>Restauré : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3659"/>
+        <source>Moved {0} unused asset(s) to Trash</source>
+        <translation>{0} ressource(s) inutilisée(s) déplacée(s) vers la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3683"/>
+        <source>Removed {0} leftover temporary file(s):
+
+{1}</source>
+        <translation>{0} fichier(s) temporaire(s) résiduel(s) supprimé(s) :
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3685"/>
+        <source>Removed {0} leftover temporary file(s)</source>
+        <translation>{0} fichier(s) temporaire(s) résiduel(s) supprimé(s)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3690"/>
+        <source>Nothing to clean — no leftover temporary files found.</source>
+        <translation>Rien à nettoyer — aucun fichier temporaire résiduel trouvé.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4289"/>
+        <source>Opened script: {0}</source>
+        <translation>Script ouvert : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4298"/>
+        <source>Failed to open script editor: {0}</source>
+        <translation>Échec de l'ouverture de l'éditeur de script : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4330"/>
+        <source>Opened sound: {0}</source>
+        <translation>Son ouvert : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4339"/>
+        <source>Failed to open sound editor: {0}</source>
+        <translation>Échec de l'ouverture de l'éditeur de son : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4371"/>
+        <source>Opened background: {0}</source>
+        <translation>Arrière-plan ouvert : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4380"/>
+        <source>Failed to open background editor: {0}</source>
+        <translation>Échec de l'ouverture de l'éditeur d'arrière-plan : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4412"/>
+        <source>Opened font: {0}</source>
+        <translation>Police ouverte : {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="4421"/>
+        <source>Failed to open font editor: {0}</source>
+        <translation>Échec de l'ouverture de l'éditeur de police : {0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="46"/>
+        <source>Offline Python Runtime?</source>
+        <translation>Environnement Python hors ligne ?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="48"/>
+        <source>This game uses Python code (execute_code), which normally loads its runtime from the internet the first time the exported game is opened.
+
+Bundle it into the .html file instead, so the game works with no internet at all (e.g. locked-down school networks)?
+
+Adds about 15-20 MB to the exported file. Needs internet once now, to download and cache it (cached afterwards for future exports).</source>
+        <translation>Ce jeu utilise du code Python (execute_code), qui charge normalement son environnement d'exécution depuis Internet à la première ouverture du jeu exporté.
+
+L'intégrer plutôt dans le fichier .html, afin que le jeu fonctionne sans connexion Internet du tout (par exemple pour les réseaux scolaires verrouillés) ?
+
+Ajoute environ 15 à 20 Mo au fichier exporté. Nécessite une connexion Internet une seule fois maintenant, pour le télécharger et le mettre en cache (mis en cache ensuite pour les futurs exports).</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="189"/>
+        <source>Exporting Kivy project...</source>
+        <translation>Export du projet Kivy en cours...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="195"/>
+        <source>Kivy project exported to:
+{0}</source>
+        <translation>Projet Kivy exporté vers :
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="197"/>
+        <source>Would you like to open the export directory?</source>
+        <translation>Voulez-vous ouvrir le dossier d'export ?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="202"/>
+        <source>Kivy export complete</source>
+        <translation>Export Kivy terminé</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="349"/>
+        <source>&amp;Find...</source>
+        <translation>&amp;Rechercher...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="350"/>
+        <source>Find and &amp;Replace...</source>
+        <translation>Rechercher et &amp;remplacer...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="392"/>
+        <source>&amp;Build Game...</source>
+        <translation>&amp;Construire le jeu...</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="393"/>
+        <source>Build and &amp;Run</source>
+        <translation>Construire et &amp;exécuter</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3682"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/core/ide_window.py" line="3689"/>
+        <source>Clean Project</source>
+        <translation>Nettoyer le projet</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>
@@ -7318,6 +7699,46 @@ Toute action provenant de celles-ci sera ignorée et le projet peut sembler ou s
         <location filename="../editors/room_editor/__init__.py" line="667"/>
         <source>Duplicated {0} instance(s)</source>
         <translation>{0} instance(s) dupliquée(s)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="94"/>
+        <source>Open another tile palette (up to {0})</source>
+        <translation>Ouvrir une autre palette de tuiles (jusqu'à {0})</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="211"/>
+        <source>🧱 Block Edit</source>
+        <translation>🧱 Édition de blocs</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="212"/>
+        <source>Edit this room&apos;s Block World voxels</source>
+        <translation>Modifier les voxels du monde de blocs de cette salle</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="264"/>
+        <source>Block World</source>
+        <translation>Monde de blocs</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="265"/>
+        <source>Save this room first, so its blocks have a name to save under.</source>
+        <translation>Enregistrez d'abord cette salle pour que ses blocs aient un nom de sauvegarde.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="613"/>
+        <source>Tile palette limit reached ({0})</source>
+        <translation>Limite de palettes de tuiles atteinte ({0})</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="615"/>
+        <source>Tile Palette {0}</source>
+        <translation>Palette de tuiles {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/__init__.py" line="674"/>
+        <source>Selected {0} at ({1}, {2}) -- {3} objects stacked here, click again to cycle ({4}/{5})</source>
+        <translation>{0} sélectionné à ({1}, {2}) -- {3} objets empilés ici, cliquez à nouveau pour parcourir ({4}/{5})</translation>
     </message>
 </context>
 <context>
@@ -8478,6 +8899,56 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>(none)</source>
         <translation>(aucun)</translation>
     </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="184"/>
+        <source>Tilesheet grid</source>
+        <translation>Grille de la planche de tuiles</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="187"/>
+        <source>Use as tileset</source>
+        <translation>Utiliser comme jeu de tuiles</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="205"/>
+        <source>H sep:</source>
+        <translation>Espacement H :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="208"/>
+        <source>Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)</source>
+        <translation>Espace horizontal entre les tuiles, en pixels (mettre 1 pour les planches avec des lignes de grille de 1 px)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="212"/>
+        <source>V sep:</source>
+        <translation>Espacement V :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="215"/>
+        <source>Vertical gap between tiles, in pixels</source>
+        <translation>Espace vertical entre les tuiles, en pixels</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="219"/>
+        <source>H offset:</source>
+        <translation>Décalage H :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="222"/>
+        <source>Left-edge offset before the first tile column, in pixels</source>
+        <translation>Décalage du bord gauche avant la première colonne de tuiles, en pixels</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="226"/>
+        <source>V offset:</source>
+        <translation>Décalage V :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/room_editor/tile_palette.py" line="229"/>
+        <source>Top-edge offset before the first tile row, in pixels</source>
+        <translation>Décalage du bord supérieur avant la première ligne de tuiles, en pixels</translation>
+    </message>
 </context>
 <context>
     <name>TutorialDialog</name>
@@ -8956,6 +9427,432 @@ Voulez-vous quand même enregistrer ?</translation>
         <location filename="../widgets/welcome_tab.py" line="567"/>
         <source>_No documentation is bundled for **{0}**._</source>
         <translation>_Aucune documentation n'est fournie pour **{0}**._</translation>
+    </message>
+</context>
+<context>
+    <name>OrphanedFilesDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="644"/>
+        <source>Orphaned Files</source>
+        <translation>Fichiers orphelins</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="652"/>
+        <source>Physical files under sprites/sounds/backgrounds/fonts/thumbnails that nothing in this project references — usually left behind by a deleted asset entry, or a file copied in by hand. Trashed files can be restored below until permanently removed.</source>
+        <translation>Fichiers physiques dans sprites/sounds/backgrounds/fonts/thumbnails que rien dans ce projet ne référence — généralement laissés par une entrée de ressource supprimée, ou un fichier copié manuellement. Les fichiers mis à la corbeille peuvent être restaurés ci-dessous jusqu'à leur suppression définitive.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="660"/>
+        <source>Found on disk:</source>
+        <translation>Trouvés sur le disque :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="674"/>
+        <source>Move Selected to Trash</source>
+        <translation>Déplacer la sélection vers la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="680"/>
+        <source>Trashed:</source>
+        <translation>Dans la corbeille :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="686"/>
+        <source>Restore</source>
+        <translation>Restaurer</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="690"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="822"/>
+        <source>Delete Permanently</source>
+        <translation>Supprimer définitivement</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="694"/>
+        <source>Empty</source>
+        <translation>Vide</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="734"/>
+        <source>No orphaned files found.</source>
+        <translation>Aucun fichier orphelin trouvé.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="746"/>
+        <source>{0}  —  deleted {1}</source>
+        <translation>{0}  —  supprimé le {1}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="789"/>
+        <source>Move to Trash</source>
+        <translation>Déplacer vers la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="790"/>
+        <source>Move {0} orphaned file(s) to the trash?</source>
+        <translation>Déplacer {0} fichier(s) orphelin(s) vers la corbeille ?</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="809"/>
+        <source>Restore Failed</source>
+        <translation>Échec de la restauration</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="811"/>
+        <source>Could not restore &apos;{0}&apos; — a file already exists there. Move or remove it first, then try again.</source>
+        <translation>Impossible de restaurer « {0} » — un fichier existe déjà à cet emplacement. Déplacez-le ou supprimez-le d'abord, puis réessayez.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="823"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Supprimer définitivement « {0} » ? Cette action est irréversible.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="833"/>
+        <source>Empty Trash</source>
+        <translation>Vider la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="834"/>
+        <source>Permanently delete every trashed orphaned file? This cannot be undone.</source>
+        <translation>Supprimer définitivement tous les fichiers orphelins mis à la corbeille ? Cette action est irréversible.</translation>
+    </message>
+</context>
+<context>
+    <name>BlockWorldEditorWindow</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="102"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="152"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="160"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="176"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="438"/>
+        <source>Block World</source>
+        <translation>Monde de blocs</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="103"/>
+        <source>Could not load this room&apos;s saved blocks ({0}); starting empty.</source>
+        <translation>Impossible de charger les blocs enregistrés de cette salle ({0}) ; démarrage à vide.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="139"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="224"/>
+        <source>Block World Editor</source>
+        <translation>Éditeur de monde de blocs</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="153"/>
+        <source>This room has no project/name to save to.</source>
+        <translation>Cette salle n'a ni projet ni nom pour l'enregistrement.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="161"/>
+        <source>Failed to save blocks:
+{0}</source>
+        <translation>Échec de l'enregistrement des blocs :
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="164"/>
+        <source>Saved to {0}</source>
+        <translation>Enregistré vers {0}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="177"/>
+        <source>There are no blocks to clear.</source>
+        <translation>Il n'y a aucun bloc à effacer.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="180"/>
+        <source>Clear World</source>
+        <translation>Effacer le monde</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="181"/>
+        <source>Remove every block in this room? This can be undone.</source>
+        <translation>Retirer tous les blocs de cette salle ? Cette action peut être annulée.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="205"/>
+        <source>WASD fly | middle-drag to look | wheel to pitch | Space/Shift layer up/down | left-click place | right-click / Delete break | Ctrl+Z / Ctrl+Y undo/redo | Ctrl+S save</source>
+        <translation>WASD pour voler | glisser avec le bouton central pour regarder | molette pour incliner | Espace/Maj pour changer de couche | clic gauche pour poser | clic droit / Suppr pour casser | Ctrl+Z / Ctrl+Y annuler/rétablir | Ctrl+S enregistrer</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="214"/>
+        <source>Blocks</source>
+        <translation>Blocs</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="227"/>
+        <source>Save blocks (Ctrl+S)</source>
+        <translation>Enregistrer les blocs (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="233"/>
+        <source>🗑️ Clear World</source>
+        <translation>🗑️ Effacer le monde</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="234"/>
+        <source>Remove every block in this room</source>
+        <translation>Retirer tous les blocs de cette salle</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="429"/>
+        <source>cell {0}   layer {1}   angle {2:.0f}   pitch {3:+.0f}   block {4}   undo {5}</source>
+        <translation>case {0}   couche {1}   angle {2:.0f}   inclinaison {3:+.0f}   bloc {4}   annulation {5}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/block_world_editor/window.py" line="439"/>
+        <source>Save changes to this room&apos;s blocks before closing?</source>
+        <translation>Enregistrer les modifications des blocs de cette salle avant de fermer ?</translation>
+    </message>
+</context>
+<context>
+    <name>FindReplaceDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="31"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="94"/>
+        <source>Find</source>
+        <translation>Rechercher</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="42"/>
+        <source>Find:</source>
+        <translation>Rechercher :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="44"/>
+        <source>Replace:</source>
+        <translation>Remplacer :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="50"/>
+        <source>Case sensitive</source>
+        <translation>Respecter la casse</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="51"/>
+        <source>Whole words</source>
+        <translation>Mots entiers</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="62"/>
+        <source>Find Next</source>
+        <translation>Suivant</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="64"/>
+        <source>Find Previous</source>
+        <translation>Précédent</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="66"/>
+        <source>Replace</source>
+        <translation>Remplacer</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="68"/>
+        <source>Replace All</source>
+        <translation>Tout remplacer</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="94"/>
+        <source>Find and Replace</source>
+        <translation>Rechercher et remplacer</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="124"/>
+        <source>Phrase not found</source>
+        <translation>Expression introuvable</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/dialogs/find_replace_dialog.py" line="183"/>
+        <source>%d replacement(s) made</source>
+        <translation>%d remplacement(s) effectué(s)</translation>
+    </message>
+</context>
+<context>
+    <name>TrashDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="324"/>
+        <source>Trash</source>
+        <translation>Corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="332"/>
+        <source>Deleted assets stay here until you permanently remove them.</source>
+        <translation>Les ressources supprimées restent ici jusqu'à leur suppression définitive.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="346"/>
+        <source>Restore</source>
+        <translation>Restaurer</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="351"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="420"/>
+        <source>Delete Permanently</source>
+        <translation>Supprimer définitivement</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="356"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="431"/>
+        <source>Empty Trash</source>
+        <translation>Vider la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="372"/>
+        <source>{0} / {1}  —  deleted {2}</source>
+        <translation>{0} / {1}  —  supprimé le {2}</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="392"/>
+        <source>Deleting this cleared a reference in: {0}. Restoring brings the file back but does not re-link that reference automatically.</source>
+        <translation>Cette suppression a effacé une référence dans : {0}. La restauration ramène le fichier mais ne rétablit pas automatiquement cette référence.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="405"/>
+        <source>Restore Failed</source>
+        <translation>Échec de la restauration</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="407"/>
+        <source>Could not restore &apos;{0}&apos; — an asset with that name already exists. Rename or remove it first, then try again.</source>
+        <translation>Impossible de restaurer « {0} » — une ressource portant ce nom existe déjà. Renommez-la ou supprimez-la d'abord, puis réessayez.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="422"/>
+        <source>Permanently delete &apos;{0}&apos;? This cannot be undone.</source>
+        <translation>Supprimer définitivement « {0} » ? Cette action est irréversible.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="432"/>
+        <source>Permanently delete everything in the trash? This cannot be undone.</source>
+        <translation>Supprimer définitivement tout le contenu de la corbeille ? Cette action est irréversible.</translation>
+    </message>
+</context>
+<context>
+    <name>UnusedAssetsDialog</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="463"/>
+        <source>Unused Assets</source>
+        <translation>Ressources inutilisées</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="471"/>
+        <source>Assets not referenced by any object, room, or action. Deleted items go to the Trash, not removed permanently. References inside execute_code/execute_script can&apos;t be detected and may cause false positives here. Rooms are listed as &quot;not explicitly navigated to&quot; rather than unused — a starting room is often never referenced by name anywhere, so that alone doesn&apos;t mean it&apos;s safe to delete.</source>
+        <translation>Ressources non référencées par aucun objet, salle ou action. Les éléments supprimés vont à la corbeille et ne sont pas retirés définitivement. Les références à l'intérieur d'execute_code/execute_script ne peuvent pas être détectées et peuvent provoquer de faux positifs ici. Les salles sont indiquées comme « non explicitement rejointes » plutôt qu'inutilisées — une salle de départ n'est souvent jamais référencée par son nom nulle part, ce qui ne signifie pas à lui seul qu'elle peut être supprimée sans risque.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="498"/>
+        <source>Move Selected to Trash</source>
+        <translation>Déplacer la sélection vers la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="533"/>
+        <source>Rooms — not explicitly navigated to ({0})</source>
+        <translation>Salles — non explicitement rejointes ({0})</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="550"/>
+        <source>No unused assets found.</source>
+        <translation>Aucune ressource inutilisée trouvée.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="603"/>
+        <source>Move to Trash</source>
+        <translation>Déplacer vers la corbeille</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_dialogs.py" line="604"/>
+        <source>Move {0} unused asset(s) to the Trash?</source>
+        <translation>Déplacer {0} ressource(s) inutilisée(s) vers la corbeille ?</translation>
+    </message>
+</context>
+<context>
+    <name>BackgroundEditor</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="85"/>
+        <source>Tile horizontally</source>
+        <translation>Répéter horizontalement</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="89"/>
+        <source>Tile vertically</source>
+        <translation>Répéter verticalement</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="106"/>
+        <source>(image not found)</source>
+        <translation>(image introuvable)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="110"/>
+        <source>(could not load image)</source>
+        <translation>(impossible de charger l'image)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="125"/>
+        <source>(no file)</source>
+        <translation>(aucun fichier)</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/background_editor.py" line="129"/>
+        <source>(unknown)</source>
+        <translation>(inconnu)</translation>
+    </message>
+</context>
+<context>
+    <name>SoundEditor</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="78"/>
+        <source>Volume:</source>
+        <translation>Volume :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="80"/>
+        <source>Loop</source>
+        <translation>Boucle</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="87"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="119"/>
+        <source>▶ Play</source>
+        <translation>▶ Lecture</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="131"/>
+        <source>■ Stop</source>
+        <translation>■ Arrêt</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/sound_editor.py" line="142"/>
+        <source>(no file)</source>
+        <translation>(aucun fichier)</translation>
+    </message>
+</context>
+<context>
+    <name>FontEditor</name>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/font_editor.py" line="73"/>
+        <source>Font family:</source>
+        <translation>Famille de police :</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/font_editor.py" line="80"/>
+        <source>Bold</source>
+        <translation>Gras</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/font_editor.py" line="84"/>
+        <source>Italic</source>
+        <translation>Italique</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/font_editor.py" line="90"/>
+        <source>The quick brown fox</source>
+        <translation>Portez ce vieux whisky au juge blond qui fume</translation>
     </message>
 </context>
 </TS>
