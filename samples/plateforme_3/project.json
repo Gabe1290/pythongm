@@ -1153,6 +1153,13 @@
                 }
               },
               {
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0"
+                }
+              },
+              {
                 "action": "set_sprite",
                 "parameters": {
                   "sprite": "spr_pingus_splat",
