@@ -1,8 +1,11 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **Phases 4–7 and 8.1/8.2/8.3/8.5/8.6 DONE** (7.4's wiki docs are
-complete for English + French; 7 more languages are explicitly deferred
-incremental work — see 7.4's own entry). Written and
+Status: **CLOSED 2026-09-03.** Phases 4–7 and 8.1/8.2/8.3/8.5/8.6/8.7 are
+DONE (7.4's wiki docs are complete for English + French; 7 more languages
+are explicitly deferred incremental work — see 7.4's own entry; 8.4
+`reseau_4` is optional/stretch and was never required for closure). See
+`CLAUDE.md`'s "2026-09-02/03 — LAN multiplayer v2 finished" entry for the
+session-level summary. Written and
 mostly executed 2026-09-02. The full student-facing API — Tier A (shared
 blackboard: shared variables, custom messages, player identity, `Réseau`
 events) and Tier B (networked instances: `network_spawn` + interpolated
@@ -22,9 +25,9 @@ on) plus **one** small generic HTML5-engine addition
 (`registerFrameUpdate`, a third extension registry alongside Stage C's
 room-renderer/action registries) on top of v1's frame-update hook; the
 transport and session layers remain zero-core-change extension code.
-**Open:** 7.4's remaining 7 wiki languages (DE/UK/RU/IT/ES/PT/SL, incremental
-follow-up work, not blocking), 8.4 (`reseau_4`, optional), 8.7 (close this
-doc). See the checklist near the end.
+**Open (non-blocking):** 7.4's remaining 7 wiki languages (DE/UK/RU/IT/ES/PT/SL,
+incremental follow-up work), 8.4 (`reseau_4`, optional), and the Manual QA
+checklist (needs real hardware/network). See the checklist near the end.
 
 ## Where this comes from
 
@@ -1199,7 +1202,12 @@ each phase self-contained.
   the full-suite gate, not by the new tests themselves — a reminder that
   "the new tests pass" isn't sufficient; the *existing* suite must also
   stay green after any edit to a large class-based module like this one.
-- [ ] 8.7 `CLAUDE.md` "Recent agent-session notes" entry; close this doc.
+- [x] 8.7 `CLAUDE.md` "Recent agent-session notes" entry; close this doc.
+  **DONE 2026-09-03.** Entry added under the 2026-09-02 LAN multiplayer v2
+  note. This doc is now CLOSED — see the top status line. Genuinely open
+  items going forward: 7.4's 7 remaining wiki languages (incremental, not
+  blocking), 8.4 (`reseau_4`, optional), and the Manual QA checklist below
+  (needs real hardware/network, cannot be automated).
 
 ### Manual QA (cannot be automated — needs displays/machines)
 - [ ] Two real machines on a wired school LAN: host + join by typed IP;
