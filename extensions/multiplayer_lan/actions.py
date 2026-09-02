@@ -170,6 +170,52 @@ PLUGIN_ACTIONS = {
                 description="Position relative à l'objet qui exécute l'action"),
         ],
     ),
+    "sync_instance": ActionType(
+        name="sync_instance",
+        display_name="Synchroniser cette instance",
+        description="Marquer l'instance qui exécute l'action comme "
+                    "« synchronisée » : sa position, sa rotation, son image et "
+                    "sa visibilité sont répliquées sur toutes les machines. À "
+                    "appeler dans l'événement Création. Par défaut l'hôte en est "
+                    "le propriétaire ; utilisez « Définir le propriétaire » pour "
+                    "qu'un client la pilote.",
+        category=_CATEGORY,
+        icon="🔗",
+        parameters=[
+            ActionParameter(name="vars", display_name="Variables à répliquer",
+                param_type="string", default_value="", required=False,
+                description="Noms de variables d'instance à répliquer aussi, "
+                            "séparés par des virgules (ex. \"hp, couleur\")"),
+        ],
+    ),
+    "set_instance_owner": ActionType(
+        name="set_instance_owner",
+        display_name="Définir le propriétaire de l'instance",
+        description="Assigner quel joueur pilote cette instance synchronisée "
+                    "(0 = hôte, 1, 2, ... = clients). Sur la machine de ce "
+                    "joueur, l'instance tourne localement (réactive) et son "
+                    "état est renvoyé à l'hôte ; ailleurs c'est un fantôme "
+                    "interpolé. À appeler chez l'hôte (guardé par "
+                    "global.is_host == 1).",
+        category=_CATEGORY,
+        icon="🎮",
+        parameters=[
+            ActionParameter(name="player", display_name="Joueur", param_type="string",
+                default_value="0",
+                description="Numéro de joueur (0 = hôte). Souvent "
+                            "global.network_sender dans « Joueur connecté »."),
+        ],
+    ),
+    "is_instance_owner": ActionType(
+        name="is_instance_owner",
+        display_name="Si je pilote cette instance",
+        description="Condition : vraie si CETTE machine est le propriétaire de "
+                    "l'instance synchronisée. À placer avant un bloc pour ne "
+                    "faire tourner la logique de contrôle que chez le bon joueur.",
+        category=_CATEGORY,
+        icon="❓",
+        parameters=[],
+    ),
     "set_sync_rate": ActionType(
         name="set_sync_rate",
         display_name="Régler la fréquence de synchro",

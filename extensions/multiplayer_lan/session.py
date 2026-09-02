@@ -26,8 +26,8 @@ from .network import CONN_CLOSED, CONN_OPENED, NetworkClient, NetworkHost
 from .replication import NetIdAllocator, SnapshotApplier, SnapshotBuilder
 from .state import (
     DEFAULT_PORT, MAX_STR_LEN, MSG_BYE, MSG_GAME_START, MSG_HELLO, MSG_JOIN,
-    MSG_LEAVE, MSG_MSG, MSG_SHARED_SET, MSG_SNAP, MSG_WELCOME, PROTO_VER,
-    is_valid_shared_name, sanitize_name, sanitize_value,
+    MSG_LEAVE, MSG_MSG, MSG_OWN, MSG_SHARED_SET, MSG_SNAP, MSG_WELCOME,
+    PROTO_VER, is_valid_shared_name, sanitize_name, sanitize_value,
 )
 
 logger = get_logger(__name__)
@@ -91,6 +91,7 @@ class NetworkSession:
         self._local_instances = []     # host: rows for the next snapshot
         self._ghost_creates = []       # client: accumulated (nid, obj, x, y)
         self._ghost_destroys = []      # client: accumulated nid
+        self._own_state = {}           # host: nid -> latest client-owned row
         self.interp_delay = _DEFAULT_INTERP_DELAY
 
     # -- lifecycle ----------------------------------------------------
@@ -205,6 +206,24 @@ class NetworkSession:
     def ghost_vars(self, nid: int) -> dict:
         return self._applier.ghost_vars(nid)
 
+    def ghost_owner(self, nid):
+        """Client: the player slot that owns netid ``nid`` per the latest
+        snapshot (``None`` = host-owned / unassigned)."""
+        return self._applier.ghost_owner(nid)
+
+    def push_own_instances(self, rows) -> None:
+        """Client: send this frame's state for the instances *this* player
+        owns, up to the host. A no-op with no rows."""
+        rows = list(rows or ())
+        if rows and self._client is not None:
+            self._client.send({"t": MSG_OWN, "i": rows})
+
+    def take_own_state(self) -> dict:
+        """Host: ``{nid: row}`` -- the latest client-reported state for each
+        client-owned instance since the last call. Then cleared."""
+        state, self._own_state = self._own_state, {}
+        return state
+
     def sample_ghost(self, nid: int):
         """Client: the ``(x, y, r, f, v)`` to draw ghost ``nid`` at right
         now (interpolated ``interp_delay`` seconds in the past), or
@@ -274,7 +293,9 @@ class NetworkSession:
                 self._on_shared_set(frame)
             elif t == MSG_MSG:
                 self._on_client_msg(cid, frame)
-            # MSG_INPUT / MSG_OWN: Tier B, ignored here.
+            elif t == MSG_OWN:
+                self._on_client_own(cid, frame)
+            # MSG_INPUT: Tier B named input, not here yet.
 
     def _on_hello(self, cid: int, frame: dict) -> None:
         if cid not in self._pending:
@@ -337,6 +358,24 @@ class NetworkSession:
                 {"t": MSG_MSG, "event": event, "data": data,
                  "sender": sender, "target": "all"},
                 exclude=cid)
+
+    def _on_client_own(self, cid: int, frame: dict) -> None:
+        slot = self._conn_slot.get(cid)
+        if slot is None:
+            return
+        for row in frame.get("i") or ():
+            nid = row.get("nid")
+            if nid is None:
+                continue
+            iv = row.get("vars")
+            self._own_state[nid] = {
+                "nid": nid,
+                "x": row.get("x", 0), "y": row.get("y", 0),
+                "r": row.get("r", 0), "f": row.get("f", 0),
+                "v": bool(row.get("v", 1)),
+                "vars": iv if isinstance(iv, dict) else None,
+                "_from": slot,           # which client claimed it -- host verifies
+            }
 
     def _client_drain(self) -> None:
         if self._client is None:

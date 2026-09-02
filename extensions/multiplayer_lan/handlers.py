@@ -267,6 +267,8 @@ class PluginExecutor:
         st["enabled"] = False
         st["synced"] = None
         st["ghosts"] = None
+        st["synced_local"] = None
+        st["sync_ord"] = None
         gv = getattr(ae.game_runner, "global_variables", None)
         if isinstance(gv, dict):
             for key in _NETWORK_GLOBALS:
@@ -368,6 +370,53 @@ class PluginExecutor:
             _pv(ae, instance, parameters.get("interp_ms"), 100.0),
         )
 
+    def execute_sync_instance_action(self, instance, parameters):
+        """Mark the acting instance as network-synced. Host: it becomes a
+        host-owned replicated instance. Client: it's registered as the
+        local stand-in for a shared netid (driven by snapshots unless this
+        player owns it). The netid is ``<object>#<ordinal>`` -- deterministic
+        across machines because both load the same room and run this action
+        in the same create-event order."""
+        session = self._session_for(instance)
+        if session is None:
+            return
+        ae = self._executor(instance)
+        room = getattr(ae.game_runner, "current_room", None)
+        if room is None:
+            return
+        st = multiplayer_state(room)
+        nid = getattr(instance, "_net_id", None) or _deterministic_netid(st, instance.object_name)
+        instance._net_id = nid
+        if getattr(instance, "_net_owner", None) is None:
+            instance._net_owner = 0            # host by default
+
+        raw_vars = _raw(parameters, "vars")
+        if raw_vars:
+            instance._net_sync_vars = [v.strip() for v in raw_vars.split(",") if v.strip()]
+
+        if session.is_host():
+            st.setdefault("synced", {})[nid] = instance
+        else:
+            st.setdefault("synced_local", {})[nid] = instance
+
+    def execute_set_instance_owner_action(self, instance, parameters):
+        session = self._session_for(instance)
+        if session is None:
+            return
+        ae = self._executor(instance)
+        try:
+            instance._net_owner = int(float(_pv(ae, instance, parameters.get("player"), 0)))
+        except (TypeError, ValueError):
+            instance._net_owner = 0
+
+    def execute_is_instance_owner_action(self, instance, parameters):
+        """Condition: True iff this machine owns the acting instance."""
+        session = self._session_for(instance)
+        if session is None:
+            return False
+        owner = getattr(instance, "_net_owner", None)
+        return owner is not None and owner == session.player_id
+
     # -- internals -----------------------------------------------
 
     @staticmethod
@@ -438,6 +487,45 @@ def _apply_session_state(game_runner, session):
 _GHOST_VAR_WHITELIST_TYPES = (int, float, str, bool)
 
 
+def _deterministic_netid(st, object_name):
+    """``<object>#<ordinal>`` -- ordinal counted per room per object type in
+    the order ``sync_instance`` is called. Both machines load the same room
+    and run create events in the same order, so the same instance gets the
+    same id on every machine with no coordination."""
+    ords = st.setdefault("sync_ord", {})
+    n = ords.get(object_name, 0)
+    ords[object_name] = n + 1
+    return "{}#{}".format(object_name, n)
+
+
+def _instance_vars_row(inst):
+    names = getattr(inst, "_net_sync_vars", None)
+    if not names:
+        return None
+    out = {}
+    for name in names:
+        if hasattr(inst, name):
+            val = getattr(inst, name)
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+                out[name] = val
+    return out or None
+
+
+def _row_from_instance(nid, inst):
+    row = {
+        "nid": nid, "o": inst.object_name,
+        "x": inst.x, "y": inst.y,
+        "r": getattr(inst, "rotation", 0),
+        "f": getattr(inst, "image_index", 0),
+        "v": bool(getattr(inst, "visible", True)),
+        "own": getattr(inst, "_net_owner", 0),
+    }
+    iv = _instance_vars_row(inst)
+    if iv:
+        row["vars"] = iv
+    return row
+
+
 def _spawn_ghost(game_runner, object_name, x, y, nid):
     """Create a client-side puppet of a host-owned networked instance. Like
     execute_create_instance_action's build path, but the ``create`` event
@@ -475,6 +563,30 @@ def _spawn_ghost(game_runner, object_name, x, y, nid):
     return inst
 
 
+def _apply_host_own_state(st, session):
+    """Host, before_step: fold each client's latest reported state for the
+    instances it owns into the host's own copy, so the host sim and the
+    outgoing snapshot agree. A row is only accepted if the claiming client
+    really is the recorded owner."""
+    synced = st.get("synced")
+    if not synced:
+        return
+    for nid, row in session.take_own_state().items():
+        inst = synced.get(nid)
+        if inst is None:
+            continue
+        if getattr(inst, "_net_owner", 0) != row.get("_from"):
+            continue                       # a client can't grab an instance it doesn't own
+        inst.x = row.get("x", inst.x)
+        inst.y = row.get("y", inst.y)
+        inst.rotation = row.get("r", getattr(inst, "rotation", 0))
+        inst.image_index = row.get("f", getattr(inst, "image_index", 0))
+        inst.visible = bool(row.get("v", getattr(inst, "visible", True)))
+        for key, val in (row.get("vars") or {}).items():
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+                setattr(inst, key, val)
+
+
 def _collect_synced_rows(room, st):
     """Host: primitive rows for every live networked instance, pruning any
     that were destroyed."""
@@ -488,13 +600,7 @@ def _collect_synced_rows(room, st):
         if id(inst) not in live or getattr(inst, "to_destroy", False):
             del synced[nid]
             continue
-        rows.append({
-            "nid": nid, "o": inst.object_name,
-            "x": inst.x, "y": inst.y,
-            "r": getattr(inst, "rotation", 0),
-            "f": getattr(inst, "image_index", 0),
-            "v": bool(getattr(inst, "visible", True)),
-        })
+        rows.append(_row_from_instance(nid, inst))
     return rows
 
 
@@ -507,10 +613,11 @@ def _apply_ghosts(game_runner, st, session):
         return
     ghosts = st.setdefault("ghosts", {})
 
+    synced_local = st.get("synced_local") or {}
     to_create, to_destroy = session.take_ghost_changes()
     for nid, obj, x, y in to_create:
-        if nid in ghosts:
-            continue
+        if nid in ghosts or nid in synced_local:
+            continue                       # client already has a real copy of this netid
         inst = _spawn_ghost(game_runner, obj, x, y, nid)
         if inst is not None:
             ghosts[nid] = inst
@@ -536,6 +643,54 @@ def _apply_ghosts(game_runner, st, session):
         for key, val in session.ghost_vars(nid).items():
             if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
                 setattr(inst, key, val)
+
+
+def _apply_synced_local(game_runner, st, session):
+    """Client, before_step: for each room instance registered via
+    sync_instance, either leave it under local control (this player owns
+    it) or drive it from the interpolated snapshot (a ghost of the host's
+    / another player's copy)."""
+    synced_local = st.get("synced_local")
+    if not synced_local:
+        return
+    room = getattr(game_runner, "current_room", None)
+    live = set(id(i) for i in getattr(room, "instances", ())) if room else set()
+    for nid in list(synced_local):
+        inst = synced_local[nid]
+        if id(inst) not in live or getattr(inst, "to_destroy", False):
+            del synced_local[nid]
+            continue
+        owner = session.ghost_owner(nid)
+        inst._net_owner = 0 if owner is None else owner
+        if inst._net_owner == session.player_id:
+            continue                       # mine -- local sim is authoritative here
+        pos = session.sample_ghost(nid)
+        if pos is None:
+            continue
+        gx, gy, gr, gf, gv = pos
+        inst.x = gx
+        inst.y = gy
+        inst.rotation = gr
+        inst.image_index = gf
+        inst.visible = bool(gv)
+        for key, val in session.ghost_vars(nid).items():
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+                setattr(inst, key, val)
+
+
+def _send_owned(st, session):
+    """Client, after_update: report this frame's state for every synced
+    instance this player owns, up to the host."""
+    synced_local = st.get("synced_local")
+    if not synced_local:
+        return
+    rows = [
+        _row_from_instance(nid, inst)
+        for nid, inst in synced_local.items()
+        if getattr(inst, "_net_owner", 0) == session.player_id
+        and not getattr(inst, "to_destroy", False)
+    ]
+    session.push_own_instances(rows)
 
 
 def _resolve_state(game_runner):
@@ -567,8 +722,11 @@ def _frame_update_apply_inbound(game_runner):
     if session is not None:
         session.pump_before_step()
         _apply_session_state(game_runner, session)
-        if session.mode == "client":
+        if session.mode == "host":
+            _apply_host_own_state(st, session)
+        else:
             _apply_ghosts(game_runner, st, session)
+            _apply_synced_local(game_runner, st, session)
         return
 
     if st.get("mode") != "client":
@@ -616,6 +774,8 @@ def _frame_update_broadcast(game_runner):
     if session is not None:
         if session.mode == "host":
             session.push_local_instances(_collect_synced_rows(room, st))
+        else:
+            _send_owned(st, session)
         session.pump_after_update()
         return
 

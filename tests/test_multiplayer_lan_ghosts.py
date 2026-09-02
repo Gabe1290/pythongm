@@ -201,3 +201,111 @@ class TestGhostReplication:
             assert cs.interp_delay == 0.05
         finally:
             _teardown(host, client)
+
+
+def _player(runner):
+    return next(i for i in runner.current_room.instances
+               if i.object_name == "obj_player")
+
+
+class TestSyncInstanceAndOwnership:
+    def test_deterministic_netid_matches_across_machines(self):
+        host, client = _make_pair()
+        try:
+            _do(host, "sync_instance", {"vars": ""})
+            _do(client, "sync_instance", {"vars": ""})
+            _tick(host, client)
+            assert _player(host)._net_id == "obj_player#0"
+            assert _player(client)._net_id == "obj_player#0"
+        finally:
+            _teardown(host, client)
+
+    def test_host_owned_synced_room_instance_drives_the_client_copy(self):
+        host, client = _make_pair()
+        try:
+            _do(host, "sync_instance", {"vars": ""})       # owner defaults to host (0)
+            _do(client, "sync_instance", {"vars": ""})
+            for _ in range(15):
+                _tick(host, client); time.sleep(0.02)
+
+            _player(host).x = 480.0
+            _player(host).y = 90.0
+            deadline = time.time() + 3.0
+            while time.time() < deadline and abs(_player(client).x - 480) > 5:
+                _tick(host, client); time.sleep(0.02)
+            assert abs(_player(client).x - 480) < 5
+            assert abs(_player(client).y - 90) < 5
+        finally:
+            _teardown(host, client)
+
+    def test_client_owned_instance_drives_the_host_copy(self):
+        host, client = _make_pair()
+        try:
+            _do(host, "sync_instance", {"vars": ""})
+            _do(host, "set_instance_owner", {"player": "1"})   # host hands slot 1 the avatar
+            _do(client, "sync_instance", {"vars": ""})
+
+            deadline = time.time() + 3.0
+            while time.time() < deadline and getattr(_player(client), "_net_owner", 0) != 1:
+                _tick(host, client); time.sleep(0.02)
+            assert _player(client)._net_owner == 1
+
+            _player(client).x = 250.0
+            _player(client).y = 175.0
+            deadline = time.time() + 3.0
+            while time.time() < deadline and abs(_player(host).x - 250) > 5:
+                _tick(host, client); time.sleep(0.02)
+            assert abs(_player(host).x - 250) < 5
+            assert abs(_player(host).y - 175) < 5
+        finally:
+            _teardown(host, client)
+
+    def test_is_instance_owner_condition(self):
+        host, client = _make_pair()
+        try:
+            _do(host, "sync_instance", {"vars": ""})
+            _do(host, "set_instance_owner", {"player": "1"})
+            _do(client, "sync_instance", {"vars": ""})
+            deadline = time.time() + 3.0
+            while time.time() < deadline and getattr(_player(client), "_net_owner", 0) != 1:
+                _tick(host, client); time.sleep(0.02)
+
+            h = host.action_executor.action_handlers["is_instance_owner"]
+            c = client.action_executor.action_handlers["is_instance_owner"]
+            assert c(_player(client), {}) is True
+            assert h(_player(host), {}) is False
+        finally:
+            _teardown(host, client)
+
+    def test_client_cannot_grab_an_instance_the_host_owns(self):
+        host, client = _make_pair()
+        try:
+            _do(host, "sync_instance", {"vars": ""})          # host keeps ownership (0)
+            _do(client, "sync_instance", {"vars": ""})
+            _do(client, "set_instance_owner", {"player": "1"})  # client *claims* it -- must be refused
+            for _ in range(15):
+                _tick(host, client); time.sleep(0.02)
+
+            host_x = _player(host).x
+            _player(client).x = 999.0
+            for _ in range(20):
+                _tick(host, client); time.sleep(0.02)
+            # the host's copy did not jump to the client's forged position
+            assert abs(_player(host).x - host_x) < 20
+            assert _player(host).x != 999.0
+        finally:
+            _teardown(host, client)
+
+    def test_synced_vars_replicate(self):
+        host, client = _make_pair()
+        try:
+            hp = _player(host)
+            hp.hp = 7
+            _do(host, "sync_instance", {"vars": "hp"})
+            _do(client, "sync_instance", {"vars": "hp"})
+            deadline = time.time() + 3.0
+            while time.time() < deadline and getattr(_player(client), "hp", None) != 7:
+                _tick(host, client); time.sleep(0.02)
+            assert _player(client).hp == 7
+        finally:
+            _teardown(host, client)

@@ -13,6 +13,9 @@
         "get_shared_var",
         "send_network_message",
         "network_spawn",
+        "sync_instance",
+        "set_instance_owner",
+        "is_instance_owner",
         "set_sync_rate",
         "set_network_mode"
     ],

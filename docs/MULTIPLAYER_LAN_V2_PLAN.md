@@ -624,15 +624,39 @@ each phase self-contained.
   host instance, host destroy→ghost gone, client `network_spawn` no-op,
   create suppressed, `set_sync_rate` tunes the session). Full suite
   **4087 passed, 0 failed**. Landed `c5b34146`.
-- [ ] 5.4c **`sync_instance` + ownership**: `sync_instance` (mark a
-  room-loaded object synced), `set_instance_owner` / `is_instance_owner`,
-  `bind_network_input` / `remote_input`, the `own` client→host frame and
-  client-authoritative-avatar path. This is the identity-model piece
-  ("your avatar is yours, everyone else's is a host ghost").
+- [x] 5.4c-1 **`sync_instance` + ownership.** `sync_instance` gives a
+  room-placed instance the deterministic netid `<object>#<ordinal>`
+  (per-room per-type call order — same on every machine, no
+  coordination); host registers it in `st["synced"]`, client in
+  `st["synced_local"]`. `set_instance_owner(player)` sets `_net_owner`;
+  the owner slot rides on every `i` row (`replication.py` `_Ghost.owner`
+  + `SnapshotApplier.ghost_owner`). `is_instance_owner` is a bool-returning
+  action (works as an `if_condition` gate via the generic `result is
+  False` path — no `_QUESTION_ACTIONS` core edit). **Client-authoritative
+  avatar path:** the owning client's `_apply_synced_local` leaves the
+  instance under local sim and `_send_owned` reports it up in an `own`
+  frame each `after_update`; the host's `_apply_host_own_state` folds
+  that into its copy **only if the claiming client is the recorded
+  owner** (a client can't grab an instance the host owns — the snapshot's
+  `own` field always wins on the client too). `vars` param replicates
+  named instance variables. `tests/test_multiplayer_lan_ghosts.py` +6
+  (two real GameRunners: matching netid, host-owned drives client copy,
+  client-owned drives host copy, `is_instance_owner` both sides, forged
+  claim refused, `vars` replicate). Full suite **4093 passed, 0 failed**.
+  Landed `156eaa63`.
+  **Authoring rule this exposed:** for per-player avatars the *host* must
+  assign a non-host slot (`set_instance_owner(global.network_sender)` in
+  `player_joined`, or after `network_spawn`) — `set_instance_owner(
+  player_id())` in a shared create event can't work, since one shared
+  instance can't be owned by two machines at once.
+- [ ] 5.4c-2 **named input**: `bind_network_input(name, key)` (client maps
+  a local key to a named input), `input` frame on change, `remote_input(
+  player, name)` condition (host reads it). Arrow keys + space auto-bound
+  so trivial samples need no binding.
 - [ ] 5.5 Back-compat: `set_network_mode` + `PYGM_NET_*` + `run_game.py`
   flags. **Largely already done** — v2 sessions and the v1 raw
   host/client are mutually exclusive per room, `multiplayer_lan_1` test +
-  smoke stay green through 4.2b/5.1/5.2. Final tick when 5.4c lands.
+  smoke stay green through every unit so far. Final tick when 5.4c-2 lands.
 
 ### Phase 6 — connection UX
 - [ ] 6.1 `discovery.py` (new): UDP beacon broadcaster + listener +
