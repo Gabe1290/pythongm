@@ -66,11 +66,22 @@ MSG_OWN = "own"              # client -> host, once/frame: {t, i: [{nid, x, y, r
 SNAPSHOT_MSG_TYPE = MSG_SNAP
 
 # Bounds applied by sanitize_value. Sized for classroom data (a list of a
-# few answers, a small inventory), not arbitrary payloads; network.py adds
-# a hard frame-size cap on top as the real backstop.
+# few answers, a small inventory), not arbitrary payloads; the frame-size
+# caps below are the real backstop against a hostile/broken peer.
 MAX_STR_LEN = 4096
 MAX_COLLECTION_LEN = 256
 MAX_VALUE_DEPTH = 3
+
+# Frame-size limits, enforced in framing.py. A single JSON line over the
+# soft cap is logged but still sent/received (an author's oversized custom
+# message stays visible rather than silently vanishing); a stream buffer
+# that grows past the hard cap with no newline terminator is a broken or
+# hostile peer and the connection is dropped.
+SOFT_FRAME_BYTES = 4096
+MAX_FRAME_BYTES = 65536
+
+# Client -> host frame rate ceiling (token bucket in framing.RateLimiter).
+INBOUND_FRAME_RATE = 60.0
 
 # Player display names: length-capped, control chars stripped, display only.
 MAX_NAME_LEN = 24
