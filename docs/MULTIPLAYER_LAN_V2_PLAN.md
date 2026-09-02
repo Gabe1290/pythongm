@@ -680,9 +680,19 @@ each phase self-contained.
   units of this session. **Phase 5 complete — both tiers usable.**
 
 ### Phase 6 — connection UX
-- [ ] 6.1 `discovery.py` (new): UDP beacon broadcaster + listener +
-  server-list model, daemon threads, TTL. Encode/decode + directed-
-  datagram tests.
+- [x] 6.1 `discovery.py` (new, standalone — not wired into `__init__.py`
+  until 6.2). `encode_beacon` / `decode_beacon` (clamps/sanitizes every
+  field — untrusted UDP input; rejects non-magic, bad port, oversized).
+  `DiscoveryBeacon` (host: one daemon thread, `SO_BROADCAST`, sends
+  `{m,name,port,players,max}` to `255.255.255.255:45783` every
+  `BEACON_INTERVAL`; `update()` refreshes counts; `target`/`interval`
+  params for tests). `DiscoveryListener` (client: daemon thread,
+  `SO_REUSEADDR`/`SO_REUSEPORT`, 0.5 s socket timeout so `stop()` is
+  prompt; `servers()` returns the list newest-first, entries older than
+  `ttl` pruned). `tests/test_multiplayer_lan_discovery.py` (12: codec
+  round-trip/sanitize/reject, listener collect + TTL prune + garbage
+  ignore, beacon→listener integration + `update`, clean idempotent
+  `stop`). Landed `8241941a`.
 - [ ] 6.2 `connect_screen.py` (new): the French built-in connect/lobby
   overlay (client server browser + manual IP + this-machine IP +
   failure reasons; host waiting-room + Démarrer). Driven from a
