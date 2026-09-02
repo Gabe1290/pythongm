@@ -537,3 +537,106 @@ class TestCaption:
             assert host.window_caption == "Mon jeu"
         finally:
             _teardown(host)
+
+
+class TestConnectionLostTeardown:
+    """Phase 8.6: connection_lost already fired the event and zeroed
+    network_connected (Phase 5.2); this closes the other half -- a lost
+    host will never send another snapshot, so a client's ghost puppets
+    must not just freeze forever."""
+
+    def test_losing_the_host_destroys_client_ghosts(self):
+        host, client = _make_pair()
+        try:
+            _do(host, "network_spawn", {"object": "obj_player", "x": "140", "y": "150"})
+            deadline = time.time() + 3.0
+            while time.time() < deadline and not _ghosts(client):
+                _tick(host, client)
+                time.sleep(0.02)
+            assert len(_ghosts(client)) == 1
+
+            # Simulate the host vanishing: kill the client's own transport
+            # socket directly, rather than tearing down the host GameRunner
+            # (which would also stop responding to the host's own ticks and
+            # complicate cleanup) -- the client-side effect is identical
+            # either way, since NetworkClient._fail() (a dead/closed peer)
+            # is exactly what this reproduces.
+            client_session = peek_multiplayer(client.current_room)["session"]
+            client_session._client.close()
+
+            def _live_ghosts():
+                return [g for g in _ghosts(client) if not getattr(g, "to_destroy", False)]
+
+            deadline = time.time() + 3.0
+            while time.time() < deadline and _live_ghosts():
+                _tick(client)
+                time.sleep(0.02)
+
+            assert client.global_variables.get("network_connected") == 0
+            # _tick() only runs the frame-update hooks, not a full engine
+            # step, so a destroyed instance isn't necessarily pruned from
+            # room.instances yet -- to_destroy=True is what actually
+            # matters (matches test_destroying_the_host_instance_removes_
+            # the_ghost's own assertion shape above).
+            assert _live_ghosts() == []
+            st = peek_multiplayer(client.current_room)
+            assert st["ghosts"] == {}
+        finally:
+            _teardown(host, client)
+
+    def test_connection_lost_does_not_destroy_the_clients_own_avatar(self):
+        """The client's locally-owned avatar (synced_local) keeps running
+        after the host disappears -- matching this repo's "the game
+        continues single-player" precedent elsewhere in this extension."""
+        host, client = _make_pair()
+        try:
+            for _ in range(5):
+                _tick(host, client)
+                time.sleep(0.01)
+            st = peek_multiplayer(client.current_room)
+            synced_local_before = dict(st.get("synced_local") or {})
+
+            client_session = peek_multiplayer(client.current_room)["session"]
+            client_session._client.close()
+
+            deadline = time.time() + 3.0
+            while (time.time() < deadline
+                   and client.global_variables.get("network_connected") != 0):
+                _tick(client)
+                time.sleep(0.02)
+
+            assert client.global_variables.get("network_connected") == 0
+            st_after = peek_multiplayer(client.current_room)
+            for nid, inst in synced_local_before.items():
+                assert not getattr(inst, "to_destroy", False)
+                assert st_after["synced_local"].get(nid) is inst
+        finally:
+            _teardown(host, client)
+
+    def test_connection_lost_fires_the_event_exactly_once(self):
+        host, client = _make_pair()
+        mod = _loaded_handlers()
+        orig_fire = mod._fire_network_event
+        fired = []
+        def spy(room, event_name):
+            if event_name == "connection_lost":
+                fired.append(1)
+            return orig_fire(room, event_name)
+        mod._fire_network_event = spy
+        try:
+            client_session = peek_multiplayer(client.current_room)["session"]
+            client_session._client.close()
+
+            deadline = time.time() + 3.0
+            while time.time() < deadline and not fired:
+                _tick(client)
+                time.sleep(0.02)
+            assert len(fired) == 1
+
+            for _ in range(20):
+                _tick(client)
+                time.sleep(0.01)
+            assert len(fired) == 1  # not re-fired every subsequent frame
+        finally:
+            mod._fire_network_event = orig_fire
+            _teardown(host, client)
