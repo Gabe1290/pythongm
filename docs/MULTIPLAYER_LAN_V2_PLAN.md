@@ -853,7 +853,41 @@ each phase self-contained.
      discipline, now documented in the sample's own generator script for
      next time.
   Full suite 4164 → 4178 passed, 0 failed.
-- [ ] 8.3 `reseau_3` (co-op).
+- [x] 8.3 `reseau_3` (co-op). **DONE 2026-09-02.** "Récolte en équipe":
+  Tier B, built directly on `reseau_1`'s owned-avatar pattern, adding a
+  host-simulated patrolling monster and 5 host-authoritative gems.
+  `obj_person`'s `collision_with_obj_gem`/`collision_with_obj_monster`
+  are both guarded by `global.is_host == 1`; picking up a gem calls
+  `destroy_instance(target="other")` + increments a shared
+  `team_score`, touching the monster docks a point (`max(...,0)`
+  floored). New sprites (`spr_gem`, `spr_monster`) generated
+  procedurally via PIL — no hand-drawn art needed for simple flat
+  shapes. `README.md` + `README.fr.md`, Welcome-tab entry, smoke
+  registration.
+  **Real design bug found and fixed while building this, not just a
+  test artifact:** the spawn logic (avatar + monster + 5 gems) was
+  first written inline in the "h" keyboard handler's action list, right
+  after `host_game`. Since `host_game(show_lobby=true)` is a *blocking*
+  call that shows "En attente de joueurs…" and only returns once
+  "Démarrer" is clicked, spawning inline there means everything appears
+  the instant hosting starts — before any player has joined or the
+  round has actually begun. Moved to `network_game_started` (guarded by
+  `is_host==1`), matching `reseau_2`'s own pattern exactly — "the game
+  actually begins" is what that event means. A monster-teleport-back-
+  to-start-on-hit design was also considered and dropped: on the host, a
+  *client-owned* avatar's position keeps arriving from that client every
+  frame, so a host-side teleport would just get overwritten by the
+  client's next report — docking a shared score point sidesteps that
+  ownership conflict entirely.
+  `tests/test_reseau_3_sample.py` (9 tests: single-player/registration/
+  guides, plus 6 real two-`GameRunner`-loopback tests — spawn on game
+  start, `player_joined` spawns a second avatar, the client materialises
+  gem/monster ghosts, gem collision scores and destroys the gem
+  (mirrored to the client), monster collision docks a point without
+  going negative, and the monster's `step` AI is confirmed genuinely
+  host-only by firing it directly on a client's ghost copy and checking
+  it doesn't move). Visually verified via a rendered HUD frame — accents
+  render correctly. Full suite 4178 → 4192 passed, 0 failed.
 - [ ] 8.4 `reseau_4` (draw-together) — optional.
 - [ ] 8.5 `tools/smoke_run_multiplayer.py` + CI wiring.
 - [x] 8.6 Graceful host-loss. **DONE 2026-09-02.** The `connection_lost`

@@ -1,0 +1,81 @@
+{
+  "name": "obj_monster",
+  "asset_type": "object",
+  "sprite": "spr_monster",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 5,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "dir",
+            "value": 1,
+            "scope": "self"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "global.is_host == 1",
+            "then_actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "x",
+                  "value": "x + 2 * self.dir",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "x > 500",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "dir",
+                        "value": -1,
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "x < 100",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "dir",
+                        "value": 1,
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        }
+      ]
+    }
+  }
+}

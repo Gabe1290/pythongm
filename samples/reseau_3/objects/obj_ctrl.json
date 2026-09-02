@@ -1,0 +1,215 @@
+{
+  "name": "obj_ctrl",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -100,
+  "events": {
+    "keyboard": {
+      "h": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "expression",
+              "expression": "global.network_connected != 1",
+              "then_actions": [
+                {
+                  "action": "host_game",
+                  "parameters": {
+                    "game_name": "Récolte en équipe",
+                    "max_players": "4",
+                    "show_lobby": true
+                  }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      },
+      "j": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "expression",
+              "expression": "global.network_connected != 1",
+              "then_actions": [
+                {
+                  "action": "join_game",
+                  "parameters": {
+                    "host": "auto"
+                  }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      }
+    },
+    "network_game_started": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "global.is_host == 1",
+            "then_actions": [
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_person",
+                  "x": "320",
+                  "y": "240",
+                  "owner": "0"
+                }
+              },
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_monster",
+                  "x": "300",
+                  "y": "100",
+                  "owner": "0"
+                }
+              },
+              {
+                "action": "set_shared_var",
+                "parameters": {
+                  "name": "team_score",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_gem",
+                  "x": "80",
+                  "y": "80",
+                  "owner": "0"
+                }
+              },
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_gem",
+                  "x": "560",
+                  "y": "80",
+                  "owner": "0"
+                }
+              },
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_gem",
+                  "x": "80",
+                  "y": "400",
+                  "owner": "0"
+                }
+              },
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_gem",
+                  "x": "560",
+                  "y": "400",
+                  "owner": "0"
+                }
+              },
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_gem",
+                  "x": "320",
+                  "y": "400",
+                  "owner": "0"
+                }
+              }
+            ],
+            "else_actions": []
+          }
+        }
+      ]
+    },
+    "player_joined": {
+      "actions": [
+        {
+          "action": "network_spawn",
+          "parameters": {
+            "object": "obj_person",
+            "x": "160 + global.network_sender * 80",
+            "y": "240",
+            "owner": "global.network_sender"
+          }
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "global.network_connected != 1",
+            "then_actions": [
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Récolte en équipe\"",
+                  "x": "200",
+                  "y": "160",
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"H = héberger  /  J = rejoindre\"",
+                  "x": "160",
+                  "y": "220",
+                  "color": "#cccccc"
+                }
+              },
+              {
+                "action": "exit_event",
+                "parameters": {}
+              }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Score d'équipe :\"",
+            "x": "20",
+            "y": "20",
+            "color": "#ffd700"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "global.team_score",
+            "x": "200",
+            "y": "20",
+            "color": "#ffd700"
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Flèches pour se déplacer -- attention au monstre !\"",
+            "x": "20",
+            "y": "450",
+            "color": "#cccccc"
+          }
+        }
+      ]
+    }
+  }
+}
