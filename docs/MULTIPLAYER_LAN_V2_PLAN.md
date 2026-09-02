@@ -889,7 +889,45 @@ each phase self-contained.
   it doesn't move). Visually verified via a rendered HUD frame — accents
   render correctly. Full suite 4178 → 4192 passed, 0 failed.
 - [ ] 8.4 `reseau_4` (draw-together) — optional.
-- [ ] 8.5 `tools/smoke_run_multiplayer.py` + CI wiring.
+- [x] 8.5 `tools/smoke_run_multiplayer.py` + CI wiring. **DONE
+  2026-09-02.** Launches a real host subprocess + a real client
+  subprocess over a real `127.0.0.1` socket via `runtime/run_game.py`
+  (the actual CLI/subprocess deployment path — two real OS processes,
+  not the in-process `GameRunner` pytest coverage). New `GameRunner.
+  _print_net_status` (called alongside the existing `PYGM_FRAMES_
+  COMPLETED` marker) prints a grep-able `PYGM_NET_STATUS=role=...
+  connected=... player_id=...` line so an external harness can verify
+  the client actually received a WELCOME (only fires when a v2 session
+  mirrored `network_role` into globals — an ordinary single-player run's
+  stdout is unaffected). **Scoped to `reseau_1` only** — the one bundled
+  sample launched purely via env vars (`PYGM_NET_AUTOHOST`/
+  `PYGM_NET_AUTOJOIN`), which a headless subprocess with no display can
+  receive; `reseau_2`/`reseau_3` need an in-game "h"/"j" keypress
+  instead (already thoroughly covered by their own real two-`GameRunner`
+  pytest suites) and `multiplayer_lan_1` (v1) has no identity/globals
+  mirroring at all, so the marker this tool checks for never fires for
+  it (it has its own existing in-process networked smoke test).
+  **Real bug caught and fixed while building this**: the host and
+  client were both given the same frame budget and the host started
+  0.5s earlier, so the host's process (and its listening socket) could
+  exit *before* the client finished its own run — the client then
+  correctly detected `connection_lost` right at the end (Phase 8.6's
+  new teardown behavior working exactly as designed) and reported
+  `connected=0` despite having been genuinely connected the whole time
+  that mattered. Fixed by giving the host double the client's frame
+  budget so it reliably outlives it.
+  **"CI wiring"**: `tools/smoke_run_samples.py` itself isn't directly
+  invoked by `.github/workflows/`  either — it's a manual dev tool: the
+  actual CI-relevant coverage is the structural pytest checks (does the
+  tool exist, compile, and name the right samples), which run in the
+  normal suite every time. Matched that same pattern here rather than
+  inventing new CI infrastructure with no sibling precedent. The real
+  two-subprocess run is opt-in behind `PYGM_E2E_MULTIPLAYER=1` (mirrors
+  `test_desktop_export_end_to_end.py`'s `PYGM_E2E_EXPORT=1`), verified
+  to actually pass, not just wired.
+  `tests/test_game_runner_net_status_print.py` (4 tests),
+  `tests/test_smoke_run_multiplayer.py` (6 tests, including the real
+  opt-in end-to-end run). Full suite 4192 → 4201 passed, 0 failed.
 - [x] 8.6 Graceful host-loss. **DONE 2026-09-02.** The `connection_lost`
   event + `network_connected=0` mirroring already existed (Phase 5.2);
   what was missing was "clean client teardown" — a lost host will never

@@ -2708,6 +2708,25 @@ class GameRunner:
         except (pygame.error, OSError) as exc:
             logger.warning("Could not save frame to %s: %s", destination, exc)
 
+    def _print_net_status(self) -> None:
+        """Print a grep-able one-liner an external harness can check for
+        LAN multiplayer verification (tools/smoke_run_multiplayer.py),
+        the same "opt-in, observable-from-outside-the-process" pattern
+        PYGM_FRAMES_COMPLETED/PYGM_SCREENSHOT already establish. Only
+        fires when a v2 multiplayer session actually mirrored
+        network_role into globals (extensions/multiplayer_lan/handlers.py
+        _apply_session_state) -- an ordinary single-player run's stdout
+        is completely unaffected, since global_variables never gets that
+        key at all."""
+        role = self.global_variables.get("network_role", "")
+        if not role:
+            return
+        print("PYGM_NET_STATUS=role=%s connected=%s player_id=%s" % (
+            role,
+            self.global_variables.get("network_connected", 0),
+            self.global_variables.get("player_id", -1),
+        ), flush=True)
+
     def run_game_loop(self) -> bool:
         """Main game loop"""
         try:
@@ -2943,6 +2962,7 @@ class GameRunner:
                         self._save_final_frame()
                         print("PYGM_FRAMES_COMPLETED=%d" % frames_rendered,
                               flush=True)
+                        self._print_net_status()
 
             return True
 
