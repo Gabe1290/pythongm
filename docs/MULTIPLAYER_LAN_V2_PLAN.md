@@ -706,11 +706,24 @@ each phase self-contained.
   from `NetworkSession` (roster/tick are callables) so it's tested with
   plain surfaces + synthetic events. `tests/test_multiplayer_lan_connect_screen.py`
   (20). Landed `15917e53`.
-- [ ] 6.2b Wire it in: `join_game host="auto"` → client `ConnectScreen`
-  + a `DiscoveryListener`; `host_game show_lobby=true` → host lobby +
-  a `DiscoveryBeacon` (updated on `player_joined`/`player_left`).
-  `ConnectScreen.run()` result → start the session at the chosen address
-  / on Démarrer. Real-`GameRunner`-with-dummy-display test.
+- [x] 6.2b Wired in. **Every `host_game` starts a `DiscoveryBeacon`**
+  (stored in `st["beacon"]`, refreshed with the live player count each
+  frame in `_frame_update_broadcast`, stopped by `leave_game`) — so a
+  game is discoverable whether or not it shows a lobby. `host_game
+  show_lobby=true` also runs the modal host `ConnectScreen`; `"start"` →
+  `session.start_game()`, `"cancel"` → full teardown. `join_game
+  host="auto"` starts a `DiscoveryListener`, runs the modal client
+  `ConnectScreen`, parses `"connect:<ip>:<port>"` → connects there,
+  `"cancel"` → no session (game continues single-player), then stops the
+  listener. All connect-screen construction goes through
+  `_run_connect_flow` (a module fn tests monkeypatch on the *loaded*
+  handlers copy); headless runners get `ConnectScreen.run()`'s
+  short-circuit. `leave_game` refactored to a single `_teardown` that
+  stops session + beacon + listener and clears all `st` keys. `new
+  show_lobby` param on `host_game`. `tests/test_multiplayer_lan_ghosts.py`
+  +5 (beacon start/stop, `join auto` headless → loopback, `join auto`
+  cancel, `show_lobby` start, `show_lobby` cancel). Full suite **4136
+  passed, 0 failed**. Landed `6f20ec3d`.
 - [ ] 6.3 Runner caption status string.
 - [ ] 6.4 IDE "Test Game (2 players)" button + `PYGM_NET_AUTOJOIN`.
   (`core/ide_window.py` Popen path — keep the existing single-launch path
