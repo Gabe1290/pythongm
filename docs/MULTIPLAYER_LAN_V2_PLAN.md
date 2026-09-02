@@ -1,6 +1,15 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **PROPOSED — not started.** Written 2026-09-02.
+Status: **Phases 4–5 DONE (2026-09-02).** Written and executed 2026-09-02.
+The full student-facing API — Tier A (shared blackboard: shared variables,
+custom messages, player identity, `Réseau` events) and Tier B (networked
+instances: `network_spawn` + interpolated ghosts, `sync_instance`,
+validated client-owned avatars, named input) — is on `main` and covered
+by ~210 tests, including real two-`GameRunner`-over-a-socket coverage for
+every replication path. v2 added **zero** core changes on top of v1's
+frame-update hook. **Open:** Phase 6 (UDP discovery + built-in French
+connect/lobby screen), Phase 7 (HTML5 export parity), Phase 8 (samples
+`reseau_1`–`4` + guides). See the checklist near the end.
 
 ## Where this comes from
 
