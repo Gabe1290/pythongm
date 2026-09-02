@@ -1,107 +1,94 @@
 #!/usr/bin/env python3
-"""TCP transport for LAN multiplayer -- the actual rewrite of what
-``runtime/network/`` used to be before its untracked source was deleted
-(see docs/MULTIPLAYER_LAN_PLAN.md for the full history).
+"""TCP transport for LAN multiplayer.
 
-Design decisions this file makes, per the plan doc's own recommendations:
-  - **TCP, not UDP.** Position snapshots are small and infrequent (one per
-    frame, a handful of instances) -- head-of-line blocking is unlikely to
-    matter at LAN scale, and TCP avoids writing packet-loss/reordering
-    handling from scratch for a first cut.
-  - **Multi-client from day one**, even though a first playtest only
-    exercises one client -- broadcasting to a list of sockets instead of a
-    single one costs nothing extra now and avoids a bigger retrofit later.
-  - **JSON lines, newline-delimited**, over the raw TCP stream. Not the
-    most bandwidth-efficient framing available, but this was never
-    bandwidth-constrained, and it stays trivially debuggable (readable in
-    a packet capture, a log, or by hand).
+v1 (docs/MULTIPLAYER_LAN_PLAN.md) shipped this one-directional: the host
+broadcast snapshots and never read from a client. v2
+(docs/MULTIPLAYER_LAN_V2_PLAN.md Phase 4.2b) makes it bidirectional and
+framed on ``framing.py`` -- a client sends intent (hello / input /
+shared_set / msg / own / bye) up, the host reads it and can reply to one
+client or broadcast to all. The v1 surface is preserved exactly
+(``NetworkHost.start`` / ``.broadcast_snapshot`` / ``.close`` / the
+``._listen_sock`` attribute; ``NetworkClient.connect`` / ``.poll`` ->
+latest-snapshot-or-None / ``.close``) so the shipped spectator sample and
+its tests are untouched; the new methods sit alongside for the Phase 5
+session layer to build on.
 
-``NetworkClient.poll()`` is called once per frame from inside the game
-loop's ``before_step`` frame-update hook -- it must NEVER block waiting on
-the socket, or every client frame stalls on network I/O. Non-blocking
-sockets throughout; a "no data yet" condition is expected and silent, not
-an error.
+Design decisions, unchanged from v1:
+  - **TCP, not UDP.** Frames are small and infrequent; head-of-line
+    blocking is a non-issue at LAN scale and TCP saves writing
+    reliability from scratch.
+  - **JSON lines, newline-delimited** over the stream -- readable in a
+    capture; bandwidth was never the constraint.
+  - **Never block.** Both sides are pumped once per frame from the game
+    loop's frame-update hooks. Non-blocking sockets throughout; "no data
+    yet" is the normal silent case. Outbound that can't be written
+    immediately is queued and retried next pump; a peer that falls far
+    enough behind on reads is dropped.
 """
 
-import json
 import socket
-from typing import List, Optional, Sequence, Tuple
+from typing import Optional
 
-from .state import DEFAULT_PORT, SNAPSHOT_MSG_TYPE
+from core.logger import get_logger
+from .framing import FrameBuffer, FrameOverflow, RateLimiter, encode_frame
+from .state import DEFAULT_PORT, MSG_SNAP
 
-# Snapshot rows: (sync_id, x, y, rotation, image_index, visible)
-SnapshotRow = Tuple[int, float, float, float, float, bool]
+logger = get_logger(__name__)
+
+# Synthetic frames NetworkHost.poll() emits for connection lifecycle. The
+# "__" prefix cannot collide with a real MSG_* wire value.
+CONN_OPENED = "__open__"
+CONN_CLOSED = "__close__"
+
+# A client whose queued-but-unwritten output passes this is too far behind
+# to keep -- drop it rather than let the host's memory grow unbounded.
+_MAX_OUTBUF_BYTES = 262144
+
+_RECV_CHUNK = 65536
 
 
-def _encode(rows: Sequence[SnapshotRow]) -> bytes:
-    msg = {"t": SNAPSHOT_MSG_TYPE, "i": [list(row) for row in rows]}
-    return (json.dumps(msg, separators=(",", ":")) + "\n").encode("utf-8")
+class _HostConn:
+    """One accepted client, from the host's side."""
+
+    __slots__ = ("sock", "addr", "buf", "limiter", "outbuf", "alive")
+
+    def __init__(self, sock: socket.socket, addr):
+        self.sock = sock
+        self.addr = addr
+        self.buf = FrameBuffer()
+        self.limiter = RateLimiter()
+        self.outbuf = bytearray()
+        self.alive = True
 
 
 class NetworkHost:
-    """Authoritative side: listens for client connections, broadcasts
-    position snapshots to all of them. Never reads from clients in this
-    first cut -- host state is authoritative, clients are pure observers
-    (see docs/MULTIPLAYER_LAN_PLAN.md's "Explicitly out of scope": no
-    server-side input validation/anti-cheat, no clients sending state back)."""
+    """Authoritative side: listens, accepts clients, reads their frames,
+    sends to one or all. ``poll()`` is the single pump -- accept, read,
+    flush -- and returns everything that arrived this pump."""
 
     def __init__(self, port: int = DEFAULT_PORT):
         self.port = port
         self._listen_sock: Optional[socket.socket] = None
-        self._clients: List[socket.socket] = []
+        self._conns = {}                 # conn_id -> _HostConn
+        self._next_id = 1
+
+    # -- lifecycle -------------------------------------------------------
 
     def start(self) -> None:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("", self.port))
-        sock.listen(8)
+        sock.listen(16)
         sock.setblocking(False)
         self._listen_sock = sock
 
-    def _accept_pending(self) -> None:
-        """Accept any client connections waiting, without blocking. Called
-        internally before every broadcast so new players can join
-        mid-game, not just at startup."""
-        if self._listen_sock is None:
-            return
-        while True:
-            try:
-                conn, _addr = self._listen_sock.accept()
-            except BlockingIOError:
-                return
-            except OSError:
-                return
-            conn.setblocking(True)
-            conn.settimeout(0.2)  # bound how long a stalled client can hang a broadcast
-            self._clients.append(conn)
-
-    def broadcast_snapshot(self, rows: Sequence[SnapshotRow]) -> None:
-        """Send the current snapshot to every connected client. A client
-        that fails to receive it (disconnected, timed out) is dropped
-        silently -- a departed player must not crash the host."""
-        self._accept_pending()
-        if not self._clients:
-            return
-        payload = _encode(rows)
-        surviving = []
-        for conn in self._clients:
-            try:
-                conn.sendall(payload)
-                surviving.append(conn)
-            except OSError:
-                try:
-                    conn.close()
-                except OSError:
-                    pass
-        self._clients = surviving
-
     def close(self) -> None:
-        for conn in self._clients:
+        for conn in self._conns.values():
             try:
-                conn.close()
+                conn.sock.close()
             except OSError:
                 pass
-        self._clients = []
+        self._conns.clear()
         if self._listen_sock is not None:
             try:
                 self._listen_sock.close()
@@ -109,60 +96,227 @@ class NetworkHost:
                 pass
             self._listen_sock = None
 
+    @property
+    def connection_ids(self) -> list:
+        """Live connection ids, in accept order."""
+        return [cid for cid, c in self._conns.items() if c.alive]
+
+    # -- pump ----------------------------------------------------------
+
+    def poll(self) -> list:
+        """Accept pending connections, drain each client, flush queued
+        output. Returns ``[(conn_id, frame), ...]`` -- real inbound frames
+        plus synthetic ``{"t": "__open__", "addr": ip}`` /
+        ``{"t": "__close__", "reason": str}`` lifecycle frames, in the
+        order they happened. Never blocks."""
+        events: list = []
+        self._accept(events)
+        for cid, conn in list(self._conns.items()):
+            if conn.alive:
+                self._read_conn(cid, conn, events)
+        for cid, conn in list(self._conns.items()):
+            if conn.alive and conn.outbuf:
+                self._flush_conn(cid, conn, events)
+        for cid in [c for c, k in self._conns.items() if not k.alive]:
+            self._conns.pop(cid, None)
+        return events
+
+    def _accept(self, events: list) -> None:
+        if self._listen_sock is None:
+            return
+        while True:
+            try:
+                sock, addr = self._listen_sock.accept()
+            except BlockingIOError:
+                return
+            except OSError:
+                return
+            sock.setblocking(False)
+            cid = self._next_id
+            self._next_id += 1
+            self._conns[cid] = _HostConn(sock, addr)
+            events.append((cid, {"t": CONN_OPENED, "addr": addr[0] if addr else ""}))
+
+    def _read_conn(self, cid: int, conn: _HostConn, events: list) -> None:
+        try:
+            while True:
+                chunk = conn.sock.recv(_RECV_CHUNK)
+                if not chunk:
+                    self._kill(cid, conn, events, "peer closed")
+                    return
+                try:
+                    frames = conn.buf.feed(chunk)
+                except FrameOverflow:
+                    self._kill(cid, conn, events, "frame overflow")
+                    return
+                for frame in frames:
+                    if conn.limiter.allow():
+                        events.append((cid, frame))
+                    else:
+                        logger.warning(
+                            "multiplayer: rate-limited a frame from %s", conn.addr)
+        except BlockingIOError:
+            return
+        except OSError:
+            self._kill(cid, conn, events, "recv error")
+
+    def _flush_conn(self, cid: int, conn: _HostConn, events: list) -> None:
+        if conn.outbuf:
+            try:
+                sent = conn.sock.send(conn.outbuf)
+                del conn.outbuf[:sent]
+            except BlockingIOError:
+                pass
+            except OSError:
+                self._kill(cid, conn, events, "send error")
+                return
+        if len(conn.outbuf) > _MAX_OUTBUF_BYTES:
+            self._kill(cid, conn, events, "client too far behind")
+
+    def _kill(self, cid: int, conn: _HostConn, events: list, why: str) -> None:
+        if not conn.alive:
+            return
+        conn.alive = False
+        try:
+            conn.sock.close()
+        except OSError:
+            pass
+        events.append((cid, {"t": CONN_CLOSED, "reason": why}))
+
+    # -- send --------------------------------------------------------
+
+    def send(self, conn_id: int, msg: dict) -> None:
+        """Queue a frame to one client and try to flush immediately."""
+        conn = self._conns.get(conn_id)
+        if conn is None or not conn.alive:
+            return
+        conn.outbuf.extend(encode_frame(msg))
+        self._flush_conn(conn_id, conn, [])
+
+    def broadcast(self, msg: dict, exclude: Optional[int] = None) -> None:
+        """Queue a frame to every live client (optionally excluding one)."""
+        data = encode_frame(msg)
+        for cid, conn in list(self._conns.items()):
+            if not conn.alive or cid == exclude:
+                continue
+            conn.outbuf.extend(data)
+            self._flush_conn(cid, conn, [])
+
+    def broadcast_snapshot(self, rows) -> None:
+        """v1 surface: send one position snapshot to every client. Pumps
+        first so a client that connected since the last call is accepted
+        (v1 callers only ever loop on this method)."""
+        self.poll()
+        self.broadcast({"t": MSG_SNAP, "i": [list(row) for row in rows]})
+
+    def disconnect(self, conn_id: int) -> None:
+        conn = self._conns.get(conn_id)
+        if conn is not None:
+            self._kill(conn_id, conn, [], "host closed connection")
+            self._conns.pop(conn_id, None)
+
 
 class NetworkClient:
-    """Observer side: connects to a host, polls for the latest snapshot."""
+    """Client side: connects to a host, sends intent up, pulls frames down.
+
+    ``poll()`` keeps the v1 contract -- return the single most recent
+    snapshot dict, or ``None`` -- so the shipped spectator path is
+    unchanged. ``take_frames()`` returns every buffered frame (snapshots
+    included) for the Phase 5 session layer, which needs the control
+    frames too.
+    """
 
     def __init__(self, host: str, port: int = DEFAULT_PORT):
         self.host = host
         self.port = port
         self._sock: Optional[socket.socket] = None
-        self._buffer = b""
+        self._buf = FrameBuffer()
+        self._inbox: list = []
+        self._outbuf = bytearray()
+        self._closed = False
 
     def connect(self) -> None:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(5.0)          # a bounded wait for the initial handshake only
+        sock.settimeout(5.0)          # bounded wait for the initial handshake only
         sock.connect((self.host, self.port))
-        sock.setblocking(False)       # every subsequent read is via poll(), never blocking
+        sock.setblocking(False)       # every read after this is via a pump, never blocking
         self._sock = sock
+        self._closed = False
 
-    def poll(self) -> Optional[dict]:
-        """Drain whatever is available on the socket and return the LATEST
-        complete message, or None if nothing new arrived. Never blocks --
-        a socket with nothing to read is the normal, silent case, not an
-        error, since this runs once per frame."""
+    @property
+    def connected(self) -> bool:
+        return self._sock is not None and not self._closed
+
+    def _pump(self) -> None:
+        """Drain the socket into ``self._inbox`` and retry queued output.
+        Never blocks. A closed/broken peer sets ``self._closed`` and stops
+        further I/O."""
         if self._sock is None:
-            return None
+            return
+        if self._outbuf:
+            try:
+                sent = self._sock.send(self._outbuf)
+                del self._outbuf[:sent]
+            except BlockingIOError:
+                pass
+            except OSError:
+                self._fail()
+                return
         try:
             while True:
-                chunk = self._sock.recv(65536)
+                chunk = self._sock.recv(_RECV_CHUNK)
                 if not chunk:
-                    # Peer closed the connection -- stop trying to read it.
-                    self._sock = None
-                    break
-                self._buffer += chunk
+                    self._fail()
+                    return
+                try:
+                    self._inbox.extend(self._buf.feed(chunk))
+                except FrameOverflow:
+                    self._fail()
+                    return
         except BlockingIOError:
-            pass
+            return
         except OSError:
+            self._fail()
+
+    def _fail(self) -> None:
+        self._closed = True
+        if self._sock is not None:
+            try:
+                self._sock.close()
+            except OSError:
+                pass
             self._sock = None
 
-        if b"\n" not in self._buffer:
+    def poll(self) -> Optional[dict]:
+        """v1 contract: the latest snapshot frame, or None. Non-snapshot
+        frames stay in the inbox for ``take_frames()``. Never blocks; a
+        closed connection is the silent normal case, not an error."""
+        self._pump()
+        if not self._inbox:
             return None
+        latest = None
+        keep = []
+        for frame in self._inbox:
+            if frame.get("t") == MSG_SNAP:
+                latest = frame
+            else:
+                keep.append(frame)
+        self._inbox = keep
+        return latest
 
-        # Keep only the LAST complete line -- stale snapshots from earlier
-        # frames don't matter once a newer one has arrived (this is
-        # deliberately a "latest state wins" protocol, not a reliable
-        # ordered stream the app needs every message from).
-        lines = self._buffer.split(b"\n")
-        self._buffer = lines[-1]     # partial trailing data, if any
-        complete_lines = [line for line in lines[:-1] if line]
-        if not complete_lines:
-            return None
+    def take_frames(self) -> list:
+        """Every buffered frame since the last call, in arrival order,
+        then clear. For the session layer, which needs control frames."""
+        self._pump()
+        frames, self._inbox = self._inbox, []
+        return frames
 
-        try:
-            return json.loads(complete_lines[-1].decode("utf-8"))
-        except (ValueError, UnicodeDecodeError):
-            return None
+    def send(self, msg: dict) -> None:
+        """Queue a frame to the host and try to flush immediately."""
+        if self._sock is None:
+            return
+        self._outbuf.extend(encode_frame(msg))
+        self._pump()
 
     def close(self) -> None:
         if self._sock is not None:
@@ -170,4 +324,5 @@ class NetworkClient:
                 self._sock.close()
             except OSError:
                 pass
-            self._sock = None
+        self._sock = None
+        self._closed = True
