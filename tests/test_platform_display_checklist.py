@@ -35,7 +35,6 @@ def test_every_named_tool_and_document_exists():
         "tools/verify_desktop_export.py",
         "scripts/generate_platform_test_pdfs.py",
         "docs/test_checklist.md",
-        "docs/EYEBALL_FIXES_2026-08-16.md",
     ]
     for relative in referenced:
         assert relative in text, "%s should be referenced" % relative

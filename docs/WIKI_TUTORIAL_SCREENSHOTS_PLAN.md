@@ -1,12 +1,12 @@
 # Plan: per-tutorial-step screenshots for the 6 build-along wiki tutorials
 
-Status: **not started.** Written 2026-08-15 per
-`docs/REMAINING_WORK_2026-08-15.md` Section F. This is the sole open item
-carried over from `docs/WIKI_COMPLETENESS_PLAN_2026-08-11.md`'s Phase 3
-(that doc is otherwise fully closed — Phases 0-3 and 5 done, Phase 4
-explicitly decided against). Read that doc's Phase 3 entry first; this doc
-expands it into an actual sequenced plan rather than duplicating its
-reasoning.
+Status: **not started** — one of the few genuinely open initiatives in
+the repo; see `docs/PROJECT_STATUS.md` for the current overall picture.
+Written 2026-08-15. This was the sole open item carried over from the
+wiki completeness effort's Phase 3 (that plan is otherwise fully closed —
+Phases 0-3 and 5 done, Phase 4 explicitly decided against; its own doc
+has since been removed as closed, but this plan is self-contained and
+doesn't depend on it).
 
 ## The six tutorials, and why none of them can reuse an existing sample
 

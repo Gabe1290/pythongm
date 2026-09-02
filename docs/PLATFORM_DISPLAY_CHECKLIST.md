@@ -268,10 +268,10 @@ once and check that log output is readable rather than encoding errors. Use
 ## Recording what you find
 
 One line per problem: **platform, sample or screen, what you expected, what you
-saw.** A screenshot beats a description for anything about layout. Add them to
-a dated `docs/EYEBALL_FIXES_<date>.md` in the same shape as
-`docs/EYEBALL_FIXES_2026-08-16.md`, which turned twelve loose observations into
-a worked plan.
+saw.** A screenshot beats a description for anything about layout. Group
+findings by root cause before fixing them (several loose observations
+often share one underlying bug) rather than working the list in report
+order.
 
 Two things worth checking twice, because they are the ones automation cannot
 reach at all:
