@@ -188,7 +188,7 @@ it before picking an item to work on.
   `widgets/asset_tree/asset_tree_widget.py` — it now logs and returns silently
   when no `create_asset` handler is reachable.
 
-### UI metadata coverage for runtime actions (partial in rc.12)
+### ~~UI metadata coverage for runtime actions~~ (DONE 2026-08-15, re-verified 2026-09-02 — all 5 named items closed)
 - The runtime knows ~207 actions (executor `execute_*_action` methods +
   modular handlers in `runtime/action_handlers/`); the UI-side
   `events/action_types.py` registry covers them progressively. After the
@@ -239,39 +239,23 @@ it before picking an item to work on.
     restore, the previously-dead cross-room restore, a nonexistent-room
     save (must not crash), and score/lives/health/global-variable
     round-trip. Suite 2897 → 2903 passed, 0 failed.
-  - **Particle system and timelines — confirmed still genuinely
-    non-functional, correctly deferred, NOT touched.** Grepped
-    `runtime/game_runner.py` for every relevant name
-    (`_particle_system`/`particle_types`/`_timeline`/`active_timeline`/
-    `timeline_position`, etc.): zero hits. The action handlers
-    (`runtime/action_executor.py`, `runtime/action_handlers/
-    particle_handlers.py`) build real-looking data structures
-    (particle type defs, emitter configs, timeline position/speed) but
-    nothing anywhere ever reads them back to spawn/age/draw a particle or
-    advance a timeline step — pure write-only state. Exposing UI for
-    either would be exactly the "click it, nothing visibly happens"
-    dead end rc.11 (`77e9dbf`) removed; both need a real update+render
-    pass built first (a genuinely large feature, not a quick fix) before
-    this entry's "do NOT add UI yet" instruction can be lifted. Scheduled
-    (explicit ask, 2026-08-14): `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 5,
-    phased desktop-engine → UI → export-parity, budgeted 3+ sessions and
-    deliberately last in that plan's queue.
-  - **`show_video` — confirmed still genuinely incomplete, correctly
-    deferred, NOT touched.** Its own docstring already says so: "Video
-    playback requires additional libraries (moviepy/opencv). This
-    implementation logs the request but actual playback may be limited."
-    The real implementation just shells out to the OS's default video
-    player (`os.startfile`/`open`/`xdg-open`) — opens an external
-    application window, not in-game video playback with any pause/resume
-    control. Not what a `show_video` action's UI would honestly promise.
-    **Re-scoped 2026-08-14**: the shell-out itself is honest and working —
-    the actual gap is that it has no `events/action_types.py` entry, so
-    it's invisible in the UI despite being functional. Registering it (with
-    a description that says plainly "opens in your system's video player,
-    not in-engine playback") is a small, real fix, distinct from — and much
-    smaller than — building real in-engine decoding. Scheduled:
-    `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 2.4 (also folds in
-    `splash_show_video`/`splash_show_webpage` as thin wrappers).
+  - ~~**Particle system and timelines — confirmed still genuinely
+    non-functional...**~~ **DONE 2026-08-15** (`docs/DEFERRED_GAPS_2026_PLAN.md`
+    Tier 5, all 3 phases, re-verified against current code 2026-09-02 —
+    this entry was stale). `runtime/game_runner.py` now has a real
+    `GameInstance.update_particle_system()`/`update_timeline()`/
+    `render_particles()`, called from the main loop every frame; all 14
+    particle/timeline actions are registered in `events/action_types.py`
+    (categories "Particles" + "Timing"); both export targets have codegen.
+    `tests/test_particle_timeline_engine.py` +
+    `tests/test_particle_timeline_action_registration.py`.
+  - ~~**`show_video` — confirmed still genuinely incomplete...**~~ **DONE
+    2026-08-15** (Tier 2.4, re-verified 2026-09-02). Registered in
+    `events/action_types.py` with an honest description ("opens in your
+    system's video player, not in-engine playback");
+    `splash_show_video`/`splash_show_webpage` folded into
+    `show_video`/`open_webpage` via `ActionExecutor.ACTION_ALIASES`.
+    `tests/test_show_video_action.py`.
 - **Room-background/scrolling actions (set_background*, set_room_speed,
   set_room_persistent) — DONE 2026-08-09.** All four registered in
   `events/action_types.py` (category "Room"), each actually finished
@@ -513,11 +497,12 @@ it before picking an item to work on.
 
 In `runtime/action_handlers/extra_handlers.py`:
 
-- **Splash text / image / video / webpage** (lines 51, 57, 63, 69) — these are
-  placeholders, not UI-registered (no `events/action_types.py` entry for any
-  of the four, so there's no dead-end UI path today, just an unbuilt
-  feature). Real implementations, sequencing, and file/line references:
-  `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 2.
+- ~~**Splash text / image / video / webpage**~~ **DONE 2026-08-15**
+  (Tier 2.4/2.5, re-verified 2026-09-02 — the old placeholder functions in
+  `runtime/action_handlers/extra_handlers.py` are gone). `splash_show_text`/
+  `splash_show_image` have real registered implementations;
+  `splash_show_video`/`splash_show_webpage` are aliased onto `show_video`/
+  `open_webpage`.
 - ~~**Execute file** / **Execute shell command**~~ (lines 84, 90) —
   **decision confirmed 2026-08-14: stay disabled.** Asked the user directly
   given the security stakes for this audience (children, per the
@@ -542,9 +527,13 @@ Other:
   **separately-named** `execute_script`/`execute_code` (real `exec()`-based,
   `action_executor.py`), not this. Scheduled for removal:
   `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 1.1.
-- **Thymio "play sound"** — `runtime/thymio_action_handlers.py` — placeholder
-  that emits a single tone instead of playing the requested sound resource.
-  Scheduled: `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 2.3.
+- ~~**Thymio "play sound"**~~ **DONE 2026-08-15** (Tier 2.3, re-verified
+  2026-09-02). Real hardware has no sampled-audio capability at all (only
+  tone primitives) — `export/Aseba/aseba_exporter.py` already emits the
+  robot's authentic system-sound melody for real hardware; the simulator's
+  single-tone approximation is now disclosed in
+  `thymio_play_system_sound`'s description instead of silently misleading.
+  `tests/test_thymio_sound_honesty.py`.
 
 ## Runtime features called out in code
 
@@ -1266,17 +1255,14 @@ existed. Regenerated; 0 untranslated strings reported now.
     equivalent fallback. See the matching Kivy entry above; both share
     `tests/test_kivy_html5_right_middle_mouse_export.py`.
 
-- **Kivy export — long-tail action coverage** —
-  `export/Kivy/code_generator.py`'s `process_action`/`_convert_simple_action`.
-  Most actions translate fine; unhandled ones fall through to a no-op
-  `pass  # TODO: {action_type}` (with `_UNSUPPORTED_ACTIONS` tracking which).
-  Re-surveyed 2026-08-14: ~18-20 of `ACTION_TYPES`'s 107 entries have no
-  branch (`bounce`, `open_webpage`, `save_game`, `load_game`,
-  `test_question`, `show_info`, `stop_sound`, `check_sound`, `check_room`,
-  `fill_color`, `set_alpha`, `move_towards_point`, `draw_scaled_text`,
-  `set_image_index`, `set_image_speed`, `set_room_caption`,
-  `start_animation`, `stop_animation`, plus a couple more). Being worked in
-  small clusters: `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 3.
+- ~~**Kivy export — long-tail action coverage**~~ **DONE 2026-08-15**
+  (Tier 3, all 23 in one commit; re-verified 2026-09-02 against the actual
+  `code_generator.py` source — `bounce`, `save_game`/`load_game`, and
+  `test_question` each ship with a documented, narrower-than-desktop scope
+  rather than a silent gap; see the plan doc for the exact tradeoffs).
+  `_UNSUPPORTED_ACTIONS` remains as a safety net for any FUTURE action that
+  falls through unhandled — a regression, not a known gap, if it's ever
+  non-empty on a real export. `tests/test_kivy_tier3_actions_export.py`.
 
 ### Export feature-parity matrix (quantified 2026-07-10)
 - `tests/test_export_feature_matrix.py` cross-references every action and
