@@ -29,6 +29,19 @@ from events.plugin_loader import load_all_plugins  # noqa: E402
 from runtime.action_executor import ActionExecutor  # noqa: E402
 from runtime import extension_hooks  # noqa: E402
 from extensions.multiplayer_lan.state import peek_multiplayer  # noqa: E402
+import extensions.multiplayer_lan.handlers as mp_handlers  # noqa: E402
+
+
+def _loaded_handlers():
+    """The handlers module actually behind the registered frame-update
+    hooks -- the loader imports the extension under a synthetic package
+    name, so that's a different module object from the one imported the
+    normal way above (see CLAUDE.md's raycast note)."""
+    import sys
+    for func, _phase in extension_hooks.get_frame_updates():
+        if getattr(func, "__name__", "") == "_frame_update_broadcast":
+            return sys.modules[func.__module__]
+    return mp_handlers
 
 PROJECT_JSON = str(REPO_ROOT / "samples" / "multiplayer_lan_1" / "project.json")
 
@@ -307,5 +320,80 @@ class TestSyncInstanceAndOwnership:
             while time.time() < deadline and getattr(_player(client), "hp", None) != 7:
                 _tick(host, client); time.sleep(0.02)
             assert _player(client).hp == 7
+        finally:
+            _teardown(host, client)
+
+
+class TestNamedInput:
+    def test_default_inputs_are_bound(self):
+        host, client = _make_pair()
+        try:
+            _tick(host, client)
+            binds = peek_multiplayer(client.current_room)["input_binds"]
+            for name in ("left", "right", "up", "down", "space"):
+                assert name in binds and binds[name] is not None
+        finally:
+            _teardown(host, client)
+
+    def test_bind_network_input_writes_a_binding(self):
+        host, client = _make_pair()
+        try:
+            _do(client, "bind_network_input", {"name": "jump", "key": "space"})
+            assert peek_multiplayer(client.current_room)["input_binds"]["jump"] == pygame.K_SPACE
+        finally:
+            _teardown(host, client)
+
+    def test_client_input_reaches_host_via_remote_input(self, monkeypatch):
+        host, client = _make_pair()
+        try:
+            hs = peek_multiplayer(host.current_room)["session"]
+            # simulate the client holding jump + left (the real
+            # _poll_held_inputs reads pygame's keyboard, unavailable headless)
+            monkeypatch.setattr(_loaded_handlers(), "_poll_held_inputs",
+                                lambda st: {"jump", "left"})
+            for _ in range(15):
+                _tick(host, client); time.sleep(0.02)
+            assert hs.remote_input(1, "jump") is True
+            assert hs.remote_input(1, "left") is True
+            assert hs.remote_input(1, "fire") is False
+            assert hs.remote_input(2, "jump") is False
+
+            monkeypatch.setattr(_loaded_handlers(), "_poll_held_inputs", lambda st: set())
+            for _ in range(15):
+                _tick(host, client); time.sleep(0.02)
+            assert hs.remote_input(1, "jump") is False
+        finally:
+            _teardown(host, client)
+
+    def test_remote_input_action_reads_host_state(self, monkeypatch):
+        host, client = _make_pair()
+        try:
+            monkeypatch.setattr(_loaded_handlers(), "_poll_held_inputs", lambda st: {"jump"})
+            for _ in range(15):
+                _tick(host, client); time.sleep(0.02)
+            act = host.action_executor.action_handlers["remote_input"]
+            assert act(_player(host), {"player": "1", "name": "jump"}) is True
+            assert act(_player(host), {"player": "1", "name": "nope"}) is False
+        finally:
+            _teardown(host, client)
+
+    def test_host_own_input_is_player_zero(self):
+        host, client = _make_pair()
+        try:
+            hs = peek_multiplayer(host.current_room)["session"]
+            hs.set_local_input(["up", "space"])
+            assert hs.remote_input(0, "up") is True
+            assert hs.remote_input(0, "down") is False
+        finally:
+            _teardown(host, client)
+
+    def test_input_send_is_deduped(self):
+        host, client = _make_pair()
+        try:
+            cs = peek_multiplayer(client.current_room)["session"]
+            cs.send_input(["a"])
+            assert cs._last_input_sent == frozenset(["a"])
+            cs.send_input(["a"])                   # unchanged -> no-op, must not raise
+            assert cs._last_input_sent == frozenset(["a"])
         finally:
             _teardown(host, client)

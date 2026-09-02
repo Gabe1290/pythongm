@@ -25,9 +25,9 @@ from core.logger import get_logger
 from .network import CONN_CLOSED, CONN_OPENED, NetworkClient, NetworkHost
 from .replication import NetIdAllocator, SnapshotApplier, SnapshotBuilder
 from .state import (
-    DEFAULT_PORT, MAX_STR_LEN, MSG_BYE, MSG_GAME_START, MSG_HELLO, MSG_JOIN,
-    MSG_LEAVE, MSG_MSG, MSG_OWN, MSG_SHARED_SET, MSG_SNAP, MSG_WELCOME,
-    PROTO_VER, is_valid_shared_name, sanitize_name, sanitize_value,
+    DEFAULT_PORT, MAX_STR_LEN, MSG_BYE, MSG_GAME_START, MSG_HELLO, MSG_INPUT,
+    MSG_JOIN, MSG_LEAVE, MSG_MSG, MSG_OWN, MSG_SHARED_SET, MSG_SNAP,
+    MSG_WELCOME, PROTO_VER, is_valid_shared_name, sanitize_name, sanitize_value,
 )
 
 logger = get_logger(__name__)
@@ -92,6 +92,8 @@ class NetworkSession:
         self._ghost_creates = []       # client: accumulated (nid, obj, x, y)
         self._ghost_destroys = []      # client: accumulated nid
         self._own_state = {}           # host: nid -> latest client-owned row
+        self._input_state = {}         # host: player slot -> set of held input names
+        self._last_input_sent = None   # client: last held-set sent (dedup)
         self.interp_delay = _DEFAULT_INTERP_DELAY
 
     # -- lifecycle ----------------------------------------------------
@@ -224,6 +226,31 @@ class NetworkSession:
         state, self._own_state = self._own_state, {}
         return state
 
+    # -- named input ------------------------------------------------
+
+    def send_input(self, held) -> None:
+        """Client: report the set of currently-held named inputs to the
+        host, but only when it changed since last call."""
+        names = frozenset(str(n) for n in (held or ()))
+        if names == self._last_input_sent:
+            return
+        self._last_input_sent = names
+        if self._client is not None:
+            self._client.send({"t": MSG_INPUT, "held": sorted(names)})
+
+    def set_local_input(self, held) -> None:
+        """Host: record its own held named inputs as player 0, so
+        ``remote_input(0, ...)`` works the same as for a client."""
+        self._input_state[0] = set(str(n) for n in (held or ()))
+
+    def remote_input(self, player, name) -> bool:
+        """Host: is ``player`` currently holding the named input ``name``?"""
+        try:
+            player = int(player)
+        except (TypeError, ValueError):
+            return False
+        return str(name) in self._input_state.get(player, ())
+
     def sample_ghost(self, nid: int):
         """Client: the ``(x, y, r, f, v)`` to draw ghost ``nid`` at right
         now (interpolated ``interp_delay`` seconds in the past), or
@@ -295,7 +322,8 @@ class NetworkSession:
                 self._on_client_msg(cid, frame)
             elif t == MSG_OWN:
                 self._on_client_own(cid, frame)
-            # MSG_INPUT: Tier B named input, not here yet.
+            elif t == MSG_INPUT:
+                self._on_client_input(cid, frame)
 
     def _on_hello(self, cid: int, frame: dict) -> None:
         if cid not in self._pending:
@@ -333,6 +361,7 @@ class NetworkSession:
         if slot is None:
             return
         name = self._roster.pop(slot, {}).get("name", "")
+        self._input_state.pop(slot, None)
         self.player_count = 1 + len(self._roster)
         if self._host is not None:
             self._host.broadcast({"t": MSG_LEAVE, "player_id": slot, "name": name})
@@ -376,6 +405,15 @@ class NetworkSession:
                 "vars": iv if isinstance(iv, dict) else None,
                 "_from": slot,           # which client claimed it -- host verifies
             }
+
+    def _on_client_input(self, cid: int, frame: dict) -> None:
+        slot = self._conn_slot.get(cid)
+        if slot is None:
+            return
+        held = frame.get("held")
+        if isinstance(held, list):
+            self._input_state[slot] = {
+                str(h)[:64] for h in held[:32] if isinstance(h, str)}
 
     def _client_drain(self) -> None:
         if self._client is None:

@@ -649,14 +649,26 @@ each phase self-contained.
   `player_joined`, or after `network_spawn`) — `set_instance_owner(
   player_id())` in a shared create event can't work, since one shared
   instance can't be owned by two machines at once.
-- [ ] 5.4c-2 **named input**: `bind_network_input(name, key)` (client maps
-  a local key to a named input), `input` frame on change, `remote_input(
-  player, name)` condition (host reads it). Arrow keys + space auto-bound
-  so trivial samples need no binding.
-- [ ] 5.5 Back-compat: `set_network_mode` + `PYGM_NET_*` + `run_game.py`
-  flags. **Largely already done** — v2 sessions and the v1 raw
-  host/client are mutually exclusive per room, `multiplayer_lan_1` test +
-  smoke stay green through every unit so far. Final tick when 5.4c-2 lands.
+- [x] 5.4c-2 **named input.** `bind_network_input(name, key)` writes
+  `st["input_binds"][name] = <pygame key>` (`_name_to_key` resolves
+  "space"/"left"/"a"/"lshift"/…); `left`/`right`/`up`/`down`/`space`
+  auto-bound when a session starts. Each frame `_poll_held_inputs` reads
+  `pygame.key.get_pressed()` for the bound keys; the client sends an
+  `input` frame **only on change** (`session.send_input` dedups via
+  `_last_input_sent`), the host records its own as player 0
+  (`set_local_input`). Host `_on_client_input` stores each slot's held
+  set (capped 32×64 chars); `remote_input(player, name)` action returns
+  the bool (an `if_condition` gate). `tests/test_multiplayer_lan_ghosts.py`
+  +6 (default binds, `bind_network_input`, client input → host
+  `remote_input`, release, the action, host-own-input, dedup — the
+  wire-path tests monkeypatch `_poll_held_inputs` on the *loaded* module
+  since keys can't be held headless). Full suite **4099 passed, 0
+  failed**. Landed `14b038ab`.
+- [x] 5.5 Back-compat: `set_network_mode` + `PYGM_NET_*` + `run_game.py`
+  flags all still work. v2 sessions and the v1 raw host/client are
+  mutually exclusive per room; `set_network_mode` no-ops if a session
+  owns the room. `multiplayer_lan_1` test + smoke green through all 13
+  units of this session. **Phase 5 complete — both tiers usable.**
 
 ### Phase 6 — connection UX
 - [ ] 6.1 `discovery.py` (new): UDP beacon broadcaster + listener +
