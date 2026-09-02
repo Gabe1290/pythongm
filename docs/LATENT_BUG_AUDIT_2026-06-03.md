@@ -1,5 +1,10 @@
 # Latent Bug Audit — 2026-06-03
 
+> **Superseded by `docs/FULL_AUDIT_2026-06-11.md`** (per `CLAUDE.md`'s own
+> note: "This supersedes the '14 medium + 9 low remain open' note above —
+> the 2026-06-03 registry is fully closed"). See `docs/PROJECT_STATUS.md`
+> for the current picture. Kept as the historical record.
+
 Multi-agent logic-level bug audit of pygm2 (11 subsystems reviewed → 34
 candidate findings → **30 confirmed** by adversarial verification, 4 rejected).
 Each finding was verified against the real code (many reproduced empirically);

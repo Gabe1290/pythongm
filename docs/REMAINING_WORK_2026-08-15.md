@@ -1,5 +1,11 @@
 # Plan: everything remaining for pygm2
 
+> **Superseded 2026-09-02 by `docs/PROJECT_STATUS.md`** — every Section F
+> item below now has its own dedicated, completed (or, for the two
+> genuinely still-open ones, actively tracked) plan; read that doc for
+> the current picture instead of this one. Kept here as the historical
+> record of the 2026-08-15 survey.
+
 Written 2026-08-15, right after `docs/DEFERRED_GAPS_2026_PLAN.md`'s queue
 (Tiers 1–7c) closed. That doc is done; this one is the next resume point —
 a full survey of every other planning doc in `docs/` plus `TODO.md`, so a

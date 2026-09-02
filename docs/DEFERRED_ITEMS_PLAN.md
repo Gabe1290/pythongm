@@ -1,11 +1,12 @@
 # Plan: working through TODO.md's deferred items
 
-Status: **planned, not started.** Written 2026-07-15, right after the
-views/camera plan (`docs/VIEWS_SAMPLES_PLAN.md`) shipped, specifically so
-it can be picked up cold on a different machine. This doc triages and
-sequences `TODO.md`'s registry — it doesn't replace it. `TODO.md` stays
-the source of truth for each item's detail; this doc just says which
-order to tackle them in and why.
+Status: **DONE — all 13 items across Tiers 0-3 closed** (corrected
+2026-09-02; this line previously said "planned, not started," stale
+against the doc's own body and against `TODO.md`). Written 2026-07-15,
+right after the views/camera plan (`docs/VIEWS_SAMPLES_PLAN.md`) shipped,
+specifically so it can be picked up cold on a different machine. This doc
+triaged and sequenced `TODO.md`'s registry; see `docs/PROJECT_STATUS.md`
+for the current overall picture.
 
 ## Before touching anything: re-verify, don't trust
 

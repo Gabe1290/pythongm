@@ -1,5 +1,10 @@
 # Plan: LAN multiplayer (folder extension)
 
+> **This is the v1 plan — superseded by `docs/MULTIPLAYER_LAN_V2_PLAN.md`**,
+> which is the live doc (real open phases — see `docs/PROJECT_STATUS.md`).
+> v1 shipped a spectator-only slice; v2 turns it into the full
+> student-facing API. Kept here as the historical record.
+
 Status: **Phases 0-3 DONE (2026-08-15), except the one thing that can't be
 automated.** Written 2026-08-15 per `docs/REMAINING_WORK_2026-08-15.md`
 Section F's instruction that this item needs its own dedicated plan doc

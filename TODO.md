@@ -8,10 +8,17 @@ have been removed; the work is tracked here instead.
 Add new entries at the top of each section. When you start implementing one,
 move it to a feature branch and remove the entry once the feature ships.
 
+**For the larger picture — which of the ~50 other docs in `docs/` are
+still live vs. closed, and the handful of genuinely open large
+initiatives (multiplayer, the 4-file split, wiki screenshots, crafting)
+— see `docs/PROJECT_STATUS.md`.** This file (`TODO.md`) stays scoped to
+smaller, feature-level deferred items specifically.
+
 **2026-07-15: `docs/DEFERRED_ITEMS_PLAN.md` triages and sequences this
 whole registry** (small-and-ready items first, then moderate-effort ones,
 then larger multi-session efforts, then explicitly-not-now items) — read
-it before picking an item to work on.
+it before picking an item to work on. (That doc is itself fully done —
+see `docs/PROJECT_STATUS.md`.)
 
 ---
 

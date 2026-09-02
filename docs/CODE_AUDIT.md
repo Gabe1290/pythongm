@@ -1,5 +1,12 @@
 # Code Audit — Duplicate & Dead Code
 
+> **§0–§3 all closed** (per `CLAUDE.md`'s "Audit-cleanup history" note,
+> 2026-05-19), later superseded as a methodology by
+> `docs/FULL_AUDIT_2026-06-11.md`'s adversarially-verified pass. See
+> `docs/PROJECT_STATUS.md` for the current picture. Kept as the
+> historical record and for its methodology notes (still referenced by
+> `CLAUDE.md` for how to run a future audit).
+
 **Date:** 2026-05-17
 **Status:** Findings reference for pre-1.0 testing. §0, §1 fixed 2026-05-17.
 §2 dead-symbol removal completed 2026-05-18 (65 symbols, ~800 lines). §3

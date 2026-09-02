@@ -3,6 +3,12 @@
 Working notes for Claude / agent sessions on pygm2. Lives in-repo so the
 context follows across machines.
 
+**Looking for what's still open?** `docs/PROJECT_STATUS.md` (written
+2026-09-02) is the map: the handful of genuinely open large initiatives,
+plus an index of which of the ~50 other docs in `docs/` are closed vs.
+live, so you don't have to re-derive that from scratch. `TODO.md` stays
+the registry for smaller, feature-level deferred items.
+
 ## Running tests
 
 From the repo root:
