@@ -1267,6 +1267,24 @@ existed. Regenerated; 0 untranslated strings reported now.
   falls through unhandled — a regression, not a known gap, if it's ever
   non-empty on a real export. `tests/test_kivy_tier3_actions_export.py`.
 
+### Kivy export — `draw_text` doesn't resolve a bare `global.X` reference
+- Found 2026-09-02 while closing `docs/MULTIPLAYER_LAN_V2_PLAN.md` Phase
+  7.3 (Kivy export of a multiplayer sample). Desktop and HTML5's
+  `draw_text` both special-case a bare `global.<name>` text-param value,
+  resolving it to that global's live value at render time (draw_text's
+  own resolution, upstream of the LAN multiplayer extension's
+  `global.<shared-var>` mirror — see the plan doc's Phase 4.4). Kivy has
+  no equivalent: `text='global.team_score'` is emitted as a plain string
+  literal, so it renders the literal text `global.team_score`, not the
+  score. Display-only — doesn't crash the export, distinct from the
+  `global.X`-in-a-*condition* `SyntaxError` bug the same session fixed
+  (`export/Kivy/code_generator.py`'s `_strip_global_refs`). `reseau_2`'s
+  score readout is the concrete symptom; not fixed here — out of scope
+  for Phase 7.3, and Kivy has no global-variable storage at all to route
+  a real read to (the condition-side fix reads a stand-in `0`, which
+  isn't a sensible *display* value). Pick up opportunistically alongside
+  other Kivy long-tail action-coverage work.
+
 ### ~~Export feature-parity matrix~~ (CLOSED 2026-07-11, re-verified live 2026-09-02 — all 6 registry tests pass, still empty)
 - `tests/test_export_feature_matrix.py` cross-references every action and
   event the bundled samples use against what each export target
