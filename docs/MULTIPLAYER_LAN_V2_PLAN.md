@@ -725,9 +725,25 @@ each phase self-contained.
   cancel, `show_lobby` start, `show_lobby` cancel). Full suite **4136
   passed, 0 failed**. Landed `6f20ec3d`.
 - [ ] 6.3 Runner caption status string.
-- [ ] 6.4 IDE "Test Game (2 players)" button + `PYGM_NET_AUTOJOIN`.
-  (`core/ide_window.py` Popen path — keep the existing single-launch path
-  byte-for-byte, add a parallel two-launch path.)
+- [x] 6.3 Runner caption. `_update_network_caption` (called from
+  `_apply_session_state`) writes `game_runner.window_caption` — which
+  `GameRunner.update_caption` already prepends and caches, so no flicker
+  and no core change. Host shows `🌐 Hôte — N joueur(s)`, client
+  `🌐 Client — connecté (joueur N)` / `— déconnecté` / `— connexion…`;
+  an author-set caption is preserved as the prefix and **restored by
+  `leave_game`** (`st["_orig_caption"]`). 2 tests.
+- [x] 6.4 (env-var half). `PYGM_NET_AUTOHOST` (any value → this game
+  hosts a v2 session) / `PYGM_NET_AUTOJOIN=<ip>` (→ joins as a v2
+  client), read in `_resolve_state` *before* the v1 `PYGM_NET_MODE`
+  path, so a project with zero multiplayer authoring runs networked
+  purely from the environment — the mechanism the IDE "Test Game
+  (2 players)" button and quick two-process iteration need. 2 tests
+  (real `GameRunner`s: `AUTOHOST` starts a host session; `AUTOJOIN`
+  connects to it). **IDE button deferred** — `core/ide_window.py`'s
+  Test-Game path has carefully-guarded single-process supervision
+  (QTimer poll, stderr temp-file, `closeEvent` teardown); a parallel
+  two-launch path is worth doing separately rather than risking that.
+  6.3+6.4 landed `7e1d39ad`; full suite **4140 passed, 0 failed**.
 
 ### Phase 7 — HTML5 (own plan if it grows)
 - [ ] 7.1 Hand-rolled WebSocket listener in the desktop host (`port+1`),
