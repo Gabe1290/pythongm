@@ -1942,3 +1942,141 @@ safety-regex for `shared("literal")` wasn't worth it).
   eyes**: nobody has run two real machines on a wired school LAN, watched
   the connect screen, or hit a Windows firewall prompt — the two-process
   loopback tests prove the protocol converges, not that it feels right.
+
+**2026-09-02/03 — LAN multiplayer v2 finished: Phase 7 (export parity) +
+the rest of Phase 8, plan doc closed.** Continuation of the session above,
+working straight through the plan's own checklist: 8.6 (graceful host-loss
+teardown), a real core bugfix, 8.2/8.3 (`reseau_2`/`reseau_3`), 8.5 (the
+two-subprocess smoke tool), Phase 7.1–7.4, then 8.7. **One commit per unit,
+full suite green after each, pushed immediately** — suite went
+4149 → 4247 passed, 0 failed across the arc. `docs/MULTIPLAYER_LAN_V2_PLAN.md`
+is now closed (all phases done or explicitly, narrowly scoped as deferred
+follow-up — see its own final status line).
+- **Core bugfix, found before it could block anything downstream**:
+  `global.X` inside an `if_condition` "expression" (or the Test Expression
+  action) had been silently evaluating to `False` since the feature's
+  inception — `global` is a reserved Python word, `_eval_bool_expression`'s
+  raw `eval()` choked on it, the broad `except Exception` swallowed the
+  `SyntaxError` and logged it, never surfacing. This directly contradicted
+  the plan's own "Core changes: none" claim, since the whole "if
+  `is_host()`: ..." authoring pattern is `global.is_host == 1`. Fixed with
+  a regex substitution (`global.X` → `_global.get('X', 0)`) ahead of
+  `eval()`; `tests/test_eval_bool_expression_global_vars.py` (10 tests).
+- **8.6 — graceful host-loss teardown**: `connection_lost` now destroys
+  every ghost puppet but leaves the client's own avatar and identity
+  globals alone — "the game continues single-player", the same precedent
+  `join_game host="auto"` cancel already set. **Landmine that cost a debug
+  cycle**: a first draft inserted the new module-level teardown function in
+  the *middle* of the `PluginExecutor` class body — Python accepted it with
+  no `SyntaxError` but silently truncated the class, orphaning every method
+  alphabetically after the insertion point (`network_spawn` and friends
+  vanished from `action_handlers`). Caught only by the **full**-suite gate
+  (23 unrelated failures), not by the new tests — reconfirms "run the whole
+  suite after any edit to a large class-based module," not just the
+  targeted tests.
+- **`reseau_2`** ("Quiz de classe", Tier A) and **`reseau_3`** ("Récolte en
+  équipe", Tier B) — two more playable bundled samples, built on
+  `reseau_1`'s pattern. Two real authoring landmines worth remembering for
+  any future sample: (1) `set_shared_var`'s `value` and `draw_text`'s
+  `text` both route through `_parse_value`'s operator-triggered `eval()` —
+  French text containing a hyphen (`"Quel port TCP ce jeu utilise-t-il ?"`)
+  silently corrupts unless quoted; (2) `draw_text` can't concatenate a
+  literal prefix with a `global.X` read in one expression (the
+  quote-prefix check that protects literal text also blocks the global
+  resolution) — compose the full string into a shared var at the host
+  instead. Also a genuine **design** bug caught before it shipped: an early
+  reseau_3 draft spawned every instance right after the *blocking*
+  `host_game(show_lobby=true)` call, so avatars/monsters/gems all appeared
+  before any player had even joined — moved to fire in
+  `network_game_started` instead, matching `reseau_2`'s already-correct
+  pattern.
+- **8.5 — `tools/smoke_run_multiplayer.py`**: a real two-OS-process,
+  real-socket smoke test (launches an actual host + client subprocess via
+  `runtime/run_game.py`, not two in-process `GameRunner`s), scoped to
+  `reseau_1` (the one sample launchable purely by env var, no keypress
+  needed). New `GameRunner._print_net_status` prints a grep-able
+  `PYGM_NET_STATUS=...` line an external harness can check for — the same
+  "opt-in, observable from outside the process" shape `PYGM_FRAMES_COMPLETED`
+  already established. Real timing bug found and fixed: giving the host and
+  client equal frame budgets let the host's process (and its listening
+  socket) exit before the client finished, which the client correctly read
+  as `connection_lost` (8.6 working exactly as designed) right at the very
+  end — fixed by giving the host double the client's budget.
+- **Phase 7 — export parity, the largest remaining chunk, done in three
+  layers**:
+  - **7.1 — hand-rolled WebSocket listener** (`extensions/multiplayer_lan/
+    ws_transport.py`): `WebSocketHost` (RFC 6455 handshake, unfragmented
+    text-frame read/write) presents the *exact* `NetworkHost` surface, so
+    `DualHost` (raw TCP + WS side by side, WS ids offset by
+    `1_000_000_000`) drops into `session.py` with zero dispatch changes. WS
+    binds `port+1`, or its own independent OS-assigned port when the raw
+    side used the ephemeral `port=0` tests rely on (never `raw_bound_port +
+    1`, which could just as easily already be taken). A WS bind failure
+    disables browser support for that session rather than failing hosting
+    outright. `tests/test_multiplayer_lan_ws_transport.py` (12 tests) pins
+    the codec against RFC 6455's own published test vector and drives the
+    server with an independently-written minimal WS client (its own
+    masking/parsing, not reusing the server's helpers) — a real protocol
+    conformance check, including an assertion the server never masks its
+    own frames.
+  - **7.2 — the HTML5 browser client** (`extensions/multiplayer_lan/
+    export_html5.js`): client-only (a browser can't `accept()`
+    connections) — `host_game`/`start_networked_game` warn and no-op. Full
+    Tier A plus Tier B ghost **viewing** (a browser player can't yet
+    register/own a synced instance itself — needs a periodic "own" report
+    this pass didn't build, logged as a scoped, explicit limitation, not a
+    silent gap). Needed one new piece of *generic* engine.js
+    infrastructure: `registerFrameUpdate`/`runExtensionFrameUpdates`, a
+    third extension registry (alongside Stage C's room-renderer/action
+    registries) — the one thing a purely event-driven `WebSocket` client
+    can't cover on its own is continuous interpolation between snapshots.
+    **Landmine**: `tests/test_export_html5_extension_syntax.py`'s
+    brace-balance guard strips `//` as a line comment with zero
+    string-literal awareness, so a `` `ws://${host}:${port}` `` template
+    literal desynced its bracket count for the *whole file* — fixed by
+    building the URL through concatenation
+    (`'ws:' + '/' + '/' + host + ':' + port`) so no two `/` ever sit
+    adjacent in the raw source. `tests/test_html5_multiplayer_export.py`
+    (18 tests).
+  - **7.3 — Kivy parity, smaller than planned because testing beat
+    assuming**: exported `reseau_1`–`3` and **compiled every generated
+    `.py` file for real** before writing any code — the 15 network actions
+    already fell through cleanly to the exporter's existing generic
+    unsupported-action no-op (tracked + surfaced in a real warning; a
+    bespoke silent placeholder would only have *hidden* the limitation).
+    What actually crashed the export: `global` is a reserved word, so
+    `if global.network_connected != 1:` (the same `global.X` pattern the
+    core bugfix above fixed for desktop) reached the generated file as
+    literal unparseable Python and killed the whole module's import — not
+    multiplayer-specific, any project authoring a `global.X` condition hit
+    this on Kivy. Fixed with a `_strip_global_refs` regex pre-pass
+    (`global.X` → literal `0`) ahead of `_resolve_instance_names`'s
+    `ast.parse` — semantically correct too, since every multiplayer
+    identity global really is always 0/false on a target that can never
+    network. `is_instance_owner`/`remote_input` (guard conditions) needed
+    no fix: an unrecognized guard already defaults to `if True:`, which is
+    also correct here (the one local Kivy player always owns their own
+    instance). `tests/test_kivy_global_expression_export.py` (13 tests).
+  - **7.4 — wiki docs, English + French only, 7 languages deliberately
+    deferred** (same session-budget precedent as the ja/pt/zh UI-translation
+    arc). New `wiki/Network.md`/`_fr.md` (the `3D-View.md` template),
+    `Event-Reference`/`Extensions`/`Home` updates in both languages. The
+    plan's own "regen picks up new actions automatically" was **wrong** —
+    two real bugs, found by actually running it: (1)
+    `extensions/multiplayer_lan/actions.py` is authored **French-first**
+    (its `display_name`/`description` ARE the live French UI text — also a
+    live-IDE i18n gap for non-French languages, logged in `TODO.md`, not
+    fixed here), so `tools/gen_action_reference.py`'s English edition
+    needed a brand-new `EN_OVERRIDES` table (`tools/action_ref_i18n.py`)
+    rather than its usual English-source passthrough; (2) `FILE_KEY[cat]`
+    was a bare dict subscript with no fallback, crashing the *entire*
+    generator run the moment an unlisted category (Réseau, but also the
+    unrelated pre-existing `Particles`) showed up — fixed with a safe
+    ASCII-slug fallback. The regen itself was overdue independent of
+    Réseau: it caught the action count from 113 to **159** (Block World's
+    Tier 5+ particle/timeline actions had never made it into the reference
+    at all).
+- **Still needs human eyes** (unchanged from the note above): nobody has
+  run two real machines on a wired school LAN, watched an exported HTML5
+  game join a desktop host in a real browser, or hit a Windows firewall
+  prompt.
