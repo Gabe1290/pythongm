@@ -519,10 +519,21 @@ each phase self-contained.
   `tests/test_multiplayer_lan.py` (open event + addr, client→host,
   host→one client, broadcast exclude, oversize-drop, rate-limit bound).
   Full suite **4015 passed, 9 skipped, 0 failed**. Landed `bfc04f40`.
-- [ ] 4.3 `replication.py` (new): netid allocation, snapshot build
-  (`i`/`shared` delta/`spawn`/`despawn`), snapshot apply on client,
-  ghost create/destroy, interpolation buffer. Pure-ish (takes primitive
-  state, not live pygame) — heavily unit-tested.
+- [x] 4.3 `replication.py` (new, pure): `NetIdAllocator` (monotonic, no
+  reuse); `SnapshotBuilder.build(instances, shared, tick, time_ms)` —
+  delta-compressed `snap` (only-changed `shared` incl. removed→`None`,
+  `spawn` for new netids, `despawn` for gone ones, full `i` position
+  list), `reset()` for room change; `SnapshotApplier` — `ingest(frame,
+  now)` → `(to_create, to_destroy)` + per-ghost interp buffer
+  (`deque(maxlen=12)`) + `shared` mirror + adopt-on-unknown-row safety
+  net, `sample(nid, render_time)` → position lerped between the two
+  bracketing states (shortest-arc for angle; discrete `f`/`v` hold the
+  earlier bracket; clamp before first / hold last after — no
+  extrapolation). Caller owns the `render_time = now − interp_delay`
+  policy. `tests/test_multiplayer_lan_replication.py` (27). Landed `866965bc`. Note for 5.1: a client joining mid-game misses the
+  delta-only `spawn` frames, so the session must send it one full
+  snapshot on connect (per-client `SnapshotBuilder` or a full-build
+  path) — the applier's adopt path is only a fallback.
 - [ ] 4.4 Decide the expression-name hook (Core change #1): implement
   `extension_hooks.register_expression_names` **or** record the decision
   to ship without it. If implemented: one scoped core commit + guard
