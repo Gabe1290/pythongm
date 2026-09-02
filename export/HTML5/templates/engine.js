@@ -161,14 +161,30 @@ class _Game:
     from the set_lives/set_health ACTIONS specifically (see
     executeAction's 'set_lives'/'set_health' cases), never from a bare
     attribute write. There's no live reference back to the JS Game
-    object across a Pyodide call, so this is a fresh snapshot built from
-    the synced-in values each call; any change is diffed back out in
-    run_code's patch, the same way self.x/self.y already work.
+    object across a Pyodide call, so score/lives/health are synced in
+    fresh each call and any change is diffed back out in run_code's
+    patch, the same way self.x/self.y already work -- but the object
+    ITSELF is cached at module scope (see _get_game below), so a custom
+    attribute an author sets (e.g. game.wave_count = 5) persists across
+    calls, matching desktop's real semantics (execute_execute_code_action
+    binds game to the literal live GameRunner there).
     """
     def __init__(self, score, lives, health):
         self.score = score
         self.lives = lives
         self.health = health
+
+_game = None
+
+def _get_game(score, lives, health):
+    global _game
+    if _game is None:
+        _game = _Game(score, lives, health)
+    else:
+        _game.score = score
+        _game.lives = lives
+        _game.health = health
+    return _game
 
 def run_code(inst_id, code, sync_json):
     self = _get_inst(inst_id)
@@ -176,7 +192,7 @@ def run_code(inst_id, code, sync_json):
     for key in ('x', 'y', 'mouse_x', 'mouse_y'):
         if key in sync:
             setattr(self, key, sync[key])
-    game = _Game(sync.get('score', 0), sync.get('lives', 0), sync.get('health', 100))
+    game = _get_game(sync.get('score', 0), sync.get('lives', 0), sync.get('health', 100))
     exec_globals = {
         '__builtins__': __builtins__,
         'self': self,

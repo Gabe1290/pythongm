@@ -1218,24 +1218,24 @@ existed. Regenerated; 0 untranslated strings reported now.
     the `set_lives`/`set_health` ACTIONS trigger `no_more_lives`/
     `no_more_health`). `tests/test_html5_execute_code_game_binding.py`.
     See `docs/DEFERRED_ITEMS_PLAN.md` item 9.
-  - **Follow-up limitation on the item above, found 2026-08-21, not yet
-    fixed:** the per-call `_Game(score, lives, health)` snapshot means any
-    custom attribute set on `game` from `execute_code` (e.g.
-    `game.wave_count = 5`) is discarded the instant that call returns —
-    it's a fresh object every call, never cached. Desktop diverges here:
-    `execute_execute_code_action` binds `game` to the literal live
-    `GameRunner` (`self.game_runner`), so a custom attribute set there
-    persists for the rest of the game, visible to every later
-    `execute_code` call from any instance — real, working desktop idiom
-    for ad hoc shared game state. `game.score`/`lives`/`health` themselves
-    are unaffected by this gap (they're the intentionally-whitelisted
-    fields that already round-trip through the patch mechanism); only
-    attributes outside that whitelist vanish silently, with no error or
-    warning. Fix would be caching the `_Game` instance at module scope
-    (like `_instances` already does for `self` via `_get_inst`) instead of
-    reconstructing it fresh in `run_code`/`run_draw`, syncing score/lives/
-    health into it before each call rather than replacing it outright.
-    Not yet scoped for Kivy (untouched, not investigated this session).
+  - ~~**Follow-up limitation on the item above, found 2026-08-21, not yet
+    fixed**~~ **DONE 2026-09-02.** `_get_game` now caches the `_Game`
+    instance at module scope (mirroring `_get_inst`'s existing per-instance
+    `self` cache), syncing score/lives/health into it from the fresh
+    JS-provided values on every call rather than reconstructing it outright
+    — those three fields behave exactly as before (always resynced, never
+    stale), but any other attribute an author sets now persists across
+    calls and across different instances', matching desktop's real
+    "literal live GameRunner" semantics.
+    `tests/test_html5_execute_code_game_binding.py` (2 new tests: same-
+    instance persistence across calls, cross-instance visibility). Still
+    **not scoped for Kivy** — its `_ScriptGameProxy` (`export/Kivy/
+    kivy_exporter.py`) is also constructed fresh per call, which LOOKS
+    like the same shape of gap, but wasn't traced through to confirm
+    (whether a custom attribute set on it actually gets lost, and whether
+    the fix would look the same, given Kivy's proxy is a real live object
+    with a `_game_app` reference rather than a synced-value snapshot) —
+    untouched, not investigated this session.
   - ~~Draw-queue `background`/`health_bar` commands... not implemented~~
     **DONE 2026-07-15** — `case 'background'` (reuses the `game.sprites`
     map backgrounds already share with sprites, per `encode_sprites`) and

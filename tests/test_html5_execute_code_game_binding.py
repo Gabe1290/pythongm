@@ -16,6 +16,19 @@ only fire from the set_lives/set_health ACTIONS (executeAction's switch
 cases), never from a bare attribute assignment on any of the three
 targets now.
 
+**2026-09-02 follow-up, closing the gap TODO.md flagged the same day
+this fix originally shipped:** the `_Game` object itself was rebuilt
+from scratch every call, so a custom attribute an author set (e.g.
+`game.wave_count = 5`, an ordinary ad hoc shared-state idiom desktop
+supports because `game` there is the literal live `GameRunner`) was
+silently discarded the instant that call returned. Fixed by caching the
+`_Game` instance at module scope (`_get_game`, mirroring `_get_inst`'s
+existing per-instance `self` cache) instead of reconstructing it —
+score/lives/health are still forcibly overwritten from the fresh
+JS-synced values on every call (so those three fields behave exactly as
+before), but any OTHER attribute now persists across calls, and across
+different instances' calls, matching desktop.
+
 PY_BOOTSTRAP is real embedded Python source, so it can be exec()'d
 directly and its run_code/run_draw functions called for real —
 deterministic, no network, no JS engine — following the exact
@@ -96,13 +109,47 @@ def test_reading_game_score_without_writing_is_side_effect_free(py_bootstrap_ns)
     assert "score" not in patch
 
 
-def test_game_is_a_fresh_object_not_shared_across_calls(py_bootstrap_ns):
-    # Each call passes its own synced-in values; game must not silently
-    # carry state from a previous instance's call.
+def test_score_lives_health_are_always_resynced_even_though_game_is_cached(py_bootstrap_ns):
+    # The `game` OBJECT is now cached across calls (see the custom-
+    # attribute-persistence tests below), but score/lives/health are
+    # still forcibly overwritten from the freshly-synced-in JS values on
+    # every call -- so a change made to one of those three fields from a
+    # PREVIOUS call must never leak into a later call that never touched
+    # them, even though the underlying Python object is the same one.
     run_code = py_bootstrap_ns["run_code"]
     run_code("t4a", "game.score = 999", _sync(score=0))
     patch = json.loads(run_code("t4b", "pass", _sync(score=5)))
-    assert "score" not in patch  # would be 999-vs-5 if game leaked across calls
+    assert "score" not in patch  # would be 999-vs-5 if score itself weren't resynced
+
+
+def test_custom_game_attribute_persists_across_calls(py_bootstrap_ns):
+    # The actual gap this fix closes (TODO.md, found 2026-08-21): unlike
+    # score/lives/health, an author-defined attribute has no JS-side sync
+    # slot at all -- desktop's real semantics (a literal live GameRunner
+    # bound as `game`) let it persist for the rest of the game. Before
+    # this fix, `game` was rebuilt fresh every call, so it was silently
+    # discarded the instant the call returned.
+    run_code = py_bootstrap_ns["run_code"]
+    run_code("t7a", "game.wave_count = 5", _sync())
+    run_code("t7b", "game.wave_count += 1", _sync())
+    patch = json.loads(run_code("t7c", "self.seen_wave = game.wave_count", _sync()))
+    # wave_count isn't in the whitelisted patch fields, so read it back
+    # via a whitelisted side channel (self.* survives the same way).
+    assert "score" not in patch and "lives" not in patch and "health" not in patch
+    inst = py_bootstrap_ns["_get_inst"]("t7c")
+    assert inst.seen_wave == 6
+
+
+def test_custom_game_attribute_visible_from_a_different_instance(py_bootstrap_ns):
+    # game is a single process-wide object (not per-instance, unlike
+    # self) -- an attribute set by one instance's execute_code must be
+    # visible to every other instance's, matching desktop's real "one
+    # live GameRunner shared by everyone" semantics.
+    run_code = py_bootstrap_ns["run_code"]
+    run_code("t8a", "game.shared_flag = 'ready'", _sync())
+    inst = py_bootstrap_ns["_get_inst"]("t8b")
+    run_code("t8b", "self.saw_flag = game.shared_flag", _sync())
+    assert inst.saw_flag == "ready"
 
 
 def test_run_draw_does_not_propagate_game_field_changes(py_bootstrap_ns):
