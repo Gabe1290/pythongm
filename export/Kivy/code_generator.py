@@ -74,6 +74,34 @@ class _SelfNameResolver(ast.NodeTransformer):
         return ast.copy_location(new, node)
 
 
+# `global.<name>` (e.g. the LAN multiplayer extension's `global.is_host`,
+# `global.network_connected`, or any author-defined shared global) is not
+# even syntactically valid Python -- `global` is a reserved keyword, so
+# ast.parse() raises SyntaxError on it before _SelfNameResolver ever runs,
+# and _resolve_instance_names used to swallow that and return the ORIGINAL
+# text unchanged, which then reached the generated file verbatim: `if
+# global.network_connected != 1:` is a literal SyntaxError, so the WHOLE
+# exported module failed to import. Kivy has no global-variable storage at
+# all (unlike desktop's game_runner.global_variables / HTML5's
+# game.globalVariables), so there is no runtime home to route a real read
+# to -- the achievable, correctly-scoped fix is turning the reference into
+# a literal 0 instead. That's not just "safe", it's the semantically right
+# answer for every multiplayer identity/status global specifically (is_host,
+# network_connected, player_id, ...): they really are always 0/false on
+# this target, since a Kivy export never networks at all (network actions
+# already export as no-ops, see get_unsupported_actions). Any other,
+# unrelated author-defined global degrades from "crashes the export" to
+# "reads 0", the same graceful-degradation fallback this file already uses
+# throughout for anything Kivy can't represent.
+_GLOBAL_REF_RE = re.compile(r'\bglobal\.[A-Za-z_][A-Za-z0-9_]*\b')
+
+
+def _strip_global_refs(expr: str) -> str:
+    if not isinstance(expr, str) or 'global.' not in expr:
+        return expr
+    return _GLOBAL_REF_RE.sub('0', expr)
+
+
 def _resolve_instance_names(expr) -> str:
     """Bind bare instance/custom variable names in ``expr`` to self.<name>.
 
@@ -83,6 +111,7 @@ def _resolve_instance_names(expr) -> str:
     """
     if not isinstance(expr, str) or not expr.strip():
         return expr
+    expr = _strip_global_refs(expr)
     try:
         tree = ast.parse(expr, mode='eval')
     except SyntaxError:

@@ -1,6 +1,6 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **Phases 4–6, 7.1–7.2, and 8.1/8.2/8.3/8.5/8.6 DONE.** Written and
+Status: **Phases 4–6, 7.1–7.3, and 8.1/8.2/8.3/8.5/8.6 DONE.** Written and
 mostly executed 2026-09-02. The full student-facing API — Tier A (shared
 blackboard: shared variables, custom messages, player identity, `Réseau`
 events) and Tier B (networked instances: `network_spawn` + interpolated
@@ -20,8 +20,8 @@ on) plus **one** small generic HTML5-engine addition
 (`registerFrameUpdate`, a third extension registry alongside Stage C's
 room-renderer/action registries) on top of v1's frame-update hook; the
 transport and session layers remain zero-core-change extension code.
-**Open:** 7.3–7.4 (Kivy no-op parity, wiki docs), 8.4 (`reseau_4`,
-optional), 8.7 (close this doc). See the checklist near the end.
+**Open:** 7.4 (wiki docs), 8.4 (`reseau_4`, optional), 8.7 (close this
+doc). See the checklist near the end.
 
 ## Where this comes from
 
@@ -896,8 +896,65 @@ each phase self-contained.
     same standing caveat as every other HTML5/Kivy export arc in this
     repo (no JS engine in CI). Worth a manual pass alongside the plan's
     other Manual QA items.
-- [ ] 7.3 `export_kivy.py`: no-op placeholder for the network actions so a
-  Kivy export still runs single-player.
+- [x] 7.3 `export_kivy.py`: no-op placeholder for the network actions so a
+  Kivy export still runs single-player. **DONE 2026-09-02 — smaller than
+  planned, real blocker found by testing rather than assumed.** Exported
+  `reseau_1`/`2`/`3` via `KivyExporter` and compiled every generated `.py`
+  file for real before writing any code: the 15 network actions
+  (`host_game`/`join_game`/`set_shared_var`/`network_spawn`/...) already
+  fall through cleanly to `code_generator.py`'s existing generic
+  unsupported-action fallback (`pass  # TODO: <name>`, tracked in
+  `get_unsupported_actions()` and surfaced in a real post-export warning
+  naming them) — that's a correctly-scoped no-op placeholder already, and
+  a dedicated `extensions/multiplayer_lan/export_kivy.py` mimicking it
+  with silent `ACTION_CODEGEN` entries would only *hide* the limitation
+  from the exporting teacher, which this repo's "stop lying to users"
+  stance argues against. **What actually crashed the export**: reseau_3's
+  `obj_ctrl` authors `if global.network_connected != 1: ...` (the
+  `global.X` mirror Phase 4.4 gave desktop/HTML5) — `global` is a
+  reserved Python keyword, so `global.network_connected != 1` isn't even
+  parseable Python; `code_generator._resolve_instance_names`'s
+  `ast.parse()` raised `SyntaxError` and (silently) returned the literal
+  unparseable text unchanged, landing verbatim in the generated file: `if
+  global.network_connected != 1:` is a real `SyntaxError`, so the WHOLE
+  exported module failed to import — not a "runs weird", a total crash.
+  Not multiplayer-specific either: ANY project authoring a `global.X`
+  condition hits this on Kivy. Fixed with a `_strip_global_refs` regex
+  pre-pass (`\bglobal\.[A-Za-z_]\w*\b` → literal `0`) ahead of
+  `_resolve_instance_names`'s `ast.parse` call — the single shared entry
+  point all 9 of its call sites go through. Kivy has no global-variable
+  storage at all (unlike desktop's `global_variables` dict or HTML5's
+  `game.globalVariables`), so there's no real value to route a read to;
+  reading `0` is also the *semantically correct* answer specifically for
+  every multiplayer identity global (`is_host`, `network_connected`,
+  `player_id`, ...) — they really are always 0/false on a target that can
+  never network at all. An unrelated author-defined global degrades from
+  "crashes the whole export" to "reads 0", matching this file's existing
+  graceful-degradation convention for everything else it can't represent.
+  `is_instance_owner`/`remote_input` (used as GUARD conditions, not plain
+  actions) need no fix at all: Kivy's guard-action dispatch already
+  treats an unrecognized guard as `if True:` (verified — no `SyntaxError`,
+  unlike HTML5's `evaluateCondition` which defaults to `false`), and since
+  a Kivy export can never actually network, "always true" is the *correct*
+  behaviour too — the single local player genuinely does always own their
+  own instance, there being no other player who ever could.
+  `tests/test_kivy_global_expression_export.py` (13 tests):
+  `_strip_global_refs` unit coverage including a false-positive guard (an
+  identifier merely *containing* "global", e.g. `self.globalscore`, must
+  not be mangled — no literal dot follows "global" there);
+  `_resolve_instance_names` on the exact `global.network_connected != 1`
+  expression the sample authors; and a real `KivyExporter().export()` +
+  `py_compile.compile(..., doraise=True)` of all three `reseau_*` samples'
+  every generated file, confirmed zero compile failures (previously: an
+  immediate crash). Also confirmed (not fixed — a separate, narrower,
+  pre-existing display-only gap, explicitly out of scope here): Kivy's
+  `draw_text` never resolves a bare `global.X` text-param reference the
+  way desktop/HTML5 do, so reseau_2's score readout renders the literal
+  string `"global.team_score"` rather than its value on this target —
+  logged in `TODO.md` rather than fixed, since it's cosmetic (no crash)
+  and unrelated to this fix's actual scope (conditions/expressions, not
+  draw_text's own separate string-literal handling). Full suite 4234 →
+  4247 passed, 0 failed.
 - [ ] 7.4 Wiki: `Network` / `Réseau` page in all 9 languages;
   `tools/gen_action_reference.py` regen picks up the new plugin actions
   automatically; add the strings to `tools/action_ref_i18n.py`.
