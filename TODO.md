@@ -14,7 +14,7 @@ initiatives (multiplayer, the 4-file split, wiki screenshots, crafting)
 — see `docs/PROJECT_STATUS.md`.** This file (`TODO.md`) stays scoped to
 smaller, feature-level deferred items specifically.
 
-**2026-07-15: `docs/DEFERRED_ITEMS_PLAN.md` triages and sequences this
+**2026-07-15: a now-removed plan doc triaged and sequenced this
 whole registry** (small-and-ready items first, then moderate-effort ones,
 then larger multi-session efforts, then explicitly-not-now items) — read
 it before picking an item to work on. (That doc is itself fully done —
@@ -63,7 +63,7 @@ see `docs/PROJECT_STATUS.md`.)
   project-wide search (asset names, identifiers) are **not** covered —
   genuinely separate follow-up work, not silently dropped scope.
 
-### ~~Asset Manager~~ (DONE 2026-08-09, all 4 tiers — see docs/ASSET_MANAGER_PLAN.md)
+### ~~Asset Manager~~ (DONE 2026-08-09, all 4 tiers)
 - Was: `Tools → Asset Manager...`.
 - Scope: bulk operations on assets (rename, move, delete in batch), search and
   filter, usage tracking ("which rooms / objects use this sprite?"), and
@@ -78,9 +78,9 @@ see `docs/PROJECT_STATUS.md`.)
   filter box (Tier 2); `ExtendedSelection` multi-select + one combined
   confirmation for bulk delete (Tier 3); `UnusedAssetsDialog` / Tools → Find
   Unused Assets… (Tier 4). Every delete (single or bulk) is trash-backed
-  (see item 10.5 in `docs/DEFERRED_ITEMS_PLAN.md`).
+  (item 10.5 in the deferred-items queue).
 
-### ~~Clean Project~~ (DONE 2026-08-09, all 3 tiers — see docs/CLEAN_PROJECT_PLAN.md)
+### ~~Clean Project~~ (DONE 2026-08-09, all 3 tiers)
 - Was: `Tools → Clean Project`.
 - Scope: remove temporary files, delete unused assets, clean build artifacts,
   shrink project size. Investigation found rollback-snapshot cleanup already
@@ -247,8 +247,8 @@ see `docs/PROJECT_STATUS.md`.)
     save (must not crash), and score/lives/health/global-variable
     round-trip. Suite 2897 → 2903 passed, 0 failed.
   - ~~**Particle system and timelines — confirmed still genuinely
-    non-functional...**~~ **DONE 2026-08-15** (`docs/DEFERRED_GAPS_2026_PLAN.md`
-    Tier 5, all 3 phases, re-verified against current code 2026-09-02 —
+    non-functional...**~~ **DONE 2026-08-15** (Tier 5 of a now-removed
+    plan doc, all 3 phases, re-verified against current code 2026-09-02 —
     this entry was stale). `runtime/game_runner.py` now has a real
     `GameInstance.update_particle_system()`/`update_timeline()`/
     `render_particles()`, called from the main loop every frame; all 14
@@ -281,7 +281,7 @@ see `docs/PROJECT_STATUS.md`.)
   `maze_3`/`maze_4` (the only samples with real backtracking via
   `previous_room`/`next_room`): their `obj_diamond` collectibles would
   have respawned on backtrack. Fixed by marking every room in both
-  samples `persistent: true`. See `docs/DEFERRED_ITEMS_PLAN.md`-style
+  samples `persistent: true`. See the deferred-items-plan-style
   planning in the session notes for the full design tradeoffs (an
   `EnterPlanMode` session, including a Plan-agent validation pass that
   traced the actual `change_room` body and audited every sample for
@@ -322,7 +322,7 @@ see `docs/PROJECT_STATUS.md`.)
   structural + a real export round-trip — no Node.js in CI). Full suite
   2451 → 2493 passed, 0 failed across the three commits.
 - ~~**Views/camera**~~ **DONE (2026-07-15, residual limitation closed
-  2026-08-15).** Plan: `docs/VIEWS_SAMPLES_PLAN.md` (its own status line has
+  2026-08-15).** (Its own now-removed plan doc's status line had
   said "done, Phase 1+2 complete" since 2026-07-15 — this entry's stale "IN
   PROGRESS" header was never updated to match). Done: HTML5 8-view camera
   (`552a9bc`, Chromium-verified); `enable_views`/`set_view` **registered** in
@@ -339,7 +339,7 @@ see `docs/PROJECT_STATUS.md`.)
   Fbo render target was built only at room construction, so enabling views
   purely via a runtime action on a non-views room silently never rendered) is
   now fixed — `_ensure_views_fbo()` lazily builds it from `set_views_enabled`
-  too; see `docs/REMAINING_WORK_2026-08-15.md` Section B and
+  too; see the 2026-08-15 session notes and
   `tests/test_kivy_views_fbo_retrofit.py`. Both `views_1` (single scrolling
   camera) and `views_2` (split-screen multi-view) samples ship.
 - Recipe for adding more: see the comments at the bottom of
@@ -348,7 +348,7 @@ see `docs/PROJECT_STATUS.md`.)
 - ~~A future cleanup might generalise `get_action_type` to fall back
   through `ActionExecutor.ACTION_ALIASES` so legacy/alternate action
   names resolve to a single ActionType without duplicate entries.~~
-  Scheduled: `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 1.2.
+  Scheduled: Tier 1.2 of a now-removed plan doc.
 
 ### GMK importer hardening (post-1.0) — ✅ DONE 2026-07-16
 - **Closed.** `treasure` and `maze_4` are back in the bundled set after a
@@ -360,10 +360,8 @@ see `docs/PROJECT_STATUS.md`.)
   collision-context targeting, room_order-vs-IDE-reorder), 2 faithful
   imports of the original game's own quirks, 1 self-inflicted regression
   reverted. maze_4 carries one documented `snap_to_grid` wall hand-patch;
-  treasure none. See `docs/GMK_IMPORTER_HARDENING_PLAN.md` (registry all
-  checked) and `docs/{treasure,maze_4}_testing_pass.md`. Historical notes
+  treasure none. Historical notes
   below retained for context.
-- Working plan + checkbox registry: `docs/GMK_IMPORTER_HARDENING_PLAN.md`.
 - During rc.12 user-testing the **`treasure.gmk`** and **`maze_4.gmk`**
   samples both exposed importer issues the IDE could only partially
   round-trip — the imported projects loaded but had bad action
@@ -421,8 +419,7 @@ see `docs/PROJECT_STATUS.md`.)
   hardening pass.
 - **Concrete findings from rc.12 maze_1 testing pass — RE-VERIFIED
   2026-07-16, both are original-game data, not importer bugs (see
-  `docs/GMK_IMPORTER_HARDENING_PLAN.md` for the raw-byte verification
-  method):**
+  the raw-byte verification method used to close it):**
   - ~~The importer mistranslated `if_previous_room_exists` into
     `if_next_room_exists`...~~ **Not an importer bug.** Dumped the raw
     parsed `GmkAction` records directly (bypassing the converter): the
@@ -452,7 +449,7 @@ see `docs/PROJECT_STATUS.md`.)
   2026-07-16, all already fixed (fresh `maze_3.gmk` re-import produces
   zero unmapped-action stubs and matches the shipped sample
   byte-for-byte on every action checked; see
-  `docs/GMK_IMPORTER_HARDENING_PLAN.md`):**
+  its now-removed plan doc):**
   - `samples/maze_3/objects/monster_all.json` originally contained
     pairs of `(set_score value=hspeed relative=true)` +
     `(comment "Unmapped GM action: lib=1, id=425, kind=4")` between
@@ -599,8 +596,7 @@ existed. Regenerated; 0 untranslated strings reported now.
   against the current string catalog (1369 real distinct messages / 61
   contexts each — pt sourced from `pygm2_de.ts`, then ja/zh sourced from
   the corrected `pygm2_pt.ts`, via the committed `scripts/
-  gen_translation_ts.py` tool; see `docs/I18N_CLEANUP_2026-08-06.md`
-  Section H and `docs/JA_ZH_I18N_PLAN.md`), fully translated, compiled to
+  gen_translation_ts.py` tool), fully translated, compiled to
   `.qm`, and confirmed reachable in `LanguageManager._discover_languages()`.
   The legacy `translations/pygamemaker_{ja,pt,zh}.ts` files (the ones this
   entry described as abandoned/stale) are all deleted. All three now match
@@ -622,8 +618,8 @@ existed. Regenerated; 0 untranslated strings reported now.
   pixels. Not tracked as a scheduled TODO item — pick up opportunistically
   by screenshotting more dialogs the same way, budget permitting.
 - ~~**Found 2026-08-11: `pygm2_pt.ts`'s `WelcomeTab` context is missing 26
-  of 48 messages**~~ **DONE 2026-08-15** — `docs/DEFERRED_GAPS_2026_PLAN.md`
-  Tier 2.1 investigated this and found the "26 of 48" figure was a miscount
+  of 48 messages**~~ **DONE 2026-08-15** — Tier 2.1 of a now-removed
+  plan doc investigated this and found the "26 of 48" figure was a miscount
   (48 counted vanished/duplicate `<location>` entries too); the real gap
   was 1 missing `WelcomeTab` string (the `"📖  Sample guides"` button) plus
   a whole missing `SampleDocsDialog` context (3 messages) — present in
@@ -638,8 +634,7 @@ existed. Regenerated; 0 untranslated strings reported now.
   must never crash or silently corrupt when opened by an editor that
   doesn't have those extensions installed — audience is children on mixed
   hardware running different app versions.
-- Full plan: `docs/extension_compat_2_0/PLAN.md` (+ companion
-  `compat_demo.py` / `project_2_0.json` in the same folder).
+- (Full plan doc and its companion fixtures removed 2026-09-02, closed.)
 - Done: format-version guard (`core/project_format.py`, shipped v1.1.2,
   `tests/test_project_format_guard.py`); the confirmed
   `requires_extensions` resave-wipe bug fixed in
@@ -682,7 +677,7 @@ existed. Regenerated; 0 untranslated strings reported now.
   found along the way: 4 of de's own translations landed double-escaped
   (passed `lrelease` silently, resolved to literal `&lt;h3&gt;` text at
   runtime), fixed separately. Full writeup, per-language notes, and the
-  regression-test registry: `docs/I18N_UNFINISHED_2026-08-10.md`.
+  regression-test registry (removed 2026-09-02, closed).
 
 ### Block World renderer — occlusion culling for the first-person view (DONE 2026-08-21, partial)
 - Investigated after a report that movement in the bundled block_world
@@ -787,7 +782,7 @@ existed. Regenerated; 0 untranslated strings reported now.
     metadata) — `obj_person` in `samples/maze_1` is 1474 bytes serialized
     (2 events) vs. its sprite's 404.
     **Reopened 2026-08-14 (explicit ask):** scheduled as
-    `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 6, following the objects
+    a now-removed plan doc's Tier 6, following the objects
     precedent (this section) exactly, sequenced after the plan's Block World
     texture tier since both touch the same three export-loader files.
   - **Objects: stripping only `events` (not the full body) is the safe cut.**
@@ -894,7 +889,7 @@ existed. Regenerated; 0 untranslated strings reported now.
 - Why it matters long-term: smaller `project.json`, clean per-asset git diffs,
   and far less Dropbox "conflicted copy" / merge risk across the multi-machine
   workflow.
-- **2026-08-15 — sprites done too** (`docs/DEFERRED_GAPS_2026_PLAN.md` Tier 6).
+- **2026-08-15 — sprites done too** (Tier 6 of a now-removed plan doc).
   The 2026-08-14 "scope narrowed: sprites are staying dual-stored" call above
   was **reopened by explicit ask**, not overturned on the merits — the actual
   implementation strips the *whole* sprite body (not just one field, since
@@ -1066,8 +1061,8 @@ existed. Regenerated; 0 untranslated strings reported now.
     export-time AST rewrite of bare assignments, which would need to
     correctly replicate every binding form CPython's real `exec()`
     covers (for-loop targets, `with...as`, tuple unpacking, augmented
-    assignment) to get full parity. See `docs/DEFERRED_ITEMS_PLAN.md`
-    item 9.
+    assignment) to get full parity. See item 9 of a now-removed plan
+    doc.
   - **Both adjacent follow-up gaps also DONE, same day.** `keyboard` is
     now bound in Kivy's `execute_code`/`execute_script` namespaces via a
     new `GameObject._check_key(key)` method (`kivy_exporter.py`'s
@@ -1225,7 +1220,7 @@ existed. Regenerated; 0 untranslated strings reported now.
     plain write on every target, matching desktop's real semantics; only
     the `set_lives`/`set_health` ACTIONS trigger `no_more_lives`/
     `no_more_health`). `tests/test_html5_execute_code_game_binding.py`.
-    See `docs/DEFERRED_ITEMS_PLAN.md` item 9.
+    See item 9 of a now-removed plan doc.
   - ~~**Follow-up limitation on the item above, found 2026-08-21, not yet
     fixed**~~ **DONE 2026-09-02.** `_get_game` now caches the `_Game`
     instance at module scope (mirroring `_get_inst`'s existing per-instance

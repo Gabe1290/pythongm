@@ -3,17 +3,19 @@
 This document survives into the 1.1 phase. It captures the **why**, the
 **when**, and a concrete **how** for breaking up the four files that
 currently dominate pygm2's complexity surface. Companion read:
-`ARCHITECTURE.md` (current shape) and `docs/CODE_AUDIT.md` (audit-era
-methodology).
+`ARCHITECTURE.md` (current shape).
 
 ## Status
 
 **Not started.** Filed during the 1.0 stability push so the plan
-survives when attention returns to it.
+survives when attention returns to it. This is one of the few genuinely
+open initiatives in the repo — see `docs/PROJECT_STATUS.md` for the
+current overall picture.
 
-**Re-verified 2026-08-15** (`docs/REMAINING_WORK_2026-08-15.md` Section F)
-— still not started, still the right plan, but the line counts and two
-factual claims below were stale and are corrected in place:
+**Re-verified 2026-08-15** (per the-then-current "everything remaining"
+survey, since removed) — still not started, still the right plan, but
+the line counts and two factual claims below were stale and are
+corrected in place:
 - All four files have grown further since this doc was written (see the
   updated table). The relative risk ordering is unchanged.
 - **`runtime/collision_system.py` no longer exists.** It was deleted
@@ -53,9 +55,9 @@ Three reasons it didn't happen before 1.0:
    execute_* methods / 4604 lines, bidirectional call graph with the
    registry. Don't attempt mid-audit."* Splitting in the middle of a
    call graph that runs in both directions risks subtle dispatch bugs.
-3. **Behaviour-preservation methodology.** §1–§3 of the audit
-   (`docs/CODE_AUDIT.md`) established a hard requirement: every
-   consolidation must be *proven behaviour-preserving against
+3. **Behaviour-preservation methodology.** The earlier pre-1.0 audit
+   established a hard requirement: every consolidation must be *proven
+   behaviour-preserving against
    pre-refactor HEAD* via a throwaway offscreen-Qt harness, with the
    proof documented in the commit body. That's the right standard but
    it takes time and discipline; combining it with a release crunch is
@@ -79,7 +81,7 @@ runtime collision bugs hide).
 
 ## Mandatory methodology (re-read before starting any split)
 
-Cribbed from `docs/CODE_AUDIT.md` §1–§3 and `CLAUDE.md`:
+Cribbed from the earlier pre-1.0 audit's own methodology and `CLAUDE.md`:
 
 1. **Snapshot pre-refactor HEAD** with `git show HEAD:path` to a temp
    file before extracting anything.
@@ -416,9 +418,11 @@ These are smaller items worth tackling alongside the split work:
    logs from the audit era still fire in normal operation. Demote the
    informational ones to debug, keep the ones that are genuinely
    user-facing (Test Game start/stop, project save success).
-5. **`docs/CODE_AUDIT.md` §4 follow-ups.** Some of the items listed
-   there overlap with this plan; cross-check before starting any split
-   so we don't redo audit work.
+5. **Earlier audit §4 follow-ups.** The pre-1.0 audit doc that used to
+   track these (deleted 2026-09-02 in a docs cleanup, recoverable via
+   `git log -- docs/CODE_AUDIT.md` if ever needed) had some open items
+   that may overlap with this plan — worth a quick check via git history
+   before starting any split, so this doesn't redo audit work.
 
 ---
 

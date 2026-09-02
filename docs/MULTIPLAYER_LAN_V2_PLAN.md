@@ -13,8 +13,9 @@ connect/lobby screen), Phase 7 (HTML5 export parity), Phase 8 (samples
 
 ## Where this comes from
 
-`docs/MULTIPLAYER_LAN_PLAN.md` (v1) is **done**: Phases 0–3 landed
-2026-08-15. What exists on `main` today:
+The v1 plan (done: Phases 0–3 landed 2026-08-15; its doc was removed
+2026-09-02 in a docs cleanup, recoverable via `git log` if ever needed)
+produced what exists on `main` today:
 
 - `runtime/extension_hooks.py` — the generic per-frame hook
   (`register_frame_update(func, phase)` with phases `before_step` /
