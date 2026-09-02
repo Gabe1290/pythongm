@@ -27,7 +27,19 @@ from .network import NetworkClient, NetworkHost
 from .session import NetworkSession
 from .state import DEFAULT_PORT, multiplayer_state, peek_multiplayer
 
+try:
+    import pygame
+except ImportError:                        # schema-only import in the IDE
+    pygame = None
+
 logger = get_logger(__name__)
+
+# Named inputs every session starts with, so a trivial sample needs no
+# bind_network_input call. Overridable per name.
+_DEFAULT_INPUT_NAMES = {
+    "left": "K_LEFT", "right": "K_RIGHT", "up": "K_UP", "down": "K_DOWN",
+    "space": "K_SPACE",
+}
 
 # Env vars run_game.py's --net-host/--net-client/--net-port CLI flags set
 # (docs/MULTIPLAYER_LAN_PLAN.md Phase 2) -- a fallback for when no
@@ -139,6 +151,51 @@ def _raw(parameters, key, default=""):
         return default
     val = str(val).strip()
     return val if val else default
+
+
+def _name_to_key(name):
+    """A key-name string ("space", "left", "a", "5", "lshift") -> a pygame
+    key constant, or None."""
+    if pygame is None or not name:
+        return None
+    n = str(name).strip().lower()
+    aliases = {
+        "left": "K_LEFT", "right": "K_RIGHT", "up": "K_UP", "down": "K_DOWN",
+        "space": "K_SPACE", "enter": "K_RETURN", "return": "K_RETURN",
+        "escape": "K_ESCAPE", "tab": "K_TAB", "shift": "K_LSHIFT",
+        "ctrl": "K_LCTRL", "control": "K_LCTRL", "alt": "K_LALT",
+    }
+    if n in aliases:
+        return getattr(pygame, aliases[n], None)
+    if n.startswith("k_"):
+        return getattr(pygame, n.upper(), None)
+    if len(n) == 1 and (n.isalpha() or n.isdigit()):
+        return getattr(pygame, "K_" + n, None)
+    return getattr(pygame, "K_" + n.upper(), None)
+
+
+def _input_binds(st):
+    binds = st.get("input_binds")
+    if binds is None:
+        binds = {name: _name_to_key(default_key)
+                 for name, default_key in _DEFAULT_INPUT_NAMES.items()}
+        st["input_binds"] = binds
+    return binds
+
+
+def _poll_held_inputs(st):
+    """The set of bound named inputs whose key is currently held down."""
+    if pygame is None:
+        return set()
+    try:
+        pressed = pygame.key.get_pressed()
+    except pygame.error:
+        return set()
+    held = set()
+    for name, key_code in _input_binds(st).items():
+        if key_code is not None and 0 <= key_code < len(pressed) and pressed[key_code]:
+            held.add(name)
+    return held
 
 
 def _player_name(game_runner, explicit):
@@ -269,6 +326,7 @@ class PluginExecutor:
         st["ghosts"] = None
         st["synced_local"] = None
         st["sync_ord"] = None
+        st["input_binds"] = None
         gv = getattr(ae.game_runner, "global_variables", None)
         if isinstance(gv, dict):
             for key in _NETWORK_GLOBALS:
@@ -416,6 +474,28 @@ class PluginExecutor:
             return False
         owner = getattr(instance, "_net_owner", None)
         return owner is not None and owner == session.player_id
+
+    def execute_bind_network_input_action(self, instance, parameters):
+        """Map a local key to a named input reported to the host."""
+        ae = self._executor(instance)
+        room = getattr(ae.game_runner, "current_room", None) if ae else None
+        if room is None:
+            return
+        name = _raw(parameters, "name")
+        if not name:
+            return
+        _input_binds(multiplayer_state(room))[name] = _name_to_key(_raw(parameters, "key"))
+
+    def execute_remote_input_action(self, instance, parameters):
+        """Condition (host-side): is the given player holding the named
+        input right now?"""
+        session = self._session_for(instance)
+        if session is None:
+            return False
+        ae = self._executor(instance)
+        player = _pv(ae, instance, parameters.get("player"), 0)
+        name = _raw(parameters, "name")
+        return session.remote_input(player, name)
 
     # -- internals -----------------------------------------------
 
@@ -773,8 +853,10 @@ def _frame_update_broadcast(game_runner):
     session = st.get("session")
     if session is not None:
         if session.mode == "host":
+            session.set_local_input(_poll_held_inputs(st))
             session.push_local_instances(_collect_synced_rows(room, st))
         else:
+            session.send_input(_poll_held_inputs(st))
             _send_owned(st, session)
         session.pump_after_update()
         return

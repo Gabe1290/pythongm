@@ -216,6 +216,41 @@ PLUGIN_ACTIONS = {
         icon="❓",
         parameters=[],
     ),
+    "bind_network_input": ActionType(
+        name="bind_network_input",
+        display_name="Associer une touche réseau",
+        description="Associer une touche locale à une « entrée nommée » "
+                    "signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur "
+                    "appuie ». Les flèches et Espace sont déjà associées "
+                    "(\"left\", \"right\", \"up\", \"down\", \"space\").",
+        category=_CATEGORY,
+        icon="⌨️",
+        parameters=[
+            ActionParameter(name="name", display_name="Nom de l'entrée",
+                param_type="string", default_value="",
+                description="Étiquette libre (ex. \"jump\", \"tir\")"),
+            ActionParameter(name="key", display_name="Touche", param_type="string",
+                default_value="",
+                description="Nom de touche : \"space\", \"left\", \"a\", \"5\", "
+                            "\"lshift\"..."),
+        ],
+    ),
+    "remote_input": ActionType(
+        name="remote_input",
+        display_name="Si le joueur appuie",
+        description="Condition (chez l'hôte) : vraie si le joueur indiqué "
+                    "maintient l'entrée nommée. Permet à l'hôte de réagir aux "
+                    "touches d'un client sans posséder son avatar.",
+        category=_CATEGORY,
+        icon="❓",
+        parameters=[
+            ActionParameter(name="player", display_name="Joueur", param_type="string",
+                default_value="0", description="Numéro de joueur (0 = hôte)"),
+            ActionParameter(name="name", display_name="Nom de l'entrée",
+                param_type="string", default_value="",
+                description="L'entrée nommée à tester (ex. \"jump\")"),
+        ],
+    ),
     "set_sync_rate": ActionType(
         name="set_sync_rate",
         display_name="Régler la fréquence de synchro",

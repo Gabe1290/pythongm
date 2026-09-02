@@ -16,6 +16,8 @@
         "sync_instance",
         "set_instance_owner",
         "is_instance_owner",
+        "bind_network_input",
+        "remote_input",
         "set_sync_rate",
         "set_network_mode"
     ],
