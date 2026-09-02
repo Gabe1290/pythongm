@@ -30,7 +30,7 @@ from events.plugin_loader import load_all_plugins  # noqa: E402
 
 load_all_plugins()
 from events.action_types import ACTION_TYPES  # noqa: E402
-from tools.action_ref_i18n import LANGS  # noqa: E402
+from tools.action_ref_i18n import EN_OVERRIDES, LANGS  # noqa: E402
 
 # Category display order (IDE-ish); any category not listed is appended A-Z.
 CATEGORY_ORDER = [
@@ -41,13 +41,26 @@ CATEGORY_ORDER = [
 # Filesystem-safe, English-stable key per category, used to build each
 # category's own page filename (Full-Action-Reference-<key>[_<lang>].md).
 # "3D View" gets a distinct key ("3D-View-Actions") to avoid colliding with
-# the existing standalone wiki/3D-View.md concept page.
+# the existing standalone wiki/3D-View.md concept page; "Réseau" (the LAN
+# multiplayer extension's category -- see EN_OVERRIDES in action_ref_i18n.py)
+# similarly gets an ASCII, English-stable key rather than its accented,
+# French display name, matching how every other key here is chosen.
 FILE_KEY = {
     "Movement": "Movement", "Instance": "Instance", "Score": "Score",
     "Room": "Room", "Timing": "Timing", "Audio": "Audio", "Game": "Game",
     "Control": "Control", "Grid": "Grid", "Views": "Views",
-    "3D View": "3D-View-Actions",
+    "3D View": "3D-View-Actions", "Particles": "Particles",
+    "Réseau": "Network-Actions",
 }
+
+
+def _file_key(cat: str) -> str:
+    """FILE_KEY.get with a safe fallback: a category added to ACTION_TYPES
+    without a FILE_KEY entry must not crash the WHOLE generator run (every
+    category, not just the new one) -- previously a plain dict subscript,
+    which is exactly what happened when "Particles" and "Réseau" were added
+    without updating this table."""
+    return FILE_KEY.get(cat, cat.replace(" ", "-"))
 
 TYPE_LABEL = {
     "number": "Number", "float": "Number", "string": "Text", "text": "Text",
@@ -71,7 +84,10 @@ class Tr:
 
     def category(self, cat: str) -> str:
         if self.lang == "en":
-            return cat
+            # "Réseau" is French even in the category KEY itself (it's the
+            # live ActionType.category value, not just display text) -- an
+            # English page must not show a French category header.
+            return EN_OVERRIDES.get("categories", {}).get(cat, cat)
         t = self.data.get("categories", {}).get(cat)
         if t is None:
             self.missing.add(f"category:{cat}")
@@ -84,32 +100,52 @@ class Tr:
         return self.data.get("types", {}).get(en_label, en_label)
 
     def display(self, action) -> str:
-        en = action.display_name or action.name
+        # The source text is almost always English, but not always: the LAN
+        # multiplayer extension's actions.py is authored French-first (its
+        # display_name/description ARE the live French UI text), so "en" is
+        # not a safe no-op passthrough for it -- EN_OVERRIDES supplies the
+        # real English text for exactly those actions; anything not listed
+        # there is unaffected (its source already IS English).
+        src = action.display_name or action.name
         if self.lang == "en":
-            return en
+            override = EN_OVERRIDES.get("actions", {}).get(action.name)
+            return override["display"] if override and override.get("display") else src
         entry = self.data.get("actions", {}).get(action.name)
         if not entry or not entry.get("display"):
             self.missing.add(f"action.display:{action.name}")
-            return en
+            return src
         return entry["display"]
 
     def desc(self, action) -> str:
-        en = getattr(action, "description", "") or ""
-        if self.lang == "en" or not en:
-            return en
+        src = getattr(action, "description", "") or ""
+        if self.lang == "en":
+            override = EN_OVERRIDES.get("actions", {}).get(action.name)
+            return override["desc"] if override and override.get("desc") else src
+        if not src:
+            return src
         entry = self.data.get("actions", {}).get(action.name)
         if not entry or not entry.get("desc"):
             self.missing.add(f"action.desc:{action.name}")
-            return en
+            return src
         return entry["desc"]
 
-    def note(self, en_note: str) -> str:
-        if self.lang == "en" or not en_note:
-            return en_note
-        t = self.data.get("notes", {}).get(en_note)
+    def note(self, action_name: str, param_name: str, source_note: str) -> str:
+        """``source_note`` is the live ``ActionParameter.description`` --
+        English for almost every action, French for the LAN multiplayer
+        extension (see ``display`` above). Non-English editions are keyed by
+        the *source* text (as every other action already is); the "en"
+        edition instead consults ``EN_OVERRIDES["notes"]`` by
+        ``(action_name, param_name)`` since a French source string has no
+        natural English key to look up other languages' tables by."""
+        if self.lang == "en":
+            override = EN_OVERRIDES.get("notes", {}).get(action_name, {}).get(param_name)
+            return override if override else source_note
+        if not source_note:
+            return source_note
+        t = self.data.get("notes", {}).get(source_note)
         if t is None:
-            self.missing.add(f"note:{en_note}")
-            return en_note
+            self.missing.add(f"note:{source_note}")
+            return source_note
         return t
 
 
@@ -135,7 +171,7 @@ def param_table(action, tr: Tr) -> str:
         ptype = tr.type_label(TYPE_LABEL.get(str(p.param_type), str(p.param_type)))
         notes = []
         if getattr(p, "description", ""):
-            notes.append(tr.note(p.description))
+            notes.append(tr.note(action.name, p.name, p.description))
         if getattr(p, "choices", None):
             notes.append(tr.chrome("choices", "Choices") + ": "
                          + ", ".join(f"`{c}`" for c in p.choices))
@@ -157,7 +193,7 @@ def _grouped(lang: str):
 
 
 def cat_page_name(cat: str, lang: str) -> str:
-    key = FILE_KEY[cat]
+    key = _file_key(cat)
     return f"Full-Action-Reference-{key}.md" if lang == "en" else f"Full-Action-Reference-{key}_{lang}.md"
 
 

@@ -1,6 +1,8 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **Phases 4–6, 7.1–7.3, and 8.1/8.2/8.3/8.5/8.6 DONE.** Written and
+Status: **Phases 4–7 and 8.1/8.2/8.3/8.5/8.6 DONE** (7.4's wiki docs are
+complete for English + French; 7 more languages are explicitly deferred
+incremental work — see 7.4's own entry). Written and
 mostly executed 2026-09-02. The full student-facing API — Tier A (shared
 blackboard: shared variables, custom messages, player identity, `Réseau`
 events) and Tier B (networked instances: `network_spawn` + interpolated
@@ -20,7 +22,8 @@ on) plus **one** small generic HTML5-engine addition
 (`registerFrameUpdate`, a third extension registry alongside Stage C's
 room-renderer/action registries) on top of v1's frame-update hook; the
 transport and session layers remain zero-core-change extension code.
-**Open:** 7.4 (wiki docs), 8.4 (`reseau_4`, optional), 8.7 (close this
+**Open:** 7.4's remaining 7 wiki languages (DE/UK/RU/IT/ES/PT/SL, incremental
+follow-up work, not blocking), 8.4 (`reseau_4`, optional), 8.7 (close this
 doc). See the checklist near the end.
 
 ## Where this comes from
@@ -955,9 +958,85 @@ each phase self-contained.
   and unrelated to this fix's actual scope (conditions/expressions, not
   draw_text's own separate string-literal handling). Full suite 4234 →
   4247 passed, 0 failed.
-- [ ] 7.4 Wiki: `Network` / `Réseau` page in all 9 languages;
-  `tools/gen_action_reference.py` regen picks up the new plugin actions
-  automatically; add the strings to `tools/action_ref_i18n.py`.
+- [x] 7.4 Wiki: `Network` / `Réseau` page; `tools/gen_action_reference.py`
+  regen; strings added to `tools/action_ref_i18n.py`. **DONE 2026-09-02/03
+  for English + French; DE/UK/RU/IT/ES/PT/SL explicitly deferred** — see
+  below for why partial is the correct stopping point here, not a gap.
+  - **"Regen picks up the new actions automatically" was wrong — a real,
+    pre-existing architecture assumption broke, found by actually running
+    the regen rather than trusting the plan text.** Two independent bugs,
+    both fixed:
+    1. `extensions/multiplayer_lan/actions.py` is authored **French-first**
+       (its `display_name`/`description`/`ActionParameter.description` ARE
+       the live French UI text — confirmed via `object_events_panel.py`'s
+       `self.tr(action_type.display_name)` call sites, so this is also a
+       live-app i18n quirk, not just a doc-generator one), unlike every
+       other category in the codebase (English-sourced). `gen_action_
+       reference.py`'s `Tr` class hardcoded `lang == "en"` as a pure
+       pass-through of the source text with no override path — so an "en"
+       regen would have shown French text under English headings for all
+       15 Réseau actions. Fixed with a new `EN_OVERRIDES` table in
+       `action_ref_i18n.py` (real English translations for all 15 actions
+       + their ~27 parameter notes + the "Réseau"→"Network" category
+       label), consulted by `Tr.display`/`Tr.desc`/`Tr.note`/`Tr.category`
+       only when `lang == "en"` — every other (English-sourced) action is
+       completely unaffected. `Tr.note()`'s signature changed from a bare
+       source-text key to `(action_name, param_name, source_text)`, since
+       a French source string has no natural English key the way an
+       English one does for every other language's lookup table.
+    2. `FILE_KEY[cat]` was a bare dict subscript with no fallback — a
+       category added to `ACTION_TYPES` without a matching `FILE_KEY`
+       entry crashed the **entire** generator run (not just that
+       category). This wasn't only about Réseau: `Particles` (Block
+       World's particle-system actions) was ALSO missing and hit the same
+       crash — the reference had silently gone unregenerated since before
+       either category existed. New `_file_key()` helper falls back to an
+       ASCII-safe slug instead of crashing; explicit `FILE_KEY` entries
+       added for both `Particles` and `Réseau` (→ `Network-Actions`, an
+       English-stable filename independent of the French display text).
+    3. Discovered en route, NOT fixed (would need a project-wide i18n
+       pass, well beyond this doc's scope): the live IDE's action picker
+       renders `self.tr(action_type.display_name)` for every action — for
+       Réseau specifically this means a non-French IDE language shows
+       French action names/descriptions unless a `.ts` catalog entry
+       happens to translate that French source string, which none do.
+       Logged in `TODO.md` rather than silently left undiscovered.
+  - **The regen itself was badly overdue independent of Réseau**: it
+    caught the count up from 113 to **159** actions (Timing 2→8, Game
+    20→25, 3D View 4→16, plus the wholly-new Particles and Network
+    categories) — Block World's Tier 5+ particle/timeline actions had
+    never been in the reference at all. Every category's content diff is
+    additive (new actions), not corrupted (verified via `git diff
+    --stat`) — this was a stale reference catching up, not a regression.
+    `wiki/Home.md`/`Home_fr.md`'s hardcoded "109 actions" figures (also
+    stale, unrelated to Réseau) corrected to 159 in passing.
+  - **New `wiki/Network.md` + `wiki/Network_fr.md`** (matching
+    `wiki/3D-View.md`'s established template exactly): what it is, the
+    Tier A/Tier B split, how host/join/identity-globals work, the action
+    and event tables (cross-checked against the LIVE `PLUGIN_ACTIONS`/
+    `PLUGIN_EVENTS` source dicts, not invented — this caught a real
+    mistake in the first draft: the `network_started` event's actual
+    French display name is "Réseau prêt" — "Network Ready" — not the
+    "Network Started"/"Partie réseau démarrée" guessed before checking),
+    two minimal worked examples (Tier A shared room, Tier B shared
+    avatar), and the LAN/port/firewall caveats already established
+    elsewhere in this doc. `wiki/Event-Reference.md`/`_fr.md` gained a
+    "Network Events" section (six events, not part of any preset);
+    `wiki/Extensions.md`/`_fr.md` gained a second worked-example mention
+    and nav links; `wiki/Home.md`/`_fr.md` gained a features-table row, an
+    Actions-list bullet, and an Advanced-Features link — all cross-checked
+    for zero dangling internal links.
+  - **DE/UK/RU/IT/ES/PT/SL deliberately NOT done this pass** — same
+    session-budget discipline as the ja/pt/zh UI-translation arc
+    (`CLAUDE.md`'s "~40% of a session per language" precedent): the regen
+    mechanism is proven correct (falls back to the French source text with
+    an honest "missing" report for every un-translated language, same as
+    the pre-existing Particles/Block-World gap those languages already
+    have), so finishing the remaining 7 is now pure, safe, incremental
+    translation work — add `ACTIONS_XX`/`NOTES_XX`/`CATEGORIES_XX` entries
+    for the 15 actions + write `Network_<lang>.md`, one language at a
+    time, verified by re-running the regen and confirming its "missing"
+    report drops to zero for that language.
 
 ### Phase 8 — samples + polish
 - [x] 8.1 `reseau_1` — "Salle partagée". `obj_ctrl` (invisible, depth

@@ -191,6 +191,20 @@ Fill the entire viewport with a solid colour
 |-----------|------|---------|-------|
 | `color` | Color | `#000000` | RGB hex colour |
 
+### Load Game
+
+| Property | Value |
+|----------|-------|
+| **Name** | `load_game` |
+| **Icon** | 📂 |
+| **Category** | Game |
+
+Restore room, score/lives/health, global variables, and instance states from a save file
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `filename` | Text | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+
 ### Open Webpage
 
 | Property | Value |
@@ -216,6 +230,20 @@ Open a URL in the default browser
 Restart the game from the start room
 
 *Parameters:* none
+
+### Save Game
+
+| Property | Value |
+|----------|-------|
+| **Name** | `save_game` |
+| **Icon** | 💾 |
+| **Category** | Game |
+
+Save the current room, score/lives/health, global variables, and instance states to a file
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `filename` | Text | `savegame.sav` | Save file name (written to the project's saves/ folder) |
 
 ### Set Alpha
 
@@ -319,6 +347,49 @@ Display a message
 |-----------|------|---------|-------|
 | `message` | Text | `Hello!` | Message text |
 
+### Show Video
+
+| Property | Value |
+|----------|-------|
+| **Name** | `show_video` |
+| **Icon** | 🎬 |
+| **Category** | Game |
+
+Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `filename` | Text | — | Path to the video file |
+| `fullscreen` | Yes/No | No | Request fullscreen playback (support depends on your system's player); optional |
+
+### Splash: Show Image
+
+| Property | Value |
+|----------|-------|
+| **Name** | `splash_show_image` |
+| **Icon** | 🖼️ |
+| **Category** | Game |
+
+Show a sprite full-screen and pause the game until the player dismisses it
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `image` | Sprite | — | Sprite to display full-screen |
+
+### Splash: Show Text
+
+| Property | Value |
+|----------|-------|
+| **Name** | `splash_show_text` |
+| **Icon** | 💬 |
+| **Category** | Game |
+
+Show a message and pause the game until the player dismisses it
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `text` | Text | — | Message to display |
+
 ---
 
 ## Other Categories
@@ -327,11 +398,13 @@ Display a message
 - [Instance](Full-Action-Reference-Instance) (12)
 - [Score](Full-Action-Reference-Score) (11)
 - [Room](Full-Action-Reference-Room) (13)
-- [Timing](Full-Action-Reference-Timing) (2)
+- [Timing](Full-Action-Reference-Timing) (8)
 - [Audio](Full-Action-Reference-Audio) (6)
 - [Control](Full-Action-Reference-Control) (19)
 - [Grid](Full-Action-Reference-Grid) (4)
 - [Views](Full-Action-Reference-Views) (2)
-- [3D View](Full-Action-Reference-3D-View-Actions) (4)
+- [3D View](Full-Action-Reference-3D-View-Actions) (16)
+- [Particles](Full-Action-Reference-Particles) (8)
+- [Network](Full-Action-Reference-Network-Actions) (15)
 
 [← Back to Full Action Reference](Full-Action-Reference)

@@ -4,7 +4,7 @@
 
 > **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-Ta stran navaja vseh **113** dejanj, ki so na voljo v PyGameMaker, natanko tako, kot so prikazana v izbirniku dejanj IDE (vključno z vtičnikom Audio in razširitvijo Pogled 3D). Dejanja so ukazi, ki se izvedejo, ko se sproži dogodek.
+Ta stran navaja vseh **159** dejanj, ki so na voljo v PyGameMaker, natanko tako, kot so prikazana v izbirniku dejanj IDE (vključno z vtičnikom Audio in razširitvijo Pogled 3D). Dejanja so ukazi, ki se izvedejo, ko se sproži dogodek.
 
 ## Kategorije
 
@@ -12,13 +12,15 @@ Ta stran navaja vseh **113** dejanj, ki so na voljo v PyGameMaker, natanko tako,
 - [Instanca](Full-Action-Reference-Instance_sl) (12)
 - [Rezultat](Full-Action-Reference-Score_sl) (11)
 - [Soba](Full-Action-Reference-Room_sl) (13)
-- [Čas](Full-Action-Reference-Timing_sl) (2)
+- [Čas](Full-Action-Reference-Timing_sl) (8)
 - [Zvok](Full-Action-Reference-Audio_sl) (6)
-- [Igra](Full-Action-Reference-Game_sl) (20)
+- [Igra](Full-Action-Reference-Game_sl) (25)
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (4)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
+- [Particles](Full-Action-Reference-Particles_sl) (8)
+- [Réseau](Full-Action-Reference-Network-Actions_sl) (15)
 
 ---
 

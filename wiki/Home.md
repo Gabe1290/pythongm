@@ -22,7 +22,7 @@ PyGameMaker uses **presets** to control which events and actions are available. 
 |--------|----------|----------|
 | [**Beginner**](Beginner-Preset) | New to game development | Essentials — movement, collisions, score, rooms |
 | [**Intermediate**](Intermediate-Preset) | Some experience | Adds lives, health, sound, alarms, drawing |
-| **Advanced (Full)** | Experienced users | Everything — all 37 events and 109 actions |
+| **Advanced (Full)** | Experienced users | Everything — all 37 events and 159 actions |
 
 **New users:** Start with the [Beginner Preset](Beginner-Preset) to learn the fundamentals without being overwhelmed.
 
@@ -38,6 +38,7 @@ See the [Preset Guide](Preset-Guide) for a complete overview of the preset syste
 | **Event-Action System** | GameMaker 7.0 compatible event-driven logic |
 | **Skill-Based Presets** | Beginner, Intermediate, and Advanced feature sets |
 | **2.5D / First-Person View** | Optional Doom/Wolfenstein-style raycast rendering — see [3D View](3D-View) |
+| **LAN Multiplayer** | Host/join a game over the local network, shared variables and networked avatars — see [Network](Network) |
 | **Multi-Platform Export** | Windows EXE, macOS app, HTML5, Linux, Kivy (mobile/desktop) |
 | **Asset Management** | Sprites, sounds, backgrounds, fonts, and rooms |
 | **Multi-Language UI** | English, French, German, Italian, Spanish, Portuguese, Slovenian, Ukrainian, Russian |
@@ -99,13 +100,14 @@ Triggers that execute actions when specific conditions occur:
 See the [Event Reference](Event-Reference) for complete documentation.
 
 ### Actions
-Operations performed when events trigger. **109** built-in actions for:
+Operations performed when events trigger. **159** built-in actions for:
 - Movement and physics
 - Drawing and sprites
 - Score, lives, and health
 - Sound and music
 - Instance and room management
 - 3D View (first-person raycast rendering)
+- Network (LAN multiplayer)
 
 See the [Full Action Reference](Full-Action-Reference) for the complete, always-current list.
 
@@ -182,7 +184,8 @@ project_name/
 
 ### Advanced Features
 - [3D View](3D-View) - Doom-style first-person (raycast) rendering
-- [Extensions](Extensions) - Add-on actions and renderers (how 3D View ships)
+- [Network](Network) - LAN multiplayer: host/join, shared variables, networked avatars
+- [Extensions](Extensions) - Add-on actions and renderers (how 3D View and Network ship)
 
 ### Guides
 - [Object-Editor](Object-Editor) - Working with game objects

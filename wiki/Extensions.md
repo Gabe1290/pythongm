@@ -1,6 +1,6 @@
 # Extensions
 
-*[Home](Home) | [3D View](3D-View) | [Full Action Reference](Full-Action-Reference)*
+*[Home](Home) | [3D View](3D-View) | [Network](Network) | [Full Action Reference](Full-Action-Reference)*
 
 ---
 
@@ -14,7 +14,10 @@ PyGameMaker without changing the core engine. An extension can contribute:
 
 The built-in **2.5D Raycast** extension (the [3D View](3D-View) feature) is the
 worked example: it adds four "3D View" actions and a first-person renderer, and
-it exports to all three targets.
+it exports to all three targets. The built-in **LAN Multiplayer** extension
+(the [Network](Network) feature) is a second, larger one: it adds 15
+"Network" actions and six events, and networks a game over the local network
+from the desktop export (as host or client) and the HTML5 export (as client).
 
 ---
 
@@ -87,6 +90,7 @@ extension when a project needs a disabled one.
 
 ## See Also
 
-- [3D View](3D-View) — the feature the built-in extension provides
+- [3D View](3D-View) — the feature the 2.5D Raycast extension provides
+- [Network](Network) — the feature the LAN Multiplayer extension provides
 - [Full Action Reference](Full-Action-Reference) — extension actions appear here too
 - [Exporting Games](Exporting-Games) — extension features carry into exports

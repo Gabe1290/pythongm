@@ -191,6 +191,20 @@ Remplir toute la zone d'affichage d'une couleur unie
 |-----------|------|---------|-------|
 | `color` | Couleur | `#000000` | Couleur hexadécimale RVB |
 
+### Load Game
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `load_game` |
+| **Icône** | 📂 |
+| **Catégorie** | Jeu |
+
+Restore room, score/lives/health, global variables, and instance states from a save file
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `filename` | Texte | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+
 ### Ouvrir une page web
 
 | Propriété | Valeur |
@@ -216,6 +230,20 @@ Ouvrir une URL dans le navigateur par défaut
 Redémarrer le jeu depuis la salle de départ
 
 *Paramètres:* aucun
+
+### Save Game
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `save_game` |
+| **Icône** | 💾 |
+| **Catégorie** | Jeu |
+
+Save the current room, score/lives/health, global variables, and instance states to a file
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `filename` | Texte | `savegame.sav` | Save file name (written to the project's saves/ folder) |
 
 ### Définir l'alpha
 
@@ -319,6 +347,49 @@ Afficher un message
 |-----------|------|---------|-------|
 | `message` | Texte | `Hello!` | Texte du message |
 
+### Show Video
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `show_video` |
+| **Icône** | 🎬 |
+| **Catégorie** | Jeu |
+
+Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `filename` | Texte | — | Path to the video file |
+| `fullscreen` | Oui/Non | Non | Request fullscreen playback (support depends on your system's player); optionnel |
+
+### Splash: Show Image
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `splash_show_image` |
+| **Icône** | 🖼️ |
+| **Catégorie** | Jeu |
+
+Show a sprite full-screen and pause the game until the player dismisses it
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `image` | Sprite | — | Sprite to display full-screen |
+
+### Splash: Show Text
+
+| Propriété | Valeur |
+|----------|-------|
+| **Nom** | `splash_show_text` |
+| **Icône** | 💬 |
+| **Catégorie** | Jeu |
+
+Show a message and pause the game until the player dismisses it
+
+| Paramètre | Type | Défaut | Remarques |
+|-----------|------|---------|-------|
+| `text` | Texte | — | Message to display |
+
 ---
 
 ## Autres Catégories
@@ -327,11 +398,13 @@ Afficher un message
 - [Instance](Full-Action-Reference-Instance_fr) (12)
 - [Score](Full-Action-Reference-Score_fr) (11)
 - [Salle](Full-Action-Reference-Room_fr) (13)
-- [Minuterie](Full-Action-Reference-Timing_fr) (2)
+- [Minuterie](Full-Action-Reference-Timing_fr) (8)
 - [Audio](Full-Action-Reference-Audio_fr) (6)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (4)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
+- [Particles](Full-Action-Reference-Particles_fr) (8)
+- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

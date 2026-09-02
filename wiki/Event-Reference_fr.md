@@ -17,6 +17,25 @@ Cette page documente tous les événements disponibles dans PyGameMaker. Les év
 
 ---
 
+## Événements Réseau
+
+Fournis par l'extension intégrée **Réseau (multijoueur LAN)** — ne font
+partie d'aucun préréglage (le multijoueur est une fonctionnalité de projet
+avancé), et ne prennent sens qu'une fois qu'un jeu a exécuté **Héberger une
+partie** ou **Rejoindre une partie**. Voir [Réseau](Network_fr) pour la vue
+d'ensemble.
+
+| Événement | Se déclenche quand |
+|-----------|---------------------|
+| **Réseau prêt** | Un client termine sa connexion à l'hôte |
+| **Joueur connecté** | Un nouveau joueur se connecte |
+| **Joueur déconnecté** | Un joueur se déconnecte |
+| **Message réseau** | Un **Envoyer un message réseau** personnalisé arrive |
+| **Partie réseau démarrée** | L'hôte exécute **Démarrer la partie en réseau** |
+| **Connexion perdue** | La connexion d'un client à l'hôte est coupée |
+
+---
+
 ## Ordre d'Exécution des Événements
 
 Comprendre quand les événements se déclenchent aide à créer un comportement
@@ -60,3 +79,4 @@ structuré Événements/Actions) et comment le préréglage d'un projet est déf
 - [Préréglage Débutant](Beginner-Preset_fr) - Événements essentiels pour débutants
 - [Préréglage Intermédiaire](Intermediate-Preset_fr) - Événements supplémentaires
 - [Événements et Actions](Evenements_Actions_fr) - Aperçu des concepts de base
+- [Réseau](Network_fr) - Multijoueur LAN, dont les six événements réseau ci-dessus

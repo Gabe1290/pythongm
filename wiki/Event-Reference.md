@@ -17,6 +17,24 @@ This page documents all available events in PyGameMaker. Events are triggers tha
 
 ---
 
+## Network Events
+
+Provided by the built-in **LAN Multiplayer** [extension](Extensions) — not
+part of any preset (multiplayer is an advanced-project feature), and only
+meaningful once a game has called **Host Game** or **Join Game**. See
+[Network](Network) for the full picture.
+
+| Event | Fires when |
+|-------|------------|
+| **Network Ready** | A client finishes connecting to the host |
+| **Player Joined** | A new player connects |
+| **Player Left** | A player disconnects |
+| **Network Message** | A custom **Send Network Message** arrives |
+| **Network Game Started** | The host calls **Start Networked Game** |
+| **Connection Lost** | A client's connection to the host drops |
+
+---
+
 ## Event Execution Order
 
 Understanding when events fire helps create predictable game behavior
@@ -58,3 +76,4 @@ structured Events/Actions panel) and how a project's preset is set.
 - [Beginner Preset](Beginner-Preset) - Essential events for beginners
 - [Intermediate Preset](Intermediate-Preset) - Additional events
 - [Events and Actions](Events-and-Actions) - Core concepts overview
+- [Network](Network) - LAN multiplayer, including the six Network events above
