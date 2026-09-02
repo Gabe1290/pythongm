@@ -503,16 +503,22 @@ each phase self-contained.
   `FrameOverflow` past the hard cap), `RateLimiter` (token bucket).
   Frame-size caps + `INBOUND_FRAME_RATE` added to `state.py`. Unit tests
   in `tests/test_multiplayer_lan_framing.py` (24). Landed `c06e8432`.
-- [ ] 4.2b `network.py`: evolve `NetworkHost`/`NetworkClient` to
-  bidirectional + framed on `framing.py` — control frames
-  (`hello`/`welcome`/`join`/`leave`/`bye`/`msg`/`shared_set`/`input`/
-  `game_start`), per-connection `FrameBuffer` + `RateLimiter`,
-  `PROTO_VER` check, `poll()` returns *all* frames (session picks
-  snapshot-latest-wins), synthetic connect/disconnect frames. Stable
-  per-connection ids (session maps id→slot in Phase 5). **Rewire v1's
-  `handlers.py` `_frame_update_*` + `tests/test_multiplayer_lan.py` in
-  the same commit** so the shipped spectator behaviour stays green.
-  Loopback tests (multi-client, bad-client drop, oversize drop).
+- [x] 4.2b `network.py`: `NetworkHost`/`NetworkClient` are now
+  bidirectional and framed on `framing.py`. Host: `poll()` is the single
+  pump (accept + per-conn `FrameBuffer` read + `RateLimiter` gate +
+  outbuf flush) returning `[(conn_id, frame), ...]` incl. synthetic
+  `__open__`/`__close__`; `send(cid, msg)`, `broadcast(msg, exclude=)`,
+  `disconnect(cid)`, `connection_ids`; a client past `_MAX_OUTBUF_BYTES`
+  or that trips `FrameOverflow` is dropped with a `__close__` reason.
+  Client: `send(msg)`, `take_frames()` (all frames, for the session),
+  `connected`; `poll()` keeps the exact v1 contract (latest snapshot or
+  `None`, non-snapshot frames left for `take_frames`) so `handlers.py`
+  and the shipped sample needed **no** change. `PROTO_VER` handshake and
+  conn_id→player-slot mapping deferred to Phase 5.1 (they're session
+  state, not transport). 6 new loopback tests in
+  `tests/test_multiplayer_lan.py` (open event + addr, client→host,
+  host→one client, broadcast exclude, oversize-drop, rate-limit bound).
+  Full suite **4015 passed, 9 skipped, 0 failed**. Landed `bfc04f40`.
 - [ ] 4.3 `replication.py` (new): netid allocation, snapshot build
   (`i`/`shared` delta/`spawn`/`despawn`), snapshot apply on client,
   ghost create/destroy, interpolation buffer. Pure-ish (takes primitive

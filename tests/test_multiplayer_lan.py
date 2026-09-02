@@ -22,6 +22,7 @@ import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import socket
 import sys
 import time
 from pathlib import Path
@@ -40,9 +41,11 @@ from events.plugin_loader import load_all_plugins  # noqa: E402
 from events.action_types import ACTION_TYPES  # noqa: E402
 from runtime.action_executor import ActionExecutor  # noqa: E402
 
-from extensions.multiplayer_lan.network import NetworkHost, NetworkClient  # noqa: E402
+from extensions.multiplayer_lan.network import (  # noqa: E402
+    NetworkHost, NetworkClient, CONN_OPENED, CONN_CLOSED,
+)
 from extensions.multiplayer_lan.state import (  # noqa: E402
-    SNAPSHOT_MSG_TYPE, multiplayer_state, peek_multiplayer,
+    SNAPSHOT_MSG_TYPE, MAX_FRAME_BYTES, multiplayer_state, peek_multiplayer,
 )
 from extensions.multiplayer_lan.handlers import (  # noqa: E402
     ENV_MODE, ENV_PORT,
@@ -352,3 +355,156 @@ class TestEndToEndSync:
         _frame_update_apply_inbound(MockGameRunner(room))  # must not raise
 
         peek_multiplayer(room)["host"].close()
+
+
+# ---------------------------------------------------------------------------
+# v2 bidirectional transport (docs/MULTIPLAYER_LAN_V2_PLAN.md Phase 4.2b)
+# ---------------------------------------------------------------------------
+
+def _pump_until(fn, predicate, timeout=2.0):
+    """Call fn() repeatedly (with a short sleep) until predicate(result) is
+    truthy or the timeout expires. Returns the last result."""
+    deadline = time.time() + timeout
+    result = fn()
+    while time.time() < deadline and not predicate(result):
+        time.sleep(0.02)
+        result = fn()
+    return result
+
+
+class TestBidirectionalTransport:
+    def test_host_poll_reports_connection_open_with_addr(self):
+        host = NetworkHost(port=0)
+        host.start()
+        port = host._listen_sock.getsockname()[1]
+        client = NetworkClient("127.0.0.1", port=port)
+        client.connect()
+        try:
+            events = _pump_until(
+                host.poll,
+                lambda evs: any(f.get("t") == CONN_OPENED for _, f in evs))
+            opened = [(cid, f) for cid, f in events if f.get("t") == CONN_OPENED]
+            assert len(opened) == 1
+            assert opened[0][1]["addr"] == "127.0.0.1"
+            assert host.connection_ids == [opened[0][0]]
+        finally:
+            client.close()
+            host.close()
+
+    def test_client_send_reaches_host_tagged_with_conn_id(self):
+        host = NetworkHost(port=0)
+        host.start()
+        client = NetworkClient("127.0.0.1", port=host._listen_sock.getsockname()[1])
+        client.connect()
+        try:
+            client.send({"t": "hello", "name": "Amélie"})
+            hellos = []
+            deadline = time.time() + 2.0
+            while time.time() < deadline and not hellos:
+                for cid, f in host.poll():
+                    if f.get("t") == "hello":
+                        hellos.append((cid, f))
+                time.sleep(0.02)
+            assert len(hellos) == 1
+            assert hellos[0][1]["name"] == "Amélie"
+            assert hellos[0][0] in host.connection_ids
+        finally:
+            client.close()
+            host.close()
+
+    def test_host_send_reaches_one_client_via_take_frames(self):
+        host = NetworkHost(port=0)
+        host.start()
+        client = NetworkClient("127.0.0.1", port=host._listen_sock.getsockname()[1])
+        client.connect()
+        try:
+            evs = _pump_until(host.poll,
+                              lambda e: any(f.get("t") == CONN_OPENED for _, f in e))
+            cid = next(c for c, f in evs if f.get("t") == CONN_OPENED)
+
+            host.send(cid, {"t": "welcome", "player_id": 3})
+            frames = _pump_until(client.take_frames,
+                                 lambda fr: any(f.get("t") == "welcome" for f in fr))
+            welcomes = [f for f in frames if f.get("t") == "welcome"]
+            assert welcomes and welcomes[0]["player_id"] == 3
+        finally:
+            client.close()
+            host.close()
+
+    def test_broadcast_can_exclude_one_client(self):
+        host = NetworkHost(port=0)
+        host.start()
+        port = host._listen_sock.getsockname()[1]
+        a = NetworkClient("127.0.0.1", port=port)
+        b = NetworkClient("127.0.0.1", port=port)
+        a.connect()
+        b.connect()
+        try:
+            evs = _pump_until(host.poll,
+                              lambda e: len([1 for _, f in e if f.get("t") == CONN_OPENED]) >= 2)
+            opened = [c for c, f in evs if f.get("t") == CONN_OPENED]
+            assert len(opened) == 2
+            cid_a = opened[0]
+
+            host.broadcast({"t": "msg", "event": "ping"}, exclude=cid_a)
+            host.poll()
+            b_frames = _pump_until(b.take_frames,
+                                   lambda fr: any(f.get("t") == "msg" for f in fr))
+            assert any(f.get("t") == "msg" for f in b_frames)
+
+            time.sleep(0.1)
+            a_frames = a.take_frames()
+            assert not any(f.get("t") == "msg" for f in a_frames)
+        finally:
+            a.close()
+            b.close()
+            host.close()
+
+    def test_oversize_inbound_with_no_terminator_drops_the_client(self):
+        host = NetworkHost(port=0)
+        host.start()
+        port = host._listen_sock.getsockname()[1]
+        raw = socket.create_connection(("127.0.0.1", port))
+        try:
+            evs = _pump_until(host.poll,
+                              lambda e: any(f.get("t") == CONN_OPENED for _, f in e))
+            cid = next(c for c, f in evs if f.get("t") == CONN_OPENED)
+            assert cid in host.connection_ids
+
+            raw.sendall(b"x" * (MAX_FRAME_BYTES + 64))  # no newline -> FrameOverflow
+
+            closed = _pump_until(
+                host.poll,
+                lambda e: any(f.get("t") == CONN_CLOSED for _, f in e))
+            reasons = [f.get("reason") for _, f in closed if f.get("t") == CONN_CLOSED]
+            assert "frame overflow" in reasons
+            assert cid not in host.connection_ids
+        finally:
+            raw.close()
+            host.close()
+
+    def test_inbound_frame_rate_is_bounded(self):
+        host = NetworkHost(port=0)
+        host.start()
+        port = host._listen_sock.getsockname()[1]
+        raw = socket.create_connection(("127.0.0.1", port))
+        try:
+            _pump_until(host.poll,
+                        lambda e: any(f.get("t") == CONN_OPENED for _, f in e))
+            # 400 valid frames in one shot -- the token bucket must let only
+            # a bounded burst through, not all 400.
+            blob = b"".join(b'{"t":"input","n":%d}\n' % i for i in range(400))
+            raw.sendall(blob)
+
+            received = []
+            deadline = time.time() + 1.0
+            while time.time() < deadline:
+                for _, f in host.poll():
+                    if f.get("t") == "input":
+                        received.append(f)
+                time.sleep(0.02)
+
+            assert 0 < len(received) < 400
+        finally:
+            raw.close()
+            host.close()
