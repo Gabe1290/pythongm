@@ -493,7 +493,7 @@ it before picking an item to work on.
 
 ---
 
-## Runtime action handlers (stubs that just log and return)
+## ~~Runtime action handlers (stubs that just log and return)~~ (DONE 2026-08-15, re-verified 2026-09-02 — every item below closed)
 
 In `runtime/action_handlers/extra_handlers.py`:
 
@@ -525,8 +525,9 @@ Other:
   framing was stale, since the language question was already answered
   elsewhere. The actually-working, UI-registered, exported feature is the
   **separately-named** `execute_script`/`execute_code` (real `exec()`-based,
-  `action_executor.py`), not this. Scheduled for removal:
-  `docs/DEFERRED_GAPS_2026_PLAN.md` Tier 1.1.
+  `action_executor.py`), not this. **Removed** (Tier 1.1, re-verified
+  2026-09-02 — `handle_script`/`handle_code` no longer exist in
+  `runtime/action_handlers/control_handlers.py`).
 - ~~**Thymio "play sound"**~~ **DONE 2026-08-15** (Tier 2.3, re-verified
   2026-09-02). Real hardware has no sampled-audio capability at all (only
   tone primitives) — `export/Aseba/aseba_exporter.py` already emits the
@@ -535,7 +536,7 @@ Other:
   `thymio_play_system_sound`'s description instead of silently misleading.
   `tests/test_thymio_sound_honesty.py`.
 
-## Runtime features called out in code
+## ~~Runtime features called out in code~~ (DONE — both items closed; Kivy/HTML5 fade-transition export parity remains deliberately deferred, see below)
 
 - ~~**Background auto-scroll on `set_background`**~~ (DONE 2026-07-16,
   deferred-items plan tier 2, item 6) — `execute_set_background_action`
@@ -960,7 +961,7 @@ existed. Regenerated; 0 untranslated strings reported now.
   trees. `tests/test_ios_exporter_icon.py` (11 tests). Suite 2872 → 2883
   passed, 0 failed.
 
-### Kivy/Android export — remaining parity gaps (draw-queue + mouse LANDED)
+### ~~Kivy/Android export — remaining parity gaps~~ (DONE — every listed gap closed; the one remaining item is an environment ceiling, not neglected work, see below)
 - Found while validating the `match3_1` bundled sample (2026-07-03) for
   Android. The two blocking gaps were **fixed the same day** in
   `export/Kivy/kivy_exporter.py` (regression tests:
@@ -1091,7 +1092,7 @@ existed. Regenerated; 0 untranslated strings reported now.
     (`test_android_export_cleanup.py` mocks the build); the stub-kivy
     execution test above covers logic, not the actual Kivy/GL layer.
 
-### HTML5 export — Python bridge follow-ups (execute_code/mouse LANDED)
+### ~~HTML5 export — Python bridge follow-ups~~ (DONE 2026-09-02 — every listed item closed)
 - 2026-07-10, while validating "HTML export works" for the classroom: the
   JS engine gained a Pyodide-backed execute_code bridge (IDE exec
   semantics: persistent `self`, locals copy-back, keyboard shim),
@@ -1264,7 +1265,7 @@ existed. Regenerated; 0 untranslated strings reported now.
   falls through unhandled — a regression, not a known gap, if it's ever
   non-empty on a real export. `tests/test_kivy_tier3_actions_export.py`.
 
-### Export feature-parity matrix (quantified 2026-07-10)
+### ~~Export feature-parity matrix~~ (CLOSED 2026-07-11, re-verified live 2026-09-02 — all 6 registry tests pass, still empty)
 - `tests/test_export_feature_matrix.py` cross-references every action and
   event the bundled samples use against what each export target
   implements — the systematic check the code audits structurally couldn't
