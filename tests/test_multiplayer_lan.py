@@ -105,7 +105,7 @@ class TestState:
         st = multiplayer_state(room)
         assert st == {
             "enabled": False, "mode": None, "host": None, "client": None,
-            "sync_ids_assigned": False,
+            "session": None, "sync_ids_assigned": False,
         }
 
     def test_state_is_cached_per_room(self):

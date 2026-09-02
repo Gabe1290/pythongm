@@ -175,8 +175,9 @@ def _fresh():
     return {
         "enabled": False,
         "mode": None,       # "host" or "client"
-        "host": None,       # NetworkHost instance, host mode only
-        "client": None,     # NetworkClient instance, client mode only
+        "host": None,       # v1 raw NetworkHost (set_network_mode path only)
+        "client": None,     # v1 raw NetworkClient (set_network_mode path only)
+        "session": None,    # v2 NetworkSession (host_game / join_game path)
         "sync_ids_assigned": False,
     }
 

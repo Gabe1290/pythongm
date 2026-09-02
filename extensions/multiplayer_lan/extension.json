@@ -1,10 +1,25 @@
 {
     "name": "LAN Multiplayer",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "author": "PyGameMaker",
-    "description": "Authoritative-host position sync over LAN TCP -- see one other player move in real time. Vertical slice: position/rotation/frame/visibility only, no prediction/interpolation, no NAT traversal. See docs/MULTIPLAYER_LAN_PLAN.md for the full design.",
+    "description": "School LAN multiplayer game programming. Tier A: a shared-variable blackboard, custom messages, and player identity (host_game / join_game / set_shared_var / send_network_message), plus the Réseau lifecycle events. v1's spectator position sync (set_network_mode + --net-host/--net-client) is still available. Authoritative host, TCP, no NAT traversal. See docs/MULTIPLAYER_LAN_V2_PLAN.md.",
     "enabled": true,
     "provides_actions": [
+        "host_game",
+        "join_game",
+        "leave_game",
+        "start_networked_game",
+        "set_shared_var",
+        "get_shared_var",
+        "send_network_message",
         "set_network_mode"
+    ],
+    "provides_events": [
+        "network_started",
+        "player_joined",
+        "player_left",
+        "network_message",
+        "network_game_started",
+        "connection_lost"
     ]
 }
