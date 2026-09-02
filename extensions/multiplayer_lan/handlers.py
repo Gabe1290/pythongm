@@ -399,8 +399,12 @@ class PluginExecutor:
                     pass
         for inst in (st.get("ghosts") or {}).values():
             inst.to_destroy = True
+        gr = getattr(ae, "game_runner", None)
+        if gr is not None and st.get("_orig_caption") is not None:
+            gr.window_caption = st["_orig_caption"]
         for key in ("session", "host", "client", "beacon", "listener", "synced",
-                    "ghosts", "synced_local", "sync_ord", "input_binds", "mode"):
+                    "ghosts", "synced_local", "sync_ord", "input_binds", "mode",
+                    "_orig_caption"):
             st[key] = None
         st["enabled"] = False
         gv = getattr(getattr(ae, "game_runner", None), "global_variables", None)
@@ -639,6 +643,38 @@ def _apply_session_state(game_runner, session):
             gv["network_connected"] = 0
         _fire_network_event(room, name)
 
+    _update_network_caption(game_runner, session)
+
+
+def _network_caption(session):
+    if session.mode == "host":
+        n = session.player_count
+        return "\U0001F310 Hôte — %d joueur%s" % (n, "s" if n != 1 else "")
+    if session.connection_lost:
+        return "\U0001F310 Client — déconnecté"
+    if session.player_id >= 0:
+        return "\U0001F310 Client — connecté (joueur %d)" % session.player_id
+    return "\U0001F310 Client — connexion…"
+
+
+def _update_network_caption(game_runner, session):
+    """Append a live "Hôte — N joueurs" / "Client — connecté" tag to the
+    window caption via game_runner.window_caption (which GameRunner.
+    update_caption prepends and caches -- no flicker, no core change)."""
+    if not hasattr(game_runner, "window_caption"):
+        return
+    room = getattr(game_runner, "current_room", None)
+    st = peek_multiplayer(room) if room is not None else None
+    if st is None:
+        return
+    if "_orig_caption" not in st or st["_orig_caption"] is None:
+        st["_orig_caption"] = game_runner.window_caption or ""
+    base = st["_orig_caption"]
+    tag = _network_caption(session)
+    want = ("%s · %s" % (base, tag)) if base else tag
+    if game_runner.window_caption != want:
+        game_runner.window_caption = want
+
 
 _GHOST_VAR_WHITELIST_TYPES = (int, float, str, bool)
 
@@ -849,17 +885,52 @@ def _send_owned(st, session):
     session.push_own_instances(rows)
 
 
+ENV_AUTOHOST = "PYGM_NET_AUTOHOST"       # set (any value) -> this game hosts a v2 session
+ENV_AUTOJOIN = "PYGM_NET_AUTOJOIN"       # set to a host IP -> this game joins as a v2 client
+
+
+def _env_v2_config():
+    """(mode, host) for a v2 NetworkSession from PYGM_NET_AUTOHOST /
+    PYGM_NET_AUTOJOIN, or None. For the IDE's "Test Game (2 players)" and
+    quick two-process iteration -- a game with zero multiplayer authoring
+    still runs networked purely from the environment."""
+    if os.environ.get(ENV_AUTOHOST):
+        return "host", None
+    join = os.environ.get(ENV_AUTOJOIN)
+    if join:
+        return "client", join
+    return None
+
+
+def _env_v2_port():
+    try:
+        return int(os.environ.get(ENV_PORT, DEFAULT_PORT))
+    except (TypeError, ValueError):
+        return DEFAULT_PORT
+
+
 def _resolve_state(game_runner):
-    """This room's multiplayer state, auto-initialising the v1 env-var
-    path if configured. None if this room has no networking."""
+    """This room's multiplayer state, auto-initialising from the env vars
+    if configured (v2 PYGM_NET_AUTO* first, then the v1 PYGM_NET_MODE
+    path). None if this room has no networking."""
     room = getattr(game_runner, "current_room", None)
     if room is None:
         return None, None
     st = peek_multiplayer(room)
     if st is None:
-        env = _env_config()
-        if env is not None:
-            _start_network(room, *env)
+        v2 = _env_v2_config()
+        if v2 is not None:
+            mode, host = v2
+            session = NetworkSession(
+                mode=mode, host=host, port=_env_v2_port(),
+                player_name=_player_name(game_runner, ""))
+            _start_session(room, session)
+            st = peek_multiplayer(room)
+            if st is not None and st.get("session") is not None and mode == "host":
+                st["beacon"] = _start_beacon(
+                    "PyGameMaker", session.bound_port, session.max_players)
+        elif _env_config() is not None:
+            _start_network(room, *_env_config())
             st = peek_multiplayer(room)
     return room, st
 

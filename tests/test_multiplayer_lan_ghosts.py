@@ -470,3 +470,70 @@ class TestConnectFlow:
             assert st.get("beacon") is None
         finally:
             _teardown(host)
+
+
+class TestEnvAutoStart:
+    def test_autohost_env_starts_a_v2_host_session(self, monkeypatch):
+        from runtime.game_runner import GameRunner
+        monkeypatch.setenv("PYGM_NET_AUTOHOST", "1")
+        monkeypatch.setenv("PYGM_NET_PORT", "0")
+        monkeypatch.delenv("PYGM_NET_AUTOJOIN", raising=False)
+        monkeypatch.delenv("PYGM_NET_MODE", raising=False)
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        try:
+            _tick(host)
+            st = peek_multiplayer(host.current_room)
+            assert st is not None and st["session"] is not None
+            assert st["session"].mode == "host"
+        finally:
+            _teardown(host)
+
+    def test_autojoin_env_connects_as_v2_client(self, monkeypatch):
+        from runtime.game_runner import GameRunner
+        monkeypatch.setenv("PYGM_NET_AUTOHOST", "1")
+        monkeypatch.setenv("PYGM_NET_PORT", "0")
+        monkeypatch.delenv("PYGM_NET_AUTOJOIN", raising=False)
+        monkeypatch.delenv("PYGM_NET_MODE", raising=False)
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        _tick(host)
+        port = peek_multiplayer(host.current_room)["session"].bound_port
+
+        monkeypatch.delenv("PYGM_NET_AUTOHOST", raising=False)
+        monkeypatch.setenv("PYGM_NET_AUTOJOIN", "127.0.0.1")
+        monkeypatch.setenv("PYGM_NET_PORT", str(port))
+        client = GameRunner(PROJECT_JSON); client.language = "en"; _init(client)
+        try:
+            deadline = time.time() + 3.0
+            while time.time() < deadline and client.global_variables.get("player_id", -1) != 1:
+                _tick(host, client); time.sleep(0.02)
+            assert client.global_variables["player_id"] == 1
+        finally:
+            _teardown(host, client)
+
+
+class TestCaption:
+    def test_host_and_client_captions_reflect_the_session(self):
+        host, client = _make_pair()
+        try:
+            for _ in range(20):
+                _tick(host, client); time.sleep(0.02)
+            assert "Hôte" in host.window_caption
+            assert "2 joueurs" in host.window_caption
+            assert "Client" in client.window_caption
+            assert "connecté" in client.window_caption
+        finally:
+            _teardown(host, client)
+
+    def test_caption_is_restored_on_leave(self):
+        from runtime.game_runner import GameRunner
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        host.window_caption = "Mon jeu"
+        try:
+            _do(host, "host_game", {"port": 0})
+            _tick(host)
+            assert "Hôte" in host.window_caption
+            assert host.window_caption.startswith("Mon jeu")
+            _do(host, "leave_game", {})
+            assert host.window_caption == "Mon jeu"
+        finally:
+            _teardown(host)
