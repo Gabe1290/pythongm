@@ -1851,3 +1851,88 @@ sub-images stuck on frame 0), with a green suite behind every one of them.
   `docs/EYEBALL_FIXES_2026-08-16.md` are closed. **Still needs human eyes:**
   nobody has *played* an exported build — the runs prove it renders the same
   frames, not that it feels right to hold a key down on.
+
+**2026-09-02 — LAN multiplayer v2: the full student-facing API + connection
+UX (Phases 4–6 + sample reseau_1).** v1 (`docs/MULTIPLAYER_LAN_PLAN.md`,
+done 2026-08-15) was a spectator-only slice — host broadcasts
+x/y/rotation/frame/visible, clients render them, client input never
+sticks. v2 (`docs/MULTIPLAYER_LAN_V2_PLAN.md`, written + executed this
+session) turns it into something students program multiplayer games with.
+**22 commits, all pushed, full suite 4149 passed / 0 failed.** Still a
+**folder extension with ZERO core changes** on top of v1's one
+`register_frame_update` hook (Phase 4.4 decision — `global.*` reads + the
+conditional-editor cover identity/ownership; widening the eval
+safety-regex for `shared("literal")` wasn't worth it).
+
+- **Tier A — shared blackboard** (`extensions/multiplayer_lan/session.py`
+  `NetworkSession`, wired via `handlers.py`): `host_game` / `join_game` /
+  `leave_game` / `start_networked_game` / `set_shared_var` /
+  `get_shared_var` / `send_network_message`; `PLUGIN_EVENTS`
+  `network_started` / `player_joined` / `player_left` / `network_message`
+  / `network_game_started` / `connection_lost` (category **Réseau**);
+  readable globals `is_host` / `player_id` / `player_count` /
+  `network_role` / `network_connected` + every shared var mirrored as
+  `global.<name>`. → quizzes, shared scoreboards, turn-based,
+  draw-together.
+- **Tier B — networked instances**: `network_spawn(object,x,y,owner)` →
+  interpolated ghosts on every client; `sync_instance` (deterministic
+  `<object>#<ordinal>` netids); `set_instance_owner` / `is_instance_owner`
+  with **validated client-owned avatars** — the owning client simulates
+  locally and reports up via an `own` frame; the host folds it in **only
+  if the claiming client is the recorded owner** (forged claims refused,
+  the snapshot's `own` field always wins on the client);
+  `bind_network_input` / `remote_input` (named input; arrows+space
+  auto-bound); `set_sync_rate`; replicated instance vars.
+- **The identity model that actually works for per-player avatars**: the
+  *host* spawns one avatar per player (`network_spawn` in `game_start` for
+  itself + `player_joined` for joiners) and assigns a non-host slot via
+  the `owner` param. `_apply_ghosts` then **promotes** a ghost whose
+  `own` == this player into `synced_local` (local sim). A shared
+  room-placed instance with `set_instance_owner(player_id())` in a create
+  event **can't** work — one instance can't be owned by two machines.
+  This is documented in `reseau_1`'s guide and the plan doc.
+- **Wire protocol** (`state.py` vocab, `framing.py` codec/`FrameBuffer`/
+  `RateLimiter`, `replication.py` `SnapshotBuilder`/`SnapshotApplier`,
+  `network.py` bidirectional transport): TCP, newline-JSON,
+  delta-compressed ~20 Hz snapshots, 100 ms interpolation, every inbound
+  `data`/`value`/`vars` through `sanitize_value`, shared-var names through
+  `is_valid_shared_name` (the `_parse_value` operator-in-name landmine).
+  **Transport is single-threaded** — non-blocking sockets pumped from the
+  two frame hooks; the only daemon thread is the discovery beacon/listener.
+- **Connection UX** (Phase 6): `discovery.py` — hand-rolled UDP beacon +
+  listener, **no zeroconf**, all fields clamped/sanitized.
+  `connect_screen.py` — a **modal** French pygame screen (client
+  server-browser + digit/`.`/`:`-filtered manual IP + "Cette machine :
+  <ip>" + errors; host waiting-room + Démarrer; headless short-circuit).
+  Every `host_game` starts a beacon (player count refreshed each frame,
+  stopped by `leave_game`); `host_game show_lobby=true` shows the lobby;
+  `join_game host="auto"` opens the client screen. Runner window caption
+  gets `🌐 Hôte — N joueurs` / `🌐 Client — connecté` via
+  `game_runner.window_caption` (which `update_caption` prepends+caches —
+  no flicker), restored on `leave_game`. `PYGM_NET_AUTOHOST` /
+  `PYGM_NET_AUTOJOIN=<ip>` env vars start a v2 session with zero
+  authoring (for "Test Game (2 players)" and quick two-process iteration
+  — the **IDE button itself is deferred**, not worth disturbing
+  `ide_window.py`'s single-process Test-Game supervision).
+- **`reseau_1`** (`samples/reseau_1/`, "Salle partagée") — Tier B shared
+  room, arrow-key avatars, `README.md` + `README.fr.md`, in
+  `welcome_tab` + smoke; `test_edition_sample_filter` prefix list gained
+  `"reseau"` (beginner edition hides two-machine samples).
+- **~270 new tests** — `test_multiplayer_lan_{protocol,framing,replication,
+  session,discovery,connect_screen}.py` (pure/loopback) +
+  `test_multiplayer_lan{,_tier_a,_ghosts}.py` &
+  `test_reseau_1_sample.py` (real two-`GameRunner`-over-`127.0.0.1`
+  coverage for every replication path). v1's spectator mode byte-for-byte
+  unchanged and green throughout.
+- **Landmine carried forward**: the loader imports the extension under a
+  synthetic package (`pygm_extension_multiplayer_lan.*`), so a
+  frame-hook / `_poll_held_inputs` / `_run_connect_flow` spy must patch
+  the **loaded** module — `_loaded_handlers()` in
+  `test_multiplayer_lan_ghosts.py` resolves it off the registered hook's
+  `__module__`.
+- **Open** (plan doc checklist): `reseau_2`–`4` samples (8.2–8.4),
+  `tools/smoke_run_multiplayer.py` (8.5), Phase 7 (HTML5 export parity via
+  a hand-rolled WebSocket listener on the desktop host). **Needs human
+  eyes**: nobody has run two real machines on a wired school LAN, watched
+  the connect screen, or hit a Windows firewall prompt — the two-process
+  loopback tests prove the protocol converges, not that it feels right.
