@@ -693,11 +693,24 @@ each phase self-contained.
   round-trip/sanitize/reject, listener collect + TTL prune + garbage
   ignore, beacon→listener integration + `update`, clean idempotent
   `stop`). Landed `8241941a`.
-- [ ] 6.2 `connect_screen.py` (new): the French built-in connect/lobby
-  overlay (client server browser + manual IP + this-machine IP +
-  failure reasons; host waiting-room + Démarrer). Driven from a
-  frame-update hook. Offscreen-`QApplication`-free — plain pygame surface
-  test (render it, assert regions/text, feed synthetic events).
+- [x] 6.2a `connect_screen.py` (new, standalone until 6.2b). `ConnectScreen`
+  is a **modal** pygame screen (the game freezes while it's up — right UX
+  for picking a server, and it sidesteps threading input through the
+  frame hook). Client: discovered-server list (from a `DiscoveryListener`),
+  digit/`.`/`:`-filtered manual address field, Se connecter, Enter/second-
+  click = connect, "Cette machine : <ip>" (`local_ip()` via a UDP-connect
+  trick, loopback fallback), Annuler, error line on empty input. Host:
+  "En attente de joueurs…" + roster (via injected `roster_fn`), Démarrer,
+  per-loop `tick_fn` so joins appear live. `run()` degrades to "just
+  connect / just start" when there's no `screen` (headless). Decoupled
+  from `NetworkSession` (roster/tick are callables) so it's tested with
+  plain surfaces + synthetic events. `tests/test_multiplayer_lan_connect_screen.py`
+  (20). Landed `15917e53`.
+- [ ] 6.2b Wire it in: `join_game host="auto"` → client `ConnectScreen`
+  + a `DiscoveryListener`; `host_game show_lobby=true` → host lobby +
+  a `DiscoveryBeacon` (updated on `player_joined`/`player_left`).
+  `ConnectScreen.run()` result → start the session at the chosen address
+  / on Démarrer. Real-`GameRunner`-with-dummy-display test.
 - [ ] 6.3 Runner caption status string.
 - [ ] 6.4 IDE "Test Game (2 players)" button + `PYGM_NET_AUTOJOIN`.
   (`core/ide_window.py` Popen path — keep the existing single-launch path
