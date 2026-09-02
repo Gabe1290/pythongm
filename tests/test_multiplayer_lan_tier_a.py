@@ -115,10 +115,13 @@ def _connect():
 
 
 def _close(*sides):
-    for room, *_ in sides:
-        st = peek_multiplayer(room)
-        if st and st.get("session"):
-            st["session"].close()
+    for room, gr, ex, ctrl in sides:
+        try:
+            _do(ex, "leave_game", ctrl, {})   # stops session + discovery beacon
+        except Exception:
+            st = peek_multiplayer(room)
+            if st and st.get("session"):
+                st["session"].close()
 
 
 class TestRegistration:

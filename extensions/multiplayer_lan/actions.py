@@ -45,6 +45,10 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="player_name", display_name="Nom du joueur",
                 param_type="string", default_value="", required=False,
                 description="Nom de ce joueur (vide = global.player_name, ou « Joueur »)"),
+            ActionParameter(name="show_lobby", display_name="Salon d'attente",
+                param_type="boolean", default_value=False, required=False,
+                description="Afficher un écran « En attente de joueurs… » avec "
+                            "bouton Démarrer avant de lancer la partie"),
         ],
     ),
     "join_game": ActionType(

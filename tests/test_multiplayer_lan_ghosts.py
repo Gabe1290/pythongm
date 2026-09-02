@@ -95,9 +95,12 @@ def _make_pair():
 
 def _teardown(*runners):
     for r in runners:
-        st = peek_multiplayer(r.current_room)
-        if st and st.get("session"):
-            st["session"].close()
+        try:
+            _do(r, "leave_game", {})       # stops session + discovery beacon/listener
+        except Exception:
+            st = peek_multiplayer(r.current_room)
+            if st and st.get("session"):
+                st["session"].close()
     extension_hooks.clear_frame_updates()
     load_all_plugins(ActionExecutor())     # restore real hooks for later tests
 
@@ -397,3 +400,73 @@ class TestNamedInput:
             assert cs._last_input_sent == frozenset(["a"])
         finally:
             _teardown(host, client)
+
+
+class TestConnectFlow:
+    def test_host_game_starts_and_stops_a_discovery_beacon(self):
+        from runtime.game_runner import GameRunner
+        host = GameRunner(PROJECT_JSON)
+        host.language = "en"
+        _init(host)
+        try:
+            _do(host, "host_game", {"port": 0})
+            beacon = peek_multiplayer(host.current_room)["beacon"]
+            assert beacon is not None and beacon._thread is not None
+            _do(host, "leave_game", {})
+            assert peek_multiplayer(host.current_room)["beacon"] is None
+            assert beacon._thread is None
+        finally:
+            _teardown(host)
+
+    def test_join_auto_headless_connects_to_loopback(self):
+        from runtime.game_runner import GameRunner
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        _do(host, "host_game", {"port": 0})
+        port = peek_multiplayer(host.current_room)["session"].bound_port
+
+        client = GameRunner(PROJECT_JSON); client.language = "en"; _init(client)
+        try:
+            _do(client, "join_game", {"host": "auto", "port": port})
+            deadline = time.time() + 3.0
+            while time.time() < deadline and client.global_variables.get("player_id", -1) != 1:
+                _tick(host, client); time.sleep(0.02)
+            assert client.global_variables["player_id"] == 1
+        finally:
+            _teardown(host, client)
+
+    def test_join_auto_cancel_leaves_no_session(self, monkeypatch):
+        from runtime.game_runner import GameRunner
+        client = GameRunner(PROJECT_JSON); client.language = "en"; _init(client)
+        try:
+            monkeypatch.setattr(_loaded_handlers(), "_run_connect_flow",
+                                lambda *a, **k: "cancel")
+            _do(client, "join_game", {"host": "auto", "port": 45999})
+            st = peek_multiplayer(client.current_room)
+            assert st is None or st.get("session") is None
+        finally:
+            _teardown(client)
+
+    def test_host_show_lobby_start(self, monkeypatch):
+        from runtime.game_runner import GameRunner
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        try:
+            monkeypatch.setattr(_loaded_handlers(), "_run_connect_flow",
+                                lambda *a, **k: "start")
+            _do(host, "host_game", {"port": 0, "show_lobby": True})
+            session = peek_multiplayer(host.current_room)["session"]
+            assert session is not None and session.started is True
+        finally:
+            _teardown(host)
+
+    def test_host_show_lobby_cancel_tears_down(self, monkeypatch):
+        from runtime.game_runner import GameRunner
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        try:
+            monkeypatch.setattr(_loaded_handlers(), "_run_connect_flow",
+                                lambda *a, **k: "cancel")
+            _do(host, "host_game", {"port": 0, "show_lobby": True})
+            st = peek_multiplayer(host.current_room)
+            assert st.get("session") is None
+            assert st.get("beacon") is None
+        finally:
+            _teardown(host)

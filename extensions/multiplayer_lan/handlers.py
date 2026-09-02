@@ -205,6 +205,52 @@ def _player_name(game_runner, explicit):
     return str(gv.get("player_name") or "Joueur")
 
 
+def _truthy(v):
+    return v not in (None, False, 0, "", "0", "false", "False", "no")
+
+
+def _start_beacon(game_name, tcp_port, max_players):
+    try:
+        from .discovery import DiscoveryBeacon
+        b = DiscoveryBeacon(game_name, tcp_port, players=1, max_players=max_players)
+        b.start()
+        return b
+    except Exception as exc:
+        logger.debug("multiplayer: discovery beacon unavailable: %s", exc)
+        return None
+
+
+def _start_listener():
+    try:
+        from .discovery import DiscoveryListener
+        li = DiscoveryListener()
+        li.start()
+        return li
+    except OSError as exc:
+        logger.debug("multiplayer: discovery listener unavailable: %s", exc)
+        return None
+
+
+def _run_connect_flow(mode, game_runner, *, listener=None, roster_fn=None,
+                      tick_fn=None, default_port=DEFAULT_PORT, game_name=""):
+    """Build and run the modal connect/lobby screen. Returns its result
+    string ("connect:<ip>:<port>" / "start" / "cancel"). On a headless
+    runner ConnectScreen.run() short-circuits to a sensible default."""
+    from .connect_screen import ConnectScreen
+    cs = ConnectScreen(
+        mode, getattr(game_runner, "screen", None),
+        discovery_listener=listener, roster_fn=roster_fn, tick_fn=tick_fn,
+        default_port=default_port, game_name=game_name)
+    return cs.run()
+
+
+def _lobby_tick(session, beacon):
+    session.pump_before_step()
+    session.pump_after_update()
+    if beacon is not None:
+        beacon.update(players=session.player_count, max_players=session.max_players)
+
+
 def _room_and_executor(instance):
     ae = getattr(instance, "action_executor", None)
     if ae is None or not getattr(ae, "game_runner", None):
@@ -275,13 +321,32 @@ class PluginExecutor:
         st = peek_multiplayer(room)
         if st and (st.get("session") is not None or st.get("mode") is not None):
             return  # already networked
+        game_name = _raw(parameters, "game_name", "PyGameMaker")
+        max_players = _pv_int(ae, instance, parameters.get("max_players"), 8)
         session = NetworkSession(
             mode="host",
             port=_pv_int(ae, instance, parameters.get("port"), DEFAULT_PORT),
-            max_players=_pv_int(ae, instance, parameters.get("max_players"), 8),
+            max_players=max_players,
             player_name=_player_name(ae.game_runner, _raw(parameters, "player_name")),
         )
-        _start_session(room, session)
+        if not _start_session(room, session):
+            return
+        st = multiplayer_state(room)
+
+        # A discovery beacon runs for the whole session so late joiners can
+        # still find the game -- not just during the lobby.
+        beacon = _start_beacon(game_name, session.bound_port, session.max_players)
+        st["beacon"] = beacon
+
+        if _truthy(parameters.get("show_lobby")):
+            result = _run_connect_flow(
+                "host", ae.game_runner, game_name=game_name,
+                roster_fn=lambda: session.roster,
+                tick_fn=lambda: _lobby_tick(session, beacon))
+            if result == "start":
+                session.start_game()
+            elif result == "cancel":
+                self._teardown(room, ae)
 
     def execute_join_game_action(self, instance, parameters):
         room, ae = _room_and_executor(instance)
@@ -290,44 +355,55 @@ class PluginExecutor:
         st = peek_multiplayer(room)
         if st and (st.get("session") is not None or st.get("mode") is not None):
             return
+        port = _pv_int(ae, instance, parameters.get("port"), DEFAULT_PORT)
+        player_name = _player_name(ae.game_runner, _raw(parameters, "player_name"))
         host = _raw(parameters, "host", "127.0.0.1")
+
         if host == "auto":
-            # Phase 6 opens the built-in connect screen here; for now fall
-            # back to loopback so a single-box test still connects.
-            host = "127.0.0.1"
+            listener = _start_listener()
+            try:
+                result = _run_connect_flow(
+                    "client", ae.game_runner, listener=listener, default_port=port)
+            finally:
+                if listener is not None:
+                    listener.stop()
+            if not result or not result.startswith("connect:"):
+                return                     # cancelled -- game continues single-player
+            _, _, rest = result.partition("connect:")
+            addr, _, rport = rest.rpartition(":")
+            host = addr or "127.0.0.1"
+            try:
+                port = int(rport)
+            except ValueError:
+                pass
+
         session = NetworkSession(
-            mode="client", host=host,
-            port=_pv_int(ae, instance, parameters.get("port"), DEFAULT_PORT),
-            player_name=_player_name(ae.game_runner, _raw(parameters, "player_name")),
-        )
+            mode="client", host=host, port=port, player_name=player_name)
         _start_session(room, session)
 
     def execute_leave_game_action(self, instance, parameters):
         room, ae = _room_and_executor(instance)
-        if room is None:
-            return
+        if room is not None:
+            self._teardown(room, ae)
+
+    def _teardown(self, room, ae):
         st = peek_multiplayer(room)
         if not st:
             return
-        session = st.get("session")
-        if session is not None:
-            try:
-                session.close()
-            except Exception:
-                pass
+        for key in ("session", "beacon", "listener"):
+            obj = st.get(key)
+            if obj is not None:
+                try:
+                    (obj.stop if key != "session" else obj.close)()
+                except Exception:
+                    pass
         for inst in (st.get("ghosts") or {}).values():
             inst.to_destroy = True
-        st["session"] = None
-        st["host"] = None
-        st["client"] = None
-        st["mode"] = None
+        for key in ("session", "host", "client", "beacon", "listener", "synced",
+                    "ghosts", "synced_local", "sync_ord", "input_binds", "mode"):
+            st[key] = None
         st["enabled"] = False
-        st["synced"] = None
-        st["ghosts"] = None
-        st["synced_local"] = None
-        st["sync_ord"] = None
-        st["input_binds"] = None
-        gv = getattr(ae.game_runner, "global_variables", None)
+        gv = getattr(getattr(ae, "game_runner", None), "global_variables", None)
         if isinstance(gv, dict):
             for key in _NETWORK_GLOBALS:
                 gv.pop(key, None)
@@ -855,6 +931,10 @@ def _frame_update_broadcast(game_runner):
         if session.mode == "host":
             session.set_local_input(_poll_held_inputs(st))
             session.push_local_instances(_collect_synced_rows(room, st))
+            beacon = st.get("beacon")
+            if beacon is not None:
+                beacon.update(players=session.player_count,
+                              max_players=session.max_players)
         else:
             session.send_input(_poll_held_inputs(st))
             _send_owned(st, session)
