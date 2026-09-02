@@ -816,7 +816,43 @@ each phase self-contained.
   (single-player owns everything). Full suite **4149 passed, 0 failed**;
   `reseau_1` smoke [OK]. `multiplayer_lan_1` kept as the minimal
   CLI-launch example. Landed `d0311633`.
-- [ ] 8.2 `reseau_2` (quiz).
+- [x] 8.2 `reseau_2` (quiz). **DONE 2026-09-02.** "Quiz de classe":
+  Tier A only, one object (`obj_quiz`) branching on `global.is_host`/
+  `global.is_client`. Host publishes each round's full question/option
+  text as shared vars (composed once at round-setup time, not
+  concatenated at draw time — see the landmine below), runs an 8-second
+  `set_alarm` per question, and awards points via a `network_message`
+  ("reponse") handler comparing the answer against a per-machine secret
+  instance variable (`self.correct` — never published as a shared var,
+  so it can't be read off another machine). Clients answer with A/B/C/D,
+  each sending `send_network_message(event="reponse", data=<letter>,
+  target="host")`. In-game text is French (matching `reseau_1`'s own
+  precedent — the plan's general "sample messages stay English" rule is
+  for the older, pre-existing samples; these `Réseau`-branded ones are
+  French-native throughout, action names included). `README.md` +
+  `README.fr.md`, Welcome-tab entry, smoke registration.
+  `tests/test_reseau_2_sample.py` (9 tests: single-player/registration/
+  guides, and 6 real two-`GameRunner`-loopback tests covering round
+  publish, correct/wrong scoring, the alarm-driven round advance fired
+  directly rather than waiting 8 real seconds, and the quiz ending after
+  the last round). Visually verified via 3 real rendered frames (title,
+  live question, final scores) — accents render correctly throughout.
+  **Two real bugs found and fixed while building this, both logged in
+  their own sections above/below:**
+  1. `_eval_bool_expression` (if_condition's "expression" type) silently
+     no-op'd on `global.X` — see "Core changes" above, the actual reason
+     this sample needed a real (small) core fix.
+  2. `set_shared_var`'s `value` param goes through `_parse_value`, which
+     routes any string containing an operator character (`+-*/%`) to the
+     arithmetic evaluator unless quoted — French text routinely contains
+     a hyphen (`utilise-t-il`) or trails off with `...`/`?`, so every
+     human-authored shared-var value in this sample is now wrapped in
+     escaped quotes (the same documented `CLAUDE.md` landmine `draw_text`
+     already had to work around, just not previously hit for
+     `set_shared_var`). No core fix needed here — purely an authoring
+     discipline, now documented in the sample's own generator script for
+     next time.
+  Full suite 4164 → 4178 passed, 0 failed.
 - [ ] 8.3 `reseau_3` (co-op).
 - [ ] 8.4 `reseau_4` (draw-together) — optional.
 - [ ] 8.5 `tools/smoke_run_multiplayer.py` + CI wiring.
