@@ -276,3 +276,85 @@ class TestLifecycle:
             assert False, "should have raised"
         except ValueError:
             pass
+
+
+class TestInstanceReplication:
+    def test_next_netid_monotonic(self):
+        s = NetworkSession(mode="host")
+        assert [s.next_netid() for _ in range(3)] == [1, 2, 3]
+
+    def test_set_sync_rate(self):
+        s = NetworkSession(mode="host")
+        s.set_sync_rate(hz=30, interp_ms=50)
+        assert s._snap_every == 2
+        assert s.interp_delay == 0.05
+        s.set_sync_rate(hz=10, interp_ms=100)
+        assert s._snap_every == 6
+        assert s.interp_delay == 0.10
+        s.set_sync_rate(hz=0)               # bad -> fall back, don't divide by zero
+        assert s._snap_every >= 1
+
+    def test_host_instance_appears_as_ghost_on_client(self):
+        host, client, _, _ = _connected_pair()
+        try:
+            nid = host.next_netid()
+            host.push_local_instances([
+                {"nid": nid, "o": "obj_ball", "x": 10, "y": 20,
+                 "r": 0, "f": 0, "v": True}])
+            _pump(host, client, rounds=25)
+            creates, destroys = client.take_ghost_changes()
+            assert (nid, "obj_ball", 10, 20) in creates
+            assert client.ghost_ids() == [nid]
+            assert destroys == []
+        finally:
+            client.close(); host.close()
+
+    def test_ghost_position_flows_through(self):
+        host, client, _, _ = _connected_pair()
+        try:
+            nid = host.next_netid()
+            host.push_local_instances([
+                {"nid": nid, "o": "b", "x": 0, "y": 0, "r": 0, "f": 0, "v": True}])
+            _pump(host, client, rounds=15)
+            host.push_local_instances([
+                {"nid": nid, "o": "b", "x": 100, "y": 40, "r": 0, "f": 0, "v": True}])
+            _pump(host, client, rounds=15)
+            client.take_ghost_changes()
+            pos = client.sample_ghost(nid)
+            assert pos is not None
+            x, y, r, f, v = pos
+            assert 0 <= x <= 100
+            assert 0 <= y <= 40
+        finally:
+            client.close(); host.close()
+
+    def test_ghost_vars_propagate(self):
+        host, client, _, _ = _connected_pair()
+        try:
+            nid = host.next_netid()
+            host.push_local_instances([
+                {"nid": nid, "o": "b", "x": 0, "y": 0, "r": 0, "f": 0, "v": True,
+                 "vars": {"hp": 5}}])
+            _pump(host, client, rounds=25)
+            client.take_ghost_changes()
+            assert client.ghost_vars(nid) == {"hp": 5}
+        finally:
+            client.close(); host.close()
+
+    def test_despawn_reaches_client(self):
+        host, client, _, _ = _connected_pair()
+        try:
+            nid = host.next_netid()
+            host.push_local_instances([
+                {"nid": nid, "o": "b", "x": 0, "y": 0, "r": 0, "f": 0, "v": True}])
+            _pump(host, client, rounds=25)
+            client.take_ghost_changes()
+            assert client.ghost_ids() == [nid]
+
+            host.push_local_instances([])          # instance gone on the host
+            _pump(host, client, rounds=25)
+            _creates, destroys = client.take_ghost_changes()
+            assert nid in destroys
+            assert client.ghost_ids() == []
+        finally:
+            client.close(); host.close()

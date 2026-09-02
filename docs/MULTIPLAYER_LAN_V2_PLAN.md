@@ -596,12 +596,35 @@ each phase self-contained.
   exclusive per room). `state.py` `_fresh()` gains `"session": None`.
   `tests/test_multiplayer_lan_tier_a.py` (17, real loopback through the
   real `ActionExecutor` + `execute_event`). Landed `c395e927`.
-- [ ] 5.4 Tier B actions/conditions: `sync_instance`, `set_instance_owner`,
-  `is_instance_owner`, `network_spawn`, `bind_network_input`,
-  `remote_input`, `set_sync_rate`. Client-owned-avatar send path.
-- [ ] 5.5 Keep `set_network_mode` + `PYGM_NET_*` + `run_game.py` flags
-  working (back-compat; `multiplayer_lan_1` must still pass its test and
-  smoke).
+- [x] 5.4a `session.py` Tier B **session-layer plumbing** (no engine
+  wiring yet): `next_netid()`, `push_local_instances(rows)` (host feeds
+  the snapshot its synced-instance rows), `take_ghost_changes()` →
+  `(to_create, to_destroy)` accumulated from `SnapshotApplier.ingest`,
+  `ghost_ids()` / `ghost_vars(nid)` / `sample_ghost(nid)` (interpolated
+  at `now − interp_delay`), `set_sync_rate(hz, interp_ms)` (→ whole
+  60 fps frames per snapshot). `_maybe_send_snapshot` now builds with
+  the pushed instance rows (still `[]` by default, so Tier A / v1
+  unchanged). `tests/test_multiplayer_lan_session.py` +6 (loopback:
+  ghost create/despawn, position flow-through, vars, sync-rate).
+  Landed `000d80b9`.
+- [ ] 5.4b **GameRunner ghost wiring + Tier B actions**: `network_spawn`
+  (host-only replicated create — reuse `execute_create_instance_action`'s
+  build path, suppress the ghost's `create` event), `_frame_update_*`
+  glue that pushes synced rows on the host and creates/destroys/
+  interpolates real ghost instances on the client (`st["synced"]` /
+  `st["ghosts"]` maps), plus `set_sync_rate` action. Real-`GameRunner`
+  loopback test over a sample project. **Decision (open Q#3): a ghost's
+  `create` event is suppressed** (`_create_fired = True` on spawn); an
+  `is_ghost` flag is exposed for cosmetic opt-in later.
+- [ ] 5.4c **`sync_instance` + ownership**: `sync_instance` (mark a
+  room-loaded object synced), `set_instance_owner` / `is_instance_owner`,
+  `bind_network_input` / `remote_input`, the `own` client→host frame and
+  client-authoritative-avatar path. This is the identity-model piece
+  ("your avatar is yours, everyone else's is a host ghost").
+- [ ] 5.5 Back-compat: `set_network_mode` + `PYGM_NET_*` + `run_game.py`
+  flags. **Largely already done** — v2 sessions and the v1 raw
+  host/client are mutually exclusive per room, `multiplayer_lan_1` test +
+  smoke stay green through 4.2b/5.1/5.2. Final tick when 5.4c lands.
 
 ### Phase 6 — connection UX
 - [ ] 6.1 `discovery.py` (new): UDP beacon broadcaster + listener +

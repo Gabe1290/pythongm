@@ -23,7 +23,7 @@ from typing import Optional
 
 from core.logger import get_logger
 from .network import CONN_CLOSED, CONN_OPENED, NetworkClient, NetworkHost
-from .replication import SnapshotApplier, SnapshotBuilder
+from .replication import NetIdAllocator, SnapshotApplier, SnapshotBuilder
 from .state import (
     DEFAULT_PORT, MAX_STR_LEN, MSG_BYE, MSG_GAME_START, MSG_HELLO, MSG_JOIN,
     MSG_LEAVE, MSG_MSG, MSG_SHARED_SET, MSG_SNAP, MSG_WELCOME, PROTO_VER,
@@ -38,6 +38,12 @@ logger = get_logger(__name__)
 _SNAP_EVERY = 3
 
 _MAX_PLAYERS_CEIL = 16
+
+# Default interpolation delay: a client renders a ghost as it was this many
+# seconds ago, lerping between the two snapshots that bracket that instant.
+# ~= 2 snapshot intervals at 20 Hz -- enough to always have a "next" sample
+# to interpolate toward on a LAN.
+_DEFAULT_INTERP_DELAY = 0.10
 
 
 class NetworkSession:
@@ -77,7 +83,15 @@ class NetworkSession:
         self._events = deque()
         self._tick = 0
         self._since_snap = 0
+        self._snap_every = _SNAP_EVERY
         self._shared_dirty = False
+
+        # Tier B: networked instances.
+        self._netids = NetIdAllocator()
+        self._local_instances = []     # host: rows for the next snapshot
+        self._ghost_creates = []       # client: accumulated (nid, obj, x, y)
+        self._ghost_destroys = []      # client: accumulated nid
+        self.interp_delay = _DEFAULT_INTERP_DELAY
 
     # -- lifecycle ----------------------------------------------------
 
@@ -165,6 +179,52 @@ class NetworkSession:
         self._events.clear()
         return evs
 
+    # -- Tier B: networked instances -----------------------------
+
+    def next_netid(self) -> int:
+        """Host: allocate a stable network id for a newly synced instance."""
+        return self._netids.allocate()
+
+    def push_local_instances(self, rows) -> None:
+        """Host: the rows for the next snapshot -- a list of dicts
+        ``{"nid","o","x","y","r","f","v","vars"}``, one per host-owned
+        synced instance. Call once per frame before ``pump_after_update``."""
+        self._local_instances = list(rows or ())
+
+    def take_ghost_changes(self):
+        """Client: ``(to_create, to_destroy)`` accumulated since the last
+        call. ``to_create`` is ``[(nid, object_name, x, y), ...]``;
+        ``to_destroy`` is ``[nid, ...]``. Then cleared."""
+        creates, self._ghost_creates = self._ghost_creates, []
+        destroys, self._ghost_destroys = self._ghost_destroys, []
+        return creates, destroys
+
+    def ghost_ids(self) -> list:
+        return self._applier.ghost_ids()
+
+    def ghost_vars(self, nid: int) -> dict:
+        return self._applier.ghost_vars(nid)
+
+    def sample_ghost(self, nid: int):
+        """Client: the ``(x, y, r, f, v)`` to draw ghost ``nid`` at right
+        now (interpolated ``interp_delay`` seconds in the past), or
+        ``None``."""
+        return self._applier.sample(nid, time.monotonic() - self.interp_delay)
+
+    def set_sync_rate(self, hz: float = 20.0, interp_ms: float = 100.0) -> None:
+        """Tune the host snapshot rate and the client interpolation delay.
+        ``hz`` is converted to a whole number of 60 fps frames per snapshot
+        (>=1)."""
+        try:
+            hz = float(hz)
+        except (TypeError, ValueError):
+            hz = 20.0
+        self._snap_every = max(1, round(60.0 / hz)) if hz > 0 else _SNAP_EVERY
+        try:
+            self.interp_delay = max(0.0, float(interp_ms) / 1000.0)
+        except (TypeError, ValueError):
+            self.interp_delay = _DEFAULT_INTERP_DELAY
+
     # -- frame pumps ----------------------------------------------
 
     def pump_before_step(self) -> None:
@@ -186,9 +246,9 @@ class NetworkSession:
             return
         self._tick += 1
         self._since_snap += 1
-        if self._shared_dirty or self._since_snap >= _SNAP_EVERY:
+        if self._shared_dirty or self._since_snap >= self._snap_every:
             frame = self._builder.build(
-                [], self.shared, tick=self._tick,
+                self._local_instances, self.shared, tick=self._tick,
                 time_ms=int(time.monotonic() * 1000))
             self._host.broadcast(frame)
             self._since_snap = 0
@@ -303,7 +363,9 @@ class NetworkSession:
                                   sanitize_value(frame.get("data")),
                                   frame.get("sender", -1))
             elif t == MSG_SNAP:
-                self._applier.ingest(frame, time.monotonic())
+                created, destroyed = self._applier.ingest(frame, time.monotonic())
+                self._ghost_creates.extend(created)
+                self._ghost_destroys.extend(destroyed)
                 self.shared = dict(self._applier.shared)
             elif t == MSG_GAME_START:
                 if not self.started:
