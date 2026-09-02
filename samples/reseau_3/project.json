@@ -1,0 +1,629 @@
+{
+  "name": "reseau_3",
+  "version": "1.0",
+  "created": "2026-09-02T00:00:00.000000",
+  "modified": "2026-09-02T00:00:00.000000",
+  "settings": {
+    "window_title": "Recolte en equipe (reseau)",
+    "window_width": 640,
+    "window_height": 480,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_person": {
+        "name": "spr_person",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_person.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-09-02T00:00:00.000000",
+        "modified": "2026-09-02T00:00:00.000000"
+      },
+      "spr_gem": {
+        "name": "spr_gem",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_gem.png",
+        "width": 24,
+        "height": 24,
+        "origin_x": 12,
+        "origin_y": 12,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 24,
+        "frame_height": 24,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-09-02T00:00:00.000000",
+        "modified": "2026-09-02T00:00:00.000000"
+      },
+      "spr_monster": {
+        "name": "spr_monster",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_monster.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-09-02T00:00:00.000000",
+        "modified": "2026-09-02T00:00:00.000000"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_ctrl": {
+        "name": "obj_ctrl",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -100,
+        "events": {
+          "keyboard": {
+            "h": {
+              "actions": [
+                {
+                  "action": "if_condition",
+                  "parameters": {
+                    "condition_type": "expression",
+                    "expression": "global.network_connected != 1",
+                    "then_actions": [
+                      {
+                        "action": "host_game",
+                        "parameters": {
+                          "game_name": "Récolte en équipe",
+                          "max_players": "4",
+                          "show_lobby": true
+                        }
+                      }
+                    ],
+                    "else_actions": []
+                  }
+                }
+              ]
+            },
+            "j": {
+              "actions": [
+                {
+                  "action": "if_condition",
+                  "parameters": {
+                    "condition_type": "expression",
+                    "expression": "global.network_connected != 1",
+                    "then_actions": [
+                      {
+                        "action": "join_game",
+                        "parameters": {
+                          "host": "auto"
+                        }
+                      }
+                    ],
+                    "else_actions": []
+                  }
+                }
+              ]
+            }
+          },
+          "network_game_started": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.is_host == 1",
+                  "then_actions": [
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_person",
+                        "x": "320",
+                        "y": "240",
+                        "owner": "0"
+                      }
+                    },
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_monster",
+                        "x": "300",
+                        "y": "100",
+                        "owner": "0"
+                      }
+                    },
+                    {
+                      "action": "set_shared_var",
+                      "parameters": {
+                        "name": "team_score",
+                        "value": "0"
+                      }
+                    },
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_gem",
+                        "x": "80",
+                        "y": "80",
+                        "owner": "0"
+                      }
+                    },
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_gem",
+                        "x": "560",
+                        "y": "80",
+                        "owner": "0"
+                      }
+                    },
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_gem",
+                        "x": "80",
+                        "y": "400",
+                        "owner": "0"
+                      }
+                    },
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_gem",
+                        "x": "560",
+                        "y": "400",
+                        "owner": "0"
+                      }
+                    },
+                    {
+                      "action": "network_spawn",
+                      "parameters": {
+                        "object": "obj_gem",
+                        "x": "320",
+                        "y": "400",
+                        "owner": "0"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          },
+          "player_joined": {
+            "actions": [
+              {
+                "action": "network_spawn",
+                "parameters": {
+                  "object": "obj_person",
+                  "x": "160 + global.network_sender * 80",
+                  "y": "240",
+                  "owner": "global.network_sender"
+                }
+              }
+            ]
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.network_connected != 1",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"Récolte en équipe\"",
+                        "x": "200",
+                        "y": "160",
+                        "color": "#ffffff"
+                      }
+                    },
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"H = héberger  /  J = rejoindre\"",
+                        "x": "160",
+                        "y": "220",
+                        "color": "#cccccc"
+                      }
+                    },
+                    {
+                      "action": "exit_event",
+                      "parameters": {}
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Score d'équipe :\"",
+                  "x": "20",
+                  "y": "20",
+                  "color": "#ffd700"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "global.team_score",
+                  "x": "200",
+                  "y": "20",
+                  "color": "#ffd700"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Flèches pour se déplacer -- attention au monstre !\"",
+                  "x": "20",
+                  "y": "450",
+                  "color": "#cccccc"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "obj_person": {
+        "name": "obj_person",
+        "asset_type": "object",
+        "sprite": "spr_person",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "step": {
+            "actions": [
+              {
+                "action": "is_instance_owner",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "key_pressed",
+                  "key": "left",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "x",
+                        "value": "x - 4",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "key_pressed",
+                  "key": "right",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "x",
+                        "value": "x + 4",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "key_pressed",
+                  "key": "up",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "y",
+                        "value": "y - 4",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "key_pressed",
+                  "key": "down",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "y",
+                        "value": "y + 4",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "x < 16",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "x",
+                        "value": 16,
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "x > 624",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "x",
+                        "value": 624,
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "y < 16",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "y",
+                        "value": 16,
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "y > 464",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "y",
+                        "value": 464,
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "collision_with_obj_gem": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.is_host == 1",
+                  "then_actions": [
+                    {
+                      "action": "destroy_instance",
+                      "parameters": {
+                        "target": "other"
+                      }
+                    },
+                    {
+                      "action": "set_shared_var",
+                      "parameters": {
+                        "name": "team_score",
+                        "value": "global.team_score + 1"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          },
+          "collision_with_obj_monster": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.is_host == 1",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var",
+                      "parameters": {
+                        "name": "team_score",
+                        "value": "max(global.team_score - 1, 0)"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          }
+        }
+      },
+      "obj_gem": {
+        "name": "obj_gem",
+        "asset_type": "object",
+        "sprite": "spr_gem",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 10,
+        "events": {}
+      },
+      "obj_monster": {
+        "name": "obj_monster",
+        "asset_type": "object",
+        "sprite": "spr_monster",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 5,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "dir",
+                  "value": 1,
+                  "scope": "self"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.is_host == 1",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "x",
+                        "value": "x + 2 * self.dir",
+                        "scope": "self"
+                      }
+                    },
+                    {
+                      "action": "if_condition",
+                      "parameters": {
+                        "condition_type": "expression",
+                        "expression": "x > 500",
+                        "then_actions": [
+                          {
+                            "action": "set_variable",
+                            "parameters": {
+                              "variable": "dir",
+                              "value": -1,
+                              "scope": "self"
+                            }
+                          }
+                        ],
+                        "else_actions": []
+                      }
+                    },
+                    {
+                      "action": "if_condition",
+                      "parameters": {
+                        "condition_type": "expression",
+                        "expression": "x < 100",
+                        "then_actions": [
+                          {
+                            "action": "set_variable",
+                            "parameters": {
+                              "variable": "dir",
+                              "value": 1,
+                              "scope": "self"
+                            }
+                          }
+                        ],
+                        "else_actions": []
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 640,
+        "height": 480,
+        "background_color": "#1f3320",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 1,
+        "instances": [],
+        "created": "2026-09-02T00:00:00.000000",
+        "modified": "2026-09-02T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

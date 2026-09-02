@@ -1,0 +1,10 @@
+{
+  "name": "obj_gem",
+  "asset_type": "object",
+  "sprite": "spr_gem",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 10,
+  "events": {}
+}
