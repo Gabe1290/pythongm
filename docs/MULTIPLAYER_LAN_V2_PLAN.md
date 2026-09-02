@@ -497,12 +497,22 @@ each phase self-contained.
 - [x] 4.1 `state.py`: v2 message-type constants, `PROTO_VER`,
   `sanitize_value`, `is_valid_shared_name`, `sanitize_name`. Unit tests
   in `tests/test_multiplayer_lan_protocol.py` (27). `SNAPSHOT_MSG_TYPE`
-  kept as an alias of `MSG_SNAP` so v1 stays green. Landed `4f5030af`.
-- [ ] 4.2 `network.py`: control frames (`hello`/`welcome`/`join`/`leave`/
-  `bye`/`msg`/`shared_set`/`input`/`game_start`), per-connection framing
-  buffer, size caps, rate limit, `PROTO_VER` check. Host tracks a roster
-  (slot → name/conn). Loopback tests (multi-client join/leave/slot
-  assignment, bad-client drop).
+  kept as an alias of `MSG_SNAP` so v1 stays green. Landed `d18d2dcf`.
+- [x] 4.2a `framing.py` (new, pure — no socket import): `encode_frame`,
+  `FrameBuffer` (partial reads, multi-frame chunks, malformed-line skip,
+  `FrameOverflow` past the hard cap), `RateLimiter` (token bucket).
+  Frame-size caps + `INBOUND_FRAME_RATE` added to `state.py`. Unit tests
+  in `tests/test_multiplayer_lan_framing.py` (24). Landed `c06e8432`.
+- [ ] 4.2b `network.py`: evolve `NetworkHost`/`NetworkClient` to
+  bidirectional + framed on `framing.py` — control frames
+  (`hello`/`welcome`/`join`/`leave`/`bye`/`msg`/`shared_set`/`input`/
+  `game_start`), per-connection `FrameBuffer` + `RateLimiter`,
+  `PROTO_VER` check, `poll()` returns *all* frames (session picks
+  snapshot-latest-wins), synthetic connect/disconnect frames. Stable
+  per-connection ids (session maps id→slot in Phase 5). **Rewire v1's
+  `handlers.py` `_frame_update_*` + `tests/test_multiplayer_lan.py` in
+  the same commit** so the shipped spectator behaviour stays green.
+  Loopback tests (multi-client, bad-client drop, oversize drop).
 - [ ] 4.3 `replication.py` (new): netid allocation, snapshot build
   (`i`/`shared` delta/`spawn`/`despawn`), snapshot apply on client,
   ghost create/destroy, interpolation buffer. Pure-ish (takes primitive
