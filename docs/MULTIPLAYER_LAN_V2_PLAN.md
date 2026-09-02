@@ -277,8 +277,40 @@ event category **"Réseau"**.
 
 ## Core changes
 
-**ZERO. Decided in Phase 4.4 (2026-09-02).** v2 adds no core change on top
-of v1's frame-update hook.
+**ZERO net-new extension surface. One small, real bug fix landed 2026-09-02
+while authoring `reseau_2` (Phase 8.2) — see the correction below.** v2
+adds no *new extension mechanism* on top of v1's frame-update hook, but
+one of this section's own original claims (from Phase 4.4) turned out to
+be false and needed a genuine `runtime/action_executor.py` fix, not just
+a documentation correction.
+
+**Correction (2026-09-02): "a condition `global.player_id == 1` just
+works" was WRONG for `if_condition`'s "expression" type.** Verified
+empirically (not just re-read) while wiring `reseau_2`'s host/client
+gating: `global.is_host == 1` as an `if_condition` "expression" silently
+evaluated to `False` every time — `_eval_bool_expression` is a real
+Python `eval()`, and `global` is a reserved keyword, so `global.X` is a
+`SyntaxError` there regardless of the namespace (caught by the function's
+own broad `except Exception`, logged, never surfacing to the author).
+This is a *different* evaluator from `_parse_value`/`_evaluate_expression`
+(action parameter VALUES — `set_variable`'s `value`, `network_spawn`'s
+`x`/`y`), whose dotted-global handling is separate and was already
+correct; the false claim below conflated the two. No existing sample
+before this fix ever exercised the combination — `reseau_1`'s own
+`if_condition` expressions are all bare instance-scope names (`"x < 16"`),
+never `global.*`. Fixed with a regex substitution (`global.NAME` →
+`_global.get('NAME', 0)`, a namespace key bound to
+`game_runner.global_variables`) applied only inside
+`_eval_bool_expression`, right before `eval()` — matches `_parse_value`'s
+own missing-global default of 0, and is not a security-surface change
+(that function was already a full Python `eval()` with no quote-based
+whitelist to weaken, unlike the arithmetic evaluators the rejected-hook
+reasoning below is actually about). `tests/
+test_eval_bool_expression_global_vars.py` (10 tests). Full suite 4154 →
+4164 passed, 0 failed. This unblocks the exact "if is_host(): gameplay
+guard" pattern this whole plan's Design Principles section describes as
+the central authoring idiom — every future sample needs it, not just
+`reseau_2`.
 
 1. **Expression-name resolver hook — REJECTED, not built.** The idea was a
    generic `extension_hooks.register_expression_names` so `is_host()` /
