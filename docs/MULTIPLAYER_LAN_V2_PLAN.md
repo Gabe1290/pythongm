@@ -1,15 +1,17 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **Phases 4–5 DONE (2026-09-02).** Written and executed 2026-09-02.
-The full student-facing API — Tier A (shared blackboard: shared variables,
-custom messages, player identity, `Réseau` events) and Tier B (networked
-instances: `network_spawn` + interpolated ghosts, `sync_instance`,
-validated client-owned avatars, named input) — is on `main` and covered
-by ~210 tests, including real two-`GameRunner`-over-a-socket coverage for
-every replication path. v2 added **zero** core changes on top of v1's
-frame-update hook. **Open:** Phase 6 (UDP discovery + built-in French
-connect/lobby screen), Phase 7 (HTML5 export parity), Phase 8 (samples
-`reseau_1`–`4` + guides). See the checklist near the end.
+Status: **Phases 4–6 and 8.1/8.6 DONE.** Written and mostly executed
+2026-09-02. The full student-facing API — Tier A (shared blackboard:
+shared variables, custom messages, player identity, `Réseau` events) and
+Tier B (networked instances: `network_spawn` + interpolated ghosts,
+`sync_instance`, validated client-owned avatars, named input) — is on
+`main`, plus UDP discovery + the built-in French connect/lobby screen
+(Phase 6), the `reseau_1` sample (8.1), and graceful host-loss teardown
+(8.6). Covered by ~215 tests, including real two-`GameRunner`-over-a-
+socket coverage for every replication path. v2 added **zero** core
+changes on top of v1's frame-update hook. **Open:** Phase 7 (HTML5
+export parity), Phase 8.2–8.5/8.7 (`reseau_2`–`4` samples, smoke
+tooling, closing the doc). See the checklist near the end.
 
 ## Where this comes from
 
@@ -786,8 +788,32 @@ each phase self-contained.
 - [ ] 8.3 `reseau_3` (co-op).
 - [ ] 8.4 `reseau_4` (draw-together) — optional.
 - [ ] 8.5 `tools/smoke_run_multiplayer.py` + CI wiring.
-- [ ] 8.6 Graceful host-loss: `connection_lost` event + clean client
-  teardown. (Host *migration* stays deferred.)
+- [x] 8.6 Graceful host-loss. **DONE 2026-09-02.** The `connection_lost`
+  event + `network_connected=0` mirroring already existed (Phase 5.2);
+  what was missing was "clean client teardown" — a lost host will never
+  send another snapshot, so a ghost frozen in its last position read as
+  a stuck phantom player. `_destroy_ghosts_on_connection_lost` (called
+  from `_apply_session_state` right where the event is queued) marks
+  every ghost `to_destroy` and clears `st["ghosts"]`. The client's own
+  locally-owned avatar (`synced_local`) is deliberately left running —
+  same "the game continues single-player" precedent as `join_game
+  host="auto"` cancel. No automatic full `leave_game`-style reset:
+  identity globals stay readable so an author's own `connection_lost`
+  handler can react with context; a full reset only happens if the
+  author calls `leave_game` explicitly. (Host *migration* stays
+  deferred.) `tests/test_multiplayer_lan_ghosts.py::TestConnectionLostTeardown`
+  (3 tests, real two-`GameRunner` loopback: ghosts destroyed, the
+  client's own avatar untouched, the event fires exactly once not every
+  frame). Full suite 4151 → 4154 passed, 0 failed.
+  **Landmine hit and fixed while landing this**: a first draft inserted
+  the new module-level function in the middle of the `PluginExecutor`
+  class body by mistake — Python's indentation-based syntax accepted it
+  silently (no SyntaxError), but it truncated the class early, orphaning
+  every method after the insertion point (`network_spawn` and everything
+  alphabetically after it vanished from `action_handlers`). Caught by
+  the full-suite gate, not by the new tests themselves — a reminder that
+  "the new tests pass" isn't sufficient; the *existing* suite must also
+  stay green after any edit to a large class-based module like this one.
 - [ ] 8.7 `CLAUDE.md` "Recent agent-session notes" entry; close this doc.
 
 ### Manual QA (cannot be automated — needs displays/machines)

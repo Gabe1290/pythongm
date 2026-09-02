@@ -600,6 +600,30 @@ class PluginExecutor:
 # Frame-update hooks
 # ---------------------------------------------------------------------------
 
+def _destroy_ghosts_on_connection_lost(room):
+    """Phase 8.6 "clean client teardown": a lost host will never send
+    another snapshot, so a ghost frozen in its last position reads as a
+    bug (a stuck phantom player), not as network reality. Destroy every
+    ghost puppet -- the client's OWN locally-owned avatar
+    (``synced_local``) is left running, matching this repo's "the game
+    continues single-player" precedent (join_game host="auto" cancel):
+    losing the host doesn't mean the client's own play session ends, just
+    that other players vanish. The session/identity globals are left
+    alone (network_connected is already 0, set by the caller) so an
+    author's own connection_lost handler can still read
+    global.player_id/network_role while reacting to the loss; a full
+    reset only happens if the author calls leave_game explicitly."""
+    st = peek_multiplayer(room)
+    if not st:
+        return
+    ghosts = st.get("ghosts")
+    if not ghosts:
+        return
+    for inst in ghosts.values():
+        inst.to_destroy = True
+    ghosts.clear()
+
+
 def _fire_network_event(room, event_name):
     """Run ``event_name`` on every instance in the room that handles it."""
     for inst in list(getattr(room, "instances", ())):
@@ -648,6 +672,7 @@ def _apply_session_state(game_runner, session):
             gv["network_player_name"] = pname
         elif name == "connection_lost":
             gv["network_connected"] = 0
+            _destroy_ghosts_on_connection_lost(room)
         _fire_network_event(room, name)
 
     _update_network_caption(game_runner, session)
