@@ -494,8 +494,10 @@ Sequencing mirrors v1: infra → protocol → session → API → UX → samples
 each phase self-contained.
 
 ### Phase 4 — protocol v2 + netid + sanitize (no student-visible change yet)
-- [ ] 4.1 `state.py`: v2 message-type constants, `PROTO_VER`,
-  `sanitize_value`, shared-var name validator. Unit tests.
+- [x] 4.1 `state.py`: v2 message-type constants, `PROTO_VER`,
+  `sanitize_value`, `is_valid_shared_name`, `sanitize_name`. Unit tests
+  in `tests/test_multiplayer_lan_protocol.py` (27). `SNAPSHOT_MSG_TYPE`
+  kept as an alias of `MSG_SNAP` so v1 stays green. Landed `4f5030af`.
 - [ ] 4.2 `network.py`: control frames (`hello`/`welcome`/`join`/`leave`/
   `bye`/`msg`/`shared_set`/`input`/`game_start`), per-connection framing
   buffer, size caps, rate limit, `PROTO_VER` check. Host tracks a roster
