@@ -59,10 +59,10 @@ stays out of scope (see "Export targets").
 ## Design principles
 
 - **Extension-only, minimum core.** v1 added exactly one generic core
-  hook. v2 aims to add **at most one more** (a read-only expression-name
-  resolver hook — see "Core changes"), and prefers zero. Everything else
-  is `extensions/multiplayer_lan/` files and `PLUGIN_ACTIONS` /
-  `PLUGIN_EVENTS` (both already supported by `events/plugin_loader.py`).
+  hook (`register_frame_update`). v2 adds **zero** — decided in Phase 4.4
+  (see "Core changes"). Everything is `extensions/multiplayer_lan/` files
+  and `PLUGIN_ACTIONS` / `PLUGIN_EVENTS` (both already supported by
+  `events/plugin_loader.py`).
 - **Authoritative host, no netcode cleverness.** The host runs the real
   simulation; clients send *intent* (named inputs, message requests) and
   render *interpolated snapshots*. No lockstep, no rollback, no client
@@ -265,19 +265,32 @@ event category **"Réseau"**.
 
 ## Core changes
 
-**Target: one small read-only hook, or zero.**
+**ZERO. Decided in Phase 4.4 (2026-09-02).** v2 adds no core change on top
+of v1's frame-update hook.
 
-1. **(Maybe) expression-name resolver hook.** Nice-to-have so students can
-   write `is_host()` / `player_id()` / `shared("score")` *inside*
-   expressions (`draw_text` at `shared("score_p1")`). Today the expression
-   evaluator (`runtime/action_executor.py` ~line 2150) has a hardcoded
-   function whitelist (`random`, `irandom`, `choose`, `max`, `min`, `abs`,
-   `round`) and a `safe_namespace`. A generic
-   `extension_hooks.register_expression_names(provider)` that contributes
-   read-only names/functions into `safe_namespace` would serve this and
-   any future extension. **If this is judged too invasive, v2 ships
-   without it** — `global.player_id` reads and the `get_shared_var`
-   action cover every case, just less ergonomically. Decide in Phase 4.
+1. **Expression-name resolver hook — REJECTED, not built.** The idea was a
+   generic `extension_hooks.register_expression_names` so `is_host()` /
+   `shared("score")` could appear *inside* an arithmetic expression. On
+   reading `runtime/action_executor.py`:
+   - `is_host` / `is_client` / `network_connected` / `remote_input(...)` /
+     `is_instance_owner` are **conditions**, and the extension exposes
+     them through the conditional-editor mechanism (`test_instance_count`
+     is the model) — no core change.
+   - `global.player_id`, `global.player_count`, `global.network_role`, and
+     **every shared variable mirrored as `global.<name>`** already resolve
+     with zero core change: `_parse_value` / `_get_variable_value` handle
+     `global.*` and bare globals today. So `draw_text` at
+     `global.score_p1` and a condition `global.player_id == 1` just work.
+   - The only thing genuinely lost is a *string-literal-argument* function
+     like `shared("score_p1")` mid-expression — and the `global.<name>`
+     mirror makes it redundant. Supporting it would mean widening the
+     evaluator's `re.match(r'^[\d\s\+\-\*\/\%\(\)\.\,a-zA-Z_]+$', ...)`
+     safety whitelist to allow quotes, i.e. a security-surface change to a
+     shared, audited subsystem (three evaluators: `_evaluate_expression`,
+     `_eval_bool_expression`, HTML5 `gmExpressionValue`) for near-zero
+     benefit. Not worth it.
+   - `get_shared_var name into var` (Phase 5.2) covers the rare case where
+     the `global.` prefix is awkward.
 2. **Nothing else.** `PLUGIN_EVENTS`, `PLUGIN_ACTIONS`,
    `PLUGIN_FRAME_UPDATES`, `room.extension_state`, and the built-in
    connect screen (drawn via the existing `PLUGIN_ROOM_RENDERERS` hook, or
@@ -534,10 +547,14 @@ each phase self-contained.
   delta-only `spawn` frames, so the session must send it one full
   snapshot on connect (per-client `SnapshotBuilder` or a full-build
   path) — the applier's adopt path is only a fallback.
-- [ ] 4.4 Decide the expression-name hook (Core change #1): implement
-  `extension_hooks.register_expression_names` **or** record the decision
-  to ship without it. If implemented: one scoped core commit + guard
-  test, exactly like the v1 frame-update hook commit.
+- [x] 4.4 Expression-name hook: **rejected — v2 ships with ZERO core
+  changes.** `global.player_id` / `global.player_count` /
+  `global.network_role` / `global.<shared-var>` already resolve with no
+  core change; identity/ownership/`remote_input` are conditions via the
+  conditional editor; `get_shared_var … into …` covers the awkward-prefix
+  case. Supporting `shared("literal")` mid-expression would need widening
+  the eval safety whitelist across three evaluators for redundant benefit.
+  Full rationale in "Core changes" above (decided 2026-09-02, doc-only).
 
 ### Phase 5 — session layer + student API
 - [ ] 5.1 `session.py` (new): `NetworkSession` binding transport +
@@ -607,14 +624,13 @@ each phase self-contained.
 - [ ] HTML5 export (Phase 7) joining a desktop host from a Chromebook.
 - [ ] Kivy export of a multiplayer project still runs single-player.
 
-## Open questions (decide before or during Phase 4)
+## Open questions
 
-1. **Expression-name hook** (Core #1): build the generic
-   `register_expression_names` hook so `is_host()` / `shared("x")` work
-   inside expressions, or ship v2 with `global.*` reads + `get_shared_var`
-   only? *Recommendation: build it — it's small, read-only, and a third
-   extension will want it — but it's cuttable if it looks invasive when
-   the code is in front of us.*
+1. **Expression-name hook** — **RESOLVED (Phase 4.4, 2026-09-02): not
+   built, v2 stays zero-core-change.** `global.*` reads (including the
+   `global.<shared-var>` mirror) + conditions + `get_shared_var` cover
+   every case; widening the eval safety whitelist for `shared("literal")`
+   isn't worth the security surface. See "Core changes".
 2. **First sample**: `reseau_2` (quiz) or `reseau_4` (draw-together) as
    the gentlest Tier A intro? *Recommendation: `reseau_2` — a quiz is the
    single most-requested classroom multiplayer shape; `reseau_4` is a
@@ -639,15 +655,19 @@ each phase self-contained.
   this-machine-IP + reachability line. Do not over-promise in guides.
 - **Firewall prompt** without admin rights — document teacher/IT
   pre-approval; surface a clear failure reason, never a silent dead end.
-- **Thread safety** — socket I/O on daemon threads; the `GameRunner` is
-  touched **only** from the frame-update hooks on the game thread, via
-  thread-safe queues. No pygame/`GameRunner` access from a net thread,
-  ever. Pin with a review checklist + a test that asserts the transport
-  exposes only queue operations to the session layer.
-- **Blocking the game loop** — snapshot serialization of a big room could
-  stall the frame. Cap synced instances, hand the net thread a shallow
-  copy of *primitive* state (never live instances), measure with
-  `reseau_3`.
+- **Threading — the transport is single-threaded (decided in 4.2b).**
+  `NetworkHost`/`NetworkClient` use **non-blocking sockets pumped once per
+  frame** from the `before_step`/`after_update` hooks, on the game thread.
+  No net thread, no queues, no lock — `poll()` accepts/reads/flushes and
+  returns; nothing touches `GameRunner` off-thread because nothing runs
+  off-thread. The **only** daemon thread in the extension is the Phase 6.1
+  UDP discovery beacon listener, which owns just its own server-list dict.
+- **Blocking the game loop** — `poll()` + snapshot serialization run
+  in-frame, so a huge room could stall a frame. Cap synced instances;
+  `SnapshotBuilder` already takes *primitive* dicts, not live instances
+  (the session does the cheap extraction); measure with `reseau_3`. A
+  slow client can't stall the host — its unwritten output is queued and
+  it's dropped past `_MAX_OUTBUF_BYTES`.
 - **Determinism drift on clients** — never run gameplay for synced
   non-owned objects on a client; ghosts are apply-only + interpolated.
   Samples state the `is_host()` rule explicitly.
