@@ -101,6 +101,8 @@ class SnapshotBuilder:
             iv = inst.get("vars")
             if iv:
                 row["vars"] = dict(iv)
+            if inst.get("own") is not None:
+                row["own"] = inst["own"]
             rows.append(row)
 
         despawn = [nid for nid in self._known if nid not in current]
@@ -131,11 +133,12 @@ def _lerp_angle(a: float, b: float, t: float) -> float:
 
 
 class _Ghost:
-    __slots__ = ("obj", "vars", "samples")
+    __slots__ = ("obj", "vars", "samples", "owner")
 
     def __init__(self, obj: str):
         self.obj = obj
         self.vars = {}
+        self.owner = None          # player slot that owns this instance, or None (host)
         self.samples = deque(maxlen=_BUFFER_LEN)   # (recv_time, x, y, r, f, v)
 
 
@@ -167,6 +170,10 @@ class SnapshotApplier:
     def ghost_vars(self, nid: int) -> dict:
         g = self._ghosts.get(nid)
         return g.vars if g is not None else {}
+
+    def ghost_owner(self, nid: int):
+        g = self._ghosts.get(nid)
+        return g.owner if g is not None else None
 
     def ingest(self, frame: dict, now: float):
         to_create = []
@@ -204,6 +211,8 @@ class SnapshotApplier:
             ))
             if "vars" in row and isinstance(row["vars"], dict):
                 g.vars.update(row["vars"])
+            if "own" in row:
+                g.owner = row["own"]
 
         if "tick" in frame:
             self.last_tick = int(frame["tick"])
