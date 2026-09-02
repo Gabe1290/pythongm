@@ -24,6 +24,7 @@ from typing import Optional
 from core.logger import get_logger
 from .network import CONN_CLOSED, CONN_OPENED, NetworkClient, NetworkHost
 from .replication import NetIdAllocator, SnapshotApplier, SnapshotBuilder
+from .ws_transport import DualHost
 from .state import (
     DEFAULT_PORT, MAX_STR_LEN, MSG_BYE, MSG_GAME_START, MSG_HELLO, MSG_INPUT,
     MSG_JOIN, MSG_LEAVE, MSG_MSG, MSG_OWN, MSG_SHARED_SET, MSG_SNAP,
@@ -100,7 +101,11 @@ class NetworkSession:
 
     def start(self) -> None:
         if self.mode == "host":
-            self._host = NetworkHost(self.port)
+            # DualHost (Phase 7.1) also runs a WebSocket listener one port
+            # up, so an HTML5-exported browser client can join the same
+            # game -- see ws_transport.py. It presents the identical
+            # NetworkHost surface this class already drives.
+            self._host = DualHost(self.port)
             self._host.start()
         else:
             self._client = NetworkClient(self.host_addr, self.port)
@@ -122,6 +127,15 @@ class NetworkSession:
         with port 0). 0 if not a host / not started."""
         if self._host is not None and self._host._listen_sock is not None:
             return self._host._listen_sock.getsockname()[1]
+        return 0
+
+    @property
+    def bound_ws_port(self) -> int:
+        """The port the host's WebSocket (browser) listener is actually
+        listening on. 0 if not a host / not started / the WS listener
+        failed to bind (see ``DualHost.start``)."""
+        if self._host is not None and hasattr(self._host, "bound_ws_port"):
+            return self._host.bound_ws_port
         return 0
 
     @property
