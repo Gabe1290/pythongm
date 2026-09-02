@@ -33,6 +33,13 @@ MULTIPLAYER_KEY = "multiplayer_lan"
 # unprivileged range, unlikely to collide with common LAN services.
 DEFAULT_PORT = 45782
 
+# UDP port the host beacons on and clients listen on for server discovery
+# (docs/MULTIPLAYER_LAN_V2_PLAN.md Phase 6). One above the TCP port.
+DISCOVERY_PORT = 45783
+DISCOVERY_MAGIC = "pygm-lan"
+BEACON_INTERVAL = 1.0          # seconds between host beacons
+DISCOVERY_TTL = 5.0           # a server not heard from for this long drops off the list
+
 # ---------------------------------------------------------------------------
 # v2 wire protocol (docs/MULTIPLAYER_LAN_V2_PLAN.md "Wire protocol v2")
 #
