@@ -258,11 +258,15 @@ class PluginExecutor:
                 session.close()
             except Exception:
                 pass
+        for inst in (st.get("ghosts") or {}).values():
+            inst.to_destroy = True
         st["session"] = None
         st["host"] = None
         st["client"] = None
         st["mode"] = None
         st["enabled"] = False
+        st["synced"] = None
+        st["ghosts"] = None
         gv = getattr(ae.game_runner, "global_variables", None)
         if isinstance(gv, dict):
             for key in _NETWORK_GLOBALS:
@@ -319,6 +323,50 @@ class PluginExecutor:
         target = parameters.get("target", "all")
         target = target if target in ("all", "host") else "all"
         session.send_message(event, data, target)
+
+    # -- v2 Tier B: networked instances --------------------------
+
+    def execute_network_spawn_action(self, instance, parameters):
+        """Host-only replicated create. Reuses the engine's own
+        create_instance path (so the host copy is a fully normal instance,
+        create event and all), then tags it with a network id so the
+        frame-update hook includes it in the snapshot."""
+        session = self._session_for(instance)
+        if session is None or not session.is_host():
+            return
+        ae = self._executor(instance)
+        room = getattr(ae.game_runner, "current_room", None)
+        if room is None:
+            return
+        object_name = _raw(parameters, "object")
+        if not object_name:
+            return
+
+        before = {id(i) for i in room.instances}
+        ae.execute_create_instance_action(instance, {
+            "object": object_name,
+            "x": parameters.get("x", 0),
+            "y": parameters.get("y", 0),
+            "relative": parameters.get("relative", False),
+        })
+        new_insts = [i for i in room.instances if id(i) not in before]
+        if not new_insts:
+            return
+        synced = multiplayer_state(room).setdefault("synced", {})
+        for inst in new_insts:
+            nid = session.next_netid()
+            inst._net_id = nid
+            synced[nid] = inst
+
+    def execute_set_sync_rate_action(self, instance, parameters):
+        session = self._session_for(instance)
+        if session is None:
+            return
+        ae = self._executor(instance)
+        session.set_sync_rate(
+            _pv(ae, instance, parameters.get("hz"), 20.0),
+            _pv(ae, instance, parameters.get("interp_ms"), 100.0),
+        )
 
     # -- internals -----------------------------------------------
 
@@ -387,6 +435,109 @@ def _apply_session_state(game_runner, session):
         _fire_network_event(room, name)
 
 
+_GHOST_VAR_WHITELIST_TYPES = (int, float, str, bool)
+
+
+def _spawn_ghost(game_runner, object_name, x, y, nid):
+    """Create a client-side puppet of a host-owned networked instance. Like
+    execute_create_instance_action's build path, but the ``create`` event
+    is suppressed -- a ghost is driven entirely by snapshots, not by its
+    own authored logic (open Q#3). Returns the instance or None."""
+    room = getattr(game_runner, "current_room", None)
+    if room is None:
+        return None
+    objects_data = (getattr(game_runner, "project_data", {}) or {}).get(
+        "assets", {}).get("objects", {})
+    if object_name not in objects_data:
+        logger.warning("multiplayer: ghost object %r not in project", object_name)
+        return None
+    object_data = objects_data[object_name]
+
+    from runtime.game_runner import GameInstance, resolve_parent_inheritance
+
+    inst = GameInstance(object_name, float(x), float(y),
+                        {"visible": True}, action_executor=game_runner.action_executor)
+    merged = resolve_parent_inheritance(object_data, getattr(game_runner, "_objects_data", {}))
+    inst.set_object_data(merged)
+    sprite_name = object_data.get("sprite", "")
+    sprites = getattr(game_runner, "sprites", {}) or {}
+    if sprite_name and sprite_name in sprites:
+        inst.set_sprite(sprites[sprite_name])
+    inst._create_fired = True          # a ghost never runs its create event
+    inst._net_ghost = nid
+
+    room.instances.append(inst)
+    if hasattr(room, "_add_to_grid"):
+        room._add_to_grid(inst)
+    room._depth_dirty = True
+    if hasattr(room, "invalidate_collision_listened_types"):
+        room.invalidate_collision_listened_types()
+    return inst
+
+
+def _collect_synced_rows(room, st):
+    """Host: primitive rows for every live networked instance, pruning any
+    that were destroyed."""
+    synced = st.get("synced")
+    if not synced:
+        return []
+    live = set(id(i) for i in getattr(room, "instances", ()))
+    rows = []
+    for nid in list(synced):
+        inst = synced[nid]
+        if id(inst) not in live or getattr(inst, "to_destroy", False):
+            del synced[nid]
+            continue
+        rows.append({
+            "nid": nid, "o": inst.object_name,
+            "x": inst.x, "y": inst.y,
+            "r": getattr(inst, "rotation", 0),
+            "f": getattr(inst, "image_index", 0),
+            "v": bool(getattr(inst, "visible", True)),
+        })
+    return rows
+
+
+def _apply_ghosts(game_runner, st, session):
+    """Client: create / destroy / interpolate the ghost instances that
+    mirror the host's networked instances. Runs after _apply_session_state
+    in the before_step phase, so Step events see this frame's positions."""
+    room = getattr(game_runner, "current_room", None)
+    if room is None:
+        return
+    ghosts = st.setdefault("ghosts", {})
+
+    to_create, to_destroy = session.take_ghost_changes()
+    for nid, obj, x, y in to_create:
+        if nid in ghosts:
+            continue
+        inst = _spawn_ghost(game_runner, obj, x, y, nid)
+        if inst is not None:
+            ghosts[nid] = inst
+    for nid in to_destroy:
+        inst = ghosts.pop(nid, None)
+        if inst is not None:
+            inst.to_destroy = True
+
+    for nid in list(ghosts):
+        inst = ghosts[nid]
+        if getattr(inst, "to_destroy", False):
+            del ghosts[nid]
+            continue
+        pos = session.sample_ghost(nid)
+        if pos is None:
+            continue
+        gx, gy, gr, gf, gv = pos
+        inst.x = gx
+        inst.y = gy
+        inst.rotation = gr
+        inst.image_index = gf
+        inst.visible = bool(gv)
+        for key, val in session.ghost_vars(nid).items():
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+                setattr(inst, key, val)
+
+
 def _resolve_state(game_runner):
     """This room's multiplayer state, auto-initialising the v1 env-var
     path if configured. None if this room has no networking."""
@@ -416,6 +567,8 @@ def _frame_update_apply_inbound(game_runner):
     if session is not None:
         session.pump_before_step()
         _apply_session_state(game_runner, session)
+        if session.mode == "client":
+            _apply_ghosts(game_runner, st, session)
         return
 
     if st.get("mode") != "client":
@@ -461,6 +614,8 @@ def _frame_update_broadcast(game_runner):
 
     session = st.get("session")
     if session is not None:
+        if session.mode == "host":
+            session.push_local_instances(_collect_synced_rows(room, st))
         session.pump_after_update()
         return
 

@@ -12,6 +12,8 @@
         "set_shared_var",
         "get_shared_var",
         "send_network_message",
+        "network_spawn",
+        "set_sync_rate",
         "set_network_mode"
     ],
     "provides_events": [

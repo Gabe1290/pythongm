@@ -607,15 +607,23 @@ each phase self-contained.
   unchanged). `tests/test_multiplayer_lan_session.py` +6 (loopback:
   ghost create/despawn, position flow-through, vars, sync-rate).
   Landed `000d80b9`.
-- [ ] 5.4b **GameRunner ghost wiring + Tier B actions**: `network_spawn`
-  (host-only replicated create — reuse `execute_create_instance_action`'s
-  build path, suppress the ghost's `create` event), `_frame_update_*`
-  glue that pushes synced rows on the host and creates/destroys/
-  interpolates real ghost instances on the client (`st["synced"]` /
-  `st["ghosts"]` maps), plus `set_sync_rate` action. Real-`GameRunner`
-  loopback test over a sample project. **Decision (open Q#3): a ghost's
-  `create` event is suppressed** (`_create_fired = True` on spawn); an
-  `is_ghost` flag is exposed for cosmetic opt-in later.
+- [x] 5.4b **GameRunner ghost wiring + Tier B actions.** `network_spawn`
+  (host-only; reuses `execute_create_instance_action` so the host copy is
+  a fully normal instance, then tags it with `next_netid()` into
+  `st["synced"]`; no-op + debug log on a client). `set_sync_rate` action.
+  `_frame_update_broadcast` (host) calls `_collect_synced_rows` (prunes
+  destroyed) → `session.push_local_instances`. `_frame_update_apply_inbound`
+  (client) calls `_apply_ghosts`: `_spawn_ghost` builds the puppet the
+  same way as create-instance but with `_create_fired = True` +
+  `_net_ghost = nid` (open Q#3 decision: **create suppressed**), then each
+  frame sets x/y/rotation/image_index/visible from
+  `session.sample_ghost(nid)` and copies whitelisted `ghost_vars`.
+  `leave_game` marks ghosts `to_destroy` and clears `synced`/`ghosts`.
+  `tests/test_multiplayer_lan_ghosts.py` (6, **two real GameRunners** over
+  `multiplayer_lan_1` on a real socket: spawn→ghost, ghost tracks a moving
+  host instance, host destroy→ghost gone, client `network_spawn` no-op,
+  create suppressed, `set_sync_rate` tunes the session). Full suite
+  **4087 passed, 0 failed**. Landed `c5b34146`.
 - [ ] 5.4c **`sync_instance` + ownership**: `sync_instance` (mark a
   room-loaded object synced), `set_instance_owner` / `is_instance_owner`,
   `bind_network_input` / `remote_input`, the `own` client→host frame and
