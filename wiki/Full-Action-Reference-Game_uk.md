@@ -191,6 +191,20 @@
 |-----------|------|---------|-------|
 | `color` | Колір | `#000000` | Колір RGB у шістнадцятковому форматі |
 
+### Load Game
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `load_game` |
+| **Значок** | 📂 |
+| **Категорія** | Гра |
+
+Restore room, score/lives/health, global variables, and instance states from a save file
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `filename` | Текст | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+
 ### Відкрити вебсторінку
 
 | Властивість | Значення |
@@ -216,6 +230,20 @@
 Перезапустити гру зі стартової кімнати
 
 *Параметри:* немає
+
+### Save Game
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `save_game` |
+| **Значок** | 💾 |
+| **Категорія** | Гра |
+
+Save the current room, score/lives/health, global variables, and instance states to a file
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `filename` | Текст | `savegame.sav` | Save file name (written to the project's saves/ folder) |
 
 ### Задати прозорість
 
@@ -319,6 +347,49 @@
 |-----------|------|---------|-------|
 | `message` | Текст | `Hello!` | Текст повідомлення |
 
+### Show Video
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `show_video` |
+| **Значок** | 🎬 |
+| **Категорія** | Гра |
+
+Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `filename` | Текст | — | Path to the video file |
+| `fullscreen` | Так/Ні | Ні | Request fullscreen playback (support depends on your system's player); необов'язково |
+
+### Splash: Show Image
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `splash_show_image` |
+| **Значок** | 🖼️ |
+| **Категорія** | Гра |
+
+Show a sprite full-screen and pause the game until the player dismisses it
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `image` | Спрайт | — | Sprite to display full-screen |
+
+### Splash: Show Text
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `splash_show_text` |
+| **Значок** | 💬 |
+| **Категорія** | Гра |
+
+Show a message and pause the game until the player dismisses it
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `text` | Текст | — | Message to display |
+
 ---
 
 ## Інші Категорії
@@ -327,11 +398,13 @@
 - [Екземпляр](Full-Action-Reference-Instance_uk) (12)
 - [Рахунок](Full-Action-Reference-Score_uk) (11)
 - [Кімната](Full-Action-Reference-Room_uk) (13)
-- [Час](Full-Action-Reference-Timing_uk) (2)
+- [Час](Full-Action-Reference-Timing_uk) (8)
 - [Аудіо](Full-Action-Reference-Audio_uk) (6)
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
-- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (4)
+- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (16)
+- [Particles](Full-Action-Reference-Particles_uk) (8)
+- [Réseau](Full-Action-Reference-Network-Actions_uk) (15)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

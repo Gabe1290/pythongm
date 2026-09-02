@@ -191,6 +191,20 @@
 |-----------|------|---------|-------|
 | `color` | Цвет | `#000000` | Цвет RGB в шестнадцатеричном формате |
 
+### Load Game
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `load_game` |
+| **Значок** | 📂 |
+| **Категория** | Игра |
+
+Restore room, score/lives/health, global variables, and instance states from a save file
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `filename` | Текст | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+
 ### Открыть веб-страницу
 
 | Свойство | Значение |
@@ -216,6 +230,20 @@
 Перезапустить игру со стартовой комнаты
 
 *Параметры:* нет
+
+### Save Game
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `save_game` |
+| **Значок** | 💾 |
+| **Категория** | Игра |
+
+Save the current room, score/lives/health, global variables, and instance states to a file
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `filename` | Текст | `savegame.sav` | Save file name (written to the project's saves/ folder) |
 
 ### Задать прозрачность
 
@@ -319,6 +347,49 @@
 |-----------|------|---------|-------|
 | `message` | Текст | `Hello!` | Текст сообщения |
 
+### Show Video
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `show_video` |
+| **Значок** | 🎬 |
+| **Категория** | Игра |
+
+Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `filename` | Текст | — | Path to the video file |
+| `fullscreen` | Да/Нет | Нет | Request fullscreen playback (support depends on your system's player); необязательно |
+
+### Splash: Show Image
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `splash_show_image` |
+| **Значок** | 🖼️ |
+| **Категория** | Игра |
+
+Show a sprite full-screen and pause the game until the player dismisses it
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `image` | Спрайт | — | Sprite to display full-screen |
+
+### Splash: Show Text
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `splash_show_text` |
+| **Значок** | 💬 |
+| **Категория** | Игра |
+
+Show a message and pause the game until the player dismisses it
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `text` | Текст | — | Message to display |
+
 ---
 
 ## Другие Категории
@@ -327,11 +398,13 @@
 - [Экземпляр](Full-Action-Reference-Instance_ru) (12)
 - [Счёт](Full-Action-Reference-Score_ru) (11)
 - [Комната](Full-Action-Reference-Room_ru) (13)
-- [Время](Full-Action-Reference-Timing_ru) (2)
+- [Время](Full-Action-Reference-Timing_ru) (8)
 - [Аудио](Full-Action-Reference-Audio_ru) (6)
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [Виды](Full-Action-Reference-Views_ru) (2)
-- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (4)
+- [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (16)
+- [Particles](Full-Action-Reference-Particles_ru) (8)
+- [Réseau](Full-Action-Reference-Network-Actions_ru) (15)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

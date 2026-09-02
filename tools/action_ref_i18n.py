@@ -82,6 +82,9 @@ CATEGORIES_FR = {
     "Movement": "Mouvement", "Instance": "Instance", "Score": "Score", "Room": "Salle",
     "Timing": "Minuterie", "Audio": "Audio", "Game": "Jeu", "Control": "Contrôle",
     "Grid": "Grille", "Views": "Vues", "3D View": "Vue 3D",
+    # "Réseau" (LAN multiplayer) IS already French -- identity entry, same
+    # reasoning as the ACTIONS_FR Réseau block above.
+    "Réseau": "Réseau",
     # Event categories (events.event_types.EventType.category) — distinct
     # from the action categories above, shared with tools/gen_preset_docs.py.
     "Object": "Objet", "Input": "Entrée", "Collision": "Collision",
@@ -228,7 +231,29 @@ ACTIONS_FR = {
     "set_room_persistent": {"display": "Définir la persistance de la salle", "desc": "Si la salle actuelle conserve son état actif (positions des instances, instances détruites, etc.) quand le joueur la quitte puis y revient, au lieu de la reconstruire entièrement depuis sa disposition d'origine à chaque visite"},
     "set_background_color": {"display": "Définir la couleur d'arrière-plan", "desc": "Changer la couleur d'arrière-plan de la salle actuelle"},
     "set_background": {"display": "Définir l'arrière-plan", "desc": "Définir l'image d'arrière-plan de la salle actuelle, avec des options de répétition et de défilement"},
+    # -- Réseau (LAN multiplayer, docs/MULTIPLAYER_LAN_V2_PLAN.md Phase 7.4) --
+    # extensions/multiplayer_lan/actions.py is authored French-first (its
+    # display_name/description ARE the live French UI text, unlike every
+    # other category's English-sourced actions) -- these are identity
+    # copies of that source text, registered here so gen_action_reference.py
+    # never reports them as "missing" a French translation.
+    "host_game": {"display": "Héberger une partie", "desc": "Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = \"host\"."},
+    "join_game": {"display": "Rejoindre une partie", "desc": "Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo."},
+    "leave_game": {"display": "Quitter la partie", "desc": "Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales."},
+    "start_networked_game": {"display": "Démarrer la partie en réseau", "desc": "Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines."},
+    "set_shared_var": {"display": "Définir une variable partagée", "desc": "Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.<nom>."},
+    "get_shared_var": {"display": "Lire une variable partagée", "desc": "Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.<nom> directement."},
+    "send_network_message": {"display": "Envoyer un message réseau", "desc": "Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender."},
+    "network_spawn": {"display": "Créer un objet réseau", "desc": "Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1."},
+    "sync_instance": {"display": "Synchroniser cette instance", "desc": "Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote."},
+    "set_instance_owner": {"display": "Définir le propriétaire de l'instance", "desc": "Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1)."},
+    "is_instance_owner": {"display": "Si je pilote cette instance", "desc": "Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur."},
+    "bind_network_input": {"display": "Associer une touche réseau", "desc": "Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées (\"left\", \"right\", \"up\", \"down\", \"space\")."},
+    "remote_input": {"display": "Si le joueur appuie", "desc": "Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar."},
+    "set_sync_rate": {"display": "Régler la fréquence de synchro", "desc": "Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai)."},
+    "set_network_mode": {"display": "Set Network Mode (v1)", "desc": "Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client."},
 }
+
 
 ACTIONS_DE = {
     "move_grid": {"display": "Auf Gitter bewegen", "desc": "Um eine Gittereinheit in die angegebene Richtung bewegen"},
@@ -569,6 +594,40 @@ NOTES_FR = {
     "Target frames per second (1-240)": "Images par seconde cibles (1-240)",
     "Vertical auto-scroll speed in pixels/frame": "Vitesse de défilement automatique vertical en pixels/image",
     "Whether the background color is visible (off fills black instead)": "Si la couleur d'arrière-plan est visible (désactivé remplit en noir à la place)",
+    # Réseau (LAN multiplayer) param notes -- identity entries: the SOURCE
+    # text (extensions/multiplayer_lan/actions.py) is already French (see
+    # the ACTIONS_FR comment above), so Tr.note() looks up the French text
+    # as its own key. Registered explicitly (rather than relying on the
+    # "missing -> return source unchanged" fallback) so gen_action_reference.py
+    # doesn't report these as missing on an fr regen.
+    "Nom affiché dans la liste des serveurs (découverte réseau, Phase 6)": "Nom affiché dans la liste des serveurs (découverte réseau, Phase 6)",
+    "Nombre maximal de joueurs, hôte compris (2 à 16)": "Nombre maximal de joueurs, hôte compris (2 à 16)",
+    "Port TCP -- doit être identique chez l'hôte et les clients": "Port TCP -- doit être identique chez l'hôte et les clients",
+    "Nom de ce joueur (vide = global.player_name, ou « Joueur »)": "Nom de ce joueur (vide = global.player_name, ou « Joueur »)",
+    "Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie": "Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie",
+    "Adresse IP LAN de l'hôte (\"auto\" = écran de connexion intégré, Phase 6)": "Adresse IP LAN de l'hôte (\"auto\" = écran de connexion intégré, Phase 6)",
+    "Port TCP -- doit correspondre à celui de l'hôte": "Port TCP -- doit correspondre à celui de l'hôte",
+    "Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur": "Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur",
+    "Nombre, texte ou booléen (les objets complexes sont refusés)": "Nombre, texte ou booléen (les objets complexes sont refusés)",
+    "Nom de la variable partagée à lire": "Nom de la variable partagée à lire",
+    "Nom de la variable globale où écrire la valeur": "Nom de la variable globale où écrire la valeur",
+    "Étiquette libre que le gestionnaire teste (ex. \"buzz\", \"reponse\")": "Étiquette libre que le gestionnaire teste (ex. \"buzz\", \"reponse\")",
+    "Nombre, texte, booléen ou petite liste": "Nombre, texte, booléen ou petite liste",
+    "all = tout le monde ; host = l'hôte seulement": "all = tout le monde ; host = l'hôte seulement",
+    "Type d'objet à créer": "Type d'objet à créer",
+    "Joueur qui pilote l'instance (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».": "Joueur qui pilote l'instance (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».",
+    "Position relative à l'objet qui exécute l'action": "Position relative à l'objet qui exécute l'action",
+    "Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. \"hp, couleur\")": "Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. \"hp, couleur\")",
+    "Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».": "Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».",
+    "Étiquette libre (ex. \"jump\", \"tir\")": "Étiquette libre (ex. \"jump\", \"tir\")",
+    "Nom de touche : \"space\", \"left\", \"a\", \"5\", \"lshift\"...": "Nom de touche : \"space\", \"left\", \"a\", \"5\", \"lshift\"...",
+    "Numéro de joueur (0 = hôte)": "Numéro de joueur (0 = hôte)",
+    "L'entrée nommée à tester (ex. \"jump\")": "L'entrée nommée à tester (ex. \"jump\")",
+    "10-30 convient sur un réseau local (défaut 20)": "10-30 convient sur un réseau local (défaut 20)",
+    "Retard d'affichage des fantômes, en millisecondes (défaut 100)": "Retard d'affichage des fantômes, en millisecondes (défaut 100)",
+    "Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte": "Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte",
+    "Adresse IP LAN de l'hôte (mode Client uniquement)": "Adresse IP LAN de l'hôte (mode Client uniquement)",
+    "Port TCP -- doit être identique chez l'hôte et le client": "Port TCP -- doit être identique chez l'hôte et le client",
 }
 
 # --------------------------------------------------------------------------- #
@@ -3316,6 +3375,141 @@ EVENTS_SL = {
     "no_more_lives": {"desc": "Izvede se, ko življenja dosežejo 0 ali manj"},
     "no_more_health": {"desc": "Izvede se, ko zdravje doseže 0 ali manj"},
     "animation_end": {"desc": "Sproži se, ko animacija sličice doseže zadnjo sličico in se ponovi"},
+}
+
+# --------------------------------------------------------------------------- #
+# EN_OVERRIDES -- English translations for the one action module NOT authored
+# English-first: extensions/multiplayer_lan/actions.py's display_name/
+# description/ActionParameter.description are the live French UI text
+# (docs/MULTIPLAYER_LAN_V2_PLAN.md Phase 7.4). Every other action's "en"
+# edition is a pass-through of its own (English) source text -- gen_action_
+# reference.py's Tr.display()/Tr.desc()/Tr.note() consult this table ONLY
+# when lang == "en", keyed by action name (display/desc) or by
+# (action_name, param_name) (notes, since a French source string has no
+# natural English key other languages' NOTES_XX tables could share).
+# --------------------------------------------------------------------------- #
+
+EN_OVERRIDES = {
+    "categories": {
+        "Réseau": "Network",
+    },
+    "actions": {
+        "host_game": {
+            "display": "Host Game",
+            "desc": "Become the host of a LAN multiplayer game: other players connect to this machine. Call once (e.g. in the room controller's Create event). Sets global.player_id = 0 and global.network_role = \"host\".",
+        },
+        "join_game": {
+            "display": "Join Game",
+            "desc": "Connect to a LAN multiplayer game hosted by another machine. global.player_id will be set by the host (1, 2, ...). If the host can't be reached, the game continues single-player.",
+        },
+        "leave_game": {
+            "display": "Leave Game",
+            "desc": "Disconnect (or stop hosting) and clear the network global variables.",
+        },
+        "start_networked_game": {
+            "display": "Start Networked Game",
+            "desc": "Host only: move everyone out of the waiting lobby and start the game. Fires the \"Network Game Started\" event on every machine.",
+        },
+        "set_shared_var": {
+            "display": "Set Shared Variable",
+            "desc": "Write a variable shared by every machine. On the host: applied immediately. On a client: sent as a request to the host. Readable everywhere via global.<name>.",
+        },
+        "get_shared_var": {
+            "display": "Get Shared Variable",
+            "desc": "Copy a shared variable into a global variable (to use it in a calculation). Equivalent to reading global.<name> directly.",
+        },
+        "send_network_message": {
+            "display": "Send Network Message",
+            "desc": "Broadcast a custom message. Fires the \"Network Message\" event on the machines it reaches, with global.network_event / global.network_data / global.network_sender.",
+        },
+        "network_spawn": {
+            "display": "Create Networked Instance",
+            "desc": "Host only: create an instance that automatically appears on every client (as interpolated \"ghosts\"). No effect on a client. The created instance is driven by the host -- guard its game logic with global.is_host == 1.",
+        },
+        "sync_instance": {
+            "display": "Sync This Instance",
+            "desc": "Mark the instance running this action as \"synced\": its position, rotation, image, and visibility replicate to every machine. Call it in the Create event. The host owns it by default -- use \"Set Instance Owner\" to let a client drive it.",
+        },
+        "set_instance_owner": {
+            "display": "Set Instance Owner",
+            "desc": "Assign which player drives this synced instance (0 = host, 1, 2, ... = clients). On that player's machine, the instance runs locally (responsive) and its state is reported back to the host; everywhere else it's an interpolated ghost. Call it on the host (guarded by global.is_host == 1).",
+        },
+        "is_instance_owner": {
+            "display": "If I Own This Instance",
+            "desc": "Condition: true if THIS machine owns the synced instance. Place it before a block so control logic only runs on the right player's machine.",
+        },
+        "bind_network_input": {
+            "display": "Bind Network Input",
+            "desc": "Map a local key to a \"named input\" reported to the host. The host then tests it with \"If Player Presses\". The arrow keys and Space are already bound (\"left\", \"right\", \"up\", \"down\", \"space\").",
+        },
+        "remote_input": {
+            "display": "If Player Presses",
+            "desc": "Condition (on the host): true if the given player is holding the named input. Lets the host react to a client's keys without owning its avatar.",
+        },
+        "set_sync_rate": {
+            "display": "Set Sync Rate",
+            "desc": "Tune the host's snapshot rate and the clients' interpolation delay. Call it once on the host (and on clients for the delay).",
+        },
+        "set_network_mode": {
+            "display": "Set Network Mode (v1)",
+            "desc": "Older low-level action: starts the room as host or client (spectator only -- the client's input has no effect). Prefer \"Host Game\" / \"Join Game\". Kept for existing projects and the --net-host / --net-client flags.",
+        },
+    },
+    "notes": {
+        "host_game": {
+            "game_name": "Name shown in the server list (network discovery, Phase 6)",
+            "max_players": "Maximum number of players, including the host (2 to 16)",
+            "port": "TCP port -- must match on the host and every client",
+            "player_name": "This player's name (empty = global.player_name, or \"Player\")",
+            "show_lobby": "Show a \"Waiting for players...\" screen with a Start button before the game begins",
+        },
+        "join_game": {
+            "host": "The host's LAN IP address (\"auto\" = the built-in connect screen, Phase 6)",
+            "port": "TCP port -- must match the host's",
+            "player_name": "This player's name (empty = global.player_name, or \"Player\")",
+        },
+        "set_shared_var": {
+            "name": "A plain identifier (letters, digits, _) -- no spaces or operators",
+            "value": "A number, text, or boolean (complex objects are rejected)",
+        },
+        "get_shared_var": {
+            "name": "Name of the shared variable to read",
+            "into": "Name of the global variable to write the value into",
+        },
+        "send_network_message": {
+            "event": "A free-form label the handler tests for (e.g. \"buzz\", \"answer\")",
+            "data": "A number, text, boolean, or small list",
+            "target": "all = everyone; host = the host only",
+        },
+        "network_spawn": {
+            "object": "Object type to create",
+            "owner": "Player who drives the instance (0 = host). Often global.network_sender inside \"Player Joined\".",
+            "relative": "Position relative to the object running the action",
+        },
+        "sync_instance": {
+            "vars": "Names of instance variables to also replicate, comma-separated (e.g. \"hp, color\")",
+        },
+        "set_instance_owner": {
+            "player": "Player number (0 = host). Often global.network_sender inside \"Player Joined\".",
+        },
+        "bind_network_input": {
+            "name": "A free-form label (e.g. \"jump\", \"fire\")",
+            "key": "Key name: \"space\", \"left\", \"a\", \"5\", \"lshift\"...",
+        },
+        "remote_input": {
+            "player": "Player number (0 = host)",
+            "name": "The named input to test (e.g. \"jump\")",
+        },
+        "set_sync_rate": {
+            "hz": "10-30 works well on a LAN (default 20)",
+            "interp_ms": "Ghost display delay, in milliseconds (default 100)",
+        },
+        "set_network_mode": {
+            "mode": "Host = others connect to you; Client = you connect to a host",
+            "host": "The host's LAN IP address (Client mode only)",
+            "port": "TCP port -- must match on the host and the client",
+        },
+    },
 }
 
 LANGS = {

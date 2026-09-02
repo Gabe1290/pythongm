@@ -1,6 +1,6 @@
 # Extensions
 
-*[Accueil](Home_fr) | [Vue 3D](3D-View_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
+*[Accueil](Home_fr) | [Vue 3D](3D-View_fr) | [Réseau](Network_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
 
 ---
 
@@ -15,7 +15,11 @@ PyGameMaker sans modifier le moteur de base. Une extension peut apporter :
 
 L'extension intégrée **2.5D Raycast** (la fonctionnalité [Vue 3D](3D-View_fr)) est
 l'exemple de référence : elle ajoute quatre actions « Vue 3D » et un moteur de
-rendu à la première personne, et elle s'exporte vers les trois cibles.
+rendu à la première personne, et elle s'exporte vers les trois cibles. L'extension
+intégrée **Réseau (multijoueur LAN)** (la fonctionnalité [Réseau](Network_fr))
+est une seconde extension, plus grande : elle ajoute 15 actions « Réseau » et
+six événements, et met un jeu en réseau sur le réseau local depuis l'export
+ordinateur (en hôte ou en client) et l'export HTML5 (en client).
 
 ---
 
@@ -91,6 +95,7 @@ l'extension exacte lorsqu'un projet a besoin d'une extension désactivée.
 
 ## Voir aussi
 
-- [Vue 3D](3D-View_fr) — la fonctionnalité fournie par l'extension intégrée
+- [Vue 3D](3D-View_fr) — la fonctionnalité fournie par l'extension 2.5D Raycast
+- [Réseau](Network_fr) — la fonctionnalité fournie par l'extension Réseau (multijoueur LAN)
 - [Référence Complète des Actions](Full-Action-Reference_fr) — les actions d'extension y figurent aussi
 - [Exporter des Jeux](Exportation_fr) — les fonctionnalités d'extension sont conservées dans les exports

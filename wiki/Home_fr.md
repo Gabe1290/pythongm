@@ -22,7 +22,7 @@ PyGameMaker utilise des **préréglages** pour contrôler quels événements et 
 |------------|------------|-----------------|
 | [**Débutant**](Beginner-Preset_fr) | Nouveaux en développement de jeux | L'essentiel — mouvement, collisions, score, salles |
 | [**Intermédiaire**](Intermediate-Preset_fr) | Quelques connaissances | Ajoute vies, santé, son, alarmes, dessin |
-| **Avancé (Complet)** | Utilisateurs expérimentés | Tout — les 37 événements et 109 actions |
+| **Avancé (Complet)** | Utilisateurs expérimentés | Tout — les 37 événements et 159 actions |
 
 **Nouveaux utilisateurs:** Commencez avec le [Préréglage Débutant](Beginner-Preset_fr) pour apprendre les bases sans être submergé.
 
@@ -38,6 +38,7 @@ Consultez le [Guide des Préréglages](Preset-Guide_fr) pour un aperçu complet 
 | **Système Événements-Actions** | Logique événementielle compatible GameMaker 7.0 |
 | **Préréglages par Niveau** | Ensembles de fonctionnalités Débutant, Intermédiaire et Avancé |
 | **Vue 2.5D / Première personne** | Rendu optionnel par lancer de rayons façon Doom/Wolfenstein — voir [Vue 3D](3D-View_fr) |
+| **Multijoueur LAN** | Héberger/rejoindre une partie sur le réseau local, variables partagées et avatars en réseau — voir [Réseau](Network_fr) |
 | **Export Multi-Plateforme** | Windows EXE, application macOS, HTML5, Linux, Kivy (mobile/bureau) |
 | **Gestion des Ressources** | Sprites, sons, arrière-plans, polices et salles |
 | **Interface Multilingue** | Anglais, Français, Allemand, Italien, Espagnol, Portugais, Slovène, Ukrainien, Russe |
@@ -99,13 +100,14 @@ Déclencheurs qui exécutent des actions lorsque des conditions spécifiques se 
 Consultez la [Référence des Événements](Event-Reference_fr) pour la documentation complète.
 
 ### Actions
-Opérations effectuées quand les événements se déclenchent. **109** actions intégrées pour:
+Opérations effectuées quand les événements se déclenchent. **159** actions intégrées pour:
 - Mouvement et physique
 - Dessin et sprites
 - Score, vies et santé
 - Son et musique
 - Gestion des instances et salles
 - Vue 3D (rendu à la première personne par lancer de rayons)
+- Réseau (multijoueur LAN)
 
 Consultez la [Référence Complète des Actions](Full-Action-Reference_fr) pour la liste complète et toujours à jour.
 
@@ -183,7 +185,8 @@ nom_du_projet/
 
 ### Fonctionnalités Avancées
 - [Vue 3D](3D-View_fr) - Rendu à la première personne façon Doom (lancer de rayons)
-- [Extensions](Extensions_fr) - Actions et moteurs de rendu additionnels (comment la Vue 3D est fournie)
+- [Réseau](Network_fr) - Multijoueur LAN : héberger/rejoindre, variables partagées, avatars en réseau
+- [Extensions](Extensions_fr) - Actions et moteurs de rendu additionnels (comment la Vue 3D et le Réseau sont fournis)
 
 ### Guides
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu

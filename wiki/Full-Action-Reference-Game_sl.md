@@ -191,6 +191,20 @@ Zapolni celotno območje prikaza z enotno barvo
 |-----------|------|---------|-------|
 | `color` | Barva | `#000000` | Šestnajstiška barva RGB |
 
+### Load Game
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `load_game` |
+| **Ikona** | 📂 |
+| **Kategorija** | Igra |
+
+Restore room, score/lives/health, global variables, and instance states from a save file
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `filename` | Besedilo | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+
 ### Odpri spletno stran
 
 | Lastnost | Vrednost |
@@ -216,6 +230,20 @@ Odpri URL v privzetem brskalniku
 Znova zaženi igro iz začetne sobe
 
 *Parametri:* brez
+
+### Save Game
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `save_game` |
+| **Ikona** | 💾 |
+| **Kategorija** | Igra |
+
+Save the current room, score/lives/health, global variables, and instance states to a file
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `filename` | Besedilo | `savegame.sav` | Save file name (written to the project's saves/ folder) |
 
 ### Nastavi prosojnost
 
@@ -319,6 +347,49 @@ Prikaži sporočilo
 |-----------|------|---------|-------|
 | `message` | Besedilo | `Hello!` | Besedilo sporočila |
 
+### Show Video
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `show_video` |
+| **Ikona** | 🎬 |
+| **Kategorija** | Igra |
+
+Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `filename` | Besedilo | — | Path to the video file |
+| `fullscreen` | Da/Ne | Ne | Request fullscreen playback (support depends on your system's player); neobvezno |
+
+### Splash: Show Image
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `splash_show_image` |
+| **Ikona** | 🖼️ |
+| **Kategorija** | Igra |
+
+Show a sprite full-screen and pause the game until the player dismisses it
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `image` | Sprite | — | Sprite to display full-screen |
+
+### Splash: Show Text
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `splash_show_text` |
+| **Ikona** | 💬 |
+| **Kategorija** | Igra |
+
+Show a message and pause the game until the player dismisses it
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `text` | Besedilo | — | Message to display |
+
 ---
 
 ## Druge Kategorije
@@ -327,11 +398,13 @@ Prikaži sporočilo
 - [Instanca](Full-Action-Reference-Instance_sl) (12)
 - [Rezultat](Full-Action-Reference-Score_sl) (11)
 - [Soba](Full-Action-Reference-Room_sl) (13)
-- [Čas](Full-Action-Reference-Timing_sl) (2)
+- [Čas](Full-Action-Reference-Timing_sl) (8)
 - [Zvok](Full-Action-Reference-Audio_sl) (6)
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
-- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (4)
+- [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
+- [Particles](Full-Action-Reference-Particles_sl) (8)
+- [Réseau](Full-Action-Reference-Network-Actions_sl) (15)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)
