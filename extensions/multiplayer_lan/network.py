@@ -311,6 +311,11 @@ class NetworkClient:
         frames, self._inbox = self._inbox, []
         return frames
 
+    def flush(self) -> None:
+        """Retry any queued outbound and read pending inbound (into the
+        buffer for the next ``poll``/``take_frames``). Never blocks."""
+        self._pump()
+
     def send(self, msg: dict) -> None:
         """Queue a frame to the host and try to flush immediately."""
         if self._sock is None:

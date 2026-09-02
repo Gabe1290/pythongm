@@ -557,11 +557,22 @@ each phase self-contained.
   Full rationale in "Core changes" above (decided 2026-09-02, doc-only).
 
 ### Phase 5 — session layer + student API
-- [ ] 5.1 `session.py` (new): `NetworkSession` binding transport +
-  replication to a `GameRunner`; host slot assignment, roster, shared
-  store, inbound drain in `before_step`, snapshot send in `after_update`,
-  fires the `PLUGIN_EVENTS`. Rework the v1 `_frame_update_*` functions to
-  delegate to it. Session loopback tests.
+- [x] 5.1 `session.py` (new): `NetworkSession` (Tier A core) —
+  **GameRunner-agnostic** so it's testable over a real `127.0.0.1`
+  socket with no engine. Owns: host slot assignment (host=0, clients 1..N
+  up to `max_players`≤16) + roster, `PROTO_VER` handshake (mismatch →
+  `bye`), a shared-var blackboard (host-authoritative; client writes are
+  `shared_set` requests; values through `sanitize_value`, names through
+  `is_valid_shared_name`), custom messages (`send_message`, server-
+  assigned sender, `target=all` relayed to other clients), `start_game`,
+  and a `take_events()` queue of `(name, *payload)` for the engine glue
+  to fire (`player_joined/left`, `network_started/game_started`,
+  `network_message`, `connection_lost`). `pump_before_step()` drains
+  inbound; `pump_after_update()` sends a host snapshot every `_SNAP_EVERY`
+  (≈20 Hz) or immediately on a shared-var change. `NetworkClient.flush()`
+  added (one line). INPUT/OWN frames accepted and ignored (Tier B).
+  `tests/test_multiplayer_lan_session.py` (16, real loopback). The
+  handlers glue + `_frame_update_*` delegation is 5.2, not here. Landed `f3fe6d95`.
 - [ ] 5.2 `actions.py` + `handlers.py`: Tier A actions (`host_game`,
   `join_game`, `leave_game`, `set_shared_var`, `get_shared_var`,
   `send_network_message`, `start_networked_game`) + conditions
