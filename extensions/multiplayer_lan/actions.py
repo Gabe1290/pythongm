@@ -147,6 +147,47 @@ PLUGIN_ACTIONS = {
                 description="all = tout le monde ; host = l'hôte seulement"),
         ],
     ),
+    # -- Tier B: networked instances -------------------------------
+    "network_spawn": ActionType(
+        name="network_spawn",
+        display_name="Créer un objet réseau",
+        description="Hôte uniquement : créer une instance qui apparaît "
+                    "automatiquement chez tous les clients (comme des « fantômes » "
+                    "interpolés). Sans effet chez un client. L'instance créée est "
+                    "pilotée par l'hôte -- guardez sa logique de jeu par "
+                    "global.is_host == 1.",
+        category=_CATEGORY,
+        icon="✨",
+        parameters=[
+            ActionParameter(name="object", display_name="Objet", param_type="object",
+                default_value="", description="Type d'objet à créer"),
+            ActionParameter(name="x", display_name="X", param_type="string",
+                default_value="0"),
+            ActionParameter(name="y", display_name="Y", param_type="string",
+                default_value="0"),
+            ActionParameter(name="relative", display_name="Relatif",
+                param_type="boolean", default_value=False, required=False,
+                description="Position relative à l'objet qui exécute l'action"),
+        ],
+    ),
+    "set_sync_rate": ActionType(
+        name="set_sync_rate",
+        display_name="Régler la fréquence de synchro",
+        description="Ajuster la cadence des instantanés de l'hôte et le délai "
+                    "d'interpolation des clients. À appeler une fois chez l'hôte "
+                    "(et chez les clients pour le délai).",
+        category=_CATEGORY,
+        icon="⏱️",
+        parameters=[
+            ActionParameter(name="hz", display_name="Instantanés / seconde",
+                param_type="number", default_value=20, required=False,
+                description="10-30 convient sur un réseau local (défaut 20)"),
+            ActionParameter(name="interp_ms", display_name="Interpolation (ms)",
+                param_type="number", default_value=100, required=False,
+                description="Retard d'affichage des fantômes, en millisecondes "
+                            "(défaut 100)"),
+        ],
+    ),
     # -- v1 back-compat -----------------------------------------------
     "set_network_mode": ActionType(
         name="set_network_mode",
