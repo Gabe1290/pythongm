@@ -1,10 +1,14 @@
 # Plan: `raycast_2` — a "Level 2" for the Doom-style raycast sample
 
-Status: **PLAN (2026-07-19).** Not started. This is a **sample-authoring**
-project, not engine work — the raycast 2.5D engine is fully complete on all
-three targets (walls, panning sky, textured floor casting, occlusion-clipped
-billboards; see `RAYCAST_2_5D_PLAN.md`, closed). `raycast_2` showcases
-mechanics `raycast_1` doesn't, using only features that already exist.
+Status: **DONE (2026-07-19), all 6 units** — corrected 2026-09-02; this
+line previously said "PLAN. Not started," stale from the moment this same
+doc's own Units 1–6 shipped the very next session. This was a
+**sample-authoring** project, not engine work — the raycast 2.5D engine
+was already fully complete on all three targets (walls, panning sky,
+textured floor casting, occlusion-clipped billboards; see
+`RAYCAST_2_5D_PLAN.md`, closed). `raycast_2` showcases mechanics
+`raycast_1` doesn't, using only features that already existed. See
+`docs/PROJECT_STATUS.md` for the current overall picture.
 
 ## Concept
 

@@ -1,11 +1,14 @@
 # Plan: GMK importer hardening (deferred-items plan Tier 3, item 8)
 
-Status: **planned, not started.** Written 2026-07-16 at 72% session usage
-with ~1h25 until the next session window, specifically so Tier 3 can be
-picked up cold next session per `CLAUDE.md`'s "write the plan/registry to
-a file and commit it first" guidance for big jobs. Tier 1 and Tier 2 of
-`docs/DEFERRED_ITEMS_PLAN.md` are fully closed (see that file); this is
-the detail doc for Tier 3's highest-value item.
+Status: **DONE (2026-07-16)** — corrected 2026-09-02; this line
+previously said "planned, not started," stale against the doc's own body
+and against `TODO.md`'s "GMK importer hardening — ✅ DONE" entry.
+`treasure` and `maze_4` are both back in the bundled sample set. Written
+2026-07-16 at 72% session usage with ~1h25 until the next session window,
+specifically so Tier 3 could be picked up cold next session per
+`CLAUDE.md`'s "write the plan/registry to a file and commit it first"
+guidance for big jobs. See `docs/PROJECT_STATUS.md` for the current
+overall picture.
 
 ## Goal
 

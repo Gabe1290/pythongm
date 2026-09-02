@@ -1,5 +1,12 @@
 # In-app Tutorials i18n — Section L of `docs/I18N_CLEANUP_2026-08-06.md`
 
+> **DONE.** This doc's own closing "final pass ... not yet done" caveat
+> (opening the Tutorial panel in the running IDE and confirming each
+> lesson renders) was closed afterward by
+> `tests/test_tutorial_panel_i18n_verification.py` — written after this
+> doc, so it was never updated here. See `docs/PROJECT_STATUS.md` for the
+> current picture.
+
 Companion plan for the two Section L sub-problems: adding the missing
 `09_catch_the_coins` lesson to de/es/it/ru/sl/uk, and building
 `Tutorials/pt/` from scratch. Written now that this tier is actually being

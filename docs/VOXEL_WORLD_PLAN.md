@@ -1,5 +1,12 @@
 # Voxel World extension — plan
 
+> **DONE — this is the origin plan for what shipped as `extensions/
+> block_world/`.** Units 7-10 (sample + HTML5/Kivy export parity) landed
+> too; see `docs/BLOCK_WORLD_EDITOR_PLAN.md` and
+> `docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md` for the two follow-on
+> plans, both also done. See `docs/PROJECT_STATUS.md` for the current
+> picture.
+
 Status: **Phases 0 through 6 all done (2026-08-14). The plan is complete** —
 see "Finishing the plan" below for Units 7-10 (the sample + HTML5/Kivy export
 parity), the last pieces to land.
