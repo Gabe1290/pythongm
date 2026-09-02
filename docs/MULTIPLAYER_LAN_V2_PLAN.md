@@ -1,24 +1,27 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **Phases 4–6, 7.1, and 8.1/8.2/8.3/8.5/8.6 DONE.** Written and
+Status: **Phases 4–6, 7.1–7.2, and 8.1/8.2/8.3/8.5/8.6 DONE.** Written and
 mostly executed 2026-09-02. The full student-facing API — Tier A (shared
 blackboard: shared variables, custom messages, player identity, `Réseau`
 events) and Tier B (networked instances: `network_spawn` + interpolated
 ghosts, `sync_instance`, validated client-owned avatars, named input) —
-is on `main`, plus UDP discovery + the built-in French connect/lobby
-screen (Phase 6), a hand-rolled WebSocket listener so the host also
-accepts HTML5-exported browser clients (7.1), three samples (`reseau_1`–
-`3`, 8.1–8.3), a real two-subprocess smoke tool (8.5), and graceful
-host-loss teardown (8.6). Covered by ~480 tests, including real two-
-`GameRunner`-over-a-socket coverage for every replication path and a
-real-socket WebSocket protocol-conformance suite. v2 added **one** small
-core fix (`_eval_bool_expression` gained `global.X` support — a
-previously-undiscovered bug the whole "if is_host(): ..." authoring
-pattern depends on) on top of v1's frame-update hook; the transport and
-session layers remain zero-core-change extension code. **Open:** Phase
-7.2–7.4 (the browser-side HTML5 export client, Kivy no-op parity, wiki
-docs), 8.4 (`reseau_4`, optional), 8.7 (close this doc). See the
-checklist near the end.
+is on `main` for desktop, plus UDP discovery + the built-in French
+connect/lobby screen (Phase 6), a hand-rolled WebSocket listener so the
+host also accepts HTML5-exported browser clients (7.1) with a browser-
+side client that joins and plays Tier A + views Tier B ghosts (7.2),
+three samples (`reseau_1`–`3`, 8.1–8.3), a real two-subprocess smoke tool
+(8.5), and graceful host-loss teardown (8.6). Covered by ~500 tests,
+including real two-`GameRunner`-over-a-socket coverage for every
+replication path, a real-socket WebSocket protocol-conformance suite,
+and HTML5 export structural/parity coverage. v2 added **one** small core
+fix (`_eval_bool_expression` gained `global.X` support — a previously-
+undiscovered bug the whole "if is_host(): ..." authoring pattern depends
+on) plus **one** small generic HTML5-engine addition
+(`registerFrameUpdate`, a third extension registry alongside Stage C's
+room-renderer/action registries) on top of v1's frame-update hook; the
+transport and session layers remain zero-core-change extension code.
+**Open:** 7.3–7.4 (Kivy no-op parity, wiki docs), 8.4 (`reseau_4`,
+optional), 8.7 (close this doc). See the checklist near the end.
 
 ## Where this comes from
 
@@ -825,9 +828,74 @@ each phase self-contained.
   `NetworkSession(mode="host")` end-to-end hello/welcome exchange over a
   real WS connection — the plan's own "loopback test with a minimal
   in-test WS client." Full suite 4201 → 4213 passed, 0 failed.
-- [ ] 7.2 `export_html5.js`: the browser client (client-only), injected
+- [x] 7.2 `export_html5.js`: the browser client (client-only), injected
   via the existing extension-JS marker. Structural parity test
-  (`sanitize_value` + snapshot shape desktop vs. JS).
+  (`sanitize_value` + snapshot shape desktop vs. JS). **DONE 2026-09-02.**
+  New `extensions/multiplayer_lan/export_html5.js`: a `MultiplayerClient`
+  class wrapping the browser's native `WebSocket` (fully event-driven —
+  `onopen`/`onmessage`/`onclose`, no per-frame socket pump needed the way
+  desktop's non-blocking sockets require), connecting to the desktop
+  host's Phase-7.1 WS listener at `ws://<host>:<port+1>`. Implements full
+  Tier A (`join_game`/`leave_game`/`set_shared_var`/`get_shared_var`/
+  `send_network_message`, identity globals, the `Réseau` lifecycle
+  events via a new `inst.triggerEvent(name)` generic dispatch already
+  used for alarms) and Tier B ghost **viewing** (spawn/despawn/
+  interpolate other players' `network_spawn`'d/`sync_instance`'d
+  instances, byte-for-byte the same lerp/lerp-angle math as
+  `replication.py`). **Scoped out, deliberately** (see the file's own
+  docstring): a browser page can't host (`host_game`/
+  `start_networked_game` warn and no-op — a browser can't `accept()`
+  connections) and can't yet register/own a synced instance itself
+  (`sync_instance`/`set_instance_owner`/`bind_network_input`/
+  `set_sync_rate` warn once and no-op; `is_instance_owner`/`remote_input`
+  need no code at all — they already fall through to `evaluateCondition`'s
+  existing `default: return false` for an unrecognized condition action,
+  since HTML5 has no per-condition extension registry yet) — full
+  browser-owned-avatar control needs a periodic "own" frame report this
+  pass didn't build.
+  - **New generic engine.js infrastructure**: `registerFrameUpdate(fn)` /
+    `runExtensionFrameUpdates(game)`, a third extension registry
+    alongside Stage C's `registerRoomRenderer`/`registerExtensionAction`,
+    called once per `gameLoop()` iteration right before
+    `currentRoom.step()`. Needed because ghost interpolation is
+    continuous over time (must update every rendered frame), not just in
+    response to a WS message — the one thing a purely event-driven
+    WebSocket client can't cover on its own.
+  - **Landmine hit and fixed**: `tests/test_export_html5_extension_syntax.py`
+    (a repo-wide guard against a broken extension JS silently blacking
+    out every HTML5 export) does brace-balance checking via a regex
+    comment-stripper with **no string/template awareness** — a literal
+    `` `ws://${host}:${port}` `` template literal's `//` was
+    misinterpreted as starting a line comment, truncating everything
+    after it and desyncing the bracket count for the *whole file*.
+    Fixed by building the URL through concatenation
+    (`'ws:' + '/' + '/' + host + ':' + port`) so no two `/` characters
+    are ever adjacent in the raw source — worth remembering for any
+    future JS carrying a `://` literal in this repo's export files.
+  - `tests/test_html5_multiplayer_export.py` (18 tests): the
+    `registerFrameUpdate` addition and its call site are bracket-balanced
+    and ordered before the room step; every client-only/host-only/
+    unsupported action is registered with the right warn-vs-silent
+    behaviour; `join_game` connects one port above the raw port and
+    refuses `host="auto"` (no LAN discovery in a browser) instead of
+    connecting somewhere wrong; ghost interpolation updates position/
+    rotation/frame/visibility and never fires a ghost's create event;
+    three-way parity pins (`MAX_STR_LEN`/`MAX_COLLECTION_LEN`/
+    `MAX_VALUE_DEPTH`/`MAX_SHARED_NAME_LEN`/`PROTO_VER`/`DEFAULT_PORT`/
+    the shared-name regex/the `MSG_*` wire strings) extracted from the JS
+    source by regex and compared against the live `state.py` constants,
+    so a future drift on either side fails a test instead of only
+    surfacing in a manual browser session; a real `HTML5Exporter().export()`
+    of `reseau_3` (the sample that actually authors `host_game`/
+    `join_game`/`network_spawn`, unlike `reseau_1` which launches purely
+    via env vars) embeds the multiplayer JS and every authored action
+    name survives the JSON round-trip. Full suite 4213 → 4234 passed, 0
+    failed.
+  - **Still needs a browser**: nobody has watched an exported HTML5 game
+    actually join a desktop host and render another player's ghost —
+    same standing caveat as every other HTML5/Kivy export arc in this
+    repo (no JS engine in CI). Worth a manual pass alongside the plan's
+    other Manual QA items.
 - [ ] 7.3 `export_kivy.py`: no-op placeholder for the network actions so a
   Kivy export still runs single-player.
 - [ ] 7.4 Wiki: `Network` / `Réseau` page in all 9 languages;

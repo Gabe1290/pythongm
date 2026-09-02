@@ -7,8 +7,9 @@
 // Extension mechanism (docs/RAYCAST_EXTENSION_PLAN.md Stage C). Mirrors the
 // desktop runtime/extension_hooks + plugin action registry: an extension ships
 // an export_html5.js that the exporter concatenates at the __PYGM_EXTENSION_JS__
-// marker near the end of this file, and that code registers room renderers
-// and/or action handlers here. engine.js itself names no specific extension.
+// marker near the end of this file, and that code registers room renderers,
+// action handlers, and/or per-frame update hooks here. engine.js itself
+// names no specific extension.
 // ---------------------------------------------------------------------------
 
 // Room renderers: (room, ctx) -> true if the extension drew the room. The
@@ -36,6 +37,25 @@ function renderExtensionRoom(room, ctx) {
 const _extActions = {};
 function registerExtensionAction(name, fn) {
     if (typeof fn === 'function') _extActions[name] = fn;
+}
+
+// Per-frame hooks: fn(game), called once every gameLoop() iteration, right
+// before the room steps -- for state that changes continuously over time
+// rather than only in response to an action call (Phase 7.2's multiplayer
+// ghost interpolation needs this: a WebSocket message arrives once, but the
+// ghost must keep moving smoothly between two snapshots on every rendered
+// frame in between). Mirrors desktop's runtime/extension_hooks.py
+// register_frame_update.
+const _extFrameUpdates = [];
+function registerFrameUpdate(fn) {
+    if (typeof fn === 'function' && !_extFrameUpdates.includes(fn)) {
+        _extFrameUpdates.push(fn);
+    }
+}
+function runExtensionFrameUpdates(game) {
+    for (const fn of _extFrameUpdates) {
+        try { fn(game); } catch (e) { console.error('Extension frame update failed:', e); }
+    }
 }
 
 // Translation strings for game messages (matches Python runtime translations)
@@ -4575,6 +4595,7 @@ class Game {
         if (!this.paused && Date.now() >= this._sleepUntil) {
             this.processKeyboard();
             this.processKeyboardRelease();
+            runExtensionFrameUpdates(this);
             if (this.currentRoom) {
                 this.currentRoom.step(this);
             }
@@ -4734,8 +4755,9 @@ class Game {
 // __PYGM_EXTENSION_JS__
 // (The exporter concatenates each enabled extension's export_html5.js above,
 // after all engine classes are defined, so it can augment prototypes and call
-// registerRoomRenderer / registerExtensionAction. Left as a comment when there
-// are no extensions, so engine.js stays valid on its own.)
+// registerRoomRenderer / registerExtensionAction / registerFrameUpdate. Left
+// as a comment when there are no extensions, so engine.js stays valid on its
+// own.)
 
 window.addEventListener('load', async () => {
     try {
