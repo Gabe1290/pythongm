@@ -1,0 +1,648 @@
+# Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
+
+Status: **PROPOSED — not started.** Written 2026-09-02.
+
+## Where this comes from
+
+`docs/MULTIPLAYER_LAN_PLAN.md` (v1) is **done**: Phases 0–3 landed
+2026-08-15. What exists on `main` today:
+
+- `runtime/extension_hooks.py` — the generic per-frame hook
+  (`register_frame_update(func, phase)` with phases `before_step` /
+  `after_update`), called unconditionally from `GameRunner.run_game_loop`.
+  This is the *only* core-visible trace of multiplayer.
+- `extensions/multiplayer_lan/` — a folder extension:
+  - `network.py` — `NetworkHost` / `NetworkClient`, TCP, newline-delimited
+    JSON, non-blocking, multi-client host, `{"t":"snap","i":[[sync_id,
+    x, y, rotation, image_index, visible], ...]}`.
+  - `state.py` — per-room state at `room.extension_state["multiplayer_lan"]`,
+    `DEFAULT_PORT = 45782`.
+  - `handlers.py` — `set_network_mode` action handler + the two frame-update
+    functions (`_frame_update_apply_inbound` @ `before_step`,
+    `_frame_update_broadcast` @ `after_update`); `PYGM_NET_*` env-var
+    fallback.
+  - `actions.py` — one action, `set_network_mode` (mode host/client, host
+    address, port).
+- `runtime/run_game.py` — `--net-host` / `--net-client HOST` /
+  `--net-port PORT` flags → `PYGM_NET_*` env vars.
+- `samples/multiplayer_lan_1/` — one arrow-key square, no multiplayer
+  authoring at all (pure CLI/env-var launch), registered in
+  `widgets/welcome_tab.py` and `tools/smoke_run_samples.py`.
+- `tests/test_multiplayer_lan.py`, `tests/test_multiplayer_lan_1_sample.py`,
+  `tests/test_extension_frame_update_hook.py` — including a real
+  two-`GameRunner`-over-`127.0.0.1` loopback test.
+
+**What v1 deliberately does NOT do** (its "Explicitly out of scope"
+section), and therefore what "LAN multiplayer game programming" still
+needs:
+
+1. The client is a **pure spectator**. Its input never sticks — the next
+   snapshot overwrites it. There is no way for a student to make a game
+   where *both* players affect the world.
+2. Only `x / y / rotation / image_index / visible` sync. No way to share a
+   score, a turn counter, a chosen answer, an inventory — none of the
+   state a *classroom game* is actually about.
+3. No custom events. A student can't react to "a player joined", "a
+   message arrived", "the host started the round".
+4. No identity. A student can't ask "am I player 1 or player 2?", "how
+   many players?", "am I the host?".
+5. No spawn/despawn replication. `create_instance` on the host doesn't
+   reach clients.
+6. No connection UX. Roles come from a command line the student never
+   sees; there is no in-game "Host / Join" screen, no server discovery,
+   no lobby, no "waiting for players".
+7. Desktop only. HTML5 and Kivy exports ignore it.
+
+v2 closes 1–6 for desktop and takes a real run at HTML5 (7). Kivy/Android
+stays out of scope (see "Export targets").
+
+## Design principles
+
+- **Extension-only, minimum core.** v1 added exactly one generic core
+  hook. v2 aims to add **at most one more** (a read-only expression-name
+  resolver hook — see "Core changes"), and prefers zero. Everything else
+  is `extensions/multiplayer_lan/` files and `PLUGIN_ACTIONS` /
+  `PLUGIN_EVENTS` (both already supported by `events/plugin_loader.py`).
+- **Authoritative host, no netcode cleverness.** The host runs the real
+  simulation; clients send *intent* (named inputs, message requests) and
+  render *interpolated snapshots*. No lockstep, no rollback, no client
+  prediction/reconciliation beyond "a client owns its own avatar." On a
+  wired school LAN, RTT is ~1 ms — a 20 Hz snapshot stream with 100 ms
+  interpolation is smooth and is all this needs. This is the same tier of
+  multiplayer as countless simple LAN games and is the right ceiling for
+  a teaching tool.
+- **Two tiers of student-facing abstraction**, so a 10-year-old and a
+  16-year-old both have a level to work at:
+  - **Tier A — shared blackboard.** "These variables are the same on
+    every machine." Plus custom messages and player identity. Enough to
+    build quizzes, turn-based games, draw-together, board games,
+    co-op-lite. No notion of "networked instances" at all.
+  - **Tier B — networked instances.** Mark an instance synced; the host
+    replicates it; a client can *own* its avatar and drive it with input.
+    Enough for real-time co-op movement games.
+- **Cosmetic runs everywhere, gameplay runs on the host.** The teaching
+  mental model, stated in every sample guide: particles, sounds, HUD,
+  animations — everywhere. Score changes, collisions that matter, spawns,
+  win conditions — `if is_host()`. Samples model the `is_host()` guard
+  pattern explicitly.
+- **Manual IP always works.** Discovery (UDP broadcast beacon) is a
+  convenience. Every connect screen has a "type the host's address" box,
+  and every sample guide tells the teacher to write the host IP on the
+  board. This is both a reliability fallback (see "School LAN realities")
+  and a teachable networking concept.
+- **French, accents mandatory** (per `CLAUDE.md`). Action/event
+  display names, the built-in connect screen, all sample guides. Sample
+  in-game *messages* stay English (student-authored content — per the
+  2026-07-20 sample-translation decision); guides are translated.
+- **One commit per unit, pushed, full-suite-green gate.** No multi-agent
+  workflows. Registry checkboxes in this doc are the resume state.
+
+## School LAN realities (the constraints that shape everything)
+
+These are why the design looks the way it does. None are fixable in
+software; the design works *around* them.
+
+- **Wireless AP client isolation.** Many school Wi-Fi APs block
+  station-to-station traffic outright — two laptops on the same SSID
+  cannot see each other at all, on any port. *Mitigation:* document
+  wired labs as the recommended setup; the connect screen shows "this
+  machine's IP" and a reachability test so a teacher can diagnose in 10
+  seconds; nothing we do makes an isolated AP work.
+- **Host firewall prompt on first `bind()`/`listen()`.** Windows
+  Defender pops "Allow PyGameMaker to accept connections?" — a student
+  without admin rights may not be able to click Allow. *Mitigation:*
+  document that the teacher/IT pre-approves the app or opens the port
+  once; the connect screen surfaces a clear "hosting failed — firewall?"
+  message instead of a silent dead end.
+- **Broadcast may be filtered.** UDP broadcast to `255.255.255.255`
+  usually crosses a wired subnet but is not guaranteed. *Mitigation:*
+  discovery is best-effort; manual IP is the load-bearing path.
+- **mDNS/zeroconf unreliable and often an extra dependency.**
+  *Mitigation:* we do **not** use zeroconf. Discovery is a hand-rolled
+  UDP beacon (a dozen lines, no dependency) or nothing.
+- **Chromebooks.** Common in schools; they run the **HTML5 export** in a
+  browser, not the desktop app. That is the entire reason HTML5 support
+  (Phase 7) is worth attempting despite the WebSocket plumbing cost.
+- **Managed/locked Python.** The desktop path must not need pip installs
+  for multiplayer — `socket` and `selectors` are stdlib. No `msgpack`, no
+  `websockets` library (Phase 7 hand-rolls the WS handshake, or is
+  deferred — see that phase).
+
+## Networking model (v2)
+
+Still authoritative-host, extended:
+
+```
+        ┌─────────────────────────── HOST (player 0) ──────────────────────────┐
+        │  runs the real GameRunner simulation                                 │
+        │  owns: shared vars, roster, netid allocation, all non-owned insts    │
+        │  each frame @ after_update:  build snapshot → broadcast (TCP, 20Hz)  │
+        │  each frame @ before_step:   drain client inbox → apply owned-inst   │
+        │                              state, named-input state, msg requests  │
+        └───────────────▲───────────────────────────────────────▲─────────────┘
+                        │ snapshots                              │ snapshots
+             intent ────┤                             intent ───┤
+        ┌───────────────┴────────────┐          ┌───────────────┴────────────┐
+        │  CLIENT (player 1)         │          │  CLIENT (player 2)         │
+        │  before_step: apply latest │          │  ...                       │
+        │    snapshot to ghosts      │          │                            │
+        │    (interpolated)          │          │                            │
+        │  simulates ONLY its own    │          │                            │
+        │    owned avatar locally    │          │                            │
+        │  after_update: send its    │          │                            │
+        │    avatar state + named    │          │                            │
+        │    input + msg requests    │          │                            │
+        └────────────────────────────┘          └────────────────────────────┘
+```
+
+- **Player identity.** Host is player `0`. On connect, the host assigns
+  the next free slot (`1`, `2`, …) up to `max_players`. Slot is stable
+  for the session; a disconnect frees the slot (v2: not reused mid-session
+  — keeps things simple; reconnect is Phase 8).
+- **Shared variables.** A flat `name → value` dict the host owns. Values
+  restricted to JSON scalars + short lists/dicts of scalars, size-capped.
+  Host writes apply immediately and go out in the next snapshot's
+  `"shared"` delta. Client writes are *requests* sent to the host; the
+  host applies and echoes. Last-write-wins; no locking (a classroom is
+  not adversarial). Exposed to students as `global.*` reads (no core
+  change — `_parse_value` already resolves `global.x`) plus explicit
+  get/set actions.
+- **Custom messages.** `send_network_message(event, data)` — reliable
+  (TCP), broadcast to all peers (or host-only, param). Delivery fires a
+  `network_message` event on every instance that handles it, with
+  `global.network_event`, `global.network_data`, `global.network_sender`
+  readable. Data is scalar/short-collection only, never `eval`'d.
+- **Named inputs (Tier B).** A client maps local keys to named inputs
+  (`bind_network_input("jump", vk_space)`), and each frame sends the set
+  of currently-held names to the host. The host reads them with the
+  `remote_input(player, "jump")` condition. The stock arrow keys + space
+  are auto-bound so trivial samples need no binding. This teaches input
+  abstraction, which is a genuinely good lesson, and it keeps the wire
+  payload tiny and safe (a list of short strings).
+- **Owned instances (Tier B).** `set_instance_owner(player)` on a synced
+  instance. If `player == player_id()` on this machine, the instance is
+  simulated locally and its state is sent *up* to the host, which accepts
+  it for owned instances and rebroadcasts. "Client-authoritative for your
+  own avatar" — responsive, trivial to implement, and cheating is a
+  non-issue in a classroom. Everything else is host-authoritative.
+- **Spawn / despawn.** `network_spawn(object, x, y)` is host-only; it
+  creates the instance, allocates a netid, and the next snapshot carries
+  it in a `"spawn"` list so clients create a ghost. A synced instance
+  destroyed on the host goes out in `"despawn"`. Client-side
+  `network_spawn` is a no-op with a warning (host owns the world).
+- **netids.** The host allocates a monotonic `net_id` per synced
+  instance, stored as `inst._net_id`, distinct from `id(inst)` and from
+  v1's positional `_sync_id`. Clients keep `net_id → ghost instance`.
+  **This replaces v1's `_assign_sync_ids` positional scheme** — positional
+  ids break the moment either side spawns/destroys anything, which Tier B
+  requires. Migration: v1's sample keeps working because the host still
+  assigns ids to the initial room instances in enumeration order; the
+  difference is the id now travels in the snapshot (`"o"` object name +
+  `"nid"`) instead of being implied by list position.
+- **Interpolation.** Clients render ghosts at `render_time = now − 100 ms`,
+  lerping between the two most recent snapshots. Applied in the
+  `before_step` hook by setting `x/y` to the interpolated value each
+  frame. Owned instances are never interpolated (they're local). Default
+  delay tunable via `set_sync_rate` / a second param; 100 ms is the
+  starting value, tuned against `reseau_1`.
+
+## Student-facing API
+
+New action category **"Réseau"** (display) / `network` (internal). New
+event category **"Réseau"**.
+
+### Actions — Tier A (shared blackboard)
+
+| Action | Params | Effect |
+|---|---|---|
+| `host_game` | `game_name`, `max_players` (dflt 8), `port` (dflt 45782), `show_lobby` (bool) | Start hosting. Sets `global.network_role="host"`, `global.player_id=0`. Optionally shows the built-in connect/lobby screen until the host starts the game. |
+| `join_game` | `host` (`"auto"` = show server browser, or an IP), `port` | Connect. Sets role/id from the host's WELCOME. `"auto"` opens the built-in connect screen. |
+| `leave_game` | — | Disconnect / stop hosting; clears network globals. |
+| `set_shared_var` | `name`, `value` | Write a shared variable (host: immediate; client: request). |
+| `get_shared_var` | `name`, `into` (a variable name) | Read a shared variable into a local/instance/global variable. (Avoids needing an expression function.) |
+| `send_network_message` | `event` (string), `data` (value), `target` (`all` / `host`) | Broadcast a custom event. |
+| `start_networked_game` | — | Host-only: tell all clients to leave the lobby and begin (fires `network_game_started` everywhere). |
+
+### Actions — Tier B (networked instances)
+
+| Action | Params | Effect |
+|---|---|---|
+| `sync_instance` | `vars` (optional comma list of instance-var names to also replicate) | Mark **this** instance network-synced. Host replicates `x/y/rotation/image_index/visible` + any whitelisted vars. Call in Create. |
+| `set_instance_owner` | `player` (number or `<self_player>`) | Assign authority for this instance to a player slot. |
+| `network_spawn` | `object`, `x`, `y` | Host-only replicated create. |
+| `bind_network_input` | `name` (string), `key` (key constant) | Map a local key to a named input (client side). |
+| `set_sync_rate` | `hz` (dflt 20), `interp_ms` (dflt 100) | Tune snapshot rate / interpolation delay. |
+
+### Conditions
+
+| Condition | Meaning |
+|---|---|
+| `is_host` | This machine is the host. |
+| `is_client` | This machine is a client. |
+| `network_connected` | A session is live (host with ≥1 client, or a connected client). |
+| `remote_input(player, name)` | That player is currently holding that named input (host-side read). |
+| `is_instance_owner` | `player_id()` owns this instance (so "my avatar" branches work). |
+
+### Readable globals (no core change — `_parse_value` already does `global.*`)
+
+`global.player_id`, `global.player_count`, `global.network_role`
+(`"host"`/`"client"`/`""`), `global.network_event`, `global.network_data`,
+`global.network_sender`, plus every shared variable mirrored as
+`global.<shared name>` (read-only mirror; writes go through
+`set_shared_var`).
+
+### Events (`PLUGIN_EVENTS`)
+
+| Event | Fires on | Notes |
+|---|---|---|
+| `network_started` | host + client | Session is up. |
+| `player_joined` | host (and rebroadcast → all) | `global.network_sender` = new slot. |
+| `player_left` | host (and → all) | |
+| `network_message` | everyone handling it | `global.network_event/_data/_sender` set. |
+| `network_game_started` | everyone | `start_networked_game` fired. |
+| `connection_lost` | client | Host went away / socket died. |
+| `became_host` | (Phase 8, host-migration) | Deferred. |
+
+## Core changes
+
+**Target: one small read-only hook, or zero.**
+
+1. **(Maybe) expression-name resolver hook.** Nice-to-have so students can
+   write `is_host()` / `player_id()` / `shared("score")` *inside*
+   expressions (`draw_text` at `shared("score_p1")`). Today the expression
+   evaluator (`runtime/action_executor.py` ~line 2150) has a hardcoded
+   function whitelist (`random`, `irandom`, `choose`, `max`, `min`, `abs`,
+   `round`) and a `safe_namespace`. A generic
+   `extension_hooks.register_expression_names(provider)` that contributes
+   read-only names/functions into `safe_namespace` would serve this and
+   any future extension. **If this is judged too invasive, v2 ships
+   without it** — `global.player_id` reads and the `get_shared_var`
+   action cover every case, just less ergonomically. Decide in Phase 4.
+2. **Nothing else.** `PLUGIN_EVENTS`, `PLUGIN_ACTIONS`,
+   `PLUGIN_FRAME_UPDATES`, `room.extension_state`, and the built-in
+   connect screen (drawn via the existing `PLUGIN_ROOM_RENDERERS` hook, or
+   as a plain pygame overlay blitted from a frame-update hook) are all
+   already-supported extension surfaces.
+
+The v1 frame-update hook's two phases are sufficient: client snapshot
+apply + interpolation + inbound message drain @ `before_step`; host
+snapshot build/send + client intent send @ `after_update`.
+
+## Wire protocol v2
+
+Still TCP, still newline-delimited JSON (debuggable in a capture; LAN
+bandwidth was never the constraint). All frames `{"t": <type>, ...}`.
+4 KB soft cap per frame, 64 KB hard cap (drop + log). Client→host rate
+limit: 60 msg/s.
+
+Control (reliable, any time):
+
+- `hello`  `{t, name, proto_ver}` — client → host on connect.
+- `welcome` `{t, player_id, player_count, shared, roster, tick}` — host → client.
+- `join` / `leave` `{t, player_id, name}` — host → all.
+- `msg` `{t, event, data, sender, target}` — custom message, either way.
+- `shared_set` `{t, name, value}` — client → host (request) / host → all (echo).
+- `input` `{t, held: ["jump","left"]}` — client → host, only on change.
+- `bye` `{t}` — graceful disconnect.
+- `game_start` `{t}` — host → all.
+
+State (host → all, 20 Hz):
+
+```json
+{"t":"snap","tick":1234,"time":98123,
+ "shared":{"score_p1":3},                       // delta since last snap
+ "spawn":[{"nid":7,"o":"obj_bullet","x":40,"y":60}],
+ "i":[{"nid":1,"x":100.0,"y":50.0,"r":0,"f":0,"v":1,"vars":{"hp":3}},
+      {"nid":2,"x":220.5,"y":88.0,"r":90,"f":2,"v":1}],
+ "despawn":[5,6]}
+```
+
+Client → host, once per frame (`after_update`), for its owned instances:
+
+```json
+{"t":"own","i":[{"nid":2,"x":221.0,"y":88.0,"r":90,"f":2,"v":1}]}
+```
+
+- `state.py` holds the message-type constants and a
+  `sanitize_value(v, depth)` used on **every** inbound `data` / `value` /
+  `vars` field — scalars, `list`/`dict` of scalars to depth 2, length and
+  string-size caps, everything else dropped. Nothing from the wire ever
+  reaches `_parse_value` / `eval`.
+- A `PROTO_VER` int; `hello`/`welcome` exchange it; mismatch → host
+  refuses with a `bye` carrying a reason, client shows "version mismatch".
+- Partial-read framing: `NetworkClient`/host per-connection buffer keeps
+  bytes until a full `\n`-terminated frame is present; unit-tested by
+  feeding one byte at a time.
+
+## Connection UX
+
+- **Built-in connect screen.** `join_game host="auto"` or
+  `host_game show_lobby=true` shows an overlay (drawn from a frame-update
+  hook, on top of whatever room is loaded, or as its own pseudo-room):
+  - client: discovered servers list (name, host IP, players/max) +
+    "Adresse :" manual entry + "Se connecter" + "Cette machine : <ip>".
+  - host: "En attente de joueurs…", roster, "Démarrer" (calls
+    `start_networked_game`).
+  - Both: a reachability line and, on failure, a plain-language reason
+    ("pare-feu ?", "hôte introuvable", "isolation Wi-Fi ?").
+  - Fully French, keyboard + mouse.
+- **Discovery beacon.** Host UDP-broadcasts
+  `{"pygm":"lan","name":..., "port":..., "players":n, "max":m}` to
+  `255.255.255.255:45783` every 1 s on a daemon thread. Client listens on
+  a daemon thread, maintains a server list with a 5 s TTL per entry.
+  Best-effort; the manual box is always there.
+- **Lobby vs. game.** The connect screen handles *connection*. The
+  *lobby* (ready-up, team pick, character select) is author-built with
+  ordinary actions/events on top of `player_joined` / shared vars — same
+  split as raycast (extension provides the renderer, samples build the
+  game).
+- **IDE "Test Game (2 players)".** A button / menu item next to Test Game
+  that launches the current project twice: one `--net-host`, one
+  `--net-client 127.0.0.1`, tiled left/right. Env var
+  `PYGM_NET_AUTOJOIN=127.0.0.1` lets a second manually-launched Test Game
+  auto-join. Its own Phase (7 is HTML5; this is Phase 6).
+- **Runner window caption.** Append `[Hôte : 3 joueurs]` /
+  `[Client : connecté]` / `[Client : déconnecté]`, same mechanism
+  score/lives already use.
+
+## Security & safety (school context)
+
+- Bind to LAN/loopback only; never a routable external bind. No
+  STUN/TURN/relay, no internet path — LAN by name and design.
+- **No code over the wire.** All inbound `data`/`value`/`vars` go through
+  `sanitize_value` (scalars + shallow collections, size-capped). Never
+  `eval`'d, never routed to `_parse_value`, never used as a variable
+  *name* (shared-var names are validated `^[A-Za-z_][A-Za-z0-9_]*$` so a
+  name containing an operator can't reach the expression path — the
+  `CLAUDE.md` `_parse_value` landmine).
+- Frame size caps (4 KB soft / 64 KB hard); client→host message rate
+  limit; `max_players` cap (hard ceiling 16) bounds host per-frame work.
+- Player names sanitized (length-capped, control chars stripped, display
+  only).
+- Host drops a client that floods, sends malformed frames, or stalls a
+  broadcast past its 200 ms timeout — a bad client can't take the host
+  down (v1 already does this for stalls).
+- Sample guides carry a teacher note: ports used (45782 TCP, 45783 UDP),
+  "ask IT before using on a managed network", wired-lab recommendation.
+
+## Export targets
+
+- **Desktop (pygame)** — full v2 support. Primary and the bulk of this
+  plan.
+- **HTML5** — Phase 7, real attempt, may slip to its own plan. A browser
+  cannot `accept()` raw TCP, so the **desktop host also opens a WebSocket
+  listener** on `port+1`, same frame protocol over both transports; an
+  exported HTML5 game connects to `ws://<host>:<port+1>`. The host's WS
+  handshake is hand-rolled (~40 lines: parse the `Sec-WebSocket-Key`,
+  SHA-1 + base64 the accept, then RFC 6455 frame read/write for text
+  frames) so there is **no `websockets` pip dependency**. `engine.js`
+  gets an extension client (`export_html5.js`, injected via the
+  `// __PYGM_EXTENSION_JS__` marker the raycast Stage C work added). A
+  browser client can only be a *client*, never a host. Parity test:
+  desktop `sanitize_value` / snapshot builder vs. the JS equivalents over
+  a fixed state matrix (structural — no JS engine in CI), matching the
+  raycast parity pattern.
+- **Kivy / Android** — **out of scope.** School Wi-Fi station isolation +
+  Android networking permission friction + no terminal for flags makes
+  this low-value until someone has a concrete classroom asking for it.
+  `export_kivy.py` stays a placeholder that no-ops the network actions
+  (so a Kivy export of a multiplayer project still runs single-player,
+  degrading like any missing extension).
+
+## Testing strategy
+
+Everything except "two humans watch two windows" is automatable and must
+be automated.
+
+- **Protocol units** (`tests/test_multiplayer_lan_protocol.py`):
+  frame codec round-trip, byte-at-a-time partial reads, oversize-frame
+  rejection, `sanitize_value` (deep/oversized/non-scalar → dropped),
+  shared-var name validation, `PROTO_VER` mismatch handling.
+- **Transport loopback** (extend `tests/test_multiplayer_lan.py`):
+  host + 2 clients on `127.0.0.1:0`, threads inside one process; join
+  assigns distinct slots; `bye` frees a slot; a flooding/malformed client
+  is dropped without disturbing the others.
+- **Session loopback** (`tests/test_multiplayer_lan_session.py`): two/three
+  real headless `GameRunner`s (`SDL_VIDEODRIVER=dummy`), driven frame by
+  frame through the actual `before_step`/`after_update` hooks:
+  - shared var set on host → readable as `global.x` on both clients within
+    N frames;
+  - `send_network_message` → `network_message` event fires on the peers
+    with correct `global.network_*`;
+  - client with an owned avatar + `remote_input` → host sees the input and
+    the avatar's authoritative position round-trips back to the other
+    client's ghost, converging within tolerance after settle (assert
+    *convergence*, not frame-exact — host is authoritative, clients
+    interpolate);
+  - `network_spawn` on host → ghost appears on clients; host destroy →
+    ghost removed;
+  - `player_joined` / `player_left` events fire with the right slot.
+- **Discovery** (`tests/test_multiplayer_lan_discovery.py`): beacon
+  encode/decode; listener parses a directed datagram and ages entries out
+  after TTL. (Real broadcast isn't exercised in CI.)
+- **Extension ownership** (`tests/test_multiplayer_lan_ownership.py`,
+  mirroring `test_export_raycast_ownership.py`): the `network` actions/
+  events exist only after `load_all_plugins()`, never in the static
+  `ACTION_TYPES` / `EVENT_TYPES`; `game_runner.py` names nothing
+  network-specific beyond the two generic hook call sites; `engine.js` /
+  `kivy_exporter.py` name no network code (it lives in `export_*.*`).
+- **Samples**: each `reseau_*` gets a standalone single-player test (no
+  networking triggered) + a two-`GameRunner`-loopback test over the real
+  shipped project. Smoke: `tools/smoke_run_samples.py` runs each new
+  sample single-player; a dedicated `tools/smoke_run_multiplayer.py`
+  launches host + client headless with `PYGM_MAX_FRAMES` and asserts both
+  exit 0 and the client saw ≥1 snapshot.
+- **CI notes**: loopback sockets on ephemeral ports (`bind :0`) are fine;
+  no broadcast; generous timeouts; deterministic thread teardown
+  (sentinel + `join(timeout=...)`); mark the multi-`GameRunner` tests
+  `slow` if they push suite time.
+- **Landmine**: plugin actions/events are invisible to
+  `get_action_type()` / `EVENT_TYPES` before `load_all_plugins()` —
+  every test loads plugins first.
+
+## Samples (French guides; in-game messages stay English)
+
+1. **`reseau_1` — "Salle partagée".** 2–8 players, each drives a coloured
+   square (colour from `player_id`), arrow keys, everyone sees everyone
+   move in real time. Teaches `host_game`/`join_game`, the built-in
+   connect screen, `sync_instance`, `set_instance_owner` +
+   `is_instance_owner`, `player_id` colouring. The Tier B "hello world".
+   *(Replaces the spectator-only `multiplayer_lan_1` as the showcase;
+   `multiplayer_lan_1` stays as the minimal CLI-launch example.)*
+2. **`reseau_2` — "Quiz de classe".** Host cycles through a question list,
+   players pick A/B/C/D, host scores, shared scoreboard drawn on every
+   screen. Teaches shared variables, `send_network_message`, round flow,
+   `if is_host()` gameplay guard. **No fast action — robust on flaky
+   Wi-Fi; the best pure classroom fit.**
+3. **`reseau_3` — "Récolte en équipe".** Shared world, gems, a team score,
+   a monster the host simulates and broadcasts. Teaches `network_spawn` /
+   replicated destroy, `is_host()` for collision/scoring,
+   host-authoritative enemies with client-owned avatars.
+4. **`reseau_4` — "Dessine ensemble"** *(optional / stretch).* Shared
+   canvas, each player a cursor, strokes broadcast as `msg` events. Pure
+   message-passing, zero instance sync — a gentle Tier A intro; good
+   candidate to build *before* `reseau_2` if a simpler first sample is
+   wanted.
+
+Each: Welcome-tab entry + `pygm2_fr.ts` display string, `README.md` +
+`README.fr.md` guide (guide translated, per the 2026-07-20 decision),
+smoke registration, the two test files above.
+
+## Phasing — one commit per unit, push each, full suite green
+
+Sequencing mirrors v1: infra → protocol → session → API → UX → samples,
+each phase self-contained.
+
+### Phase 4 — protocol v2 + netid + sanitize (no student-visible change yet)
+- [ ] 4.1 `state.py`: v2 message-type constants, `PROTO_VER`,
+  `sanitize_value`, shared-var name validator. Unit tests.
+- [ ] 4.2 `network.py`: control frames (`hello`/`welcome`/`join`/`leave`/
+  `bye`/`msg`/`shared_set`/`input`/`game_start`), per-connection framing
+  buffer, size caps, rate limit, `PROTO_VER` check. Host tracks a roster
+  (slot → name/conn). Loopback tests (multi-client join/leave/slot
+  assignment, bad-client drop).
+- [ ] 4.3 `replication.py` (new): netid allocation, snapshot build
+  (`i`/`shared` delta/`spawn`/`despawn`), snapshot apply on client,
+  ghost create/destroy, interpolation buffer. Pure-ish (takes primitive
+  state, not live pygame) — heavily unit-tested.
+- [ ] 4.4 Decide the expression-name hook (Core change #1): implement
+  `extension_hooks.register_expression_names` **or** record the decision
+  to ship without it. If implemented: one scoped core commit + guard
+  test, exactly like the v1 frame-update hook commit.
+
+### Phase 5 — session layer + student API
+- [ ] 5.1 `session.py` (new): `NetworkSession` binding transport +
+  replication to a `GameRunner`; host slot assignment, roster, shared
+  store, inbound drain in `before_step`, snapshot send in `after_update`,
+  fires the `PLUGIN_EVENTS`. Rework the v1 `_frame_update_*` functions to
+  delegate to it. Session loopback tests.
+- [ ] 5.2 `actions.py` + `handlers.py`: Tier A actions (`host_game`,
+  `join_game`, `leave_game`, `set_shared_var`, `get_shared_var`,
+  `send_network_message`, `start_networked_game`) + conditions
+  (`is_host`, `is_client`, `network_connected`).
+- [ ] 5.3 `PLUGIN_EVENTS`: `network_started`, `player_joined`,
+  `player_left`, `network_message`, `network_game_started`,
+  `connection_lost`. Wire `global.network_*`.
+- [ ] 5.4 Tier B actions/conditions: `sync_instance`, `set_instance_owner`,
+  `is_instance_owner`, `network_spawn`, `bind_network_input`,
+  `remote_input`, `set_sync_rate`. Client-owned-avatar send path.
+- [ ] 5.5 Keep `set_network_mode` + `PYGM_NET_*` + `run_game.py` flags
+  working (back-compat; `multiplayer_lan_1` must still pass its test and
+  smoke).
+
+### Phase 6 — connection UX
+- [ ] 6.1 `discovery.py` (new): UDP beacon broadcaster + listener +
+  server-list model, daemon threads, TTL. Encode/decode + directed-
+  datagram tests.
+- [ ] 6.2 `connect_screen.py` (new): the French built-in connect/lobby
+  overlay (client server browser + manual IP + this-machine IP +
+  failure reasons; host waiting-room + Démarrer). Driven from a
+  frame-update hook. Offscreen-`QApplication`-free — plain pygame surface
+  test (render it, assert regions/text, feed synthetic events).
+- [ ] 6.3 Runner caption status string.
+- [ ] 6.4 IDE "Test Game (2 players)" button + `PYGM_NET_AUTOJOIN`.
+  (`core/ide_window.py` Popen path — keep the existing single-launch path
+  byte-for-byte, add a parallel two-launch path.)
+
+### Phase 7 — HTML5 (own plan if it grows)
+- [ ] 7.1 Hand-rolled WebSocket listener in the desktop host (`port+1`),
+  same frame protocol. No pip dependency. Loopback test with a minimal
+  in-test WS client.
+- [ ] 7.2 `export_html5.js`: the browser client (client-only), injected
+  via the existing extension-JS marker. Structural parity test
+  (`sanitize_value` + snapshot shape desktop vs. JS).
+- [ ] 7.3 `export_kivy.py`: no-op placeholder for the network actions so a
+  Kivy export still runs single-player.
+- [ ] 7.4 Wiki: `Network` / `Réseau` page in all 9 languages;
+  `tools/gen_action_reference.py` regen picks up the new plugin actions
+  automatically; add the strings to `tools/action_ref_i18n.py`.
+
+### Phase 8 — samples + polish
+- [ ] 8.1 `reseau_1` (+ Welcome tab, guide fr, smoke, 2 tests). Demote
+  `multiplayer_lan_1` from showcase to minimal example.
+- [ ] 8.2 `reseau_2` (quiz).
+- [ ] 8.3 `reseau_3` (co-op).
+- [ ] 8.4 `reseau_4` (draw-together) — optional.
+- [ ] 8.5 `tools/smoke_run_multiplayer.py` + CI wiring.
+- [ ] 8.6 Graceful host-loss: `connection_lost` event + clean client
+  teardown. (Host *migration* stays deferred.)
+- [ ] 8.7 `CLAUDE.md` "Recent agent-session notes" entry; close this doc.
+
+### Manual QA (cannot be automated — needs displays/machines)
+- [ ] Two real machines on a wired school LAN: host + join by typed IP;
+  square moves in both windows (`reseau_1`).
+- [ ] Discovery beacon actually shows the host in the browser on that LAN.
+- [ ] Windows Defender firewall prompt behaviour on a locked-down student
+  account; confirm the connect screen's failure message is accurate.
+- [ ] `reseau_2` with 4+ real clients; scoreboard stays consistent.
+- [ ] HTML5 export (Phase 7) joining a desktop host from a Chromebook.
+- [ ] Kivy export of a multiplayer project still runs single-player.
+
+## Open questions (decide before or during Phase 4)
+
+1. **Expression-name hook** (Core #1): build the generic
+   `register_expression_names` hook so `is_host()` / `shared("x")` work
+   inside expressions, or ship v2 with `global.*` reads + `get_shared_var`
+   only? *Recommendation: build it — it's small, read-only, and a third
+   extension will want it — but it's cuttable if it looks invasive when
+   the code is in front of us.*
+2. **First sample**: `reseau_2` (quiz) or `reseau_4` (draw-together) as
+   the gentlest Tier A intro? *Recommendation: `reseau_2` — a quiz is the
+   single most-requested classroom multiplayer shape; `reseau_4` is a
+   nice-to-have.*
+3. **Ghost create event**: run a client ghost's `create` event (with an
+   `is_ghost` condition available to guard it) or suppress it entirely?
+   *Recommendation: suppress by default, expose `is_ghost` so an author
+   can opt a cosmetic-only create in.*
+4. **Transport**: stay TCP-only, or add UDP for `snap` once there's a
+   fast sample to measure jitter against? *Recommendation: TCP-only for
+   v2; revisit with real numbers from `reseau_1`/`reseau_3`.*
+5. **HTML5 in v2 or its own plan?** *Recommendation: attempt Phase 7 in
+   this plan; split it out the moment the WS handshake or parity work
+   exceeds ~2 commits.*
+6. **Interpolation default**: 75 / 100 / 150 ms? *Start at 100; tune
+   against `reseau_1` on real hardware during manual QA.*
+
+## Risks & landmines
+
+- **AP client isolation** — the #1 real blocker; unfixable in software.
+  Mitigate with docs, wired-lab guidance, the connect screen's
+  this-machine-IP + reachability line. Do not over-promise in guides.
+- **Firewall prompt** without admin rights — document teacher/IT
+  pre-approval; surface a clear failure reason, never a silent dead end.
+- **Thread safety** — socket I/O on daemon threads; the `GameRunner` is
+  touched **only** from the frame-update hooks on the game thread, via
+  thread-safe queues. No pygame/`GameRunner` access from a net thread,
+  ever. Pin with a review checklist + a test that asserts the transport
+  exposes only queue operations to the session layer.
+- **Blocking the game loop** — snapshot serialization of a big room could
+  stall the frame. Cap synced instances, hand the net thread a shallow
+  copy of *primitive* state (never live instances), measure with
+  `reseau_3`.
+- **Determinism drift on clients** — never run gameplay for synced
+  non-owned objects on a client; ghosts are apply-only + interpolated.
+  Samples state the `is_host()` rule explicitly.
+- **Positional `_sync_id` → `net_id`** — v2's netids must travel in the
+  snapshot; the moment Tier B spawns anything, v1's "enumeration index"
+  scheme is wrong. Keep `multiplayer_lan_1` green through the switch.
+- **Partial TCP reads** — classic bug; unit-test the framing buffer with
+  byte-at-a-time feeding on both sides.
+- **Clock skew** — interpolate by snapshot arrival order / host `tick`,
+  never by comparing wall clocks across machines.
+- **`_parse_value` eval landmine** — shared-var names validated against a
+  strict identifier regex; inbound `data`/`value` never reach
+  `_parse_value` or `eval`; any on-screen text in samples stays quoted
+  (the `W A S D - Move` → `0` bug).
+- **Plugin visibility** — actions/events only exist post
+  `load_all_plugins()`; tests and the action-reference generator must
+  load plugins first.
+- **Kivy `.format()` templates** — N/A while Kivy is a no-op placeholder;
+  becomes relevant only if Kivy support is ever picked up. Doubled
+  `{{ }}` rule applies then.
+- **`git commit -F`** for messages with quotes/parens on the Windows box
+  (PowerShell 5.1 mangles inline quoting).
+- **Test flakiness** — ephemeral ports, generous timeouts,
+  poll-until-converged with a cap, deterministic thread teardown.
+- **HTML5 (Phase 7)** — no Node in CI; verify JS by structure/parity +
+  ad-hoc Playwright + a manual Chromebook join, matching the
+  `engine.js`/raycast precedent.
