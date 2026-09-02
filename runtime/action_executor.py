@@ -4623,6 +4623,20 @@ class ActionExecutor:
                 f"⚠️  expression: '{found}' is not a Python operator — "
                 f"use '{py}' instead (in expression: {expression!r})")
 
+        # `global.NAME` is real Python syntax nowhere -- `global` is a
+        # reserved keyword, so `global.is_host == 1` is a SyntaxError in the
+        # eval() below regardless of what the namespace contains (confirmed
+        # empirically; docs/MULTIPLAYER_LAN_V2_PLAN.md's "Core changes"
+        # section assumed this "just works" the same way _parse_value's
+        # separate dotted-global handling does, but that assumption was
+        # never true for THIS evaluator). Rewritten here to a safe dict
+        # lookup (default 0, matching _parse_value's own missing-global
+        # default) before eval ever sees it -- _parse_value/
+        # _evaluate_expression are untouched, since their existing
+        # dotted-global handling already works correctly.
+        expression = re.sub(
+            r'\bglobal\.([A-Za-z_][A-Za-z0-9_]*)\b', r"_global.get('\1', 0)", expression)
+
         try:
             namespace = {
                 'self': instance,
@@ -4643,6 +4657,7 @@ class ActionExecutor:
                 'room_width': getattr(self.game_runner.current_room, 'width', 0) if self.game_runner and self.game_runner.current_room else 0,
                 'room_height': getattr(self.game_runner.current_room, 'height', 0) if self.game_runner and self.game_runner.current_room else 0,
                 'abs': abs, 'min': min, 'max': max, 'round': round,
+                '_global': self.game_runner.global_variables if self.game_runner else {},
                 # Custom instance variables
                 **{k: v for k, v in instance.__dict__.items() if not k.startswith('_')}
             }
