@@ -1,17 +1,24 @@
 # Plan: LAN multiplayer **v2** — from "see the other player" to *programming multiplayer games*
 
-Status: **Phases 4–6 and 8.1/8.6 DONE.** Written and mostly executed
-2026-09-02. The full student-facing API — Tier A (shared blackboard:
-shared variables, custom messages, player identity, `Réseau` events) and
-Tier B (networked instances: `network_spawn` + interpolated ghosts,
-`sync_instance`, validated client-owned avatars, named input) — is on
-`main`, plus UDP discovery + the built-in French connect/lobby screen
-(Phase 6), the `reseau_1` sample (8.1), and graceful host-loss teardown
-(8.6). Covered by ~215 tests, including real two-`GameRunner`-over-a-
-socket coverage for every replication path. v2 added **zero** core
-changes on top of v1's frame-update hook. **Open:** Phase 7 (HTML5
-export parity), Phase 8.2–8.5/8.7 (`reseau_2`–`4` samples, smoke
-tooling, closing the doc). See the checklist near the end.
+Status: **Phases 4–6, 7.1, and 8.1/8.2/8.3/8.5/8.6 DONE.** Written and
+mostly executed 2026-09-02. The full student-facing API — Tier A (shared
+blackboard: shared variables, custom messages, player identity, `Réseau`
+events) and Tier B (networked instances: `network_spawn` + interpolated
+ghosts, `sync_instance`, validated client-owned avatars, named input) —
+is on `main`, plus UDP discovery + the built-in French connect/lobby
+screen (Phase 6), a hand-rolled WebSocket listener so the host also
+accepts HTML5-exported browser clients (7.1), three samples (`reseau_1`–
+`3`, 8.1–8.3), a real two-subprocess smoke tool (8.5), and graceful
+host-loss teardown (8.6). Covered by ~480 tests, including real two-
+`GameRunner`-over-a-socket coverage for every replication path and a
+real-socket WebSocket protocol-conformance suite. v2 added **one** small
+core fix (`_eval_bool_expression` gained `global.X` support — a
+previously-undiscovered bug the whole "if is_host(): ..." authoring
+pattern depends on) on top of v1's frame-update hook; the transport and
+session layers remain zero-core-change extension code. **Open:** Phase
+7.2–7.4 (the browser-side HTML5 export client, Kivy no-op parity, wiki
+docs), 8.4 (`reseau_4`, optional), 8.7 (close this doc). See the
+checklist near the end.
 
 ## Where this comes from
 
@@ -781,9 +788,43 @@ each phase self-contained.
   6.3+6.4 landed `7e1d39ad`; full suite **4140 passed, 0 failed**.
 
 ### Phase 7 — HTML5 (own plan if it grows)
-- [ ] 7.1 Hand-rolled WebSocket listener in the desktop host (`port+1`),
+- [x] 7.1 Hand-rolled WebSocket listener in the desktop host (`port+1`),
   same frame protocol. No pip dependency. Loopback test with a minimal
-  in-test WS client.
+  in-test WS client. **DONE 2026-09-02.** New `ws_transport.py`:
+  `WebSocketHost` (RFC 6455 handshake — parses `Sec-WebSocket-Key`,
+  computes `Sec-WebSocket-Accept` via SHA-1+base64 — then unfragmented
+  text/binary frame read/write, ping/pong/close handling) mirrors
+  `NetworkHost`'s exact `start`/`poll`/`send`/`broadcast`/`disconnect`/
+  `close`/`connection_ids`/`_listen_sock` surface, so it drops into
+  `session.py` with no change to `_host_drain`'s dispatch logic. `DualHost`
+  composes the original raw-TCP `NetworkHost` with a `WebSocketHost`,
+  offsetting WS connection ids by `1_000_000_000` so `poll()`/`send()`/
+  `broadcast()` see one merged id space — `NetworkSession.start()` now
+  constructs a `DualHost` when hosting instead of a bare `NetworkHost`.
+  The WS listener binds `port+1` for an explicit port (matching
+  `DISCOVERY_PORT`'s own "one above" convention — no real collision, TCP
+  and UDP are different socket namespaces even at the same port number);
+  with the ephemeral `port=0` tests use, it asks the OS for its own
+  independent free port instead of `raw_bound_port + 1` (which could just
+  as easily already be taken). A WS bind failure is caught and logged,
+  disabling browser support for *that* session rather than failing
+  hosting outright — the raw-TCP side (every existing sample) is
+  unaffected. `CONN_OPENED` fires only once the upgrade handshake
+  completes, not on raw accept, since a browser can't send/receive real
+  frames before then. New `tests/test_multiplayer_lan_ws_transport.py`
+  (12 tests): a pure codec layer checked against RFC 6455's own published
+  test vector (`accept("dGhlIHNhbXBsZSBub25jZQ==") ==
+  "s3pPLMBiTxaQ9kYGzzhZRbK+xOo="`) plus round-trip/overflow/partial-frame
+  cases; `WebSocketHost` driven directly over a real socket by a **from-
+  scratch, independently-written** minimal WS client in the test file
+  (its own HTTP request text, its own frame masking/parsing — not reusing
+  `ws_transport.py`'s encode/decode helpers, so this is a real protocol-
+  conformance check, including an assertion the server never masks its
+  own frames per spec); `DualHost` merging a raw `NetworkClient` and the
+  minimal WS client under one id space with a shared broadcast; and a
+  `NetworkSession(mode="host")` end-to-end hello/welcome exchange over a
+  real WS connection — the plan's own "loopback test with a minimal
+  in-test WS client." Full suite 4201 → 4213 passed, 0 failed.
 - [ ] 7.2 `export_html5.js`: the browser client (client-only), injected
   via the existing extension-JS marker. Structural parity test
   (`sanitize_value` + snapshot shape desktop vs. JS).
