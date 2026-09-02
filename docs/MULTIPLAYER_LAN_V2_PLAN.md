@@ -759,8 +759,28 @@ each phase self-contained.
   automatically; add the strings to `tools/action_ref_i18n.py`.
 
 ### Phase 8 — samples + polish
-- [ ] 8.1 `reseau_1` (+ Welcome tab, guide fr, smoke, 2 tests). Demote
-  `multiplayer_lan_1` from showcase to minimal example.
+- [x] 8.1 `reseau_1` — "Salle partagée". `obj_ctrl` (invisible, depth
+  -100): `game_start` → `network_spawn("obj_person", 320, 240, owner=0)`;
+  `player_joined` → `network_spawn(... owner=global.network_sender)` at a
+  slot-spaced x; a `draw_text` instruction line. `obj_person`: Step
+  guarded by `is_instance_owner` → arrow movement + room clamp, so only
+  the owner drives it (everyone else sees the interpolated ghost).
+  Registered in `welcome_tab.SAMPLE_PROJECTS` ("Réseau — Salle
+  partagée") + `smoke_run_samples.SAMPLES`; the beginner edition
+  correctly hides `reseau_*` (same two-machine reasoning as
+  `multiplayer_lan_*` — `test_edition_sample_filter` prefix list
+  updated). `README.md` + `README.fr.md`. `tests/test_reseau_1_sample.py`
+  (4: single-player runs with no session, registration, guides exist,
+  two-real-`GameRunner` networked → host spawns owner-0 + owner-1
+  avatars, client materialises both). **Engine improvements this needed,
+  landed with it:** `network_spawn` gained an `owner` param;
+  `_apply_ghosts` **promotes** a host-spawned instance whose snapshot
+  `own` == this player into `synced_local` (local sim + `_send_owned`),
+  so the "host spawns per-player avatars, each client drives its own"
+  pattern works; `is_instance_owner` returns True with no session
+  (single-player owns everything). Full suite **4149 passed, 0 failed**;
+  `reseau_1` smoke [OK]. `multiplayer_lan_1` kept as the minimal
+  CLI-launch example. Landed `d0311633`.
 - [ ] 8.2 `reseau_2` (quiz).
 - [ ] 8.3 `reseau_3` (co-op).
 - [ ] 8.4 `reseau_4` (draw-together) — optional.

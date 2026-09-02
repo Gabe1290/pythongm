@@ -169,6 +169,10 @@ PLUGIN_ACTIONS = {
                 default_value="0"),
             ActionParameter(name="y", display_name="Y", param_type="string",
                 default_value="0"),
+            ActionParameter(name="owner", display_name="Propriétaire",
+                param_type="string", default_value="0", required=False,
+                description="Joueur qui pilote l'instance (0 = hôte). Souvent "
+                            "global.network_sender dans « Joueur connecté »."),
             ActionParameter(name="relative", display_name="Relatif",
                 param_type="boolean", default_value=False, required=False,
                 description="Position relative à l'objet qui exécute l'action"),
