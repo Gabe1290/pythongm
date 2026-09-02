@@ -573,13 +573,29 @@ each phase self-contained.
   added (one line). INPUT/OWN frames accepted and ignored (Tier B).
   `tests/test_multiplayer_lan_session.py` (16, real loopback). The
   handlers glue + `_frame_update_*` delegation is 5.2, not here. Landed `f3fe6d95`.
-- [ ] 5.2 `actions.py` + `handlers.py`: Tier A actions (`host_game`,
-  `join_game`, `leave_game`, `set_shared_var`, `get_shared_var`,
-  `send_network_message`, `start_networked_game`) + conditions
-  (`is_host`, `is_client`, `network_connected`).
-- [ ] 5.3 `PLUGIN_EVENTS`: `network_started`, `player_joined`,
-  `player_left`, `network_message`, `network_game_started`,
-  `connection_lost`. Wire `global.network_*`.
+- [x] 5.2 + 5.3 (landed together — the handlers glue *is* the event
+  dispatcher). `actions.py`: Tier A actions `host_game` / `join_game` /
+  `leave_game` / `start_networked_game` / `set_shared_var` /
+  `get_shared_var` / `send_network_message`, all French, category
+  `Réseau`; `set_network_mode` kept for back-compat. `__init__.py`:
+  `PLUGIN_EVENTS` for the six `Réseau` lifecycle events. `handlers.py`:
+  `host_game`/`join_game` create a `NetworkSession` in `st["session"]`;
+  when present it takes over both frame-update hooks, and
+  `_apply_session_state` (before_step) mirrors `player_id` /
+  `player_count` / `network_role` / `is_host` / `is_client` /
+  `network_connected` + every shared var into `game_runner.
+  global_variables`, then drains `session.take_events()` and fires each
+  on the room's instances via `execute_event` (setting `network_event` /
+  `network_data` / `network_sender` / `network_player_name` first).
+  `leave_game` closes the session and clears the network globals.
+  **Name/label params (`name`, `into`, `event`, `host`, `player_name`)
+  are read literally, NOT through `_parse_value`** — the bare word
+  `score` evaluates to `0` (CLAUDE.md landmine); only `value` / `data`
+  go through the evaluator. v1 `set_network_mode` + `PYGM_NET_*` path
+  untouched (a v2 session and the v1 raw host/client are mutually
+  exclusive per room). `state.py` `_fresh()` gains `"session": None`.
+  `tests/test_multiplayer_lan_tier_a.py` (17, real loopback through the
+  real `ActionExecutor` + `execute_event`). Landed `c395e927`.
 - [ ] 5.4 Tier B actions/conditions: `sync_instance`, `set_instance_owner`,
   `is_instance_owner`, `network_spawn`, `bind_network_input`,
   `remote_input`, `set_sync_rate`. Client-owned-avatar send path.
