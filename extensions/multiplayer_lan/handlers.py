@@ -492,10 +492,15 @@ class PluginExecutor:
         new_insts = [i for i in room.instances if id(i) not in before]
         if not new_insts:
             return
+        try:
+            owner = int(float(_pv(ae, instance, parameters.get("owner"), 0)))
+        except (TypeError, ValueError):
+            owner = 0
         synced = multiplayer_state(room).setdefault("synced", {})
         for inst in new_insts:
             nid = session.next_netid()
             inst._net_id = nid
+            inst._net_owner = owner
             synced[nid] = inst
 
     def execute_set_sync_rate_action(self, instance, parameters):
@@ -548,10 +553,12 @@ class PluginExecutor:
             instance._net_owner = 0
 
     def execute_is_instance_owner_action(self, instance, parameters):
-        """Condition: True iff this machine owns the acting instance."""
+        """Condition: True iff this machine owns the acting instance. With
+        no session at all (single-player) it's True -- you own everything,
+        so control logic guarded by it still runs."""
         session = self._session_for(instance)
         if session is None:
-            return False
+            return True
         owner = getattr(instance, "_net_owner", None)
         return owner is not None and owner == session.player_id
 
@@ -822,6 +829,15 @@ def _apply_ghosts(game_runner, st, session):
         inst = ghosts[nid]
         if getattr(inst, "to_destroy", False):
             del ghosts[nid]
+            continue
+        # A host-spawned instance the snapshot says THIS player owns is
+        # promoted from a passive ghost to a locally-simulated avatar:
+        # _apply_synced_local leaves its position alone and _send_owned
+        # reports it back up. Its Step still runs (guard control logic
+        # with is_instance_owner).
+        if session.ghost_owner(nid) == session.player_id:
+            inst._net_owner = session.player_id
+            st.setdefault("synced_local", {})[nid] = ghosts.pop(nid)
             continue
         pos = session.sample_ghost(nid)
         if pos is None:

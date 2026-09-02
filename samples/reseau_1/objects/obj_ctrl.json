@@ -1,0 +1,43 @@
+{
+  "name": "obj_ctrl",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -100,
+  "events": {
+    "game_start": {
+      "actions": [
+        {
+          "action": "network_spawn",
+          "parameters": { "object": "obj_person", "x": "320", "y": "240", "owner": "0" }
+        }
+      ]
+    },
+    "player_joined": {
+      "actions": [
+        {
+          "action": "network_spawn",
+          "parameters": {
+            "object": "obj_person",
+            "x": "120 + global.network_sender * 90",
+            "y": "240",
+            "owner": "global.network_sender"
+          }
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Salle partagee : deplacez votre carre avec les fleches\"",
+            "x": "20", "y": "20", "color": "#ffffff"
+          }
+        }
+      ]
+    }
+  }
+}

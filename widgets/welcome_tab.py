@@ -55,6 +55,7 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/raycast_3", "2.5 D — Level 3"),
     ("samples/raycast_4", "2.5 D — Level 4"),
     ("samples/multiplayer_lan_1", "LAN Multiplayer — Demo"),
+    ("samples/reseau_1", "Réseau — Salle partagée"),
     ("samples/treasure", "Treasure"),
     ("samples/sky_strike_1", "Sky Strike — Level 1"),
     # `treasure` and `maze_4` were dropped after rc.12 user testing, then
