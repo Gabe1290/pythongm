@@ -7,10 +7,14 @@ currently dominate pygm2's complexity surface. Companion read:
 
 ## Status
 
-**Not started.** Filed during the 1.0 stability push so the plan
-survives when attention returns to it. This is one of the few genuinely
-open initiatives in the repo — see `docs/PROJECT_STATUS.md` for the
-current overall picture.
+**In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
+baseline) and **step 3 / File 1** (`object_events_panel.py` → an
+`editors/object_editor/events/` mixin package, 2,111 → 800 LoC across
+7 commits `e57d8d81`..`fd143b4c`) are **DONE**, batched full suite green
+throughout. Next is step 4 — a stabilization pause (exercise the IDE)
+before **File 2** (`core/ide_window.py`). Files 2–4 not started. See
+`docs/PROJECT_STATUS.md` for the repo-wide picture and the per-file
+"Progress" / sequencing notes below for detail.
 
 **Re-verified 2026-09-03** — still not started (no DONE markers, no
 `core/ide/`, `runtime/action_executor/`, `runtime/sprite.py` etc. on
