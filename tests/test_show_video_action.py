@@ -50,7 +50,11 @@ def test_splash_show_text_and_image_are_not_aliased():
 
 
 def test_dead_placeholder_handlers_are_gone():
-    src = (REPO_ROOT / "runtime" / "action_handlers" / "extra_handlers.py").read_text(encoding="utf-8")
+    # extra_handlers.py itself was deleted 2026-09-03 (no-producer sweep in
+    # docs/POST_1_0_REFACTOR.md); the guarantee is unchanged -- these dead
+    # placeholder handlers must not exist, in that file or any successor.
+    path = REPO_ROOT / "runtime" / "action_handlers" / "extra_handlers.py"
+    src = path.read_text(encoding="utf-8") if path.exists() else ""
     assert "def handle_splash_show_video" not in src
     assert "def handle_splash_show_webpage" not in src
     assert '"splash_show_video":' not in src
