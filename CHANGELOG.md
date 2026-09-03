@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-03
+
+**The multiplayer release.** 1.2.0 shipped LAN multiplayer as a
+spectator-only slice (one host broadcasting positions, client input
+inert). 1.3.0 turns it into something students actually build networked
+games with — a shared-state API, networked instances with ownership, a
+built-in connection screen, three new samples, and HTML5 export parity —
+still a self-contained folder extension with zero core engine changes.
+Also folds in three real runtime/export bug fixes and an internal
+codebase cleanup.
+
+### Added
+- **LAN multiplayer, v2** (`extensions/multiplayer_lan/`) — the full
+  student-facing feature on top of 1.2.0's spectator slice:
+  - **Shared blackboard (Tier A):** `host_game` / `join_game` /
+    `leave_game` / `start_networked_game` / `set_shared_var` /
+    `get_shared_var` / `send_network_message`, the `network_started` /
+    `player_joined` / `player_left` / `network_message` /
+    `network_game_started` / `connection_lost` events (category
+    **Réseau**), and readable globals (`is_host`, `player_id`,
+    `player_count`, `network_role`, `network_connected`, plus every
+    shared var mirrored as `global.<name>`). Good for quizzes, shared
+    scoreboards, turn-based games, draw-together.
+  - **Networked instances (Tier B):** `network_spawn` (interpolated
+    ghosts on every client), `sync_instance` (deterministic netids),
+    `set_instance_owner` / `is_instance_owner` with validated
+    client-owned avatars, `bind_network_input` / `remote_input` (named
+    input), `set_sync_rate`, replicated instance vars.
+  - **Connection UX:** UDP LAN discovery beacon + a built-in French
+    modal connect / lobby screen (server browser, manual-IP entry,
+    "this machine" hint, host waiting-room). `join_game host="auto"`
+    opens the client screen; `host_game show_lobby=true` shows the
+    lobby. Runner-window caption shows `🌐 Hôte — N joueurs` /
+    `🌐 Client — connecté`. `PYGM_NET_AUTOHOST` / `PYGM_NET_AUTOJOIN=<ip>`
+    env vars start a session with zero authoring.
+  - **HTML5 export parity:** the desktop host also opens a hand-rolled
+    RFC 6455 WebSocket listener (`port+1`), and an exported HTML5 game
+    joins as a client — full Tier A plus Tier B ghost viewing. Kivy
+    exports run single-player (the 15 network actions no-op cleanly).
+  - Wire protocol: TCP newline-JSON, delta-compressed ~20 Hz snapshots,
+    100 ms interpolation, every inbound value sanitized, single-threaded
+    transport pumped from the frame loop.
+- **New samples:** `reseau_1` ("Salle partagée", a Tier B shared room
+  with arrow-key avatars), `reseau_2` ("Quiz de classe", Tier A),
+  `reseau_3` ("Récolte en équipe", co-op Tier B).
+- `tools/smoke_run_multiplayer.py` — a real two-OS-process, real-socket
+  smoke test for the multiplayer stack.
+- `wiki/Network.md` (+ `_fr`) documenting the network actions/events.
+
+### Fixed
+- **`global.X` inside an `if_condition` "expression" (or Test
+  Expression) was a silent no-op** on desktop — `global` is a reserved
+  word, so the underlying `eval()` raised `SyntaxError`, which a broad
+  `except` swallowed. The whole "`if is_host(): …`" authoring pattern
+  was affected. Fixed with a `global.X → _global.get('X', 0)`
+  substitution ahead of `eval()`.
+- **`global.X` in a condition crashed the entire Kivy export** — the
+  same reserved-word issue reached the generated file as unparseable
+  Python and killed the module's import. Fixed with a
+  `_strip_global_refs` pre-pass.
+- **HTML5 `execute_code`'s `game` object now persists custom
+  attributes** set on it across calls, matching the desktop runtime.
+
+### Changed
+- Internal: `runtime/action_handlers/` dropped 10 dead/no-producer
+  handler modules (14 → 5); `editors/object_editor/object_events_panel.py`
+  (2,111 LoC) was split into an `editors/object_editor/events/` mixin
+  package (`_panel.py` now 800 LoC). No behaviour change — the full test
+  suite is green throughout.
+
 ## [1.2.0] - 2026-08-24
 
 **The Block World, multiplayer, and real-desktop-export release.** The
