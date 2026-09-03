@@ -40,7 +40,7 @@ def _qapp():
 
 
 def _make_panel(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     return ObjectEventsPanel()
 
 

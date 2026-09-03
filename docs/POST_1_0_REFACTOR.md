@@ -256,19 +256,44 @@ item shape — diff old vs new before committing.
   `test_raycast_view.py::…turn_a_corner…`, is a load-sensitive raycast
   smoke test — passes clean in isolation, cannot be touched by an
   object-editor change).
-- [ ] `_event_crud.py` — `add_event` / `add_sub_event` /
-  `remove_selected_event` / `remove_sub_event` / the `add_*_with_selector`
-  family.
-- [ ] `_action_crud.py` — `add_action_to_event` / `_to_sub_event` /
-  `_to_collision_event` / `_to_mouse_event` / `edit_action` /
-  `remove_action` / `_locate_action_list`.
-- [ ] `_render.py` — `refresh_events_display` + `_set_action_item_text` +
-  `_collect_expanded_keys` / `_restore_expanded_keys`.
-- [ ] `_clipboard.py` — copy/paste helpers (keep `_action_clipboard` a
-  class attr on `ObjectEventsPanel` — `test_action_copy_paste.py` sets it
-  directly).
-- Then migrate the two production importers + the shim's remaining test
-  consumers off `object_events_panel` and delete the shim.
+  All later clusters became **mixins** rather than free-function modules
+  (verbatim move, no `self`→`panel` churn, no delegate stubs; `self.tr()`
+  context stays `ObjectEventsPanel`). Each verified with: AST verbatim
+  diff vs the prior commit + a method/tree-dump harness (identical) +
+  targeted test files + a batched full gate (4247 passed every time).
+- [x] **`_event_crud.py` — `ffea7b56`.** `EventCrudMixin`, 10 methods
+  (`add_event`, `show_add_event_menu`, `add_sub_event`, the 4
+  `add_*_with_selector`, `add_alarm_event`, `remove_selected_event`,
+  `remove_sub_event`). 2111→1575.
+- [x] **`_action_crud.py` + `_action_lookup.py` — `de6dc9a4`.**
+  `ActionCrudMixin` (9 methods: `add_action_to_*`, `edit_action`,
+  `remove_action`, `_locate_action_list`, `add_thymio_action_*`); the
+  alias-aware `get_action_type` wrapper + `ACTION_ALIASES` lifted into
+  `_action_lookup.py` as the single patch target for action resolution.
+  `test_extension_action_ui.py` patch paths repointed
+  (`_action_lookup` for render, `_action_crud` for `edit_action`).
+  1575→1181.
+- [x] **`_render.py` — `69897b9d`.** `RenderMixin` (`refresh_events_display`,
+  `_set_action_item_text`, `_collect_expanded_keys`,
+  `_restore_expanded_keys`). 1181→945.
+- [x] **`_clipboard.py` — `8550820e`.** `ClipboardMixin` (12 copy/paste
+  helpers). Verbatim except the two `ObjectEventsPanel._action_clipboard`
+  refs → `type(self)._action_clipboard` (avoids a `_clipboard`↔`_panel`
+  cycle; the `= None` class attr stays on `ObjectEventsPanel`). 945→800.
+- [ ] **Retire the shim** — migrate `object_editor_main.py` +
+  `object_editor/__init__.py` (and the ~5 test files still importing
+  `editors.object_editor.object_events_panel`) onto
+  `editors.object_editor.events`, then delete `object_events_panel.py`.
+- Optional further: a `_reorder.py` mixin for the drag/drop + move-up/down
+  cluster; fold `add_collision_event` / `remove_collision_event` /
+  `remove_mouse_event` into `EventCrudMixin`.
+
+`ObjectEventsPanel` is now `(EventCrudMixin, ActionCrudMixin, RenderMixin,
+ClipboardMixin, QWidget)`; `_panel.py` is **800 lines**, down from 2,111
+(-62%) — the shell (`__init__`/`setup_ui`/`setup_shortcuts`), drag/drop +
+reorder, selection/double-click, load/save (`load_events_data`,
+`_parse_execute_code_actions`, `get_events_data`), and the
+collision/mouse-event helpers.
 
 **Env note (machine-specific, see `CLAUDE.md` "Running tests"):** the
 box this File-1 work was done on has only 8 GB RAM and OOM-kills the

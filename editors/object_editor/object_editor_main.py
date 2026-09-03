@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 from utils.config import Config
 from ..base_editor import BaseEditor
 from .object_properties_panel import ObjectPropertiesPanel
-from .object_events_panel import ObjectEventsPanel
+from .events import ObjectEventsPanel
 from .thymio_events_panel import ThymioEventsPanel
 from .python_syntax_highlighter import PythonSyntaxHighlighter
 # Lazy import: BlocklyVisualProgrammingTab uses QtWebEngine which can

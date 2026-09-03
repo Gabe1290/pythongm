@@ -53,7 +53,7 @@ def _events():
 
 
 def _make_panel(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     panel = ObjectEventsPanel()
     panel.load_events_data(_events())
     return panel
@@ -70,7 +70,7 @@ def _top_item(panel, event_name):
 
 
 def test_copy_then_paste_after_inserts_duplicate(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None  # isolate from other tests
 
     panel = _make_panel(_qapp)
@@ -91,7 +91,7 @@ def test_copy_then_paste_after_inserts_duplicate(_qapp):
 
 
 def test_paste_append_targets_end_of_event(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _make_panel(_qapp)
@@ -104,7 +104,7 @@ def test_paste_append_targets_end_of_event(_qapp):
 
 
 def test_paste_into_keyboard_sub_event(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     from PySide6.QtCore import Qt
     ObjectEventsPanel._action_clipboard = None
 
@@ -127,7 +127,7 @@ def test_paste_into_keyboard_sub_event(_qapp):
 
 
 def test_clipboard_is_shared_across_panels(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     source = _make_panel(_qapp)
@@ -141,7 +141,7 @@ def test_clipboard_is_shared_across_panels(_qapp):
 
 
 def test_paste_is_deep_copy(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _make_panel(_qapp)
@@ -159,7 +159,7 @@ def test_paste_is_deep_copy(_qapp):
 
 def test_shortcut_handlers_copy_and_paste_after(_qapp):
     """Ctrl+C then Ctrl+V on a selected action inserts after it."""
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _make_panel(_qapp)
@@ -178,7 +178,7 @@ def test_shortcut_handlers_copy_and_paste_after(_qapp):
 
 def test_shortcut_paste_on_event_node_appends(_qapp):
     """Ctrl+V with an event node selected appends to that event."""
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _make_panel(_qapp)
@@ -192,7 +192,7 @@ def test_shortcut_paste_on_event_node_appends(_qapp):
 
 def test_shortcut_copy_ignores_non_action_selection(_qapp):
     """Ctrl+C on an event node (not an action) leaves the clipboard untouched."""
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _make_panel(_qapp)
@@ -215,14 +215,14 @@ def _multi_events():
 
 
 def _load(_qapp, data):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     panel = ObjectEventsPanel()
     panel.load_events_data(data)
     return panel
 
 
 def test_copy_multiple_selected_actions(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _load(_qapp, _multi_events())
@@ -241,7 +241,7 @@ def test_copy_multiple_selected_actions(_qapp):
 
 
 def test_paste_block_inserts_after_target_in_order(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _load(_qapp, _multi_events())
@@ -257,7 +257,7 @@ def test_paste_block_inserts_after_target_in_order(_qapp):
 
 
 def test_selection_copied_in_visual_order_regardless_of_click_order(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _load(_qapp, _multi_events())
@@ -273,7 +273,7 @@ def test_selection_copied_in_visual_order_regardless_of_click_order(_qapp):
 
 def test_copy_action_within_selection_copies_whole_selection(_qapp):
     """Right-clicking one action of a multi-selection copies them all."""
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _load(_qapp, _multi_events())
@@ -289,7 +289,7 @@ def test_copy_action_within_selection_copies_whole_selection(_qapp):
 
 def test_copy_action_outside_selection_copies_only_clicked(_qapp):
     """Right-clicking an unselected action copies just that one."""
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _load(_qapp, _multi_events())
@@ -301,7 +301,7 @@ def test_copy_action_outside_selection_copies_only_clicked(_qapp):
 
 
 def test_paste_without_clipboard_is_noop(_qapp):
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     ObjectEventsPanel._action_clipboard = None
 
     panel = _make_panel(_qapp)
