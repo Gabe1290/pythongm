@@ -56,7 +56,7 @@ class TestUnknownActionRendering:
         }
         fake_owner = {"folder": "threed", "name": "3D", "enabled": True,
                       "provides_actions": ["set_camera_3d"]}
-        with patch("editors.object_editor.object_events_panel.get_action_type",
+        with patch("editors.object_editor.events._panel.get_action_type",
                    return_value=None), \
              patch("events.plugin_loader.extension_for_action",
                    return_value=fake_owner):
@@ -75,7 +75,7 @@ class TestUnknownActionRendering:
         panel.current_events_data = {
             "step": {"actions": [{"action": "totally_made_up_action", "parameters": {}}]}
         }
-        with patch("editors.object_editor.object_events_panel.get_action_type",
+        with patch("editors.object_editor.events._panel.get_action_type",
                    return_value=None), \
              patch("events.plugin_loader.extension_for_action",
                    return_value=None):
@@ -112,12 +112,12 @@ class TestEditUnknownAction:
         panel = _make_panel(_qapp)
         fake_owner = {"folder": "threed", "name": "3D", "enabled": False,
                       "provides_actions": ["set_camera_3d"]}
-        with patch("editors.object_editor.object_events_panel.get_action_type",
+        with patch("editors.object_editor.events._panel.get_action_type",
                    return_value=None), \
              patch("events.plugin_loader.extension_for_action",
                    return_value=fake_owner):
             action_item = self._action_item_for(panel, "set_camera_3d")
-            with patch("editors.object_editor.object_events_panel.QMessageBox") as mock_box:
+            with patch("editors.object_editor.events._panel.QMessageBox") as mock_box:
                 panel.edit_action(action_item)
 
         assert mock_box.information.called
@@ -129,12 +129,12 @@ class TestEditUnknownAction:
 
     def test_unknown_owner_shows_generic_message(self, _qapp):
         panel = _make_panel(_qapp)
-        with patch("editors.object_editor.object_events_panel.get_action_type",
+        with patch("editors.object_editor.events._panel.get_action_type",
                    return_value=None), \
              patch("events.plugin_loader.extension_for_action",
                    return_value=None):
             action_item = self._action_item_for(panel, "totally_made_up_action")
-            with patch("editors.object_editor.object_events_panel.QMessageBox") as mock_box:
+            with patch("editors.object_editor.events._panel.QMessageBox") as mock_box:
                 panel.edit_action(action_item)
 
         assert mock_box.information.called
@@ -148,8 +148,8 @@ class TestEditUnknownAction:
         # accidentally route it through the new unknown-action branch).
         panel = _make_panel(_qapp)
         action_item = self._action_item_for(panel, "set_score")
-        with patch("editors.object_editor.object_events_panel.QMessageBox") as mock_box, \
-             patch("editors.object_editor.object_events_panel.create_action_dialog") as mock_dialog:
+        with patch("editors.object_editor.events._panel.QMessageBox") as mock_box, \
+             patch("editors.object_editor.events._panel.create_action_dialog") as mock_dialog:
             mock_dialog.return_value.exec.return_value = 0  # QDialog.Rejected
             panel.edit_action(action_item)
         assert not mock_box.information.called
