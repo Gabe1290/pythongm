@@ -503,24 +503,38 @@ These are smaller items worth tackling alongside the split work:
    3 remained (`asset_tree_widget.py`, `action_executor.py` ×2), each a
    redundant label directly above a legitimate `logger.debug(...)` call.
    Removed the label lines; logging unchanged.
-4. **`logger.info` emoji noise.** Many "💾 ✅ 🔄" emoji-prefixed info
-   logs from the audit era still fire in normal operation. Demote the
-   informational ones to debug, keep the ones that are genuinely
-   user-facing (Test Game start/stop, project save success).
-5. **Earlier audit §4 follow-ups.** The pre-1.0 audit doc that used to
-   track these (deleted 2026-09-02 in a docs cleanup, recoverable via
-   `git log -- docs/CODE_AUDIT.md` if ever needed) had some open items
-   that may overlap with this plan — worth a quick check via git history
-   before starting any split, so this doesn't redo audit work.
+4. ~~**`logger.info` emoji noise.**~~ **Done (`61001945`)** — 54
+   emoji-prefixed info logs demoted to `debug` (runtime: `action_executor`
+   ×23, `game_runner` ×18, `thymio` ×1; IDE: `project_manager`,
+   `language_manager`, `ide_window`, `roberta_exporter`). Kept 9 genuine
+   user-facing ones (`project_manager` save-success trio, `ide_window`
+   "Save completed successfully" + preset-persist confirmations,
+   `android_exporter` WSL detection). No test captures INFO-level logs.
+5. ~~**Earlier audit §4 follow-ups.**~~ **Nothing to do** — retrieved the
+   last `docs/CODE_AUDIT.md` (`git show ccc5e153~1:docs/CODE_AUDIT.md`).
+   Its §4 is explicitly *"a guard list, not a task"* — a vulture
+   false-positive list (the `execute_*_action` auto-registration via
+   `dir(self)`, `_DRAW_HANDLERS` `getattr` dispatch, the plugin
+   `importlib` loader, Qt event overrides, `gmk_parser` `_`-locals). §1–§3
+   were all confirmed closed there. That guard list is worth re-reading
+   before File 4 (it names the dynamic-dispatch patterns the mixin split
+   must preserve), but it is not itself work.
 
 ---
 
 ## Suggested sequencing
 
-1. Ship 1.0 on the current structure.
-2. Logger noise purge + dead-code deletion (1–2 days). Sets baseline.
+1. Ship 1.0 on the current structure. **Done** (repo is at 1.2.0).
+2. ~~Logger noise purge + dead-code deletion (1–2 days). Sets baseline.~~
+   **Done 2026-09-03** (`ab39a009` `af56b25d` `4875d734` `2f145fb4`
+   `61001945`) — 10 dead handler modules gone, `# DEBUG` labels gone, 54
+   emoji `logger.info` demoted; `runtime/action_handlers/` down from 14
+   modules to 5. Companion-cleanup §2's remaining piece (the
+   `control_`/`sound_handlers` legacy-alias question) and the final
+   Phase-2 removal are deferred as a scoped compat task, not a blocker
+   for the file splits. Full suite green (4247 passed) at every step.
 3. File 1 (`object_events_panel.py`) — practice the methodology on the
-   low-risk file (3–5 days).
+   low-risk file (3–5 days). **NEXT.**
 4. **Stabilization pause** — actually use the IDE for a week. If the
    split introduced regressions you missed in tests, this is when
    you'll find them.
