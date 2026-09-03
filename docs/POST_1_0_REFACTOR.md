@@ -240,6 +240,41 @@ Thymio + a container event with sub-actions), and snapshots the rendered
 `QTreeWidget` text/structure and the `show_context_menu` output for each
 item shape — diff old vs new before committing.
 
+### Progress
+
+- [x] **Skeleton — `e57d8d81`.** `git mv object_events_panel.py →
+  events/_panel.py`; `events/__init__.py` re-exports
+  `ObjectEventsPanel`/`ACTION_ALIASES`/`get_action_type`;
+  `object_events_panel.py` is now a compat shim; two relative imports
+  went `.` → `..`; `test_extension_action_ui.py`'s 5 `patch()` paths
+  repointed to `events._panel`. Harness dump identical except
+  `__module__` (inherent to the move). Full suite 4247 passed.
+- [x] **`show_context_menu` → `events/_context_menu.py` — `c445d2e4`.**
+  175-line body moved verbatim (byte-identical after dedent + `self` →
+  `panel` + docstring strip); `show_context_menu` is a 2-line lazy-import
+  delegate. Batched full run 4246/4247 (the one miss,
+  `test_raycast_view.py::…turn_a_corner…`, is a load-sensitive raycast
+  smoke test — passes clean in isolation, cannot be touched by an
+  object-editor change).
+- [ ] `_event_crud.py` — `add_event` / `add_sub_event` /
+  `remove_selected_event` / `remove_sub_event` / the `add_*_with_selector`
+  family.
+- [ ] `_action_crud.py` — `add_action_to_event` / `_to_sub_event` /
+  `_to_collision_event` / `_to_mouse_event` / `edit_action` /
+  `remove_action` / `_locate_action_list`.
+- [ ] `_render.py` — `refresh_events_display` + `_set_action_item_text` +
+  `_collect_expanded_keys` / `_restore_expanded_keys`.
+- [ ] `_clipboard.py` — copy/paste helpers (keep `_action_clipboard` a
+  class attr on `ObjectEventsPanel` — `test_action_copy_paste.py` sets it
+  directly).
+- Then migrate the two production importers + the shim's remaining test
+  consumers off `object_events_panel` and delete the shim.
+
+**Env note:** this box (7.5 GB RAM) OOM-kills the desktop when the whole
+suite runs in one pytest process. Run targeted files individually; for a
+full gate, batch it (`tests/test_[a-g]*`, `[h-p]*`, `[q-z]*`) so no single
+process peaks.
+
 ---
 
 ## File 2 — `core/ide_window.py` (5,316 LoC)
