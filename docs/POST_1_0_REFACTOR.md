@@ -200,6 +200,46 @@ editors/object_editor/events/
   the panel class (or move to a constants module) so both sides see
   the same table.
 
+### Reconnaissance (2026-09-03) — do this before the first extraction commit
+
+Mapped every consumer so the package move isn't a naive `git mv` + shim
+(which would silently break `mock.patch` targets):
+
+- **Production importers (only two):** `editors/object_editor/
+  object_editor_main.py:25` (`from .object_events_panel import
+  ObjectEventsPanel`) and `editors/object_editor/__init__.py:8`
+  (re-export). Both must keep resolving.
+- **`tests/test_extension_action_ui.py` patches module-internal names by
+  string path** — `editors.object_editor.object_events_panel.get_action_type`,
+  `.QMessageBox`, `.create_action_dialog` (5 `patch()` sites). A
+  re-export shim patches the *shim's* binding, not the one the moved
+  code actually calls, so those tests would pass-through-fail. The
+  package-move commit **must** also repoint these five patch targets at
+  wherever the code lands (`…events._panel.*`), or keep all three names
+  bound in the old module.
+- **Class attributes tests mutate directly — must stay on
+  `ObjectEventsPanel`, not migrate to a helper module:**
+  `_action_clipboard` (`test_action_copy_paste.py`, ~20 refs, incl.
+  `ObjectEventsPanel._action_clipboard = None`), `_CONTAINER_EVENT_HINTS`
+  (already flagged), and `_parse_execute_code_actions` is called as an
+  unbound method on a fake host by `test_thymio_else_preserved.py:97`.
+- **Module-level, `self`-free, cleanest leaf:** `ACTION_ALIASES` +
+  the `get_action_type()` wrapper (lines 26–48). Safe to lift into
+  `events/_action_lookup.py` — but it's one of the patched names above,
+  so that move still touches `test_extension_action_ui.py`.
+- **Relative imports inside the file** that shift a level under
+  `events/`: `from .object_actions_formatter import …`,
+  `from .python_code_parser import …` → `from ..`.
+
+**Revised first commit:** package skeleton (`events/__init__.py` re-export
++ `_panel.py`) **plus** the `test_extension_action_ui.py` patch-path
+update, in one commit — it can't be split. Prove HEAD-identity with an
+offscreen-Qt harness that builds `ObjectEventsPanel()`, feeds a
+representative `events_data` (collision + keyboard + alarm + mouse +
+Thymio + a container event with sub-actions), and snapshots the rendered
+`QTreeWidget` text/structure and the `show_context_menu` output for each
+item shape — diff old vs new before committing.
+
 ---
 
 ## File 2 — `core/ide_window.py` (5,316 LoC)
