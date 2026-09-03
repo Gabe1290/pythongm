@@ -436,11 +436,27 @@ them — so it continues to work unchanged.
 
 These are smaller items worth tackling alongside the split work:
 
-1. **Consolidate `ACTION_ALIASES` to a single source of truth.** Currently
-   in three places (`runtime/action_executor.py`,
-   `editors/object_editor/object_events_panel.py`,
-   `events/action_types.py:BLOCKLY_TO_ACTION_MAP`). Define once in
-   `events/action_types.py` and import from there.
+1. ~~**Consolidate `ACTION_ALIASES` to a single source of truth.**~~
+   **Won't do — re-verified 2026-09-03, the three are NOT duplicates.**
+   - `editors/object_editor/object_events_panel.py:ACTION_ALIASES` (8
+     entries) feeds `get_action_type()` — it maps a legacy action name to
+     whichever name the **UI ActionType registry** is keyed under, so the
+     editor can show metadata for an action authored under an old name.
+   - `runtime/action_executor.py:ActionExecutor.ACTION_ALIASES` (17
+     entries) is consulted at **dispatch** time and maps a legacy name to
+     the **handler-registry** key. For `goto_room` / `game_end` /
+     `game_restart` it maps in the **opposite direction** from the panel's
+     dict (the canonical name differs between the two registries), and it
+     deliberately **omits `if_collision`** (there's a load-bearing comment:
+     `if_collision` has its own immediate handler and must not alias to the
+     deferred `if_collision_at`) — which the panel's dict *does* alias.
+     Merging would break dispatch and that special-case.
+   - `events/action_types.py:BLOCKLY_TO_ACTION_MAP` (~86 entries) is a
+     Blockly-block-type → action-type table (`"move_set_hspeed"` →
+     `"set_hspeed"`), not a legacy-alias map at all.
+   Three different concerns, two opposite directions, one hard
+   special-case. "Define once and import" would be a behaviour-changing
+   regression, not a cleanup. Left as-is.
 2. ~~Delete the dead `CollisionMixin`~~ **Already done** — `runtime/
    collision_system.py` was deleted entirely 2026-06-09. In its place:
    **tear down the near-dead `runtime/action_handlers/` package** so it
