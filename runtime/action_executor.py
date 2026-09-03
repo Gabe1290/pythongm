@@ -202,7 +202,6 @@ class ActionExecutor:
         event_data = events_data[event_name]
         actions = event_data.get("actions", [])
 
-        # DEBUG: Show which event is being executed
         if event_name == "create":
             obj_name = getattr(instance, 'object_name', instance.__class__.__name__)
             logger.debug(f"🎬 Executing CREATE event for {obj_name}")
@@ -1327,7 +1326,6 @@ class ActionExecutor:
         if abs(instance.vspeed) < 1e-9:
             instance.vspeed = 0.0
 
-        # DEBUG
         logger.debug(f"   ➡️ Start Moving Direction: {direction}° at speed {speed}")
         logger.debug(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
