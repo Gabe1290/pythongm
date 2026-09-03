@@ -7,9 +7,9 @@ A GameMaker-style visual game development IDE for creating 2D games with Python.
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
-## ⬇️ Download PyGameMaker 1.2
+## ⬇️ Download PyGameMaker 1.3
 
-**Version 1.2 is here** — grab a ready-to-run build. No Python install required:
+**Version 1.3 is here** — grab a ready-to-run build. No Python install required:
 
 | Platform | Download |
 |----------|----------|
