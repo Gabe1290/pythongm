@@ -1161,7 +1161,6 @@ class AssetTreeWidget(QTreeWidget):
             self.project_path = project_path
             self.set_current_project(project_path)
 
-            # DEBUG: Check room order when receiving project data
             rooms = project_data.get('assets', {}).get('rooms', {})
             logger.debug(f"asset_tree set_project: room order = {list(rooms.keys())}")
 
