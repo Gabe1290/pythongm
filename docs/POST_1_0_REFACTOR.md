@@ -46,21 +46,39 @@ corrected in place:
   already gone. File 3's `collision.py` extraction target should be built
   fresh; there is no old file to delete alongside it anymore, and
   Companion Cleanup item 2 is moot.
-- **New companion-cleanup finding**: `runtime/action_handlers/
-  particle_handlers.py` (`PARTICLE_HANDLERS`) is now confirmed **fully
-  dead code** — `ActionExecutor.__init__`'s two-phase registration
-  (`execute_*_action` methods first, modular `action_handlers/` package
-  second, explicitly skipping any action name already covered) means every
-  action `particle_handlers.py` defines is shadowed by the
-  `execute_*_action` methods already on `ActionExecutor` (these predate
-  Tier 5.1's particle-engine work — Tier 5.1 only added the *read* side;
-  the *write*-side `execute_create_particle_system_action`-style methods
-  already existed). This wasn't introduced by any recent work, just
-  newly confirmed by directly reading the registration order. Worth a
-  quick audit of the other 11 files in `runtime/action_handlers/` for the
-  same shadowing pattern when this refactor's companion-cleanup phase is
-  reached — `particle_handlers.py` is the one confirmed instance, not
-  necessarily the only one.
+- **Companion-cleanup finding, re-verified 2026-09-03 — the earlier
+  "`particle_handlers.py` is fully dead" claim was WRONG** (classic
+  audit-is-a-lead miss; corrected here rather than acted on). Actual
+  picture from an introspection pass over `ActionExecutor`'s 127
+  `execute_*_action` methods vs. every `*_HANDLERS` dict in
+  `runtime/action_handlers/`:
+  - `ActionExecutor.__init__`'s two-phase registration does skip any
+    modular handler whose action name a `execute_*_action` method already
+    covers — that part of the claim holds.
+  - **Only `game_handlers.py` is fully shadowed**: its sole entry
+    `sleep` → `handle_sleep` is covered by `execute_sleep_action`
+    (`action_executor.py:2480`), which is the one that actually runs
+    (`sleep` is used across `treasure` / `maze_4` / `plateforme_3`). So
+    `game_handlers.py` is genuinely dead-by-shadowing and safe to delete.
+  - `particle_handlers.py` registers `emitter_burst` / `emitter_stream`,
+    and there is **no** `execute_emitter_*_action` — so those are *not*
+    shadowed. They are almost certainly dead for a different reason
+    (**no producer**: absent from `ACTION_TYPES`, every sample
+    `project.json`/`objects/*.json`, the GMK importer, the Python code
+    parser, and the Blockly config), but that is "unreachable", not
+    "shadowed", and wants its own explicit sign-off before deletion.
+  - Across the whole package, **75 modular-only action names** (reachable
+    only via `action_handlers/`, not via an `execute_*` method). Of
+    those, exactly **5 are reachable** — `comment`, `move_free`,
+    `set_direction`, `set_speed` (all in `events/action_types.py` /
+    Blockly config) and `play_sound` (plugin-owned, overridden at
+    runtime by `plugins/audio_actions.py` via `register_custom_action`).
+    The other **70 have zero producers anywhere** (same five-source check
+    as above) and are strong deletion candidates — but per this doc's
+    own methodology, each `*_handlers.py` file needs its own
+    "no producer, confirmed" note in the commit body, not a blanket
+    sweep. `base.py` stays regardless — `game_runner.py:3581` imports
+    `snap_to_grid` from it directly.
 
 ## Why this is post-1.0
 
@@ -424,14 +442,36 @@ These are smaller items worth tackling alongside the split work:
    `events/action_types.py:BLOCKLY_TO_ACTION_MAP`). Define once in
    `events/action_types.py` and import from there.
 2. ~~Delete the dead `CollisionMixin`~~ **Already done** — `runtime/
-   collision_system.py` was deleted entirely 2026-06-09, before this item
-   was ever acted on. Nothing left to do here; File 3's `collision.py`
-   extraction starts from a clean slate. New item in its place: audit
-   `runtime/action_handlers/` for modules fully shadowed by
-   `execute_*_action` methods the way `particle_handlers.py` is (see the
-   2026-08-15 Status update above) — likely dead code worth deleting
-   before or during File 4's split, not carried into the new mixin
-   structure.
+   collision_system.py` was deleted entirely 2026-06-09. In its place:
+   **tear down the near-dead `runtime/action_handlers/` package** so it
+   is not carried into File 4's mixin structure. Verified sub-plan
+   (see the corrected 2026-09-03 finding in the Status section for the
+   full analysis):
+   - [ ] **Delete `game_handlers.py`** — its only entry (`sleep`) is
+     fully shadowed by `execute_sleep_action`; drop the import +
+     `register_handlers(GAME_HANDLERS)` line from
+     `action_handlers/__init__.py`. Behaviour-preserving by construction
+     (the skip logic meant it was never in the dispatch table). One
+     commit, suite must stay green.
+   - [ ] **Per-file "no producer" deletion** of the handler modules
+     whose action names appear in **none** of: `events/action_types.py`
+     `ACTION_TYPES`, any `samples/*/project.json` or
+     `samples/*/objects/*.json`, `importers/gmk_converter.py`,
+     `editors/object_editor/python_code_parser.py`, `config/blockly_config.py`.
+     70 of the 75 modular-only names qualify. Do this one `*_handlers.py`
+     file per commit, each with the five-source check recorded in the
+     commit body.
+   - [ ] **Keep** the 5 reachable modular-only actions — `comment`,
+     `move_free`, `set_direction`, `set_speed`, `play_sound`. If their
+     home file is otherwise deleted, fold these into an
+     `execute_*_action` method (or, for `play_sound`, leave it to the
+     plugin) rather than keeping a one-entry handler file alive.
+   - [ ] **Keep `base.py`** — `game_runner.py:3581` imports `snap_to_grid`
+     from it directly; that helper needs a new home (or stays) before
+     `base.py` can go.
+   - [ ] Once the package is empty of live handlers, delete Phase 2 of
+     `_register_action_handlers` and the `runtime.action_handlers`
+     import entirely — one final commit.
 3. **Audit-era `# DEBUG:` comments.** A handful remain in code (not
    logger calls — code comments labeled DEBUG that were notes-to-self
    from the audit). Grep and prune.
