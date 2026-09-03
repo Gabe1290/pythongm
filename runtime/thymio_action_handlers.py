@@ -420,7 +420,7 @@ def register_thymio_actions(action_executor: Any) -> None:
     for action_name, handler in handlers.items():
         action_executor.register_custom_action(action_name, handler)
 
-    logger.info(f"✅ Registered {len(handlers)} Thymio action handlers")
+    logger.debug(f"✅ Registered {len(handlers)} Thymio action handlers")
 
 
 # ============================================================================
