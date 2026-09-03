@@ -42,6 +42,22 @@ From the repo root:
 - For headless / offscreen Qt: `QT_QPA_PLATFORM=offscreen` (`conftest.py`
   already sets `SDL_VIDEODRIVER=dummy` / `SDL_AUDIODRIVER=dummy` for pygame).
 - Skip `-x`; tests are independent and the full count is the signal.
+- **RAM caveat — machine-specific, NOT a project rule.** The dev machines
+  differ widely (RAM, OS, CPU); the default is to run the whole suite in one
+  process (`python3 -m pytest tests/ -q`) and that's what CI does. On a
+  **small-RAM box (~8 GB)**, running all ~4200 tests in one long-lived pytest
+  process accumulates enough PySide6/pygame state to exhaust RAM+swap while a
+  desktop session (VS Code, a browser) is open — the kernel OOM-killer then
+  kills those apps, not pytest. On such a box only: run targeted files
+  individually during iteration, and for a full gate split it into
+  memory-bounded batches (`pytest tests/test_[a-g]*.py -q`, then `[h-p]`, then
+  `[q-z]`) and sum the counts. On a machine with comfortable RAM, ignore all
+  of this and run the suite normally.
+- **`test_raycast_view.py` smoke tests are timing/perf-sensitive** — they run a
+  real `GameRunner` loop against a frame budget and can spuriously fail on a
+  loaded or slow machine (e.g. one already thrashing swap). Re-run any such
+  failure in isolation before treating it as a regression; it is not one if it
+  passes alone.
 
 ## Audit-cleanup history (§1–§3 closed)
 
