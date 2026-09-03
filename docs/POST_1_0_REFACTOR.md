@@ -462,17 +462,26 @@ These are smaller items worth tackling alongside the split work:
      (`test_dead_placeholder_handlers_are_gone`) that *read* the
      now-deleted `extra_handlers.py` were updated to tolerate its
      absence.
-   - [ ] **Tighten-check `control_handlers.py` + `sound_handlers.py`**
-     — kept this pass because a broad string scan gave loose matches
-     (`collision`, `if_key_pressed`, `if_variable`, `stop_all_sounds`),
-     but none of those looked like real producers on inspection and the
-     files' own comments show prior careful pruning of the same shape
-     (`test_variable` / `code` / `script` aliases already removed as dead).
-     Needs the same rigor: check each remaining name against
-     ACTION_TYPES **after `load_all_plugins()`**, the conditional editor
-     (`events/conditional_editor.py`), `gmk_converter.py`, samples, and
-     Blockly before deleting. `play_sound` here is a shadowed fallback
-     for the plugin-owned action — leave it.
+   - [~] **`control_handlers.py` + `sound_handlers.py` — KEEP, not a
+     clean delete.** Ran the rigorous check (ACTION_TYPES post
+     `load_all_plugins()`, `events/conditional_editor.py`,
+     `gmk_converter.py`, samples, Blockly, `python_code_parser.py`,
+     `tests/`, `export/`). Result: none of these names is a *live* action
+     in the desktop UI, **but the HTML5 engine (`export/HTML5/templates/
+     engine.js`) still honours several as legacy aliases** —
+     `case 'if_condition': case 'if_variable':` (three sites; `if_variable`
+     is the pre-`if_condition` name for the same first-class conditional)
+     and a real `case 'stop_all_sounds':` audio handler. On desktop
+     `if_variable` currently routes to `control_handlers.handle_if_variable`,
+     whose param shape (`operation`/`variable`) is the *old, incompatible*
+     one — not `execute_if_condition_action`'s `condition_type` dispatch.
+     So deleting these files is **not** pure dead-code removal: it's a
+     decision about whether to keep loading pre-`if_condition` /
+     legacy-audio-name projects on desktop, and if so whether to
+     re-point those names at the modern handlers via `ACTION_ALIASES`
+     (a behaviour change needing the offscreen-Qt proof). Deferred out
+     of the teardown as its own scoped task. `play_sound` here is a
+     shadowed fallback for the plugin-owned action — leave it regardless.
    - [ ] **Keep** the reachable modular-only actions — `comment`
      (`variable_handlers`), `move_free` / `set_direction` / `set_speed`
      (`movement_handlers`; in ACTION_TYPES + Blockly config). If a home
@@ -483,7 +492,13 @@ These are smaller items worth tackling alongside the split work:
      `base.py` can go.
    - [ ] Once the package is empty of live handlers, delete Phase 2 of
      `_register_action_handlers` and the `runtime.action_handlers`
-     import entirely — one final commit.
+     import entirely — one final commit. **Blocked** on the
+     `control_`/`sound_handlers` decision above; `movement_`/`variable_`
+     still carry the reachable 4 (`comment` / `move_free` /
+     `set_direction` / `set_speed`) which must be re-homed first.
+     Package went from 14 handler modules to **5** (`base` + `movement`
+     + `control` + `variable` + `sound`) — the mixin-structure risk this
+     item was guarding against is largely defused already.
 3. ~~**Audit-era `# DEBUG:` comments.**~~ **Done (`4875d734`)** — only
    3 remained (`asset_tree_widget.py`, `action_executor.py` ×2), each a
    redundant label directly above a legitimate `logger.debug(...)` call.
