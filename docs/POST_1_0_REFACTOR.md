@@ -270,10 +270,12 @@ item shape — diff old vs new before committing.
 - Then migrate the two production importers + the shim's remaining test
   consumers off `object_events_panel` and delete the shim.
 
-**Env note:** this box (7.5 GB RAM) OOM-kills the desktop when the whole
-suite runs in one pytest process. Run targeted files individually; for a
-full gate, batch it (`tests/test_[a-g]*`, `[h-p]*`, `[q-z]*`) so no single
-process peaks.
+**Env note (machine-specific, see `CLAUDE.md` "Running tests"):** the
+box this File-1 work was done on has only 8 GB RAM and OOM-kills the
+desktop when the whole suite runs in one pytest process, so the runs
+above were done as targeted files + a batched full gate (`test_[a-g]*` /
+`[h-p]*` / `[q-z]*`). This is **not** a project rule — on a machine with
+adequate RAM, run the suite normally.
 
 ---
 
