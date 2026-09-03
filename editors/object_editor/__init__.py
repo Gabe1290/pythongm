@@ -5,7 +5,7 @@ Object Editor Package
 
 from .object_editor_main import ObjectEditor
 from .object_properties_panel import ObjectPropertiesPanel
-from .object_events_panel import ObjectEventsPanel
+from .events import ObjectEventsPanel
 from .thymio_events_panel import ThymioEventsPanel
 from .object_actions_formatter import ActionParametersFormatter
 

@@ -35,7 +35,7 @@ def _qapp():
 
 
 def _make_panel():
-    from editors.object_editor.object_events_panel import ObjectEventsPanel
+    from editors.object_editor.events import ObjectEventsPanel
     panel = ObjectEventsPanel()
     return panel
 

@@ -91,7 +91,7 @@ class TestEventsPanelAmplifier:
     """The on-load re-parse must not destroy a saved project's else logic."""
 
     def _run_panel_reparse(self, events_data):
-        from editors.object_editor.object_events_panel import ObjectEventsPanel
+        from editors.object_editor.events import ObjectEventsPanel
         host = type('Host', (), {})()
         host.current_events_data = events_data
         ObjectEventsPanel._parse_execute_code_actions(host)
