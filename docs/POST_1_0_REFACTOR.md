@@ -280,20 +280,26 @@ item shape — diff old vs new before committing.
   helpers). Verbatim except the two `ObjectEventsPanel._action_clipboard`
   refs → `type(self)._action_clipboard` (avoids a `_clipboard`↔`_panel`
   cycle; the `= None` class attr stays on `ObjectEventsPanel`). 945→800.
-- [ ] **Retire the shim** — migrate `object_editor_main.py` +
-  `object_editor/__init__.py` (and the ~5 test files still importing
-  `editors.object_editor.object_events_panel`) onto
-  `editors.object_editor.events`, then delete `object_events_panel.py`.
-- Optional further: a `_reorder.py` mixin for the drag/drop + move-up/down
-  cluster; fold `add_collision_event` / `remove_collision_event` /
-  `remove_mouse_event` into `EventCrudMixin`.
+- [x] **Retired the shim — `fd143b4c`.** `object_editor_main.py` +
+  `object_editor/__init__.py` + 4 test files moved onto
+  `editors.object_editor.events`; `object_events_panel.py` deleted.
+  Remaining `object_events_panel` mentions are stale comments only.
+- Optional further (not blocking File 2): a `_reorder.py` mixin for the
+  drag/drop + move-up/down cluster; fold `add_collision_event` /
+  `remove_collision_event` / `remove_mouse_event` into `EventCrudMixin`.
 
-`ObjectEventsPanel` is now `(EventCrudMixin, ActionCrudMixin, RenderMixin,
-ClipboardMixin, QWidget)`; `_panel.py` is **800 lines**, down from 2,111
-(-62%) — the shell (`__init__`/`setup_ui`/`setup_shortcuts`), drag/drop +
-reorder, selection/double-click, load/save (`load_events_data`,
+**File 1 DONE (2026-09-03).** `ObjectEventsPanel` is now
+`(EventCrudMixin, ActionCrudMixin, RenderMixin, ClipboardMixin, QWidget)`;
+`_panel.py` is **800 lines**, down from 2,111 (**-62%**) — just the shell
+(`__init__`/`setup_ui`/`setup_shortcuts`), drag/drop + reorder,
+selection/double-click, load/save (`load_events_data`,
 `_parse_execute_code_actions`, `get_events_data`), and the
-collision/mouse-event helpers.
+collision/mouse-event helpers. New package modules: `_context_menu.py`
+(195), `_event_crud.py` (392), `_action_crud.py` (~400),
+`_action_lookup.py` (43), `_render.py` (~265), `_clipboard.py` (~190).
+Batched full suite **4247 passed / 0 failed** after every one of the 7
+commits. **Next: step 4 (stabilization pause — exercise the IDE) before
+File 2.**
 
 **Env note (machine-specific, see `CLAUDE.md` "Running tests"):** the
 box this File-1 work was done on has only 8 GB RAM and OOM-kills the
@@ -651,8 +657,10 @@ These are smaller items worth tackling alongside the split work:
    `control_`/`sound_handlers` legacy-alias question) and the final
    Phase-2 removal are deferred as a scoped compat task, not a blocker
    for the file splits. Full suite green (4247 passed) at every step.
-3. File 1 (`object_events_panel.py`) — practice the methodology on the
-   low-risk file (3–5 days). **NEXT.**
+3. ~~File 1 (`object_events_panel.py`) — practice the methodology on the
+   low-risk file.~~ **DONE 2026-09-03** — `_panel.py` 2,111 → 800 LoC
+   across 7 commits (`e57d8d81`..`fd143b4c`), suite green throughout.
+   See File 1's own "DONE" note above.
 4. **Stabilization pause** — actually use the IDE for a week. If the
    split introduced regressions you missed in tests, this is when
    you'll find them.
