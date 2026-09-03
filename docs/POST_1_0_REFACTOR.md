@@ -447,34 +447,47 @@ These are smaller items worth tackling alongside the split work:
    is not carried into File 4's mixin structure. Verified sub-plan
    (see the corrected 2026-09-03 finding in the Status section for the
    full analysis):
-   - [ ] **Delete `game_handlers.py`** — its only entry (`sleep`) is
-     fully shadowed by `execute_sleep_action`; drop the import +
-     `register_handlers(GAME_HANDLERS)` line from
-     `action_handlers/__init__.py`. Behaviour-preserving by construction
-     (the skip logic meant it was never in the dispatch table). One
-     commit, suite must stay green.
-   - [ ] **Per-file "no producer" deletion** of the handler modules
-     whose action names appear in **none** of: `events/action_types.py`
-     `ACTION_TYPES`, any `samples/*/project.json` or
-     `samples/*/objects/*.json`, `importers/gmk_converter.py`,
-     `editors/object_editor/python_code_parser.py`, `config/blockly_config.py`.
-     70 of the 75 modular-only names qualify. Do this one `*_handlers.py`
-     file per commit, each with the five-source check recorded in the
-     commit body.
-   - [ ] **Keep** the 5 reachable modular-only actions — `comment`,
-     `move_free`, `set_direction`, `set_speed`, `play_sound`. If their
-     home file is otherwise deleted, fold these into an
-     `execute_*_action` method (or, for `play_sound`, leave it to the
-     plugin) rather than keeping a one-entry handler file alive.
+   - [x] **Deleted `game_handlers.py`** (`ab39a009`) — its only entry
+     (`sleep`) was fully shadowed by `execute_sleep_action`. Dispatch
+     table byte-identical; suite 4247/0.
+   - [x] **Per-file "no producer" deletion** (`af56b25d`) — removed 9
+     modules whose every action name appears in **none** of:
+     `events/action_types.py` `ACTION_TYPES`, any `samples/**/*.json`
+     `"action"` field, `importers/gmk_converter.py`,
+     `editors/object_editor/python_code_parser.py`,
+     `config/blockly_config.py`, `export/**/*.{py,js}`, `tests/`:
+     `instance_`, `draw_`, `score_`, `room_`, `timing_`, `particle_`,
+     `extra_`, `info_`, `resource_handlers`. ~58 dead dispatch entries
+     (live table 202 → 144). Two regression tests
+     (`test_dead_placeholder_handlers_are_gone`) that *read* the
+     now-deleted `extra_handlers.py` were updated to tolerate its
+     absence.
+   - [ ] **Tighten-check `control_handlers.py` + `sound_handlers.py`**
+     — kept this pass because a broad string scan gave loose matches
+     (`collision`, `if_key_pressed`, `if_variable`, `stop_all_sounds`),
+     but none of those looked like real producers on inspection and the
+     files' own comments show prior careful pruning of the same shape
+     (`test_variable` / `code` / `script` aliases already removed as dead).
+     Needs the same rigor: check each remaining name against
+     ACTION_TYPES **after `load_all_plugins()`**, the conditional editor
+     (`events/conditional_editor.py`), `gmk_converter.py`, samples, and
+     Blockly before deleting. `play_sound` here is a shadowed fallback
+     for the plugin-owned action — leave it.
+   - [ ] **Keep** the reachable modular-only actions — `comment`
+     (`variable_handlers`), `move_free` / `set_direction` / `set_speed`
+     (`movement_handlers`; in ACTION_TYPES + Blockly config). If a home
+     file is otherwise emptied, fold these into an `execute_*_action`
+     method rather than keeping a one-entry handler file alive.
    - [ ] **Keep `base.py`** — `game_runner.py:3581` imports `snap_to_grid`
      from it directly; that helper needs a new home (or stays) before
      `base.py` can go.
    - [ ] Once the package is empty of live handlers, delete Phase 2 of
      `_register_action_handlers` and the `runtime.action_handlers`
      import entirely — one final commit.
-3. **Audit-era `# DEBUG:` comments.** A handful remain in code (not
-   logger calls — code comments labeled DEBUG that were notes-to-self
-   from the audit). Grep and prune.
+3. ~~**Audit-era `# DEBUG:` comments.**~~ **Done (`4875d734`)** — only
+   3 remained (`asset_tree_widget.py`, `action_executor.py` ×2), each a
+   redundant label directly above a legitimate `logger.debug(...)` call.
+   Removed the label lines; logging unchanged.
 4. **`logger.info` emoji noise.** Many "💾 ✅ 🔄" emoji-prefixed info
    logs from the audit era still fire in normal operation. Demote the
    informational ones to debug, keep the ones that are genuinely
