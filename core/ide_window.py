@@ -5297,7 +5297,7 @@ class PyGameMakerIDE(QMainWindow):
 
         if event.type() == QEvent.Type.LanguageChange:
             # Recreate menu bar with new translations
-            logger.info("🔄 Language change event detected, recreating menus...")
+            logger.debug("🔄 Language change event detected, recreating menus...")
             self.menuBar().clear()
             self.create_menu_bar()
 
@@ -5310,7 +5310,7 @@ class PyGameMakerIDE(QMainWindow):
 
             # Update UI state to enable/disable actions based on project state
             self.update_ui_state()
-            logger.info("✅ Menus and toolbars recreated with new language")
+            logger.debug("✅ Menus and toolbars recreated with new language")
 
         # Call parent class handler
         super().changeEvent(event)

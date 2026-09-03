@@ -86,7 +86,7 @@ class RobertaExporter:
 
         # Use the first Thymio object (Roberta programs are single-robot)
         obj_name, obj_data = next(iter(thymio_objects.items()))
-        logger.info(f"Exporting {obj_name} to Roberta XML…")
+        logger.debug(f"Exporting {obj_name} to Roberta XML…")
 
         xml_str = self._build_xml(obj_data, project_name)
 

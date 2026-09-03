@@ -237,7 +237,7 @@ class LanguageManager:
 
                     self.current_language = language_code
                     Config.set('language', language_code)
-                    logger.info(f"   ✅ Language set to: {language_code}")
+                    logger.debug(f"   ✅ Language set to: {language_code}")
                     return True
                 else:
                     logger.error("   ❌ Failed to load any translation files")
@@ -267,7 +267,7 @@ class LanguageManager:
                             pass  # Widget was deleted during iteration
                 logger.debug("   🔄 Sent LanguageChange event to all widgets")
 
-            logger.info("   ✅ Set to English")
+            logger.debug("   ✅ Set to English")
             return True
 
 

@@ -568,7 +568,7 @@ class ProjectManager(QObject):
         try:
             # Check if we should save as zip
             if self._auto_save_as_zip and self._original_zip_path and not project_path:
-                logger.info(f"💾 Auto-saving to zip: {self._original_zip_path}")
+                logger.debug(f"💾 Auto-saving to zip: {self._original_zip_path}")
                 return self._save_to_zip()
             else:
                 # Regular folder save
@@ -1085,7 +1085,7 @@ class ProjectManager(QObject):
         whenever a different project becomes current.
         """
         if self._temp_extraction_dir and Path(self._temp_extraction_dir).exists():
-            logger.info(f"🧹 Cleaning up temp extraction: {self._temp_extraction_dir}")
+            logger.debug(f"🧹 Cleaning up temp extraction: {self._temp_extraction_dir}")
             shutil.rmtree(self._temp_extraction_dir, ignore_errors=True)
         self._original_zip_path = None
         self._temp_extraction_dir = None
@@ -1248,13 +1248,13 @@ class ProjectManager(QObject):
             objects_dir = project_path / "objects"
             if not objects_dir.exists():
                 objects_dir.mkdir(parents=True, exist_ok=True)
-                logger.info(f"📁 Created objects directory: {objects_dir}")
+                logger.debug(f"📁 Created objects directory: {objects_dir}")
 
             # Create rooms/ directory if it doesn't exist
             rooms_dir = project_path / "rooms"
             if not rooms_dir.exists():
                 rooms_dir.mkdir(parents=True, exist_ok=True)
-                logger.info(f"📁 Created rooms directory: {rooms_dir}")
+                logger.debug(f"📁 Created rooms directory: {rooms_dir}")
 
             # Save objects to external files
             objects_data = self.current_project_data.get('assets', {}).get('objects', {})
@@ -1264,7 +1264,7 @@ class ProjectManager(QObject):
                     continue
                 _atomic_write_json(object_file, object_data)
                 event_count = len(object_data.get('events', {}))
-                logger.info(f"💾 Migrated object: {object_name} ({event_count} events)")
+                logger.debug(f"💾 Migrated object: {object_name} ({event_count} events)")
 
             # Save rooms to external files
             rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
@@ -1274,7 +1274,7 @@ class ProjectManager(QObject):
                     continue
                 _atomic_write_json(room_file, room_data)
                 instance_count = len(room_data.get('instances', []))
-                logger.info(f"💾 Migrated room: {room_name} ({instance_count} instances)")
+                logger.debug(f"💾 Migrated room: {room_name} ({instance_count} instances)")
 
             # Now save the project (which will use the external files)
             self.save_project()
@@ -1774,7 +1774,7 @@ class ProjectManager(QObject):
     def set_auto_save_as_zip(self, enabled: bool):
         """Enable/disable auto-save as zip"""
         self._auto_save_as_zip = enabled
-        logger.info(f"📦 Auto-save as zip: {'enabled' if enabled else 'disabled'}")
+        logger.debug(f"📦 Auto-save as zip: {'enabled' if enabled else 'disabled'}")
 
 
     def validate_project(self) -> List[Dict[str, Any]]:

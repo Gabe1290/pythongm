@@ -113,7 +113,7 @@ class ActionExecutor:
         # Auto-discover all action handler methods
         self._register_action_handlers()
 
-        logger.info(f"✅ ActionExecutor initialized with {len(self.action_handlers)} action handlers")
+        logger.debug(f"✅ ActionExecutor initialized with {len(self.action_handlers)} action handlers")
 
     def _register_action_handlers(self):
         """Automatically discover and register action handler methods
@@ -168,7 +168,7 @@ class ActionExecutor:
                 logger.debug(f"  📦 Registered modular handler: {action_name}")
 
             if modular_count > 0:
-                logger.info(f"  📦 Registered {modular_count} modular action handlers")
+                logger.debug(f"  📦 Registered {modular_count} modular action handlers")
         except ImportError as e:
             logger.warning(f"  ⚠️ Could not load modular action handlers: {e}")
 
@@ -180,7 +180,7 @@ class ActionExecutor:
             handler_func: A function with signature (instance, parameters) -> None
         """
         self.action_handlers[action_name] = handler_func
-        logger.info(f"  🔌 Registered custom action: {action_name}")
+        logger.debug(f"  🔌 Registered custom action: {action_name}")
 
     def execute_event(self, instance, event_name: str, events_data: Dict[str, Any]):
         """Execute all actions in an event"""
@@ -268,10 +268,10 @@ class ActionExecutor:
         self._deferred_create_events = []
 
         if events_to_process:
-            logger.info(f"🎬 Processing {len(events_to_process)} deferred CREATE event(s)")
+            logger.debug(f"🎬 Processing {len(events_to_process)} deferred CREATE event(s)")
 
         for new_instance, events in events_to_process:
-            logger.info(f"  🎬 Running deferred CREATE event for {new_instance.object_name}")
+            logger.debug(f"  🎬 Running deferred CREATE event for {new_instance.object_name}")
             self.execute_event(new_instance, 'create', events)
 
     def execute_action_list(self, instance, actions: list):
@@ -1670,7 +1670,7 @@ class ActionExecutor:
         # Apply NOT flag
         result = not exists if not_flag else exists
 
-        logger.info(f"  ❓ if_object_exists: '{object_type}' count={count}, exists={exists}, not_flag={not_flag}, result={result}")
+        logger.debug(f"  ❓ if_object_exists: '{object_type}' count={count}, exists={exists}, not_flag={not_flag}, result={result}")
 
         return result
 
@@ -1875,7 +1875,7 @@ class ActionExecutor:
         """Execute show message action with optional translation support."""
         message = self.localize_param(parameters, "message", "")
 
-        logger.info(f"💬 MESSAGE: {message}")
+        logger.debug(f"💬 MESSAGE: {message}")
         self._show_or_queue_message(instance, message)
 
     def execute_delay_action_action(self, instance, parameters: Dict[str, Any]):
@@ -1910,7 +1910,7 @@ class ActionExecutor:
         }
         instance._delayed_actions.append(delayed)
 
-        logger.info(f"⏱️ Scheduled {then_action} action in {frames} frames for {instance.object_name}")
+        logger.debug(f"⏱️ Scheduled {then_action} action in {frames} frames for {instance.object_name}")
 
     def execute_restart_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute restart room action - resets current level"""
@@ -1924,7 +1924,7 @@ class ActionExecutor:
 
     def execute_next_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute next room action - advances to next level"""
-        logger.info(f"➡️  NEXT ROOM requested by {instance.object_name}")
+        logger.debug(f"➡️  NEXT ROOM requested by {instance.object_name}")
         instance.next_room_flag = True
 
     # Alias for room_goto_next (GameMaker naming convention)
@@ -2892,7 +2892,7 @@ class ActionExecutor:
         if description:
             info_text += f"\n\n{description}"
 
-        logger.info(f"ℹ️ GAME INFO:\n{info_text}")
+        logger.debug(f"ℹ️ GAME INFO:\n{info_text}")
         self._show_or_queue_message(instance, info_text)
 
     def execute_splash_show_text_action(self, instance, parameters: Dict[str, Any]):
@@ -2908,7 +2908,7 @@ class ActionExecutor:
         if not text:
             logger.debug("⚠️ splash_show_text: No text specified")
             return
-        logger.info(f"💬 SPLASH TEXT: {text}")
+        logger.debug(f"💬 SPLASH TEXT: {text}")
         self._show_or_queue_message(instance, str(text))
 
     def execute_splash_show_image_action(self, instance, parameters: Dict[str, Any]):
@@ -2941,7 +2941,7 @@ class ActionExecutor:
             logger.warning(f"⚠️ splash_show_image: Sprite '{image_name}' has no surface")
             return
 
-        logger.info(f"🖼️ SPLASH IMAGE: {image_name}")
+        logger.debug(f"🖼️ SPLASH IMAGE: {image_name}")
         runner.show_splash_image(surface)
 
     def execute_show_video_action(self, instance, parameters: Dict[str, Any]):
@@ -2976,7 +2976,7 @@ class ActionExecutor:
             logger.warning(f"⚠️ show_video: Video file not found: {file_path}")
             return
 
-        logger.info(f"🎬 Video playback requested: {file_path} (fullscreen={fullscreen})")
+        logger.debug(f"🎬 Video playback requested: {file_path} (fullscreen={fullscreen})")
 
         # Try to play video using available methods
         try:
@@ -3014,7 +3014,7 @@ class ActionExecutor:
         if not url.startswith(('http://', 'https://', 'file://')):
             url = 'https://' + url
 
-        logger.info(f"🌐 Opening web page: {url}")
+        logger.debug(f"🌐 Opening web page: {url}")
 
         try:
             webbrowser.open(url)
@@ -3090,7 +3090,7 @@ class ActionExecutor:
         try:
             with open(save_path, 'w', encoding='utf-8') as f:
                 json.dump(save_data, f, indent=2, ensure_ascii=False)
-            logger.info(f"💾 Game saved to: {save_path}")
+            logger.debug(f"💾 Game saved to: {save_path}")
         except Exception as e:
             logger.error(f"❌ Error saving game: {e}")
 
@@ -3158,7 +3158,7 @@ class ActionExecutor:
                 # Restore instances in current room
                 self._restore_instances(save_data.get('instances', []))
 
-            logger.info(f"📂 Game loaded from: {save_path}")
+            logger.debug(f"📂 Game loaded from: {save_path}")
 
         except json.JSONDecodeError as e:
             logger.error(f"❌ Invalid save file format: {e}")
@@ -3629,16 +3629,16 @@ class ActionExecutor:
                 if self._event_depth > 0:
                     # Defer create event until current event completes
                     self._deferred_create_events.append((target_instance, events))
-                    logger.info(f"  🎬 Create event for {new_object_name} DEFERRED (depth={self._event_depth})")
+                    logger.debug(f"  🎬 Create event for {new_object_name} DEFERRED (depth={self._event_depth})")
                 else:
-                    logger.info(f"  🎬 Executing create event for {new_object_name} IMMEDIATELY")
+                    logger.debug(f"  🎬 Executing create event for {new_object_name} IMMEDIATELY")
                     self.execute_event(target_instance, 'create', events)
             else:
-                logger.info(f"  ⚠️ No create event defined for {new_object_name}")
+                logger.debug(f"  ⚠️ No create event defined for {new_object_name}")
         else:
-            logger.info(f"  ℹ️ perform_events=False, skipping create event for {new_object_name}")
+            logger.debug(f"  ℹ️ perform_events=False, skipping create event for {new_object_name}")
 
-        logger.info(f"  ✅ Changed instance to {new_object_name} at ({old_x}, {old_y})")
+        logger.debug(f"  ✅ Changed instance to {new_object_name} at ({old_x}, {old_y})")
 
     # ==================== DRAWING ACTIONS ====================
 
@@ -4787,7 +4787,7 @@ class ActionExecutor:
         # double-executed every branch (M43 cleanup; verified count went 2→1).
         result = self._evaluate_if_condition(instance, condition_type, parameters)
 
-        logger.info(f"❓ if_condition ({condition_type}): result={result}")
+        logger.debug(f"❓ if_condition ({condition_type}): result={result}")
 
         return result
 
@@ -4813,7 +4813,7 @@ class ActionExecutor:
             except (ValueError, TypeError):
                 value = 0
 
-            logger.info(f"  🔢 instance_count: {object_name} = {count} (comparing {operator} {value})")
+            logger.debug(f"  🔢 instance_count: {object_name} = {count} (comparing {operator} {value})")
             return self._compare(count, operator, value)
 
         elif condition_type == "variable_compare":

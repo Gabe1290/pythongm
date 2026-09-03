@@ -2204,7 +2204,7 @@ class GameRunner:
         register_thymio_actions(self.action_executor)
 
         # Load plugins
-        logger.info("🔌 Loading action/event plugins...")
+        logger.debug("🔌 Loading action/event plugins...")
         self.plugin_loader = load_all_plugins(self.action_executor)
 
         # Game assets
@@ -2349,7 +2349,7 @@ class GameRunner:
             logger.error(f"📂 Objects directory not found: {objects_dir}")
             return
 
-        logger.info(f"📂 Loading objects from: {objects_dir}")
+        logger.debug(f"📂 Loading objects from: {objects_dir}")
         objects_data = self._objects_data
 
         for object_name, object_data in objects_data.items():
@@ -2736,7 +2736,7 @@ class GameRunner:
             # Initialize mixer for audio (after pygame.init)
             try:
                 pygame.mixer.init()
-                logger.info("🔊 Audio mixer initialized")
+                logger.debug("🔊 Audio mixer initialized")
             except Exception as e:
                 logger.error(f"⚠️  Audio mixer failed to initialize: {e}")
 
@@ -2750,7 +2750,7 @@ class GameRunner:
             logger.info(f"Game window: {self.window_width}x{self.window_height}")
 
             # NOW load sprites (after pygame.display is initialized)
-            logger.info("\n🎮 Loading sprites after pygame.display initialization...")
+            logger.debug("\n🎮 Loading sprites after pygame.display initialization...")
             self.load_sprites()
 
             # Load background images (after pygame.display is initialized)
@@ -2783,18 +2783,18 @@ class GameRunner:
             self._apply_seed()
 
             # IMPORTANT: Execute create events for starting room instances
-            logger.info(f"\n🎬 Triggering create events for starting room: {self.current_room.name}")
+            logger.debug(f"\n🎬 Triggering create events for starting room: {self.current_room.name}")
             for instance in self.current_room.instances:
                 if instance.object_data and "events" in instance.object_data:
                     self.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
             # Execute the once-per-game game_start event (after Create, before
             # Room Start) so startup setup like score/lives/caption runs.
-            logger.info(f"🎬 Triggering game_start events for starting room: {self.current_room.name}")
+            logger.debug(f"🎬 Triggering game_start events for starting room: {self.current_room.name}")
             self.trigger_game_start_event()
 
             # Execute room_start event for all instances (after create events)
-            logger.info(f"🚪 Triggering room_start events for starting room: {self.current_room.name}")
+            logger.debug(f"🚪 Triggering room_start events for starting room: {self.current_room.name}")
             self.trigger_room_start_event()
 
             self.running = True
@@ -2850,7 +2850,7 @@ class GameRunner:
                                 # Execute the delayed action
                                 action_name = delayed['action']
                                 params = delayed['parameters']
-                                logger.info(f"⏱️ Executing delayed action: {action_name} for {instance.object_name}")
+                                logger.debug(f"⏱️ Executing delayed action: {action_name} for {instance.object_name}")
 
                                 # Handle specific delayed actions
                                 if action_name == "change_room":
@@ -3353,25 +3353,25 @@ class GameRunner:
         # If any transition flag is set, we return immediately (physics is skipped for that frame)
         for instance in self.current_room.instances:
             if instance.restart_room_flag:
-                logger.info("🔄 Restarting room...")
+                logger.debug("🔄 Restarting room...")
                 self.restart_current_room()
                 return
 
             if instance.next_room_flag:
                 instance.next_room_flag = False
-                logger.info("➡️  Going to next room...")
+                logger.debug("➡️  Going to next room...")
                 self.goto_next_room()
                 return
 
             if instance.previous_room_flag:
                 instance.previous_room_flag = False
-                logger.info("⬅️  Going to previous room...")
+                logger.debug("⬅️  Going to previous room...")
                 self.goto_previous_room()
                 return
 
             if instance.restart_game_flag:
                 instance.restart_game_flag = False
-                logger.info("🔄 Restarting game...")
+                logger.debug("🔄 Restarting game...")
                 self.restart_game()
                 return
 
@@ -3385,7 +3385,7 @@ class GameRunner:
                 # delay_action leave it unset, which is fine: 'none' is the
                 # existing instant-switch behaviour, unchanged.
                 transition = getattr(instance, 'goto_room_transition', 'none')
-                logger.info(f"🚪 Going to room: {goto_target}")
+                logger.debug(f"🚪 Going to room: {goto_target}")
                 self.change_room(goto_target, transition=transition)
                 # load_game's cross-room case rides the same deferred flag —
                 # restore the saved instances onto the freshly-built room
@@ -4254,7 +4254,7 @@ class GameRunner:
 
         # Use INFO level for important collisions (box with store)
         if 'obj_box' in instance.object_name and 'obj_store' in other_instance.object_name:
-            logger.info(f"🎯 BOX-STORE COLLISION: {instance.object_name} with {other_instance.object_name} at ({instance.x}, {instance.y})")
+            logger.debug(f"🎯 BOX-STORE COLLISION: {instance.object_name} with {other_instance.object_name} at ({instance.x}, {instance.y})")
         else:
             logger.debug(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
         logger.debug(f"   Stored speeds - self: ({collision_data['self_hspeed']}, {collision_data['self_vspeed']}), other: ({collision_data['other_hspeed']}, {collision_data['other_vspeed']})")
@@ -4666,7 +4666,7 @@ class GameRunner:
             return
 
         room_name = self.current_room.name
-        logger.info(f"🔄 Restarting room: {room_name}")
+        logger.debug(f"🔄 Restarting room: {room_name}")
 
         # Collect persistent instances before discarding the old room — they
         # must survive a room restart (GameMaker semantics). Without this a
@@ -4741,7 +4741,7 @@ class GameRunner:
 
     def restart_game(self):
         """Restart the game from the first room with reset score/lives/health"""
-        logger.info("🔄 Restarting game from first room...")
+        logger.debug("🔄 Restarting game from first room...")
 
         # Reset score, lives, and health to starting values
         settings = self.project_data.get('settings', {})
@@ -5022,7 +5022,7 @@ class GameRunner:
                 # Trigger room_end event in the current room before leaving
                 self.trigger_room_end_event()
 
-            logger.info(f"🚪 Changing to room: {room_name}")
+            logger.debug(f"🚪 Changing to room: {room_name}")
 
             # A room rebuilds fresh from its authored layout every time it's
             # RE-entered, unless explicitly marked persistent — real
@@ -5243,7 +5243,7 @@ class GameRunner:
             logger.debug("❌ No rooms found in project")
             return False
 
-        logger.info(f"🎮 Starting game with room: {starting_room}")
+        logger.debug(f"🎮 Starting game with room: {starting_room}")
         self.current_room = self.rooms[starting_room]
         self._visited_rooms.add(starting_room)
 
