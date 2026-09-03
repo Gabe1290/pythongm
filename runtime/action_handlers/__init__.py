@@ -25,7 +25,6 @@ def register_handlers(handlers: Dict[str, ActionHandler]) -> None:
 # Import all handler modules - each registers its handlers
 from runtime.action_handlers.movement_handlers import MOVEMENT_HANDLERS
 from runtime.action_handlers.control_handlers import CONTROL_HANDLERS
-from runtime.action_handlers.game_handlers import GAME_HANDLERS
 from runtime.action_handlers.variable_handlers import VARIABLE_HANDLERS
 from runtime.action_handlers.instance_handlers import INSTANCE_HANDLERS
 from runtime.action_handlers.sound_handlers import SOUND_HANDLERS
@@ -41,7 +40,6 @@ from runtime.action_handlers.resource_handlers import RESOURCE_HANDLERS
 # Register all handlers
 register_handlers(MOVEMENT_HANDLERS)
 register_handlers(CONTROL_HANDLERS)
-register_handlers(GAME_HANDLERS)
 register_handlers(VARIABLE_HANDLERS)
 register_handlers(INSTANCE_HANDLERS)
 register_handlers(SOUND_HANDLERS)
