@@ -90,6 +90,14 @@ sed_i "s/prodvers=([0-9, ]*)/prodvers=($MAJOR, $MINOR, $PATCH, $BUILD)/" version
 sed_i "s/\\(u'FileVersion', u'\\)[^']*'/\\1$VER'/" version_info.txt
 sed_i "s/\\(u'ProductVersion', u'\\)[^']*'/\\1$VER'/" version_info.txt
 sed_i "s#badge/version-.*-blue#badge/version-$BADGE-blue#" README.md
+# README's Download section prose carries a MAJOR.MINOR string too (not the
+# full x.y.z) -- "## ⬇️ Download PyGameMaker 1.2" / "**Version 1.2 is here**".
+# For a pre-release the download links still point at the last final build,
+# so only bump the prose on a final release.
+if [[ -z "$PRETYPE" ]]; then
+  sed_i "s/Download PyGameMaker [0-9]\\+\\.[0-9]\\+/Download PyGameMaker $MAJOR.$MINOR/" README.md
+  sed_i "s/\\*\\*Version [0-9]\\+\\.[0-9]\\+ is here\\*\\*/**Version $MAJOR.$MINOR is here**/" README.md
+fi
 # PyGameMaker.spec (PyInstaller) and main.py (Qt setApplicationVersion) each
 # carry their own literal too -- both went stale at 1.2.0 (fixed by hand in
 # 69a47183) because this script didn't touch them.
