@@ -12,6 +12,27 @@ survives when attention returns to it. This is one of the few genuinely
 open initiatives in the repo — see `docs/PROJECT_STATUS.md` for the
 current overall picture.
 
+**Re-verified 2026-09-03** — still not started (no DONE markers, no
+`core/ide/`, `runtime/action_executor/`, `runtime/sprite.py` etc. on
+disk), still the right plan. Line counts refreshed again below; all four
+files grew a little more since the 2026-08-15 pass (object_events_panel
+flat at 2,111; ide_window 5,295→5,316; game_runner 5,854→6,063;
+action_executor 6,421→6,514). Two structural notes since 2026-08-15:
+- **`runtime/game_runner.py` now carries the generic extension seam.**
+  The raycast-2.5D and LAN-multiplayer extensions hang off
+  `register_frame_update(...)` and the room-renderer `extension_hooks`
+  registry that now live in `GameRunner` (~19 call sites). The raycast
+  *renderer* itself was extracted to `extensions/raycast_2_5d/renderer.py`
+  earlier, so File 3's `rendering.py` / `views.py` targets are now
+  smaller than this doc's original estimate — but the hook *call sites*
+  in the game loop are load-bearing for every extension and must move
+  verbatim with whatever orchestration code surrounds them.
+- **`export/Kivy/kivy_exporter.py` (5,689 LoC) is now the repo's 3rd
+  largest file** but is deliberately **out of scope here** — it's a
+  `.format()`-templated code-generator string, not a live-complexity
+  hotspot, and splitting a template file has a different (lower) payoff.
+  Noted so it doesn't get pulled in by "split the big files" scope creep.
+
 **Re-verified 2026-08-15** (per the-then-current "everything remaining"
 survey, since removed) — still not started, still the right plan, but
 the line counts and two factual claims below were stale and are
@@ -65,12 +86,12 @@ Three reasons it didn't happen before 1.0:
 
 ## The four files
 
-| File                                    | LoC (2026-08-15) | Risk to split | Order |
+| File                                    | LoC (2026-09-03) | Risk to split | Order |
 | --------------------------------------- | ------ | ------------- | ----- |
 | `editors/object_editor/object_events_panel.py` | 2,111  | **Low**       | 1st   |
-| `core/ide_window.py`                    | 5,295  | Medium        | 2nd   |
-| `runtime/game_runner.py`                | 5,854  | Medium-high   | 3rd   |
-| `runtime/action_executor.py`            | 6,421  | **High**      | 4th (last) |
+| `core/ide_window.py`                    | 5,316  | Medium        | 2nd   |
+| `runtime/game_runner.py`                | 6,063  | Medium-high   | 3rd   |
+| `runtime/action_executor.py`            | 6,514  | **High**      | 4th (last) |
 
 Risk ranking weights three factors: how isolated the file's surface
 area is, how much state is shared across the call sites, and how
@@ -111,7 +132,7 @@ the code where it is.
 
 ---
 
-## File 1 — `editors/object_editor/object_events_panel.py` (1,880 LoC)
+## File 1 — `editors/object_editor/object_events_panel.py` (2,111 LoC)
 
 ### Current shape
 
@@ -163,7 +184,7 @@ editors/object_editor/events/
 
 ---
 
-## File 2 — `core/ide_window.py` (4,153 LoC)
+## File 2 — `core/ide_window.py` (5,316 LoC)
 
 ### Current shape
 
@@ -216,7 +237,7 @@ core/ide/
 
 ---
 
-## File 3 — `runtime/game_runner.py` (4,680 LoC)
+## File 3 — `runtime/game_runner.py` (6,063 LoC)
 
 ### Current shape
 
@@ -289,7 +310,7 @@ runtime/
 
 ---
 
-## File 4 — `runtime/action_executor.py` (5,593 LoC) — last and hardest
+## File 4 — `runtime/action_executor.py` (6,514 LoC) — last and hardest
 
 ### Current shape
 
