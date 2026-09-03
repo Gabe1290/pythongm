@@ -54,7 +54,7 @@ esac
 BADGE="${VER//-/--}"          # shields.io escapes '-' as '--'
 TAG="v$VER"
 DATE="$(date +%Y-%m-%d)"
-FILES=(__init__.py utils/__init__.py core/__init__.py pyproject.toml version_info.txt README.md CHANGELOG.md)
+FILES=(__init__.py utils/__init__.py core/__init__.py pyproject.toml version_info.txt README.md PyGameMaker.spec main.py CHANGELOG.md)
 
 echo "Releasing $VER"
 echo "  tag           : $TAG"
@@ -90,6 +90,11 @@ sed_i "s/prodvers=([0-9, ]*)/prodvers=($MAJOR, $MINOR, $PATCH, $BUILD)/" version
 sed_i "s/\\(u'FileVersion', u'\\)[^']*'/\\1$VER'/" version_info.txt
 sed_i "s/\\(u'ProductVersion', u'\\)[^']*'/\\1$VER'/" version_info.txt
 sed_i "s#badge/version-.*-blue#badge/version-$BADGE-blue#" README.md
+# PyGameMaker.spec (PyInstaller) and main.py (Qt setApplicationVersion) each
+# carry their own literal too -- both went stale at 1.2.0 (fixed by hand in
+# 69a47183) because this script didn't touch them.
+sed_i "s/^VERSION = '.*'/VERSION = '$VER'/" PyGameMaker.spec
+sed_i "s/setApplicationVersion(\".*\")/setApplicationVersion(\"$VER\")/" main.py
 
 awk -v ver="$VER" -v date="$DATE" '
   /^## \[[0-9]/ && !done {
@@ -112,6 +117,8 @@ grep -q "^version = \"$PEP440\"$"                      pyproject.toml   || fail 
 grep -q "filevers=($MAJOR, $MINOR, $PATCH, $BUILD)"    version_info.txt || fail "version_info filevers"
 grep -q "u'FileVersion', u'$VER'"                      version_info.txt || fail "version_info FileVersion"
 grep -q "badge/version-$BADGE-blue"                    README.md        || fail "README badge"
+grep -q "^VERSION = '$VER'$"                           PyGameMaker.spec || fail "PyGameMaker.spec VERSION"
+grep -q "setApplicationVersion(\"$VER\")"              main.py          || fail "main.py setApplicationVersion"
 grep -q "^## \[$VER\] - $DATE$"                        CHANGELOG.md     || fail "CHANGELOG stub"
 
 echo "=== proposed changes ==="
