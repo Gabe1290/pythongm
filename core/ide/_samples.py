@@ -22,7 +22,7 @@ class SamplesMixin:
 
     def _samples_dir(self) -> Path:
         """Return the repo-bundled samples/ directory (resolved)."""
-        return (Path(__file__).resolve().parent.parent / 'samples').resolve()
+        return (Path(__file__).resolve().parents[2] / 'samples').resolve()
 
     def _is_samples_path(self, path: Path) -> bool:
         """True if ``path`` is the bundled samples/ folder or a child of it."""
