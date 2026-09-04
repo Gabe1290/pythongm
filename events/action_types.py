@@ -1806,6 +1806,12 @@ ACTION_TYPES = {
                 description="Draw relative to this instance's position instead of absolute screen coordinates",
                 required=False,
             ),
+            ActionParameter(
+                name="color", display_name="Color",
+                param_type="color", default_value="",
+                description="Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.",
+                required=False,
+            ),
         ],
     ),
 

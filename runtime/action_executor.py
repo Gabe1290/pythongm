@@ -3679,8 +3679,16 @@ class ActionExecutor:
         text = str(self._parse_value(
             self.localize_param(parameters, "text", ""), instance))
 
-        # Get the active drawing colour (instance, then global, then black).
-        color = self._resolve_draw_color(instance, (0, 0, 0))
+        # Colour: an explicit `color`/`colour` param wins (GM's draw_text has
+        # no colour arg, but authors and every bundled sample reasonably
+        # expect one -- without this the text fell back to the active
+        # set_draw_color, i.e. black, and vanished on a dark background),
+        # then the active set_draw_color, then black.
+        color_param = parameters.get("color", parameters.get("colour"))
+        if color_param not in (None, ""):
+            color = self._parse_color(str(self._parse_value(color_param, instance)))
+        else:
+            color = self._resolve_draw_color(instance, (0, 0, 0))
 
         # Queue drawing command for draw event
         if not hasattr(instance, '_draw_queue'):
