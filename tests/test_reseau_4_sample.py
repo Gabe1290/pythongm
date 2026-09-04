@@ -96,12 +96,12 @@ class TestWiring:
         return d["events"]
 
     def test_h_hosts_with_a_lobby(self):
-        acts = self._ctrl_events()["keyboard"]["h"]["actions"]
+        acts = self._ctrl_events()["keyboard_press"]["h"]["actions"]
         blob = repr(acts)
         assert "host_game" in blob and "'show_lobby': True" in blob
 
     def test_j_joins_via_the_connect_screen(self):
-        acts = self._ctrl_events()["keyboard"]["j"]["actions"]
+        acts = self._ctrl_events()["keyboard_press"]["j"]["actions"]
         blob = repr(acts)
         assert "join_game" in blob and "'host': 'auto'" in blob
 
@@ -155,6 +155,36 @@ def _tick(*runners):
         extension_hooks.run_frame_updates(r, "after_update")
 
 
+class TestKeyDispatch:
+    """A physical key press must actually reach host_game/join_game -- the
+    reason the sample uses keyboard_press (fires once on KEYDOWN,
+    immediately) rather than keyboard (held; can be missed on a quick tap
+    or lost to event ordering). Drives the real handle_keyboard_press
+    path, not the action list directly."""
+
+    def test_pressing_h_reaches_host_game(self):
+        from runtime.game_runner import GameRunner
+        host = GameRunner(PROJECT_JSON); host.language = "en"; _init(host)
+        _ctrl(host)                                   # sets obj_ctrl object_data
+        host.screen = None                            # headless -> connect flow returns "start"
+        try:
+            host.handle_keyboard_press(pygame.K_h)
+            st = peek_multiplayer(host.current_room)
+            assert st is not None and st.get("session") is not None
+            assert st["session"].mode == "host"
+        finally:
+            st = peek_multiplayer(host.current_room)
+            for k in ("session", "beacon", "listener"):
+                o = (st or {}).get(k)
+                if o is not None:
+                    try:
+                        (o.close if k == "session" else o.stop)()
+                    except Exception:
+                        pass
+            extension_hooks.clear_frame_updates()
+            load_all_plugins(ActionExecutor())
+
+
 class TestNetworked:
     def test_h_hosts_j_joins_and_avatars_mirror(self):
         from runtime.game_runner import GameRunner
@@ -164,7 +194,7 @@ class TestNetworked:
         # 'h' -> host_game(show_lobby=true); headless connect flow returns
         # "start" immediately, so the session starts and network_game_started
         # is queued.
-        _run_sub(hc, "keyboard", "h")
+        _run_sub(hc, "keyboard_press", "h")
         _tick(host)                                  # drain network_game_started
         hst = peek_multiplayer(host.current_room)
         assert hst and hst["session"].mode == "host"
@@ -175,7 +205,7 @@ class TestNetworked:
         cc = _ctrl(client)
         # drive 'j' with an explicit host:port instead of "auto" so the test
         # doesn't ride on the headless connect-screen default port.
-        _run_sub(cc, "keyboard", "j", host="127.0.0.1", port=port)
+        _run_sub(cc, "keyboard_press", "j", host="127.0.0.1", port=port)
 
         try:
             deadline = time.time() + 3.0
