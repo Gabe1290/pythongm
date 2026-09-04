@@ -49,10 +49,13 @@ From the repo root:
   process accumulates enough PySide6/pygame state to exhaust RAM+swap while a
   desktop session (VS Code, a browser) is open — the kernel OOM-killer then
   kills those apps, not pytest. On such a box only: run targeted files
-  individually during iteration, and for a full gate split it into
-  memory-bounded batches (`pytest tests/test_[a-g]*.py -q`, then `[h-p]`, then
-  `[q-z]`) and sum the counts. On a machine with comfortable RAM, ignore all
-  of this and run the suite normally.
+  individually during iteration; the `test_[a-g]*` / `[h-p]` / `[q-z]` batch
+  split still peaks ~2 000 tests per process and has still OOM-killed the
+  desktop mid-run here, so **prefer letting GitHub CI (`tests.yml`, which runs
+  on every push to `main`) be the full-suite gate** and keep local runs to the
+  handful of files a change actually touches. Split batches only for an
+  offline / pre-push gate when the desktop is closed. On a machine with
+  comfortable RAM, ignore all of this and run the suite normally.
 - **`test_raycast_view.py` smoke tests are timing/perf-sensitive** — they run a
   real `GameRunner` loop against a frame budget and can spuriously fail on a
   loaded or slow machine (e.g. one already thrashing swap). Re-run any such
