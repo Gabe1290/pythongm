@@ -34,7 +34,7 @@ def test_no_project_shows_info_message():
     stub.current_project_path = None
     stub.tr = lambda text: text
 
-    with patch("core.ide_window.QMessageBox") as mock_box:
+    with patch("core.ide._dialogs.QMessageBox") as mock_box:
         _ide_cls().clean_project(stub)
 
     assert mock_box.information.called
@@ -49,7 +49,7 @@ def test_removes_orphan_tmp_files_and_reports_count(tmp_path):
     stub.current_project_path = str(tmp_path)
     stub.tr = lambda text: text
 
-    with patch("core.ide_window.QMessageBox") as mock_box:
+    with patch("core.ide._dialogs.QMessageBox") as mock_box:
         _ide_cls().clean_project(stub)
 
     assert not tmp_file.exists()
@@ -62,7 +62,7 @@ def test_no_orphans_reports_nothing_to_clean(tmp_path):
     stub.current_project_path = str(tmp_path)
     stub.tr = lambda text: text
 
-    with patch("core.ide_window.QMessageBox") as mock_box:
+    with patch("core.ide._dialogs.QMessageBox") as mock_box:
         _ide_cls().clean_project(stub)
 
     assert mock_box.information.called
@@ -77,7 +77,7 @@ def test_recent_tmp_file_is_not_swept(tmp_path):
     stub.current_project_path = str(tmp_path)
     stub.tr = lambda text: text
 
-    with patch("core.ide_window.QMessageBox"):
+    with patch("core.ide._dialogs.QMessageBox"):
         _ide_cls().clean_project(stub)
 
     assert tmp_file.exists()

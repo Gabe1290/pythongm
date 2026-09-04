@@ -290,7 +290,7 @@ class TestShowUnusedAssetsDialogDispatch:
         stub.project_manager = MagicMock()
         stub.tr = lambda text: text
 
-        with patch("core.ide_window.QMessageBox") as mock_box:
+        with patch("core.ide._dialogs.QMessageBox") as mock_box:
             self._ide_cls().show_unused_assets_dialog(stub)
 
         assert mock_box.information.called
