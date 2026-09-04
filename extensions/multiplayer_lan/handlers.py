@@ -258,6 +258,20 @@ def _room_and_executor(instance):
     return getattr(ae.game_runner, "current_room", None), ae
 
 
+def _notify(ae, message):
+    """Surface a networking failure to the player instead of the action
+    silently doing nothing. Uses the runtime's blocking message dialog
+    when there's one, falls back to a log line (headless / tests)."""
+    logger.warning("multiplayer: %s", message.replace("\n", " "))
+    gr = getattr(ae, "game_runner", None)
+    fn = getattr(gr, "show_message_dialog", None)
+    if callable(fn) and getattr(gr, "screen", None) is not None:
+        try:
+            fn(message)
+        except Exception:
+            pass
+
+
 def _start_session(room, session):
     """Try to start a NetworkSession; stash it on room state or discard it
     on failure. Never raises."""
@@ -330,6 +344,11 @@ class PluginExecutor:
             player_name=_player_name(ae.game_runner, _raw(parameters, "player_name")),
         )
         if not _start_session(room, session):
+            _notify(ae,
+                    "Impossible d'heberger sur le port %d.\n\n"
+                    "Le port est peut-etre deja utilise, ou le pare-feu du "
+                    "systeme bloque les connexions entrantes pour Python "
+                    "(autorisez-le sur le reseau prive)." % session.port)
             return
         st = multiplayer_state(room)
 
@@ -379,7 +398,12 @@ class PluginExecutor:
 
         session = NetworkSession(
             mode="client", host=host, port=port, player_name=player_name)
-        _start_session(room, session)
+        if not _start_session(room, session):
+            _notify(ae,
+                    "Impossible de se connecter a %s:%d.\n\n"
+                    "Verifiez que l'hote a bien lance la partie (touche H) et "
+                    "que les deux machines sont sur le meme reseau filaire ; "
+                    "un pare-feu peut aussi bloquer le port." % (host, port))
 
     def execute_leave_game_action(self, instance, parameters):
         room, ae = _room_and_executor(instance)
