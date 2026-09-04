@@ -47,8 +47,8 @@ class TestRecentZipReopen:
         stub = _stub()
         stub.project_manager.load_project_from_zip.return_value = True
 
-        with patch('core.ide_window.Config'), \
-             patch('core.ide_window.QMessageBox'), \
+        with patch('core.ide._project_actions.Config'), \
+             patch('core.ide._project_actions.QMessageBox'), \
              patch('utils.project_compression.ProjectCompressor') as PC:
             PC.is_project_zip.return_value = True
             _ide_cls().load_project(stub, zip_path)
@@ -62,8 +62,8 @@ class TestRecentZipReopen:
         zip_path.write_bytes(b"PK\x03\x04stub")
         stub = _stub()
 
-        with patch('core.ide_window.Config'), \
-             patch('core.ide_window.QMessageBox') as MB, \
+        with patch('core.ide._project_actions.Config'), \
+             patch('core.ide._project_actions.QMessageBox') as MB, \
              patch('utils.project_compression.ProjectCompressor') as PC:
             PC.is_project_zip.return_value = False
             _ide_cls().load_project(stub, zip_path)
@@ -78,8 +78,8 @@ class TestRecentZipReopen:
         stub = _stub()
         stub.project_manager.load_project.return_value = True
 
-        with patch('core.ide_window.Config'), \
-             patch('core.ide_window.QMessageBox'):
+        with patch('core.ide._project_actions.Config'), \
+             patch('core.ide._project_actions.QMessageBox'):
             _ide_cls().load_project(stub, folder)
 
         stub.project_manager.load_project.assert_called_once_with(folder)
