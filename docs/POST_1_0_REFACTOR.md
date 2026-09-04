@@ -428,14 +428,67 @@ imports `core/ide/_<name>` at class-definition time, so a re-export in
 `__init__` would be circular). `core/ide_window.py` stays as the
 authoritative module and shrinks in place = the plan's `window.py`.
 
-**Next cluster:** `_samples.py` (tiny, no patch targets) as the practice
-run. Each cluster: new `core/ide/_<name>.py` with `<Name>Mixin` (verbatim
+**Per cluster:** new `core/ide/_<name>.py` with `<Name>Mixin` (verbatim
 method moves), add it to `class PyGameMakerIDE(...)`, delete the bodies
 from `ide_window.py`, repoint *that cluster's* patch sites
 (`core.ide_window.X` → `core.ide._<name>.X`), verify with AST verbatim
-diff + an offscreen-Qt harness (build `PyGameMakerIDE()`, dump the
-menu-bar/toolbar action tree + method surface) + targeted tests + the
-batched full gate.
+diff + MRO check + targeted `ide_window` test files. Full-suite gate =
+CI (`tests.yml` on push) — see the env note above.
+
+**Gotcha found in cluster 1:** a moved method that did
+`Path(__file__).resolve().parent.parent` (relying on `ide_window.py`
+being exactly one dir under the repo root) resolves one level short from
+`core/ide/_<name>.py`. Grep each cluster for `__file__` before moving and
+bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
+`9a189e6b` — no test asserted the path, so the suite stayed green) and
+`show_tutorials` (caught pre-push in `194e72ff`).
+
+### Progress
+
+- [x] **Skeleton — `b01e663b`.** `core/ide/__init__.py` (empty). No file
+  move / shim (see above).
+- [x] **`_samples.py` — `9a189e6b`** (+ path fix `bebb7ddf`). `SamplesMixin`,
+  4 methods. No patch targets.
+- [x] **`_edit_actions.py` — `505373ba`.** `EditActionsMixin`, 11 methods
+  (`_active_editor`, undo/redo/cut/copy/paste/duplicate, find family). No
+  patch targets.
+- [x] **`_dialogs.py` — `194e72ff`.** `DialogsMixin`, 21 methods
+  (preferences, configure_*, the Thymio show_*, validate_project, the
+  trash/unused/orphaned/clean dialogs, docs/tutorials/about).
+  `QMessageBox` patch sites repointed in 4 test files; `show_tutorials`
+  path-depth adjusted.
+- [ ] `_test_game.py` — `test_game`, `_run_project_json`, `test_object`,
+  `_check_game_process`, `_drain_game_stderr`, `stop_game`, `debug_game`,
+  `_show_validation_warnings`. Patch targets: `core.ide_window.logger`
+  (test_game_subprocess_supervision ×2), `.QMessageBox`
+  (test_play_object, test_test_game_editor_sync).
+- [ ] `_project_actions.py` — new/open/load/save/close + `on_project_*`,
+  recents, `_require_open_project`, `ensure_project_loaded`,
+  `_show_load_failure_message`, `_warn_missing_extensions`. Patch:
+  `core.ide_window.Config`, `.QMessageBox` (test_recent_zip_reopen,
+  test_modified_editor_preservation, test_project_format_guard).
+- [ ] `_assets.py` — `import_*`, `create_*`, `on_asset_*`,
+  `find_renamed_asset`, `_refresh_*`. Patch: `.ObjectEditor`
+  (test_open_editors_composite_key, test_reopen_modified_editor).
+- [ ] `_editor_lifecycle.py` — `open_*_editor` ×8, `close_editor_*`,
+  `float`/`reattach`/`_focus`/`_destroy_detached_editor`,
+  `on_editor_save/close/data_modified`, `_flush/_iter_open_editors`,
+  `_editor_key`/`_open_key`/`_forget_open_editor`/`_canonical_category`,
+  `toggle/set_window_mode`. Patch: `.RoomEditor`/`.SpriteEditor`/
+  `.ObjectEditor` (test_reopen_modified_editor).
+- [ ] `_export.py` — biggest. `export_*`, `build_game`/`build_and_run`,
+  `_run_export_with_progress`, `_build_desktop`, `_launch_built_game`,
+  `_ask_export_dir`, `_current_export_options`, `_require_open_project`
+  (if not already in `_project_actions`). Patch: `.ExportThread`,
+  `.QMessageBox`, `.os.startfile` (test_build_game).
+- [ ] `_menu_builder.py` — **last.** `create_menu_bar`,
+  `create_language_menu`, `create_toolbar`, `create_action`,
+  `create_status_bar`, `update_recent_projects_menu`,
+  `clear_recent_projects`.
+
+`ide_window.py`: 5,316 → **4,501** after `_dialogs`. Remaining shell =
+`__init__`/`setup_ui`/`setup_connections`, tab/right-panel handlers,
+`update_ui_state`/`update_window_title`, `closeEvent`/`changeEvent`.
 
 ---
 
