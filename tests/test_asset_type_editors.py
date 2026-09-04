@@ -179,7 +179,16 @@ class TestAssetEditorDispatchWiring:
         # "core/ide_window.py" resolves against tests/ and raises
         # FileNotFoundError there even though every local `pytest tests/`
         # invocation (run from the repo root) resolves it fine.
-        return (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+        #
+        # The PyGameMakerIDE class is being split into core/ide/_*.py
+        # mixins (docs/POST_1_0_REFACTOR.md File 2), so scan the whole
+        # window + package, not just ide_window.py -- on_asset_double_clicked
+        # / _canonical_category may live in a sibling module now.
+        parts = [(REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")]
+        pkg = REPO_ROOT / "core" / "ide"
+        if pkg.is_dir():
+            parts += [p.read_text(encoding="utf-8") for p in sorted(pkg.glob("*.py"))]
+        return "\n".join(parts)
 
     def test_double_click_dispatch_covers_new_types(self):
         src = self._source()
