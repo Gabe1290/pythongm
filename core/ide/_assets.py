@@ -17,6 +17,8 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QInputDialog, QDialog
 
+from dialogs.import_dialogs import ImportAssetDialog
+
 from core.logger import get_logger
 
 logger = get_logger(__name__)
