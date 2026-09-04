@@ -52,7 +52,7 @@ class TestDrainGameStderr:
         handle, path = _capture("Traceback (most recent call last):\nBoom")
         stub = SimpleNamespace(_game_stderr_handle=handle, _game_stderr_path=path)
 
-        with patch('core.ide_window.logger') as log:
+        with patch('core.ide._test_game.logger') as log:
             ide._drain_game_stderr(stub, 3)
 
         msg = "\n".join(str(c.args[0]) for c in log.error.call_args_list)
@@ -67,7 +67,7 @@ class TestDrainGameStderr:
         handle, path = _capture("some incidental stderr noise")
         stub = SimpleNamespace(_game_stderr_handle=handle, _game_stderr_path=path)
 
-        with patch('core.ide_window.logger') as log:
+        with patch('core.ide._test_game.logger') as log:
             ide._drain_game_stderr(stub, 0)
 
         log.error.assert_not_called()

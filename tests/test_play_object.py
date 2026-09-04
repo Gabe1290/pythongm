@@ -47,7 +47,7 @@ class TestPlayObjectGuards:
         # patch it out rather than show it in this headless test — same
         # reasoning as conftest's _auto_dismiss_qmessagebox fixture, which
         # doesn't cover non-qtbot tests like this one.
-        with patch('core.ide_window.QMessageBox') as mock_box:
+        with patch('core.ide._test_game.QMessageBox') as mock_box:
             ide.test_object(stub, "obj_player", {})
             mock_box.information.assert_called_once()
         assert not hasattr(stub, "_game_temp_project_dir")
@@ -59,7 +59,7 @@ class TestPlayObjectGuards:
             current_project_path=None,
             tr=_identity_tr,
         )
-        with patch('core.ide_window.QMessageBox') as mock_box:
+        with patch('core.ide._test_game.QMessageBox') as mock_box:
             ide.test_object(stub, "obj_player", {})
             mock_box.warning.assert_called_once()
         assert not hasattr(stub, "_game_temp_project_dir")
