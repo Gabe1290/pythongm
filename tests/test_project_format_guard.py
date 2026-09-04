@@ -133,7 +133,7 @@ class TestShowLoadFailureMessage:
 
     def test_format_error_shows_specific_message(self):
         stub = self._StubIDE(last_load_format_error=(2, 0))
-        with patch('core.ide_window.QMessageBox') as mock_box:
+        with patch('core.ide._project_actions.QMessageBox') as mock_box:
             self._ide_cls()._show_load_failure_message(stub, "Failed to load project")
         title = mock_box.warning.call_args[0][1]
         message = mock_box.warning.call_args[0][2]
@@ -142,7 +142,7 @@ class TestShowLoadFailureMessage:
 
     def test_other_failure_shows_generic_message(self):
         stub = self._StubIDE(last_load_format_error=None)
-        with patch('core.ide_window.QMessageBox') as mock_box:
+        with patch('core.ide._project_actions.QMessageBox') as mock_box:
             self._ide_cls()._show_load_failure_message(stub, "Failed to load project")
         title = mock_box.warning.call_args[0][1]
         message = mock_box.warning.call_args[0][2]
