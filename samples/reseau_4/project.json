@@ -50,50 +50,6 @@
         "persistent": false,
         "depth": -100,
         "events": {
-          "keyboard": {
-            "h": {
-              "actions": [
-                {
-                  "action": "if_condition",
-                  "parameters": {
-                    "condition_type": "expression",
-                    "expression": "global.network_connected != 1",
-                    "then_actions": [
-                      {
-                        "action": "host_game",
-                        "parameters": {
-                          "game_name": "Salle partagee",
-                          "max_players": "4",
-                          "show_lobby": true
-                        }
-                      }
-                    ],
-                    "else_actions": []
-                  }
-                }
-              ]
-            },
-            "j": {
-              "actions": [
-                {
-                  "action": "if_condition",
-                  "parameters": {
-                    "condition_type": "expression",
-                    "expression": "global.network_connected != 1",
-                    "then_actions": [
-                      {
-                        "action": "join_game",
-                        "parameters": {
-                          "host": "auto"
-                        }
-                      }
-                    ],
-                    "else_actions": []
-                  }
-                }
-              ]
-            }
-          },
           "network_game_started": {
             "actions": [
               {
@@ -192,6 +148,50 @@
                 }
               }
             ]
+          },
+          "keyboard_press": {
+            "h": {
+              "actions": [
+                {
+                  "action": "if_condition",
+                  "parameters": {
+                    "condition_type": "expression",
+                    "expression": "global.network_connected != 1",
+                    "then_actions": [
+                      {
+                        "action": "host_game",
+                        "parameters": {
+                          "game_name": "Salle partagee",
+                          "max_players": "4",
+                          "show_lobby": true
+                        }
+                      }
+                    ],
+                    "else_actions": []
+                  }
+                }
+              ]
+            },
+            "j": {
+              "actions": [
+                {
+                  "action": "if_condition",
+                  "parameters": {
+                    "condition_type": "expression",
+                    "expression": "global.network_connected != 1",
+                    "then_actions": [
+                      {
+                        "action": "join_game",
+                        "parameters": {
+                          "host": "auto"
+                        }
+                      }
+                    ],
+                    "else_actions": []
+                  }
+                }
+              ]
+            }
           }
         }
       },
