@@ -1,0 +1,134 @@
+{
+  "name": "obj_ctrl",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -100,
+  "events": {
+    "keyboard": {
+      "h": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "expression",
+              "expression": "global.network_connected != 1",
+              "then_actions": [
+                {
+                  "action": "host_game",
+                  "parameters": {
+                    "game_name": "Salle partagee",
+                    "max_players": "4",
+                    "show_lobby": true
+                  }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      },
+      "j": {
+        "actions": [
+          {
+            "action": "if_condition",
+            "parameters": {
+              "condition_type": "expression",
+              "expression": "global.network_connected != 1",
+              "then_actions": [
+                {
+                  "action": "join_game",
+                  "parameters": { "host": "auto" }
+                }
+              ],
+              "else_actions": []
+            }
+          }
+        ]
+      }
+    },
+    "network_game_started": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "global.is_host == 1",
+            "then_actions": [
+              {
+                "action": "network_spawn",
+                "parameters": { "object": "obj_person", "x": "320", "y": "240", "owner": "0" }
+              }
+            ],
+            "else_actions": []
+          }
+        }
+      ]
+    },
+    "player_joined": {
+      "actions": [
+        {
+          "action": "network_spawn",
+          "parameters": {
+            "object": "obj_person",
+            "x": "120 + global.network_sender * 90",
+            "y": "240",
+            "owner": "global.network_sender"
+          }
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "if_condition",
+          "parameters": {
+            "condition_type": "expression",
+            "expression": "global.network_connected != 1",
+            "then_actions": [
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Salle partagee LAN\"",
+                  "x": "230", "y": "160", "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"H = heberger une partie\"",
+                  "x": "200", "y": "215", "color": "#cccccc"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"J = rejoindre une partie\"",
+                  "x": "200", "y": "245", "color": "#cccccc"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"(H sur une machine, J sur les autres)\"",
+                  "x": "160", "y": "290", "color": "#888888"
+                }
+              },
+              { "action": "exit_event", "parameters": {} }
+            ],
+            "else_actions": []
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "\"Salle partagee : deplacez votre carre avec les fleches\"",
+            "x": "20", "y": "20", "color": "#ffffff"
+          }
+        }
+      ]
+    }
+  }
+}
