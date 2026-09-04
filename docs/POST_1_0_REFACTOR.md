@@ -365,6 +365,63 @@ core/ide/
 - The `auto_save_timer` is on `ProjectManager`, but several IDE methods
   also touch dirty state. Audit dirty-state mutations during the split.
 
+### Reconnaissance (2026-09-03) — do this before the first extraction commit
+
+File 1's mixin approach transfers, but File 2's consumer/patch surface is
+**much** bigger — this is why the plan gates it behind step 4.
+
+- **`PyGameMakerIDE(QMainWindow)`** is ~5,150 of the file's 5,316 lines,
+  **~150 methods**. Two small helper classes at the top stay put:
+  `ExportThread(QThread)` and `_ExportProgressDialog(QDialog)` (the latter
+  is imported directly by `tests/test_export_progress_dialog.py`), plus
+  module-level `_green_play_icon` / `_contrasting_icon_color` /
+  `_tinted_standard_icon` (imported by `tests/test_ide_polish_fixes.py`).
+- **Production importers (few):** `main.py:229/364`, `core/__init__.py:21`,
+  and `__init__.py:45` (`importlib.import_module("main").PyGameMakerIDE`).
+- **~40 test files** import `PyGameMakerIDE` from `core.ide_window` — all
+  import the class, so a re-export from `core/ide_window.py` keeps them
+  working (as the File 1 shim did). The real work is the patch targets.
+- **`mock.patch("core.ide_window.<NAME>")` targets** used by method-level
+  tests — these break the moment the method using `<NAME>` moves to a
+  sibling module whose own `from … import <NAME>` binding the patch
+  doesn't touch: `QMessageBox` (**many** sites, spread across export /
+  import / dialog / project methods → will land in several mixins),
+  `ExportThread`, `Config`, `logger`, `ObjectEditor`, `RoomEditor`,
+  `SpriteEditor`, `os.startfile`. Each extraction commit must repoint the
+  patch sites for the methods it moves (the File 1 `test_extension_
+  action_ui.py` pattern, but bigger). `tests/test_ide_polish_fixes.py:310`
+  does `import core.ide_window as ide_mod` and pokes module attributes —
+  check what it touches before moving anything it relies on.
+- **`create_menu_bar` (~220 lines) wires ~100 `QAction`s to `self.<slot>`
+  methods** that will end up scattered across mixins. Because a mixin
+  method resolves on the concrete `PyGameMakerIDE` via MRO,
+  `self.export_game` etc. keep working from `create_menu_bar` wherever it
+  lives — so the menu builder can move to `_menu_builder.py` (or stay)
+  independently of the slots. But do the menu builder *last*, after the
+  slot clusters, so a missed slot surfaces as an `AttributeError` at
+  construction (loud) rather than mid-refactor.
+
+**Cluster map (each → a `*Mixin` in `core/ide/_<name>.py`, verbatim moves):**
+| Module | Rough method set | Notes |
+| --- | --- | --- |
+| `_export.py` | `export_*`, `build_game`/`build_and_run`, `_run_export_with_progress`, `_build_desktop`, `_launch_built_game`, `_ask_export_dir`, `_current_export_options` | biggest; needs its own `QMessageBox`/`ExportThread` imports; most patch-site churn |
+| `_test_game.py` | `test_game`, `_run_project_json`, `test_object`, `_check_game_process`, `_drain_game_stderr`, `stop_game`, `debug_game`, `_show_validation_warnings` | subprocess plumbing; `QTimer` poll |
+| `_assets.py` | `import_*`, `create_object/room/script/font/asset`, `create_asset_with_data`, `on_asset_renamed/deleted/imported/selected/double_clicked`, `find_renamed_asset`, `_refresh_*` | `ObjectEditor`/`RoomEditor`/`SpriteEditor` patch targets live here |
+| `_project_actions.py` | `new/open/open_recent/load/save/save_as/close_project`, `project_settings`, `on_project_loaded/saved`, `add_to_recent_projects`, `_require_open_project`, `ensure_project_loaded`, `_show_load_failure_message`, `_warn_missing_extensions` | |
+| `_editor_lifecycle.py` | `open_*_editor` (8), `close_editor_*`, `float_editor`, `reattach_editor`, `_focus/_destroy_detached_editor`, `on_editor_save/close/modified_requested`, `_flush/_iter_open_editors`, `_active_editor`, `_editor_key`/`_open_key`/`_forget_open_editor`/`_canonical_category`, `toggle/set_window_mode` | largest by count |
+| `_edit_actions.py` | `undo/redo/cut/copy/paste/duplicate`, `find`, `find_replace`, `_show_find_dialog`, `_find_target_text_edit` | |
+| `_samples.py` | `_samples_dir`, `_is_samples_path`, `_promote_samples_to_working_copy`, `_strip_samples_from_recent_projects` | smallest — good first cluster |
+| `_dialogs.py` | `preferences`, `configure_blockly/thymio`, `about`, `show_documentation`/`show_online_documentation`, `show_trash/unused_assets/orphaned_files_dialog`, `clean_project`, `validate_project`, `show_thymio_*` | |
+| `_menu_builder.py` | `create_menu_bar`, `create_language_menu`, `create_toolbar`, `create_action`, `create_status_bar`, `update_recent_projects_menu`, `clear_recent_projects` | **last** |
+| `_panel.py` (`window.py`) | `__init__`, `setup_ui`, `create_main_widget`, `setup_connections`, `closeEvent`/`changeEvent`, `update_ui_state`, `update_window_title`, tab handlers, right-panel collapse | the shell — stays |
+
+**First commit:** skeleton (`core/ide/` package, `__init__.py` re-exporting
+`PyGameMakerIDE` + `_ExportProgressDialog` + the 3 icon helpers +
+`ExportThread`; `core/ide_window.py` becomes a re-export shim), proven
+HEAD-identical with an offscreen-Qt harness that builds `PyGameMakerIDE()`
+and dumps the menu-bar/toolbar action tree + method surface. Then
+`_samples.py` (tiny, no patch targets) as the practice cluster.
+
 ---
 
 ## File 3 — `runtime/game_runner.py` (6,063 LoC)
