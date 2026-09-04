@@ -306,11 +306,14 @@ commits. **Next: step 4 (stabilization pause — exercise the IDE) before
 File 2.**
 
 **Env note (machine-specific, see `CLAUDE.md` "Running tests"):** the
-box this File-1 work was done on has only 8 GB RAM and OOM-kills the
-desktop when the whole suite runs in one pytest process, so the runs
-above were done as targeted files + a batched full gate (`test_[a-g]*` /
-`[h-p]*` / `[q-z]*`). This is **not** a project rule — on a machine with
-adequate RAM, run the suite normally.
+box this refactor work is being done on has only 8 GB RAM. Even the
+`test_[a-g]*` / `[h-p]*` / `[q-z]*` batch split peaks ~2 000 tests per
+process and has OOM-killed the desktop (VS Code + browser) mid-run, so
+from File 2 onward the full-suite gate is **GitHub CI** (`tests.yml` runs
+on every push to `main`); local runs per cluster are just the ~6–15
+`ide_window` test files a change touches, plus the AST verbatim diff +
+MRO check + offscreen-Qt harness. Not a project rule — on adequate RAM,
+run the whole suite locally.
 
 ---
 
