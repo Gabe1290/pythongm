@@ -20,6 +20,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QMessageBox
 
 from utils.config import Config

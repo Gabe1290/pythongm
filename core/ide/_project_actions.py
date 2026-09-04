@@ -22,6 +22,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QMessageBox, QFileDialog
 
+from runtime.game_runner import GameRunner
 from utils.config import Config
 from dialogs.project_dialogs import NewProjectDialog, ProjectSettingsDialog
 from core.logger import get_logger
