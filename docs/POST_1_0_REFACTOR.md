@@ -415,12 +415,24 @@ File 1's mixin approach transfers, but File 2's consumer/patch surface is
 | `_menu_builder.py` | `create_menu_bar`, `create_language_menu`, `create_toolbar`, `create_action`, `create_status_bar`, `update_recent_projects_menu`, `clear_recent_projects` | **last** |
 | `_panel.py` (`window.py`) | `__init__`, `setup_ui`, `create_main_widget`, `setup_connections`, `closeEvent`/`changeEvent`, `update_ui_state`, `update_window_title`, tab handlers, right-panel collapse | the shell — stays |
 
-**First commit:** skeleton (`core/ide/` package, `__init__.py` re-exporting
-`PyGameMakerIDE` + `_ExportProgressDialog` + the 3 icon helpers +
-`ExportThread`; `core/ide_window.py` becomes a re-export shim), proven
-HEAD-identical with an offscreen-Qt harness that builds `PyGameMakerIDE()`
-and dumps the menu-bar/toolbar action tree + method surface. Then
-`_samples.py` (tiny, no patch targets) as the practice cluster.
+**Skeleton — done (`<commit>`).** Unlike File 1, `core/ide_window.py` is
+**not** moved to a shim: the ~30 `mock.patch("core.ide_window.<NAME>")`
+sites (see the patch-target list above) would all need repointing in the
+skeleton commit for zero functional gain, and would then need repointing
+*again* per cluster as their methods move. So the skeleton is just an
+empty `core/ide/__init__.py` (imports nothing — `core/ide_window.py`
+imports `core/ide/_<name>` at class-definition time, so a re-export in
+`__init__` would be circular). `core/ide_window.py` stays as the
+authoritative module and shrinks in place = the plan's `window.py`.
+
+**Next cluster:** `_samples.py` (tiny, no patch targets) as the practice
+run. Each cluster: new `core/ide/_<name>.py` with `<Name>Mixin` (verbatim
+method moves), add it to `class PyGameMakerIDE(...)`, delete the bodies
+from `ide_window.py`, repoint *that cluster's* patch sites
+(`core.ide_window.X` → `core.ide._<name>.X`), verify with AST verbatim
+diff + an offscreen-Qt harness (build `PyGameMakerIDE()`, dump the
+menu-bar/toolbar action tree + method surface) + targeted tests + the
+batched full gate.
 
 ---
 
