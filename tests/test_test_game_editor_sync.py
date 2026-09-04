@@ -53,7 +53,7 @@ def test_test_game_syncs_detached_editors(tmp_path):
     stub._run_project_json = lambda project_path: _ide_cls()._run_project_json(stub, project_path)
     stub._drain_game_stderr = lambda *a: None
 
-    with patch('core.ide_window.QMessageBox'):
+    with patch('core.ide._test_game.QMessageBox'):
         _ide_cls().test_game(stub)
 
     synced_names = [n for n, _ in synced]
