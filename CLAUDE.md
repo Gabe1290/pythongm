@@ -2099,3 +2099,148 @@ follow-up — see its own final status line).
   run two real machines on a wired school LAN, watched an exported HTML5
   game join a desktop host in a real browser, or hit a Windows firewall
   prompt.
+
+**2026-09-04 — Docs/version housekeeping, File 2 refactor resumed +
+paused mid-way, and `reseau_4` (a Test-Game-playable LAN sample) built
++ debugged through 4 real bugs via live hardware testing. SSH push
+access set up for this machine (`SEMLOG-R33-GT`).** Long session, several
+threads; all code is committed and pushed to `main` (HEAD `8528dc5d`) —
+nothing is stashed or uncommitted. Picking this up on another machine:
+`git pull` and everything below is already there.
+
+- **Docs audit — closed.** `docs/FLYER.md`/`FLYER_FR.md` fact-checked
+  against live code (140+ actions, 9 tutorials, 128 Blockly blocks/20
+  categories, 11 languages, LAN multiplayer bullet) and re-accented in
+  French; `scripts/generate_flyer_pdf.py` / `generate_flyer_odt.py` (new)
+  produce `docs/FLYER{,_FR}.pdf` (gitignored, regenerate on demand) and
+  `.odt` (committed).
+- **Version bump 1.2.0 → 1.3.0 — closed.** The shipped version hadn't
+  moved since the LAN multiplayer v2 feature arc landed. Bumped every
+  reference (`__init__.py`, `utils/__init__.py`, `core/__init__.py`,
+  `pyproject.toml`, `version_info.txt`, `README.md` badge **and** the
+  prose "Download PyGameMaker 1.2" line a prior release's badge-only sed
+  had missed, `PyGameMaker.spec`, `main.py`), added a real `[1.3.0]`
+  CHANGELOG entry documenting the LAN v2 feature set. `git commit -F -`
+  with a single-quoted heredoc is required for any message containing
+  backticks — a literal `git commit -m "...`...`..."` lets bash execute
+  the backticked text as a command substitution and silently mangles the
+  message (hit once this session on a DialogsMixin commit).
+- **GitHub SSH access set up for this machine.** This box previously had
+  no way to push (`could not read Username for 'https://github.com'`);
+  walked the user through generating an SSH key and adding it to GitHub,
+  then switched the remote to `git@github.com:Gabe1290/pythongm.git`.
+  Pushes now work directly from here. (This machine does **not** use the
+  Dropbox-synced repo some other machines do — confirmed by the user,
+  don't assume otherwise.)
+- **`docs/POST_1_0_REFACTOR.md` File 2 split — resumed, PAUSED mid-way,
+  not abandoned.** `core/ide_window.py` is down from 5316 to **3009
+  lines** across a skeleton + 6 extracted mixins in `core/ide/`:
+  `_samples.py`, `_edit_actions.py`, `_dialogs.py`, `_test_game.py`,
+  `_project_actions.py`, `_assets.py`. **Remaining, not started:**
+  `_editor_lifecycle`, `_export`, `_menu_builder` (menu builder
+  deliberately last). New `tests/test_ide_mixins_resolve.py` — an
+  AST scanner asserting every `Name` used in a `core/ide/_*.py` mixin
+  resolves to an import/builtin/local binding — exists specifically
+  because this cluster-by-cluster extraction has a **recurring landmine**:
+  a moved method silently drops an import it needs (a bare `NameError`
+  gets caught by some broad `except Exception` upstream and degrades
+  silently rather than crashing loudly), see the `reseau_4` bug #1 below
+  for a real instance. Also recurring: `Path(__file__).resolve()` climbs
+  one directory too FEW after a method moves from `ide_window.py` (repo
+  root's parent.parent) into `core/ide/_x.py` (needs `.parents[2]`) — hit
+  in `_samples_dir`, `show_tutorials`, and `_run_project_json`'s
+  `game_script` path, all fixed. **8GB-RAM caveat**: this box OOM-crashed
+  VS Code repeatedly when the full local suite ran; per CLAUDE.md's
+  Running-tests section this is machine-specific, not a project rule —
+  rely on GitHub CI (`tests.yml`) as the full-suite gate here and keep
+  local runs to the files a change actually touches.
+- **`samples/reseau_4` — "Salle partagée LAN" — built because
+  `multiplayer_lan_1` (v1, CLI-only via `PYGM_NET_AUTOHOST`/`AUTOJOIN`
+  env vars) isn't launchable two-machine from Test Game.** `obj_ctrl`'s
+  `h`/`j` keyboard sub-events call `host_game(show_lobby=true)` /
+  `join_game(host="auto")` directly — no env vars, no CLI, just click
+  Test Game on two machines and press H on one, J on the other. Found
+  and fixed **four real bugs in sequence, each via the user's own
+  real two-machine hardware testing, not just code review**:
+  1. `580adb0d` — **Test Game was totally broken**, a regression from the
+     File 2 refactor above: `core/ide/_project_actions.py`'s
+     `on_project_loaded` called `GameRunner(...)` with no import; the
+     `NameError` was swallowed by a broad `except`, silently leaving
+     `self.game_runner = None`, so Test Game crashed with `'NoneType'
+     object has no attribute 'test_game'`. Same commit fixed two sibling
+     import gaps the new `test_ide_mixins_resolve.py` caught in the same
+     sweep (`_test_game.py` missing `QTimer`, `_assets.py` missing
+     `ImportAssetDialog`).
+  2. `695db115` — **H/J did nothing.** Wired as `keyboard` (held) instead
+     of `keyboard_press`; a quick tap's KEYDOWN+KEYUP could both land
+     before the per-frame held-key check ran. Switched to
+     `keyboard_press` (fires once, immediately, on KEYDOWN).
+  3. `f7304c46` — **host_game/join_game failed completely silently** on a
+     network error (port bind failure on host; unreachable host on
+     client) — `execute_host_game_action` had no user feedback path at
+     all, and `execute_join_game_action` outright ignored
+     `_start_session`'s return value. Added a `_notify()` helper
+     (`extensions/multiplayer_lan/handlers.py`) that shows a blocking
+     `show_message_dialog` (or logs, headless) with a likely-cause
+     message.
+  4. `8528dc5d` — **unreadable contrast, black text on a dark room.**
+     `execute_draw_text_action` never read a `color`/`colour` parameter
+     at all — only the active `set_draw_color` (default black) — so
+     every `draw_text` call across the reseau_* samples that specified
+     `"color": "#ffffff"` was silently discarded. Fixed to honor an
+     explicit `color`/`colour` param (backward-compatible: blank/absent
+     still falls back to the old behavior); added `color` as a documented
+     `ActionParameter` on `draw_text`.
+  All four have regression tests (`tests/test_ide_mixins_resolve.py`,
+  `tests/test_reseau_4_sample.py`'s `TestKeyDispatch`, and
+  `tests/test_draw_text_color_param.py`).
+- **OPEN, unresolved: a "grey blank window" the user hit launching
+  `reseau_4` through the IDE's Test Game / Welcome tab specifically**
+  (`python runtime/run_game.py samples/reseau_4/project.json` directly
+  renders fine; going through the IDE — even after deleting stale
+  promoted copies — showed a grey blank window instead of the menu).
+  Investigated extensively this session, on this exact machine
+  (`SEMLOG-R33-GT`), without reproducing it:
+  - A raw `shutil.copytree` + direct `run_game.py` run on the copy
+    rendered correctly (rules out simple file-copying).
+  - A simulated `ProjectManager.load_project()` + `save_project()`
+    round-trip (mirroring what `test_game()` does before launching)
+    preserved all project data correctly and rendered fine afterward.
+  - **The strongest test**: drove a real, non-offscreen `PyGameMakerIDE`
+    on this machine's actual X11 display (`DISPLAY=:1`, confirmed
+    reachable, real GLX direct rendering) — `ide.load_project(samples/
+    reseau_4)` (exercising the real promotion-to-`~/Documents/
+    PyGameMaker Projects/` copy) then the real `ide.test_game()` — and
+    screenshotted the resulting game window with ImageMagick's `import`.
+    It rendered correctly (readable menu text), via the real subprocess
+    path (`Popen` → `run_game.py`, confirmed a real child process, not
+    the in-process `is_packaged` fallback).
+  - Two things found along the way, neither confirmed as the actual
+    cause but both worth carrying into the next attempt: (a) `~/Documents`
+    on this machine is a Kerberos CIFS network mount
+    (`nasedu01.ge-pedago.etat-ge.ch`, `cache=loose`, `actimeo=1`) — real
+    latency the direct-run comparison doesn't have, though it didn't
+    stop this session's reproduction from rendering correctly; (b) **this
+    machine was critically low on memory at investigation time** (`free
+    -h`: ~420Mi free / ~770Mi available RAM, swap 3.8/4.0Gi used) — the
+    same chronic 8GB-RAM instability already documented elsewhere in this
+    file (VS Code crashed repeatedly this same session). A new Python+
+    pygame subprocess starting under that pressure, competing with the
+    already-running Qt IDE, is the leading hypothesis for a window that
+    opens but is slow/stuck before its first paint (Mutter shows exactly
+    a grey placeholder for an unresponsive not-yet-painted window).
+  - **Deliberately not changed**: the `is_packaged` Nuitka/PyInstaller
+    detection in `core/ide/_test_game.py` (the `not exe_exists` /
+    `file_dir.startswith('/tmp/')` heuristics). This DID misfire once on
+    this exact user's machine (that's what bug #1 above's crash proved —
+    `self.game_runner.test_game(...)` is only reachable from that
+    branch), but every heuristic in it is legitimately needed to detect a
+    real Nuitka onefile packaged build (`scripts/build_nuitka.py` — the
+    IDE itself, not just game exports, ships this way to students), and
+    nothing found this session reproduces it misfiring on a normal
+    source/venv run here. Ripping it out risks breaking Test Game in an
+    actual packaged deployment for a theory that isn't confirmed. **Next
+    session, if this recurs**: check free RAM first; if it recurs with
+    RAM to spare, that rules out the leading hypothesis and the
+    `is_packaged` branch (add a one-off debug print/log of which branch
+    `_run_project_json` actually took) is the next thing to instrument.
