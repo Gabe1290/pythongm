@@ -457,16 +457,20 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   trash/unused/orphaned/clean dialogs, docs/tutorials/about).
   `QMessageBox` patch sites repointed in 4 test files; `show_tutorials`
   path-depth adjusted.
-- [ ] `_test_game.py` — `test_game`, `_run_project_json`, `test_object`,
-  `_check_game_process`, `_drain_game_stderr`, `stop_game`, `debug_game`,
-  `_show_validation_warnings`. Patch targets: `core.ide_window.logger`
-  (test_game_subprocess_supervision ×2), `.QMessageBox`
-  (test_play_object, test_test_game_editor_sync).
-- [ ] `_project_actions.py` — new/open/load/save/close + `on_project_*`,
-  recents, `_require_open_project`, `ensure_project_loaded`,
-  `_show_load_failure_message`, `_warn_missing_extensions`. Patch:
-  `core.ide_window.Config`, `.QMessageBox` (test_recent_zip_reopen,
-  test_modified_editor_preservation, test_project_format_guard).
+- [x] **`_test_game.py` — `ca87d744`.** `TestGameMixin`, 8 methods.
+  `logger`×2 + `QMessageBox`×3 patch targets repointed. `_run_project_json`
+  `game_script` path bumped to `.parents[2]`.
+- [x] **`_project_actions.py` — `a18c32e6`.** `ProjectActionsMixin`, 16
+  methods (fully verbatim), `ide_window.py` → 3,625. **Fresh-look boundary
+  calls:** `_require_open_project` + `_ask_export_dir` have callers *only*
+  in the export methods → they go to `_export`, not here.
+  `update_recent_projects_menu` / `clear_recent_projects` → `_menu_builder`.
+  `update_window_title` / `_on_dirty_changed` / `closeEvent` → stay in the
+  shell (`closeEvent` calls `self.save_project()` and uses its own
+  `Config`/`QMessageBox`, so `test_modified_editor_preservation`'s patch
+  sites were left as `core.ide_window.*`). Repointed:
+  `test_recent_zip_reopen` (Config×3 + QMessageBox×3, `load_project`),
+  `test_project_format_guard` (QMessageBox×2, `_show_load_failure_message`).
 - [ ] `_assets.py` — `import_*`, `create_*`, `on_asset_*`,
   `find_renamed_asset`, `_refresh_*`. Patch: `.ObjectEditor`
   (test_open_editors_composite_key, test_reopen_modified_editor).
@@ -478,17 +482,21 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   `.ObjectEditor` (test_reopen_modified_editor).
 - [ ] `_export.py` — biggest. `export_*`, `build_game`/`build_and_run`,
   `_run_export_with_progress`, `_build_desktop`, `_launch_built_game`,
-  `_ask_export_dir`, `_current_export_options`, `_require_open_project`
-  (if not already in `_project_actions`). Patch: `.ExportThread`,
-  `.QMessageBox`, `.os.startfile` (test_build_game).
+  `_ask_export_dir`, `_current_export_options`, **`_require_open_project`**
+  (confirmed export-only). Patch: `.ExportThread`, `.QMessageBox`,
+  `.os.startfile` (test_build_game).
 - [ ] `_menu_builder.py` — **last.** `create_menu_bar`,
   `create_language_menu`, `create_toolbar`, `create_action`,
   `create_status_bar`, `update_recent_projects_menu`,
   `clear_recent_projects`.
 
-`ide_window.py`: 5,316 → **4,501** after `_dialogs`. Remaining shell =
-`__init__`/`setup_ui`/`setup_connections`, tab/right-panel handlers,
-`update_ui_state`/`update_window_title`, `closeEvent`/`changeEvent`.
+`ide_window.py`: 5,316 → **3,625** after `_project_actions` (**-32%**).
+Remaining shell = `__init__`/`setup_ui`/`setup_connections`,
+tab/right-panel handlers, `update_ui_state`/`update_window_title`,
+`_on_dirty_changed`, `closeEvent`/`changeEvent`, plus the still-unmoved
+`_refresh_room_editor_objects` and the auto-save toggles
+(`toggle_auto_save*` / `show_auto_save_settings` — small, left for a later
+`_autosave` or the shell).
 
 ---
 
