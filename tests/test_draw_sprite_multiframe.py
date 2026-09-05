@@ -21,7 +21,9 @@ KIVY_EXPORTER = (REPO_ROOT / "export" / "Kivy" / "kivy_exporter.py").read_text(e
 # --- Desktop (already correct — a guard, not a fix) ------------------------
 
 def test_desktop_draw_sprite_already_honours_subimage():
-    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    # _draw_sprite is a GameInstance method, moved to runtime/instance.py
+    # (docs/POST_1_0_REFACTOR.md File 3, cluster 3).
+    gr = (REPO_ROOT / "runtime" / "instance.py").read_text(encoding="utf-8")
     body = gr[gr.index("def _draw_sprite"):]
     body = body[:body.index("\n    def ")]
     assert "subimage = cmd.get('subimage', 0)" in body
