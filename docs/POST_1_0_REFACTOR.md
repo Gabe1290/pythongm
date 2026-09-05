@@ -27,48 +27,47 @@ missing an import it needs is an `AttributeError`-on-first-use bug, not
 a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
 (built during this arc specifically for this) caught one for real in
 `_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
-any manual testing was needed. **File 3 (`runtime/game_runner.py`) is
-underway**: `GameSprite` → `runtime/sprite.py`, `GameRoom` →
-`runtime/room.py`, `GameInstance` → `runtime/instance.py`, the
-input-handling/game-loop cluster → `runtime/input_handler.py`, and now
-collision detection/resolution → `runtime/collision.py` are all done
-(6,063 → 2,541 LoC). The `GameInstance` cluster turned out to be
-the EASY mirror-image case, not the "medium risk" one the plan
-originally called it: a fresh AST dependency audit (not an assumption)
-found `GameInstance` has no reference to `GameRoom`,
-`resolve_parent_inheritance`, or anything else `game_runner.py`-specific
-— only `ActionExecutor`, `GameSprite` (already its own module), and
-stdlib/pygame — so there is no circular dependency to resolve here at
-all, unlike `GameRoom`. That let `runtime/room.py`'s own
-`GameInstance` import be simplified too: it now comes directly from
-`runtime.instance` (a plain one-way dependency), and `game_runner.py`'s
-"MUST stay at this exact position" comment for the `GameRoom` re-export
-was corrected to drop the now-stale `GameInstance` justification,
-keeping only the still-real `resolve_parent_inheritance` one. The
+any manual testing was needed. **File 3 (`runtime/game_runner.py`) IS
+NOW COMPLETE: 6,063 → 2,541 LoC (-58%)**, split across `sprite.py`
+(`GameSprite`), `room.py` (`GameRoom`), `instance.py` (`GameInstance`),
+`input_handler.py` (`InputMixin`), and `collision.py` (`CollisionMixin`).
+`GameRunner` is now `(InputMixin, CollisionMixin)`; what remains on it is
+genuinely orchestration-only (game loop, project/room loading, room
+lifecycle, event triggers, dialogs, highscores), matching the plan's own
+target shape. The `GameInstance` cluster turned out to be the EASY
+mirror-image case, not the "medium risk" one the plan originally called
+it: a fresh AST dependency audit (not an assumption) found `GameInstance`
+has no reference to `GameRoom`, `resolve_parent_inheritance`, or anything
+else `game_runner.py`-specific — only `ActionExecutor`, `GameSprite`
+(already its own module), and stdlib/pygame — so there is no circular
+dependency to resolve here at all, unlike `GameRoom`. The
 `input_handler.py` cluster (11 methods incl. `update()` and
 `_process_held_keys`, moved together per the plan's own risk callout,
 which really does apply here) switched technique back to File 2's MIXIN
-style rather than File 3's "move the whole class" style, since these
-are `GameRunner` methods, not a separate object — `class GameRunner:` is
-now `class GameRunner(InputMixin):`. It also turned up a real, unplanned
-finding: `runtime/input_handler.py` already existed on disk, but this
-doc's "already partially exists — empty shell" description of it was
-wrong on both counts — it held a full but completely DEAD, DIVERGED
-`InputMixin` (imported only by `runtime/__init__.py`'s optional
+style rather than File 3's "move the whole class" style, since these are
+`GameRunner` methods, not a separate object. It also turned up a real,
+unplanned finding: `runtime/input_handler.py` already existed on disk,
+but this doc's "already partially exists — empty shell" description of
+it was wrong on both counts — it held a full but completely DEAD,
+DIVERGED `InputMixin` (imported only by `runtime/__init__.py`'s optional
 re-export, never actually inherited by `GameRunner`), the same shape of
 finding as the 2026-06-09 `CollisionMixin` deletion. Replaced its stale
-content with the real, live methods rather than deleting it, since
-`GameRunner` genuinely needs this functionality. The `collision.py`
-cluster (17 methods, another contiguous span) was the opposite case —
-nothing dead to find, just the collision methods' one and only live
-implementation moved verbatim, `GameRunner` now
-`(InputMixin, CollisionMixin)`; the two load-bearing invariant comment
-blocks the plan's risk callout named (`8ae3a7a`, `e3c0cc5`) came along
-automatically as part of the verbatim move. File 4
-(`runtime/action_executor.py`, 6,520 LoC) remains **not started**; the
-remaining File 3 clusters are `rendering.py`, `views.py`, and the
-orchestration-only `game_runner.py` remainder — see their Progress
-entries below.
+content with the real, live methods rather than deleting it. The
+`collision.py` cluster (17 methods, another contiguous span) was the
+opposite case — nothing dead to find, just the collision methods' one
+and only live implementation moved verbatim; the two load-bearing
+invariant comment blocks the plan's risk callout named (`8ae3a7a`,
+`e3c0cc5`) came along automatically as part of the verbatim move.
+Finally, `rendering.py`/`views.py` (the plan's last two proposed File 3
+modules) turned out to need **no new extraction at all** — their target
+methods (`update_views`, `render`/`_render_room`/the view-compositing
+code) were already inside `GameRoom`, moved there incidentally during
+the `room.py` cluster; the only rendering-shaped thing left on
+`GameRunner` is its own 33-line per-frame `render()` orchestrator, which
+correctly stays with the rest of the game loop. File 4
+(`runtime/action_executor.py`, 6,520 LoC, "last and hardest" per the
+plan) remains **not started** — see its own section below for the
+proposed split and risk callouts.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
@@ -1038,8 +1037,51 @@ runtime/
   instance/score/lives numbers to the prior cluster's run); full suite
   **4,270 passed, 0 failed, 10 skipped** — exactly matching the
   documented baseline, no flakes this run.
-- [ ] `rendering.py`, `views.py`, and the `game_runner.py`
-  orchestration-only remainder — not started.
+- [x] **`rendering.py`/`views.py` — DONE, but not as separate files;
+  folded into `room.py` already (confirmed 2026-09-05, not re-derived
+  from scratch).** Re-checked `game_runner.py` for any remaining
+  rendering/view method before starting a new cluster and found there
+  wasn't one to extract: `update_views` (the plan's `views.py` target)
+  and `render`/`_render_room`/`_render_draw_events`/`render_tiles`/the
+  background-layer and view-compositing methods (the plan's
+  `rendering.py` target) are ALL already inside `GameRoom` — moved
+  there during the `room.py` cluster above, which the plan's own
+  "Proposed split" hadn't anticipated (`room.py`'s Progress entry
+  already flagged this: "Substantially larger than the plan doc's
+  original estimate... because GameRoom has since absorbed room
+  rendering too"). The only rendering-shaped thing still on `GameRunner`
+  itself is its own `render()` (33 lines) — a thin per-frame
+  orchestrator that calls `self.current_room.update_views()` /
+  `self.current_room.render(self.screen)` / Thymio-robot compositing /
+  the `draw_gui` event / `pygame.display.flip()`. That's orchestration,
+  not rendering logic, and belongs with the rest of the game loop it's
+  tightly coupled to (`run_game_loop` calls it every frame) — creating a
+  standalone `rendering.py` for one 33-line orchestration method would
+  fragment cohesive code for no real size or clarity win, so it stays in
+  `game_runner.py`'s orchestration-only remainder below. Splitting these
+  checkboxes into DONE rather than leaving them `[ ]` (which would read
+  as "not started" and invite someone to redundantly re-extract already-
+  moved code) reflects the actual, verified state of the code, per this
+  doc's own "correct the doc, don't force a refactor" discipline.
+- [x] **File 3 is now COMPLETE.** `game_runner.py`: 6,063 → 2,541 LoC
+  (-58%), across `sprite.py`, `room.py`, `instance.py`,
+  `input_handler.py`, and `collision.py`. What remains on `GameRunner`
+  itself (confirmed by listing every method, not assumed) is genuinely
+  orchestration-only, matching the plan's own target shape: project/asset
+  loading (`load_project_data_only`, `_load_rooms_from_files`,
+  `_load_objects_from_files`, `_load_sprites_from_files`, `load_sprites`,
+  `load_backgrounds`, `load_sounds`, ...), the game loop itself
+  (`run_game_loop`, `handle_events`, `render`), room lifecycle
+  (`restart_current_room`, `restart_game`, `goto_next_room`,
+  `goto_previous_room`, `change_room`, the persistent-instance/destroyed-
+  memory helpers), event triggers (`trigger_room_end_event`,
+  `trigger_room_start_event`, `trigger_game_start_event`,
+  `trigger_no_more_lives_event`, `trigger_no_more_health_event`), dialogs
+  (`show_message_dialog`, `show_splash_image`, `show_highscore_dialog`,
+  `_show_name_entry_dialog`), highscores persistence, and
+  `update_thymio_robots`. No further natural cluster remains — a future
+  session could still split highscores or dialogs out if `game_runner.py`
+  grows again, but there's no urgency at 2,541 LoC.
 
 ---
 
