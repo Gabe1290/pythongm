@@ -7,6 +7,20 @@ currently dominate pygm2's complexity surface. Companion read:
 
 ## Status
 
+**Re-verified 2026-09-05.** File 1 (`object_events_panel.py`) is DONE
+(unchanged from below). **File 2 (`core/ide_window.py`) is well
+underway, paused mid-flight, not abandoned**: 5,316 → **3,009 LoC**
+(-43%) across a skeleton + 6 extracted mixins in `core/ide/` —
+`_samples.py`, `_edit_actions.py`, `_dialogs.py`, `_test_game.py`,
+`_project_actions.py`, `_assets.py` (the last of these, `39411b79`, had
+gone un-checked-off below despite being on disk and green — a doc-lag,
+not a code gap; corrected in place). `PyGameMakerIDE` is now `(Samples,
+EditActions, Dialogs, TestGame, ProjectActions, Assets, QMainWindow)`.
+Remaining for File 2, in the deliberate order below: `_editor_lifecycle.py`,
+then `_export.py` (the biggest chunk), then `_menu_builder.py` (last).
+Files 3 (`runtime/game_runner.py`, 6,063 LoC) and 4
+(`runtime/action_executor.py`, 6,520 LoC) are **not started**.
+
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
 `editors/object_editor/events/` mixin package, 2,111 → 800 LoC across
@@ -471,9 +485,18 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   sites were left as `core.ide_window.*`). Repointed:
   `test_recent_zip_reopen` (Config×3 + QMessageBox×3, `load_project`),
   `test_project_format_guard` (QMessageBox×2, `_show_load_failure_message`).
-- [ ] `_assets.py` — `import_*`, `create_*`, `on_asset_*`,
-  `find_renamed_asset`, `_refresh_*`. Patch: `.ObjectEditor`
-  (test_open_editors_composite_key, test_reopen_modified_editor).
+- [x] **`_assets.py` — `39411b79`.** `AssetsMixin`, 22 methods (fully
+  verbatim): the 4 `import_*_package/file` methods, the 4
+  `import_sprite/sound/background/asset`, `on_asset_renamed/_deleted/
+  _selected/_imported/_double_clicked`, `find_renamed_asset`,
+  `_refresh_blockly_asset_lists`, `_refresh_room_editor_objects`, and the
+  6 `create_*`/`create_asset_with_data`. No patch targets moved —
+  `ObjectEditor` appears here only as a `__class__.__name__` string; the
+  real `RoomEditor`/`ObjectEditor`/`SpriteEditor` patch sites in
+  `test_reopen_modified_editor`/`test_open_editors_composite_key` belong
+  to `open_*_editor` (→ `_editor_lifecycle`, next).
+  `test_asset_type_editors`'s source-grep helper widened to scan the
+  whole `core/ide/` package, not just `ide_window.py`.
 - [ ] `_editor_lifecycle.py` — `open_*_editor` ×8, `close_editor_*`,
   `float`/`reattach`/`_focus`/`_destroy_detached_editor`,
   `on_editor_save/close/data_modified`, `_flush/_iter_open_editors`,
@@ -490,13 +513,15 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   `create_status_bar`, `update_recent_projects_menu`,
   `clear_recent_projects`.
 
-`ide_window.py`: 5,316 → **3,625** after `_project_actions` (**-32%**).
-Remaining shell = `__init__`/`setup_ui`/`setup_connections`,
-tab/right-panel handlers, `update_ui_state`/`update_window_title`,
-`_on_dirty_changed`, `closeEvent`/`changeEvent`, plus the still-unmoved
-`_refresh_room_editor_objects` and the auto-save toggles
-(`toggle_auto_save*` / `show_auto_save_settings` — small, left for a later
-`_autosave` or the shell).
+`ide_window.py`: 5,316 → 3,625 after `_project_actions` → **3,009** after
+`_assets` (**-43%**). `PyGameMakerIDE` is now `(Samples, EditActions,
+Dialogs, TestGame, ProjectActions, Assets, QMainWindow)`. Remaining shell
+= `__init__`/`setup_ui`/`setup_connections`, tab/right-panel handlers,
+`update_ui_state`/`update_window_title`, `_on_dirty_changed`,
+`closeEvent`/`changeEvent`, `_iter_open_editors` (shared — stays in the
+shell), plus the auto-save toggles (`toggle_auto_save*` /
+`show_auto_save_settings` — small, left for a later `_autosave` or the
+shell).
 
 ---
 
