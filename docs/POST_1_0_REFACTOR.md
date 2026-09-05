@@ -29,9 +29,10 @@ a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
 `_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
 any manual testing was needed. **File 3 (`runtime/game_runner.py`) is
 underway**: `GameSprite` → `runtime/sprite.py`, `GameRoom` →
-`runtime/room.py`, `GameInstance` → `runtime/instance.py`, and now the
-input-handling/game-loop cluster → `runtime/input_handler.py` are all
-done (6,063 → 3,400 LoC). The `GameInstance` cluster turned out to be
+`runtime/room.py`, `GameInstance` → `runtime/instance.py`, the
+input-handling/game-loop cluster → `runtime/input_handler.py`, and now
+collision detection/resolution → `runtime/collision.py` are all done
+(6,063 → 2,541 LoC). The `GameInstance` cluster turned out to be
 the EASY mirror-image case, not the "medium risk" one the plan
 originally called it: a fresh AST dependency audit (not an assumption)
 found `GameInstance` has no reference to `GameRoom`,
@@ -57,11 +58,17 @@ wrong on both counts — it held a full but completely DEAD, DIVERGED
 re-export, never actually inherited by `GameRunner`), the same shape of
 finding as the 2026-06-09 `CollisionMixin` deletion. Replaced its stale
 content with the real, live methods rather than deleting it, since
-`GameRunner` genuinely needs this functionality. File 4
+`GameRunner` genuinely needs this functionality. The `collision.py`
+cluster (17 methods, another contiguous span) was the opposite case —
+nothing dead to find, just the collision methods' one and only live
+implementation moved verbatim, `GameRunner` now
+`(InputMixin, CollisionMixin)`; the two load-bearing invariant comment
+blocks the plan's risk callout named (`8ae3a7a`, `e3c0cc5`) came along
+automatically as part of the verbatim move. File 4
 (`runtime/action_executor.py`, 6,520 LoC) remains **not started**; the
-remaining File 3 clusters are `collision.py`, `rendering.py`, `views.py`,
-and the orchestration-only `game_runner.py` remainder — see their
-Progress entries below.
+remaining File 3 clusters are `rendering.py`, `views.py`, and the
+orchestration-only `game_runner.py` remainder — see their Progress
+entries below.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
@@ -986,15 +993,53 @@ runtime/
   this doc's own already-documented non-determinism for that sample, not
   a regression); full suite **4,270 passed, 0 failed, 10 skipped** —
   exactly matching the documented baseline, no flakes this run.
-- [ ] `collision.py`, `rendering.py`, `views.py`, and the
-  `game_runner.py` orchestration-only remainder — not started.
-  `collision.py`'s risk callout above (carry the `8ae3a7a`/`e3c0cc5`
-  invariant comments verbatim) is still open and unaffected by this
-  cluster — `update()` still calls
-  `self.check_movement_collision_with_blocker`/
-  `self._slide_axis_to_contact`/etc., which all remain directly on
-  `GameRunner` for now and will resolve exactly the same way through the
-  MRO once they, too, move to their own mixin.
+- [x] **`collision.py` — done (2026-09-05).** `_get_step_grid_size`,
+  `_get_any_grid_size`, `_slide_axis_to_contact`,
+  `check_movement_collision_with_blocker`, `separate_overlapping_instances`,
+  `push_back_instance`, `check_outside_room_events`,
+  `detect_collisions_for_instance`, `process_collision_event`,
+  `check_not_collision_events`, `_object_matches_target`,
+  `_resolve_collision_event`, `instances_overlap`, `_bbox_in_world`,
+  `rectangles_overlap`, `_precise_refine`, `check_collision_at_position`
+  (17 methods, 876 contiguous LoC — another single unbroken span) moved
+  verbatim to `runtime/collision.py`'s `CollisionMixin`. `game_runner.py`:
+  3,400 → 2,541. Same mixin technique as `input_handler.py`: `class
+  GameRunner:` is now `class GameRunner(InputMixin, CollisionMixin):`,
+  and since mixin methods resolve everything through `self` at runtime,
+  `update()` (still in `InputMixin`, a sibling mixin) calling
+  `self.check_movement_collision_with_blocker(...)` (now in
+  `CollisionMixin`) works identically to before — no coordination
+  between the two clusters was needed despite the heavy cross-calling
+  the risk callout above worried about.
+  **Not a revival of the old, deleted `collision_system.CollisionMixin`**
+  (`ARCHITECTURE.md` §6) — that module was deleted outright in 2026-06-09
+  because it was pure dead weight (`GameRunner` never inherited it and
+  had its own correct, same-named methods). This is the opposite
+  situation: nothing stale to find here, just the live methods' one and
+  only implementation, copied verbatim. The two load-bearing invariant
+  comment blocks the risk callout named (`8ae3a7a`'s "AABB-only for
+  movement blocking" note in `check_movement_collision_with_blocker`,
+  `e3c0cc5`'s "parent-chain match symmetry" note in
+  `_resolve_collision_event`) came along automatically, character for
+  character, as part of the verbatim `sed`-range extraction — no
+  transcription risk.
+  Dead `import math` removed from `game_runner.py` (both `InputMixin`
+  and `CollisionMixin` now carry their own; confirmed zero remaining
+  `math` references in `game_runner.py` itself).
+  **No test breakage found**: comprehensive greps for
+  `mock.patch(...)`/`patch.object(...)` targeting any of the 17 method
+  names across `tests/` turned up nothing.
+  Verified: AST-structural diff of all 17 methods against the pre-cluster
+  `game_runner.py` is byte-for-byte clean (plus a completeness check that
+  no extra or missing methods leaked into the new class); `GameRunner.__mro__`
+  is `[GameRunner, InputMixin, CollisionMixin, object]` and every moved
+  method resolves to `CollisionMixin.<name>`; **all 25 bundled samples
+  smoke-run clean** (`tools/smoke_run_samples.py`, identical
+  instance/score/lives numbers to the prior cluster's run); full suite
+  **4,270 passed, 0 failed, 10 skipped** — exactly matching the
+  documented baseline, no flakes this run.
+- [ ] `rendering.py`, `views.py`, and the `game_runner.py`
+  orchestration-only remainder — not started.
 
 ---
 
