@@ -27,9 +27,13 @@ missing an import it needs is an `AttributeError`-on-first-use bug, not
 a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
 (built during this arc specifically for this) caught one for real in
 `_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
-any manual testing was needed. Files 3 (`runtime/game_runner.py`,
-6,063 LoC) and 4 (`runtime/action_executor.py`, 6,520 LoC) are the only
-files from this doc's original scope **not started**.
+any manual testing was needed. **File 3 (`runtime/game_runner.py`) has
+begun**: `GameSprite` → `runtime/sprite.py` (6,063 → 5,728 LoC), the
+first of its five planned clusters — see its own Progress entry for the
+"keep a re-export, don't force an import-path update" call this one
+made (a genuine divergence from File 2's own precedent, reasoned through
+there). File 4 (`runtime/action_executor.py`, 6,520 LoC) remains **not
+started**.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
@@ -737,6 +741,44 @@ runtime/
   re-sync at the end of `update()` makes this invariant hold. Both
   pieces must move together — extract `update()` and
   `_process_held_keys` in the same commit.
+
+### Progress
+
+- [x] **`sprite.py` — done (2026-09-05).** `GameSprite` moved fully
+  verbatim (AST-diff-clean against pre-refactor HEAD) to `runtime/sprite.py`
+  — confirmed genuinely self-contained first: no reference to
+  `GameInstance`/`GameRoom`/`GameRunner` or to any of `game_runner.py`'s
+  module-level helpers/constants (`resolve_parent_inheritance`,
+  `_CHILD_ONLY_OBJECT_PROPS`, `CAPTION_TRANSLATIONS`, etc.), and
+  instantiated in exactly one place in the whole codebase
+  (`GameRunner`'s sprite-loading code). `game_runner.py`: 6,063 → 5,728.
+  **Deliberately kept a re-export** (`from runtime.sprite import
+  GameSprite` near the top of `game_runner.py`) rather than requiring
+  every caller to update its import path — unlike the `core/ide/` mixin
+  extractions (internal inheritance pieces of one class, no shim by
+  design), this is an ordinary module-level class relocation with real
+  external call sites: **11+ tests** do
+  `from runtime.game_runner import GameSprite` directly, and a plain
+  re-export is the standard, lowest-churn way to move a class to its
+  own module in Python. Confirmed by running the full suite with **zero
+  test changes** — every existing import path kept resolving to the
+  identical class object (`is` check passed). Dead imports removed from
+  `game_runner.py`: `from PIL import Image` (was GIF-loading-only,
+  confirmed zero remaining usage).
+  Verified: AST-structural diff of the whole class against
+  `git show HEAD:runtime/game_runner.py` is clean; `runtime.game_runner.
+  GameSprite is runtime.sprite.GameSprite` (literally the same object,
+  not just equivalent); full suite gated (one isolated re-run needed —
+  `test_raycast_view.py`'s `TestRaycast1SampleSmoke`/`TestFloorCasting`
+  flaked under CPU contention from a parallel targeted-file run, exactly
+  CLAUDE.md's documented timing-sensitivity caveat for that file, not a
+  regression — confirmed by re-running that file alone, 51/51 green).
+- [ ] `room.py` — `GameRoom` + spatial grid helpers. Next (per the
+  plan's own "easy" ordering).
+- [ ] `instance.py` — `GameInstance`. Medium risk (see the
+  `_process_held_keys`/`update()` coupling risk callout above).
+- [ ] `input_handler.py`, `collision.py`, `rendering.py`, `views.py`,
+  and the `game_runner.py` orchestration-only remainder — not started.
 
 ---
 
