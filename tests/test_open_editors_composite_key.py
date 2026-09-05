@@ -74,7 +74,7 @@ def test_same_named_room_and_object_both_open(qapp):
 
     # Opening an OBJECT named 'niveau1' must NOT focus the room (different
     # composite key); it builds a new object editor.
-    with patch('core.ide_window.ObjectEditor') as OE:
+    with patch('core.ide._editor_lifecycle.ObjectEditor') as OE:
         _ide_cls().open_object_editor(stub, "niveau1", {})
         OE.assert_called_once()  # a new object editor was constructed
 

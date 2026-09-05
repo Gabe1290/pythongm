@@ -45,21 +45,21 @@ def _stub_with_open_editor(qapp, category, asset_name, dirty=True):
 class TestFocusInsteadOfDuplicate:
     def test_room_editor_focuses_dirty_existing(self, qapp):
         stub, tabs, existing = _stub_with_open_editor(qapp, "rooms", "level1", dirty=True)
-        with patch('core.ide_window.RoomEditor') as RE:
+        with patch('core.ide._editor_lifecycle.RoomEditor') as RE:
             _ide_cls().open_room_editor(stub, "level1", {})
         RE.assert_not_called()                 # no duplicate constructed
         assert tabs.currentWidget() is existing  # focused the existing one
 
     def test_object_editor_focuses_dirty_existing(self, qapp):
         stub, tabs, existing = _stub_with_open_editor(qapp, "objects", "obj_hero", dirty=True)
-        with patch('core.ide_window.ObjectEditor') as OE:
+        with patch('core.ide._editor_lifecycle.ObjectEditor') as OE:
             _ide_cls().open_object_editor(stub, "obj_hero", {})
         OE.assert_not_called()
         assert tabs.currentWidget() is existing
 
     def test_sprite_editor_focuses_dirty_existing(self, qapp):
         stub, tabs, existing = _stub_with_open_editor(qapp, "sprites", "spr_ball", dirty=True)
-        with patch('core.ide_window.SpriteEditor') as SE:
+        with patch('core.ide._editor_lifecycle.SpriteEditor') as SE:
             _ide_cls().open_sprite_editor(stub, "spr_ball", {})
         SE.assert_not_called()
         assert tabs.currentWidget() is existing
@@ -67,7 +67,7 @@ class TestFocusInsteadOfDuplicate:
     def test_clean_editor_still_focuses(self, qapp):
         # The non-dirty case worked before too; make sure it still does.
         stub, tabs, existing = _stub_with_open_editor(qapp, "rooms", "level2", dirty=False)
-        with patch('core.ide_window.RoomEditor') as RE:
+        with patch('core.ide._editor_lifecycle.RoomEditor') as RE:
             _ide_cls().open_room_editor(stub, "level2", {})
         RE.assert_not_called()
         assert tabs.currentWidget() is existing

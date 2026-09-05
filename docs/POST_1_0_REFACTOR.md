@@ -9,16 +9,17 @@ currently dominate pygm2's complexity surface. Companion read:
 
 **Re-verified 2026-09-05.** File 1 (`object_events_panel.py`) is DONE
 (unchanged from below). **File 2 (`core/ide_window.py`) is well
-underway, paused mid-flight, not abandoned**: 5,316 → **3,009 LoC**
-(-43%) across a skeleton + 6 extracted mixins in `core/ide/` —
+underway, paused mid-flight, not abandoned**: 5,316 → **2,164 LoC**
+(-59%) across a skeleton + 7 extracted mixins in `core/ide/` —
 `_samples.py`, `_edit_actions.py`, `_dialogs.py`, `_test_game.py`,
-`_project_actions.py`, `_assets.py` (the last of these, `39411b79`, had
-gone un-checked-off below despite being on disk and green — a doc-lag,
-not a code gap; corrected in place). `PyGameMakerIDE` is now `(Samples,
-EditActions, Dialogs, TestGame, ProjectActions, Assets, QMainWindow)`.
-Remaining for File 2, in the deliberate order below: `_editor_lifecycle.py`,
-then `_export.py` (the biggest chunk), then `_menu_builder.py` (last).
-Files 3 (`runtime/game_runner.py`, 6,063 LoC) and 4
+`_project_actions.py`, `_assets.py`, `_editor_lifecycle.py` (the
+`_assets.py` checkbox had gone un-checked-off below despite being on
+disk and green — a doc-lag, not a code gap; corrected in place;
+`_editor_lifecycle.py` landed the same session). `PyGameMakerIDE` is now
+`(Samples, EditActions, Dialogs, TestGame, ProjectActions, Assets,
+EditorLifecycle, QMainWindow)`. Remaining for File 2, in the deliberate
+order below: `_export.py` (the biggest chunk), then `_menu_builder.py`
+(last). Files 3 (`runtime/game_runner.py`, 6,063 LoC) and 4
 (`runtime/action_executor.py`, 6,520 LoC) are **not started**.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
@@ -497,12 +498,47 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   to `open_*_editor` (→ `_editor_lifecycle`, next).
   `test_asset_type_editors`'s source-grep helper widened to scan the
   whole `core/ide/` package, not just `ide_window.py`.
-- [ ] `_editor_lifecycle.py` — `open_*_editor` ×8, `close_editor_*`,
-  `float`/`reattach`/`_focus`/`_destroy_detached_editor`,
-  `on_editor_save/close/data_modified`, `_flush/_iter_open_editors`,
-  `_editor_key`/`_open_key`/`_forget_open_editor`/`_canonical_category`,
-  `toggle/set_window_mode`. Patch: `.RoomEditor`/`.SpriteEditor`/
-  `.ObjectEditor` (test_reopen_modified_editor).
+- [x] **`_editor_lifecycle.py`.** `EditorLifecycleMixin`, 26 methods (fully
+  verbatim, AST-diff-clean against pre-refactor HEAD): the 8
+  `open_*_editor` (room/playground/object/sprite/script/sound/background/
+  font), `close_editor_tab`/`close_editor_by_name`, `float_editor`/
+  `reattach_editor`/`_on_detached_reattach_requested`/
+  `_focus_detached_editor`/`_destroy_detached_editor`,
+  `on_editor_save_requested`/`on_editor_close_requested`/
+  `on_editor_data_modified`, `_flush_open_editors`, `_editor_key`/
+  `_open_key`/`_forget_open_editor`/`_canonical_category`,
+  `toggle_window_mode`/`set_window_mode`/
+  `_update_window_mode_action_label`. `ide_window.py`: 3,009 → **2,164**
+  (-59% from the 5,316 File-2 start). `PyGameMakerIDE` is now `(Samples,
+  EditActions, Dialogs, TestGame, ProjectActions, Assets,
+  EditorLifecycle, QMainWindow)`. **Fresh-look boundary calls** (same
+  discipline as `_project_actions`'s): `on_room_editor_activated`/
+  `on_object_editor_activated` and the right-panel/properties helpers
+  (`clear_properties_contexts`/`_collapse_right_panel`/
+  `_restore_right_panel`) stay in the shell — despite sitting physically
+  inside this method range, they're a properties-panel-sync concern
+  driven mainly by `on_tab_changed`, not editor-open/close/float
+  tracking; `_iter_open_editors` and `_add_welcome_tab` also stay
+  (shared with `_assets`/`_test_game`/general UI setup, per the
+  `_assets` commit's own precedent). Patch targets moved:
+  `core.ide_window.RoomEditor`/`ObjectEditor`/`SpriteEditor` →
+  `core.ide._editor_lifecycle.*` in `test_reopen_modified_editor.py`
+  (4 sites) and `test_open_editors_composite_key.py` (1 site) — these
+  three editor classes are constructed directly inside
+  `open_room_editor`/`open_object_editor`/`open_sprite_editor`; the
+  other five `open_*_editor` methods import their editor class locally
+  and needed no patch-target change. `QMessageBox`/`Config` are used
+  throughout but no test patches either for a method in this cluster
+  (the three existing `core.ide_window.QMessageBox` patch sites all
+  belong to `closeEvent`/`toggle_auto_save`/`_run_export_with_progress`,
+  none of which moved) — confirmed by an exhaustive search across
+  `tests/` for every method name in this cluster before editing, not
+  assumed.
+  Verified: AST-structural diff of all 26 methods against `git show
+  HEAD:core/ide_window.py` is clean; MRO resolves all 26 (+ the
+  now-8-mixin chain); the two directly-affected test files plus 6
+  peripheral ones referencing these method names all green; full suite
+  gated.
 - [ ] `_export.py` — biggest. `export_*`, `build_game`/`build_and_run`,
   `_run_export_with_progress`, `_build_desktop`, `_launch_built_game`,
   `_ask_export_dir`, `_current_export_options`, **`_require_open_project`**
@@ -513,15 +549,19 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   `create_status_bar`, `update_recent_projects_menu`,
   `clear_recent_projects`.
 
-`ide_window.py`: 5,316 → 3,625 after `_project_actions` → **3,009** after
-`_assets` (**-43%**). `PyGameMakerIDE` is now `(Samples, EditActions,
-Dialogs, TestGame, ProjectActions, Assets, QMainWindow)`. Remaining shell
-= `__init__`/`setup_ui`/`setup_connections`, tab/right-panel handlers,
+`ide_window.py`: 5,316 → 3,625 after `_project_actions` → 3,009 after
+`_assets` → **2,164** after `_editor_lifecycle` (**-59%**).
+`PyGameMakerIDE` is now `(Samples, EditActions, Dialogs, TestGame,
+ProjectActions, Assets, EditorLifecycle, QMainWindow)`. Remaining shell
+= `__init__`/`setup_ui`/`setup_connections`, tab/right-panel handlers
+(`on_tab_changed`, `on_room_editor_activated`/`on_object_editor_activated`,
+`clear_properties_contexts`/`_collapse_right_panel`/`_restore_right_panel`),
 `update_ui_state`/`update_window_title`, `_on_dirty_changed`,
-`closeEvent`/`changeEvent`, `_iter_open_editors` (shared — stays in the
-shell), plus the auto-save toggles (`toggle_auto_save*` /
-`show_auto_save_settings` — small, left for a later `_autosave` or the
-shell).
+`closeEvent`/`changeEvent`, `_iter_open_editors`/`_add_welcome_tab`
+(shared — stay in the shell), plus the auto-save toggles
+(`toggle_auto_save*` / `show_auto_save_settings` — small, left for a
+later `_autosave` or the shell). Remaining clusters: `_export.py`
+(biggest), then `_menu_builder.py` (last).
 
 ---
 
