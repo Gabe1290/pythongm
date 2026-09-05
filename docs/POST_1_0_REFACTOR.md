@@ -27,13 +27,18 @@ missing an import it needs is an `AttributeError`-on-first-use bug, not
 a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
 (built during this arc specifically for this) caught one for real in
 `_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
-any manual testing was needed. **File 3 (`runtime/game_runner.py`) has
-begun**: `GameSprite` → `runtime/sprite.py` (6,063 → 5,728 LoC), the
-first of its five planned clusters — see its own Progress entry for the
-"keep a re-export, don't force an import-path update" call this one
-made (a genuine divergence from File 2's own precedent, reasoned through
-there). File 4 (`runtime/action_executor.py`, 6,520 LoC) remains **not
-started**.
+any manual testing was needed. **File 3 (`runtime/game_runner.py`) is
+underway**: `GameSprite` → `runtime/sprite.py` and `GameRoom` →
+`runtime/room.py` are both done (6,063 → 4,988 LoC) — see their own
+Progress entries for two decisions worth carrying into `instance.py`
+next: (1) keep a re-export rather than force an import-path update
+(diverging from File 2's own no-shim precedent, reasoned through
+there); (2) a real circular dependency between `GameRoom` and
+`GameInstance` (the former constructs the latter) was resolved with a
+plain top-level import kept at a specific, load-order-safe position in
+`game_runner.py`, verified in both import orders rather than assumed —
+`instance.py` will hit the mirror image of this same dependency. File 4
+(`runtime/action_executor.py`, 6,520 LoC) remains **not started**.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
@@ -773,10 +778,63 @@ runtime/
   flaked under CPU contention from a parallel targeted-file run, exactly
   CLAUDE.md's documented timing-sensitivity caveat for that file, not a
   regression — confirmed by re-running that file alone, 51/51 green).
-- [ ] `room.py` — `GameRoom` + spatial grid helpers. Next (per the
-  plan's own "easy" ordering).
+- [x] **`room.py` — done (2026-09-05).** `GameRoom` (whole class,
+  unsplit) moved verbatim to `runtime/room.py`, along with
+  `_sane_room_dimension`/`ROOM_MIN_DIMENSION`/`ROOM_MAX_DIMENSION`
+  (used only by it). **Correction to this doc's own estimate**: the
+  "~150 LoC, self-contained" claim in File 3's "Current shape" above was
+  stale — actual size is **~730 LoC**, because `GameRoom` has since
+  absorbed room *rendering* too (`render`/`_render_room`/
+  `_render_draw_events`/`render_tiles`/the background-layer and
+  view-compositing methods) — the "Proposed split"'s eventual
+  `rendering.py`/`views.py` targets are currently still part of this one
+  class. Splitting THOSE out further needs the harder, File-2-style
+  mixin methodology; deferred, not attempted here — this commit only
+  relocates the whole class.
+  **Real circular dependency found and resolved, worth remembering for
+  `instance.py` next**: `GameRoom.__init__` constructs `GameInstance`
+  directly, and `set_sprites_for_instances` calls
+  `resolve_parent_inheritance` — both still live in `game_runner.py`
+  (GameInstance hasn't moved yet). Resolved with a plain top-level
+  import in `room.py` (not a local/lazy import) that's safe *by
+  construction*: `game_runner.py`'s `from runtime.room import GameRoom`
+  re-export sits at the **exact original position** `class GameRoom`
+  occupied — after both `GameInstance` and `resolve_parent_inheritance`
+  are already fully defined in that module's namespace — so by the time
+  `room.py`'s own top-level import runs, nothing is partially
+  initialized. Verified empirically in **both** import orders
+  (`game_runner` first, `room` first) before trusting it. A prominent
+  comment on both sides warns against moving that import line. `Path`/
+  `pygame`/`GameSprite`/`ThymioSimulator`/`extension_hooks` all import
+  cleanly with no such ordering constraint (`ThymioSimulator` and
+  `extension_hooks` have zero dependency on `game_runner.py` at all).
+  `game_runner.py`: 6,063 → 4,988. Dead import removed:
+  `from runtime.thymio_simulator import ThymioSimulator` (confirmed zero
+  remaining usage there; `ThymioRenderer`, a different class, stays).
+  (`from PIL import Image` had already been removed in the `sprite.py`
+  commit above — GameSprite was its only user.)
+  **Same source-string-scanning breakage class `_export.py` hit,
+  confirmed recurring across File 2 → File 3**: two tests in
+  `test_raycast_export_parity.py` `read_text()` `game_runner.py` and
+  slice out `_render_draw_events`/the `extension_hooks.render_room(...)`
+  branch by name — both moved, both fixed to read `runtime/room.py`
+  instead. `test_draw_sprite_multiframe.py`/`test_plugin_loading_in_ide.py`
+  do the same kind of scan but for content that stayed
+  (`_draw_sprite`/`load_all_plugins`, both `GameInstance`/`GameRunner`
+  methods) — confirmed unaffected, not changed.
+  Verified: AST-structural diff of the class + function + both constants
+  against `git show HEAD:runtime/game_runner.py` is clean; the circular
+  import resolves in both orders; **all 25 bundled samples smoke-run
+  clean** (`tools/smoke_run_samples.py`, 180 frames each, correct
+  room/instance/score/lives at the end of each run) — the plan's own
+  mandatory-methodology bar for a runtime change; full suite gated.
 - [ ] `instance.py` — `GameInstance`. Medium risk (see the
-  `_process_held_keys`/`update()` coupling risk callout above).
+  `_process_held_keys`/`update()` coupling risk callout above) — and now
+  also the other half of the `GameRoom` circular dependency above: moving
+  `GameInstance` out from `game_runner.py` will need the SAME "import
+  position" discipline in reverse (or a lazy import), since `room.py`
+  will then depend on a class that's moved out of `game_runner.py`
+  entirely rather than one still living there.
 - [ ] `input_handler.py`, `collision.py`, `rendering.py`, `views.py`,
   and the `game_runner.py` orchestration-only remainder — not started.
 

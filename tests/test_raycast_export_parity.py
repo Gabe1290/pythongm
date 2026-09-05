@@ -398,7 +398,9 @@ def test_all_three_share_the_facing_angle_convention():
 # these pin that none of them regresses back to a bare early-return.
 
 def test_all_three_composite_the_hud_after_the_raycast_render():
-    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    # GameRoom (render/_render_room/_render_draw_events/update_views) moved
+    # to runtime/room.py (docs/POST_1_0_REFACTOR.md File 3, cluster 2).
+    gr = (REPO_ROOT / "runtime" / "room.py").read_text(encoding="utf-8")
     kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
 
     # Desktop: the raycast view renders through the extension seam (Stage B2),
@@ -432,7 +434,8 @@ def test_all_three_draw_the_hud_in_screen_space():
     """A HUD at (8, 8) must land 8px from the window's top-left on every
     target — no camera/view offset, and (on Kivy) flipped against the WINDOW
     height rather than the room height."""
-    gr = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    # _render_draw_events/update_views moved to runtime/room.py (File 3).
+    gr = (REPO_ROOT / "runtime" / "room.py").read_text(encoding="utf-8")
     kx = KIVY   # shipped Kivy source: kivy_exporter.py + export_kivy.py
     # Desktop passes the bare screen (no view_offset).
     helper = gr[gr.index("def _render_draw_events"):]
