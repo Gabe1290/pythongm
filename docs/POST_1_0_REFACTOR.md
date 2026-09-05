@@ -9,17 +9,21 @@ currently dominate pygm2's complexity surface. Companion read:
 
 **Re-verified 2026-09-05.** File 1 (`object_events_panel.py`) is DONE
 (unchanged from below). **File 2 (`core/ide_window.py`) is well
-underway, paused mid-flight, not abandoned**: 5,316 → **2,164 LoC**
-(-59%) across a skeleton + 7 extracted mixins in `core/ide/` —
+underway, paused mid-flight, not abandoned**: 5,316 → **1,504 LoC**
+(-72%) across a skeleton + 8 extracted mixins in `core/ide/` —
 `_samples.py`, `_edit_actions.py`, `_dialogs.py`, `_test_game.py`,
-`_project_actions.py`, `_assets.py`, `_editor_lifecycle.py` (the
-`_assets.py` checkbox had gone un-checked-off below despite being on
-disk and green — a doc-lag, not a code gap; corrected in place;
-`_editor_lifecycle.py` landed the same session). `PyGameMakerIDE` is now
-`(Samples, EditActions, Dialogs, TestGame, ProjectActions, Assets,
-EditorLifecycle, QMainWindow)`. Remaining for File 2, in the deliberate
-order below: `_export.py` (the biggest chunk), then `_menu_builder.py`
-(last). Files 3 (`runtime/game_runner.py`, 6,063 LoC) and 4
+`_project_actions.py`, `_assets.py`, `_editor_lifecycle.py`, `_export.py`
+(the `_assets.py` checkbox had gone un-checked-off below despite being
+on disk and green — a doc-lag, not a code gap; corrected in place;
+`_editor_lifecycle.py` and `_export.py` both landed the same session —
+`_export.py`'s move also surfaced a second class of test breakage,
+source-string-scanning tests that `read_text()` `ide_window.py` and
+slice out a method's body by name, silently emptied when the method
+moves; see its own Progress entry). `PyGameMakerIDE` is now `(Samples,
+EditActions, Dialogs, TestGame, ProjectActions, Assets,
+EditorLifecycle, Export, QMainWindow)`. **`_menu_builder.py` is now the
+only remaining File 2 cluster** (deliberately last). Files 3
+(`runtime/game_runner.py`, 6,063 LoC) and 4
 (`runtime/action_executor.py`, 6,520 LoC) are **not started**.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
@@ -539,29 +543,74 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   now-8-mixin chain); the two directly-affected test files plus 6
   peripheral ones referencing these method names all green; full suite
   gated.
-- [ ] `_export.py` — biggest. `export_*`, `build_game`/`build_and_run`,
-  `_run_export_with_progress`, `_build_desktop`, `_launch_built_game`,
-  `_ask_export_dir`, `_current_export_options`, **`_require_open_project`**
-  (confirmed export-only). Patch: `.ExportThread`, `.QMessageBox`,
-  `.os.startfile` (test_build_game).
-- [ ] `_menu_builder.py` — **last.** `create_menu_bar`,
-  `create_language_menu`, `create_toolbar`, `create_action`,
-  `create_status_bar`, `update_recent_projects_menu`,
+- [x] **`_export.py` — biggest, done.** `ExportMixin`, 19 methods +
+  2 module-level classes (fully verbatim, AST-diff-clean against
+  pre-refactor HEAD): `export_html5`/`export_kivy`/`export_project`/
+  `export_project_zip` (thin menu-entry delegates, physically separate
+  from the rest of the cluster but the same concern —
+  `export_project`/`export_project_zip` are literal `export_*` matches
+  the plan's own wildcard already named), `export_game`,
+  `_current_export_options`, the five `export_windows_exe`/
+  `_linux_binary`/`_macos_app`/`_android_apk`/`_ios_app`, `export_aseba_code`,
+  `build_game`/`build_and_run`, `_require_open_project`, `_ask_export_dir`,
+  `_run_export_with_progress`, `_build_desktop`, `_launch_built_game`, plus
+  the module-level `ExportThread(QThread)` and `_ExportProgressDialog(QDialog)`
+  helper classes `_run_export_with_progress` builds on (used nowhere else,
+  so they move with it). `ide_window.py`: 2,164 → **1,504** (-72% from the
+  5,316 File-2 start). `PyGameMakerIDE` is now `(Samples, EditActions,
+  Dialogs, TestGame, ProjectActions, Assets, EditorLifecycle, Export,
+  QMainWindow)`. Dead imports removed from `ide_window.py`: `os`,
+  `sys`, `subprocess`, `QThread`, `QDialog`, `QFileDialog`, `QPushButton`,
+  `QHBoxLayout` — all confirmed zero remaining real usages (not just
+  "moved code doesn't need it"; checked the whole file, since e.g.
+  `QProgressBar` looked similarly export-only but turned out to have a
+  second, unrelated use in `create_status_bar`).
+  **Patch targets moved** (found by an exhaustive `tests/` search across
+  every method/class name in this cluster before editing, matching the
+  `_editor_lifecycle` discipline): `core.ide_window.QMessageBox` /
+  `.ExportThread` / `.os.startfile` → `core.ide._export.*` in
+  `test_build_game.py` (3 sites); `from core.ide_window import
+  _ExportProgressDialog` → `core.ide._export` in
+  `test_export_progress_dialog.py`. **A second, previously-unseen class
+  of breakage this cluster hit for the first time**: four tests
+  (`test_export_dialog_routing.py` ×2, `test_export_dialog_options.py`,
+  `test_export_registry.py`) don't patch anything — they `read_text()`
+  `core/ide_window.py`'s raw source and string-search inside it (e.g.
+  slicing out `export_game`'s own body to assert it never routes on
+  translated combo text — the M13 regression the test exists to catch).
+  Moving the methods silently emptied that slice, so these failed with
+  `IndexError`/false assertion misses rather than an import error —
+  caught by the full targeted-file run, not the AST/MRO checks (which
+  only prove the method CONTENT is intact, not that every test locates
+  it correctly). Fixed by repointing each `read_text()` call at
+  `core/ide/_export.py`, matching `test_asset_type_editors.py`'s own
+  established fix for this exact class of test one cluster earlier.
+  Verified: AST-structural diff of all 19 methods + 2 classes against
+  `git show HEAD:core/ide_window.py` is clean; MRO resolves all 19
+  methods through the now-9-mixin chain; every test file referencing a
+  moved name (11 files across the two failure classes above) green;
+  full suite gated.
+- [ ] `_menu_builder.py` — **last, and now the only remaining File 2
+  cluster.** `create_menu_bar`, `create_language_menu`, `create_toolbar`,
+  `create_action`, `create_status_bar`, `update_recent_projects_menu`,
   `clear_recent_projects`.
 
 `ide_window.py`: 5,316 → 3,625 after `_project_actions` → 3,009 after
-`_assets` → **2,164** after `_editor_lifecycle` (**-59%**).
-`PyGameMakerIDE` is now `(Samples, EditActions, Dialogs, TestGame,
-ProjectActions, Assets, EditorLifecycle, QMainWindow)`. Remaining shell
-= `__init__`/`setup_ui`/`setup_connections`, tab/right-panel handlers
-(`on_tab_changed`, `on_room_editor_activated`/`on_object_editor_activated`,
-`clear_properties_contexts`/`_collapse_right_panel`/`_restore_right_panel`),
-`update_ui_state`/`update_window_title`, `_on_dirty_changed`,
-`closeEvent`/`changeEvent`, `_iter_open_editors`/`_add_welcome_tab`
-(shared — stay in the shell), plus the auto-save toggles
-(`toggle_auto_save*` / `show_auto_save_settings` — small, left for a
-later `_autosave` or the shell). Remaining clusters: `_export.py`
-(biggest), then `_menu_builder.py` (last).
+`_assets` → 2,164 after `_editor_lifecycle` → **1,504** after `_export`
+(**-72%**). `PyGameMakerIDE` is now `(Samples, EditActions, Dialogs,
+TestGame, ProjectActions, Assets, EditorLifecycle, Export, QMainWindow)`.
+Remaining shell = `__init__`/`setup_ui`/`setup_connections`, tab/
+right-panel handlers (`on_tab_changed`, `on_room_editor_activated`/
+`on_object_editor_activated`, `clear_properties_contexts`/
+`_collapse_right_panel`/`_restore_right_panel`), `update_ui_state`/
+`update_window_title`, `_on_dirty_changed`, `closeEvent`/`changeEvent`,
+`_iter_open_editors`/`_add_welcome_tab` (shared — stay in the shell),
+plus the auto-save toggles (`toggle_auto_save*` /
+`show_auto_save_settings` — small, left for a later `_autosave` or the
+shell) and the `_menu_builder` candidates listed above (`create_toolbar`,
+`create_status_bar`, `setup_connections`, `create_action`,
+`update_recent_projects_menu`, `clear_recent_projects` are all still in
+the shell, awaiting that one remaining cluster).
 
 ---
 

@@ -76,8 +76,12 @@ def test_current_export_options_defaults_without_dialog():
 
 def test_runner_shells_use_the_options_not_hardcoded_dicts():
     """No runner shell may regress to a hardcoded options dict (the
-    pre-consolidation state of export_windows_exe/linux/macos/android)."""
-    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    pre-consolidation state of export_windows_exe/linux/macos/android).
+
+    These shells live in core/ide/_export.py (docs/POST_1_0_REFACTOR.md
+    File 2), not core/ide_window.py.
+    """
+    src = (REPO_ROOT / "core" / "ide" / "_export.py").read_text(encoding="utf-8")
     assert src.count("**self._current_export_options()") >= 4
     hardcoded = "'include_assets': True,\n                'optimize': True,"
     assert hardcoded not in src

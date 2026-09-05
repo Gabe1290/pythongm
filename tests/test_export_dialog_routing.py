@@ -36,8 +36,12 @@ def test_registry_carries_the_retired_dialogs_targets():
 def test_dispatch_is_locale_independent():
     """M13's failure mode was text-based routing. The unified dialog
     dispatches index -> ExportTarget.runner; assert the dialog code never
-    routes on display text."""
-    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    routes on display text.
+
+    export_game lives in core/ide/_export.py (docs/POST_1_0_REFACTOR.md
+    File 2), not core/ide_window.py -- scan the extraction target.
+    """
+    src = (REPO_ROOT / "core" / "ide" / "_export.py").read_text(encoding="utf-8")
     dialog_src = src.split("def export_game(self):", 1)[1].split(
         "\n    def ", 1)[0]
     assert "EXPORT_TARGETS[index].runner" in dialog_src
@@ -49,7 +53,7 @@ def test_dispatch_is_locale_independent():
 def test_file_export_project_opens_the_unified_dialog():
     """File -> Export Project... (Ctrl+E) must open the same registry
     dialog as Build -> Export Game... -- not a second, diverging UI."""
-    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    src = (REPO_ROOT / "core" / "ide" / "_export.py").read_text(encoding="utf-8")
     shell = src.split("def export_project(self):", 1)[1].split(
         "\n    def ", 1)[0]
     assert "self.export_game()" in shell

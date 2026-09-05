@@ -89,7 +89,9 @@ def test_runners_are_ide_methods():
 
 
 def test_export_game_builds_from_registry():
-    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    # export_game lives in core/ide/_export.py (docs/POST_1_0_REFACTOR.md
+    # File 2), not core/ide_window.py.
+    src = (REPO_ROOT / "core" / "ide" / "_export.py").read_text(encoding="utf-8")
     assert "from export.registry import EXPORT_TARGETS" in src
     assert "EXPORT_TARGETS[index].runner" in src
     # The hardcoded per-target radios are gone from the dialog builder —
