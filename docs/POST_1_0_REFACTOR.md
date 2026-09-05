@@ -28,16 +28,29 @@ a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
 (built during this arc specifically for this) caught one for real in
 `_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
 any manual testing was needed. **File 3 (`runtime/game_runner.py`) is
-underway**: `GameSprite` → `runtime/sprite.py` and `GameRoom` →
-`runtime/room.py` are both done (6,063 → 4,988 LoC) — see their own
-Progress entries for two decisions worth carrying into `instance.py`
-next: (1) keep a re-export rather than force an import-path update
-(diverging from File 2's own no-shim precedent, reasoned through
-there); (2) a real circular dependency between `GameRoom` and
-`GameInstance` (the former constructs the latter) was resolved with a
-plain top-level import kept at a specific, load-order-safe position in
-`game_runner.py`, verified in both import orders rather than assumed —
-`instance.py` will hit the mirror image of this same dependency. File 4
+underway**: `GameSprite` → `runtime/sprite.py`, `GameRoom` →
+`runtime/room.py`, and now `GameInstance` → `runtime/instance.py` are
+all done (6,063 → 4,148 LoC). The `GameInstance` cluster turned out to
+be the EASY mirror-image case, not the "medium risk" one the plan
+originally called it: a fresh AST dependency audit (not an assumption)
+found `GameInstance` has no reference to `GameRoom`,
+`resolve_parent_inheritance`, or anything else `game_runner.py`-specific
+— only `ActionExecutor`, `GameSprite` (already its own module), and
+stdlib/pygame — so there is no circular dependency to resolve here at
+all, unlike `GameRoom`. That let `runtime/room.py`'s own
+`GameInstance` import be simplified too: it now comes directly from
+`runtime.instance` (a plain one-way dependency), and `game_runner.py`'s
+"MUST stay at this exact position" comment for the `GameRoom` re-export
+was corrected to drop the now-stale `GameInstance` justification,
+keeping only the still-real `resolve_parent_inheritance` one. Also: the
+plan's own risk callout for this cluster — "`_process_held_keys`'s
+`is_grid_moving` check and `update()` must move together" — does **not**
+apply to `GameInstance` at all; both of those are `GameRunner` methods
+(input handling), not `GameInstance` methods, verified by locating their
+real definitions (lines 2009/2269, well inside `GameRunner`, which
+starts at 1086) before assuming the callout was relevant. That risk
+callout actually belongs to a future `input_handler.py` cluster — see
+the corrected note in `GameInstance`'s own Progress entry below. File 4
 (`runtime/action_executor.py`, 6,520 LoC) remains **not started**.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
@@ -745,7 +758,14 @@ runtime/
   on `instance.intended_x/y == instance.x/y`. The post-collision
   re-sync at the end of `update()` makes this invariant hold. Both
   pieces must move together — extract `update()` and
-  `_process_held_keys` in the same commit.
+  `_process_held_keys` in the same commit. **Correction (2026-09-05):**
+  this doc originally filed this callout under the `GameInstance`/
+  `instance.py` cluster below — wrong. Both `_process_held_keys` and
+  `update()` are `GameRunner` methods (confirmed by their real line
+  numbers), not `GameInstance` methods; `GameInstance`'s own extraction
+  needed none of this. This callout is real and still open — it belongs
+  to whichever future cluster ends up owning `_process_held_keys`
+  (`input_handler.py`, per the proposed split above).
 
 ### Progress
 
@@ -818,25 +838,79 @@ runtime/
   `test_raycast_export_parity.py` `read_text()` `game_runner.py` and
   slice out `_render_draw_events`/the `extension_hooks.render_room(...)`
   branch by name — both moved, both fixed to read `runtime/room.py`
-  instead. `test_draw_sprite_multiframe.py`/`test_plugin_loading_in_ide.py`
-  do the same kind of scan but for content that stayed
-  (`_draw_sprite`/`load_all_plugins`, both `GameInstance`/`GameRunner`
-  methods) — confirmed unaffected, not changed.
+  instead. `test_plugin_loading_in_ide.py` does the same kind of scan but
+  for `load_all_plugins`, a `GameRunner` method that stayed — confirmed
+  unaffected at the time. (`test_draw_sprite_multiframe.py`'s equivalent
+  scan for `_draw_sprite` looked unaffected here too, since `_draw_sprite`
+  is a `GameInstance` method and hadn't moved yet — but see the
+  `instance.py` entry below: it *did* need fixing once `GameInstance`
+  itself moved.)
   Verified: AST-structural diff of the class + function + both constants
   against `git show HEAD:runtime/game_runner.py` is clean; the circular
   import resolves in both orders; **all 25 bundled samples smoke-run
   clean** (`tools/smoke_run_samples.py`, 180 frames each, correct
   room/instance/score/lives at the end of each run) — the plan's own
   mandatory-methodology bar for a runtime change; full suite gated.
-- [ ] `instance.py` — `GameInstance`. Medium risk (see the
-  `_process_held_keys`/`update()` coupling risk callout above) — and now
-  also the other half of the `GameRoom` circular dependency above: moving
-  `GameInstance` out from `game_runner.py` will need the SAME "import
-  position" discipline in reverse (or a lazy import), since `room.py`
-  will then depend on a class that's moved out of `game_runner.py`
-  entirely rather than one still living there.
+- [x] **`instance.py` — done (2026-09-05).** `GameInstance` (per-instance
+  state — position/speed/alarms/particle+timeline state — plus the whole
+  draw-queue rendering pipeline: `run_draw_event`, `_draw_text`,
+  `_draw_sprite`, `_draw_rectangle`/`_circle`/`_ellipse`/`_line`/`_arrow`,
+  `_draw_background`, `_draw_lives`, `_draw_health_bar`, font/color
+  helpers) moved verbatim to `runtime/instance.py`, 852 LoC.
+  **Turned out to be the EASY case, not "medium risk" as this doc
+  originally guessed** — a fresh AST dependency audit (the same
+  before-touching-anything discipline as `GameSprite`/`GameRoom`) found
+  `GameInstance` has zero reference to `GameRoom`,
+  `resolve_parent_inheritance`, or any other `game_runner.py`-specific
+  name — only `ActionExecutor`, `GameSprite` (already its own module),
+  `logger`, `math`, `pygame`. **No circular dependency at all**, unlike
+  `GameRoom` — so this is a plain one-way move, not the mirror image of
+  the `room.py` situation this doc predicted. That let `room.py`'s own
+  `GameInstance` import be simplified in the same commit: it now reads
+  `from runtime.instance import GameInstance` directly instead of going
+  through `game_runner.py`'s re-export chain, and
+  `game_runner.py`'s "MUST stay at this exact position" comment guarding
+  the `GameRoom` re-export was corrected to drop its now-stale
+  `GameInstance` justification (the constraint that remains is only
+  about `resolve_parent_inheritance`, which still lives in
+  `game_runner.py` and is used by both `GameRoom` and `GameRunner`).
+  **The plan's own risk callout for this cluster was also wrong and is
+  corrected here rather than carried forward**: "`_process_held_keys`'s
+  `is_grid_moving` check and `update()` must move together" does NOT
+  apply to `GameInstance` — both methods were checked by their actual
+  line numbers (2009 and 2269) and are `GameRunner` methods (input
+  handling), well outside `GameInstance`'s span (218-1069 pre-move). That
+  callout belongs to the future `input_handler.py` cluster below, not
+  this one — move it there when that cluster is picked up.
+  `game_runner.py`: 4,988 → 4,148. Re-export kept in `game_runner.py`
+  (`from runtime.instance import GameInstance`, same precedent as
+  `GameSprite`/`GameRoom`) for the many existing
+  `from runtime.game_runner import GameInstance` call sites (tests and
+  the multiplayer extension's `_spawn_ghost` included).
+  **Source-string-scanning breakage, same recurring class**:
+  `test_draw_sprite_multiframe.py`'s `test_desktop_draw_sprite_already_honours_subimage`
+  `read_text()`'d `game_runner.py` and sliced out `_draw_sprite` by
+  name — now fixed to read `runtime/instance.py` instead. Comprehensive
+  greps for `"game_runner.py"`/`runtime/game_runner.py` literal-string
+  scans and `mock.patch(...GameInstance...)` targets across `tests/`
+  turned up nothing else needing a change (every other `GameInstance`
+  reference is a plain `from runtime.game_runner import GameInstance`,
+  which the re-export keeps working unchanged).
+  Verified: AST-structural diff of the `GameInstance` class node against
+  `git show HEAD:runtime/game_runner.py` is clean; both import orders
+  (`game_runner` first, `instance` first, `room` first) resolve to the
+  same object; **all 25 bundled samples smoke-run clean**
+  (`tools/smoke_run_samples.py`); full suite **4,269 passed, 1 failed
+  (known-flaky `test_raycast_view.py::TestFloorCasting::test_full_textured_pipeline_under_budget`,
+  confirmed non-regression — 51/51 green in isolation), 10 skipped**.
 - [ ] `input_handler.py`, `collision.py`, `rendering.py`, `views.py`,
   and the `game_runner.py` orchestration-only remainder — not started.
+  Note: the `_process_held_keys`/`update()` `is_grid_moving` coupling
+  risk callout above (previously mis-attributed to `instance.py`, see
+  its corrected entry) genuinely applies here — both are `GameRunner`
+  methods and the natural home for `_process_held_keys` specifically is
+  `input_handler.py`; extract `update()` and `_process_held_keys` in the
+  same commit if/when they're split apart.
 
 ---
 

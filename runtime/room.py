@@ -14,21 +14,25 @@ methodology -- deferred; this commit only relocates the whole class,
 unsplit, which is still a large, real win for ``game_runner.py``'s size
 and is behaviour-identical (AST-diff-clean).
 
-``GameRoom.__init__`` constructs ``GameInstance`` directly, and
-``set_sprites_for_instances`` calls ``resolve_parent_inheritance`` --
-both still live in ``game_runner.py`` (GameInstance hasn't been
-extracted yet), which makes this a genuine two-way relationship between
-the two files. Resolved with a plain module-level import here
-(``from runtime.game_runner import GameInstance, resolve_parent_inheritance``)
-rather than a local/lazy import, because it's safe by construction: in
-``game_runner.py``, the ``from runtime.room import GameRoom`` re-export
-sits at the exact position ``class GameRoom`` used to occupy -- AFTER
-both ``GameInstance`` and ``resolve_parent_inheritance`` are already
-fully defined in that module's namespace, so by the time this module's
-own top-level import runs, there's nothing partially-initialized left to
-trip over. **Do not move that import earlier in game_runner.py** (e.g.
-to the top-of-file import block) -- that would reintroduce a real
-circular-import failure at process start.
+``GameRoom.__init__`` constructs ``GameInstance`` directly. As of File 3
+cluster 3, ``GameInstance`` moved to its own module
+(``runtime/instance.py``) and is imported from there directly -- a plain
+one-way dependency with no cycle back into ``game_runner.py``, so no
+ordering constraint applies to it any more (this note originally
+described a real two-way relationship when GameInstance still lived in
+``game_runner.py``; corrected here once it moved rather than left stale).
+
+``set_sprites_for_instances`` still calls ``resolve_parent_inheritance``,
+which remains in ``game_runner.py`` (used by both ``GameRoom`` and
+``GameRunner``) -- that one import stays module-level and positional:
+in ``game_runner.py``, the ``from runtime.room import GameRoom``
+re-export sits at the exact position ``class GameRoom`` used to occupy,
+AFTER ``resolve_parent_inheritance`` is already fully defined in that
+module's namespace, so by the time this module's own top-level import
+runs, there's nothing partially-initialized left to trip over. **Do not
+move that import earlier in game_runner.py** (e.g. to the top-of-file
+import block) -- that would reintroduce a real circular-import failure
+at process start.
 
 ``GameSprite`` (already its own module), ``ThymioSimulator``, and
 ``runtime.extension_hooks`` have no dependency on ``game_runner.py`` and
@@ -47,11 +51,12 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from runtime.sprite import GameSprite
+from runtime.instance import GameInstance
 from runtime.thymio_simulator import ThymioSimulator
 from runtime import extension_hooks
 # Safe only because of WHERE game_runner.py re-imports GameRoom from this
 # module -- see the module docstring above before touching either side.
-from runtime.game_runner import GameInstance, resolve_parent_inheritance
+from runtime.game_runner import resolve_parent_inheritance
 
 from core.logger import get_logger
 logger = get_logger(__name__)
