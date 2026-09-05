@@ -29,9 +29,10 @@ a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
 `_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
 any manual testing was needed. **File 3 (`runtime/game_runner.py`) is
 underway**: `GameSprite` → `runtime/sprite.py`, `GameRoom` →
-`runtime/room.py`, and now `GameInstance` → `runtime/instance.py` are
-all done (6,063 → 4,148 LoC). The `GameInstance` cluster turned out to
-be the EASY mirror-image case, not the "medium risk" one the plan
+`runtime/room.py`, `GameInstance` → `runtime/instance.py`, and now the
+input-handling/game-loop cluster → `runtime/input_handler.py` are all
+done (6,063 → 3,400 LoC). The `GameInstance` cluster turned out to be
+the EASY mirror-image case, not the "medium risk" one the plan
 originally called it: a fresh AST dependency audit (not an assumption)
 found `GameInstance` has no reference to `GameRoom`,
 `resolve_parent_inheritance`, or anything else `game_runner.py`-specific
@@ -42,16 +43,25 @@ all, unlike `GameRoom`. That let `runtime/room.py`'s own
 `runtime.instance` (a plain one-way dependency), and `game_runner.py`'s
 "MUST stay at this exact position" comment for the `GameRoom` re-export
 was corrected to drop the now-stale `GameInstance` justification,
-keeping only the still-real `resolve_parent_inheritance` one. Also: the
-plan's own risk callout for this cluster — "`_process_held_keys`'s
-`is_grid_moving` check and `update()` must move together" — does **not**
-apply to `GameInstance` at all; both of those are `GameRunner` methods
-(input handling), not `GameInstance` methods, verified by locating their
-real definitions (lines 2009/2269, well inside `GameRunner`, which
-starts at 1086) before assuming the callout was relevant. That risk
-callout actually belongs to a future `input_handler.py` cluster — see
-the corrected note in `GameInstance`'s own Progress entry below. File 4
-(`runtime/action_executor.py`, 6,520 LoC) remains **not started**.
+keeping only the still-real `resolve_parent_inheritance` one. The
+`input_handler.py` cluster (11 methods incl. `update()` and
+`_process_held_keys`, moved together per the plan's own risk callout,
+which really does apply here) switched technique back to File 2's MIXIN
+style rather than File 3's "move the whole class" style, since these
+are `GameRunner` methods, not a separate object — `class GameRunner:` is
+now `class GameRunner(InputMixin):`. It also turned up a real, unplanned
+finding: `runtime/input_handler.py` already existed on disk, but this
+doc's "already partially exists — empty shell" description of it was
+wrong on both counts — it held a full but completely DEAD, DIVERGED
+`InputMixin` (imported only by `runtime/__init__.py`'s optional
+re-export, never actually inherited by `GameRunner`), the same shape of
+finding as the 2026-06-09 `CollisionMixin` deletion. Replaced its stale
+content with the real, live methods rather than deleting it, since
+`GameRunner` genuinely needs this functionality. File 4
+(`runtime/action_executor.py`, 6,520 LoC) remains **not started**; the
+remaining File 3 clusters are `collision.py`, `rendering.py`, `views.py`,
+and the orchestration-only `game_runner.py` remainder — see their
+Progress entries below.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
@@ -717,6 +727,12 @@ runtime/
                           handle_mouse_press / handle_mouse_release /
                           handle_mouse_motion / _process_held_keys
                           (already partially exists — empty shell)
+                          **Correction (2026-09-05): wrong on both counts.**
+                          The file was not empty and not a safe shell to
+                          build on — it held a full but completely dead,
+                          diverged `InputMixin` (never inherited by
+                          `GameRunner`). See this cluster's Progress entry
+                          below for what was actually found and done.
   collision.py            Replace CollisionMixin (currently dead — see §6
                           of ARCHITECTURE.md) with a working module that
                           GameRunner actually delegates to.
@@ -903,14 +919,82 @@ runtime/
   (`tools/smoke_run_samples.py`); full suite **4,269 passed, 1 failed
   (known-flaky `test_raycast_view.py::TestFloorCasting::test_full_textured_pipeline_under_budget`,
   confirmed non-regression — 51/51 green in isolation), 10 skipped**.
-- [ ] `input_handler.py`, `collision.py`, `rendering.py`, `views.py`,
-  and the `game_runner.py` orchestration-only remainder — not started.
-  Note: the `_process_held_keys`/`update()` `is_grid_moving` coupling
-  risk callout above (previously mis-attributed to `instance.py`, see
-  its corrected entry) genuinely applies here — both are `GameRunner`
-  methods and the natural home for `_process_held_keys` specifically is
-  `input_handler.py`; extract `update()` and `_process_held_keys` in the
-  same commit if/when they're split apart.
+- [x] **`input_handler.py` — done (2026-09-05).** `_get_key_name`,
+  `handle_keyboard_press`, `_process_held_keys`, `_release_held_key_silent`,
+  `handle_keyboard_release`, `handle_mouse_press`,
+  `_handle_thymio_button_press`, `handle_mouse_release`,
+  `handle_mouse_motion`, `_room_transition_pending`, and `update()`
+  (11 methods, 703 contiguous LoC — a single unbroken span in
+  `game_runner.py`) plus 3 module-level helpers
+  (`_FLAT_MOUSE_KEY_ALIASES`, `_mouse_sub_event`, `_find_key_in_event`)
+  all moved verbatim. `game_runner.py`: 4,148 → 3,400.
+  **Used the File-2 MIXIN technique, not File 3's "move the whole class"
+  technique** — these are `GameRunner` methods that read/write a huge
+  surface of `self` state and call sibling `GameRunner` methods
+  (`self.change_room`, `self.check_movement_collision_with_blocker`,
+  ...), so there is no AST-dependency-isolation or circular-import
+  question at all: a mixin's methods resolve everything through `self`
+  at runtime, not at import time, regardless of which file defines them.
+  `class GameRunner:` is now `class GameRunner(InputMixin):`.
+  Extracted `update()` and `_process_held_keys` in the same commit per
+  the risk callout above.
+  **Real, unplanned discovery: `runtime/input_handler.py` already
+  existed on disk, but held a DIFFERENT, DEAD, DIVERGED `InputMixin`**
+  — this doc's own "Proposed split" table had described it as "already
+  partially exists — empty shell," which was wrong on both counts (not
+  empty; not a safe starting point). `grep` before touching anything
+  confirmed it was imported by exactly one place in the whole
+  codebase — `runtime/__init__.py`'s `try/except` re-export into
+  `__all__` — and never actually inherited by `GameRunner`, so it was
+  100% inert. Diffing it against the real, live methods found it had
+  drifted significantly out of date: no `anykey` support, no Thymio
+  button integration, no M49 snapshot-safe iteration
+  (`list(self.current_room.instances)`, protecting against a
+  spawn/destroy mid-loop corrupting iteration), and different mouse
+  button-name conventions (`"left"`/`"right"`/`"middle"` vs. the real
+  `"left_button"`/`"right_button"`/`"middle_button"`). Exact same shape
+  of finding as the 2026-06-09 `CollisionMixin` deletion (a long-dead,
+  never-wired-in mixin sitting in the tree) — except here the right fix
+  is to replace the dead content with the real one and actually wire it
+  in (`GameRunner` genuinely needs this functionality *somewhere*),
+  not to delete it. The file's pre-existing module docstring and
+  pygame-optional import guard were reused/preserved in spirit: the new
+  content doesn't reference the `pygame` module directly at all (only
+  `math` and `_keymap.pygame_key_name`, which is itself pygame-optional),
+  so `runtime.input_handler` stays importable with pygame absent —
+  verified with a real import-blocking test, not assumed — matching the
+  original file's documented intent in `runtime/__init__.py`'s "these can
+  be imported without pygame" comment and `runtime/_keymap.py`'s own
+  docstring (a *separate*, already-correct piece of prior dedup work: the
+  44-line pygame-keycode table was already single-sourced between
+  `game_runner.GameRunner._get_key_name` and the old dead
+  `input_handler.InputMixin._get_key_name` via `_keymap.pygame_key_name`
+  — that comment remains accurate, now describing a live delegation
+  instead of a dead one).
+  **Test breakage searched for, none found needing a fix**: comprehensive
+  greps for `mock.patch(...)`/`patch.object(...)` targeting any of the 11
+  method names, and for `"def <method_name>"` source-string scans across
+  `tests/`, turned up nothing — every existing test exercises these
+  through real `GameRunner`/sample behavior, not by patching or
+  string-slicing the method source.
+  Verified: AST-structural diff of all 11 methods + 3 module-level items
+  against `git show HEAD:runtime/game_runner.py` is byte-for-byte clean;
+  `GameRunner.__mro__` is `[GameRunner, InputMixin, object]` and every
+  moved method resolves to `InputMixin.<name>` via `getattr`; **all 25
+  bundled samples smoke-run clean** (`tools/smoke_run_samples.py` —
+  `plateforme_3`'s score/lives varied slightly between runs, matching
+  this doc's own already-documented non-determinism for that sample, not
+  a regression); full suite **4,270 passed, 0 failed, 10 skipped** —
+  exactly matching the documented baseline, no flakes this run.
+- [ ] `collision.py`, `rendering.py`, `views.py`, and the
+  `game_runner.py` orchestration-only remainder — not started.
+  `collision.py`'s risk callout above (carry the `8ae3a7a`/`e3c0cc5`
+  invariant comments verbatim) is still open and unaffected by this
+  cluster — `update()` still calls
+  `self.check_movement_collision_with_blocker`/
+  `self._slide_axis_to_contact`/etc., which all remain directly on
+  `GameRunner` for now and will resolve exactly the same way through the
+  MRO once they, too, move to their own mixin.
 
 ---
 
