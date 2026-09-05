@@ -21,7 +21,7 @@ pytestmark = skip_without_pyside6
 
 
 def _dialog_cls():
-    from core.ide_window import _ExportProgressDialog
+    from core.ide._export import _ExportProgressDialog
     return _ExportProgressDialog
 
 

@@ -140,7 +140,7 @@ class TestLaunchBuiltGame:
         (tmp_path / "L_aventure.exe").write_bytes(b"")
         stub = self._ide_with_project_name("L'aventure")
         with patch("platform.system", return_value="Windows"), \
-             patch("core.ide_window.os.startfile", create=True) as mock_start:
+             patch("core.ide._export.os.startfile", create=True) as mock_start:
             _ide_cls()._launch_built_game(stub, str(tmp_path))
         mock_start.assert_called_once_with(str(tmp_path / "L_aventure.exe"))
 
@@ -178,7 +178,7 @@ class TestLaunchBuiltGame:
 
 
 class _FakeExportThread:
-    """Stands in for core.ide_window.ExportThread without spinning a real
+    """Stands in for core.ide._export.ExportThread without spinning a real
     OS thread (real QThread + cross-thread queued signals would make this
     test's completion timing non-deterministic). Schedules the fake
     export via QTimer.singleShot(0, ...) so it runs only once
@@ -244,8 +244,8 @@ class TestOnSuccessHookWiring:
 
         exporter_class = self._fake_exporter_class(success)
 
-        with patch("core.ide_window.QMessageBox") as mock_box, \
-             patch("core.ide_window.ExportThread", _FakeExportThread):
+        with patch("core.ide._export.QMessageBox") as mock_box, \
+             patch("core.ide._export.ExportThread", _FakeExportThread):
             mock_box.information.return_value = mock_box.StandardButton.No
             PyGameMakerIDE._run_export_with_progress(
                 stub,
