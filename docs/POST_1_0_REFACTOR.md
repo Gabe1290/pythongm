@@ -7,24 +7,29 @@ currently dominate pygm2's complexity surface. Companion read:
 
 ## Status
 
-**Re-verified 2026-09-05.** File 1 (`object_events_panel.py`) is DONE
-(unchanged from below). **File 2 (`core/ide_window.py`) is well
-underway, paused mid-flight, not abandoned**: 5,316 → **1,504 LoC**
-(-72%) across a skeleton + 8 extracted mixins in `core/ide/` —
-`_samples.py`, `_edit_actions.py`, `_dialogs.py`, `_test_game.py`,
-`_project_actions.py`, `_assets.py`, `_editor_lifecycle.py`, `_export.py`
-(the `_assets.py` checkbox had gone un-checked-off below despite being
-on disk and green — a doc-lag, not a code gap; corrected in place;
-`_editor_lifecycle.py` and `_export.py` both landed the same session —
-`_export.py`'s move also surfaced a second class of test breakage,
-source-string-scanning tests that `read_text()` `ide_window.py` and
-slice out a method's body by name, silently emptied when the method
-moves; see its own Progress entry). `PyGameMakerIDE` is now `(Samples,
-EditActions, Dialogs, TestGame, ProjectActions, Assets,
-EditorLifecycle, Export, QMainWindow)`. **`_menu_builder.py` is now the
-only remaining File 2 cluster** (deliberately last). Files 3
-(`runtime/game_runner.py`, 6,063 LoC) and 4
-(`runtime/action_executor.py`, 6,520 LoC) are **not started**.
+**Re-verified 2026-09-05 — FILE 2 IS NOW COMPLETE.** File 1
+(`object_events_panel.py`) is DONE (unchanged from below). **File 2
+(`core/ide_window.py`): 5,316 → 955 LoC (-82%)**, fully split across a
+skeleton + 9 mixins in `core/ide/` — `_samples.py`, `_edit_actions.py`,
+`_dialogs.py`, `_test_game.py`, `_project_actions.py`, `_assets.py`,
+`_editor_lifecycle.py`, `_export.py`, `_menu_builder.py` (the last
+three all landed the same session; the `_assets.py` checkbox had gone
+un-checked-off below despite being on disk and green the whole time — a
+doc-lag, not a code gap, corrected in place). `PyGameMakerIDE` is now
+`(Samples, EditActions, Dialogs, TestGame, ProjectActions, Assets,
+EditorLifecycle, Export, MenuBuilder, QMainWindow)`. Two recurring
+landmines this arc's later clusters kept hitting, both now well-precedented
+for File 3/4: (1) source-string-scanning tests that `read_text()`
+`ide_window.py` and slice out a method's body by name go silently empty
+when the method moves — `_export.py`'s Progress entry has the first
+instance and the fix pattern; (2) a moved method's own mixin file
+missing an import it needs is an `AttributeError`-on-first-use bug, not
+a load-time error — `tests/test_ide_mixins_resolve.py`'s AST-scan guard
+(built during this arc specifically for this) caught one for real in
+`_menu_builder.py` (`clear_recent_projects` needed `QMessageBox`) before
+any manual testing was needed. Files 3 (`runtime/game_runner.py`,
+6,063 LoC) and 4 (`runtime/action_executor.py`, 6,520 LoC) are the only
+files from this doc's original scope **not started**.
 
 **In progress (2026-09-03).** Sequencing step 2 (dead-code/logger
 baseline) and **step 3 / File 1** (`object_events_panel.py` → an
@@ -590,27 +595,75 @@ bump to `.parents[2]`. Bit `_samples_dir` (`bebb7ddf`, regression from
   methods through the now-9-mixin chain; every test file referencing a
   moved name (11 files across the two failure classes above) green;
   full suite gated.
-- [ ] `_menu_builder.py` — **last, and now the only remaining File 2
-  cluster.** `create_menu_bar`, `create_language_menu`, `create_toolbar`,
-  `create_action`, `create_status_bar`, `update_recent_projects_menu`,
-  `clear_recent_projects`.
+- [x] **`_menu_builder.py` — last, done. FILE 2 IS NOW COMPLETE.**
+  `MenuBuilderMixin`, 7 methods + 3 module-level icon-helper functions
+  (fully verbatim, AST-diff-clean against pre-refactor HEAD):
+  `create_menu_bar`/`create_language_menu` (contiguous — the whole menu
+  bar plus its Language submenu), `create_toolbar`, `create_status_bar`,
+  `create_action` (the generic `QAction` builder every menu/toolbar item
+  above calls), `update_recent_projects_menu`/`clear_recent_projects`,
+  plus `_green_play_icon`/`_contrasting_icon_color`/`_tinted_standard_icon`
+  (used only by `create_toolbar`/`create_action`, moved with them — same
+  precedent as `_export.py`'s `ExportThread`/`_ExportProgressDialog`).
+  Done genuinely last, per this doc's own sequencing rationale: this
+  cluster calls `self.<name>` for nearly every action on every other
+  mixin (`self.new_project`, `self.export_game`, `self.build_and_run`,
+  `self.test_game`, ...) — had any earlier extraction dropped a method,
+  it would have surfaced here as a loud `AttributeError` at menu
+  construction, not stayed silently masked.
+  `ide_window.py`: 1,504 → **955** (-82% from the 5,316 File-2 start).
+  `PyGameMakerIDE` is now `(Samples, EditActions, Dialogs, TestGame,
+  ProjectActions, Assets, EditorLifecycle, Export, MenuBuilder,
+  QMainWindow)` — 9 extracted mixins plus the shell.
+  Dead imports removed: `QProgressBar`/`QLabel`/`QStyle`/`QSize`
+  (confirmed zero remaining real usage — all were exclusively used by
+  the methods/functions that just moved) plus, found in the same sweep,
+  two imports that were **already** dead before this cluster
+  (`QApplication`, `QInputDialog` — leftover from an earlier extraction
+  that nobody had cleaned up; removed here since the audit was already
+  in progress, not because this cluster caused them).
+  **No patch-target moves needed** — confirmed by searching `tests/` for
+  every method/function name in this cluster before editing; nothing
+  mocks any of it. **One real bug this cluster's own new guard-test run
+  caught before it could ship**: `clear_recent_projects` uses
+  `QMessageBox.question`/`.Yes`/`.No`, and the first draft's header
+  simply forgot to import `QMessageBox` into `_menu_builder.py` — an
+  `AttributeError`-on-first-use bug that `tests/test_ide_mixins_resolve.py`
+  (the AST-scan guard built specifically for this recurring class of
+  mistake, see its own docstring) caught immediately as an unresolved
+  name, before any manual testing was needed. Also found (source-scan
+  class, not patch-target class, matching `_export.py`'s discovery):
+  `test_ide_polish_fixes.py` directly imports `_green_play_icon`/
+  `_contrasting_icon_color`/`_tinted_standard_icon` from `core.ide_window`
+  (not a `mock.patch`, a real `from ... import`) — repointed to
+  `core.ide._menu_builder`.
+  Verified: AST-structural diff of all 7 methods + 3 functions against
+  `git show HEAD:core/ide_window.py` is clean; MRO resolves all 7
+  methods through the now-10-mixin chain; every test file referencing a
+  moved name green; full suite gated.
 
 `ide_window.py`: 5,316 → 3,625 after `_project_actions` → 3,009 after
-`_assets` → 2,164 after `_editor_lifecycle` → **1,504** after `_export`
-(**-72%**). `PyGameMakerIDE` is now `(Samples, EditActions, Dialogs,
-TestGame, ProjectActions, Assets, EditorLifecycle, Export, QMainWindow)`.
-Remaining shell = `__init__`/`setup_ui`/`setup_connections`, tab/
-right-panel handlers (`on_tab_changed`, `on_room_editor_activated`/
+`_assets` → 2,164 after `_editor_lifecycle` → 1,504 after `_export` →
+**955** after `_menu_builder` (**-82%**). `PyGameMakerIDE` is now
+`(Samples, EditActions, Dialogs, TestGame, ProjectActions, Assets,
+EditorLifecycle, Export, MenuBuilder, QMainWindow)`. **File 2 is
+complete** — the remaining shell is genuinely just the window's own
+lifecycle and cross-cutting glue: `__init__`/`setup_ui`/
+`setup_connections`, `create_main_widget`/`create_center_panel_with_editors`,
+tab/right-panel handlers (`on_tab_changed`, `on_room_editor_activated`/
 `on_object_editor_activated`, `clear_properties_contexts`/
 `_collapse_right_panel`/`_restore_right_panel`), `update_ui_state`/
 `update_window_title`, `_on_dirty_changed`, `closeEvent`/`changeEvent`,
-`_iter_open_editors`/`_add_welcome_tab` (shared — stay in the shell),
-plus the auto-save toggles (`toggle_auto_save*` /
-`show_auto_save_settings` — small, left for a later `_autosave` or the
-shell) and the `_menu_builder` candidates listed above (`create_toolbar`,
-`create_status_bar`, `setup_connections`, `create_action`,
-`update_recent_projects_menu`, `clear_recent_projects` are all still in
-the shell, awaiting that one remaining cluster).
+`_iter_open_editors`/`_add_welcome_tab` (shared across several mixins,
+correctly left in the shell throughout this arc), `restore_geometry`,
+`safe_disconnect_signal`, `update_status`,
+`refresh_open_object_editors`/`refresh_object_sprites`, `change_language`,
+and the small auto-save toggles (`toggle_auto_save*` /
+`show_auto_save_settings`). None of these are natural candidates for a
+tenth cluster — they're either genuinely `__init__`-adjacent, or shared
+by enough of the extracted mixins that splitting them out would just
+reintroduce a cross-file coupling this arc spent its whole effort
+removing.
 
 ---
 
