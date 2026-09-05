@@ -129,7 +129,7 @@ def test_update_ui_state_keeps_exempt_actions_enabled(_qapp):
 # --------------------------------------------------------------------------
 
 def test_green_play_icon_is_green(_qapp):
-    from core.ide_window import _green_play_icon
+    from core.ide._menu_builder import _green_play_icon
 
     icon = _green_play_icon()
     assert not icon.isNull()
@@ -149,7 +149,7 @@ def test_green_play_icon_is_green(_qapp):
 
 def test_contrasting_icon_color_picks_light_on_dark(_qapp):
     from PySide6.QtGui import QPalette, QColor
-    from core.ide_window import _contrasting_icon_color
+    from core.ide._menu_builder import _contrasting_icon_color
 
     dark = QPalette()
     dark.setColor(QPalette.ColorRole.Button, QColor(30, 30, 30))
@@ -165,7 +165,7 @@ def test_contrasting_icon_color_picks_light_on_dark(_qapp):
 
 def test_tinted_standard_icon_recolors_to_target(_qapp):
     from PySide6.QtGui import QColor
-    from core.ide_window import _tinted_standard_icon
+    from core.ide._menu_builder import _tinted_standard_icon
 
     style = _qapp.style()
     target = QColor(235, 235, 235)
