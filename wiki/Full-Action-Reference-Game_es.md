@@ -160,7 +160,7 @@ Dibujar una cadena de texto en una posición
 | `x` | Número | `0` | Posición X |
 | `y` | Número | `0` | Posición Y |
 | `relative` | Sí/No | No | Dibujar respecto a la posición de esta instancia en lugar de coordenadas de pantalla absolutas; opcional |
-| `color` | Color | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; opcional |
+| `color` | Color | — | Color del texto (por ej. #ffffff). Vacío = el color de dibujo activo, o negro.; opcional |
 
 ### Dibujar variable
 
@@ -204,7 +204,7 @@ Restaura la sala, la puntuación, las vidas, la salud, las variables globales y 
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `filename` | Texto | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+| `filename` | Texto | `savegame.sav` | Nombre del archivo guardado que se va a cargar (de la carpeta saves/ del proyecto) |
 
 ### Abrir página web
 
@@ -244,7 +244,7 @@ Guarda en un archivo la sala actual, la puntuación, las vidas, la salud, las va
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `filename` | Texto | `savegame.sav` | Save file name (written to the project's saves/ folder) |
+| `filename` | Texto | `savegame.sav` | Nombre del archivo de guardado (se escribe en la carpeta saves/ del proyecto) |
 
 ### Establecer transparencia
 
@@ -360,8 +360,8 @@ Reproduce un archivo de vídeo en el reproductor predeterminado del sistema: se 
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `filename` | Texto | — | Path to the video file |
-| `fullscreen` | Sí/No | No | Request fullscreen playback (support depends on your system's player); opcional |
+| `filename` | Texto | — | Ruta al archivo de vídeo |
+| `fullscreen` | Sí/No | No | Pedir reproducción a pantalla completa (depende del reproductor de tu sistema); opcional |
 
 ### Pantalla: mostrar imagen
 
@@ -375,7 +375,7 @@ Muestra un sprite a pantalla completa y pausa el juego hasta que el jugador lo c
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `image` | Sprite | — | Sprite to display full-screen |
+| `image` | Sprite | — | Sprite que se muestra a pantalla completa |
 
 ### Pantalla: mostrar texto
 
@@ -389,7 +389,7 @@ Muestra un mensaje y pausa el juego hasta que el jugador lo cierra
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `text` | Texto | — | Message to display |
+| `text` | Texto | — | Mensaje que se muestra |
 
 ---
 

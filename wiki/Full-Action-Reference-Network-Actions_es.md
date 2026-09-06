@@ -16,8 +16,8 @@ Asocia una tecla local a una «entrada con nombre» que se comunica al anfitrió
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | A label of your choosing (e.g. "jump", "fire") |
-| `key` | Texto | — | A key name: "space", "left", "a", "5", "lshift"... |
+| `name` | Texto | — | Una etiqueta que elijas (por ej. "jump", "fire") |
+| `key` | Texto | — | Un nombre de tecla: "space", "left", "a", "5", "lshift"... |
 
 ### Crear objeto en red
 
@@ -31,11 +31,11 @@ Solo en el anfitrión: crea una instancia que aparece automáticamente en todos 
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `object` | Objeto | — | The type of object to create |
+| `object` | Objeto | — | El tipo de objeto que se crea |
 | `x` | Texto | `0` |  |
 | `y` | Texto | `0` |  |
-| `owner` | Texto | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; opcional |
-| `relative` | Sí/No | No | Position relative to the object running the action; opcional |
+| `owner` | Texto | `0` | El jugador que gobierna esta instancia (0 = anfitrión). A menudo global.network_sender dentro de «Jugador conectado».; opcional |
+| `relative` | Sí/No | No | Posición relativa al objeto que ejecuta la acción; opcional |
 
 ### Alojar una partida
 
@@ -49,11 +49,11 @@ Convierte esta máquina en el anfitrión de una partida multijugador LAN: los de
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `game_name` | Texto | `PyGameMaker` | Name shown in the server list (network discovery); opcional |
-| `max_players` | Número | `8` | Largest number of players, host included (2 to 16); opcional |
-| `port` | Número | `45782` | TCP port -- must be the same on the host and every client; opcional |
-| `player_name` | Texto | — | This player's name (empty = global.player_name, or "Player"); opcional |
-| `show_lobby` | Sí/No | No | Show a "Waiting for players..." screen with a Start button before the game begins; opcional |
+| `game_name` | Texto | `PyGameMaker` | Nombre que se muestra en la lista de servidores (descubrimiento en la red); opcional |
+| `max_players` | Número | `8` | Número máximo de jugadores, incluido el anfitrión (de 2 a 16); opcional |
+| `port` | Número | `45782` | Puerto TCP: debe ser el mismo en el anfitrión y en todos los clientes; opcional |
+| `player_name` | Texto | — | Nombre de este jugador (vacío = global.player_name, o "Player"); opcional |
+| `show_lobby` | Sí/No | No | Mostrar una pantalla «Esperando jugadores...» con un botón de inicio antes de empezar la partida; opcional |
 
 ### Si yo controlo esta instancia
 
@@ -79,8 +79,8 @@ Una condición, en el anfitrión: verdadera mientras el jugador indicado manteng
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `player` | Texto | `0` | Player number (0 = host) |
-| `name` | Texto | — | The named input to test (e.g. "jump") |
+| `player` | Texto | `0` | Número de jugador (0 = anfitrión) |
+| `name` | Texto | — | La entrada con nombre que se comprueba (por ej. "jump") |
 
 ### Unirse a una partida
 
@@ -94,9 +94,9 @@ Se conecta a una partida multijugador LAN alojada en otra máquina. El anfitrió
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `host` | Texto | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); opcional |
-| `port` | Número | `45782` | TCP port -- must match the host's; opcional |
-| `player_name` | Texto | — | This player's name (empty = global.player_name, or "Player"); opcional |
+| `host` | Texto | `127.0.0.1` | Dirección IP del anfitrión en la LAN ("auto" abre la pantalla de conexión integrada); opcional |
+| `port` | Número | `45782` | Puerto TCP: debe coincidir con el del anfitrión; opcional |
+| `player_name` | Texto | — | Nombre de este jugador (vacío = global.player_name, o "Player"); opcional |
 
 ### Salir de la partida
 
@@ -122,8 +122,8 @@ Copia una variable compartida en una variable global, para usarla en un cálculo
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | Name of the shared variable to read |
-| `into` | Texto | — | Name of the global variable to write the value into |
+| `name` | Texto | — | Nombre de la variable compartida que se va a leer |
+| `into` | Texto | — | Nombre de la variable global en la que se escribe el valor |
 
 ### Enviar mensaje de red
 
@@ -137,9 +137,9 @@ Difunde un mensaje propio. Dispara el evento «Mensaje de red» en las máquinas
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `event` | Texto | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
-| `data` | Texto | — | A number, text, true/false, or a short list; opcional |
-| `target` | Elección | `all` | all = everyone; host = the host only; Opciones: `all`, `host` |
+| `event` | Texto | — | Una etiqueta que elijas y que comprueba el manejador (por ej. "buzz", "answer") |
+| `data` | Texto | — | Un número, un texto, true/false o una lista corta; opcional |
+| `target` | Elección | `all` | all = todos; host = solo el anfitrión; Opciones: `all`, `host` |
 
 ### Definir el modo de red (v1)
 
@@ -153,9 +153,9 @@ Una acción antigua de bajo nivel: arranca la sala en modo anfitrión o cliente 
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `mode` | Elección | `host` | Host = others connect to you; Client = you connect to a host; Opciones: `host`, `client` |
-| `host` | Texto | `127.0.0.1` | The host's LAN IP address (Client mode only); opcional |
-| `port` | Número | `45782` | TCP port -- must be the same on the host and the client; opcional |
+| `mode` | Elección | `host` | Anfitrión = los demás se conectan a ti; Cliente = tú te conectas a un anfitrión; Opciones: `host`, `client` |
+| `host` | Texto | `127.0.0.1` | Dirección IP del anfitrión en la LAN (solo en modo Cliente); opcional |
+| `port` | Número | `45782` | Puerto TCP: debe ser el mismo en el anfitrión y en el cliente; opcional |
 
 ### Definir variable compartida
 
@@ -169,8 +169,8 @@ Escribe una variable compartida por todas las máquinas. En el anfitrión se apl
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Texto | `0` | A number, text or true/false (complex objects are refused) |
+| `name` | Texto | — | Un identificador simple (letras, dígitos, _): sin espacios ni operadores |
+| `value` | Texto | `0` | Un número, un texto o true/false (los objetos complejos se rechazan) |
 
 ### Definir el dueño de la instancia
 
@@ -184,7 +184,7 @@ Elige qué jugador gobierna esta instancia sincronizada (0 = anfitrión; 1, 2, .
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `player` | Texto | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+| `player` | Texto | `0` | Número de jugador (0 = anfitrión). A menudo global.network_sender dentro de «Jugador conectado». |
 
 ### Ajustar la frecuencia de sincronización
 
@@ -198,8 +198,8 @@ Ajusta con qué frecuencia envía instantáneas el anfitrión y con cuánto retr
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `hz` | Número | `20` | 10-30 works well on a local network (default 20); opcional |
-| `interp_ms` | Número | `100` | How far behind ghosts are drawn, in milliseconds (default 100); opcional |
+| `hz` | Número | `20` | De 10 a 30 funciona bien en una red local (por omisión 20); opcional |
+| `interp_ms` | Número | `100` | Con cuánto retraso se dibujan los fantasmas, en milisegundos (por omisión 100); opcional |
 
 ### Empezar la partida en red
 
@@ -225,7 +225,7 @@ Marca como sincronizada la instancia que ejecuta esta acción: su posición, rot
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `vars` | Texto | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); opcional |
+| `vars` | Texto | — | Nombres de variables de instancia que también se copian, separados por comas (por ej. "hp, colour"); opcional |
 
 ---
 

@@ -16,8 +16,8 @@ Lanza una ráfaga única de partículas desde el emisor creado más recientement
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `particle_type` | Número | `0` | Particle type id (from Create Particle Type) |
-| `number` | Número | `10` | Number of particles to emit |
+| `particle_type` | Número | `0` | Identificador del tipo de partícula (de «Crear tipo de partícula») |
+| `number` | Número | `10` | Número de partículas a lanzar |
 
 ### Borrar partículas
 
@@ -43,11 +43,11 @@ Crea una zona emisora de partículas (el identificador devuelto se guarda para l
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `x` | Número | `0` | Emitter center X (room coordinates) |
-| `y` | Número | `0` | Emitter center Y (room coordinates) |
-| `width` | Número | `0` | Emitter area width |
-| `height` | Número | `0` | Emitter area height |
-| `shape` | Elección | `rectangle` | Shape of the emitter area particles spawn within; Opciones: `rectangle`, `ellipse`, `diamond`, `line` |
+| `x` | Número | `0` | X del centro del emisor (coordenadas de la sala) |
+| `y` | Número | `0` | Y del centro del emisor (coordenadas de la sala) |
+| `width` | Número | `0` | Anchura de la zona emisora |
+| `height` | Número | `0` | Altura de la zona emisora |
+| `shape` | Elección | `rectangle` | Forma de la zona emisora dentro de la cual nacen las partículas; Opciones: `rectangle`, `ellipse`, `diamond`, `line` |
 
 ### Crear sistema de partículas
 
@@ -61,7 +61,7 @@ Crea un sistema de partículas asociado a esta instancia (sustituye cualquier ot
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `depth` | Número | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
+| `depth` | Número | `0` | Profundidad de dibujo del sistema de partículas (todavía no se usa para ordenar entre instancias) |
 
 ### Crear tipo de partícula
 
@@ -75,18 +75,18 @@ Define una nueva apariencia o comportamiento de partícula (el identificador de 
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `sprite` | Sprite | — | Sprite to draw each particle as; leave empty for a plain colored circle; opcional |
-| `size_min` | Número | `1.0` | Minimum particle size (scale factor) |
-| `size_max` | Número | `1.0` | Maximum particle size (scale factor) |
-| `size_increase` | Número | `0.0` | Size change per step (negative shrinks, floored at 0) |
-| `color` | Color | `#FFFFFF` | Particle color (used when no sprite is set) |
-| `alpha` | Número | `1.0` | Transparency (0=invisible, 1=opaque) |
-| `speed_min` | Número | `0.0` | Minimum movement speed |
-| `speed_max` | Número | `0.0` | Maximum movement speed |
-| `direction_min` | Número | `0` | Minimum direction angle (0=right, 90=up) |
-| `direction_max` | Número | `360` | Maximum direction angle |
-| `life_min` | Número | `100` | Minimum lifetime in steps |
-| `life_max` | Número | `100` | Maximum lifetime in steps |
+| `sprite` | Sprite | — | Sprite con el que se dibuja cada partícula; déjalo vacío para un simple círculo de color; opcional |
+| `size_min` | Número | `1.0` | Tamaño mínimo de la partícula (factor de escala) |
+| `size_max` | Número | `1.0` | Tamaño máximo de la partícula (factor de escala) |
+| `size_increase` | Número | `0.0` | Cambio de tamaño por paso (negativo encoge, con 0 como mínimo) |
+| `color` | Color | `#FFFFFF` | Color de la partícula (se usa cuando no hay sprite) |
+| `alpha` | Número | `1.0` | Transparencia (0 = invisible, 1 = opaca) |
+| `speed_min` | Número | `0.0` | Velocidad de movimiento mínima |
+| `speed_max` | Número | `0.0` | Velocidad de movimiento máxima |
+| `direction_min` | Número | `0` | Ángulo de dirección mínimo (0 = derecha, 90 = arriba) |
+| `direction_max` | Número | `360` | Ángulo de dirección máximo |
+| `life_min` | Número | `100` | Duración mínima, en pasos |
+| `life_max` | Número | `100` | Duración máxima, en pasos |
 
 ### Destruir emisor
 
@@ -124,8 +124,8 @@ Emite partículas de forma continua en cada paso desde el emisor creado más rec
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `particle_type` | Número | `0` | Particle type id (from Create Particle Type) |
-| `number` | Número | `1` | Particles to emit per step (0 stops streaming) |
+| `particle_type` | Número | `0` | Identificador del tipo de partícula (de «Crear tipo de partícula») |
+| `number` | Número | `1` | Partículas emitidas por paso (0 detiene la emisión) |
 
 ---
 
