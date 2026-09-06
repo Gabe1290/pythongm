@@ -726,7 +726,11 @@ existed. Regenerated; 0 untranslated strings reported now.
   Surface operations, a lower default `columns`/`render_distance` (a
   visible quality/speed tradeoff, not free), or a different rendering
   approach entirely (e.g. numpy-vectorized column compositing) — a larger,
-  riskier effort than this session's scope.
+  riskier effort than this session's scope. **Update 2026-09-06: numpy is
+  ruled OUT by explicit decision** (see `docs/BLOCK_WORLD_PERF_PLAN.md`
+  Phase 3) — it is absent from this project entirely and would become a hard
+  dependency of every exported game, so this sentence's suggestion is closed,
+  not pending.
 - **RE-MEASURED 2026-09-06 (A3.1), and the picture changed in two ways.**
   Harness is now committed: `tools/measure_block_world_fps.py` (real
   `GameRunner.run()`, headless, no-sleep clock, warmup discarded, conditions
