@@ -1,231 +1,231 @@
-# Réseau
+# Network
 
 *[Главная](Home_ru) | [Руководство по пресетам](Preset-Guide_ru) | [Справочник событий](Event-Reference_ru)*
 
 > **Сгенерировано автоматически** из реестра действий IDE с помощью `tools/gen_action_reference.py` — не редактируйте вручную; повторно запустите генератор после изменения действий. Переводы взяты из `tools/action_ref_i18n.py`.
 
-### Associer une touche réseau
+### Назначить сетевую клавишу
 
 | Свойство | Значение |
 |----------|-------|
 | **Имя** | `bind_network_input` |
 | **Значок** | ⌨️ |
-| **Категория** | Réseau |
+| **Категория** | Network |
 
-Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space")
+Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space")
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `name` | Текст | — | Étiquette libre (ex. "jump", "tir") |
-| `key` | Текст | — | Nom de touche : "space", "left", "a", "5", "lshift"... |
+| `name` | Текст | — | A label of your choosing (e.g. "jump", "fire") |
+| `key` | Текст | — | A key name: "space", "left", "a", "5", "lshift"... |
 
-### Créer un objet réseau
+### Создать сетевой объект
 
 | Свойство | Значение |
 |----------|-------|
 | **Имя** | `network_spawn` |
 | **Значок** | ✨ |
-| **Категория** | Réseau |
+| **Категория** | Network |
 
-Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1
+Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `object` | Объект | — | Type d'objet à créer |
+| `object` | Объект | — | The type of object to create |
 | `x` | Текст | `0` |  |
 | `y` | Текст | `0` |  |
-| `owner` | Текст | `0` | Joueur qui pilote l'instance (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».; необязательно |
-| `relative` | Да/Нет | Нет | Position relative à l'objet qui exécute l'action; необязательно |
+| `owner` | Текст | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; необязательно |
+| `relative` | Да/Нет | Нет | Position relative to the object running the action; необязательно |
 
-### Définir le propriétaire de l'instance
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `set_instance_owner` |
-| **Значок** | 🎮 |
-| **Категория** | Réseau |
-
-Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1)
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `player` | Текст | `0` | Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ». |
-
-### Définir une variable partagée
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `set_shared_var` |
-| **Значок** | 📤 |
-| **Категория** | Réseau |
-
-Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.<nom>
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `name` | Текст | — | Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur |
-| `value` | Текст | `0` | Nombre, texte ou booléen (les objets complexes sont refusés) |
-
-### Démarrer la partie en réseau
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `start_networked_game` |
-| **Значок** | 🚦 |
-| **Категория** | Réseau |
-
-Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines
-
-*Параметры:* нет
-
-### Envoyer un message réseau
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `send_network_message` |
-| **Значок** | ✉️ |
-| **Категория** | Réseau |
-
-Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `event` | Текст | — | Étiquette libre que le gestionnaire teste (ex. "buzz", "reponse") |
-| `data` | Текст | — | Nombre, texte, booléen ou petite liste; необязательно |
-| `target` | Выбор | `all` | all = tout le monde ; host = l'hôte seulement; Варианты: `all`, `host` |
-
-### Héberger une partie
+### Создать игру
 
 | Свойство | Значение |
 |----------|-------|
 | **Имя** | `host_game` |
 | **Значок** | 🌐 |
-| **Категория** | Réseau |
+| **Категория** | Network |
 
-Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host"
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `game_name` | Текст | `PyGameMaker` | Nom affiché dans la liste des serveurs (découverte réseau, Phase 6); необязательно |
-| `max_players` | Число | `8` | Nombre maximal de joueurs, hôte compris (2 à 16); необязательно |
-| `port` | Число | `45782` | Port TCP -- doit être identique chez l'hôte et les clients; необязательно |
-| `player_name` | Текст | — | Nom de ce joueur (vide = global.player_name, ou « Joueur »); необязательно |
-| `show_lobby` | Да/Нет | Нет | Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie; необязательно |
-
-### Lire une variable partagée
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `get_shared_var` |
-| **Значок** | 📥 |
-| **Категория** | Réseau |
-
-Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.<nom> directement
+Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host"
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `name` | Текст | — | Nom de la variable partagée à lire |
-| `into` | Текст | — | Nom de la variable globale où écrire la valeur |
+| `game_name` | Текст | `PyGameMaker` | Name shown in the server list (network discovery); необязательно |
+| `max_players` | Число | `8` | Largest number of players, host included (2 to 16); необязательно |
+| `port` | Число | `45782` | TCP port -- must be the same on the host and every client; необязательно |
+| `player_name` | Текст | — | This player's name (empty = global.player_name, or "Player"); необязательно |
+| `show_lobby` | Да/Нет | Нет | Show a "Waiting for players..." screen with a Start button before the game begins; необязательно |
 
-### Quitter la partie
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `leave_game` |
-| **Значок** | 🚪 |
-| **Категория** | Réseau |
-
-Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales
-
-*Параметры:* нет
-
-### Rejoindre une partie
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `join_game` |
-| **Значок** | 🔌 |
-| **Категория** | Réseau |
-
-Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `host` | Текст | `127.0.0.1` | Adresse IP LAN de l'hôte ("auto" = écran de connexion intégré, Phase 6); необязательно |
-| `port` | Число | `45782` | Port TCP -- doit correspondre à celui de l'hôte; необязательно |
-| `player_name` | Текст | — | Nom de ce joueur (vide = global.player_name, ou « Joueur »); необязательно |
-
-### Régler la fréquence de synchro
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `set_sync_rate` |
-| **Значок** | ⏱️ |
-| **Категория** | Réseau |
-
-Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai)
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `hz` | Число | `20` | 10-30 convient sur un réseau local (défaut 20); необязательно |
-| `interp_ms` | Число | `100` | Retard d'affichage des fantômes, en millisecondes (défaut 100); необязательно |
-
-### Set Network Mode (v1)
-
-| Свойство | Значение |
-|----------|-------|
-| **Имя** | `set_network_mode` |
-| **Значок** | 🌐 |
-| **Категория** | Réseau |
-
-Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client
-
-| Параметр | Тип | По умолч. | Примечания |
-|-----------|------|---------|-------|
-| `mode` | Выбор | `host` | Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte; Варианты: `host`, `client` |
-| `host` | Текст | `127.0.0.1` | Adresse IP LAN de l'hôte (mode Client uniquement); необязательно |
-| `port` | Число | `45782` | Port TCP -- doit être identique chez l'hôte et le client; необязательно |
-
-### Si je pilote cette instance
+### Если я управляю этим экземпляром
 
 | Свойство | Значение |
 |----------|-------|
 | **Имя** | `is_instance_owner` |
 | **Значок** | ❓ |
-| **Категория** | Réseau |
+| **Категория** | Network |
 
-Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur
+A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine
 
 *Параметры:* нет
 
-### Si le joueur appuie
+### Если игрок нажимает
 
 | Свойство | Значение |
 |----------|-------|
 | **Имя** | `remote_input` |
 | **Значок** | ❓ |
-| **Категория** | Réseau |
+| **Категория** | Network |
 
-Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar
+A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `player` | Текст | `0` | Numéro de joueur (0 = hôte) |
-| `name` | Текст | — | L'entrée nommée à tester (ex. "jump") |
+| `player` | Текст | `0` | Player number (0 = host) |
+| `name` | Текст | — | The named input to test (e.g. "jump") |
 
-### Synchroniser cette instance
+### Присоединиться к игре
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `join_game` |
+| **Значок** | 🔌 |
+| **Категория** | Network |
+
+Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `host` | Текст | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); необязательно |
+| `port` | Число | `45782` | TCP port -- must match the host's; необязательно |
+| `player_name` | Текст | — | This player's name (empty = global.player_name, or "Player"); необязательно |
+
+### Покинуть игру
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `leave_game` |
+| **Значок** | 🚪 |
+| **Категория** | Network |
+
+Disconnect (or stop hosting) and clear the global network variables
+
+*Параметры:* нет
+
+### Прочитать общую переменную
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `get_shared_var` |
+| **Значок** | 📥 |
+| **Категория** | Network |
+
+Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `name` | Текст | — | Name of the shared variable to read |
+| `into` | Текст | — | Name of the global variable to write the value into |
+
+### Отправить сетевое сообщение
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `send_network_message` |
+| **Значок** | ✉️ |
+| **Категория** | Network |
+
+Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `event` | Текст | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
+| `data` | Текст | — | A number, text, true/false, or a short list; необязательно |
+| `target` | Выбор | `all` | all = everyone; host = the host only; Варианты: `all`, `host` |
+
+### Задать сетевой режим (v1)
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `set_network_mode` |
+| **Значок** | 🌐 |
+| **Категория** | Network |
+
+An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `mode` | Выбор | `host` | Host = others connect to you; Client = you connect to a host; Варианты: `host`, `client` |
+| `host` | Текст | `127.0.0.1` | The host's LAN IP address (Client mode only); необязательно |
+| `port` | Число | `45782` | TCP port -- must be the same on the host and the client; необязательно |
+
+### Задать общую переменную
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `set_shared_var` |
+| **Значок** | 📤 |
+| **Категория** | Network |
+
+Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.<name>
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `name` | Текст | — | A plain identifier (letters, digits, _) -- no spaces or operators |
+| `value` | Текст | `0` | A number, text or true/false (complex objects are refused) |
+
+### Задать владельца экземпляра
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `set_instance_owner` |
+| **Значок** | 🎮 |
+| **Категория** | Network |
+
+Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `player` | Текст | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+
+### Задать частоту синхронизации
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `set_sync_rate` |
+| **Значок** | ⏱️ |
+| **Категория** | Network |
+
+Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay
+
+| Параметр | Тип | По умолч. | Примечания |
+|-----------|------|---------|-------|
+| `hz` | Число | `20` | 10-30 works well on a local network (default 20); необязательно |
+| `interp_ms` | Число | `100` | How far behind ghosts are drawn, in milliseconds (default 100); необязательно |
+
+### Начать сетевую игру
+
+| Свойство | Значение |
+|----------|-------|
+| **Имя** | `start_networked_game` |
+| **Значок** | 🚦 |
+| **Категория** | Network |
+
+Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine
+
+*Параметры:* нет
+
+### Синхронизировать этот экземпляр
 
 | Свойство | Значение |
 |----------|-------|
 | **Имя** | `sync_instance` |
 | **Значок** | 🔗 |
-| **Категория** | Réseau |
+| **Категория** | Network |
 
-Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote
+Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `vars` | Текст | — | Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. "hp, couleur"); необязательно |
+| `vars` | Текст | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); необязательно |
 
 ---
 
