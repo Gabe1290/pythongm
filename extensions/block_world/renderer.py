@@ -525,9 +525,12 @@ def wall_shade(side: int, corrected: float, max_dist: float) -> float:
     """Brightness multiplier in [MIN_SHADE, 1] for a wall strip."""
     side_factor = SIDE_SHADE if side == 1 else 1.0
     t = corrected / max_dist if max_dist > 0 else 0.0
-    t = max(0.0, min(1.0, t))
-    dist_factor = 1.0 - FOG_STRENGTH * t
-    return max(MIN_SHADE, side_factor * dist_factor)
+    if t < 0.0:
+        t = 0.0
+    elif t > 1.0:
+        t = 1.0
+    shade = side_factor * (1.0 - FOG_STRENGTH * t)
+    return shade if shade > MIN_SHADE else MIN_SHADE
 
 
 def face_shade(corrected: float, max_dist: float, facing: float) -> float:
@@ -538,8 +541,14 @@ def face_shade(corrected: float, max_dist: float, facing: float) -> float:
     x/y side hint. Clamped to 1.0 at the top so TOP_SHADE brightens a near
     face without blowing it out."""
     t = corrected / max_dist if max_dist > 0 else 0.0
-    t = max(0.0, min(1.0, t))
-    return max(MIN_SHADE, min(1.0, facing * (1.0 - FOG_STRENGTH * t)))
+    if t < 0.0:
+        t = 0.0
+    elif t > 1.0:
+        t = 1.0
+    shade = facing * (1.0 - FOG_STRENGTH * t)
+    if shade > 1.0:
+        shade = 1.0
+    return shade if shade > MIN_SHADE else MIN_SHADE
 
 
 _AVG_COLOR_CACHE = {}
@@ -681,7 +690,7 @@ def _is_covered(covered, y0, y1):
 
 
 def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
-                     texture_path, tex_u, flat_color):
+                     texture_path, tex_u, flat_color, screen_h=None):
     """One block's vertical face in one column.
 
     Runs up to ~18,000 times a frame on open terrain, where the profile is
@@ -690,7 +699,8 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
     cost a full Python call each, and they were 10.6% of a whole frame across
     ~272,000 calls. Same arithmetic, same results; only the dispatch differs.
     """
-    screen_h = screen.get_height()
+    if screen_h is None:
+        screen_h = screen.get_height()
     y0 = int(math.floor(y_top))
     if y0 < 0:
         y0 = 0
@@ -822,7 +832,7 @@ def _horizontal_face_scratch(samples):
 def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
                                    cam_x, cam_y, dir_x, dir_y, cos_off,
                                    plane_z, eye_z, horizon, cell_size,
-                                   shade, res):
+                                   shade, res, screen_h=None):
     """The same face, texture-mapped.
 
     Inverting the projection gives the distance to the plane for a screen
@@ -842,7 +852,8 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
     Shading is applied once to the finished column with a hardware multiply,
     never per texel.
     """
-    screen_h = screen.get_height()
+    if screen_h is None:
+        screen_h = screen.get_height()
     lo, hi = (y_a, y_b) if y_a < y_b else (y_b, y_a)
     y0 = int(math.floor(lo))
     if y0 < 0:
@@ -1010,7 +1021,9 @@ def render_block_world_view(room, screen: pygame.Surface):
         dir_x, dir_y = math.cos(ray_angle), math.sin(ray_angle)
         x0 = int(col * col_width)
         x1 = int((col + 1) * col_width)
-        strip_w = max(1, x1 - x0)
+        strip_w = x1 - x0
+        if strip_w < 1:
+            strip_w = 1
 
         # Collect near->far so the occlusion early-out can stop the march,
         # then paint far->near.
@@ -1039,8 +1052,12 @@ def render_block_world_view(room, screen: pygame.Surface):
             stack = columns.get((map_x, map_y))
             if not stack:
                 continue  # air column -- floor/ceiling fill shows through
-            near = max(d_entry * cos_off, 1e-4)
-            far = max(d_exit * cos_off, near)
+            near = d_entry * cos_off
+            if near < 1e-4:
+                near = 1e-4
+            far = d_exit * cos_off
+            if far < near:
+                far = near
             # Computed once here and carried in the tuple rather than
             # recomputed in the paint loop below -- one division per non-air
             # cell the ray enters, every column, every frame otherwise.
@@ -1074,20 +1091,26 @@ def render_block_world_view(room, screen: pygame.Surface):
             px_per_cell_far = h * cell_size / far
             shade = wall_shade(side, near, max_dist)
             mid = (near + far) / 2.0
+            stack_len = len(stack)
             for i, (z, block_type) in enumerate(stack):
                 faces = block_face_textures(block_type) if textured else None
                 _draw_wall_strip(
                     screen, x0, strip_w,
                     horizon + (eye_z - (z + 1)) * px_per_cell, px_per_cell,
-                    shade, faces["side"] if faces else None, tex_u, wall_color)
+                    shade, faces["side"] if faces else None, tex_u, wall_color,
+                    h)
 
                 # Top/bottom face visibility: visible only from the
                 # corresponding side, and only when nothing sits against it.
                 # stack is sorted lowest z first (column_index's guarantee),
                 # so a block at z+1/z-1, if any, can only be the very next/
                 # previous entry -- no scan needed.
-                above = _has_neighbor(stack, i, +1)
-                below = _has_neighbor(stack, i, -1)
+                # Inlined _has_neighbor (kept, and still tested, for its
+                # other callers): two comparisons rather than a Python call,
+                # twice per strip and ~18,000 times a frame.
+                nxt = i + 1
+                above = nxt < stack_len and stack[nxt][0] == z + 1
+                below = i > 0 and stack[i - 1][0] == z - 1
 
                 # Top face: visible only from above it, and only when nothing
                 # is stacked on top.
@@ -1100,7 +1123,7 @@ def render_block_world_view(room, screen: pygame.Surface):
                             screen, x0, strip_w, y_far, y_near,
                             _load_texture(faces["top"]), cam_x, cam_y,
                             dir_x, dir_y, cos_off, z + 1, eye_z, horizon,
-                            cell_size, lit, top_res)
+                            cell_size, lit, top_res, h)
                     else:
                         base = face_average_color(faces["top"]) if faces else wall_color
                         _draw_horizontal_face(
@@ -1118,7 +1141,7 @@ def render_block_world_view(room, screen: pygame.Surface):
                             screen, x0, strip_w, y_near, y_far,
                             _load_texture(faces["bottom"]), cam_x, cam_y,
                             dir_x, dir_y, cos_off, z, eye_z, horizon,
-                            cell_size, lit, top_res)
+                            cell_size, lit, top_res, h)
                     else:
                         base = face_average_color(faces["bottom"]) if faces else wall_color
                         _draw_horizontal_face(
