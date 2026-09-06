@@ -31,6 +31,28 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 
+# Vector helpers folded in from the retired runtime/action_handlers/base.py
+# (docs/POST_1_0_REFACTOR.md companion teardown). They live here because the
+# three actions below are their only callers.
+_FULL_CIRCLE_DEGREES = 360
+
+
+def _direction_to_vector(direction_degrees, speed=1.0):
+    """GameMaker convention: 0 deg = right, 90 = up, 180 = left, 270 = down."""
+    angle_rad = math.radians(direction_degrees)
+    hspeed = math.cos(angle_rad) * speed
+    # Negative because screen Y increases downward.
+    vspeed = -math.sin(angle_rad) * speed
+    return (hspeed, vspeed)
+
+
+def _vector_to_direction(hspeed, vspeed):
+    """Inverse of _direction_to_vector; 0-360 degrees."""
+    if hspeed == 0 and vspeed == 0:
+        return 0
+    return math.degrees(math.atan2(-vspeed, hspeed)) % _FULL_CIRCLE_DEGREES
+
+
 class MovementMixin:
     """Movement ``execute_*_action`` methods, mixed into ``ActionExecutor``."""
 
@@ -729,3 +751,58 @@ class MovementMixin:
         # Ensure exact grid alignment
         instance.x = round(instance.x / grid_size) * grid_size
         instance.y = round(instance.y / grid_size) * grid_size
+
+
+    def _parse_float(self, value, instance=None, default=0.0):
+        """Coerce an action parameter to float, resolving expressions first.
+
+        Folded in from the retired action_handlers/base.py `parse_float`, whose
+        `ctx` argument was always this executor.
+        """
+        if value is None:
+            return default
+        parsed = (self._parse_value(str(value), instance)
+                  if isinstance(value, str) else value)
+        try:
+            return float(parsed) if parsed is not None else default
+        except (ValueError, TypeError):
+            return default
+
+    def execute_move_free_action(self, instance, parameters: Dict[str, Any]):
+        """Move at an exact direction and speed.
+
+        Delegates to set_direction_speed -- same semantics, kept as its own
+        registered action because the UI registers `move_free` by that name.
+        """
+        self.execute_set_direction_speed_action(instance, parameters)
+
+    def execute_set_speed_action(self, instance, parameters: Dict[str, Any]):
+        """Set the speed magnitude, preserving the current direction.
+
+        Reads the direction out of the existing (hspeed, vspeed) vector and
+        rebuilds the velocity at the new magnitude. Stationary means direction
+        0 (right), so choosing a non-zero speed actually starts movement.
+        """
+        speed = self._parse_float(
+            parameters.get("speed", parameters.get("value", 0)), instance, default=0.0)
+        current_direction = _vector_to_direction(instance.hspeed, instance.vspeed)
+        hspeed, vspeed = _direction_to_vector(current_direction, speed)
+        instance.hspeed = hspeed
+        instance.vspeed = vspeed
+        logger.debug("  %s speed=%s (dir preserved at %.1f deg)",
+                     instance.object_name, speed, current_direction)
+
+    def execute_set_direction_action(self, instance, parameters: Dict[str, Any]):
+        """Set the direction angle, preserving the current speed magnitude.
+
+        If currently stationary, setting a direction does NOT start movement --
+        that matches GameMaker.
+        """
+        direction = self._parse_float(
+            parameters.get("direction", parameters.get("value", 0)), instance, default=0.0)
+        current_speed = math.sqrt(instance.hspeed ** 2 + instance.vspeed ** 2)
+        hspeed, vspeed = _direction_to_vector(direction, current_speed)
+        instance.hspeed = hspeed
+        instance.vspeed = vspeed
+        logger.debug("  %s direction=%s deg (speed preserved at %.2f)",
+                     instance.object_name, direction, current_speed)
