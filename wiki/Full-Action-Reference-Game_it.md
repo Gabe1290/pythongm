@@ -160,7 +160,7 @@ Disegna una stringa di testo in una posizione
 | `x` | Numero | `0` | Posizione X |
 | `y` | Numero | `0` | Posizione Y |
 | `relative` | Sì/No | No | Disegna rispetto alla posizione di questa istanza invece che a coordinate schermo assolute; facoltativo |
-| `color` | Colore | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; facoltativo |
+| `color` | Colore | — | Colore del testo (per es. #ffffff). Vuoto = il colore di disegno attivo, altrimenti nero.; facoltativo |
 
 ### Disegna variabile
 
@@ -204,7 +204,7 @@ Ripristina la stanza, il punteggio, le vite, la salute, le variabili globali e l
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `filename` | Testo | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+| `filename` | Testo | `savegame.sav` | Nome del file di salvataggio da caricare (dalla cartella saves/ del progetto) |
 
 ### Apri pagina web
 
@@ -244,7 +244,7 @@ Salva in un file la stanza corrente, il punteggio, le vite, la salute, le variab
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `filename` | Testo | `savegame.sav` | Save file name (written to the project's saves/ folder) |
+| `filename` | Testo | `savegame.sav` | Nome del file di salvataggio (scritto nella cartella saves/ del progetto) |
 
 ### Imposta trasparenza
 
@@ -360,8 +360,8 @@ Riproduce un file video nel lettore video predefinito del sistema: si apre in un
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `filename` | Testo | — | Path to the video file |
-| `fullscreen` | Sì/No | No | Request fullscreen playback (support depends on your system's player); facoltativo |
+| `filename` | Testo | — | Percorso del file video |
+| `fullscreen` | Sì/No | No | Chiedere la riproduzione a schermo intero (dipende dal lettore del tuo sistema); facoltativo |
 
 ### Schermata: mostra immagine
 
@@ -375,7 +375,7 @@ Mostra uno sprite a schermo intero e mette il gioco in pausa finché il giocator
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `image` | Sprite | — | Sprite to display full-screen |
+| `image` | Sprite | — | Sprite da mostrare a schermo intero |
 
 ### Schermata: mostra testo
 
@@ -389,7 +389,7 @@ Mostra un messaggio e mette il gioco in pausa finché il giocatore non lo chiude
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `text` | Testo | — | Message to display |
+| `text` | Testo | — | Messaggio da mostrare |
 
 ---
 

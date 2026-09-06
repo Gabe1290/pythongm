@@ -43,7 +43,7 @@ Imposta l'etichetta della linea temporale di questa istanza e ne riporta la posi
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `timeline` | Testo | — | A label for your own reference; not a resource lookup |
+| `timeline` | Testo | — | Un'etichetta per uso personale; non cerca alcuna risorsa |
 
 ### Imposta la posizione nella linea temporale
 
@@ -57,8 +57,8 @@ Imposta (o sposta) la posizione di questa istanza sulla linea temporale
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `position` | Numero | `0` | Position in steps |
-| `relative` | Sì/No | No | Add to the current position instead of setting it absolutely |
+| `position` | Numero | `0` | Posizione, in passi |
+| `relative` | Sì/No | No | Aggiungere alla posizione corrente invece di impostarla in modo assoluto |
 
 ### Imposta la velocità della linea temporale
 
@@ -72,7 +72,7 @@ Imposta il moltiplicatore di velocità della linea temporale
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `speed` | Numero | `1.0` | 1.0=normal, 0.5=half speed, 2.0=double speed |
+| `speed` | Numero | `1.0` | 1.0 = normale, 0.5 = metà velocità, 2.0 = doppia velocità |
 
 ### Pausa
 
