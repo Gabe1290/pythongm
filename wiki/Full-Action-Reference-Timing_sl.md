@@ -12,7 +12,7 @@
 | **Ikona** | ⏸️ |
 | **Kategorija** | Čas |
 
-Pause timeline playback at the current position
+Predvajanje časovnice začasno ustavi na trenutnem mestu
 
 *Parametri:* brez
 
@@ -39,7 +39,7 @@ Nastavi budilko
 | **Ikona** | ⏱️ |
 | **Kategorija** | Čas |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Nastavi oznako časovnice tega primerka in njegovo mesto ponastavi na 0 (samo evidenca – glej opombo kategorije)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Ikona** | ⏱️ |
 | **Kategorija** | Čas |
 
-Set (or offset) this instance's timeline position
+Nastavi (ali zamakne) mesto tega primerka na časovnici
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Ikona** | ⏱️ |
 | **Kategorija** | Čas |
 
-Set the timeline playback speed multiplier
+Nastavi množitelj hitrosti predvajanja časovnice
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Zaustavi igro za določeno število milisekund, nato nadaljuj. Zvoki se med prem
 | **Ikona** | ▶️ |
 | **Kategorija** | Čas |
 
-Begin or resume timeline playback from the current position
+Zažene ali nadaljuje predvajanje časovnice od trenutnega mesta
 
 *Parametri:* brez
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Ikona** | ⏹️ |
 | **Kategorija** | Čas |
 
-Stop timeline playback and reset the position to 0
+Ustavi predvajanje časovnice in mesto ponastavi na 0
 
 *Parametri:* brez
 

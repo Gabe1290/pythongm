@@ -200,7 +200,7 @@ Zapolni celotno območje prikaza z enotno barvo
 | **Ikona** | 📂 |
 | **Kategorija** | Igra |
 
-Restore room, score/lives/health, global variables, and instance states from a save file
+Iz shranjene datoteke obnovi sobo, točke, življenja, zdravje, globalne spremenljivke in stanje primerkov
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -240,7 +240,7 @@ Znova zaženi igro iz začetne sobe
 | **Ikona** | 💾 |
 | **Kategorija** | Igra |
 
-Save the current room, score/lives/health, global variables, and instance states to a file
+V datoteko shrani trenutno sobo, točke, življenja, zdravje, globalne spremenljivke in stanje primerkov
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -356,7 +356,7 @@ Prikaži sporočilo
 | **Ikona** | 🎬 |
 | **Kategorija** | Igra |
 
-Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+Predvaja video datoteko v privzetem predvajalniku sistema: odpre se v svojem oknu in se ne riše znotraj same igre
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -371,7 +371,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | **Ikona** | 🖼️ |
 | **Kategorija** | Igra |
 
-Show a sprite full-screen and pause the game until the player dismisses it
+Pokaže sličico čez ves zaslon in zaustavi igro, dokler je igralec ne zapre
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -385,7 +385,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 | **Ikona** | 💬 |
 | **Kategorija** | Igra |
 
-Show a message and pause the game until the player dismisses it
+Pokaže sporočilo in zaustavi igro, dokler ga igralec ne zapre
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
