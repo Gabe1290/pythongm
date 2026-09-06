@@ -12,7 +12,7 @@
 | **Ícone** | ⏸️ |
 | **Categoria** | Tempo |
 
-Pause timeline playback at the current position
+Coloca a reprodução da linha temporal em pausa na posição atual
 
 *Parâmetros:* nenhum
 
@@ -39,7 +39,7 @@ Definir um alarme
 | **Ícone** | ⏱️ |
 | **Categoria** | Tempo |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Define a etiqueta da linha temporal desta instância e repõe a sua posição a 0 (apenas registo — ver a nota da categoria)
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Ícone** | ⏱️ |
 | **Categoria** | Tempo |
 
-Set (or offset) this instance's timeline position
+Define (ou desloca) a posição desta instância na linha temporal
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Ícone** | ⏱️ |
 | **Categoria** | Tempo |
 
-Set the timeline playback speed multiplier
+Define o multiplicador de velocidade da linha temporal
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Pausar o jogo por um número de milissegundos e depois continuar. Os sons contin
 | **Ícone** | ▶️ |
 | **Categoria** | Tempo |
 
-Begin or resume timeline playback from the current position
+Inicia ou retoma a linha temporal a partir da posição atual
 
 *Parâmetros:* nenhum
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Ícone** | ⏹️ |
 | **Categoria** | Tempo |
 
-Stop timeline playback and reset the position to 0
+Para a linha temporal e repõe a posição a 0
 
 *Parâmetros:* nenhum
 
