@@ -160,7 +160,7 @@ Dessiner une chaîne de texte à une position
 | `x` | Nombre | `0` | Position X |
 | `y` | Nombre | `0` | Position Y |
 | `relative` | Oui/Non | Non | Dessiner par rapport à la position de cette instance au lieu de coordonnées d'écran absolues; optionnel |
-| `color` | Couleur | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; optionnel |
+| `color` | Couleur | — | Couleur du texte (par ex. #ffffff). Vide = la couleur de dessin active, sinon noir.; optionnel |
 
 ### Dessiner une variable
 
@@ -204,7 +204,7 @@ Restaure la salle, le score, les vies, la santé, les variables globales et l'é
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `filename` | Texte | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+| `filename` | Texte | `savegame.sav` | Nom du fichier de sauvegarde à charger (dans le dossier saves/ du projet) |
 
 ### Ouvrir une page web
 
@@ -244,7 +244,7 @@ Enregistre dans un fichier la salle courante, le score, les vies, la santé, les
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `filename` | Texte | `savegame.sav` | Save file name (written to the project's saves/ folder) |
+| `filename` | Texte | `savegame.sav` | Nom du fichier de sauvegarde (écrit dans le dossier saves/ du projet) |
 
 ### Définir l'alpha
 
@@ -360,8 +360,8 @@ Lit un fichier vidéo dans le lecteur vidéo par défaut du système : il s'ouvr
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `filename` | Texte | — | Path to the video file |
-| `fullscreen` | Oui/Non | Non | Request fullscreen playback (support depends on your system's player); optionnel |
+| `filename` | Texte | — | Chemin vers le fichier vidéo |
+| `fullscreen` | Oui/Non | Non | Demander une lecture en plein écran (selon ce que permet le lecteur de votre système); optionnel |
 
 ### Écran d'accueil : afficher une image
 
@@ -375,7 +375,7 @@ Affiche un sprite en plein écran et met le jeu en pause jusqu'à ce que le joue
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `image` | Sprite | — | Sprite to display full-screen |
+| `image` | Sprite | — | Sprite à afficher en plein écran |
 
 ### Écran d'accueil : afficher un texte
 
@@ -389,7 +389,7 @@ Affiche un message et met le jeu en pause jusqu'à ce que le joueur le referme
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `text` | Texte | — | Message to display |
+| `text` | Texte | — | Message à afficher |
 
 ---
 

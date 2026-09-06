@@ -16,8 +16,8 @@ Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `name` | Texte | — | A label of your choosing (e.g. "jump", "fire") |
-| `key` | Texte | — | A key name: "space", "left", "a", "5", "lshift"... |
+| `name` | Texte | — | Un nom de votre choix (par ex. "jump", "fire") |
+| `key` | Texte | — | Un nom de touche : "space", "left", "a", "5", "lshift"... |
 
 ### Créer un objet réseau
 
@@ -31,11 +31,11 @@ Hôte uniquement : créer une instance qui apparaît automatiquement chez tous l
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `object` | Objet | — | The type of object to create |
+| `object` | Objet | — | Le type d'objet à créer |
 | `x` | Texte | `0` |  |
 | `y` | Texte | `0` |  |
-| `owner` | Texte | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; optionnel |
-| `relative` | Oui/Non | Non | Position relative to the object running the action; optionnel |
+| `owner` | Texte | `0` | Le joueur qui pilote cette instance (0 = l'hôte). Souvent global.network_sender dans « Joueur connecté ».; optionnel |
+| `relative` | Oui/Non | Non | Position relative à l'objet qui exécute l'action; optionnel |
 
 ### Héberger une partie
 
@@ -49,11 +49,11 @@ Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent 
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `game_name` | Texte | `PyGameMaker` | Name shown in the server list (network discovery); optionnel |
-| `max_players` | Nombre | `8` | Largest number of players, host included (2 to 16); optionnel |
-| `port` | Nombre | `45782` | TCP port -- must be the same on the host and every client; optionnel |
-| `player_name` | Texte | — | This player's name (empty = global.player_name, or "Player"); optionnel |
-| `show_lobby` | Oui/Non | Non | Show a "Waiting for players..." screen with a Start button before the game begins; optionnel |
+| `game_name` | Texte | `PyGameMaker` | Nom affiché dans la liste des serveurs (découverte réseau); optionnel |
+| `max_players` | Nombre | `8` | Nombre maximal de joueurs, hôte compris (de 2 à 16); optionnel |
+| `port` | Nombre | `45782` | Port TCP — doit être le même chez l'hôte et chez chaque client; optionnel |
+| `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
+| `show_lobby` | Oui/Non | Non | Afficher un écran « En attente de joueurs... » avec un bouton Démarrer avant le début de la partie; optionnel |
 
 ### Si je pilote cette instance
 
@@ -79,8 +79,8 @@ Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nomm�
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `player` | Texte | `0` | Player number (0 = host) |
-| `name` | Texte | — | The named input to test (e.g. "jump") |
+| `player` | Texte | `0` | Numéro de joueur (0 = l'hôte) |
+| `name` | Texte | — | L'entrée nommée à tester (par ex. "jump") |
 
 ### Rejoindre une partie
 
@@ -94,9 +94,9 @@ Se connecter à une partie multijoueur LAN hébergée par une autre machine. glo
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `host` | Texte | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); optionnel |
-| `port` | Nombre | `45782` | TCP port -- must match the host's; optionnel |
-| `player_name` | Texte | — | This player's name (empty = global.player_name, or "Player"); optionnel |
+| `host` | Texte | `127.0.0.1` | Adresse IP de l'hôte sur le réseau local ("auto" ouvre l'écran de connexion intégré); optionnel |
+| `port` | Nombre | `45782` | Port TCP — doit correspondre à celui de l'hôte; optionnel |
+| `player_name` | Texte | — | Nom de ce joueur (vide = global.player_name, sinon "Player"); optionnel |
 
 ### Quitter la partie
 
@@ -122,8 +122,8 @@ Copier une variable partagée dans une variable globale (pour l'utiliser dans un
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `name` | Texte | — | Name of the shared variable to read |
-| `into` | Texte | — | Name of the global variable to write the value into |
+| `name` | Texte | — | Nom de la variable partagée à lire |
+| `into` | Texte | — | Nom de la variable globale dans laquelle écrire la valeur |
 
 ### Envoyer un message réseau
 
@@ -137,9 +137,9 @@ Diffuser un message personnalisé. Déclenche l'événement « Message réseau �
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `event` | Texte | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
-| `data` | Texte | — | A number, text, true/false, or a short list; optionnel |
-| `target` | Choix | `all` | all = everyone; host = the host only; Choix: `all`, `host` |
+| `event` | Texte | — | Un nom de votre choix que le gestionnaire teste (par ex. "buzz", "answer") |
+| `data` | Texte | — | Un nombre, du texte, true/false ou une courte liste; optionnel |
+| `target` | Choix | `all` | all = tout le monde ; host = l'hôte uniquement; Choix: `all`, `host` |
 
 ### Set Network Mode (v1)
 
@@ -153,9 +153,9 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `mode` | Choix | `host` | Host = others connect to you; Client = you connect to a host; Choix: `host`, `client` |
-| `host` | Texte | `127.0.0.1` | The host's LAN IP address (Client mode only); optionnel |
-| `port` | Nombre | `45782` | TCP port -- must be the same on the host and the client; optionnel |
+| `mode` | Choix | `host` | Hôte = les autres se connectent à vous ; Client = vous vous connectez à un hôte; Choix: `host`, `client` |
+| `host` | Texte | `127.0.0.1` | Adresse IP de l'hôte sur le réseau local (mode Client uniquement); optionnel |
+| `port` | Nombre | `45782` | Port TCP — doit être le même chez l'hôte et chez le client; optionnel |
 
 ### Définir une variable partagée
 
@@ -169,8 +169,8 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `name` | Texte | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Texte | `0` | A number, text or true/false (complex objects are refused) |
+| `name` | Texte | — | Un identifiant simple (lettres, chiffres, _) — ni espaces ni opérateurs |
+| `value` | Texte | `0` | Un nombre, du texte ou true/false (les objets complexes sont refusés) |
 
 ### Définir le propriétaire de l'instance
 
@@ -184,7 +184,7 @@ Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... =
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `player` | Texte | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+| `player` | Texte | `0` | Numéro de joueur (0 = l'hôte). Souvent global.network_sender dans « Joueur connecté ». |
 
 ### Régler la fréquence de synchro
 
@@ -198,8 +198,8 @@ Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des 
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `hz` | Nombre | `20` | 10-30 works well on a local network (default 20); optionnel |
-| `interp_ms` | Nombre | `100` | How far behind ghosts are drawn, in milliseconds (default 100); optionnel |
+| `hz` | Nombre | `20` | De 10 à 30 fonctionne bien sur un réseau local (20 par défaut); optionnel |
+| `interp_ms` | Nombre | `100` | Retard de dessin des fantômes, en millisecondes (100 par défaut); optionnel |
 
 ### Démarrer la partie en réseau
 
@@ -225,7 +225,7 @@ Marquer l'instance qui exécute l'action comme « synchronisée » : sa position
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `vars` | Texte | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); optionnel |
+| `vars` | Texte | — | Noms des variables d'instance à copier également, séparés par des virgules (par ex. "hp, colour"); optionnel |
 
 ---
 
