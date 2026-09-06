@@ -200,7 +200,7 @@ Remplir toute la zone d'affichage d'une couleur unie
 | **Icône** | 📂 |
 | **Catégorie** | Jeu |
 
-Restore room, score/lives/health, global variables, and instance states from a save file
+Restaure la salle, le score, les vies, la santé, les variables globales et l'état des instances depuis un fichier de sauvegarde
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -240,7 +240,7 @@ Redémarrer le jeu depuis la salle de départ
 | **Icône** | 💾 |
 | **Catégorie** | Jeu |
 
-Save the current room, score/lives/health, global variables, and instance states to a file
+Enregistre dans un fichier la salle courante, le score, les vies, la santé, les variables globales et l'état des instances
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -356,7 +356,7 @@ Afficher un message
 | **Icône** | 🎬 |
 | **Catégorie** | Jeu |
 
-Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+Lit un fichier vidéo dans le lecteur vidéo par défaut du système : il s'ouvre dans une fenêtre séparée, il n'est pas dessiné dans le jeu lui-même
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -371,7 +371,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | **Icône** | 🖼️ |
 | **Catégorie** | Jeu |
 
-Show a sprite full-screen and pause the game until the player dismisses it
+Affiche un sprite en plein écran et met le jeu en pause jusqu'à ce que le joueur le referme
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -385,7 +385,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 | **Icône** | 💬 |
 | **Catégorie** | Jeu |
 
-Show a message and pause the game until the player dismisses it
+Affiche un message et met le jeu en pause jusqu'à ce que le joueur le referme
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
