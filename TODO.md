@@ -727,6 +727,39 @@ existed. Regenerated; 0 untranslated strings reported now.
   visible quality/speed tradeoff, not free), or a different rendering
   approach entirely (e.g. numpy-vectorized column compositing) — a larger,
   riskier effort than this session's scope.
+- **RE-MEASURED 2026-09-06 (A3.1), and the picture changed in two ways.**
+  Harness is now committed: `tools/measure_block_world_fps.py` (real
+  `GameRunner.run()`, headless, no-sleep clock, warmup discarded, conditions
+  interleaved, `PYGM_ROOT` to point it at a worktree).
+  1. **The renderer has NOT changed since August.** `git diff 25983640 HEAD --
+     extensions/block_world samples/block_world_1 samples/block_world_2` is
+     empty. The "~9.6 / ~3.85 fps" figures above are not stale code, they are
+     a **different, slower machine** — measured on the Windows box at that
+     exact commit via a worktree, the same samples give ~19.1 / ~8.1 fps.
+     **So don't compare an fps number here against one taken elsewhere.** The
+     August trade-off itself reproduces cleanly on this box: block_world_1
+     16.4 → 19.1 (+17%, claimed +20%), block_world_2 9.1 → 8.1 (−11%, claimed
+     −12%), measured across `25983640^` vs `25983640` worktrees.
+  2. **A single fps per sample was hiding the worst case.** The number depends
+     far more on where the camera stands than on which sample it is.
+     `block_world_1` runs at **19.3 fps standing still but 3.8 fps while
+     walking** — a 5x collapse, and 7.8x under its 30fps target, precisely
+     when the player is moving and smoothness matters most. `block_world_2` is
+     flat at ~8.2 either way.
+- **Profiling lead for the optimisation work, measured not guessed.** Counting
+  `pygame.transform.scale` calls and the pixel area they produce shows **two
+  different cost regimes**, which is why one fix will not cover both:
+  - `block_world_1` walking makes **fewer** scale calls than standing still
+    (6,073 vs 7,649 per frame) but scales **40x more pixels** (23.5M vs 579K).
+    Walking up to a wall means near blocks whose projected strips are
+    full-screen height, so cost is dominated by **scaled pixel area**, not by
+    how many cells the DDA crosses. Occlusion culling cannot help here — these
+    strips are genuinely visible.
+  - `block_world_2` (open terrain) is the opposite: ~21,800 scale calls/frame
+    for only 1.3M pixels, so it is dominated by **per-call overhead** — the
+    bottleneck the note above already identified.
+  Batching a column into fewer Surface ops attacks the second regime; the
+  first needs the strip scaling itself to get cheaper (or fewer columns).
 - **Follow-up decision, same day: the block_world extension's further work
   is set aside** (not deleted — `extensions/block_world/`, both samples,
   and all their tests remain and stay green) in favor of a cheaper vertical
