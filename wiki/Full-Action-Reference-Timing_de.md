@@ -43,7 +43,7 @@ Setzt die Zeitleisten-Bezeichnung dieser Instanz und stellt ihre Position auf 0 
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `timeline` | Text | — | A label for your own reference; not a resource lookup |
+| `timeline` | Text | — | Eine Bezeichnung für Sie selbst; keine Ressourcensuche |
 
 ### Position der Zeitleiste festlegen
 
@@ -57,8 +57,8 @@ Setzt die Position dieser Instanz auf der Zeitleiste (oder verschiebt sie)
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `position` | Zahl | `0` | Position in steps |
-| `relative` | Ja/Nein | Nein | Add to the current position instead of setting it absolutely |
+| `position` | Zahl | `0` | Position in Schritten |
+| `relative` | Ja/Nein | Nein | Zur aktuellen Position addieren, statt sie absolut zu setzen |
 
 ### Geschwindigkeit der Zeitleiste festlegen
 
@@ -72,7 +72,7 @@ Setzt den Geschwindigkeitsfaktor der Zeitleisten-Wiedergabe
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `speed` | Zahl | `1.0` | 1.0=normal, 0.5=half speed, 2.0=double speed |
+| `speed` | Zahl | `1.0` | 1.0 = normal, 0.5 = halbe Geschwindigkeit, 2.0 = doppelte Geschwindigkeit |
 
 ### Warten
 

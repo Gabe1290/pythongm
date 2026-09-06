@@ -16,8 +16,8 @@ Verknüpft eine lokale Taste mit einer „benannten Eingabe“, die an den Host 
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `name` | Text | — | A label of your choosing (e.g. "jump", "fire") |
-| `key` | Text | — | A key name: "space", "left", "a", "5", "lshift"... |
+| `name` | Text | — | Eine Bezeichnung Ihrer Wahl (z. B. "jump", "fire") |
+| `key` | Text | — | Ein Tastenname: "space", "left", "a", "5", "lshift"... |
 
 ### Netzwerkobjekt erzeugen
 
@@ -31,11 +31,11 @@ Nur beim Host: erzeugt eine Instanz, die auf allen Clients automatisch als gegl�
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `object` | Objekt | — | The type of object to create |
+| `object` | Objekt | — | Die Art des zu erstellenden Objekts |
 | `x` | Text | `0` |  |
 | `y` | Text | `0` |  |
-| `owner` | Text | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; optional |
-| `relative` | Ja/Nein | Nein | Position relative to the object running the action; optional |
+| `owner` | Text | `0` | Der Spieler, der diese Instanz steuert (0 = Host). Oft global.network_sender innerhalb von „Spieler beigetreten“.; optional |
+| `relative` | Ja/Nein | Nein | Position relativ zu dem Objekt, das die Aktion ausführt; optional |
 
 ### Spiel hosten
 
@@ -49,11 +49,11 @@ Wird zum Host einer LAN-Mehrspielerpartie: die anderen Spieler verbinden sich mi
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `game_name` | Text | `PyGameMaker` | Name shown in the server list (network discovery); optional |
-| `max_players` | Zahl | `8` | Largest number of players, host included (2 to 16); optional |
-| `port` | Zahl | `45782` | TCP port -- must be the same on the host and every client; optional |
-| `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
-| `show_lobby` | Ja/Nein | Nein | Show a "Waiting for players..." screen with a Start button before the game begins; optional |
+| `game_name` | Text | `PyGameMaker` | Name, der in der Serverliste angezeigt wird (Netzwerksuche); optional |
+| `max_players` | Zahl | `8` | Größte Anzahl Spieler, Host eingeschlossen (2 bis 16); optional |
+| `port` | Zahl | `45782` | TCP-Port – muss beim Host und bei jedem Client gleich sein; optional |
+| `player_name` | Text | — | Name dieses Spielers (leer = global.player_name, sonst "Player"); optional |
+| `show_lobby` | Ja/Nein | Nein | Vor dem Spielbeginn einen Bildschirm „Warten auf Spieler …“ mit Startknopf anzeigen; optional |
 
 ### Wenn ich diese Instanz steuere
 
@@ -79,8 +79,8 @@ Eine Bedingung beim Host: wahr, solange der genannte Spieler die genannte Eingab
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `player` | Text | `0` | Player number (0 = host) |
-| `name` | Text | — | The named input to test (e.g. "jump") |
+| `player` | Text | `0` | Spielernummer (0 = Host) |
+| `name` | Text | — | Die zu prüfende benannte Eingabe (z. B. "jump") |
 
 ### Spiel beitreten
 
@@ -94,9 +94,9 @@ Verbindet sich mit einer LAN-Mehrspielerpartie, die eine andere Maschine hostet.
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `host` | Text | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); optional |
-| `port` | Zahl | `45782` | TCP port -- must match the host's; optional |
-| `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
+| `host` | Text | `127.0.0.1` | LAN-IP-Adresse des Hosts ("auto" öffnet den eingebauten Verbindungsbildschirm); optional |
+| `port` | Zahl | `45782` | TCP-Port – muss mit dem des Hosts übereinstimmen; optional |
+| `player_name` | Text | — | Name dieses Spielers (leer = global.player_name, sonst "Player"); optional |
 
 ### Spiel verlassen
 
@@ -122,8 +122,8 @@ Kopiert eine geteilte Variable in eine globale Variable, um sie in einer Berechn
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `name` | Text | — | Name of the shared variable to read |
-| `into` | Text | — | Name of the global variable to write the value into |
+| `name` | Text | — | Name der zu lesenden geteilten Variable |
+| `into` | Text | — | Name der globalen Variable, in die der Wert geschrieben wird |
 
 ### Netzwerknachricht senden
 
@@ -137,9 +137,9 @@ Sendet eine eigene Nachricht an alle. Löst auf den betroffenen Maschinen das Er
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `event` | Text | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
-| `data` | Text | — | A number, text, true/false, or a short list; optional |
-| `target` | Auswahl | `all` | all = everyone; host = the host only; Auswahl: `all`, `host` |
+| `event` | Text | — | Eine Bezeichnung Ihrer Wahl, die der Handler prüft (z. B. "buzz", "answer") |
+| `data` | Text | — | Eine Zahl, ein Text, true/false oder eine kurze Liste; optional |
+| `target` | Auswahl | `all` | all = alle; host = nur der Host; Auswahl: `all`, `host` |
 
 ### Netzwerkmodus festlegen (v1)
 
@@ -153,9 +153,9 @@ Eine ältere Low-Level-Aktion: startet den Raum im Host- oder Client-Modus (nur 
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `mode` | Auswahl | `host` | Host = others connect to you; Client = you connect to a host; Auswahl: `host`, `client` |
-| `host` | Text | `127.0.0.1` | The host's LAN IP address (Client mode only); optional |
-| `port` | Zahl | `45782` | TCP port -- must be the same on the host and the client; optional |
+| `mode` | Auswahl | `host` | Host = andere verbinden sich mit Ihnen; Client = Sie verbinden sich mit einem Host; Auswahl: `host`, `client` |
+| `host` | Text | `127.0.0.1` | LAN-IP-Adresse des Hosts (nur im Client-Modus); optional |
+| `port` | Zahl | `45782` | TCP-Port – muss beim Host und beim Client gleich sein; optional |
 
 ### Geteilte Variable setzen
 
@@ -169,8 +169,8 @@ Schreibt eine Variable, die alle Maschinen teilen. Beim Host wird sie sofort üb
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `name` | Text | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Text | `0` | A number, text or true/false (complex objects are refused) |
+| `name` | Text | — | Ein einfacher Bezeichner (Buchstaben, Ziffern, _) – keine Leerzeichen, keine Operatoren |
+| `value` | Text | `0` | Eine Zahl, ein Text oder true/false (zusammengesetzte Objekte werden abgelehnt) |
 
 ### Besitzer der Instanz festlegen
 
@@ -184,7 +184,7 @@ Legt fest, welcher Spieler diese synchronisierte Instanz steuert (0 = Host, 1, 2
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `player` | Text | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+| `player` | Text | `0` | Spielernummer (0 = Host). Oft global.network_sender innerhalb von „Spieler beigetreten“. |
 
 ### Synchronisationsrate festlegen
 
@@ -198,8 +198,8 @@ Stellt ein, wie oft der Host Momentaufnahmen sendet und wie weit dahinter die Cl
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `hz` | Zahl | `20` | 10-30 works well on a local network (default 20); optional |
-| `interp_ms` | Zahl | `100` | How far behind ghosts are drawn, in milliseconds (default 100); optional |
+| `hz` | Zahl | `20` | 10–30 funktioniert im lokalen Netz gut (Standard 20); optional |
+| `interp_ms` | Zahl | `100` | Wie weit zurückversetzt Geister gezeichnet werden, in Millisekunden (Standard 100); optional |
 
 ### Netzwerkspiel starten
 
@@ -225,7 +225,7 @@ Markiert die Instanz, die diese Aktion ausführt, als synchronisiert: ihre Posit
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `vars` | Text | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); optional |
+| `vars` | Text | — | Namen zusätzlich zu kopierender Instanzvariablen, durch Kommas getrennt (z. B. "hp, colour"); optional |
 
 ---
 
