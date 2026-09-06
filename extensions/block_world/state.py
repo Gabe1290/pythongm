@@ -52,6 +52,22 @@ TEXTURE_DIR = os.path.join(
 # unlike Luanti's node definitions). "solid" gates collision (Phase 4);
 # "transparent" flags a block a renderer (Phase 2) should not use to occlude
 # whatever is behind it.
+# How many screen columns get raycast, capped. Cost is per column and almost
+# nothing else -- halving this from the original 320 nearly doubled the frame
+# rate on open terrain (block_world_2 8.11 -> 15.00 fps) and pushed
+# block_world_1 past its 30fps target standing still, for 4px-wide strips
+# instead of 2px on the standard 640px window. Side-by-side that is very hard
+# to see: block textures are 16px Minecraft-style already, so only the
+# diagonal edges of blocks get visibly chunkier, which reads as style rather
+# than as a defect in a voxel game. Any project can raise it on Enable Block
+# World View.
+#
+# The HTML5 and Kivy ports carry the same number by hand (export_html5.js,
+# export_kivy.py) -- a divergence here means an exported game renders at a
+# different resolution than Test Game, so tests/test_block_world_default_columns.py
+# pins all three together.
+DEFAULT_COLUMNS = 160
+
 BLOCK_TYPES = {
     "dirt": {"all": "default_dirt.png", "solid": True},
     "grass": {
@@ -441,9 +457,9 @@ def column_index(room):
     Phase 2b's renderer needs the whole vertical STACK at each cell it steps
     into, and the backing store is keyed by a formatted ``"x,y,z"`` string.
     Probing that per candidate layer means a string format per lookup, which
-    at 320 columns x 24 cells x a handful of layers is tens of thousands of
-    formats per frame -- comfortably the most expensive thing in the render
-    path. One tuple-keyed dict lookup per cell instead.
+    at DEFAULT_COLUMNS columns x 24 cells x a handful of layers is many
+    thousands of formats per frame -- comfortably the most expensive thing in
+    the render path. One tuple-keyed dict lookup per cell instead.
     """
     st = block_world_state(room)
     merged = st.get("_merged_columns")

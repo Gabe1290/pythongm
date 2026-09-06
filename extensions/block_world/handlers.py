@@ -11,7 +11,8 @@ import json
 import math
 from pathlib import Path
 
-from .state import (BLOCK_TYPES, DEFAULT_HOTBAR, block_world_state, can_enter,
+from .state import (BLOCK_TYPES, DEFAULT_COLUMNS, DEFAULT_HOTBAR,
+                    block_world_state, can_enter,
                     cell_of, get_block, ground_layer, is_breakable,
                     load_block_list, load_world_state, peek_camera,
                     remove_block, set_block)
@@ -594,7 +595,7 @@ class PluginExecutor:
             "fov": _num("fov", 66),
             "render_distance": int(_num("render_distance", 20)),
             "cell_size": int(_num("cell_size", 32)),
-            "columns": int(_num("columns", 320)),
+            "columns": int(_num("columns", DEFAULT_COLUMNS)),
             "wall_color": str(parameters.get("wall_color", "#8a8a8a")),
             "floor_color": str(parameters.get("floor_color", "#3a2f1c")),
             "ceiling_color": str(parameters.get("ceiling_color", "#87CEEB")),

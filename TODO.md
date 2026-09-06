@@ -806,6 +806,38 @@ existed. Regenerated; 0 untranslated strings reported now.
     the baseline was 17.31/3.45/7.43/7.40 — the machine had simply got ~10%
     slower. **Always A/B against a worktree in the same sitting**, never
     against a number from earlier in the session.
+- **A3.3 units 2a + 2b SHIPPED 2026-09-06 — both samples are now ~2x their
+  August speed, and block_world_1 finally MEETS its 30fps target standing
+  still.**
+  - **2a, invisible: hoist the per-column clamps.** min()/max() were 10.6% of a
+    frame across ~272,000 calls; rewritten as conditionals in
+    `_draw_wall_strip`, `_draw_horizontal_face_textured` and its `_texel`
+    closure. **+10% on every case**, pixel-identical.
+  - **2b, visible and authorised: `DEFAULT_COLUMNS` 320 -> 160.** Cost is per
+    column and almost nothing else, so halving them nearly doubles the frame
+    rate: `block_world_1` static **18.80 -> 34.17 fps (target met)**, walking
+    11.80 -> 16.80; `block_world_2` **8.10 -> 14.92** static, 8.15 -> 15.04
+    walking. Worst frame 138ms -> 85ms.
+    - **What it costs visually is very little.** 4px-wide strips instead of 2px
+      on the standard 640px window. Block textures are 16px Minecraft-style
+      already, so only the diagonal edges of blocks get chunkier; side by side
+      at 320/213/160/128 the pictures are hard to tell apart, and it reads as
+      style rather than as a defect in a voxel game. Any project can raise it
+      on Enable Block World View, which already documents the dial.
+    - **Six copies of that number existed** across desktop, `export_html5.js`
+      and `export_kivy.py`. Desktop now shares `state.DEFAULT_COLUMNS` (put in
+      `state.py`, not `renderer.py`, so the pygame-free modules can import it);
+      the two ports still carry it by hand, so
+      `tests/test_block_world_default_columns.py` pins all three together — a
+      divergence would mean an exported game renders at a different resolution
+      than Test Game. That test also caught a stale "at 320 columns" in a
+      `state.py` docstring.
+  - **Cumulative across A3.3** (from the pre-unit-1 baseline, same machine):
+    `block_world_1` static 17.31 -> 34.17 (~2x), walking **3.45 -> 16.80
+    (~4.9x)**; `block_world_2` 7.43 -> 14.92 and 7.40 -> 15.04 (~2x each).
+    `block_world_2` is still 2x under target, so the open-terrain regime is
+    improved but not solved; merging adjacent columns that share a face into
+    one wider scale+blit remains the untried idea.
 - **Follow-up decision, same day: the block_world extension's further work
   is set aside** (not deleted — `extensions/block_world/`, both samples,
   and all their tests remain and stay green) in favor of a cheaper vertical

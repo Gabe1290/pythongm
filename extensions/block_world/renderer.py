@@ -32,7 +32,7 @@ import math
 import pygame
 
 from .state import (block_world_state, get_block, block_face_textures,
-                    column_index, is_transparent, CHUNK_SIZE,
+                    column_index, is_transparent, CHUNK_SIZE, DEFAULT_COLUMNS,
                     ensure_chunks_loaded, unload_distant_chunks)
 
 _TEXTURE_CACHE = {}
@@ -478,6 +478,7 @@ def eye_z_for(cfg):
 # slow in pure Python, and on a horizontal plane the rows between samples
 # differ too little for the interpolation to show.
 DEFAULT_TOP_CAST_RES = 4
+
 
 # Looking up and down (Phase 2c) is a Y-SHEAR: the horizon slides along the
 # screen and every other formula is left alone. That works because the whole
@@ -971,7 +972,7 @@ def render_block_world_view(room, screen: pygame.Surface):
     fov_rad = math.radians(fov_deg)
     render_distance_cells = int(cfg.get("render_distance", 20))
     max_dist = render_distance_cells * cell_size
-    num_columns = int(cfg.get("columns", min(w, 320)))
+    num_columns = int(cfg.get("columns", min(w, DEFAULT_COLUMNS)))
     col_width = w / num_columns
 
     # Tier 7e Phase 2 (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md): generate
