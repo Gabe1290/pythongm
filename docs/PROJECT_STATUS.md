@@ -74,12 +74,22 @@ This is the complete list. Everything else that used to be tracked in
    smaller and lower-priority than the other three — write a plan when
    it's actually next in line, not speculatively.
 
-5. **`TODO.md`'s own two small leftovers** (already tracked there, not
-   duplicated here): the Block World renderer's remaining fps gap
-   (deliberately parked in favor of `sky_strike_1`, not neglected — see
-   TODO.md's "Block World renderer" section), and a low-priority
-   asset-type-registration formalization note with no current asset type
-   actually affected by its absence.
+5. **`docs/BLOCK_WORLD_PERF_PLAN.md` — the Block World fps gap, now scoped.**
+   *(New 2026-09-06.)* This entry used to point at `TODO.md` and say the gap
+   was "deliberately parked". It has since been worked: `block_world_1` went
+   17.3 → 35.9 fps standing still (**past its 30 fps target**) and 3.5 → 16.5
+   walking, `block_world_2` 7.4 → 15.7. What remains is `block_world_2` alone,
+   and the plan exists to record that it is **not** the renderer rewrite the
+   old note assumed. Measured: drawing is 51 of a 65 ms frame, the draw count
+   is dominated by distance, and `render_distance` 10 already measures 32.8 fps
+   — target met — if distance fog is added so a shorter view is haze rather
+   than a hard brown cut. Phase 1 is a day's work and improves how the sample
+   looks regardless of frame rate; Phases 2–3 are explicitly conditional on
+   Phase 1 falling short.
+
+6. **`TODO.md`'s own small leftover** (tracked there, not duplicated here): a
+   low-priority asset-type-registration formalization note, with no current
+   asset type actually affected by its absence.
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 

@@ -861,6 +861,15 @@ existed. Regenerated; 0 untranslated strings reported now.
   35.7/35.9, `block_world_2` 15.0 -> 15.7 both conditions; `block_world_1`
   walking flat, which is consistent with the two-regime model -- its cost is
   near-wall pixel work, not per-strip overhead.
+- **Scoped for a future session: `docs/BLOCK_WORLD_PERF_PLAN.md`** (written
+  2026-09-06). It contradicts the "needs a different rendering approach"
+  guess below, with measurements: drawing is 51 ms of a 65 ms frame (marching
+  and the loop are only 13.5), the draw count is dominated by distance, and
+  `render_distance` 10 already measures **32.8 fps -- the target met** -- if
+  distance fog is added first so a shorter view reads as haze instead of the
+  hard brown cut it produces today. Phase 1 is a rendering change, not a
+  rewrite; numpy (the old suggestion) turns out to be absent from this project
+  entirely and would be a new hard dependency for every exported game.
 - **Where Block World stands now.** `block_world_1` **meets its 30fps target
   standing still (35.9)** and runs at ~16.5 walking; `block_world_2` is at
   ~15.7, still 1.9x under. Every idea in the A3.2 profile has now been either
