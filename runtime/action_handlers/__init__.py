@@ -14,6 +14,16 @@ Only the handful of handlers below have a real producer (the IDE action
 palette / Blockly config / the Python code parser / bundled samples); the
 category modules whose actions had no producer anywhere were removed
 2026-09-03 as part of the ``docs/POST_1_0_REFACTOR.md`` teardown.
+
+``control_handlers`` and ``sound_handlers`` followed on 2026-09-06, once the
+question they were blocked on was answered: legacy action names from before
+``if_condition`` (``if_variable``, ``if_dice``, ``if_expression``,
+``if_mouse_button``, ``if_key_pressed``, ``if_random_chance``) and the legacy
+audio names (``stop_all_sounds``, ``set_sound_volume``, ``if_sound_playing``)
+are NOT worth carrying -- there are too few legacy projects to justify it.
+The HTML5 and Kivy exporters keep their own defensive cases for a couple of
+those spellings; that asymmetry is deliberate and costs nothing, rather than
+being a gap to close.
 """
 
 from typing import Dict, Callable, Any
@@ -32,13 +42,11 @@ def register_handlers(handlers: Dict[str, ActionHandler]) -> None:
 
 # Import the live handler modules - each registers its handlers
 from runtime.action_handlers.movement_handlers import MOVEMENT_HANDLERS
-from runtime.action_handlers.control_handlers import CONTROL_HANDLERS
 from runtime.action_handlers.variable_handlers import VARIABLE_HANDLERS
 from runtime.action_handlers.sound_handlers import SOUND_HANDLERS
 
 # Register all handlers
 register_handlers(MOVEMENT_HANDLERS)
-register_handlers(CONTROL_HANDLERS)
 register_handlers(VARIABLE_HANDLERS)
 register_handlers(SOUND_HANDLERS)
 

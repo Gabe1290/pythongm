@@ -2,21 +2,45 @@
 """
 Regression: the "script"/"code" action stub removal (2026-08-14).
 
-runtime/action_handlers/control_handlers.py used to register two handlers
+`runtime/action_handlers/control_handlers.py` used to register two handlers
 (handle_script, handle_code) under the action names "script"/"code". Neither
-name ever had an events/action_types.py entry, and no sample/importer ever
-emitted either name -- confirmed dead code, distinct from the real, working
-execute_script/execute_code actions. This pins their removal and confirms
-the real actions are unaffected.
+name ever had an events/action_types.py entry, and no sample or importer ever
+emitted either -- confirmed dead code, distinct from the real, working
+execute_script / execute_code actions.
+
+That module itself was deleted on 2026-09-06 (the docs/POST_1_0_REFACTOR.md
+action_handlers teardown, once the "do we keep legacy action names?" question
+was answered: no). So this no longer imports it. The assertions moved to the
+LIVE dispatch table instead, which is a stronger statement of the same intent
+-- it holds no matter which module a handler might come back from -- and the
+same treatment the extra_handlers.py deletion gave its own tests.
 """
 
 from events.action_types import get_action_type
-from runtime.action_handlers.control_handlers import CONTROL_HANDLERS
 
 
-def test_dead_action_names_not_in_control_handlers():
-    assert "script" not in CONTROL_HANDLERS
-    assert "code" not in CONTROL_HANDLERS
+def test_dead_action_names_are_not_dispatchable():
+    """The point of the original removal: nothing anywhere registers these."""
+    from runtime.action_executor import ActionExecutor
+
+    executor = ActionExecutor()
+    assert "script" not in executor.action_handlers
+    assert "code" not in executor.action_handlers
+
+
+def test_the_module_that_defined_them_is_gone():
+    """It carried only legacy pre-if_condition conditionals besides these two;
+    if it comes back, the teardown has been undone and the names above deserve
+    re-checking rather than assuming."""
+    import importlib
+
+    try:
+        importlib.import_module("runtime.action_handlers.control_handlers")
+    except ImportError:
+        return
+    raise AssertionError(
+        "runtime/action_handlers/control_handlers.py is back -- re-verify that "
+        "it does not reintroduce the dead 'script'/'code' handlers")
 
 
 def test_dead_action_names_not_resolvable():
