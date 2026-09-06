@@ -624,7 +624,7 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         fov_rad = math.radians(fov_deg)
         render_distance_cells = int(cfg.get('render_distance', 20))
         max_dist = render_distance_cells * cell_size
-        num_columns = int(cfg.get('columns', 0)) or int(min(W, 320))
+        num_columns = int(cfg.get('columns', 0)) or int(min(W, 160))
         num_columns = max(1, num_columns)
         col_width = W / num_columns
         facing_screen_rad = math.radians(-float(getattr(camera, 'facing_angle', 0)))
@@ -1027,7 +1027,7 @@ def _cg_enable_block_world_view(gen, params, event_type):
         'fov': _tofloat(params.get('fov'), 66),
         'render_distance': int(_tofloat(params.get('render_distance'), 20)),
         'cell_size': int(_tofloat(params.get('cell_size'), 32)),
-        'columns': int(_tofloat(params.get('columns'), 320)),
+        'columns': int(_tofloat(params.get('columns'), 160)),
         'wall_color': str(params.get('wall_color') or '#8a8a8a'),
         'floor_color': str(params.get('floor_color') or '#3a2f1c'),
         'ceiling_color': str(params.get('ceiling_color') or '#87CEEB'),

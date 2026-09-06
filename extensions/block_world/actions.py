@@ -9,7 +9,7 @@ PluginExecutor class). The loader merges this into ACTION_TYPES at startup.
 """
 from events.action_types import ActionType, ActionParameter
 
-from .state import BLOCK_TYPES
+from .state import BLOCK_TYPES, DEFAULT_COLUMNS
 
 # Offered as a dropdown rather than a typed string: these are the block ids
 # the CC0 texture registry actually knows, and a typo would otherwise be a
@@ -45,7 +45,7 @@ PLUGIN_ACTIONS = {
                 default_value=32, required=False,
                 description="Grid cell size in pixels (match the block-placement grid)"),
             ActionParameter(name="columns", display_name="Columns", param_type="number",
-                default_value=320, required=False,
+                default_value=DEFAULT_COLUMNS, required=False,
                 description="Screen columns to raycast (lower = faster/chunkier)"),
             ActionParameter(name="wall_color", display_name="Fallback Block Color",
                 param_type="color", default_value="#8a8a8a", required=False,

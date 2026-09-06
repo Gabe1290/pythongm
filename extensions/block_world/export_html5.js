@@ -591,7 +591,7 @@ function bwRenderView(room, ctx) {
     const fovRad = (cfg.fov || 66) * Math.PI / 180;
     const renderDistanceCells = cfg.render_distance || 20;
     const maxDist = renderDistanceCells * cellSize;
-    const numColumns = cfg.columns || Math.min(w, 320);
+    const numColumns = cfg.columns || Math.min(w, 160);
     const colWidth = w / numColumns;
     const facingScreenRad = -camera.facing_angle * Math.PI / 180;
     const planeTan = Math.tan(fovRad / 2);
@@ -1013,7 +1013,7 @@ registerExtensionAction('enable_block_world_view', function(obj, params, game) {
         fov: num('fov', 66),
         render_distance: Math.trunc(num('render_distance', 20)),
         cell_size: Math.trunc(num('cell_size', 32)),
-        columns: Math.trunc(num('columns', 320)),
+        columns: Math.trunc(num('columns', 160)),
         wall_color: params.wall_color || '#8a8a8a',
         floor_color: params.floor_color || '#3a2f1c',
         ceiling_color: params.ceiling_color || '#87CEEB',
