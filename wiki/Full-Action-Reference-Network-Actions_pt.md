@@ -16,8 +16,8 @@ Associa uma tecla local a uma «entrada com nome» comunicada ao anfitrião. O a
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | A label of your choosing (e.g. "jump", "fire") |
-| `key` | Texto | — | A key name: "space", "left", "a", "5", "lshift"... |
+| `name` | Texto | — | Uma etiqueta à tua escolha (por ex. "jump", "fire") |
+| `key` | Texto | — | Um nome de tecla: "space", "left", "a", "5", "lshift"... |
 
 ### Criar objeto em rede
 
@@ -31,11 +31,11 @@ Só no anfitrião: cria uma instância que aparece automaticamente em todos os c
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `object` | Objeto | — | The type of object to create |
+| `object` | Objeto | — | O tipo de objeto a criar |
 | `x` | Texto | `0` |  |
 | `y` | Texto | `0` |  |
-| `owner` | Texto | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; opcional |
-| `relative` | Sim/Não | Não | Position relative to the object running the action; opcional |
+| `owner` | Texto | `0` | O jogador que comanda esta instância (0 = anfitrião). Muitas vezes global.network_sender dentro de «Jogador entrou».; opcional |
+| `relative` | Sim/Não | Não | Posição relativa ao objeto que executa a ação; opcional |
 
 ### Alojar um jogo
 
@@ -49,11 +49,11 @@ Torna esta máquina o anfitrião de um jogo multijogador em LAN: os outros jogad
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `game_name` | Texto | `PyGameMaker` | Name shown in the server list (network discovery); opcional |
-| `max_players` | Número | `8` | Largest number of players, host included (2 to 16); opcional |
-| `port` | Número | `45782` | TCP port -- must be the same on the host and every client; opcional |
-| `player_name` | Texto | — | This player's name (empty = global.player_name, or "Player"); opcional |
-| `show_lobby` | Sim/Não | Não | Show a "Waiting for players..." screen with a Start button before the game begins; opcional |
+| `game_name` | Texto | `PyGameMaker` | Nome mostrado na lista de servidores (deteção na rede); opcional |
+| `max_players` | Número | `8` | Número máximo de jogadores, incluindo o anfitrião (de 2 a 16); opcional |
+| `port` | Número | `45782` | Porta TCP: tem de ser a mesma no anfitrião e em cada cliente; opcional |
+| `player_name` | Texto | — | Nome deste jogador (vazio = global.player_name, ou "Player"); opcional |
+| `show_lobby` | Sim/Não | Não | Mostrar um ecrã «À espera de jogadores...» com um botão Começar antes de o jogo arrancar; opcional |
 
 ### Se eu controlo esta instância
 
@@ -79,8 +79,8 @@ Uma condição, no anfitrião: verdadeira enquanto o jogador indicado mantiver a
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `player` | Texto | `0` | Player number (0 = host) |
-| `name` | Texto | — | The named input to test (e.g. "jump") |
+| `player` | Texto | `0` | Número do jogador (0 = anfitrião) |
+| `name` | Texto | — | A entrada com nome a testar (por ex. "jump") |
 
 ### Entrar num jogo
 
@@ -94,9 +94,9 @@ Liga-se a um jogo multijogador em LAN alojado noutra máquina. O anfitrião defi
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `host` | Texto | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); opcional |
-| `port` | Número | `45782` | TCP port -- must match the host's; opcional |
-| `player_name` | Texto | — | This player's name (empty = global.player_name, or "Player"); opcional |
+| `host` | Texto | `127.0.0.1` | Endereço IP do anfitrião na rede local ("auto" abre o ecrã de ligação incorporado); opcional |
+| `port` | Número | `45782` | Porta TCP: tem de coincidir com a do anfitrião; opcional |
+| `player_name` | Texto | — | Nome deste jogador (vazio = global.player_name, ou "Player"); opcional |
 
 ### Sair do jogo
 
@@ -122,8 +122,8 @@ Copia uma variável partilhada para uma variável global, para a usar num cálcu
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | Name of the shared variable to read |
-| `into` | Texto | — | Name of the global variable to write the value into |
+| `name` | Texto | — | Nome da variável partilhada a ler |
+| `into` | Texto | — | Nome da variável global onde escrever o valor |
 
 ### Enviar mensagem de rede
 
@@ -137,9 +137,9 @@ Difunde uma mensagem à tua escolha. Dispara o evento «Mensagem de rede» nas m
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `event` | Texto | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
-| `data` | Texto | — | A number, text, true/false, or a short list; opcional |
-| `target` | Escolha | `all` | all = everyone; host = the host only; Opções: `all`, `host` |
+| `event` | Texto | — | Uma etiqueta à tua escolha que o tratamento testa (por ex. "buzz", "answer") |
+| `data` | Texto | — | Um número, texto, true/false ou uma lista curta; opcional |
+| `target` | Escolha | `all` | all = toda a gente; host = só o anfitrião; Opções: `all`, `host` |
 
 ### Definir o modo de rede (v1)
 
@@ -153,9 +153,9 @@ Uma ação antiga de baixo nível: arranca a sala em modo anfitrião ou cliente 
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `mode` | Escolha | `host` | Host = others connect to you; Client = you connect to a host; Opções: `host`, `client` |
-| `host` | Texto | `127.0.0.1` | The host's LAN IP address (Client mode only); opcional |
-| `port` | Número | `45782` | TCP port -- must be the same on the host and the client; opcional |
+| `mode` | Escolha | `host` | Anfitrião = os outros ligam-se a ti; Cliente = tu ligas-te a um anfitrião; Opções: `host`, `client` |
+| `host` | Texto | `127.0.0.1` | Endereço IP do anfitrião na rede local (só no modo Cliente); opcional |
+| `port` | Número | `45782` | Porta TCP: tem de ser a mesma no anfitrião e no cliente; opcional |
 
 ### Definir variável partilhada
 
@@ -169,8 +169,8 @@ Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplica
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Texto | `0` | A number, text or true/false (complex objects are refused) |
+| `name` | Texto | — | Um identificador simples (letras, algarismos, _): sem espaços nem operadores |
+| `value` | Texto | `0` | Um número, texto ou true/false (objetos complexos são recusados) |
 
 ### Definir o dono da instância
 
@@ -184,7 +184,7 @@ Escolhe qual o jogador que comanda esta instância sincronizada (0 = anfitrião;
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `player` | Texto | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+| `player` | Texto | `0` | Número do jogador (0 = anfitrião). Muitas vezes global.network_sender dentro de «Jogador entrou». |
 
 ### Ajustar a frequência de sincronização
 
@@ -198,8 +198,8 @@ Ajusta com que frequência o anfitrião envia instantâneos e com que atraso os 
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `hz` | Número | `20` | 10-30 works well on a local network (default 20); opcional |
-| `interp_ms` | Número | `100` | How far behind ghosts are drawn, in milliseconds (default 100); opcional |
+| `hz` | Número | `20` | De 10 a 30 funciona bem numa rede local (por omissão 20); opcional |
+| `interp_ms` | Número | `100` | Com que atraso os fantasmas são desenhados, em milissegundos (por omissão 100); opcional |
 
 ### Começar o jogo em rede
 
@@ -225,7 +225,7 @@ Marca como sincronizada a instância que executa esta ação: a sua posição, r
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `vars` | Texto | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); opcional |
+| `vars` | Texto | — | Nomes de variáveis de instância a copiar também, separados por vírgulas (por ex. "hp, colour"); opcional |
 
 ---
 

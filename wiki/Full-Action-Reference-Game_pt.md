@@ -160,7 +160,7 @@ Desenhar uma cadeia de texto em uma posição
 | `x` | Número | `0` | Posição X |
 | `y` | Número | `0` | Posição Y |
 | `relative` | Sim/Não | Não | Desenhar em relação à posição desta instância em vez de coordenadas de tela absolutas; opcional |
-| `color` | Cor | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; opcional |
+| `color` | Cor | — | Cor do texto (por ex. #ffffff). Vazio = a cor de desenho ativa, ou preto.; opcional |
 
 ### Desenhar variável
 
@@ -204,7 +204,7 @@ Repõe a sala, a pontuação, as vidas, a saúde, as variáveis globais e o esta
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `filename` | Texto | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+| `filename` | Texto | `savegame.sav` | Nome do ficheiro guardado a carregar (da pasta saves/ do projeto) |
 
 ### Abrir página web
 
@@ -244,7 +244,7 @@ Guarda num ficheiro a sala atual, a pontuação, as vidas, a saúde, as variáve
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `filename` | Texto | `savegame.sav` | Save file name (written to the project's saves/ folder) |
+| `filename` | Texto | `savegame.sav` | Nome do ficheiro de gravação (escrito na pasta saves/ do projeto) |
 
 ### Definir transparência
 
@@ -360,8 +360,8 @@ Reproduz um ficheiro de vídeo no leitor de vídeo predefinido do sistema: abre 
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `filename` | Texto | — | Path to the video file |
-| `fullscreen` | Sim/Não | Não | Request fullscreen playback (support depends on your system's player); opcional |
+| `filename` | Texto | — | Caminho para o ficheiro de vídeo |
+| `fullscreen` | Sim/Não | Não | Pedir reprodução em ecrã inteiro (depende do leitor do teu sistema); opcional |
 
 ### Ecrã: mostrar imagem
 
@@ -375,7 +375,7 @@ Mostra um sprite em ecrã inteiro e põe o jogo em pausa até o jogador o fechar
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `image` | Sprite | — | Sprite to display full-screen |
+| `image` | Sprite | — | Sprite a mostrar em ecrã inteiro |
 
 ### Ecrã: mostrar texto
 
@@ -389,7 +389,7 @@ Mostra uma mensagem e põe o jogo em pausa até o jogador a fechar
 
 | Parâmetro | Tipo | Padrão | Notas |
 |-----------|------|---------|-------|
-| `text` | Texto | — | Message to display |
+| `text` | Texto | — | Mensagem a mostrar |
 
 ---
 
