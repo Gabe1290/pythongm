@@ -314,7 +314,7 @@ Award score when Break Block successfully removes a chosen block type -- call on
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
-- [Network](Full-Action-Reference-Network_uk) (15)
+- [Network](Full-Action-Reference-Network-Actions_uk) (15)
 - [Particles](Full-Action-Reference-Particles_uk) (8)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

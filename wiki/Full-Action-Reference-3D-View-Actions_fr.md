@@ -314,7 +314,7 @@ Définir la direction du regard de l'instance pour une caméra à lancer de rayo
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Network](Full-Action-Reference-Network_fr) (15)
+- [Network](Full-Action-Reference-Network-Actions_fr) (15)
 - [Particles](Full-Action-Reference-Particles_fr) (8)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

@@ -77,7 +77,7 @@
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
 - [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (16)
-- [Network](Full-Action-Reference-Network_uk) (15)
+- [Network](Full-Action-Reference-Network-Actions_uk) (15)
 - [Particles](Full-Action-Reference-Particles_uk) (8)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

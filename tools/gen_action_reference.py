@@ -50,7 +50,13 @@ FILE_KEY = {
     "Room": "Room", "Timing": "Timing", "Audio": "Audio", "Game": "Game",
     "Control": "Control", "Grid": "Grid", "Views": "Views",
     "3D View": "3D-View-Actions", "Particles": "Particles",
-    "Réseau": "Network-Actions",
+    # Keyed on the ENGLISH category name since 2026-09-06, when the
+    # extension was re-authored ("Réseau" -> "Network"). The PAGE name
+    # deliberately stays "Network-Actions": those pages are already
+    # published and wiki/Network.md links to them, and sync_wiki.sh is
+    # additive-only -- it never deletes, so a rename would strand the
+    # old pages live and break those links.
+    "Network": "Network-Actions",
 }
 
 

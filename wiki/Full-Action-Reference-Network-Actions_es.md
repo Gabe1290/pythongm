@@ -1,231 +1,231 @@
-# Réseau
+# Network
 
 *[Inicio](Home_es) | [Guía de preajustes](Preset-Guide_es) | [Referencia de eventos](Event-Reference_es)*
 
 > **Generado automáticamente** a partir del registro de acciones del IDE mediante `tools/gen_action_reference.py` — no editar a mano; vuelve a ejecutar el generador tras cambiar las acciones. Las traducciones provienen de `tools/action_ref_i18n.py`.
 
-### Associer une touche réseau
+### Asignar una tecla de red
 
 | Propiedad | Valor |
 |----------|-------|
 | **Nombre** | `bind_network_input` |
 | **Icono** | ⌨️ |
-| **Categoría** | Réseau |
+| **Categoría** | Network |
 
-Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space")
+Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space")
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | Étiquette libre (ex. "jump", "tir") |
-| `key` | Texto | — | Nom de touche : "space", "left", "a", "5", "lshift"... |
+| `name` | Texto | — | A label of your choosing (e.g. "jump", "fire") |
+| `key` | Texto | — | A key name: "space", "left", "a", "5", "lshift"... |
 
-### Créer un objet réseau
+### Crear objeto en red
 
 | Propiedad | Valor |
 |----------|-------|
 | **Nombre** | `network_spawn` |
 | **Icono** | ✨ |
-| **Categoría** | Réseau |
+| **Categoría** | Network |
 
-Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1
+Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `object` | Objeto | — | Type d'objet à créer |
+| `object` | Objeto | — | The type of object to create |
 | `x` | Texto | `0` |  |
 | `y` | Texto | `0` |  |
-| `owner` | Texto | `0` | Joueur qui pilote l'instance (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».; opcional |
-| `relative` | Sí/No | No | Position relative à l'objet qui exécute l'action; opcional |
+| `owner` | Texto | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; opcional |
+| `relative` | Sí/No | No | Position relative to the object running the action; opcional |
 
-### Définir le propriétaire de l'instance
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `set_instance_owner` |
-| **Icono** | 🎮 |
-| **Categoría** | Réseau |
-
-Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1)
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `player` | Texto | `0` | Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ». |
-
-### Définir une variable partagée
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `set_shared_var` |
-| **Icono** | 📤 |
-| **Categoría** | Réseau |
-
-Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.<nom>
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `name` | Texto | — | Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur |
-| `value` | Texto | `0` | Nombre, texte ou booléen (les objets complexes sont refusés) |
-
-### Démarrer la partie en réseau
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `start_networked_game` |
-| **Icono** | 🚦 |
-| **Categoría** | Réseau |
-
-Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines
-
-*Parámetros:* ninguno
-
-### Envoyer un message réseau
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `send_network_message` |
-| **Icono** | ✉️ |
-| **Categoría** | Réseau |
-
-Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `event` | Texto | — | Étiquette libre que le gestionnaire teste (ex. "buzz", "reponse") |
-| `data` | Texto | — | Nombre, texte, booléen ou petite liste; opcional |
-| `target` | Elección | `all` | all = tout le monde ; host = l'hôte seulement; Opciones: `all`, `host` |
-
-### Héberger une partie
+### Alojar una partida
 
 | Propiedad | Valor |
 |----------|-------|
 | **Nombre** | `host_game` |
 | **Icono** | 🌐 |
-| **Categoría** | Réseau |
+| **Categoría** | Network |
 
-Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host"
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `game_name` | Texto | `PyGameMaker` | Nom affiché dans la liste des serveurs (découverte réseau, Phase 6); opcional |
-| `max_players` | Número | `8` | Nombre maximal de joueurs, hôte compris (2 à 16); opcional |
-| `port` | Número | `45782` | Port TCP -- doit être identique chez l'hôte et les clients; opcional |
-| `player_name` | Texto | — | Nom de ce joueur (vide = global.player_name, ou « Joueur »); opcional |
-| `show_lobby` | Sí/No | No | Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie; opcional |
-
-### Lire une variable partagée
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `get_shared_var` |
-| **Icono** | 📥 |
-| **Categoría** | Réseau |
-
-Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.<nom> directement
+Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host"
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `name` | Texto | — | Nom de la variable partagée à lire |
-| `into` | Texto | — | Nom de la variable globale où écrire la valeur |
+| `game_name` | Texto | `PyGameMaker` | Name shown in the server list (network discovery); opcional |
+| `max_players` | Número | `8` | Largest number of players, host included (2 to 16); opcional |
+| `port` | Número | `45782` | TCP port -- must be the same on the host and every client; opcional |
+| `player_name` | Texto | — | This player's name (empty = global.player_name, or "Player"); opcional |
+| `show_lobby` | Sí/No | No | Show a "Waiting for players..." screen with a Start button before the game begins; opcional |
 
-### Quitter la partie
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `leave_game` |
-| **Icono** | 🚪 |
-| **Categoría** | Réseau |
-
-Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales
-
-*Parámetros:* ninguno
-
-### Rejoindre une partie
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `join_game` |
-| **Icono** | 🔌 |
-| **Categoría** | Réseau |
-
-Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `host` | Texto | `127.0.0.1` | Adresse IP LAN de l'hôte ("auto" = écran de connexion intégré, Phase 6); opcional |
-| `port` | Número | `45782` | Port TCP -- doit correspondre à celui de l'hôte; opcional |
-| `player_name` | Texto | — | Nom de ce joueur (vide = global.player_name, ou « Joueur »); opcional |
-
-### Régler la fréquence de synchro
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `set_sync_rate` |
-| **Icono** | ⏱️ |
-| **Categoría** | Réseau |
-
-Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai)
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `hz` | Número | `20` | 10-30 convient sur un réseau local (défaut 20); opcional |
-| `interp_ms` | Número | `100` | Retard d'affichage des fantômes, en millisecondes (défaut 100); opcional |
-
-### Set Network Mode (v1)
-
-| Propiedad | Valor |
-|----------|-------|
-| **Nombre** | `set_network_mode` |
-| **Icono** | 🌐 |
-| **Categoría** | Réseau |
-
-Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client
-
-| Parámetro | Tipo | Predet. | Notas |
-|-----------|------|---------|-------|
-| `mode` | Elección | `host` | Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte; Opciones: `host`, `client` |
-| `host` | Texto | `127.0.0.1` | Adresse IP LAN de l'hôte (mode Client uniquement); opcional |
-| `port` | Número | `45782` | Port TCP -- doit être identique chez l'hôte et le client; opcional |
-
-### Si je pilote cette instance
+### Si yo controlo esta instancia
 
 | Propiedad | Valor |
 |----------|-------|
 | **Nombre** | `is_instance_owner` |
 | **Icono** | ❓ |
-| **Categoría** | Réseau |
+| **Categoría** | Network |
 
-Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur
+A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine
 
 *Parámetros:* ninguno
 
-### Si le joueur appuie
+### Si el jugador pulsa
 
 | Propiedad | Valor |
 |----------|-------|
 | **Nombre** | `remote_input` |
 | **Icono** | ❓ |
-| **Categoría** | Réseau |
+| **Categoría** | Network |
 
-Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar
+A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `player` | Texto | `0` | Numéro de joueur (0 = hôte) |
-| `name` | Texto | — | L'entrée nommée à tester (ex. "jump") |
+| `player` | Texto | `0` | Player number (0 = host) |
+| `name` | Texto | — | The named input to test (e.g. "jump") |
 
-### Synchroniser cette instance
+### Unirse a una partida
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `join_game` |
+| **Icono** | 🔌 |
+| **Categoría** | Network |
+
+Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `host` | Texto | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); opcional |
+| `port` | Número | `45782` | TCP port -- must match the host's; opcional |
+| `player_name` | Texto | — | This player's name (empty = global.player_name, or "Player"); opcional |
+
+### Salir de la partida
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `leave_game` |
+| **Icono** | 🚪 |
+| **Categoría** | Network |
+
+Disconnect (or stop hosting) and clear the global network variables
+
+*Parámetros:* ninguno
+
+### Leer variable compartida
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `get_shared_var` |
+| **Icono** | 📥 |
+| **Categoría** | Network |
+
+Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `name` | Texto | — | Name of the shared variable to read |
+| `into` | Texto | — | Name of the global variable to write the value into |
+
+### Enviar mensaje de red
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `send_network_message` |
+| **Icono** | ✉️ |
+| **Categoría** | Network |
+
+Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `event` | Texto | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
+| `data` | Texto | — | A number, text, true/false, or a short list; opcional |
+| `target` | Elección | `all` | all = everyone; host = the host only; Opciones: `all`, `host` |
+
+### Definir el modo de red (v1)
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_network_mode` |
+| **Icono** | 🌐 |
+| **Categoría** | Network |
+
+An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `mode` | Elección | `host` | Host = others connect to you; Client = you connect to a host; Opciones: `host`, `client` |
+| `host` | Texto | `127.0.0.1` | The host's LAN IP address (Client mode only); opcional |
+| `port` | Número | `45782` | TCP port -- must be the same on the host and the client; opcional |
+
+### Definir variable compartida
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_shared_var` |
+| **Icono** | 📤 |
+| **Categoría** | Network |
+
+Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.<name>
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `name` | Texto | — | A plain identifier (letters, digits, _) -- no spaces or operators |
+| `value` | Texto | `0` | A number, text or true/false (complex objects are refused) |
+
+### Definir el dueño de la instancia
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_instance_owner` |
+| **Icono** | 🎮 |
+| **Categoría** | Network |
+
+Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `player` | Texto | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+
+### Ajustar la frecuencia de sincronización
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `set_sync_rate` |
+| **Icono** | ⏱️ |
+| **Categoría** | Network |
+
+Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay
+
+| Parámetro | Tipo | Predet. | Notas |
+|-----------|------|---------|-------|
+| `hz` | Número | `20` | 10-30 works well on a local network (default 20); opcional |
+| `interp_ms` | Número | `100` | How far behind ghosts are drawn, in milliseconds (default 100); opcional |
+
+### Empezar la partida en red
+
+| Propiedad | Valor |
+|----------|-------|
+| **Nombre** | `start_networked_game` |
+| **Icono** | 🚦 |
+| **Categoría** | Network |
+
+Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine
+
+*Parámetros:* ninguno
+
+### Sincronizar esta instancia
 
 | Propiedad | Valor |
 |----------|-------|
 | **Nombre** | `sync_instance` |
 | **Icono** | 🔗 |
-| **Categoría** | Réseau |
+| **Categoría** | Network |
 
-Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote
+Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `vars` | Texto | — | Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. "hp, couleur"); opcional |
+| `vars` | Texto | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); opcional |
 
 ---
 

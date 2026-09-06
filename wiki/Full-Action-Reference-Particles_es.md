@@ -142,6 +142,6 @@ Continuously emit particles every step from the most recently created emitter (0
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (16)
-- [Network](Full-Action-Reference-Network_es) (15)
+- [Network](Full-Action-Reference-Network-Actions_es) (15)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

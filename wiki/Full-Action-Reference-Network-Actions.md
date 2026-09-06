@@ -37,63 +37,6 @@ Host only: create an instance that automatically appears on every client (as int
 | `owner` | Text | `0` | Player who drives the instance (0 = host). Often global.network_sender inside "Player Joined".; optional |
 | `relative` | Yes/No | No | Position relative to the object running the action; optional |
 
-### Set Instance Owner
-
-| Property | Value |
-|----------|-------|
-| **Name** | `set_instance_owner` |
-| **Icon** | 🎮 |
-| **Category** | Network |
-
-Assign which player drives this synced instance (0 = host, 1, 2, ... = clients). On that player's machine, the instance runs locally (responsive) and its state is reported back to the host; everywhere else it's an interpolated ghost. Call it on the host (guarded by global.is_host == 1)
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `player` | Text | `0` | Player number (0 = host). Often global.network_sender inside "Player Joined". |
-
-### Set Shared Variable
-
-| Property | Value |
-|----------|-------|
-| **Name** | `set_shared_var` |
-| **Icon** | 📤 |
-| **Category** | Network |
-
-Write a variable shared by every machine. On the host: applied immediately. On a client: sent as a request to the host. Readable everywhere via global.<name>
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `name` | Text | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Text | `0` | A number, text, or boolean (complex objects are rejected) |
-
-### Start Networked Game
-
-| Property | Value |
-|----------|-------|
-| **Name** | `start_networked_game` |
-| **Icon** | 🚦 |
-| **Category** | Network |
-
-Host only: move everyone out of the waiting lobby and start the game. Fires the "Network Game Started" event on every machine
-
-*Parameters:* none
-
-### Send Network Message
-
-| Property | Value |
-|----------|-------|
-| **Name** | `send_network_message` |
-| **Icon** | ✉️ |
-| **Category** | Network |
-
-Broadcast a custom message. Fires the "Network Message" event on the machines it reaches, with global.network_event / global.network_data / global.network_sender
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `event` | Text | — | A free-form label the handler tests for (e.g. "buzz", "answer") |
-| `data` | Text | — | A number, text, boolean, or small list; optional |
-| `target` | Choice | `all` | all = everyone; host = the host only; Choices: `all`, `host` |
-
 ### Host Game
 
 | Property | Value |
@@ -111,80 +54,6 @@ Become the host of a LAN multiplayer game: other players connect to this machine
 | `port` | Number | `45782` | TCP port -- must match on the host and every client; optional |
 | `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
 | `show_lobby` | Yes/No | No | Show a "Waiting for players..." screen with a Start button before the game begins; optional |
-
-### Get Shared Variable
-
-| Property | Value |
-|----------|-------|
-| **Name** | `get_shared_var` |
-| **Icon** | 📥 |
-| **Category** | Network |
-
-Copy a shared variable into a global variable (to use it in a calculation). Equivalent to reading global.<name> directly
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `name` | Text | — | Name of the shared variable to read |
-| `into` | Text | — | Name of the global variable to write the value into |
-
-### Leave Game
-
-| Property | Value |
-|----------|-------|
-| **Name** | `leave_game` |
-| **Icon** | 🚪 |
-| **Category** | Network |
-
-Disconnect (or stop hosting) and clear the network global variables
-
-*Parameters:* none
-
-### Join Game
-
-| Property | Value |
-|----------|-------|
-| **Name** | `join_game` |
-| **Icon** | 🔌 |
-| **Category** | Network |
-
-Connect to a LAN multiplayer game hosted by another machine. global.player_id will be set by the host (1, 2, ...). If the host can't be reached, the game continues single-player
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `host` | Text | `127.0.0.1` | The host's LAN IP address ("auto" = the built-in connect screen, Phase 6); optional |
-| `port` | Number | `45782` | TCP port -- must match the host's; optional |
-| `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
-
-### Set Sync Rate
-
-| Property | Value |
-|----------|-------|
-| **Name** | `set_sync_rate` |
-| **Icon** | ⏱️ |
-| **Category** | Network |
-
-Tune the host's snapshot rate and the clients' interpolation delay. Call it once on the host (and on clients for the delay)
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `hz` | Number | `20` | 10-30 works well on a LAN (default 20); optional |
-| `interp_ms` | Number | `100` | Ghost display delay, in milliseconds (default 100); optional |
-
-### Set Network Mode (v1)
-
-| Property | Value |
-|----------|-------|
-| **Name** | `set_network_mode` |
-| **Icon** | 🌐 |
-| **Category** | Network |
-
-Older low-level action: starts the room as host or client (spectator only -- the client's input has no effect). Prefer "Host Game" / "Join Game". Kept for existing projects and the --net-host / --net-client flags
-
-| Parameter | Type | Default | Notes |
-|-----------|------|---------|-------|
-| `mode` | Choice | `host` | Host = others connect to you; Client = you connect to a host; Choices: `host`, `client` |
-| `host` | Text | `127.0.0.1` | The host's LAN IP address (Client mode only); optional |
-| `port` | Number | `45782` | TCP port -- must match on the host and the client; optional |
 
 ### If I Own This Instance
 
@@ -212,6 +81,137 @@ Condition (on the host): true if the given player is holding the named input. Le
 |-----------|------|---------|-------|
 | `player` | Text | `0` | Player number (0 = host) |
 | `name` | Text | — | The named input to test (e.g. "jump") |
+
+### Join Game
+
+| Property | Value |
+|----------|-------|
+| **Name** | `join_game` |
+| **Icon** | 🔌 |
+| **Category** | Network |
+
+Connect to a LAN multiplayer game hosted by another machine. global.player_id will be set by the host (1, 2, ...). If the host can't be reached, the game continues single-player
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `host` | Text | `127.0.0.1` | The host's LAN IP address ("auto" = the built-in connect screen, Phase 6); optional |
+| `port` | Number | `45782` | TCP port -- must match the host's; optional |
+| `player_name` | Text | — | This player's name (empty = global.player_name, or "Player"); optional |
+
+### Leave Game
+
+| Property | Value |
+|----------|-------|
+| **Name** | `leave_game` |
+| **Icon** | 🚪 |
+| **Category** | Network |
+
+Disconnect (or stop hosting) and clear the network global variables
+
+*Parameters:* none
+
+### Get Shared Variable
+
+| Property | Value |
+|----------|-------|
+| **Name** | `get_shared_var` |
+| **Icon** | 📥 |
+| **Category** | Network |
+
+Copy a shared variable into a global variable (to use it in a calculation). Equivalent to reading global.<name> directly
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `name` | Text | — | Name of the shared variable to read |
+| `into` | Text | — | Name of the global variable to write the value into |
+
+### Send Network Message
+
+| Property | Value |
+|----------|-------|
+| **Name** | `send_network_message` |
+| **Icon** | ✉️ |
+| **Category** | Network |
+
+Broadcast a custom message. Fires the "Network Message" event on the machines it reaches, with global.network_event / global.network_data / global.network_sender
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `event` | Text | — | A free-form label the handler tests for (e.g. "buzz", "answer") |
+| `data` | Text | — | A number, text, boolean, or small list; optional |
+| `target` | Choice | `all` | all = everyone; host = the host only; Choices: `all`, `host` |
+
+### Set Network Mode (v1)
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_network_mode` |
+| **Icon** | 🌐 |
+| **Category** | Network |
+
+Older low-level action: starts the room as host or client (spectator only -- the client's input has no effect). Prefer "Host Game" / "Join Game". Kept for existing projects and the --net-host / --net-client flags
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `mode` | Choice | `host` | Host = others connect to you; Client = you connect to a host; Choices: `host`, `client` |
+| `host` | Text | `127.0.0.1` | The host's LAN IP address (Client mode only); optional |
+| `port` | Number | `45782` | TCP port -- must match on the host and the client; optional |
+
+### Set Shared Variable
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_shared_var` |
+| **Icon** | 📤 |
+| **Category** | Network |
+
+Write a variable shared by every machine. On the host: applied immediately. On a client: sent as a request to the host. Readable everywhere via global.<name>
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `name` | Text | — | A plain identifier (letters, digits, _) -- no spaces or operators |
+| `value` | Text | `0` | A number, text, or boolean (complex objects are rejected) |
+
+### Set Instance Owner
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_instance_owner` |
+| **Icon** | 🎮 |
+| **Category** | Network |
+
+Assign which player drives this synced instance (0 = host, 1, 2, ... = clients). On that player's machine, the instance runs locally (responsive) and its state is reported back to the host; everywhere else it's an interpolated ghost. Call it on the host (guarded by global.is_host == 1)
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `player` | Text | `0` | Player number (0 = host). Often global.network_sender inside "Player Joined". |
+
+### Set Sync Rate
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_sync_rate` |
+| **Icon** | ⏱️ |
+| **Category** | Network |
+
+Tune the host's snapshot rate and the clients' interpolation delay. Call it once on the host (and on clients for the delay)
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `hz` | Number | `20` | 10-30 works well on a LAN (default 20); optional |
+| `interp_ms` | Number | `100` | Ghost display delay, in milliseconds (default 100); optional |
+
+### Start Networked Game
+
+| Property | Value |
+|----------|-------|
+| **Name** | `start_networked_game` |
+| **Icon** | 🚦 |
+| **Category** | Network |
+
+Host only: move everyone out of the waiting lobby and start the game. Fires the "Network Game Started" event on every machine
+
+*Parameters:* none
 
 ### Sync This Instance
 

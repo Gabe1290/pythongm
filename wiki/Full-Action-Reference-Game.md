@@ -405,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Grid](Full-Action-Reference-Grid) (4)
 - [Views](Full-Action-Reference-Views) (2)
 - [3D View](Full-Action-Reference-3D-View-Actions) (16)
-- [Network](Full-Action-Reference-Network) (15)
+- [Network](Full-Action-Reference-Network-Actions) (15)
 - [Particles](Full-Action-Reference-Particles) (8)
 
 [← Back to Full Action Reference](Full-Action-Reference)

@@ -19,7 +19,7 @@ Esta página enumera todas las **159** acciones disponibles en PyGameMaker, exac
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (16)
-- [Network](Full-Action-Reference-Network_es) (15)
+- [Network](Full-Action-Reference-Network-Actions_es) (15)
 - [Particles](Full-Action-Reference-Particles_es) (8)
 
 ---
