@@ -36,11 +36,38 @@ E2E_ENABLED = os.environ.get("PYGM_E2E_EXPORT") == "1"
 
 
 def _engine_env(**extra):
+    """A clean environment for a child engine run.
+
+    Every hook this file drives must be scrubbed from the INHERITED
+    environment, not just the ones a given test sets. PYGM_SEED was missing
+    from that list, which would have made
+    test_an_unseeded_random_sample_differs_from_itself quietly vacuous the
+    moment a seed was exported anywhere up the process tree: its two "unseeded"
+    runs would both be seeded, come out identical, and the test that exists to
+    prove match3_1 IS non-deterministic would be asserting nothing.
+    """
     env = dict(os.environ, SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy")
-    env.pop("PYGM_MAX_FRAMES", None)
-    env.pop("PYGM_SCREENSHOT", None)
+    for hook in ("PYGM_MAX_FRAMES", "PYGM_SCREENSHOT", "PYGM_SEED"):
+        env.pop(hook, None)
     env.update({k: str(v) for k, v in extra.items()})
     return env
+
+
+def _diagnose(result, output, note=""):
+    """A failure message worth reading.
+
+    These are subprocess integration tests, and two of them failed once
+    each under full-suite load without reproducing afterwards
+    (2026-09-06) -- undiagnosable, because the bare assertions said only
+    that something was missing, never what the child process did. Every
+    assertion below now carries this, so the next occurrence explains
+    itself instead of costing another investigation.
+    """
+    newline = chr(10)
+    tail = newline.join(output.strip().splitlines()[-15:])
+    header = (note + newline) if note else ""
+    return "%sexit=%s%s--- child output (tail) ---%s%s" % (
+        header, result.returncode, newline, newline, tail)
 
 
 def _run_sample(sample, frames, screenshot=None, language="en", timeout=180):
@@ -94,9 +121,9 @@ def test_the_engine_reports_the_frames_it_rendered():
     cannot tell a running game from one stuck on a black screen before its
     first frame."""
     result, output = _run_sample("maze_1", 30)
-    assert MARKER in output, output[-2000:]
-    assert int(output.split(MARKER)[1].split()[0]) == 30
-    assert result.returncode == 0, output[-2000:]
+    assert MARKER in output, _diagnose(result, output, "no frame marker")
+    assert int(output.split(MARKER)[1].split()[0]) == 30, _diagnose(result, output)
+    assert result.returncode == 0, _diagnose(result, output)
 
 
 def test_a_budgeted_run_exits_by_itself():
@@ -104,8 +131,8 @@ def test_a_budgeted_run_exits_by_itself():
     cannot tell a clean run from a wedged one. (Killing a one-file PyInstaller
     build is genuinely awkward -- the bootloader spawns a child that keeps the
     pipes open -- so the budget is what avoids needing to.)"""
-    result, _ = _run_sample("maze_1", 15, timeout=120)
-    assert result.returncode == 0
+    result, output = _run_sample("maze_1", 15, timeout=120)
+    assert result.returncode == 0, _diagnose(result, output)
 
 
 @pytest.mark.parametrize("sample", ["maze_1", "plateforme_2", "raycast_4"])
@@ -276,7 +303,9 @@ def test_a_seeded_sample_renders_identically_twice(tmp_path):
             capture_output=True, text=True, timeout=180,
             env=_engine_env(PYGM_MAX_FRAMES=60, PYGM_SCREENSHOT=shot,
                             PYGM_SEED=99))
-        assert shot.exists(), result.stdout[-1500:] + result.stderr[-1500:]
+        assert shot.exists(), _diagnose(
+            result, (result.stdout or "") + (result.stderr or ""),
+            "the seeded run saved no frame")
 
     assert compare_frames(first, second, 0.0) == "", (
         "a seeded sample must render identically twice, or comparing an export "
