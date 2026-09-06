@@ -23,7 +23,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 PKG = REPO_ROOT / "core" / "ide"
-_BUILTINS = set(dir(builtins)) | {"__file__", "__name__", "__doc__", "__class__"}
+# `__builtins__` is present in every module's globals but is not an
+# attribute of the builtins module itself, so dir(builtins) misses it.
+_BUILTINS = set(dir(builtins)) | {"__file__", "__name__", "__doc__",
+                                  "__class__", "__builtins__"}
 
 
 def _module_globals(tree):
@@ -79,6 +82,12 @@ def _function_bindings(fn):
             for x in ast.walk(n.optional_vars):
                 if isinstance(x, ast.Name):
                     b.add(x.id)
+        elif isinstance(n, ast.ClassDef):
+            # A class defined INSIDE a method binds its own name locally --
+            # runtime/action_appearance.py's replace_sprite does exactly this
+            # with ReplacedSprite, and without this branch the scanner reports
+            # it as a missing import.
+            b.add(n.name)
         elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
             b.add(getattr(n, "name", ""))
             aa = n.args
