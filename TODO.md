@@ -781,6 +781,31 @@ existed. Regenerated; 0 untranslated strings reported now.
     strip width / shade value. Note it rests on `scale` specifically —
     `smoothscale` interpolates and would NOT commute, so this optimisation
     must not be carried over if the renderer ever switches.
+- **A3.3 unit 1 SHIPPED 2026-09-06 — walking is 3.4x faster, nothing else
+  moved.** `_draw_wall_strip` now shades the 1px source column instead of the
+  scaled strip, and `_draw_horizontal_face_textured` shades its sampled column
+  instead of the strip (which is what its docstring always claimed).
+  Interleaved A/B against a worktree of the pre-change commit, twice:
+  `block_world_1` walking **3.45/3.50 → 11.64/12.00 fps**, worst frame
+  **390ms → 106ms**; the other three conditions flat within ±1.5%.
+  - **The threshold `_SHADE_AT_SOURCE_ABOVE` is load-bearing, not tidiness.**
+    Shading at source *unconditionally* was 8% SLOWER on `block_world_2`
+    (6.77/6.87 vs 7.34/7.40) and slower even on the case it was meant to help
+    (10.75 vs 11.37): a distant block's strip is a few pixels tall, so the
+    Surface copy costs more than the shading it saves. Both orders are
+    pixel-identical, so the branch is purely a cost choice.
+  - **The `.copy()` before shading at source is load-bearing too:** the column
+    is a subsurface of the CACHED texture, so shading it in place would darken
+    that texture permanently and compound on every later draw. Pinned by
+    `tests/test_block_world_shading.py`, which drives the real function down
+    both branches and compares pixels; both mutations (dropping the copy,
+    switching to smoothscale) fail it.
+  - **Measurement lesson, again:** the "before" numbers taken 30 minutes
+    earlier (19.29/3.83/8.23/8.15) made this change look like a regression
+    everywhere but walking. Re-measured from a worktree in the same minutes,
+    the baseline was 17.31/3.45/7.43/7.40 — the machine had simply got ~10%
+    slower. **Always A/B against a worktree in the same sitting**, never
+    against a number from earlier in the session.
 - **Follow-up decision, same day: the block_world extension's further work
   is set aside** (not deleted — `extensions/block_world/`, both samples,
   and all their tests remain and stay green) in favor of a cheaper vertical

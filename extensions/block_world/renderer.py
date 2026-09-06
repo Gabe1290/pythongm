@@ -421,6 +421,15 @@ SIDE_SHADE = 0.85
 FOG_STRENGTH = 0.55
 MIN_SHADE = 0.35
 
+# _draw_wall_strip can apply its distance shading either to the 1px texture
+# column (before scaling) or to the scaled strip (after). The two are
+# pixel-identical -- see the comment there -- so this is purely a cost choice:
+# shading at source touches src_h pixels but needs a Surface copy, shading the
+# strip touches strip_w * dest_h and needs none. Source wins once the strip is
+# this many times taller than its source, which is exactly the near-wall case
+# that dominates a frame while the player walks.
+_SHADE_AT_SOURCE_ABOVE = 8
+
 # Horizontal faces (Phase 2b). A top face catches the light and a bottom face
 # is in shadow; without that split a stepped stack reads as one flat mass,
 # since every face would otherwise share the vertical faces' shading.
@@ -700,8 +709,37 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
     src_h = max(1, min(th - src_y, need))
     dest_h = max(1, int(round(src_h / texels_per_px)))
     col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
+    shade_at_source = (shade < 1.0
+                       and strip_w * dest_h > _SHADE_AT_SOURCE_ABOVE * src_h)
+    if shade_at_source:
+        # Shade the 1px SOURCE column, not the scaled strip. pygame's
+        # transform.scale is a nearest-neighbour copy, so every destination
+        # pixel takes its value from exactly one source pixel and a per-pixel
+        # multiply commutes with it -- byte-identical output, verified across
+        # 2,464 (src_h, dest_h, strip_w, shade) combinations by
+        # tests/test_block_world_shading.py. Shading here instead costs
+        # src_h pixels rather than strip_w * dest_h, and dest_h is the full
+        # screen height for a wall you are standing next to: profiled at 48.9%
+        # of the entire frame while walking in block_world_1, 23.5M shaded
+        # px/frame against 319K here.
+        #
+        # NOTE this rests on `scale` specifically -- `smoothscale` interpolates
+        # between source pixels and would NOT commute. Do not carry this over
+        # if the scale below ever changes.
+        #
+        # The copy is not optional: col_surf is a subsurface of the CACHED
+        # texture, so filling it in place would permanently darken the texture
+        # for every later draw.
+        v = int(shade * 255)
+        col_surf = col_surf.copy()
+        col_surf.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
     strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
-    if shade < 1.0:
+    if shade < 1.0 and not shade_at_source:
+        # Short strip: the copy above would cost more than it saves, so shade
+        # the destination as before. Measured, not assumed -- shading at source
+        # unconditionally made block_world_2 (all distant blocks, ~21,800
+        # strips a frame) 15% SLOWER even while it made walking in
+        # block_world_1 3x faster. The two branches are pixel-identical.
         v = int(shade * 255)
         strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
     off = max(0, min(dest_h - 1, int(round(frac_px))))
@@ -818,11 +856,15 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
     for i in range(samples):
         put((0, i), _texel(y0 + i * res))
 
-    strip = pygame.transform.scale(column, (strip_w, span))
     if shade < 1.0:
+        # Same swap as _draw_wall_strip, and the same proof: shade the sampled
+        # column (1 x samples) rather than the strip it scales up to
+        # (strip_w x span). Safe to do in place -- `column` is the module
+        # scratch surface, every row of which this call has just overwritten.
+        # This is also what the docstring above always claimed happened.
         v = int(shade * 255)
-        strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
-    screen.blit(strip, (x0, y0))
+        column.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+    screen.blit(pygame.transform.scale(column, (strip_w, span)), (x0, y0))
 
 
 def render_block_world_view(room, screen: pygame.Surface):
