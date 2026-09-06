@@ -200,7 +200,7 @@ Rellenar toda el área de visualización con un color uniforme
 | **Icono** | 📂 |
 | **Categoría** | Juego |
 
-Restore room, score/lives/health, global variables, and instance states from a save file
+Restaura la sala, la puntuación, las vidas, la salud, las variables globales y el estado de las instancias desde un archivo guardado
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -240,7 +240,7 @@ Reiniciar el juego desde la sala inicial
 | **Icono** | 💾 |
 | **Categoría** | Juego |
 
-Save the current room, score/lives/health, global variables, and instance states to a file
+Guarda en un archivo la sala actual, la puntuación, las vidas, la salud, las variables globales y el estado de las instancias
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -356,7 +356,7 @@ Mostrar un mensaje
 | **Icono** | 🎬 |
 | **Categoría** | Juego |
 
-Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+Reproduce un archivo de vídeo en el reproductor predeterminado del sistema: se abre en una ventana aparte, no se dibuja dentro del propio juego
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -371,7 +371,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | **Icono** | 🖼️ |
 | **Categoría** | Juego |
 
-Show a sprite full-screen and pause the game until the player dismisses it
+Muestra un sprite a pantalla completa y pausa el juego hasta que el jugador lo cierra
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -385,7 +385,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 | **Icono** | 💬 |
 | **Categoría** | Juego |
 
-Show a message and pause the game until the player dismisses it
+Muestra un mensaje y pausa el juego hasta que el jugador lo cierra
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|

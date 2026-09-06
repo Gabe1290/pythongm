@@ -12,7 +12,7 @@
 | **Icono** | ⬇️ |
 | **Categoría** | Vista 3D |
 
-Continuous falling/landing physics for the block-world camera -- bind in the Step event (not a keyboard-held event) so it runs every frame regardless of movement input. No-op unless Enable Block World View's Gravity parameter is set above 0
+Física continua de caída y aterrizaje para la cámara de Block World: colócala en el evento Paso (no en un evento de tecla mantenida) para que se ejecute en cada fotograma, haya o no entrada de movimiento. No hace nada si el parámetro Gravedad de «Activar vista Block World» no es mayor que 0
 
 *Parámetros:* ninguno
 
@@ -24,7 +24,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 | **Icono** | ⛏️ |
 | **Categoría** | Vista 3D |
 
-Remove the block the camera is looking at -- also picks it up into the calling instance's inventory if Enable Block World View's Inventory is on, and refuses if the block is protected (Set Block Protection) and the required key isn't in inventory
+Quita el bloque al que apunta la cámara; además lo recoge en el inventario de la instancia que llama la acción si el inventario de «Activar vista Block World» está activado, y se niega a quitarlo si el bloque está protegido («Definir protección de bloques») y la llave necesaria no está en el inventario
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -38,7 +38,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 | **Icono** | 🧰 |
 | **Categoría** | Vista 3D |
 
-Draw a crosshair plus a hotbar strip (the selected slot highlighted, with a count on each slot once Inventory is on) -- call from the player/camera object's own Draw event
+Dibuja una mira y una barra de acceso rápido (con la casilla seleccionada resaltada y un contador en cada casilla cuando el inventario está activo): llámala desde el evento Dibujar del propio objeto jugador o cámara
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -114,7 +114,7 @@ Dibujar un minimapa orientado al norte de los muros de la sala raycast, con un m
 | **Icono** | 🧱 |
 | **Categoría** | Vista 3D |
 
-Render the room as a first-person voxel view (single layer) instead of the top-down view
+Muestra la sala como una vista de vóxeles en primera persona (una sola capa) en lugar de la vista cenital
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -174,7 +174,7 @@ Renderizar la sala como una vista 3D en primera persona al estilo Doom/Wolfenste
 | **Icono** | ⬆️ |
 | **Categoría** | Vista 3D |
 
-Give the block-world camera upward velocity -- only while standing on solid ground (no double/air jumps). Needs Gravity configured (Enable Block World View) and Apply Gravity bound in the Step event, or nothing brings it back down
+Da a la cámara de Block World velocidad hacia arriba, solo cuando está apoyada en suelo sólido (sin saltos dobles ni en el aire). Necesita la Gravedad configurada («Activar vista Block World») y «Aplicar gravedad» en el evento Paso, o nada la hará bajar de nuevo
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -188,7 +188,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 | **Icono** | 📂 |
 | **Categoría** | Vista 3D |
 
-Load a pre-authored world (blocks placed by a generator or hand-authored file) into the current room, replacing whatever blocks are there
+Carga un mundo ya preparado (bloques colocados por un generador o escritos a mano) en la sala actual, sustituyendo los bloques que hubiera
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -202,7 +202,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 | **Icono** | 🔭 |
 | **Categoría** | Vista 3D |
 
-Tilt the block-world view up or down
+Inclina la vista de Block World hacia arriba o hacia abajo
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -217,7 +217,7 @@ Tilt the block-world view up or down
 | **Icono** | 🚶 |
 | **Categoría** | Vista 3D |
 
-Move this step, checked against the block grid, with automatic footing (step up one block, drop any distance) -- the camera's z_layer follows if this is the block-world camera
+Mueve este paso comprobándolo contra la rejilla de bloques, con apoyo automático (sube un bloque, baja cualquier altura); la capa z_layer de la cámara lo sigue si esta es la cámara de Block World
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -233,7 +233,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | **Icono** | 🧱 |
 | **Categoría** | Vista 3D |
 
-Put a block in the empty cell the camera is looking at -- unlimited unless Enable Block World View's Inventory is on, which draws from what Break Block has picked up
+Coloca un bloque en la celda vacía a la que apunta la cámara: sin límite, salvo que el inventario de «Activar vista Block World» esté activado, en cuyo caso se toma de lo que haya recogido «Romper bloque»
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -248,7 +248,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | **Icono** | 🔢 |
 | **Categoría** | Vista 3D |
 
-Choose which block the hotbar has selected, for place_block to build with -- bind Place Block's Block parameter to the expression "hotbar_block" to use it
+Elige qué bloque tiene seleccionado la barra de acceso rápido, para que «Colocar bloque» construya con él: pon la expresión «hotbar_block» en el parámetro Bloque de «Colocar bloque» para usarlo
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -263,7 +263,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | **Icono** | 🔒 |
 | **Categoría** | Vista 3D |
 
-Require a specific block type in inventory before Break Block can remove a chosen block type -- call once per protected type, needs Enable Block World View's Inventory on or the requirement can never be satisfied
+Exige un tipo de bloque concreto en el inventario antes de que «Romper bloque» pueda quitar un tipo de bloque elegido: llámala una vez por cada tipo protegido; necesita el inventario de «Activar vista Block World» activado o la condición nunca podrá cumplirse
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -278,7 +278,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | **Icono** | 💎 |
 | **Categoría** | Vista 3D |
 
-Award score when Break Block successfully removes a chosen block type -- call once per rewarded type (e.g. in the room's create event, right after Enable Block World View). A mine-to-collect ore/gem block: place it in the terrain, register its reward, and breaking it awards the points automatically
+Concede puntos cuando «Romper bloque» quita con éxito un tipo de bloque elegido: llámala una vez por cada tipo recompensado (por ejemplo en el evento Crear de la sala, justo después de «Activar vista Block World»). Un bloque de mineral o gema que se pica para recoger: colócalo en el terreno, registra su recompensa y romperlo dará los puntos automáticamente
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|

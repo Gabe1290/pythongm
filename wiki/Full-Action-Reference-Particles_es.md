@@ -12,7 +12,7 @@
 | **Icono** | 💥 |
 | **Categoría** | Particles |
 
-Emit a one-time burst of particles from the most recently created emitter
+Lanza una ráfaga única de partículas desde el emisor creado más recientemente
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | **Icono** | 🧹 |
 | **Categoría** | Particles |
 
-Remove all active particles but keep particle types and emitters
+Elimina todas las partículas activas, pero conserva los tipos de partícula y los emisores
 
 *Parámetros:* ninguno
 
@@ -39,7 +39,7 @@ Remove all active particles but keep particle types and emitters
 | **Icono** | 🌀 |
 | **Categoría** | Particles |
 
-Create a particle emitter area (returned id is stored for the next emitter-using action)
+Crea una zona emisora de partículas (el identificador devuelto se guarda para la siguiente acción que use un emisor)
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -57,7 +57,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | **Icono** | ✨ |
 | **Categoría** | Particles |
 
-Create a particle system attached to this instance (replaces any existing one)
+Crea un sistema de partículas asociado a esta instancia (sustituye cualquier otro existente)
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -71,7 +71,7 @@ Create a particle system attached to this instance (replaces any existing one)
 | **Icono** | ⚙️ |
 | **Categoría** | Particles |
 
-Define a new particle appearance/behavior (returned type id is stored for the next particle_type-using action)
+Define una nueva apariencia o comportamiento de partícula (el identificador de tipo devuelto se guarda para la siguiente acción que use un tipo de partícula)
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | **Icono** | 💥 |
 | **Categoría** | Particles |
 
-Destroy the most recently created emitter
+Destruye el emisor creado más recientemente
 
 *Parámetros:* ninguno
 
@@ -108,7 +108,7 @@ Destroy the most recently created emitter
 | **Icono** | 💥 |
 | **Categoría** | Particles |
 
-Remove this instance's particle system, clearing all particles and emitters
+Elimina el sistema de partículas de esta instancia, borrando todas sus partículas y emisores
 
 *Parámetros:* ninguno
 
@@ -120,7 +120,7 @@ Remove this instance's particle system, clearing all particles and emitters
 | **Icono** | 🌊 |
 | **Categoría** | Particles |
 
-Continuously emit particles every step from the most recently created emitter (0 to stop)
+Emite partículas de forma continua en cada paso desde el emisor creado más recientemente (0 para detenerlo)
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
