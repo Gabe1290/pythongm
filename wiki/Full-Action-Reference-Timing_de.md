@@ -12,7 +12,7 @@
 | **Symbol** | ⏸️ |
 | **Kategorie** | Zeitsteuerung |
 
-Pause timeline playback at the current position
+Hält die Wiedergabe der Zeitleiste an der aktuellen Position an
 
 *Parameter:* keine
 
@@ -39,7 +39,7 @@ Einen Wecker stellen
 | **Symbol** | ⏱️ |
 | **Kategorie** | Zeitsteuerung |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Setzt die Zeitleisten-Bezeichnung dieser Instanz und stellt ihre Position auf 0 zurück (nur Buchführung – siehe Hinweis zur Kategorie)
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Symbol** | ⏱️ |
 | **Kategorie** | Zeitsteuerung |
 
-Set (or offset) this instance's timeline position
+Setzt die Position dieser Instanz auf der Zeitleiste (oder verschiebt sie)
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Symbol** | ⏱️ |
 | **Kategorie** | Zeitsteuerung |
 
-Set the timeline playback speed multiplier
+Setzt den Geschwindigkeitsfaktor der Zeitleisten-Wiedergabe
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Das Spiel für eine Anzahl von Millisekunden anhalten und dann fortfahren. Klän
 | **Symbol** | ▶️ |
 | **Kategorie** | Zeitsteuerung |
 
-Begin or resume timeline playback from the current position
+Startet die Wiedergabe der Zeitleiste ab der aktuellen Position oder setzt sie fort
 
 *Parameter:* keine
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Symbol** | ⏹️ |
 | **Kategorie** | Zeitsteuerung |
 
-Stop timeline playback and reset the position to 0
+Stoppt die Wiedergabe der Zeitleiste und stellt die Position auf 0 zurück
 
 *Parameter:* keine
 

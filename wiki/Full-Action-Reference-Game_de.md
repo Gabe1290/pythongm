@@ -200,7 +200,7 @@ Den gesamten Anzeigebereich mit einer einfarbigen Farbe füllen
 | **Symbol** | 📂 |
 | **Kategorie** | Spiel |
 
-Restore room, score/lives/health, global variables, and instance states from a save file
+Stellt Raum, Punkte/Leben/Gesundheit, globale Variablen und Instanzzustände aus einer Speicherdatei wieder her
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -240,7 +240,7 @@ Das Spiel vom Startraum aus neu starten
 | **Symbol** | 💾 |
 | **Kategorie** | Spiel |
 
-Save the current room, score/lives/health, global variables, and instance states to a file
+Speichert den aktuellen Raum, Punkte/Leben/Gesundheit, globale Variablen und Instanzzustände in einer Datei
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -356,7 +356,7 @@ Eine Nachricht anzeigen
 | **Symbol** | 🎬 |
 | **Kategorie** | Spiel |
 
-Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+Spielt eine Videodatei im Standard-Videoplayer des Systems ab – sie öffnet sich in einem eigenen Fenster und wird nicht im Spiel selbst dargestellt
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -371,7 +371,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | **Symbol** | 🖼️ |
 | **Kategorie** | Spiel |
 
-Show a sprite full-screen and pause the game until the player dismisses it
+Zeigt ein Sprite bildschirmfüllend und hält das Spiel an, bis der Spieler es wegklickt
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
@@ -385,7 +385,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 | **Symbol** | 💬 |
 | **Kategorie** | Spiel |
 
-Show a message and pause the game until the player dismisses it
+Zeigt eine Nachricht und hält das Spiel an, bis der Spieler sie wegklickt
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
