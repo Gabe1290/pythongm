@@ -292,7 +292,13 @@ class TestRenderBlockWorldView:
         room = _room(320, 320)
         room.instances.append(_camera_instance())
         cfg = block_world_state(room)["camera"]
-        cfg.update({"enabled": True, "camera_object": "obj_person", "render_distance": 2})
+        cfg.update({"enabled": True, "camera_object": "obj_person",
+                    "render_distance": 2,
+                    # Fog deliberately replaces the raw floor colour just
+                    # below the horizon with haze; this test is about the
+                    # no-hit background, so it asks for the unfogged look.
+                    # The haze itself is covered by test_block_world_fog.py.
+                    "fog": False})
         screen = pygame.Surface((320, 240))
         render_block_world_view(room, screen)
         ceiling = tuple(room.parse_color(cfg.get("ceiling_color", "#87CEEB")))

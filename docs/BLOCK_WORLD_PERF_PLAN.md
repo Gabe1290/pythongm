@@ -85,7 +85,21 @@ fog.
 
 The whole win, and it is a *rendering* change, not a rewrite.
 
-- [ ] **1.1 Fade to horizon, not to black.** Give the camera config a
+**STATUS 2026-09-07: 1.1-1.3 done on DESKTOP; 1.4 (the two export ports) is
+the open item, and until it lands the three targets look different.**
+Measured same-sitting against the pre-fog commit, samples moved 16 -> 10:
+`block_world_2` **8.14 -> 13.75 fps static (+69%) and 7.70 -> 13.74 walking
+(+78%)**; `block_world_1` +7%/+2%, which is expected -- it is an enclosed maze
+where sightlines are short, so render distance was never its binding
+constraint. Fog itself costs ~19% (measured on its own), and the shorter
+distance more than repays it.
+
+*Absolute figures here are NOT comparable to the ones earlier in this document:
+this desktop drifts, and on the day of these measurements it was running about
+half the speed it was when the 32.8 fps figure was taken. The ratios are what
+carry over. Always A/B against a worktree in the same sitting.*
+
+- [x] **1.1 Fade to horizon, not to black.** Give the camera config a
       `fog_color` (defaulting to the existing `ceiling_color`, so an unchanged
       project looks the same as long as `render_distance` is unchanged) and
       blend each strip's colour toward it by the same `t` the shade curve
@@ -95,16 +109,24 @@ The whole win, and it is a *rendering* change, not a rewrite.
       7.2% of the frame; a second per-strip blend must not simply double it —
       fold it into the same fill where possible (pre-multiply the source
       column, as `_draw_wall_strip` already does above its threshold).
-- [ ] **1.2 Haze band at the horizon.** The floor and ceiling fills become a
+- [x] **1.2 Haze band at the horizon.** The floor and ceiling fills become a
       small vertical gradient toward `fog_color` near the horizon line instead
       of two flat rectangles. A handful of `fill`s per frame, not per column —
       negligible cost.
-- [ ] **1.3 Lower the default `render_distance`** once 1.1–1.2 make it
+- [x] **1.3 Lower the render distance** (in the two samples, which set it
+      explicitly; the *default* moves with the ports in 1.4) once 1.1–1.2 make it
       invisible. **10 cells is the number to aim for: it measures 32.8 fps,
       i.e. the target met, with no other change at all.** 8 would give 50 fps
       if the fog turns out to hide it. Pick it against screenshots, not
       against the fps figure alone.
-- [ ] **1.4 Three targets, one number — again.** `render_distance` is
+- [ ] **1.4 Port the fog to HTML5 and Kivy — the open item.** Desktop has it;
+      `export_html5.js` and `export_kivy.py` do not, so an exported Block World
+      game currently shows the hard cut the desktop no longer does. The port is
+      mechanical (mirror `fog_amount`, scale the shade by `1 - fog`, add
+      `fog_color * fog`, and draw the same derived haze band) but it is three
+      hand-written renderers, and the parity test should grow pins for
+      `fog_amount` and the new defaults the same way it holds `wall_shade`.
+      **Three targets, one number — again.** `render_distance` is
       duplicated in `export_html5.js` and `export_kivy.py` exactly as `columns`
       was, and 2a5e52bc had to fix six copies. Extend
       `tests/test_block_world_default_columns.py` (or a sibling) to pin the

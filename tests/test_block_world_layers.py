@@ -72,6 +72,11 @@ def _configure(room, **overrides):
         "z_layer": 0, "fov": 66, "render_distance": 20, "columns": 1,
         "wall_textured": False, "wall_color": "#ff0000",
         "floor_color": FLOOR, "ceiling_color": CEILING,
+        # Off, because _drawn_span finds geometry by looking for pixels that
+        # differ from the flat background, and distance fog deliberately
+        # blends both. Fog has its own tests (test_block_world_fog.py); these
+        # measure projection geometry, which fog does not touch.
+        "fog": False,
         # Pinned deliberately. These tests assert closed-form projection
         # geometry, and an eye at the middle of its own layer keeps the
         # arithmetic 1:1 with the layer numbers. The SHIPPED default is 1.5
