@@ -43,7 +43,7 @@ Define la etiqueta de la línea de tiempo de esta instancia y pone su posición 
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `timeline` | Texto | — | A label for your own reference; not a resource lookup |
+| `timeline` | Texto | — | Una etiqueta para tu propia referencia; no busca ningún recurso |
 
 ### Definir la posición en la línea de tiempo
 
@@ -57,8 +57,8 @@ Define (o desplaza) la posición de esta instancia en la línea de tiempo
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `position` | Número | `0` | Position in steps |
-| `relative` | Sí/No | No | Add to the current position instead of setting it absolutely |
+| `position` | Número | `0` | Posición, en pasos |
+| `relative` | Sí/No | No | Sumar a la posición actual en lugar de fijarla de forma absoluta |
 
 ### Definir la velocidad de la línea de tiempo
 
@@ -72,7 +72,7 @@ Define el multiplicador de velocidad de la línea de tiempo
 
 | Parámetro | Tipo | Predet. | Notas |
 |-----------|------|---------|-------|
-| `speed` | Número | `1.0` | 1.0=normal, 0.5=half speed, 2.0=double speed |
+| `speed` | Número | `1.0` | 1.0 = normal, 0.5 = media velocidad, 2.0 = doble velocidad |
 
 ### Pausa
 
