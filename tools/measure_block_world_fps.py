@@ -39,15 +39,23 @@ at a `git worktree` of an older commit. On a machine this noisy, an A/B between
 two trees measured minutes apart is the only sound way to ask whether a change
 actually moved the number.
 
+`--profile` swaps the timing run for a cProfile of the same loop, sorted by
+tottime (time IN a function, not on top of the stack) -- the question is which
+code is expensive, not which code is deepest. Absolute ms/frame under the
+profiler is inflated by the profiler itself; read the shares, not the clock.
+
 Usage:
     py -3.12 tools/measure_block_world_fps.py                # 60 frames, 3 runs
     py -3.12 tools/measure_block_world_fps.py 90 5
+    py -3.12 tools/measure_block_world_fps.py --profile
     PYGM_ROOT=/path/to/worktree py -3.12 tools/measure_block_world_fps.py
 """
 import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import cProfile
+import pstats
 import statistics
 import sys
 import time
@@ -111,7 +119,68 @@ def run_once(sample, frames, walking):
             "ms_worst": 1000 * max(per_frame)}
 
 
+def profile_once(sample, walking, frames, top=15):
+    """cProfile one run and print the tottime leaders."""
+    runner = GameRunner(str(ROOT / "samples" / sample / "project.json"))
+    runner.language = "en"
+    runner.show_message_dialog = lambda *a, **k: None
+    runner.show_highscore_dialog = lambda *a, **k: None
+    runner._show_name_entry_dialog = lambda *a, **k: ""
+    runner.process_pending_messages = lambda *a, **k: None
+
+    prof = cProfile.Profile()
+    state = {"n": 0, "measured": 0}
+
+    class _FakeClock:
+        def tick(self, fps=0):
+            n = state["n"] = state["n"] + 1
+            if n == WARMUP:
+                if walking:
+                    pygame.event.post(pygame.event.Event(
+                        pygame.KEYDOWN, key=pygame.K_w))
+                prof.enable()
+            elif n > WARMUP:
+                state["measured"] += 1
+            if n >= frames:
+                prof.disable()
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    pygame.time.Clock = _FakeClock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+
+    st = pstats.Stats(prof)
+    total = st.total_tt or 1e-9
+    measured = max(state["measured"], 1)
+    print("\n--- %s / %s --- %d frames profiled, %.2fs under the profiler"
+          % (sample, "walking" if walking else "static", measured, total))
+    print("%8s %9s %9s  %s" % ("tottime", "share", "calls/f", "function"))
+    rows = sorted(st.stats.items(), key=lambda kv: kv[1][2], reverse=True)
+    for (fn, line, name), (_cc, nc, tt, _ct, _callers) in rows[:top]:
+        where = Path(fn).name if fn != "~" else "builtin"
+        print("%8.3f %8.1f%% %9.0f  %s (%s:%s)"
+              % (tt, 100 * tt / total, nc / measured, name, where, line))
+
+
 def main():
+    argv = [a for a in sys.argv[1:] if a != "--profile"]
+    if len(argv) != len(sys.argv) - 1:
+        frames = int(argv[0]) if argv else 45
+        print("tree    %s\nprofiling %d frames per condition "
+              "(shares are meaningful, absolute ms is not -- the profiler "
+              "inflates it)" % (ROOT, frames - WARMUP))
+        for sample in SAMPLES:
+            for walking in (False, True):
+                profile_once(sample, walking, frames)
+        return 0
+
     frames = int(sys.argv[1]) if len(sys.argv) > 1 else 60
     repeats = int(sys.argv[2]) if len(sys.argv) > 2 else 3
     print("tree    %s" % ROOT)

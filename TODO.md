@@ -760,6 +760,27 @@ existed. Regenerated; 0 untranslated strings reported now.
     bottleneck the note above already identified.
   Batching a column into fewer Surface ops attacks the second regime; the
   first needs the strip scaling itself to get cheaper (or fewer columns).
+- **PROFILED 2026-09-06 (A3.2)** — `tools/measure_block_world_fps.py
+  --profile`, cProfile sorted by tottime. Each regime has one named culprit:
+  - **Walking: 48.9% of the whole frame is one `Surface.fill`** —
+    `renderer.py:706`, the distance-shading `BLEND_RGB_MULT` in
+    `_draw_wall_strip`. It runs *after* the 1px texture column has been scaled
+    up to strip height, so a near wall shades a full-screen-height strip:
+    **23.5M px/frame**. Shading the 1px SOURCE column first would touch 319K —
+    a measured **73.7x reduction**. `transform.scale` is next at 14.2%.
+  - **Open terrain: no single hot spot.** `_draw_wall_strip` 21.5% over 18,023
+    calls/frame, `render_block_world_view` 12.4%, and **`min()`+`max()` 10.6%
+    across ~272,000 calls per frame** (~7.5 clamps per wall strip), then
+    `_texel` 4.4%, `fill` 4.3%, `scale` 4.0%, `blit` 3.4%, `subsurface` 3.0%.
+    Python-level per-column overhead: it needs FEWER, WIDER operations, not
+    cheaper ones.
+  - **The source-column shading swap is proven safe before writing it.** It is
+    valid only if a per-pixel multiply commutes with `pygame.transform.scale`,
+    i.e. only if that scale is a nearest-neighbour copy. Verified
+    **byte-identical across 2,464 combinations** of src height / dest height /
+    strip width / shade value. Note it rests on `scale` specifically —
+    `smoothscale` interpolates and would NOT commute, so this optimisation
+    must not be carried over if the renderer ever switches.
 - **Follow-up decision, same day: the block_world extension's further work
   is set aside** (not deleted — `extensions/block_world/`, both samples,
   and all their tests remain and stay green) in favor of a cheaper vertical
