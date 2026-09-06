@@ -12,7 +12,7 @@
 | **Значок** | ⌨️ |
 | **Категорія** | Network |
 
-Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space")
+Прив'язує локальну клавішу до «іменованого введення», про яке повідомляється ведучому. Далі ведучий перевіряє його дією «Якщо гравець натискає». Стрілки та пробіл уже прив'язані ("left", "right", "up", "down", "space")
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Attach a local key to a "named input" reported to the host. The host then tests 
 | **Значок** | ✨ |
 | **Категорія** | Network |
 
-Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1
+Лише у ведучого: створює екземпляр, який автоматично з'являється в усіх клієнтів як згладжений «привид». У клієнта нічого не робить. Створеним екземпляром керує ведучий — захистіть його ігрову логіку умовою global.is_host == 1
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -45,7 +45,7 @@ Host only: create an instance that appears automatically on every client, as a s
 | **Значок** | 🌐 |
 | **Категорія** | Network |
 
-Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host"
+Робить цю машину ведучою в багатокористувацькій грі в локальній мережі: інші гравці під'єднуються до неї. Викликайте один раз (наприклад, у події Створення контролера кімнати). Встановлює global.player_id = 0 і global.network_role = "host"
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -63,7 +63,7 @@ Become the host of a LAN multiplayer game: the other players connect to this mac
 | **Значок** | ❓ |
 | **Категорія** | Network |
 
-A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine
+Умова: істинна, коли ЦЯ машина володіє синхронізованим екземпляром. Ставте її перед блоком, щоб логіка керування виконувалася лише на машині потрібного гравця
 
 *Параметри:* немає
 
@@ -75,7 +75,7 @@ A condition: true when THIS machine owns the synchronised instance. Put it befor
 | **Значок** | ❓ |
 | **Категорія** | Network |
 
-A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character
+Умова на боці ведучого: істинна, доки вказаний гравець утримує вказане введення. Дозволяє ведучому реагувати на клавіші клієнта, не володіючи його персонажем
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -90,7 +90,7 @@ A condition, on the host: true while the named player is holding the named input
 | **Значок** | 🔌 |
 | **Категорія** | Network |
 
-Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player
+Під'єднується до багатокористувацької гри в локальній мережі, яку веде інша машина. Ведучий задає global.player_id (1, 2, ...). Якщо ведучий недоступний, гра продовжується в одиночному режимі
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -106,7 +106,7 @@ Connect to a LAN multiplayer game hosted by another machine. The host sets globa
 | **Значок** | 🚪 |
 | **Категорія** | Network |
 
-Disconnect (or stop hosting) and clear the global network variables
+Від'єднується (або припиняє вести гру) і очищає глобальні мережеві змінні
 
 *Параметри:* немає
 
@@ -118,7 +118,7 @@ Disconnect (or stop hosting) and clear the global network variables
 | **Значок** | 📥 |
 | **Категорія** | Network |
 
-Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly
+Копіює спільну змінну до глобальної, щоб використати її в обчисленні. Те саме, що прочитати global.<ім'я> напряму
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -133,7 +133,7 @@ Copy a shared variable into a global variable, to use it in a calculation. The s
 | **Значок** | ✉️ |
 | **Категорія** | Network |
 
-Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender
+Розсилає власне повідомлення. Запускає подію «Мережеве повідомлення» на відповідних машинах, з global.network_event / global.network_data / global.network_sender
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -149,7 +149,7 @@ Broadcast a message of your own. Fires the "Network message" event on the machin
 | **Значок** | 🌐 |
 | **Категорія** | Network |
 
-An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags
+Старіша низькорівнева дія: запускає кімнату в режимі ведучого або клієнта (лише спостереження — введення клієнта ні на що не впливає). Краще використовувати «Створити гру» / «Приєднатися до гри». Збережено заради наявних проєктів і ключів --net-host / --net-client
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -165,7 +165,7 @@ An older low-level action: starts the room in host or client mode (spectator onl
 | **Значок** | 📤 |
 | **Категорія** | Network |
 
-Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.<name>
+Записує змінну, спільну для всіх машин. У ведучого вона застосовується одразу; у клієнта це запит, надісланий ведучому. Читається будь-де як global.<ім'я>
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -180,7 +180,7 @@ Write a variable shared by every machine. On the host it applies immediately; on
 | **Значок** | 🎮 |
 | **Категорія** | Network |
 
-Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1
+Вибирає, який гравець керує цим синхронізованим екземпляром (0 — ведучий; 1, 2, ... — клієнти). На машині цього гравця екземпляр обчислюється локально та відгукується жваво, а його стан повідомляється ведучому; на решті це згладжений привид. Викликайте у ведучого, під умовою global.is_host == 1
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -194,7 +194,7 @@ Choose which player drives this synchronised instance (0 = host, 1, 2, ... = cli
 | **Значок** | ⏱️ |
 | **Категорія** | Network |
 
-Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay
+Налаштовує, як часто ведучий надсилає знімки стану і з якою затримкою клієнти їх малюють. Викличте один раз у ведучого, а для затримки — і в клієнтів
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -209,7 +209,7 @@ Adjust how often the host sends snapshots, and how far behind clients draw them.
 | **Значок** | 🚦 |
 | **Категорія** | Network |
 
-Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine
+Лише у ведучого: виводить усіх з кімнати очікування і починає гру. Запускає подію «Мережеву гру розпочато» на кожній машині
 
 *Параметри:* немає
 
@@ -221,7 +221,7 @@ Host only: take everyone out of the waiting room and begin. Fires the "Networked
 | **Значок** | 🔗 |
 | **Категорія** | Network |
 
-Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it
+Позначає екземпляр, який виконує цю дію, як синхронізований: його позиція, поворот, зображення та видимість копіюються на всі машини. Викликайте в події Створення. Типово ним володіє ведучий; щоб ним керував клієнт, скористайтеся дією «Задати власника екземпляра»
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|

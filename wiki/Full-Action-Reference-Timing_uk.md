@@ -12,7 +12,7 @@
 | **Значок** | ⏸️ |
 | **Категорія** | Час |
 
-Pause timeline playback at the current position
+Призупиняє відтворення часової шкали на поточній позиції
 
 *Параметри:* немає
 
@@ -39,7 +39,7 @@ Pause timeline playback at the current position
 | **Значок** | ⏱️ |
 | **Категорія** | Час |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Задає позначку часової шкали цього екземпляра і скидає його позицію до 0 (лише облік — див. примітку до категорії)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Значок** | ⏱️ |
 | **Категорія** | Час |
 
-Set (or offset) this instance's timeline position
+Задає (або зсуває) позицію цього екземпляра на часовій шкалі
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Значок** | ⏱️ |
 | **Категорія** | Час |
 
-Set the timeline playback speed multiplier
+Задає множник швидкості відтворення часової шкали
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Set the timeline playback speed multiplier
 | **Значок** | ▶️ |
 | **Категорія** | Час |
 
-Begin or resume timeline playback from the current position
+Запускає або продовжує відтворення часової шкали з поточної позиції
 
 *Параметри:* немає
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Значок** | ⏹️ |
 | **Категорія** | Час |
 
-Stop timeline playback and reset the position to 0
+Зупиняє відтворення часової шкали і скидає позицію до 0
 
 *Параметри:* немає
 
