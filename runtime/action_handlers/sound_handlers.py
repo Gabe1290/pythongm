@@ -1,19 +1,30 @@
 #!/usr/bin/env python3
-"""
-Sound Action Handlers
+"""The ``play_sound`` fallback handler.
 
-Handles sound playback and audio control.
+This module used to carry the legacy audio action names too --
+``stop_all_sounds``, ``set_sound_volume``, ``if_sound_playing``. Those went on
+2026-09-06: with the "do we keep pre-modern action names?" question answered
+no (too few legacy projects to justify it), none of them had a producer
+anywhere in the IDE, the samples, the importer or the Blockly config.
+
+``play_sound`` is NOT legacy and stays. It is a shadowed fallback for the
+plugin-owned action in ``plugins/audio_actions.py``: that plugin's
+``register_custom_action`` overwrites this entry whenever plugins load, so in a
+normal run this code never executes. It matters when they have not -- a
+CLI/test import, or a packaged build whose ``plugins/`` directory failed to
+resolve -- where without it a sample calling ``play_sound`` would hit an
+unregistered action rather than a merely silent one.
+``docs/POST_1_0_REFACTOR.md``'s teardown says of this handler: "leave it
+regardless", and deleting it did in fact break
+``test_export_feature_matrix.py``'s "runtime covers every sample action" check.
 """
 
 from typing import Dict, Any
-
 from core.logger import get_logger
 from runtime.action_handlers.base import (
     Parameters, Instance, HandlerContext,
     parse_float, parse_bool,
 )
-
-logger = get_logger(__name__)
 
 
 def handle_play_sound(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
@@ -37,61 +48,6 @@ def handle_play_sound(ctx: HandlerContext, instance: Instance, params: Parameter
     logger.debug(f"  🔊 Queue play sound '{sound}' (loop={loop})")
 
 
-
-def handle_stop_all_sounds(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Stop all playing sounds."""
-    if not hasattr(instance, 'pending_sounds'):
-        instance.pending_sounds = []
-
-    instance.pending_sounds.append({
-        'action': 'stop_all'
-    })
-
-    logger.debug("  🔇 Queue stop all sounds")
-
-
-def handle_if_sound_playing(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Check if a sound is currently playing."""
-    sound = params.get("sound", "")
-    not_flag = parse_bool(params.get("not_flag", False))
-
-    result = False
-    if ctx.game_runner and hasattr(ctx.game_runner, 'playing_sounds'):
-        result = sound in ctx.game_runner.playing_sounds
-
-    if not_flag:
-        result = not result
-
-    logger.debug(f"  ❓ if_sound_playing: '{sound}' = {result}")
-    return result
-
-
-def handle_set_sound_volume(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Set the volume for a sound."""
-    sound = params.get("sound", "")
-    volume = parse_float(ctx, params.get("volume", 1.0), instance, default=1.0)
-
-    if not hasattr(instance, 'pending_sounds'):
-        instance.pending_sounds = []
-
-    instance.pending_sounds.append({
-        'sound': sound,
-        'volume': max(0.0, min(1.0, volume)),
-        'action': 'set_volume'
-    })
-
-    logger.debug(f"  🔊 Queue set volume for '{sound}' = {volume}")
-
-
-
-# =============================================================================
-# Handler Registry
-# =============================================================================
-
-SOUND_HANDLERS: Dict[str, Any] = {
+SOUND_HANDLERS = {
     "play_sound": handle_play_sound,
-    "stop_all_sounds": handle_stop_all_sounds,
-    "if_sound_playing": handle_if_sound_playing,
-    "set_sound_volume": handle_set_sound_volume,
-    # Aliases
 }
