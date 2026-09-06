@@ -120,6 +120,17 @@ def _find_key_in_event(event_dict: dict, key: str) -> Optional[str]:
     return None
 
 
+
+def snap_to_grid(value: float, grid_size: int) -> float:
+    """Snap a value to the nearest grid position.
+
+    Folded in from the retired runtime/action_handlers/base.py
+    (docs/POST_1_0_REFACTOR.md companion teardown), which this module was the
+    last external importer of.
+    """
+    return round(value / grid_size) * grid_size
+
+
 class InputMixin:
     """Mixin providing GameRunner's input handling and per-frame update.
 
@@ -709,7 +720,8 @@ class InputMixin:
                 if not grid_size:
                     grid_size = self._get_any_grid_size(instance)
                 if grid_size:
-                    from runtime.action_handlers.base import snap_to_grid
+                    # snap_to_grid moved here when the
+                    # action_handlers package was retired.
                     instance.x = snap_to_grid(instance.x, grid_size)
                     instance.y = snap_to_grid(instance.y, grid_size)
         # Handle intended movement (grid-based) with collision checking

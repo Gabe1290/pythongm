@@ -92,32 +92,16 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
                     self.action_handlers[action_name] = method
                     logger.debug(f"  📌 Registered action handler: {action_name}")
 
-        # Phase 2: Register modular handlers from action_handlers package.
-        # These have signature (ctx, instance, params) where ctx is the executor.
-        # Wrap them to match the dispatch signature (instance, params).
-        try:
-            from runtime.action_handlers import ACTION_HANDLERS
-
-            def make_wrapper(fn):
-                """Factory to correctly capture fn in closure"""
-                def wrapper(instance, parameters):
-                    return fn(self, instance, parameters)
-                wrapper.__name__ = fn.__name__
-                return wrapper
-
-            modular_count = 0
-            for action_name, handler_func in ACTION_HANDLERS.items():
-                if action_name in self.action_handlers:
-                    logger.debug(f"  ⚠️ Skipping modular handler '{action_name}' (executor method takes priority)")
-                    continue
-                self.action_handlers[action_name] = make_wrapper(handler_func)
-                modular_count += 1
-                logger.debug(f"  📦 Registered modular handler: {action_name}")
-
-            if modular_count > 0:
-                logger.debug(f"  📦 Registered {modular_count} modular action handlers")
-        except ImportError as e:
-            logger.warning(f"  ⚠️ Could not load modular action handlers: {e}")
+        # There is no Phase 2 any more. runtime/action_handlers/ -- a second,
+        # parallel handler source that predated the execute_*_action
+        # convention -- was retired on 2026-09-06 (docs/POST_1_0_REFACTOR.md's
+        # companion teardown). Its last live entries were folded into the
+        # mixins: move_free / set_speed / set_direction into MovementMixin,
+        # comment and the play_sound fallback into MiscMixin. Everything else
+        # it held was legacy action names with no producer anywhere.
+        #
+        # Plugins still register at runtime through register_custom_action
+        # below, which is a different mechanism and unaffected.
 
     def register_custom_action(self, action_name: str, handler_func):
         """Register a custom action handler dynamically (for plugins)

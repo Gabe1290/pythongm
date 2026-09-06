@@ -449,3 +449,34 @@ class MiscMixin:
         annotate an action list. Folded in from the retired
         action_handlers/variable_handlers.py, which held only this."""
         return None
+
+    def execute_play_sound_action(self, instance, parameters: Dict[str, Any]):
+        """Queue a sound to play. FALLBACK ONLY.
+
+        The real `play_sound` is plugin-owned (`plugins/audio_actions.py`), and
+        its `register_custom_action` overwrites this entry whenever plugins
+        load -- so in a normal run this never executes. It exists for the runs
+        where they have not loaded: a CLI/test import, or a packaged build
+        whose `plugins/` directory failed to resolve. Without it a sample
+        calling play_sound hits an unregistered action rather than a merely
+        silent one, which is what `test_export_feature_matrix`'s "runtime
+        covers every sample action" check is asserting.
+
+        Folded in from the retired runtime/action_handlers/sound_handlers.py.
+        """
+        sound = parameters.get("sound", "")
+        loop = parameters.get("loop", False)
+        if isinstance(loop, str):
+            loop = loop.lower() in ("true", "1", "yes", "on")
+        else:
+            loop = bool(loop)
+
+        if not sound:
+            logger.debug("play_sound: no sound specified")
+            return
+
+        if not hasattr(instance, "pending_sounds"):
+            instance.pending_sounds = []
+        instance.pending_sounds.append(
+            {"sound": sound, "loop": loop, "action": "play"})
+        logger.debug("  queue play sound %r (loop=%s)", sound, loop)
