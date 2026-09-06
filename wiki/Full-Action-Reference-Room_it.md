@@ -203,7 +203,7 @@ Cambia il frame rate del gioco (fotogrammi al secondo)
 - [Griglia](Full-Action-Reference-Grid_it) (4)
 - [Viste](Full-Action-Reference-Views_it) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (16)
+- [Network](Full-Action-Reference-Network_it) (15)
 - [Particles](Full-Action-Reference-Particles_it) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_it) (15)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

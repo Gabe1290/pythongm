@@ -4,7 +4,7 @@
 
 > **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Začasno ustavi časovnico
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -31,7 +31,7 @@ Nastavi budilko
 | `alarm_number` | Število | `0` | Katera budilka (0-11) |
 | `steps` | Število | `30` | Število korakov do sprožitve budilke (30 = 0,5 s pri 60 FPS) |
 
-### Set Timeline
+### Nastavi časovnico
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Besedilo | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Nastavi mesto na časovnici
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Število | `0` | Position in steps |
 | `relative` | Da/Ne | Ne | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Nastavi hitrost časovnice
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -88,7 +88,7 @@ Zaustavi igro za določeno število milisekund, nato nadaljuj. Zvoki se med prem
 |-----------|------|---------|-------|
 | `milliseconds` | Število | `1000` | Trajanje premora, v milisekundah (1000 = 1 sekunda) |
 
-### Start Timeline
+### Zaženi časovnico
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Parametri:* brez
 
-### Stop Timeline
+### Ustavi časovnico
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
+- [Network](Full-Action-Reference-Network_sl) (15)
 - [Particles](Full-Action-Reference-Particles_sl) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_sl) (15)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

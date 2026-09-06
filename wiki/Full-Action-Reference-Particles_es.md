@@ -4,7 +4,7 @@
 
 > **Generado automáticamente** a partir del registro de acciones del IDE mediante `tools/gen_action_reference.py` — no editar a mano; vuelve a ejecutar el generador tras cambiar las acciones. Las traducciones provienen de `tools/action_ref_i18n.py`.
 
-### Burst Particles
+### Lanzar partículas
 
 | Propiedad | Valor |
 |----------|-------|
@@ -19,7 +19,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | `particle_type` | Número | `0` | Particle type id (from Create Particle Type) |
 | `number` | Número | `10` | Number of particles to emit |
 
-### Clear Particles
+### Borrar partículas
 
 | Propiedad | Valor |
 |----------|-------|
@@ -31,7 +31,7 @@ Remove all active particles but keep particle types and emitters
 
 *Parámetros:* ninguno
 
-### Create Emitter
+### Crear emisor
 
 | Propiedad | Valor |
 |----------|-------|
@@ -49,7 +49,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | `height` | Número | `0` | Emitter area height |
 | `shape` | Elección | `rectangle` | Shape of the emitter area particles spawn within; Opciones: `rectangle`, `ellipse`, `diamond`, `line` |
 
-### Create Particle System
+### Crear sistema de partículas
 
 | Propiedad | Valor |
 |----------|-------|
@@ -63,7 +63,7 @@ Create a particle system attached to this instance (replaces any existing one)
 |-----------|------|---------|-------|
 | `depth` | Número | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
 
-### Create Particle Type
+### Crear tipo de partícula
 
 | Propiedad | Valor |
 |----------|-------|
@@ -88,7 +88,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | `life_min` | Número | `100` | Minimum lifetime in steps |
 | `life_max` | Número | `100` | Maximum lifetime in steps |
 
-### Destroy Emitter
+### Destruir emisor
 
 | Propiedad | Valor |
 |----------|-------|
@@ -100,7 +100,7 @@ Destroy the most recently created emitter
 
 *Parámetros:* ninguno
 
-### Destroy Particle System
+### Destruir sistema de partículas
 
 | Propiedad | Valor |
 |----------|-------|
@@ -112,7 +112,7 @@ Remove this instance's particle system, clearing all particles and emitters
 
 *Parámetros:* ninguno
 
-### Stream Particles
+### Emitir partículas en continuo
 
 | Propiedad | Valor |
 |----------|-------|
@@ -142,6 +142,6 @@ Continuously emit particles every step from the most recently created emitter (0
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (16)
-- [Réseau](Full-Action-Reference-Network-Actions_es) (15)
+- [Network](Full-Action-Reference-Network_es) (15)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

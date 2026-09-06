@@ -4,7 +4,7 @@
 
 > **Згенеровано автоматично** з реєстру дій IDE за допомогою `tools/gen_action_reference.py` — не редагуйте вручну; повторно запустіть генератор після зміни дій. Переклади взято з `tools/action_ref_i18n.py`.
 
-### Burst Particles
+### Випустити частки
 
 | Властивість | Значення |
 |----------|-------|
@@ -19,7 +19,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | `particle_type` | Число | `0` | Particle type id (from Create Particle Type) |
 | `number` | Число | `10` | Number of particles to emit |
 
-### Clear Particles
+### Очистити частки
 
 | Властивість | Значення |
 |----------|-------|
@@ -31,7 +31,7 @@ Remove all active particles but keep particle types and emitters
 
 *Параметри:* немає
 
-### Create Emitter
+### Створити випромінювач
 
 | Властивість | Значення |
 |----------|-------|
@@ -49,7 +49,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | `height` | Число | `0` | Emitter area height |
 | `shape` | Вибір | `rectangle` | Shape of the emitter area particles spawn within; Варіанти: `rectangle`, `ellipse`, `diamond`, `line` |
 
-### Create Particle System
+### Створити систему часток
 
 | Властивість | Значення |
 |----------|-------|
@@ -63,7 +63,7 @@ Create a particle system attached to this instance (replaces any existing one)
 |-----------|------|---------|-------|
 | `depth` | Число | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
 
-### Create Particle Type
+### Створити тип часток
 
 | Властивість | Значення |
 |----------|-------|
@@ -88,7 +88,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | `life_min` | Число | `100` | Minimum lifetime in steps |
 | `life_max` | Число | `100` | Maximum lifetime in steps |
 
-### Destroy Emitter
+### Видалити випромінювач
 
 | Властивість | Значення |
 |----------|-------|
@@ -100,7 +100,7 @@ Destroy the most recently created emitter
 
 *Параметри:* немає
 
-### Destroy Particle System
+### Видалити систему часток
 
 | Властивість | Значення |
 |----------|-------|
@@ -112,7 +112,7 @@ Remove this instance's particle system, clearing all particles and emitters
 
 *Параметри:* немає
 
-### Stream Particles
+### Випускати частки потоком
 
 | Властивість | Значення |
 |----------|-------|
@@ -142,6 +142,6 @@ Continuously emit particles every step from the most recently created emitter (0
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
 - [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (16)
-- [Réseau](Full-Action-Reference-Network-Actions_uk) (15)
+- [Network](Full-Action-Reference-Network_uk) (15)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

@@ -4,7 +4,7 @@
 
 > **Automatisch generiert** aus der Aktionsregistrierung der IDE durch `tools/gen_action_reference.py` — nicht von Hand bearbeiten; führen Sie den Generator nach Änderungen an Aktionen erneut aus. Die Übersetzungen stammen aus `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Zeitleiste anhalten
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -31,7 +31,7 @@ Einen Wecker stellen
 | `alarm_number` | Zahl | `0` | Welcher Wecker (0-11) |
 | `steps` | Zahl | `30` | Anzahl der Schritte bis zur Auslösung des Weckers (30 = 0,5 s bei 60 FPS) |
 
-### Set Timeline
+### Zeitleiste festlegen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Text | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Position der Zeitleiste festlegen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Zahl | `0` | Position in steps |
 | `relative` | Ja/Nein | Nein | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Geschwindigkeit der Zeitleiste festlegen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -88,7 +88,7 @@ Das Spiel für eine Anzahl von Millisekunden anhalten und dann fortfahren. Klän
 |-----------|------|---------|-------|
 | `milliseconds` | Zahl | `1000` | Dauer der Pause in Millisekunden (1000 = 1 Sekunde) |
 
-### Start Timeline
+### Zeitleiste starten
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Parameter:* keine
 
-### Stop Timeline
+### Zeitleiste stoppen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Gitter](Full-Action-Reference-Grid_de) (4)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
+- [Network](Full-Action-Reference-Network_de) (15)
 - [Particles](Full-Action-Reference-Particles_de) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_de) (15)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

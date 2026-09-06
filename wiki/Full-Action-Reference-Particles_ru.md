@@ -4,7 +4,7 @@
 
 > **Сгенерировано автоматически** из реестра действий IDE с помощью `tools/gen_action_reference.py` — не редактируйте вручную; повторно запустите генератор после изменения действий. Переводы взяты из `tools/action_ref_i18n.py`.
 
-### Burst Particles
+### Выпустить частицы
 
 | Свойство | Значение |
 |----------|-------|
@@ -19,7 +19,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | `particle_type` | Число | `0` | Particle type id (from Create Particle Type) |
 | `number` | Число | `10` | Number of particles to emit |
 
-### Clear Particles
+### Очистить частицы
 
 | Свойство | Значение |
 |----------|-------|
@@ -31,7 +31,7 @@ Remove all active particles but keep particle types and emitters
 
 *Параметры:* нет
 
-### Create Emitter
+### Создать источник
 
 | Свойство | Значение |
 |----------|-------|
@@ -49,7 +49,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | `height` | Число | `0` | Emitter area height |
 | `shape` | Выбор | `rectangle` | Shape of the emitter area particles spawn within; Варианты: `rectangle`, `ellipse`, `diamond`, `line` |
 
-### Create Particle System
+### Создать систему частиц
 
 | Свойство | Значение |
 |----------|-------|
@@ -63,7 +63,7 @@ Create a particle system attached to this instance (replaces any existing one)
 |-----------|------|---------|-------|
 | `depth` | Число | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
 
-### Create Particle Type
+### Создать тип частиц
 
 | Свойство | Значение |
 |----------|-------|
@@ -88,7 +88,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | `life_min` | Число | `100` | Minimum lifetime in steps |
 | `life_max` | Число | `100` | Maximum lifetime in steps |
 
-### Destroy Emitter
+### Удалить источник
 
 | Свойство | Значение |
 |----------|-------|
@@ -100,7 +100,7 @@ Destroy the most recently created emitter
 
 *Параметры:* нет
 
-### Destroy Particle System
+### Удалить систему частиц
 
 | Свойство | Значение |
 |----------|-------|
@@ -112,7 +112,7 @@ Remove this instance's particle system, clearing all particles and emitters
 
 *Параметры:* нет
 
-### Stream Particles
+### Испускать частицы потоком
 
 | Свойство | Значение |
 |----------|-------|
@@ -142,6 +142,6 @@ Continuously emit particles every step from the most recently created emitter (0
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [Виды](Full-Action-Reference-Views_ru) (2)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (16)
-- [Réseau](Full-Action-Reference-Network-Actions_ru) (15)
+- [Network](Full-Action-Reference-Network_ru) (15)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

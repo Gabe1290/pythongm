@@ -191,7 +191,7 @@ Bedingung: die Punktzahl mit einem Wert vergleichen
 - [Gitter](Full-Action-Reference-Grid_de) (4)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
+- [Network](Full-Action-Reference-Network_de) (15)
 - [Particles](Full-Action-Reference-Particles_de) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_de) (15)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

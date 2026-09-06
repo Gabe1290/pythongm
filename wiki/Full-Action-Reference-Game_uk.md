@@ -160,6 +160,7 @@
 | `x` | Число | `0` | Позиція X |
 | `y` | Число | `0` | Позиція Y |
 | `relative` | Так/Ні | Ні | Малювати відносно позиції цього екземпляра замість абсолютних екранних координат; необов'язково |
+| `color` | Колір | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; необов'язково |
 
 ### Намалювати змінну
 
@@ -191,7 +192,7 @@
 |-----------|------|---------|-------|
 | `color` | Колір | `#000000` | Колір RGB у шістнадцятковому форматі |
 
-### Load Game
+### Завантажити гру
 
 | Властивість | Значення |
 |----------|-------|
@@ -231,7 +232,7 @@ Restore room, score/lives/health, global variables, and instance states from a s
 
 *Параметри:* немає
 
-### Save Game
+### Зберегти гру
 
 | Властивість | Значення |
 |----------|-------|
@@ -347,7 +348,7 @@ Save the current room, score/lives/health, global variables, and instance states
 |-----------|------|---------|-------|
 | `message` | Текст | `Hello!` | Текст повідомлення |
 
-### Show Video
+### Показати відео
 
 | Властивість | Значення |
 |----------|-------|
@@ -362,7 +363,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | `filename` | Текст | — | Path to the video file |
 | `fullscreen` | Так/Ні | Ні | Request fullscreen playback (support depends on your system's player); необов'язково |
 
-### Splash: Show Image
+### Заставка: показати зображення
 
 | Властивість | Значення |
 |----------|-------|
@@ -376,7 +377,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 |-----------|------|---------|-------|
 | `image` | Спрайт | — | Sprite to display full-screen |
 
-### Splash: Show Text
+### Заставка: показати текст
 
 | Властивість | Значення |
 |----------|-------|
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
 - [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (16)
+- [Network](Full-Action-Reference-Network_uk) (15)
 - [Particles](Full-Action-Reference-Particles_uk) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_uk) (15)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

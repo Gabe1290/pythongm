@@ -4,7 +4,7 @@
 
 > **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-### Apply Gravity
+### Uporabi težnost
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -16,7 +16,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 
 *Parametri:* brez
 
-### Break Block
+### Razbij blok
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -30,7 +30,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 |-----------|------|---------|-------|
 | `reach` | Število | `5` | How many cells ahead you can reach, in grid cells; neobvezno |
 
-### Draw Block World HUD
+### Nariši HUD Block World
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -106,7 +106,7 @@ Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki pri
 | `mark_object_2` | Predmet | — | A second object to dot on, in its own colour; neobvezno |
 | `mark_color_2` | Barva | `#ff5050` | Colour of the Mark Object 2 dots; neobvezno |
 
-### Enable Block World View
+### Vklopi pogled Block World
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -166,7 +166,7 @@ Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, 
 | `floor_cast_res` | Število | `4` | Podvzorčenje projiciranih tal (višje = hitreje + bolj grobo); neobvezno |
 | `viewport_height` | Število | `0` | Skrči 3D-pogled na to višino v pikslih (letterbox), pri čemer se pod njim rezervira pas za vrstico stanja v slogu DOOM (0 = polna višina okna, nespremenjeno); neobvezno |
 
-### Jump
+### Skoči
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -180,7 +180,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 |-----------|------|---------|-------|
 | `speed` | Število | `0.35` | Initial upward velocity, in cells/step; neobvezno |
 
-### Load Block World
+### Naloži svet Block World
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -194,7 +194,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 |-----------|------|---------|-------|
 | `data_file` | Besedilo | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
 
-### Look Up / Down
+### Poglej gor / dol
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -209,7 +209,7 @@ Tilt the block-world view up or down
 | `pitch` | Število | `0` | Degrees to look up (+) or down (-); 0 is level |
 | `relative` | Da/Ne | Ne | On = add to the current angle, for a look control you can hold down; off = set it outright; neobvezno |
 
-### Move And Collide
+### Premakni s trkom
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -225,7 +225,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | `dy` | Število | `0` | How far to move on y this step, in pixels |
 | `collide` | Da/Ne | Da | Off ignores the block grid entirely (flying/debug); neobvezno |
 
-### Place Block
+### Postavi blok
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -240,7 +240,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | `block` | Izbira | `stone` | Which kind of block to place; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `reach` | Število | `5` | How many cells ahead you can build, in grid cells; neobvezno |
 
-### Select Hotbar Slot
+### Izberi mesto v vrstici
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -255,7 +255,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | `index` | Število | `0` | Hotbar slot index, wrapping around at either end |
 | `relative` | Da/Ne | Ne | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; neobvezno |
 
-### Set Block Protection
+### Nastavi zaščito blokov
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -270,7 +270,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | `block_type` | Izbira | `diamond_block` | Which block type becomes protected; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `required_key` | Izbira | `gold_block` | Which block type must be in inventory to break it; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
-### Set Block Reward
+### Nastavi nagrado za blok
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -314,7 +314,7 @@ Nastavi smer pogleda instance za kamero raycast (iz prve osebe) — neodvisno od
 - [Nadzor](Full-Action-Reference-Control_sl) (19)
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
+- [Network](Full-Action-Reference-Network_sl) (15)
 - [Particles](Full-Action-Reference-Particles_sl) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_sl) (15)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

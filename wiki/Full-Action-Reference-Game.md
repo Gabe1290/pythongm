@@ -160,6 +160,7 @@ Draw a text string at a position
 | `x` | Number | `0` | X position |
 | `y` | Number | `0` | Y position |
 | `relative` | Yes/No | No | Draw relative to this instance's position instead of absolute screen coordinates; optional |
+| `color` | Color | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; optional |
 
 ### Draw Variable
 
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Grid](Full-Action-Reference-Grid) (4)
 - [Views](Full-Action-Reference-Views) (2)
 - [3D View](Full-Action-Reference-3D-View-Actions) (16)
+- [Network](Full-Action-Reference-Network) (15)
 - [Particles](Full-Action-Reference-Particles) (8)
-- [Network](Full-Action-Reference-Network-Actions) (15)
 
 [← Back to Full Action Reference](Full-Action-Reference)
