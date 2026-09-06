@@ -41,13 +41,9 @@ def register_handlers(handlers: Dict[str, ActionHandler]) -> None:
 
 
 # Import the live handler modules - each registers its handlers
-from runtime.action_handlers.movement_handlers import MOVEMENT_HANDLERS
-from runtime.action_handlers.variable_handlers import VARIABLE_HANDLERS
 from runtime.action_handlers.sound_handlers import SOUND_HANDLERS
 
 # Register all handlers
-register_handlers(MOVEMENT_HANDLERS)
-register_handlers(VARIABLE_HANDLERS)
 register_handlers(SOUND_HANDLERS)
 
 __all__ = ['ACTION_HANDLERS', 'ActionHandler', 'register_handlers']

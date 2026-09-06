@@ -443,3 +443,9 @@ class MiscMixin:
                     f"view=({view['view_x']},{view['view_y']},{view['view_w']}x{view['view_h']}), "
                     f"port=({view['port_x']},{view['port_y']},{view['port_w']}x{view['port_h']}), "
                     f"follow={view['follow']}")
+
+    def execute_comment_action(self, instance, parameters: Dict[str, Any]):
+        """A comment does nothing at runtime -- it exists so an author can
+        annotate an action list. Folded in from the retired
+        action_handlers/variable_handlers.py, which held only this."""
+        return None
