@@ -895,6 +895,27 @@ existed. Regenerated; 0 untranslated strings reported now.
   two Welcome tab tuples to bring block_world back into view if work on it
   resumes later.
 
+## Kivy export: two set_variable bugs adjacent to the globals fix
+
+Found 2026-09-06 while making `global.X` work on Kivy (A4), and deliberately
+left alone — they are a different bug class, and widening that change would
+have hidden them. Both are silent: the export builds and runs, it just does
+the wrong thing.
+
+- **A `self.`-prefixed name double-prefixes.** `set_variable` with the name
+  `self.coins` emits `self.self.coins = 5`. Desktop accepts `self.var` (it is
+  in the action's own parameter description), so this is a supported spelling
+  that writes to the wrong attribute on one target.
+- **A value EXPRESSION is emitted as a string literal.** `set_variable coins =
+  coins + 1` emits `self.coins = 'coins + 1'`, so the most ordinary counter a
+  student writes assigns text instead of incrementing. `_literal()` is a
+  deliberate safety choice (a custom var may hold a number or a string, and a
+  cleared field must not emit uncompilable Python) — the fix is to route a
+  value that parses as an expression through `_resolve_instance_names`, the way
+  conditions and the new global-valued case already do, and fall back to
+  `_literal` when it does not parse. Worth checking `test_variable`'s value
+  side for the same shape.
+
 ## Project format / persistence
 
 ### ~~Manifest-ify objects & sprites in project.json~~ (DONE 2026-08-14 objects, DONE 2026-08-15 sprites)

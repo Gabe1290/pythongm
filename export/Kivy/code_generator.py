@@ -18,6 +18,13 @@ logger = get_logger(__name__)
 _EXPR_LEAVE_BARE = frozenset({
     'self', 'other', 'True', 'False', 'None',
     'abs', 'min', 'max', 'round',
+    # resolve_global_refs substitutes `__import__('main').get_global(...)` into
+    # the expression text BEFORE it is parsed here, so unlike _EXPR_GLOBAL_MAP
+    # (whose replacements this transformer builds itself and never revisits)
+    # the builtin arrives as an ordinary Name. Without this it was bound to
+    # `self.__import__`, and every condition touching a global raised
+    # AttributeError at runtime.
+    '__import__',
 })
 
 # Game-global names the runtime resolves from the GameRunner / current room,
@@ -81,25 +88,45 @@ class _SelfNameResolver(ast.NodeTransformer):
 # and _resolve_instance_names used to swallow that and return the ORIGINAL
 # text unchanged, which then reached the generated file verbatim: `if
 # global.network_connected != 1:` is a literal SyntaxError, so the WHOLE
-# exported module failed to import. Kivy has no global-variable storage at
-# all (unlike desktop's game_runner.global_variables / HTML5's
-# game.globalVariables), so there is no runtime home to route a real read
-# to -- the achievable, correctly-scoped fix is turning the reference into
-# a literal 0 instead. That's not just "safe", it's the semantically right
-# answer for every multiplayer identity/status global specifically (is_host,
-# network_connected, player_id, ...): they really are always 0/false on
-# this target, since a Kivy export never networks at all (network actions
-# already export as no-ops, see get_unsupported_actions). Any other,
-# unrelated author-defined global degrades from "crashes the export" to
-# "reads 0", the same graceful-degradation fallback this file already uses
-# throughout for anything Kivy can't represent.
-_GLOBAL_REF_RE = re.compile(r'\bglobal\.[A-Za-z_][A-Za-z0-9_]*\b')
+# exported module failed to import.
+#
+# The first fix substituted a literal 0, because Kivy had no global storage to
+# read from at all. It now does -- GameApp.globals, sitting beside score and
+# lives -- so a reference resolves for REAL, matching desktop's
+# game_runner.global_variables and HTML5's game.globalVariables. A name that
+# was never set reads 0 on all three targets.
+#
+# Multiplayer identity globals (is_host, network_connected, player_id, ...)
+# still come out 0/false here, which remains the right answer: a Kivy export
+# never networks (those actions export as no-ops, see
+# get_unsupported_actions), so nothing ever writes them and the default
+# stands.
+_GLOBAL_REF_RE = re.compile(r'\bglobal\.([A-Za-z_][A-Za-z0-9_]*)\b')
+
+# Read and write one global through main.py's module-level accessors, reached
+# with the same call-time `__import__('main')` pattern _EXPR_GLOBAL_MAP above
+# already uses for score/lives/health -- and for the same reason: these get
+# substituted into arbitrary expressions, INCLUDING an `if` condition, where
+# there is nowhere to hang an import statement, and a plain `from main import`
+# at the top of a generated object module can deadlock the import graph.
+# main.get_global answers the default when the app does not exist yet, so no
+# guard is needed at the call site.
+_GLOBAL_READ = "__import__('main').get_global({name!r})"
+_GLOBAL_WRITE = "__import__('main').set_global({name!r}, {value})"
 
 
-def _strip_global_refs(expr: str) -> str:
+def resolve_global_refs(expr: str) -> str:
+    """Rewrite every ``global.<name>`` in ``expr`` into a real read of the
+    app's globals dict. Self-contained -- the result needs no import line."""
     if not isinstance(expr, str) or 'global.' not in expr:
         return expr
-    return _GLOBAL_REF_RE.sub('0', expr)
+    return _GLOBAL_REF_RE.sub(
+        lambda m: _GLOBAL_READ.format(name=m.group(1)), expr)
+
+
+# Kept under the old name: existing call sites and tests still use it, and the
+# rename would be churn for no behaviour change.
+_strip_global_refs = resolve_global_refs
 
 
 def _resolve_instance_names(expr) -> str:
@@ -1462,7 +1489,18 @@ if dist > 0:
             text = str(params.get('text', ''))
             x = _num_code(params.get('x', 0))
             y = _num_code(params.get('y', 0))
-            return (f"self._draw_queue.append(dict(type='text', text={text!r}, "
+            # A bare `global.<name>` draws that global's VALUE, not the seven
+            # characters "global.". Deliberately narrow -- exactly the same
+            # `^global\.(\w+)$` shape HTML5's engine.js already uses -- so no
+            # existing sample's rendered text changes: anything with its own
+            # dots, spaces or operators is still drawn literally, matching the
+            # note in engine.js's own draw_text case.
+            bare_global = _GLOBAL_REF_RE.fullmatch(text.strip())
+            if bare_global:
+                drawn = "str(%s)" % _GLOBAL_READ.format(name=bare_global.group(1))
+            else:
+                drawn = repr(text)
+            return (f"self._draw_queue.append(dict(type='text', text={drawn}, "
                     f"x={x}, y={y}, "
                     "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
 
@@ -1925,12 +1963,38 @@ if dist > 0:
             relative = params.get('relative', False)
             numeric_attrs = ['x', 'y', 'hspeed', 'vspeed', 'speed', 'direction',
                              'visible', 'solid']
-            if var_name in numeric_attrs:
+
+            # A value that MENTIONS a global gets expression treatment -- the
+            # same _resolve_instance_names conditions already use -- so
+            # `global.total + 1` reads the store and adds to it. Every other
+            # value keeps _literal untouched: emitting a non-global expression
+            # as a string is a deliberate safety choice here (a custom var may
+            # hold a number OR a string, and a cleared field must not emit
+            # uncompilable Python), and revisiting it is a separate question
+            # from globals.
+            if isinstance(raw, str) and 'global.' in raw:
+                resolved = _resolve_instance_names(raw)
+                value = resolved if resolved != raw else _literal(raw)
+            elif var_name in numeric_attrs:
                 value = _num_code(raw)
+            else:
+                value = _literal(raw)
+
+            # `global.<name>` is not a valid attribute path -- `global` is a
+            # reserved word, so `self.global.coins = 5` was a SyntaxError that
+            # took the WHOLE generated module's import down with it. Route the
+            # write to the app's globals dict, the same store every `global.`
+            # read now resolves against.
+            target = _GLOBAL_REF_RE.fullmatch(str(var_name).strip())
+            if target:
+                name = target.group(1)
                 if relative:
-                    return f"self.{var_name} += {value}"
-                return f"self.{var_name} = {value}"
-            value = _literal(raw)
+                    value = "%s + %s" % (
+                        _GLOBAL_READ.format(name=name), value)
+                return _GLOBAL_WRITE.format(name=name, value=value)
+
+            if var_name in numeric_attrs and relative:
+                return f"self.{var_name} += {value}"
             if relative:
                 return f"self.{var_name} = getattr(self, {var_name!r}, 0) + {value}"
             return f"self.{var_name} = {value}"
