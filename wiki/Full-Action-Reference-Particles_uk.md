@@ -12,7 +12,7 @@
 | **Значок** | 💥 |
 | **Категорія** | Particles |
 
-Emit a one-time burst of particles from the most recently created emitter
+Випускає одиничний залп часток з останнього створеного випромінювача
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | **Значок** | 🧹 |
 | **Категорія** | Particles |
 
-Remove all active particles but keep particle types and emitters
+Вилучає всі активні частки, але зберігає типи часток і випромінювачі
 
 *Параметри:* немає
 
@@ -39,7 +39,7 @@ Remove all active particles but keep particle types and emitters
 | **Значок** | 🌀 |
 | **Категорія** | Particles |
 
-Create a particle emitter area (returned id is stored for the next emitter-using action)
+Створює область-випромінювач часток (повернений ідентифікатор запам'ятовується для наступної дії, що використовує випромінювач)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -57,7 +57,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | **Значок** | ✨ |
 | **Категорія** | Particles |
 
-Create a particle system attached to this instance (replaces any existing one)
+Створює систему часток, прив'язану до цього екземпляра (замінює наявну)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -71,7 +71,7 @@ Create a particle system attached to this instance (replaces any existing one)
 | **Значок** | ⚙️ |
 | **Категорія** | Particles |
 
-Define a new particle appearance/behavior (returned type id is stored for the next particle_type-using action)
+Визначає новий вигляд або поведінку часток (повернений ідентифікатор типу запам'ятовується для наступної дії, що використовує тип часток)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | **Значок** | 💥 |
 | **Категорія** | Particles |
 
-Destroy the most recently created emitter
+Вилучає останній створений випромінювач
 
 *Параметри:* немає
 
@@ -108,7 +108,7 @@ Destroy the most recently created emitter
 | **Значок** | 💥 |
 | **Категорія** | Particles |
 
-Remove this instance's particle system, clearing all particles and emitters
+Вилучає систему часток цього екземпляра разом з усіма частками та випромінювачами
 
 *Параметри:* немає
 
@@ -120,7 +120,7 @@ Remove this instance's particle system, clearing all particles and emitters
 | **Значок** | 🌊 |
 | **Категорія** | Particles |
 
-Continuously emit particles every step from the most recently created emitter (0 to stop)
+Безперервно випускає частки на кожному кроці з останнього створеного випромінювача (0 — зупинити)
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
