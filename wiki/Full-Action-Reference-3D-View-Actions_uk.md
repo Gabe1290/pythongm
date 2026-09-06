@@ -4,7 +4,7 @@
 
 > **Згенеровано автоматично** з реєстру дій IDE за допомогою `tools/gen_action_reference.py` — не редагуйте вручну; повторно запустіть генератор після зміни дій. Переклади взято з `tools/action_ref_i18n.py`.
 
-### Apply Gravity
+### Застосувати гравітацію
 
 | Властивість | Значення |
 |----------|-------|
@@ -16,7 +16,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 
 *Параметри:* немає
 
-### Break Block
+### Зруйнувати блок
 
 | Властивість | Значення |
 |----------|-------|
@@ -30,7 +30,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 |-----------|------|---------|-------|
 | `reach` | Число | `5` | How many cells ahead you can reach, in grid cells; необов'язково |
 
-### Draw Block World HUD
+### Намалювати HUD Block World
 
 | Властивість | Значення |
 |----------|-------|
@@ -106,7 +106,7 @@ Draw a crosshair plus a hotbar strip (the selected slot highlighted, with a coun
 | `mark_object_2` | Об'єкт | — | A second object to dot on, in its own colour; необов'язково |
 | `mark_color_2` | Колір | `#ff5050` | Colour of the Mark Object 2 dots; необов'язково |
 
-### Enable Block World View
+### Увімкнути вигляд Block World
 
 | Властивість | Значення |
 |----------|-------|
@@ -166,7 +166,7 @@ Render the room as a first-person voxel view (single layer) instead of the top-d
 | `floor_cast_res` | Число | `4` | Зменшення дискретизації підлоги (більше = швидше + грубіше); необов'язково |
 | `viewport_height` | Число | `0` | Обмежити 3D-вигляд до цієї висоти в пікселях (леттербокс), зарезервувавши смугу нижче для смуги стану у стилі DOOM (0 = повна висота вікна, без змін); необов'язково |
 
-### Jump
+### Стрибок
 
 | Властивість | Значення |
 |----------|-------|
@@ -180,7 +180,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 |-----------|------|---------|-------|
 | `speed` | Число | `0.35` | Initial upward velocity, in cells/step; необов'язково |
 
-### Load Block World
+### Завантажити світ Block World
 
 | Властивість | Значення |
 |----------|-------|
@@ -194,7 +194,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 |-----------|------|---------|-------|
 | `data_file` | Текст | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
 
-### Look Up / Down
+### Дивитися вгору / вниз
 
 | Властивість | Значення |
 |----------|-------|
@@ -209,7 +209,7 @@ Tilt the block-world view up or down
 | `pitch` | Число | `0` | Degrees to look up (+) or down (-); 0 is level |
 | `relative` | Так/Ні | Ні | On = add to the current angle, for a look control you can hold down; off = set it outright; необов'язково |
 
-### Move And Collide
+### Рухатися зі зіткненням
 
 | Властивість | Значення |
 |----------|-------|
@@ -225,7 +225,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | `dy` | Число | `0` | How far to move on y this step, in pixels |
 | `collide` | Так/Ні | Так | Off ignores the block grid entirely (flying/debug); необов'язково |
 
-### Place Block
+### Поставити блок
 
 | Властивість | Значення |
 |----------|-------|
@@ -240,7 +240,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | `block` | Вибір | `stone` | Which kind of block to place; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `reach` | Число | `5` | How many cells ahead you can build, in grid cells; необов'язково |
 
-### Select Hotbar Slot
+### Вибрати комірку панелі
 
 | Властивість | Значення |
 |----------|-------|
@@ -255,7 +255,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | `index` | Число | `0` | Hotbar slot index, wrapping around at either end |
 | `relative` | Так/Ні | Ні | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; необов'язково |
 
-### Set Block Protection
+### Задати захист блоків
 
 | Властивість | Значення |
 |----------|-------|
@@ -270,7 +270,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | `block_type` | Вибір | `diamond_block` | Which block type becomes protected; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `required_key` | Вибір | `gold_block` | Which block type must be in inventory to break it; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
-### Set Block Reward
+### Задати нагороду за блок
 
 | Властивість | Значення |
 |----------|-------|
@@ -314,7 +314,7 @@ Award score when Break Block successfully removes a chosen block type -- call on
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
+- [Network](Full-Action-Reference-Network_uk) (15)
 - [Particles](Full-Action-Reference-Particles_uk) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_uk) (15)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

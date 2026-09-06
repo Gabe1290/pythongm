@@ -4,7 +4,7 @@
 
 > **Generato automaticamente** dal registro delle azioni dell'IDE tramite `tools/gen_action_reference.py` — non modificare a mano; riesegui il generatore dopo aver cambiato le azioni. Le traduzioni provengono da `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Metti in pausa la linea temporale
 
 | Proprietà | Valore |
 |----------|-------|
@@ -31,7 +31,7 @@ Imposta un allarme
 | `alarm_number` | Numero | `0` | Quale allarme (0-11) |
 | `steps` | Numero | `30` | Numero di passi prima che l'allarme scatti (30 = 0,5 s a 60 FPS) |
 
-### Set Timeline
+### Imposta la linea temporale
 
 | Proprietà | Valore |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Testo | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Imposta la posizione nella linea temporale
 
 | Proprietà | Valore |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Numero | `0` | Position in steps |
 | `relative` | Sì/No | No | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Imposta la velocità della linea temporale
 
 | Proprietà | Valore |
 |----------|-------|
@@ -88,7 +88,7 @@ Metti in pausa il gioco per un certo numero di millisecondi, poi continua. I suo
 |-----------|------|---------|-------|
 | `milliseconds` | Numero | `1000` | Durata della pausa, in millisecondi (1000 = 1 secondo) |
 
-### Start Timeline
+### Avvia la linea temporale
 
 | Proprietà | Valore |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Parametri:* nessuno
 
-### Stop Timeline
+### Ferma la linea temporale
 
 | Proprietà | Valore |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Griglia](Full-Action-Reference-Grid_it) (4)
 - [Viste](Full-Action-Reference-Views_it) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (16)
+- [Network](Full-Action-Reference-Network_it) (15)
 - [Particles](Full-Action-Reference-Particles_it) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_it) (15)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

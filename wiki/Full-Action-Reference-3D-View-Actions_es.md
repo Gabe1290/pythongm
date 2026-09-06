@@ -4,7 +4,7 @@
 
 > **Generado automáticamente** a partir del registro de acciones del IDE mediante `tools/gen_action_reference.py` — no editar a mano; vuelve a ejecutar el generador tras cambiar las acciones. Las traducciones provienen de `tools/action_ref_i18n.py`.
 
-### Apply Gravity
+### Aplicar gravedad
 
 | Propiedad | Valor |
 |----------|-------|
@@ -16,7 +16,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 
 *Parámetros:* ninguno
 
-### Break Block
+### Romper bloque
 
 | Propiedad | Valor |
 |----------|-------|
@@ -30,7 +30,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 |-----------|------|---------|-------|
 | `reach` | Número | `5` | How many cells ahead you can reach, in grid cells; opcional |
 
-### Draw Block World HUD
+### Dibujar HUD de Block World
 
 | Propiedad | Valor |
 |----------|-------|
@@ -106,7 +106,7 @@ Dibujar un minimapa orientado al norte de los muros de la sala raycast, con un m
 | `mark_object_2` | Objeto | — | A second object to dot on, in its own colour; opcional |
 | `mark_color_2` | Color | `#ff5050` | Colour of the Mark Object 2 dots; opcional |
 
-### Enable Block World View
+### Activar vista Block World
 
 | Propiedad | Valor |
 |----------|-------|
@@ -166,7 +166,7 @@ Renderizar la sala como una vista 3D en primera persona al estilo Doom/Wolfenste
 | `floor_cast_res` | Número | `4` | Submuestreo del suelo proyectado (mayor = más rápido + más tosco); opcional |
 | `viewport_height` | Número | `0` | Reduce la vista 3D a esta altura en píxeles (letterbox), reservando la franja inferior para una barra de estado al estilo DOOM (0 = altura completa de la ventana, sin cambios); opcional |
 
-### Jump
+### Saltar
 
 | Propiedad | Valor |
 |----------|-------|
@@ -180,7 +180,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 |-----------|------|---------|-------|
 | `speed` | Número | `0.35` | Initial upward velocity, in cells/step; opcional |
 
-### Load Block World
+### Cargar Block World
 
 | Propiedad | Valor |
 |----------|-------|
@@ -194,7 +194,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 |-----------|------|---------|-------|
 | `data_file` | Texto | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
 
-### Look Up / Down
+### Mirar arriba / abajo
 
 | Propiedad | Valor |
 |----------|-------|
@@ -209,7 +209,7 @@ Tilt the block-world view up or down
 | `pitch` | Número | `0` | Degrees to look up (+) or down (-); 0 is level |
 | `relative` | Sí/No | No | On = add to the current angle, for a look control you can hold down; off = set it outright; opcional |
 
-### Move And Collide
+### Mover con colisión
 
 | Propiedad | Valor |
 |----------|-------|
@@ -225,7 +225,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | `dy` | Número | `0` | How far to move on y this step, in pixels |
 | `collide` | Sí/No | Sí | Off ignores the block grid entirely (flying/debug); opcional |
 
-### Place Block
+### Colocar bloque
 
 | Propiedad | Valor |
 |----------|-------|
@@ -240,7 +240,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | `block` | Elección | `stone` | Which kind of block to place; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `reach` | Número | `5` | How many cells ahead you can build, in grid cells; opcional |
 
-### Select Hotbar Slot
+### Elegir casilla de la barra
 
 | Propiedad | Valor |
 |----------|-------|
@@ -255,7 +255,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | `index` | Número | `0` | Hotbar slot index, wrapping around at either end |
 | `relative` | Sí/No | No | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; opcional |
 
-### Set Block Protection
+### Definir protección de bloques
 
 | Propiedad | Valor |
 |----------|-------|
@@ -270,7 +270,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | `block_type` | Elección | `diamond_block` | Which block type becomes protected; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `required_key` | Elección | `gold_block` | Which block type must be in inventory to break it; Opciones: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
-### Set Block Reward
+### Definir recompensa de bloque
 
 | Propiedad | Valor |
 |----------|-------|
@@ -314,7 +314,7 @@ Establecer la dirección de mirada de la instancia para una cámara raycast (en 
 - [Control](Full-Action-Reference-Control_es) (19)
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
+- [Network](Full-Action-Reference-Network_es) (15)
 - [Particles](Full-Action-Reference-Particles_es) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_es) (15)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

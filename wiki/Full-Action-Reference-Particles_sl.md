@@ -4,7 +4,7 @@
 
 > **Samodejno ustvarjeno** iz registra dejanj IDE z `tools/gen_action_reference.py` — ne urejajte ročno; po spremembi dejanj znova zaženite generator. Prevodi so iz `tools/action_ref_i18n.py`.
 
-### Burst Particles
+### Izpusti delce
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -19,7 +19,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | `particle_type` | Število | `0` | Particle type id (from Create Particle Type) |
 | `number` | Število | `10` | Number of particles to emit |
 
-### Clear Particles
+### Počisti delce
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -31,7 +31,7 @@ Remove all active particles but keep particle types and emitters
 
 *Parametri:* brez
 
-### Create Emitter
+### Ustvari izvor
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -49,7 +49,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | `height` | Število | `0` | Emitter area height |
 | `shape` | Izbira | `rectangle` | Shape of the emitter area particles spawn within; Izbire: `rectangle`, `ellipse`, `diamond`, `line` |
 
-### Create Particle System
+### Ustvari sistem delcev
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -63,7 +63,7 @@ Create a particle system attached to this instance (replaces any existing one)
 |-----------|------|---------|-------|
 | `depth` | Število | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
 
-### Create Particle Type
+### Ustvari vrsto delca
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -88,7 +88,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | `life_min` | Število | `100` | Minimum lifetime in steps |
 | `life_max` | Število | `100` | Maximum lifetime in steps |
 
-### Destroy Emitter
+### Odstrani izvor
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -100,7 +100,7 @@ Destroy the most recently created emitter
 
 *Parametri:* brez
 
-### Destroy Particle System
+### Odstrani sistem delcev
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -112,7 +112,7 @@ Remove this instance's particle system, clearing all particles and emitters
 
 *Parametri:* brez
 
-### Stream Particles
+### Neprekinjeno oddajaj delce
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -142,6 +142,6 @@ Continuously emit particles every step from the most recently created emitter (0
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
-- [Réseau](Full-Action-Reference-Network-Actions_sl) (15)
+- [Network](Full-Action-Reference-Network_sl) (15)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

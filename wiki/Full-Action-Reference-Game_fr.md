@@ -160,6 +160,7 @@ Dessiner une chaîne de texte à une position
 | `x` | Nombre | `0` | Position X |
 | `y` | Nombre | `0` | Position Y |
 | `relative` | Oui/Non | Non | Dessiner par rapport à la position de cette instance au lieu de coordonnées d'écran absolues; optionnel |
+| `color` | Couleur | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; optionnel |
 
 ### Dessiner une variable
 
@@ -191,7 +192,7 @@ Remplir toute la zone d'affichage d'une couleur unie
 |-----------|------|---------|-------|
 | `color` | Couleur | `#000000` | Couleur hexadécimale RVB |
 
-### Load Game
+### Charger la partie
 
 | Propriété | Valeur |
 |----------|-------|
@@ -231,7 +232,7 @@ Redémarrer le jeu depuis la salle de départ
 
 *Paramètres:* aucun
 
-### Save Game
+### Sauvegarder la partie
 
 | Propriété | Valeur |
 |----------|-------|
@@ -347,7 +348,7 @@ Afficher un message
 |-----------|------|---------|-------|
 | `message` | Texte | `Hello!` | Texte du message |
 
-### Show Video
+### Afficher une vidéo
 
 | Propriété | Valeur |
 |----------|-------|
@@ -362,7 +363,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | `filename` | Texte | — | Path to the video file |
 | `fullscreen` | Oui/Non | Non | Request fullscreen playback (support depends on your system's player); optionnel |
 
-### Splash: Show Image
+### Écran d'accueil : afficher une image
 
 | Propriété | Valeur |
 |----------|-------|
@@ -376,7 +377,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 |-----------|------|---------|-------|
 | `image` | Sprite | — | Sprite to display full-screen |
 
-### Splash: Show Text
+### Écran d'accueil : afficher un texte
 
 | Propriété | Valeur |
 |----------|-------|
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
+- [Network](Full-Action-Reference-Network_fr) (15)
 - [Particles](Full-Action-Reference-Particles_fr) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

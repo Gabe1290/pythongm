@@ -4,7 +4,7 @@
 
 > **Généré automatiquement** à partir du registre d'actions de l'IDE par `tools/gen_action_reference.py` — ne pas modifier à la main ; relancez le générateur après avoir changé les actions. Les traductions proviennent de `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Mettre la frise en pause
 
 | Propriété | Valeur |
 |----------|-------|
@@ -31,7 +31,7 @@ Régler une alarme
 | `alarm_number` | Nombre | `0` | Quelle alarme (0-11) |
 | `steps` | Nombre | `30` | Nombre d'étapes avant le déclenchement de l'alarme (30 = 0,5 s à 60 IPS) |
 
-### Set Timeline
+### Définir la frise chronologique
 
 | Propriété | Valeur |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Texte | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Définir la position dans la frise
 
 | Propriété | Valeur |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Nombre | `0` | Position in steps |
 | `relative` | Oui/Non | Non | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Définir la vitesse de la frise
 
 | Propriété | Valeur |
 |----------|-------|
@@ -88,7 +88,7 @@ Mettre le jeu en pause pendant un certain nombre de millisecondes, puis continue
 |-----------|------|---------|-------|
 | `milliseconds` | Nombre | `1000` | Durée de la pause, en millisecondes (1000 = 1 seconde) |
 
-### Start Timeline
+### Démarrer la frise
 
 | Propriété | Valeur |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Paramètres:* aucun
 
-### Stop Timeline
+### Arrêter la frise
 
 | Propriété | Valeur |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
+- [Network](Full-Action-Reference-Network_fr) (15)
 - [Particles](Full-Action-Reference-Particles_fr) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

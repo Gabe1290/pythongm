@@ -160,6 +160,7 @@
 | `x` | Число | `0` | Позиция X |
 | `y` | Число | `0` | Позиция Y |
 | `relative` | Да/Нет | Нет | Рисовать относительно позиции этого экземпляра вместо абсолютных экранных координат; необязательно |
+| `color` | Цвет | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; необязательно |
 
 ### Нарисовать переменную
 
@@ -191,7 +192,7 @@
 |-----------|------|---------|-------|
 | `color` | Цвет | `#000000` | Цвет RGB в шестнадцатеричном формате |
 
-### Load Game
+### Загрузить игру
 
 | Свойство | Значение |
 |----------|-------|
@@ -231,7 +232,7 @@ Restore room, score/lives/health, global variables, and instance states from a s
 
 *Параметры:* нет
 
-### Save Game
+### Сохранить игру
 
 | Свойство | Значение |
 |----------|-------|
@@ -347,7 +348,7 @@ Save the current room, score/lives/health, global variables, and instance states
 |-----------|------|---------|-------|
 | `message` | Текст | `Hello!` | Текст сообщения |
 
-### Show Video
+### Показать видео
 
 | Свойство | Значение |
 |----------|-------|
@@ -362,7 +363,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | `filename` | Текст | — | Path to the video file |
 | `fullscreen` | Да/Нет | Нет | Request fullscreen playback (support depends on your system's player); необязательно |
 
-### Splash: Show Image
+### Заставка: показать изображение
 
 | Свойство | Значение |
 |----------|-------|
@@ -376,7 +377,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 |-----------|------|---------|-------|
 | `image` | Спрайт | — | Sprite to display full-screen |
 
-### Splash: Show Text
+### Заставка: показать текст
 
 | Свойство | Значение |
 |----------|-------|
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [Виды](Full-Action-Reference-Views_ru) (2)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (16)
+- [Network](Full-Action-Reference-Network_ru) (15)
 - [Particles](Full-Action-Reference-Particles_ru) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_ru) (15)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

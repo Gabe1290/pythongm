@@ -4,7 +4,7 @@
 
 > **Сгенерировано автоматически** из реестра действий IDE с помощью `tools/gen_action_reference.py` — не редактируйте вручную; повторно запустите генератор после изменения действий. Переводы взяты из `tools/action_ref_i18n.py`.
 
-### Apply Gravity
+### Применить гравитацию
 
 | Свойство | Значение |
 |----------|-------|
@@ -16,7 +16,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 
 *Параметры:* нет
 
-### Break Block
+### Разрушить блок
 
 | Свойство | Значение |
 |----------|-------|
@@ -30,7 +30,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 |-----------|------|---------|-------|
 | `reach` | Число | `5` | How many cells ahead you can reach, in grid cells; необязательно |
 
-### Draw Block World HUD
+### Нарисовать HUD Block World
 
 | Свойство | Значение |
 |----------|-------|
@@ -106,7 +106,7 @@ Draw a crosshair plus a hotbar strip (the selected slot highlighted, with a coun
 | `mark_object_2` | Объект | — | A second object to dot on, in its own colour; необязательно |
 | `mark_color_2` | Цвет | `#ff5050` | Colour of the Mark Object 2 dots; необязательно |
 
-### Enable Block World View
+### Включить вид Block World
 
 | Свойство | Значение |
 |----------|-------|
@@ -166,7 +166,7 @@ Render the room as a first-person voxel view (single layer) instead of the top-d
 | `floor_cast_res` | Число | `4` | Уменьшение дискретизации пола (больше = быстрее + грубее); необязательно |
 | `viewport_height` | Число | `0` | Ограничить 3D-вид до этой высоты в пикселях (леттербокс), зарезервировав полосу ниже для полосы состояния в стиле DOOM (0 = полная высота окна, без изменений); необязательно |
 
-### Jump
+### Прыжок
 
 | Свойство | Значение |
 |----------|-------|
@@ -180,7 +180,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 |-----------|------|---------|-------|
 | `speed` | Число | `0.35` | Initial upward velocity, in cells/step; необязательно |
 
-### Load Block World
+### Загрузить мир Block World
 
 | Свойство | Значение |
 |----------|-------|
@@ -194,7 +194,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 |-----------|------|---------|-------|
 | `data_file` | Текст | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
 
-### Look Up / Down
+### Смотреть вверх / вниз
 
 | Свойство | Значение |
 |----------|-------|
@@ -209,7 +209,7 @@ Tilt the block-world view up or down
 | `pitch` | Число | `0` | Degrees to look up (+) or down (-); 0 is level |
 | `relative` | Да/Нет | Нет | On = add to the current angle, for a look control you can hold down; off = set it outright; необязательно |
 
-### Move And Collide
+### Двигаться со столкновением
 
 | Свойство | Значение |
 |----------|-------|
@@ -225,7 +225,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | `dy` | Число | `0` | How far to move on y this step, in pixels |
 | `collide` | Да/Нет | Да | Off ignores the block grid entirely (flying/debug); необязательно |
 
-### Place Block
+### Поставить блок
 
 | Свойство | Значение |
 |----------|-------|
@@ -240,7 +240,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | `block` | Выбор | `stone` | Which kind of block to place; Варианты: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `reach` | Число | `5` | How many cells ahead you can build, in grid cells; необязательно |
 
-### Select Hotbar Slot
+### Выбрать ячейку панели
 
 | Свойство | Значение |
 |----------|-------|
@@ -255,7 +255,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | `index` | Число | `0` | Hotbar slot index, wrapping around at either end |
 | `relative` | Да/Нет | Нет | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; необязательно |
 
-### Set Block Protection
+### Задать защиту блоков
 
 | Свойство | Значение |
 |----------|-------|
@@ -270,7 +270,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | `block_type` | Выбор | `diamond_block` | Which block type becomes protected; Варианты: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `required_key` | Выбор | `gold_block` | Which block type must be in inventory to break it; Варианты: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
-### Set Block Reward
+### Задать награду за блок
 
 | Свойство | Значение |
 |----------|-------|
@@ -314,7 +314,7 @@ Award score when Break Block successfully removes a chosen block type -- call on
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [Виды](Full-Action-Reference-Views_ru) (2)
+- [Network](Full-Action-Reference-Network_ru) (15)
 - [Particles](Full-Action-Reference-Particles_ru) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_ru) (15)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

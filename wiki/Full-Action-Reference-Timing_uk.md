@@ -4,7 +4,7 @@
 
 > **Згенеровано автоматично** з реєстру дій IDE за допомогою `tools/gen_action_reference.py` — не редагуйте вручну; повторно запустіть генератор після зміни дій. Переклади взято з `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Призупинити шкалу
 
 | Властивість | Значення |
 |----------|-------|
@@ -31,7 +31,7 @@ Pause timeline playback at the current position
 | `alarm_number` | Число | `0` | Який будильник (0-11) |
 | `steps` | Число | `30` | Кількість кроків до спрацювання будильника (30 = 0,5 с при 60 FPS) |
 
-### Set Timeline
+### Задати часову шкалу
 
 | Властивість | Значення |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Текст | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Задати позицію на шкалі
 
 | Властивість | Значення |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Число | `0` | Position in steps |
 | `relative` | Так/Ні | Ні | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Задати швидкість шкали
 
 | Властивість | Значення |
 |----------|-------|
@@ -88,7 +88,7 @@ Set the timeline playback speed multiplier
 |-----------|------|---------|-------|
 | `milliseconds` | Число | `1000` | Тривалість паузи в мілісекундах (1000 = 1 секунда) |
 
-### Start Timeline
+### Запустити шкалу
 
 | Властивість | Значення |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Параметри:* немає
 
-### Stop Timeline
+### Зупинити шкалу
 
 | Властивість | Значення |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
 - [Вигляди](Full-Action-Reference-Views_uk) (2)
 - [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (16)
+- [Network](Full-Action-Reference-Network_uk) (15)
 - [Particles](Full-Action-Reference-Particles_uk) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_uk) (15)
 
 [← Назад до Повного Довідника Дій](Full-Action-Reference_uk)

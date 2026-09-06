@@ -60,7 +60,7 @@
 - [Управление](Full-Action-Reference-Control_ru) (19)
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (16)
+- [Network](Full-Action-Reference-Network_ru) (15)
 - [Particles](Full-Action-Reference-Particles_ru) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_ru) (15)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

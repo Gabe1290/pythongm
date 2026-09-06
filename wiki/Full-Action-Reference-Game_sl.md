@@ -160,6 +160,7 @@ Nariši besedilni niz na položaju
 | `x` | Število | `0` | Položaj X |
 | `y` | Število | `0` | Položaj Y |
 | `relative` | Da/Ne | Ne | Nariši glede na položaj te instance namesto absolutnih zaslonskih koordinat; neobvezno |
+| `color` | Barva | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; neobvezno |
 
 ### Nariši spremenljivko
 
@@ -191,7 +192,7 @@ Zapolni celotno območje prikaza z enotno barvo
 |-----------|------|---------|-------|
 | `color` | Barva | `#000000` | Šestnajstiška barva RGB |
 
-### Load Game
+### Naloži igro
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -231,7 +232,7 @@ Znova zaženi igro iz začetne sobe
 
 *Parametri:* brez
 
-### Save Game
+### Shrani igro
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -347,7 +348,7 @@ Prikaži sporočilo
 |-----------|------|---------|-------|
 | `message` | Besedilo | `Hello!` | Besedilo sporočila |
 
-### Show Video
+### Predvajaj video
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -362,7 +363,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | `filename` | Besedilo | — | Path to the video file |
 | `fullscreen` | Da/Ne | Ne | Request fullscreen playback (support depends on your system's player); neobvezno |
 
-### Splash: Show Image
+### Uvodni zaslon: pokaži sliko
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -376,7 +377,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 |-----------|------|---------|-------|
 | `image` | Sprite | — | Sprite to display full-screen |
 
-### Splash: Show Text
+### Uvodni zaslon: pokaži besedilo
 
 | Lastnost | Vrednost |
 |----------|-------|
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
+- [Network](Full-Action-Reference-Network_sl) (15)
 - [Particles](Full-Action-Reference-Particles_sl) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_sl) (15)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

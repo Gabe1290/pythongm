@@ -160,6 +160,7 @@ Eine Textzeichenkette an einer Position zeichnen
 | `x` | Zahl | `0` | X-Position |
 | `y` | Zahl | `0` | Y-Position |
 | `relative` | Ja/Nein | Nein | Relativ zur Position dieser Instanz statt zu absoluten Bildschirmkoordinaten zeichnen; optional |
+| `color` | Farbe | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; optional |
 
 ### Variable zeichnen
 
@@ -191,7 +192,7 @@ Den gesamten Anzeigebereich mit einer einfarbigen Farbe füllen
 |-----------|------|---------|-------|
 | `color` | Farbe | `#000000` | RGB-Hexfarbe |
 
-### Load Game
+### Spiel laden
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -231,7 +232,7 @@ Das Spiel vom Startraum aus neu starten
 
 *Parameter:* keine
 
-### Save Game
+### Spiel speichern
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -347,7 +348,7 @@ Eine Nachricht anzeigen
 |-----------|------|---------|-------|
 | `message` | Text | `Hello!` | Nachrichtentext |
 
-### Show Video
+### Video abspielen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -362,7 +363,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | `filename` | Text | — | Path to the video file |
 | `fullscreen` | Ja/Nein | Nein | Request fullscreen playback (support depends on your system's player); optional |
 
-### Splash: Show Image
+### Startbild: Bild zeigen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -376,7 +377,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 |-----------|------|---------|-------|
 | `image` | Sprite | — | Sprite to display full-screen |
 
-### Splash: Show Text
+### Startbild: Text zeigen
 
 | Eigenschaft | Wert |
 |----------|-------|
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Gitter](Full-Action-Reference-Grid_de) (4)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
+- [Network](Full-Action-Reference-Network_de) (15)
 - [Particles](Full-Action-Reference-Particles_de) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_de) (15)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

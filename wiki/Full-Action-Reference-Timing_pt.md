@@ -4,7 +4,7 @@
 
 > **Gerado automaticamente** a partir do registro de ações do IDE via `tools/gen_action_reference.py` — não edite manualmente; execute novamente o gerador após alterar as ações. As traduções vêm de `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Pausar a linha temporal
 
 | Propriedade | Valor |
 |----------|-------|
@@ -31,7 +31,7 @@ Definir um alarme
 | `alarm_number` | Número | `0` | Qual alarme (0-11) |
 | `steps` | Número | `30` | Número de passos até o alarme disparar (30 = 0,5 s a 60 FPS) |
 
-### Set Timeline
+### Definir a linha temporal
 
 | Propriedade | Valor |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Texto | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Definir a posição na linha temporal
 
 | Propriedade | Valor |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Número | `0` | Position in steps |
 | `relative` | Sim/Não | Não | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Definir a velocidade da linha temporal
 
 | Propriedade | Valor |
 |----------|-------|
@@ -88,7 +88,7 @@ Pausar o jogo por um número de milissegundos e depois continuar. Os sons contin
 |-----------|------|---------|-------|
 | `milliseconds` | Número | `1000` | Duração da pausa, em milissegundos (1000 = 1 segundo) |
 
-### Start Timeline
+### Iniciar a linha temporal
 
 | Propriedade | Valor |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Parâmetros:* nenhum
 
-### Stop Timeline
+### Parar a linha temporal
 
 | Propriedade | Valor |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Grade](Full-Action-Reference-Grid_pt) (4)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (16)
+- [Network](Full-Action-Reference-Network_pt) (15)
 - [Particles](Full-Action-Reference-Particles_pt) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_pt) (15)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

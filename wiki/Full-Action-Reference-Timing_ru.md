@@ -4,7 +4,7 @@
 
 > **Сгенерировано автоматически** из реестра действий IDE с помощью `tools/gen_action_reference.py` — не редактируйте вручную; повторно запустите генератор после изменения действий. Переводы взяты из `tools/action_ref_i18n.py`.
 
-### Pause Timeline
+### Приостановить шкалу
 
 | Свойство | Значение |
 |----------|-------|
@@ -31,7 +31,7 @@ Pause timeline playback at the current position
 | `alarm_number` | Число | `0` | Какой будильник (0-11) |
 | `steps` | Число | `30` | Количество шагов до срабатывания будильника (30 = 0,5 с при 60 FPS) |
 
-### Set Timeline
+### Задать временную шкалу
 
 | Свойство | Значение |
 |----------|-------|
@@ -45,7 +45,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 |-----------|------|---------|-------|
 | `timeline` | Текст | — | A label for your own reference; not a resource lookup |
 
-### Set Timeline Position
+### Задать позицию на шкале
 
 | Свойство | Значение |
 |----------|-------|
@@ -60,7 +60,7 @@ Set (or offset) this instance's timeline position
 | `position` | Число | `0` | Position in steps |
 | `relative` | Да/Нет | Нет | Add to the current position instead of setting it absolutely |
 
-### Set Timeline Speed
+### Задать скорость шкалы
 
 | Свойство | Значение |
 |----------|-------|
@@ -88,7 +88,7 @@ Set the timeline playback speed multiplier
 |-----------|------|---------|-------|
 | `milliseconds` | Число | `1000` | Длительность паузы в миллисекундах (1000 = 1 секунда) |
 
-### Start Timeline
+### Запустить шкалу
 
 | Свойство | Значение |
 |----------|-------|
@@ -100,7 +100,7 @@ Begin or resume timeline playback from the current position
 
 *Параметры:* нет
 
-### Stop Timeline
+### Остановить шкалу
 
 | Свойство | Значение |
 |----------|-------|
@@ -126,7 +126,7 @@ Stop timeline playback and reset the position to 0
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [Виды](Full-Action-Reference-Views_ru) (2)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (16)
+- [Network](Full-Action-Reference-Network_ru) (15)
 - [Particles](Full-Action-Reference-Particles_ru) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_ru) (15)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

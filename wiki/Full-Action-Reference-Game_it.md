@@ -160,6 +160,7 @@ Disegna una stringa di testo in una posizione
 | `x` | Numero | `0` | Posizione X |
 | `y` | Numero | `0` | Posizione Y |
 | `relative` | Sì/No | No | Disegna rispetto alla posizione di questa istanza invece che a coordinate schermo assolute; facoltativo |
+| `color` | Colore | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; facoltativo |
 
 ### Disegna variabile
 
@@ -191,7 +192,7 @@ Riempi l'intera area di visualizzazione con un colore uniforme
 |-----------|------|---------|-------|
 | `color` | Colore | `#000000` | Colore RGB esadecimale |
 
-### Load Game
+### Carica la partita
 
 | Proprietà | Valore |
 |----------|-------|
@@ -231,7 +232,7 @@ Riavvia il gioco dalla stanza iniziale
 
 *Parametri:* nessuno
 
-### Save Game
+### Salva la partita
 
 | Proprietà | Valore |
 |----------|-------|
@@ -347,7 +348,7 @@ Mostra un messaggio
 |-----------|------|---------|-------|
 | `message` | Testo | `Hello!` | Testo del messaggio |
 
-### Show Video
+### Mostra un video
 
 | Proprietà | Valore |
 |----------|-------|
@@ -362,7 +363,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | `filename` | Testo | — | Path to the video file |
 | `fullscreen` | Sì/No | No | Request fullscreen playback (support depends on your system's player); facoltativo |
 
-### Splash: Show Image
+### Schermata: mostra immagine
 
 | Proprietà | Valore |
 |----------|-------|
@@ -376,7 +377,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 |-----------|------|---------|-------|
 | `image` | Sprite | — | Sprite to display full-screen |
 
-### Splash: Show Text
+### Schermata: mostra testo
 
 | Proprietà | Valore |
 |----------|-------|
@@ -404,7 +405,7 @@ Show a message and pause the game until the player dismisses it
 - [Griglia](Full-Action-Reference-Grid_it) (4)
 - [Viste](Full-Action-Reference-Views_it) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (16)
+- [Network](Full-Action-Reference-Network_it) (15)
 - [Particles](Full-Action-Reference-Particles_it) (8)
-- [Réseau](Full-Action-Reference-Network-Actions_it) (15)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

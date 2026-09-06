@@ -4,7 +4,7 @@
 
 > **Généré automatiquement** à partir du registre d'actions de l'IDE par `tools/gen_action_reference.py` — ne pas modifier à la main ; relancez le générateur après avoir changé les actions. Les traductions proviennent de `tools/action_ref_i18n.py`.
 
-### Burst Particles
+### Émettre une salve de particules
 
 | Propriété | Valeur |
 |----------|-------|
@@ -19,7 +19,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | `particle_type` | Nombre | `0` | Particle type id (from Create Particle Type) |
 | `number` | Nombre | `10` | Number of particles to emit |
 
-### Clear Particles
+### Effacer les particules
 
 | Propriété | Valeur |
 |----------|-------|
@@ -31,7 +31,7 @@ Remove all active particles but keep particle types and emitters
 
 *Paramètres:* aucun
 
-### Create Emitter
+### Créer un émetteur
 
 | Propriété | Valeur |
 |----------|-------|
@@ -49,7 +49,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | `height` | Nombre | `0` | Emitter area height |
 | `shape` | Choix | `rectangle` | Shape of the emitter area particles spawn within; Choix: `rectangle`, `ellipse`, `diamond`, `line` |
 
-### Create Particle System
+### Créer un système de particules
 
 | Propriété | Valeur |
 |----------|-------|
@@ -63,7 +63,7 @@ Create a particle system attached to this instance (replaces any existing one)
 |-----------|------|---------|-------|
 | `depth` | Nombre | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
 
-### Create Particle Type
+### Créer un type de particule
 
 | Propriété | Valeur |
 |----------|-------|
@@ -88,7 +88,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | `life_min` | Nombre | `100` | Minimum lifetime in steps |
 | `life_max` | Nombre | `100` | Maximum lifetime in steps |
 
-### Destroy Emitter
+### Supprimer l'émetteur
 
 | Propriété | Valeur |
 |----------|-------|
@@ -100,7 +100,7 @@ Destroy the most recently created emitter
 
 *Paramètres:* aucun
 
-### Destroy Particle System
+### Supprimer le système de particules
 
 | Propriété | Valeur |
 |----------|-------|
@@ -112,7 +112,7 @@ Remove this instance's particle system, clearing all particles and emitters
 
 *Paramètres:* aucun
 
-### Stream Particles
+### Émettre des particules en continu
 
 | Propriété | Valeur |
 |----------|-------|
@@ -142,6 +142,6 @@ Continuously emit particles every step from the most recently created emitter (0
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
-- [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
+- [Network](Full-Action-Reference-Network_fr) (15)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)
