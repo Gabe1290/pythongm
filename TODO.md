@@ -895,26 +895,35 @@ existed. Regenerated; 0 untranslated strings reported now.
   two Welcome tab tuples to bring block_world back into view if work on it
   resumes later.
 
-## Kivy export: two set_variable bugs adjacent to the globals fix
+## Kivy export: variable NAMES and VALUES (fixed 2026-09-06)
 
-Found 2026-09-06 while making `global.X` work on Kivy (A4), and deliberately
-left alone — they are a different bug class, and widening that change would
-have hidden them. Both are silent: the export builds and runs, it just does
-the wrong thing.
+Found while making `global.X` work on Kivy (A4), fixed straight after. Both
+were silent -- the export built and ran, it just did the wrong thing -- and
+both affected `set_variable` and `test_variable` alike.
 
-- **A `self.`-prefixed name double-prefixes.** `set_variable` with the name
-  `self.coins` emits `self.self.coins = 5`. Desktop accepts `self.var` (it is
-  in the action's own parameter description), so this is a supported spelling
-  that writes to the wrong attribute on one target.
-- **A value EXPRESSION is emitted as a string literal.** `set_variable coins =
-  coins + 1` emits `self.coins = 'coins + 1'`, so the most ordinary counter a
-  student writes assigns text instead of incrementing. `_literal()` is a
-  deliberate safety choice (a custom var may hold a number or a string, and a
-  cleared field must not emit uncompilable Python) — the fix is to route a
-  value that parses as an expression through `_resolve_instance_names`, the way
-  conditions and the new global-valued case already do, and fall back to
-  `_literal` when it does not parse. Worth checking `test_variable`'s value
-  side for the same shape.
+- **The scope prefix on a NAME was ignored.** The generator prepended `self.`
+  to whatever it was handed, so `self.coins` wrote to `self.self.coins`,
+  `other.hp` to `self.other.hp`, and `global.coins` emitted
+  `self.global.coins` -- a SyntaxError, `global` being reserved. On the read
+  side `test_variable` did `getattr(self, 'global.coins', 0)`, which raises
+  nothing and simply answers 0 forever, so the condition was quietly dead.
+  `_variable_read_code` is now the single shared reader for both actions, so
+  the two cannot disagree about where a name lives; `other` resolves only
+  inside a collision handler (None everywhere else, as the rest of this
+  generator already assumes) and a write through it is dropped rather than
+  raising.
+- **A VALUE expression was emitted as a string literal.** `set_variable coins =
+  coins + 1` became `self.coins = 'coins + 1'`, so the most ordinary counter a
+  student writes assigned text instead of incrementing. `_value_code` now
+  mirrors the desktop runtime's `_parse_value` routing: an arithmetic
+  operator, a GML function call or a scoped reference means expression;
+  anything else stays text; quoted text keeps its content and loses its quotes
+  (desktop strips them, this used to keep them); and an expression that does
+  not parse falls back to the literal, which is safer than desktop, where
+  operator-looking prose evaluates to 0.
+
+`tests/test_kivy_global_variables.py` covers both by EXECUTING the generated
+lines rather than matching their text.
 
 ## Project format / persistence
 

@@ -29,7 +29,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 from export.Kivy.code_generator import (  # noqa: E402
-    ActionCodeGenerator, _resolve_instance_names)
+    ActionCodeGenerator, _resolve_instance_names, _variable_read_code)
 
 
 def emit(action, params, event="step"):
@@ -229,3 +229,129 @@ class TestExportedRuntime:
 
     def test_the_generated_module_compiles(self, main_source):
         ast.parse(main_source)
+
+
+class TestVariableNameScopes:
+    """A `set_variable`/`test_variable` NAME may carry a scope prefix -- the
+    action's own parameter description offers "self.var, global.var, or bare
+    names". The generator used to prepend `self.` to whatever it was handed,
+    so a prefixed name wrote to, or read from, the wrong place -- silently, in
+    two of the three cases."""
+
+    def test_a_self_prefixed_name_does_not_double_prefix(self):
+        assert emit("set_variable", {"variable": "self.coins", "value": "5"}) \
+            == "self.coins = 5"
+
+    def test_a_self_prefixed_name_reads_the_same_attribute_it_writes(self):
+        write = emit("set_variable", {"variable": "self.coins", "value": "5"})
+        read = _variable_read_code("self.coins")
+        assert "self.self" not in write and "self.self" not in read
+        assert "'coins'" in read
+
+    def test_a_global_name_is_read_from_the_store_not_the_instance(self):
+        """`getattr(self, 'global.coins', 0)` is not an error -- it just
+        always answers 0, so a condition on a global was quietly dead."""
+        read = _variable_read_code("global.coins")
+        assert "getattr" not in read
+        assert "get_global('coins')" in read
+
+    def test_other_is_only_read_inside_a_collision(self):
+        assert "other" in _variable_read_code("other.hp", "collision_obj_x")
+        # Outside one `other` is None everywhere in this generator, so reading
+        # through it would raise; 0 is the runtime's own unresolved answer.
+        assert _variable_read_code("other.hp", "step") == "0"
+
+    def test_writing_to_other_outside_a_collision_is_dropped_not_crashed(self):
+        code = emit("set_variable", {"variable": "other.hp", "value": "1"}, "step")
+        assert code.startswith("pass")
+        ast.parse(code)
+
+    def test_writing_to_other_inside_a_collision_targets_other(self):
+        code = emit("set_variable", {"variable": "other.hp", "value": "1"},
+                    "collision_obj_x")
+        assert code == "other.hp = 1"
+
+    def test_vspeed_keeps_its_gamemaker_space_sign(self):
+        """Kivy's Y axis is inverted and set_vspeed flips the sign on export."""
+        assert _variable_read_code("vspeed") == "-(self.vspeed)"
+
+
+class TestVariableValues:
+    """A custom variable's VALUE was always emitted as a literal, so an
+    expression became the text of itself: `coins + 1` assigned the string
+    "coins + 1" and the most ordinary counter a student writes never
+    incremented, on this target only."""
+
+    def _run(self, value, start=None):
+        class Inst:
+            pass
+        inst = Inst()
+        if start is not None:
+            inst.coins = start
+        exec(emit("set_variable", {"variable": "coins", "value": value}),
+             {}, {"self": inst})
+        return inst.coins
+
+    def test_the_counter_increments(self):
+        assert self._run("coins + 1", start=4) == 5
+
+    def test_arithmetic_is_evaluated(self):
+        assert self._run("3 * 4") == 12
+
+    def test_a_bare_word_is_still_text(self):
+        """Not every value is an expression, and a bare word was already
+        treated as text by both this exporter and desktop."""
+        assert self._run("hello") == "hello"
+
+    def test_quoted_text_keeps_its_content_and_loses_its_quotes(self):
+        """Quoting is desktop's escape hatch for text containing an operator
+        ("W A S D - Move"); the quotes are part of the escape, not the value,
+        and desktop strips them. This used to keep them."""
+        assert self._run('"W A S D - Move"') == "W A S D - Move"
+
+    def test_operator_looking_prose_stays_text_rather_than_becoming_junk(self):
+        """Desktop evaluates this and lands on 0 -- the landmine CLAUDE.md
+        documents. Unparseable here means we keep what the author typed."""
+        assert self._run("Level 1 - Start") == "Level 1 - Start"
+
+    def test_a_gml_function_resolves_to_the_object_helper(self):
+        code = emit("set_variable", {"variable": "coins", "value": "irandom(10)"})
+        assert "self.irandom(10)" in code   # GameObject provides it
+
+    def test_an_empty_value_is_empty_text_not_uncompilable(self):
+        assert self._run("") == ""
+
+    def test_test_variable_reads_a_global_from_the_store(self, fake_main):
+        """The NAME side of the same action. `getattr(self, 'global.coins', 0)`
+        raises nothing -- it just answers 0 forever, so the condition was
+        quietly dead. A mutation reverting only this half slipped past the
+        value-side test below, which is why it has its own."""
+        gen = ActionCodeGenerator()
+        gen.process_action(
+            {"action": "test_variable",
+             "parameters": {"variable": "global.coins", "value": "5",
+                            "operation": "greater"}},
+            "step")
+        code = gen.get_code()
+        assert "get_global('coins')" in code
+        assert "getattr(self, 'global.coins'" not in code
+
+    def test_test_variable_does_not_double_prefix_a_self_name(self, fake_main):
+        gen = ActionCodeGenerator()
+        gen.process_action(
+            {"action": "test_variable",
+             "parameters": {"variable": "self.hp", "value": "0"}},
+            "step")
+        assert "self.hp" not in gen.get_code()      # it is a getattr, not an attr
+        assert "'hp'" in gen.get_code()
+        assert "'self.hp'" not in gen.get_code()
+
+    def test_test_variable_compares_against_an_evaluated_value(self, fake_main):
+        gen = ActionCodeGenerator()
+        gen.process_action(
+            {"action": "test_variable",
+             "parameters": {"variable": "hp", "value": "global.threshold"}},
+            "step")
+        code = gen.get_code()
+        assert "get_global('threshold')" in code
+        assert "'global.threshold'" not in code

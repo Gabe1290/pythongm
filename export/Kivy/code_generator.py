@@ -178,6 +178,86 @@ def _tofloat(value, default):
         return float(default)
 
 
+# What makes a custom-variable VALUE an expression rather than text, mirroring
+# the desktop runtime's _parse_value: an arithmetic operator, a GML function
+# call (which carries no operator, so it needs its own trigger), or a scoped
+# reference. Everything else is plain text -- a bare word stays the word, which
+# is what both desktop and this exporter already did.
+_VALUE_IS_EXPRESSION = re.compile(
+    r'[*+\-/%]'
+    r'|\b(?:random|irandom|choose|max|min|abs|round)\s*\('
+    r'|\b(?:self|other|global)\.')
+
+
+def _value_code(raw):
+    """Emit a custom variable's VALUE, which may be a number, an expression or
+    plain text.
+
+    Until 2026-09-06 this was always `_literal`, so `coins + 1` exported as the
+    STRING "coins + 1" and the most ordinary counter a student writes assigned
+    text instead of incrementing -- silently, on this target only. `_literal`
+    was chosen because a custom var may legitimately hold text and a malformed
+    field must never emit uncompilable Python; both concerns are kept here, by
+    only treating a value as an expression when it looks like one and by
+    falling back to the literal when the result does not parse.
+    """
+    if isinstance(raw, bool) or isinstance(raw, (int, float)):
+        return _literal(raw)
+    text = str(raw)
+    stripped = text.strip()
+    try:
+        float(stripped)
+        return _literal(stripped)
+    except ValueError:
+        pass
+    # Explicitly quoted text is verbatim, the escape hatch desktop's
+    # _parse_value offers for text containing an operator ("W A S D - Move").
+    # The quotes are part of the escape, not part of the value -- desktop
+    # strips them, and this used to keep them.
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in '"\'':
+        return repr(stripped[1:-1])
+    if not _VALUE_IS_EXPRESSION.search(stripped):
+        return _literal(text)
+    resolved = _resolve_instance_names(stripped)
+    try:
+        ast.parse(resolved, mode='eval')
+    except SyntaxError:
+        # "Level 1 - Start": operator-looking prose. Desktop evaluates it and
+        # lands on 0 (the landmine CLAUDE.md documents); keeping the text is
+        # both safer and closer to what the author meant.
+        return _literal(text)
+    return f"({resolved})"
+
+
+def _variable_read_code(var_name, event_type=''):
+    """Read one variable by the name an author typed, honouring its scope
+    prefix -- `self.x`, `other.x`, `global.x` or a bare name.
+
+    Shared by test_variable and set_variable's relative path so the two cannot
+    disagree about where a name lives: before this existed, test_variable read
+    `getattr(self, 'global.coins', 0)`, which is silently always 0.
+    """
+    name = str(var_name).strip()
+    target = _GLOBAL_REF_RE.fullmatch(name)
+    if target:
+        return _GLOBAL_READ.format(name=target.group(1))
+    if name.startswith('self.'):
+        name = name[len('self.'):]
+    elif name.startswith('other.'):
+        attr = name[len('other.'):]
+        if 'collision' not in (event_type or ''):
+            # `other` is None outside a collision handler, as everywhere else
+            # in this generator; the runtime's own unresolved-variable answer
+            # is 0.
+            return '0'
+        return f"getattr(other, {attr!r}, 0)"
+    if name == 'vspeed':
+        # Kivy's Y axis is inverted and set_vspeed flips the sign on export,
+        # so compare the GameMaker-space value.
+        return "-(self.vspeed)"
+    return f"getattr(self, {name!r}, 0)"
+
+
 def _num_code(value, default=0):
     """Emit a NUMERIC parameter that may be an expression ("direction+90").
 
@@ -643,14 +723,13 @@ class ActionCodeGenerator:
             var_name = params.get('variable') or params.get('variable_name') or 'temp'
             value = params.get('value', 0)
             op = _COMPARISON_OPS.get(params.get('operation', 'equal'), '==')
-            if var_name == 'vspeed':
-                # Kivy's Y axis is inverted relative to GameMaker, and
-                # set_vspeed flips the sign on export — compare the
-                # GameMaker-space value so thresholds keep their meaning.
-                current = "-(self.vspeed)"
-            else:
-                current = f"getattr(self, '{var_name}', 0)"
-            self._open_guard(f"if {current} {op} {_literal(value)}:")
+            # Both sides used to ignore what the author actually wrote: the
+            # NAME went into getattr verbatim, so `global.coins` read
+            # `getattr(self, 'global.coins', 0)` and was silently always 0,
+            # and the VALUE went through _literal, so comparing against
+            # `coins + 1` compared against that text.
+            current = _variable_read_code(var_name, event_type)
+            self._open_guard(f"if {current} {op} {_value_code(value)}:")
             return
 
         elif action_type == 'if_condition':
@@ -1964,40 +2043,47 @@ if dist > 0:
             numeric_attrs = ['x', 'y', 'hspeed', 'vspeed', 'speed', 'direction',
                              'visible', 'solid']
 
-            # A value that MENTIONS a global gets expression treatment -- the
-            # same _resolve_instance_names conditions already use -- so
-            # `global.total + 1` reads the store and adds to it. Every other
-            # value keeps _literal untouched: emitting a non-global expression
-            # as a string is a deliberate safety choice here (a custom var may
-            # hold a number OR a string, and a cleared field must not emit
-            # uncompilable Python), and revisiting it is a separate question
-            # from globals.
-            if isinstance(raw, str) and 'global.' in raw:
-                resolved = _resolve_instance_names(raw)
-                value = resolved if resolved != raw else _literal(raw)
-            elif var_name in numeric_attrs:
-                value = _num_code(raw)
-            else:
-                value = _literal(raw)
+            value = (_num_code(raw) if var_name in numeric_attrs
+                     else _value_code(raw))
 
-            # `global.<name>` is not a valid attribute path -- `global` is a
-            # reserved word, so `self.global.coins = 5` was a SyntaxError that
-            # took the WHOLE generated module's import down with it. Route the
-            # write to the app's globals dict, the same store every `global.`
-            # read now resolves against.
-            target = _GLOBAL_REF_RE.fullmatch(str(var_name).strip())
+            # The NAME may carry a scope prefix -- the action's own parameter
+            # description offers "self.var, global.var, or bare names", and
+            # desktop honours all of them. This used to prepend `self.`
+            # unconditionally, so `self.coins` wrote to `self.self.coins` and
+            # `global.coins` emitted `self.global.coins`, which is a
+            # SyntaxError (`global` is reserved) that took the whole generated
+            # module's import with it.
+            name = str(var_name).strip()
+
+            target = _GLOBAL_REF_RE.fullmatch(name)
             if target:
-                name = target.group(1)
+                key = target.group(1)
                 if relative:
-                    value = "%s + %s" % (
-                        _GLOBAL_READ.format(name=name), value)
-                return _GLOBAL_WRITE.format(name=name, value=value)
+                    value = "%s + %s" % (_GLOBAL_READ.format(name=key), value)
+                return _GLOBAL_WRITE.format(name=key, value=value)
 
-            if var_name in numeric_attrs and relative:
-                return f"self.{var_name} += {value}"
+            if name.startswith('self.'):
+                name = name[len('self.'):]
+            elif name.startswith('other.'):
+                # `other` is a real name only inside a collision handler; the
+                # generator emits None for it everywhere else (see the
+                # other_expr sites), matching the runtime's
+                # _collision_other-or-None. Writing through None would raise,
+                # so drop the write the way the runtime silently does.
+                if 'collision' not in (event_type or ''):
+                    return (f"pass  # set_variable {var_name!r}: 'other' only "
+                            "exists in a collision event")
+                attr = name[len('other.'):]
+                if relative:
+                    return (f"other.{attr} = getattr(other, {attr!r}, 0) "
+                            f"+ {value}")
+                return f"other.{attr} = {value}"
+
+            if name in numeric_attrs and relative:
+                return f"self.{name} += {value}"
             if relative:
-                return f"self.{var_name} = getattr(self, {var_name!r}, 0) + {value}"
-            return f"self.{var_name} = {value}"
+                return f"self.{name} = getattr(self, {name!r}, 0) + {value}"
+            return f"self.{name} = {value}"
 
         elif action_type == 'comment':
             # GM comments are real (no-op) actions: they can be the guarded
