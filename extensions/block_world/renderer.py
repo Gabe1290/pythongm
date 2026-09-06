@@ -479,6 +479,83 @@ def eye_z_for(cfg):
 # differ too little for the interpolation to show.
 DEFAULT_TOP_CAST_RES = 4
 
+# Distance fog. Geometry fades toward `fog_color` (the sky, unless a project
+# says otherwise) as it recedes, reaching it exactly at the render distance --
+# so the far edge of the world reads as haze rather than the hard cut it was.
+#
+# That cut is the reason this exists. Before it, the world simply stopped and
+# the flat floor colour showed through: a dark brown void with a floating
+# island of terrain on it, which made a shorter render distance unusable even
+# though it is by far the biggest performance dial this renderer has (16 -> 10
+# cells measured 15.4 -> 32.8 fps on block_world_2, past its 30fps target).
+# See docs/BLOCK_WORLD_PERF_PLAN.md.
+#
+# Squared rather than linear so the near and middle distance stay clear and
+# the haze gathers where the geometry is about to run out; 1.0 exactly at
+# max_dist is what makes the boundary invisible.
+FOG_CURVE = 2.0
+
+# Below this a strip's fog is not worth an extra Surface op -- it is under a
+# pixel of colour shift on an 8-bit channel.
+FOG_SKIP_BELOW = 0.02
+
+# At or above this a strip IS the fog colour, so it can be one flat fill: no
+# subsurface, no scale, no blit. The most distant geometry is also the most
+# numerous, which makes this a speed-up, not just a shortcut.
+FOG_OPAQUE_ABOVE = 0.985
+
+# How far past the fogged void the floor keeps fading, as a multiple of the
+# void's own height, and in how many steps. Purely cosmetic: it stops the
+# bottom of the haze being a second hard line.
+FLOOR_HAZE_TAIL = 0.5
+FLOOR_HAZE_BANDS = 16
+
+
+def fog_amount(corrected: float, max_dist: float) -> float:
+    """How far a surface at this distance has faded into the fog, in [0, 1].
+
+    Deliberately independent of wall_shade/face_shade: those stay exactly as
+    they were (and stay pinned across the three renderers by
+    tests/test_block_world_export_parity.py), and fog composes on top of
+    whatever they return.
+    """
+    if max_dist <= 0:
+        return 0.0
+    t = corrected / max_dist
+    if t <= 0.0:
+        return 0.0
+    if t >= 1.0:
+        return 1.0
+    return t ** FOG_CURVE
+
+
+# The additive half of the fog blend, memoised. Building it inline was the
+# first version's real cost: `tuple(int(c * fog) for c in fog_color[:3])` is a
+# generator, a slice and a tuple built ~9,000 times a frame, which cost more
+# than the Surface op it fed. Quantising to FOG_ADD_STEPS makes the cache
+# small and the lookup a dict hit; the step is far finer than an 8-bit channel
+# can show.
+FOG_ADD_STEPS = 128
+
+
+def fog_add_for(fog, fog_color, cache):
+    """The `fog_color * fog` term, quantised and cached per frame."""
+    key = int(fog * FOG_ADD_STEPS)
+    hit = cache.get(key)
+    if hit is None:
+        f = key / FOG_ADD_STEPS
+        hit = cache[key] = (int(fog_color[0] * f), int(fog_color[1] * f),
+                            int(fog_color[2] * f))
+    return hit
+
+
+def fog_mix(color, fog, fog_color):
+    """Blend a resolved RGB tuple toward the fog colour."""
+    if fog <= FOG_SKIP_BELOW:
+        return color
+    keep = 1.0 - fog
+    return tuple(int(c * keep + f * fog) for c, f in zip(color[:3], fog_color[:3]))
+
 
 # Looking up and down (Phase 2c) is a Y-SHEAR: the horizon slides along the
 # screen and every other formula is left alone. That works because the whole
@@ -690,7 +767,8 @@ def _is_covered(covered, y0, y1):
 
 
 def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
-                     texture_path, tex_u, flat_color, screen_h=None):
+                     texture_path, tex_u, flat_color, screen_h=None,
+                     fog=0.0, fog_color=None, fog_add=None):
     """One block's vertical face in one column.
 
     Runs up to ~18,000 times a frame on open terrain, where the profile is
@@ -711,10 +789,31 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
     if vis_h <= 0:
         return
 
-    if texture_path is None:
-        screen.fill(tuple(int(c * shade) for c in flat_color),
-                    (x0, y0, strip_w, vis_h))
+    if fog_color is not None and fog >= FOG_OPAQUE_ABOVE:
+        # Fully fogged: the strip IS the fog colour, so skip the texture work
+        # entirely. The furthest geometry is also the most numerous, which
+        # makes this the cheapest strip in the frame instead of the same
+        # subsurface/scale/shade/blit as a wall in your face.
+        screen.fill(fog_color, (x0, y0, strip_w, vis_h))
         return
+
+    if texture_path is None:
+        lit = tuple(int(c * shade) for c in flat_color)
+        if fog_color is not None:
+            lit = fog_mix(lit, fog, fog_color)
+        screen.fill(lit, (x0, y0, strip_w, vis_h))
+        return
+
+    fogging = fog_color is not None and fog > FOG_SKIP_BELOW
+    if fogging:
+        # out = texel * shade * (1 - fog) + fog_color * fog -- an exact lerp
+        # toward the fog colour, expressed as the multiply this already did
+        # (with the factor scaled down) plus one add. Both commute with the
+        # nearest-neighbour scale below, so either may be applied to the 1px
+        # source column just as the shade is.
+        shade *= (1.0 - fog)
+        if fog_add is None:
+            fog_add = tuple(int(c * fog) for c in fog_color[:3])
 
     frame = _load_texture(texture_path)
     tw, th = frame.get_width(), frame.get_height()
@@ -769,8 +868,16 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
         v = int(shade * 255)
         col_surf = col_surf.copy()
         col_surf.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+        if fogging:
+            col_surf.fill(fog_add, special_flags=pygame.BLEND_RGB_ADD)
     strip = pygame.transform.scale(col_surf, (strip_w, dest_h))
-    if shade < 1.0 and not shade_at_source:
+    if fogging and shade_at_source:
+        pass                      # already applied to the source column
+    elif fogging:
+        v = int(shade * 255)
+        strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+        strip.fill(fog_add, special_flags=pygame.BLEND_RGB_ADD)
+    elif shade < 1.0 and not shade_at_source:
         # Short strip: the copy above would cost more than it saves, so shade
         # the destination as before. Measured, not assumed -- shading at source
         # unconditionally made block_world_2 (all distant blocks, ~21,800
@@ -800,7 +907,8 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
                     (x0, y0 + covered))
 
 
-def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color):
+def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color,
+                          fog=0.0, fog_color=None, fog_add=None):
     """A block's top or bottom face in one column, flat-shaded: the span
     between its near edge (the cell's entry distance) and its far edge (the
     exit). The fallback when texturing is off."""
@@ -808,6 +916,8 @@ def _draw_horizontal_face(screen, x0, strip_w, y_a, y_b, color):
     y0 = max(0, int(math.floor(min(y_a, y_b))))
     y1 = min(screen_h, int(math.ceil(max(y_a, y_b))))
     if y1 > y0:
+        if fog_color is not None:
+            color = fog_mix(color, fog, fog_color)
         screen.fill(color, (x0, y0, strip_w, y1 - y0))
 
 
@@ -832,7 +942,8 @@ def _horizontal_face_scratch(samples):
 def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
                                    cam_x, cam_y, dir_x, dir_y, cos_off,
                                    plane_z, eye_z, horizon, cell_size,
-                                   shade, res, screen_h=None):
+                                   shade, res, screen_h=None,
+                                   fog=0.0, fog_color=None, fog_add=None):
     """The same face, texture-mapped.
 
     Inverting the projection gives the distance to the plane for a screen
@@ -864,9 +975,17 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
     span = y1 - y0
     if span <= 0:
         return
+    if fog_color is not None and fog >= FOG_OPAQUE_ABOVE:
+        screen.fill(fog_color, (x0, y0, strip_w, span))
+        return
     tw, th = texture.get_width(), texture.get_height()
     if tw <= 0 or th <= 0:
         return
+    fogging = fog_color is not None and fog > FOG_SKIP_BELOW
+    if fogging:
+        shade *= (1.0 - fog)
+        if fog_add is None:
+            fog_add = tuple(int(c * fog) for c in fog_color[:3])
 
     # Same sign top or bottom: looking down, eye_z > plane_z and the rows sit
     # below the horizon; looking up, both flip. The ratio stays positive.
@@ -898,6 +1017,8 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
         color = _texel(y0)
         if shade < 1.0:
             color = tuple(int(c * shade) for c in color[:3])
+        if fogging:
+            color = tuple(min(255, c + f) for c, f in zip(color, fog_add))
         screen.fill(color, (x0, y0, strip_w, span))
         return
 
@@ -915,6 +1036,8 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
         # This is also what the docstring above always claimed happened.
         v = int(shade * 255)
         column.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
+    if fogging:
+        column.fill(fog_add, special_flags=pygame.BLEND_RGB_ADD)
     screen.blit(pygame.transform.scale(column, (strip_w, span)), (x0, y0))
 
 
@@ -959,6 +1082,18 @@ def render_block_world_view(room, screen: pygame.Surface):
 
     floor_color = room.parse_color(cfg.get("floor_color", "#3a2f1c"))
     ceiling_color = room.parse_color(cfg.get("ceiling_color", "#87CEEB"))
+    # Fog defaults to the sky, which is what makes the far edge of the world
+    # look like distance rather than an edge. A project can override it (a
+    # cave wants its own colour), and "" means "follow the sky".
+    _fog_cfg = str(cfg.get("fog_color", "") or "").strip()
+    fog_color = room.parse_color(_fog_cfg) if _fog_cfg else ceiling_color
+    # Off restores the pre-fog look exactly -- no blend, no haze band -- for a
+    # world that does not want it (an enclosed cave, or a project that liked
+    # the hard horizon) and for tests that measure projection geometry by
+    # looking for pixels which differ from the flat background.
+    if not cfg.get("fog", True):
+        fog_color = None
+
     screen.fill(ceiling_color, (0, 0, w, int(horizon)))
     screen.fill(floor_color, (0, int(horizon), w, h - int(horizon)))
 
@@ -983,6 +1118,36 @@ def render_block_world_view(room, screen: pygame.Surface):
     fov_rad = math.radians(fov_deg)
     render_distance_cells = int(cfg.get("render_distance", 20))
     max_dist = render_distance_cells * cell_size
+
+    # Haze band. Beyond the render distance the ground plane simply is not
+    # drawn, and the flat floor colour shows through -- the dark brown void
+    # that made a shorter render distance unusable, and the whole reason fog
+    # exists here (docs/BLOCK_WORLD_PERF_PLAN.md).
+    #
+    # Its extent is DERIVED, not a tuned fraction: the ground at the render
+    # distance lands at horizon + eye_z * (h * cell / max_dist), so everything
+    # between the horizon and that row is past the edge of the world and gets
+    # solid fog. Below it, where real terrain starts, a short gradient returns
+    # to the floor colour. A first attempt used a fixed 45% of the floor with a
+    # squared falloff and left a brown band exactly where the void was: the
+    # region that needs covering grows as the render distance SHRINKS, which
+    # is the opposite of what a fixed fraction does.
+    if fog_color is not None and fog_color != floor_color and max_dist > 0:
+        _edge = horizon + eye_z * (h * cell_size / max_dist)
+        _y0, _y1 = int(horizon), min(h, int(_edge) + 1)
+        if _y1 > _y0:
+            screen.fill(fog_color, (0, _y0, w, _y1 - _y0))
+        # Fade back to the floor over half again as much screen, so the join
+        # is not a second hard line.
+        _tail = int((_y1 - _y0) * FLOOR_HAZE_TAIL)
+        if _tail > 0:
+            _band = max(1, _tail // FLOOR_HAZE_BANDS)
+            _y = _y1
+            while _y < min(h, _y1 + _tail):
+                _t = 1.0 - (_y - _y1) / _tail
+                _hi = min(_band, min(h, _y1 + _tail) - _y)
+                screen.fill(fog_mix(floor_color, _t, fog_color), (0, _y, w, _hi))
+                _y += _band
     num_columns = int(cfg.get("columns", min(w, DEFAULT_COLUMNS)))
     col_width = w / num_columns
 
@@ -1012,6 +1177,9 @@ def render_block_world_view(room, screen: pygame.Surface):
     top_res = int(cfg.get("top_cast_res", DEFAULT_TOP_CAST_RES))
     top_textured = textured and top_res >= 1
     columns = column_index(room)
+    # One cache per frame: the fog colour is constant within a frame, so the
+    # quantised add terms can be shared across every column.
+    _fog_cache = {}
 
     for col in range(num_columns):
         camera_x = 2.0 * (col + 0.5) / num_columns - 1.0
@@ -1091,6 +1259,13 @@ def render_block_world_view(room, screen: pygame.Surface):
             px_per_cell_far = h * cell_size / far
             shade = wall_shade(side, near, max_dist)
             mid = (near + far) / 2.0
+            wall_fog = fog_amount(near, max_dist)
+            face_fog = fog_amount(mid, max_dist)
+            if fog_color is None:
+                wall_add = face_add = None
+            else:
+                wall_add = fog_add_for(wall_fog, fog_color, _fog_cache)
+                face_add = fog_add_for(face_fog, fog_color, _fog_cache)
             stack_len = len(stack)
             for i, (z, block_type) in enumerate(stack):
                 faces = block_face_textures(block_type) if textured else None
@@ -1098,7 +1273,7 @@ def render_block_world_view(room, screen: pygame.Surface):
                     screen, x0, strip_w,
                     horizon + (eye_z - (z + 1)) * px_per_cell, px_per_cell,
                     shade, faces["side"] if faces else None, tex_u, wall_color,
-                    h)
+                    h, wall_fog, fog_color, wall_add)
 
                 # Top/bottom face visibility: visible only from the
                 # corresponding side, and only when nothing sits against it.
@@ -1123,12 +1298,14 @@ def render_block_world_view(room, screen: pygame.Surface):
                             screen, x0, strip_w, y_far, y_near,
                             _load_texture(faces["top"]), cam_x, cam_y,
                             dir_x, dir_y, cos_off, z + 1, eye_z, horizon,
-                            cell_size, lit, top_res, h)
+                            cell_size, lit, top_res, h,
+                            face_fog, fog_color, face_add)
                     else:
                         base = face_average_color(faces["top"]) if faces else wall_color
                         _draw_horizontal_face(
                             screen, x0, strip_w, y_far, y_near,
-                            tuple(int(c * lit) for c in base))
+                            tuple(int(c * lit) for c in base),
+                            face_fog, fog_color, face_add)
                 # Underside: only reachable by standing below an overhang,
                 # which a pure heightmap never has -- but a hand-built world
                 # can, and a missing face there is a hole straight to the sky.
@@ -1141,9 +1318,11 @@ def render_block_world_view(room, screen: pygame.Surface):
                             screen, x0, strip_w, y_near, y_far,
                             _load_texture(faces["bottom"]), cam_x, cam_y,
                             dir_x, dir_y, cos_off, z, eye_z, horizon,
-                            cell_size, lit, top_res, h)
+                            cell_size, lit, top_res, h,
+                            face_fog, fog_color, face_add)
                     else:
                         base = face_average_color(faces["bottom"]) if faces else wall_color
                         _draw_horizontal_face(
                             screen, x0, strip_w, y_near, y_far,
-                            tuple(int(c * lit) for c in base))
+                            tuple(int(c * lit) for c in base),
+                            face_fog, fog_color, face_add)
