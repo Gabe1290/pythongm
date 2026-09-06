@@ -1,6 +1,8 @@
 # Project status — where things actually stand
 
-**Read this first.** Written 2026-09-02, after a full audit of every
+**Read this first.** Written 2026-09-02 and revised 2026-09-06 (items 1
+and 2 had both gone stale within days — see their own notes), after a full
+audit of every
 planning/audit/status document that had accumulated in `docs/` since
 early 2026 (~50 files). Each doc's own status claim was verified against
 its body and against current code, not just trusted — several were
@@ -30,25 +32,35 @@ not as a standalone sweep.
 This is the complete list. Everything else that used to be tracked in
 `docs/` is done and has been deleted.
 
-1. **Multiplayer LAN — Phases 7–8.** `docs/MULTIPLAYER_LAN_V2_PLAN.md`
-   is the one plan doc with real, checked-out-but-unchecked work: Phase 7
-   (HTML5 export parity for multiplayer — a hand-rolled WebSocket
-   listener on the desktop host, the browser client, a Kivy no-op
-   placeholder, wiki pages) and Phase 8 items 8.2–8.7 (`reseau_2`/`_3`/
-   `_4` samples, `tools/smoke_run_multiplayer.py` + CI wiring, graceful
-   host-loss handling, closing the doc). Plus a standing manual-QA list
-   (two real machines on a school LAN, a real firewall prompt, HTML5
-   export joining from a Chromebook) that needs real hardware, not code.
-   This is the most concrete, ready-to-pick-up item in the whole
-   backlog — the doc names its own next phase. **Kept** (not deleted —
-   this is live work).
+1. **Multiplayer LAN — code COMPLETE, blocked on hardware.**
+   *(Updated 2026-09-06. This entry said "Phases 7–8 open"; both landed on
+   2026-09-02/03, right after this document was written.)*
+   `docs/MULTIPLAYER_LAN_V2_PLAN.md` has eight unticked boxes and six of them
+   are the standing manual-QA list below — two real machines on a school LAN,
+   the discovery beacon, a Windows firewall prompt, `reseau_2` with 4+ clients,
+   an HTML5 export joining from a Chromebook, a Kivy export still running
+   single-player. Of the other two, **6.3 (runner caption) is a stale box** —
+   verified wired in `extensions/multiplayer_lan/handlers.py` — and **8.4 is a
+   name collision**: it wants a *draw-together* `reseau_4`, while the
+   `samples/reseau_4` that exists is "Salle partagée (Test Game)", a
+   Test-Game-launchable rebuild of `reseau_1`. It is marked optional.
+   **Nothing here is code work anyone can do without two machines.**
 
-2. **`docs/POST_1_0_REFACTOR.md` — splitting the four largest files.**
-   Zero progress (confirmed: no DONE/checkbox markers anywhere in the
-   doc, and the four target files have only grown since it was written).
-   Estimated ~3 months of focused work. Real, large, genuinely
-   untouched — needs a dedicated session (or several) when there's an
-   explicit appetite for it; not a quick pickup. **Kept.**
+2. **`docs/POST_1_0_REFACTOR.md` — DONE, all four files split.**
+   *(Updated 2026-09-06. This entry said "Zero progress ... estimated ~3 months
+   of focused work", which was true when written and wrong within days.)*
+   File 1 `object_events_panel.py` → `editors/object_editor/events/`;
+   File 2 `core/ide_window.py` 5,316 → **955** LoC across 9 mixins in
+   `core/ide/`; File 3 `runtime/game_runner.py` 6,063 → **2,540** across
+   `sprite`/`room`/`instance`/`input_handler`/`collision`; File 4
+   `runtime/action_executor.py` 6,520 → **1,427** across ten
+   `runtime/action_*.py` mixins, in twelve one-cluster-per-commit steps each
+   proven bytecode-identical against pre-refactor HEAD.
+   **What remains is not a file split:** three companion-cleanup boxes at the
+   end of that doc retire the parallel `runtime/action_handlers/` package, and
+   the last is blocked on a product decision — whether desktop keeps loading
+   pre-`if_condition` / legacy-audio-name projects, and if so whether to
+   re-point them through `ACTION_ALIASES`.
 
 3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md`.** Confirmed "not started"
    in its own header, and nothing since mentions it being picked up.
