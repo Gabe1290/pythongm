@@ -200,7 +200,7 @@
 | **Значок** | 📂 |
 | **Категория** | Игра |
 
-Restore room, score/lives/health, global variables, and instance states from a save file
+Восстанавливает комнату, очки, жизни, здоровье, глобальные переменные и состояние экземпляров из файла сохранения
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -240,7 +240,7 @@ Restore room, score/lives/health, global variables, and instance states from a s
 | **Значок** | 💾 |
 | **Категория** | Игра |
 
-Save the current room, score/lives/health, global variables, and instance states to a file
+Сохраняет в файл текущую комнату, очки, жизни, здоровье, глобальные переменные и состояние экземпляров
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -356,7 +356,7 @@ Save the current room, score/lives/health, global variables, and instance states
 | **Значок** | 🎬 |
 | **Категория** | Игра |
 
-Play a video file in your system's default video player -- opens as a separate window, not rendered inside the game itself
+Проигрывает видеофайл в стандартном видеоплеере системы: он открывается в отдельном окне, а не рисуется внутри самой игры
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -371,7 +371,7 @@ Play a video file in your system's default video player -- opens as a separate w
 | **Значок** | 🖼️ |
 | **Категория** | Игра |
 
-Show a sprite full-screen and pause the game until the player dismisses it
+Показывает спрайт во весь экран и приостанавливает игру, пока игрок его не закроет
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -385,7 +385,7 @@ Show a sprite full-screen and pause the game until the player dismisses it
 | **Значок** | 💬 |
 | **Категория** | Игра |
 
-Show a message and pause the game until the player dismisses it
+Показывает сообщение и приостанавливает игру, пока игрок его не закроет
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|

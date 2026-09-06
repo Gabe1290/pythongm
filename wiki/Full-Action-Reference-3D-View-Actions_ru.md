@@ -12,7 +12,7 @@
 | **Значок** | ⬇️ |
 | **Категория** | 3D-вид |
 
-Continuous falling/landing physics for the block-world camera -- bind in the Step event (not a keyboard-held event) so it runs every frame regardless of movement input. No-op unless Enable Block World View's Gravity parameter is set above 0
+Непрерывная физика падения и приземления для камеры Block World: разместите её в событии Шаг (а не в событии удерживаемой клавиши), чтобы она выполнялась каждый кадр независимо от ввода движения. Ничего не делает, пока параметр «Гравитация» действия «Включить вид Block World» не больше 0
 
 *Параметры:* нет
 
@@ -24,7 +24,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 | **Значок** | ⛏️ |
 | **Категория** | 3D-вид |
 
-Remove the block the camera is looking at -- also picks it up into the calling instance's inventory if Enable Block World View's Inventory is on, and refuses if the block is protected (Set Block Protection) and the required key isn't in inventory
+Убирает блок, на который смотрит камера; кроме того, кладёт его в инвентарь вызвавшего экземпляра, если инвентарь в «Включить вид Block World» включён, и отказывается убирать блок, если он защищён («Задать защиту блоков»), а нужного ключа нет в инвентаре
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -38,7 +38,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 | **Значок** | 🧰 |
 | **Категория** | 3D-вид |
 
-Draw a crosshair plus a hotbar strip (the selected slot highlighted, with a count on each slot once Inventory is on) -- call from the player/camera object's own Draw event
+Рисует прицел и панель быстрого доступа (выбранная ячейка подсвечена, а при включённом инвентаре на каждой ячейке показано количество): вызывайте из события Рисование самого объекта игрока или камеры
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -114,7 +114,7 @@ Draw a crosshair plus a hotbar strip (the selected slot highlighted, with a coun
 | **Значок** | 🧱 |
 | **Категория** | 3D-вид |
 
-Render the room as a first-person voxel view (single layer) instead of the top-down view
+Показывает комнату как воксельный вид от первого лица (один слой) вместо вида сверху
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -174,7 +174,7 @@ Render the room as a first-person voxel view (single layer) instead of the top-d
 | **Значок** | ⬆️ |
 | **Категория** | 3D-вид |
 
-Give the block-world camera upward velocity -- only while standing on solid ground (no double/air jumps). Needs Gravity configured (Enable Block World View) and Apply Gravity bound in the Step event, or nothing brings it back down
+Придаёт камере Block World скорость вверх — только когда она стоит на твёрдой поверхности (без двойных прыжков и прыжков в воздухе). Требует настроенной гравитации («Включить вид Block World») и действия «Применить гравитацию» в событии Шаг, иначе камера уже не опустится
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -188,7 +188,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 | **Значок** | 📂 |
 | **Категория** | 3D-вид |
 
-Load a pre-authored world (blocks placed by a generator or hand-authored file) into the current room, replacing whatever blocks are there
+Загружает заранее подготовленный мир (блоки, расставленные генератором или вручную) в текущую комнату, заменяя те блоки, которые там были
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -202,7 +202,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 | **Значок** | 🔭 |
 | **Категория** | 3D-вид |
 
-Tilt the block-world view up or down
+Наклоняет вид Block World вверх или вниз
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -217,7 +217,7 @@ Tilt the block-world view up or down
 | **Значок** | 🚶 |
 | **Категория** | 3D-вид |
 
-Move this step, checked against the block grid, with automatic footing (step up one block, drop any distance) -- the camera's z_layer follows if this is the block-world camera
+Выполняет шаг движения с проверкой по сетке блоков и автоматической опорой (подъём на один блок, спуск на любую высоту): слой z_layer камеры следует за ним, если это камера Block World
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -233,7 +233,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | **Значок** | 🧱 |
 | **Категория** | 3D-вид |
 
-Put a block in the empty cell the camera is looking at -- unlimited unless Enable Block World View's Inventory is on, which draws from what Break Block has picked up
+Ставит блок в пустую ячейку, на которую смотрит камера: без ограничений, если только не включён инвентарь в «Включить вид Block World» — тогда блоки берутся из того, что собрало «Разрушить блок»
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -248,7 +248,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | **Значок** | 🔢 |
 | **Категория** | 3D-вид |
 
-Choose which block the hotbar has selected, for place_block to build with -- bind Place Block's Block parameter to the expression "hotbar_block" to use it
+Выбирает, какой блок выделен на панели быстрого доступа, чтобы «Поставить блок» строил именно им: задайте параметру «Блок» действия «Поставить блок» выражение «hotbar_block»
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -263,7 +263,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | **Значок** | 🔒 |
 | **Категория** | 3D-вид |
 
-Require a specific block type in inventory before Break Block can remove a chosen block type -- call once per protected type, needs Enable Block World View's Inventory on or the requirement can never be satisfied
+Требует наличия определённого типа блока в инвентаре, прежде чем «Разрушить блок» сможет убрать выбранный тип блока: вызывайте по одному разу на каждый защищённый тип; требует включённого инвентаря в «Включить вид Block World», иначе условие невозможно выполнить
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -278,7 +278,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | **Значок** | 💎 |
 | **Категория** | 3D-вид |
 
-Award score when Break Block successfully removes a chosen block type -- call once per rewarded type (e.g. in the room's create event, right after Enable Block World View). A mine-to-collect ore/gem block: place it in the terrain, register its reward, and breaking it awards the points automatically
+Начисляет очки, когда «Разрушить блок» успешно убирает выбранный тип блока: вызывайте по одному разу на каждый награждаемый тип (например, в событии Создание комнаты, сразу после «Включить вид Block World»). Добываемая руда или самоцвет: разместите блок в ландшафте, зарегистрируйте награду — и разрушение начислит очки автоматически
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|

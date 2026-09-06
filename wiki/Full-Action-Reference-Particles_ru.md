@@ -12,7 +12,7 @@
 | **Значок** | 💥 |
 | **Категория** | Particles |
 
-Emit a one-time burst of particles from the most recently created emitter
+Выпускает одиночный залп частиц из последнего созданного источника
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | **Значок** | 🧹 |
 | **Категория** | Particles |
 
-Remove all active particles but keep particle types and emitters
+Удаляет все активные частицы, сохраняя типы частиц и источники
 
 *Параметры:* нет
 
@@ -39,7 +39,7 @@ Remove all active particles but keep particle types and emitters
 | **Значок** | 🌀 |
 | **Категория** | Particles |
 
-Create a particle emitter area (returned id is stored for the next emitter-using action)
+Создаёт область-источник частиц (возвращённый идентификатор запоминается для следующего действия, использующего источник)
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -57,7 +57,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | **Значок** | ✨ |
 | **Категория** | Particles |
 
-Create a particle system attached to this instance (replaces any existing one)
+Создаёт систему частиц, привязанную к этому экземпляру (заменяет существующую)
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -71,7 +71,7 @@ Create a particle system attached to this instance (replaces any existing one)
 | **Значок** | ⚙️ |
 | **Категория** | Particles |
 
-Define a new particle appearance/behavior (returned type id is stored for the next particle_type-using action)
+Задаёт новый внешний вид или поведение частиц (возвращённый идентификатор типа запоминается для следующего действия, использующего тип частиц)
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | **Значок** | 💥 |
 | **Категория** | Particles |
 
-Destroy the most recently created emitter
+Удаляет последний созданный источник
 
 *Параметры:* нет
 
@@ -108,7 +108,7 @@ Destroy the most recently created emitter
 | **Значок** | 💥 |
 | **Категория** | Particles |
 
-Remove this instance's particle system, clearing all particles and emitters
+Удаляет систему частиц этого экземпляра вместе со всеми частицами и источниками
 
 *Параметры:* нет
 
@@ -120,7 +120,7 @@ Remove this instance's particle system, clearing all particles and emitters
 | **Значок** | 🌊 |
 | **Категория** | Particles |
 
-Continuously emit particles every step from the most recently created emitter (0 to stop)
+Непрерывно выпускает частицы на каждом шаге из последнего созданного источника (0 — остановить)
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
