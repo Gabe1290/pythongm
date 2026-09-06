@@ -7,6 +7,84 @@ currently dominate pygm2's complexity surface. Companion read:
 
 ## Status
 
+**ALL FOUR FILES ARE NOW SPLIT — this plan is COMPLETE (2026-09-06).**
+
+| file | before | after | modules it became |
+| --- | ---: | ---: | --- |
+| 1 · `object_events_panel.py` | 2,111 | — | `editors/object_editor/events/` |
+| 2 · `core/ide_window.py` | 5,316 | **955** | skeleton + 9 mixins in `core/ide/` |
+| 3 · `runtime/game_runner.py` | 6,063 | **2,540** | `sprite`/`room`/`instance`/`input_handler`/`collision` |
+| 4 · `runtime/action_executor.py` | 6,520 | **1,427** | 10 `runtime/action_*.py` mixins + `action_colors` |
+
+**File 4 (2026-09-06), twelve clusters, one commit each**, in order: drawing,
+movement, score/lives/health, room, spawn, particles/timelines, conditional
+flow, appearance, game state, dialogs/system, four relocated stragglers, and
+the remaining tail. `runtime/action_executor.py` kept exactly what this plan
+asked it to: registration and dispatch (`execute_action` / `_list` / `_event` /
+`_collision_event` and their inner helpers), the shared expression and value
+machinery (`_parse_value`, `_evaluate_expression`, `_evaluate_if_condition`,
+`_compare`, `_get_variable_value`), and the resolvers every mixin reaches
+through `self`.
+
+**One deliberate deviation from the layout sketched below: sibling modules, not
+a `runtime/action_executor/` package.** Measured before starting — the package
+would break 35 test files, which load the engine with
+`import_module_directly("runtime/action_executor.py")`, a
+`spec_from_file_location` helper that deliberately bypasses `__init__.py` so
+the module imports *without pygame or PySide6*. `runtime/__init__.py` documents
+that property and the module's own import list exists to preserve it. Sibling
+modules keep both, and match the precedent File 3 actually set
+(`runtime/collision.py`, `runtime/input_handler.py`) rather than the one this
+plan guessed at before File 3 was written. Every new module keeps its heavy
+imports (`pygame`, `PySide6`, `pathlib`, `json`) *inside* the methods, as they
+were.
+
+**How each cluster was proven.** A bytecode-identity harness compared the
+composed class against pre-refactor HEAD: same attribute surface, and every
+method body byte-identical (`co_code`, canonicalised `co_consts`, `co_names`,
+`co_varnames`, arg counts), plus a `dis` LOAD_GLOBAL scan for names that would
+no longer resolve. Stronger than a behavioural spot-check for pure code
+movement, because it proves no body was edited in transit. Run **cumulatively**
+at the end against `d7b378fc` (the commit before File 4 began): 165 attributes,
+160 bodies identical, 1 qualname-only difference, 0 differing.
+
+Two harness lessons worth reusing: it must report a CLEAN baseline on an
+unmodified file before you trust it (a first draft flagged
+`_evaluate_expression`, because a code object's repr carries its file path and
+a frozenset's repr order is not stable between two separately-compiled
+modules); and a method that defines a class inside itself legitimately changes
+that class's `__qualname__` when it moves, which the harness now reports
+separately instead of failing.
+
+**Two real bugs the gates caught**, neither of which the bytecode proof could
+see by design:
+* `test_gml_operator_emits_warning` attached its capture handler to the
+  executor module's logger, so it went blind when the warning started coming
+  from `runtime.action_flow`. Re-pointed at the shared `pygm` parent so a
+  future move cannot break it the same way.
+* an unrelated pre-existing flake in `utils/asset_trash.py` surfaced under the
+  loaded suite: `list_trash` sorted on an ISO timestamp string alone, so two
+  deletions in one clock tick tied and stable sort returned them oldest-first.
+  Fixed with a position tie-break in its own commit.
+
+`tests/test_runtime_action_mixins_resolve.py` is the standing guard for the two
+failure modes a verbatim move has and import time does not catch: a dropped
+import, and a mixin never added to the class bases.
+
+### Companion cleanup — still open, needs a decision
+
+The three unchecked boxes near the end of this document are NOT part of the
+file splits and were deliberately not taken during File 4. They retire the
+parallel `runtime/action_handlers/` package, and the last one is blocked on a
+product decision nobody has made: **whether desktop should keep loading
+pre-`if_condition` / legacy-audio-name projects, and if so whether to re-point
+those names at the modern handlers via `ACTION_ALIASES`** — a behaviour change
+that needs its own offscreen-Qt proof, not a refactor.
+
+---
+
+### Original status, kept for the record
+
 **Re-verified 2026-09-05 — FILE 2 IS NOW COMPLETE.** File 1
 (`object_events_panel.py`) is DONE (unchanged from below). **File 2
 (`core/ide_window.py`): 5,316 → 955 LoC (-82%)**, fully split across a
