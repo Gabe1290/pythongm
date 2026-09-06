@@ -681,10 +681,21 @@ def _is_covered(covered, y0, y1):
 
 def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
                      texture_path, tex_u, flat_color):
-    """One block's vertical face in one column."""
+    """One block's vertical face in one column.
+
+    Runs up to ~18,000 times a frame on open terrain, where the profile is
+    flat -- no hot spot, just per-call overhead repeated. The clamps below are
+    therefore written as conditionals rather than min()/max(): builtin calls
+    cost a full Python call each, and they were 10.6% of a whole frame across
+    ~272,000 calls. Same arithmetic, same results; only the dispatch differs.
+    """
     screen_h = screen.get_height()
-    y0 = max(0, int(math.floor(y_top)))
-    y1 = min(screen_h, int(math.ceil(y_top + full_h)))
+    y0 = int(math.floor(y_top))
+    if y0 < 0:
+        y0 = 0
+    y1 = int(math.ceil(y_top + full_h))
+    if y1 > screen_h:
+        y1 = screen_h
     vis_h = y1 - y0
     if vis_h <= 0:
         return
@@ -696,18 +707,32 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
 
     frame = _load_texture(texture_path)
     tw, th = frame.get_width(), frame.get_height()
-    tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+    tex_x = int(tex_u * tw)
+    if tex_x < 0:
+        tex_x = 0
+    elif tex_x > tw - 1:
+        tex_x = tw - 1
     # Sub-texel crop (see raycast_2_5d.renderer's identical comment):
     # rounding src_y per column would snap adjacent columns to different
     # texels on a close wall, so crop to the floor texel and carry the
     # remainder as a blit offset instead.
     texels_per_px = th / full_h
     src_y_f = (y0 - y_top) * texels_per_px
-    src_y = max(0, min(th - 1, int(math.floor(src_y_f))))
+    src_y = int(math.floor(src_y_f))
+    if src_y < 0:
+        src_y = 0
+    elif src_y > th - 1:
+        src_y = th - 1
     frac_px = (src_y_f - src_y) / texels_per_px
     need = int(math.ceil(vis_h * texels_per_px)) + 2
-    src_h = max(1, min(th - src_y, need))
-    dest_h = max(1, int(round(src_h / texels_per_px)))
+    src_h = th - src_y
+    if need < src_h:
+        src_h = need
+    if src_h < 1:
+        src_h = 1
+    dest_h = int(round(src_h / texels_per_px))
+    if dest_h < 1:
+        dest_h = 1
     col_surf = frame.subsurface((tex_x, src_y, 1, src_h))
     shade_at_source = (shade < 1.0
                        and strip_w * dest_h > _SHADE_AT_SOURCE_ABOVE * src_h)
@@ -742,8 +767,14 @@ def _draw_wall_strip(screen, x0, strip_w, y_top, full_h, shade,
         # block_world_1 3x faster. The two branches are pixel-identical.
         v = int(shade * 255)
         strip.fill((v, v, v), special_flags=pygame.BLEND_RGB_MULT)
-    off = max(0, min(dest_h - 1, int(round(frac_px))))
-    covered = min(vis_h, dest_h - off)
+    off = int(round(frac_px))
+    if off < 0:
+        off = 0
+    elif off > dest_h - 1:
+        off = dest_h - 1
+    covered = dest_h - off
+    if vis_h < covered:
+        covered = vis_h
     screen.blit(strip, (x0, y0), (0, off, strip_w, covered))
     if covered < vis_h:
         # dest_h ROUNDS the scaled column height while vis_h CEILS the span
@@ -811,8 +842,13 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
     never per texel.
     """
     screen_h = screen.get_height()
-    y0 = max(0, int(math.floor(min(y_a, y_b))))
-    y1 = min(screen_h, int(math.ceil(max(y_a, y_b))))
+    lo, hi = (y_a, y_b) if y_a < y_b else (y_b, y_a)
+    y0 = int(math.floor(lo))
+    if y0 < 0:
+        y0 = 0
+    y1 = int(math.ceil(hi))
+    if y1 > screen_h:
+        y1 = screen_h
     span = y1 - y0
     if span <= 0:
         return
@@ -823,10 +859,13 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
     # Same sign top or bottom: looking down, eye_z > plane_z and the rows sit
     # below the horizon; looking up, both flip. The ratio stays positive.
     k = (eye_z - plane_z) * screen_h * cell_size
-    samples = max(1, (span + res - 1) // res)
+    samples = (span + res - 1) // res
+    if samples < 1:
+        samples = 1
     tex_at = texture.get_at
     floor = math.floor
     inv_cell = 1.0 / cell_size
+    tw1, th1 = tw - 1, th - 1
 
     def _texel(y):
         denom = y + 0.5 - horizon
@@ -837,7 +876,7 @@ def _draw_horizontal_face_textured(screen, x0, strip_w, y_a, y_b, texture,
         gy = (cam_y + dir_y * ray_dist) * inv_cell
         tx = int(tw * (gx - floor(gx)))
         ty = int(th * (gy - floor(gy)))
-        return tex_at((min(tx, tw - 1), min(ty, th - 1)))
+        return tex_at((tx if tx < tw1 else tw1, ty if ty < th1 else th1))
 
     if samples == 1:
         # Most faces are a handful of rows -- a distant deck is hundreds of
