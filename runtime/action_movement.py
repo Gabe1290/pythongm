@@ -697,3 +697,35 @@ class MovementMixin:
         # Round to nearest grid position
         instance.x = round(instance.x / grid_size) * grid_size
         instance.y = round(instance.y / grid_size) * grid_size
+
+    def execute_stop_movement_action(self, instance, parameters: Dict[str, Any]):
+        """Stop all movement by setting speeds to zero"""
+        instance.hspeed = 0
+        instance.vspeed = 0
+
+    def execute_stop_if_no_keys_action(self, instance, parameters: Dict[str, Any]):
+        """Stop movement when on grid (for precise grid-based movement)
+
+        NEW LOGIC (Nov 19, 2025 - Fix overshoot issue):
+        - ALWAYS stop movement when this action executes
+        - This action is called from step event when player reaches grid
+        - Prevents overshoot by forcing stop at every grid position
+        - Keyboard events will restart movement on next frame if key still held
+        - This creates precise one-grid-cell-at-a-time movement
+
+        Old logic checked if keys were pressed, but this caused overshoot
+        because keyboard events fire continuously while key is held.
+
+        Parameters:
+            grid_size: Grid cell size (default 32)
+        """
+        grid_size = int(parameters.get("grid_size", 32))
+
+        # ALWAYS stop movement - don't check keys_pressed
+        # This ensures player stops at EVERY grid position
+        instance.hspeed = 0
+        instance.vspeed = 0
+
+        # Ensure exact grid alignment
+        instance.x = round(instance.x / grid_size) * grid_size
+        instance.y = round(instance.y / grid_size) * grid_size
