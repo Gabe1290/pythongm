@@ -68,7 +68,11 @@ class GM80ActionDialog(QDialog):
                     self.param_widgets[param.name] = widget
                     label = QLabel(self.tr(param.display_name) + ":")
                     if param.description:
-                        label.setToolTip(param.description)
+                        # tr() to match the label right beside it, which has
+                        # always been translated; without it a parameter's
+                        # tooltip is the one string in this dialog that cannot
+                        # be localized.
+                        label.setToolTip(self.tr(param.description))
                     params_layout.addRow(label, widget)
 
             params_group.setLayout(params_layout)
