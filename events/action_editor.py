@@ -83,7 +83,14 @@ class ActionConfigDialog(QDialog):
         layout.addWidget(title_label)
 
         if self.action_type.description:
-            desc_label = QLabel(self.action_type.description)
+            # tr() so the description is localizable at all. It was a bare
+            # QLabel, which meant no action description in the app could ever
+            # be translated -- the display_name right above it has been going
+            # through tr() all along. That asymmetry is why zero descriptions
+            # appear in any .ts catalogue: there was nothing for lrelease to
+            # collect. Same failure family as the self.ide context and the
+            # self.tr(f"...") f-strings.
+            desc_label = QLabel(self.tr(self.action_type.description))
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet("color: #666; font-style: italic;")
             layout.addWidget(desc_label)
