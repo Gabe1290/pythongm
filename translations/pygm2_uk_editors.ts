@@ -1035,8 +1035,7 @@ The code will execute when the event triggers during gameplay.</source>
     </message>
 </context>
 <context>
-    <name>ObjectEventsPanel</name>
-    <message>
+    <name>ObjectEventsPanel</name>    <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
         <translation>Події об&apos;єкта</translation>
@@ -1571,19 +1570,19 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
     </message>
     <message>
         <source>Play Sound</source>
-        <translation type="vanished">Відтворити звук</translation>
+        <translation>Відтворити звук</translation>
     </message>
     <message>
         <source>Stop Sound</source>
-        <translation type="vanished">Зупинити звук</translation>
+        <translation>Зупинити звук</translation>
     </message>
     <message>
         <source>Play Music</source>
-        <translation type="vanished">Відтворити музику</translation>
+        <translation>Відтворити музику</translation>
     </message>
     <message>
         <source>Stop Music</source>
-        <translation type="vanished">Зупинити музику</translation>
+        <translation>Зупинити музику</translation>
     </message>
     <message>
         <source>Set Score</source>
@@ -1864,6 +1863,138 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (потребує {1})</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Застосувати гравітацію</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Призначити мережеву клавішу</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Зруйнувати блок</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Створити мережевий об'єкт</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Намалювати HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Намалювати HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Намалювати мінікарту</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Увімкнути вигляд Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Увімкнути вигляд 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Створити гру</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Якщо я керую цим екземпляром</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Якщо гравець натискає</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Приєднатися до гри</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Стрибок</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Покинути гру</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Завантажити світ Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Дивитися вгору / вниз</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Рухатися зі зіткненням</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Поставити блок</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Прочитати спільну змінну</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Вибрати комірку панелі</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Надіслати мережеве повідомлення</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Задати захист блоків</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Задати нагороду за блок</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Задати кут огляду</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Задати мережевий режим (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Задати гучність</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Задати спільну змінну</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Задати власника екземпляра</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Задати частоту синхронізації</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Почати мережеву гру</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Синхронізувати цей екземпляр</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Перевірити, чи звучить звук</translation>
     </message>
 </context>
 <context>

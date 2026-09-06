@@ -2011,8 +2011,7 @@ Do you want to save anyway?</source>
     </message>
 </context>
 <context>
-    <name>ActionConfigDialog</name>
-    <message>
+    <name>ActionConfigDialog</name>    <message>
         <location filename="../events/action_editor.py" line="47"/>
         <source>Configure {0}</source>
         <translation>{0} を設定</translation>
@@ -2107,6 +2106,154 @@ Do you want to save anyway?</source>
         <location filename="../events/action_editor.py" line="346"/>
         <source>Add translations for different languages</source>
         <translation>さまざまな言語の翻訳を追加</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>重力を適用</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>ネットワーク用のキーを割り当てる</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>ブロックを壊す</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>ネットワークオブジェクトを作る</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>ブロックワールド HUD を描画</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>DOOM HUD を描画</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>ミニマップを描画</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>ブロックワールド表示を有効化</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>2.5D 表示を有効化</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>ゲームをホストする</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>このインスタンスを操作しているなら</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>プレイヤーが押しているなら</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>ゲームに参加する</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>ジャンプ</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>ゲームから抜ける</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>ブロックワールドを読み込む</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>上下を見る</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>移動して衝突判定</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>ブロックを置く</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>音楽を再生</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>音を鳴らす</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>共有変数を読む</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>ホットバーの枠を選択</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>ネットワークメッセージを送る</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>ブロック保護を設定</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>ブロックの報酬を設定</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>向きの角度を設定</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>ネットワークモードを設定 (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>音量を設定</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>共有変数を設定</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>インスタンスの所有者を設定</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>同期の頻度を設定</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>ネットワーク対戦を開始</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>音楽を止める</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>このインスタンスを同期</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>音が鳴っているか調べる</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>音を止める</translation>
     </message>
 </context>
 <context>
@@ -3788,8 +3935,7 @@ Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
     </message>
 </context>
 <context>
-    <name>ObjectEventsPanel</name>
-    <message>
+    <name>ObjectEventsPanel</name>    <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
         <translation>オブジェクトイベント</translation>
@@ -4129,6 +4275,154 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0}({1}が必要)</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>重力を適用</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>ネットワーク用のキーを割り当てる</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>ブロックを壊す</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>ネットワークオブジェクトを作る</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>ブロックワールド HUD を描画</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>DOOM HUD を描画</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>ミニマップを描画</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>ブロックワールド表示を有効化</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>2.5D 表示を有効化</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>ゲームをホストする</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>このインスタンスを操作しているなら</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>プレイヤーが押しているなら</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>ゲームに参加する</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>ジャンプ</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>ゲームから抜ける</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>ブロックワールドを読み込む</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>上下を見る</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>移動して衝突判定</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>ブロックを置く</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>音楽を再生</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>音を鳴らす</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>共有変数を読む</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>ホットバーの枠を選択</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>ネットワークメッセージを送る</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>ブロック保護を設定</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>ブロックの報酬を設定</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>向きの角度を設定</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>ネットワークモードを設定 (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>音量を設定</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>共有変数を設定</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>インスタンスの所有者を設定</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>同期の頻度を設定</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>ネットワーク対戦を開始</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>音楽を止める</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>このインスタンスを同期</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>音が鳴っているか調べる</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>音を止める</translation>
     </message>
 </context>
 <context>

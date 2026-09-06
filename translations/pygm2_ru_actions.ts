@@ -2,8 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
-    <name>ActionConfigDialog</name>
-        <message>
+    <name>ActionConfigDialog</name>        <message>
             <source>Use Python operators</source>
             <translation>Используйте операторы Python</translation>
         </message>
@@ -19,7 +18,6 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
 
 Используйте вместо них операторы Python (and / or / not), например "vspeed &gt; 0 and y &lt; other.y".</translation>
         </message>
-
     <message>
         <source>Configure {0}</source>
         <translation type="vanished">Configurer {0}</translation>
@@ -87,6 +85,154 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
     <message>
         <source>Add translations for different languages</source>
         <translation type="vanished">Добавить переводы для разных языков</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Применить гравитацию</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Назначить сетевую клавишу</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Разрушить блок</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Создать сетевой объект</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Нарисовать HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Нарисовать HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Нарисовать миникарту</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Включить вид Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Включить вид 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Создать игру</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Если я управляю этим экземпляром</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Если игрок нажимает</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Присоединиться к игре</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Прыжок</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Покинуть игру</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Загрузить мир Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Смотреть вверх / вниз</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Двигаться со столкновением</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Поставить блок</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>Играть музыку</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>Играть звук</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Прочитать общую переменную</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Выбрать ячейку панели</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Отправить сетевое сообщение</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Задать защиту блоков</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Задать награду за блок</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Задать угол обзора</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Задать сетевой режим (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Задать громкость</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Задать общую переменную</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Задать владельца экземпляра</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Задать частоту синхронизации</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Начать сетевую игру</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>Остановить музыку</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Синхронизировать этот экземпляр</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Проверить, играет ли звук</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>Остановить звук</translation>
     </message>
 </context>
 <context>

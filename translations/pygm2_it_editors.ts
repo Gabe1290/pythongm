@@ -1035,8 +1035,7 @@ Il codice verrà eseguito quando l&apos;evento si attiva durante il gioco.</tran
     </message>
 </context>
 <context>
-    <name>ObjectEventsPanel</name>
-    <message>
+    <name>ObjectEventsPanel</name>    <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
         <translation>Eventi oggetto</translation>
@@ -1571,19 +1570,19 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
     </message>
     <message>
         <source>Play Sound</source>
-        <translation type="vanished">Riproduci suono</translation>
+        <translation>Riproduci suono</translation>
     </message>
     <message>
         <source>Stop Sound</source>
-        <translation type="vanished">Ferma suono</translation>
+        <translation>Ferma suono</translation>
     </message>
     <message>
         <source>Play Music</source>
-        <translation type="vanished">Riproduci musica</translation>
+        <translation>Riproduci musica</translation>
     </message>
     <message>
         <source>Stop Music</source>
-        <translation type="vanished">Ferma musica</translation>
+        <translation>Ferma musica</translation>
     </message>
     <message>
         <source>Set Score</source>
@@ -1864,6 +1863,138 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (richiede {1})</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Applica gravità</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Associa un tasto di rete</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Rompi blocco</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Crea oggetto in rete</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Disegna HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Disegna HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Disegna minimappa</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Attiva vista Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Attiva vista 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Ospita una partita</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Se controllo questa istanza</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Se il giocatore preme</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Unisciti a una partita</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Salta</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Esci dalla partita</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Carica Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Guarda su / giù</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Muovi con collisione</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Posiziona blocco</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Leggi variabile condivisa</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Scegli casella della barra</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Invia messaggio di rete</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Imposta protezione blocchi</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Imposta ricompensa blocco</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Imposta angolo di vista</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Imposta la modalità di rete (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Imposta volume</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Imposta variabile condivisa</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Imposta il proprietario dell'istanza</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Imposta la frequenza di sincronia</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Avvia la partita in rete</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Sincronizza questa istanza</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Verifica se il suono è attivo</translation>
     </message>
 </context>
 <context>
