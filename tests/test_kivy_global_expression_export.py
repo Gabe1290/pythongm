@@ -19,15 +19,17 @@ so the WHOLE exported module failed to even import -- not scoped to
 multiplayer specifically; ANY project authoring a `global.X` condition
 hit this on a Kivy export.
 
-Kivy has no global-variable storage at all (unlike desktop's
-game_runner.global_variables / HTML5's game.globalVariables), so there is
-no real value to route a `global.X` read to. The fix turns the reference
-into a literal 0 instead of leaving it unparseable: correctly-scoped
-(matches this file's existing "degrade gracefully, never crash the
-export" convention for everything else it can't represent) and actually
-semantically right for every multiplayer identity/status global
-specifically (is_host, network_connected, player_id, ...) -- they are
-genuinely always 0/false on a target that never networks at all.
+The first fix substituted a literal 0, because Kivy had no global storage to
+read from. **Superseded 2026-09-06**: GameApp now keeps one (`self.globals`,
+beside score/lives), reached from generated code through main.py's
+`get_global`/`set_global`, so a reference resolves for real and matches
+desktop's game_runner.global_variables and HTML5's game.globalVariables. An
+unset name still reads 0 on all three.
+
+Multiplayer identity globals (is_host, network_connected, player_id, ...)
+therefore still evaluate 0/false on this target -- nothing ever writes them,
+because a Kivy export never networks -- which is the same answer the literal-0
+substitution gave, arrived at honestly.
 """
 import ast
 import json
@@ -48,12 +50,22 @@ def _equiv(a, b):
 
 
 class TestStripGlobalRefs:
-    def test_single_reference_becomes_zero(self):
-        assert _strip_global_refs("global.is_host == 1") == "0 == 1"
+    def test_single_reference_becomes_a_real_read(self):
+        assert (_strip_global_refs("global.is_host == 1")
+                == "__import__('main').get_global('is_host') == 1")
 
     def test_multiple_references(self):
         out = _strip_global_refs("global.a + global.b")
-        assert out == "0 + 0"
+        assert out == ("__import__('main').get_global('a') + "
+                       "__import__('main').get_global('b')")
+
+    def test_the_read_is_self_contained(self):
+        """It gets substituted into arbitrary expressions -- including an `if`
+        condition, where there is nowhere to hang an import statement -- so it
+        must not depend on a name the caller has to bring."""
+        out = _strip_global_refs("global.hp")
+        assert "import" in out and ";" not in out
+        ast.parse(out, mode="eval")
 
     def test_no_global_reference_is_unchanged(self):
         assert _strip_global_refs("self.x + 4") == "self.x + 4"
@@ -77,19 +89,33 @@ class TestResolveInstanceNamesWithGlobals:
         export. Now it must return real, parseable Python."""
         resolved = _resolve_instance_names("global.is_host == 1")
         ast.parse(resolved, mode="eval")   # must not raise
-        assert "global" not in resolved
-        assert _equiv(resolved, "0 == 1")
+        assert "global." not in resolved, "the reserved-word form must be gone"
+        assert _equiv(
+            resolved, "__import__('main').get_global('is_host') == 1")
 
     def test_network_connected_condition_from_reseau_3(self):
         """The literal expression reseau_3's obj_ctrl authors."""
         resolved = _resolve_instance_names("global.network_connected != 1")
         ast.parse(resolved, mode="eval")
-        assert _equiv(resolved, "0 != 1")
+        assert _equiv(
+            resolved,
+            "__import__('main').get_global('network_connected') != 1")
 
     def test_mixed_with_self_and_bare_names(self):
         resolved = _resolve_instance_names("global.is_host == 1 and hp > 0")
         ast.parse(resolved, mode="eval")
-        assert _equiv(resolved, "0 == 1 and self.hp > 0")
+        assert _equiv(
+            resolved,
+            "__import__('main').get_global('is_host') == 1 and self.hp > 0")
+
+    def test_the_accessor_itself_is_not_bound_to_the_instance(self):
+        """resolve_global_refs substitutes `__import__(...)` into the text
+        BEFORE it is parsed, so the builtin arrives here as an ordinary Name.
+        Bound to self, every condition touching a global raised AttributeError
+        at runtime -- and nothing else in the expression would have looked
+        wrong."""
+        resolved = _resolve_instance_names("global.hp > 0")
+        assert "self.__import__" not in resolved
 
     def test_ordinary_expression_unaffected(self):
         """No 'global.' present -- must behave exactly as before."""

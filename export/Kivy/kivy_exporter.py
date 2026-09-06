@@ -715,6 +715,24 @@ def previous_room_exists():
     return False
 
 
+def get_global(name, default=0):
+    """Read an author-defined `global.<name>` variable.
+
+    Unset (or before the app exists) reads the default, matching desktop's
+    _get_variable_value and the HTML5 engine -- a Draw event that runs before
+    the Create event that sets a global shows 0 rather than raising."""
+    if _game_app:
+        return _game_app.globals.get(name, default)
+    return default
+
+
+def set_global(name, value):
+    """Write an author-defined `global.<name>` variable."""
+    if _game_app:
+        _game_app.globals[name] = value
+    return value
+
+
 def get_score():
     """Get the current score"""
     if _game_app:
@@ -818,6 +836,12 @@ def _save_state_and_restart(room_index):
         'score': app.score if app else 0,
         'lives': app.lives if app else 3,
         'health': app.health if app else 100,
+        # Globals survive the Activity restart with the rest of the game
+        # state; only JSON-representable values, since that is what the
+        # state file is. Anything else is dropped rather than failing the
+        # save and losing the score too.
+        'globals': {{k: v for k, v in (app.globals if app else {{}}).items()
+                    if isinstance(v, (int, float, str, bool, type(None)))}},
     }}
     _log(f"_save_state_and_restart: saving {{state}}")
     try:
@@ -1215,6 +1239,15 @@ class GameApp(App):
         self.lives = 3
         self.health = 100
 
+        # Author-defined `global.<name>` variables. Game-wide and outliving a
+        # room switch, exactly like score/lives above -- desktop keeps them on
+        # GameRunner.global_variables and HTML5 on game.globalVariables, and
+        # this is the third one. A name that was never set reads 0, matching
+        # both (desktop's _get_variable_value and the HTML5 engine's own
+        # default), so a Draw event referencing a global the Create event has
+        # not run yet shows 0 rather than crashing.
+        self.globals = {{}}
+
         # Caption display settings
         self.window_caption = ""
         self.show_score_in_caption = False
@@ -1255,6 +1288,9 @@ class GameApp(App):
             self.score = _saved.get('score', 0)
             self.lives = _saved.get('lives', 3)
             self.health = _saved.get('health', 100)
+            _g = _saved.get('globals')
+            if isinstance(_g, dict):
+                self.globals = dict(_g)
         else:
             _start_idx = 0
         _start_name = ROOM_ORDER[_start_idx]
