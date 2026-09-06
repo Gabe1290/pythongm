@@ -1,4 +1,4 @@
-# Network
+# Réseau
 
 *[Accueil](Home_fr) | [Guide des Préréglages](Preset-Guide_fr) | [Référence des Événements](Event-Reference_fr)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nom** | `bind_network_input` |
 | **Icône** | ⌨️ |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space")
 
@@ -25,7 +25,7 @@ Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'
 |----------|-------|
 | **Nom** | `network_spawn` |
 | **Icône** | ✨ |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1
 
@@ -43,7 +43,7 @@ Hôte uniquement : créer une instance qui apparaît automatiquement chez tous l
 |----------|-------|
 | **Nom** | `host_game` |
 | **Icône** | 🌐 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host"
 
@@ -61,7 +61,7 @@ Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent 
 |----------|-------|
 | **Nom** | `is_instance_owner` |
 | **Icône** | ❓ |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur
 
@@ -73,7 +73,7 @@ Condition : vraie si CETTE machine est le propriétaire de l'instance synchronis
 |----------|-------|
 | **Nom** | `remote_input` |
 | **Icône** | ❓ |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar
 
@@ -88,7 +88,7 @@ Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nomm�
 |----------|-------|
 | **Nom** | `join_game` |
 | **Icône** | 🔌 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo
 
@@ -104,7 +104,7 @@ Se connecter à une partie multijoueur LAN hébergée par une autre machine. glo
 |----------|-------|
 | **Nom** | `leave_game` |
 | **Icône** | 🚪 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales
 
@@ -116,7 +116,7 @@ Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globa
 |----------|-------|
 | **Nom** | `get_shared_var` |
 | **Icône** | 📥 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.<nom> directement
 
@@ -131,7 +131,7 @@ Copier une variable partagée dans une variable globale (pour l'utiliser dans un
 |----------|-------|
 | **Nom** | `send_network_message` |
 | **Icône** | ✉️ |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender
 
@@ -147,7 +147,7 @@ Diffuser un message personnalisé. Déclenche l'événement « Message réseau �
 |----------|-------|
 | **Nom** | `set_network_mode` |
 | **Icône** | 🌐 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client
 
@@ -163,7 +163,7 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 |----------|-------|
 | **Nom** | `set_shared_var` |
 | **Icône** | 📤 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.<nom>
 
@@ -178,7 +178,7 @@ Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectate
 |----------|-------|
 | **Nom** | `set_instance_owner` |
 | **Icône** | 🎮 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1)
 
@@ -192,7 +192,7 @@ Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... =
 |----------|-------|
 | **Nom** | `set_sync_rate` |
 | **Icône** | ⏱️ |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai)
 
@@ -207,7 +207,7 @@ Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des 
 |----------|-------|
 | **Nom** | `start_networked_game` |
 | **Icône** | 🚦 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines
 
@@ -219,7 +219,7 @@ Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la pa
 |----------|-------|
 | **Nom** | `sync_instance` |
 | **Icône** | 🔗 |
-| **Catégorie** | Network |
+| **Catégorie** | Réseau |
 
 Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote
 
@@ -242,6 +242,6 @@ Marquer l'instance qui exécute l'action comme « synchronisée » : sa position
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
 - [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
-- [Particles](Full-Action-Reference-Particles_fr) (8)
+- [Particules](Full-Action-Reference-Particles_fr) (8)
 
 [← Retour à la Référence Complète des Actions](Full-Action-Reference_fr)

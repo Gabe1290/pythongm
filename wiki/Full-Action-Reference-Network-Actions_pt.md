@@ -1,4 +1,4 @@
-# Network
+# Rede
 
 *[Início](Home_pt) | [Guia de predefinições](Preset-Guide_pt) | [Referência de eventos](Event-Reference_pt)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nome** | `bind_network_input` |
 | **Ícone** | ⌨️ |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Associa uma tecla local a uma «entrada com nome» comunicada ao anfitrião. O anfitrião testa-a depois com «Se o jogador carregar». As setas e a barra de espaços já estão associadas ("left", "right", "up", "down", "space")
 
@@ -25,7 +25,7 @@ Associa uma tecla local a uma «entrada com nome» comunicada ao anfitrião. O a
 |----------|-------|
 | **Nome** | `network_spawn` |
 | **Ícone** | ✨ |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Só no anfitrião: cria uma instância que aparece automaticamente em todos os clientes, como um «fantasma» suavizado. Num cliente não faz nada. O anfitrião comanda a instância que cria: protege a sua lógica de jogo com global.is_host == 1
 
@@ -43,7 +43,7 @@ Só no anfitrião: cria uma instância que aparece automaticamente em todos os c
 |----------|-------|
 | **Nome** | `host_game` |
 | **Ícone** | 🌐 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Torna esta máquina o anfitrião de um jogo multijogador em LAN: os outros jogadores ligam-se a ela. Chama-a apenas uma vez (por exemplo no evento Criar do controlador da sala). Define global.player_id = 0 e global.network_role = "host"
 
@@ -61,7 +61,7 @@ Torna esta máquina o anfitrião de um jogo multijogador em LAN: os outros jogad
 |----------|-------|
 | **Nome** | `is_instance_owner` |
 | **Ícone** | ❓ |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Uma condição: verdadeira quando ESTA máquina é dona da instância sincronizada. Coloca-a antes de um bloco para que a lógica de controlo só corra na máquina do jogador certo
 
@@ -73,7 +73,7 @@ Uma condição: verdadeira quando ESTA máquina é dona da instância sincroniza
 |----------|-------|
 | **Nome** | `remote_input` |
 | **Ícone** | ❓ |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Uma condição, no anfitrião: verdadeira enquanto o jogador indicado mantiver a entrada indicada. Permite ao anfitrião reagir às teclas de um cliente sem ser dono da personagem desse cliente
 
@@ -88,7 +88,7 @@ Uma condição, no anfitrião: verdadeira enquanto o jogador indicado mantiver a
 |----------|-------|
 | **Nome** | `join_game` |
 | **Ícone** | 🔌 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Liga-se a um jogo multijogador em LAN alojado noutra máquina. O anfitrião define global.player_id (1, 2, ...). Se não for possível contactar o anfitrião, o jogo continua a solo
 
@@ -104,7 +104,7 @@ Liga-se a um jogo multijogador em LAN alojado noutra máquina. O anfitrião defi
 |----------|-------|
 | **Nome** | `leave_game` |
 | **Ícone** | 🚪 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Desliga-se (ou deixa de alojar) e limpa as variáveis globais de rede
 
@@ -116,7 +116,7 @@ Desliga-se (ou deixa de alojar) e limpa as variáveis globais de rede
 |----------|-------|
 | **Nome** | `get_shared_var` |
 | **Ícone** | 📥 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Copia uma variável partilhada para uma variável global, para a usar num cálculo. É o mesmo que ler global.<nome> diretamente
 
@@ -131,7 +131,7 @@ Copia uma variável partilhada para uma variável global, para a usar num cálcu
 |----------|-------|
 | **Nome** | `send_network_message` |
 | **Ícone** | ✉️ |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Difunde uma mensagem à tua escolha. Dispara o evento «Mensagem de rede» nas máquinas em causa, com global.network_event / global.network_data / global.network_sender
 
@@ -147,7 +147,7 @@ Difunde uma mensagem à tua escolha. Dispara o evento «Mensagem de rede» nas m
 |----------|-------|
 | **Nome** | `set_network_mode` |
 | **Ícone** | 🌐 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Uma ação antiga de baixo nível: arranca a sala em modo anfitrião ou cliente (só espetador — os comandos do cliente não têm efeito). É preferível «Alojar um jogo» / «Entrar num jogo». Mantida para os projetos existentes e para as opções --net-host / --net-client
 
@@ -163,7 +163,7 @@ Uma ação antiga de baixo nível: arranca a sala em modo anfitrião ou cliente 
 |----------|-------|
 | **Nome** | `set_shared_var` |
 | **Ícone** | 📤 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplicada de imediato; num cliente é um pedido enviado ao anfitrião. Pode ler-se em qualquer lado como global.<nome>
 
@@ -178,7 +178,7 @@ Escreve uma variável partilhada por todas as máquinas. No anfitrião é aplica
 |----------|-------|
 | **Nome** | `set_instance_owner` |
 | **Ícone** | 🎮 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Escolhe qual o jogador que comanda esta instância sincronizada (0 = anfitrião; 1, 2, ... = clientes). Na máquina desse jogador a instância corre localmente e responde bem, e o seu estado é comunicado ao anfitrião; em todas as outras é um fantasma suavizado. Chama-a no anfitrião, protegida por global.is_host == 1
 
@@ -192,7 +192,7 @@ Escolhe qual o jogador que comanda esta instância sincronizada (0 = anfitrião;
 |----------|-------|
 | **Nome** | `set_sync_rate` |
 | **Ícone** | ⏱️ |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Ajusta com que frequência o anfitrião envia instantâneos e com que atraso os clientes os desenham. Chama-a uma vez no anfitrião, e nos clientes para o atraso
 
@@ -207,7 +207,7 @@ Ajusta com que frequência o anfitrião envia instantâneos e com que atraso os 
 |----------|-------|
 | **Nome** | `start_networked_game` |
 | **Ícone** | 🚦 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Só no anfitrião: tira toda a gente da sala de espera e começa o jogo. Dispara o evento «Jogo em rede iniciado» em todas as máquinas
 
@@ -219,7 +219,7 @@ Só no anfitrião: tira toda a gente da sala de espera e começa o jogo. Dispara
 |----------|-------|
 | **Nome** | `sync_instance` |
 | **Ícone** | 🔗 |
-| **Categoria** | Network |
+| **Categoria** | Rede |
 
 Marca como sincronizada a instância que executa esta ação: a sua posição, rotação, imagem e visibilidade são copiadas para todas as máquinas. Chama-a no evento Criar. Por omissão pertence ao anfitrião; usa «Definir o dono da instância» para que seja um cliente a comandá-la
 
@@ -242,6 +242,6 @@ Marca como sincronizada a instância que executa esta ação: a sua posição, r
 - [Grade](Full-Action-Reference-Grid_pt) (4)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (16)
-- [Particles](Full-Action-Reference-Particles_pt) (8)
+- [Partículas](Full-Action-Reference-Particles_pt) (8)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

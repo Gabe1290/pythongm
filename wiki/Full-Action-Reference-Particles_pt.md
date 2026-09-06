@@ -1,4 +1,4 @@
-# Particles
+# Partículas
 
 *[Início](Home_pt) | [Guia de predefinições](Preset-Guide_pt) | [Referência de eventos](Event-Reference_pt)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nome** | `burst_particles` |
 | **Ícone** | 💥 |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Lança uma rajada única de partículas a partir do emissor criado mais recentemente
 
@@ -25,7 +25,7 @@ Lança uma rajada única de partículas a partir do emissor criado mais recentem
 |----------|-------|
 | **Nome** | `clear_particles` |
 | **Ícone** | 🧹 |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Remove todas as partículas ativas, mas mantém os tipos de partícula e os emissores
 
@@ -37,7 +37,7 @@ Remove todas as partículas ativas, mas mantém os tipos de partícula e os emis
 |----------|-------|
 | **Nome** | `create_emitter` |
 | **Ícone** | 🌀 |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Cria uma zona emissora de partículas (o identificador devolvido fica guardado para a próxima ação que use um emissor)
 
@@ -55,7 +55,7 @@ Cria uma zona emissora de partículas (o identificador devolvido fica guardado p
 |----------|-------|
 | **Nome** | `create_particle_system` |
 | **Ícone** | ✨ |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Cria um sistema de partículas ligado a esta instância (substitui o que existir)
 
@@ -69,7 +69,7 @@ Cria um sistema de partículas ligado a esta instância (substitui o que existir
 |----------|-------|
 | **Nome** | `create_particle_type` |
 | **Ícone** | ⚙️ |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Define um novo aspeto ou comportamento de partícula (o identificador de tipo devolvido fica guardado para a próxima ação que use um tipo de partícula)
 
@@ -94,7 +94,7 @@ Define um novo aspeto ou comportamento de partícula (o identificador de tipo de
 |----------|-------|
 | **Nome** | `destroy_emitter` |
 | **Ícone** | 💥 |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Destrói o emissor criado mais recentemente
 
@@ -106,7 +106,7 @@ Destrói o emissor criado mais recentemente
 |----------|-------|
 | **Nome** | `destroy_particle_system` |
 | **Ícone** | 💥 |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Remove o sistema de partículas desta instância, apagando todas as suas partículas e emissores
 
@@ -118,7 +118,7 @@ Remove o sistema de partículas desta instância, apagando todas as suas partíc
 |----------|-------|
 | **Nome** | `stream_particles` |
 | **Ícone** | 🌊 |
-| **Categoria** | Particles |
+| **Categoria** | Partículas |
 
 Emite partículas continuamente, a cada passo, a partir do emissor criado mais recentemente (0 para parar)
 
@@ -142,6 +142,6 @@ Emite partículas continuamente, a cada passo, a partir do emissor criado mais r
 - [Grade](Full-Action-Reference-Grid_pt) (4)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (16)
-- [Network](Full-Action-Reference-Network-Actions_pt) (15)
+- [Rede](Full-Action-Reference-Network-Actions_pt) (15)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

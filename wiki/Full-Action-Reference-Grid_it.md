@@ -77,7 +77,7 @@ Condizione: vero se l'istanza è allineata a una griglia
 - [Controllo](Full-Action-Reference-Control_it) (19)
 - [Viste](Full-Action-Reference-Views_it) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (16)
-- [Network](Full-Action-Reference-Network-Actions_it) (15)
-- [Particles](Full-Action-Reference-Particles_it) (8)
+- [Rete](Full-Action-Reference-Network-Actions_it) (15)
+- [Particelle](Full-Action-Reference-Particles_it) (8)
 
 [← Torna al Riferimento Completo delle Azioni](Full-Action-Reference_it)

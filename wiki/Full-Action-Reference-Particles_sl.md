@@ -1,4 +1,4 @@
-# Particles
+# Delci
 
 *[Domov](Home_sl) | [Vodnik po prednastavitvah](Preset-Guide_sl) | [Referenca dogodkov](Event-Reference_sl)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Ime** | `burst_particles` |
 | **Ikona** | 💥 |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Iz nazadnje ustvarjenega izvora izpusti enkraten izbruh delcev
 
@@ -25,7 +25,7 @@ Iz nazadnje ustvarjenega izvora izpusti enkraten izbruh delcev
 |----------|-------|
 | **Ime** | `clear_particles` |
 | **Ikona** | 🧹 |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Odstrani vse dejavne delce, ohrani pa vrste delcev in izvore
 
@@ -37,7 +37,7 @@ Odstrani vse dejavne delce, ohrani pa vrste delcev in izvore
 |----------|-------|
 | **Ime** | `create_emitter` |
 | **Ikona** | 🌀 |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Ustvari območje, ki oddaja delce (vrnjena oznaka se shrani za naslednje dejanje, ki uporablja izvor)
 
@@ -55,7 +55,7 @@ Ustvari območje, ki oddaja delce (vrnjena oznaka se shrani za naslednje dejanje
 |----------|-------|
 | **Ime** | `create_particle_system` |
 | **Ikona** | ✨ |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Ustvari sistem delcev, pripet na ta primerek (nadomesti obstoječega)
 
@@ -69,7 +69,7 @@ Ustvari sistem delcev, pripet na ta primerek (nadomesti obstoječega)
 |----------|-------|
 | **Ime** | `create_particle_type` |
 | **Ikona** | ⚙️ |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Določi nov videz oziroma vedenje delca (vrnjena oznaka vrste se shrani za naslednje dejanje, ki uporablja vrsto delca)
 
@@ -94,7 +94,7 @@ Določi nov videz oziroma vedenje delca (vrnjena oznaka vrste se shrani za nasle
 |----------|-------|
 | **Ime** | `destroy_emitter` |
 | **Ikona** | 💥 |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Odstrani nazadnje ustvarjeni izvor
 
@@ -106,7 +106,7 @@ Odstrani nazadnje ustvarjeni izvor
 |----------|-------|
 | **Ime** | `destroy_particle_system` |
 | **Ikona** | 💥 |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Odstrani sistem delcev tega primerka in z njim vse delce in izvore
 
@@ -118,7 +118,7 @@ Odstrani sistem delcev tega primerka in z njim vse delce in izvore
 |----------|-------|
 | **Ime** | `stream_particles` |
 | **Ikona** | 🌊 |
-| **Kategorija** | Particles |
+| **Kategorija** | Delci |
 
 Iz nazadnje ustvarjenega izvora v vsakem koraku neprekinjeno oddaja delce (0 za ustavitev)
 
@@ -142,6 +142,6 @@ Iz nazadnje ustvarjenega izvora v vsakem koraku neprekinjeno oddaja delce (0 za 
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
-- [Network](Full-Action-Reference-Network-Actions_sl) (15)
+- [Omrežje](Full-Action-Reference-Network-Actions_sl) (15)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)

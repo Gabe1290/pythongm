@@ -1,4 +1,4 @@
-# Network
+# Netzwerk
 
 *[Startseite](Home_de) | [Voreinstellungs-Leitfaden](Preset-Guide_de) | [Ereignisreferenz](Event-Reference_de)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Name** | `bind_network_input` |
 | **Symbol** | ⌨️ |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Verknüpft eine lokale Taste mit einer „benannten Eingabe“, die an den Host gemeldet wird. Der Host prüft sie dann mit „Wenn der Spieler drückt“. Die Pfeiltasten und die Leertaste sind bereits verknüpft ("left", "right", "up", "down", "space")
 
@@ -25,7 +25,7 @@ Verknüpft eine lokale Taste mit einer „benannten Eingabe“, die an den Host 
 |----------|-------|
 | **Name** | `network_spawn` |
 | **Symbol** | ✨ |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Nur beim Host: erzeugt eine Instanz, die auf allen Clients automatisch als geglätteter „Geist“ erscheint. Auf einem Client ohne Wirkung. Der Host steuert die erzeugte Instanz – ihre Spiellogik mit global.is_host == 1 absichern
 
@@ -43,7 +43,7 @@ Nur beim Host: erzeugt eine Instanz, die auf allen Clients automatisch als gegl�
 |----------|-------|
 | **Name** | `host_game` |
 | **Symbol** | 🌐 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Wird zum Host einer LAN-Mehrspielerpartie: die anderen Spieler verbinden sich mit dieser Maschine. Nur einmal aufrufen (zum Beispiel im Erstellen-Ereignis des Raum-Controllers). Setzt global.player_id = 0 und global.network_role = "host"
 
@@ -61,7 +61,7 @@ Wird zum Host einer LAN-Mehrspielerpartie: die anderen Spieler verbinden sich mi
 |----------|-------|
 | **Name** | `is_instance_owner` |
 | **Symbol** | ❓ |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Eine Bedingung: wahr, wenn DIESE Maschine die synchronisierte Instanz besitzt. Vor einen Block setzen, damit die Steuerungslogik nur auf der Maschine des richtigen Spielers läuft
 
@@ -73,7 +73,7 @@ Eine Bedingung: wahr, wenn DIESE Maschine die synchronisierte Instanz besitzt. V
 |----------|-------|
 | **Name** | `remote_input` |
 | **Symbol** | ❓ |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Eine Bedingung beim Host: wahr, solange der genannte Spieler die genannte Eingabe hält. So kann der Host auf die Tasten eines Clients reagieren, ohne dessen Figur zu besitzen
 
@@ -88,7 +88,7 @@ Eine Bedingung beim Host: wahr, solange der genannte Spieler die genannte Eingab
 |----------|-------|
 | **Name** | `join_game` |
 | **Symbol** | 🔌 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Verbindet sich mit einer LAN-Mehrspielerpartie, die eine andere Maschine hostet. Der Host setzt global.player_id (1, 2, ...). Ist der Host nicht erreichbar, läuft das Spiel als Einzelspieler weiter
 
@@ -104,7 +104,7 @@ Verbindet sich mit einer LAN-Mehrspielerpartie, die eine andere Maschine hostet.
 |----------|-------|
 | **Name** | `leave_game` |
 | **Symbol** | 🚪 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Trennt die Verbindung (oder beendet das Hosten) und löscht die globalen Netzwerkvariablen
 
@@ -116,7 +116,7 @@ Trennt die Verbindung (oder beendet das Hosten) und löscht die globalen Netzwer
 |----------|-------|
 | **Name** | `get_shared_var` |
 | **Symbol** | 📥 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Kopiert eine geteilte Variable in eine globale Variable, um sie in einer Berechnung zu verwenden. Entspricht dem direkten Lesen von global.<name>
 
@@ -131,7 +131,7 @@ Kopiert eine geteilte Variable in eine globale Variable, um sie in einer Berechn
 |----------|-------|
 | **Name** | `send_network_message` |
 | **Symbol** | ✉️ |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Sendet eine eigene Nachricht an alle. Löst auf den betroffenen Maschinen das Ereignis „Netzwerknachricht“ aus, mit global.network_event / global.network_data / global.network_sender
 
@@ -147,7 +147,7 @@ Sendet eine eigene Nachricht an alle. Löst auf den betroffenen Maschinen das Er
 |----------|-------|
 | **Name** | `set_network_mode` |
 | **Symbol** | 🌐 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Eine ältere Low-Level-Aktion: startet den Raum im Host- oder Client-Modus (nur Zuschauer – die Eingabe eines Clients hat keine Wirkung). Besser „Spiel hosten“ / „Spiel beitreten“ verwenden. Für bestehende Projekte und die Schalter --net-host / --net-client erhalten
 
@@ -163,7 +163,7 @@ Eine ältere Low-Level-Aktion: startet den Raum im Host- oder Client-Modus (nur 
 |----------|-------|
 | **Name** | `set_shared_var` |
 | **Symbol** | 📤 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Schreibt eine Variable, die alle Maschinen teilen. Beim Host wird sie sofort übernommen; auf einem Client ist es eine Anfrage an den Host. Überall lesbar als global.<name>
 
@@ -178,7 +178,7 @@ Schreibt eine Variable, die alle Maschinen teilen. Beim Host wird sie sofort üb
 |----------|-------|
 | **Name** | `set_instance_owner` |
 | **Symbol** | 🎮 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Legt fest, welcher Spieler diese synchronisierte Instanz steuert (0 = Host, 1, 2, ... = Clients). Auf der Maschine dieses Spielers läuft die Instanz lokal und reagiert flüssig, und ihr Zustand wird an den Host zurückgemeldet; überall sonst ist sie ein geglätteter Geist. Beim Host aufrufen, abgesichert mit global.is_host == 1
 
@@ -192,7 +192,7 @@ Legt fest, welcher Spieler diese synchronisierte Instanz steuert (0 = Host, 1, 2
 |----------|-------|
 | **Name** | `set_sync_rate` |
 | **Symbol** | ⏱️ |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Stellt ein, wie oft der Host Momentaufnahmen sendet und wie weit dahinter die Clients sie zeichnen. Einmal beim Host aufrufen, und für die Verzögerung auch bei den Clients
 
@@ -207,7 +207,7 @@ Stellt ein, wie oft der Host Momentaufnahmen sendet und wie weit dahinter die Cl
 |----------|-------|
 | **Name** | `start_networked_game` |
 | **Symbol** | 🚦 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Nur beim Host: holt alle aus dem Warteraum und startet die Partie. Löst auf jeder Maschine das Ereignis „Netzwerkspiel gestartet“ aus
 
@@ -219,7 +219,7 @@ Nur beim Host: holt alle aus dem Warteraum und startet die Partie. Löst auf jed
 |----------|-------|
 | **Name** | `sync_instance` |
 | **Symbol** | 🔗 |
-| **Kategorie** | Network |
+| **Kategorie** | Netzwerk |
 
 Markiert die Instanz, die diese Aktion ausführt, als synchronisiert: ihre Position, ihre Drehung, ihr Bild und ihre Sichtbarkeit werden auf alle Maschinen kopiert. Im Erstellen-Ereignis aufrufen. Standardmäßig gehört sie dem Host; mit „Besitzer der Instanz festlegen“ kann ein Client sie steuern
 
@@ -242,6 +242,6 @@ Markiert die Instanz, die diese Aktion ausführt, als synchronisiert: ihre Posit
 - [Gitter](Full-Action-Reference-Grid_de) (4)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
-- [Particles](Full-Action-Reference-Particles_de) (8)
+- [Partikel](Full-Action-Reference-Particles_de) (8)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

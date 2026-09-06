@@ -79,6 +79,7 @@ CHROME_DE = {
 # --------------------------------------------------------------------------- #
 
 CATEGORIES_FR = {
+    "Network": "Réseau", "Particles": "Particules",
     "Movement": "Mouvement", "Instance": "Instance", "Score": "Score", "Room": "Salle",
     "Timing": "Minuterie", "Audio": "Audio", "Game": "Jeu", "Control": "Contrôle",
     "Grid": "Grille", "Views": "Vues", "3D View": "Vue 3D",
@@ -91,6 +92,7 @@ CATEGORIES_FR = {
     "Step": "Étape", "Drawing": "Dessin", "Other": "Autre",
 }
 CATEGORIES_DE = {
+    "Network": "Netzwerk", "Particles": "Partikel",
     "Movement": "Bewegung", "Instance": "Instanz", "Score": "Punkte", "Room": "Raum",
     "Timing": "Zeitsteuerung", "Audio": "Audio", "Game": "Spiel", "Control": "Steuerung",
     "Grid": "Gitter", "Views": "Ansichten", "3D View": "3D-Ansicht",
@@ -1015,6 +1017,7 @@ CHROME_UK = {
 }
 
 CATEGORIES_UK = {
+    "Network": "Мережа", "Particles": "Частки",
     "Movement": "Рух", "Instance": "Екземпляр", "Score": "Рахунок", "Room": "Кімната",
     "Timing": "Час", "Audio": "Аудіо", "Game": "Гра", "Control": "Керування",
     "Grid": "Сітка", "Views": "Вигляди", "3D View": "3D-вигляд",
@@ -1472,6 +1475,7 @@ CHROME_RU = {
 }
 
 CATEGORIES_RU = {
+    "Network": "Сеть", "Particles": "Частицы",
     "Movement": "Движение", "Instance": "Экземпляр", "Score": "Счёт", "Room": "Комната",
     "Timing": "Время", "Audio": "Аудио", "Game": "Игра", "Control": "Управление",
     "Grid": "Сетка", "Views": "Виды", "3D View": "3D-вид",
@@ -1930,6 +1934,7 @@ CHROME_IT = {
 }
 
 CATEGORIES_IT = {
+    "Network": "Rete", "Particles": "Particelle",
     "Movement": "Movimento", "Instance": "Istanza", "Score": "Punteggio", "Room": "Stanza",
     "Timing": "Tempo", "Audio": "Audio", "Game": "Gioco", "Control": "Controllo",
     "Grid": "Griglia", "Views": "Viste", "3D View": "Vista 3D",
@@ -2388,6 +2393,7 @@ CHROME_ES = {
 }
 
 CATEGORIES_ES = {
+    "Network": "Red", "Particles": "Partículas",
     "Movement": "Movimiento", "Instance": "Instancia", "Score": "Puntuación", "Room": "Sala",
     "Timing": "Tiempo", "Audio": "Audio", "Game": "Juego", "Control": "Control",
     "Grid": "Cuadrícula", "Views": "Vistas", "3D View": "Vista 3D",
@@ -2845,6 +2851,7 @@ CHROME_PT = {
 }
 
 CATEGORIES_PT = {
+    "Network": "Rede", "Particles": "Partículas",
     "Movement": "Movimento", "Instance": "Instância", "Score": "Pontuação", "Room": "Sala",
     "Timing": "Tempo", "Audio": "Áudio", "Game": "Jogo", "Control": "Controle",
     "Grid": "Grade", "Views": "Vistas", "3D View": "Vista 3D",
@@ -3301,6 +3308,7 @@ CHROME_SL = {
 }
 
 CATEGORIES_SL = {
+    "Network": "Omrežje", "Particles": "Delci",
     "Movement": "Gibanje", "Instance": "Instanca", "Score": "Rezultat", "Room": "Soba",
     "Timing": "Čas", "Audio": "Zvok", "Game": "Igra", "Control": "Nadzor",
     "Grid": "Mreža", "Views": "Pogledi", "3D View": "Pogled 3D",
