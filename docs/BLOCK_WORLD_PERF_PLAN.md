@@ -149,15 +149,21 @@ wide, mostly short):
 Only if Phases 1–2 both land and it is still short, and with a decision taken
 first, because **this is the expensive one**.
 
-- **numpy is not installed on this machine and appears nowhere in the
-  project** — not in `requirements*.txt`, not in `pyproject.toml`, not imported
-  by a single file. The August note's "numpy-vectorised column compositing"
-  therefore means **adding a hard dependency to the IDE and to every exported
-  desktop game**, which collides directly with the export-dependency decision
-  recorded in `CLAUDE.md` (keep pip-based deps; every added package is
-  friction for a teacher installing without admin rights, and weight in every
-  PyInstaller bundle). `pygame.surfarray` needs numpy too, so it is the same
-  decision.
+- **DECIDED 2026-09-06: numpy is not going in.** The user's call, asked and
+  answered — so the "numpy-vectorised column compositing" idea carried in
+  `TODO.md` since August is now closed, not deferred. Do not re-propose it.
+  The reasoning, for anyone who meets the idea again: numpy is not installed
+  here and appears nowhere in the project — not in `requirements*.txt`, not in
+  `pyproject.toml`, not imported by a single file — so adopting it means a hard
+  dependency for the IDE **and for every exported desktop game** (~15–20 MB in
+  each PyInstaller bundle, plus one more `pip install` for a teacher without
+  admin rights), against the export-dependency decision recorded in
+  `CLAUDE.md`. It would also help the desktop renderer only: HTML5 runs under
+  Pyodide and Kivy generates its own code, so the three targets would drift
+  apart unless each got its own equivalent. And the win is not automatic —
+  the DDA march is sequential per column and does not vectorise, so only part
+  of the frame's work would move into C. `pygame.surfarray` requires numpy, so
+  it falls under the same decision.
 - The no-new-dependency version is to composite a frame into a `bytearray` and
   push it with `Surface.get_buffer()` / `frombuffer`. The ceiling is real —
   **one 640×480 blit is 0.2 ms against today's 10.4 ms of strip ops** — but
