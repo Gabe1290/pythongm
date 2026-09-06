@@ -12,7 +12,7 @@
 | **Значок** | ⌨️ |
 | **Категория** | Network |
 
-Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space")
+Привязывает локальную клавишу к «именованному вводу», о котором сообщается ведущему. Ведущий затем проверяет его действием «Если игрок нажимает». Стрелки и пробел уже привязаны ("left", "right", "up", "down", "space")
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Attach a local key to a "named input" reported to the host. The host then tests 
 | **Значок** | ✨ |
 | **Категория** | Network |
 
-Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1
+Только у ведущего: создаёт экземпляр, который автоматически появляется у всех клиентов как сглаженный «призрак». У клиента ничего не делает. Созданным экземпляром управляет ведущий — защитите его игровую логику условием global.is_host == 1
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -45,7 +45,7 @@ Host only: create an instance that appears automatically on every client, as a s
 | **Значок** | 🌐 |
 | **Категория** | Network |
 
-Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host"
+Делает эту машину ведущей в многопользовательской игре по локальной сети: остальные игроки подключаются к ней. Вызовите один раз (например, в событии Создание контроллера комнаты). Устанавливает global.player_id = 0 и global.network_role = "host"
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -63,7 +63,7 @@ Become the host of a LAN multiplayer game: the other players connect to this mac
 | **Значок** | ❓ |
 | **Категория** | Network |
 
-A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine
+Условие: истинно, когда ЭТА машина владеет синхронизированным экземпляром. Поставьте его перед блоком, чтобы логика управления выполнялась только на машине нужного игрока
 
 *Параметры:* нет
 
@@ -75,7 +75,7 @@ A condition: true when THIS machine owns the synchronised instance. Put it befor
 | **Значок** | ❓ |
 | **Категория** | Network |
 
-A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character
+Условие на стороне ведущего: истинно, пока указанный игрок удерживает указанный ввод. Позволяет ведущему реагировать на клавиши клиента, не владея его персонажем
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -90,7 +90,7 @@ A condition, on the host: true while the named player is holding the named input
 | **Значок** | 🔌 |
 | **Категория** | Network |
 
-Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player
+Подключается к многопользовательской игре по локальной сети, запущенной на другой машине. Ведущий задаёт global.player_id (1, 2, ...). Если ведущий недоступен, игра продолжается в одиночном режиме
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -106,7 +106,7 @@ Connect to a LAN multiplayer game hosted by another machine. The host sets globa
 | **Значок** | 🚪 |
 | **Категория** | Network |
 
-Disconnect (or stop hosting) and clear the global network variables
+Отключается (или прекращает быть ведущим) и очищает глобальные сетевые переменные
 
 *Параметры:* нет
 
@@ -118,7 +118,7 @@ Disconnect (or stop hosting) and clear the global network variables
 | **Значок** | 📥 |
 | **Категория** | Network |
 
-Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly
+Копирует общую переменную в глобальную, чтобы использовать её в вычислении. То же самое, что прочитать global.<имя> напрямую
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -133,7 +133,7 @@ Copy a shared variable into a global variable, to use it in a calculation. The s
 | **Значок** | ✉️ |
 | **Категория** | Network |
 
-Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender
+Рассылает собственное сообщение. Вызывает событие «Сетевое сообщение» на соответствующих машинах, с global.network_event / global.network_data / global.network_sender
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -149,7 +149,7 @@ Broadcast a message of your own. Fires the "Network message" event on the machin
 | **Значок** | 🌐 |
 | **Категория** | Network |
 
-An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags
+Устаревшее низкоуровневое действие: запускает комнату в режиме ведущего или клиента (только наблюдение — ввод клиента ни на что не влияет). Лучше использовать «Создать игру» / «Присоединиться к игре». Сохранено ради существующих проектов и ключей --net-host / --net-client
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -165,7 +165,7 @@ An older low-level action: starts the room in host or client mode (spectator onl
 | **Значок** | 📤 |
 | **Категория** | Network |
 
-Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.<name>
+Записывает переменную, общую для всех машин. У ведущего она применяется сразу; у клиента это запрос, отправляемый ведущему. Читается везде как global.<имя>
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -180,7 +180,7 @@ Write a variable shared by every machine. On the host it applies immediately; on
 | **Значок** | 🎮 |
 | **Категория** | Network |
 
-Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1
+Выбирает, какой игрок управляет этим синхронизированным экземпляром (0 — ведущий; 1, 2, ... — клиенты). На машине этого игрока экземпляр просчитывается локально и отзывчиво, а его состояние сообщается ведущему; на остальных это сглаженный призрак. Вызывайте у ведущего, под условием global.is_host == 1
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -194,7 +194,7 @@ Choose which player drives this synchronised instance (0 = host, 1, 2, ... = cli
 | **Значок** | ⏱️ |
 | **Категория** | Network |
 
-Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay
+Настраивает, как часто ведущий отправляет снимки состояния и с какой задержкой клиенты их отрисовывают. Вызовите один раз у ведущего, а для задержки — и у клиентов
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -209,7 +209,7 @@ Adjust how often the host sends snapshots, and how far behind clients draw them.
 | **Значок** | 🚦 |
 | **Категория** | Network |
 
-Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine
+Только у ведущего: выводит всех из комнаты ожидания и начинает игру. Вызывает событие «Сетевая игра началась» на каждой машине
 
 *Параметры:* нет
 
@@ -221,7 +221,7 @@ Host only: take everyone out of the waiting room and begin. Fires the "Networked
 | **Значок** | 🔗 |
 | **Категория** | Network |
 
-Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it
+Помечает экземпляр, выполняющий это действие, как синхронизированный: его позиция, поворот, изображение и видимость копируются на все машины. Вызывайте в событии Создание. По умолчанию им владеет ведущий; чтобы им управлял клиент, используйте «Задать владельца экземпляра»
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|

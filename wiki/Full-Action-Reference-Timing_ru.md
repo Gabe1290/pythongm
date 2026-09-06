@@ -12,7 +12,7 @@
 | **Значок** | ⏸️ |
 | **Категория** | Время |
 
-Pause timeline playback at the current position
+Приостанавливает воспроизведение временной шкалы на текущей позиции
 
 *Параметры:* нет
 
@@ -39,7 +39,7 @@ Pause timeline playback at the current position
 | **Значок** | ⏱️ |
 | **Категория** | Время |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Задаёт метку временной шкалы этого экземпляра и сбрасывает его позицию в 0 (только учёт — см. примечание к категории)
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Значок** | ⏱️ |
 | **Категория** | Время |
 
-Set (or offset) this instance's timeline position
+Задаёт (или сдвигает) позицию этого экземпляра на временной шкале
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Значок** | ⏱️ |
 | **Категория** | Время |
 
-Set the timeline playback speed multiplier
+Задаёт множитель скорости воспроизведения временной шкалы
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Set the timeline playback speed multiplier
 | **Значок** | ▶️ |
 | **Категория** | Время |
 
-Begin or resume timeline playback from the current position
+Запускает или продолжает воспроизведение временной шкалы с текущей позиции
 
 *Параметры:* нет
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Значок** | ⏹️ |
 | **Категория** | Время |
 
-Stop timeline playback and reset the position to 0
+Останавливает воспроизведение временной шкалы и сбрасывает позицию в 0
 
 *Параметры:* нет
 
