@@ -17,77 +17,82 @@ var as ``global.<name>``, so an author gates logic with an ordinary
 """
 from events.action_types import ActionType, ActionParameter
 
-_CATEGORY = "Réseau"
+_CATEGORY = "Network"
 
 PLUGIN_ACTIONS = {
     # -- Session lifecycle ------------------------------------------------
     "host_game": ActionType(
         name="host_game",
-        display_name="Héberger une partie",
-        description="Devenir l'hôte d'une partie multijoueur LAN : les autres "
-                    "joueurs se connectent à cette machine. À appeler une "
-                    "seule fois (par ex. dans l'événement Création du contrôleur "
-                    "de la salle). Définit global.player_id = 0 et "
-                    "global.network_role = \"host\".",
+        display_name="Host a Game",
+        description="Become the host of a LAN multiplayer game: the "
+                        "other players connect to this machine. Call it "
+                        "once (for example in the room controller's "
+                        "Create event). Sets global.player_id = 0 and "
+                        "global.network_role = \"host\".",
         category=_CATEGORY,
         icon="🌐",
         parameters=[
-            ActionParameter(name="game_name", display_name="Nom de la partie",
+            ActionParameter(name="game_name", display_name="Game name",
                 param_type="string", default_value="PyGameMaker", required=False,
-                description="Nom affiché dans la liste des serveurs (découverte "
-                            "réseau, Phase 6)"),
-            ActionParameter(name="max_players", display_name="Joueurs max",
+                description="Name shown in the server list (network "
+                                "discovery)"),
+            ActionParameter(name="max_players", display_name="Max players",
                 param_type="number", default_value=8, required=False,
-                description="Nombre maximal de joueurs, hôte compris (2 à 16)"),
+                description="Largest number of players, host included "
+                                "(2 to 16)"),
             ActionParameter(name="port", display_name="Port", param_type="number",
                 default_value=45782, required=False,
-                description="Port TCP -- doit être identique chez l'hôte et les clients"),
-            ActionParameter(name="player_name", display_name="Nom du joueur",
+                description="TCP port -- must be the same on the host "
+                                "and every client"),
+            ActionParameter(name="player_name", display_name="Player name",
                 param_type="string", default_value="", required=False,
-                description="Nom de ce joueur (vide = global.player_name, ou « Joueur »)"),
-            ActionParameter(name="show_lobby", display_name="Salon d'attente",
+                description="This player's name (empty = "
+                                "global.player_name, or \"Player\")"),
+            ActionParameter(name="show_lobby", display_name="Waiting room",
                 param_type="boolean", default_value=False, required=False,
-                description="Afficher un écran « En attente de joueurs… » avec "
-                            "bouton Démarrer avant de lancer la partie"),
+                description="Show a \"Waiting for players...\" screen "
+                                "with a Start button before the game "
+                                "begins"),
         ],
     ),
     "join_game": ActionType(
         name="join_game",
-        display_name="Rejoindre une partie",
-        description="Se connecter à une partie multijoueur LAN hébergée par "
-                    "une autre machine. global.player_id sera défini par l'hôte "
-                    "(1, 2, ...). Si l'hôte est injoignable, la partie continue "
-                    "en solo.",
+        display_name="Join a Game",
+        description="Connect to a LAN multiplayer game hosted by "
+                        "another machine. The host sets global.player_id "
+                        "(1, 2, ...). If the host cannot be reached, the "
+                        "game carries on single-player.",
         category=_CATEGORY,
         icon="🔌",
         parameters=[
-            ActionParameter(name="host", display_name="Adresse de l'hôte",
+            ActionParameter(name="host", display_name="Host address",
                 param_type="string", default_value="127.0.0.1", required=False,
-                description="Adresse IP LAN de l'hôte (\"auto\" = écran de "
-                            "connexion intégré, Phase 6)"),
+                description="The host's LAN IP address (\"auto\" opens "
+                                "the built-in connection screen)"),
             ActionParameter(name="port", display_name="Port", param_type="number",
                 default_value=45782, required=False,
-                description="Port TCP -- doit correspondre à celui de l'hôte"),
-            ActionParameter(name="player_name", display_name="Nom du joueur",
+                description="TCP port -- must match the host's"),
+            ActionParameter(name="player_name", display_name="Player name",
                 param_type="string", default_value="", required=False,
-                description="Nom de ce joueur (vide = global.player_name, ou « Joueur »)"),
+                description="This player's name (empty = "
+                                "global.player_name, or \"Player\")"),
         ],
     ),
     "leave_game": ActionType(
         name="leave_game",
-        display_name="Quitter la partie",
-        description="Se déconnecter (ou arrêter d'héberger) et effacer les "
-                    "variables réseau globales.",
+        display_name="Leave the Game",
+        description="Disconnect (or stop hosting) and clear the "
+                        "global network variables.",
         category=_CATEGORY,
         icon="🚪",
         parameters=[],
     ),
     "start_networked_game": ActionType(
         name="start_networked_game",
-        display_name="Démarrer la partie en réseau",
-        description="Hôte uniquement : faire sortir tout le monde du salon "
-                    "d'attente et lancer la partie. Déclenche l'événement "
-                    "« Partie réseau démarrée » sur toutes les machines.",
+        display_name="Start the Networked Game",
+        description="Host only: take everyone out of the waiting room "
+                        "and begin. Fires the \"Networked game started\" "
+                        "event on every machine.",
         category=_CATEGORY,
         icon="🚦",
         parameters=[],
@@ -95,210 +100,222 @@ PLUGIN_ACTIONS = {
     # -- Shared blackboard ---------------------------------------------
     "set_shared_var": ActionType(
         name="set_shared_var",
-        display_name="Définir une variable partagée",
-        description="Écrire une variable partagée par toutes les machines. "
-                    "Chez l'hôte : appliquée immédiatement. Chez un client : "
-                    "une demande envoyée à l'hôte. Lisible partout via "
-                    "global.<nom>.",
+        display_name="Set a Shared Variable",
+        description="Write a variable shared by every machine. On the "
+                        "host it applies immediately; on a client it is a "
+                        "request sent to the host. Readable anywhere as "
+                        "global.<name>.",
         category=_CATEGORY,
         icon="📤",
         parameters=[
-            ActionParameter(name="name", display_name="Nom", param_type="string",
-                default_value="", description="Identifiant simple (lettres, "
-                "chiffres, _) -- pas d'espace ni d'opérateur"),
-            ActionParameter(name="value", display_name="Valeur", param_type="string",
+            ActionParameter(name="name", display_name="Name", param_type="string",
+                default_value="", description="A plain identifier (letters, "
+                                                  "digits, _) -- no spaces or "
+                                                  "operators"),
+            ActionParameter(name="value", display_name="Value", param_type="string",
                 default_value="0",
-                description="Nombre, texte ou booléen (les objets complexes "
-                            "sont refusés)"),
+                description="A number, text or true/false (complex "
+                                "objects are refused)"),
         ],
     ),
     "get_shared_var": ActionType(
         name="get_shared_var",
-        display_name="Lire une variable partagée",
-        description="Copier une variable partagée dans une variable globale "
-                    "(pour l'utiliser dans un calcul). Équivaut à lire "
-                    "global.<nom> directement.",
+        display_name="Read a Shared Variable",
+        description="Copy a shared variable into a global variable, "
+                        "to use it in a calculation. The same as reading "
+                        "global.<name> directly.",
         category=_CATEGORY,
         icon="📥",
         parameters=[
-            ActionParameter(name="name", display_name="Nom partagé",
+            ActionParameter(name="name", display_name="Shared name",
                 param_type="string", default_value="",
-                description="Nom de la variable partagée à lire"),
-            ActionParameter(name="into", display_name="Variable globale",
+                description="Name of the shared variable to read"),
+            ActionParameter(name="into", display_name="Global variable",
                 param_type="string", default_value="",
-                description="Nom de la variable globale où écrire la valeur"),
+                description="Name of the global variable to write the "
+                                "value into"),
         ],
     ),
     "send_network_message": ActionType(
         name="send_network_message",
-        display_name="Envoyer un message réseau",
-        description="Diffuser un message personnalisé. Déclenche l'événement "
-                    "« Message réseau » sur les machines concernées, avec "
-                    "global.network_event / global.network_data / "
-                    "global.network_sender.",
+        display_name="Send a Network Message",
+        description="Broadcast a message of your own. Fires the "
+                        "\"Network message\" event on the machines "
+                        "concerned, with global.network_event / "
+                        "global.network_data / global.network_sender.",
         category=_CATEGORY,
         icon="✉️",
         parameters=[
-            ActionParameter(name="event", display_name="Nom du message",
+            ActionParameter(name="event", display_name="Message name",
                 param_type="string", default_value="",
-                description="Étiquette libre que le gestionnaire teste "
-                            "(ex. \"buzz\", \"reponse\")"),
-            ActionParameter(name="data", display_name="Donnée", param_type="string",
+                description="A label of your choosing that the "
+                                "handler tests (e.g. \"buzz\", \"answer\")"),
+            ActionParameter(name="data", display_name="Data", param_type="string",
                 default_value="", required=False,
-                description="Nombre, texte, booléen ou petite liste"),
-            ActionParameter(name="target", display_name="Destinataire",
+                description="A number, text, true/false, or a short list"),
+            ActionParameter(name="target", display_name="Send to",
                 param_type="choice", default_value="all", choices=["all", "host"],
-                description="all = tout le monde ; host = l'hôte seulement"),
+                description="all = everyone; host = the host only"),
         ],
     ),
     # -- Tier B: networked instances -------------------------------
     "network_spawn": ActionType(
         name="network_spawn",
-        display_name="Créer un objet réseau",
-        description="Hôte uniquement : créer une instance qui apparaît "
-                    "automatiquement chez tous les clients (comme des « fantômes » "
-                    "interpolés). Sans effet chez un client. L'instance créée est "
-                    "pilotée par l'hôte -- guardez sa logique de jeu par "
-                    "global.is_host == 1.",
+        display_name="Create a Networked Object",
+        description="Host only: create an instance that appears "
+                        "automatically on every client, as a smoothed "
+                        "\"ghost\". Does nothing on a client. The host "
+                        "drives the instance it creates -- guard its game "
+                        "logic with global.is_host == 1.",
         category=_CATEGORY,
         icon="✨",
         parameters=[
-            ActionParameter(name="object", display_name="Objet", param_type="object",
-                default_value="", description="Type d'objet à créer"),
+            ActionParameter(name="object", display_name="Object", param_type="object",
+                default_value="", description="The type of object to create"),
             ActionParameter(name="x", display_name="X", param_type="string",
                 default_value="0"),
             ActionParameter(name="y", display_name="Y", param_type="string",
                 default_value="0"),
-            ActionParameter(name="owner", display_name="Propriétaire",
+            ActionParameter(name="owner", display_name="Owner",
                 param_type="string", default_value="0", required=False,
-                description="Joueur qui pilote l'instance (0 = hôte). Souvent "
-                            "global.network_sender dans « Joueur connecté »."),
-            ActionParameter(name="relative", display_name="Relatif",
+                description="The player who drives this instance (0 = "
+                                "host). Often global.network_sender "
+                                "inside \"Player joined\"."),
+            ActionParameter(name="relative", display_name="Relative",
                 param_type="boolean", default_value=False, required=False,
-                description="Position relative à l'objet qui exécute l'action"),
+                description="Position relative to the object running "
+                                "the action"),
         ],
     ),
     "sync_instance": ActionType(
         name="sync_instance",
-        display_name="Synchroniser cette instance",
-        description="Marquer l'instance qui exécute l'action comme "
-                    "« synchronisée » : sa position, sa rotation, son image et "
-                    "sa visibilité sont répliquées sur toutes les machines. À "
-                    "appeler dans l'événement Création. Par défaut l'hôte en est "
-                    "le propriétaire ; utilisez « Définir le propriétaire » pour "
-                    "qu'un client la pilote.",
+        display_name="Synchronise This Instance",
+        description="Mark the instance running this action as "
+                        "synchronised: its position, rotation, image and "
+                        "visibility are copied to every machine. Call it "
+                        "in the Create event. The host owns it by "
+                        "default; use \"Set the instance's owner\" to let a "
+                        "client drive it.",
         category=_CATEGORY,
         icon="🔗",
         parameters=[
-            ActionParameter(name="vars", display_name="Variables à répliquer",
+            ActionParameter(name="vars", display_name="Variables to copy",
                 param_type="string", default_value="", required=False,
-                description="Noms de variables d'instance à répliquer aussi, "
-                            "séparés par des virgules (ex. \"hp, couleur\")"),
+                description="Instance variable names to copy as well, "
+                                "separated by commas (e.g. \"hp, colour\")"),
         ],
     ),
     "set_instance_owner": ActionType(
         name="set_instance_owner",
-        display_name="Définir le propriétaire de l'instance",
-        description="Assigner quel joueur pilote cette instance synchronisée "
-                    "(0 = hôte, 1, 2, ... = clients). Sur la machine de ce "
-                    "joueur, l'instance tourne localement (réactive) et son "
-                    "état est renvoyé à l'hôte ; ailleurs c'est un fantôme "
-                    "interpolé. À appeler chez l'hôte (guardé par "
-                    "global.is_host == 1).",
+        display_name="Set the Instance's Owner",
+        description="Choose which player drives this synchronised "
+                        "instance (0 = host, 1, 2, ... = clients). On "
+                        "that player's machine the instance runs locally "
+                        "and feels responsive, and its state is reported "
+                        "back to the host; everywhere else it is a "
+                        "smoothed ghost. Call it on the host, guarded by "
+                        "global.is_host == 1.",
         category=_CATEGORY,
         icon="🎮",
         parameters=[
-            ActionParameter(name="player", display_name="Joueur", param_type="string",
+            ActionParameter(name="player", display_name="Player", param_type="string",
                 default_value="0",
-                description="Numéro de joueur (0 = hôte). Souvent "
-                            "global.network_sender dans « Joueur connecté »."),
+                description="Player number (0 = host). Often "
+                                "global.network_sender inside \"Player "
+                                "joined\"."),
         ],
     ),
     "is_instance_owner": ActionType(
         name="is_instance_owner",
-        display_name="Si je pilote cette instance",
-        description="Condition : vraie si CETTE machine est le propriétaire de "
-                    "l'instance synchronisée. À placer avant un bloc pour ne "
-                    "faire tourner la logique de contrôle que chez le bon joueur.",
+        display_name="If I Drive This Instance",
+        description="A condition: true when THIS machine owns the "
+                        "synchronised instance. Put it before a block so "
+                        "the control logic only runs on the right "
+                        "player's machine.",
         category=_CATEGORY,
         icon="❓",
         parameters=[],
     ),
     "bind_network_input": ActionType(
         name="bind_network_input",
-        display_name="Associer une touche réseau",
-        description="Associer une touche locale à une « entrée nommée » "
-                    "signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur "
-                    "appuie ». Les flèches et Espace sont déjà associées "
-                    "(\"left\", \"right\", \"up\", \"down\", \"space\").",
+        display_name="Bind a Network Key",
+        description="Attach a local key to a \"named input\" reported "
+                        "to the host. The host then tests it with \"If the "
+                        "player presses\". The arrow keys and Space are "
+                        "already bound (\"left\", \"right\", \"up\", \"down\", "
+                        "\"space\").",
         category=_CATEGORY,
         icon="⌨️",
         parameters=[
-            ActionParameter(name="name", display_name="Nom de l'entrée",
+            ActionParameter(name="name", display_name="Input name",
                 param_type="string", default_value="",
-                description="Étiquette libre (ex. \"jump\", \"tir\")"),
-            ActionParameter(name="key", display_name="Touche", param_type="string",
+                description="A label of your choosing (e.g. \"jump\", \"fire\")"),
+            ActionParameter(name="key", display_name="Key", param_type="string",
                 default_value="",
-                description="Nom de touche : \"space\", \"left\", \"a\", \"5\", "
-                            "\"lshift\"..."),
+                description="A key name: \"space\", \"left\", \"a\", \"5\", "
+                                "\"lshift\"..."),
         ],
     ),
     "remote_input": ActionType(
         name="remote_input",
-        display_name="Si le joueur appuie",
-        description="Condition (chez l'hôte) : vraie si le joueur indiqué "
-                    "maintient l'entrée nommée. Permet à l'hôte de réagir aux "
-                    "touches d'un client sans posséder son avatar.",
+        display_name="If the Player Presses",
+        description="A condition, on the host: true while the named "
+                        "player is holding the named input. It lets the "
+                        "host react to a client's keys without owning "
+                        "that client's character.",
         category=_CATEGORY,
         icon="❓",
         parameters=[
-            ActionParameter(name="player", display_name="Joueur", param_type="string",
-                default_value="0", description="Numéro de joueur (0 = hôte)"),
-            ActionParameter(name="name", display_name="Nom de l'entrée",
+            ActionParameter(name="player", display_name="Player", param_type="string",
+                default_value="0", description="Player number (0 = host)"),
+            ActionParameter(name="name", display_name="Input name",
                 param_type="string", default_value="",
-                description="L'entrée nommée à tester (ex. \"jump\")"),
+                description="The named input to test (e.g. \"jump\")"),
         ],
     ),
     "set_sync_rate": ActionType(
         name="set_sync_rate",
-        display_name="Régler la fréquence de synchro",
-        description="Ajuster la cadence des instantanés de l'hôte et le délai "
-                    "d'interpolation des clients. À appeler une fois chez l'hôte "
-                    "(et chez les clients pour le délai).",
+        display_name="Set the Sync Rate",
+        description="Adjust how often the host sends snapshots, and "
+                        "how far behind clients draw them. Call it once "
+                        "on the host, and on the clients for the delay.",
         category=_CATEGORY,
         icon="⏱️",
         parameters=[
-            ActionParameter(name="hz", display_name="Instantanés / seconde",
+            ActionParameter(name="hz", display_name="Snapshots per second",
                 param_type="number", default_value=20, required=False,
-                description="10-30 convient sur un réseau local (défaut 20)"),
-            ActionParameter(name="interp_ms", display_name="Interpolation (ms)",
+                description="10-30 works well on a local network "
+                                "(default 20)"),
+            ActionParameter(name="interp_ms", display_name="Smoothing (ms)",
                 param_type="number", default_value=100, required=False,
-                description="Retard d'affichage des fantômes, en millisecondes "
-                            "(défaut 100)"),
+                description="How far behind ghosts are drawn, in "
+                                "milliseconds (default 100)"),
         ],
     ),
     # -- v1 back-compat -----------------------------------------------
     "set_network_mode": ActionType(
         name="set_network_mode",
         display_name="Set Network Mode (v1)",
-        description="Ancienne action bas niveau : démarre la salle en mode "
-                    "hôte ou client (spectateur seulement -- l'entrée du "
-                    "client n'a aucun effet). Préférez « Héberger une partie » "
-                    "/ « Rejoindre une partie ». Conservée pour les projets "
-                    "existants et les drapeaux --net-host / --net-client.",
+        description="An older low-level action: starts the room in "
+                        "host or client mode (spectator only -- a "
+                        "client's input has no effect). Prefer \"Host a "
+                        "Game\" / \"Join a Game\". Kept for existing "
+                        "projects and the --net-host / --net-client "
+                        "flags.",
         category=_CATEGORY,
         icon="🌐",
         parameters=[
             ActionParameter(name="mode", display_name="Mode", param_type="choice",
                 default_value="host", choices=["host", "client"],
-                description="Host = les autres se connectent à vous ; Client = "
-                            "vous vous connectez à un hôte"),
+                description="Host = others connect to you; Client = "
+                                "you connect to a host"),
             ActionParameter(name="host", display_name="Host Address",
                 param_type="string", default_value="127.0.0.1", required=False,
-                description="Adresse IP LAN de l'hôte (mode Client uniquement)"),
+                description="The host's LAN IP address (Client mode only)"),
             ActionParameter(name="port", display_name="Port", param_type="number",
                 default_value=45782, required=False,
-                description="Port TCP -- doit être identique chez l'hôte et le client"),
+                description="TCP port -- must be the same on the host "
+                                "and the client"),
         ],
     ),
 }

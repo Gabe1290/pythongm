@@ -22,39 +22,41 @@ from events.event_types import EventType
 from .actions import PLUGIN_ACTIONS
 from .handlers import PluginExecutor, _frame_update_apply_inbound, _frame_update_broadcast
 
-_CATEGORY = "Réseau"
+_CATEGORY = "Network"
 
 PLUGIN_EVENTS = {
     "network_started": EventType(
-        name="network_started", display_name="Réseau prêt",
-        description="La session réseau est établie (l'hôte a accepté ce client, "
-                    "ou l'hôte a démarré). global.player_id est défini.",
+        name="network_started", display_name="Network Ready",
+        description="The network session is up -- the host accepted "
+                        "this client, or the host started. "
+                        "global.player_id is set.",
         category=_CATEGORY, icon="🌐", parameters=[]),
     "player_joined": EventType(
-        name="player_joined", display_name="Joueur connecté",
-        description="Un joueur a rejoint la partie. global.network_sender = son "
-                    "numéro, global.network_player_name = son nom.",
+        name="player_joined", display_name="Player Joined",
+        description="A player joined the game. global.network_sender "
+                        "is their number, global.network_player_name "
+                        "their name.",
         category=_CATEGORY, icon="➕", parameters=[]),
     "player_left": EventType(
-        name="player_left", display_name="Joueur déconnecté",
-        description="Un joueur a quitté la partie. global.network_sender = son "
-                    "numéro.",
+        name="player_left", display_name="Player Left",
+        description="A player left the game. global.network_sender is "
+                        "their number.",
         category=_CATEGORY, icon="➖", parameters=[]),
     "network_message": EventType(
-        name="network_message", display_name="Message réseau",
-        description="Un message personnalisé est arrivé. global.network_event = "
-                    "son étiquette, global.network_data = sa donnée, "
-                    "global.network_sender = l'expéditeur.",
+        name="network_message", display_name="Network Message",
+        description="A custom message arrived. global.network_event "
+                        "is its label, global.network_data its data, "
+                        "global.network_sender the sender.",
         category=_CATEGORY, icon="✉️", parameters=[]),
     "network_game_started": EventType(
-        name="network_game_started", display_name="Partie réseau démarrée",
-        description="L'hôte a appelé « Démarrer la partie en réseau ». Se "
-                    "déclenche sur toutes les machines.",
+        name="network_game_started", display_name="Networked Game Started",
+        description="The host called \"Start the Networked Game\". "
+                        "Fires on every machine.",
         category=_CATEGORY, icon="🚦", parameters=[]),
     "connection_lost": EventType(
-        name="connection_lost", display_name="Connexion perdue",
-        description="Le lien avec l'hôte est rompu (hôte fermé, câble débranché, "
-                    "isolation Wi-Fi...).",
+        name="connection_lost", display_name="Connection Lost",
+        description="The link to the host broke -- host closed, cable "
+                        "unplugged, Wi-Fi client isolation, and so on.",
         category=_CATEGORY, icon="⚠️", parameters=[]),
 }
 

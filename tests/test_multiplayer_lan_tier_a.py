@@ -134,10 +134,18 @@ class TestRegistration:
                   "network_message", "network_game_started", "connection_lost"):
             assert e in EVENT_TYPES, e
 
-    def test_reseau_category(self):
+    def test_network_category(self):
+        """The category is English now.
+
+        It was "Réseau", along with every action and event name in this
+        extension -- which meant a German or Japanese teacher read French in
+        the action palette, since the source language IS what non-French users
+        get. Re-authored in English on 2026-09-06 with the French kept as a
+        real translation, so both audiences are served instead of trading
+        places. See tests/test_extension_action_i18n.py."""
         load_all_plugins(ActionExecutor())
-        assert ACTION_TYPES["host_game"].category == "Réseau"
-        assert EVENT_TYPES["player_joined"].category == "Réseau"
+        assert ACTION_TYPES["host_game"].category == "Network"
+        assert EVENT_TYPES["player_joined"].category == "Network"
 
 
 class TestIdentity:

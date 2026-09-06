@@ -206,6 +206,394 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <source>Other</source>
         <translation>Autre</translation>
     </message>
+    <message>
+        <source>10-30 works well on a local network (default 20)</source>
+        <translation>10-30 convient sur un réseau local (défaut 20)</translation>
+    </message>
+    <message>
+        <source>A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character.</source>
+        <translation>Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar.</translation>
+    </message>
+    <message>
+        <source>A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine.</source>
+        <translation>Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur.</translation>
+    </message>
+    <message>
+        <source>A key name: "space", "left", "a", "5", "lshift"...</source>
+        <translation>Nom de touche : "space", "left", "a", "5", "lshift"...</translation>
+    </message>
+    <message>
+        <source>A label of your choosing (e.g. "jump", "fire")</source>
+        <translation>Étiquette libre (ex. "jump", "tir")</translation>
+    </message>
+    <message>
+        <source>A label of your choosing that the handler tests (e.g. "buzz", "answer")</source>
+        <translation>Étiquette libre que le gestionnaire teste (ex. "buzz", "reponse")</translation>
+    </message>
+    <message>
+        <source>A number, text or true/false (complex objects are refused)</source>
+        <translation>Nombre, texte ou booléen (les objets complexes sont refusés)</translation>
+    </message>
+    <message>
+        <source>A number, text, true/false, or a short list</source>
+        <translation>Nombre, texte, booléen ou petite liste</translation>
+    </message>
+    <message>
+        <source>A plain identifier (letters, digits, _) -- no spaces or operators</source>
+        <translation>Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur</translation>
+    </message>
+    <message>
+        <source>Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay.</source>
+        <translation>Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai).</translation>
+    </message>
+    <message>
+        <source>An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags.</source>
+        <translation>Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client.</translation>
+    </message>
+    <message>
+        <source>Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space").</source>
+        <translation>Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space").</translation>
+    </message>
+    <message>
+        <source>Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host".</source>
+        <translation>Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host".</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Associer une touche réseau</translation>
+    </message>
+    <message>
+        <source>Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender.</source>
+        <translation>Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender.</translation>
+    </message>
+    <message>
+        <source>Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1.</source>
+        <translation>Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1).</translation>
+    </message>
+    <message>
+        <source>Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player.</source>
+        <translation>Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo.</translation>
+    </message>
+    <message>
+        <source>Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.&lt;name&gt; directly.</source>
+        <translation>Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.&lt;nom&gt; directement.</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Créer un objet réseau</translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation>Donnée</translation>
+    </message>
+    <message>
+        <source>Disconnect (or stop hosting) and clear the global network variables.</source>
+        <translation>Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales.</translation>
+    </message>
+    <message>
+        <source>Game name</source>
+        <translation>Nom de la partie</translation>
+    </message>
+    <message>
+        <source>Global variable</source>
+        <translation>Variable globale</translation>
+    </message>
+    <message>
+        <source>Host = others connect to you; Client = you connect to a host</source>
+        <translation>Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Héberger une partie</translation>
+    </message>
+    <message>
+        <source>Host address</source>
+        <translation>Adresse de l'hôte</translation>
+    </message>
+    <message>
+        <source>Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1.</source>
+        <translation>Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1.</translation>
+    </message>
+    <message>
+        <source>Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine.</source>
+        <translation>Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines.</translation>
+    </message>
+    <message>
+        <source>How far behind ghosts are drawn, in milliseconds (default 100)</source>
+        <translation>Retard d'affichage des fantômes, en millisecondes (défaut 100)</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Si je pilote cette instance</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Si le joueur appuie</translation>
+    </message>
+    <message>
+        <source>Input name</source>
+        <translation>Nom de l'entrée</translation>
+    </message>
+    <message>
+        <source>Instance variable names to copy as well, separated by commas (e.g. "hp, colour")</source>
+        <translation>Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. "hp, couleur")</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Rejoindre une partie</translation>
+    </message>
+    <message>
+        <source>Key</source>
+        <translation>Touche</translation>
+    </message>
+    <message>
+        <source>Largest number of players, host included (2 to 16)</source>
+        <translation>Nombre maximal de joueurs, hôte compris (2 à 16)</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Quitter la partie</translation>
+    </message>
+    <message>
+        <source>Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it.</source>
+        <translation>Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote.</translation>
+    </message>
+    <message>
+        <source>Max players</source>
+        <translation>Joueurs max</translation>
+    </message>
+    <message>
+        <source>Message name</source>
+        <translation>Nom du message</translation>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <source>Name of the global variable to write the value into</source>
+        <translation>Nom de la variable globale où écrire la valeur</translation>
+    </message>
+    <message>
+        <source>Name of the shared variable to read</source>
+        <translation>Nom de la variable partagée à lire</translation>
+    </message>
+    <message>
+        <source>Name shown in the server list (network discovery)</source>
+        <translation>Nom affiché dans la liste des serveurs (découverte réseau, Phase 6)</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>Réseau</translation>
+    </message>
+    <message>
+        <source>Object</source>
+        <translation>Objet</translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation>Propriétaire</translation>
+    </message>
+    <message>
+        <source>Player</source>
+        <translation>Joueur</translation>
+    </message>
+    <message>
+        <source>Player name</source>
+        <translation>Nom du joueur</translation>
+    </message>
+    <message>
+        <source>Player number (0 = host)</source>
+        <translation>Numéro de joueur (0 = hôte)</translation>
+    </message>
+    <message>
+        <source>Player number (0 = host). Often global.network_sender inside "Player joined".</source>
+        <translation>Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation>Port</translation>
+    </message>
+    <message>
+        <source>Position relative to the object running the action</source>
+        <translation>Position relative à l'objet qui exécute l'action</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Lire une variable partagée</translation>
+    </message>
+    <message>
+        <source>Relative</source>
+        <translation>Relatif</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Envoyer un message réseau</translation>
+    </message>
+    <message>
+        <source>Send to</source>
+        <translation>Destinataire</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Définir une variable partagée</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Définir le propriétaire de l'instance</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Régler la fréquence de synchro</translation>
+    </message>
+    <message>
+        <source>Shared name</source>
+        <translation>Nom partagé</translation>
+    </message>
+    <message>
+        <source>Show a "Waiting for players..." screen with a Start button before the game begins</source>
+        <translation>Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie</translation>
+    </message>
+    <message>
+        <source>Smoothing (ms)</source>
+        <translation>Interpolation (ms)</translation>
+    </message>
+    <message>
+        <source>Snapshots per second</source>
+        <translation>Instantanés / seconde</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Démarrer la partie en réseau</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Synchroniser cette instance</translation>
+    </message>
+    <message>
+        <source>TCP port -- must be the same on the host and every client</source>
+        <translation>Port TCP -- doit être identique chez l'hôte et les clients</translation>
+    </message>
+    <message>
+        <source>TCP port -- must be the same on the host and the client</source>
+        <translation>Port TCP -- doit être identique chez l'hôte et le client</translation>
+    </message>
+    <message>
+        <source>TCP port -- must match the host's</source>
+        <translation>Port TCP -- doit correspondre à celui de l'hôte</translation>
+    </message>
+    <message>
+        <source>The host's LAN IP address ("auto" opens the built-in connection screen)</source>
+        <translation>Adresse IP LAN de l'hôte ("auto" = écran de connexion intégré, Phase 6)</translation>
+    </message>
+    <message>
+        <source>The host's LAN IP address (Client mode only)</source>
+        <translation>Adresse IP LAN de l'hôte (mode Client uniquement)</translation>
+    </message>
+    <message>
+        <source>The named input to test (e.g. "jump")</source>
+        <translation>L'entrée nommée à tester (ex. "jump")</translation>
+    </message>
+    <message>
+        <source>The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".</source>
+        <translation>Joueur qui pilote l'instance (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».</translation>
+    </message>
+    <message>
+        <source>The type of object to create</source>
+        <translation>Type d'objet à créer</translation>
+    </message>
+    <message>
+        <source>This player's name (empty = global.player_name, or "Player")</source>
+        <translation>Nom de ce joueur (vide = global.player_name, ou « Joueur »)</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Valeur</translation>
+    </message>
+    <message>
+        <source>Variables to copy</source>
+        <translation>Variables à répliquer</translation>
+    </message>
+    <message>
+        <source>Waiting room</source>
+        <translation>Salon d'attente</translation>
+    </message>
+    <message>
+        <source>Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.&lt;name&gt;.</source>
+        <translation>Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.&lt;nom&gt;.</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <source>all = everyone; host = the host only</source>
+        <translation>all = tout le monde ; host = l'hôte seulement</translation>
+    </message>
+    <message>
+        <source>Host Address</source>
+        <translation>Adresse de l'hôte</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Définir le mode réseau (v1)</translation>
+    </message>
+    <message>
+        <source>A custom message arrived. global.network_event is its label, global.network_data its data, global.network_sender the sender.</source>
+        <translation>Un message personnalisé est arrivé. global.network_event = son étiquette, global.network_data = sa donnée, global.network_sender = l'expéditeur.</translation>
+    </message>
+    <message>
+        <source>A player joined the game. global.network_sender is their number, global.network_player_name their name.</source>
+        <translation>Un joueur a rejoint la partie. global.network_sender = son numéro, global.network_player_name = son nom.</translation>
+    </message>
+    <message>
+        <source>A player left the game. global.network_sender is their number.</source>
+        <translation>Un joueur a quitté la partie. global.network_sender = son numéro.</translation>
+    </message>
+    <message>
+        <source>Connection Lost</source>
+        <translation>Connexion perdue</translation>
+    </message>
+    <message>
+        <source>Network Message</source>
+        <translation>Message réseau</translation>
+    </message>
+    <message>
+        <source>Network Ready</source>
+        <translation>Réseau prêt</translation>
+    </message>
+    <message>
+        <source>Networked Game Started</source>
+        <translation>Partie réseau démarrée</translation>
+    </message>
+    <message>
+        <source>Player Joined</source>
+        <translation>Joueur connecté</translation>
+    </message>
+    <message>
+        <source>Player Left</source>
+        <translation>Joueur déconnecté</translation>
+    </message>
+    <message>
+        <source>The host called "Start the Networked Game". Fires on every machine.</source>
+        <translation>L'hôte a appelé « Démarrer la partie en réseau ». Se déclenche sur toutes les machines.</translation>
+    </message>
+    <message>
+        <source>The link to the host broke -- host closed, cable unplugged, Wi-Fi client isolation, and so on.</source>
+        <translation>Le lien avec l'hôte est rompu (hôte fermé, câble débranché, isolation Wi-Fi...).</translation>
+    </message>
+    <message>
+        <source>The network session is up -- the host accepted this client, or the host started. global.player_id is set.</source>
+        <translation>La session réseau est établie (l'hôte a accepté ce client, ou l'hôte a démarré). global.player_id est défini.</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -3860,6 +4248,394 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
         <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="1270"/>
         <source>(empty comment)</source>
         <translation>(commentaire vide)</translation>
+    </message>
+    <message>
+        <source>10-30 works well on a local network (default 20)</source>
+        <translation>10-30 convient sur un réseau local (défaut 20)</translation>
+    </message>
+    <message>
+        <source>A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character.</source>
+        <translation>Condition (chez l'hôte) : vraie si le joueur indiqué maintient l'entrée nommée. Permet à l'hôte de réagir aux touches d'un client sans posséder son avatar.</translation>
+    </message>
+    <message>
+        <source>A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine.</source>
+        <translation>Condition : vraie si CETTE machine est le propriétaire de l'instance synchronisée. À placer avant un bloc pour ne faire tourner la logique de contrôle que chez le bon joueur.</translation>
+    </message>
+    <message>
+        <source>A key name: "space", "left", "a", "5", "lshift"...</source>
+        <translation>Nom de touche : "space", "left", "a", "5", "lshift"...</translation>
+    </message>
+    <message>
+        <source>A label of your choosing (e.g. "jump", "fire")</source>
+        <translation>Étiquette libre (ex. "jump", "tir")</translation>
+    </message>
+    <message>
+        <source>A label of your choosing that the handler tests (e.g. "buzz", "answer")</source>
+        <translation>Étiquette libre que le gestionnaire teste (ex. "buzz", "reponse")</translation>
+    </message>
+    <message>
+        <source>A number, text or true/false (complex objects are refused)</source>
+        <translation>Nombre, texte ou booléen (les objets complexes sont refusés)</translation>
+    </message>
+    <message>
+        <source>A number, text, true/false, or a short list</source>
+        <translation>Nombre, texte, booléen ou petite liste</translation>
+    </message>
+    <message>
+        <source>A plain identifier (letters, digits, _) -- no spaces or operators</source>
+        <translation>Identifiant simple (lettres, chiffres, _) -- pas d'espace ni d'opérateur</translation>
+    </message>
+    <message>
+        <source>Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay.</source>
+        <translation>Ajuster la cadence des instantanés de l'hôte et le délai d'interpolation des clients. À appeler une fois chez l'hôte (et chez les clients pour le délai).</translation>
+    </message>
+    <message>
+        <source>An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags.</source>
+        <translation>Ancienne action bas niveau : démarre la salle en mode hôte ou client (spectateur seulement -- l'entrée du client n'a aucun effet). Préférez « Héberger une partie » / « Rejoindre une partie ». Conservée pour les projets existants et les drapeaux --net-host / --net-client.</translation>
+    </message>
+    <message>
+        <source>Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space").</source>
+        <translation>Associer une touche locale à une « entrée nommée » signalée à l'hôte. L'hôte teste ensuite avec « Si le joueur appuie ». Les flèches et Espace sont déjà associées ("left", "right", "up", "down", "space").</translation>
+    </message>
+    <message>
+        <source>Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host".</source>
+        <translation>Devenir l'hôte d'une partie multijoueur LAN : les autres joueurs se connectent à cette machine. À appeler une seule fois (par ex. dans l'événement Création du contrôleur de la salle). Définit global.player_id = 0 et global.network_role = "host".</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Associer une touche réseau</translation>
+    </message>
+    <message>
+        <source>Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender.</source>
+        <translation>Diffuser un message personnalisé. Déclenche l'événement « Message réseau » sur les machines concernées, avec global.network_event / global.network_data / global.network_sender.</translation>
+    </message>
+    <message>
+        <source>Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1.</source>
+        <translation>Assigner quel joueur pilote cette instance synchronisée (0 = hôte, 1, 2, ... = clients). Sur la machine de ce joueur, l'instance tourne localement (réactive) et son état est renvoyé à l'hôte ; ailleurs c'est un fantôme interpolé. À appeler chez l'hôte (guardé par global.is_host == 1).</translation>
+    </message>
+    <message>
+        <source>Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player.</source>
+        <translation>Se connecter à une partie multijoueur LAN hébergée par une autre machine. global.player_id sera défini par l'hôte (1, 2, ...). Si l'hôte est injoignable, la partie continue en solo.</translation>
+    </message>
+    <message>
+        <source>Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.&lt;name&gt; directly.</source>
+        <translation>Copier une variable partagée dans une variable globale (pour l'utiliser dans un calcul). Équivaut à lire global.&lt;nom&gt; directement.</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Créer un objet réseau</translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation>Donnée</translation>
+    </message>
+    <message>
+        <source>Disconnect (or stop hosting) and clear the global network variables.</source>
+        <translation>Se déconnecter (ou arrêter d'héberger) et effacer les variables réseau globales.</translation>
+    </message>
+    <message>
+        <source>Game name</source>
+        <translation>Nom de la partie</translation>
+    </message>
+    <message>
+        <source>Global variable</source>
+        <translation>Variable globale</translation>
+    </message>
+    <message>
+        <source>Host = others connect to you; Client = you connect to a host</source>
+        <translation>Host = les autres se connectent à vous ; Client = vous vous connectez à un hôte</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Héberger une partie</translation>
+    </message>
+    <message>
+        <source>Host address</source>
+        <translation>Adresse de l'hôte</translation>
+    </message>
+    <message>
+        <source>Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1.</source>
+        <translation>Hôte uniquement : créer une instance qui apparaît automatiquement chez tous les clients (comme des « fantômes » interpolés). Sans effet chez un client. L'instance créée est pilotée par l'hôte -- guardez sa logique de jeu par global.is_host == 1.</translation>
+    </message>
+    <message>
+        <source>Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine.</source>
+        <translation>Hôte uniquement : faire sortir tout le monde du salon d'attente et lancer la partie. Déclenche l'événement « Partie réseau démarrée » sur toutes les machines.</translation>
+    </message>
+    <message>
+        <source>How far behind ghosts are drawn, in milliseconds (default 100)</source>
+        <translation>Retard d'affichage des fantômes, en millisecondes (défaut 100)</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Si je pilote cette instance</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Si le joueur appuie</translation>
+    </message>
+    <message>
+        <source>Input name</source>
+        <translation>Nom de l'entrée</translation>
+    </message>
+    <message>
+        <source>Instance variable names to copy as well, separated by commas (e.g. "hp, colour")</source>
+        <translation>Noms de variables d'instance à répliquer aussi, séparés par des virgules (ex. "hp, couleur")</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Rejoindre une partie</translation>
+    </message>
+    <message>
+        <source>Key</source>
+        <translation>Touche</translation>
+    </message>
+    <message>
+        <source>Largest number of players, host included (2 to 16)</source>
+        <translation>Nombre maximal de joueurs, hôte compris (2 à 16)</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Quitter la partie</translation>
+    </message>
+    <message>
+        <source>Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it.</source>
+        <translation>Marquer l'instance qui exécute l'action comme « synchronisée » : sa position, sa rotation, son image et sa visibilité sont répliquées sur toutes les machines. À appeler dans l'événement Création. Par défaut l'hôte en est le propriétaire ; utilisez « Définir le propriétaire » pour qu'un client la pilote.</translation>
+    </message>
+    <message>
+        <source>Max players</source>
+        <translation>Joueurs max</translation>
+    </message>
+    <message>
+        <source>Message name</source>
+        <translation>Nom du message</translation>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <source>Name of the global variable to write the value into</source>
+        <translation>Nom de la variable globale où écrire la valeur</translation>
+    </message>
+    <message>
+        <source>Name of the shared variable to read</source>
+        <translation>Nom de la variable partagée à lire</translation>
+    </message>
+    <message>
+        <source>Name shown in the server list (network discovery)</source>
+        <translation>Nom affiché dans la liste des serveurs (découverte réseau, Phase 6)</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>Réseau</translation>
+    </message>
+    <message>
+        <source>Object</source>
+        <translation>Objet</translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation>Propriétaire</translation>
+    </message>
+    <message>
+        <source>Player</source>
+        <translation>Joueur</translation>
+    </message>
+    <message>
+        <source>Player name</source>
+        <translation>Nom du joueur</translation>
+    </message>
+    <message>
+        <source>Player number (0 = host)</source>
+        <translation>Numéro de joueur (0 = hôte)</translation>
+    </message>
+    <message>
+        <source>Player number (0 = host). Often global.network_sender inside "Player joined".</source>
+        <translation>Numéro de joueur (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation>Port</translation>
+    </message>
+    <message>
+        <source>Position relative to the object running the action</source>
+        <translation>Position relative à l'objet qui exécute l'action</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Lire une variable partagée</translation>
+    </message>
+    <message>
+        <source>Relative</source>
+        <translation>Relatif</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Envoyer un message réseau</translation>
+    </message>
+    <message>
+        <source>Send to</source>
+        <translation>Destinataire</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Définir une variable partagée</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Définir le propriétaire de l'instance</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Régler la fréquence de synchro</translation>
+    </message>
+    <message>
+        <source>Shared name</source>
+        <translation>Nom partagé</translation>
+    </message>
+    <message>
+        <source>Show a "Waiting for players..." screen with a Start button before the game begins</source>
+        <translation>Afficher un écran « En attente de joueurs… » avec bouton Démarrer avant de lancer la partie</translation>
+    </message>
+    <message>
+        <source>Smoothing (ms)</source>
+        <translation>Interpolation (ms)</translation>
+    </message>
+    <message>
+        <source>Snapshots per second</source>
+        <translation>Instantanés / seconde</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Démarrer la partie en réseau</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Synchroniser cette instance</translation>
+    </message>
+    <message>
+        <source>TCP port -- must be the same on the host and every client</source>
+        <translation>Port TCP -- doit être identique chez l'hôte et les clients</translation>
+    </message>
+    <message>
+        <source>TCP port -- must be the same on the host and the client</source>
+        <translation>Port TCP -- doit être identique chez l'hôte et le client</translation>
+    </message>
+    <message>
+        <source>TCP port -- must match the host's</source>
+        <translation>Port TCP -- doit correspondre à celui de l'hôte</translation>
+    </message>
+    <message>
+        <source>The host's LAN IP address ("auto" opens the built-in connection screen)</source>
+        <translation>Adresse IP LAN de l'hôte ("auto" = écran de connexion intégré, Phase 6)</translation>
+    </message>
+    <message>
+        <source>The host's LAN IP address (Client mode only)</source>
+        <translation>Adresse IP LAN de l'hôte (mode Client uniquement)</translation>
+    </message>
+    <message>
+        <source>The named input to test (e.g. "jump")</source>
+        <translation>L'entrée nommée à tester (ex. "jump")</translation>
+    </message>
+    <message>
+        <source>The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".</source>
+        <translation>Joueur qui pilote l'instance (0 = hôte). Souvent global.network_sender dans « Joueur connecté ».</translation>
+    </message>
+    <message>
+        <source>The type of object to create</source>
+        <translation>Type d'objet à créer</translation>
+    </message>
+    <message>
+        <source>This player's name (empty = global.player_name, or "Player")</source>
+        <translation>Nom de ce joueur (vide = global.player_name, ou « Joueur »)</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Valeur</translation>
+    </message>
+    <message>
+        <source>Variables to copy</source>
+        <translation>Variables à répliquer</translation>
+    </message>
+    <message>
+        <source>Waiting room</source>
+        <translation>Salon d'attente</translation>
+    </message>
+    <message>
+        <source>Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.&lt;name&gt;.</source>
+        <translation>Écrire une variable partagée par toutes les machines. Chez l'hôte : appliquée immédiatement. Chez un client : une demande envoyée à l'hôte. Lisible partout via global.&lt;nom&gt;.</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <source>all = everyone; host = the host only</source>
+        <translation>all = tout le monde ; host = l'hôte seulement</translation>
+    </message>
+    <message>
+        <source>Host Address</source>
+        <translation>Adresse de l'hôte</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Définir le mode réseau (v1)</translation>
+    </message>
+    <message>
+        <source>A custom message arrived. global.network_event is its label, global.network_data its data, global.network_sender the sender.</source>
+        <translation>Un message personnalisé est arrivé. global.network_event = son étiquette, global.network_data = sa donnée, global.network_sender = l'expéditeur.</translation>
+    </message>
+    <message>
+        <source>A player joined the game. global.network_sender is their number, global.network_player_name their name.</source>
+        <translation>Un joueur a rejoint la partie. global.network_sender = son numéro, global.network_player_name = son nom.</translation>
+    </message>
+    <message>
+        <source>A player left the game. global.network_sender is their number.</source>
+        <translation>Un joueur a quitté la partie. global.network_sender = son numéro.</translation>
+    </message>
+    <message>
+        <source>Connection Lost</source>
+        <translation>Connexion perdue</translation>
+    </message>
+    <message>
+        <source>Network Message</source>
+        <translation>Message réseau</translation>
+    </message>
+    <message>
+        <source>Network Ready</source>
+        <translation>Réseau prêt</translation>
+    </message>
+    <message>
+        <source>Networked Game Started</source>
+        <translation>Partie réseau démarrée</translation>
+    </message>
+    <message>
+        <source>Player Joined</source>
+        <translation>Joueur connecté</translation>
+    </message>
+    <message>
+        <source>Player Left</source>
+        <translation>Joueur déconnecté</translation>
+    </message>
+    <message>
+        <source>The host called "Start the Networked Game". Fires on every machine.</source>
+        <translation>L'hôte a appelé « Démarrer la partie en réseau ». Se déclenche sur toutes les machines.</translation>
+    </message>
+    <message>
+        <source>The link to the host broke -- host closed, cable unplugged, Wi-Fi client isolation, and so on.</source>
+        <translation>Le lien avec l'hôte est rompu (hôte fermé, câble débranché, isolation Wi-Fi...).</translation>
+    </message>
+    <message>
+        <source>The network session is up -- the host accepted this client, or the host started. global.player_id is set.</source>
+        <translation>La session réseau est établie (l'hôte a accepté ce client, ou l'hôte a démarré). global.player_id est défini.</translation>
     </message>
 </context>
 <context>
