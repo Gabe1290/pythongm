@@ -56,11 +56,11 @@ This is the complete list. Everything else that used to be tracked in
    `runtime/action_executor.py` 6,520 → **1,427** across ten
    `runtime/action_*.py` mixins, in twelve one-cluster-per-commit steps each
    proven bytecode-identical against pre-refactor HEAD.
-   **What remains is not a file split:** three companion-cleanup boxes at the
-   end of that doc retire the parallel `runtime/action_handlers/` package, and
-   the last is blocked on a product decision — whether desktop keeps loading
-   pre-`if_condition` / legacy-audio-name projects, and if so whether to
-   re-point them through `ACTION_ALIASES`.
+   **The companion cleanup is closed too** (2026-09-06): the decision it was
+   blocked on was made — legacy action names are not worth carrying, there
+   being too few legacy projects — so `runtime/action_handlers/` and Phase 2
+   of `_register_action_handlers` are gone, with the live handlers folded into
+   the mixins. **This plan now has no open work at all.**
 
 3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md`.** Confirmed "not started"
    in its own header, and nothing since mentions it being picked up.
