@@ -2,8 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="sl_SI">
 <context>
-    <name>ActionConfigDialog</name>
-        <message>
+    <name>ActionConfigDialog</name>        <message>
             <source>Use Python operators</source>
             <translation>Uporabite operatorje Python</translation>
         </message>
@@ -19,7 +18,6 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
 
 Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt; 0 and y &lt; other.y".</translation>
         </message>
-
     <message>
         <source>Configure {0}</source>
         <translation type="vanished">Configurer {0}</translation>
@@ -87,6 +85,154 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
     <message>
         <source>Add translations for different languages</source>
         <translation type="vanished">Dodaj prevode za različne jezike</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Uporabi težnost</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Dodeli omrežno tipko</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Razbij blok</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Ustvari omrežni predmet</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Nariši HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Nariši HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Nariši mini zemljevid</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Vklopi pogled Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Vklopi pogled 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Gosti igro</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Če upravljam ta primerek</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Če igralec pritisne</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Pridruži se igri</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Skoči</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Zapusti igro</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Naloži svet Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Poglej gor / dol</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Premakni s trkom</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Postavi blok</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>Predvajaj glasbo</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>Predvajaj zvok</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Preberi skupno spremenljivko</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Izberi mesto v vrstici</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Pošlji omrežno sporočilo</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Nastavi zaščito blokov</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Nastavi nagrado za blok</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Nastavi kot pogleda</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Nastavi omrežni način (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Nastavi glasnost</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Nastavi skupno spremenljivko</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Nastavi lastnika primerka</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Nastavi hitrost sinhronizacije</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Začni omrežno igro</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>Ustavi glasbo</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Sinhroniziraj ta primerek</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Preveri, ali zvok teče</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>Ustavi zvok</translation>
     </message>
 </context>
 <context>

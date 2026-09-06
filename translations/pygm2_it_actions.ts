@@ -2,8 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="it_IT">
 <context>
-    <name>ActionConfigDialog</name>
-        <message>
+    <name>ActionConfigDialog</name>        <message>
             <source>Use Python operators</source>
             <translation>Usa gli operatori Python</translation>
         </message>
@@ -19,7 +18,6 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
 
 Usa invece gli operatori Python (and / or / not), ad esempio "vspeed &gt; 0 and y &lt; other.y".</translation>
         </message>
-
     <message>
         <source>Configure {0}</source>
         <translation type="vanished">Configura {0}</translation>
@@ -87,6 +85,154 @@ Usa invece gli operatori Python (and / or / not), ad esempio "vspeed &gt; 0 and 
     <message>
         <source>Add translations for different languages</source>
         <translation type="vanished">Aggiungi traduzioni per diverse lingue</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Applica gravità</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Associa un tasto di rete</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Rompi blocco</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Crea oggetto in rete</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Disegna HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Disegna HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Disegna minimappa</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Attiva vista Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Attiva vista 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Ospita una partita</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Se controllo questa istanza</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Se il giocatore preme</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Unisciti a una partita</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Salta</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Esci dalla partita</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Carica Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Guarda su / giù</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Muovi con collisione</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Posiziona blocco</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>Riproduci musica</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>Riproduci suono</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Leggi variabile condivisa</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Scegli casella della barra</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Invia messaggio di rete</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Imposta protezione blocchi</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Imposta ricompensa blocco</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Imposta angolo di vista</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Imposta la modalità di rete (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Imposta volume</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Imposta variabile condivisa</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Imposta il proprietario dell'istanza</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Imposta la frequenza di sincronia</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Avvia la partita in rete</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>Ferma musica</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Sincronizza questa istanza</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Verifica se il suono è attivo</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>Ferma suono</translation>
     </message>
 </context>
 <context>

@@ -1035,8 +1035,7 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
     </message>
 </context>
 <context>
-    <name>ObjectEventsPanel</name>
-    <message>
+    <name>ObjectEventsPanel</name>    <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
         <translation>Dogodki objekta</translation>
@@ -1571,19 +1570,19 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
     </message>
     <message>
         <source>Play Sound</source>
-        <translation type="vanished">Predvajaj zvok</translation>
+        <translation>Predvajaj zvok</translation>
     </message>
     <message>
         <source>Stop Sound</source>
-        <translation type="vanished">Ustavi zvok</translation>
+        <translation>Ustavi zvok</translation>
     </message>
     <message>
         <source>Play Music</source>
-        <translation type="vanished">Predvajaj glasbo</translation>
+        <translation>Predvajaj glasbo</translation>
     </message>
     <message>
         <source>Stop Music</source>
-        <translation type="vanished">Ustavi glasbo</translation>
+        <translation>Ustavi glasbo</translation>
     </message>
     <message>
         <source>Set Score</source>
@@ -1864,6 +1863,138 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0} (potrebuje {1})</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Uporabi težnost</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Dodeli omrežno tipko</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Razbij blok</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Ustvari omrežni predmet</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Nariši HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Nariši HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Nariši mini zemljevid</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Vklopi pogled Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Vklopi pogled 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Gosti igro</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Če upravljam ta primerek</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Če igralec pritisne</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Pridruži se igri</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Skoči</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Zapusti igro</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Naloži svet Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Poglej gor / dol</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Premakni s trkom</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Postavi blok</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Preberi skupno spremenljivko</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Izberi mesto v vrstici</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Pošlji omrežno sporočilo</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Nastavi zaščito blokov</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Nastavi nagrado za blok</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Nastavi kot pogleda</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Nastavi omrežni način (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Nastavi glasnost</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Nastavi skupno spremenljivko</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Nastavi lastnika primerka</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Nastavi hitrost sinhronizacije</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Začni omrežno igro</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Sinhroniziraj ta primerek</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Preveri, ali zvok teče</translation>
     </message>
 </context>
 <context>

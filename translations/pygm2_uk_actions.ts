@@ -2,8 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="uk_UA">
 <context>
-    <name>ActionConfigDialog</name>
-        <message>
+    <name>ActionConfigDialog</name>        <message>
             <source>Use Python operators</source>
             <translation>Використовуйте оператори Python</translation>
         </message>
@@ -19,7 +18,6 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
 
 Використовуйте натомість оператори Python (and / or / not), наприклад "vspeed &gt; 0 and y &lt; other.y".</translation>
         </message>
-
     <message>
         <source>Configure {0}</source>
         <translation type="vanished">Налаштувати {0}</translation>
@@ -87,6 +85,154 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
     <message>
         <source>🎨 {0}</source>
         <translation type="vanished">🎨 {0}</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Застосувати гравітацію</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>Призначити мережеву клавішу</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Зруйнувати блок</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>Створити мережевий об'єкт</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Намалювати HUD Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Намалювати HUD DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Намалювати мінікарту</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Увімкнути вигляд Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Увімкнути вигляд 2.5 D</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>Створити гру</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>Якщо я керую цим екземпляром</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>Якщо гравець натискає</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>Приєднатися до гри</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Стрибок</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>Покинути гру</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Завантажити світ Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Дивитися вгору / вниз</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Рухатися зі зіткненням</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Поставити блок</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>Грати музику</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>Відтворити звук</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>Прочитати спільну змінну</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Вибрати комірку панелі</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>Надіслати мережеве повідомлення</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Задати захист блоків</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Задати нагороду за блок</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Задати кут огляду</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>Задати мережевий режим (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Задати гучність</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>Задати спільну змінну</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>Задати власника екземпляра</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>Задати частоту синхронізації</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>Почати мережеву гру</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>Зупинити музику</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>Синхронізувати цей екземпляр</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Перевірити, чи звучить звук</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>Зупинити звук</translation>
     </message>
 </context>
 <context>

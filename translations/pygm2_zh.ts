@@ -1835,8 +1835,7 @@ Do you want to save anyway?</source>
     </message>
 </context>
 <context>
-    <name>ActionConfigDialog</name>
-    <message>
+    <name>ActionConfigDialog</name>    <message>
         <location filename="../events/action_editor.py" line="47"/>
         <source>Configure {0}</source>
         <translation>配置 {0}</translation>
@@ -1931,6 +1930,154 @@ Do you want to save anyway?</source>
         <location filename="../events/action_editor.py" line="346"/>
         <source>Add translations for different languages</source>
         <translation>为不同语言添加翻译</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>应用重力</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>绑定网络按键</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>破坏方块</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>创建联机对象</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>绘制方块世界 HUD</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>绘制 DOOM HUD</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>绘制小地图</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>启用方块世界视图</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>启用 2.5D 视图</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>创建游戏</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>如果我控制此实例</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>如果玩家按下</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>加入游戏</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>跳跃</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>离开游戏</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>载入方块世界</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>上下看</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>移动并检测碰撞</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>放置方块</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>播放音乐</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>播放声音</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>读取共享变量</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>选择快捷栏格子</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>发送网络消息</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>设置方块保护</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>设置方块奖励</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>设置朝向角度</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>设置网络模式 (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>设置音量</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>设置共享变量</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>设置实例的所有者</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>设置同步频率</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>开始联机游戏</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>停止音乐</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>同步此实例</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>检查声音是否播放</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>停止声音</translation>
     </message>
 </context>
 <context>
@@ -3788,8 +3935,7 @@ Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
     </message>
 </context>
 <context>
-    <name>ObjectEventsPanel</name>
-    <message>
+    <name>ObjectEventsPanel</name>    <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
         <translation>对象事件</translation>
@@ -4129,6 +4275,154 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
         <source>{0} (needs {1})</source>
         <translation>{0}(需要{1})</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>应用重力</translation>
+    </message>
+    <message>
+        <source>Bind a Network Key</source>
+        <translation>绑定网络按键</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>破坏方块</translation>
+    </message>
+    <message>
+        <source>Create a Networked Object</source>
+        <translation>创建联机对象</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>绘制方块世界 HUD</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>绘制 DOOM HUD</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>绘制小地图</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>启用方块世界视图</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>启用 2.5D 视图</translation>
+    </message>
+    <message>
+        <source>Host a Game</source>
+        <translation>创建游戏</translation>
+    </message>
+    <message>
+        <source>If I Drive This Instance</source>
+        <translation>如果我控制此实例</translation>
+    </message>
+    <message>
+        <source>If the Player Presses</source>
+        <translation>如果玩家按下</translation>
+    </message>
+    <message>
+        <source>Join a Game</source>
+        <translation>加入游戏</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>跳跃</translation>
+    </message>
+    <message>
+        <source>Leave the Game</source>
+        <translation>离开游戏</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>载入方块世界</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>上下看</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>移动并检测碰撞</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>放置方块</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>播放音乐</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>播放声音</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable</source>
+        <translation>读取共享变量</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>选择快捷栏格子</translation>
+    </message>
+    <message>
+        <source>Send a Network Message</source>
+        <translation>发送网络消息</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>设置方块保护</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>设置方块奖励</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>设置朝向角度</translation>
+    </message>
+    <message>
+        <source>Set Network Mode (v1)</source>
+        <translation>设置网络模式 (v1)</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>设置音量</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable</source>
+        <translation>设置共享变量</translation>
+    </message>
+    <message>
+        <source>Set the Instance's Owner</source>
+        <translation>设置实例的所有者</translation>
+    </message>
+    <message>
+        <source>Set the Sync Rate</source>
+        <translation>设置同步频率</translation>
+    </message>
+    <message>
+        <source>Start the Networked Game</source>
+        <translation>开始联机游戏</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>停止音乐</translation>
+    </message>
+    <message>
+        <source>Synchronise This Instance</source>
+        <translation>同步此实例</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>检查声音是否播放</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>停止声音</translation>
     </message>
 </context>
 <context>

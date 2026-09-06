@@ -77,8 +77,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     </message>
 </context>
 <context>
-    <name>ActionConfigDialog</name>
-        <message>
+    <name>ActionConfigDialog</name>        <message>
             <source>Use Python operators</source>
             <translation>Utilisez les opérateurs Python</translation>
         </message>
@@ -94,7 +93,6 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
 
 Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &gt; 0 and y &lt; other.y".</translation>
         </message>
-
     <message>
         <location filename="../events/action_editor.py" line="47"/>
         <source>Configure {0}</source>
@@ -593,6 +591,94 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
     <message>
         <source>The network session is up -- the host accepted this client, or the host started. global.player_id is set.</source>
         <translation>La session réseau est établie (l'hôte a accepté ce client, ou l'hôte a démarré). global.player_id est défini.</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Appliquer la gravité</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Casser un bloc</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Dessiner l'ATH Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Dessiner l'ATH DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Dessiner la mini-carte</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Activer la vue Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Activer la vue 2.5 D</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Sauter</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Charger un monde Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Regarder en haut / en bas</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Déplacer avec collision</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Poser un bloc</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>Jouer une musique</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>Jouer un son</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Choisir une case de la barre</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Définir la protection des blocs</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Définir la récompense d'un bloc</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Définir l'angle de vue</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Régler le volume</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>Arrêter la musique</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Vérifier si un son joue</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>Arrêter un son</translation>
     </message>
 </context>
 <context>
@@ -3815,8 +3901,7 @@ Le code s&apos;exécutera lorsque l&apos;événement se déclenchera pendant le 
     </message>
 </context>
 <context>
-    <name>ObjectEventsPanel</name>
-    <message>
+    <name>ObjectEventsPanel</name>    <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
         <source>Object Events</source>
         <translation>Événements de l&apos;objet</translation>
@@ -4636,6 +4721,94 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
     <message>
         <source>The network session is up -- the host accepted this client, or the host started. global.player_id is set.</source>
         <translation>La session réseau est établie (l'hôte a accepté ce client, ou l'hôte a démarré). global.player_id est défini.</translation>
+    </message>
+    <message>
+        <source>Apply Gravity</source>
+        <translation>Appliquer la gravité</translation>
+    </message>
+    <message>
+        <source>Break Block</source>
+        <translation>Casser un bloc</translation>
+    </message>
+    <message>
+        <source>Draw Block World HUD</source>
+        <translation>Dessiner l'ATH Block World</translation>
+    </message>
+    <message>
+        <source>Draw DOOM HUD</source>
+        <translation>Dessiner l'ATH DOOM</translation>
+    </message>
+    <message>
+        <source>Draw Minimap</source>
+        <translation>Dessiner la mini-carte</translation>
+    </message>
+    <message>
+        <source>Enable Block World View</source>
+        <translation>Activer la vue Block World</translation>
+    </message>
+    <message>
+        <source>Enable Raycast View</source>
+        <translation>Activer la vue 2.5 D</translation>
+    </message>
+    <message>
+        <source>Jump</source>
+        <translation>Sauter</translation>
+    </message>
+    <message>
+        <source>Load Block World</source>
+        <translation>Charger un monde Block World</translation>
+    </message>
+    <message>
+        <source>Look Up / Down</source>
+        <translation>Regarder en haut / en bas</translation>
+    </message>
+    <message>
+        <source>Move And Collide</source>
+        <translation>Déplacer avec collision</translation>
+    </message>
+    <message>
+        <source>Place Block</source>
+        <translation>Poser un bloc</translation>
+    </message>
+    <message>
+        <source>Play Music</source>
+        <translation>Jouer une musique</translation>
+    </message>
+    <message>
+        <source>Play Sound</source>
+        <translation>Jouer un son</translation>
+    </message>
+    <message>
+        <source>Select Hotbar Slot</source>
+        <translation>Choisir une case de la barre</translation>
+    </message>
+    <message>
+        <source>Set Block Protection</source>
+        <translation>Définir la protection des blocs</translation>
+    </message>
+    <message>
+        <source>Set Block Reward</source>
+        <translation>Définir la récompense d'un bloc</translation>
+    </message>
+    <message>
+        <source>Set Facing Angle</source>
+        <translation>Définir l'angle de vue</translation>
+    </message>
+    <message>
+        <source>Set Volume</source>
+        <translation>Régler le volume</translation>
+    </message>
+    <message>
+        <source>Stop Music</source>
+        <translation>Arrêter la musique</translation>
+    </message>
+    <message>
+        <source>Check Sound Playing</source>
+        <translation>Vérifier si un son joue</translation>
+    </message>
+    <message>
+        <source>Stop Sound</source>
+        <translation>Arrêter un son</translation>
     </message>
 </context>
 <context>

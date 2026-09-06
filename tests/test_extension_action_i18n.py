@@ -40,6 +40,29 @@ from conftest import skip_without_pyside6  # noqa: E402
 
 pytestmark = skip_without_pyside6
 
+@pytest.fixture(autouse=True)
+def _restore_english_afterwards():
+    """Leave the application in English after EVERY test in this file.
+
+    These tests install real translators and switch the app language, which is
+    process-global state. Without this, French leaked into the rest of the
+    suite and ten unrelated widget tests started asserting against
+    "Aucun tutoriel disponible" -- failures that reproduced only when this file
+    ran first, which is exactly the kind of order-dependent breakage that
+    wastes an afternoon. Restoring unconditionally in teardown is cheaper than
+    reasoning about which path installed what.
+    """
+    yield
+    try:
+        from PySide6.QtWidgets import QApplication
+        from core.language_manager import get_language_manager
+
+        if QApplication.instance() is not None:
+            get_language_manager().set_language("en")
+    except Exception:
+        pass
+
+
 # Where these strings are displayed: the palette context menu lives on
 # ObjectEventsPanel, the configure dialog on ActionConfigDialog.
 CONTEXTS = ("ObjectEventsPanel", "ActionConfigDialog")
@@ -88,9 +111,18 @@ def test_no_extension_action_carries_french_source_text():
         "instead:\n  " + "\n  ".join(offenders))
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def french():
-    """A live French QTranslator over the compiled catalogue."""
+    """A live French QTranslator over the compiled catalogue.
+
+    FUNCTION scope, deliberately. As a module fixture it stayed installed for
+    the rest of the file, so the all-language test below ran with French
+    loaded underneath -- and Qt, consulting translators in reverse install
+    order, resolved from French whatever the target language was missing. A
+    mutation that deleted "Draw Minimap" from the German catalogue passed the
+    whole file and only failed when that one test ran alone. Per-test teardown
+    removes the translator before the next test installs its own.
+    """
     from PySide6.QtCore import QTranslator
     from PySide6.QtWidgets import QApplication
 
@@ -176,3 +208,106 @@ def test_the_catalogue_has_no_double_escaping():
     assert "&amp;gt;" not in text
     assert "&amp;lt;" not in text
     assert "\u00c3\u00a9" not in text, "mojibake (double-encoded UTF-8)"
+
+
+# --- the whole extension surface, every shipped language --------------------
+
+EXTENSION_CATEGORIES = ("Network", "3D View", "Audio")
+SHIPPED = ("de", "es", "fr", "it", "ja", "pt", "ru", "sl", "uk", "zh")
+
+
+def _extension_actions():
+    """Every action contributed by a plugin or folder extension."""
+    from events.action_types import ACTION_TYPES
+    from events.plugin_loader import load_all_plugins
+    from runtime.action_executor import ActionExecutor
+
+    load_all_plugins(ActionExecutor())
+    return {n: a for n, a in ACTION_TYPES.items()
+            if getattr(a, "category", "") in EXTENSION_CATEGORIES}
+
+
+def test_there_are_extension_actions_to_check():
+    """37, not 35.
+
+    The first count came from "what did load_all_plugins ADD to
+    ACTION_TYPES?", which misses check_sound and stop_sound -- both sit in the
+    Audio category but are declared statically in core. Filtering by CATEGORY
+    is what the user actually sees in the palette, and that difference of two
+    was found by this assertion rather than by reading."""
+    actions = _extension_actions()
+    assert len(actions) == 37, sorted(actions)
+
+
+@pytest.mark.parametrize("lang", SHIPPED)
+def test_every_extension_action_name_resolves(lang):
+    """The A1 goal: an extension action reads in the user's language.
+
+    Before 2026-09-06 not one of these 35 appeared in any catalogue, so every
+    non-English user read English (and, for the LAN extension, French).
+
+    Driven through the real LanguageManager rather than a hand-built
+    QTranslator, because that is what the running app uses -- and checked in
+    BOTH Qt contexts, since Qt keys by (context, source) with no fallback
+    between them.
+    """
+    from PySide6.QtCore import QCoreApplication
+    from PySide6.QtWidgets import QApplication
+
+    from core.language_manager import get_language_manager
+
+    QApplication.instance() or QApplication([])
+    manager = get_language_manager()
+    previous = getattr(manager, "current_language", "en")
+    try:
+        manager.set_language(lang)
+        unresolved = []
+        for name, action in _extension_actions().items():
+            source = action.display_name
+            for context in CONTEXTS:
+                if QCoreApplication.translate(context, source) == source:
+                    unresolved.append("%s/%s (%s)" % (context, name, source))
+        assert not unresolved, (
+            "%s: %d extension action names fall back to English:\n  %s"
+            % (lang, len(unresolved), "\n  ".join(unresolved[:12])))
+    finally:
+        manager.set_language(previous)
+
+
+def test_a_vanished_entry_does_not_count_as_translated():
+    """The trap that made this pass look finished when it was not.
+
+    lrelease DROPS type="vanished" messages from the compiled .qm, so a source
+    shadowed only by a vanished duplicate stays untranslated at runtime no
+    matter how good the text in the .ts looks. Play Sound / Play Music /
+    Stop Music each carried a correct translation marked vanished in five
+    languages and had been reaching users in English the whole time.
+
+    Appending a second, live entry did NOT fix it either: two messages with
+    the same source in one context do not resolve at all. They had to be
+    un-vanished in place.
+    """
+    import re
+
+    for lang in ("de", "es", "it", "ru", "sl", "uk"):
+        for stem in ("pygm2_%s_editors.ts" % lang, "pygm2_%s.ts" % lang):
+            path = REPO_ROOT / "translations" / stem
+            if not path.exists():
+                continue
+            text = path.read_text(encoding="utf-8")
+            block = re.search(
+                r"<context>\s*<name>ObjectEventsPanel</name>(.*?)</context>",
+                text, re.S)
+            if not block:
+                continue
+            for source in ("Play Sound", "Play Music", "Stop Music"):
+                entries = re.findall(
+                    r"<message>(?:(?!</message>).)*?<source>" + source
+                    + r"</source>.*?</message>", block.group(1), re.S)
+                assert len(entries) <= 1, (
+                    "%s has %d entries for %r in ObjectEventsPanel; duplicates "
+                    "do not resolve" % (stem, len(entries), source))
+                for entry in entries:
+                    assert 'type="vanished"' not in entry, (
+                        "%s: %r is vanished, so lrelease drops it and the user "
+                        "sees English" % (stem, source))
