@@ -556,3 +556,66 @@ class AppearanceMixin:
         instance.draw_valign = valign if valign in ('top', 'middle', 'bottom') else 'top'
 
         logger.debug(f"🔤 Set draw font: '{font_name}', halign={halign}, valign={valign}")
+
+    def execute_transform_sprite_action(self, instance, parameters: Dict[str, Any]):
+        """Transform the sprite with scaling and rotation
+
+        Parameters:
+            xscale: Horizontal scale factor (1.0 = normal)
+            yscale: Vertical scale factor (1.0 = normal)
+            angle: Rotation angle in degrees
+        """
+        xscale_param = parameters.get("xscale", 1.0)
+        yscale_param = parameters.get("yscale", 1.0)
+        angle_param = parameters.get("angle", 0.0)
+
+        # Parse values
+        xscale = self._parse_value(str(xscale_param), instance)
+        yscale = self._parse_value(str(yscale_param), instance)
+        angle = self._parse_value(str(angle_param), instance)
+
+        try:
+            xscale = float(xscale) if xscale is not None else 1.0
+            yscale = float(yscale) if yscale is not None else 1.0
+            angle = float(angle) if angle is not None else 0.0
+        except (ValueError, TypeError):
+            xscale, yscale, angle = 1.0, 1.0, 0.0
+
+        # Apply to instance
+        instance.image_xscale = xscale
+        instance.image_yscale = yscale
+        instance.image_angle = angle
+
+        logger.debug(f"🔄 Transform sprite for {instance.object_name}: scale=({xscale}, {yscale}), angle={angle}")
+
+    def execute_fill_color_action(self, instance, parameters: Dict[str, Any]):
+        """Fill the entire screen with a color
+
+        Parameters:
+            color: Fill color (hex string like "#RRGGBB")
+        """
+        color_param = self._parse_value(parameters.get("color", "#000000"), instance)
+
+        # Parse color if it's a hex string
+        if isinstance(color_param, str) and color_param.startswith('#'):
+            try:
+                hex_color = color_param.lstrip('#')
+                r = int(hex_color[0:2], 16)
+                g = int(hex_color[2:4], 16)
+                b = int(hex_color[4:6], 16)
+                color = (r, g, b)
+            except (ValueError, IndexError):
+                color = (0, 0, 0)
+        else:
+            color = (0, 0, 0)
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'fill',
+            'color': color
+        })
+
+        logger.debug(f"🎨 Queued fill_color: {color}")
