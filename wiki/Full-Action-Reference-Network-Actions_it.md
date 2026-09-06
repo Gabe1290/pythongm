@@ -12,7 +12,7 @@
 | **Icona** | ⌨️ |
 | **Categoria** | Network |
 
-Attach a local key to a "named input" reported to the host. The host then tests it with "If the player presses". The arrow keys and Space are already bound ("left", "right", "up", "down", "space")
+Associa un tasto locale a un «comando con nome» segnalato all'host. L'host lo controlla poi con «Se il giocatore preme». Le frecce e la barra spaziatrice sono già associate ("left", "right", "up", "down", "space")
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Attach a local key to a "named input" reported to the host. The host then tests 
 | **Icona** | ✨ |
 | **Categoria** | Network |
 
-Host only: create an instance that appears automatically on every client, as a smoothed "ghost". Does nothing on a client. The host drives the instance it creates -- guard its game logic with global.is_host == 1
+Solo sull'host: crea un'istanza che compare automaticamente su ogni client come «fantasma» interpolato. Su un client non fa nulla. L'host guida l'istanza che crea: proteggi la sua logica di gioco con global.is_host == 1
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -45,7 +45,7 @@ Host only: create an instance that appears automatically on every client, as a s
 | **Icona** | 🌐 |
 | **Categoria** | Network |
 
-Become the host of a LAN multiplayer game: the other players connect to this machine. Call it once (for example in the room controller's Create event). Sets global.player_id = 0 and global.network_role = "host"
+Rende questa macchina l'host di una partita multigiocatore LAN: gli altri giocatori si collegano a essa. Va chiamata una sola volta (per esempio nell'evento Creazione del controller della stanza). Imposta global.player_id = 0 e global.network_role = "host"
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -63,7 +63,7 @@ Become the host of a LAN multiplayer game: the other players connect to this mac
 | **Icona** | ❓ |
 | **Categoria** | Network |
 
-A condition: true when THIS machine owns the synchronised instance. Put it before a block so the control logic only runs on the right player's machine
+Una condizione: vera quando QUESTA macchina è proprietaria dell'istanza sincronizzata. Mettila prima di un blocco perché la logica di controllo giri solo sulla macchina del giocatore giusto
 
 *Parametri:* nessuno
 
@@ -75,7 +75,7 @@ A condition: true when THIS machine owns the synchronised instance. Put it befor
 | **Icona** | ❓ |
 | **Categoria** | Network |
 
-A condition, on the host: true while the named player is holding the named input. It lets the host react to a client's keys without owning that client's character
+Una condizione, sull'host: vera finché il giocatore indicato tiene premuto il comando indicato. Permette all'host di reagire ai tasti di un client senza possedere il suo personaggio
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -90,7 +90,7 @@ A condition, on the host: true while the named player is holding the named input
 | **Icona** | 🔌 |
 | **Categoria** | Network |
 
-Connect to a LAN multiplayer game hosted by another machine. The host sets global.player_id (1, 2, ...). If the host cannot be reached, the game carries on single-player
+Si collega a una partita multigiocatore LAN ospitata da un'altra macchina. L'host assegna global.player_id (1, 2, ...). Se l'host non è raggiungibile, la partita prosegue da soli
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -106,7 +106,7 @@ Connect to a LAN multiplayer game hosted by another machine. The host sets globa
 | **Icona** | 🚪 |
 | **Categoria** | Network |
 
-Disconnect (or stop hosting) and clear the global network variables
+Si disconnette (o smette di ospitare) e azzera le variabili globali di rete
 
 *Parametri:* nessuno
 
@@ -118,7 +118,7 @@ Disconnect (or stop hosting) and clear the global network variables
 | **Icona** | 📥 |
 | **Categoria** | Network |
 
-Copy a shared variable into a global variable, to use it in a calculation. The same as reading global.<name> directly
+Copia una variabile condivisa in una variabile globale, per usarla in un calcolo. Equivale a leggere direttamente global.<nome>
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -133,7 +133,7 @@ Copy a shared variable into a global variable, to use it in a calculation. The s
 | **Icona** | ✉️ |
 | **Categoria** | Network |
 
-Broadcast a message of your own. Fires the "Network message" event on the machines concerned, with global.network_event / global.network_data / global.network_sender
+Trasmette un messaggio personalizzato. Attiva l'evento «Messaggio di rete» sulle macchine interessate, con global.network_event / global.network_data / global.network_sender
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -149,7 +149,7 @@ Broadcast a message of your own. Fires the "Network message" event on the machin
 | **Icona** | 🌐 |
 | **Categoria** | Network |
 
-An older low-level action: starts the room in host or client mode (spectator only -- a client's input has no effect). Prefer "Host a Game" / "Join a Game". Kept for existing projects and the --net-host / --net-client flags
+Una vecchia azione di basso livello: avvia la stanza in modalità host o client (solo spettatore — i comandi del client non hanno effetto). Meglio usare «Ospita una partita» / «Unisciti a una partita». Conservata per i progetti esistenti e per le opzioni --net-host / --net-client
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -165,7 +165,7 @@ An older low-level action: starts the room in host or client mode (spectator onl
 | **Icona** | 📤 |
 | **Categoria** | Network |
 
-Write a variable shared by every machine. On the host it applies immediately; on a client it is a request sent to the host. Readable anywhere as global.<name>
+Scrive una variabile condivisa da tutte le macchine. Sull'host viene applicata subito; su un client è una richiesta inviata all'host. Leggibile ovunque come global.<nome>
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -180,7 +180,7 @@ Write a variable shared by every machine. On the host it applies immediately; on
 | **Icona** | 🎮 |
 | **Categoria** | Network |
 
-Choose which player drives this synchronised instance (0 = host, 1, 2, ... = clients). On that player's machine the instance runs locally and feels responsive, and its state is reported back to the host; everywhere else it is a smoothed ghost. Call it on the host, guarded by global.is_host == 1
+Sceglie quale giocatore guida questa istanza sincronizzata (0 = host; 1, 2, ... = client). Sulla macchina di quel giocatore l'istanza gira in locale e risponde in modo fluido, e il suo stato viene riferito all'host; altrove è un fantasma interpolato. Va chiamata sull'host, protetta da global.is_host == 1
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -194,7 +194,7 @@ Choose which player drives this synchronised instance (0 = host, 1, 2, ... = cli
 | **Icona** | ⏱️ |
 | **Categoria** | Network |
 
-Adjust how often the host sends snapshots, and how far behind clients draw them. Call it once on the host, and on the clients for the delay
+Regola ogni quanto l'host invia le istantanee e con quanto ritardo i client le disegnano. Va chiamata una volta sull'host, e sui client per il ritardo
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -209,7 +209,7 @@ Adjust how often the host sends snapshots, and how far behind clients draw them.
 | **Icona** | 🚦 |
 | **Categoria** | Network |
 
-Host only: take everyone out of the waiting room and begin. Fires the "Networked game started" event on every machine
+Solo sull'host: fa uscire tutti dalla sala d'attesa e comincia la partita. Attiva l'evento «Partita di rete avviata» su ogni macchina
 
 *Parametri:* nessuno
 
@@ -221,7 +221,7 @@ Host only: take everyone out of the waiting room and begin. Fires the "Networked
 | **Icona** | 🔗 |
 | **Categoria** | Network |
 
-Mark the instance running this action as synchronised: its position, rotation, image and visibility are copied to every machine. Call it in the Create event. The host owns it by default; use "Set the instance's owner" to let a client drive it
+Contrassegna come sincronizzata l'istanza che esegue questa azione: posizione, rotazione, immagine e visibilità vengono copiate su tutte le macchine. Va chiamata nell'evento Creazione. Per impostazione predefinita è dell'host; usa «Imposta il proprietario dell'istanza» per farla guidare da un client
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|

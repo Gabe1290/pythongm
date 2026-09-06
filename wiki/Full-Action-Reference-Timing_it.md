@@ -12,7 +12,7 @@
 | **Icona** | ⏸️ |
 | **Categoria** | Tempo |
 
-Pause timeline playback at the current position
+Mette in pausa la riproduzione della linea temporale nella posizione corrente
 
 *Parametri:* nessuno
 
@@ -39,7 +39,7 @@ Imposta un allarme
 | **Icona** | ⏱️ |
 | **Categoria** | Tempo |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Imposta l'etichetta della linea temporale di questa istanza e ne riporta la posizione a 0 (solo annotazione — vedi la nota della categoria)
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Icona** | ⏱️ |
 | **Categoria** | Tempo |
 
-Set (or offset) this instance's timeline position
+Imposta (o sposta) la posizione di questa istanza sulla linea temporale
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Icona** | ⏱️ |
 | **Categoria** | Tempo |
 
-Set the timeline playback speed multiplier
+Imposta il moltiplicatore di velocità della linea temporale
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Metti in pausa il gioco per un certo numero di millisecondi, poi continua. I suo
 | **Icona** | ▶️ |
 | **Categoria** | Tempo |
 
-Begin or resume timeline playback from the current position
+Avvia o riprende la linea temporale dalla posizione corrente
 
 *Parametri:* nessuno
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Icona** | ⏹️ |
 | **Categoria** | Tempo |
 
-Stop timeline playback and reset the position to 0
+Ferma la linea temporale e riporta la posizione a 0
 
 *Parametri:* nessuno
 
