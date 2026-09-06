@@ -12,7 +12,7 @@
 | **Icône** | ⏸️ |
 | **Catégorie** | Minuterie |
 
-Pause timeline playback at the current position
+Met la lecture de la frise chronologique en pause à la position courante
 
 *Paramètres:* aucun
 
@@ -39,7 +39,7 @@ Régler une alarme
 | **Icône** | ⏱️ |
 | **Catégorie** | Minuterie |
 
-Set this instance's timeline label and reset its position to 0 (bookkeeping only — see category note)
+Définit l'étiquette de frise de cette instance et remet sa position à 0 (simple enregistrement — voir la note de la catégorie)
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -53,7 +53,7 @@ Set this instance's timeline label and reset its position to 0 (bookkeeping only
 | **Icône** | ⏱️ |
 | **Catégorie** | Minuterie |
 
-Set (or offset) this instance's timeline position
+Définit (ou décale) la position de cette instance sur la frise
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -68,7 +68,7 @@ Set (or offset) this instance's timeline position
 | **Icône** | ⏱️ |
 | **Catégorie** | Minuterie |
 
-Set the timeline playback speed multiplier
+Définit le multiplicateur de vitesse de lecture de la frise
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Mettre le jeu en pause pendant un certain nombre de millisecondes, puis continue
 | **Icône** | ▶️ |
 | **Catégorie** | Minuterie |
 
-Begin or resume timeline playback from the current position
+Démarre ou reprend la lecture de la frise à partir de la position courante
 
 *Paramètres:* aucun
 
@@ -108,7 +108,7 @@ Begin or resume timeline playback from the current position
 | **Icône** | ⏹️ |
 | **Catégorie** | Minuterie |
 
-Stop timeline playback and reset the position to 0
+Arrête la lecture de la frise et remet la position à 0
 
 *Paramètres:* aucun
 
