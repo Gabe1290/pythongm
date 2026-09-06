@@ -36,7 +36,7 @@ def build_context_menu(panel, position):
 
             actions_by_category = get_actions_by_category(panel.blockly_config)
             for category, actions in actions_by_category.items():
-                category_menu = add_action_menu.addMenu(category)
+                category_menu = add_action_menu.addMenu(panel.tr(category))
 
                 for action_type in actions:
                     action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
@@ -61,7 +61,7 @@ def build_context_menu(panel, position):
 
             actions_by_category = get_actions_by_category(panel.blockly_config)
             for category, actions in actions_by_category.items():
-                category_menu = add_action_menu.addMenu(category)
+                category_menu = add_action_menu.addMenu(panel.tr(category))
 
                 for action_type in actions:
                     action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
@@ -110,7 +110,7 @@ def build_context_menu(panel, position):
 
             actions_by_category = get_actions_by_category(panel.blockly_config)
             for category, actions in actions_by_category.items():
-                category_menu = add_action_menu.addMenu(category)
+                category_menu = add_action_menu.addMenu(panel.tr(category))
 
                 for action_type in actions:
                     action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
@@ -148,7 +148,7 @@ def build_context_menu(panel, position):
 
                 actions_by_category = get_actions_by_category(panel.blockly_config)
                 for category, actions in actions_by_category.items():
-                    category_menu = add_action_menu.addMenu(category)
+                    category_menu = add_action_menu.addMenu(panel.tr(category))
 
                     for action_type in actions:
                         action_item = category_menu.addAction(f"{action_type.icon} {panel.tr(action_type.display_name)}")
