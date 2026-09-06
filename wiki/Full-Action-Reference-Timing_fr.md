@@ -43,7 +43,7 @@ Définit l'étiquette de frise de cette instance et remet sa position à 0 (simp
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `timeline` | Texte | — | A label for your own reference; not a resource lookup |
+| `timeline` | Texte | — | Une étiquette pour votre propre usage ; ce n'est pas la recherche d'une ressource |
 
 ### Définir la position dans la frise
 
@@ -57,8 +57,8 @@ Définit (ou décale) la position de cette instance sur la frise
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `position` | Nombre | `0` | Position in steps |
-| `relative` | Oui/Non | Non | Add to the current position instead of setting it absolutely |
+| `position` | Nombre | `0` | Position, en pas |
+| `relative` | Oui/Non | Non | Ajouter à la position actuelle au lieu de la fixer de façon absolue |
 
 ### Définir la vitesse de la frise
 
@@ -72,7 +72,7 @@ Définit le multiplicateur de vitesse de lecture de la frise
 
 | Paramètre | Type | Défaut | Remarques |
 |-----------|------|---------|-------|
-| `speed` | Nombre | `1.0` | 1.0=normal, 0.5=half speed, 2.0=double speed |
+| `speed` | Nombre | `1.0` | 1.0 = normal, 0.5 = moitié moins vite, 2.0 = deux fois plus vite |
 
 ### Attendre
 
