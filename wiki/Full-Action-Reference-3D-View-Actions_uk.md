@@ -28,7 +28,7 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `reach` | Число | `5` | How many cells ahead you can reach, in grid cells; необов'язково |
+| `reach` | Число | `5` | Досяжність уперед, у комірках сітки; необов'язково |
 
 ### Намалювати HUD Block World
 
@@ -42,15 +42,15 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `slot_size` | Число | `40` | Width and height of each hotbar slot, in pixels; необов'язково |
-| `gap` | Число | `6` | Space between hotbar slots, in pixels; необов'язково |
-| `margin_bottom` | Число | `16` | Space between the hotbar and the bottom of the screen; необов'язково |
-| `back_color` | Колір | `#202020` | Fill colour of an unselected slot; необов'язково |
-| `selected_color` | Колір | `#ffd040` | Fill colour of the currently selected slot; необов'язково |
-| `border_color` | Колір | `#ffffff` | Outline colour of every slot; необов'язково |
-| `text_color` | Колір | `#ffffff` | Colour of each slot's block-type label; необов'язково |
-| `crosshair_size` | Число | `12` | Width and height of the centre crosshair, in pixels; необов'язково |
-| `crosshair_color` | Колір | `#ffffff` | Colour of the centre crosshair; необов'язково |
+| `slot_size` | Число | `40` | Ширина й висота кожної комірки панелі, у пікселях; необов'язково |
+| `gap` | Число | `6` | Проміжок між комірками панелі, у пікселях; необов'язково |
+| `margin_bottom` | Число | `16` | Відступ між панеллю та нижнім краєм екрана; необов'язково |
+| `back_color` | Колір | `#202020` | Колір заливки невибраної комірки; необов'язково |
+| `selected_color` | Колір | `#ffd040` | Колір заливки вибраної комірки; необов'язково |
+| `border_color` | Колір | `#ffffff` | Колір обведення всіх комірок; необов'язково |
+| `text_color` | Колір | `#ffffff` | Колір підпису типу блока на кожній комірці; необов'язково |
+| `crosshair_size` | Число | `12` | Ширина й висота прицілу в центрі, у пікселях; необов'язково |
+| `crosshair_color` | Колір | `#ffffff` | Колір прицілу в центрі; необов'язково |
 
 ### Намалювати HUD DOOM
 
@@ -101,10 +101,10 @@
 | `back_color` | Колір | `#101018` | Колір панелі за картою; необов'язково |
 | `wall_color` | Колір | `#8080a0` | Колір ліній стін; необов'язково |
 | `player_color` | Колір | `#ffd040` | Колір позначки камери та її лінії напрямку; необов'язково |
-| `mark_object` | Об'єкт | — | Also dot every instance of this object onto the map (blank = show walls and player only); необов'язково |
-| `mark_color` | Колір | `#40e0ff` | Colour of the Mark Object dots; необов'язково |
-| `mark_object_2` | Об'єкт | — | A second object to dot on, in its own colour; необов'язково |
-| `mark_color_2` | Колір | `#ff5050` | Colour of the Mark Object 2 dots; необов'язково |
+| `mark_object` | Об'єкт | — | Додатково позначати крапкою на карті кожен екземпляр цього об'єкта (порожньо — показувати лише стіни та гравця); необов'язково |
+| `mark_color` | Колір | `#40e0ff` | Колір крапок «Позначити об'єкт»; необов'язково |
+| `mark_object_2` | Об'єкт | — | Другий об'єкт для позначення, власним кольором; необов'язково |
+| `mark_color_2` | Колір | `#ff5050` | Колір крапок «Позначити об'єкт 2»; необов'язково |
 
 ### Увімкнути вигляд Block World
 
@@ -118,24 +118,24 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `enable` | Так/Ні | Так | On = first-person block view; off = normal top-down |
+| `enable` | Так/Ні | Так | Увімкнено — вигляд блоків від першої особи; вимкнено — звичайний вигляд згори |
 | `camera_object` | Об'єкт | — | Об'єкт, чия позиція + кут погляду є камерою (порожньо = об'єкт, що виконує цю дію); необов'язково |
-| `z_layer` | Число | `0` | Which world layer to render (Phase 2a renders exactly one layer -- no looking up/down yet); необов'язково |
+| `z_layer` | Число | `0` | Який шар світу малюється (на етапі 2a малюється рівно один шар — погляду вгору та вниз ще немає); необов'язково |
 | `fov` | Число | `66` | Горизонтальне поле зору в градусах; необов'язково |
 | `render_distance` | Число | `20` | Макс. довжина променя в клітинках сітки; необов'язково |
-| `cell_size` | Число | `32` | Grid cell size in pixels (match the block-placement grid); необов'язково |
+| `cell_size` | Число | `32` | Розмір комірки сітки в пікселях (відповідно до сітки розміщення блоків); необов'язково |
 | `columns` | Число | `320` | Стовпці екрана для raycast (менше = швидше/грубіше); необов'язково |
-| `wall_color` | Колір | `#8a8a8a` | Flat colour used only if Textured Blocks is off; необов'язково |
-| `floor_color` | Колір | `#3a2f1c` | Flat floor colour (Phase 2a has no floor texturing yet); необов'язково |
-| `ceiling_color` | Колір | `#87CEEB` | Flat ceiling/sky colour (Phase 2a has no sky yet); необов'язково |
-| `pitch` | Число | `0` | Degrees to look up (+) or down (-); 0 is level; необов'язково |
-| `wall_textured` | Так/Ні | Так | Off forces flat block colours even though real textures are available; необов'язково |
-| `top_cast_res` | Число | `4` | Top/bottom face texture detail: rows sampled per N screen rows (higher = faster + chunkier, 0 = flat average colour instead of texture); необов'язково |
-| `eye_height` | Число | `1.5` | Camera height above the layer it stands on, in cells (1.5 = a two-block-tall body, needed to see the top of a block on your own layer and stack onto it); необов'язково |
-| `gravity` | Число | `0` | Downward acceleration in cells/step^2 for the Jump action + gravity/falling (Tier 7a). 0 (default) keeps Move And Collide's original instant-footing behaviour with no jumping; a typical value is around 0.04; необов'язково |
-| `inventory` | Так/Ні | Ні | On = Break Block picks up what it breaks and Place Block consumes from that inventory (Tier 7c); off (default) = unlimited creative-mode placing, unchanged from before Tier 7c; необов'язково |
-| `generate` | Так/Ні | Ні | On = procedurally generate rolling terrain around the camera as it explores (Tier 7e), using Seed below; off (default) = only hand-placed/loaded blocks exist, unchanged from before Tier 7e; необов'язково |
-| `seed` | Число | `0` | World seed for Generate Terrain -- the same seed always produces the same terrain on this target. Ignored unless Generate Terrain is on; необов'язково |
+| `wall_color` | Колір | `#8a8a8a` | Суцільний колір, використовується лише якщо текстурні блоки вимкнено; необов'язково |
+| `floor_color` | Колір | `#3a2f1c` | Суцільний колір підлоги (на етапі 2a підлога ще не текстурується); необов'язково |
+| `ceiling_color` | Колір | `#87CEEB` | Суцільний колір стелі або неба (на етапі 2a неба ще немає); необов'язково |
+| `pitch` | Число | `0` | Градуси для погляду вгору (+) чи вниз (−); 0 — горизонт; необов'язково |
+| `wall_textured` | Так/Ні | Так | Вимкнено примусово дає суцільні кольори блоків, навіть коли доступні справжні текстури; необов'язково |
+| `top_cast_res` | Число | `4` | Деталізація текстури верхніх і нижніх граней: скільки рядків вибирається на кожні N рядків екрана (більше — швидше й грубіше, 0 — суцільний середній колір замість текстури); необов'язково |
+| `eye_height` | Число | `1.5` | Висота камери над шаром, на якому вона стоїть, у комірках (1,5 — тіло заввишки у два блоки; потрібно, щоб бачити верх блока на своєму шарі та ставати на нього); необов'язково |
+| `gravity` | Число | `0` | Прискорення вниз у комірках/крок² для дії «Стрибок», а також для гравітації та падіння (рівень 7a). 0 (типово) зберігає початкову миттєву опору дії «Рухатися зі зіткненням» без стрибків; типове значення — близько 0,04; необов'язково |
+| `inventory` | Так/Ні | Ні | Увімкнено — «Зруйнувати блок» підбирає зруйноване, а «Поставити блок» витрачає з цього інвентарю (рівень 7c); вимкнено (типово) — необмежене будівництво як у творчому режимі, як і до рівня 7c; необов'язково |
+| `generate` | Так/Ні | Ні | Увімкнено — під час дослідження навколо камери процедурно створюється горбистий ландшафт (рівень 7e) із зерном, указаним нижче; вимкнено (типово) — існують лише розставлені вручну чи завантажені блоки, як і до рівня 7e; необов'язково |
+| `seed` | Число | `0` | Зерно світу для «Створити ландшафт» — те саме зерно завжди дає той самий ландшафт на цій платформі. Ігнорується, якщо створення ландшафту вимкнено; необов'язково |
 
 ### Увімкнути вигляд Raycast
 
@@ -178,7 +178,7 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `speed` | Число | `0.35` | Initial upward velocity, in cells/step; необов'язково |
+| `speed` | Число | `0.35` | Початкова швидкість угору, у комірках за крок; необов'язково |
 
 ### Завантажити світ Block World
 
@@ -192,7 +192,7 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `data_file` | Текст | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
+| `data_file` | Текст | — | Шлях до JSON-файлу блокового світу відносно теки проєкту (напр. blocks/room1.json) |
 
 ### Дивитися вгору / вниз
 
@@ -206,8 +206,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `pitch` | Число | `0` | Degrees to look up (+) or down (-); 0 is level |
-| `relative` | Так/Ні | Ні | On = add to the current angle, for a look control you can hold down; off = set it outright; необов'язково |
+| `pitch` | Число | `0` | Градуси для погляду вгору (+) чи вниз (−); 0 — горизонт |
+| `relative` | Так/Ні | Ні | Увімкнено — додати до поточного кута, для керування поглядом з утриманням клавіші; вимкнено — задати кут одразу; необов'язково |
 
 ### Рухатися зі зіткненням
 
@@ -221,9 +221,9 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `dx` | Число | `0` | How far to move on x this step, in pixels |
-| `dy` | Число | `0` | How far to move on y this step, in pixels |
-| `collide` | Так/Ні | Так | Off ignores the block grid entirely (flying/debug); необов'язково |
+| `dx` | Число | `0` | На скільки зміститися по x за цей крок, у пікселях |
+| `dy` | Число | `0` | На скільки зміститися по y за цей крок, у пікселях |
+| `collide` | Так/Ні | Так | Вимкнено повністю ігнорує сітку блоків (політ або зневадження); необов'язково |
 
 ### Поставити блок
 
@@ -237,8 +237,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `block` | Вибір | `stone` | Which kind of block to place; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `reach` | Число | `5` | How many cells ahead you can build, in grid cells; необов'язково |
+| `block` | Вибір | `stone` | Який блок ставити; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `reach` | Число | `5` | Наскільки далеко вперед можна будувати, у комірках сітки; необов'язково |
 
 ### Вибрати комірку панелі
 
@@ -252,8 +252,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `index` | Число | `0` | Hotbar slot index, wrapping around at either end |
-| `relative` | Так/Ні | Ні | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; необов'язково |
+| `index` | Число | `0` | Номер комірки на панелі швидкого доступу, із переходом по колу на обох кінцях |
+| `relative` | Так/Ні | Ні | Увімкнено — додати до поточної комірки, для гортання клавішами [ ] або коліщатком; вимкнено — перейти до неї одразу; необов'язково |
 
 ### Задати захист блоків
 
@@ -267,8 +267,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `block_type` | Вибір | `diamond_block` | Which block type becomes protected; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `required_key` | Вибір | `gold_block` | Which block type must be in inventory to break it; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `block_type` | Вибір | `diamond_block` | Який тип блока стає захищеним; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `required_key` | Вибір | `gold_block` | Який тип блока має бути в інвентарі, щоб його зруйнувати; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Задати нагороду за блок
 
@@ -282,8 +282,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `block_type` | Вибір | `diamond_block` | Which block type awards score when broken; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `points` | Число | `10` | Score awarded per block of this type broken |
+| `block_type` | Вибір | `diamond_block` | Який тип блока дає очки при руйнуванні; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `points` | Число | `10` | Очки за кожен зруйнований блок цього типу |
 
 ### Задати кут погляду
 

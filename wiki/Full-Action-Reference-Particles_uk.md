@@ -16,8 +16,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `particle_type` | Число | `0` | Particle type id (from Create Particle Type) |
-| `number` | Число | `10` | Number of particles to emit |
+| `particle_type` | Число | `0` | Ідентифікатор типу часток (з «Створити тип часток») |
+| `number` | Число | `10` | Скільки часток випустити |
 
 ### Очистити частки
 
@@ -43,11 +43,11 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `x` | Число | `0` | Emitter center X (room coordinates) |
-| `y` | Число | `0` | Emitter center Y (room coordinates) |
-| `width` | Число | `0` | Emitter area width |
-| `height` | Число | `0` | Emitter area height |
-| `shape` | Вибір | `rectangle` | Shape of the emitter area particles spawn within; Варіанти: `rectangle`, `ellipse`, `diamond`, `line` |
+| `x` | Число | `0` | X центру випромінювача (координати кімнати) |
+| `y` | Число | `0` | Y центру випромінювача (координати кімнати) |
+| `width` | Число | `0` | Ширина області випромінювача |
+| `height` | Число | `0` | Висота області випромінювача |
+| `shape` | Вибір | `rectangle` | Форма області випромінювача, у якій з'являються частки; Варіанти: `rectangle`, `ellipse`, `diamond`, `line` |
 
 ### Створити систему часток
 
@@ -61,7 +61,7 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `depth` | Число | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
+| `depth` | Число | `0` | Глибина малювання системи часток (для порядку між екземплярами поки не використовується) |
 
 ### Створити тип часток
 
@@ -75,18 +75,18 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `sprite` | Спрайт | — | Sprite to draw each particle as; leave empty for a plain colored circle; необов'язково |
-| `size_min` | Число | `1.0` | Minimum particle size (scale factor) |
-| `size_max` | Число | `1.0` | Maximum particle size (scale factor) |
-| `size_increase` | Число | `0.0` | Size change per step (negative shrinks, floored at 0) |
-| `color` | Колір | `#FFFFFF` | Particle color (used when no sprite is set) |
-| `alpha` | Число | `1.0` | Transparency (0=invisible, 1=opaque) |
-| `speed_min` | Число | `0.0` | Minimum movement speed |
-| `speed_max` | Число | `0.0` | Maximum movement speed |
-| `direction_min` | Число | `0` | Minimum direction angle (0=right, 90=up) |
-| `direction_max` | Число | `360` | Maximum direction angle |
-| `life_min` | Число | `100` | Minimum lifetime in steps |
-| `life_max` | Число | `100` | Maximum lifetime in steps |
+| `sprite` | Спрайт | — | Спрайт, яким малюється кожна частка; залиште порожнім для простого кольорового кола; необов'язково |
+| `size_min` | Число | `1.0` | Найменший розмір частки (коефіцієнт масштабу) |
+| `size_max` | Число | `1.0` | Найбільший розмір частки (коефіцієнт масштабу) |
+| `size_increase` | Число | `0.0` | Зміна розміру за крок (від'ємна зменшує, не нижче 0) |
+| `color` | Колір | `#FFFFFF` | Колір частки (використовується, коли спрайт не задано) |
+| `alpha` | Число | `1.0` | Прозорість (0 — невидима, 1 — непрозора) |
+| `speed_min` | Число | `0.0` | Найменша швидкість руху |
+| `speed_max` | Число | `0.0` | Найбільша швидкість руху |
+| `direction_min` | Число | `0` | Найменший кут напрямку (0 — праворуч, 90 — вгору) |
+| `direction_max` | Число | `360` | Найбільший кут напрямку |
+| `life_min` | Число | `100` | Найменший час життя, у кроках |
+| `life_max` | Число | `100` | Найбільший час життя, у кроках |
 
 ### Видалити випромінювач
 
@@ -124,8 +124,8 @@
 
 | Параметр | Тип | За замовч. | Примітки |
 |-----------|------|---------|-------|
-| `particle_type` | Число | `0` | Particle type id (from Create Particle Type) |
-| `number` | Число | `1` | Particles to emit per step (0 stops streaming) |
+| `particle_type` | Число | `0` | Ідентифікатор типу часток (з «Створити тип часток») |
+| `number` | Число | `1` | Часток за крок (0 зупиняє потік) |
 
 ---
 
