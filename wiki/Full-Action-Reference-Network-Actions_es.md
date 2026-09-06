@@ -1,4 +1,4 @@
-# Network
+# Red
 
 *[Inicio](Home_es) | [Guía de preajustes](Preset-Guide_es) | [Referencia de eventos](Event-Reference_es)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Nombre** | `bind_network_input` |
 | **Icono** | ⌨️ |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Asocia una tecla local a una «entrada con nombre» que se comunica al anfitrión. El anfitrión la comprueba después con «Si el jugador pulsa». Las flechas y la barra espaciadora ya están asociadas ("left", "right", "up", "down", "space")
 
@@ -25,7 +25,7 @@ Asocia una tecla local a una «entrada con nombre» que se comunica al anfitrió
 |----------|-------|
 | **Nombre** | `network_spawn` |
 | **Icono** | ✨ |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Solo en el anfitrión: crea una instancia que aparece automáticamente en todos los clientes, como un «fantasma» suavizado. En un cliente no hace nada. El anfitrión gobierna la instancia que crea: protege su lógica de juego con global.is_host == 1
 
@@ -43,7 +43,7 @@ Solo en el anfitrión: crea una instancia que aparece automáticamente en todos 
 |----------|-------|
 | **Nombre** | `host_game` |
 | **Icono** | 🌐 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Convierte esta máquina en el anfitrión de una partida multijugador LAN: los demás jugadores se conectan a ella. Llámala una sola vez (por ejemplo en el evento Crear del controlador de la sala). Define global.player_id = 0 y global.network_role = "host"
 
@@ -61,7 +61,7 @@ Convierte esta máquina en el anfitrión de una partida multijugador LAN: los de
 |----------|-------|
 | **Nombre** | `is_instance_owner` |
 | **Icono** | ❓ |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Una condición: verdadera cuando ESTA máquina es la dueña de la instancia sincronizada. Colócala delante de un bloque para que la lógica de control solo se ejecute en la máquina del jugador correcto
 
@@ -73,7 +73,7 @@ Una condición: verdadera cuando ESTA máquina es la dueña de la instancia sinc
 |----------|-------|
 | **Nombre** | `remote_input` |
 | **Icono** | ❓ |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Una condición, en el anfitrión: verdadera mientras el jugador indicado mantenga pulsada la entrada indicada. Permite al anfitrión reaccionar a las teclas de un cliente sin ser dueño de su personaje
 
@@ -88,7 +88,7 @@ Una condición, en el anfitrión: verdadera mientras el jugador indicado manteng
 |----------|-------|
 | **Nombre** | `join_game` |
 | **Icono** | 🔌 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Se conecta a una partida multijugador LAN alojada en otra máquina. El anfitrión asigna global.player_id (1, 2, ...). Si no se puede contactar con el anfitrión, la partida continúa en solitario
 
@@ -104,7 +104,7 @@ Se conecta a una partida multijugador LAN alojada en otra máquina. El anfitrió
 |----------|-------|
 | **Nombre** | `leave_game` |
 | **Icono** | 🚪 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Se desconecta (o deja de alojar) y borra las variables globales de red
 
@@ -116,7 +116,7 @@ Se desconecta (o deja de alojar) y borra las variables globales de red
 |----------|-------|
 | **Nombre** | `get_shared_var` |
 | **Icono** | 📥 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Copia una variable compartida en una variable global, para usarla en un cálculo. Equivale a leer global.<nombre> directamente
 
@@ -131,7 +131,7 @@ Copia una variable compartida en una variable global, para usarla en un cálculo
 |----------|-------|
 | **Nombre** | `send_network_message` |
 | **Icono** | ✉️ |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Difunde un mensaje propio. Dispara el evento «Mensaje de red» en las máquinas afectadas, con global.network_event / global.network_data / global.network_sender
 
@@ -147,7 +147,7 @@ Difunde un mensaje propio. Dispara el evento «Mensaje de red» en las máquinas
 |----------|-------|
 | **Nombre** | `set_network_mode` |
 | **Icono** | 🌐 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Una acción antigua de bajo nivel: arranca la sala en modo anfitrión o cliente (solo espectador: la entrada del cliente no tiene efecto). Es preferible usar «Alojar una partida» / «Unirse a una partida». Se conserva para los proyectos existentes y para las opciones --net-host / --net-client
 
@@ -163,7 +163,7 @@ Una acción antigua de bajo nivel: arranca la sala en modo anfitrión o cliente 
 |----------|-------|
 | **Nombre** | `set_shared_var` |
 | **Icono** | 📤 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Escribe una variable compartida por todas las máquinas. En el anfitrión se aplica de inmediato; en un cliente es una petición que se envía al anfitrión. Se puede leer en cualquier parte como global.<nombre>
 
@@ -178,7 +178,7 @@ Escribe una variable compartida por todas las máquinas. En el anfitrión se apl
 |----------|-------|
 | **Nombre** | `set_instance_owner` |
 | **Icono** | 🎮 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Elige qué jugador gobierna esta instancia sincronizada (0 = anfitrión; 1, 2, ... = clientes). En la máquina de ese jugador la instancia se simula localmente y responde con fluidez, y su estado se comunica al anfitrión; en el resto es un fantasma suavizado. Llámala en el anfitrión, protegida con global.is_host == 1
 
@@ -192,7 +192,7 @@ Elige qué jugador gobierna esta instancia sincronizada (0 = anfitrión; 1, 2, .
 |----------|-------|
 | **Nombre** | `set_sync_rate` |
 | **Icono** | ⏱️ |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Ajusta con qué frecuencia envía instantáneas el anfitrión y con cuánto retraso las dibujan los clientes. Llámala una vez en el anfitrión, y en los clientes para el retraso
 
@@ -207,7 +207,7 @@ Ajusta con qué frecuencia envía instantáneas el anfitrión y con cuánto retr
 |----------|-------|
 | **Nombre** | `start_networked_game` |
 | **Icono** | 🚦 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Solo en el anfitrión: saca a todo el mundo de la sala de espera y empieza la partida. Dispara el evento «Partida en red iniciada» en todas las máquinas
 
@@ -219,7 +219,7 @@ Solo en el anfitrión: saca a todo el mundo de la sala de espera y empieza la pa
 |----------|-------|
 | **Nombre** | `sync_instance` |
 | **Icono** | 🔗 |
-| **Categoría** | Network |
+| **Categoría** | Red |
 
 Marca como sincronizada la instancia que ejecuta esta acción: su posición, rotación, imagen y visibilidad se copian a todas las máquinas. Llámala en el evento Crear. El anfitrión es su dueño por defecto; usa «Definir el dueño de la instancia» para que la gobierne un cliente
 
@@ -242,6 +242,6 @@ Marca como sincronizada la instancia que ejecuta esta acción: su posición, rot
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
 - [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (16)
-- [Particles](Full-Action-Reference-Particles_es) (8)
+- [Partículas](Full-Action-Reference-Particles_es) (8)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

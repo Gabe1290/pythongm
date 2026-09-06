@@ -1,4 +1,4 @@
-# Particles
+# Partikel
 
 *[Startseite](Home_de) | [Voreinstellungs-Leitfaden](Preset-Guide_de) | [Ereignisreferenz](Event-Reference_de)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Name** | `burst_particles` |
 | **Symbol** | 💥 |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Stößt eine einmalige Salve von Partikeln aus dem zuletzt erstellten Emitter aus
 
@@ -25,7 +25,7 @@ Stößt eine einmalige Salve von Partikeln aus dem zuletzt erstellten Emitter au
 |----------|-------|
 | **Name** | `clear_particles` |
 | **Symbol** | 🧹 |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Entfernt alle aktiven Partikel, behält aber Partikeltypen und Emitter
 
@@ -37,7 +37,7 @@ Entfernt alle aktiven Partikel, behält aber Partikeltypen und Emitter
 |----------|-------|
 | **Name** | `create_emitter` |
 | **Symbol** | 🌀 |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Erstellt einen Emitterbereich für Partikel (die zurückgegebene Kennung wird für die nächste Aktion gemerkt, die einen Emitter verwendet)
 
@@ -55,7 +55,7 @@ Erstellt einen Emitterbereich für Partikel (die zurückgegebene Kennung wird f�
 |----------|-------|
 | **Name** | `create_particle_system` |
 | **Symbol** | ✨ |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Erstellt ein an diese Instanz gebundenes Partikelsystem (ersetzt ein vorhandenes)
 
@@ -69,7 +69,7 @@ Erstellt ein an diese Instanz gebundenes Partikelsystem (ersetzt ein vorhandenes
 |----------|-------|
 | **Name** | `create_particle_type` |
 | **Symbol** | ⚙️ |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Legt ein neues Aussehen bzw. Verhalten für Partikel fest (die zurückgegebene Typkennung wird für die nächste Aktion gemerkt, die einen Partikeltyp verwendet)
 
@@ -94,7 +94,7 @@ Legt ein neues Aussehen bzw. Verhalten für Partikel fest (die zurückgegebene T
 |----------|-------|
 | **Name** | `destroy_emitter` |
 | **Symbol** | 💥 |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Entfernt den zuletzt erstellten Emitter
 
@@ -106,7 +106,7 @@ Entfernt den zuletzt erstellten Emitter
 |----------|-------|
 | **Name** | `destroy_particle_system` |
 | **Symbol** | 💥 |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Entfernt das Partikelsystem dieser Instanz und löscht dabei alle Partikel und Emitter
 
@@ -118,7 +118,7 @@ Entfernt das Partikelsystem dieser Instanz und löscht dabei alle Partikel und E
 |----------|-------|
 | **Name** | `stream_particles` |
 | **Symbol** | 🌊 |
-| **Kategorie** | Particles |
+| **Kategorie** | Partikel |
 
 Stößt bei jedem Schritt fortlaufend Partikel aus dem zuletzt erstellten Emitter aus (0 zum Anhalten)
 
@@ -142,6 +142,6 @@ Stößt bei jedem Schritt fortlaufend Partikel aus dem zuletzt erstellten Emitte
 - [Gitter](Full-Action-Reference-Grid_de) (4)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
 - [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
-- [Network](Full-Action-Reference-Network-Actions_de) (15)
+- [Netzwerk](Full-Action-Reference-Network-Actions_de) (15)
 
 [← Zurück zur Vollständigen Aktionsreferenz](Full-Action-Reference_de)

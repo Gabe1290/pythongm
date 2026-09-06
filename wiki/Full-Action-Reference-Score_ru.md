@@ -191,7 +191,7 @@
 - [Сетка](Full-Action-Reference-Grid_ru) (4)
 - [Виды](Full-Action-Reference-Views_ru) (2)
 - [3D-вид](Full-Action-Reference-3D-View-Actions_ru) (16)
-- [Network](Full-Action-Reference-Network-Actions_ru) (15)
-- [Particles](Full-Action-Reference-Particles_ru) (8)
+- [Сеть](Full-Action-Reference-Network-Actions_ru) (15)
+- [Частицы](Full-Action-Reference-Particles_ru) (8)
 
 [← Назад к Полному Справочнику Действий](Full-Action-Reference_ru)

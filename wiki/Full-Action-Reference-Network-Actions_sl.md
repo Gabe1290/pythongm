@@ -1,4 +1,4 @@
-# Network
+# Omrežje
 
 *[Domov](Home_sl) | [Vodnik po prednastavitvah](Preset-Guide_sl) | [Referenca dogodkov](Event-Reference_sl)*
 
@@ -10,7 +10,7 @@
 |----------|-------|
 | **Ime** | `bind_network_input` |
 | **Ikona** | ⌨️ |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Poveže krajevno tipko z »imenovanim vnosom«, o katerem se poroča gostitelju. Gostitelj ga nato preveri z »Če igralec pritisne«. Puščice in preslednica so že povezane ("left", "right", "up", "down", "space")
 
@@ -25,7 +25,7 @@ Poveže krajevno tipko z »imenovanim vnosom«, o katerem se poroča gostitelju.
 |----------|-------|
 | **Ime** | `network_spawn` |
 | **Ikona** | ✨ |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Samo pri gostitelju: ustvari primerek, ki se samodejno pojavi pri vseh odjemalcih kot zglajen »duh«. Pri odjemalcu ne naredi ničesar. Ustvarjeni primerek vodi gostitelj – njegovo igralno logiko zavaruj z global.is_host == 1
 
@@ -43,7 +43,7 @@ Samo pri gostitelju: ustvari primerek, ki se samodejno pojavi pri vseh odjemalci
 |----------|-------|
 | **Ime** | `host_game` |
 | **Ikona** | 🌐 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Ta računalnik postane gostitelj večigralske igre v krajevnem omrežju: drugi igralci se povežejo nanj. Pokliči enkrat (na primer v dogodku Ustvari pri krmilniku sobe). Nastavi global.player_id = 0 in global.network_role = "host"
 
@@ -61,7 +61,7 @@ Ta računalnik postane gostitelj večigralske igre v krajevnem omrežju: drugi i
 |----------|-------|
 | **Ime** | `is_instance_owner` |
 | **Ikona** | ❓ |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Pogoj: resničen, kadar je TA računalnik lastnik sinhroniziranega primerka. Postavi ga pred blok, da se krmilna logika izvaja le na računalniku pravega igralca
 
@@ -73,7 +73,7 @@ Pogoj: resničen, kadar je TA računalnik lastnik sinhroniziranega primerka. Pos
 |----------|-------|
 | **Ime** | `remote_input` |
 | **Ikona** | ❓ |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Pogoj pri gostitelju: resničen, dokler navedeni igralec drži navedeni vnos. Gostitelju omogoča, da se odziva na tipke odjemalca, ne da bi bil lastnik njegovega lika
 
@@ -88,7 +88,7 @@ Pogoj pri gostitelju: resničen, dokler navedeni igralec drži navedeni vnos. Go
 |----------|-------|
 | **Ime** | `join_game` |
 | **Ikona** | 🔌 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Poveže se z večigralsko igro v krajevnem omrežju, ki jo gosti drug računalnik. Gostitelj nastavi global.player_id (1, 2, ...). Če gostitelj ni dosegljiv, se igra nadaljuje kot enoigralska
 
@@ -104,7 +104,7 @@ Poveže se z večigralsko igro v krajevnem omrežju, ki jo gosti drug računalni
 |----------|-------|
 | **Ime** | `leave_game` |
 | **Ikona** | 🚪 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Prekine povezavo (ali preneha gostiti) in počisti globalne omrežne spremenljivke
 
@@ -116,7 +116,7 @@ Prekine povezavo (ali preneha gostiti) in počisti globalne omrežne spremenljiv
 |----------|-------|
 | **Ime** | `get_shared_var` |
 | **Ikona** | 📥 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Skupno spremenljivko prepiše v globalno, da jo lahko uporabiš v izračunu. Enako kot neposredno branje global.<ime>
 
@@ -131,7 +131,7 @@ Skupno spremenljivko prepiše v globalno, da jo lahko uporabiš v izračunu. Ena
 |----------|-------|
 | **Ime** | `send_network_message` |
 | **Ikona** | ✉️ |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Razpošlje sporočilo po tvoji izbiri. Na zadevnih računalnikih sproži dogodek »Omrežno sporočilo«, z global.network_event / global.network_data / global.network_sender
 
@@ -147,7 +147,7 @@ Razpošlje sporočilo po tvoji izbiri. Na zadevnih računalnikih sproži dogodek
 |----------|-------|
 | **Ime** | `set_network_mode` |
 | **Ikona** | 🌐 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Starejše nizkonivojsko dejanje: sobo zažene v načinu gostitelja ali odjemalca (samo opazovanje – vnos odjemalca nima učinka). Raje uporabi »Gosti igro« / »Pridruži se igri«. Ohranjeno za obstoječe projekte in za zastavici --net-host / --net-client
 
@@ -163,7 +163,7 @@ Starejše nizkonivojsko dejanje: sobo zažene v načinu gostitelja ali odjemalca
 |----------|-------|
 | **Ime** | `set_shared_var` |
 | **Ikona** | 📤 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Zapiše spremenljivko, ki si jo delijo vsi računalniki. Pri gostitelju se uveljavi takoj; pri odjemalcu je to zahteva, poslana gostitelju. Povsod berljiva kot global.<ime>
 
@@ -178,7 +178,7 @@ Zapiše spremenljivko, ki si jo delijo vsi računalniki. Pri gostitelju se uvelj
 |----------|-------|
 | **Ime** | `set_instance_owner` |
 | **Ikona** | 🎮 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Določi, kateri igralec vodi ta sinhronizirani primerek (0 = gostitelj; 1, 2, ... = odjemalci). Na računalniku tega igralca se primerek računa krajevno in se odziva gladko, njegovo stanje pa se sporoča gostitelju; drugje je zglajen duh. Pokliči pri gostitelju, zavarovano z global.is_host == 1
 
@@ -192,7 +192,7 @@ Določi, kateri igralec vodi ta sinhronizirani primerek (0 = gostitelj; 1, 2, ..
 |----------|-------|
 | **Ime** | `set_sync_rate` |
 | **Ikona** | ⏱️ |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Nastavi, kako pogosto gostitelj pošilja posnetke stanja in koliko za njimi jih odjemalci rišejo. Pokliči enkrat pri gostitelju, za zakasnitev pa tudi pri odjemalcih
 
@@ -207,7 +207,7 @@ Nastavi, kako pogosto gostitelj pošilja posnetke stanja in koliko za njimi jih 
 |----------|-------|
 | **Ime** | `start_networked_game` |
 | **Ikona** | 🚦 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Samo pri gostitelju: vse pospremi iz čakalnice in začne igro. Na vsakem računalniku sproži dogodek »Omrežna igra se je začela«
 
@@ -219,7 +219,7 @@ Samo pri gostitelju: vse pospremi iz čakalnice in začne igro. Na vsakem račun
 |----------|-------|
 | **Ime** | `sync_instance` |
 | **Ikona** | 🔗 |
-| **Kategorija** | Network |
+| **Kategorija** | Omrežje |
 
 Primerek, ki izvaja to dejanje, označi kot sinhroniziran: njegov položaj, zasuk, slika in vidnost se prepišejo na vse računalnike. Pokliči v dogodku Ustvari. Privzeto je last gostitelja; z »Nastavi lastnika primerka« ga lahko vodi odjemalec
 
@@ -242,6 +242,6 @@ Primerek, ki izvaja to dejanje, označi kot sinhroniziran: njegov položaj, zasu
 - [Mreža](Full-Action-Reference-Grid_sl) (4)
 - [Pogledi](Full-Action-Reference-Views_sl) (2)
 - [Pogled 3D](Full-Action-Reference-3D-View-Actions_sl) (16)
-- [Particles](Full-Action-Reference-Particles_sl) (8)
+- [Delci](Full-Action-Reference-Particles_sl) (8)
 
 [← Nazaj na Popolno Referenco Dejanj](Full-Action-Reference_sl)
