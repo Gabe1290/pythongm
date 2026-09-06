@@ -43,7 +43,7 @@ Nastavi oznako časovnice tega primerka in njegovo mesto ponastavi na 0 (samo ev
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `timeline` | Besedilo | — | A label for your own reference; not a resource lookup |
+| `timeline` | Besedilo | — | Oznaka za tvojo lastno rabo; ne išče nobenega vira |
 
 ### Nastavi mesto na časovnici
 
@@ -57,8 +57,8 @@ Nastavi (ali zamakne) mesto tega primerka na časovnici
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `position` | Število | `0` | Position in steps |
-| `relative` | Da/Ne | Ne | Add to the current position instead of setting it absolutely |
+| `position` | Število | `0` | Mesto v korakih |
+| `relative` | Da/Ne | Ne | Prišteje trenutnemu mestu, namesto da bi ga nastavilo absolutno |
 
 ### Nastavi hitrost časovnice
 
@@ -72,7 +72,7 @@ Nastavi množitelj hitrosti predvajanja časovnice
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `speed` | Število | `1.0` | 1.0=normal, 0.5=half speed, 2.0=double speed |
+| `speed` | Število | `1.0` | 1.0 = običajno, 0.5 = pol počasneje, 2.0 = dvakrat hitreje |
 
 ### Premor
 

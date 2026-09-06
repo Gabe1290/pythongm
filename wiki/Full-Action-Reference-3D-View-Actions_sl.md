@@ -28,7 +28,7 @@ Odstrani blok, v katerega je usmerjena kamera; če je inventar v »Vklopi pogled
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `reach` | Število | `5` | How many cells ahead you can reach, in grid cells; neobvezno |
+| `reach` | Število | `5` | Doseg naprej, v celicah mreže; neobvezno |
 
 ### Nariši HUD Block World
 
@@ -42,15 +42,15 @@ Nariše merek in vrstico za hiter dostop (izbrano mesto je poudarjeno, ob vklopl
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `slot_size` | Število | `40` | Width and height of each hotbar slot, in pixels; neobvezno |
-| `gap` | Število | `6` | Space between hotbar slots, in pixels; neobvezno |
-| `margin_bottom` | Število | `16` | Space between the hotbar and the bottom of the screen; neobvezno |
-| `back_color` | Barva | `#202020` | Fill colour of an unselected slot; neobvezno |
-| `selected_color` | Barva | `#ffd040` | Fill colour of the currently selected slot; neobvezno |
-| `border_color` | Barva | `#ffffff` | Outline colour of every slot; neobvezno |
-| `text_color` | Barva | `#ffffff` | Colour of each slot's block-type label; neobvezno |
-| `crosshair_size` | Število | `12` | Width and height of the centre crosshair, in pixels; neobvezno |
-| `crosshair_color` | Barva | `#ffffff` | Colour of the centre crosshair; neobvezno |
+| `slot_size` | Število | `40` | Širina in višina vsakega mesta v vrstici, v slikovnih točkah; neobvezno |
+| `gap` | Število | `6` | Razmik med mesti v vrstici, v slikovnih točkah; neobvezno |
+| `margin_bottom` | Število | `16` | Razmik med vrstico in spodnjim robom zaslona; neobvezno |
+| `back_color` | Barva | `#202020` | Barva polnila neizbranega mesta; neobvezno |
+| `selected_color` | Barva | `#ffd040` | Barva polnila trenutno izbranega mesta; neobvezno |
+| `border_color` | Barva | `#ffffff` | Barva obrobe vseh mest; neobvezno |
+| `text_color` | Barva | `#ffffff` | Barva oznake vrste bloka na vsakem mestu; neobvezno |
+| `crosshair_size` | Število | `12` | Širina in višina merka na sredini, v slikovnih točkah; neobvezno |
+| `crosshair_color` | Barva | `#ffffff` | Barva merka na sredini; neobvezno |
 
 ### Nariši HUD DOOM
 
@@ -101,10 +101,10 @@ Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki pri
 | `back_color` | Barva | `#101018` | Barva plošče za zemljevidom; neobvezno |
 | `wall_color` | Barva | `#8080a0` | Barva črt sten; neobvezno |
 | `player_color` | Barva | `#ffd040` | Barva oznake kamere in njene smerne črte; neobvezno |
-| `mark_object` | Predmet | — | Also dot every instance of this object onto the map (blank = show walls and player only); neobvezno |
-| `mark_color` | Barva | `#40e0ff` | Colour of the Mark Object dots; neobvezno |
-| `mark_object_2` | Predmet | — | A second object to dot on, in its own colour; neobvezno |
-| `mark_color_2` | Barva | `#ff5050` | Colour of the Mark Object 2 dots; neobvezno |
+| `mark_object` | Predmet | — | Na zemljevid s piko označi tudi vsak primerek tega objekta (prazno = pokaži samo stene in igralca); neobvezno |
+| `mark_color` | Barva | `#40e0ff` | Barva pik iz »Označi objekt«; neobvezno |
+| `mark_object_2` | Predmet | — | Drug objekt, ki se označi s svojo barvo; neobvezno |
+| `mark_color_2` | Barva | `#ff5050` | Barva pik iz »Označi objekt 2«; neobvezno |
 
 ### Vklopi pogled Block World
 
@@ -118,24 +118,24 @@ Sobo prikaže kot voksel pogled iz prve osebe (ena sama plast) namesto pogleda o
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `enable` | Da/Ne | Da | On = first-person block view; off = normal top-down |
+| `enable` | Da/Ne | Da | Vklopljeno = pogled blokov iz prve osebe; izklopljeno = običajen pogled od zgoraj |
 | `camera_object` | Predmet | — | Predmet, čigar položaj + kot pogleda je kamera (prazno = predmet, ki izvaja to dejanje); neobvezno |
-| `z_layer` | Število | `0` | Which world layer to render (Phase 2a renders exactly one layer -- no looking up/down yet); neobvezno |
+| `z_layer` | Število | `0` | Katera plast sveta se nariše (faza 2a nariše natanko eno plast – pogleda gor in dol še ni); neobvezno |
 | `fov` | Število | `66` | Vodoravno vidno polje v stopinjah; neobvezno |
 | `render_distance` | Število | `20` | Največja dolžina žarka v celicah mreže; neobvezno |
-| `cell_size` | Število | `32` | Grid cell size in pixels (match the block-placement grid); neobvezno |
+| `cell_size` | Število | `32` | Velikost celice mreže v slikovnih točkah (naj se ujema z mrežo za postavljanje blokov); neobvezno |
 | `columns` | Število | `320` | Zaslonski stolpci za raycast (manj = hitreje/bolj grobo); neobvezno |
-| `wall_color` | Barva | `#8a8a8a` | Flat colour used only if Textured Blocks is off; neobvezno |
-| `floor_color` | Barva | `#3a2f1c` | Flat floor colour (Phase 2a has no floor texturing yet); neobvezno |
-| `ceiling_color` | Barva | `#87CEEB` | Flat ceiling/sky colour (Phase 2a has no sky yet); neobvezno |
-| `pitch` | Število | `0` | Degrees to look up (+) or down (-); 0 is level; neobvezno |
-| `wall_textured` | Da/Ne | Da | Off forces flat block colours even though real textures are available; neobvezno |
-| `top_cast_res` | Število | `4` | Top/bottom face texture detail: rows sampled per N screen rows (higher = faster + chunkier, 0 = flat average colour instead of texture); neobvezno |
-| `eye_height` | Število | `1.5` | Camera height above the layer it stands on, in cells (1.5 = a two-block-tall body, needed to see the top of a block on your own layer and stack onto it); neobvezno |
-| `gravity` | Število | `0` | Downward acceleration in cells/step^2 for the Jump action + gravity/falling (Tier 7a). 0 (default) keeps Move And Collide's original instant-footing behaviour with no jumping; a typical value is around 0.04; neobvezno |
-| `inventory` | Da/Ne | Ne | On = Break Block picks up what it breaks and Place Block consumes from that inventory (Tier 7c); off (default) = unlimited creative-mode placing, unchanged from before Tier 7c; neobvezno |
-| `generate` | Da/Ne | Ne | On = procedurally generate rolling terrain around the camera as it explores (Tier 7e), using Seed below; off (default) = only hand-placed/loaded blocks exist, unchanged from before Tier 7e; neobvezno |
-| `seed` | Število | `0` | World seed for Generate Terrain -- the same seed always produces the same terrain on this target. Ignored unless Generate Terrain is on; neobvezno |
+| `wall_color` | Barva | `#8a8a8a` | Enotna barva, uporabljena le, če so blokovne teksture izklopljene; neobvezno |
+| `floor_color` | Barva | `#3a2f1c` | Enotna barva tal (faza 2a tal še ne teksturira); neobvezno |
+| `ceiling_color` | Barva | `#87CEEB` | Enotna barva stropa oziroma neba (faza 2a neba še nima); neobvezno |
+| `pitch` | Število | `0` | Stopinje za pogled navzgor (+) ali navzdol (−); 0 je vodoravno; neobvezno |
+| `wall_textured` | Da/Ne | Da | Izklopljeno vsili enotne barve blokov, tudi če so na voljo prave teksture; neobvezno |
+| `top_cast_res` | Število | `4` | Podrobnost teksture zgornjih in spodnjih ploskev: vzorčene vrstice na vsakih N zaslonskih vrstic (višje = hitreje in bolj grobo, 0 = enotna povprečna barva namesto teksture); neobvezno |
+| `eye_height` | Število | `1.5` | Višina kamere nad plastjo, na kateri stoji, v celicah (1,5 = telo, visoko dva bloka, potrebno, da vidiš vrh bloka na svoji plasti in stopiš nanj); neobvezno |
+| `gravity` | Število | `0` | Pospešek navzdol v celicah/korak² za dejanje »Skoči« ter za težnost in padanje (stopnja 7a). 0 (privzeto) ohrani izvorno hipno oprijemanje dejanja »Premakni s trkom«, brez skokov; običajna vrednost je okoli 0,04; neobvezno |
+| `inventory` | Da/Ne | Ne | Vklopljeno = »Razbij blok« pobere, kar razbije, »Postavi blok« pa jemlje iz tega inventarja (stopnja 7c); izklopljeno (privzeto) = neomejeno postavljanje kot v ustvarjalnem načinu, tako kot pred stopnjo 7c; neobvezno |
+| `generate` | Da/Ne | Ne | Vklopljeno = med raziskovanjem se okoli kamere proceduralno ustvarja valovit teren (stopnja 7e) z uporabo spodnjega semena; izklopljeno (privzeto) = obstajajo le ročno postavljeni ali naloženi bloki, tako kot pred stopnjo 7e; neobvezno |
+| `seed` | Število | `0` | Seme sveta za »Ustvari teren« – isto seme na tej platformi vedno ustvari enak teren. Prezrto, dokler je ustvarjanje terena izklopljeno; neobvezno |
 
 ### Omogoči pogled Raycast
 
@@ -178,7 +178,7 @@ Kameri Block World doda hitrost navzgor – le kadar stoji na trdnih tleh (brez 
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `speed` | Število | `0.35` | Initial upward velocity, in cells/step; neobvezno |
+| `speed` | Število | `0.35` | Začetna hitrost navzgor, v celicah na korak; neobvezno |
 
 ### Naloži svet Block World
 
@@ -192,7 +192,7 @@ V trenutno sobo naloži vnaprej pripravljen svet (bloke, ki jih je postavil gene
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `data_file` | Besedilo | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
+| `data_file` | Besedilo | — | Pot do datoteke JSON s svetom blokov, glede na mapo projekta (npr. blocks/room1.json) |
 
 ### Poglej gor / dol
 
@@ -206,8 +206,8 @@ Nagne pogled Block World navzgor ali navzdol
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `pitch` | Število | `0` | Degrees to look up (+) or down (-); 0 is level |
-| `relative` | Da/Ne | Ne | On = add to the current angle, for a look control you can hold down; off = set it outright; neobvezno |
+| `pitch` | Število | `0` | Stopinje za pogled navzgor (+) ali navzdol (−); 0 je vodoravno |
+| `relative` | Da/Ne | Ne | Vklopljeno = prišteje trenutnemu kotu, za upravljanje pogleda s pridržanjem; izklopljeno = kot nastavi neposredno; neobvezno |
 
 ### Premakni s trkom
 
@@ -221,9 +221,9 @@ Naredi korak premika, preverjen glede na mrežo blokov, s samodejnim oprijemom (
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `dx` | Število | `0` | How far to move on x this step, in pixels |
-| `dy` | Število | `0` | How far to move on y this step, in pixels |
-| `collide` | Da/Ne | Da | Off ignores the block grid entirely (flying/debug); neobvezno |
+| `dx` | Število | `0` | Za koliko se v tem koraku premakne po x, v slikovnih točkah |
+| `dy` | Število | `0` | Za koliko se v tem koraku premakne po y, v slikovnih točkah |
+| `collide` | Da/Ne | Da | Izklopljeno povsem prezre mrežo blokov (letenje / razhroščevanje); neobvezno |
 
 ### Postavi blok
 
@@ -237,8 +237,8 @@ Postavi blok v prazno celico, v katero je usmerjena kamera: brez omejitev, razen
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `block` | Izbira | `stone` | Which kind of block to place; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `reach` | Število | `5` | How many cells ahead you can build, in grid cells; neobvezno |
+| `block` | Izbira | `stone` | Katero vrsto bloka postaviti; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `reach` | Število | `5` | Kako daleč naprej lahko gradiš, v celicah mreže; neobvezno |
 
 ### Izberi mesto v vrstici
 
@@ -252,8 +252,8 @@ Izbere, kateri blok je izbran v vrstici za hiter dostop in s katerim bo gradilo 
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `index` | Število | `0` | Hotbar slot index, wrapping around at either end |
-| `relative` | Da/Ne | Ne | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; neobvezno |
+| `index` | Število | `0` | Zaporedna številka mesta v vrstici za hiter dostop, ki se na obeh koncih ovije |
+| `relative` | Da/Ne | Ne | Vklopljeno = prišteje trenutnemu mestu, za listanje s [ ] ali kolescem miške; izklopljeno = skoči neposredno nanj; neobvezno |
 
 ### Nastavi zaščito blokov
 
@@ -267,8 +267,8 @@ Zahteva določeno vrsto bloka v inventarju, preden lahko »Razbij blok« odstran
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `block_type` | Izbira | `diamond_block` | Which block type becomes protected; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `required_key` | Izbira | `gold_block` | Which block type must be in inventory to break it; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `block_type` | Izbira | `diamond_block` | Katera vrsta bloka postane zaščitena; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `required_key` | Izbira | `gold_block` | Katera vrsta bloka mora biti v inventarju, da ga je mogoče razbiti; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Nastavi nagrado za blok
 
@@ -282,8 +282,8 @@ Dodeli točke, ko »Razbij blok« uspešno odstrani izbrano vrsto bloka: poklič
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `block_type` | Izbira | `diamond_block` | Which block type awards score when broken; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `points` | Število | `10` | Score awarded per block of this type broken |
+| `block_type` | Izbira | `diamond_block` | Katera vrsta bloka ob razbitju prinese točke; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `points` | Število | `10` | Točke za vsak razbit blok te vrste |
 
 ### Nastavi kot pogleda
 

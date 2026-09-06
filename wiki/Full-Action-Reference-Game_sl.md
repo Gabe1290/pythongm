@@ -160,7 +160,7 @@ Nariši besedilni niz na položaju
 | `x` | Število | `0` | Položaj X |
 | `y` | Število | `0` | Položaj Y |
 | `relative` | Da/Ne | Ne | Nariši glede na položaj te instance namesto absolutnih zaslonskih koordinat; neobvezno |
-| `color` | Barva | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; neobvezno |
+| `color` | Barva | — | Barva besedila (npr. #ffffff). Prazno = trenutna barva risanja, sicer črna.; neobvezno |
 
 ### Nariši spremenljivko
 
@@ -204,7 +204,7 @@ Iz shranjene datoteke obnovi sobo, točke, življenja, zdravje, globalne spremen
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `filename` | Besedilo | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+| `filename` | Besedilo | `savegame.sav` | Ime shranjene datoteke za nalaganje (iz mape saves/ v projektu) |
 
 ### Odpri spletno stran
 
@@ -244,7 +244,7 @@ V datoteko shrani trenutno sobo, točke, življenja, zdravje, globalne spremenlj
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `filename` | Besedilo | `savegame.sav` | Save file name (written to the project's saves/ folder) |
+| `filename` | Besedilo | `savegame.sav` | Ime shranjene datoteke (zapiše se v mapo saves/ v projektu) |
 
 ### Nastavi prosojnost
 
@@ -360,8 +360,8 @@ Predvaja video datoteko v privzetem predvajalniku sistema: odpre se v svojem okn
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `filename` | Besedilo | — | Path to the video file |
-| `fullscreen` | Da/Ne | Ne | Request fullscreen playback (support depends on your system's player); neobvezno |
+| `filename` | Besedilo | — | Pot do video datoteke |
+| `fullscreen` | Da/Ne | Ne | Zahtevaj predvajanje čez cel zaslon (odvisno od predvajalnika v tvojem sistemu); neobvezno |
 
 ### Uvodni zaslon: pokaži sliko
 
@@ -375,7 +375,7 @@ Pokaže sličico čez ves zaslon in zaustavi igro, dokler je igralec ne zapre
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `image` | Sprite | — | Sprite to display full-screen |
+| `image` | Sprite | — | Sličica, ki naj se pokaže čez cel zaslon |
 
 ### Uvodni zaslon: pokaži besedilo
 
@@ -389,7 +389,7 @@ Pokaže sporočilo in zaustavi igro, dokler ga igralec ne zapre
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `text` | Besedilo | — | Message to display |
+| `text` | Besedilo | — | Sporočilo, ki naj se pokaže |
 
 ---
 
