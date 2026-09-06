@@ -7,11 +7,13 @@ Converts visual actions into runtime behavior
 import math
 import re
 from typing import Dict, Any, List, Tuple
+from runtime.action_colors import _hex_to_rgb
 from core.logger import get_logger
 # Absolute import, matching runtime/game_runner.py's mixin precedent.
 # runtime/__init__.py is deliberately pygame-free, so this keeps the
 # "importable without pygame" property 35 tests rely on.
 from runtime.action_drawing import DrawingMixin
+from runtime.action_score_lives_health import ScoreLivesHealthMixin
 from runtime.action_movement import MovementMixin
 logger = get_logger(__name__)
 
@@ -86,20 +88,8 @@ class _ExecKeyboard:
     check_pressed = check
 
 
-def _hex_to_rgb(hex_str: str, default: Tuple[int, int, int] = (0, 0, 0)) -> Tuple[int, int, int]:
-    """Parse ``#RRGGBB`` (or ``RRGGBB``) to an ``(r, g, b)`` 0-255 tuple.
 
-    Returns ``default`` on empty input or any parse failure.
-    """
-    if not hex_str:
-        return default
-    try:
-        hex_str = hex_str.lstrip('#')
-        return tuple(int(hex_str[i:i + 2], 16) for i in (0, 2, 4))
-    except (ValueError, IndexError, TypeError):
-        return default
-
-class ActionExecutor(DrawingMixin, MovementMixin):
+class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin):
     """Executes visual actions during gameplay with auto-discovery"""
 
     def __init__(self, game_runner=None):
@@ -1856,54 +1846,7 @@ class ActionExecutor(DrawingMixin, MovementMixin):
 
     # ==================== SCORE/LIVES/HEALTH ACTIONS ====================
 
-    def execute_set_score_action(self, instance, parameters: Dict[str, Any]):
-        """Set the score value"""
-        if not self.game_runner:
-            logger.warning("⚠️  Warning: set_score requires game_runner reference")
-            return
 
-        value = int(parameters.get("value", 0))
-        relative = parameters.get("relative", False)
-
-        if relative:
-            self.game_runner.score += value
-        else:
-            self.game_runner.score = value
-
-        # Auto-enable score in caption when score is used
-        self.game_runner.show_score_in_caption = True
-
-        logger.debug(f"🏆 Score set to: {self.game_runner.score}")
-
-    def execute_test_score_action(self, instance, parameters: Dict[str, Any]):
-        """Test score value and execute conditional actions
-
-        Returns True if condition met, False otherwise
-        """
-        if not self.game_runner:
-            return False
-
-        value = int(parameters.get("value", 0))
-        operation = parameters.get("operation", "equal")
-
-        current_score = self.game_runner.score
-
-        # Evaluate comparison
-        result = False
-        if operation == "equal":
-            result = current_score == value
-        elif operation == "less":
-            result = current_score < value
-        elif operation == "greater":
-            result = current_score > value
-        elif operation == "less_equal":
-            result = current_score <= value
-        elif operation == "greater_equal":
-            result = current_score >= value
-        elif operation == "not_equal":
-            result = current_score != value
-
-        return result
 
     def _resolve_draw_color(self, instance, default):
         """Return the active draw colour for a draw_* action.
@@ -1931,124 +1874,10 @@ class ActionExecutor(DrawingMixin, MovementMixin):
         return bool(relative)
 
 
-    def execute_set_lives_action(self, instance, parameters: Dict[str, Any]):
-        """Set the lives value"""
-        if not self.game_runner:
-            logger.warning("⚠️  Warning: set_lives requires game_runner reference")
-            return
-
-        value = int(parameters.get("value", 3))
-        relative = parameters.get("relative", False)
-
-        old_lives = self.game_runner.lives
-
-        if relative:
-            self.game_runner.lives += value
-        else:
-            self.game_runner.lives = value
-
-        # Ensure lives doesn't go negative
-        self.game_runner.lives = max(0, self.game_runner.lives)
-
-        # Auto-enable lives in caption when lives are used
-        self.game_runner.show_lives_in_caption = True
-
-        logger.debug(f"❤️  Lives set to: {self.game_runner.lives}")
-
-        # Trigger no_more_lives event if lives just reached 0
-        if old_lives > 0 and self.game_runner.lives <= 0:
-            logger.debug("💀 No more lives! Triggering no_more_lives event...")
-            self.game_runner.trigger_no_more_lives_event(instance)
-
-    def execute_test_lives_action(self, instance, parameters: Dict[str, Any]):
-        """Test lives value and execute conditional actions"""
-        if not self.game_runner:
-            return False
-
-        value = int(parameters.get("value", 0))
-        operation = parameters.get("operation", "equal")
-
-        current_lives = self.game_runner.lives
-
-        # Evaluate comparison
-        result = False
-        if operation == "equal":
-            result = current_lives == value
-        elif operation == "less":
-            result = current_lives < value
-        elif operation == "greater":
-            result = current_lives > value
-        elif operation == "less_equal":
-            result = current_lives <= value
-        elif operation == "greater_equal":
-            result = current_lives >= value
-        elif operation == "not_equal":
-            result = current_lives != value
-
-        return result
 
 
-    def execute_set_health_action(self, instance, parameters: Dict[str, Any]):
-        """Set health value (0-100)"""
-        if not self.game_runner:
-            logger.warning("⚠️  Warning: set_health requires game_runner reference")
-            return
 
-        value = float(parameters.get("value", 100))
-        relative = parameters.get("relative", False)
 
-        old_health = self.game_runner.health
-
-        if relative:
-            self.game_runner.health += value
-        else:
-            self.game_runner.health = value
-
-        # Clamp health between 0 and 100
-        self.game_runner.health = max(0, min(100, self.game_runner.health))
-
-        # Auto-enable health in caption when health is used
-        self.game_runner.show_health_in_caption = True
-
-        logger.debug(f"💚 Health set to: {self.game_runner.health}")
-
-        # Trigger no_more_health event if health just reached 0
-        if old_health > 0 and self.game_runner.health <= 0:
-            logger.debug("💔 No more health! Triggering no_more_health event...")
-            self.game_runner.trigger_no_more_health_event(instance)
-
-    def execute_test_health_action(self, instance, parameters: Dict[str, Any]):
-        """Test health value and execute conditional actions"""
-        if not self.game_runner:
-            return False
-
-        value = float(parameters.get("value", 0))
-        operation = parameters.get("operation", "equal")
-        # Heal the legacy *_or_equal spellings the editor used to save so
-        # already-authored projects keep working (M29).
-        if operation == "less_or_equal":
-            operation = "less_equal"
-        elif operation == "greater_or_equal":
-            operation = "greater_equal"
-
-        current_health = self.game_runner.health
-
-        # Evaluate comparison
-        result = False
-        if operation == "equal":
-            result = abs(current_health - value) < 0.001  # Float comparison tolerance
-        elif operation == "less":
-            result = current_health < value
-        elif operation == "greater":
-            result = current_health > value
-        elif operation == "less_equal":
-            result = current_health <= value
-        elif operation == "greater_equal":
-            result = current_health >= value
-        elif operation == "not_equal":
-            result = abs(current_health - value) >= 0.001
-
-        return result
 
     # execute_draw_minimap_action MOVED to extensions/raycast_2_5d/handlers.py
     # (PluginExecutor) in Stage B3. It reads the room's derived wall edges via
@@ -2073,40 +1902,7 @@ class ActionExecutor(DrawingMixin, MovementMixin):
         logger.debug(f"🪟 Caption settings updated: score={self.game_runner.show_score_in_caption}, "
               f"lives={self.game_runner.show_lives_in_caption}, health={self.game_runner.show_health_in_caption}")
 
-    def execute_show_highscore_action(self, instance, parameters: Dict[str, Any]):
-        """Show highscore table dialog
 
-        Parameters:
-            background: Background color (hex string like "#FFFFDD")
-            new_color: Color for new entry (hex string)
-            other_color: Color for other entries (hex string)
-            allow_new_entry: Whether to prompt for name if score qualifies (default True)
-        """
-        if not self.game_runner:
-            return
-
-        # Parse color parameters (GameMaker uses BGR format, we use RGB)
-        background = _hex_to_rgb(parameters.get('background'), (255, 255, 220))
-        new_color = _hex_to_rgb(parameters.get('new_color'), (255, 0, 0))
-        other_color = _hex_to_rgb(parameters.get('other_color'), (0, 0, 0))
-        allow_new_entry = parameters.get('allow_new_entry', True)
-
-        logger.debug(f"🏆 Show highscore action - current score: {self.game_runner.score}")
-
-        # Show the dialog
-        self.game_runner.show_highscore_dialog(
-            background_color=background,
-            new_color=new_color,
-            other_color=other_color,
-            allow_name_entry=allow_new_entry
-        )
-
-    def execute_clear_highscore_action(self, instance, parameters: Dict[str, Any]):
-        """Clear highscore table"""
-        if not self.game_runner:
-            return
-
-        self.game_runner.clear_highscores()
 
     # ==================== GAME CONTROL ACTIONS ====================
 
