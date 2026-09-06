@@ -1074,15 +1074,19 @@ class TestTestExpressionAction:
         executor = ActionExecutor()
         inst = MockInstance()
 
-        # This project's logger doesn't propagate to root, so attach a capturing
-        # handler directly to the module logger rather than relying on caplog.
+        # This project's logger doesn't propagate to ROOT, so caplog sees
+        # nothing -- but records do propagate up to the "pygm" parent. Attach
+        # there rather than to one module's logger: the warning moved from
+        # runtime.action_executor to runtime.action_flow when File 4 split the
+        # conditional-flow actions out, and a test pinned to a specific module
+        # breaks on a pure code move that changed no behaviour at all.
         records = []
 
         class _Capture(logging.Handler):
             def emit(self, record):
                 records.append(record.getMessage())
 
-        module_logger = _action_executor_module.logger
+        module_logger = logging.getLogger("pygm")
         handler = _Capture()
         module_logger.addHandler(handler)
         try:
