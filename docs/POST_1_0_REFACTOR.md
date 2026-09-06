@@ -71,15 +71,39 @@ see by design:
 failure modes a verbatim move has and import time does not catch: a dropped
 import, and a mixin never added to the class bases.
 
-### Companion cleanup — still open, needs a decision
+### Companion cleanup — also COMPLETE (2026-09-06)
 
-The three unchecked boxes near the end of this document are NOT part of the
-file splits and were deliberately not taken during File 4. They retire the
-parallel `runtime/action_handlers/` package, and the last one is blocked on a
-product decision nobody has made: **whether desktop should keep loading
-pre-`if_condition` / legacy-audio-name projects, and if so whether to re-point
-those names at the modern handlers via `ACTION_ALIASES`** — a behaviour change
-that needs its own offscreen-Qt proof, not a refactor.
+The `runtime/action_handlers/` teardown finished the same day, once the
+decision it was blocked on was made: **legacy action names are not worth
+carrying — there are too few legacy projects to justify it.** With that
+answered, the package is gone entirely and so is Phase 2 of
+`_register_action_handlers`; the engine now has one dispatch mechanism, plus
+`register_custom_action` for plugins.
+
+* **Deleted as legacy, each re-checked against the full "no producer" list
+  first** (ACTION_TYPES post-`load_all_plugins`, samples, `gmk_converter`,
+  `python_code_parser`, `blockly_config`, exporters, tests): the
+  pre-`if_condition` conditionals (`if_variable`, `if_dice`, `if_expression`,
+  `if_mouse_button`, `if_key_pressed`, `if_random_chance`, `if_collision`) and
+  the legacy audio names (`stop_all_sounds`, `set_sound_volume`,
+  `if_sound_playing`), plus `snap_object_to_grid` / `stop_object_movement`.
+* **Folded into the mixins, not deleted**: `move_free` / `set_speed` /
+  `set_direction` → `MovementMixin`, `comment` and the `play_sound` fallback →
+  `MiscMixin`, `snap_to_grid` → `runtime/input_handler.py` (its one remaining
+  caller).
+* **The exporters keep their own defensive cases** for a few old spellings
+  (`engine.js`'s `if_variable` / `stop_all_sounds`, Kivy's `if_key_pressed`).
+  That asymmetry is deliberate: it costs nothing, and rewriting JS with no CI
+  to run it would be the riskier move.
+
+Two things this step got wrong first and the gates caught, both worth
+remembering: deleting `sound_handlers.py` wholesale also removed `play_sound`,
+which is *not* legacy but the fallback for the plugin-owned action — the
+"runtime covers every sample action" matrix test failed immediately, and it was
+restored. And folding that fallback onto the executor risked **inverting plugin
+ownership**; verified empirically that the plugin still replaces it at load and
+still owns the `ACTION_TYPES` entry, rather than assuming.
+`tests/test_action_handlers_package_retired.py` pins all of it.
 
 ---
 
