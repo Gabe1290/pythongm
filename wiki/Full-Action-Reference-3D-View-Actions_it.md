@@ -28,7 +28,7 @@ Rimuove il blocco inquadrato dalla telecamera; lo raccoglie anche nell'inventari
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `reach` | Numero | `5` | How many cells ahead you can reach, in grid cells; facoltativo |
+| `reach` | Numero | `5` | Quanto lontano arrivi in avanti, in celle della griglia; facoltativo |
 
 ### Disegna HUD Block World
 
@@ -42,15 +42,15 @@ Disegna un mirino e una barra rapida (con la casella selezionata evidenziata e u
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `slot_size` | Numero | `40` | Width and height of each hotbar slot, in pixels; facoltativo |
-| `gap` | Numero | `6` | Space between hotbar slots, in pixels; facoltativo |
-| `margin_bottom` | Numero | `16` | Space between the hotbar and the bottom of the screen; facoltativo |
-| `back_color` | Colore | `#202020` | Fill colour of an unselected slot; facoltativo |
-| `selected_color` | Colore | `#ffd040` | Fill colour of the currently selected slot; facoltativo |
-| `border_color` | Colore | `#ffffff` | Outline colour of every slot; facoltativo |
-| `text_color` | Colore | `#ffffff` | Colour of each slot's block-type label; facoltativo |
-| `crosshair_size` | Numero | `12` | Width and height of the centre crosshair, in pixels; facoltativo |
-| `crosshair_color` | Colore | `#ffffff` | Colour of the centre crosshair; facoltativo |
+| `slot_size` | Numero | `40` | Larghezza e altezza di ogni casella della barra, in pixel; facoltativo |
+| `gap` | Numero | `6` | Spazio fra le caselle della barra, in pixel; facoltativo |
+| `margin_bottom` | Numero | `16` | Spazio fra la barra e il bordo inferiore dello schermo; facoltativo |
+| `back_color` | Colore | `#202020` | Colore di riempimento di una casella non selezionata; facoltativo |
+| `selected_color` | Colore | `#ffd040` | Colore di riempimento della casella selezionata; facoltativo |
+| `border_color` | Colore | `#ffffff` | Colore del contorno di tutte le caselle; facoltativo |
+| `text_color` | Colore | `#ffffff` | Colore dell'etichetta del tipo di blocco su ogni casella; facoltativo |
+| `crosshair_size` | Numero | `12` | Larghezza e altezza del mirino centrale, in pixel; facoltativo |
+| `crosshair_color` | Colore | `#ffffff` | Colore del mirino centrale; facoltativo |
 
 ### Disegna HUD DOOM
 
@@ -101,10 +101,10 @@ Disegna una minimappa orientata a nord dei muri della stanza raycast, con un ind
 | `back_color` | Colore | `#101018` | Colore del pannello dietro la mappa; facoltativo |
 | `wall_color` | Colore | `#8080a0` | Colore delle linee dei muri; facoltativo |
 | `player_color` | Colore | `#ffd040` | Colore dell'indicatore della camera e della sua linea di direzione; facoltativo |
-| `mark_object` | Oggetto | — | Also dot every instance of this object onto the map (blank = show walls and player only); facoltativo |
-| `mark_color` | Colore | `#40e0ff` | Colour of the Mark Object dots; facoltativo |
-| `mark_object_2` | Oggetto | — | A second object to dot on, in its own colour; facoltativo |
-| `mark_color_2` | Colore | `#ff5050` | Colour of the Mark Object 2 dots; facoltativo |
+| `mark_object` | Oggetto | — | Segnare sulla mappa anche ogni istanza di questo oggetto (vuoto = mostrare solo muri e giocatore); facoltativo |
+| `mark_color` | Colore | `#40e0ff` | Colore dei punti di «Segna oggetto»; facoltativo |
+| `mark_object_2` | Oggetto | — | Un secondo oggetto da segnare, con un colore proprio; facoltativo |
+| `mark_color_2` | Colore | `#ff5050` | Colore dei punti di «Segna oggetto 2»; facoltativo |
 
 ### Attiva vista Block World
 
@@ -118,24 +118,24 @@ Mostra la stanza come vista voxel in prima persona (un solo livello) invece dell
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `enable` | Sì/No | Sì | On = first-person block view; off = normal top-down |
+| `enable` | Sì/No | Sì | Attivo = vista dei blocchi in prima persona; disattivo = normale vista dall'alto |
 | `camera_object` | Oggetto | — | Oggetto la cui posizione + angolo di sguardo è la camera (vuoto = l'oggetto che esegue questa azione); facoltativo |
-| `z_layer` | Numero | `0` | Which world layer to render (Phase 2a renders exactly one layer -- no looking up/down yet); facoltativo |
+| `z_layer` | Numero | `0` | Quale livello del mondo viene disegnato (la fase 2a ne disegna esattamente uno: non si guarda ancora su e giù); facoltativo |
 | `fov` | Numero | `66` | Campo visivo orizzontale in gradi; facoltativo |
 | `render_distance` | Numero | `20` | Lunghezza massima del raggio in celle della griglia; facoltativo |
-| `cell_size` | Numero | `32` | Grid cell size in pixels (match the block-placement grid); facoltativo |
+| `cell_size` | Numero | `32` | Dimensione della cella della griglia, in pixel (da far coincidere con la griglia di posa dei blocchi); facoltativo |
 | `columns` | Numero | `320` | Colonne dello schermo per il raycast (meno = più veloce/più grezzo); facoltativo |
-| `wall_color` | Colore | `#8a8a8a` | Flat colour used only if Textured Blocks is off; facoltativo |
-| `floor_color` | Colore | `#3a2f1c` | Flat floor colour (Phase 2a has no floor texturing yet); facoltativo |
-| `ceiling_color` | Colore | `#87CEEB` | Flat ceiling/sky colour (Phase 2a has no sky yet); facoltativo |
-| `pitch` | Numero | `0` | Degrees to look up (+) or down (-); 0 is level; facoltativo |
-| `wall_textured` | Sì/No | Sì | Off forces flat block colours even though real textures are available; facoltativo |
-| `top_cast_res` | Numero | `4` | Top/bottom face texture detail: rows sampled per N screen rows (higher = faster + chunkier, 0 = flat average colour instead of texture); facoltativo |
-| `eye_height` | Numero | `1.5` | Camera height above the layer it stands on, in cells (1.5 = a two-block-tall body, needed to see the top of a block on your own layer and stack onto it); facoltativo |
-| `gravity` | Numero | `0` | Downward acceleration in cells/step^2 for the Jump action + gravity/falling (Tier 7a). 0 (default) keeps Move And Collide's original instant-footing behaviour with no jumping; a typical value is around 0.04; facoltativo |
-| `inventory` | Sì/No | No | On = Break Block picks up what it breaks and Place Block consumes from that inventory (Tier 7c); off (default) = unlimited creative-mode placing, unchanged from before Tier 7c; facoltativo |
-| `generate` | Sì/No | No | On = procedurally generate rolling terrain around the camera as it explores (Tier 7e), using Seed below; off (default) = only hand-placed/loaded blocks exist, unchanged from before Tier 7e; facoltativo |
-| `seed` | Numero | `0` | World seed for Generate Terrain -- the same seed always produces the same terrain on this target. Ignored unless Generate Terrain is on; facoltativo |
+| `wall_color` | Colore | `#8a8a8a` | Colore pieno, usato solo se i blocchi con texture sono disattivati; facoltativo |
+| `floor_color` | Colore | `#3a2f1c` | Colore pieno del pavimento (la fase 2a non applica ancora texture al pavimento); facoltativo |
+| `ceiling_color` | Colore | `#87CEEB` | Colore pieno del soffitto o del cielo (la fase 2a non ha ancora un cielo); facoltativo |
+| `pitch` | Numero | `0` | Gradi per guardare in alto (+) o in basso (−); 0 è l'orizzontale; facoltativo |
+| `wall_textured` | Sì/No | Sì | Disattivo impone colori pieni per i blocchi, anche se sono disponibili texture vere; facoltativo |
+| `top_cast_res` | Numero | `4` | Dettaglio della texture delle facce superiore e inferiore: righe campionate ogni N righe di schermo (più alto = più veloce e più grezzo, 0 = colore medio pieno invece della texture); facoltativo |
+| `eye_height` | Numero | `1.5` | Altezza della telecamera sopra il livello su cui poggia, in celle (1,5 = un corpo alto due blocchi, necessario per vedere la faccia superiore di un blocco del proprio livello e salirci sopra); facoltativo |
+| `gravity` | Numero | `0` | Accelerazione verso il basso, in celle/passo², per l'azione «Salta» e per gravità e cadute (livello 7a). 0 (predefinito) mantiene l'appoggio istantaneo originale di «Muovi con collisione», senza salti; un valore tipico è intorno a 0,04; facoltativo |
+| `inventory` | Sì/No | No | Attivo = «Rompi blocco» raccoglie ciò che rompe e «Posiziona blocco» attinge da quell'inventario (livello 7c); disattivo (predefinito) = posa illimitata in stile creativo, come prima del livello 7c; facoltativo |
+| `generate` | Sì/No | No | Attivo = genera proceduralmente un terreno ondulato attorno alla telecamera man mano che esplora (livello 7e), usando il seme qui sotto; disattivo (predefinito) = esistono solo i blocchi posati a mano o caricati, come prima del livello 7e; facoltativo |
+| `seed` | Numero | `0` | Seme del mondo per «Genera terreno»: lo stesso seme produce sempre lo stesso terreno su questa piattaforma. Ignorato se «Genera terreno» è disattivato; facoltativo |
 
 ### Abilita vista Raycast
 
@@ -178,7 +178,7 @@ Dà alla telecamera Block World una velocità verso l'alto, solo quando poggia s
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `speed` | Numero | `0.35` | Initial upward velocity, in cells/step; facoltativo |
+| `speed` | Numero | `0.35` | Velocità iniziale verso l'alto, in celle per passo; facoltativo |
 
 ### Carica Block World
 
@@ -192,7 +192,7 @@ Carica un mondo già pronto (blocchi posati da un generatore o scritti a mano) n
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `data_file` | Testo | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
+| `data_file` | Testo | — | Percorso di un file JSON di mondo a blocchi, relativo alla cartella del progetto (per es. blocks/room1.json) |
 
 ### Guarda su / giù
 
@@ -206,8 +206,8 @@ Inclina la vista Block World verso l'alto o verso il basso
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `pitch` | Numero | `0` | Degrees to look up (+) or down (-); 0 is level |
-| `relative` | Sì/No | No | On = add to the current angle, for a look control you can hold down; off = set it outright; facoltativo |
+| `pitch` | Numero | `0` | Gradi per guardare in alto (+) o in basso (−); 0 è l'orizzontale |
+| `relative` | Sì/No | No | Attivo = aggiungere all'angolo attuale, per un comando di mira da tenere premuto; disattivo = impostarlo direttamente; facoltativo |
 
 ### Muovi con collisione
 
@@ -221,9 +221,9 @@ Muove di un passo, controllando la griglia dei blocchi, con appoggio automatico 
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `dx` | Numero | `0` | How far to move on x this step, in pixels |
-| `dy` | Numero | `0` | How far to move on y this step, in pixels |
-| `collide` | Sì/No | Sì | Off ignores the block grid entirely (flying/debug); facoltativo |
+| `dx` | Numero | `0` | Di quanto muoversi su x in questo passo, in pixel |
+| `dy` | Numero | `0` | Di quanto muoversi su y in questo passo, in pixel |
+| `collide` | Sì/No | Sì | Disattivo ignora del tutto la griglia dei blocchi (volo / debug); facoltativo |
 
 ### Posiziona blocco
 
@@ -237,8 +237,8 @@ Mette un blocco nella cella vuota inquadrata dalla telecamera: senza limiti, a m
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `block` | Scelta | `stone` | Which kind of block to place; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `reach` | Numero | `5` | How many cells ahead you can build, in grid cells; facoltativo |
+| `block` | Scelta | `stone` | Che tipo di blocco posizionare; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `reach` | Numero | `5` | Quanto lontano puoi costruire in avanti, in celle della griglia; facoltativo |
 
 ### Scegli casella della barra
 
@@ -252,8 +252,8 @@ Sceglie quale blocco è selezionato nella barra rapida, con cui «Posiziona bloc
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `index` | Numero | `0` | Hotbar slot index, wrapping around at either end |
-| `relative` | Sì/No | No | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; facoltativo |
+| `index` | Numero | `0` | Indice della casella nella barra rapida, che riparte da capo a entrambe le estremità |
+| `relative` | Sì/No | No | Attivo = aggiungere alla casella corrente, per scorrere con [ ] o con la rotella; disattivo = andarci direttamente; facoltativo |
 
 ### Imposta protezione blocchi
 
@@ -267,8 +267,8 @@ Richiede un tipo di blocco preciso nell'inventario prima che «Rompi blocco» po
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `block_type` | Scelta | `diamond_block` | Which block type becomes protected; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `required_key` | Scelta | `gold_block` | Which block type must be in inventory to break it; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `block_type` | Scelta | `diamond_block` | Quale tipo di blocco diventa protetto; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `required_key` | Scelta | `gold_block` | Quale tipo di blocco deve essere nell'inventario per poterlo rompere; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Imposta ricompensa blocco
 
@@ -282,8 +282,8 @@ Assegna punti quando «Rompi blocco» rimuove con successo un tipo di blocco sce
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `block_type` | Scelta | `diamond_block` | Which block type awards score when broken; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `points` | Numero | `10` | Score awarded per block of this type broken |
+| `block_type` | Scelta | `diamond_block` | Quale tipo di blocco assegna punti quando viene rotto; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `points` | Numero | `10` | Punti assegnati per ogni blocco di questo tipo rotto |
 
 ### Imposta angolo di sguardo
 

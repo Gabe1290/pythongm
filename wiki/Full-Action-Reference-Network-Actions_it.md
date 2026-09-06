@@ -16,8 +16,8 @@ Associa un tasto locale a un «comando con nome» segnalato all'host. L'host lo 
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `name` | Testo | — | A label of your choosing (e.g. "jump", "fire") |
-| `key` | Testo | — | A key name: "space", "left", "a", "5", "lshift"... |
+| `name` | Testo | — | Un nome a tua scelta (per es. "jump", "fire") |
+| `key` | Testo | — | Un nome di tasto: "space", "left", "a", "5", "lshift"... |
 
 ### Crea oggetto in rete
 
@@ -31,11 +31,11 @@ Solo sull'host: crea un'istanza che compare automaticamente su ogni client come 
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `object` | Oggetto | — | The type of object to create |
+| `object` | Oggetto | — | Il tipo di oggetto da creare |
 | `x` | Testo | `0` |  |
 | `y` | Testo | `0` |  |
-| `owner` | Testo | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; facoltativo |
-| `relative` | Sì/No | No | Position relative to the object running the action; facoltativo |
+| `owner` | Testo | `0` | Il giocatore che guida questa istanza (0 = host). Spesso global.network_sender dentro «Giocatore entrato».; facoltativo |
+| `relative` | Sì/No | No | Posizione relativa all'oggetto che esegue l'azione; facoltativo |
 
 ### Ospita una partita
 
@@ -49,11 +49,11 @@ Rende questa macchina l'host di una partita multigiocatore LAN: gli altri giocat
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `game_name` | Testo | `PyGameMaker` | Name shown in the server list (network discovery); facoltativo |
-| `max_players` | Numero | `8` | Largest number of players, host included (2 to 16); facoltativo |
-| `port` | Numero | `45782` | TCP port -- must be the same on the host and every client; facoltativo |
-| `player_name` | Testo | — | This player's name (empty = global.player_name, or "Player"); facoltativo |
-| `show_lobby` | Sì/No | No | Show a "Waiting for players..." screen with a Start button before the game begins; facoltativo |
+| `game_name` | Testo | `PyGameMaker` | Nome mostrato nell'elenco dei server (rilevamento in rete); facoltativo |
+| `max_players` | Numero | `8` | Numero massimo di giocatori, host compreso (da 2 a 16); facoltativo |
+| `port` | Numero | `45782` | Porta TCP: deve essere la stessa sull'host e su ogni client; facoltativo |
+| `player_name` | Testo | — | Nome di questo giocatore (vuoto = global.player_name, oppure "Player"); facoltativo |
+| `show_lobby` | Sì/No | No | Mostrare una schermata «In attesa di giocatori...» con un pulsante Avvia prima che la partita inizi; facoltativo |
 
 ### Se controllo questa istanza
 
@@ -79,8 +79,8 @@ Una condizione, sull'host: vera finché il giocatore indicato tiene premuto il c
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `player` | Testo | `0` | Player number (0 = host) |
-| `name` | Testo | — | The named input to test (e.g. "jump") |
+| `player` | Testo | `0` | Numero del giocatore (0 = host) |
+| `name` | Testo | — | Il comando con nome da controllare (per es. "jump") |
 
 ### Unisciti a una partita
 
@@ -94,9 +94,9 @@ Si collega a una partita multigiocatore LAN ospitata da un'altra macchina. L'hos
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `host` | Testo | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); facoltativo |
-| `port` | Numero | `45782` | TCP port -- must match the host's; facoltativo |
-| `player_name` | Testo | — | This player's name (empty = global.player_name, or "Player"); facoltativo |
+| `host` | Testo | `127.0.0.1` | Indirizzo IP dell'host sulla rete locale ("auto" apre la schermata di connessione integrata); facoltativo |
+| `port` | Numero | `45782` | Porta TCP: deve corrispondere a quella dell'host; facoltativo |
+| `player_name` | Testo | — | Nome di questo giocatore (vuoto = global.player_name, oppure "Player"); facoltativo |
 
 ### Esci dalla partita
 
@@ -122,8 +122,8 @@ Copia una variabile condivisa in una variabile globale, per usarla in un calcolo
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `name` | Testo | — | Name of the shared variable to read |
-| `into` | Testo | — | Name of the global variable to write the value into |
+| `name` | Testo | — | Nome della variabile condivisa da leggere |
+| `into` | Testo | — | Nome della variabile globale in cui scrivere il valore |
 
 ### Invia messaggio di rete
 
@@ -137,9 +137,9 @@ Trasmette un messaggio personalizzato. Attiva l'evento «Messaggio di rete» sul
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `event` | Testo | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
-| `data` | Testo | — | A number, text, true/false, or a short list; facoltativo |
-| `target` | Scelta | `all` | all = everyone; host = the host only; Scelte: `all`, `host` |
+| `event` | Testo | — | Un nome a tua scelta che il gestore controlla (per es. "buzz", "answer") |
+| `data` | Testo | — | Un numero, del testo, true/false o un breve elenco; facoltativo |
+| `target` | Scelta | `all` | all = tutti; host = solo l'host; Scelte: `all`, `host` |
 
 ### Imposta la modalità di rete (v1)
 
@@ -153,9 +153,9 @@ Una vecchia azione di basso livello: avvia la stanza in modalità host o client 
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `mode` | Scelta | `host` | Host = others connect to you; Client = you connect to a host; Scelte: `host`, `client` |
-| `host` | Testo | `127.0.0.1` | The host's LAN IP address (Client mode only); facoltativo |
-| `port` | Numero | `45782` | TCP port -- must be the same on the host and the client; facoltativo |
+| `mode` | Scelta | `host` | Host = gli altri si collegano a te; Client = tu ti colleghi a un host; Scelte: `host`, `client` |
+| `host` | Testo | `127.0.0.1` | Indirizzo IP dell'host sulla rete locale (solo in modalità Client); facoltativo |
+| `port` | Numero | `45782` | Porta TCP: deve essere la stessa sull'host e sul client; facoltativo |
 
 ### Imposta variabile condivisa
 
@@ -169,8 +169,8 @@ Scrive una variabile condivisa da tutte le macchine. Sull'host viene applicata s
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `name` | Testo | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Testo | `0` | A number, text or true/false (complex objects are refused) |
+| `name` | Testo | — | Un identificatore semplice (lettere, cifre, _): niente spazi né operatori |
+| `value` | Testo | `0` | Un numero, del testo o true/false (gli oggetti complessi vengono rifiutati) |
 
 ### Imposta il proprietario dell'istanza
 
@@ -184,7 +184,7 @@ Sceglie quale giocatore guida questa istanza sincronizzata (0 = host; 1, 2, ... 
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `player` | Testo | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+| `player` | Testo | `0` | Numero del giocatore (0 = host). Spesso global.network_sender dentro «Giocatore entrato». |
 
 ### Imposta la frequenza di sincronia
 
@@ -198,8 +198,8 @@ Regola ogni quanto l'host invia le istantanee e con quanto ritardo i client le d
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `hz` | Numero | `20` | 10-30 works well on a local network (default 20); facoltativo |
-| `interp_ms` | Numero | `100` | How far behind ghosts are drawn, in milliseconds (default 100); facoltativo |
+| `hz` | Numero | `20` | Da 10 a 30 funziona bene su una rete locale (predefinito 20); facoltativo |
+| `interp_ms` | Numero | `100` | Con quanto ritardo vengono disegnati i fantasmi, in millisecondi (predefinito 100); facoltativo |
 
 ### Avvia la partita in rete
 
@@ -225,7 +225,7 @@ Contrassegna come sincronizzata l'istanza che esegue questa azione: posizione, r
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `vars` | Testo | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); facoltativo |
+| `vars` | Testo | — | Nomi delle variabili di istanza da copiare anche, separati da virgole (per es. "hp, colour"); facoltativo |
 
 ---
 

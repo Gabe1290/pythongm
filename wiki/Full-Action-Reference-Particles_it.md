@@ -16,8 +16,8 @@ Emette una raffica singola di particelle dall'emettitore creato più di recente
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `particle_type` | Numero | `0` | Particle type id (from Create Particle Type) |
-| `number` | Numero | `10` | Number of particles to emit |
+| `particle_type` | Numero | `0` | Identificatore del tipo di particella (da «Crea tipo di particella») |
+| `number` | Numero | `10` | Numero di particelle da emettere |
 
 ### Cancella particelle
 
@@ -43,11 +43,11 @@ Crea un'area emettitrice di particelle (l'identificatore restituito viene ricord
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `x` | Numero | `0` | Emitter center X (room coordinates) |
-| `y` | Numero | `0` | Emitter center Y (room coordinates) |
-| `width` | Numero | `0` | Emitter area width |
-| `height` | Numero | `0` | Emitter area height |
-| `shape` | Scelta | `rectangle` | Shape of the emitter area particles spawn within; Scelte: `rectangle`, `ellipse`, `diamond`, `line` |
+| `x` | Numero | `0` | X del centro dell'emettitore (coordinate della stanza) |
+| `y` | Numero | `0` | Y del centro dell'emettitore (coordinate della stanza) |
+| `width` | Numero | `0` | Larghezza dell'area emettitrice |
+| `height` | Numero | `0` | Altezza dell'area emettitrice |
+| `shape` | Scelta | `rectangle` | Forma dell'area emettitrice in cui nascono le particelle; Scelte: `rectangle`, `ellipse`, `diamond`, `line` |
 
 ### Crea sistema di particelle
 
@@ -61,7 +61,7 @@ Crea un sistema di particelle collegato a questa istanza (sostituisce quello esi
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `depth` | Numero | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
+| `depth` | Numero | `0` | Profondità di disegno del sistema di particelle (non ancora usata per l'ordine fra istanze) |
 
 ### Crea tipo di particella
 
@@ -75,18 +75,18 @@ Definisce un nuovo aspetto o comportamento di particella (l'identificatore di ti
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `sprite` | Sprite | — | Sprite to draw each particle as; leave empty for a plain colored circle; facoltativo |
-| `size_min` | Numero | `1.0` | Minimum particle size (scale factor) |
-| `size_max` | Numero | `1.0` | Maximum particle size (scale factor) |
-| `size_increase` | Numero | `0.0` | Size change per step (negative shrinks, floored at 0) |
-| `color` | Colore | `#FFFFFF` | Particle color (used when no sprite is set) |
-| `alpha` | Numero | `1.0` | Transparency (0=invisible, 1=opaque) |
-| `speed_min` | Numero | `0.0` | Minimum movement speed |
-| `speed_max` | Numero | `0.0` | Maximum movement speed |
-| `direction_min` | Numero | `0` | Minimum direction angle (0=right, 90=up) |
-| `direction_max` | Numero | `360` | Maximum direction angle |
-| `life_min` | Numero | `100` | Minimum lifetime in steps |
-| `life_max` | Numero | `100` | Maximum lifetime in steps |
+| `sprite` | Sprite | — | Sprite con cui disegnare ogni particella; lascia vuoto per un semplice cerchio colorato; facoltativo |
+| `size_min` | Numero | `1.0` | Dimensione minima della particella (fattore di scala) |
+| `size_max` | Numero | `1.0` | Dimensione massima della particella (fattore di scala) |
+| `size_increase` | Numero | `0.0` | Variazione di dimensione per passo (negativo rimpicciolisce, con minimo 0) |
+| `color` | Colore | `#FFFFFF` | Colore della particella (usato quando non è impostato uno sprite) |
+| `alpha` | Numero | `1.0` | Trasparenza (0 = invisibile, 1 = opaca) |
+| `speed_min` | Numero | `0.0` | Velocità di movimento minima |
+| `speed_max` | Numero | `0.0` | Velocità di movimento massima |
+| `direction_min` | Numero | `0` | Angolo di direzione minimo (0 = a destra, 90 = in alto) |
+| `direction_max` | Numero | `360` | Angolo di direzione massimo |
+| `life_min` | Numero | `100` | Durata minima, in passi |
+| `life_max` | Numero | `100` | Durata massima, in passi |
 
 ### Elimina emettitore
 
@@ -124,8 +124,8 @@ Emette particelle in continuo, a ogni passo, dall'emettitore creato più di rece
 
 | Parametro | Tipo | Predef. | Note |
 |-----------|------|---------|-------|
-| `particle_type` | Numero | `0` | Particle type id (from Create Particle Type) |
-| `number` | Numero | `1` | Particles to emit per step (0 stops streaming) |
+| `particle_type` | Numero | `0` | Identificatore del tipo di particella (da «Crea tipo di particella») |
+| `number` | Numero | `1` | Particelle emesse per passo (0 ferma l'emissione) |
 
 ---
 
