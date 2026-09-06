@@ -149,3 +149,41 @@ def test_cleared_references_recorded_but_not_acted_on(project_dir):
         cleared_references=[{"object": "obj_player", "field": "sprite"}])
     entries = list_trash(project_dir)
     assert entries[0]["cleared_references"] == [{"object": "obj_player", "field": "sprite"}]
+
+
+def test_list_trash_newest_first_when_timestamps_tie(project_dir, monkeypatch):
+    """Two deletions inside the SAME clock tick must still list newest first.
+
+    test_list_trash_newest_first above only catches this when the two
+    trash_asset calls happen to land on different timestamps -- which they
+    usually do alone, and sometimes do not under a loaded full-suite run
+    (Windows' clock granularity is coarser than the microseconds an ISO string
+    implies). It failed exactly that way during the File 4 refactor. With equal
+    keys `sorted` is stable, so the manifest's insertion order survived and the
+    OLDEST came out first.
+
+    This pins the tie deterministically by freezing the clock, so the ordering
+    guarantee is tested rather than raced.
+    """
+    import utils.asset_trash as trash_mod
+
+    frozen = "2026-09-06T12:00:00+00:00"
+
+    class _FrozenDatetime:
+        @staticmethod
+        def now(tz=None):
+            class _Stamp:
+                @staticmethod
+                def isoformat():
+                    return frozen
+            return _Stamp()
+
+    monkeypatch.setattr(trash_mod, "datetime", _FrozenDatetime)
+
+    trash_asset(project_dir, "sprites", "spr_1", {"name": "spr_1"})
+    trash_asset(project_dir, "sprites", "spr_2", {"name": "spr_2"})
+
+    entries = list_trash(project_dir)
+    assert [e["deleted_at"] for e in entries] == [frozen, frozen], (
+        "the timestamps must actually tie, or this test proves nothing")
+    assert [e["asset_name"] for e in entries] == ["spr_2", "spr_1"]

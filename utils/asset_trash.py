@@ -132,9 +132,22 @@ def trash_asset(project_dir: Path, asset_type: str, asset_name: str,
 
 
 def list_trash(project_dir: Path) -> List[Dict[str, Any]]:
-    """Every trashed asset, newest first."""
+    """Every trashed asset, newest first.
+
+    Ties break on manifest position, last-appended first. Sorting on
+    `deleted_at` alone is not enough: it is an ISO timestamp string, and two
+    deletions inside one clock tick (easy on Windows, whose clock granularity
+    is coarser than the microseconds the string implies) compare equal -- at
+    which point `sorted` is stable and quietly returns them OLDEST-first, the
+    exact opposite of what this function promises. That made
+    tests/test_asset_trash.py::test_list_trash_newest_first fail intermittently
+    under a loaded full-suite run while passing on its own.
+    """
     entries = _load_manifest(project_dir)
-    return sorted(entries, key=lambda e: e.get("deleted_at", ""), reverse=True)
+    order = sorted(range(len(entries)),
+                   key=lambda i: (entries[i].get("deleted_at", ""), i),
+                   reverse=True)
+    return [entries[i] for i in order]
 
 
 def restore_asset(project_dir: Path, trash_id: str) -> Optional[Dict[str, Any]]:
