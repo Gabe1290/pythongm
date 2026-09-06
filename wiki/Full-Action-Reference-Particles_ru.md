@@ -16,8 +16,8 @@
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `particle_type` | Число | `0` | Particle type id (from Create Particle Type) |
-| `number` | Число | `10` | Number of particles to emit |
+| `particle_type` | Число | `0` | Идентификатор типа частиц (из «Создать тип частиц») |
+| `number` | Число | `10` | Сколько частиц выпустить |
 
 ### Очистить частицы
 
@@ -43,11 +43,11 @@
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `x` | Число | `0` | Emitter center X (room coordinates) |
-| `y` | Число | `0` | Emitter center Y (room coordinates) |
-| `width` | Число | `0` | Emitter area width |
-| `height` | Число | `0` | Emitter area height |
-| `shape` | Выбор | `rectangle` | Shape of the emitter area particles spawn within; Варианты: `rectangle`, `ellipse`, `diamond`, `line` |
+| `x` | Число | `0` | X центра источника (координаты комнаты) |
+| `y` | Число | `0` | Y центра источника (координаты комнаты) |
+| `width` | Число | `0` | Ширина области источника |
+| `height` | Число | `0` | Высота области источника |
+| `shape` | Выбор | `rectangle` | Форма области источника, внутри которой появляются частицы; Варианты: `rectangle`, `ellipse`, `diamond`, `line` |
 
 ### Создать систему частиц
 
@@ -61,7 +61,7 @@
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `depth` | Число | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
+| `depth` | Число | `0` | Глубина отрисовки системы частиц (пока не используется для порядка между экземплярами) |
 
 ### Создать тип частиц
 
@@ -75,18 +75,18 @@
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `sprite` | Спрайт | — | Sprite to draw each particle as; leave empty for a plain colored circle; необязательно |
-| `size_min` | Число | `1.0` | Minimum particle size (scale factor) |
-| `size_max` | Число | `1.0` | Maximum particle size (scale factor) |
-| `size_increase` | Число | `0.0` | Size change per step (negative shrinks, floored at 0) |
-| `color` | Цвет | `#FFFFFF` | Particle color (used when no sprite is set) |
-| `alpha` | Число | `1.0` | Transparency (0=invisible, 1=opaque) |
-| `speed_min` | Число | `0.0` | Minimum movement speed |
-| `speed_max` | Число | `0.0` | Maximum movement speed |
-| `direction_min` | Число | `0` | Minimum direction angle (0=right, 90=up) |
-| `direction_max` | Число | `360` | Maximum direction angle |
-| `life_min` | Число | `100` | Minimum lifetime in steps |
-| `life_max` | Число | `100` | Maximum lifetime in steps |
+| `sprite` | Спрайт | — | Спрайт, которым рисуется каждая частица; оставьте пустым для простого цветного круга; необязательно |
+| `size_min` | Число | `1.0` | Наименьший размер частицы (коэффициент масштаба) |
+| `size_max` | Число | `1.0` | Наибольший размер частицы (коэффициент масштаба) |
+| `size_increase` | Число | `0.0` | Изменение размера за шаг (отрицательное уменьшает, не ниже 0) |
+| `color` | Цвет | `#FFFFFF` | Цвет частицы (используется, когда спрайт не задан) |
+| `alpha` | Число | `1.0` | Прозрачность (0 — невидимая, 1 — непрозрачная) |
+| `speed_min` | Число | `0.0` | Наименьшая скорость движения |
+| `speed_max` | Число | `0.0` | Наибольшая скорость движения |
+| `direction_min` | Число | `0` | Наименьший угол направления (0 — вправо, 90 — вверх) |
+| `direction_max` | Число | `360` | Наибольший угол направления |
+| `life_min` | Число | `100` | Наименьшее время жизни, в шагах |
+| `life_max` | Число | `100` | Наибольшее время жизни, в шагах |
 
 ### Удалить источник
 
@@ -124,8 +124,8 @@
 
 | Параметр | Тип | По умолч. | Примечания |
 |-----------|------|---------|-------|
-| `particle_type` | Число | `0` | Particle type id (from Create Particle Type) |
-| `number` | Число | `1` | Particles to emit per step (0 stops streaming) |
+| `particle_type` | Число | `0` | Идентификатор типа частиц (из «Создать тип частиц») |
+| `number` | Число | `1` | Частиц за шаг (0 останавливает поток) |
 
 ---
 
