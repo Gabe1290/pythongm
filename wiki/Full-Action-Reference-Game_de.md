@@ -160,7 +160,7 @@ Eine Textzeichenkette an einer Position zeichnen
 | `x` | Zahl | `0` | X-Position |
 | `y` | Zahl | `0` | Y-Position |
 | `relative` | Ja/Nein | Nein | Relativ zur Position dieser Instanz statt zu absoluten Bildschirmkoordinaten zeichnen; optional |
-| `color` | Farbe | — | Text colour (e.g. #ffffff). Blank = the active Set Drawing Color, or black.; optional |
+| `color` | Farbe | — | Textfarbe (z. B. #ffffff). Leer = die aktive Zeichenfarbe, sonst Schwarz.; optional |
 
 ### Variable zeichnen
 
@@ -204,7 +204,7 @@ Stellt Raum, Punkte/Leben/Gesundheit, globale Variablen und Instanzzustände aus
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `filename` | Text | `savegame.sav` | Save file name to load (from the project's saves/ folder) |
+| `filename` | Text | `savegame.sav` | Name der zu ladenden Speicherdatei (aus dem Ordner saves/ des Projekts) |
 
 ### Webseite öffnen
 
@@ -244,7 +244,7 @@ Speichert den aktuellen Raum, Punkte/Leben/Gesundheit, globale Variablen und Ins
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `filename` | Text | `savegame.sav` | Save file name (written to the project's saves/ folder) |
+| `filename` | Text | `savegame.sav` | Name der Speicherdatei (wird in den Ordner saves/ des Projekts geschrieben) |
 
 ### Alpha setzen
 
@@ -360,8 +360,8 @@ Spielt eine Videodatei im Standard-Videoplayer des Systems ab – sie öffnet si
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `filename` | Text | — | Path to the video file |
-| `fullscreen` | Ja/Nein | Nein | Request fullscreen playback (support depends on your system's player); optional |
+| `filename` | Text | — | Pfad zur Videodatei |
+| `fullscreen` | Ja/Nein | Nein | Vollbildwiedergabe anfordern (ob das geht, hängt vom Player Ihres Systems ab); optional |
 
 ### Startbild: Bild zeigen
 
@@ -375,7 +375,7 @@ Zeigt ein Sprite bildschirmfüllend und hält das Spiel an, bis der Spieler es w
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `image` | Sprite | — | Sprite to display full-screen |
+| `image` | Sprite | — | Sprite, das bildschirmfüllend angezeigt wird |
 
 ### Startbild: Text zeigen
 
@@ -389,7 +389,7 @@ Zeigt eine Nachricht und hält das Spiel an, bis der Spieler sie wegklickt
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `text` | Text | — | Message to display |
+| `text` | Text | — | Anzuzeigende Nachricht |
 
 ---
 

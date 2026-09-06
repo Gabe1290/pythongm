@@ -16,8 +16,8 @@ Stößt eine einmalige Salve von Partikeln aus dem zuletzt erstellten Emitter au
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `particle_type` | Zahl | `0` | Particle type id (from Create Particle Type) |
-| `number` | Zahl | `10` | Number of particles to emit |
+| `particle_type` | Zahl | `0` | Kennung des Partikeltyps (aus „Partikeltyp erstellen“) |
+| `number` | Zahl | `10` | Anzahl der auszustoßenden Partikel |
 
 ### Partikel löschen
 
@@ -43,11 +43,11 @@ Erstellt einen Emitterbereich für Partikel (die zurückgegebene Kennung wird f�
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `x` | Zahl | `0` | Emitter center X (room coordinates) |
-| `y` | Zahl | `0` | Emitter center Y (room coordinates) |
-| `width` | Zahl | `0` | Emitter area width |
-| `height` | Zahl | `0` | Emitter area height |
-| `shape` | Auswahl | `rectangle` | Shape of the emitter area particles spawn within; Auswahl: `rectangle`, `ellipse`, `diamond`, `line` |
+| `x` | Zahl | `0` | X-Mitte des Emitters (Raumkoordinaten) |
+| `y` | Zahl | `0` | Y-Mitte des Emitters (Raumkoordinaten) |
+| `width` | Zahl | `0` | Breite des Emitterbereichs |
+| `height` | Zahl | `0` | Höhe des Emitterbereichs |
+| `shape` | Auswahl | `rectangle` | Form des Emitterbereichs, in dem Partikel entstehen; Auswahl: `rectangle`, `ellipse`, `diamond`, `line` |
 
 ### Partikelsystem erstellen
 
@@ -61,7 +61,7 @@ Erstellt ein an diese Instanz gebundenes Partikelsystem (ersetzt ein vorhandenes
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `depth` | Zahl | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
+| `depth` | Zahl | `0` | Zeichentiefe des Partikelsystems (noch nicht für die Sortierung zwischen Instanzen verwendet) |
 
 ### Partikeltyp erstellen
 
@@ -75,18 +75,18 @@ Legt ein neues Aussehen bzw. Verhalten für Partikel fest (die zurückgegebene T
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `sprite` | Sprite | — | Sprite to draw each particle as; leave empty for a plain colored circle; optional |
-| `size_min` | Zahl | `1.0` | Minimum particle size (scale factor) |
-| `size_max` | Zahl | `1.0` | Maximum particle size (scale factor) |
-| `size_increase` | Zahl | `0.0` | Size change per step (negative shrinks, floored at 0) |
-| `color` | Farbe | `#FFFFFF` | Particle color (used when no sprite is set) |
-| `alpha` | Zahl | `1.0` | Transparency (0=invisible, 1=opaque) |
-| `speed_min` | Zahl | `0.0` | Minimum movement speed |
-| `speed_max` | Zahl | `0.0` | Maximum movement speed |
-| `direction_min` | Zahl | `0` | Minimum direction angle (0=right, 90=up) |
-| `direction_max` | Zahl | `360` | Maximum direction angle |
-| `life_min` | Zahl | `100` | Minimum lifetime in steps |
-| `life_max` | Zahl | `100` | Maximum lifetime in steps |
+| `sprite` | Sprite | — | Sprite, mit dem jedes Partikel gezeichnet wird; leer lassen für einen einfachen farbigen Kreis; optional |
+| `size_min` | Zahl | `1.0` | Kleinste Partikelgröße (Skalierungsfaktor) |
+| `size_max` | Zahl | `1.0` | Größte Partikelgröße (Skalierungsfaktor) |
+| `size_increase` | Zahl | `0.0` | Größenänderung pro Schritt (negativ schrumpft, mindestens 0) |
+| `color` | Farbe | `#FFFFFF` | Partikelfarbe (wird verwendet, wenn kein Sprite gesetzt ist) |
+| `alpha` | Zahl | `1.0` | Transparenz (0 = unsichtbar, 1 = deckend) |
+| `speed_min` | Zahl | `0.0` | Kleinste Bewegungsgeschwindigkeit |
+| `speed_max` | Zahl | `0.0` | Größte Bewegungsgeschwindigkeit |
+| `direction_min` | Zahl | `0` | Kleinster Richtungswinkel (0 = rechts, 90 = oben) |
+| `direction_max` | Zahl | `360` | Größter Richtungswinkel |
+| `life_min` | Zahl | `100` | Kleinste Lebensdauer in Schritten |
+| `life_max` | Zahl | `100` | Größte Lebensdauer in Schritten |
 
 ### Emitter entfernen
 
@@ -124,8 +124,8 @@ Stößt bei jedem Schritt fortlaufend Partikel aus dem zuletzt erstellten Emitte
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `particle_type` | Zahl | `0` | Particle type id (from Create Particle Type) |
-| `number` | Zahl | `1` | Particles to emit per step (0 stops streaming) |
+| `particle_type` | Zahl | `0` | Kennung des Partikeltyps (aus „Partikeltyp erstellen“) |
+| `number` | Zahl | `1` | Partikel pro Schritt (0 hält den Strom an) |
 
 ---
 

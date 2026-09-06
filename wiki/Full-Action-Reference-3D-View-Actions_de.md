@@ -28,7 +28,7 @@ Entfernt den Block, den die Kamera anvisiert – legt ihn außerdem ins Inventar
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `reach` | Zahl | `5` | How many cells ahead you can reach, in grid cells; optional |
+| `reach` | Zahl | `5` | Reichweite nach vorn, in Gitterzellen; optional |
 
 ### Block-World-HUD zeichnen
 
@@ -42,15 +42,15 @@ Zeichnet ein Fadenkreuz und eine Schnellzugriffsleiste (der gewählte Platz herv
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `slot_size` | Zahl | `40` | Width and height of each hotbar slot, in pixels; optional |
-| `gap` | Zahl | `6` | Space between hotbar slots, in pixels; optional |
-| `margin_bottom` | Zahl | `16` | Space between the hotbar and the bottom of the screen; optional |
-| `back_color` | Farbe | `#202020` | Fill colour of an unselected slot; optional |
-| `selected_color` | Farbe | `#ffd040` | Fill colour of the currently selected slot; optional |
-| `border_color` | Farbe | `#ffffff` | Outline colour of every slot; optional |
-| `text_color` | Farbe | `#ffffff` | Colour of each slot's block-type label; optional |
-| `crosshair_size` | Zahl | `12` | Width and height of the centre crosshair, in pixels; optional |
-| `crosshair_color` | Farbe | `#ffffff` | Colour of the centre crosshair; optional |
+| `slot_size` | Zahl | `40` | Breite und Höhe jedes Platzes der Schnellzugriffsleiste, in Pixeln; optional |
+| `gap` | Zahl | `6` | Abstand zwischen den Plätzen der Schnellzugriffsleiste, in Pixeln; optional |
+| `margin_bottom` | Zahl | `16` | Abstand zwischen der Schnellzugriffsleiste und dem unteren Bildschirmrand; optional |
+| `back_color` | Farbe | `#202020` | Füllfarbe eines nicht ausgewählten Platzes; optional |
+| `selected_color` | Farbe | `#ffd040` | Füllfarbe des aktuell ausgewählten Platzes; optional |
+| `border_color` | Farbe | `#ffffff` | Umrissfarbe aller Plätze; optional |
+| `text_color` | Farbe | `#ffffff` | Farbe der Blocktyp-Beschriftung auf jedem Platz; optional |
+| `crosshair_size` | Zahl | `12` | Breite und Höhe des Fadenkreuzes in der Mitte, in Pixeln; optional |
+| `crosshair_color` | Farbe | `#ffffff` | Farbe des Fadenkreuzes in der Mitte; optional |
 
 ### DOOM-HUD zeichnen
 
@@ -101,10 +101,10 @@ Eine nach Norden ausgerichtete Minikarte der Wände des Raycast-Raums zeichnen, 
 | `back_color` | Farbe | `#101018` | Panelfarbe hinter der Karte; optional |
 | `wall_color` | Farbe | `#8080a0` | Farbe der Wandlinien; optional |
 | `player_color` | Farbe | `#ffd040` | Farbe der Kameramarkierung und ihrer Blickrichtungslinie; optional |
-| `mark_object` | Objekt | — | Also dot every instance of this object onto the map (blank = show walls and player only); optional |
-| `mark_color` | Farbe | `#40e0ff` | Colour of the Mark Object dots; optional |
-| `mark_object_2` | Objekt | — | A second object to dot on, in its own colour; optional |
-| `mark_color_2` | Farbe | `#ff5050` | Colour of the Mark Object 2 dots; optional |
+| `mark_object` | Objekt | — | Zusätzlich jede Instanz dieses Objekts auf der Karte als Punkt anzeigen (leer = nur Wände und Spieler); optional |
+| `mark_color` | Farbe | `#40e0ff` | Farbe der Punkte von „Objekt markieren“; optional |
+| `mark_object_2` | Objekt | — | Ein zweites Objekt, das in einer eigenen Farbe als Punkt erscheint; optional |
+| `mark_color_2` | Farbe | `#ff5050` | Farbe der Punkte von „Objekt 2 markieren“; optional |
 
 ### Block-World-Ansicht aktivieren
 
@@ -118,24 +118,24 @@ Stellt den Raum als First-Person-Voxelansicht (eine einzelne Ebene) dar statt in
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `enable` | Ja/Nein | Ja | On = first-person block view; off = normal top-down |
+| `enable` | Ja/Nein | Ja | Ein = Blockansicht aus der Ich-Perspektive; aus = normale Draufsicht |
 | `camera_object` | Objekt | — | Objekt, dessen Position + Blickwinkel die Kamera ist (leer = das Objekt, das diese Aktion ausführt); optional |
-| `z_layer` | Zahl | `0` | Which world layer to render (Phase 2a renders exactly one layer -- no looking up/down yet); optional |
+| `z_layer` | Zahl | `0` | Welche Weltebene dargestellt wird (Phase 2a stellt genau eine Ebene dar – noch kein Blick nach oben/unten); optional |
 | `fov` | Zahl | `66` | Horizontales Sichtfeld in Grad; optional |
 | `render_distance` | Zahl | `20` | Maximale Strahllänge in Gitterzellen; optional |
-| `cell_size` | Zahl | `32` | Grid cell size in pixels (match the block-placement grid); optional |
+| `cell_size` | Zahl | `32` | Gitterzellengröße in Pixeln (passend zum Gitter, auf dem Blöcke gesetzt werden); optional |
 | `columns` | Zahl | `320` | Bildschirmspalten zum Raycasten (weniger = schneller/grobkörniger); optional |
-| `wall_color` | Farbe | `#8a8a8a` | Flat colour used only if Textured Blocks is off; optional |
-| `floor_color` | Farbe | `#3a2f1c` | Flat floor colour (Phase 2a has no floor texturing yet); optional |
-| `ceiling_color` | Farbe | `#87CEEB` | Flat ceiling/sky colour (Phase 2a has no sky yet); optional |
-| `pitch` | Zahl | `0` | Degrees to look up (+) or down (-); 0 is level; optional |
-| `wall_textured` | Ja/Nein | Ja | Off forces flat block colours even though real textures are available; optional |
-| `top_cast_res` | Zahl | `4` | Top/bottom face texture detail: rows sampled per N screen rows (higher = faster + chunkier, 0 = flat average colour instead of texture); optional |
-| `eye_height` | Zahl | `1.5` | Camera height above the layer it stands on, in cells (1.5 = a two-block-tall body, needed to see the top of a block on your own layer and stack onto it); optional |
-| `gravity` | Zahl | `0` | Downward acceleration in cells/step^2 for the Jump action + gravity/falling (Tier 7a). 0 (default) keeps Move And Collide's original instant-footing behaviour with no jumping; a typical value is around 0.04; optional |
-| `inventory` | Ja/Nein | Nein | On = Break Block picks up what it breaks and Place Block consumes from that inventory (Tier 7c); off (default) = unlimited creative-mode placing, unchanged from before Tier 7c; optional |
-| `generate` | Ja/Nein | Nein | On = procedurally generate rolling terrain around the camera as it explores (Tier 7e), using Seed below; off (default) = only hand-placed/loaded blocks exist, unchanged from before Tier 7e; optional |
-| `seed` | Zahl | `0` | World seed for Generate Terrain -- the same seed always produces the same terrain on this target. Ignored unless Generate Terrain is on; optional |
+| `wall_color` | Farbe | `#8a8a8a` | Einfarbig, nur verwendet, wenn texturierte Blöcke aus sind; optional |
+| `floor_color` | Farbe | `#3a2f1c` | Einfarbiger Boden (Phase 2a hat noch keine Bodentexturierung); optional |
+| `ceiling_color` | Farbe | `#87CEEB` | Einfarbige Decke bzw. Himmel (Phase 2a hat noch keinen Himmel); optional |
+| `pitch` | Zahl | `0` | Grad nach oben (+) oder unten (−); 0 ist waagerecht; optional |
+| `wall_textured` | Ja/Nein | Ja | Aus erzwingt einfarbige Blöcke, auch wenn echte Texturen vorhanden sind; optional |
+| `top_cast_res` | Zahl | `4` | Texturdetail der Ober- und Unterseiten: gelesene Zeilen je N Bildschirmzeilen (höher = schneller und grober, 0 = einfarbiger Mittelwert statt Textur); optional |
+| `eye_height` | Zahl | `1.5` | Kamerahöhe über der Ebene, auf der sie steht, in Zellen (1,5 = ein zwei Blöcke hoher Körper – nötig, um die Oberseite eines Blocks auf der eigenen Ebene zu sehen und darauf zu steigen); optional |
+| `gravity` | Zahl | `0` | Beschleunigung nach unten in Zellen/Schritt² für die Aktion „Springen“ und für Schwerkraft/Fallen (Stufe 7a). 0 (Standard) behält das ursprüngliche sofortige Auftreten von „Bewegen mit Kollision“ ohne Springen bei; ein typischer Wert liegt bei etwa 0,04; optional |
+| `inventory` | Ja/Nein | Nein | Ein = „Block abbauen“ sammelt das Abgebaute ein und „Block setzen“ verbraucht daraus (Stufe 7c); aus (Standard) = unbegrenztes Bauen wie im Kreativmodus, unverändert wie vor Stufe 7c; optional |
+| `generate` | Ja/Nein | Nein | Ein = beim Erkunden wird rundherum prozedural hügeliges Gelände erzeugt (Stufe 7e), mit dem Startwert unten; aus (Standard) = es gibt nur von Hand gesetzte oder geladene Blöcke, unverändert wie vor Stufe 7e; optional |
+| `seed` | Zahl | `0` | Startwert für die Geländeerzeugung – derselbe Startwert erzeugt auf dieser Plattform immer dasselbe Gelände. Wird ignoriert, solange die Geländeerzeugung aus ist; optional |
 
 ### Raycast-Ansicht aktivieren
 
@@ -178,7 +178,7 @@ Gibt der Block-World-Kamera Geschwindigkeit nach oben – nur solange sie auf fe
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `speed` | Zahl | `0.35` | Initial upward velocity, in cells/step; optional |
+| `speed` | Zahl | `0.35` | Anfangsgeschwindigkeit nach oben, in Zellen/Schritt; optional |
 
 ### Block-World laden
 
@@ -192,7 +192,7 @@ Lädt eine vorbereitete Welt (von einem Generator gesetzte oder von Hand erstell
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `data_file` | Text | — | Path to a block-world JSON file, relative to the project folder (e.g. blocks/room1.json) |
+| `data_file` | Text | — | Pfad zu einer Block-World-JSON-Datei, relativ zum Projektordner (z. B. blocks/room1.json) |
 
 ### Nach oben / unten schauen
 
@@ -206,8 +206,8 @@ Neigt die Block-World-Ansicht nach oben oder unten
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `pitch` | Zahl | `0` | Degrees to look up (+) or down (-); 0 is level |
-| `relative` | Ja/Nein | Nein | On = add to the current angle, for a look control you can hold down; off = set it outright; optional |
+| `pitch` | Zahl | `0` | Grad nach oben (+) oder unten (−); 0 ist waagerecht |
+| `relative` | Ja/Nein | Nein | Ein = zum aktuellen Winkel addieren, für eine Blicksteuerung zum Gedrückthalten; aus = den Winkel direkt setzen; optional |
 
 ### Bewegen mit Kollision
 
@@ -221,9 +221,9 @@ Bewegt diesen Schritt, gegen das Blockgitter geprüft, mit automatischem Tritt (
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `dx` | Zahl | `0` | How far to move on x this step, in pixels |
-| `dy` | Zahl | `0` | How far to move on y this step, in pixels |
-| `collide` | Ja/Nein | Ja | Off ignores the block grid entirely (flying/debug); optional |
+| `dx` | Zahl | `0` | Wie weit in diesem Schritt auf x bewegt wird, in Pixeln |
+| `dy` | Zahl | `0` | Wie weit in diesem Schritt auf y bewegt wird, in Pixeln |
+| `collide` | Ja/Nein | Ja | Aus ignoriert das Blockgitter vollständig (Fliegen/Fehlersuche); optional |
 
 ### Block setzen
 
@@ -237,8 +237,8 @@ Setzt einen Block in die leere Zelle, die die Kamera anvisiert – unbegrenzt, a
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `block` | Auswahl | `stone` | Which kind of block to place; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `reach` | Zahl | `5` | How many cells ahead you can build, in grid cells; optional |
+| `block` | Auswahl | `stone` | Welche Art von Block gesetzt wird; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `reach` | Zahl | `5` | Reichweite zum Bauen nach vorn, in Gitterzellen; optional |
 
 ### Schnellleisten-Platz wählen
 
@@ -252,8 +252,8 @@ Wählt, welcher Block in der Schnellzugriffsleiste ausgewählt ist, damit „Blo
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `index` | Zahl | `0` | Hotbar slot index, wrapping around at either end |
-| `relative` | Ja/Nein | Nein | On = add to the current slot, for cycling with [ ] / scroll-wheel style controls; off = jump to it; optional |
+| `index` | Zahl | `0` | Platznummer in der Schnellzugriffsleiste, umlaufend an beiden Enden |
+| `relative` | Ja/Nein | Nein | Ein = zur aktuellen Platznummer addieren, für ein Durchblättern mit [ ] oder dem Mausrad; aus = direkt dorthin springen; optional |
 
 ### Blockschutz festlegen
 
@@ -267,8 +267,8 @@ Verlangt einen bestimmten Blocktyp im Inventar, bevor „Block abbauen“ einen 
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `block_type` | Auswahl | `diamond_block` | Which block type becomes protected; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `required_key` | Auswahl | `gold_block` | Which block type must be in inventory to break it; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `block_type` | Auswahl | `diamond_block` | Welcher Blocktyp geschützt wird; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `required_key` | Auswahl | `gold_block` | Welcher Blocktyp im Inventar liegen muss, um ihn abzubauen; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 
 ### Blockbelohnung festlegen
 
@@ -282,8 +282,8 @@ Vergibt Punkte, wenn „Block abbauen“ einen gewählten Blocktyp erfolgreich e
 
 | Parameter | Typ | Standard | Hinweise |
 |-----------|------|---------|-------|
-| `block_type` | Auswahl | `diamond_block` | Which block type awards score when broken; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
-| `points` | Zahl | `10` | Score awarded per block of this type broken |
+| `block_type` | Auswahl | `diamond_block` | Welcher Blocktyp beim Abbauen Punkte gibt; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `points` | Zahl | `10` | Punkte je abgebautem Block dieses Typs |
 
 ### Blickwinkel setzen
 
