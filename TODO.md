@@ -838,6 +838,36 @@ existed. Regenerated; 0 untranslated strings reported now.
     `block_world_2` is still 2x under target, so the open-terrain regime is
     improved but not solved; merging adjacent columns that share a face into
     one wider scale+blit remains the untried idea.
+- **A3.3 unit 2c, and the END of the planned optimisation queue: merging
+  adjacent columns is DEAD, measured.** The plan's last remaining idea was to
+  merge adjacent columns that hit the same face into one wider scale+blit.
+  Measured the run lengths before building it: **mean run of identical
+  adjacent columns is 1.05-1.12** (block_world_2 1.05, block_world_1 1.12),
+  i.e. essentially every column differs from its neighbour, because each has
+  its own distance and therefore its own strip height and shade. Loosening the
+  test to "within 1px" changes nothing. The only long runs are a couple of
+  dozen per frame at silhouette edges. So the merge machinery would add
+  per-column bookkeeping to collapse ~5% of strips at best -- the same trade
+  that made occlusion culling a net LOSS on open terrain. **Do not build it.**
+  (`scratchpad measurement, reproducible: spy on _draw_wall_strip, group by
+  x0, compare adjacent columns' strip lists.`)
+- **What shipped instead as 2c: shaving the per-strip path, ~+5%,
+  pixel-identical.** `screen.get_height()` ran ~20,600 times a frame for a
+  value the caller already had (now passed in, default kept for other
+  callers); `_has_neighbor` was a Python call twice per strip (~18,000/frame,
+  inlined at the one hot call site, function kept and still tested);
+  `wall_shade`/`face_shade` and the per-cell near/far got the same
+  min/max-to-conditional treatment as 2a. `block_world_1` static 34.0/34.4 ->
+  35.7/35.9, `block_world_2` 15.0 -> 15.7 both conditions; `block_world_1`
+  walking flat, which is consistent with the two-regime model -- its cost is
+  near-wall pixel work, not per-strip overhead.
+- **Where Block World stands now.** `block_world_1` **meets its 30fps target
+  standing still (35.9)** and runs at ~16.5 walking; `block_world_2` is at
+  ~15.7, still 1.9x under. Every idea in the A3.2 profile has now been either
+  shipped or measured and rejected. Going further on open terrain needs a
+  DIFFERENT rendering approach (numpy-vectorised column compositing, or
+  batching the whole frame into one surface op), not another micro-pass --
+  that is a new plan, not a continuation of this one.
 - **Follow-up decision, same day: the block_world extension's further work
   is set aside** (not deleted — `extensions/block_world/`, both samples,
   and all their tests remain and stay green) in favor of a cheaper vertical
