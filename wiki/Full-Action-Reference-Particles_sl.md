@@ -16,8 +16,8 @@ Iz nazadnje ustvarjenega izvora izpusti enkraten izbruh delcev
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `particle_type` | Število | `0` | Particle type id (from Create Particle Type) |
-| `number` | Število | `10` | Number of particles to emit |
+| `particle_type` | Število | `0` | Oznaka vrste delca (iz »Ustvari vrsto delca«) |
+| `number` | Število | `10` | Koliko delcev naj se izpusti |
 
 ### Počisti delce
 
@@ -43,11 +43,11 @@ Ustvari območje, ki oddaja delce (vrnjena oznaka se shrani za naslednje dejanje
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `x` | Število | `0` | Emitter center X (room coordinates) |
-| `y` | Število | `0` | Emitter center Y (room coordinates) |
-| `width` | Število | `0` | Emitter area width |
-| `height` | Število | `0` | Emitter area height |
-| `shape` | Izbira | `rectangle` | Shape of the emitter area particles spawn within; Izbire: `rectangle`, `ellipse`, `diamond`, `line` |
+| `x` | Število | `0` | X središča izvora (koordinate sobe) |
+| `y` | Število | `0` | Y središča izvora (koordinate sobe) |
+| `width` | Število | `0` | Širina območja izvora |
+| `height` | Število | `0` | Višina območja izvora |
+| `shape` | Izbira | `rectangle` | Oblika območja izvora, v katerem nastajajo delci; Izbire: `rectangle`, `ellipse`, `diamond`, `line` |
 
 ### Ustvari sistem delcev
 
@@ -61,7 +61,7 @@ Ustvari sistem delcev, pripet na ta primerek (nadomesti obstoječega)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `depth` | Število | `0` | Drawing depth for the particle system (not yet used for cross-instance sort order) |
+| `depth` | Število | `0` | Globina risanja sistema delcev (za vrstni red med primerki še ni v rabi) |
 
 ### Ustvari vrsto delca
 
@@ -75,18 +75,18 @@ Določi nov videz oziroma vedenje delca (vrnjena oznaka vrste se shrani za nasle
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `sprite` | Sprite | — | Sprite to draw each particle as; leave empty for a plain colored circle; neobvezno |
-| `size_min` | Število | `1.0` | Minimum particle size (scale factor) |
-| `size_max` | Število | `1.0` | Maximum particle size (scale factor) |
-| `size_increase` | Število | `0.0` | Size change per step (negative shrinks, floored at 0) |
-| `color` | Barva | `#FFFFFF` | Particle color (used when no sprite is set) |
-| `alpha` | Število | `1.0` | Transparency (0=invisible, 1=opaque) |
-| `speed_min` | Število | `0.0` | Minimum movement speed |
-| `speed_max` | Število | `0.0` | Maximum movement speed |
-| `direction_min` | Število | `0` | Minimum direction angle (0=right, 90=up) |
-| `direction_max` | Število | `360` | Maximum direction angle |
-| `life_min` | Število | `100` | Minimum lifetime in steps |
-| `life_max` | Število | `100` | Maximum lifetime in steps |
+| `sprite` | Sprite | — | Sličica, s katero se nariše vsak delec; pusti prazno za preprost obarvan krog; neobvezno |
+| `size_min` | Število | `1.0` | Najmanjša velikost delca (faktor merila) |
+| `size_max` | Število | `1.0` | Največja velikost delca (faktor merila) |
+| `size_increase` | Število | `0.0` | Sprememba velikosti na korak (negativna manjša, najmanj 0) |
+| `color` | Barva | `#FFFFFF` | Barva delca (uporabljena, kadar sličica ni nastavljena) |
+| `alpha` | Število | `1.0` | Prosojnost (0 = neviden, 1 = neprosojen) |
+| `speed_min` | Število | `0.0` | Najmanjša hitrost premikanja |
+| `speed_max` | Število | `0.0` | Največja hitrost premikanja |
+| `direction_min` | Število | `0` | Najmanjši kot smeri (0 = desno, 90 = navzgor) |
+| `direction_max` | Število | `360` | Največji kot smeri |
+| `life_min` | Število | `100` | Najkrajša življenjska doba, v korakih |
+| `life_max` | Število | `100` | Najdaljša življenjska doba, v korakih |
 
 ### Odstrani izvor
 
@@ -124,8 +124,8 @@ Iz nazadnje ustvarjenega izvora v vsakem koraku neprekinjeno oddaja delce (0 za 
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `particle_type` | Število | `0` | Particle type id (from Create Particle Type) |
-| `number` | Število | `1` | Particles to emit per step (0 stops streaming) |
+| `particle_type` | Število | `0` | Oznaka vrste delca (iz »Ustvari vrsto delca«) |
+| `number` | Število | `1` | Delcev na korak (0 ustavi oddajanje) |
 
 ---
 

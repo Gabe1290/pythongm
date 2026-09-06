@@ -16,8 +16,8 @@ Poveže krajevno tipko z »imenovanim vnosom«, o katerem se poroča gostitelju.
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `name` | Besedilo | — | A label of your choosing (e.g. "jump", "fire") |
-| `key` | Besedilo | — | A key name: "space", "left", "a", "5", "lshift"... |
+| `name` | Besedilo | — | Oznaka po tvoji izbiri (npr. "jump", "fire") |
+| `key` | Besedilo | — | Ime tipke: "space", "left", "a", "5", "lshift"... |
 
 ### Ustvari omrežni predmet
 
@@ -31,11 +31,11 @@ Samo pri gostitelju: ustvari primerek, ki se samodejno pojavi pri vseh odjemalci
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `object` | Predmet | — | The type of object to create |
+| `object` | Predmet | — | Vrsta objekta, ki naj se ustvari |
 | `x` | Besedilo | `0` |  |
 | `y` | Besedilo | `0` |  |
-| `owner` | Besedilo | `0` | The player who drives this instance (0 = host). Often global.network_sender inside "Player joined".; neobvezno |
-| `relative` | Da/Ne | Ne | Position relative to the object running the action; neobvezno |
+| `owner` | Besedilo | `0` | Igralec, ki vodi ta primerek (0 = gostitelj). Pogosto global.network_sender znotraj »Igralec se je pridružil«.; neobvezno |
+| `relative` | Da/Ne | Ne | Položaj glede na objekt, ki izvaja dejanje; neobvezno |
 
 ### Gosti igro
 
@@ -49,11 +49,11 @@ Ta računalnik postane gostitelj večigralske igre v krajevnem omrežju: drugi i
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `game_name` | Besedilo | `PyGameMaker` | Name shown in the server list (network discovery); neobvezno |
-| `max_players` | Število | `8` | Largest number of players, host included (2 to 16); neobvezno |
-| `port` | Število | `45782` | TCP port -- must be the same on the host and every client; neobvezno |
-| `player_name` | Besedilo | — | This player's name (empty = global.player_name, or "Player"); neobvezno |
-| `show_lobby` | Da/Ne | Ne | Show a "Waiting for players..." screen with a Start button before the game begins; neobvezno |
+| `game_name` | Besedilo | `PyGameMaker` | Ime, prikazano na seznamu strežnikov (odkrivanje v omrežju); neobvezno |
+| `max_players` | Število | `8` | Največje število igralcev, skupaj z gostiteljem (od 2 do 16); neobvezno |
+| `port` | Število | `45782` | Vrata TCP – morajo biti enaka pri gostitelju in pri vsakem odjemalcu; neobvezno |
+| `player_name` | Besedilo | — | Ime tega igralca (prazno = global.player_name, sicer "Player"); neobvezno |
+| `show_lobby` | Da/Ne | Ne | Pred začetkom igre pokaži zaslon »Čakanje na igralce ...« z gumbom za začetek; neobvezno |
 
 ### Če upravljam ta primerek
 
@@ -79,8 +79,8 @@ Pogoj pri gostitelju: resničen, dokler navedeni igralec drži navedeni vnos. Go
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `player` | Besedilo | `0` | Player number (0 = host) |
-| `name` | Besedilo | — | The named input to test (e.g. "jump") |
+| `player` | Besedilo | `0` | Številka igralca (0 = gostitelj) |
+| `name` | Besedilo | — | Imenovani vnos, ki se preveri (npr. "jump") |
 
 ### Pridruži se igri
 
@@ -94,9 +94,9 @@ Poveže se z večigralsko igro v krajevnem omrežju, ki jo gosti drug računalni
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `host` | Besedilo | `127.0.0.1` | The host's LAN IP address ("auto" opens the built-in connection screen); neobvezno |
-| `port` | Število | `45782` | TCP port -- must match the host's; neobvezno |
-| `player_name` | Besedilo | — | This player's name (empty = global.player_name, or "Player"); neobvezno |
+| `host` | Besedilo | `127.0.0.1` | Naslov IP gostitelja v krajevnem omrežju ("auto" odpre vgrajeni zaslon za povezovanje); neobvezno |
+| `port` | Število | `45782` | Vrata TCP – morajo se ujemati z gostiteljevimi; neobvezno |
+| `player_name` | Besedilo | — | Ime tega igralca (prazno = global.player_name, sicer "Player"); neobvezno |
 
 ### Zapusti igro
 
@@ -122,8 +122,8 @@ Skupno spremenljivko prepiše v globalno, da jo lahko uporabiš v izračunu. Ena
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `name` | Besedilo | — | Name of the shared variable to read |
-| `into` | Besedilo | — | Name of the global variable to write the value into |
+| `name` | Besedilo | — | Ime skupne spremenljivke, ki naj se prebere |
+| `into` | Besedilo | — | Ime globalne spremenljivke, v katero se zapiše vrednost |
 
 ### Pošlji omrežno sporočilo
 
@@ -137,9 +137,9 @@ Razpošlje sporočilo po tvoji izbiri. Na zadevnih računalnikih sproži dogodek
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `event` | Besedilo | — | A label of your choosing that the handler tests (e.g. "buzz", "answer") |
-| `data` | Besedilo | — | A number, text, true/false, or a short list; neobvezno |
-| `target` | Izbira | `all` | all = everyone; host = the host only; Izbire: `all`, `host` |
+| `event` | Besedilo | — | Oznaka po tvoji izbiri, ki jo preverja obravnava (npr. "buzz", "answer") |
+| `data` | Besedilo | — | Število, besedilo, true/false ali kratek seznam; neobvezno |
+| `target` | Izbira | `all` | all = vsi; host = samo gostitelj; Izbire: `all`, `host` |
 
 ### Nastavi omrežni način (v1)
 
@@ -153,9 +153,9 @@ Starejše nizkonivojsko dejanje: sobo zažene v načinu gostitelja ali odjemalca
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `mode` | Izbira | `host` | Host = others connect to you; Client = you connect to a host; Izbire: `host`, `client` |
-| `host` | Besedilo | `127.0.0.1` | The host's LAN IP address (Client mode only); neobvezno |
-| `port` | Število | `45782` | TCP port -- must be the same on the host and the client; neobvezno |
+| `mode` | Izbira | `host` | Gostitelj = drugi se povežejo s teboj; Odjemalec = ti se povežeš z gostiteljem; Izbire: `host`, `client` |
+| `host` | Besedilo | `127.0.0.1` | Naslov IP gostitelja v krajevnem omrežju (samo v načinu odjemalca); neobvezno |
+| `port` | Število | `45782` | Vrata TCP – morajo biti enaka pri gostitelju in pri odjemalcu; neobvezno |
 
 ### Nastavi skupno spremenljivko
 
@@ -169,8 +169,8 @@ Zapiše spremenljivko, ki si jo delijo vsi računalniki. Pri gostitelju se uvelj
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `name` | Besedilo | — | A plain identifier (letters, digits, _) -- no spaces or operators |
-| `value` | Besedilo | `0` | A number, text or true/false (complex objects are refused) |
+| `name` | Besedilo | — | Preprosto ime (črke, števke, _) – brez presledkov in operatorjev |
+| `value` | Besedilo | `0` | Število, besedilo ali true/false (sestavljeni predmeti so zavrnjeni) |
 
 ### Nastavi lastnika primerka
 
@@ -184,7 +184,7 @@ Določi, kateri igralec vodi ta sinhronizirani primerek (0 = gostitelj; 1, 2, ..
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `player` | Besedilo | `0` | Player number (0 = host). Often global.network_sender inside "Player joined". |
+| `player` | Besedilo | `0` | Številka igralca (0 = gostitelj). Pogosto global.network_sender znotraj »Igralec se je pridružil«. |
 
 ### Nastavi hitrost sinhronizacije
 
@@ -198,8 +198,8 @@ Nastavi, kako pogosto gostitelj pošilja posnetke stanja in koliko za njimi jih 
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `hz` | Število | `20` | 10-30 works well on a local network (default 20); neobvezno |
-| `interp_ms` | Število | `100` | How far behind ghosts are drawn, in milliseconds (default 100); neobvezno |
+| `hz` | Število | `20` | 10–30 dobro deluje v krajevnem omrežju (privzeto 20); neobvezno |
+| `interp_ms` | Število | `100` | Kako daleč zadaj se rišejo duhovi, v milisekundah (privzeto 100); neobvezno |
 
 ### Začni omrežno igro
 
@@ -225,7 +225,7 @@ Primerek, ki izvaja to dejanje, označi kot sinhroniziran: njegov položaj, zasu
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
-| `vars` | Besedilo | — | Instance variable names to copy as well, separated by commas (e.g. "hp, colour"); neobvezno |
+| `vars` | Besedilo | — | Imena spremenljivk primerka, ki naj se prav tako prepišejo, ločena z vejicami (npr. "hp, colour"); neobvezno |
 
 ---
 
