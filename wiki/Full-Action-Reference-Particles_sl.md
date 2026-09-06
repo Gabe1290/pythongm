@@ -12,7 +12,7 @@
 | **Ikona** | 💥 |
 | **Kategorija** | Particles |
 
-Emit a one-time burst of particles from the most recently created emitter
+Iz nazadnje ustvarjenega izvora izpusti enkraten izbruh delcev
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -27,7 +27,7 @@ Emit a one-time burst of particles from the most recently created emitter
 | **Ikona** | 🧹 |
 | **Kategorija** | Particles |
 
-Remove all active particles but keep particle types and emitters
+Odstrani vse dejavne delce, ohrani pa vrste delcev in izvore
 
 *Parametri:* brez
 
@@ -39,7 +39,7 @@ Remove all active particles but keep particle types and emitters
 | **Ikona** | 🌀 |
 | **Kategorija** | Particles |
 
-Create a particle emitter area (returned id is stored for the next emitter-using action)
+Ustvari območje, ki oddaja delce (vrnjena oznaka se shrani za naslednje dejanje, ki uporablja izvor)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -57,7 +57,7 @@ Create a particle emitter area (returned id is stored for the next emitter-using
 | **Ikona** | ✨ |
 | **Kategorija** | Particles |
 
-Create a particle system attached to this instance (replaces any existing one)
+Ustvari sistem delcev, pripet na ta primerek (nadomesti obstoječega)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -71,7 +71,7 @@ Create a particle system attached to this instance (replaces any existing one)
 | **Ikona** | ⚙️ |
 | **Kategorija** | Particles |
 
-Define a new particle appearance/behavior (returned type id is stored for the next particle_type-using action)
+Določi nov videz oziroma vedenje delca (vrnjena oznaka vrste se shrani za naslednje dejanje, ki uporablja vrsto delca)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -96,7 +96,7 @@ Define a new particle appearance/behavior (returned type id is stored for the ne
 | **Ikona** | 💥 |
 | **Kategorija** | Particles |
 
-Destroy the most recently created emitter
+Odstrani nazadnje ustvarjeni izvor
 
 *Parametri:* brez
 
@@ -108,7 +108,7 @@ Destroy the most recently created emitter
 | **Ikona** | 💥 |
 | **Kategorija** | Particles |
 
-Remove this instance's particle system, clearing all particles and emitters
+Odstrani sistem delcev tega primerka in z njim vse delce in izvore
 
 *Parametri:* brez
 
@@ -120,7 +120,7 @@ Remove this instance's particle system, clearing all particles and emitters
 | **Ikona** | 🌊 |
 | **Kategorija** | Particles |
 
-Continuously emit particles every step from the most recently created emitter (0 to stop)
+Iz nazadnje ustvarjenega izvora v vsakem koraku neprekinjeno oddaja delce (0 za ustavitev)
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|

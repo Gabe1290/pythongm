@@ -12,7 +12,7 @@
 | **Ikona** | ⬇️ |
 | **Kategorija** | Pogled 3D |
 
-Continuous falling/landing physics for the block-world camera -- bind in the Step event (not a keyboard-held event) so it runs every frame regardless of movement input. No-op unless Enable Block World View's Gravity parameter is set above 0
+Neprekinjena fizika padanja in pristajanja za kamero Block World: vstavi jo v dogodek Korak (in ne v dogodek pridržane tipke), da se izvede v vsaki sličici, ne glede na vnos premikanja. Nima učinka, dokler parameter Težnost v »Vklopi pogled Block World« ni večji od 0
 
 *Parametri:* brez
 
@@ -24,7 +24,7 @@ Continuous falling/landing physics for the block-world camera -- bind in the Ste
 | **Ikona** | ⛏️ |
 | **Kategorija** | Pogled 3D |
 
-Remove the block the camera is looking at -- also picks it up into the calling instance's inventory if Enable Block World View's Inventory is on, and refuses if the block is protected (Set Block Protection) and the required key isn't in inventory
+Odstrani blok, v katerega je usmerjena kamera; če je inventar v »Vklopi pogled Block World« vklopljen, ga tudi pobere v inventar primerka, ki izvaja dejanje, in ga noče odstraniti, če je blok zaščiten (»Nastavi zaščito blokov«) in zahtevanega ključa ni v inventarju
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -38,7 +38,7 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 | **Ikona** | 🧰 |
 | **Kategorija** | Pogled 3D |
 
-Draw a crosshair plus a hotbar strip (the selected slot highlighted, with a count on each slot once Inventory is on) -- call from the player/camera object's own Draw event
+Nariše merek in vrstico za hiter dostop (izbrano mesto je poudarjeno, ob vklopljenem inventarju pa je na vsakem mestu še števec): pokliči jo iz dogodka Nariši v samem objektu igralca oziroma kamere
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -114,7 +114,7 @@ Nariši proti severu usmerjen mini zemljevid sten sobe raycast, z oznako, ki pri
 | **Ikona** | 🧱 |
 | **Kategorija** | Pogled 3D |
 
-Render the room as a first-person voxel view (single layer) instead of the top-down view
+Sobo prikaže kot voksel pogled iz prve osebe (ena sama plast) namesto pogleda od zgoraj
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -174,7 +174,7 @@ Izriši sobo kot 3D-pogled iz prve osebe v slogu Doom/Wolfenstein (stene, nebo, 
 | **Ikona** | ⬆️ |
 | **Kategorija** | Pogled 3D |
 
-Give the block-world camera upward velocity -- only while standing on solid ground (no double/air jumps). Needs Gravity configured (Enable Block World View) and Apply Gravity bound in the Step event, or nothing brings it back down
+Kameri Block World doda hitrost navzgor – le kadar stoji na trdnih tleh (brez dvojnih skokov in skokov v zraku). Zahteva nastavljeno težnost (»Vklopi pogled Block World«) in dejanje »Uporabi težnost« v dogodku Korak, sicer je nič ne spravi nazaj na tla
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -188,7 +188,7 @@ Give the block-world camera upward velocity -- only while standing on solid grou
 | **Ikona** | 📂 |
 | **Kategorija** | Pogled 3D |
 
-Load a pre-authored world (blocks placed by a generator or hand-authored file) into the current room, replacing whatever blocks are there
+V trenutno sobo naloži vnaprej pripravljen svet (bloke, ki jih je postavil generator ali so napisani ročno) in nadomesti bloke, ki so bili v njej
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -202,7 +202,7 @@ Load a pre-authored world (blocks placed by a generator or hand-authored file) i
 | **Ikona** | 🔭 |
 | **Kategorija** | Pogled 3D |
 
-Tilt the block-world view up or down
+Nagne pogled Block World navzgor ali navzdol
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -217,7 +217,7 @@ Tilt the block-world view up or down
 | **Ikona** | 🚶 |
 | **Kategorija** | Pogled 3D |
 
-Move this step, checked against the block grid, with automatic footing (step up one block, drop any distance) -- the camera's z_layer follows if this is the block-world camera
+Naredi korak premika, preverjen glede na mrežo blokov, s samodejnim oprijemom (stopi za en blok navzgor, pade poljubno globoko): če je to kamera Block World, ji sledi tudi njen z_layer
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -233,7 +233,7 @@ Move this step, checked against the block grid, with automatic footing (step up 
 | **Ikona** | 🧱 |
 | **Kategorija** | Pogled 3D |
 
-Put a block in the empty cell the camera is looking at -- unlimited unless Enable Block World View's Inventory is on, which draws from what Break Block has picked up
+Postavi blok v prazno celico, v katero je usmerjena kamera: brez omejitev, razen če je vklopljen inventar v »Vklopi pogled Block World« – takrat jemlje iz tega, kar je pobralo »Razbij blok«
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -248,7 +248,7 @@ Put a block in the empty cell the camera is looking at -- unlimited unless Enabl
 | **Ikona** | 🔢 |
 | **Kategorija** | Pogled 3D |
 
-Choose which block the hotbar has selected, for place_block to build with -- bind Place Block's Block parameter to the expression "hotbar_block" to use it
+Izbere, kateri blok je izbran v vrstici za hiter dostop in s katerim bo gradilo »Postavi blok«: za to nastavi parameter Blok v »Postavi blok« na izraz »hotbar_block«
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -263,7 +263,7 @@ Choose which block the hotbar has selected, for place_block to build with -- bin
 | **Ikona** | 🔒 |
 | **Kategorija** | Pogled 3D |
 
-Require a specific block type in inventory before Break Block can remove a chosen block type -- call once per protected type, needs Enable Block World View's Inventory on or the requirement can never be satisfied
+Zahteva določeno vrsto bloka v inventarju, preden lahko »Razbij blok« odstrani izbrano vrsto bloka: pokliči enkrat za vsako zaščiteno vrsto; zahteva vklopljen inventar v »Vklopi pogled Block World«, sicer pogoja ni mogoče nikoli izpolniti
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
@@ -278,7 +278,7 @@ Require a specific block type in inventory before Break Block can remove a chose
 | **Ikona** | 💎 |
 | **Kategorija** | Pogled 3D |
 
-Award score when Break Block successfully removes a chosen block type -- call once per rewarded type (e.g. in the room's create event, right after Enable Block World View). A mine-to-collect ore/gem block: place it in the terrain, register its reward, and breaking it awards the points automatically
+Dodeli točke, ko »Razbij blok« uspešno odstrani izbrano vrsto bloka: pokliči enkrat za vsako nagrajeno vrsto (na primer v dogodku Ustvari v sobi, takoj za »Vklopi pogled Block World«). Rudo ali dragi kamen za izkopavanje postavi v teren, vpiši njegovo nagrado – in razbijanje samodejno dodeli točke
 
 | Parameter | Vrsta | Privzeto | Opombe |
 |-----------|------|---------|-------|
