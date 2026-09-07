@@ -18,6 +18,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QInputDialog, QDialog
 
 from dialogs.import_dialogs import ImportAssetDialog
+from widgets.asset_tree.asset_utils import validate_asset_name
 
 from core.logger import get_logger
 
@@ -500,6 +501,20 @@ class AssetsMixin:
         )
 
         if not ok or not name:
+            return
+
+        # H6, docs/FULL_AUDIT_2026-09-07.md: this Create-asset menu path
+        # never validated the typed name, unlike the asset tree's own
+        # rename/create dialogs (widgets/asset_tree/asset_dialogs.py),
+        # which both call validate_asset_name. A name containing a path
+        # separator, "..", a Windows-reserved device name (CON/PRN/...),
+        # or a trailing dot/space either silently fails to write its side
+        # file (_safe_asset_path skips it with a warning) or breaks
+        # open() outright on Windows, which can trip the cross-file
+        # rollback and lose the whole save.
+        is_valid, error_msg = validate_asset_name(name)
+        if not is_valid:
+            QMessageBox.warning(self, self.tr("Invalid Name"), error_msg)
             return
 
         # Create the asset data directly
