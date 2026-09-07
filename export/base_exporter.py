@@ -16,9 +16,14 @@ produced five separate user-reported bugs in one pass. The Kivy helpers below
 the mobile targets only.
 
 Notes:
-- AndroidExporter inherits this base but overrides _load_rooms_from_files,
-  _load_objects_from_files and _generate_kivy_game, which legitimately differ
-  for the buildozer pipeline.
+- AndroidExporter inherits this base and overrides _generate_kivy_game,
+  which legitimately differs for the buildozer pipeline. It used to also
+  override _load_rooms_from_files/_load_objects_from_files with a shorter,
+  incomplete room/object key list -- that was a real bug (H5,
+  docs/FULL_AUDIT_2026-09-07.md), not a legitimate difference, and those
+  overrides were removed so Android now uses this base's loaders (which
+  route through utils/project_file_merge.py's merge_room_file/
+  merge_object_file) like every desktop target does.
 - iOSExporter is intentionally NOT built on this base: its loaders and build
   flow diverge substantially (Xcode/kivy-ios), so forcing it onto a shared
   template would risk behaviour changes for no real dedup gain.

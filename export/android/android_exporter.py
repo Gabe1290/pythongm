@@ -46,91 +46,18 @@ class AndroidExporter(BaseKivyExporter):
         self._key_alias = None
         self._key_password = None
 
-    def _load_rooms_from_files(self, project_dir: Path) -> None:
-        """Load room instance data from separate files in rooms/ directory
-
-        The main project.json stores room metadata but NOT instances.
-        Instances are stored in separate rooms/<room_name>.json files.
-        """
-        rooms_dir = project_dir / "rooms"
-
-        if not rooms_dir.exists():
-            logger.debug("No rooms/ directory found, using embedded room data")
-            return
-
-        rooms_data = self.project_data.get('assets', {}).get('rooms', {})
-
-        for room_name, room_data in rooms_data.items():
-            room_file = rooms_dir / "{}.json".format(room_name)
-
-            if room_file.exists():
-                try:
-                    with open(room_file, 'r', encoding='utf-8') as f:
-                        file_room_data = json.load(f)
-
-                    if 'instances' in file_room_data:
-                        room_data['instances'] = file_room_data['instances']
-                        logger.debug("Loaded room: {} ({} instances from file)".format(
-                            room_name, len(room_data['instances'])))
-
-                    for key in ['width', 'height', 'background_color', 'background_image',
-                               'tile_horizontal', 'tile_vertical']:
-                        if key in file_room_data:
-                            room_data[key] = file_room_data[key]
-
-                except Exception as e:
-                    logger.warning("Could not load room file {}: {}".format(room_file, e))
-            else:
-                if room_data.get('instances'):
-                    logger.debug("Room {}: using embedded instances ({} instances)".format(
-                        room_name, len(room_data['instances'])))
-                else:
-                    logger.warning("Room {}: no instances found".format(room_name))
-
-    def _load_objects_from_files(self, project_dir: Path) -> None:
-        """Load object data from separate files in objects/ directory
-
-        The main project.json stores object metadata but NOT events.
-        Events are stored in separate objects/<object_name>.json files.
-        """
-        from collections import OrderedDict
-
-        objects_dir = project_dir / "objects"
-
-        if not objects_dir.exists():
-            logger.debug("No objects/ directory found, using embedded object data")
-            return
-
-        objects_data = self.project_data.get('assets', {}).get('objects', {})
-
-        for object_name, object_data in list(objects_data.items()):
-            object_file = objects_dir / "{}.json".format(object_name)
-
-            if isinstance(object_data, str):
-                object_data = {"name": object_name, "asset_type": "object"}
-                objects_data[object_name] = object_data
-
-            if object_file.exists():
-                try:
-                    with open(object_file, 'r', encoding='utf-8') as f:
-                        file_object_data = json.load(f, object_pairs_hook=OrderedDict)
-
-                    for key in ['events', 'sprite', 'visible', 'solid', 'persistent',
-                               'depth', 'parent', 'mask', 'imported', 'created', 'modified']:
-                        if key in file_object_data:
-                            object_data[key] = file_object_data[key]
-
-                    event_count = len(file_object_data.get('events', {}))
-                    logger.debug("Loaded object: {} ({} events from file)".format(
-                        object_name, event_count))
-
-                except Exception as e:
-                    logger.warning("Could not load object file {}: {}".format(object_file, e))
-            else:
-                if object_data.get('events'):
-                    logger.debug("Object {}: using embedded events".format(object_name))
-                else:
-                    logger.warning("Object {}: no events found".format(object_name))
+    # _load_rooms_from_files / _load_objects_from_files: INTENTIONALLY not
+    # overridden here (H5, docs/FULL_AUDIT_2026-09-07.md). These used to
+    # duplicate BaseKivyExporter's loaders with a shorter, incomplete key
+    # list -- missing tiles, views, enable_views, backgrounds, persistent,
+    # remember_destroyed -- so a manifest-ified project (every project a
+    # current IDE saves) built for Android silently lost its tiles/views,
+    # and every object lost remember_destroyed. Deleted in favour of the
+    # inherited versions, which route through utils/project_file_merge.py's
+    # merge_room_file/merge_object_file -- the single place that knows the
+    # full set of room/object side-file keys (export/ios/ios_exporter.py's
+    # loaders were fixed the same day to call the same two functions,
+    # since it can't inherit this base class).
 
     def export_project(self, project_path: str, output_path: str, settings: Dict) -> bool:
         """
