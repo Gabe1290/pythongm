@@ -251,7 +251,7 @@ exists, so the English fallback is correct).
   `is_valid_shared_name` checks syntax only. *Fix:* reserve the identity
   names in `is_valid_shared_name` (refuse at the setter, host side too).
 
-- [ ] **M11 — `.trash_orphaned_files` ships inside desktop exports.**
+- [x] **M11 — `.trash_orphaned_files` ships inside desktop exports.**
   `export/desktop/pygame_desktop_exporter.py:100`
   `SKIPPED_PROJECT_DIRS = {".trash", ".git", "__pycache__", "build", "dist"}`
   — `utils/project_cleanup.py`'s orphan trash root (`.trash_orphaned_files`,
@@ -261,6 +261,8 @@ exists, so the English fallback is correct).
   `utils/project_compression.py` excludes both. *Fix:* single-source the
   exclusion set (import it from `utils/project_compression.py` or
   `asset_trash`/`project_cleanup`).
+  **Fixed `94b53eaa`** (both files now import `TRASH_DIR_NAME`/
+  `ORPHAN_TRASH_DIR_NAME` from `asset_trash`/`project_cleanup`).
 
 - [ ] **M12 — Unaccented French in user-facing multiplayer error text.**
   `extensions/multiplayer_lan/handlers.py:348-351` ("heberger", "peut-etre
