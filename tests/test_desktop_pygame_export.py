@@ -306,6 +306,25 @@ def test_soft_deleted_assets_are_not_shipped(qapp, target, project, tmp_path):
 
 
 @pytest.mark.parametrize("target", ALL_TARGETS)
+def test_orphaned_trash_is_not_shipped(qapp, target, project, tmp_path):
+    """M11, docs/FULL_AUDIT_2026-09-07.md: .trash_orphaned_files holds
+    physical files the Clean Project orphan sweep trashed (utils/
+    project_cleanup.py) -- the same "shipping a deletion undoes it"
+    reasoning as .trash above. SKIPPED_PROJECT_DIRS never listed it, so
+    it shipped in every desktop export until this fix."""
+    (project / ".trash_orphaned_files").mkdir()
+    (project / ".trash_orphaned_files" / "some-trash-id").mkdir()
+    (project / ".trash_orphaned_files" / "some-trash-id" / "orphan.png").write_bytes(
+        b"\x89PNG orphan")
+
+    exporter, build_dir = _stage(target, project, tmp_path)
+    assert not (build_dir / "game" / ".trash_orphaned_files").exists()
+
+    datas = exporter._spec_datas(build_dir)
+    assert not any("orphan.png" in src for src, _ in datas)
+
+
+@pytest.mark.parametrize("target", ALL_TARGETS)
 def test_the_whole_game_tree_reaches_the_spec(qapp, target, project, tmp_path):
     """Staging the files is not enough -- anything absent from the spec's
     datas is absent from the bundle."""
