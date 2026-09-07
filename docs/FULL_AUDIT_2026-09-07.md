@@ -172,7 +172,7 @@ exists, so the English fallback is correct).
   for the fourth side-file type). *Fix:* add `"sprites"` to the tuple.
   **Fixed `011bf4c2`.**
 
-- [ ] **M3 — Object rename ignores room instances keyed `"object"` (the legacy key still shipped in samples).**
+- [x] **M3 — Object rename ignores room instances keyed `"object"` (the legacy key still shipped in samples).**
   `core/asset_manager.py:620` only rewrites `instance["object_name"]`.
   The runtime (`runtime/room.py:213`) and room editor accept
   `instance["object"]` as well, and `samples/plateforme_1/rooms/niveau_01.json`
@@ -180,6 +180,8 @@ exists, so the English fallback is correct).
   leaves every placed instance pointing at the old name → they vanish at
   runtime. *Fix:* check both keys (and normalise to `object_name` on the
   way through).
+  **Fixed `3a7ff2af`** (updates whichever key is present; did not force
+  normalization to `object_name`, out of scope for this fix).
 
 - [ ] **M4 — `test_question` is always "yes" in the real game process.**
   `runtime/action_flow.py:794` builds a `QMessageBox`; at `:810` it returns
