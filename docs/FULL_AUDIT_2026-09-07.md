@@ -202,13 +202,14 @@ exists, so the English fallback is correct).
   room build with a warning).
   **Fixed `9c2b6756`.**
 
-- [ ] **M6 — `destroy_instance` / `change_instance` with target=other silently act on self when there is no collision partner.**
+- [x] **M6 — `destroy_instance` / `change_instance` with target=other silently act on self when there is no collision partner.**
   `runtime/action_spawn.py:52-54` and `:201-202`: `if target == "other"
   and self._collision_other:` else falls through to `self`. A GMK-imported
   "destroy other" placed in a non-collision event (or the "Applies to →
   Other" radio the editor now offers for these two actions) destroys the
   *caller*. *Fix:* when target is `other` and there is no partner, log
   and return without acting (GM's behaviour).
+  **Fixed `4e37d922`.**
 
 - [ ] **M7 — Audio plugin: emoji `print()` before the `try`, and volume not parsed.**
   `plugins/audio_actions.py:138` prints `🔊 Playing sound: …` *outside*
