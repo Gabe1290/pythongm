@@ -163,13 +163,14 @@ exists, so the English fallback is correct).
   `change_room`), and make AUTOHOST idempotent per process. *How
   verified:* `_resolve_state` + `change_room`'s fresh `GameRoom`.
 
-- [ ] **M2 — Sprite rename leaves `sprites/<old>.json` behind (stale side file resurrects on reuse).**
+- [x] **M2 — Sprite rename leaves `sprites/<old>.json` behind (stale side file resurrects on reuse).**
   `core/asset_manager.py:550` carries the side file only for
   `("rooms", "objects", "playgrounds")`; `delete_asset` (`:393`) already
   handles `sprites` too. After renaming `spr_a`→`spr_b`, `sprites/spr_a.json`
   stays, and a future sprite named `spr_a` loads that stale file's
   `frame_width`/`precise`/`speed` over its own (H3's exact failure mode,
   for the fourth side-file type). *Fix:* add `"sprites"` to the tuple.
+  **Fixed `011bf4c2`.**
 
 - [ ] **M3 — Object rename ignores room instances keyed `"object"` (the legacy key still shipped in samples).**
   `core/asset_manager.py:620` only rewrites `instance["object_name"]`.
