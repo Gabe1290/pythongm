@@ -42,7 +42,7 @@ from events.action_types import ACTION_TYPES  # noqa: E402
 from runtime.action_executor import ActionExecutor  # noqa: E402
 
 from extensions.multiplayer_lan.network import (  # noqa: E402
-    NetworkHost, NetworkClient, CONN_OPENED, CONN_CLOSED,
+    NetworkHost, NetworkClient, CONN_OPENED, CONN_CLOSED, _HostConn,
 )
 from extensions.multiplayer_lan.state import (  # noqa: E402
     SNAPSHOT_MSG_TYPE, MAX_FRAME_BYTES, multiplayer_state, peek_multiplayer,
@@ -202,6 +202,99 @@ class TestNetworkLoopback:
             client.poll()  # must not raise
         finally:
             client.close()
+
+
+class _FailingSocket:
+    """A duck-typed socket standing in for a real one whose peer vanished
+    mid-write (cable pulled, Wi-Fi client isolation, the peer process
+    killed) -- send() raises exactly like a real dead socket's would."""
+
+    def send(self, data):
+        raise OSError("simulated send failure")
+
+    def close(self):
+        pass
+
+
+class TestSendPathConnectionLoss:
+    """H3, docs/FULL_AUDIT_2026-09-07.md: NetworkHost.send()/broadcast()
+    used to pass _flush_conn a throwaway `[]` for its events list, so a
+    connection killed by a failed WRITE (as opposed to a failed read, which
+    poll() itself surfaces) never produced a CONN_CLOSED event at all --
+    session.py's _drop_conn (player_left, player_count, roster cleanup)
+    was never told, leaving a permanent phantom player.
+
+    Uses a real NetworkHost with one real accepted connection swapped for
+    a fake failing socket, rather than real network fault injection --
+    deterministic, no timing/flakiness, and exercises the exact code path
+    (_flush_conn's OSError branch) the finding is about.
+    """
+
+    def _host_with_dead_conn(self):
+        host = NetworkHost(port=0)
+        host.start()
+        conn = _HostConn(_FailingSocket(), ("127.0.0.1", 0))
+        host._conns[1] = conn
+        return host
+
+    def test_broadcast_send_failure_surfaces_conn_closed_on_next_poll(self):
+        host = NetworkHost(port=0)
+        host.start()
+        try:
+            conn = _HostConn(_FailingSocket(), ("127.0.0.1", 0))
+            host._conns[1] = conn
+
+            host.broadcast({"t": "x"})  # send fails -> _kill -> used to be lost
+            assert conn.alive is False, "the connection must be marked dead immediately"
+
+            events = host.poll()
+            closed = [e for e in events if e[1].get("t") == CONN_CLOSED]
+            assert closed, (
+                "poll() must return the CONN_CLOSED event from a "
+                "broadcast()-path failure, or session.py never sees the "
+                "player leave")
+            assert closed[0][0] == 1
+        finally:
+            host.close()
+
+    def test_send_failure_surfaces_conn_closed_on_next_poll(self):
+        host = NetworkHost(port=0)
+        host.start()
+        try:
+            conn = _HostConn(_FailingSocket(), ("127.0.0.1", 0))
+            host._conns[7] = conn
+
+            host.send(7, {"t": "x"})
+            assert conn.alive is False
+
+            events = host.poll()
+            closed = [e for e in events if e[1].get("t") == CONN_CLOSED]
+            assert closed, (
+                "poll() must return the CONN_CLOSED event from a "
+                "send()-path failure")
+            assert closed[0][0] == 7
+        finally:
+            host.close()
+
+    def test_pending_events_do_not_duplicate_or_leak_across_polls(self):
+        """A pending CONN_CLOSED must be returned exactly once, and a poll
+        with nothing pending must not keep re-returning stale events."""
+        host = NetworkHost(port=0)
+        host.start()
+        try:
+            conn = _HostConn(_FailingSocket(), ("127.0.0.1", 0))
+            host._conns[3] = conn
+            host.broadcast({"t": "x"})
+
+            first = host.poll()
+            assert sum(1 for e in first if e[1].get("t") == CONN_CLOSED) == 1
+
+            second = host.poll()
+            assert not any(e[1].get("t") == CONN_CLOSED for e in second), (
+                "a already-delivered CONN_CLOSED must not repeat on the "
+                "next poll()")
+        finally:
+            host.close()
 
 
 # ---------------------------------------------------------------------------
