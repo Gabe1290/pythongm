@@ -264,7 +264,7 @@ exists, so the English fallback is correct).
   **Fixed `94b53eaa`** (both files now import `TRASH_DIR_NAME`/
   `ORPHAN_TRASH_DIR_NAME` from `asset_trash`/`project_cleanup`).
 
-- [ ] **M12 — Unaccented French in user-facing multiplayer error text.**
+- [x] **M12 — Unaccented French in user-facing multiplayer error text.**
   `extensions/multiplayer_lan/handlers.py:348-351` ("heberger", "peut-etre
   deja utilise", "systeme", "reseau prive") and `:404-405` ("Verifiez",
   "l'hote", "lance", "meme reseau"). These are shown to students in a
@@ -274,6 +274,8 @@ exists, so the English fallback is correct).
   accents (`héberger`, `peut-être déjà utilisé`, `système`, `réseau privé`,
   `Vérifiez`, `l'hôte`, `lancé`, `même réseau`; `Français`, `Español`,
   `Português`, `Slovenščina`).
+  **Fixed `0139fbdf`** (also fixed `Russian`/`Ukrainian` → native
+  `Русский`/`Українська` in the same fallback list).
 
 - [ ] **M13 — Import GMK: `any(candidate.iterdir())` raises when the candidate exists as a file.**
   `core/ide/_assets.py:207` — the "pick a free destination folder" loop
