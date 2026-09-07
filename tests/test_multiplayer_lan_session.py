@@ -358,3 +358,71 @@ class TestInstanceReplication:
             assert client.ghost_ids() == []
         finally:
             client.close(); host.close()
+
+
+# ---------------------------------------------------------------------------
+# M9, docs/FULL_AUDIT_2026-09-07.md: a connection that never sends its HELLO
+# must eventually be dropped, not held forever.
+# ---------------------------------------------------------------------------
+
+class TestPendingConnectionTimeout:
+    def test_silent_peer_is_eventually_dropped(self, monkeypatch):
+        """A raw socket that connects and sends nothing (a port scanner, a
+        browser tab that opened the socket and went idle) used to hold a
+        roster slot and cost a per-frame recv attempt forever."""
+        import extensions.multiplayer_lan.session as session_mod
+        monkeypatch.setattr(session_mod, "_PENDING_HELLO_TIMEOUT", 0.05)
+
+        host = NetworkSession(mode="host", port=0, player_name="Prof")
+        host.start()
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5.0)
+            try:
+                sock.connect(("127.0.0.1", host.bound_port))
+
+                deadline = time.time() + 3.0
+                while time.time() < deadline and not host._pending:
+                    host.pump_before_step()
+                    host.pump_after_update()
+                    time.sleep(0.01)
+                assert host._pending, "the accepted connection must register as pending"
+
+                # Send nothing -- wait past the (patched, short) timeout.
+                deadline = time.time() + 3.0
+                while time.time() < deadline and host._pending:
+                    host.pump_before_step()
+                    host.pump_after_update()
+                    time.sleep(0.01)
+
+                assert not host._pending, "a silent peer must eventually be dropped"
+
+                # The socket itself must actually have been closed on the
+                # host side, not just forgotten from bookkeeping.
+                deadline = time.time() + 3.0
+                closed = False
+                while time.time() < deadline and not closed:
+                    try:
+                        sock.settimeout(0.1)
+                        chunk = sock.recv(1)
+                        closed = (chunk == b"")
+                    except (socket.timeout, ConnectionResetError, OSError):
+                        closed = True
+                assert closed, "the host must actually close the stale connection's socket"
+            finally:
+                sock.close()
+        finally:
+            host.close()
+
+    def test_peer_that_sends_hello_in_time_is_not_dropped(self, monkeypatch):
+        """Behaviour-preservation baseline: a normal, prompt client must
+        never be affected by the timeout."""
+        import extensions.multiplayer_lan.session as session_mod
+        monkeypatch.setattr(session_mod, "_PENDING_HELLO_TIMEOUT", 5.0)
+
+        host, client, host_log, client_log = _connected_pair()
+        try:
+            assert not host._pending
+            assert host.player_count == 2
+        finally:
+            client.close(); host.close()

@@ -46,6 +46,15 @@ _MAX_PLAYERS_CEIL = 16
 # to interpolate toward on a LAN.
 _DEFAULT_INTERP_DELAY = 0.10
 
+# A connection that never sends its HELLO within this many seconds of being
+# accepted is dropped (M9, docs/FULL_AUDIT_2026-09-07.md) -- a port scanner,
+# a browser tab that opened the raw/WS socket and went idle, or any other
+# silent peer would otherwise hold a roster slot and cost a per-frame recv
+# attempt forever. Generous for a LAN (a real client's HELLO round-trips in
+# well under a second) without being so short a slow/loaded machine's first
+# connect attempt gets punished.
+_PENDING_HELLO_TIMEOUT = 5.0
+
 
 class NetworkSession:
     """One machine's view of a LAN game. ``mode`` is ``"host"`` or
@@ -78,7 +87,7 @@ class NetworkSession:
         # host-only roster bookkeeping
         self._roster = {}              # slot -> {"cid": int, "name": str}
         self._conn_slot = {}          # cid -> slot
-        self._pending = set()         # cids accepted, awaiting a valid hello
+        self._pending = {}            # cid -> accept time (monotonic), awaiting a valid hello
         self._next_slot = 1
 
         self._events = deque()
@@ -325,7 +334,7 @@ class NetworkSession:
         for cid, frame in self._host.poll():
             t = frame.get("t")
             if t == CONN_OPENED:
-                self._pending.add(cid)
+                self._pending[cid] = time.monotonic()
             elif t == CONN_CLOSED:
                 self._drop_conn(cid)
             elif t == MSG_HELLO:
@@ -338,11 +347,24 @@ class NetworkSession:
                 self._on_client_own(cid, frame)
             elif t == MSG_INPUT:
                 self._on_client_input(cid, frame)
+        self._expire_stale_pending()
+
+    def _expire_stale_pending(self) -> None:
+        """Drop any accepted connection that hasn't sent its HELLO within
+        _PENDING_HELLO_TIMEOUT (M9, docs/FULL_AUDIT_2026-09-07.md)."""
+        if not self._pending:
+            return
+        now = time.monotonic()
+        stale = [cid for cid, accepted_at in self._pending.items()
+                 if now - accepted_at > _PENDING_HELLO_TIMEOUT]
+        for cid in stale:
+            self._pending.pop(cid, None)
+            self._host.disconnect(cid)
 
     def _on_hello(self, cid: int, frame: dict) -> None:
         if cid not in self._pending:
             return
-        self._pending.discard(cid)
+        self._pending.pop(cid, None)
         if frame.get("proto_ver") != PROTO_VER:
             self._host.send(cid, {"t": MSG_BYE, "reason": "protocol version mismatch"})
             self._host.disconnect(cid)
@@ -370,7 +392,7 @@ class NetworkSession:
         self._queue_event("player_joined", slot, name)
 
     def _drop_conn(self, cid: int) -> None:
-        self._pending.discard(cid)
+        self._pending.pop(cid, None)
         slot = self._conn_slot.pop(cid, None)
         if slot is None:
             return
