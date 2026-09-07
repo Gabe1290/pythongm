@@ -79,7 +79,7 @@ exists, so the English fallback is correct).
   call exists in the launcher or in `run()`.
   **Fixed `e06ed3da`.**
 
-- [ ] **H3 — Multiplayer: a connection killed during `send()`/`broadcast()` never emits `CONN_CLOSED` → phantom players.**
+- [x] **H3 — Multiplayer: a connection killed during `send()`/`broadcast()` never emits `CONN_CLOSED` → phantom players.**
   `extensions/multiplayer_lan/network.py:203` (and the raw-TCP siblings)
   call `self._flush_conn(cid, conn, [])` with a throwaway event list;
   `_kill` (`network.py:176`) appends the `CONN_CLOSED` event into *that*
@@ -93,6 +93,7 @@ exists, so the English fallback is correct).
   the list) so send-path kills surface on the next `poll()`. *How
   verified:* read `send`, `broadcast`, `_flush_conn`, `_kill`, `poll` in
   both transports.
+  **Fixed `23d2c2a2`.**
 
 - [ ] **H4 — Multiplayer host applies client-owned rows without validation → crash or hijacked host state.**
   `extensions/multiplayer_lan/handlers.py:814` `_apply_host_own_state`
