@@ -277,7 +277,7 @@ exists, so the English fallback is correct).
   **Fixed `0139fbdf`** (also fixed `Russian`/`Ukrainian` → native
   `Русский`/`Українська` in the same fallback list).
 
-- [ ] **M13 — Import GMK: `any(candidate.iterdir())` raises when the candidate exists as a file.**
+- [x] **M13 — Import GMK: `any(candidate.iterdir())` raises when the candidate exists as a file.**
   `core/ide/_assets.py:207` — the "pick a free destination folder" loop
   does `while candidate.exists() and any(candidate.iterdir())`; if
   `~/Documents/PyGameMaker Projects/<name>` exists as a *file* (or is a
@@ -285,6 +285,7 @@ exists, so the English fallback is correct).
   `iterdir()` raises `NotADirectoryError`, caught by the outer broad
   except and reported as a generic import failure. *Fix:* `candidate.is_dir()
   and any(...)`, treat a file as occupied.
+  **Fixed `db4fd3cf`.**
 
 ## Low
 
