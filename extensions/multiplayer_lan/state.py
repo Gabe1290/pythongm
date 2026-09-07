@@ -102,13 +102,30 @@ MAX_SHARED_NAME_LEN = 64
 
 _SCALAR_TYPES = (bool, int, float, str)
 
+# Identity/event globals handlers.py's _apply_session_state writes on every
+# machine every frame -- reserved so a shared variable can never shadow one
+# (M10, docs/FULL_AUDIT_2026-09-07.md). Without this, set_shared_var(name=
+# "is_host", ...) from ANY client (or an author picking the name by
+# accident) silently overwrote every machine's global.is_host, breaking
+# every "if is_host()" branch in the project. Kept here (not in
+# handlers.py) since is_valid_shared_name is the single choke point both
+# the local set_shared_var action and an inbound wire frame go through.
+RESERVED_SHARED_NAMES = frozenset({
+    "player_id", "player_count", "network_role", "is_host", "is_client",
+    "network_connected", "network_event", "network_data", "network_sender",
+    "network_player_name",
+})
+
 
 def is_valid_shared_name(name) -> bool:
     """True if ``name`` is a safe shared-variable identifier: a non-empty
     plain identifier (letter/underscore start, then word chars) no longer
-    than ``MAX_SHARED_NAME_LEN``. Anything else -- an operator, a dot, a
-    space, a leading digit, a non-str -- is rejected."""
+    than ``MAX_SHARED_NAME_LEN``, and not one of the reserved identity/event
+    global names. Anything else -- an operator, a dot, a space, a leading
+    digit, a non-str, a reserved name -- is rejected."""
     if not isinstance(name, str) or not name or len(name) > MAX_SHARED_NAME_LEN:
+        return False
+    if name in RESERVED_SHARED_NAMES:
         return False
     return _SHARED_NAME_RE.match(name) is not None
 
