@@ -211,7 +211,7 @@ exists, so the English fallback is correct).
   and return without acting (GM's behaviour).
   **Fixed `4e37d922`.**
 
-- [ ] **M7 — Audio plugin: emoji `print()` before the `try`, and volume not parsed.**
+- [x] **M7 — Audio plugin: emoji `print()` before the `try`, and volume not parsed.**
   `plugins/audio_actions.py:138` prints `🔊 Playing sound: …` *outside*
   the try; on a cp1252 Windows console (any exported `.exe` run from cmd,
   `PYTHONUTF8` unset) that raises `UnicodeEncodeError` and the action
@@ -221,6 +221,7 @@ exists, so the English fallback is correct).
   or a `"0,5"` typo raises `ValueError` instead of going through
   `_parse_value`. *Fix:* use the logger; route volume through
   `instance.action_executor._parse_value` with a `try`.
+  **Fixed `430ac6fd`.**
 
 - [ ] **M8 — WebSocket transport accepts unmasked client frames and has no Origin check.**
   `extensions/multiplayer_lan/ws_transport.py:94-119` decodes frames
