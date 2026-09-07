@@ -205,7 +205,13 @@ class AssetsMixin:
         default_parent = gmk_file.parent
         candidate = default_parent / gmk_file.stem
         suffix = 2
-        while candidate.exists() and any(candidate.iterdir()):
+        # `candidate.is_dir()` first: a name occupied by a FILE (or, on a
+        # network mount, a broken junction) raised NotADirectoryError from
+        # iterdir() here and aborted the whole import with a generic error
+        # (M13, docs/FULL_AUDIT_2026-09-07.md) instead of just treating the
+        # name as occupied and trying the next suffix like it does for a
+        # non-empty directory.
+        while candidate.exists() and (not candidate.is_dir() or any(candidate.iterdir())):
             candidate = default_parent / f"{gmk_file.stem}_{suffix}"
             suffix += 1
         output_dir = candidate
