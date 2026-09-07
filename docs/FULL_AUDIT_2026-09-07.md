@@ -95,7 +95,7 @@ exists, so the English fallback is correct).
   both transports.
   **Fixed `23d2c2a2`.**
 
-- [ ] **H4 — Multiplayer host applies client-owned rows without validation → crash or hijacked host state.**
+- [x] **H4 — Multiplayer host applies client-owned rows without validation → crash or hijacked host state.**
   `extensions/multiplayer_lan/handlers.py:814` `_apply_host_own_state`
   does `inst.x = row.get("x", inst.x)` etc. straight from the wire (no
   numeric coercion, no bounds), and at `:835` (also `:902`, `:935` for the
@@ -112,6 +112,7 @@ exists, so the English fallback is correct).
   (or to a declared replicated-var set). *How verified:* read
   `_apply_host_own_state`, `_apply_ghosts`, `_apply_synced_local`,
   `sanitize_value` (values only).
+  **Fixed `7d39c74d`.**
 
 - [ ] **H5 — Android/iOS export drops room tiles, background layers, views, and object flags because of hand-maintained key lists.**
   `export/android/android_exporter.py:77` copies only
