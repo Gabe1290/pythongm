@@ -71,6 +71,16 @@ class NetworkHost:
         self._listen_sock: Optional[socket.socket] = None
         self._conns = {}                 # conn_id -> _HostConn
         self._next_id = 1
+        # Lifecycle events (CONN_CLOSED, mainly) produced by a send()/
+        # broadcast() call outside of poll()'s own read/flush pass -- a
+        # write can fail and kill a connection between polls, and that
+        # kill's synthetic event has nowhere else to go. poll() drains and
+        # returns these first thing (H3, docs/FULL_AUDIT_2026-09-07.md):
+        # without this, a connection that dies on the SEND path never
+        # surfaces its CONN_CLOSED event at all, so session.py's
+        # _drop_conn/player_left never fires -- a phantom player stays in
+        # the roster forever.
+        self._pending_events = []
 
     # -- lifecycle -------------------------------------------------------
 
@@ -109,7 +119,8 @@ class NetworkHost:
         plus synthetic ``{"t": "__open__", "addr": ip}`` /
         ``{"t": "__close__", "reason": str}`` lifecycle frames, in the
         order they happened. Never blocks."""
-        events: list = []
+        events: list = list(self._pending_events)
+        self._pending_events.clear()
         self._accept(events)
         for cid, conn in list(self._conns.items()):
             if conn.alive:
@@ -191,7 +202,7 @@ class NetworkHost:
         if conn is None or not conn.alive:
             return
         conn.outbuf.extend(encode_frame(msg))
-        self._flush_conn(conn_id, conn, [])
+        self._flush_conn(conn_id, conn, self._pending_events)
 
     def broadcast(self, msg: dict, exclude: Optional[int] = None) -> None:
         """Queue a frame to every live client (optionally excluding one)."""
@@ -200,7 +211,7 @@ class NetworkHost:
             if not conn.alive or cid == exclude:
                 continue
             conn.outbuf.extend(data)
-            self._flush_conn(cid, conn, [])
+            self._flush_conn(cid, conn, self._pending_events)
 
     def broadcast_snapshot(self, rows) -> None:
         """v1 surface: send one position snapshot to every client. Pumps

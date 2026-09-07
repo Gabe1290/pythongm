@@ -33,7 +33,7 @@ from extensions.multiplayer_lan.session import NetworkSession
 from extensions.multiplayer_lan.state import MSG_HELLO, MSG_WELCOME, PROTO_VER
 from extensions.multiplayer_lan.ws_transport import (
     DualHost, WebSocketHost, WSFrameOverflow, _encode_ws_frame,
-    _try_parse_ws_frame, _ws_accept_key,
+    _try_parse_ws_frame, _ws_accept_key, _WSConn,
 )
 
 _RFC6455_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
@@ -349,6 +349,65 @@ class TestWebSocketHostDirect:
                     time.sleep(0.02)
             finally:
                 sock.close()
+        finally:
+            host.close()
+
+
+class _FailingSocket:
+    """Same role as test_multiplayer_lan.py's _FailingSocket: a dead
+    peer's socket, whose send() raises like a real closed/reset one."""
+
+    def send(self, data):
+        raise OSError("simulated send failure")
+
+    def close(self):
+        pass
+
+
+class TestSendPathConnectionLoss:
+    """H3, docs/FULL_AUDIT_2026-09-07.md: the same throwaway-events-list
+    bug as network.NetworkHost, but in the WebSocket transport a browser
+    client uses -- send()/broadcast() passed _flush_conn a `[]`, so a
+    connection killed by a failed write never surfaced CONN_CLOSED."""
+
+    def _handshaken_conn(self):
+        conn = _WSConn(_FailingSocket(), ("127.0.0.1", 0))
+        conn.handshaken = True
+        return conn
+
+    def test_broadcast_send_failure_surfaces_conn_closed_on_next_poll(self):
+        host = WebSocketHost(0)
+        host.start()
+        try:
+            conn = self._handshaken_conn()
+            host._conns[1] = conn
+
+            host.broadcast({"t": "x"})
+            assert conn.alive is False
+
+            events = host.poll()
+            closed = [e for e in events if e[1].get("t") == CONN_CLOSED]
+            assert closed, (
+                "poll() must return the CONN_CLOSED event from a "
+                "broadcast()-path failure on the WebSocket transport too")
+        finally:
+            host.close()
+
+    def test_send_failure_surfaces_conn_closed_on_next_poll(self):
+        host = WebSocketHost(0)
+        host.start()
+        try:
+            conn = self._handshaken_conn()
+            host._conns[5] = conn
+
+            host.send(5, {"t": "x"})
+            assert conn.alive is False
+
+            events = host.poll()
+            closed = [e for e in events if e[1].get("t") == CONN_CLOSED]
+            assert closed, (
+                "poll() must return the CONN_CLOSED event from a "
+                "send()-path failure on the WebSocket transport too")
         finally:
             host.close()
 

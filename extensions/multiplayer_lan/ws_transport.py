@@ -152,6 +152,11 @@ class WebSocketHost:
         self._listen_sock: Optional[socket.socket] = None
         self._conns = {}
         self._next_id = 1
+        # See network.NetworkHost._pending_events -- same reasoning:
+        # send()/broadcast() can kill a connection outside of poll()'s own
+        # read/flush pass, and that kill's CONN_CLOSED has nowhere else to
+        # go (H3, docs/FULL_AUDIT_2026-09-07.md).
+        self._pending_events = []
 
     def start(self) -> None:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -189,7 +194,8 @@ class WebSocketHost:
         return [cid for cid, c in self._conns.items() if c.alive and c.handshaken]
 
     def poll(self) -> list:
-        events: list = []
+        events: list = list(self._pending_events)
+        self._pending_events.clear()
         self._accept(events)
         for cid, conn in list(self._conns.items()):
             if conn.alive:
@@ -339,7 +345,7 @@ class WebSocketHost:
             return
         data = json.dumps(msg, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
         conn.outbuf.extend(_encode_ws_frame(data))
-        self._flush_conn(conn_id, conn, [])
+        self._flush_conn(conn_id, conn, self._pending_events)
 
     def broadcast(self, msg: dict, exclude: Optional[int] = None) -> None:
         data = json.dumps(msg, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
@@ -348,7 +354,7 @@ class WebSocketHost:
             if not conn.alive or not conn.handshaken or cid == exclude:
                 continue
             conn.outbuf.extend(frame)
-            self._flush_conn(cid, conn, [])
+            self._flush_conn(cid, conn, self._pending_events)
 
     def disconnect(self, conn_id: int) -> None:
         conn = self._conns.get(conn_id)
