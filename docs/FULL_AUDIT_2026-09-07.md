@@ -134,7 +134,7 @@ exists, so the English fallback is correct).
   generator's reads.
   **Fixed `9f9f85af`.**
 
-- [ ] **H6 — Asset names from the Create dialog are unvalidated; a name with `/`, `..` or a trailing dot breaks save.**
+- [x] **H6 — Asset names from the Create dialog are unvalidated; a name with `/`, `..` or a trailing dot breaks save.**
   `core/ide/_assets.py:497` passes `QInputDialog.getText`'s result straight
   to `create_asset_with_data`. The asset-tree dialogs *do* validate
   (`widgets/asset_tree/asset_utils.py` `validate_asset_name`, used by
@@ -146,6 +146,7 @@ exists, so the English fallback is correct).
   the whole save. *Fix:* call `validate_asset_name` in `create_asset` and
   reject with the same message the tree uses. *How verified:* grep for
   validation on this path (none), traced to `_safe_asset_path`.
+  **Fixed `0dab3277`.**
 
 ## Medium
 
