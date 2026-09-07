@@ -266,6 +266,26 @@ class TestSharedVars:
         finally:
             _close(host, client)
 
+    def test_shared_var_cannot_shadow_identity_globals(self):
+        """M10, docs/FULL_AUDIT_2026-09-07.md: a client naming a shared
+        variable "is_host" used to silently overwrite every machine's
+        global.is_host (an identity global _apply_session_state itself
+        writes every frame) -- breaking every "if is_host()" branch in the
+        project for the rest of the session."""
+        host, client = _connect()
+        try:
+            assert host[1].global_variables.get("is_host") == 1
+            assert client[1].global_variables.get("is_host") == 0
+
+            _do(client[2], "set_shared_var", client[3], {"name": "is_host", "value": "0"})
+            _pump(host[1], client[1], rounds=25)
+
+            # The real identity global must be untouched on both machines.
+            assert host[1].global_variables.get("is_host") == 1
+            assert client[1].global_variables.get("is_host") == 0
+        finally:
+            _close(host, client)
+
 
 class TestMessages:
     def test_client_message_fires_network_message_event_on_host(self):

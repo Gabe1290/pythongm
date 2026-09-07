@@ -21,6 +21,7 @@ from extensions.multiplayer_lan.state import (  # noqa: E402
     MSG_LEAVE, MSG_BYE, MSG_MSG, MSG_SHARED_SET, MSG_INPUT, MSG_GAME_START,
     MSG_OWN, MAX_STR_LEN, MAX_COLLECTION_LEN, MAX_VALUE_DEPTH, MAX_NAME_LEN,
     DEFAULT_PLAYER_NAME, is_valid_shared_name, sanitize_name, sanitize_value,
+    RESERVED_SHARED_NAMES,
 )
 
 
@@ -69,6 +70,32 @@ class TestIsValidSharedName:
     def test_length_cap(self):
         assert is_valid_shared_name("a" * 64)
         assert not is_valid_shared_name("a" * 65)
+
+    def test_reserved_identity_names_rejected(self):
+        """M10, docs/FULL_AUDIT_2026-09-07.md: a shared variable named
+        after one of _apply_session_state's identity/event globals used to
+        pass validation -- set_shared_var(name="is_host", ...) from ANY
+        client then silently overwrote every machine's global.is_host,
+        breaking every "if is_host()" branch in the project."""
+        for name in RESERVED_SHARED_NAMES:
+            assert not is_valid_shared_name(name), name
+
+    def test_reserved_names_are_exactly_the_identity_globals_written(self):
+        """Pins the set against the actual globals handlers.py writes, so
+        a future new identity global added there and forgotten here isn't
+        silently exploitable."""
+        assert RESERVED_SHARED_NAMES == {
+            "player_id", "player_count", "network_role", "is_host",
+            "is_client", "network_connected", "network_event",
+            "network_data", "network_sender", "network_player_name",
+        }
+
+    def test_ordinary_names_still_pass(self):
+        """Behaviour-preservation: the reservation must not over-reach into
+        ordinary author-chosen names that merely start similarly."""
+        for name in ("score", "host_score", "is_ready", "player_name_1",
+                     "network_score"):
+            assert is_valid_shared_name(name), name
 
 
 # ---------------------------------------------------------------------------
