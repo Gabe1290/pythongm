@@ -613,7 +613,16 @@ class AssetManager(QObject):
                 self._update_param_in_all_actions(old_name, new_name, "sprite")
 
             elif asset_type == "objects":
-                # Update object references in rooms
+                # Update object references in rooms. Instances are keyed
+                # 'object_name' in every file the room editor itself saves
+                # (editors/room_editor/object_instance.py's to_dict), but it
+                # READS the legacy 'object' key too (its from_dict) for
+                # rooms it never re-saved -- samples/plateforme_1's
+                # niveau_01.json is a real, currently-shipped example, still
+                # using 'object' throughout. Renaming an object in such a
+                # project used to update nothing, so every placed instance
+                # of it silently vanished at runtime (M3,
+                # docs/FULL_AUDIT_2026-09-07.md).
                 rooms = self.assets_cache.get("rooms", {})
                 for room_name, room_data in rooms.items():
                     instances = room_data.get("instances", [])
@@ -623,6 +632,10 @@ class AssetManager(QObject):
                             instance["object_name"] = new_name
                             updated = True
                             logger.debug(f"  📝 Updated object reference in room '{room_name}' instance: {old_name} → {new_name}")
+                        elif instance.get("object") == old_name:
+                            instance["object"] = new_name
+                            updated = True
+                            logger.debug(f"  📝 Updated legacy 'object' reference in room '{room_name}' instance: {old_name} → {new_name}")
                     if updated:
                         room_data["modified"] = datetime.now().isoformat()
 

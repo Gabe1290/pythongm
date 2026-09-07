@@ -225,6 +225,34 @@ class TestAssetRenameWorkflow:
         room = am.get_asset("rooms", "room0")
         assert room["instances"][0]["object_name"] == "obj_player"
 
+    def test_rename_object_updates_room_instances_using_legacy_object_key(
+            self, project_with_assets):
+        """M3, docs/FULL_AUDIT_2026-09-07.md: the room editor's own save
+        path always writes 'object_name' (editors/room_editor/
+        object_instance.py's to_dict), but its LOAD path (from_dict) also
+        accepts the legacy 'object' key -- and so does the runtime
+        (runtime/room.py). samples/plateforme_1's niveau_01.json is a real,
+        currently-shipped room still using 'object' throughout (never
+        re-saved since it was authored). Renaming an object in such a
+        project used to update nothing, silently orphaning every placed
+        instance of it."""
+        am = project_with_assets["am"]
+
+        room = am.get_asset("rooms", "room0")
+        if room is None:
+            am.create_asset("room0", "rooms")
+            room = am.get_asset("rooms", "room0")
+
+        room["instances"] = [{"object": "obj_uses_sprite", "x": 50, "y": 50}]
+
+        result = am.rename_asset("objects", "obj_uses_sprite", "obj_player")
+        assert result is True
+
+        room = am.get_asset("rooms", "room0")
+        assert room["instances"][0]["object"] == "obj_player", (
+            "the legacy 'object' key must be updated too, or the instance "
+            "still points at the object's old (now-nonexistent) name")
+
 
 class TestDeleteAssetWorkflow:
     """Test deleting assets and cleaning up references"""
