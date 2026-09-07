@@ -192,7 +192,7 @@ exists, so the English fallback is correct).
   *Fix:* implement it on the pygame side with the existing modal machinery
   (`show_message_dialog` with Y/N keys), mirroring `splash_show_text`.
 
-- [ ] **M5 — `change_room` / `_readd_persistent_instances` crash on an instance whose object no longer exists.**
+- [x] **M5 — `change_room` / `_readd_persistent_instances` crash on an instance whose object no longer exists.**
   `runtime/game_runner.py:1129` and `:1531` (also `:1154/:1495`) evaluate
   `inst.object_data.get('persistent', False)` with no `None` guard. Room
   construction tolerates an orphan instance (object deleted, instance
@@ -200,6 +200,7 @@ exists, so the English fallback is correct).
   change then raises `AttributeError` and the game exits. *Fix:*
   `(inst.object_data or {}).get(...)` at each site (or drop orphans at
   room build with a warning).
+  **Fixed `9c2b6756`.**
 
 - [ ] **M6 — `destroy_instance` / `change_instance` with target=other silently act on self when there is no collision partner.**
   `runtime/action_spawn.py:52-54` and `:201-202`: `if target == "other"
