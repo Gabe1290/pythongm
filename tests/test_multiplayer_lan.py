@@ -51,6 +51,7 @@ from extensions.multiplayer_lan.handlers import (  # noqa: E402
     ENV_MODE, ENV_PORT,
     _frame_update_apply_inbound, _frame_update_broadcast,
 )
+import extensions.multiplayer_lan.handlers as mp_handlers  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +296,205 @@ class TestSendPathConnectionLoss:
                 "next poll()")
         finally:
             host.close()
+
+
+# ---------------------------------------------------------------------------
+# H4, docs/FULL_AUDIT_2026-09-07.md: replicated state/vars hardening
+# ---------------------------------------------------------------------------
+
+class TestReplicatedVarKeyHardening:
+    """The two helper functions the fix introduces: an engine-attribute
+    denylist built from a real GameInstance (not hand-maintained), and a
+    finite-float coercion for numeric wire fields."""
+
+    def test_engine_attrs_include_known_internals(self):
+        attrs = mp_handlers._engine_instance_attrs()
+        for name in ("object_data", "action_executor", "sprite",
+                     "keys_pressed", "x", "y"):
+            assert name in attrs, name
+
+    def test_is_safe_replicated_var_key(self):
+        assert mp_handlers._is_safe_replicated_var_key("hp") is True
+        assert mp_handlers._is_safe_replicated_var_key("score_bonus") is True
+        for bad in ("object_data", "action_executor", "sprite", "x", "y",
+                    "_private", "123bad", "", None, 42):
+            assert mp_handlers._is_safe_replicated_var_key(bad) is False, bad
+
+    def test_coerce_finite_float(self):
+        assert mp_handlers._coerce_finite_float("5.5", 0) == 5.5
+        assert mp_handlers._coerce_finite_float(3, 0) == 3.0
+        for bad in ("pwned", [1, 2], {"a": 1}, None,
+                    float("nan"), float("inf"), float("-inf")):
+            assert mp_handlers._coerce_finite_float(bad, 99) == 99, bad
+
+
+class _FakeOwnStateSession:
+    """Minimal stand-in for NetworkSession, exposing only what
+    _apply_host_own_state calls."""
+
+    def __init__(self, rows):
+        self._rows = rows
+
+    def take_own_state(self):
+        rows, self._rows = self._rows, {}
+        return rows
+
+
+class TestApplyHostOwnStateHardening:
+    """Client -> host direction: a malicious/buggy client's "own" report
+    for an instance it legitimately owns must not crash the host or
+    clobber engine-internal attributes."""
+
+    @staticmethod
+    def _inst(owner=1):
+        inst = MockInstance()
+        inst._net_owner = owner
+        inst.object_data = {"events": {}}
+        return inst
+
+    def test_non_numeric_position_does_not_crash_and_falls_back(self):
+        inst = self._inst()
+        st = {"synced": {1: inst}}
+        session = _FakeOwnStateSession({
+            1: {"_from": 1, "x": "pwned", "y": ["also", "bad"],
+                "r": {"nested": True}, "f": None, "v": 1},
+        })
+        mp_handlers._apply_host_own_state(st, session)  # must not raise
+        assert inst.x == 0.0 and isinstance(inst.x, float)
+        assert inst.y == 0.0 and isinstance(inst.y, float)
+        assert inst.rotation == 0.0
+        assert inst.image_index == 0.0
+
+    def test_legit_numeric_row_still_applies(self):
+        inst = self._inst()
+        st = {"synced": {1: inst}}
+        session = _FakeOwnStateSession({
+            1: {"_from": 1, "x": 12.5, "y": -3, "r": 90, "f": 2, "v": 0},
+        })
+        mp_handlers._apply_host_own_state(st, session)
+        assert inst.x == 12.5
+        assert inst.y == -3.0
+        assert inst.rotation == 90.0
+        assert inst.image_index == 2.0
+        assert inst.visible is False
+
+    def test_engine_attribute_key_in_vars_is_refused(self):
+        inst = self._inst()
+        st = {"synced": {1: inst}}
+        session = _FakeOwnStateSession({
+            1: {"_from": 1, "x": 0, "y": 0,
+                "vars": {"object_data": "pwned", "action_executor": "pwned"}},
+        })
+        mp_handlers._apply_host_own_state(st, session)  # must not raise
+        assert inst.object_data == {"events": {}}
+        assert inst.action_executor is None
+
+    def test_ordinary_game_variable_key_is_applied(self):
+        inst = self._inst()
+        st = {"synced": {1: inst}}
+        session = _FakeOwnStateSession({
+            1: {"_from": 1, "x": 0, "y": 0, "vars": {"hp": 42, "flag": True}},
+        })
+        mp_handlers._apply_host_own_state(st, session)
+        assert inst.hp == 42
+        assert inst.flag is True
+
+    def test_wrong_owner_is_ignored_entirely(self):
+        inst = self._inst(owner=1)
+        st = {"synced": {1: inst}}
+        session = _FakeOwnStateSession({
+            1: {"_from": 2, "x": 999, "y": 999},  # claimed by the wrong client
+        })
+        mp_handlers._apply_host_own_state(st, session)
+        assert inst.x == 0.0 and inst.y == 0.0  # untouched
+
+
+class _FakeGhostSession:
+    """Minimal stand-in for NetworkSession, exposing only what
+    _apply_ghosts/_apply_synced_local call."""
+
+    def __init__(self, owner_map, pos_map, vars_map, player_id=0,
+                 ghost_changes=((), ())):
+        self.player_id = player_id
+        self._owner_map = owner_map
+        self._pos_map = pos_map
+        self._vars_map = vars_map
+        self._ghost_changes = ghost_changes
+
+    def take_ghost_changes(self):
+        return self._ghost_changes
+
+    def ghost_owner(self, nid):
+        return self._owner_map.get(nid)
+
+    def sample_ghost(self, nid):
+        return self._pos_map.get(nid)
+
+    def ghost_vars(self, nid):
+        return self._vars_map.get(nid, {})
+
+
+class TestApplyGhostsHardening:
+    """Host -> client direction (_apply_ghosts): same class of hardening,
+    defence in depth against a compromised/buggy host."""
+
+    def test_malicious_ghost_vars_key_is_refused(self):
+        inst = MockInstance()
+        inst.object_data = {"events": {}}
+        inst.to_destroy = False
+        room = MockRoom()
+        runner = MockGameRunner(room)
+        st = {"ghosts": {1: inst}}
+        session = _FakeGhostSession(
+            owner_map={1: None},          # not this player's -> stays a ghost
+            pos_map={1: (5.0, 6.0, 0.0, 0.0, True)},
+            vars_map={1: {"action_executor": "pwned", "score": 3}},
+        )
+        mp_handlers._apply_ghosts(runner, st, session)
+        assert inst.action_executor is None
+        assert inst.score == 3
+        assert inst.x == 5.0 and inst.y == 6.0
+
+
+class TestApplySyncedLocalHardening:
+    """Host -> client direction (_apply_synced_local): same hardening for
+    an author-registered sync_instance the local player doesn't own."""
+
+    def test_malicious_ghost_vars_key_is_refused(self):
+        inst = MockInstance()
+        inst.object_data = {"events": {}}
+        inst.to_destroy = False
+        room = MockRoom()
+        room.instances = [inst]
+        runner = MockGameRunner(room)
+        st = {"synced_local": {1: inst}}
+        session = _FakeGhostSession(
+            owner_map={1: 5},             # owned by a different player
+            pos_map={1: (10.0, 20.0, 0.0, 0.0, True)},
+            vars_map={1: {"object_data": "pwned", "hp": 7}},
+            player_id=0,
+        )
+        mp_handlers._apply_synced_local(runner, st, session)
+        assert inst.object_data == {"events": {}}
+        assert inst.hp == 7
+        assert inst.x == 10.0 and inst.y == 20.0
+
+    def test_non_numeric_ghost_position_does_not_crash(self):
+        inst = MockInstance()
+        inst.object_data = {"events": {}}
+        inst.to_destroy = False
+        room = MockRoom()
+        room.instances = [inst]
+        runner = MockGameRunner(room)
+        st = {"synced_local": {1: inst}}
+        session = _FakeGhostSession(
+            owner_map={1: 5},
+            pos_map={1: ("bad", None, [1], {}, 1)},
+            vars_map={1: {}},
+            player_id=0,
+        )
+        mp_handlers._apply_synced_local(runner, st, session)  # must not raise
+        assert inst.x == 0.0 and inst.y == 0.0
 
 
 # ---------------------------------------------------------------------------

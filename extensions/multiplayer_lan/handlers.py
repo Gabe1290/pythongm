@@ -734,6 +734,70 @@ def _update_network_caption(game_runner, session):
 
 _GHOST_VAR_WHITELIST_TYPES = (int, float, str, bool)
 
+# H4, docs/FULL_AUDIT_2026-09-07.md: a networked instance's replicated
+# `vars` dict is applied with setattr(inst, key, val) -- the value's TYPE
+# is checked (_GHOST_VAR_WHITELIST_TYPES above) but the key never was, so
+# a peer (a malicious client sending "own" rows to the host, or a
+# compromised host sending ghost rows to a client) could name an actual
+# engine-internal attribute -- "object_data", "action_executor", "sprite",
+# "x" (a property, not a plain attribute, so it isn't caught by checking
+# instance __dict__ alone) -- and clobber it with an unrelated int/float/
+# str/bool, corrupting the instance for every later use (typically an
+# AttributeError/TypeError the next time engine code touches that
+# attribute, which crashes the whole game loop on whichever machine holds
+# the corrupted instance).
+#
+# Built from a real throwaway GameInstance rather than hand-listed, so it
+# can't silently drift out of sync with the engine the way a
+# hand-maintained key list does elsewhere in this codebase (see the audit's
+# own H5 finding about exactly that failure mode) -- covers every plain
+# instance attribute GameInstance.__init__ sets, plus every property
+# defined anywhere in its MRO (x/y and friends), which never show up in
+# vars(instance) but are exactly as dangerous to smuggle through.
+_ENGINE_INSTANCE_ATTRS = None
+
+
+def _engine_instance_attrs():
+    global _ENGINE_INSTANCE_ATTRS
+    if _ENGINE_INSTANCE_ATTRS is None:
+        from runtime.game_runner import GameInstance
+        probe = GameInstance("__pygm_net_probe__", 0.0, 0.0, {})
+        attrs = set(vars(probe).keys())
+        for klass in type(probe).__mro__:
+            for name, member in vars(klass).items():
+                if isinstance(member, property):
+                    attrs.add(name)
+        _ENGINE_INSTANCE_ATTRS = frozenset(attrs)
+    return _ENGINE_INSTANCE_ATTRS
+
+
+def _is_safe_replicated_var_key(key) -> bool:
+    """A `vars` dict key is safe to setattr onto a live GameInstance only
+    if it's a plain identifier that isn't one of the engine's own
+    attributes/properties -- i.e. an author's own game-state variable
+    (health, ammo, a custom flag), never an engine internal."""
+    return (isinstance(key, str) and key.isidentifier()
+            and not key.startswith("_")
+            and key not in _engine_instance_attrs())
+
+
+def _coerce_finite_float(value, default):
+    """Best-effort float coercion for a value that arrived over the wire
+    and is about to be assigned straight to an instance's x/y/rotation/
+    frame -- these fields get plain arithmetic done on them every frame
+    (movement, collision), so a non-numeric value (a client sending a
+    string, list, dict or None instead of a number) would raise a
+    TypeError deep in engine code on the very next step, crashing the game
+    loop for everyone. Falls back to ``default`` (the instance's current
+    value) on anything that isn't a finite real number."""
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return default
+    if f != f or f in (float("inf"), float("-inf")):  # NaN / +-inf
+        return default
+    return f
+
 
 def _deterministic_netid(st, object_name):
     """``<object>#<ordinal>`` -- ordinal counted per room per object type in
@@ -825,13 +889,13 @@ def _apply_host_own_state(st, session):
             continue
         if getattr(inst, "_net_owner", 0) != row.get("_from"):
             continue                       # a client can't grab an instance it doesn't own
-        inst.x = row.get("x", inst.x)
-        inst.y = row.get("y", inst.y)
-        inst.rotation = row.get("r", getattr(inst, "rotation", 0))
-        inst.image_index = row.get("f", getattr(inst, "image_index", 0))
+        inst.x = _coerce_finite_float(row.get("x"), inst.x)
+        inst.y = _coerce_finite_float(row.get("y"), inst.y)
+        inst.rotation = _coerce_finite_float(row.get("r"), getattr(inst, "rotation", 0))
+        inst.image_index = _coerce_finite_float(row.get("f"), getattr(inst, "image_index", 0))
         inst.visible = bool(row.get("v", getattr(inst, "visible", True)))
         for key, val in (row.get("vars") or {}).items():
-            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES) and _is_safe_replicated_var_key(key):
                 setattr(inst, key, val)
 
 
@@ -892,13 +956,13 @@ def _apply_ghosts(game_runner, st, session):
         if pos is None:
             continue
         gx, gy, gr, gf, gv = pos
-        inst.x = gx
-        inst.y = gy
-        inst.rotation = gr
-        inst.image_index = gf
+        inst.x = _coerce_finite_float(gx, inst.x)
+        inst.y = _coerce_finite_float(gy, inst.y)
+        inst.rotation = _coerce_finite_float(gr, getattr(inst, "rotation", 0))
+        inst.image_index = _coerce_finite_float(gf, getattr(inst, "image_index", 0))
         inst.visible = bool(gv)
         for key, val in session.ghost_vars(nid).items():
-            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES) and _is_safe_replicated_var_key(key):
                 setattr(inst, key, val)
 
 
@@ -925,13 +989,13 @@ def _apply_synced_local(game_runner, st, session):
         if pos is None:
             continue
         gx, gy, gr, gf, gv = pos
-        inst.x = gx
-        inst.y = gy
-        inst.rotation = gr
-        inst.image_index = gf
+        inst.x = _coerce_finite_float(gx, inst.x)
+        inst.y = _coerce_finite_float(gy, inst.y)
+        inst.rotation = _coerce_finite_float(gr, getattr(inst, "rotation", 0))
+        inst.image_index = _coerce_finite_float(gf, getattr(inst, "image_index", 0))
         inst.visible = bool(gv)
         for key, val in session.ghost_vars(nid).items():
-            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES):
+            if isinstance(val, _GHOST_VAR_WHITELIST_TYPES) and _is_safe_replicated_var_key(key):
                 setattr(inst, key, val)
 
 
