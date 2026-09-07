@@ -543,11 +543,13 @@ class AssetManager(QObject):
                     old_thumbnail_path.rename(new_thumbnail_path)
                     asset_data["thumbnail"] = self.get_relative_path(new_thumbnail_path)
 
-            # Carry the rooms/objects/playgrounds <type>/<name>.json side file
-            # along so an orphan under the old name can't resurrect stale data
-            # into a future asset reusing that name (audit H3; playgrounds for
-            # M59).
-            if asset_type in ("rooms", "objects", "playgrounds"):
+            # Carry the rooms/objects/playgrounds/sprites <type>/<name>.json
+            # side file along so an orphan under the old name can't
+            # resurrect stale data into a future asset reusing that name
+            # (audit H3; playgrounds for M59; sprites for M2,
+            # docs/FULL_AUDIT_2026-09-07.md -- delete_asset already handled
+            # all four types, this rename path was missing "sprites").
+            if asset_type in ("rooms", "objects", "playgrounds", "sprites"):
                 old_side = self.project_directory / asset_type / f"{old_name}.json"
                 if old_side.exists():
                     old_side.replace(self.project_directory / asset_type / f"{new_name}.json")
