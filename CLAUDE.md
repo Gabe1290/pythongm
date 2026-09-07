@@ -2244,3 +2244,24 @@ nothing is stashed or uncommitted. Picking this up on another machine:
     RAM to spare, that rules out the leading hypothesis and the
     `is_packaged` branch (add a one-off debug print/log of which branch
     `_run_project_json` actually took) is the next thing to instrument.
+
+**2026-09-07 — Full code audit (sequential, single-thread): 39 verified
+findings.** Registry with checkboxes, file:line, repro and suggested fix:
+`docs/FULL_AUDIT_2026-09-07.md` — 6 high / 13 medium / 20 low. Done as one
+main-thread read of the whole codebase (no multi-agent fan-out, per the
+session-limit rule), every finding re-verified against code before it went
+in, the previously-rejected items (eval/exec, caches, load_project
+whitelist, slide loop, dialog speed-restore) deliberately not re-raised,
+and three candidates dropped during verification and recorded in the doc
+so they aren't re-flagged. Highest-value leads: held-key set mutated during
+iteration when a modal opens from a held-key event (game exits); desktop
+exports never *load* high scores (launcher reassigns `highscore_file`
+after `__init__` already loaded); multiplayer send-path `_kill` discards
+`CONN_CLOSED` (phantom players) and the host applies client-owned rows /
+`vars` keys unvalidated; Android/iOS exporters' hand-maintained key lists
+drop tiles/views/object sprites (use the `merge_room_file`/
+`merge_object_file` kernels); the Create-asset menu path skips
+`validate_asset_name`. Work the queue top-down, one finding per commit
+with a regression test, flip the checkbox with the hash. Baseline on this
+Windows box (`py -3.12`, two halves because one process exceeds the agent
+tool's 10-minute cap): see the registry's Baseline section.
