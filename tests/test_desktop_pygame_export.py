@@ -171,6 +171,50 @@ def test_launcher_keeps_high_scores_outside_the_bundle(qapp, target, project, tm
 
 
 @pytest.mark.parametrize("target", ALL_TARGETS)
+def test_launcher_reloads_high_scores_after_redirecting_the_path(qapp, target, project, tmp_path):
+    """H2 (docs/FULL_AUDIT_2026-09-07.md): GameRunner.__init__ already loads
+    highscores.json from the (bundle-internal) project path during
+    load_project_data_only, BEFORE the launcher redirects highscore_file to
+    writable_dir(). Reassigning the path alone does not re-read from the new
+    location, so without a follow-up load_highscores() call every launch of a
+    one-file build would silently start with an empty table even though a
+    previous run wrote real scores next to the executable.
+
+    Parsed via AST (not string search) for the same reason
+    _runner_assignments exists: a call sitting in a comment, or one that
+    precedes the reassignment instead of following it, must not pass."""
+    exporter, build_dir = _stage(target, project, tmp_path)
+    source = exporter._write_launcher(build_dir).read_text(encoding="utf-8")
+    tree = ast.parse(source)
+
+    highscore_assign_line = None
+    reload_call_line = None
+    for node in ast.walk(tree):
+        if (isinstance(node, ast.Assign)
+                and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Attribute)
+                and isinstance(node.targets[0].value, ast.Name)
+                and node.targets[0].value.id == "runner"
+                and node.targets[0].attr == "highscore_file"):
+            highscore_assign_line = node.lineno
+        if (isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "load_highscores"
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "runner"):
+            reload_call_line = node.lineno
+
+    assert highscore_assign_line is not None, (
+        "the launcher must redirect the high-score file (see the test above)")
+    assert reload_call_line is not None, (
+        "the launcher must call runner.load_highscores() after redirecting "
+        "highscore_file, or the table loaded from the bundle path (empty/"
+        "nonexistent) is never replaced with the one next to the executable")
+    assert reload_call_line > highscore_assign_line, (
+        "load_highscores() must run AFTER the path redirect, not before")
+
+
+@pytest.mark.parametrize("target", ALL_TARGETS)
 def test_plugins_and_extensions_ship_as_data(qapp, target, project, tmp_path):
     """They are loaded with spec_from_file_location, so they must be real .py
     files in the bundle. If they are missing the loader reports "Loaded 0
