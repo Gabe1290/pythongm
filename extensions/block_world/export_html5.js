@@ -538,6 +538,34 @@ function bwPickVoxel(room, camX, camY, eyeZ, angleRad, zPerPx, cellSize, reach, 
     return { target: null, placement: first };
 }
 
+// Distance fog -- mirrors renderer.py's fog_amount/FOG_CURVE. Geometry fades
+// toward the fog colour, reaching it exactly at the render distance, so the
+// far edge of the world reads as haze rather than the hard cut it was. See
+// docs/BLOCK_WORLD_PERF_PLAN.md; the desktop renderer is the reference and
+// tests/test_block_world_export_parity.py pins the two together.
+const BW_FOG_CURVE = 2.0;
+const BW_FOG_SKIP_BELOW = 0.02;
+const BW_FOG_OPAQUE_ABOVE = 0.985;
+const BW_FLOOR_HAZE_TAIL = 0.5;
+const BW_FLOOR_HAZE_BANDS = 16;
+
+function bwFogAmount(corrected, maxDist) {
+    if (maxDist <= 0) return 0.0;
+    const t = corrected / maxDist;
+    if (t <= 0.0) return 0.0;
+    if (t >= 1.0) return 1.0;
+    return Math.pow(t, BW_FOG_CURVE);
+}
+
+// Canvas composites an alpha fill as dst*(1-a) + src*a, which IS the lerp the
+// desktop expresses as a scaled multiply plus an add -- so one translucent
+// rect over the finished strip, exactly like the shade overlay above it.
+function bwFogOverlay(ctx, fog, fogCss, x0, y0, w, h) {
+    if (!fogCss || fog <= BW_FOG_SKIP_BELOW || h <= 0) return;
+    ctx.fillStyle = bwFogRgba(fogCss, fog);
+    ctx.fillRect(x0, y0, w, h);
+}
+
 function bwWallShade(side, corrected, maxDist) {
     const sideFactor = side === 1 ? BW_SIDE_SHADE : 1.0;
     let t = maxDist > 0 ? corrected / maxDist : 0.0;
@@ -550,6 +578,38 @@ function bwFaceShade(corrected, maxDist, facing) {
     let t = maxDist > 0 ? corrected / maxDist : 0.0;
     t = Math.max(0, Math.min(1, t));
     return Math.max(BW_MIN_SHADE, Math.min(1.0, facing * (1.0 - BW_FOG_STRENGTH * t)));
+}
+
+// The fog colour arrives as whatever CSS the project wrote (#rgb, #rrggbb or
+// a name). Parsed once per frame into [r, g, b] so the haze gradient can
+// interpolate it; anything unparseable falls back to the sky default rather
+// than throwing inside the render loop.
+function bwParseColor(css) {
+    if (Array.isArray(css)) return css;
+    const t = String(css || '').trim();
+    let m = /^#([0-9a-f]{6})$/i.exec(t);
+    if (m) {
+        const n = parseInt(m[1], 16);
+        return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    m = /^#([0-9a-f]{3})$/i.exec(t);
+    if (m) {
+        const d = m[1];
+        return [parseInt(d[0] + d[0], 16), parseInt(d[1] + d[1], 16),
+                parseInt(d[2] + d[2], 16)];
+    }
+    return [0x87, 0xCE, 0xEB];
+}
+
+function bwFogRgba(rgb, alpha) {
+    return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha.toFixed(3)})`;
+}
+
+function bwMixColor(rgb, t, fogRgb) {
+    const keep = 1 - t;
+    return `rgb(${Math.round(rgb[0] * keep + fogRgb[0] * t)},` +
+           `${Math.round(rgb[1] * keep + fogRgb[1] * t)},` +
+           `${Math.round(rgb[2] * keep + fogRgb[2] * t)})`;
 }
 
 function bwShadeColor(rgb, shade) {
@@ -576,6 +636,14 @@ function bwRenderView(room, ctx) {
     ctx.fillStyle = cfg.floor_color || '#3a2f1c';
     ctx.fillRect(0, Math.trunc(horizon), w, h - Math.trunc(horizon));
 
+    // Fog follows the sky unless the project names its own colour, and `fog:
+    // false` restores the pre-fog picture exactly.
+    const fogOn = cfg.fog !== false && cfg.fog !== 0 && cfg.fog !== 'false';
+    const fogRgb = fogOn
+        ? bwParseColor(cfg.fog_color || cfg.ceiling_color || '#87CEEB')
+        : null;
+    const floorRgb = bwParseColor(cfg.floor_color || '#3a2f1c');
+
     const camera = room.findFirstInstance(cfg.camera_object || '');
     if (!camera) return;   // flat floor/ceiling only
 
@@ -589,8 +657,31 @@ function bwRenderView(room, ctx) {
 
     const wallColorRgb = bwHexToRgb(cfg.wall_color || '#8a8a8a');
     const fovRad = (cfg.fov || 66) * Math.PI / 180;
-    const renderDistanceCells = cfg.render_distance || 20;
+    const renderDistanceCells = cfg.render_distance || 10;
     const maxDist = renderDistanceCells * cellSize;
+
+    // Haze band. Its extent is DERIVED from the render distance, not a tuned
+    // fraction: the ground at maxDist lands at
+    // horizon + eyeZ * (h * cell / maxDist), so everything between the horizon
+    // and that row is past the edge of the world and gets solid fog, with a
+    // short gradient back to the floor below it. Mirrors renderer.py.
+    if (fogRgb && maxDist > 0 && String(cfg.floor_color) !== String(cfg.fog_color)) {
+        const edge = horizon + eyeZ * (h * cellSize / maxDist);
+        const hy0 = Math.trunc(horizon), hy1 = Math.min(h, Math.trunc(edge) + 1);
+        if (hy1 > hy0) {
+            ctx.fillStyle = `rgb(${fogRgb[0]},${fogRgb[1]},${fogRgb[2]})`;
+            ctx.fillRect(0, hy0, w, hy1 - hy0);
+        }
+        const tail = Math.trunc((hy1 - hy0) * BW_FLOOR_HAZE_TAIL);
+        if (tail > 0) {
+            const band = Math.max(1, Math.trunc(tail / BW_FLOOR_HAZE_BANDS));
+            const stop = Math.min(h, hy1 + tail);
+            for (let y = hy1; y < stop; y += band) {
+                ctx.fillStyle = bwMixColor(floorRgb, 1 - (y - hy1) / tail, fogRgb);
+                ctx.fillRect(0, y, w, Math.min(band, stop - y));
+            }
+        }
+    }
     const numColumns = cfg.columns || Math.min(w, 160);
     const colWidth = w / numColumns;
     const facingScreenRad = -camera.facing_angle * Math.PI / 180;
@@ -636,6 +727,8 @@ function bwRenderView(room, ctx) {
             const pxPerCellFar = h * cellSize / far;
             const shade = bwWallShade(side, near, maxDist);
             const mid = (near + far) / 2.0;
+            const wallFog = fogRgb ? bwFogAmount(near, maxDist) : 0.0;
+            const faceFog = fogRgb ? bwFogAmount(mid, maxDist) : 0.0;
 
             for (let i = 0; i < stack.length; i++) {
                 const z = stack[i][0], blockType = stack[i][1];
@@ -663,8 +756,12 @@ function bwRenderView(room, ctx) {
                             ctx.fillStyle = `rgba(0,0,0,${(1 - shade).toFixed(3)})`;
                             ctx.fillRect(x0, y0v, stripW, y1v - y0v);
                         }
+                        bwFogOverlay(ctx, wallFog, fogRgb, x0, y0v, stripW, y1v - y0v);
                     } else {
-                        ctx.fillStyle = bwShadeColor(sideColor, shade);
+                        ctx.fillStyle = fogRgb
+                            ? bwMixColor(sideColor.map(function (c) {
+                                  return c * shade; }), wallFog, fogRgb)
+                            : bwShadeColor(sideColor, shade);
                         ctx.fillRect(x0, y0v, stripW, y1v - y0v);
                     }
                 }
@@ -682,12 +779,19 @@ function bwRenderView(room, ctx) {
                         bwDrawHorizontalFaceTextured(ctx, x0, stripW, yFar, yNear, texData,
                             camX, camY, dirX, dirY, cosOff, z + 1, eyeZ, horizon,
                             cellSize, lit, topRes, h);
+                        bwFogOverlay(ctx, faceFog, fogRgb,
+                            x0, Math.max(0, Math.floor(Math.min(yFar, yNear))), stripW,
+                            Math.min(h, Math.ceil(Math.max(yFar, yNear)))
+                                - Math.max(0, Math.floor(Math.min(yFar, yNear))));
                     } else {
                         const color = colorSet ? colorSet.top : wallColorRgb;
                         const fy0 = Math.max(0, Math.floor(Math.min(yFar, yNear)));
                         const fy1 = Math.min(h, Math.ceil(Math.max(yFar, yNear)));
                         if (fy1 > fy0) {
-                            ctx.fillStyle = bwShadeColor(color, lit);
+                            ctx.fillStyle = fogRgb
+                                ? bwMixColor(color.map(function (c) {
+                                      return c * lit; }), faceFog, fogRgb)
+                                : bwShadeColor(color, lit);
                             ctx.fillRect(x0, fy0, stripW, fy1 - fy0);
                         }
                     }
@@ -701,12 +805,19 @@ function bwRenderView(room, ctx) {
                         bwDrawHorizontalFaceTextured(ctx, x0, stripW, yNear, yFar, texData,
                             camX, camY, dirX, dirY, cosOff, z, eyeZ, horizon,
                             cellSize, lit, topRes, h);
+                        bwFogOverlay(ctx, faceFog, fogRgb,
+                            x0, Math.max(0, Math.floor(Math.min(yFar, yNear))), stripW,
+                            Math.min(h, Math.ceil(Math.max(yFar, yNear)))
+                                - Math.max(0, Math.floor(Math.min(yFar, yNear))));
                     } else {
                         const color = colorSet ? colorSet.bottom : wallColorRgb;
                         const fy0 = Math.max(0, Math.floor(Math.min(yNear, yFar)));
                         const fy1 = Math.min(h, Math.ceil(Math.max(yNear, yFar)));
                         if (fy1 > fy0) {
-                            ctx.fillStyle = bwShadeColor(color, lit);
+                            ctx.fillStyle = fogRgb
+                                ? bwMixColor(color.map(function (c) {
+                                      return c * lit; }), faceFog, fogRgb)
+                                : bwShadeColor(color, lit);
                             ctx.fillRect(x0, fy0, stripW, fy1 - fy0);
                         }
                     }
@@ -1011,7 +1122,7 @@ registerExtensionAction('enable_block_world_view', function(obj, params, game) {
         // at 0.
         z_layer: num('z_layer', 0),
         fov: num('fov', 66),
-        render_distance: Math.trunc(num('render_distance', 20)),
+        render_distance: Math.trunc(num('render_distance', 10)),
         cell_size: Math.trunc(num('cell_size', 32)),
         columns: Math.trunc(num('columns', 160)),
         wall_color: params.wall_color || '#8a8a8a',

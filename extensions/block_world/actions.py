@@ -9,7 +9,7 @@ PluginExecutor class). The loader merges this into ACTION_TYPES at startup.
 """
 from events.action_types import ActionType, ActionParameter
 
-from .state import BLOCK_TYPES, DEFAULT_COLUMNS
+from .state import BLOCK_TYPES, DEFAULT_COLUMNS, DEFAULT_RENDER_DISTANCE
 
 # Offered as a dropdown rather than a typed string: these are the block ids
 # the CC0 texture registry actually knows, and a typo would otherwise be a
@@ -39,14 +39,25 @@ PLUGIN_ACTIONS = {
             ActionParameter(name="fov", display_name="Field of View", param_type="number",
                 default_value=66, required=False, description="Horizontal FOV in degrees"),
             ActionParameter(name="render_distance", display_name="Render Distance",
-                param_type="number", default_value=20, required=False,
-                description="Max ray length in grid cells"),
+                param_type="number", default_value=DEFAULT_RENDER_DISTANCE,
+                required=False,
+                description="Max ray length in grid cells (lower = faster; "
+                            "distance fog hides where the world ends)"),
             ActionParameter(name="cell_size", display_name="Cell Size", param_type="number",
                 default_value=32, required=False,
                 description="Grid cell size in pixels (match the block-placement grid)"),
             ActionParameter(name="columns", display_name="Columns", param_type="number",
                 default_value=DEFAULT_COLUMNS, required=False,
                 description="Screen columns to raycast (lower = faster/chunkier)"),
+            ActionParameter(name="fog", display_name="Distance Fog",
+                param_type="boolean", default_value=True, required=False,
+                description="Fade distant blocks into the sky so the edge of "
+                            "the view looks like haze instead of a hard cut. "
+                            "Off restores the old flat look"),
+            ActionParameter(name="fog_color", display_name="Fog Color",
+                param_type="color", default_value="", required=False,
+                description="Colour the distance fades to; empty follows the "
+                            "Sky Color (a cave might want its own)"),
             ActionParameter(name="wall_color", display_name="Fallback Block Color",
                 param_type="color", default_value="#8a8a8a", required=False,
                 description="Flat colour used only if Textured Blocks is off"),

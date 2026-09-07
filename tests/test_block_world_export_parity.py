@@ -23,8 +23,9 @@ sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # for sibling test import
 
 from extensions.block_world.renderer import (  # noqa: E402
-    march_ray, pick_voxel, wall_shade, face_shade,
+    march_ray, pick_voxel, wall_shade, face_shade, fog_amount,
     SIDE_SHADE, FOG_STRENGTH, MIN_SHADE, TOP_SHADE, BOTTOM_SHADE,
+    FOG_CURVE, FOG_SKIP_BELOW, FLOOR_HAZE_TAIL, FLOOR_HAZE_BANDS,
     DEFAULT_EYE_HEIGHT, MAX_PITCH_DEGREES,
 )
 
@@ -145,6 +146,30 @@ def test_wall_and_face_shade_match_across_desktop_and_kivy():
                       - scene._bw_face_shade(corrected, max_dist, facing)) < 1e-12
 
 
+def test_fog_amount_matches_across_desktop_and_kivy():
+    """Fog is what makes a short render distance usable, so a target whose fog
+    curve differs shows the world ending somewhere else -- a divergence a
+    player sees immediately and no structural check would catch."""
+    game = _export_block_world_1()
+    with _stub_kivy_env(game):
+        scene = _blank_scene(_scene_class(game))
+        for corrected in (0.0, 1.0, 40.0, 160.0, 319.0, 320.0, 400.0):
+            for max_dist in (320.0, 512.0, 0.0):
+                assert abs(fog_amount(corrected, max_dist)
+                           - scene._bw_fog_amount(corrected, max_dist)) < 1e-12, (
+                    corrected, max_dist)
+
+
+def test_kivy_fog_constants_match_desktop():
+    game = _export_block_world_1()
+    with _stub_kivy_env(game):
+        cls = _scene_class(game)
+        assert cls.BW_FOG_CURVE == FOG_CURVE
+        assert cls.BW_FOG_SKIP_BELOW == FOG_SKIP_BELOW
+        assert cls.BW_FLOOR_HAZE_TAIL == FLOOR_HAZE_TAIL
+        assert cls.BW_FLOOR_HAZE_BANDS == FLOOR_HAZE_BANDS
+
+
 def test_kivy_shading_constants_match_desktop():
     game = _export_block_world_1()
     with _stub_kivy_env(game):
@@ -171,6 +196,43 @@ def test_html5_march_ray_mirrors_desktop_dda():
     assert "Math.abs(1 / dx)" in body and "Math.abs(1 / dy)" in body
     assert "sideX < sideY" in body
     assert "mapX += stepX" in body and "mapY += stepY" in body
+
+
+def test_html5_fog_constants_match_desktop():
+    checks = {
+        "BW_FOG_CURVE": FOG_CURVE, "BW_FOG_SKIP_BELOW": FOG_SKIP_BELOW,
+        "BW_FLOOR_HAZE_TAIL": FLOOR_HAZE_TAIL,
+        "BW_FLOOR_HAZE_BANDS": FLOOR_HAZE_BANDS,
+    }
+    for name, value in checks.items():
+        m = re.search(rf"const {name} = ([0-9.]+);", EXPORT_HTML5)
+        assert m, name
+        assert float(m.group(1)) == float(value), name
+
+
+def test_html5_fog_curve_mirrors_desktop():
+    """The shape, not just the constant: a linear falloff would leave a step
+    exactly where the world ends."""
+    m = re.search(r"function bwFogAmount\([^)]*\)\s*\{(.*?)\n\}",
+                  EXPORT_HTML5, re.S)
+    assert m, "bwFogAmount not found"
+    body = m.group(1)
+    assert "Math.pow(t, BW_FOG_CURVE)" in body
+    assert "if (t >= 1.0) return 1.0;" in body, (
+        "fog must reach 1.0 exactly at the render distance, or the cut shows")
+
+
+def test_every_target_draws_the_haze_band():
+    """All three derive its extent from the render distance rather than a
+    fixed fraction of the floor -- the region needing cover GROWS as the
+    distance shrinks."""
+    assert "eyeZ * (h * cellSize / maxDist)" in EXPORT_HTML5
+    kivy = (REPO_ROOT / "extensions" / "block_world" / "export_kivy.py").read_text(
+        encoding="utf-8")
+    assert "eye_z * (H * cell_size / _max_dist_px)" in kivy
+    desktop = (REPO_ROOT / "extensions" / "block_world" / "renderer.py").read_text(
+        encoding="utf-8")
+    assert "eye_z * (h * cell_size / max_dist)" in desktop
 
 
 def test_html5_shading_constants_match_desktop():

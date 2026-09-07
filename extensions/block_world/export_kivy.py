@@ -447,6 +447,48 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             return None, gap
         return None, first
 
+    BW_FOG_CURVE = 2.0
+    BW_FOG_SKIP_BELOW = 0.02
+    BW_FLOOR_HAZE_TAIL = 0.5
+    BW_FLOOR_HAZE_BANDS = 16
+
+    def _bw_fog_amount(self, corrected, max_dist):
+        """Mirrors renderer.py's fog_amount -- geometry fades toward the fog
+        colour, reaching it exactly at the render distance, so the far edge of
+        the world reads as haze rather than the hard cut it was. See
+        docs/BLOCK_WORLD_PERF_PLAN.md; the desktop renderer is the reference
+        and tests/test_block_world_export_parity.py pins the two together."""
+        if max_dist <= 0:
+            return 0.0
+        t = corrected / max_dist
+        if t <= 0.0:
+            return 0.0
+        if t >= 1.0:
+            return 1.0
+        return t ** self.BW_FOG_CURVE
+
+    def _bw_fog_mix(self, rgb, fog, fog_rgb):
+        if fog_rgb is None or fog <= self.BW_FOG_SKIP_BELOW:
+            return rgb
+        keep = 1.0 - fog
+        return (rgb[0] * keep + fog_rgb[0] * fog,
+                rgb[1] * keep + fog_rgb[1] * fog,
+                rgb[2] * keep + fog_rgb[2] * fog)
+
+    def _bw_fog_overlay(self, group, x0, strip_w, y0_gm, y1_gm, fog, fog_rgb, H):
+        """A translucent rectangle over a finished textured span. Kivy blends
+        it as dst*(1-a) + src*a, which IS the lerp the desktop expresses as a
+        scaled multiply plus an add."""
+        if fog_rgb is None or fog <= self.BW_FOG_SKIP_BELOW:
+            return
+        y0 = max(0.0, min(y0_gm, y1_gm))
+        y1 = min(H, max(y0_gm, y1_gm))
+        if y1 <= y0:
+            return
+        group.add(Color(fog_rgb[0] / 255.0, fog_rgb[1] / 255.0,
+                        fog_rgb[2] / 255.0, fog))
+        group.add(Rectangle(pos=(x0, H - y1), size=(strip_w, y1 - y0)))
+
     def _bw_wall_shade(self, side, corrected, max_dist):
         side_factor = self.BW_SIDE_SHADE if side == 1 else 1.0
         t = corrected / max_dist if max_dist > 0 else 0.0
@@ -475,7 +517,8 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         name = cfg.get('camera_object', '')
         return self._find_view_target(name) if name else None
 
-    def _bw_fill_span(self, group, x0, strip_w, y0_gm, y1_gm, rgb, shade, H):
+    def _bw_fill_span(self, group, x0, strip_w, y0_gm, y1_gm, rgb, shade, H,
+                      fog=0.0, fog_rgb=None):
         """Fill a screen column span computed in GM y-DOWN space, converting
         to Kivy y-UP at the one point that matters: kivy_y = H - gm_y. Unlike
         raycast's symmetric wall strips, block faces need this general-case
@@ -484,8 +527,9 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         y1 = min(H, max(y0_gm, y1_gm))
         if y1 <= y0:
             return
-        group.add(Color(rgb[0] / 255.0 * shade, rgb[1] / 255.0 * shade,
-                        rgb[2] / 255.0 * shade, 1))
+        lit = self._bw_fog_mix((rgb[0] * shade, rgb[1] * shade,
+                                rgb[2] * shade), fog, fog_rgb)
+        group.add(Color(lit[0] / 255.0, lit[1] / 255.0, lit[2] / 255.0, 1))
         group.add(Rectangle(pos=(x0, H - y1), size=(strip_w, y1 - y0)))
 
     def _bw_fill_span_textured(self, group, x0, strip_w, y0_gm, y1_gm,
@@ -610,6 +654,13 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         group.add(Color(floor_rgb[0] / 255.0, floor_rgb[1] / 255.0, floor_rgb[2] / 255.0, 1))
         group.add(Rectangle(pos=(0, 0), size=(W, max(0.0, H - horizon_gm))))
 
+        # Fog follows the sky unless the project names its own colour; `fog:
+        # False` restores the pre-fog picture exactly.
+        _fog_flag = cfg.get('fog', True)
+        fog_on = _fog_flag not in (False, 0, 'false', 'False', '0')
+        fog_rgb = (self._bw_color(cfg.get('fog_color') or cfg.get('ceiling_color'),
+                                  '87CEEB') if fog_on else None)
+
         camera = self._find_block_world_camera(cfg)
         if camera is None:
             return   # flat floor/ceiling only
@@ -622,7 +673,35 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         wall_rgb = self._bw_color(cfg.get('wall_color'), '8a8a8a')
         fov_deg = float(cfg.get('fov', 66))
         fov_rad = math.radians(fov_deg)
-        render_distance_cells = int(cfg.get('render_distance', 20))
+        render_distance_cells = int(cfg.get('render_distance', 10))
+        _max_dist_px = render_distance_cells * cell_size
+
+        # Haze band, extent DERIVED from the render distance exactly as in
+        # renderer.py: the ground at max_dist lands at
+        # horizon + eye_z * (H * cell / max_dist), so everything between the
+        # horizon and that row is past the edge of the world and gets solid
+        # fog, with a short gradient back to the floor below it. Drawn in GM
+        # y-down space and flipped at the Rectangle, like every other span
+        # here.
+        if fog_rgb is not None and _max_dist_px > 0 and fog_rgb != floor_rgb:
+            _edge = horizon_gm + eye_z * (H * cell_size / _max_dist_px)
+            _hy0, _hy1 = horizon_gm, min(H, _edge + 1.0)
+            if _hy1 > _hy0:
+                group.add(Color(fog_rgb[0] / 255.0, fog_rgb[1] / 255.0,
+                                fog_rgb[2] / 255.0, 1))
+                group.add(Rectangle(pos=(0, H - _hy1), size=(W, _hy1 - _hy0)))
+            _tail = (_hy1 - _hy0) * self.BW_FLOOR_HAZE_TAIL
+            if _tail > 0:
+                _band = max(1.0, _tail / self.BW_FLOOR_HAZE_BANDS)
+                _stop = min(H, _hy1 + _tail)
+                _y = _hy1
+                while _y < _stop:
+                    _t = 1.0 - (_y - _hy1) / _tail
+                    _c = self._bw_fog_mix(floor_rgb, _t, fog_rgb)
+                    _hi = min(_band, _stop - _y)
+                    group.add(Color(_c[0] / 255.0, _c[1] / 255.0, _c[2] / 255.0, 1))
+                    group.add(Rectangle(pos=(0, H - (_y + _hi)), size=(W, _hi)))
+                    _y += _band
         max_dist = render_distance_cells * cell_size
         num_columns = int(cfg.get('columns', 0)) or int(min(W, 160))
         num_columns = max(1, num_columns)
@@ -669,6 +748,8 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                 px_per_cell_far = H * cell_size / far
                 shade = self._bw_wall_shade(side, near, max_dist)
                 mid = (near + far) / 2.0
+                wall_fog = self._bw_fog_amount(near, max_dist) if fog_rgb else 0.0
+                face_fog = self._bw_fog_amount(mid, max_dist) if fog_rgb else 0.0
                 for i, (z, block_type) in enumerate(stack):
                     color_set = self.BLOCK_FACE_COLORS.get(block_type) if textured else None
                     side_rgb = color_set['side'] if color_set else wall_rgb
@@ -684,9 +765,13 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                         self._bw_fill_span_textured(
                             group, x0, strip_w, y_top, y_top + px_per_cell,
                             y_top, px_per_cell, tex, tex_x, shade, H)
+                        self._bw_fog_overlay(group, x0, strip_w, y_top,
+                                             y_top + px_per_cell, wall_fog,
+                                             fog_rgb, H)
                     else:
                         self._bw_fill_span(group, x0, strip_w, y_top,
-                                           y_top + px_per_cell, side_rgb, shade, H)
+                                           y_top + px_per_cell, side_rgb, shade, H,
+                                           wall_fog, fog_rgb)
 
                     above = self._bw_has_neighbor(stack, i, 1)
                     below = self._bw_has_neighbor(stack, i, -1)
@@ -702,9 +787,12 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                                 group, x0, strip_w, y_far, y_near, top_tex,
                                 cam_x, cam_y, dir_x, dir_y, cos_off,
                                 z + 1, eye_z, horizon_gm, cell_size, lit, top_res, H)
+                            self._bw_fog_overlay(group, x0, strip_w, y_far,
+                                                 y_near, face_fog, fog_rgb, H)
                         else:
                             color = color_set['top'] if color_set else wall_rgb
-                            self._bw_fill_span(group, x0, strip_w, y_far, y_near, color, lit, H)
+                            self._bw_fill_span(group, x0, strip_w, y_far, y_near,
+                                               color, lit, H, face_fog, fog_rgb)
                     elif eye_z < z and not below:
                         lit = self._bw_face_shade(mid, max_dist, self.BW_BOTTOM_SHADE)
                         y_near = horizon_gm + (eye_z - z) * px_per_cell
@@ -716,9 +804,12 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
                                 group, x0, strip_w, y_near, y_far, bottom_tex,
                                 cam_x, cam_y, dir_x, dir_y, cos_off,
                                 z, eye_z, horizon_gm, cell_size, lit, top_res, H)
+                            self._bw_fog_overlay(group, x0, strip_w, y_near,
+                                                 y_far, face_fog, fog_rgb, H)
                         else:
                             color = color_set['bottom'] if color_set else wall_rgb
-                            self._bw_fill_span(group, x0, strip_w, y_near, y_far, color, lit, H)
+                            self._bw_fill_span(group, x0, strip_w, y_near, y_far,
+                                               color, lit, H, face_fog, fog_rgb)
 
     # ------------------------------------------------------------------
     # handlers.py port -- each takes the acting GameObject (`obj`) as an
@@ -1025,7 +1116,7 @@ def _cg_enable_block_world_view(gen, params, event_type):
         # A float from Tier 7a on -- still a clean whole number at rest.
         'z_layer': _tofloat(params.get('z_layer'), 0),
         'fov': _tofloat(params.get('fov'), 66),
-        'render_distance': int(_tofloat(params.get('render_distance'), 20)),
+        'render_distance': int(_tofloat(params.get('render_distance'), 10)),
         'cell_size': int(_tofloat(params.get('cell_size'), 32)),
         'columns': int(_tofloat(params.get('columns'), 160)),
         'wall_color': str(params.get('wall_color') or '#8a8a8a'),

@@ -12,6 +12,7 @@ import math
 from pathlib import Path
 
 from .state import (BLOCK_TYPES, DEFAULT_COLUMNS, DEFAULT_HOTBAR,
+                    DEFAULT_RENDER_DISTANCE,
                     block_world_state, can_enter,
                     cell_of, get_block, ground_layer, is_breakable,
                     load_block_list, load_world_state, peek_camera,
@@ -593,9 +594,11 @@ class PluginExecutor:
             # layer index changes when gravity is off (the default).
             "z_layer": _num("z_layer", 0),
             "fov": _num("fov", 66),
-            "render_distance": int(_num("render_distance", 20)),
+            "render_distance": int(_num("render_distance", DEFAULT_RENDER_DISTANCE)),
             "cell_size": int(_num("cell_size", 32)),
             "columns": int(_num("columns", DEFAULT_COLUMNS)),
+            "fog": _bool("fog", True),
+            "fog_color": str(parameters.get("fog_color", "") or ""),
             "wall_color": str(parameters.get("wall_color", "#8a8a8a")),
             "floor_color": str(parameters.get("floor_color", "#3a2f1c")),
             "ceiling_color": str(parameters.get("ceiling_color", "#87CEEB")),

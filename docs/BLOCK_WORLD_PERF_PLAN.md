@@ -85,8 +85,7 @@ fog.
 
 The whole win, and it is a *rendering* change, not a rewrite.
 
-**STATUS 2026-09-07: 1.1-1.3 done on DESKTOP; 1.4 (the two export ports) is
-the open item, and until it lands the three targets look different.**
+**STATUS 2026-09-07: Phase 1 is COMPLETE on all three targets.**
 Measured same-sitting against the pre-fog commit, samples moved 16 -> 10:
 `block_world_2` **8.14 -> 13.75 fps static (+69%) and 7.70 -> 13.74 walking
 (+78%)**; `block_world_1` +7%/+2%, which is expected -- it is an enclosed maze
@@ -119,14 +118,20 @@ carry over. Always A/B against a worktree in the same sitting.*
       i.e. the target met, with no other change at all.** 8 would give 50 fps
       if the fog turns out to hide it. Pick it against screenshots, not
       against the fps figure alone.
-- [ ] **1.4 Port the fog to HTML5 and Kivy — the open item.** Desktop has it;
-      `export_html5.js` and `export_kivy.py` do not, so an exported Block World
-      game currently shows the hard cut the desktop no longer does. The port is
-      mechanical (mirror `fog_amount`, scale the shade by `1 - fog`, add
-      `fog_color * fog`, and draw the same derived haze band) but it is three
-      hand-written renderers, and the parity test should grow pins for
-      `fog_amount` and the new defaults the same way it holds `wall_shade`.
-      **Three targets, one number — again.** `render_distance` is
+- [x] **1.4 Ported to HTML5 and Kivy, with parity pinned.** Both mirror
+      `fog_amount` and the same derived haze band; both express the lerp in
+      their own idiom (a translucent `fillRect` on canvas, a translucent
+      `Rectangle` in Kivy — each composites as `dst*(1-a) + src*a`, which is
+      what the desktop writes as a scaled multiply plus an add). The render
+      distance default moved to a shared `state.DEFAULT_RENDER_DISTANCE` on the
+      desktop side, with the two ports carrying it by hand.
+      `tests/test_block_world_export_parity.py` now pins `fog_amount`
+      numerically against Kivy, the fog constants against both, the curve shape
+      in the JS, and that all three derive the haze extent from the render
+      distance; `tests/test_block_world_default_columns.py` pins the distance
+      default across all three. Mutation-tested: a linear Kivy curve, a JS fog
+      that never reaches 1.0, a fixed-extent Kivy haze band and a reverted
+      HTML5 distance each fail. `render_distance` is
       duplicated in `export_html5.js` and `export_kivy.py` exactly as `columns`
       was, and 2a5e52bc had to fix six copies. Extend
       `tests/test_block_world_default_columns.py` (or a sibling) to pin the
