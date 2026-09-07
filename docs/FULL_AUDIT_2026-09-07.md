@@ -114,7 +114,7 @@ exists, so the English fallback is correct).
   `sanitize_value` (values only).
   **Fixed `7d39c74d`.**
 
-- [ ] **H5 — Android/iOS export drops room tiles, background layers, views, and object flags because of hand-maintained key lists.**
+- [x] **H5 — Android/iOS export drops room tiles, background layers, views, and object flags because of hand-maintained key lists.**
   `export/android/android_exporter.py:77` copies only
   `width/height/background_color/background_image/tile_horizontal/
   tile_vertical` from `rooms/<name>.json`; `export/ios/ios_exporter.py:308`
@@ -132,6 +132,7 @@ exists, so the English fallback is correct).
   shared kernels and delete the local key lists. *How verified:* diffed
   the three lists against `_ROOM_FILE_KEYS`/`_OBJECT_FILE_KEYS` and the
   generator's reads.
+  **Fixed `9f9f85af`.**
 
 - [ ] **H6 — Asset names from the Create dialog are unvalidated; a name with `/`, `..` or a trailing dot breaks save.**
   `core/ide/_assets.py:497` passes `QInputDialog.getText`'s result straight
