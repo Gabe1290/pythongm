@@ -1040,11 +1040,14 @@ class MessageTranslationsDialog(QDialog):
                 key=lambda x: x[1]
             )
         except ImportError:
-            # Fallback if LanguageManager is not available
+            # Fallback if LanguageManager is not available. Native names
+            # with their real accents, matching LanguageManager.LANGUAGE_INFO
+            # exactly (M12, docs/FULL_AUDIT_2026-09-07.md -- this copy had
+            # dropped every accent and used the English name for ru/uk).
             return [
-                ('fr', 'Francais'), ('de', 'Deutsch'), ('es', 'Espanol'),
-                ('it', 'Italiano'), ('pt', 'Portugues'), ('ru', 'Russian'),
-                ('uk', 'Ukrainian'), ('sl', 'Slovenscina'),
+                ('fr', 'Français'), ('de', 'Deutsch'), ('es', 'Español'),
+                ('it', 'Italiano'), ('pt', 'Português'), ('ru', 'Русский'),
+                ('uk', 'Українська'), ('sl', 'Slovenščina'),
             ]
 
     def setup_ui(self):
