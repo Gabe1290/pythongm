@@ -242,7 +242,7 @@ exists, so the English fallback is correct).
   per-frame `recv` attempt forever. *Fix:* record `monotonic()` on accept
   and kill after ~5 s without a handshake.
 
-- [ ] **M10 — Shared-variable names can shadow multiplayer identity globals.**
+- [x] **M10 — Shared-variable names can shadow multiplayer identity globals.**
   `extensions/multiplayer_lan/handlers.py:667` `_apply_session_state`
   writes `is_host`/`player_id`/`player_count`/… then
   `for key, val in session.shared.items(): gv[key] = val`. A
@@ -250,6 +250,7 @@ exists, so the English fallback is correct).
   machine's `global.is_host`, breaking every "if host" branch.
   `is_valid_shared_name` checks syntax only. *Fix:* reserve the identity
   names in `is_valid_shared_name` (refuse at the setter, host side too).
+  **Fixed `e71c418f`.**
 
 - [x] **M11 — `.trash_orphaned_files` ships inside desktop exports.**
   `export/desktop/pygame_desktop_exporter.py:100`
