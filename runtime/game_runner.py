@@ -1123,10 +1123,18 @@ class GameRunner(InputMixin, CollisionMixin):
             return
         objects_data = self._objects_data
         for persistent_inst in persistent_instances:
+            # `inst.object_data or {}`: an orphan instance (its object was
+            # deleted from the project but it's still sitting in the room
+            # JSON) has object_data=None, and `.get(...)` on it raised
+            # AttributeError here -- crashing every room change/restart the
+            # moment such a room was ever entered (M5,
+            # docs/FULL_AUDIT_2026-09-07.md). An orphan has no way to be
+            # persistent, so treating it as non-persistent (get on {})
+            # matches intent, not just avoiding the crash.
             room.instances = [
                 inst for inst in room.instances
                 if not (inst.object_name == persistent_inst.object_name and
-                        not inst.object_data.get('persistent', False))
+                        not (inst.object_data or {}).get('persistent', False))
             ]
             if persistent_inst.object_name in objects_data:
                 merged = resolve_parent_inheritance(
@@ -1525,10 +1533,13 @@ class GameRunner(InputMixin, CollisionMixin):
             for persistent_inst in persistent_instances:
                 # Remove any existing instances of the same object type that are NOT persistent
                 # This ensures the persistent instance replaces the room's default instance
+                # See _readd_persistent_instances' matching comment (M5,
+                # docs/FULL_AUDIT_2026-09-07.md): an orphan instance has
+                # object_data=None, so `.get(...)` on it would raise.
                 self.current_room.instances = [
                     inst for inst in self.current_room.instances
                     if not (inst.object_name == persistent_inst.object_name and
-                            not inst.object_data.get('persistent', False))
+                            not (inst.object_data or {}).get('persistent', False))
                 ]
 
                 # IMPORTANT: Refresh the persistent instance's object_data from project
