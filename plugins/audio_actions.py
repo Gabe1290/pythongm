@@ -6,6 +6,10 @@ Adds sound and music actions to PyGameMaker
 
 from events.action_types import ActionType, ActionParameter
 
+from core.logger import get_logger
+
+logger = get_logger(__name__)
+
 # Plugin Metadata
 PLUGIN_NAME = "Audio Actions"
 PLUGIN_VERSION = "1.0.0"
@@ -130,12 +134,38 @@ class PluginExecutor:
             return instance.action_executor.game_runner
         return None
 
+    def _safe_volume(self, instance, parameters, default):
+        """Resolve a volume parameter safely (M7, docs/FULL_AUDIT_2026-09-07.md).
+
+        The raw value can be an expression (e.g. a global variable name),
+        so it's routed through the action executor's own _parse_value
+        first when reachable; either way, the final float() coercion is
+        guarded, so a value that is still not a real number (a typo, an
+        unresolved expression, a stray string) falls back to `default`
+        instead of raising ValueError/TypeError and aborting the action.
+        Clamped to pygame's valid 0.0-1.0 range, matching this action's
+        own declared min_value/max_value.
+        """
+        raw = parameters.get("volume", default)
+        parse_value = getattr(getattr(instance, "action_executor", None), "_parse_value", None)
+        if callable(parse_value):
+            try:
+                raw = parse_value(raw, instance)
+            except Exception:
+                pass
+        try:
+            volume = float(raw)
+        except (TypeError, ValueError):
+            logger.warning("audio: could not parse volume %r, using default %r", raw, default)
+            return default
+        return max(0.0, min(1.0, volume))
+
     def execute_play_sound_action(self, instance, parameters):
         """Play a sound effect"""
         sound_name = parameters.get("sound", "")
-        volume = float(parameters.get("volume", 1.0))
+        volume = self._safe_volume(instance, parameters, 1.0)
 
-        print(f"🔊 Playing sound: {sound_name} at volume {volume}")
+        logger.debug("audio: playing sound %r at volume %s", sound_name, volume)
 
         try:
             game_runner = self._get_game_runner(instance)
@@ -145,19 +175,19 @@ class PluginExecutor:
                     sound.set_volume(volume)
                     sound.play()
                 else:
-                    print(f"⚠️  Sound not found: {sound_name}")
+                    logger.warning("audio: sound not found: %r", sound_name)
             else:
-                print("⚠️  No game sound system available")
+                logger.warning("audio: no game sound system available")
         except Exception as e:
-            print(f"❌ Error playing sound: {e}")
+            logger.error("audio: error playing sound: %s", e)
 
     def execute_play_music_action(self, instance, parameters):
         """Play background music"""
         music_name = parameters.get("music", "")
         loop = parameters.get("loop", True)
-        volume = float(parameters.get("volume", 0.7))
+        volume = self._safe_volume(instance, parameters, 0.7)
 
-        print(f"🎵 Playing music: {music_name} (loop={loop}, volume={volume})")
+        logger.debug("audio: playing music %r (loop=%s, volume=%s)", music_name, loop, volume)
 
         try:
             import pygame
@@ -169,27 +199,27 @@ class PluginExecutor:
                     pygame.mixer.music.set_volume(volume)
                     pygame.mixer.music.play(-1 if loop else 0)
                 else:
-                    print(f"⚠️  Music not found: {music_name}")
+                    logger.warning("audio: music not found: %r", music_name)
             else:
-                print("⚠️  No game music system available")
+                logger.warning("audio: no game music system available")
         except Exception as e:
-            print(f"❌ Error playing music: {e}")
+            logger.error("audio: error playing music: %s", e)
 
     def execute_stop_music_action(self, instance, parameters):
         """Stop background music"""
-        print("🔇 Stopping music")
+        logger.debug("audio: stopping music")
 
         try:
             import pygame
             pygame.mixer.music.stop()
         except Exception as e:
-            print(f"❌ Error stopping music: {e}")
+            logger.error("audio: error stopping music: %s", e)
 
     def execute_set_volume_action(self, instance, parameters):
         """Set global volume"""
-        volume = float(parameters.get("volume", 1.0))
+        volume = self._safe_volume(instance, parameters, 1.0)
 
-        print(f"🔉 Setting volume to {volume}")
+        logger.debug("audio: setting volume to %s", volume)
 
         try:
             import pygame
@@ -202,4 +232,4 @@ class PluginExecutor:
                 for sound in game_runner.sounds.values():
                     sound.set_volume(volume)
         except Exception as e:
-            print(f"❌ Error setting volume: {e}")
+            logger.error("audio: error setting volume: %s", e)
