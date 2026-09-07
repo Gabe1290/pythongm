@@ -555,8 +555,16 @@ def main():
         runner.language = LANGUAGE
         # High scores default to the project folder, which is inside the
         # bundle -- and therefore a temp directory that is deleted on exit.
-        # Keep them next to the executable so they persist.
+        # Keep them next to the executable so they persist. Re-run
+        # load_highscores() after the reassignment: GameRunner.__init__
+        # already loaded (an empty/nonexistent) table from the bundle path
+        # before this line runs, and that load is not repeated automatically
+        # just because the path changed underneath it -- without this call
+        # every launch of a one-file build would start with an empty
+        # high-score table even though a previous run wrote real scores
+        # next to the executable.
         runner.highscore_file = writable_dir() / "highscores.json"
+        runner.load_highscores()
         runner.run()
     except Exception:
         import traceback
