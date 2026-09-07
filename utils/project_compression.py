@@ -11,6 +11,9 @@ from pathlib import Path
 import shutil
 import tempfile
 
+from utils.asset_trash import TRASH_DIR_NAME
+from utils.project_cleanup import ORPHAN_TRASH_DIR_NAME
+
 
 class ProjectCompressor:
     """Compress and decompress PyGameMaker projects"""
@@ -45,8 +48,14 @@ class ProjectCompressor:
                         # files (utils/project_cleanup.py, Clean Project Tier 3) —
                         # the whole point of deleting something is that it stops
                         # being part of the project; bundling it into every export/
-                        # backup would defeat that and bloat the archive.
-                        if arcname.parts and arcname.parts[0] in ('.trash', '.trash_orphaned_files'):
+                        # backup would defeat that and bloat the archive. Imported
+                        # by name rather than hardcoded here a second time — see
+                        # export/desktop/pygame_desktop_exporter.py's matching
+                        # SKIPPED_PROJECT_DIRS (M11, docs/FULL_AUDIT_2026-09-07.md:
+                        # that exclusion list drifted out of sync with this one and
+                        # shipped .trash_orphaned_files in every desktop export
+                        # until both were switched to these same two constants).
+                        if arcname.parts and arcname.parts[0] in (TRASH_DIR_NAME, ORPHAN_TRASH_DIR_NAME):
                             continue
 
                         # Add file to zip

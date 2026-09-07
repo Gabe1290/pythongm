@@ -93,12 +93,21 @@ ENGINE_EXCLUDES: Tuple[str, ...] = (
 )
 
 # Never copy these out of the author's project folder.
-#   .trash      soft-deleted assets (utils/asset_trash.py). Shipping them
-#               would undo the deletion the author asked for -- the same leak
-#               already fixed in utils/project_compression.py.
+#   .trash                soft-deleted assets (utils/asset_trash.py).
+#   .trash_orphaned_files trashed orphaned physical files (utils/
+#                         project_cleanup.py, Clean Project Tier 3).
+#   Shipping either would undo the deletion the author asked for -- the
+#   same leak utils/project_compression.py's zip export already excludes
+#   both of. Imported by name (not hardcoded a second time) so the two
+#   exclusion lists can't drift the way this one did on
+#   .trash_orphaned_files (M11, docs/FULL_AUDIT_2026-09-07.md): it
+#   shipped in every desktop export until this fix.
 #   build_temp* leftovers from an earlier export, potentially huge.
+from utils.asset_trash import TRASH_DIR_NAME
+from utils.project_cleanup import ORPHAN_TRASH_DIR_NAME
+
 SKIPPED_PROJECT_DIRS = frozenset({
-    ".trash", ".git", "__pycache__", "build", "dist",
+    TRASH_DIR_NAME, ORPHAN_TRASH_DIR_NAME, ".git", "__pycache__", "build", "dist",
 })
 SKIPPED_PROJECT_PREFIXES = ("build_temp",)
 
