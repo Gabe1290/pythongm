@@ -44,7 +44,7 @@ exists, so the English fallback is correct).
 
 ## High
 
-- [ ] **H1 — Held-key set mutated while iterated: `RuntimeError: Set changed size during iteration` kills the game.**
+- [x] **H1 — Held-key set mutated while iterated: `RuntimeError: Set changed size during iteration` kills the game.**
   `runtime/input_handler.py:254` — `_process_held_keys` does
   `for sub_key in instance.keys_pressed:` and runs the sub-event's action
   list inside the loop. Any action in that list that opens a modal
@@ -62,6 +62,7 @@ exists, so the English fallback is correct).
   and skip keys no longer held; same in any other `keys_pressed`
   iteration. *How verified:* traced M54's `_release_held_key_silent` back
   to the four dialog KEYUP branches and the iteration site.
+  **Fixed `00e7ee62`.**
 
 - [ ] **H2 — Exported desktop games never load their high scores.**
   `export/desktop/pygame_desktop_exporter.py:559` (LAUNCHER_TEMPLATE) does
