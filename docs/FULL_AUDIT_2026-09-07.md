@@ -234,13 +234,16 @@ exists, so the English fallback is correct).
   unmasked frames; accept only `Origin` values that are absent
   (non-browser) or match the HTML5 export's host, configurable.
 
-- [ ] **M9 — Pending TCP/WS connections never time out.**
+- [x] **M9 — Pending TCP/WS connections never time out.**
   `extensions/multiplayer_lan/network.py:107` accepts sockets and keeps
   them until a `HELLO`/handshake arrives; nothing expires a peer that
   connects and stays silent (port scanners, a browser that opened the
   socket and hung). Each costs a slot up to `max_players` and a
   per-frame `recv` attempt forever. *Fix:* record `monotonic()` on accept
   and kill after ~5 s without a handshake.
+  **Fixed `05ab7b0a`** (implemented at the session layer, where the
+  app-level HELLO/pending-tracking already lives, rather than inside
+  `network.py`'s raw accept — that module has no concept of "handshake").
 
 - [x] **M10 — Shared-variable names can shadow multiplayer identity globals.**
   `extensions/multiplayer_lan/handlers.py:667` `_apply_session_state`
