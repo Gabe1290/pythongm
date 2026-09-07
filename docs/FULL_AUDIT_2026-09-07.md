@@ -64,7 +64,7 @@ exists, so the English fallback is correct).
   to the four dialog KEYUP branches and the iteration site.
   **Fixed `00e7ee62`.**
 
-- [ ] **H2 — Exported desktop games never load their high scores.**
+- [x] **H2 — Exported desktop games never load their high scores.**
   `export/desktop/pygame_desktop_exporter.py:559` (LAUNCHER_TEMPLATE) does
   `runner = GameRunner(str(project))` **then**
   `runner.highscore_file = writable_dir() / "highscores.json"`. But
@@ -77,6 +77,7 @@ exists, so the English fallback is correct).
   `runner.load_highscores()` (or accept a `highscore_file=` kwarg in
   `GameRunner.__init__`). *How verified:* read both sites; no second load
   call exists in the launcher or in `run()`.
+  **Fixed `e06ed3da`.**
 
 - [ ] **H3 — Multiplayer: a connection killed during `send()`/`broadcast()` never emits `CONN_CLOSED` → phantom players.**
   `extensions/multiplayer_lan/network.py:203` (and the raw-TCP siblings)
