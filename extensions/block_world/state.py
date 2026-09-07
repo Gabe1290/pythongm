@@ -68,6 +68,17 @@ TEXTURE_DIR = os.path.join(
 # pins all three together.
 DEFAULT_COLUMNS = 160
 
+# How far the camera sees, in cells. Cost is dominated by the number of strips
+# drawn, and a distant cell pays a full draw for a sliver a few pixels tall --
+# so this is the single biggest performance dial the renderer has (16 -> 10
+# measured +69% on block_world_2). It was only usable once distance fog landed:
+# before that the world simply stopped and the flat floor colour showed
+# through. See docs/BLOCK_WORLD_PERF_PLAN.md.
+#
+# The HTML5 and Kivy ports carry the same number by hand, so
+# tests/test_block_world_default_columns.py pins all three together.
+DEFAULT_RENDER_DISTANCE = 10
+
 BLOCK_TYPES = {
     "dirt": {"all": "default_dirt.png", "solid": True},
     "grass": {

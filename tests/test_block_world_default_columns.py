@@ -19,7 +19,8 @@ sys.path.insert(0, str(REPO_ROOT))
 
 EXT = REPO_ROOT / "extensions" / "block_world"
 
-from extensions.block_world.state import DEFAULT_COLUMNS  # noqa: E402
+from extensions.block_world.state import (  # noqa: E402
+    DEFAULT_COLUMNS, DEFAULT_RENDER_DISTANCE)
 
 
 def test_the_default_is_the_one_that_was_measured():
@@ -77,6 +78,33 @@ def test_kivy_export_uses_the_same_default():
     assert set(numbers) == {DEFAULT_COLUMNS}, (
         "Kivy defaults %s disagree with %d" % (sorted(set(numbers)),
                                                DEFAULT_COLUMNS))
+
+
+def test_the_render_distance_default_is_the_one_that_was_measured():
+    """10 cells: +69% on block_world_2 over the old 16, and only usable at all
+    once distance fog hid where the world ends."""
+    assert DEFAULT_RENDER_DISTANCE == 10
+
+
+def test_every_target_defaults_to_the_same_render_distance():
+    """Same divergence risk as `columns`: three hand-written renderers, and an
+    exported game rendering a different distance than Test Game."""
+    for name in ("renderer.py", "actions.py", "handlers.py"):
+        assert "DEFAULT_RENDER_DISTANCE" in (EXT / name).read_text(encoding="utf-8"), name
+    js = (EXT / "export_html5.js").read_text(encoding="utf-8")
+    assert _js_number_after(
+        js, r"const renderDistanceCells = cfg\.render_distance \|\| (\d+);"
+    ) == DEFAULT_RENDER_DISTANCE
+    assert _js_number_after(
+        js, r"render_distance: Math\.trunc\(num\('render_distance', (\d+)\)\)"
+    ) == DEFAULT_RENDER_DISTANCE
+    kivy = (EXT / "export_kivy.py").read_text(encoding="utf-8")
+    found = [int(n) for pair in re.findall(
+        r"cfg\.get\('render_distance', (\d+)\)"
+        r"|_tofloat\(params\.get\('render_distance'\), (\d+)\)", kivy)
+        for n in pair if n]
+    assert found, "no Kivy render_distance default found"
+    assert set(found) == {DEFAULT_RENDER_DISTANCE}, sorted(set(found))
 
 
 def test_no_stray_320_columns_default_survives_anywhere():

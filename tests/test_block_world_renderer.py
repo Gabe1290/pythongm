@@ -262,6 +262,10 @@ class TestRenderBlockWorldView:
             "enabled": True, "camera_object": "obj_person", "z_layer": 0,
             "cell_size": 32, "columns": 64, "wall_textured": False,
             "wall_color": "#ff0000",
+            # The assertion below is "pure red, only darkened". Distance fog
+            # blends toward the sky, which is exactly what it is for, so this
+            # test asks for the unfogged look; fog has its own file.
+            "fog": False,
         })
         screen = pygame.Surface((320, 240))
         screen.fill((0, 255, 0))  # sentinel -- anything untouched stays green

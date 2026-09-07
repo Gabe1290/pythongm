@@ -33,6 +33,7 @@ import pygame
 
 from .state import (block_world_state, get_block, block_face_textures,
                     column_index, is_transparent, CHUNK_SIZE, DEFAULT_COLUMNS,
+                    DEFAULT_RENDER_DISTANCE,
                     ensure_chunks_loaded, unload_distant_chunks)
 
 _TEXTURE_CACHE = {}
@@ -1116,7 +1117,8 @@ def render_block_world_view(room, screen: pygame.Surface):
     wall_color = room.parse_color(cfg.get("wall_color", "#8a8a8a"))
     fov_deg = cfg.get("fov", 66)
     fov_rad = math.radians(fov_deg)
-    render_distance_cells = int(cfg.get("render_distance", 20))
+    render_distance_cells = int(cfg.get("render_distance",
+                                      DEFAULT_RENDER_DISTANCE))
     max_dist = render_distance_cells * cell_size
 
     # Haze band. Beyond the render distance the ground plane simply is not
