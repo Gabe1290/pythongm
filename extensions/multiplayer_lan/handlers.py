@@ -345,10 +345,10 @@ class PluginExecutor:
         )
         if not _start_session(room, session):
             _notify(ae,
-                    "Impossible d'heberger sur le port %d.\n\n"
-                    "Le port est peut-etre deja utilise, ou le pare-feu du "
-                    "systeme bloque les connexions entrantes pour Python "
-                    "(autorisez-le sur le reseau prive)." % session.port)
+                    "Impossible d'héberger sur le port %d.\n\n"
+                    "Le port est peut-être déjà utilisé, ou le pare-feu du "
+                    "système bloque les connexions entrantes pour Python "
+                    "(autorisez-le sur le réseau privé)." % session.port)
             return
         st = multiplayer_state(room)
 
@@ -400,9 +400,9 @@ class PluginExecutor:
             mode="client", host=host, port=port, player_name=player_name)
         if not _start_session(room, session):
             _notify(ae,
-                    "Impossible de se connecter a %s:%d.\n\n"
-                    "Verifiez que l'hote a bien lance la partie (touche H) et "
-                    "que les deux machines sont sur le meme reseau filaire ; "
+                    "Impossible de se connecter à %s:%d.\n\n"
+                    "Vérifiez que l'hôte a bien lancé la partie (touche H) et "
+                    "que les deux machines sont sur le même réseau filaire ; "
                     "un pare-feu peut aussi bloquer le port." % (host, port))
 
     def execute_leave_game_action(self, instance, parameters):
