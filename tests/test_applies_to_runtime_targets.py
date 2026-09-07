@@ -315,3 +315,40 @@ def test_plateforme_3_dead_monster_stops_moving():
     assert monster.object_name == "obj_monstre_mort"
     assert monster.hspeed == 0
     assert monster.vspeed == 0
+
+
+# ---------------------------------------------------------------------------
+# M6, docs/FULL_AUDIT_2026-09-07.md: target="other" with no collision
+# partner must be a no-op, not "act on self"
+# ---------------------------------------------------------------------------
+
+def test_destroy_instance_target_other_without_collision_is_a_noop():
+    """A destroy_instance(target='other') placed in a non-collision event
+    (or a GMK import that reaches this path with no _collision_other set)
+    used to fall through to the "destroy self" default -- destroying the
+    caller instead of doing nothing, since there is no "other" to act on."""
+    hero = _instance("explorer", 50, 50)
+    ex = _executor_with_room([hero])
+    assert not getattr(ex, "_collision_other", None)
+
+    ex.execute_destroy_instance_action(hero, {"target": "other"})
+
+    assert hero.to_destroy is False, (
+        "no collision partner -- the caller must survive untouched")
+
+
+def test_change_instance_target_other_without_collision_is_a_noop():
+    """Same fault, change_instance's target='other': the trailing
+    'else: target_instances = [instance]' caught the no-partner case too,
+    silently changing the caller into a different object type."""
+    hero = _instance("explorer", 50, 50)
+    ex = _executor_with_room([hero])
+    assert not getattr(ex, "_collision_other", None)
+    ex.game_runner.project_data["assets"]["objects"]["scared"] = {
+        "name": "scared", "sprite": "", "events": {}}
+
+    ex.execute_change_instance_action(
+        hero, {"object": "scared", "target": "other"})
+
+    assert hero.object_name == "explorer", (
+        "no collision partner -- the caller must not change object type")

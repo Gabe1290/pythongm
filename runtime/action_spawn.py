@@ -54,6 +54,16 @@ class SpawnMixin:
             self._collision_other.to_destroy = True
             return
 
+        if target == "other":
+            # No collision partner (this action fired from a non-collision
+            # event, or ran outside a collision this frame) -- GM's own
+            # behaviour is a no-op here, not "destroy self" (M6,
+            # docs/FULL_AUDIT_2026-09-07.md). Falling through to the
+            # "Default: destroy self" branch below would silently destroy
+            # the caller instead.
+            logger.debug("⚠️ destroy_instance: target='other' but no collision partner -- no-op")
+            return
+
         if target == "object":
             if not target_object:
                 logger.debug("⚠️ destroy_instance: target='object' but no target_object given")
@@ -200,6 +210,13 @@ class SpawnMixin:
         target_instances = []
         if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
             target_instances = [self._collision_other]
+        elif target == "other":
+            # No collision partner -- GM's behaviour is a no-op, not
+            # "change self" (M6, docs/FULL_AUDIT_2026-09-07.md). The
+            # trailing `else: target_instances = [instance]` below would
+            # otherwise catch this case too, silently changing the caller.
+            logger.debug("⚠️ change_instance: target='other' but no collision partner -- no-op")
+            return
         elif target == "object":
             if not target_object:
                 logger.debug("⚠️ change_instance: target='object' but no target_object given")
