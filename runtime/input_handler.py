@@ -251,7 +251,21 @@ class InputMixin:
         if is_grid_moving:
             return
 
-        for sub_key in instance.keys_pressed:
+        # Snapshot before iterating: an action in the held-key's action list
+        # can open a modal dialog (show_message, show_info, a splash, the
+        # high-score/name-entry screens), and every one of those dialogs'
+        # KEYUP handling calls _release_held_key_silent, which discards from
+        # this same set. Mutating a set while iterating it raises
+        # RuntimeError ("Set changed size during iteration"), which used to
+        # escape all the way out of the frame and end the game. Same
+        # snapshot-safe-iteration fix M49 already applied to
+        # ``self.current_room.instances`` for the analogous spawn/destroy
+        # case.
+        for sub_key in list(instance.keys_pressed):
+            if sub_key not in instance.keys_pressed:
+                # Released by an earlier action in this same pass (e.g. a
+                # modal dialog's KEYUP handling) -- don't fire its action.
+                continue
             press_key = f"press_{sub_key}"
             found_key = _find_key_in_event(keyboard_event, press_key)
             if not found_key:
