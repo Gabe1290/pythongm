@@ -287,13 +287,24 @@ class iOSExporter(QObject):
             return False, str(e)
 
     # ------------------------------------------------------------------
-    # Project data helpers (identical to AndroidExporter)
+    # Project data helpers
     # ------------------------------------------------------------------
+    #
+    # H5, docs/FULL_AUDIT_2026-09-07.md: these used to hand-copy a short,
+    # incomplete list of room/object keys (missing tiles, views,
+    # enable_views, backgrounds, persistent, remember_destroyed, ...),
+    # which the Kivy generator these exports feed into DOES read -- so a
+    # manifest-ified project (every project a current IDE saves) built for
+    # iOS silently lost its tiles and views. Routed through the same
+    # merge_room_file/merge_object_file kernels export/base_exporter.py and
+    # AndroidExporter now use, so there is exactly one place that knows the
+    # full set of room/object side-file keys.
 
     def _load_rooms_from_files(self, project_dir: Path) -> None:
         rooms_dir = project_dir / "rooms"
         if not rooms_dir.exists():
             return
+        from utils.project_file_merge import merge_room_file
         rooms_data = self.project_data.get('assets', {}).get('rooms', {})
         for room_name, room_data in rooms_data.items():
             room_file = rooms_dir / "{}.json".format(room_name)
@@ -301,13 +312,7 @@ class iOSExporter(QObject):
                 try:
                     with open(room_file, 'r', encoding='utf-8') as f:
                         file_room_data = json.load(f)
-                    if 'instances' in file_room_data:
-                        room_data['instances'] = file_room_data['instances']
-                    for key in ['width', 'height', 'background_color',
-                                'background_image', 'tile_horizontal',
-                                'tile_vertical']:
-                        if key in file_room_data:
-                            room_data[key] = file_room_data[key]
+                    merge_room_file(room_data, file_room_data)
                 except Exception as e:
                     logger.warning("Could not load room {}: {}".format(room_name, e))
 
@@ -315,6 +320,7 @@ class iOSExporter(QObject):
         objects_dir = project_dir / "objects"
         if not objects_dir.exists():
             return
+        from utils.project_file_merge import merge_object_file
         objects_data = self.project_data.get('assets', {}).get('objects', {})
         for obj_name, obj_data in objects_data.items():
             obj_file = objects_dir / "{}.json".format(obj_name)
@@ -322,8 +328,7 @@ class iOSExporter(QObject):
                 try:
                     with open(obj_file, 'r', encoding='utf-8') as f:
                         file_obj_data = json.load(f)
-                    if 'events' in file_obj_data:
-                        obj_data['events'] = file_obj_data['events']
+                    merge_object_file(obj_data, file_obj_data)
                 except Exception as e:
                     logger.warning("Could not load object {}: {}".format(obj_name, e))
 
