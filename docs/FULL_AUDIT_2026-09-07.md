@@ -452,7 +452,8 @@ exists, so the English fallback is correct).
   any future emoji/accent there hits the same crash. *Fix:* route through
   `ConsoleSafeHandler` or keep an explicit ASCII-only comment + test.
 
-- [ ] **L20 — `run_game.py` swallows a wrong `language` silently.**
+- [x] **L20 — `run_game.py` swallows a wrong `language` silently.**
+  **Fixed `e52e24e5`.**
   `runtime/run_game.py` accepts any second positional as the language
   code; a typo (`--net-host` mis-ordered, or `fr_FR`) yields English
   translations with no message. *Fix:* validate against
