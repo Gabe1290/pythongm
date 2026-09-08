@@ -11,8 +11,11 @@ multiplayer games (quizzes, turn-based, draw-together, co-op-lite). Tier B
 
 Hooks used: the generic per-frame hook (runtime/extension_hooks.py's
 register_frame_update) -- a client applies inbound state before Step, a
-host sends after the frame settles. No room renderer (this draws nothing;
-the Phase 6 connect screen will add one).
+host sends after the frame settles. Also the room-change hook
+(register_room_change_hook, M1 docs/FULL_AUDIT_2026-09-07.md) -- migrates
+a live session across change_room/restart_current_room instead of it
+being orphaned on the room object being left. No room renderer (this
+draws nothing; the Phase 6 connect screen will add one).
 """
 
 PLUGIN_NAME = "LAN Multiplayer"
@@ -20,7 +23,10 @@ PLUGIN_NAME = "LAN Multiplayer"
 from events.event_types import EventType
 
 from .actions import PLUGIN_ACTIONS
-from .handlers import PluginExecutor, _frame_update_apply_inbound, _frame_update_broadcast
+from .handlers import (
+    PluginExecutor, _frame_update_apply_inbound, _frame_update_broadcast,
+    _on_room_change,
+)
 
 _CATEGORY = "Network"
 
@@ -64,3 +70,7 @@ PLUGIN_FRAME_UPDATES = [
     (_frame_update_apply_inbound, "before_step"),
     (_frame_update_broadcast, "after_update"),
 ]
+
+# Migrates a live session across a room change instead of it being silently
+# orphaned on the room object being left (M1, docs/FULL_AUDIT_2026-09-07.md).
+PLUGIN_ROOM_CHANGE_HOOKS = [_on_room_change]
