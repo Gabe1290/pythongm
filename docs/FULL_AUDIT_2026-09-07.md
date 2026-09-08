@@ -314,7 +314,8 @@ exists, so the English fallback is correct).
   `choose()` helpers are what authors should see. *Fix:* expose only the
   helper callables, not the module.
 
-- [ ] **L2 — `move_to_contact` loop has no iteration cap.**
+- [x] **L2 — `move_to_contact` loop has no iteration cap.**
+  **Fixed `5caed972`.**
   `runtime/action_movement.py:286` steps `max_dist` pixels one at a time;
   an expression yielding a huge/inf `max_dist` (e.g. `1/0` → handled to
   0, but `10**9` isn't) spins the frame. *Fix:* clamp to room diagonal.
