@@ -1075,7 +1075,12 @@ def render_block_world_view(room, screen: pygame.Surface):
     """
     st = block_world_state(room)
     cfg = st["camera"]
-    cell_size = int(cfg.get("cell_size", 32))
+    # cell_size/columns are author-set camera parameters with no lower
+    # bound at the action layer; 0 reaches several raw divisions below
+    # (inv_cell, col_width) and crashes the game (L3,
+    # docs/FULL_AUDIT_2026-09-07.md). Clamped once here, at the single
+    # place this function reads them, rather than at every division site.
+    cell_size = max(1, int(cfg.get("cell_size", 32)))
 
     camera = room._find_first_instance(cfg.get("camera_object", ""))
     w, h = screen.get_size()
@@ -1150,7 +1155,7 @@ def render_block_world_view(room, screen: pygame.Surface):
                 _hi = min(_band, min(h, _y1 + _tail) - _y)
                 screen.fill(fog_mix(floor_color, _t, fog_color), (0, _y, w, _hi))
                 _y += _band
-    num_columns = int(cfg.get("columns", min(w, DEFAULT_COLUMNS)))
+    num_columns = max(1, int(cfg.get("columns", min(w, DEFAULT_COLUMNS))))
     col_width = w / num_columns
 
     # Tier 7e Phase 2 (docs/BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md): generate

@@ -91,7 +91,11 @@ class PluginExecutor:
             reach = 5
         reach = max(1, reach)
 
-        cell_size = int(cfg.get("cell_size", 32))
+        # >= 1: cell_size is author-set with no lower bound at the write
+        # site, and several call paths below (pick_voxel/march_ray,
+        # cell_of) divide by it raw -- 0 crashes the game (L3,
+        # docs/FULL_AUDIT_2026-09-07.md).
+        cell_size = max(1, int(cfg.get("cell_size", 32)))
         cx, cy = room._sprite_top_left(camera)
         from .renderer import pick_voxel, screen_ray, horizon_for, eye_z_for  # lazy: pygame
         # The layer the EYE is in, not the layer the feet are on. With the
@@ -243,7 +247,11 @@ class PluginExecutor:
         except (TypeError, ValueError):
             return
         collide = _truthy(parameters.get("collide", True))
-        cell_size = int(cfg.get("cell_size", 32))
+        # >= 1: cell_size is author-set with no lower bound at the write
+        # site, and several call paths below (pick_voxel/march_ray,
+        # cell_of) divide by it raw -- 0 crashes the game (L3,
+        # docs/FULL_AUDIT_2026-09-07.md).
+        cell_size = max(1, int(cfg.get("cell_size", 32)))
 
         camera = room._find_first_instance(cfg.get("camera_object", ""))
         is_camera = camera is instance
@@ -313,7 +321,11 @@ class PluginExecutor:
         if camera is not instance:
             return
 
-        cell_size = int(cfg.get("cell_size", 32))
+        # >= 1: cell_size is author-set with no lower bound at the write
+        # site, and several call paths below (pick_voxel/march_ray,
+        # cell_of) divide by it raw -- 0 crashes the game (L3,
+        # docs/FULL_AUDIT_2026-09-07.md).
+        cell_size = max(1, int(cfg.get("cell_size", 32)))
         tl_x, tl_y = room._sprite_top_left(instance)
         ground = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
 
@@ -355,7 +367,11 @@ class PluginExecutor:
         if camera is not instance:
             return
 
-        cell_size = int(cfg.get("cell_size", 32))
+        # >= 1: cell_size is author-set with no lower bound at the write
+        # site, and several call paths below (pick_voxel/march_ray,
+        # cell_of) divide by it raw -- 0 crashes the game (L3,
+        # docs/FULL_AUDIT_2026-09-07.md).
+        cell_size = max(1, int(cfg.get("cell_size", 32)))
         tl_x, tl_y = room._sprite_top_left(instance)
         ground = ground_layer(room, cell_of(tl_x, cell_size), cell_of(tl_y, cell_size))
         z = float(cfg.get("z_layer", ground))
@@ -595,8 +611,12 @@ class PluginExecutor:
             "z_layer": _num("z_layer", 0),
             "fov": _num("fov", 66),
             "render_distance": int(_num("render_distance", DEFAULT_RENDER_DISTANCE)),
-            "cell_size": int(_num("cell_size", 32)),
-            "columns": int(_num("columns", DEFAULT_COLUMNS)),
+            # Both feed raw divisions downstream (cell_of, renderer.py's
+            # inv_cell/col_width) with no other guard at this write site,
+            # so an author-set 0 must never reach state (L3,
+            # docs/FULL_AUDIT_2026-09-07.md).
+            "cell_size": max(1, int(_num("cell_size", 32))),
+            "columns": max(1, int(_num("columns", DEFAULT_COLUMNS))),
             "fog": _bool("fog", True),
             "fog_color": str(parameters.get("fog_color", "") or ""),
             "wall_color": str(parameters.get("wall_color", "#8a8a8a")),

@@ -223,3 +223,21 @@ def test_every_texture_with_real_alpha_is_flagged_transparent():
                     f"{block_type}'s texture {path} has real alpha but "
                     f"BLOCK_TYPES[{block_type!r}] is not flagged transparent"
                 )
+
+
+def test_cell_of_matches_the_documented_centre_rounding():
+    from extensions.block_world.state import cell_of
+    assert cell_of(0, 32) == 0
+    assert cell_of(16, 32) == 1  # exactly at the next cell's centre boundary
+    assert cell_of(15, 32) == 0
+    assert cell_of(-16, 32) == 0
+    assert cell_of(-17, 32) == -1
+
+
+def test_cell_of_clamps_zero_and_negative_cell_size():
+    """L3, docs/FULL_AUDIT_2026-09-07.md: cell_size is an author-set camera
+    parameter with no lower bound at the write site, and cell_of divides by
+    it -- 0 must not reach the floor division and raise ZeroDivisionError."""
+    from extensions.block_world.state import cell_of
+    assert cell_of(100, 0) == cell_of(100, 1)
+    assert cell_of(100, -5) == cell_of(100, 1)
