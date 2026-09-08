@@ -376,6 +376,12 @@ class InputMixin:
             return
 
         mouse_x, mouse_y = pos
+        # Screen -> room space (L6, docs/FULL_AUDIT_2026-09-07.md) -- a
+        # scrolled view's offset must be undone before it reaches
+        # instance.mouse_x/mouse_y, which authors compare against room
+        # coordinates. Thymio hit-testing below stays in raw screen space
+        # on purpose: thymio_renderer draws in screen space too.
+        room_mouse_x, room_mouse_y = self.current_room.screen_to_room(mouse_x, mouse_y)
         logger.debug(f"\n🖱️  Mouse pressed: {button_name} at ({mouse_x}, {mouse_y})")
 
         # Thymio button click takes precedence over generic mouse events:
@@ -396,8 +402,8 @@ class InputMixin:
             if sub_event_data is not None:
                 logger.debug(f"  ✅ Executing mouse.{button_name} for {instance.object_name}")
                 # Add mouse position to instance for actions to use
-                instance.mouse_x = mouse_x
-                instance.mouse_y = mouse_y
+                instance.mouse_x = room_mouse_x
+                instance.mouse_y = room_mouse_y
                 instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def _handle_thymio_button_press(self, mouse_button, mouse_x, mouse_y):
@@ -448,6 +454,8 @@ class InputMixin:
             return
 
         mouse_x, mouse_y = pos
+        # Screen -> room space (L6, docs/FULL_AUDIT_2026-09-07.md).
+        room_mouse_x, room_mouse_y = self.current_room.screen_to_room(mouse_x, mouse_y)
 
         # Execute mouse release events (snapshot, M49)
         for instance in list(self.current_room.instances):
@@ -458,8 +466,8 @@ class InputMixin:
 
             sub_event_data = _mouse_sub_event(events, button_name)
             if sub_event_data is not None:
-                instance.mouse_x = mouse_x
-                instance.mouse_y = mouse_y
+                instance.mouse_x = room_mouse_x
+                instance.mouse_y = room_mouse_y
                 instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def handle_mouse_motion(self, pos):
@@ -468,6 +476,8 @@ class InputMixin:
             return
 
         mouse_x, mouse_y = pos
+        # Screen -> room space (L6, docs/FULL_AUDIT_2026-09-07.md).
+        room_mouse_x, room_mouse_y = self.current_room.screen_to_room(mouse_x, mouse_y)
 
         # Execute mouse motion events (snapshot, M49)
         for instance in list(self.current_room.instances):
@@ -478,8 +488,8 @@ class InputMixin:
 
             sub_event_data = _mouse_sub_event(events, "mouse_move")
             if sub_event_data is not None:
-                instance.mouse_x = mouse_x
-                instance.mouse_y = mouse_y
+                instance.mouse_x = room_mouse_x
+                instance.mouse_y = room_mouse_y
                 instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def _room_transition_pending(self) -> bool:

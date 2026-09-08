@@ -35,6 +35,14 @@ def _instance(events):
     return inst
 
 
+def _room(instances):
+    # screen_to_room is the real GameRoom API (L6,
+    # docs/FULL_AUDIT_2026-09-07.md) -- identity here matches the
+    # views-disabled case these dispatch tests care about; the
+    # translation itself is covered by tests/test_view_mouse_translation.py.
+    return MagicMock(instances=instances, screen_to_room=lambda x, y: (x, y))
+
+
 class TestMouseSubEventLookup:
     def test_flat_press_key_resolves_to_left_button(self):
         from runtime.game_runner import _mouse_sub_event
@@ -73,7 +81,7 @@ class TestDispatchFiresFlatEvents:
         runner = _runner()
         actions = [{'action': 'show_message', 'parameters': {}}]
         inst = _instance({'mouse_left_press': {'actions': actions}})
-        runner.current_room = MagicMock(instances=[inst])
+        runner.current_room = _room([inst])
 
         runner.handle_mouse_press(1, (10, 20))
 
@@ -84,7 +92,7 @@ class TestDispatchFiresFlatEvents:
         runner = _runner()
         actions = [{'action': 'a'}]
         inst = _instance({'mouse_left_release': {'actions': actions}})
-        runner.current_room = MagicMock(instances=[inst])
+        runner.current_room = _room([inst])
 
         runner.handle_mouse_release(1, (1, 2))
 
@@ -93,7 +101,7 @@ class TestDispatchFiresFlatEvents:
     def test_press_event_does_not_fire_on_release(self):
         runner = _runner()
         inst = _instance({'mouse_left_press': {'actions': [{'action': 'a'}]}})
-        runner.current_room = MagicMock(instances=[inst])
+        runner.current_room = _room([inst])
 
         runner.handle_mouse_release(1, (1, 2))
 

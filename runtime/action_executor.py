@@ -1133,6 +1133,11 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
                 if getattr(instance, 'sprite', _missing) is None:
                     return False
                 mx, my = pygame.mouse.get_pos()
+                # Screen -> room space (L6, docs/FULL_AUDIT_2026-09-07.md) --
+                # instance.x/y are room coordinates, so a scrolled view's
+                # offset must be undone before comparing.
+                if self.game_runner and self.game_runner.current_room:
+                    mx, my = self.game_runner.current_room.screen_to_room(mx, my)
                 width = getattr(instance, '_cached_width', 32)
                 height = getattr(instance, '_cached_height', 32)
                 return (instance.x <= mx < instance.x + width and

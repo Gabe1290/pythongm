@@ -470,6 +470,42 @@ class GameRoom:
         """Return list of (index, view) tuples for visible views, in order."""
         return [(i, v) for i, v in enumerate(self.views) if v.get('visible')]
 
+    def screen_to_room(self, screen_x, screen_y):
+        """Translate a screen-space point (e.g. pygame.mouse.get_pos()) into
+        room-space coordinates (L6, docs/FULL_AUDIT_2026-09-07.md).
+
+        Every mouse-position/mouse-over site compared a raw screen pixel
+        against instance room coordinates directly -- correct only when
+        views are disabled (or the one active view happens to sit at the
+        room's own origin), and off by the view's scroll offset any other
+        time. Mirrors render()'s own
+        ``offset = (port_x - view_x, port_y - view_y)`` exactly, inverted,
+        for whichever visible view's port rect contains the point. NOT a
+        full projection -- render() itself never scales a view whose
+        view_w/view_h differs from its port_w/port_h (offset is a pure
+        translation, no scale factor anywhere in ``_render_room``), so
+        there is no scale to invert here either.
+
+        With no views enabled -- the common case, and every project that
+        predates the view system -- this is the identity transform,
+        matching legacy behavior exactly. A point outside every visible
+        port's rect (e.g. window space a multi-viewport layout doesn't
+        cover) has no natural room-space interpretation, so it is
+        returned unchanged rather than guessed at.
+        """
+        if not self.views_enabled:
+            return screen_x, screen_y
+        for _i, view in self._active_views():
+            port_x = int(view['port_x'])
+            port_y = int(view['port_y'])
+            port_w = int(view['port_w'])
+            port_h = int(view['port_h'])
+            if port_x <= screen_x < port_x + port_w and port_y <= screen_y < port_y + port_h:
+                view_x = int(view['view_x'])
+                view_y = int(view['view_y'])
+                return screen_x - (port_x - view_x), screen_y - (port_y - view_y)
+        return screen_x, screen_y
+
     def _render_room(self, screen: pygame.Surface, offset):
         """Internal: render room contents translated by offset.
 
