@@ -383,7 +383,8 @@ exists, so the English fallback is correct).
   and fail to decode in some browsers. *Fix:* `mimetypes.guess_type`
   with a small override table.
 
-- [ ] **L11 — Pyodide offline bundle downloaded without an integrity check.**
+- [x] **L11 — Pyodide offline bundle downloaded without an integrity check.**
+  **Fixed `0d12bd1d`.**
   `export/HTML5/pyodide_bundle.py:71` fetches the archive over HTTPS and
   unpacks it; no size cap, no hash pin. A CDN incident ships arbitrary
   JS inside every offline export. *Fix:* pin the SHA-256 per version.
