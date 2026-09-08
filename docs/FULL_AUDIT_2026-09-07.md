@@ -421,7 +421,8 @@ exists, so the English fallback is correct).
   push (`apply_available_sprites`) can't save at all. *Fix:* skip the
   check when the list is empty/unknown.
 
-- [ ] **L16 — Duplicate-asset path doesn't copy room/object/sprite side files.**
+- [x] **L16 — Duplicate-asset path doesn't copy room/object/sprite side files.**
+  **Fixed `8d628d30`.**
   `widgets/asset_tree/asset_operations.py:322` copies `file_path` and
   `thumbnail` only; for manifest-ified rooms/objects the payload lives in
   `<type>/<name>.json`, so the duplicate has the *in-memory* copy only
