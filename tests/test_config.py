@@ -85,6 +85,49 @@ class TestConfigBasics:
         assert "bad_key" not in Config._config_data
 
 
+class TestConfigLazyDirectoryCreation:
+    """L9, docs/FULL_AUDIT_2026-09-07.md: importing utils.config used to
+    mkdir ~/.pygamemaker unconditionally -- Config.load() ran at module
+    scope on import and always created the directory, even just to check
+    whether a config file existed. This module is imported transitively
+    by every exported game (events/plugin_loader.py imports it, and
+    load_all_plugins() runs on every game start), so a player who never
+    touches the IDE still got an IDE-only config folder dropped in their
+    home directory. load() must not create the directory; only save()
+    (an actual write) should.
+
+    Deliberately does NOT pre-create the config directory in its fixture,
+    unlike every other test class in this file -- that's exactly the
+    untouched-directory scenario this fix is about.
+    """
+
+    @pytest.fixture(autouse=True)
+    def setup_config(self, temp_dir):
+        Config._config_data = {}
+        Config._config_file = temp_dir / ".pygamemaker" / "config.json"
+        yield
+        Config._config_data = {}
+
+    def test_load_does_not_create_the_config_directory(self):
+        assert not Config._config_file.parent.exists()
+        Config.load()
+        assert not Config._config_file.parent.exists()
+
+    def test_load_still_returns_usable_defaults_without_the_directory(self):
+        config = Config.load()
+        assert "version" in config
+        assert "recent_projects" in config
+        assert isinstance(config["recent_projects"], list)
+
+    def test_save_creates_the_directory_lazily(self):
+        assert not Config._config_file.parent.exists()
+        Config._config_data = {"test_key": "test_value"}
+        result = Config.save()
+        assert result is True
+        assert Config._config_file.parent.exists()
+        assert Config._config_file.exists()
+
+
 class TestConfigRecentProjects:
     """Test recent projects functionality"""
 
