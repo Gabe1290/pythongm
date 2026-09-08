@@ -412,11 +412,18 @@ class AssetsMixin:
             for i in range(root.childCount()):
                 category_item = root.child(i)
 
-                # Check if this is the right category
-                category_text = category_item.text(0).lower()
+                # Match on the category item's stored asset type, not its
+                # displayed text (L7, docs/FULL_AUDIT_2026-09-07.md):
+                # category_item.text(0) is a tr()'d label (with an emoji
+                # prefix in some builds), so comparing it against a hardcoded
+                # English "<type>s" suffix only ever matched on an
+                # English-language IDE -- on any other language this always
+                # returned None and the post-rename tree/properties-panel
+                # refresh silently did nothing.
                 expected_category = asset_type.lower() + 's'  # sprites, sounds, etc.
 
-                if category_text == expected_category:
+                if (hasattr(category_item, 'asset_type') and
+                        category_item.asset_type == expected_category):
                     # Search through assets in this category
                     for j in range(category_item.childCount()):
                         asset_item = category_item.child(j)
