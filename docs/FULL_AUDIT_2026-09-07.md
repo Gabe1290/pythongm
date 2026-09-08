@@ -389,7 +389,8 @@ exists, so the English fallback is correct).
   unpacks it; no size cap, no hash pin. A CDN incident ships arbitrary
   JS inside every offline export. *Fix:* pin the SHA-256 per version.
 
-- [ ] **L12 — `GameRoom.parse_color(None)` crashes; `instance_data['x']` KeyError.**
+- [x] **L12 — `GameRoom.parse_color(None)` crashes; `instance_data['x']` KeyError.**
+  **Fixed `6e51dada`.**
   `runtime/room.py:96` and `:213` — a room JSON with `"background_color":
   null` or an instance missing `x` (hand edit, partial GMK conversion)
   raises at room build rather than defaulting. *Fix:* `.get('x', 0)`,
