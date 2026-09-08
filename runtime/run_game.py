@@ -57,6 +57,40 @@ def _parse_args(argv):
     return positional, net_mode, net_host, net_port
 
 
+def _validate_language(language: str) -> str:
+    """Warn and fall back to 'en' if `language` isn't a code this app
+    actually knows (L20, docs/FULL_AUDIT_2026-09-07.md).
+
+    Without this, a typo (a mis-ordered flag landing in the language
+    slot, "fr_FR" instead of "fr") silently produced English runtime
+    translations with no message at all -- easy to miss in a Test Game
+    run where the author isn't specifically checking every string.
+
+    Validated against core.language_manager.LanguageManager's own known
+    code list -- but that module (like the rest of the IDE) depends on
+    PySide6, which this standalone pygame process, and every exported
+    game built from it, deliberately does not require. So the import is
+    best-effort: if PySide6 genuinely isn't installed in this
+    environment, silently skip validation rather than crash a shipped
+    game over a diagnostic nicety -- the language is used exactly as
+    given either way.
+    """
+    if language == 'en':
+        return language
+    try:
+        from core.language_manager import LanguageManager
+        known_codes = set(LanguageManager.LANGUAGE_INFO.keys()) | {'en'}
+    except Exception:
+        return language
+    if language not in known_codes:
+        logger.warning(
+            f"Unrecognized language code '{language}' -- falling back to "
+            "English. Check for a typo or a misplaced command-line argument."
+        )
+        return 'en'
+    return language
+
+
 def main() -> None:
     """Entry point for standalone game runner.
 
@@ -75,6 +109,7 @@ def main() -> None:
 
     project_json = positional[0]
     language = positional[1] if len(positional) > 1 else 'en'
+    language = _validate_language(language)
 
     if not os.path.exists(project_json):
         logger.error(f"Error: Project file not found: {project_json}")
