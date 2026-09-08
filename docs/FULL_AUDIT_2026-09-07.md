@@ -396,7 +396,8 @@ exists, so the English fallback is correct).
   raises at room build rather than defaulting. *Fix:* `.get('x', 0)`,
   `parse_color` returning the default on `None`/non-str.
 
-- [ ] **L13 — Sound combo saves the placeholder as a value.**
+- [x] **L13 — Sound combo saves the placeholder as a value.**
+  **Fixed `038037c0`.**
   `events/action_editor.py:377` adds the translated
   "(No sounds available)" item when the project has no sounds; OK on the
   dialog saves that literal string as the `sound` parameter. *Fix:* add
