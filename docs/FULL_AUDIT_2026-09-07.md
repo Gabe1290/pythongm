@@ -320,7 +320,8 @@ exists, so the English fallback is correct).
   an expression yielding a huge/inf `max_dist` (e.g. `1/0` → handled to
   0, but `10**9` isn't) spins the frame. *Fix:* clamp to room diagonal.
 
-- [ ] **L3 — Block World: `columns == 0` / `cell_size == 0` division.**
+- [x] **L3 — Block World: `columns == 0` / `cell_size == 0` division.**
+  **Fixed `81f272a4`.**
   `extensions/block_world/state.py:526/536` `cell_of` divides by
   `cell_size`; `renderer.py:994/999/1146` divides by the column count.
   Both come from action parameters / room data with no lower bound;
