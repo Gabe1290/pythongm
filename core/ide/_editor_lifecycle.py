@@ -673,12 +673,25 @@ class EditorLifecycleMixin:
 
     def on_editor_data_modified(self, asset_name: str):
         """Handle data modification in editors"""
-        # Update tab title to show modification
-        for i in range(self.editor_tabs.count()):
-            if self.editor_tabs.tabText(i) == asset_name:
-                if not self.editor_tabs.tabText(i).endswith('*'):
-                    self.editor_tabs.setTabText(i, asset_name + '*')
-                break
+        # Update tab title to show modification. Matched by WIDGET
+        # IDENTITY, not the bare asset_name (L8,
+        # docs/FULL_AUDIT_2026-09-07.md): the data_modified signal only
+        # carries the name, so a sprite and an object sharing a name
+        # ("player" is common) get tabs with the same title, and a text
+        # match marked whichever tab happened to be first rather than the
+        # one that actually changed. self.sender() -- the standard Qt way
+        # to recover which connected object emitted the current signal --
+        # is the editor that just changed, since every open_*_editor
+        # connects its own editor's data_modified to this same shared
+        # slot (same idiom close_editor_by_name already uses to match a
+        # tab by widget identity).
+        editor = self.sender()
+        if editor is not None:
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.widget(i) is editor:
+                    if not self.editor_tabs.tabText(i).endswith('*'):
+                        self.editor_tabs.setTabText(i, asset_name + '*')
+                    break
 
         # Reflect editor-local edits in the project's dirty state so the
         # IDE-close 'Unsaved Changes' prompt fires for editor-only changes —

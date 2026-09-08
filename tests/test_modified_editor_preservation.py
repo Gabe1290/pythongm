@@ -35,7 +35,12 @@ class TestEditorEditMarksProjectDirty:
     def test_on_editor_data_modified_marks_dirty(self, qapp):
         from PySide6.QtWidgets import QTabWidget
         pm = MagicMock()
-        stub = SimpleNamespace(editor_tabs=QTabWidget(), project_manager=pm)
+        # sender() is the real Qt way on_editor_data_modified now finds the
+        # tab to rename (L8, docs/FULL_AUDIT_2026-09-07.md) -- None here
+        # (no real signal emission drove this direct call) still exercises
+        # the project-dirty behaviour this test is actually about.
+        stub = SimpleNamespace(editor_tabs=QTabWidget(), project_manager=pm,
+                                sender=lambda: None)
         _ide_cls().on_editor_data_modified(stub, "obj_hero")
         pm.mark_dirty.assert_called_once()
 
