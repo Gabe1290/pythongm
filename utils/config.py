@@ -79,10 +79,20 @@ class Config:
 
     @classmethod
     def load(cls):
-        """Load configuration"""
-        try:
-            cls._config_file.parent.mkdir(exist_ok=True)
+        """Load configuration.
 
+        Does NOT create the config directory (L9,
+        docs/FULL_AUDIT_2026-09-07.md) -- this module is imported
+        transitively by every exported game (events/plugin_loader.py
+        imports it, and load_all_plugins() runs on every game start), so
+        an eager mkdir here dropped an IDE-only ~/.pygamemaker folder on
+        every player's machine even for a game that never touches config.
+        Path.exists() below works fine against a directory that doesn't
+        exist yet (just returns False), so there is nothing to lazily
+        create on the read path -- only save() (an actual write) needs the
+        directory to exist first.
+        """
+        try:
             if cls._config_file.exists():
                 with open(cls._config_file, 'r', encoding='utf-8') as f:
                     loaded_data = json.load(f)
@@ -122,6 +132,9 @@ class Config:
             if config_data:
                 cls._config_data = config_data
 
+            # The one place the config directory is actually created (L9,
+            # docs/FULL_AUDIT_2026-09-07.md) -- a real write needs it to
+            # exist; load() no longer creates it just to check/read.
             cls._config_file.parent.mkdir(exist_ok=True)
 
             # Clean the config data before saving
