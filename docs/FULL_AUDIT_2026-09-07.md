@@ -351,7 +351,8 @@ exists, so the English fallback is correct).
   `mouse_x`/`mouse_y` and mouse-over tests are off by the view offset.
   *Fix:* add the active view's `x/y` (and scale) once in a helper.
 
-- [ ] **L7 — `find_renamed_asset` matches the category by its translated label.**
+- [x] **L7 — `find_renamed_asset` matches the category by its translated label.**
+  **Fixed `48e02156`.**
   `core/ide/_assets.py:409` compares `category_item.text(0).lower()` with
   `asset_type + 's'`; the category label is a `tr()`'d string (with an
   emoji prefix in some builds), so on any non-English IDE the lookup
