@@ -304,7 +304,8 @@ exists, so the English fallback is correct).
 
 ## Low
 
-- [ ] **L1 — `random` module exposed by name in the expression namespace.**
+- [x] **L1 — `random` module exposed by name in the expression namespace.**
+  **Fixed `ce591635`.**
   `runtime/action_executor.py:812` puts `'random': random_module` into
   the eval namespace, so `random.seed(0)` or `random.getstate()` are
   reachable from any expression field (the regex whitelist allows
