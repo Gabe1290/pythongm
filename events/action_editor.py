@@ -374,7 +374,15 @@ class ActionConfigDialog(QDialog):
                 if available_sounds:
                     widget.addItems(available_sounds)
                 else:
-                    widget.addItems([self.tr("(No sounds available)")])
+                    # Empty sentinel first, like the sprite branch above
+                    # (L13, docs/FULL_AUDIT_2026-09-07.md): get_parameter_
+                    # values() saves widget.currentText() verbatim as this
+                    # action's `sound` parameter with no per-type check, so
+                    # without a real "" item, OK on a project with no
+                    # sounds saved the literal translated placeholder text
+                    # itself as the value.
+                    widget.addItem("")
+                    widget.addItem(self.tr("(No sounds available)"))
 
                 if param.name in self.current_params:
                     widget.setCurrentText(str(self.current_params[param.name]))
