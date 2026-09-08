@@ -328,7 +328,8 @@ exists, so the English fallback is correct).
   `0` → `ZeroDivisionError` → game exits. *Fix:* clamp to `>= 1` at the
   action handler and in `state`.
 
-- [ ] **L4 — `separate_overlapping_instances` ignores the parent chain.**
+- [x] **L4 — `separate_overlapping_instances` ignores the parent chain.**
+  **Fixed `c06335b2`.**
   `runtime/collision.py:298` matches `object_name` directly whereas every
   other collision path resolves parents (`_object_matches`). A solid
   child object isn't separated. *Fix:* reuse the parent-aware matcher.
