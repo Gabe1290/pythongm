@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-09-08
+
+Patch release. The downloadable 1.3.0 builds were missing their bundled
+extensions and plugins, so several features that work when running from
+source did nothing in the packaged app.
+
+### Fixed
+- **Packaged builds now include the folder extensions and single-file
+  plugins.** The PyInstaller spec bundled `samples/`, `Tutorials/` and
+  the Blockly assets but not `extensions/` or `plugins/`, which
+  `plugin_loader` reads off disk at startup. In the 1.3.0 downloads this
+  meant zero extensions loaded, so **LAN multiplayer** (`host_game` /
+  `join_game` — e.g. the H / J keys in the `reseau_4` sample), **audio
+  actions** (`play_sound`, `play_music`, …) and the **2.5D raycast** and
+  **Block World** renderers all silently did nothing. Fixed builds carry
+  both directories; `tests/test_ide_bundle_spec.py` guards the spec so it
+  can't regress.
+
+### Changed
+- The "LAN Multiplayer — Demo" (`multiplayer_lan_1`) sample is no longer
+  listed on the Welcome tab. It has no in-game networking UI — it only
+  connects when launched from a terminal with `run_game.py --net-host` /
+  `--net-client` — so from the IDE it just ran single-player and looked
+  broken. The `reseau_1`–`reseau_4` samples are the LAN multiplayer
+  examples; `reseau_4` hosts and joins straight from the Test Game button.
+
 ## [1.3.0] - 2026-09-03
 
 **The multiplayer release.** 1.2.0 shipped LAN multiplayer as a
