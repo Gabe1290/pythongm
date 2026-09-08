@@ -364,6 +364,47 @@ class TestMovementActions:
         assert result is False
         assert abs(mover.y - 108.0) < 0.001  # moved the full 8px down
 
+    def test_move_to_contact_clamps_huge_max_distance_to_room_diagonal(self):
+        """L2, docs/FULL_AUDIT_2026-09-07.md: an expression-computed
+        max_distance has no author-visible bound, and the loop steps one
+        pixel at a time -- a huge value should spin far fewer frames than
+        the raw parameter would imply, clamped to the room diagonal (no
+        object can be farther away than that). MockRoom is 640x480, so
+        the diagonal is exactly 800."""
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+
+        mover = MockInstance("obj_personnage")
+        mover.x = 100.0
+        mover.y = 100.0
+        runner.current_room.instances = [mover]
+
+        result = executor.execute_move_to_contact_action(
+            mover, {"direction": "270", "max_distance": "1000000", "object": "solid"}
+        )
+
+        assert result is False
+        assert abs(mover.y - 900.0) < 0.001  # 100 + clamped 800px, not 1,000,000
+
+    def test_move_to_contact_clamps_infinite_max_distance(self):
+        """A non-finite max_distance (e.g. an expression evaluating to
+        float('inf')) must not spin the loop forever -- same clamp as the
+        huge-finite case above."""
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+
+        mover = MockInstance("obj_personnage")
+        mover.x = 100.0
+        mover.y = 100.0
+        runner.current_room.instances = [mover]
+
+        result = executor.execute_move_to_contact_action(
+            mover, {"direction": "270", "max_distance": "inf", "object": "solid"}
+        )
+
+        assert result is False
+        assert abs(mover.y - 900.0) < 0.001
+
 
 # ==============================================================================
 # Grid Utility Tests

@@ -317,6 +317,16 @@ class MovementMixin:
             logger.debug("⚠️  move_to_contact: No game runner available")
             return False
 
+        # An expression-computed max_distance can come out huge (or inf/nan)
+        # with no author-visible bound, and the loop below steps one pixel
+        # at a time -- a runaway value spins the frame or hangs the process
+        # outright (L2, docs/FULL_AUDIT_2026-09-07.md). No object can be more
+        # than a room diagonal away, so clamp to that.
+        room = self.game_runner.current_room
+        room_diagonal = math.sqrt(room.width ** 2 + room.height ** 2)
+        if not math.isfinite(max_distance) or max_distance > room_diagonal:
+            max_distance = room_diagonal
+
         # Calculate movement vector (1 pixel per step)
         angle_rad = math.radians(direction)
         step_x = math.cos(angle_rad)
