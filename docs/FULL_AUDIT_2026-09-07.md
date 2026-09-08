@@ -445,7 +445,8 @@ exists, so the English fallback is correct).
   but makes nested conditionals unreadable in the Then/Else editor.
   *Fix:* use `ActionParametersFormatter` like the main events panel.
 
-- [ ] **L19 — Console `print` in runtime paths bypasses the cp1252-safe logger.**
+- [x] **L19 — Console `print` in runtime paths bypasses the cp1252-safe logger.**
+  **Fixed `7a08aa06`.**
   Besides M7, `runtime/game_runner.py` `_print_net_status` and the
   `PYGM_FRAMES_COMPLETED` line use plain `print`; ASCII-only today, but
   any future emoji/accent there hits the same crash. *Fix:* route through
