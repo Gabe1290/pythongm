@@ -157,10 +157,21 @@ for _dir, _prefix in [
     # Bundled sample projects (read-only at runtime — users must Save As
     # to a writable location before editing).
     ('samples', 'samples'),
+    # Folder extensions (raycast 2.5D, block world, LAN multiplayer) and
+    # single-file plugins (audio actions) are discovered and loaded OFF
+    # DISK at runtime by events/plugin_loader.get_app_root() — which points
+    # at sys._MEIPASS in a frozen build. Without these two trees the
+    # packaged app loads zero extensions/plugins and every action they
+    # contribute (network host/join, play_sound, the 2.5D renderer, ...)
+    # silently does nothing.
+    ('extensions', 'extensions'),
+    ('plugins', 'plugins'),
 ]:
     _path = project_dir / _dir
     if _path.is_dir():
-        a.datas += Tree(str(_path), prefix=_prefix)
+        # Don't ship stale bytecode / caches alongside the real sources.
+        a.datas += Tree(str(_path), prefix=_prefix,
+                        excludes=['__pycache__', '*.pyc', '*.pyo'])
 
 # Create the PYZ archive
 pyz = PYZ(a.pure, a.zipped_data, cipher=None)
