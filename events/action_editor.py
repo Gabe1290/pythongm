@@ -924,8 +924,17 @@ class MultiActionEditor(QDialog):
 
             params = action_data.get("parameters", {})
             if params:
-                param_summary = ", ".join([f"{k}={v}" for k, v in params.items()])
-                item.setText(1, param_summary[:50] + ("..." if len(param_summary) > 50 else ""))
+                # ActionParametersFormatter, not a raw k=v join (L18,
+                # docs/FULL_AUDIT_2026-09-07.md): the naive join stringified
+                # EVERY parameter including then_actions/else_actions --
+                # whole nested action lists as dict reprs, truncated at 50
+                # chars, making a Then/Else branch containing its own
+                # conditional unreadable. The formatter (already used by the
+                # main events panel, editors/object_editor/events/_render.py)
+                # collapses nested lists to a count instead.
+                from editors.object_editor.object_actions_formatter import ActionParametersFormatter
+                item.setText(1, ActionParametersFormatter.format_action_parameters(
+                    action_name, params))
 
             item.setData(0, Qt.ItemDataRole.UserRole, action_data)
             self.action_tree.addTopLevelItem(item)
