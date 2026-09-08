@@ -533,6 +533,12 @@ def cell_of(pixel_value, cell_size):
 
     Promoted from tools/preview_block_world.py's own ``cell_of`` lambda
     (Phase 4 Unit 4), proven there first."""
+    # cell_size is an author-set camera parameter with no lower bound at
+    # the action layer; 0 (or negative) reaches the floor-division below
+    # and crashes the game with a ZeroDivisionError (L3,
+    # docs/FULL_AUDIT_2026-09-07.md).
+    if cell_size < 1:
+        cell_size = 1
     return int((pixel_value + cell_size / 2) // cell_size)
 
 

@@ -105,6 +105,26 @@ class TestEnableBlockWorldView:
         assert cfg["top_cast_res"] == 8
         assert cfg["eye_height"] == 0.5
 
+    def test_enable_clamps_zero_and_negative_cell_size_and_columns(self):
+        """L3, docs/FULL_AUDIT_2026-09-07.md: cell_size/columns are
+        author-set with no lower bound elsewhere, and both feed raw
+        divisions downstream (cell_of, renderer.py's inv_cell/col_width) --
+        0 or a negative value must never reach state, or the game crashes
+        with a ZeroDivisionError."""
+        executor = _bw_executor(game_runner=MockGameRunner())
+        instance = MockInstance()
+        _dispatch(executor, "enable_block_world_view", instance,
+                   {"cell_size": 0, "columns": 0})
+        cfg = block_world_state(executor.game_runner.current_room)["camera"]
+        assert cfg["cell_size"] == 1
+        assert cfg["columns"] == 1
+
+        _dispatch(executor, "enable_block_world_view", instance,
+                   {"cell_size": -8, "columns": -3})
+        cfg = block_world_state(executor.game_runner.current_room)["camera"]
+        assert cfg["cell_size"] == 1
+        assert cfg["columns"] == 1
+
     def test_pitch_is_clamped_here_too_not_just_at_render_time(self):
         """Was the one pitch-writing site (of four: this action,
         set_look_pitch, and the preview tool's two look controls) that
@@ -309,6 +329,21 @@ class TestRenderBlockWorldView:
         floor = tuple(room.parse_color(cfg.get("floor_color", "#3a2f1c")))
         assert screen.get_at((160, 60))[:3] == ceiling
         assert screen.get_at((160, 180))[:3] == floor
+
+    def test_zero_cell_size_or_columns_written_directly_does_not_crash(self):
+        """L3, docs/FULL_AUDIT_2026-09-07.md. The handler clamp (see
+        TestEnableBlockWorldView above) protects the normal authoring path,
+        but state can also be reached directly -- an old saved room, a
+        different write site -- so the renderer itself must not divide by
+        an unclamped cfg value either."""
+        room = _room(320, 320)
+        room.instances.append(_camera_instance())
+        set_block(room, 2, 0, 0, "stone")
+        cfg = block_world_state(room)["camera"]
+        cfg.update({"enabled": True, "camera_object": "obj_person",
+                    "cell_size": 0, "columns": 0})
+        screen = pygame.Surface((320, 240))
+        render_block_world_view(room, screen)  # must not raise ZeroDivisionError
 
 
 # ---------------------------------------------------------------------------
