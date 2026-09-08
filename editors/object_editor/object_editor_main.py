@@ -1040,9 +1040,17 @@ class ObjectEditor(BaseEditor):
                 # ✅ TRANSLATABLE: Validation error
                 return False, self.tr("Object name is required")
 
-            # Validate sprite reference if assigned
+            # Validate sprite reference if assigned. Skipped when
+            # available_sprites is empty/unknown (L15,
+            # docs/FULL_AUDIT_2026-09-07.md): a floated editor whose parent
+            # chain can't reach the IDE, or hasn't yet received the
+            # apply_available_sprites() push, has no reliable list to
+            # validate against -- rejecting every save with "does not
+            # exist" (even for a perfectly valid sprite) is worse than
+            # skipping a check we have no real information for.
             sprite_name = data.get('sprite', '')
-            if sprite_name and sprite_name not in self.available_sprites:
+            if (sprite_name and self.available_sprites
+                    and sprite_name not in self.available_sprites):
                 # ✅ TRANSLATABLE: Validation error
                 return False, self.tr("Referenced sprite '{0}' does not exist").format(sprite_name)
 
