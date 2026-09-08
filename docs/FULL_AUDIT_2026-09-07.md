@@ -413,7 +413,8 @@ exists, so the English fallback is correct).
   rewrite when the parse is lossless (round-trips to identical code) or
   make it an explicit "Convert" action.
 
-- [ ] **L15 — Object editor validation fails for a floated editor with no reachable IDE data.**
+- [x] **L15 — Object editor validation fails for a floated editor with no reachable IDE data.**
+  **Fixed `63c6d3cd`.**
   `editors/object_editor/object_editor_main.py:1045` rejects a sprite
   "that does not exist" whenever `available_sprites` is empty; a floated
   window whose parent chain can't reach the IDE and hasn't received the
