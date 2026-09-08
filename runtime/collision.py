@@ -326,8 +326,17 @@ class CollisionMixin:
                 if pair_key in processed_pairs:
                     continue
 
-                # Check if there's a collision event between these objects using pre-parsed targets
-                if other_instance.object_name not in collision_targets:
+                # Check if there's a collision event between these objects using
+                # pre-parsed targets. Parent-aware (L4,
+                # docs/FULL_AUDIT_2026-09-07.md): collision_targets is keyed by the
+                # literal authored target name, so a plain membership test never
+                # matched a CHILD of that target (e.g. a "collision_with_obj_wall"
+                # event with an obj_wall_brick instance) even though the collision
+                # event itself fires for it -- every other collision path in this
+                # file resolves parents via _object_matches_target, so a solid
+                # child object was silently never separated.
+                if not any(self._object_matches_target(other_instance.object_name, target_name)
+                           for target_name in collision_targets):
                     continue
 
                 # Only separate when at least one object is solid.
