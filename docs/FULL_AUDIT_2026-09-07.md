@@ -430,7 +430,10 @@ exists, so the English fallback is correct).
   `asset_data` was loaded before the side-file merge. *Fix:* copy the
   side file when present.
 
-- [ ] **L17 — Kivy export has no `remember_destroyed` support.**
+- [x] **L17 — Kivy export has no `remember_destroyed` support.**
+  **Fixed `e7fd3fa6`.** (HTML5 was independently found to have the same
+  gap despite the audit's own claim otherwise — logged in TODO.md, not
+  fixed here.)
   `grep remember_destroyed export/Kivy` is empty; an object with the flag
   respawns on room restart on Android/iOS (desktop + HTML5 honour it).
   *Fix:* port the `_destroyed_memory` keyed set to the Kivy `GameApp`.
