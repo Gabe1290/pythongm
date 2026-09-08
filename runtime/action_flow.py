@@ -583,7 +583,9 @@ class FlowMixin:
                 # Stop the mover (not necessarily instance - could be other if event is on box)
                 mover.hspeed = 0
                 mover.vspeed = 0
-                mover.speed = 0
+                # `speed` is a read-only property derived from hspeed/vspeed
+                # (L5, docs/FULL_AUDIT_2026-09-07.md) -- zeroing those two is
+                # enough, there is nothing separate left to write.
                 # Revert mover position if it overlapped with push_target (non-solid case)
                 last_dx = getattr(mover, '_last_grid_move_dx', 0)
                 last_dy = getattr(mover, '_last_grid_move_dy', 0)
