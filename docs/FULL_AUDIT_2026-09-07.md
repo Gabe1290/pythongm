@@ -360,7 +360,8 @@ exists, so the English fallback is correct).
   *Fix:* match on the category item's stored asset type
   (`item.asset_type`), not its text.
 
-- [ ] **L8 — `on_editor_data_modified` identifies the tab by bare title.**
+- [x] **L8 — `on_editor_data_modified` identifies the tab by bare title.**
+  **Fixed `9ab395cb`.**
   `core/ide/_editor_lifecycle.py:678` marks the first tab whose
   `tabText(i) == asset_name`; tabs are titled with the bare asset name
   (`:166/273/333`), so a sprite and an object that share a name (`player`
