@@ -809,7 +809,6 @@ class ActionExecutor(DrawingMixin, MovementMixin, ScoreLivesHealthMixin, RoomMix
                     'gm_random': gm_random,
                     'gm_irandom': gm_irandom,
                     'gm_choose': gm_choose,
-                    'random': random_module,  # Allow Python random module access
                     # Matches _eval_bool_expression's own namespace (and
                     # HTML5's gmExpressionValue) — needed for e.g. a
                     # difficulty ramp clamped with max(15, 40 - score/50).
