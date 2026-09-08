@@ -757,6 +757,18 @@ class GameRunner(InputMixin, CollisionMixin):
         role = self.global_variables.get("network_role", "")
         if not role:
             return
+        # ASCII-only by design (L19, docs/FULL_AUDIT_2026-09-07.md): this is
+        # a bare print(), not routed through core.logger's ConsoleSafeHandler
+        # (M7's fix for plugins/audio_actions.py), and deliberately so --
+        # tools/smoke_run_multiplayer.py greps stdout for this EXACT literal
+        # prefix, and ConsoleSafeHandler's format() sanitization would risk
+        # changing the line the harness matches against. `role` is always
+        # one of the internal network_role enum values (extensions/
+        # multiplayer_lan/handlers.py sets it from session.mode, never
+        # author-authored text -- RESERVED_SHARED_NAMES keeps set_shared_var
+        # from ever shadowing it), so this stays safe as long as nobody
+        # edits the literal text below to add non-ASCII -- see
+        # tests/test_game_runner_stdout_lines_are_ascii.py, which pins it.
         print("PYGM_NET_STATUS=role=%s connected=%s player_id=%s" % (
             role,
             self.global_variables.get("network_connected", 0),
@@ -996,6 +1008,16 @@ class GameRunner(InputMixin, CollisionMixin):
                     if frames_rendered >= frame_budget:
                         self.running = False
                         self._save_final_frame()
+                        # ASCII-only by design (L19,
+                        # docs/FULL_AUDIT_2026-09-07.md) -- same reasoning as
+                        # _print_net_status just below: tools/
+                        # verify_desktop_export.py greps stdout for this
+                        # exact literal, so this stays a bare print() rather
+                        # than routing through ConsoleSafeHandler. %d can
+                        # never itself produce non-ASCII; only editing the
+                        # literal text can regress this --
+                        # tests/test_game_runner_stdout_lines_are_ascii.py
+                        # pins it.
                         print("PYGM_FRAMES_COMPLETED=%d" % frames_rendered,
                               flush=True)
                         self._print_net_status()
