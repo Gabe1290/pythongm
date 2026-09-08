@@ -365,6 +365,22 @@ class AssetOperations:
                     shutil.copy2(str(old_thumb_path), str(new_thumb))
                     new_data['thumbnail'] = str(new_thumb.relative_to(project_path))
 
+            # Manifest-ified rooms/objects/playgrounds/sprites keep their
+            # real payload in a <type>/<name>.json side file, not embedded
+            # in project.json's own entry -- copy it too, or the duplicate
+            # has only the in-memory copy (stale the moment a full save
+            # reconciles against the missing side file, or nothing at all
+            # if asset_data was itself loaded before the side-file merge)
+            # (L16, docs/FULL_AUDIT_2026-09-07.md). Same asset-type set and
+            # <type>/<name>.json convention delete_asset/rename_asset
+            # already use (core/asset_manager.py).
+            if asset_category in ("rooms", "objects", "playgrounds", "sprites"):
+                old_side = project_path / asset_category / f"{asset_name}.json"
+                if old_side.exists():
+                    new_side = project_path / asset_category / f"{new_name}.json"
+                    shutil.copy2(str(old_side), str(new_side))
+                    logger.debug(f"Copied side file: {old_side} -> {new_side}")
+
             # Save to project.json
             project_file = project_path / "project.json"
             project_data = load_project_data(project_file)
