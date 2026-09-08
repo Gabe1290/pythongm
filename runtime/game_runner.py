@@ -1934,6 +1934,167 @@ class GameRunner(InputMixin, CollisionMixin):
                 if id(instance) in saved_speeds:
                     instance.hspeed, instance.vspeed = saved_speeds[id(instance)]
 
+    def show_question_dialog(self, question: str) -> bool:
+        """Display a yes/no question dialog that pauses the game, returning
+        the player's answer (M4, docs/FULL_AUDIT_2026-09-07.md).
+
+        The Qt-based dialog test_question used to show only ever ran in the
+        in-process IDE fallback (QApplication.instance() is not None); the
+        real game process -- the Test Game subprocess and every desktop
+        export, both driven by runtime/run_game.py, which never creates a
+        QApplication -- always took the "no QApplication" branch and
+        answered Yes unconditionally, so authors got a conditional that
+        never actually asked. This is the pygame-side counterpart,
+        following show_message_dialog's own blocking-loop shape (overlay,
+        centered box, word-wrapped text, speed-pause/restore) verbatim,
+        with two buttons instead of one and a boolean return.
+
+        Enter/Y = Yes, Escape/N = No (matching the removed Qt dialog's own
+        QMessageBox.setDefaultButton(QMessageBox.Yes) for Enter). Space is
+        deliberately NOT a shortcut here, unlike show_message_dialog's OK
+        dismissal -- a student holding Space to move would otherwise answer
+        the question by accident the instant it appeared.
+        """
+        logger.debug(f"❔ Showing question dialog: {question}")
+
+        if not self.screen:
+            logger.debug("⚠️ Cannot show question dialog - no screen; defaulting to True")
+            return True
+
+        # Same frame-budget auto-dismiss as show_message_dialog -- a
+        # headless verification run has no real input to answer with.
+        if self._frame_budget():
+            logger.debug(f"❔ Question dialog auto-dismissed (frame budget mode): {question}")
+            return True
+
+        pygame.event.clear()
+
+        saved_speeds = {}
+        if self.current_room:
+            for instance in self.current_room.instances:
+                saved_speeds[id(instance)] = (instance.hspeed, instance.vspeed)
+                instance.hspeed = 0
+                instance.vspeed = 0
+
+        if self.current_room:
+            self.current_room.render(self.screen)
+            pygame.display.flip()
+
+        screen_w, screen_h = self.screen.get_size()
+
+        overlay = pygame.Surface((screen_w, screen_h))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(128)
+
+        try:
+            font = pygame.font.Font(None, 24)
+            title_font = pygame.font.Font(None, 28)
+        except Exception:
+            font = pygame.font.SysFont('arial', 18)
+            title_font = pygame.font.SysFont('arial', 22)
+
+        dialog_width = min(400, screen_w - 40)
+        max_text_width = dialog_width - 30
+        line_height = 22
+        text_top = 45
+
+        lines = []
+        for paragraph in expand_hash_newlines(question).split('\n'):
+            current_line = ""
+            for word in paragraph.split():
+                test_line = current_line + (" " if current_line else "") + word
+                if font.size(test_line)[0] <= max_text_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        lines.append(current_line)
+                    current_line = word
+            lines.append(current_line)
+
+        button_width = 80
+        button_height = 30
+        button_gap = 20
+        dialog_height = text_top + len(lines) * line_height + 15 + button_height + 15
+        dialog_height = min(dialog_height, screen_h - 40)
+        dialog_x = (screen_w - dialog_width) // 2
+        dialog_y = (screen_h - dialog_height) // 2
+
+        buttons_total_width = button_width * 2 + button_gap
+        yes_x = dialog_x + (dialog_width - buttons_total_width) // 2
+        no_x = yes_x + button_width + button_gap
+        button_y = dialog_y + dialog_height - button_height - 15
+
+        answer = True
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.stop_game()
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key in (pygame.K_RETURN, pygame.K_y):
+                        answer = True
+                        waiting = False
+                    elif event.key in (pygame.K_ESCAPE, pygame.K_n):
+                        answer = False
+                        waiting = False
+                elif event.type == pygame.KEYUP:
+                    self._release_held_key_silent(event.key)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mx, my = event.pos
+                    if (yes_x <= mx <= yes_x + button_width and
+                            button_y <= my <= button_y + button_height):
+                        answer = True
+                        waiting = False
+                    elif (no_x <= mx <= no_x + button_width and
+                            button_y <= my <= button_y + button_height):
+                        answer = False
+                        waiting = False
+
+            self.screen.blit(overlay, (0, 0))
+
+            pygame.draw.rect(self.screen, (240, 240, 240),
+                           (dialog_x, dialog_y, dialog_width, dialog_height))
+            pygame.draw.rect(self.screen, (100, 100, 100),
+                           (dialog_x, dialog_y, dialog_width, dialog_height), 2)
+
+            pygame.draw.rect(self.screen, (70, 130, 180),
+                           (dialog_x, dialog_y, dialog_width, 30))
+            title_text = title_font.render("Question", True, (255, 255, 255))
+            self.screen.blit(title_text, (dialog_x + 10, dialog_y + 5))
+
+            y_offset = dialog_y + text_top
+            for line in lines:
+                text_surface = font.render(line, True, (0, 0, 0))
+                self.screen.blit(text_surface, (dialog_x + 15, y_offset))
+                y_offset += line_height
+
+            mouse_pos = pygame.mouse.get_pos()
+            for bx, label in ((yes_x, "Yes"), (no_x, "No")):
+                hover = (bx <= mouse_pos[0] <= bx + button_width and
+                        button_y <= mouse_pos[1] <= button_y + button_height)
+                color = (100, 149, 237) if hover else (70, 130, 180)
+                pygame.draw.rect(self.screen, color,
+                               (bx, button_y, button_width, button_height))
+                pygame.draw.rect(self.screen, (50, 50, 50),
+                               (bx, button_y, button_width, button_height), 1)
+                label_text = font.render(label, True, (255, 255, 255))
+                label_x = bx + (button_width - label_text.get_width()) // 2
+                label_y = button_y + (button_height - label_text.get_height()) // 2
+                self.screen.blit(label_text, (label_x, label_y))
+
+            pygame.display.flip()
+            if self.clock:
+                self.clock.tick(60)
+
+        if self.current_room:
+            for instance in self.current_room.instances:
+                if id(instance) in saved_speeds:
+                    instance.hspeed, instance.vspeed = saved_speeds[id(instance)]
+
+        logger.debug(f"❔ Question: '{question}' → {'Yes' if answer else 'No'}")
+        return answer
+
     def show_splash_image(self, surface: pygame.Surface):
         """Show a sprite full-screen, pausing the game until the player
         dismisses it (any key or mouse click) -- the image counterpart of
