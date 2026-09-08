@@ -375,7 +375,8 @@ exists, so the English fallback is correct).
   drops an IDE config folder in the player's home. *Fix:* lazy-create
   on first *write* only.
 
-- [ ] **L10 — HTML5 export mime sniffing knows only PNG/JPEG.**
+- [x] **L10 — HTML5 export mime sniffing knows only PNG/JPEG.**
+  **Fixed `28795fe0`.**
   `export/HTML5/html5_exporter.py:887/923` default to `image/png` and
   special-case `.jpg`; `.bmp`/`.webp`/`.tga` (all accepted by the sprite
   importer, `core/asset_manager.py:26`) are embedded with the wrong mime
