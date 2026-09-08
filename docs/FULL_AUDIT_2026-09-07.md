@@ -223,7 +223,7 @@ exists, so the English fallback is correct).
   `instance.action_executor._parse_value` with a `try`.
   **Fixed `430ac6fd`.**
 
-- [ ] **M8 — WebSocket transport accepts unmasked client frames and has no Origin check.**
+- [x] **M8 — WebSocket transport accepts unmasked client frames and has no Origin check.**
   `extensions/multiplayer_lan/ws_transport.py:94-119` decodes frames
   whether or not the mask bit is set; RFC 6455 §5.1 requires a server to
   fail the connection on an unmasked client frame (the masking exists to
@@ -233,6 +233,9 @@ exists, so the English fallback is correct).
   threat model, but the host is a *teacher's* machine. *Fix:* reject
   unmasked frames; accept only `Origin` values that are absent
   (non-browser) or match the HTML5 export's host, configurable.
+  **Fixed `ecd690e9`** (zero-configuration default: no Origin, loopback,
+  or matching this connection's own local address are allowed; any
+  other Origin is rejected — no new config surface needed).
 
 - [x] **M9 — Pending TCP/WS connections never time out.**
   `extensions/multiplayer_lan/network.py:107` accepts sockets and keeps
