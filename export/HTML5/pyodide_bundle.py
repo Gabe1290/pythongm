@@ -62,6 +62,26 @@ MIME_TYPES = {
     "python_stdlib.zip": "application/zip",
 }
 
+# Known-good SHA-256 per file at PYODIDE_VERSION (L11,
+# docs/FULL_AUDIT_2026-09-07.md) -- pinned so a compromised CDN response,
+# or a tampered/corrupted cache file, can't silently ship arbitrary JS/wasm
+# inside every offline export. Computed from a fresh download of the real
+# jsDelivr files and cross-checked with an independent sha256sum run; must
+# be updated alongside PYODIDE_VERSION whenever that version bumps.
+EXPECTED_SHA256 = {
+    "pyodide.js": "c0069107621d5b942a659e737a12e774cc0451feaa2256f475d72e071d844ec7",
+    "pyodide.asm.js": "919560652ed3dad3707cb3a394785da1e046fb13dc0defa162058ff230cb7eed",
+    "pyodide.asm.wasm": "b7e66a19427a55010ac3367c1b6c64b893f9826f783412945fdf0c3337f3bc94",
+    "pyodide-lock.json": "cd50b49de944c579045e122fe8628b31f9ce446379f032f36c05e273d38766e0",
+    "python_stdlib.zip": "72894522b791858b9d613ac786b951d8b5094035dcf376313ea24a466810f336",
+}
+
+# Generous upper bound per file -- real sizes top out around 10 MB
+# (pyodide.asm.wasm). Exists to bound memory during download (streamed in
+# chunks, checked as it arrives), not as a tight budget; the hash check
+# above is the real integrity guard.
+_MAX_FILE_BYTES = 64 * 1024 * 1024  # 64 MB
+
 
 def _cache_dir() -> Path:
     return Path.home() / ".pygamemaker" / "pyodide_cache" / PYODIDE_VERSION
@@ -69,13 +89,47 @@ def _cache_dir() -> Path:
 
 def _default_downloader(url: str, timeout: int = 120) -> bytes:
     with urllib.request.urlopen(url, timeout=timeout) as resp:
-        return resp.read()
+        chunks = []
+        total = 0
+        while True:
+            chunk = resp.read(1 << 20)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > _MAX_FILE_BYTES:
+                raise ValueError(
+                    f"Response from {url} exceeded the {_MAX_FILE_BYTES}-byte "
+                    "cap for a single Pyodide core file; aborting download.")
+            chunks.append(chunk)
+        return b"".join(chunks)
+
+
+def _verify_hash(filename: str, data: bytes, expected_sha256: Dict[str, str]) -> None:
+    """Raise RuntimeError if data doesn't match expected_sha256[filename].
+    A no-op for a filename with no recorded pin (defensive; every name in
+    CORE_FILES has one in the real EXPECTED_SHA256 table)."""
+    expected = expected_sha256.get(filename)
+    if expected is None:
+        return
+    import hashlib
+    actual = hashlib.sha256(data).hexdigest()
+    if actual != expected:
+        raise RuntimeError(
+            f"The offline Python runtime file '{filename}' does not match "
+            f"its expected SHA-256 (got {actual}, expected {expected}).\n\n"
+            "This can mean a corrupted download, a tampered cache file, or "
+            "a compromised CDN response -- refusing to embed it into the "
+            "export. Delete the cached copy "
+            f"({_cache_dir() / filename}) and try again, or check your "
+            "connection."
+        )
 
 
 def ensure_pyodide_files(
     progress_callback: Optional[Callable[[float, str], None]] = None,
     downloader: Optional[Callable[[str], bytes]] = None,
     cache_dir: Optional[Path] = None,
+    expected_sha256: Optional[Dict[str, str]] = None,
 ) -> Dict[str, bytes]:
     """Return {filename: bytes} for every file in CORE_FILES, downloading
     (into cache_dir, default ~/.pygamemaker/pyodide_cache/<version>/) any
@@ -83,6 +137,14 @@ def ensure_pyodide_files(
 
     downloader defaults to a real HTTP GET (urllib) — injectable so tests
     never need real network access or a real 13 MB payload.
+
+    expected_sha256 defaults to the real EXPECTED_SHA256 pin table (L11,
+    docs/FULL_AUDIT_2026-09-07.md) -- every file, whether freshly
+    downloaded or read back from cache, must match its pinned hash or
+    this raises rather than embedding it. Also injectable, purely so
+    tests can exercise the real verification code path against their own
+    fake file content instead of either fighting the real CDN's hashes or
+    disabling the check outright.
 
     Raises RuntimeError with an actionable message (matching this
     codebase's _missing_dependency_message convention) if a download
@@ -92,6 +154,7 @@ def ensure_pyodide_files(
     cache_dir = Path(cache_dir) if cache_dir is not None else _cache_dir()
     cache_dir.mkdir(parents=True, exist_ok=True)
     get = downloader or _default_downloader
+    hashes = expected_sha256 if expected_sha256 is not None else EXPECTED_SHA256
 
     result: Dict[str, bytes] = {}
     total = len(CORE_FILES)
@@ -100,11 +163,13 @@ def ensure_pyodide_files(
         if progress_callback:
             progress_callback(i / total, f"Preparing offline Python runtime: {filename}...")
         if cached_path.exists():
-            result[filename] = cached_path.read_bytes()
+            data = cached_path.read_bytes()
+            _verify_hash(filename, data, hashes)
+            result[filename] = data
             continue
         try:
             data = get(_BASE_URL + filename)
-        except (urllib.error.URLError, OSError, TimeoutError) as e:
+        except (urllib.error.URLError, OSError, TimeoutError, ValueError) as e:
             raise RuntimeError(
                 f"Could not download the offline Python runtime file "
                 f"'{filename}' from {_BASE_URL}{filename}.\n\n"
@@ -116,6 +181,7 @@ def ensure_pyodide_files(
                 "runtime instead (still works fine with internet at play "
                 "time), or check your connection and try again."
             ) from e
+        _verify_hash(filename, data, hashes)
         cached_path.write_bytes(data)
         result[filename] = data
 
