@@ -190,7 +190,8 @@ exists, so the English fallback is correct).
   **Fixed `3a7ff2af`** (updates whichever key is present; did not force
   normalization to `object_name`, out of scope for this fix).
 
-- [ ] **M4 — `test_question` is always "yes" in the real game process.**
+- [x] **M4 — `test_question` is always "yes" in the real game process.**
+  **Fixed `eebbd02d`.**
   `runtime/action_flow.py:794` builds a `QMessageBox`; at `:810` it returns
   `True` when `QApplication.instance() is None`. `runtime/run_game.py`
   (the Test Game subprocess and every desktop export) never creates a
