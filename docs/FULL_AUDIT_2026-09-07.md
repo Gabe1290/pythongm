@@ -438,7 +438,8 @@ exists, so the English fallback is correct).
   respawns on room restart on Android/iOS (desktop + HTML5 honour it).
   *Fix:* port the `_destroyed_memory` keyed set to the Kivy `GameApp`.
 
-- [ ] **L18 — `MultiActionEditor` parameter summary leaks nested action lists into the tree text.**
+- [x] **L18 — `MultiActionEditor` parameter summary leaks nested action lists into the tree text.**
+  **Fixed `0344a8bd`.**
   `events/action_editor.py:919` joins `k=v` for every parameter including
   `then_actions` lists (whole dict reprs, truncated at 50 chars) — cosmetic,
   but makes nested conditionals unreadable in the Then/Else editor.
