@@ -26,7 +26,7 @@ from ._action_lookup import ACTION_ALIASES, get_action_type  # noqa: F401  (re-e
 from ..object_actions_formatter import ActionParametersFormatter
 
 # Import Python code parser for execute_code action parsing
-from ..python_code_parser import PythonToActionsParser
+from ..python_code_parser import PythonToActionsParser, ActionsToPythonGenerator
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -627,6 +627,7 @@ class ObjectEventsPanel(EventCrudMixin, ActionCrudMixin, RenderMixin, ClipboardM
     def _parse_execute_code_actions(self):
         """Parse execute_code actions to extract proper action types (especially Thymio)"""
         parser = PythonToActionsParser()
+        generator = ActionsToPythonGenerator()
 
         for event_name, event_info in self.current_events_data.items():
             if not isinstance(event_info, dict):
@@ -654,9 +655,32 @@ class ObjectEventsPanel(EventCrudMixin, ActionCrudMixin, RenderMixin, ClipboardM
                                     for a in parsed_actions
                                 )
                                 if has_thymio_actions:
-                                    logger.debug(f"Parsed execute_code in {event_name}: {len(parsed_actions)} actions")
-                                    new_actions.extend(parsed_actions)
-                                    continue
+                                    # Only accept the rewrite if it's LOSSLESS -- the
+                                    # parse is idempotent under regeneration (L14,
+                                    # docs/FULL_AUDIT_2026-09-07.md). This is what
+                                    # guards against the real failure mode: a
+                                    # `'thymio' in code` substring match against the
+                                    # RAW text (comments included) gates a heuristic
+                                    # that reclassifies plain assignments as
+                                    # thymio_set_variable, so code that merely
+                                    # MENTIONS "thymio." in a comment could get an
+                                    # unrelated statement silently reinterpreted.
+                                    # Regenerating code from parsed_actions and
+                                    # re-parsing it fresh re-derives whether "thymio"
+                                    # genuinely appears in the REAL (comment-free)
+                                    # code; if that disagrees with the first parse,
+                                    # the rewrite isn't safe to persist.
+                                    regenerated = generator.generate_event_code(
+                                        event_name, {"actions": parsed_actions})
+                                    reparsed_actions = parser.parse_event_code(
+                                        regenerated, event_name).get('actions', [])
+                                    if reparsed_actions == parsed_actions:
+                                        logger.debug(f"Parsed execute_code in {event_name}: {len(parsed_actions)} actions")
+                                        new_actions.extend(parsed_actions)
+                                        continue
+                                    logger.debug(
+                                        f"Skipping lossy thymio rewrite in {event_name}: "
+                                        "parse did not round-trip, keeping original execute_code")
                         except Exception as e:
                             logger.warning(f"Failed to parse execute_code in {event_name}: {e}")
                     # Keep original execute_code if not Thymio code or parsing failed
