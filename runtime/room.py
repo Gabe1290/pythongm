@@ -208,10 +208,15 @@ class GameRoom:
         for instance_data in instances_data:
             # Support both 'object' and 'object_name' keys for compatibility
             object_name = instance_data.get('object') or instance_data.get('object_name')
+            # .get(..., 0) not a direct subscript: a hand-edited room JSON
+            # or a partial GMK conversion missing x/y raised KeyError here,
+            # crashing the whole room's construction over one malformed
+            # instance rather than defaulting it to the origin (L12,
+            # docs/FULL_AUDIT_2026-09-07.md).
             instance = GameInstance(
                 object_name,
-                instance_data['x'],
-                instance_data['y'],
+                instance_data.get('x', 0),
+                instance_data.get('y', 0),
                 instance_data,
                 action_executor=self.action_executor
             )
@@ -346,6 +351,13 @@ class GameRoom:
 
     def parse_color(self, color_str: str) -> Tuple[int, int, int]:
         """Parse color string to RGB tuple"""
+        # A room JSON with an explicit "background_color": null (or any
+        # other non-string value -- a hand edit, a partial GMK conversion)
+        # reaches here as None/non-str, and .startswith would crash room
+        # construction outright rather than defaulting (L12,
+        # docs/FULL_AUDIT_2026-09-07.md).
+        if not isinstance(color_str, str):
+            return (135, 206, 235)  # Default sky blue
         if color_str.startswith('#'):
             color_str = color_str[1:]
 

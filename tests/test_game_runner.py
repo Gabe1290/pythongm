@@ -295,6 +295,58 @@ class TestGameRoom:
                 assert room.parse_color('FFFFFF') == (255, 255, 255)
                 assert room.parse_color('000000') == (0, 0, 0)
 
+    def test_parse_color_none_defaults_instead_of_crashing(self, mock_action_executor):
+        """L12, docs/FULL_AUDIT_2026-09-07.md: a room JSON with an explicit
+        "background_color": null (or any other non-string value -- a hand
+        edit, a partial GMK conversion) must default rather than crash room
+        construction with AttributeError."""
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom
+                room = GameRoom("test", {'width': 100, 'height': 100}, mock_action_executor)
+
+                assert room.parse_color(None) == (135, 206, 235)
+                assert room.parse_color(42) == (135, 206, 235)
+                assert room.parse_color([]) == (135, 206, 235)
+
+    def test_room_with_explicit_null_background_color_does_not_crash(self, mock_action_executor):
+        """The real reproduction: __init__ itself passes background_color
+        straight through .get('background_color', default) -- a default
+        that only applies when the key is ABSENT, not when it's present
+        with a JSON null value."""
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom
+                room_data = {
+                    'width': 800, 'height': 600,
+                    'background_color': None,
+                    'instances': [],
+                }
+                room = GameRoom("test_room", room_data, mock_action_executor)
+                assert room.background_color == (135, 206, 235)
+
+    def test_room_instance_missing_x_y_defaults_to_origin(self, mock_action_executor):
+        """L12: a hand-edited room JSON (or a partial GMK conversion) whose
+        instance is missing x/y used to raise KeyError and crash the whole
+        room's construction over one malformed instance."""
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom
+                room_data = {
+                    'width': 640, 'height': 480,
+                    'instances': [
+                        {'object_name': 'obj_no_position'},
+                        {'object_name': 'obj_normal', 'x': 50, 'y': 60},
+                    ],
+                }
+                room = GameRoom("game_room", room_data, mock_action_executor)
+
+                assert len(room.instances) == 2
+                assert room.instances[0].x == 0
+                assert room.instances[0].y == 0
+                assert room.instances[1].x == 50
+                assert room.instances[1].y == 60
+
     def test_spatial_grid_cells(self, mock_action_executor):
         """Test spatial grid cell calculation"""
         with patch('runtime.game_runner.pygame'):
