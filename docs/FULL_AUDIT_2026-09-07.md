@@ -343,7 +343,8 @@ exists, so the English fallback is correct).
   property computing `hypot(hspeed, vspeed)` when not explicitly set, or
   update it in the h/v setters.
 
-- [ ] **L6 — Mouse coordinates aren't view-translated in `if_mouse_over`/mouse-position expressions.**
+- [x] **L6 — Mouse coordinates aren't view-translated in `if_mouse_over`/mouse-position expressions.**
+  **Fixed `e80ae45c`.**
   `runtime/action_executor.py:1136` and `runtime/game_runner.py:1882/2231/2413`
   use `pygame.mouse.get_pos()` (screen space) but compare to instance
   room coordinates; in a room with views enabled and the view scrolled,
