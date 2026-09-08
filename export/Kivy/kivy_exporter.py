@@ -1234,6 +1234,16 @@ class GameApp(App):
         self._room_cache = {{}}
         self._visited_rooms = set()
 
+        # "Stay destroyed" opt-in (remember_destroyed, L17,
+        # docs/FULL_AUDIT_2026-09-07.md). Maps a room name to a set of
+        # object_name/xstart/ystart identity tuples for instances a player
+        # already destroyed that must not respawn on that room's next
+        # rebuild (a restart, or a non-persistent room revisit). Mirrors
+        # the desktop runtime's GameRunner._destroyed_memory exactly --
+        # same identity tuple, same per-room set, same "cleared on a full
+        # game restart" lifetime.
+        self._destroyed_memory = {{}}
+
         # Game state (initialized in build() from saved state or defaults)
         self.score = 0
         self.lives = 3
@@ -1367,6 +1377,7 @@ class GameApp(App):
         flag (a full game restart is a harder reset than restart_room)."""
         self._room_cache.clear()
         self._visited_rooms.clear()
+        self._destroyed_memory.clear()
         self._switch_to_room(0)
 
     def goto_next_room(self):
@@ -1479,6 +1490,18 @@ class GameApp(App):
                 _log(f"_do_room_switch: creating {{room_class.__name__}}")
                 new_scene = room_class()
                 self._room_cache.pop(room_index, None)
+                # "Stay destroyed" opt-in (remember_destroyed, L17,
+                # docs/FULL_AUDIT_2026-09-07.md): drop instances a player
+                # already destroyed in this room so the freshly-built
+                # layout doesn't respawn them. Only on a genuine rebuild --
+                # a persistent-room reuse above keeps its own live state,
+                # which already reflects any earlier destruction. Mirrors
+                # the desktop runtime's GameRunner._apply_destroyed_memory.
+                remembered = self._destroyed_memory.get(new_scene.room_name)
+                if remembered:
+                    for inst in list(new_scene.instances):
+                        if (inst.object_name, inst.xstart, inst.ystart) in remembered:
+                            new_scene.remove_instance(inst)
             self._visited_rooms.add(room_index)
 
             # 4. Add new scene to widget tree. Use the scene's DISPLAYED size
@@ -1999,6 +2022,7 @@ class {class_name}(Widget):
 
         self.room_width = {width}
         self.room_height = {height}
+        self.room_name = "{room_name}"
         self.instances = []
         self.instances_to_destroy = []
         self._pending_creates = []
@@ -2757,7 +2781,21 @@ class {class_name}(Widget):
 
         # 9. CLEANUP - Remove destroyed instances
         if self.instances_to_destroy:
+            # "Stay destroyed" opt-in (remember_destroyed, L17,
+            # docs/FULL_AUDIT_2026-09-07.md): this scene lives in its own
+            # module (scenes/<room>.py), so it reaches the app instance
+            # the same way every other app-level access here does -- a
+            # local import from main, not a bare module-level name.
+            from main import get_game_app
+            _app = get_game_app()
             for instance in self.instances_to_destroy:
+                # Record this instance's identity on the app so a later
+                # rebuild of this room (a restart, or a non-persistent
+                # revisit) skips respawning it. Mirrors the desktop
+                # runtime's GameRunner._remember_destroyed_instance.
+                if getattr(instance, 'remember_destroyed', False) and _app is not None:
+                    _app._destroyed_memory.setdefault(self.room_name, set()).add(
+                        (instance.object_name, instance.xstart, instance.ystart))
                 self.remove_instance(instance)
             self.instances_to_destroy.clear()
 
@@ -4702,6 +4740,10 @@ class GameObject(Widget):
         # GameMaker draw depth: higher = drawn first (further back).
         depth = obj_data.get('depth', 0)
         persistent = obj_data.get('persistent', False)
+        # "Stay destroyed" opt-in: once destroyed, doesn't respawn on a
+        # room restart (L17, docs/FULL_AUDIT_2026-09-07.md -- desktop's
+        # own GameRunner._destroyed_memory, ported here).
+        remember_destroyed = obj_data.get('remember_destroyed', False)
 
         # Get sprite file path if sprite is set
         sprite_path = ""
@@ -4830,6 +4872,7 @@ class {class_name}(GameObject):
         self.solid = {solid}
         self.visible = {visible}
         self.persistent = {persistent}
+        self.remember_destroyed = {remember_destroyed}
         self.pushable = {pushable}
         self.depth = {depth}
         self.object_name = "{obj_name}"
@@ -4847,6 +4890,7 @@ class {class_name}(GameObject):
             solid=solid,
             visible=visible,
             persistent=persistent,
+            remember_destroyed=remember_destroyed,
             pushable=pushable,
             depth=depth,
             sprite_line=sprite_line,

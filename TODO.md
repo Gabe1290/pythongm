@@ -1123,6 +1123,22 @@ lines rather than matching their text.
 
 ## Export
 
+### HTML5 export has no `remember_destroyed` support either
+- Found 2026-09-08 while fixing L17 of `docs/FULL_AUDIT_2026-09-07.md`
+  ("Kivy export has no `remember_destroyed` support"). That finding's own
+  rationale claimed "(desktop + HTML5 honour it)" — verified false by
+  direct grep: `grep remember_destroyed export/HTML5` is empty too, same
+  as Kivy was. So an object flagged `remember_destroyed` respawns on
+  every room restart/revisit on the HTML5 target as well, not just
+  Android/iOS. Kivy now has real support (ported from the desktop
+  runtime's `GameRunner._destroyed_memory` — see
+  `export/Kivy/kivy_exporter.py`'s `GameApp._destroyed_memory` /
+  `Scene.room_name` / the per-object `remember_destroyed` flag,
+  `tests/test_kivy_remember_destroyed.py`); HTML5's `engine.js` still has
+  nothing. Scoped out of L17 deliberately (that finding's own verify
+  command only checked Kivy) rather than silently expanding it — port the
+  same mechanism to `engine.js`'s `Game`/`GameRoom` when picked up.
+
 ### ~~iOS exporter has no app icon~~ (DONE 2026-08-14)
 - Done: `iOSExporter.export_settings['icon_path']` (same key `exe_exporter.py`/
   `macos_exporter.py` already use) is resized into every AppIcon.appiconset
