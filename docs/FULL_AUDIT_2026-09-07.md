@@ -334,7 +334,8 @@ exists, so the English fallback is correct).
   other collision path resolves parents (`_object_matches`). A solid
   child object isn't separated. *Fix:* reuse the parent-aware matcher.
 
-- [ ] **L5 — `speed` is not derived from `hspeed`/`vspeed`.**
+- [x] **L5 — `speed` is not derived from `hspeed`/`vspeed`.**
+  **Fixed `3c59515f`.**
   `runtime/instance.py` keeps `speed` as a plain attribute set by
   `set_speed`/`set_direction_speed`; after `set_hspeed`/`set_vspeed`,
   `self.speed` in an expression still reports the stale value (GM
