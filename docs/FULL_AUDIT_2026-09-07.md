@@ -150,7 +150,7 @@ exists, so the English fallback is correct).
 
 ## Medium
 
-- [ ] **M1 — Multiplayer per-room session is orphaned on room change, and `PYGM_NET_AUTOHOST` re-hosts on every room.**
+- [x] **M1 — Multiplayer per-room session is orphaned on room change, and `PYGM_NET_AUTOHOST` re-hosts on every room.**
   State is per `GameRoom` via `peek_multiplayer(room)`; `change_room`
   builds a new room whose `extension_state` is empty, so the live
   `NetworkSession` (sockets, beacon thread) on the old room is never
@@ -162,6 +162,13 @@ exists, so the English fallback is correct).
   `GameRunner` (or migrate `extension_state["multiplayer"]` in
   `change_room`), and make AUTOHOST idempotent per process. *How
   verified:* `_resolve_state` + `change_room`'s fresh `GameRoom`.
+  **Fixed `a718b6d3`** (new generic `extension_hooks.
+  register_room_change_hook` mechanism, same shape as the existing
+  room-renderer/frame-update hooks so core stays extension-agnostic;
+  the extension's own hook migrates the whole per-room state dict —
+  session, beacon, roster — onto the new room, which also makes
+  AUTOHOST idempotent as a direct consequence: it only auto-starts for
+  a room that genuinely has no state yet).
 
 - [x] **M2 — Sprite rename leaves `sprites/<old>.json` behind (stale side file resurrects on reuse).**
   `core/asset_manager.py:550` carries the side file only for
