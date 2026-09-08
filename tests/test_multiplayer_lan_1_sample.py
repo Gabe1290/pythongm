@@ -104,24 +104,24 @@ class TestMultiplayerLan1Smoke:
 
 
 class TestMultiplayerLan1WelcomeTabAndGuide:
-    def test_registered_in_the_welcome_tab(self):
+    def test_not_listed_in_the_welcome_tab(self):
+        # multiplayer_lan_1 only networks when launched from a terminal
+        # with run_game.py --net-host / --net-client, so it is deliberately
+        # kept off the Welcome tab (it would just run single-player there).
+        # It still ships as a folder for CLI use; the reseau_* samples are
+        # the IDE-facing LAN multiplayer examples.
         from widgets.welcome_tab import SAMPLE_PROJECTS
-        assert ("samples/multiplayer_lan_1", "LAN Multiplayer — Demo") in SAMPLE_PROJECTS
+        paths = [p for p, _label in SAMPLE_PROJECTS]
+        assert "samples/multiplayer_lan_1" not in paths
+        assert not any("LAN Multiplayer" in label for _p, label in SAMPLE_PROJECTS)
 
-    def test_guide_is_listed_and_renders(self):
-        from PySide6.QtWidgets import QApplication
-        QApplication.instance() or QApplication([])
-        from widgets.welcome_tab import SampleDocsDialog, SAMPLE_PROJECTS
-
-        dlg = SampleDocsDialog(SAMPLE_PROJECTS, REPO_ROOT)
-        labels = dlg.sample_labels()
-        assert "LAN Multiplayer — Demo" in labels
-
-        row = labels.index("LAN Multiplayer — Demo")
-        dlg._show_row(row)
-        text = dlg._viewer.toPlainText()
-        assert "net-host" in text
-        assert "net-client" in text
+    def test_sample_and_its_guide_still_ship(self):
+        base = REPO_ROOT / "samples" / "multiplayer_lan_1"
+        assert (base / "project.json").exists()
+        assert (base / "README.md").exists()
+        # the guide documents the CLI launch flags
+        text = (base / "README.md").read_text(encoding="utf-8")
+        assert "net-host" in text and "net-client" in text
 
 
 def _init_room_without_entering_the_game_loop(runner):
