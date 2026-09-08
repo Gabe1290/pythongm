@@ -403,7 +403,8 @@ exists, so the English fallback is correct).
   dialog saves that literal string as the `sound` parameter. *Fix:* add
   an empty sentinel item like the sprite branch does.
 
-- [ ] **L14 — `_parse_execute_code_actions` rewrites saved data on load.**
+- [x] **L14 — `_parse_execute_code_actions` rewrites saved data on load.**
+  **Fixed `95bbecef`.**
   `editors/object_editor/events/_panel.py:627` replaces any
   `execute_code` whose text contains `thymio.` with parsed
   `thymio_*` actions the moment the object is *opened*; the next
