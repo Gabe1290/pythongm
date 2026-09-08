@@ -25,7 +25,7 @@ import os
 from core.logger import get_logger
 from .network import NetworkClient, NetworkHost
 from .session import NetworkSession
-from .state import DEFAULT_PORT, multiplayer_state, peek_multiplayer
+from .state import DEFAULT_PORT, MULTIPLAYER_KEY, multiplayer_state, peek_multiplayer
 
 try:
     import pygame
@@ -1062,6 +1062,58 @@ def _resolve_state(game_runner):
             _start_network(room, *_env_config())
             st = peek_multiplayer(room)
     return room, st
+
+
+def _on_room_change(old_room, new_room):
+    """Room-change hook (runtime/extension_hooks.py): migrate a live
+    multiplayer session from the room being left onto the new one, so a
+    room change (or restart) doesn't orphan it (M1,
+    docs/FULL_AUDIT_2026-09-07.md).
+
+    Without this, the session's sockets and its discovery-beacon thread
+    kept running, but nothing pointed _resolve_state at them any more --
+    the new room reported "not connected", and with PYGM_NET_AUTOHOST set
+    it would go on to auto-start a SECOND session for the new room,
+    fighting the first over the same port.
+
+    A room with no networking (peek_multiplayer returns None, or a state
+    dict with no active session and no v1 mode) has nothing to carry, so
+    this is a no-op for every ordinary, non-networked room change -- and
+    leaves PYGM_NET_AUTOHOST free to auto-start normally the first time a
+    genuinely fresh room needs it.
+
+    Deliberately scoped to the session/connection state only (the exact
+    thing the finding describes) -- NOT the room's own networked ghost/
+    synced-instance objects. Those already self-clean the frame after a
+    migration: _apply_synced_local and _collect_synced_rows both prune
+    any instance no longer present in the CURRENT room's live instance
+    list, which becomes true for every old-room instance the moment
+    current_room changes, with no extra code needed here.
+    """
+    if old_room is None:
+        return
+    old_state = peek_multiplayer(old_room)
+    if old_state is None:
+        return
+    if old_state.get("session") is None and old_state.get("mode") is None:
+        return  # nothing live to carry (e.g. a session that already ended)
+
+    new_es = getattr(new_room, "extension_state", None)
+    if new_es is None:
+        new_es = {}
+        setattr(new_room, "extension_state", new_es)
+    new_es[MULTIPLAYER_KEY] = old_state
+
+    # The old room must not keep claiming a resource it no longer owns --
+    # matters if it's persistent and gets revisited later without ever
+    # going through another room-change hook call in between.
+    old_es = getattr(old_room, "extension_state", None)
+    if old_es is not None:
+        old_es.pop(MULTIPLAYER_KEY, None)
+
+    logger.debug(
+        "multiplayer: migrated session from room %r to room %r on room change",
+        getattr(old_room, "name", old_room), getattr(new_room, "name", new_room))
 
 
 def _frame_update_apply_inbound(game_runner):

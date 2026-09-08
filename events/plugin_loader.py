@@ -117,6 +117,12 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_FRAME_UPDATES'):
                 self._load_frame_updates(module.PLUGIN_FRAME_UPDATES)
 
+            # Room-change hooks (extension_hooks) — a plugin may need to
+            # migrate a cross-room resource across a room switch (M1,
+            # docs/FULL_AUDIT_2026-09-07.md)
+            if hasattr(module, 'PLUGIN_ROOM_CHANGE_HOOKS'):
+                self._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -211,6 +217,8 @@ class PluginLoader:
                 self._load_room_renderers(module.PLUGIN_ROOM_RENDERERS)
             if hasattr(module, 'PLUGIN_FRAME_UPDATES'):
                 self._load_frame_updates(module.PLUGIN_FRAME_UPDATES)
+            if hasattr(module, 'PLUGIN_ROOM_CHANGE_HOOKS'):
+                self._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -243,6 +251,18 @@ class PluginLoader:
         count = 0
         for func, phase in (updates or []):
             register_frame_update(func, phase)
+            count += 1
+        return count
+
+    def _load_room_change_hooks(self, hooks) -> int:
+        """Register an extension's PLUGIN_ROOM_CHANGE_HOOKS (see
+        runtime/extension_hooks). Lets an extension migrate a cross-room
+        resource (a live network session, say) across a room switch instead
+        of it being silently orphaned on the old room object."""
+        from runtime.extension_hooks import register_room_change_hook
+        count = 0
+        for func in (hooks or []):
+            register_room_change_hook(func)
             count += 1
         return count
 
@@ -587,18 +607,21 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
         for module in _shared_loader.plugin_modules:
             if hasattr(module, 'PluginExecutor'):
                 _shared_loader._register_action_handlers(module.PluginExecutor)
-    # Re-register room renderers + frame updates on every call. Registration
-    # is idempotent, and the hook registry (runtime/extension_hooks) is
-    # process-global state a test may legitimately clear — without this, the
-    # once-per-process load above would never restore it, and every later
-    # GameRunner in the process would silently lose extension rendering
-    # (raycast rooms falling back to top-down) or frame updates (LAN
-    # multiplayer sync silently stopping).
+    # Re-register room renderers + frame updates + room-change hooks on
+    # every call. Registration is idempotent, and the hook registry
+    # (runtime/extension_hooks) is process-global state a test may
+    # legitimately clear — without this, the once-per-process load above
+    # would never restore it, and every later GameRunner in the process
+    # would silently lose extension rendering (raycast rooms falling back
+    # to top-down), frame updates (LAN multiplayer sync silently
+    # stopping), or room-change migration (M1's fix silently undone).
     for module in _shared_loader.plugin_modules:
         if hasattr(module, 'PLUGIN_ROOM_RENDERERS'):
             _shared_loader._load_room_renderers(module.PLUGIN_ROOM_RENDERERS)
         if hasattr(module, 'PLUGIN_FRAME_UPDATES'):
             _shared_loader._load_frame_updates(module.PLUGIN_FRAME_UPDATES)
+        if hasattr(module, 'PLUGIN_ROOM_CHANGE_HOOKS'):
+            _shared_loader._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
     return _shared_loader
 
 

@@ -163,3 +163,72 @@ def run_frame_updates(game_runner, phase: str) -> None:
         except Exception as exc:
             logger.error(
                 f"Frame update {getattr(func, '__name__', func)} failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Room-change hooks: notified whenever GameRunner switches rooms (change_room
+# or a same-room rebuild via restart_current_room), so an extension whose
+# per-room state is really a cross-room, process-lifetime resource -- LAN
+# multiplayer's live network session being the motivating case (M1,
+# docs/FULL_AUDIT_2026-09-07.md) -- can migrate it onto the new room object
+# itself, instead of it being silently orphaned on a room nothing points at
+# any more. Extension state otherwise lives in ``room.extension_state``
+# (see the room-renderer contract above), which is naturally per-room and
+# does NOT survive a rebuild; most extensions (the 2.5D raycast view, say)
+# correctly WANT that -- a new room should get fresh state, not inherit the
+# old one's. A hook is how the rare extension that wants otherwise opts in,
+# without core knowing anything about what any specific extension stores.
+#
+# An extension declares one the same declarative way it declares the hooks
+# above::
+#
+#     # extensions/my_ext/__init__.py
+#     def my_room_change_hook(old_room, new_room):
+#         ...
+#
+#     PLUGIN_ROOM_CHANGE_HOOKS = [my_room_change_hook]
+#
+# Called AFTER the engine has already pointed ``self.current_room`` at
+# ``new_room``, but before any frame-update hook or event runs against it --
+# so a migrated resource is fully live again before anything reads it.
+# ``old_room`` is the room being left (``None`` on a game's very first room);
+# ``new_room`` is never ``None``.
+# ---------------------------------------------------------------------------
+
+# Registered (old_room, new_room) -> None hooks, in registration order.
+_room_change_hooks = []
+
+
+def register_room_change_hook(func) -> None:
+    """Register an ``(old_room, new_room) -> None`` room-change hook."""
+    if not callable(func):
+        logger.error(f"Room-change hook is not callable: {func!r}")
+        return
+    if func in _room_change_hooks:
+        return                      # idempotent: the loader may re-run
+    _room_change_hooks.append(func)
+    logger.debug(f"Registered room-change hook: {getattr(func, '__name__', func)}")
+
+
+def get_room_change_hooks() -> list:
+    """The registered hooks (a copy — callers must not mutate the list)."""
+    return list(_room_change_hooks)
+
+
+def clear_room_change_hooks() -> None:
+    """Drop every registered room-change hook. For tests and for reloading extensions."""
+    _room_change_hooks.clear()
+
+
+def run_room_change_hooks(old_room, new_room) -> None:
+    """Notify every registered hook that the room changed.
+
+    A hook that raises is logged and skipped, same "a broken extension must
+    not take the game down" contract render_room/run_frame_updates have.
+    """
+    for func in _room_change_hooks:
+        try:
+            func(old_room, new_room)
+        except Exception as exc:
+            logger.error(
+                f"Room-change hook {getattr(func, '__name__', func)} failed: {exc}")

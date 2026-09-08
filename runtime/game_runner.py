@@ -1150,6 +1150,7 @@ class GameRunner(InputMixin, CollisionMixin):
         if not self.current_room:
             return
 
+        old_room = self.current_room  # for the room-change hook call below
         room_name = self.current_room.name
         logger.debug(f"🔄 Restarting room: {room_name}")
 
@@ -1201,6 +1202,12 @@ class GameRunner(InputMixin, CollisionMixin):
             # Replace the room in our dictionary
             self.rooms[room_name] = new_room
             self.current_room = new_room
+
+            # Same reasoning as change_room's own call (M1,
+            # docs/FULL_AUDIT_2026-09-07.md): a restart discards the old
+            # room object too, which would otherwise silently orphan a
+            # cross-room resource an extension migrated onto it.
+            extension_hooks.run_room_change_hooks(old_room, new_room)
 
             # Re-add carried persistent instances, replacing any authored
             # non-persistent instance of the same object (mirrors change_room).
@@ -1484,6 +1491,13 @@ class GameRunner(InputMixin, CollisionMixin):
         see TODO.md's "Room transition effects" entry.
         """
         if room_name in self.rooms:
+            # Saved before any reassignment below, for the room-change hook
+            # call after the switch (M1, docs/FULL_AUDIT_2026-09-07.md) --
+            # lets an extension migrate a cross-room resource (a live
+            # multiplayer session, say) that would otherwise be silently
+            # orphaned on this room object.
+            old_room = self.current_room
+
             do_fade = transition == 'fade' and self.screen is not None
             if do_fade:
                 # Snapshot whatever's already on screen from the last
@@ -1527,6 +1541,11 @@ class GameRunner(InputMixin, CollisionMixin):
                     self.rooms[room_name] = target_room
             self._visited_rooms.add(room_name)
             self.current_room = target_room
+
+            # Give an extension first chance to migrate a cross-room
+            # resource onto the new room before anything else touches it
+            # (M1, docs/FULL_AUDIT_2026-09-07.md).
+            extension_hooks.run_room_change_hooks(old_room, target_room)
 
             # Add persistent instances to the new room
             objects_data = self._objects_data
