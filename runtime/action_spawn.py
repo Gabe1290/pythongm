@@ -319,7 +319,9 @@ class SpawnMixin:
         if was_grid_moving:
             target_instance.hspeed = 0
             target_instance.vspeed = 0
-            target_instance.speed = 0
+            # `speed` is a read-only property derived from hspeed/vspeed
+            # (L5, docs/FULL_AUDIT_2026-09-07.md) -- zeroing those two is
+            # enough, there is nothing separate left to write.
         # Clear any pending grid movement either way
         target_instance._has_intended_move = False
 
@@ -522,10 +524,10 @@ class SpawnMixin:
         rad = math.radians(direction)
         new_instance.hspeed = speed * math.cos(rad)
         new_instance.vspeed = -speed * math.sin(rad)  # Negative because Y increases downward
-        new_instance.speed = speed
-        # `direction` is now a derived property on GameInstance (computed
-        # from hspeed/vspeed), so there's nothing to write back here —
-        # setting hspeed/vspeed above is enough.
+        # `direction` and `speed` are both derived properties on GameInstance
+        # (computed from hspeed/vspeed -- L5, docs/FULL_AUDIT_2026-09-07.md,
+        # for `speed`), so there's nothing to write back here — setting
+        # hspeed/vspeed above is enough.
 
         # Get sprite for the new instance
         sprite_name = object_data.get('sprite', '')

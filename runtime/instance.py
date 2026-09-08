@@ -194,6 +194,24 @@ class GameInstance:
         return math.degrees(math.atan2(-self.vspeed, self.hspeed)) % 360.0
 
     @property
+    def speed(self):
+        """GameMaker-style movement magnitude, derived from hspeed/vspeed
+        (L5, docs/FULL_AUDIT_2026-09-07.md) -- the same read-only-view
+        treatment as `direction` just above, for the same reason: GameMaker
+        recomputes `speed` live, so a bare `self.speed` reference in an
+        event expression must reflect motion set via hspeed/vspeed
+        directly (set_hspeed/set_vspeed) too, not just the two actions
+        (set_speed/set_direction_speed) that used to also write a separate
+        plain `speed` attribute -- that attribute went stale the instant
+        anything else changed the velocity underneath it, and never
+        existed at all on most instances (only ones spawned via
+        create_moving_instance ever set it), so a bare `speed` reference
+        elsewhere silently read as 0. To change it, write hspeed/vspeed
+        (or use set_speed/set_direction_speed, which do exactly that).
+        """
+        return math.hypot(self.hspeed, self.vspeed)
+
+    @property
     def image_number(self):
         """GameMaker-style read-only count of subimages (frames) in this
         instance's sprite, or 0 when no sprite is assigned. Mirrors GM's
