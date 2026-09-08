@@ -368,7 +368,8 @@ exists, so the English fallback is correct).
   is common) mark the wrong tab dirty. *Fix:* look the tab up by the
   editor's `_open_editor_key` (`<category>:<name>`) set by L5 (2026-06-15).
 
-- [ ] **L9 — Importing `utils.config` creates `~/.pygamemaker` on the player's machine.**
+- [x] **L9 — Importing `utils.config` creates `~/.pygamemaker` on the player's machine.**
+  **Fixed `433bdced`.**
   `utils/config.py:84/125` `mkdir`s the config dir at import/first
   `get`; the runtime imports it transitively, so every exported game
   drops an IDE config folder in the player's home. *Fix:* lazy-create
