@@ -792,47 +792,34 @@ class FlowMixin:
             logger.error(f"⚠️  Error evaluating expression '{expression}': {e}")
             return False
     def execute_test_question_action(self, instance, parameters: Dict[str, Any]):
-        """Show a yes/no question dialog to the user
+        """Show a yes/no question dialog to the user (M4,
+        docs/FULL_AUDIT_2026-09-07.md).
 
         Parameters:
             question: Question text to display
 
-        Returns True if user clicks Yes, False if user clicks No
-
-        This displays a modal dialog with Yes/No buttons.
+        Returns True if the player answers Yes, False if No. Blocks the
+        game loop until answered -- runtime/game_runner.py's
+        show_question_dialog is the same pygame modal machinery
+        show_message/splash_show_text already use, not the removed
+        QMessageBox-based version. That Qt dialog only ever ran in the
+        in-process IDE fallback (QApplication.instance() is not None);
+        the real game process -- the Test Game subprocess and every
+        desktop export, both driven by runtime/run_game.py, which never
+        creates a QApplication -- always took the "no QApplication"
+        branch and answered Yes unconditionally, so authors got a
+        conditional that never actually asked.
         """
         question = parameters.get("question", "Continue?")
 
-        try:
-            from PySide6.QtWidgets import QMessageBox, QApplication
+        runner = self.game_runner
+        if (runner is not None and getattr(runner, 'screen', None) is not None
+                and hasattr(runner, 'show_question_dialog')):
+            return runner.show_question_dialog(str(question))
 
-            # Check if QApplication exists
-            if QApplication.instance() is None:
-                logger.debug(f"⚠️  test_question: No QApplication, defaulting to True for '{question}'")
-                return True
+        logger.debug(f"⚠️  test_question: No live screen -- defaulting to True for '{question}'")
+        return True
 
-            # Create message box
-            msg_box = QMessageBox()
-            msg_box.setWindowTitle("Question")
-            msg_box.setText(question)
-            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            msg_box.setDefaultButton(QMessageBox.Yes)
-            msg_box.setIcon(QMessageBox.Question)
-
-            # Show dialog and get result
-            result = msg_box.exec()
-            answer = (result == QMessageBox.Yes)
-
-            logger.debug(f"❔ Question: '{question}' → {'Yes' if answer else 'No'}")
-            return answer
-
-        except ImportError:
-            # Fallback for environments without Qt (like testing)
-            logger.debug(f"⚠️  test_question: Qt not available, defaulting to True for '{question}'")
-            return True
-        except Exception as e:
-            logger.error(f"⚠️  test_question: Error showing dialog: {e}")
-            return True
     def execute_test_instance_count_action(self, instance, parameters: Dict[str, Any]):
         """Test the number of instances of a specific object type
 
