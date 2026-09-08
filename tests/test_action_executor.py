@@ -1012,6 +1012,31 @@ class TestExpressionEvaluation:
         result = executor._evaluate_expression("x + 50", instance)
         assert result == 150.0
 
+    def test_random_helper_functions_still_work(self):
+        """L1's fix removes the raw `random` module from the eval
+        namespace, but the documented random()/irandom()/choose() GML
+        helpers must keep working -- they route through the gm_random/
+        gm_irandom/gm_choose wrappers, not the module itself."""
+        executor = ActionExecutor()
+
+        assert 0 <= executor._evaluate_expression("random(10)", None) < 10
+        assert 0 <= executor._evaluate_expression("irandom(5)", None) <= 5
+        assert executor._evaluate_expression("choose(7)", None) == 7
+
+    def test_random_module_is_not_reachable_by_name(self):
+        """L1, docs/FULL_AUDIT_2026-09-07.md: the eval namespace used to
+        bind the real `random` module under the name 'random' -- not a
+        sandbox escape (no builtins, no strings), but it let an
+        expression field call random.seed(0)/random.getstate() etc.
+        directly, reaching outside the documented random()/irandom()/
+        choose() surface. A dotted or bare reference to `random` must
+        now fail closed (NameError, caught, defaults to 0) rather than
+        resolving to the live module object."""
+        executor = ActionExecutor()
+
+        assert executor._evaluate_expression("random.seed(0)", None) == 0
+        assert executor._evaluate_expression("random", None) == 0
+
 
 class TestTestExpressionAction:
     """Regression tests for execute_test_expression_action.
