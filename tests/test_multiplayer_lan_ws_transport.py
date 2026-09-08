@@ -25,6 +25,8 @@ import sys
 import time
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
@@ -32,8 +34,9 @@ from extensions.multiplayer_lan.network import CONN_CLOSED, CONN_OPENED, Network
 from extensions.multiplayer_lan.session import NetworkSession
 from extensions.multiplayer_lan.state import MSG_HELLO, MSG_WELCOME, PROTO_VER
 from extensions.multiplayer_lan.ws_transport import (
-    DualHost, WebSocketHost, WSFrameOverflow, _encode_ws_frame,
-    _try_parse_ws_frame, _ws_accept_key, _WSConn,
+    DualHost, WebSocketHost, WSFrameOverflow, WSProtocolViolation,
+    _encode_ws_frame, _try_parse_ws_frame, _ws_accept_key, _WSConn,
+    _origin_is_allowed,
 )
 
 _RFC6455_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
@@ -46,7 +49,7 @@ def _connect_raw_socket(port, timeout=5.0):
     return sock
 
 
-def _minimal_ws_handshake(sock, path="/", pump=None, timeout=5.0):
+def _minimal_ws_handshake(sock, path="/", pump=None, timeout=5.0, origin=None):
     """A from-scratch (not reusing ws_transport.py) client-side upgrade
     request + response parse, so this actually validates RFC 6455
     conformance rather than the server agreeing with itself.
@@ -54,9 +57,11 @@ def _minimal_ws_handshake(sock, path="/", pump=None, timeout=5.0):
     ``pump``, if given, is called between non-blocking read attempts --
     the server side only progresses the handshake (and everything else)
     when something calls its own ``poll()``/frame-pump method, and this
-    single test thread does both sides."""
+    single test thread does both sides. ``origin``, if given, is sent as
+    the request's ``Origin`` header (M8, docs/FULL_AUDIT_2026-09-07.md)."""
     key_bytes = os.urandom(16)
     key = base64.b64encode(key_bytes).decode("ascii")
+    origin_line = f"Origin: {origin}\r\n" if origin is not None else ""
     request = (
         f"GET {path} HTTP/1.1\r\n"
         "Host: 127.0.0.1\r\n"
@@ -64,6 +69,7 @@ def _minimal_ws_handshake(sock, path="/", pump=None, timeout=5.0):
         "Connection: Upgrade\r\n"
         f"Sec-WebSocket-Key: {key}\r\n"
         "Sec-WebSocket-Version: 13\r\n"
+        f"{origin_line}"
         "\r\n"
     ).encode("ascii")
     sock.sendall(request)
@@ -188,6 +194,31 @@ def _parse_one_client_side(buf: bytearray):
 # Pure codec
 # ---------------------------------------------------------------------------
 
+def _mask_client_frame(payload: bytes, opcode: int = 0x1,
+                        mask: bytes = b"\x01\x02\x03\x04") -> bytearray:
+    """Build a real, correctly-masked client->server frame -- the shape
+    every actual browser sends. _try_parse_ws_frame (the INBOUND/client
+    side of the codec) now enforces RFC 6455's masking requirement (M8,
+    docs/FULL_AUDIT_2026-09-07.md), so any test feeding it a frame must
+    mask it the same way a real client would; _encode_ws_frame is the
+    OUTBOUND/server-side half of the codec and is documented to never
+    mask (RFC 6455 forbids a server from masking), so it cannot be reused
+    here even though it happens to produce the same header shape."""
+    header = bytearray()
+    header.append(0x80 | (opcode & 0x0F))
+    length = len(payload)
+    if length < 126:
+        header.append(0x80 | length)
+    elif length < 65536:
+        header.append(0x80 | 126)
+        header += length.to_bytes(2, "big")
+    else:
+        header.append(0x80 | 127)
+        header += length.to_bytes(8, "big")
+    masked_payload = bytes(b ^ mask[i % 4] for i, b in enumerate(payload))
+    return header + bytearray(mask) + bytearray(masked_payload)
+
+
 class TestFrameCodec:
     def test_accept_key_matches_the_rfc6455_published_test_vector(self):
         # https://datatracker.ietf.org/doc/html/rfc6455#section-1.3
@@ -195,8 +226,7 @@ class TestFrameCodec:
 
     def test_encode_decode_round_trip_small_payload(self):
         payload = b'{"t":"hello"}'
-        frame = _encode_ws_frame(payload)
-        buf = bytearray(frame)
+        buf = _mask_client_frame(payload)
         opcode, decoded = _try_parse_ws_frame(buf)
         assert opcode == 0x1
         assert decoded == payload
@@ -204,15 +234,15 @@ class TestFrameCodec:
 
     def test_encode_decode_round_trip_16bit_length(self):
         payload = b"x" * 5000
-        frame = _encode_ws_frame(payload)
-        assert frame[1] == 126
+        frame = _mask_client_frame(payload)
+        assert frame[1] == 0x80 | 126
         buf = bytearray(frame)
         opcode, decoded = _try_parse_ws_frame(buf)
         assert decoded == payload
 
     def test_partial_frame_returns_none_until_complete(self):
         payload = b'{"t":"x"}'
-        frame = _encode_ws_frame(payload)
+        frame = _mask_client_frame(payload)
         buf = bytearray(frame[:3])
         assert _try_parse_ws_frame(buf) is None
         buf.extend(frame[3:])
@@ -230,11 +260,25 @@ class TestFrameCodec:
     def test_oversized_declared_length_raises_overflow(self):
         from extensions.multiplayer_lan.state import MAX_FRAME_BYTES
         huge = MAX_FRAME_BYTES + 1
-        header = bytearray([0x81, 127]) + huge.to_bytes(8, "big")
+        # Mask bit (0x80) set on the length byte -- a real client's frame
+        # always has it; the overflow check fires before the mask key is
+        # ever read, so no actual mask key bytes are needed here.
+        header = bytearray([0x81, 0x80 | 127]) + huge.to_bytes(8, "big")
         try:
             _try_parse_ws_frame(header)
             assert False, "expected WSFrameOverflow"
         except WSFrameOverflow:
+            pass
+
+    def test_unmasked_client_frame_is_rejected(self):
+        """M8, docs/FULL_AUDIT_2026-09-07.md: RFC 6455 SS5.1 requires a
+        server to reject an unmasked client frame outright."""
+        payload = b'{"t":"hello"}'
+        frame = bytearray([0x81, len(payload)]) + payload  # mask bit NOT set
+        try:
+            _try_parse_ws_frame(frame)
+            assert False, "expected WSProtocolViolation"
+        except WSProtocolViolation:
             pass
 
 
@@ -408,6 +452,77 @@ class TestSendPathConnectionLoss:
             assert closed, (
                 "poll() must return the CONN_CLOSED event from a "
                 "send()-path failure on the WebSocket transport too")
+        finally:
+            host.close()
+
+
+# ---------------------------------------------------------------------------
+# M8, docs/FULL_AUDIT_2026-09-07.md: Origin check
+# ---------------------------------------------------------------------------
+
+class TestOriginIsAllowed:
+    """Unit tests on the pure header/host-matching logic."""
+
+    def test_no_origin_header_is_allowed(self):
+        assert _origin_is_allowed(b"Host: x\r\n", "192.168.1.5") is True
+
+    def test_loopback_origin_is_allowed(self):
+        for origin in (b"http://localhost:8000", b"http://127.0.0.1:8000",
+                       b"http://[::1]:8000"):
+            assert _origin_is_allowed(b"Origin: " + origin + b"\r\n", "192.168.1.5") is True
+
+    def test_file_origin_null_is_allowed(self):
+        # Browsers send "Origin: null" for a page opened via file:// --
+        # the "double-click the exported HTML5 file" case.
+        assert _origin_is_allowed(b"Origin: null\r\n", "192.168.1.5") is True
+
+    def test_origin_matching_local_host_is_allowed(self):
+        assert _origin_is_allowed(
+            b"Origin: http://192.168.1.5:8000\r\n", "192.168.1.5") is True
+
+    def test_different_remote_origin_is_rejected(self):
+        """The exploit the finding describes: a page on some other site
+        the student happens to have open opens a WebSocket back to the
+        LAN host."""
+        assert _origin_is_allowed(
+            b"Origin: https://evil.example.com\r\n", "192.168.1.5") is False
+
+    def test_different_lan_host_origin_is_rejected(self):
+        assert _origin_is_allowed(
+            b"Origin: http://192.168.1.9:8000\r\n", "192.168.1.5") is False
+
+    def test_case_insensitive_host_match(self):
+        assert _origin_is_allowed(
+            b"Origin: http://LOCALHOST:8000\r\n", "192.168.1.5") is True
+
+
+class TestOriginCheckEndToEnd:
+    def test_handshake_with_no_origin_still_succeeds(self):
+        """Behaviour-preservation: every existing non-browser-style test
+        client (none of which send Origin) must be unaffected."""
+        host = WebSocketHost(0)
+        host.start()
+        try:
+            sock = _connect_raw_socket(host.bound_port)
+            try:
+                _minimal_ws_handshake(sock, pump=lambda: host.poll())
+            finally:
+                sock.close()
+        finally:
+            host.close()
+
+    def test_handshake_with_hostile_origin_is_refused(self):
+        host = WebSocketHost(0)
+        host.start()
+        try:
+            sock = _connect_raw_socket(host.bound_port)
+            try:
+                with pytest.raises((ConnectionError, TimeoutError)):
+                    _minimal_ws_handshake(
+                        sock, pump=lambda: host.poll(),
+                        origin="https://evil.example.com")
+            finally:
+                sock.close()
         finally:
             host.close()
 

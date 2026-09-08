@@ -30,6 +30,7 @@ import json
 import re
 import socket
 from typing import Optional
+from urllib.parse import urlparse
 
 from core.logger import get_logger
 from .framing import RateLimiter
@@ -44,6 +45,8 @@ _MAX_OUTBUF_BYTES = 262144
 _RECV_CHUNK = 65536
 
 _SEC_WS_KEY_RE = re.compile(rb"[Ss]ec-[Ww]eb[Ss]ocket-[Kk]ey:[ \t]*([^\r\n]+)")
+_ORIGIN_HEADER_RE = re.compile(rb"^[Oo]rigin:[ \t]*([^\r\n]+)", re.MULTILINE)
+_LOOPBACK_HOSTS = frozenset({"localhost", "127.0.0.1", "::1", "[::1]"})
 
 _OP_CONT = 0x0
 _OP_TEXT = 0x1
@@ -59,9 +62,62 @@ class WSFrameOverflow(Exception):
     ``framing.FrameOverflow``, just for the WS transport."""
 
 
+class WSProtocolViolation(Exception):
+    """A client sent something RFC 6455 forbids -- currently just an
+    unmasked frame (M8, docs/FULL_AUDIT_2026-09-07.md). RFC 6455 §5.1:
+    "a server MUST close the connection upon receiving a frame that is
+    not masked" -- masking exists specifically so a malicious web page
+    can't use a browser's WebSocket API to smuggle attacker-chosen bytes
+    to a server the same way it could an unmasked raw TCP write; every
+    real browser (and every conformant client library) always masks, so
+    this can only ever fire for a hand-crafted, non-browser peer."""
+
+
 def _ws_accept_key(key: str) -> str:
     digest = hashlib.sha1((key + _WS_GUID).encode("ascii")).digest()
     return base64.b64encode(digest).decode("ascii")
+
+
+def _origin_is_allowed(headers: bytes, local_host: str) -> bool:
+    """M8, docs/FULL_AUDIT_2026-09-07.md: is this handshake's Origin header
+    (if any) one this server should accept the upgrade from?
+
+    No allowlist configuration exists (or is needed) for the common cases:
+    - No Origin header at all -- a non-browser client (this transport is
+      browser-only, but a curl/websocat-style tool, or a future non-browser
+      client, sends none). Allowed.
+    - Origin is loopback (localhost/127.0.0.1/::1) -- the "open the
+      exported HTML5 file locally and test against this machine" case, or
+      a page served from ``file://`` (browsers send ``Origin: null`` for
+      that, which also fails to parse as loopback OR as this host, so it
+      is covered by the general "unparseable -- allow" fallback below,
+      matching a real `file://`-origin WebSocket client's normal, harmless
+      behaviour). Allowed.
+    - Origin's host matches this specific connection's own local address
+      (the LAN IP a browser on the SAME machine, or reaching this machine
+      by a different route, used to open the page) -- the "the teacher
+      serves the HTML5 export from their own machine" case. Allowed.
+
+    Anything else -- a real, different remote origin -- is exactly the
+    "student has some other website open and it drives the host" case the
+    finding describes, and is rejected.
+    """
+    match = _ORIGIN_HEADER_RE.search(headers)
+    if not match:
+        return True
+    origin = match.group(1).decode("ascii", "ignore").strip()
+    if not origin or origin.lower() == "null":
+        return True
+    try:
+        host = urlparse(origin).hostname
+    except ValueError:
+        return True
+    if not host:
+        return True
+    host = host.lower()
+    if host in _LOOPBACK_HOSTS:
+        return True
+    return host == local_host.lower()
 
 
 def _encode_ws_frame(payload: bytes, opcode: int = _OP_TEXT) -> bytes:
@@ -86,12 +142,18 @@ def _try_parse_ws_frame(buf: bytearray):
     returning ``(opcode, payload)``. ``None`` if ``buf`` doesn't yet hold a
     complete frame -- wait for more bytes. Raises ``WSFrameOverflow`` for a
     declared length over the cap (checked as soon as the length is known,
-    before waiting on the payload)."""
+    before waiting on the payload), or ``WSProtocolViolation`` for an
+    unmasked frame (checked first, as soon as the mask bit is readable)."""
     if len(buf) < 2:
         return None
     b0, b1 = buf[0], buf[1]
     opcode = b0 & 0x0F
     masked = bool(b1 & 0x80)
+    if not masked:
+        # RFC 6455 §5.1: a server MUST close the connection on an unmasked
+        # client frame. Checked before any further parsing -- there is no
+        # legitimate reason to ever see one from a real browser.
+        raise WSProtocolViolation("unmasked client frame")
     length = b1 & 0x7F
     pos = 2
     if length == 126:
@@ -257,6 +319,13 @@ class WebSocketHost:
         if not match:
             self._kill(cid, conn, events, "not a websocket upgrade request")
             return False
+        try:
+            local_host = conn.sock.getsockname()[0]
+        except OSError:
+            local_host = ""
+        if not _origin_is_allowed(headers, local_host):
+            self._kill(cid, conn, events, "origin not allowed")
+            return False
         key = match.group(1).decode("ascii", "ignore").strip()
         accept = _ws_accept_key(key)
         response = (
@@ -285,6 +354,9 @@ class WebSocketHost:
                 parsed = _try_parse_ws_frame(conn.fbuf)
             except WSFrameOverflow:
                 self._kill(cid, conn, events, "frame overflow")
+                return False
+            except WSProtocolViolation as exc:
+                self._kill(cid, conn, events, str(exc))
                 return False
             if parsed is None:
                 return True
