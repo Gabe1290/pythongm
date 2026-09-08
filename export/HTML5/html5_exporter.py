@@ -178,6 +178,39 @@ def _copy_asset_file(full_path: Path, dest_dir: Path, asset_name: str,
     return f"{url_prefix}/{dest_path.name}"
 
 
+# core/asset_manager.py's SUPPORTED_FORMATS["sprites"]/["backgrounds"] accept
+# all of these; mimetypes.guess_type doesn't know .webp/.tga on every
+# platform (confirmed empirically -- both return None on this box), so a
+# small override table covers the gap rather than trusting the stdlib alone
+# (L10, docs/FULL_AUDIT_2026-09-07.md).
+_IMAGE_MIME_OVERRIDES = {
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.bmp': 'image/bmp',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.tga': 'image/x-tga',
+}
+
+
+def _image_mime_type(path: Path) -> str:
+    """Best-known mime type for an embedded sprite/background data: URI.
+
+    The old inline logic hardcoded image/png as the default and only ever
+    special-cased .jpg/.jpeg (sprites) or nothing at all (backgrounds), so
+    a .bmp/.webp/.tga file -- every one of them a real, importable sprite
+    format -- was embedded as "data:image/png;base64,<its real bytes>", a
+    label that doesn't match the payload and fails to decode in browsers
+    that check it (rather than sniffing the actual bytes)."""
+    import mimetypes
+    ext = path.suffix.lower()
+    if ext in _IMAGE_MIME_OVERRIDES:
+        return _IMAGE_MIME_OVERRIDES[ext]
+    guessed, _ = mimetypes.guess_type(str(path))
+    return guessed or 'application/octet-stream'
+
+
 class HTML5Exporter:
     """Export PyGameMaker projects to HTML5"""
 
@@ -879,15 +912,7 @@ class HTML5Exporter:
                     with open(full_path, 'rb') as f:
                         sprite_bytes = f.read()
                         b64 = base64.b64encode(sprite_bytes).decode('utf-8')
-
-                        # Detect image type
-                        ext = full_path.suffix.lower()
-                        mime_type = 'image/png'
-                        if ext == '.jpg' or ext == '.jpeg':
-                            mime_type = 'image/jpeg'
-                        elif ext == '.gif':
-                            mime_type = 'image/gif'
-
+                        mime_type = _image_mime_type(full_path)
                         encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
             except Exception as e:
                 logger.warning(f"  Failed to encode {sprite_name}: {e}")
@@ -916,12 +941,7 @@ class HTML5Exporter:
                     with open(full_path, 'rb') as f:
                         bg_bytes = f.read()
                         b64 = base64.b64encode(bg_bytes).decode('utf-8')
-
-                        ext = full_path.suffix.lower()
-                        mime_type = 'image/png'
-                        if ext == '.jpg' or ext == '.jpeg':
-                            mime_type = 'image/jpeg'
-
+                        mime_type = _image_mime_type(full_path)
                         encoded[bg_name] = f"data:{mime_type};base64,{b64}"
             except Exception as e:
                 logger.warning(f"  Failed to encode background {bg_name}: {e}")
