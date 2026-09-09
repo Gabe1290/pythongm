@@ -74,18 +74,27 @@ This is the complete list. Everything else that used to be tracked in
    smaller and lower-priority than the other three — write a plan when
    it's actually next in line, not speculatively.
 
-5. **`docs/BLOCK_WORLD_PERF_PLAN.md` — the Block World fps gap, now scoped.**
-   *(New 2026-09-06.)* This entry used to point at `TODO.md` and say the gap
-   was "deliberately parked". It has since been worked: `block_world_1` went
-   17.3 → 35.9 fps standing still (**past its 30 fps target**) and 3.5 → 16.5
-   walking, `block_world_2` 7.4 → 15.7. What remains is `block_world_2` alone,
-   and the plan exists to record that it is **not** the renderer rewrite the
-   old note assumed. Measured: drawing is 51 of a 65 ms frame, the draw count
-   is dominated by distance, and `render_distance` 10 already measures 32.8 fps
-   — target met — if distance fog is added so a shorter view is haze rather
-   than a hard brown cut. Phase 1 is a day's work and improves how the sample
-   looks regardless of frame rate; Phases 2–3 are explicitly conditional on
-   Phase 1 falling short.
+5. **`docs/BLOCK_WORLD_PERF_PLAN.md` — the Block World fps gap. CLOSED
+   2026-09-09; Phase 1 shipped, re-measured, stopping there per the plan's
+   own recommendation.** *(Superseding this item's 2026-09-06 "now scoped"
+   framing, which had gone stale the same way items 1/2 above once did —
+   Phase 1 landed the next day, 2026-09-07, and this entry was never
+   updated.)* Distance fog + `render_distance` 10 (all three targets — see
+   the plan doc's 1.1–1.4) is live in code today: `fog_amount`/`fog_mix` in
+   `extensions/block_world/renderer.py`, ported to `export_html5.js` and
+   `export_kivy.py`, both samples' cameras at `render_distance: 10`.
+   **Fresh measurement 2026-09-09** (`tools/measure_block_world_fps.py`,
+   interleaved, 30fps target): `block_world_1` static 37.9 (met), walking
+   16.2 (1.8x under — an enclosed maze, never render-distance-bound, so fog
+   doesn't touch it); `block_world_2` static 26.5 / walking 27.3 (both only
+   ~1.1x under, down from ~2x pre-fog). Asked the user whether to chase the
+   remaining ~10% on `block_world_2` (Phase 2, estimated ~+5%, likely not
+   enough on its own) or investigate `block_world_1` walking (a different,
+   unscoped near-wall-pixel-cost regime) — **decision: stop here.** Neither
+   sample is in the Welcome tab (see `TODO.md`'s Block World section), Phase
+   1 already delivered on its own stated goal, and the plan doc itself says
+   not to start Phase 2/3 without a clear need. Re-open only on a fresh,
+   explicit ask.
 
 6. **`TODO.md`'s own small leftover** (tracked there, not duplicated here): a
    low-priority asset-type-registration formalization note, with no current

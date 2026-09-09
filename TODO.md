@@ -894,6 +894,20 @@ existed. Regenerated; 0 untranslated strings reported now.
   that whitelist instead, being simple enough for a beginner. Re-add the
   two Welcome tab tuples to bring block_world back into view if work on it
   resumes later.
+- **Update 2026-09-09: `docs/BLOCK_WORLD_PERF_PLAN.md` Phase 1 shipped
+  (2026-09-07, one day after the "set aside" note above) as a deliberate,
+  narrow exception — it's a visual fix (kills the hard brown horizon cut)
+  as much as a speed one. Re-measured fresh on an explicit user ask to pick
+  the fps item back up: `block_world_2` now 26.5/27.3 fps (static/walking,
+  30fps target) — only ~1.1x under, down from ~2x. `block_world_1` meets
+  target standing still; walking (16.2, 1.8x under) is untouched by fog —
+  an enclosed maze, never render-distance-bound. Asked the user whether to
+  chase Phase 2 (block_world_2's last ~10%, est. ~+5%) or the untouched
+  block_world_1-walking regime; **decided to stop here**, matching the
+  plan doc's own recommendation not to start Phase 2/3 without a clear
+  need. The "set aside"/Welcome-tab decision above still stands — this was
+  a re-measurement, not a reversal. Full detail in
+  `docs/PROJECT_STATUS.md` item 5.
 
 ## Kivy export: variable NAMES and VALUES (fixed 2026-09-06)
 
