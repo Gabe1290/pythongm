@@ -1,0 +1,466 @@
+{
+  "name": "block_world_3",
+  "version": "1.0.0",
+  "created": "2026-09-09T00:00:00.000000",
+  "modified": "2026-09-09T00:00:00.000000",
+  "settings": {
+    "window_title": "Block World — Crafting",
+    "window_width": 640,
+    "window_height": 480,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_person": {
+        "name": "spr_person",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_person.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-09-09T00:00:00.000000",
+        "modified": "2026-09-09T00:00:00.000000"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_person": {
+        "name": "obj_person",
+        "asset_type": "object",
+        "sprite": "spr_person",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "enable_block_world_view",
+                "parameters": {
+                  "camera_object": "obj_person",
+                  "z_layer": "1",
+                  "fov": "66",
+                  "cell_size": "32",
+                  "render_distance": "10",
+                  "wall_color": "#8a8a8a",
+                  "floor_color": "#3a2f1c",
+                  "ceiling_color": "#87CEEB",
+                  "inventory": "true"
+                }
+              },
+              {
+                "action": "set_crafting_recipe",
+                "parameters": {
+                  "output": "brick",
+                  "output_count": "4",
+                  "input_1": "clay",
+                  "input_1_count": "4",
+                  "input_2": "",
+                  "input_2_count": "1",
+                  "input_3": "",
+                  "input_3_count": "1"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "won",
+                  "value": "0",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "help_on",
+                  "value": "1",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "self.block_inventory = {}"
+                }
+              }
+            ]
+          },
+          "game_start": {
+            "actions": [
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": false
+                }
+              },
+              {
+                "action": "load_block_world",
+                "parameters": {
+                  "data_file": "blocks/room0.json"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "won == 0 and block_inventory.get('brick', 0) >= 4 and abs(x - 304) < 24 and abs(y - 208) < 24",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "won",
+                        "value": "1",
+                        "scope": "self"
+                      }
+                    },
+                    {
+                      "action": "set_score",
+                      "parameters": {
+                        "value": "100",
+                        "relative": true
+                      }
+                    },
+                    {
+                      "action": "show_message",
+                      "parameters": {
+                        "message": "Delivered! You mined the clay, crafted it into bricks, and brought them to the beacon. You win!",
+                        "message_translations": {
+                          "fr": "Livré ! Tu as extrait l'argile, l'as transformée en briques, et les as apportées à la balise. Tu as gagné !"
+                        }
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          },
+          "keyboard": {
+            "w": {
+              "actions": [
+                {
+                  "action": "move_and_collide",
+                  "parameters": {
+                    "dx": "0",
+                    "dy": "-4"
+                  }
+                }
+              ]
+            },
+            "s": {
+              "actions": [
+                {
+                  "action": "move_and_collide",
+                  "parameters": {
+                    "dx": "0",
+                    "dy": "4"
+                  }
+                }
+              ]
+            },
+            "a": {
+              "actions": [
+                {
+                  "action": "move_and_collide",
+                  "parameters": {
+                    "dx": "-4",
+                    "dy": "0"
+                  }
+                }
+              ]
+            },
+            "d": {
+              "actions": [
+                {
+                  "action": "move_and_collide",
+                  "parameters": {
+                    "dx": "4",
+                    "dy": "0"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "set_facing_angle",
+                  "parameters": {
+                    "angle": "3",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "set_facing_angle",
+                  "parameters": {
+                    "angle": "-3",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "set_look_pitch",
+                  "parameters": {
+                    "pitch": "2",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "down": {
+              "actions": [
+                {
+                  "action": "set_look_pitch",
+                  "parameters": {
+                    "pitch": "-2",
+                    "relative": true
+                  }
+                }
+              ]
+            }
+          },
+          "keyboard_press": {
+            "space": {
+              "actions": [
+                {
+                  "action": "break_block",
+                  "parameters": {
+                    "reach": "5"
+                  }
+                }
+              ]
+            },
+            "c": {
+              "actions": [
+                {
+                  "action": "craft_item",
+                  "parameters": {
+                    "output": "brick"
+                  }
+                }
+              ]
+            },
+            "h": {
+              "actions": [
+                {
+                  "action": "test_variable",
+                  "parameters": {
+                    "variable": "help_on",
+                    "value": "0",
+                    "scope": "instance",
+                    "operation": "equal"
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "help_on",
+                    "value": "1",
+                    "scope": "instance",
+                    "relative": false
+                  }
+                },
+                {
+                  "action": "exit_event",
+                  "parameters": {}
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "help_on",
+                    "value": "0",
+                    "scope": "instance",
+                    "relative": false
+                  }
+                }
+              ]
+            }
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "draw_block_world_hud",
+                "parameters": {}
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "help_on",
+                  "value": "1",
+                  "scope": "instance",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#101018"
+                }
+              },
+              {
+                "action": "draw_rectangle",
+                "parameters": {
+                  "x1": "14",
+                  "y1": "12",
+                  "x2": "506",
+                  "y2": "198",
+                  "filled": true
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#ffd040"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"CONTROLS            H = hide\"",
+                  "x": "26",
+                  "y": "20",
+                  "text_translations": {
+                    "fr": "\"COMMANDES          H = masquer\""
+                  }
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#ffffff"
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"W A S D   -  Move\"",
+                  "x": "26",
+                  "y": "48",
+                  "text_translations": {
+                    "fr": "\"W A S D   -  Se déplacer\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Left / Right  -  Turn\"",
+                  "x": "26",
+                  "y": "76",
+                  "text_translations": {
+                    "fr": "\"Gauche / Droite  -  Tourner\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Space   -  Mine clay\"",
+                  "x": "26",
+                  "y": "104",
+                  "text_translations": {
+                    "fr": "\"Espace   -  Extraire l'argile\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"C   -  Craft 4 clay into bricks\"",
+                  "x": "26",
+                  "y": "132",
+                  "text_translations": {
+                    "fr": "\"C   -  Transformer 4 argiles en briques\""
+                  }
+                }
+              },
+              {
+                "action": "draw_text",
+                "parameters": {
+                  "text": "\"Bring 4+ bricks to the gold beacon to win\"",
+                  "x": "26",
+                  "y": "160",
+                  "text_translations": {
+                    "fr": "\"Apporte 4 briques ou plus à la balise dorée pour gagner\""
+                  }
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          }
+        },
+        "imported": false,
+        "created": "2026-09-09T00:00:00.000000",
+        "modified": "2026-09-09T00:00:00.000000",
+        "parent": "",
+        "remember_destroyed": false
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 640,
+        "height": 480,
+        "background_color": "#87CEEB",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 1,
+        "instances": [],
+        "created": "2026-09-09T00:00:00.000000",
+        "modified": "2026-09-09T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}
