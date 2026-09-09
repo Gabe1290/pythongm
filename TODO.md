@@ -928,6 +928,20 @@ existed. Regenerated; 0 untranslated strings reported now.
   need. The "set aside"/Welcome-tab decision above still stands — this was
   a re-measurement, not a reversal. Full detail in
   `docs/PROJECT_STATUS.md` item 5.
+- **Found while porting Tier 8 crafting to Kivy (2026-09-09), not fixed —
+  logged so it isn't lost: `set_block_reward` (Tier 7b's mine-to-collect
+  score payout) is entirely unported on the Kivy export target.** Neither
+  a `_bw_set_block_reward` scene method nor a `_cg_set_block_reward`
+  codegen entry exists in `extensions/block_world/export_kivy.py` — the
+  action falls through to the generic unsupported-action no-op. Desktop
+  and HTML5 both implement it correctly (`tests/test_block_world_reward.py`,
+  `tests/test_html5_block_world_reward.py`); there is no
+  `tests/test_kivy_block_world_reward.py`, which is how this went
+  unnoticed. Out of scope for `docs/BLOCK_WORLD_CRAFTING_PLAN.md`'s own
+  Unit 2 (a different action); fix by mirroring
+  `_bw_set_block_protection`'s scene method + `_cg_set_block_protection`'s
+  codegen shape (same call-once-per-type-on-camera-config pattern) plus a
+  `rewards` payout check added to `_bw_break_block`, when picked up.
 
 ## Kivy export: variable NAMES and VALUES (fixed 2026-09-06)
 

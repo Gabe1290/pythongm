@@ -892,6 +892,73 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             return
         cfg.setdefault('protection', {})[block_type] = required_key
 
+    def _bw_crafting_slot(self, block_type, count):
+        """One recipe input slot's (block_type, count) pair, or None if
+        blank/malformed. Mirrors handlers._valid_input_slot exactly."""
+        block_type = str(block_type) if block_type else ''
+        if not block_type or block_type not in self.BLOCK_FACE_COLORS:
+            return None
+        try:
+            count = int(count)
+        except (TypeError, ValueError):
+            return None
+        if count <= 0:
+            return None
+        return (block_type, count)
+
+    def _bw_set_crafting_recipe(self, output, output_count, input_1, input_1_count,
+                                 input_2, input_2_count, input_3, input_3_count):
+        """Tier 8 (docs/BLOCK_WORLD_CRAFTING_PLAN.md). Mirrors
+        handlers.execute_set_crafting_recipe_action exactly."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        output = str(output) if output else ''
+        if output not in self.BLOCK_FACE_COLORS:
+            return
+        try:
+            output_count = int(output_count)
+        except (TypeError, ValueError):
+            return
+        if output_count <= 0:
+            return
+
+        first = self._bw_crafting_slot(input_1, input_1_count)
+        if first is None:
+            return  # input_1 is required -- no recipe without at least one input
+        inputs = [first]
+        for t, c in ((input_2, input_2_count), (input_3, input_3_count)):
+            extra = self._bw_crafting_slot(t, c)
+            if extra is not None:
+                inputs.append(extra)
+
+        cfg.setdefault('recipes', {})[output] = {
+            'output_count': output_count,
+            'inputs': inputs,
+        }
+
+    def _bw_craft_item(self, obj, output):
+        """Tier 8 (docs/BLOCK_WORLD_CRAFTING_PLAN.md). Mirrors
+        handlers.execute_craft_item_action exactly -- all-or-nothing
+        consumption, checked before any input is consumed."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled') or not cfg.get('inventory'):
+            return
+        output = str(output) if output else ''
+        recipe = (cfg.get('recipes') or {}).get(output)
+        if not recipe:
+            return
+
+        inventory = getattr(obj, 'block_inventory', None) or {}
+        for block_type, needed in recipe['inputs']:
+            if inventory.get(block_type, 0) < needed:
+                return  # short on this input -- consume nothing
+
+        for block_type, needed in recipe['inputs']:
+            inventory[block_type] -= needed
+        inventory[output] = inventory.get(output, 0) + recipe['output_count']
+        obj.block_inventory = inventory
+
     def _bw_select_hotbar_slot(self, obj, index, relative):
         index = int(index)
         if relative:
@@ -1213,6 +1280,26 @@ def _cg_set_block_protection(gen, params, event_type):
     required_key = str(params.get('required_key', ''))
     return f"self.scene._bw_set_block_protection({block_type!r}, {required_key!r})"
 
+def _cg_set_crafting_recipe(gen, params, event_type):
+    from export.Kivy.code_generator import _tofloat
+    output = str(params.get('output', ''))
+    output_count = int(_tofloat(params.get('output_count', 1), 1))
+    input_1 = str(params.get('input_1', ''))
+    input_1_count = int(_tofloat(params.get('input_1_count', 1), 1))
+    input_2 = str(params.get('input_2', ''))
+    input_2_count = int(_tofloat(params.get('input_2_count', 1), 1))
+    input_3 = str(params.get('input_3', ''))
+    input_3_count = int(_tofloat(params.get('input_3_count', 1), 1))
+    return (f"self.scene._bw_set_crafting_recipe("
+            f"{output!r}, {output_count}, "
+            f"{input_1!r}, {input_1_count}, "
+            f"{input_2!r}, {input_2_count}, "
+            f"{input_3!r}, {input_3_count})")
+
+def _cg_craft_item(gen, params, event_type):
+    output = str(params.get('output', ''))
+    return f"self.scene._bw_craft_item(self, {output!r})"
+
 def _cg_load_block_world(gen, params, event_type):
     data_file = str(params.get('data_file', ''))
     if not data_file:
@@ -1253,4 +1340,6 @@ ACTION_CODEGEN = {
     'draw_block_world_hud': _cg_draw_block_world_hud,
     'load_block_world': _cg_load_block_world,
     'set_look_pitch': _cg_set_look_pitch,
+    'set_crafting_recipe': _cg_set_crafting_recipe,
+    'craft_item': _cg_craft_item,
 }

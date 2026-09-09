@@ -201,17 +201,63 @@ each — the standard workflow this repo uses for every Block World Tier.
       permitted operations) before the gate could go green.
       Full suite: **4,668 passed, 0 failed, 10 skipped** — clean, no
       flakes.
-- [ ] **Unit 2 — HTML5 + Kivy parity.** Port both actions into
-      `export_html5.js` and `export_kivy.py`, mirroring exactly how Tier
-      7c's inventory reads/writes (`obj.block_inventory` /
-      `getattr(obj, 'block_inventory', None)`) were ported for
-      break/place. Extend `tests/test_block_world_export_parity.py` (or a
-      sibling) to pin recipe-storage shape and craft-consumption logic
-      identically across all three sources, same discipline as the fog
-      parity test from `docs/BLOCK_WORLD_PERF_PLAN.md` 1.4 — mutation-test
-      each port (a Kivy version that consumes only the first input, an
-      HTML5 version that doesn't check Inventory) to prove the parity
-      test actually catches drift, not just that it passes once.
+- [x] **Unit 2 — HTML5 + Kivy parity. DONE (2026-09-09).** Both actions
+      ported, mirroring the `set_block_protection` precedent (the closest
+      structural match — register-once-per-type on the camera config) on
+      both targets:
+      - **HTML5** (`export_html5.js`): `registerExtensionAction`
+        entries for `set_crafting_recipe`/`craft_item`, plus a shared
+        `bwCraftingSlot(typeVal, countVal, obj, game)` helper (mirrors
+        `handlers._valid_input_slot`) so `input_1`'s required-vs-
+        `input_2`/`input_3`'s optional validation can't silently drift
+        apart between slots.
+      - **Kivy** (`export_kivy.py`): `_bw_crafting_slot`/
+        `_bw_set_crafting_recipe`/`_bw_craft_item` scene methods (SCENE_CODE
+        — literal braces, not `.format()`-doubled, confirmed against the
+        existing `cfg.setdefault('protection', {})` precedent already in
+        that string) + `_cg_set_crafting_recipe`/`_cg_craft_item` codegen
+        functions (using `_tofloat` at codegen time, matching
+        `_cg_place_block`'s `reach` handling, since these are compile-time
+        literal params, not runtime expressions) + both registered in
+        `ACTION_CODEGEN`.
+      `tests/test_kivy_block_world_crafting.py` (15 tests: codegen strings,
+      a compile-check that the generated scene source is valid Python, and
+      real execution against `_blank_scene` covering the same scenarios as
+      the desktop tests) and `tests/test_html5_block_world_crafting.py`
+      (7 tests: source-structural, no JS engine in CI, matching this
+      extension's established tier for HTML5).
+      **`tests/test_block_world_crafting_export_parity.py`** (9 tests, a
+      sibling file rather than extending `test_block_world_export_parity.py`
+      — that file is specifically DDA/render-math parity, a different shape
+      of check than crafting's plain dict/count logic): feeds identical
+      recipe-registration and craft-attempt calls to desktop's real
+      `PluginExecutor` handlers and Kivy's real `_bw_*` scene methods via
+      `_blank_scene`, asserting byte-identical resulting state across 4
+      scenarios (single/two/three-input, blank-slot-2-with-valid-slot-3)
+      plus an explicit all-or-nothing short-input case.
+      **Mutation-tested for real, not just asserted to exist**: temporarily
+      changed Kivy's `_bw_craft_item` to consume only the first input (the
+      plan's own suggested mutation) — 3 of 4 multi-input parity scenarios
+      failed exactly as expected (the single-input one is unaffected by
+      construction), confirming the parity test actually catches drift.
+      Separately, temporarily dropped HTML5's `cfg.inventory` check —
+      `test_craft_item_checks_inventory_flag_and_recipe_presence` failed
+      exactly as expected. Both mutations reverted immediately after
+      (`git diff --stat` confirmed pure additions, no residual change).
+      Also extended `tests/test_export_block_world_ownership.py`'s
+      existing (partial, not-fully-exhaustive) action-name lists to
+      include the two new actions, so a future regression re-inlining
+      crafting code into a core export engine would trip there too.
+      **Real, unrelated pre-existing gap found and logged, not fixed
+      (out of this plan's scope)**: Kivy has NO `set_block_reward`
+      port at all (Tier 7b's mine-to-collect payout) — missing both
+      scene method and codegen entry, with no test file to have caught
+      it (`tests/test_kivy_block_world_reward.py` doesn't exist). Logged
+      in `TODO.md`'s Block World section with the fix shape, not chased
+      here.
+      Full `block_world`-keyed suite: 708 passed (677 → 708, +31 across
+      the three new test files). Full suite: **4,699 passed, 0 failed,
+      10 skipped** — clean, no flakes.
 - [ ] **Unit 3 — action reference + README.** Re-run
       `tools/gen_action_reference.py` (both new actions need
       `EN_OVERRIDES`/i18n table entries if this extension is still
