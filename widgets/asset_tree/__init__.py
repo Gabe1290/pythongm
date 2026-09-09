@@ -21,7 +21,8 @@ from .asset_utils import (
     create_asset_data_template,
     get_asset_categories,
     get_supported_file_extensions,
-    get_asset_file_filter
+    get_asset_file_filter,
+    ASSET_TYPE_REGISTRY
 )
 
 # Version info
@@ -49,7 +50,8 @@ __all__ = [
     'create_asset_data_template',
     'get_asset_categories',
     'get_supported_file_extensions',
-    'get_asset_file_filter'
+    'get_asset_file_filter',
+    'ASSET_TYPE_REGISTRY'
 ]
 
 # Module-level convenience functions

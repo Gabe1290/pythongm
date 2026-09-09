@@ -168,39 +168,34 @@ class TestFontEditor:
 
 
 class TestAssetEditorDispatchWiring:
-    """core/ide_window.py's on_asset_double_clicked / _canonical_category —
-    static source checks (no full IDEWindow instantiation needed) that the
-    three new asset types are actually wired into the dispatch, not just
-    that the editor classes exist in isolation."""
-
-    def _source(self):
-        # Absolute (repo-root-relative), not a bare relative path: CI's
-        # widget-tests job runs `cd tests && pytest .`, so a relative
-        # "core/ide_window.py" resolves against tests/ and raises
-        # FileNotFoundError there even though every local `pytest tests/`
-        # invocation (run from the repo root) resolves it fine.
-        #
-        # The PyGameMakerIDE class is being split into core/ide/_*.py
-        # mixins (docs/POST_1_0_REFACTOR.md File 2), so scan the whole
-        # window + package, not just ide_window.py -- on_asset_double_clicked
-        # / _canonical_category may live in a sibling module now.
-        parts = [(REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")]
-        pkg = REPO_ROOT / "core" / "ide"
-        if pkg.is_dir():
-            parts += [p.read_text(encoding="utf-8") for p in sorted(pkg.glob("*.py"))]
-        return "\n".join(parts)
+    """on_asset_double_clicked / _canonical_category (now core/ide/_assets.py
+    and core/ide/_editor_lifecycle.py, docs/POST_1_0_REFACTOR.md File 2) —
+    that the three new asset types are actually wired into the single-source
+    ASSET_TYPE_REGISTRY dispatch (see tests/test_asset_type_registry.py),
+    not just that the editor classes exist in isolation."""
 
     def test_double_click_dispatch_covers_new_types(self):
-        src = self._source()
-        assert "self.open_sound_editor(asset_name, asset_info)" in src
-        assert "self.open_background_editor(asset_name, asset_info)" in src
-        assert "self.open_font_editor(asset_name, asset_info)" in src
+        # on_asset_double_clicked dispatches through the single-source
+        # ASSET_TYPE_REGISTRY (widgets/asset_tree/asset_utils.py) now, not a
+        # hand-kept if/elif chain -- see tests/test_asset_type_registry.py
+        # for the full dispatch-through-getattr behavioural proof. This test
+        # keeps its original, narrower scope: sound/background/font
+        # specifically are registered at all, and point at the right method.
+        from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
+        assert ASSET_TYPE_REGISTRY["sounds"]["editor_method"] == "open_sound_editor"
+        assert ASSET_TYPE_REGISTRY["backgrounds"]["editor_method"] == "open_background_editor"
+        assert ASSET_TYPE_REGISTRY["fonts"]["editor_method"] == "open_font_editor"
 
     def test_canonical_category_maps_singular_forms(self):
         """Without this, renaming an open sound/background/font asset would
         compute a mismatched editor key ('sound:x' vs the registered
-        'sounds:x') and silently fail to update the open tab."""
-        src = self._source()
-        assert "'sound': 'sounds'" in src
-        assert "'background': 'backgrounds'" in src
-        assert "'font': 'fonts'" in src
+        'sounds:x') and silently fail to update the open tab.
+
+        _canonical_category is now derived from ASSET_TYPE_REGISTRY (see
+        core/ide/_editor_lifecycle.py) rather than its own hand-kept dict --
+        checking the registry's singular fields is the direct, current form
+        of the same assertion."""
+        from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
+        assert ASSET_TYPE_REGISTRY["sounds"]["singular"] == "sound"
+        assert ASSET_TYPE_REGISTRY["backgrounds"]["singular"] == "background"
+        assert ASSET_TYPE_REGISTRY["fonts"]["singular"] == "font"

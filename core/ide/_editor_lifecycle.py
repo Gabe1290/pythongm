@@ -37,6 +37,7 @@ from utils.config import Config
 from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
 from editors.sprite_editor import SpriteEditor
+from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -104,15 +105,20 @@ class EditorLifecycleMixin:
                 if self.editor_tabs.count() == 0:
                     self._add_welcome_tab()
 
+    # Derived from the single-source ASSET_TYPE_REGISTRY (widgets/asset_tree/
+    # asset_utils.py) rather than its own hand-kept dict -- see
+    # ``_verify_asset_editor_registry`` (core/ide/_assets.py) and TODO.md's
+    # "Formalizing the registration" note. Adding a type to the registry
+    # makes it known here for free; nothing to keep in sync by hand.
+    _SINGULAR_TO_PLURAL = {
+        info['singular']: plural for plural, info in ASSET_TYPE_REGISTRY.items()
+    }
+
     @staticmethod
     def _canonical_category(category: str) -> str:
         """Normalize singular/plural asset-type vocabulary (the rename signal
         uses 'object', delete uses 'objects') so composite editor keys agree."""
-        return {
-            'object': 'objects', 'room': 'rooms', 'sprite': 'sprites',
-            'script': 'scripts', 'playground': 'playgrounds',
-            'sound': 'sounds', 'background': 'backgrounds', 'font': 'fonts',
-        }.get(category, category)
+        return EditorLifecycleMixin._SINGULAR_TO_PLURAL.get(category, category)
 
     def _editor_key(self, category: str, name: str) -> str:
         """Composite open-editor key: "<category>:<name>" (L5)."""
