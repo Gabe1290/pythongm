@@ -47,7 +47,8 @@ def test_export_html5_owns_the_block_world_js():
     assert "registerRoomRenderer(function(room, ctx)" in EXPORT_HTML5
     for act in ("enable_block_world_view", "place_block", "break_block",
                 "select_hotbar_slot", "move_and_collide", "draw_block_world_hud",
-                "load_block_world", "set_look_pitch"):
+                "load_block_world", "set_look_pitch",
+                "set_crafting_recipe", "craft_item"):
         assert f"registerExtensionAction('{act}'" in EXPORT_HTML5
 
 
@@ -83,7 +84,8 @@ def test_export_kivy_owns_the_action_codegen():
     assert "ACTION_CODEGEN = {" in EXPORT_KIVY
     for act in ("enable_block_world_view", "place_block", "break_block",
                 "select_hotbar_slot", "move_and_collide", "draw_block_world_hud",
-                "load_block_world", "set_look_pitch"):
+                "load_block_world", "set_look_pitch",
+                "set_crafting_recipe", "craft_item"):
         assert f"def _cg_{act}(" in EXPORT_KIVY
 
 

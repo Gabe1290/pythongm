@@ -1098,6 +1098,63 @@ registerExtensionAction('set_block_protection', function(obj, params, game) {
     cfg.protection[blockType] = requiredKey;
 });
 
+// Tier 8 (docs/BLOCK_WORLD_CRAFTING_PLAN.md): recipe storage/consumption --
+// mirrors handlers.execute_set_crafting_recipe_action/execute_craft_item_action
+// and export_kivy.py's _bw_set_crafting_recipe/_bw_craft_item exactly. A
+// recipe input slot is a well-formed [block_type, count] pair or null;
+// input_1 is required (null aborts the whole registration), input_2/
+// input_3 are each independently well-formed-or-skipped.
+function bwCraftingSlot(typeVal, countVal, obj, game) {
+    const t = typeVal !== undefined ? String(typeVal) : '';
+    if (!t || !BLOCK_FACE_COLORS.hasOwnProperty(t)) return null;
+    const c = parseNumParam(countVal, obj, 1);
+    if (typeof c !== 'number' || !isFinite(c) || c <= 0) return null;
+    return [t, c];
+}
+
+registerExtensionAction('set_crafting_recipe', function(obj, params, game) {
+    if (!game || !game.currentRoom) return;
+    const cfg = game.currentRoom.blockWorldCamera;
+    if (!cfg || !cfg.enabled) return;
+
+    const output = params.output !== undefined ? String(params.output) : '';
+    if (!BLOCK_FACE_COLORS.hasOwnProperty(output)) return;
+    const outputCount = parseNumParam(params.output_count, obj, 1);
+    if (typeof outputCount !== 'number' || !isFinite(outputCount) || outputCount <= 0) return;
+
+    const first = bwCraftingSlot(params.input_1, params.input_1_count, obj, game);
+    if (!first) return;  // input_1 is required -- no recipe without at least one input
+    const inputs = [first];
+    [[params.input_2, params.input_2_count], [params.input_3, params.input_3_count]]
+        .forEach(function(pair) {
+            const extra = bwCraftingSlot(pair[0], pair[1], obj, game);
+            if (extra) inputs.push(extra);
+        });
+
+    if (!cfg.recipes) cfg.recipes = {};
+    cfg.recipes[output] = { output_count: outputCount, inputs: inputs };
+});
+
+registerExtensionAction('craft_item', function(obj, params, game) {
+    if (!game || !game.currentRoom) return;
+    const cfg = game.currentRoom.blockWorldCamera;
+    if (!cfg || !cfg.enabled || !cfg.inventory) return;
+
+    const output = params.output !== undefined ? String(params.output) : '';
+    const recipe = (cfg.recipes || {})[output];
+    if (!recipe) return;
+
+    const inv = obj.block_inventory || {};
+    for (const pair of recipe.inputs) {
+        if (!(inv[pair[0]] >= pair[1])) return;  // short -- consume nothing
+    }
+    for (const pair of recipe.inputs) {
+        inv[pair[0]] -= pair[1];
+    }
+    inv[output] = (inv[output] || 0) + recipe.output_count;
+    obj.block_inventory = inv;
+});
+
 registerExtensionAction('enable_block_world_view', function(obj, params, game) {
     if (!game || !game.currentRoom) return;
     const enable = !(params.enable === false || params.enable === 'false' ||
