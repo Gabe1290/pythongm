@@ -915,6 +915,12 @@ class GameObject {
             this.visible = false;
         }
         this.solid = objectData ? (objectData.solid || false) : false;
+        // "Stay destroyed" opt-in: once destroyed, doesn't respawn on a
+        // room rebuild (restart, or a non-persistent revisit) -- see
+        // GameRoom.step's cleanup pass and Game.buildRoom below. Mirrors
+        // the desktop runtime's GameRunner._destroyed_memory /
+        // remember_destroyed object flag.
+        this.remember_destroyed = objectData ? (objectData.remember_destroyed || false) : false;
         this.objectData = objectData;
         this.toDestroy = false;
         this.events = objectData ? (objectData.events || {}) : {};
@@ -2621,6 +2627,11 @@ class GameObject {
                 // state (destroyed instances, moved positions) can't leak
                 // into the next playthrough.
                 game._visitedRooms.clear();
+                // "Stay destroyed" memory is per-playthrough state too --
+                // matches desktop's own restart_game clearing
+                // _destroyed_memory (L17/HTML5-follow-up,
+                // docs/FULL_AUDIT_2026-09-07.md / TODO.md).
+                game._destroyedMemory = {};
                 for (const roomName of Object.keys(game.gameData.assets.rooms)) {
                     game.rooms[roomName] = game.buildRoom(roomName);
                 }
@@ -4029,6 +4040,17 @@ class GameRoom {
                 inst._destroyEventFired = true;
                 inst.triggerEvent('destroy');
             }
+            // "Stay destroyed" opt-in: record this instance's identity on
+            // the game so a later rebuild of this room (a restart, or a
+            // non-persistent revisit) skips respawning it. Mirrors the
+            // desktop runtime's GameRunner._remember_destroyed_instance.
+            if (inst.toDestroy && inst.remember_destroyed) {
+                if (!game._destroyedMemory[this.name]) {
+                    game._destroyedMemory[this.name] = new Set();
+                }
+                game._destroyedMemory[this.name].add(
+                    `${inst.name}|${inst.xstart}|${inst.ystart}`);
+            }
         });
         this.instances = this.instances.filter(inst => !inst.toDestroy);
 
@@ -4181,6 +4203,15 @@ class Game {
         // set_room_persistent support: which room indices/names have been
         // entered before this playthrough — see buildRoom/changeRoom.
         this._visitedRooms = new Set();
+        // "Stay destroyed" opt-in (remember_destroyed): roomName -> Set of
+        // "objectName|xstart|ystart" identity strings for instances a
+        // player already destroyed that must not respawn on that room's
+        // next rebuild. Mirrors the desktop runtime's
+        // GameRunner._destroyed_memory; cleared explicitly by the
+        // restart_game case (per-playthrough state, same as
+        // _visitedRooms just above -- restart_game is a real in-process
+        // reset here, not a page reload).
+        this._destroyedMemory = {};
         this.running = false;
         this.paused = false;
         this.keys = {};
@@ -4559,6 +4590,20 @@ class Game {
             if (objectData && objectData.sprite && sprites[objectData.sprite]) {
                 inst.sprite = sprites[objectData.sprite];
                 inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
+            }
+
+            // "Stay destroyed" opt-in: drop an instance a player already
+            // destroyed in this room, so a freshly-built layout (buildRoom
+            // is the ONE place a room is constructed, so this covers every
+            // rebuild -- startup and a non-persistent revisit alike; a
+            // persistent-room reuse never calls buildRoom, and already
+            // reflects its own live destruction state) doesn't respawn it.
+            // Mirrors the desktop runtime's
+            // GameRunner._apply_destroyed_memory.
+            const remembered = this._destroyedMemory[roomName];
+            if (inst.remember_destroyed && remembered &&
+                remembered.has(`${inst.name}|${inst.xstart}|${inst.ystart}`)) {
+                return;
             }
 
             room.instances.push(inst);
