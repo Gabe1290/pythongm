@@ -1996,6 +1996,14 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <source>Check Sound Playing</source>
         <translation>Prüfen ob Klang läuft</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Rezept festlegen</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Gegenstand herstellen</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

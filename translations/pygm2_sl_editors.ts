@@ -1996,6 +1996,14 @@ Samo dejanje ni prizadeto in bo ob shranjevanju ohranjeno natanko takšno, kot j
         <source>Check Sound Playing</source>
         <translation>Preveri, ali zvok teče</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Nastavi recept za izdelavo</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Izdelaj predmet</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

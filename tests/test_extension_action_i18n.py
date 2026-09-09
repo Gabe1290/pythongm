@@ -228,15 +228,19 @@ def _extension_actions():
 
 
 def test_there_are_extension_actions_to_check():
-    """37, not 35.
+    """39, not 35.
 
     The first count came from "what did load_all_plugins ADD to
     ACTION_TYPES?", which misses check_sound and stop_sound -- both sit in the
     Audio category but are declared statically in core. Filtering by CATEGORY
     is what the user actually sees in the palette, and that difference of two
-    was found by this assertion rather than by reading."""
+    was found by this assertion rather than by reading. 37 -> 39 when Block
+    World's Tier 8 crafting actions (set_crafting_recipe, craft_item) landed
+    (docs/BLOCK_WORLD_CRAFTING_PLAN.md) -- translated into all 10 shipped
+    languages the same day, so this count and the i18n coverage below moved
+    together rather than the count updating first and coverage lagging."""
     actions = _extension_actions()
-    assert len(actions) == 37, sorted(actions)
+    assert len(actions) == 39, sorted(actions)
 
 
 @pytest.mark.parametrize("lang", SHIPPED)

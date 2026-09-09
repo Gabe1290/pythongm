@@ -16,6 +16,8 @@
         "apply_gravity",
         "jump",
         "draw_block_world_hud",
-        "load_block_world"
+        "load_block_world",
+        "set_crafting_recipe",
+        "craft_item"
     ]
 }

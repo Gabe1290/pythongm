@@ -2255,6 +2255,14 @@ Do you want to save anyway?</source>
         <source>Stop Sound</source>
         <translation>音を止める</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>クラフトレシピを設定</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>アイテムをクラフト</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -4423,6 +4431,14 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Stop Sound</source>
         <translation>音を止める</translation>
+    </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>クラフトレシピを設定</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>アイテムをクラフト</translation>
     </message>
 </context>
 <context>

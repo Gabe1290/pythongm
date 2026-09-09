@@ -234,6 +234,14 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <source>Stop Sound</source>
         <translation>Остановить звук</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Задать рецепт крафта</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Скрафтить предмет</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

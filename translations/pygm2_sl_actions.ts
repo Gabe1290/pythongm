@@ -234,6 +234,14 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <source>Stop Sound</source>
         <translation>Ustavi zvok</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Nastavi recept za izdelavo</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Izdelaj predmet</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

@@ -137,14 +137,70 @@ overwrites any previous recipe for that output, matching
 Small enough for one session, one commit per unit, full-suite gate after
 each — the standard workflow this repo uses for every Block World Tier.
 
-- [ ] **Unit 1 — schemas + desktop handlers.** `set_crafting_recipe` +
-      `craft_item` in `extensions/block_world/actions.py` (category
-      "3D View", icon suggestion: 🛠️/⚗️); `execute_set_crafting_recipe_action`
-      + `execute_craft_item_action` in `handlers.py`, storage as above.
-      Unit tests drive the handlers directly (same pattern
-      `tests/test_block_world_*.py` already uses for protection/reward):
-      all-or-nothing consumption, missing-input no-op, Inventory-off
-      no-op, overwrite-on-re-register, 1/2/3-input recipes.
+- [x] **Unit 1 — schemas + desktop handlers. DONE.** `set_crafting_recipe` +
+      `craft_item` added to `extensions/block_world/actions.py` (category
+      "3D View", icons 🛠️/⚗️ as suggested) and
+      `execute_set_crafting_recipe_action` + `execute_craft_item_action`
+      to `handlers.py`, storage exactly as designed above
+      (`cfg["recipes"][output] = {"output_count": N, "inputs": [(type,
+      count), ...]}`). A new module-level `_valid_input_slot` helper
+      (mirroring `_truthy`'s shape) validates one input slot's
+      `(block_type, count)` pair; `input_1` is required (blank/unknown/
+      non-positive there aborts the whole registration), `input_2`/
+      `input_3` are independently well-formed-or-skipped, matching design
+      decision 2 exactly — a blank slot 2 with a valid slot 3 still
+      registers a 2-input recipe.
+      **Real gap the new tests caught, not anticipated in this plan**:
+      `extensions/block_world/extension.json`'s `provides_actions` list
+      is a separate, hand-maintained manifest from `PLUGIN_ACTIONS` —
+      `tests/test_block_world_state.py::test_manifest_provides_actions_matches_the_real_actions`
+      failed the moment the two new actions existed in one but not the
+      other. Added both to the manifest; every other Block World action
+      unit apparently remembered this, this one almost didn't.
+      `tests/test_block_world_crafting.py` (22 tests): recipe
+      registration (1/2/3-input, blank-slot skipping, missing/unknown/
+      non-positive required vs. optional slots, multi-output
+      accumulation, overwrite-on-re-register, view-disabled no-op) and
+      `craft_item` (successful craft, 2- and 3-input consumption,
+      all-or-nothing short-input no-op, output count accumulating onto
+      an existing stack, no-recipe no-op, Inventory-off no-op,
+      view-disabled no-op). Full `block_world`-keyed suite green (677
+      passed).
+      **Second real gap, bigger than the manifest one, pulled forward
+      from Unit 3 rather than deferred**: `tests/test_extension_action_i18n.py`
+      (a repo-wide guard, not Block-World-specific) failed the full-suite
+      gate the moment the two actions existed — its own count assertion
+      (37→39) and, more substantially,
+      `test_every_extension_action_name_resolves` for all 10 shipped
+      languages, since neither action's `display_name` had a catalogue
+      entry yet. This is exactly the class of bug the LAN multiplayer
+      extension shipped with originally (a new extension action landing
+      un-translated) — the test exists specifically to catch it before a
+      commit lands, not after. Rather than defer to Unit 3 and land Unit 1
+      with a known-red suite, translated "Set Crafting Recipe"/
+      "Craft Item" into all 10 shipped languages (de/es/fr/it/ja/pt/ru/sl/
+      uk/zh) in both Qt contexts the action palette and configure dialog
+      use (`ObjectEventsPanel`, `ActionConfigDialog`) via a one-off script
+      (same category as the 2026-08-10 Extensions-tab i18n fix's own
+      throwaway tool) that inserts `<message>` blocks into the right
+      split-vs-monolithic `.ts` file per this repo's documented convention,
+      recompiled with `scripts/compile_translations.py`, and live-verified
+      all 40 resolutions (10 languages × 2 actions × 2 contexts) through a
+      real `QTranslator`, not just presence in the `.ts`. Vocabulary
+      leaned on established Minecraft localization terms where memory of
+      one existed (zh "合成配方"/"合成", ja "クラフト"/"レシピ", ru/uk
+      "крафт"/"скрафтити"), matching the style of existing block-world
+      action translations ("Set X" → "X festlegen"/"Definir X"/etc.)
+      elsewhere. Test count bumped 37→39 in the same commit.
+      **Unrelated pre-existing environment artifact found and cleared en
+      route, not caused by this work**: a stray `runtime/action_handlers/
+      __pycache__` directory (compiled bytecode surviving the real
+      package's deletion in `f3dabc8a`, confirmed git-untracked) tripped
+      `tests/test_action_handlers_package_retired.py::test_the_package_is_gone`
+      on the full-suite gate. Removed by hand (outside the agent's
+      permitted operations) before the gate could go green.
+      Full suite: **4,668 passed, 0 failed, 10 skipped** — clean, no
+      flakes.
 - [ ] **Unit 2 — HTML5 + Kivy parity.** Port both actions into
       `export_html5.js` and `export_kivy.py`, mirroring exactly how Tier
       7c's inventory reads/writes (`obj.block_inventory` /
@@ -165,6 +221,16 @@ each — the standard workflow this repo uses for every Block World Tier.
       French-first gap noted in `TODO.md`). Add a short "Crafting"
       section to `extensions/block_world/README.md` documenting the
       two actions and the three-slot recipe shape.
+      **Note: this is a DIFFERENT i18n surface than the one Unit 1 already
+      closed.** Unit 1 fixed the live-UI `display_name` translation
+      (`ObjectEventsPanel`/`ActionConfigDialog` Qt contexts, the action
+      palette + configure dialog a user actually sees) via
+      `translations/*.ts`/`.qm` — that part is DONE. `gen_action_reference.py`
+      is a separate pipeline generating the `wiki/Full-Action-Reference*.md`
+      pages from `tools/action_ref_i18n.py`'s own `LANGS` tables (8
+      wiki languages: fr/de/uk/ru/it/es/pt/sl — no ja/zh wiki translation
+      exists yet per the 2026-07-29 session note), unrelated to the `.ts`
+      catalogues. Still open.
 - [ ] **Unit 4 — decide on sample integration, don't assume it.** Neither
       `block_world_1` nor `block_world_2` is in the Welcome tab (see
       `TODO.md`'s Block World section — deliberately set aside in favour

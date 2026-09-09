@@ -1996,6 +1996,14 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>Check Sound Playing</source>
         <translation>Проверить, играет ли звук</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Задать рецепт крафта</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Скрафтить предмет</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>
