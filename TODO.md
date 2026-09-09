@@ -188,12 +188,32 @@ see `docs/PROJECT_STATUS.md`.)
   onto a real `pygame.Surface` and inspect actual pixel bounding boxes
   (`Surface.blit` can't be monkeypatched), confirming alignment shifts and
   that a bigger font asset genuinely produces wider glyphs.
-- Formalizing the registration so a future new asset type fails loudly at
-  startup (instead of silently at click time) is still open, but lower
-  priority now that all current asset types are covered.
-- Same applies to the create-asset fallback in
-  `widgets/asset_tree/asset_tree_widget.py` — it now logs and returns silently
-  when no `create_asset` handler is reachable.
+- ~~Formalizing the registration so a future new asset type fails loudly at
+  startup (instead of silently at click time)~~ **DONE 2026-09-09.** New
+  `ASSET_TYPE_REGISTRY` (`widgets/asset_tree/asset_utils.py`) is the single
+  source for all 8 asset types (plural key -> singular + editor method) —
+  it replaces three lists that had already drifted independently:
+  `on_asset_double_clicked`'s if/elif chain, `_canonical_category`'s own
+  singular->plural dict, and `get_asset_categories` (which turned out to be
+  missing "playgrounds" entirely and, checked via grep, was never actually
+  called by anything). `on_asset_double_clicked` (`core/ide/_assets.py`)
+  and `_canonical_category` (`core/ide/_editor_lifecycle.py`) both now
+  derive from the registry instead of keeping their own copy.
+  `PyGameMakerIDE.__init__` calls the new
+  `AssetsMixin._verify_asset_editor_registry()` first thing, which raises
+  `RuntimeError` naming any registered `editor_method` that doesn't exist
+  on the class — a typo'd or forgotten editor method now crashes the IDE
+  at startup instead of a new asset type silently doing nothing on its
+  first double-click. `tests/test_asset_type_registry.py` (9 tests,
+  including a direct mutation-style proof the startup check actually
+  raises); two of `tests/test_asset_type_editors.py`'s pre-existing tests
+  updated off stale source-string matching onto the registry itself.
+- The create-asset fallback in `widgets/asset_tree/asset_tree_widget.py`
+  (logs and returns silently when no `create_asset` handler is reachable)
+  is a different kind of gap — a missing Qt ancestor-widget wiring, not a
+  per-asset-type registration miss, since `create_asset` already works
+  generically for any category via `create_asset_data_template`. Left as
+  a warning log; not the same bug class as the fix above.
 
 ### ~~UI metadata coverage for runtime actions~~ (DONE 2026-08-15, re-verified 2026-09-02 — all 5 named items closed)
 - The runtime knows ~207 actions (executor `execute_*_action` methods +
@@ -1137,21 +1157,24 @@ lines rather than matching their text.
 
 ## Export
 
-### HTML5 export has no `remember_destroyed` support either
+### ~~HTML5 export has no `remember_destroyed` support either~~ (DONE 2026-09-09)
 - Found 2026-09-08 while fixing L17 of `docs/FULL_AUDIT_2026-09-07.md`
   ("Kivy export has no `remember_destroyed` support"). That finding's own
   rationale claimed "(desktop + HTML5 honour it)" — verified false by
   direct grep: `grep remember_destroyed export/HTML5` is empty too, same
-  as Kivy was. So an object flagged `remember_destroyed` respawns on
+  as Kivy was. So an object flagged `remember_destroyed` respawned on
   every room restart/revisit on the HTML5 target as well, not just
-  Android/iOS. Kivy now has real support (ported from the desktop
+  Android/iOS. Kivy already had real support (ported from the desktop
   runtime's `GameRunner._destroyed_memory` — see
   `export/Kivy/kivy_exporter.py`'s `GameApp._destroyed_memory` /
   `Scene.room_name` / the per-object `remember_destroyed` flag,
-  `tests/test_kivy_remember_destroyed.py`); HTML5's `engine.js` still has
-  nothing. Scoped out of L17 deliberately (that finding's own verify
-  command only checked Kivy) rather than silently expanding it — port the
-  same mechanism to `engine.js`'s `Game`/`GameRoom` when picked up.
+  `tests/test_kivy_remember_destroyed.py`); scoped out of L17 deliberately
+  (that finding's own verify command only checked Kivy) rather than
+  silently expanding it. **Fixed 2026-09-09** (`fae60e23`): ported the
+  same mechanism to `engine.js`'s `GameObject`/`Game`/`GameRoom` (bakes
+  `remember_destroyed`, a `_destroyedMemory` map, the cleanup pass
+  records it, `buildRoom` prunes it, `restart_game` clears it).
+  `tests/test_html5_remember_destroyed.py` (6 tests).
 
 ### ~~iOS exporter has no app icon~~ (DONE 2026-08-14)
 - Done: `iOSExporter.export_settings['icon_path']` (same key `exe_exporter.py`/

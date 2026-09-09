@@ -308,23 +308,41 @@ def find_project_file(start_path: Path) -> Optional[Path]:
     return None
 
 
+# Single source of truth for every registered asset type: plural key (as
+# used throughout dispatch -- on_asset_double_clicked, the rename/delete
+# signals, project.json's own asset dict), singular form, and the name of
+# the IDE method that opens its editor. Formalizes what used to be three
+# independently hand-maintained lists that had already drifted apart before
+# this existed: `get_asset_categories` below was missing "playgrounds"
+# entirely and, it turns out, was never actually called by anything;
+# `core/ide/_assets.py`'s on_asset_double_clicked and
+# `core/ide/_editor_lifecycle.py`'s _canonical_category each kept their own
+# separate hardcoded list (TODO.md, "Formalizing the registration"). Add a
+# new asset type here FIRST -- `PyGameMakerIDE.__init__` calls
+# `_verify_asset_editor_registry()` (core/ide/_assets.py), which raises
+# immediately at startup if a registered editor_method doesn't exist on the
+# IDE class, instead of a new type silently doing nothing on double-click.
+ASSET_TYPE_REGISTRY = {
+    "sprites":     {"singular": "sprite",     "editor_method": "open_sprite_editor"},
+    "sounds":      {"singular": "sound",      "editor_method": "open_sound_editor"},
+    "backgrounds": {"singular": "background", "editor_method": "open_background_editor"},
+    "objects":     {"singular": "object",     "editor_method": "open_object_editor"},
+    "rooms":       {"singular": "room",       "editor_method": "open_room_editor"},
+    "scripts":     {"singular": "script",     "editor_method": "open_script_editor"},
+    "fonts":       {"singular": "font",       "editor_method": "open_font_editor"},
+    "playgrounds": {"singular": "playground", "editor_method": "open_playground_editor"},
+}
+
+
 def get_asset_categories() -> List[str]:
     """
     Get the standard asset categories
     """
-    return [
-        "sprites",
-        "sounds",
-        "backgrounds",
-        "objects",
-        "rooms",
-        "scripts",
-        "fonts"
-    ]
+    return list(ASSET_TYPE_REGISTRY.keys())
 
 
 def is_valid_asset_category(category: str) -> bool:
     """
     Check if a category is a valid asset category
     """
-    return category.lower() in get_asset_categories()
+    return category.lower() in ASSET_TYPE_REGISTRY

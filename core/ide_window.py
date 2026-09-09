@@ -47,6 +47,14 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
     def __init__(self):
         super().__init__()
 
+        # Fail loudly, immediately, if the asset-type editor registry has
+        # drifted from this class's real open_*_editor methods -- see
+        # AssetsMixin._verify_asset_editor_registry's own docstring and
+        # TODO.md's "Formalizing the registration" note. Deliberately first:
+        # every mixin method already exists on the class regardless of UI
+        # setup order, so this needs nothing built yet to check.
+        self._verify_asset_editor_registry()
+
         # Create managers in the right order
         self.asset_manager = AssetManager()  # CREATE ASSET MANAGER FIRST
         self.project_manager = ProjectManager()  # CREATE PROJECT MANAGER SECOND

@@ -18,7 +18,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QInputDialog, QDialog
 
 from dialogs.import_dialogs import ImportAssetDialog
-from widgets.asset_tree.asset_utils import validate_asset_name
+from widgets.asset_tree.asset_utils import validate_asset_name, ASSET_TYPE_REGISTRY
 
 from core.logger import get_logger
 
@@ -670,26 +670,41 @@ class AssetsMixin:
         self._refresh_blockly_asset_lists()
 
     def on_asset_double_clicked(self, asset_data):
-        """Handle double-click on assets to open in appropriate editor"""
+        """Handle double-click on assets to open in appropriate editor.
+
+        Dispatches through the single-source ASSET_TYPE_REGISTRY (widgets/
+        asset_tree/asset_utils.py) instead of a hand-kept if/elif chain --
+        see ``_verify_asset_editor_registry`` below and TODO.md's
+        "Formalizing the registration" note. An asset_type not in the
+        registry at all (never a real category) still just warns here --
+        that's a data problem (a stray/corrupt project.json key), not a
+        missing-editor bug, so it stays a soft no-op rather than raising
+        mid-session.
+        """
         asset_type = asset_data.get('asset_type', '')
         asset_name = asset_data.get('name', '')
         asset_info = asset_data.get('data', {})
 
-        if asset_type == 'rooms':
-            self.open_room_editor(asset_name, asset_info)
-        elif asset_type == 'objects':
-            self.open_object_editor(asset_name, asset_info)
-        elif asset_type == 'sprites':
-            self.open_sprite_editor(asset_name, asset_info)
-        elif asset_type == 'playgrounds':
-            self.open_playground_editor(asset_name, asset_info)
-        elif asset_type == 'scripts':
-            self.open_script_editor(asset_name, asset_info)
-        elif asset_type == 'sounds':
-            self.open_sound_editor(asset_name, asset_info)
-        elif asset_type == 'backgrounds':
-            self.open_background_editor(asset_name, asset_info)
-        elif asset_type == 'fonts':
-            self.open_font_editor(asset_name, asset_info)
-        else:
+        entry = ASSET_TYPE_REGISTRY.get(asset_type)
+        if entry is None:
             logger.warning(f"No editor registered for asset type '{asset_type}' (asset: {asset_name})")
+            return
+        getattr(self, entry['editor_method'])(asset_name, asset_info)
+
+    def _verify_asset_editor_registry(self):
+        """Fail loudly at IDE startup if ASSET_TYPE_REGISTRY and this class's
+        actual open_*_editor methods have drifted, instead of a new/typo'd
+        asset type silently doing nothing the first time someone double-
+        clicks it (TODO.md, "Formalizing the registration"). Called once
+        from PyGameMakerIDE.__init__, after every editor-lifecycle mixin is
+        in the MRO, so a missing method is a real bug here, not an
+        ordering artifact.
+        """
+        missing = [info['editor_method'] for info in ASSET_TYPE_REGISTRY.values()
+                   if not hasattr(self, info['editor_method'])]
+        if missing:
+            raise RuntimeError(
+                "ASSET_TYPE_REGISTRY (widgets/asset_tree/asset_utils.py) "
+                f"references editor method(s) that don't exist: {', '.join(missing)}. "
+                "Add the method (or fix the registry entry) before the asset "
+                "tree can dispatch to it.")
