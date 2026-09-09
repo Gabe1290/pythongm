@@ -59,7 +59,7 @@
 - [Гра](Full-Action-Reference-Game_uk) (25)
 - [Керування](Full-Action-Reference-Control_uk) (19)
 - [Сітка](Full-Action-Reference-Grid_uk) (4)
-- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (16)
+- [3D-вигляд](Full-Action-Reference-3D-View-Actions_uk) (18)
 - [Мережа](Full-Action-Reference-Network-Actions_uk) (15)
 - [Частки](Full-Action-Reference-Particles_uk) (8)
 

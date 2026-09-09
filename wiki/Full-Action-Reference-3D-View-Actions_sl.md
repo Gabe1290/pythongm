@@ -30,6 +30,20 @@ Odstrani blok, v katerega je usmerjena kamera; če je inventar v »Vklopi pogled
 |-----------|------|---------|-------|
 | `reach` | Število | `5` | Doseg naprej, v celicah mreže; neobvezno |
 
+### Izdelaj predmet
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `craft_item` |
+| **Ikona** | ⚗️ |
+| **Kategorija** | Pogled 3D |
+
+Poskusi izdelati izdelek registriranega recepta iz zaloge instance, ki kliče akcijo: vse ali nič — porabi vse sestavine naenkrat, ali nobene, če katere zmanjka. Tiho ne stori ničesar, če za izdelek ni registriranega recepta ali če parameter Zaloga v »Vklopi pogled Block World« ni vklopljen
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `output` | Izbira | `brick` | Which registered recipe to attempt, by its output block type; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+
 ### Nariši HUD Block World
 
 | Lastnost | Vrednost |
@@ -122,9 +136,11 @@ Sobo prikaže kot voksel pogled iz prve osebe (ena sama plast) namesto pogleda o
 | `camera_object` | Predmet | — | Predmet, čigar položaj + kot pogleda je kamera (prazno = predmet, ki izvaja to dejanje); neobvezno |
 | `z_layer` | Število | `0` | Katera plast sveta se nariše (faza 2a nariše natanko eno plast – pogleda gor in dol še ni); neobvezno |
 | `fov` | Število | `66` | Vodoravno vidno polje v stopinjah; neobvezno |
-| `render_distance` | Število | `20` | Največja dolžina žarka v celicah mreže; neobvezno |
+| `render_distance` | Število | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); neobvezno |
 | `cell_size` | Število | `32` | Velikost celice mreže v slikovnih točkah (naj se ujema z mrežo za postavljanje blokov); neobvezno |
-| `columns` | Število | `320` | Zaslonski stolpci za raycast (manj = hitreje/bolj grobo); neobvezno |
+| `columns` | Število | `160` | Zaslonski stolpci za raycast (manj = hitreje/bolj grobo); neobvezno |
+| `fog` | Da/Ne | Da | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; neobvezno |
+| `fog_color` | Barva | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); neobvezno |
 | `wall_color` | Barva | `#8a8a8a` | Enotna barva, uporabljena le, če so blokovne teksture izklopljene; neobvezno |
 | `floor_color` | Barva | `#3a2f1c` | Enotna barva tal (faza 2a tal še ne teksturira); neobvezno |
 | `ceiling_color` | Barva | `#87CEEB` | Enotna barva stropa oziroma neba (faza 2a neba še nima); neobvezno |
@@ -284,6 +300,27 @@ Dodeli točke, ko »Razbij blok« uspešno odstrani izbrano vrsto bloka: poklič
 |-----------|------|---------|-------|
 | `block_type` | Izbira | `diamond_block` | Katera vrsta bloka ob razbitju prinese točke; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Število | `10` | Točke za vsak razbit blok te vrste |
+
+### Nastavi recept za izdelavo
+
+| Lastnost | Vrednost |
+|----------|-------|
+| **Ime** | `set_crafting_recipe` |
+| **Ikona** | 🛠️ |
+| **Kategorija** | Pogled 3D |
+
+Registrira recept, ki ga lahko uporabi »Izdelaj predmet«: pokliči enkrat za vsako vrsto izdelka (na primer v dogodku Ustvari v sobi, takoj za »Vklopi pogled Block World«). Do tri reže za sestavine; pusti reži 2/3 prazni, če recept potrebuje le eno ali dve
+
+| Parameter | Vrsta | Privzeto | Opombe |
+|-----------|------|---------|-------|
+| `output` | Izbira | `brick` | Which block type this recipe produces; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Število | `1` | How many of Output Block one craft produces |
+| `input_1` | Izbira | `stone` | First required block type; Izbire: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Število | `1` | How many of Input 1 the recipe consumes |
+| `input_2` | Izbira | — | Second required block type (blank = unused); Izbire: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; neobvezno |
+| `input_2_count` | Število | `1` | How many of Input 2 the recipe consumes; neobvezno |
+| `input_3` | Izbira | — | Third required block type (blank = unused); Izbire: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; neobvezno |
+| `input_3_count` | Število | `1` | How many of Input 3 the recipe consumes; neobvezno |
 
 ### Nastavi kot pogleda
 

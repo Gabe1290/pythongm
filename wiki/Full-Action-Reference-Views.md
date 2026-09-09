@@ -59,7 +59,7 @@ Configure a camera view: which part of the room it shows, where on screen it dra
 - [Game](Full-Action-Reference-Game) (25)
 - [Control](Full-Action-Reference-Control) (19)
 - [Grid](Full-Action-Reference-Grid) (4)
-- [3D View](Full-Action-Reference-3D-View-Actions) (16)
+- [3D View](Full-Action-Reference-3D-View-Actions) (18)
 - [Network](Full-Action-Reference-Network-Actions) (15)
 - [Particles](Full-Action-Reference-Particles) (8)
 

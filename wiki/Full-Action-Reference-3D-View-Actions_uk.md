@@ -30,6 +30,20 @@
 |-----------|------|---------|-------|
 | `reach` | Число | `5` | Досяжність уперед, у комірках сітки; необов'язково |
 
+### Скрафтити предмет
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `craft_item` |
+| **Значок** | ⚗️ |
+| **Категорія** | 3D-вигляд |
+
+Намагається скрафтити результат зареєстрованого рецепту з інвентарю екземпляра, що викликає дію: усе або нічого — витрачає всі інгредієнти одразу, або жодного, якщо якогось не вистачає. Тихо нічого не робить, якщо для результату не зареєстровано рецепт або не увімкнено параметр Інвентар у «Увімкнути вигляд Block World»
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `output` | Вибір | `brick` | Which registered recipe to attempt, by its output block type; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+
 ### Намалювати HUD Block World
 
 | Властивість | Значення |
@@ -122,9 +136,11 @@
 | `camera_object` | Об'єкт | — | Об'єкт, чия позиція + кут погляду є камерою (порожньо = об'єкт, що виконує цю дію); необов'язково |
 | `z_layer` | Число | `0` | Який шар світу малюється (на етапі 2a малюється рівно один шар — погляду вгору та вниз ще немає); необов'язково |
 | `fov` | Число | `66` | Горизонтальне поле зору в градусах; необов'язково |
-| `render_distance` | Число | `20` | Макс. довжина променя в клітинках сітки; необов'язково |
+| `render_distance` | Число | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); необов'язково |
 | `cell_size` | Число | `32` | Розмір комірки сітки в пікселях (відповідно до сітки розміщення блоків); необов'язково |
-| `columns` | Число | `320` | Стовпці екрана для raycast (менше = швидше/грубіше); необов'язково |
+| `columns` | Число | `160` | Стовпці екрана для raycast (менше = швидше/грубіше); необов'язково |
+| `fog` | Так/Ні | Так | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; необов'язково |
+| `fog_color` | Колір | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); необов'язково |
 | `wall_color` | Колір | `#8a8a8a` | Суцільний колір, використовується лише якщо текстурні блоки вимкнено; необов'язково |
 | `floor_color` | Колір | `#3a2f1c` | Суцільний колір підлоги (на етапі 2a підлога ще не текстурується); необов'язково |
 | `ceiling_color` | Колір | `#87CEEB` | Суцільний колір стелі або неба (на етапі 2a неба ще немає); необов'язково |
@@ -284,6 +300,27 @@
 |-----------|------|---------|-------|
 | `block_type` | Вибір | `diamond_block` | Який тип блока дає очки при руйнуванні; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Число | `10` | Очки за кожен зруйнований блок цього типу |
+
+### Задати рецепт крафту
+
+| Властивість | Значення |
+|----------|-------|
+| **Назва** | `set_crafting_recipe` |
+| **Значок** | 🛠️ |
+| **Категорія** | 3D-вигляд |
+
+Реєструє рецепт, який може використовувати «Скрафтити предмет»: викликайте по одному разу на кожен тип результату (наприклад, у події Створення кімнати, одразу після «Увімкнути вигляд Block World»). До трьох слотів інгредієнтів; залиште слоти 2/3 порожніми, якщо рецепту потрібен лише один або два
+
+| Параметр | Тип | За замовч. | Примітки |
+|-----------|------|---------|-------|
+| `output` | Вибір | `brick` | Which block type this recipe produces; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Число | `1` | How many of Output Block one craft produces |
+| `input_1` | Вибір | `stone` | First required block type; Варіанти: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Число | `1` | How many of Input 1 the recipe consumes |
+| `input_2` | Вибір | — | Second required block type (blank = unused); Варіанти: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; необов'язково |
+| `input_2_count` | Число | `1` | How many of Input 2 the recipe consumes; необов'язково |
+| `input_3` | Вибір | — | Third required block type (blank = unused); Варіанти: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; необов'язково |
+| `input_3_count` | Число | `1` | How many of Input 3 the recipe consumes; необов'язково |
 
 ### Задати кут погляду
 

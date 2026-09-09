@@ -30,6 +30,20 @@ Entfernt den Block, den die Kamera anvisiert – legt ihn außerdem ins Inventar
 |-----------|------|---------|-------|
 | `reach` | Zahl | `5` | Reichweite nach vorn, in Gitterzellen; optional |
 
+### Gegenstand herstellen
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `craft_item` |
+| **Symbol** | ⚗️ |
+| **Kategorie** | 3D-Ansicht |
+
+Versucht, die Ausgabe eines registrierten Rezepts aus dem Inventar der aufrufenden Instanz herzustellen – alles oder nichts: verbraucht alle Zutaten auf einmal oder keine, falls eine fehlt. Stiller Leerlauf, wenn kein Rezept für „Ausgabe“ registriert ist oder das Inventar-Häkchen von „Block-World-Ansicht aktivieren“ nicht aktiviert ist
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `output` | Auswahl | `brick` | Which registered recipe to attempt, by its output block type; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+
 ### Block-World-HUD zeichnen
 
 | Eigenschaft | Wert |
@@ -122,9 +136,11 @@ Stellt den Raum als First-Person-Voxelansicht (eine einzelne Ebene) dar statt in
 | `camera_object` | Objekt | — | Objekt, dessen Position + Blickwinkel die Kamera ist (leer = das Objekt, das diese Aktion ausführt); optional |
 | `z_layer` | Zahl | `0` | Welche Weltebene dargestellt wird (Phase 2a stellt genau eine Ebene dar – noch kein Blick nach oben/unten); optional |
 | `fov` | Zahl | `66` | Horizontales Sichtfeld in Grad; optional |
-| `render_distance` | Zahl | `20` | Maximale Strahllänge in Gitterzellen; optional |
+| `render_distance` | Zahl | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); optional |
 | `cell_size` | Zahl | `32` | Gitterzellengröße in Pixeln (passend zum Gitter, auf dem Blöcke gesetzt werden); optional |
-| `columns` | Zahl | `320` | Bildschirmspalten zum Raycasten (weniger = schneller/grobkörniger); optional |
+| `columns` | Zahl | `160` | Bildschirmspalten zum Raycasten (weniger = schneller/grobkörniger); optional |
+| `fog` | Ja/Nein | Ja | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; optional |
+| `fog_color` | Farbe | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); optional |
 | `wall_color` | Farbe | `#8a8a8a` | Einfarbig, nur verwendet, wenn texturierte Blöcke aus sind; optional |
 | `floor_color` | Farbe | `#3a2f1c` | Einfarbiger Boden (Phase 2a hat noch keine Bodentexturierung); optional |
 | `ceiling_color` | Farbe | `#87CEEB` | Einfarbige Decke bzw. Himmel (Phase 2a hat noch keinen Himmel); optional |
@@ -284,6 +300,27 @@ Vergibt Punkte, wenn „Block abbauen“ einen gewählten Blocktyp erfolgreich e
 |-----------|------|---------|-------|
 | `block_type` | Auswahl | `diamond_block` | Welcher Blocktyp beim Abbauen Punkte gibt; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Zahl | `10` | Punkte je abgebautem Block dieses Typs |
+
+### Rezept festlegen
+
+| Eigenschaft | Wert |
+|----------|-------|
+| **Name** | `set_crafting_recipe` |
+| **Symbol** | 🛠️ |
+| **Kategorie** | 3D-Ansicht |
+
+Registriert ein Rezept, das „Gegenstand herstellen“ verwenden kann – einmal pro Ausgabetyp aufrufen (z. B. im Erstellen-Ereignis des Raums, direkt nach „Block-World-Ansicht aktivieren“). Bis zu drei Zutaten-Plätze; Plätze 2/3 leer lassen, wenn das Rezept nur eine oder zwei benötigt
+
+| Parameter | Typ | Standard | Hinweise |
+|-----------|------|---------|-------|
+| `output` | Auswahl | `brick` | Which block type this recipe produces; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Zahl | `1` | How many of Output Block one craft produces |
+| `input_1` | Auswahl | `stone` | First required block type; Auswahl: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Zahl | `1` | How many of Input 1 the recipe consumes |
+| `input_2` | Auswahl | — | Second required block type (blank = unused); Auswahl: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; optional |
+| `input_2_count` | Zahl | `1` | How many of Input 2 the recipe consumes; optional |
+| `input_3` | Auswahl | — | Third required block type (blank = unused); Auswahl: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; optional |
+| `input_3_count` | Zahl | `1` | How many of Input 3 the recipe consumes; optional |
 
 ### Blickwinkel setzen
 

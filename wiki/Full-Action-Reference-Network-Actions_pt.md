@@ -241,7 +241,7 @@ Marca como sincronizada a instância que executa esta ação: a sua posição, r
 - [Controle](Full-Action-Reference-Control_pt) (19)
 - [Grade](Full-Action-Reference-Grid_pt) (4)
 - [Vistas](Full-Action-Reference-Views_pt) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (16)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_pt) (18)
 - [Partículas](Full-Action-Reference-Particles_pt) (8)
 
 [← Voltar à Referência Completa de Ações](Full-Action-Reference_pt)

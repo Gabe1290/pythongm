@@ -76,7 +76,7 @@ Bedingung: wahr, wenn die Instanz an einem Gitter ausgerichtet ist
 - [Spiel](Full-Action-Reference-Game_de) (25)
 - [Steuerung](Full-Action-Reference-Control_de) (19)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
-- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
+- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (18)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (15)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
 

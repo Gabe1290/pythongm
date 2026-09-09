@@ -4,7 +4,7 @@
 
 > **Automatisch generiert** aus der Aktionsregistrierung der IDE durch `tools/gen_action_reference.py` — nicht von Hand bearbeiten; führen Sie den Generator nach Änderungen an Aktionen erneut aus. Die Übersetzungen stammen aus `tools/action_ref_i18n.py`.
 
-Diese Seite listet alle **159** in PyGameMaker verfügbaren Aktionen auf, genau so, wie sie im Aktionsauswahldialog der IDE erscheinen (einschließlich des Audio-Plugins und der 3D-Ansicht-Erweiterung). Aktionen sind Befehle, die ausgeführt werden, wenn ein Ereignis ausgelöst wird.
+Diese Seite listet alle **161** in PyGameMaker verfügbaren Aktionen auf, genau so, wie sie im Aktionsauswahldialog der IDE erscheinen (einschließlich des Audio-Plugins und der 3D-Ansicht-Erweiterung). Aktionen sind Befehle, die ausgeführt werden, wenn ein Ereignis ausgelöst wird.
 
 ## Kategorien
 
@@ -18,7 +18,7 @@ Diese Seite listet alle **159** in PyGameMaker verfügbaren Aktionen auf, genau 
 - [Steuerung](Full-Action-Reference-Control_de) (19)
 - [Gitter](Full-Action-Reference-Grid_de) (4)
 - [Ansichten](Full-Action-Reference-Views_de) (2)
-- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
+- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (18)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (15)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
 
