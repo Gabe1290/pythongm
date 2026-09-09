@@ -7,7 +7,13 @@ instance — split crafting out as its own future item on purpose: "smaller
 and lower-priority than the other three — write a plan when it's actually
 next in line, not speculatively." It's next in line now.
 
-Not started. No code changes yet — this is the plan to work from.
+**Closed 2026-09-09 — all 4 units done, same day.** `set_crafting_recipe`/
+`craft_item` shipped on desktop + HTML5 + Kivy, translated (10 UI
+languages + 8 wiki languages), documented, and fully tested (46 new
+tests). See the Units section below for the full account, including two
+real gaps found and fixed along the way (the `extension.json` manifest
+sync, the live-UI i18n guard) and one found and deliberately not chased
+(Kivy's pre-existing `set_block_reward` gap, logged in `TODO.md`).
 
 ---
 
@@ -302,17 +308,27 @@ each — the standard workflow this repo uses for every Block World Tier.
       real scope cuts and the `set_block_reward`-on-Kivy gap from Unit 2).
       A full README modernization pass is explicitly **not** part of this
       plan and wasn't attempted.
-- [ ] **Unit 4 — decide on sample integration, don't assume it.** Neither
-      `block_world_1` nor `block_world_2` is in the Welcome tab (see
-      `TODO.md`'s Block World section — deliberately set aside in favour
-      of `sky_strike_1`, and `docs/PROJECT_STATUS.md` item 5's
-      2026-09-09 update, which chose to stop at Phase 1 of the perf plan
-      rather than invest further in either sample). Building crafting
-      doesn't require a new flagship sample or reversing that decision —
-      recommend shipping this as pure engine capability with handler +
-      parity test coverage (Units 1–3) and stopping there, same as the
-      perf plan's own conclusion. If a sample is wanted later, that's a
-      fresh, explicit ask, not an assumption baked into this plan.
+- [x] **Unit 4 — decide on sample integration, don't assume it. DECIDED
+      (2026-09-09): stop here, no new sample.** Neither `block_world_1`
+      nor `block_world_2` is in the Welcome tab (see `TODO.md`'s Block
+      World section — deliberately set aside in favour of `sky_strike_1`,
+      and `docs/PROJECT_STATUS.md` item 5's 2026-09-09 update, which
+      chose to stop at Phase 1 of the perf plan rather than invest
+      further in either sample). Building crafting doesn't require a new
+      flagship sample or reversing that decision, so Units 1–3 (handler +
+      export parity + docs coverage) ship as pure engine capability and
+      Tier 8 stops there — matching the perf plan's own conclusion. This
+      was this plan's own default recommendation, carried out rather than
+      revisited. If a sample is wanted later, that's a fresh, explicit
+      ask, not an assumption baked into this plan.
+
+**All four units are now done. `docs/BLOCK_WORLD_CRAFTING_PLAN.md` is
+closed** — `set_crafting_recipe`/`craft_item` are real, tested (46 new
+tests across desktop/HTML5/Kivy/cross-engine-parity), exported to all
+three targets, translated into 10 UI languages + 8 wiki languages, and
+documented in the extension's own README. No further work is implied by
+this plan; anything found along the way and deliberately not chased (the
+Kivy `set_block_reward` gap) is tracked in `TODO.md` instead.
 
 ## Explicitly out of scope (don't re-propose without a fresh ask)
 
