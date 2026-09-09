@@ -76,7 +76,7 @@ Condition : vrai si l'instance est alignée sur une grille
 - [Jeu](Full-Action-Reference-Game_fr) (25)
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
 

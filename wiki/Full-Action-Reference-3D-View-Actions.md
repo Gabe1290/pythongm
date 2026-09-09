@@ -30,6 +30,20 @@ Remove the block the camera is looking at -- also picks it up into the calling i
 |-----------|------|---------|-------|
 | `reach` | Number | `5` | How many cells ahead you can reach, in grid cells; optional |
 
+### Craft Item
+
+| Property | Value |
+|----------|-------|
+| **Name** | `craft_item` |
+| **Icon** | ⚗️ |
+| **Category** | 3D View |
+
+Attempt to craft a registered recipe's output from the calling instance's inventory -- all-or-nothing: consumes every input at once, or nothing at all if any input is short. Silent no-op if no recipe is registered for Output, or Enable Block World View's Inventory parameter isn't on
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `output` | Choice | `brick` | Which registered recipe to attempt, by its output block type; Choices: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+
 ### Draw Block World HUD
 
 | Property | Value |
@@ -122,9 +136,11 @@ Render the room as a first-person voxel view (single layer) instead of the top-d
 | `camera_object` | Object | — | Object whose position + facing angle is the camera (blank = the object running this action); optional |
 | `z_layer` | Number | `0` | Which world layer to render (Phase 2a renders exactly one layer -- no looking up/down yet); optional |
 | `fov` | Number | `66` | Horizontal FOV in degrees; optional |
-| `render_distance` | Number | `20` | Max ray length in grid cells; optional |
+| `render_distance` | Number | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); optional |
 | `cell_size` | Number | `32` | Grid cell size in pixels (match the block-placement grid); optional |
-| `columns` | Number | `320` | Screen columns to raycast (lower = faster/chunkier); optional |
+| `columns` | Number | `160` | Screen columns to raycast (lower = faster/chunkier); optional |
+| `fog` | Yes/No | Yes | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; optional |
+| `fog_color` | Color | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); optional |
 | `wall_color` | Color | `#8a8a8a` | Flat colour used only if Textured Blocks is off; optional |
 | `floor_color` | Color | `#3a2f1c` | Flat floor colour (Phase 2a has no floor texturing yet); optional |
 | `ceiling_color` | Color | `#87CEEB` | Flat ceiling/sky colour (Phase 2a has no sky yet); optional |
@@ -284,6 +300,27 @@ Award score when Break Block successfully removes a chosen block type -- call on
 |-----------|------|---------|-------|
 | `block_type` | Choice | `diamond_block` | Which block type awards score when broken; Choices: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Number | `10` | Score awarded per block of this type broken |
+
+### Set Crafting Recipe
+
+| Property | Value |
+|----------|-------|
+| **Name** | `set_crafting_recipe` |
+| **Icon** | 🛠️ |
+| **Category** | 3D View |
+
+Register a recipe Craft Item can use -- call once per output type (e.g. in the room's create event, right after Enable Block World View). Up to three input slots; leave slots 2/3 blank if the recipe only needs one or two
+
+| Parameter | Type | Default | Notes |
+|-----------|------|---------|-------|
+| `output` | Choice | `brick` | Which block type this recipe produces; Choices: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Number | `1` | How many of Output Block one craft produces |
+| `input_1` | Choice | `stone` | First required block type; Choices: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Number | `1` | How many of Input 1 the recipe consumes |
+| `input_2` | Choice | — | Second required block type (blank = unused); Choices: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; optional |
+| `input_2_count` | Number | `1` | How many of Input 2 the recipe consumes; optional |
+| `input_3` | Choice | — | Third required block type (blank = unused); Choices: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; optional |
+| `input_3_count` | Number | `1` | How many of Input 3 the recipe consumes; optional |
 
 ### Set Facing Angle
 

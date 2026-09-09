@@ -30,6 +30,20 @@ Rimuove il blocco inquadrato dalla telecamera; lo raccoglie anche nell'inventari
 |-----------|------|---------|-------|
 | `reach` | Numero | `5` | Quanto lontano arrivi in avanti, in celle della griglia; facoltativo |
 
+### Crea oggetto
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `craft_item` |
+| **Icona** | ⚗️ |
+| **Categoria** | Vista 3D |
+
+Tenta di creare l'output di una ricetta registrata a partire dall'inventario dell'istanza chiamante: tutto o niente — consuma tutti gli ingredienti in una volta, o nessuno se ne manca uno. Non fa nulla silenziosamente se non è registrata alcuna ricetta per l'output, o se il parametro Inventario di «Attiva vista Block World» non è attivo
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `output` | Scelta | `brick` | Which registered recipe to attempt, by its output block type; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+
 ### Disegna HUD Block World
 
 | Proprietà | Valore |
@@ -122,9 +136,11 @@ Mostra la stanza come vista voxel in prima persona (un solo livello) invece dell
 | `camera_object` | Oggetto | — | Oggetto la cui posizione + angolo di sguardo è la camera (vuoto = l'oggetto che esegue questa azione); facoltativo |
 | `z_layer` | Numero | `0` | Quale livello del mondo viene disegnato (la fase 2a ne disegna esattamente uno: non si guarda ancora su e giù); facoltativo |
 | `fov` | Numero | `66` | Campo visivo orizzontale in gradi; facoltativo |
-| `render_distance` | Numero | `20` | Lunghezza massima del raggio in celle della griglia; facoltativo |
+| `render_distance` | Numero | `10` | Max ray length in grid cells (lower = faster; distance fog hides where the world ends); facoltativo |
 | `cell_size` | Numero | `32` | Dimensione della cella della griglia, in pixel (da far coincidere con la griglia di posa dei blocchi); facoltativo |
-| `columns` | Numero | `320` | Colonne dello schermo per il raycast (meno = più veloce/più grezzo); facoltativo |
+| `columns` | Numero | `160` | Colonne dello schermo per il raycast (meno = più veloce/più grezzo); facoltativo |
+| `fog` | Sì/No | Sì | Fade distant blocks into the sky so the edge of the view looks like haze instead of a hard cut. Off restores the old flat look; facoltativo |
+| `fog_color` | Colore | — | Colour the distance fades to; empty follows the Sky Color (a cave might want its own); facoltativo |
 | `wall_color` | Colore | `#8a8a8a` | Colore pieno, usato solo se i blocchi con texture sono disattivati; facoltativo |
 | `floor_color` | Colore | `#3a2f1c` | Colore pieno del pavimento (la fase 2a non applica ancora texture al pavimento); facoltativo |
 | `ceiling_color` | Colore | `#87CEEB` | Colore pieno del soffitto o del cielo (la fase 2a non ha ancora un cielo); facoltativo |
@@ -284,6 +300,27 @@ Assegna punti quando «Rompi blocco» rimuove con successo un tipo di blocco sce
 |-----------|------|---------|-------|
 | `block_type` | Scelta | `diamond_block` | Quale tipo di blocco assegna punti quando viene rotto; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
 | `points` | Numero | `10` | Punti assegnati per ogni blocco di questo tipo rotto |
+
+### Imposta ricetta di creazione
+
+| Proprietà | Valore |
+|----------|-------|
+| **Nome** | `set_crafting_recipe` |
+| **Icona** | 🛠️ |
+| **Categoria** | Vista 3D |
+
+Registra una ricetta che «Crea oggetto» può usare: va chiamata una volta per ogni tipo di output (per es. nell'evento Creazione della stanza, subito dopo «Attiva vista Block World»). Fino a tre slot di ingredienti; lascia vuoti gli slot 2/3 se la ricetta ne richiede solo uno o due
+
+| Parametro | Tipo | Predef. | Note |
+|-----------|------|---------|-------|
+| `output` | Scelta | `brick` | Which block type this recipe produces; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `output_count` | Numero | `1` | How many of Output Block one craft produces |
+| `input_1` | Scelta | `stone` | First required block type; Scelte: `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow` |
+| `input_1_count` | Numero | `1` | How many of Input 1 the recipe consumes |
+| `input_2` | Scelta | — | Second required block type (blank = unused); Scelte: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; facoltativo |
+| `input_2_count` | Numero | `1` | How many of Input 2 the recipe consumes; facoltativo |
+| `input_3` | Scelta | — | Third required block type (blank = unused); Scelte: ``, `brick`, `clay`, `coal_block`, `cobble`, `desert_sand`, `diamond_block`, `dirt`, `glass`, `gold_block`, `grass`, `gravel`, `ice`, `jungle_plank`, `leaves`, `mese_block`, `obsidian`, `pine_plank`, `sand`, `sandstone`, `snow`, `stone`, `water`, `wood_log`, `wood_plank`, `wool_black`, `wool_blue`, `wool_green`, `wool_red`, `wool_white`, `wool_yellow`; facoltativo |
+| `input_3_count` | Numero | `1` | How many of Input 3 the recipe consumes; facoltativo |
 
 ### Imposta angolo di sguardo
 

@@ -12,6 +12,19 @@ can stand on things and see over what's below you, blocks show their top
 faces — and you can now build and dig at your own layer. Still no hotbar
 action, no collision and no gravity — see "What's not here yet" below.
 
+> **This "Status" line and the table below predate the Tier 7/7e/8 work**
+> (gravity/jump, per-type protection/reward, hotbar + inventory + HUD,
+> chunked infinite terrain, and now crafting — see
+> `docs/BLOCK_WORLD_CRAFTING_PLAN.md`) and are stale in several specific,
+> checkable ways: a hotbar action, collision, gravity and a HUD all exist;
+> `block_world_1`/`block_world_2` are real bundled samples; HTML5/Kivy
+> export parity exists for most (not all — see `TODO.md`'s Block World
+> section for the one confirmed gap) actions. A full pass to bring this
+> file's Status/table up to date is a separate task from documenting
+> crafting below, and hasn't been done here.
+
+
+
 ## What exists so far
 
 | File | What's in it |
@@ -101,6 +114,36 @@ is still aimed at, still occludes, still gets built against, and can still be
 placed. Swinging at one does nothing. That one flag is the whole protection
 model; the engine has no edit/play modes, and the plan doc explains why.
 
+## Crafting (Tier 8)
+
+Full design in `docs/BLOCK_WORLD_CRAFTING_PLAN.md`. Two actions, one call
+per output type to register a recipe and one to attempt it, on desktop +
+HTML5 + Kivy:
+
+- **`set_crafting_recipe(output, output_count, input_1, input_1_count,
+  input_2, input_2_count, input_3, input_3_count)`** registers a recipe
+  on the room's camera config — same call-once-per-type-in-`create`
+  pattern as `set_block_protection`/`set_block_reward` above. Up to
+  three input slots; `input_1` is required, `input_2`/`input_3` are
+  independently optional (a blank type there just means "unused" — a
+  blank slot 2 with a filled slot 3 still registers a 2-input recipe).
+- **`craft_item(output)`** looks up the recipe for `output` and, if every
+  input is present in the calling instance's inventory in sufficient
+  count, consumes them all and adds `output_count` of `output` —
+  **all-or-nothing**: a 2-input recipe short on one input never
+  partially consumes the other. Silent no-op if the recipe doesn't
+  exist, if inventory is short, or if Enable Block World View's
+  **Inventory** parameter isn't on (Tier 8 crafts FROM/INTO the same
+  `block_inventory` dict `break_block`/`place_block` use — there is no
+  separate "item" concept, deliberately, to keep this a small feature
+  rather than a parallel inventory system).
+
+Recipe outputs are block types, not a new asset kind — nothing here adds a
+crafting-grid UI, table-proximity gating, or recipe unlock progression;
+a project author who wants those builds them from existing actions
+(`test_instance_count`/`check_collision` against a table object, for
+proximity; an authored `draw_*` action, for a recipe browser).
+
 ## The data model (`state.py`)
 
 Mirrors `extensions/raycast_2_5d/state.py`'s pattern exactly: nothing
@@ -147,9 +190,14 @@ voxel-specific touches core's `GameRoom`. A room's blocks live under
 - Protected *regions*. Protection is per block TYPE only (`breakable`); a
   bounding box the actions refuse to touch is the follow-up if that turns
   out too coarse.
-- A hotbar action, and a committed world generator (rest of Phase 3).
-- Collision, gravity, a HUD (Phase 4).
-- A sample game (Phase 5).
-- HTML5 / Kivy export parity (Phase 6).
+- A crafting-grid UI, table-proximity gating, or recipe unlock
+  progression (Tier 8's own explicit scope cuts — see the Crafting
+  section above).
+- A `set_block_reward` port on Kivy specifically — desktop and HTML5 both
+  have it; Kivy's export silently no-ops the action. See `TODO.md`'s
+  Block World section.
 
-See `docs/VOXEL_WORLD_PLAN.md` for the full staging.
+See `docs/VOXEL_WORLD_PLAN.md` for the full original staging (itself
+stale past Phase 3 — later work is tracked in `docs/BLOCK_WORLD_PERF_PLAN.md`
+and `docs/BLOCK_WORLD_CRAFTING_PLAN.md` instead; `docs/PROJECT_STATUS.md`
+indexes the rest).

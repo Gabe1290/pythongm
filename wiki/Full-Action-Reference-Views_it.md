@@ -59,7 +59,7 @@ Configura una vista di camera: quale parte della stanza mostra, dove si disegna 
 - [Gioco](Full-Action-Reference-Game_it) (25)
 - [Controllo](Full-Action-Reference-Control_it) (19)
 - [Griglia](Full-Action-Reference-Grid_it) (4)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (16)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (18)
 - [Rete](Full-Action-Reference-Network-Actions_it) (15)
 - [Particelle](Full-Action-Reference-Particles_it) (8)
 

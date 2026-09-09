@@ -59,7 +59,7 @@ Eine Kameraansicht konfigurieren: welchen Teil des Raums sie zeigt, wo sie auf d
 - [Spiel](Full-Action-Reference-Game_de) (25)
 - [Steuerung](Full-Action-Reference-Control_de) (19)
 - [Gitter](Full-Action-Reference-Grid_de) (4)
-- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (16)
+- [3D-Ansicht](Full-Action-Reference-3D-View-Actions_de) (18)
 - [Netzwerk](Full-Action-Reference-Network-Actions_de) (15)
 - [Partikel](Full-Action-Reference-Particles_de) (8)
 

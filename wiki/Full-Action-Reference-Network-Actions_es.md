@@ -241,7 +241,7 @@ Marca como sincronizada la instancia que ejecuta esta acción: su posición, rot
 - [Control](Full-Action-Reference-Control_es) (19)
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (16)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (18)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
 
 [← Volver a la Referencia Completa de Acciones](Full-Action-Reference_es)

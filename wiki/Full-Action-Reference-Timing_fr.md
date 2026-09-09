@@ -125,7 +125,7 @@ Arrête la lecture de la frise et remet la position à 0
 - [Contrôle](Full-Action-Reference-Control_fr) (19)
 - [Grille](Full-Action-Reference-Grid_fr) (4)
 - [Vues](Full-Action-Reference-Views_fr) (2)
-- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (16)
+- [Vue 3D](Full-Action-Reference-3D-View-Actions_fr) (18)
 - [Réseau](Full-Action-Reference-Network-Actions_fr) (15)
 - [Particules](Full-Action-Reference-Particles_fr) (8)
 

@@ -258,25 +258,50 @@ each — the standard workflow this repo uses for every Block World Tier.
       Full `block_world`-keyed suite: 708 passed (677 → 708, +31 across
       the three new test files). Full suite: **4,699 passed, 0 failed,
       10 skipped** — clean, no flakes.
-- [ ] **Unit 3 — action reference + README.** Re-run
-      `tools/gen_action_reference.py` (both new actions need
-      `EN_OVERRIDES`/i18n table entries if this extension is still
-      French-first anywhere it matters — check
-      `extensions/block_world/actions.py`'s existing strings first,
-      they read English already, unlike `multiplayer_lan`'s
-      French-first gap noted in `TODO.md`). Add a short "Crafting"
-      section to `extensions/block_world/README.md` documenting the
-      two actions and the three-slot recipe shape.
-      **Note: this is a DIFFERENT i18n surface than the one Unit 1 already
-      closed.** Unit 1 fixed the live-UI `display_name` translation
-      (`ObjectEventsPanel`/`ActionConfigDialog` Qt contexts, the action
-      palette + configure dialog a user actually sees) via
-      `translations/*.ts`/`.qm` — that part is DONE. `gen_action_reference.py`
-      is a separate pipeline generating the `wiki/Full-Action-Reference*.md`
-      pages from `tools/action_ref_i18n.py`'s own `LANGS` tables (8
-      wiki languages: fr/de/uk/ru/it/es/pt/sl — no ja/zh wiki translation
-      exists yet per the 2026-07-29 session note), unrelated to the `.ts`
-      catalogues. Still open.
+- [x] **Unit 3 — action reference + README. DONE (2026-09-09).**
+      Confirmed (not assumed) `extensions/block_world/actions.py`'s
+      strings read English already — no `EN_OVERRIDES` entries needed for
+      the English wiki edition, unlike `multiplayer_lan`'s French-first
+      gap. Added `set_crafting_recipe`/`craft_item` `{"display", "desc"}`
+      entries to `tools/action_ref_i18n.py`'s `ACTIONS_<LANG>` tables for
+      all 8 wiki languages (fr/de/uk/ru/it/es/pt/sl — matching Unit 1's
+      note that ja/zh have no wiki translation yet), via a one-off
+      insertion script (same category as Unit 1's translation-catalogue
+      script — mechanical, not hand-edited XML/dict surgery). Display
+      names reused verbatim from Unit 1's own `.ts` translations (same
+      source string, same target audience); descriptions newly
+      translated, matching the phrasing/quoting conventions
+      (`«…»`/`„…"`/`»…«` per language) `set_block_reward`'s own entries
+      already established. Re-ran `tools/gen_action_reference.py` for
+      English + all 8 languages: **159 → 161 actions**, zero missing
+      `action.display`/`action.desc` entries for either new action in any
+      language (verified from the tool's own missing-string report, not
+      assumed) — the only fallbacks-to-English left are the two new
+      actions' 8 PARAMETER notes (`"Which block type this recipe
+      produces"` and its 7 siblings), deliberately left to the tool's own
+      documented graceful-fallback-with-report mechanism rather than
+      translating another ~64 short param-note entries, matching two
+      genuinely pre-existing fallbacks (fog-related notes) already
+      present before this change — translating every parameter note was
+      never this plan's ask, just the action-level display/description.
+      Regenerated `wiki/*.md` (126 files touched — every page's shared
+      category-count sidebar shifts 159→161 / 16→18 for 3D View, plus the
+      3D-View pages' own new content; `git diff` confirms no other
+      content moved).
+      Added a "Crafting (Tier 8)" section to
+      `extensions/block_world/README.md` documenting both actions and the
+      three-slot recipe shape, matching the file's existing per-feature
+      section style. **Found the surrounding README's "Status" line,
+      feature table, and "What's not here yet" list are stale well past
+      Tier 7/8** (still claiming "no hotbar action, no collision, no
+      gravity," no samples, no export parity — all long since shipped) —
+      logged as an explicit callout rather than silently writing new,
+      accurate content next to old, false claims, and fixed only the
+      specific "What's not here yet" bullets that would have directly
+      contradicted the new Crafting section (replaced with Tier 8's own
+      real scope cuts and the `set_block_reward`-on-Kivy gap from Unit 2).
+      A full README modernization pass is explicitly **not** part of this
+      plan and wasn't attempted.
 - [ ] **Unit 4 — decide on sample integration, don't assume it.** Neither
       `block_world_1` nor `block_world_2` is in the Welcome tab (see
       `TODO.md`'s Block World section — deliberately set aside in favour

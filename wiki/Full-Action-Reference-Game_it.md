@@ -404,7 +404,7 @@ Mostra un messaggio e mette il gioco in pausa finché il giocatore non lo chiude
 - [Controllo](Full-Action-Reference-Control_it) (19)
 - [Griglia](Full-Action-Reference-Grid_it) (4)
 - [Viste](Full-Action-Reference-Views_it) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (16)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_it) (18)
 - [Rete](Full-Action-Reference-Network-Actions_it) (15)
 - [Particelle](Full-Action-Reference-Particles_it) (8)
 

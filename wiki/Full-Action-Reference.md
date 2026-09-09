@@ -4,7 +4,7 @@
 
 > **Auto-generated** from the IDE's action registry by `tools/gen_action_reference.py` — do not edit by hand; re-run the generator after changing actions.
 
-This page lists all **159** actions available in PyGameMaker, exactly as they appear in the IDE's action picker (including the Audio plugin and the 3D View extension). Actions are commands that run when an event fires.
+This page lists all **161** actions available in PyGameMaker, exactly as they appear in the IDE's action picker (including the Audio plugin and the 3D View extension). Actions are commands that run when an event fires.
 
 ## Categories
 
@@ -18,7 +18,7 @@ This page lists all **159** actions available in PyGameMaker, exactly as they ap
 - [Control](Full-Action-Reference-Control) (19)
 - [Grid](Full-Action-Reference-Grid) (4)
 - [Views](Full-Action-Reference-Views) (2)
-- [3D View](Full-Action-Reference-3D-View-Actions) (16)
+- [3D View](Full-Action-Reference-3D-View-Actions) (18)
 - [Network](Full-Action-Reference-Network-Actions) (15)
 - [Particles](Full-Action-Reference-Particles) (8)
 

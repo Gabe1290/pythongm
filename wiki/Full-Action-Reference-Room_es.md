@@ -202,7 +202,7 @@ Cambiar la velocidad de fotogramas del juego (fotogramas por segundo)
 - [Control](Full-Action-Reference-Control_es) (19)
 - [Cuadrícula](Full-Action-Reference-Grid_es) (4)
 - [Vistas](Full-Action-Reference-Views_es) (2)
-- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (16)
+- [Vista 3D](Full-Action-Reference-3D-View-Actions_es) (18)
 - [Red](Full-Action-Reference-Network-Actions_es) (15)
 - [Partículas](Full-Action-Reference-Particles_es) (8)
 

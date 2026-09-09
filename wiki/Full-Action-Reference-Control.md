@@ -301,7 +301,7 @@ Test an instance or global variable value
 - [Game](Full-Action-Reference-Game) (25)
 - [Grid](Full-Action-Reference-Grid) (4)
 - [Views](Full-Action-Reference-Views) (2)
-- [3D View](Full-Action-Reference-3D-View-Actions) (16)
+- [3D View](Full-Action-Reference-3D-View-Actions) (18)
 - [Network](Full-Action-Reference-Network-Actions) (15)
 - [Particles](Full-Action-Reference-Particles) (8)
 
