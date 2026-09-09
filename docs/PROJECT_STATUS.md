@@ -69,10 +69,16 @@ This is the complete list. Everything else that used to be tracked in
    "pick up only on an explicit ask" — low value relative to its effort,
    not neglected. **Kept.**
 
-4. **Full crafting system for Block World.** No plan doc exists yet.
-   Explicitly split out of the inventory work as its own future item,
-   smaller and lower-priority than the other three — write a plan when
-   it's actually next in line, not speculatively.
+4. **Full crafting system for Block World — planned, not started.**
+   *(Updated 2026-09-09.)* `docs/BLOCK_WORLD_CRAFTING_PLAN.md` now exists
+   (written on an explicit ask). Scope: outputs stay block types (no new
+   "item" asset type), two new register/attempt actions
+   (`set_crafting_recipe`/`craft_item`) mirroring `set_block_protection`/
+   `set_block_reward`'s exact call-once-per-type pattern, fixed 3-input-slot
+   shapeless recipes, requires Tier 7c's Inventory on. No crafting-table
+   gating, no dedicated crafting HUD, no new export machinery beyond
+   porting the two actions to HTML5/Kivy — all explicit, written cuts.
+   Ready to pick up unit-by-unit whenever it's next in line.
 
 5. **`docs/BLOCK_WORLD_PERF_PLAN.md` — the Block World fps gap. CLOSED
    2026-09-09; Phase 1 shipped, re-measured, stopping there per the plan's
