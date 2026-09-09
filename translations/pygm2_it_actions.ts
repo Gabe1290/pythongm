@@ -234,6 +234,14 @@ Usa invece gli operatori Python (and / or / not), ad esempio "vspeed &gt; 0 and 
         <source>Stop Sound</source>
         <translation>Ferma suono</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Imposta ricetta di creazione</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Crea oggetto</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

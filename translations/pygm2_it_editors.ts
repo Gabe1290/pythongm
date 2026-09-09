@@ -1996,6 +1996,14 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <source>Check Sound Playing</source>
         <translation>Verifica se il suono è attivo</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Imposta ricetta di creazione</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Crea oggetto</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

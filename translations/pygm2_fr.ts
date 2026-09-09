@@ -680,6 +680,14 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <source>Stop Sound</source>
         <translation>Arrêter un son</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Définir une recette de fabrication</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Fabriquer un objet</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -4809,6 +4817,14 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
     <message>
         <source>Stop Sound</source>
         <translation>Arrêter un son</translation>
+    </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Définir une recette de fabrication</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Fabriquer un objet</translation>
     </message>
 </context>
 <context>

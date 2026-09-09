@@ -210,6 +210,68 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "set_crafting_recipe": ActionType(
+        name="set_crafting_recipe",
+        display_name="Set Crafting Recipe",
+        description="Register a recipe Craft Item can use -- call once per "
+                    "output type (e.g. in the room's create event, right "
+                    "after Enable Block World View). Up to three input "
+                    "slots; leave slots 2/3 blank if the recipe only needs "
+                    "one or two",
+        category="3D View",
+        icon="🛠️",
+        parameters=[
+            ActionParameter(name="output", display_name="Output Block",
+                param_type="choice", default_value="brick",
+                choices=_BLOCK_CHOICES,
+                description="Which block type this recipe produces"),
+            ActionParameter(name="output_count", display_name="Output Count",
+                param_type="number", default_value=1,
+                description="How many of Output Block one craft produces"),
+            ActionParameter(name="input_1", display_name="Input 1",
+                param_type="choice", default_value="stone",
+                choices=_BLOCK_CHOICES,
+                description="First required block type"),
+            ActionParameter(name="input_1_count", display_name="Input 1 Count",
+                param_type="number", default_value=1,
+                description="How many of Input 1 the recipe consumes"),
+            ActionParameter(name="input_2", display_name="Input 2",
+                param_type="choice", default_value="", required=False,
+                choices=[""] + _BLOCK_CHOICES,
+                description="Second required block type (blank = unused)"),
+            ActionParameter(name="input_2_count", display_name="Input 2 Count",
+                param_type="number", default_value=1, required=False,
+                description="How many of Input 2 the recipe consumes"),
+            ActionParameter(name="input_3", display_name="Input 3",
+                param_type="choice", default_value="", required=False,
+                choices=[""] + _BLOCK_CHOICES,
+                description="Third required block type (blank = unused)"),
+            ActionParameter(name="input_3_count", display_name="Input 3 Count",
+                param_type="number", default_value=1, required=False,
+                description="How many of Input 3 the recipe consumes"),
+        ]
+    ),
+
+    "craft_item": ActionType(
+        name="craft_item",
+        display_name="Craft Item",
+        description="Attempt to craft a registered recipe's output from "
+                    "the calling instance's inventory -- all-or-nothing: "
+                    "consumes every input at once, or nothing at all if "
+                    "any input is short. Silent no-op if no recipe is "
+                    "registered for Output, or Enable Block World View's "
+                    "Inventory parameter isn't on",
+        category="3D View",
+        icon="⚗️",
+        parameters=[
+            ActionParameter(name="output", display_name="Output Block",
+                param_type="choice", default_value="brick",
+                choices=_BLOCK_CHOICES,
+                description="Which registered recipe to attempt, by its "
+                            "output block type"),
+        ]
+    ),
+
     "select_hotbar_slot": ActionType(
         name="select_hotbar_slot",
         display_name="Select Hotbar Slot",

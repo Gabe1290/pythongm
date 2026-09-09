@@ -1986,6 +1986,14 @@ Deseja salvar mesmo assim?</translation>
         <source>Stop Sound</source>
         <translation>Parar som</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Definir receita de fabricação</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Fabricar item</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -4423,6 +4431,14 @@ A ação em si não é afetada e será mantida exatamente como está ao salvar.<
     <message>
         <source>Stop Sound</source>
         <translation>Parar som</translation>
+    </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Definir receita de fabricação</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Fabricar item</translation>
     </message>
 </context>
 <context>

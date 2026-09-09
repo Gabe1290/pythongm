@@ -27,6 +27,26 @@ def _truthy(raw):
     return bool(raw)
 
 
+def _valid_input_slot(ae, instance, parameters, slot):
+    """A recipe input slot's (block_type, count) pair, or None if blank or
+    malformed. Blank type is the deliberate "unused" signal for
+    set_crafting_recipe's optional input_2/input_3 slots (Tier 8 design
+    decision 2) -- this only checks well-formedness; whether a blank/
+    invalid slot means "skip it" (optional slots) or "the whole recipe is
+    invalid" (the required input_1 slot) is the caller's decision."""
+    raw_type = ae._parse_value(parameters.get(slot, ""), instance)
+    raw_type = str(raw_type) if raw_type else ""
+    if not raw_type or raw_type not in BLOCK_TYPES:
+        return None
+    try:
+        count = int(ae._parse_value(parameters.get(f"{slot}_count", 1), instance))
+    except (TypeError, ValueError):
+        return None
+    if count <= 0:
+        return None
+    return (raw_type, count)
+
+
 # Jump mechanic (Tier 7a, docs/DEFERRED_GAPS_2026_PLAN.md). Tuning defaults
 # in cells/step (cells/step^2 for gravity) -- a game-feel choice, freely
 # overridden per project via enable_block_world_view's `gravity` param and
@@ -561,6 +581,114 @@ class PluginExecutor:
             return
 
         cfg.setdefault("protection", {})[block_type] = required_key
+
+    def execute_set_crafting_recipe_action(self, instance, parameters):
+        """Register a recipe craft_item can use (Tier 8) -- call once per
+        output type (e.g. the room's create event, right after
+        enable_block_world_view). Same call-once-per-type pattern, same
+        camera-config storage, as set_block_protection/set_block_reward.
+
+        Outputs are block types, not a separate "item" concept (design
+        decision 1) -- a crafted result lands in the same block_inventory
+        dict break_block/place_block already use.
+
+        Up to three input slots. input_1 is required: a call with it
+        blank, unrecognized, or a non-positive count registers nothing (a
+        recipe with zero required inputs isn't a recipe). input_2/input_3
+        are genuinely optional -- a blank type there just means "this slot
+        is unused", not an error; each is independently well-formed-or-
+        skipped (design decision 2), so e.g. a blank input_2 with a valid
+        input_3 still registers a 2-input recipe.
+
+        Each call overwrites any previous recipe for that Output, matching
+        set_block_reward's "each call adds/overwrites one entry" convention.
+
+        Parameters:
+            output: which block type this recipe produces
+            output_count: how many of output one craft produces
+            input_1, input_1_count: first required block type + count
+            input_2, input_2_count: second required block type + count
+                (blank type = unused)
+            input_3, input_3_count: third required block type + count
+                (blank type = unused)
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled"):
+            return
+
+        output = ae._parse_value(parameters.get("output", ""), instance)
+        output = str(output) if output else ""
+        if output not in BLOCK_TYPES:
+            return
+        try:
+            output_count = int(ae._parse_value(parameters.get("output_count", 1), instance))
+        except (TypeError, ValueError):
+            return
+        if output_count <= 0:
+            return
+
+        first = _valid_input_slot(ae, instance, parameters, "input_1")
+        if first is None:
+            return  # input_1 is required -- no recipe without at least one input
+        inputs = [first]
+        for slot in ("input_2", "input_3"):
+            extra = _valid_input_slot(ae, instance, parameters, slot)
+            if extra is not None:
+                inputs.append(extra)
+
+        cfg.setdefault("recipes", {})[output] = {
+            "output_count": output_count,
+            "inputs": inputs,
+        }
+
+    def execute_craft_item_action(self, instance, parameters):
+        """Attempt to craft a registered recipe's output from the calling
+        instance's inventory (Tier 8).
+
+        All-or-nothing: every input is checked before any is consumed, so
+        a recipe needing 2+ inputs never partially consumes one and fails
+        the other. Silent no-op (not an error) if: no recipe is registered
+        for Output, Enable Block World View's Inventory parameter isn't
+        on, or any required input is short -- the same "holding the build
+        key against a wall is ordinary play" precedent
+        place_block/break_block already established.
+
+        Requires Inventory on, same as break_block's pickup/place_block's
+        consumption -- without it there's no instance.block_inventory to
+        craft from or into, so this is a guaranteed no-op (design
+        decision 5).
+
+        Parameters:
+            output: which registered recipe to attempt, by its output
+                block type
+        """
+        ae = self._executor(instance)
+        if ae is None or not ae.game_runner or not ae.game_runner.current_room:
+            return
+        room = ae.game_runner.current_room
+        cfg = peek_camera(room)
+        if not cfg or not cfg.get("enabled") or not _truthy(cfg.get("inventory", False)):
+            return
+
+        output = ae._parse_value(parameters.get("output", ""), instance)
+        output = str(output) if output else ""
+        recipe = cfg.get("recipes", {}).get(output)
+        if not recipe:
+            return
+
+        inventory = getattr(instance, "block_inventory", None) or {}
+        for block_type, needed in recipe["inputs"]:
+            if inventory.get(block_type, 0) < needed:
+                return  # short on this input -- consume nothing (all-or-nothing)
+
+        for block_type, needed in recipe["inputs"]:
+            inventory[block_type] -= needed
+        inventory[output] = inventory.get(output, 0) + recipe["output_count"]
+        instance.block_inventory = inventory
 
     def execute_enable_block_world_view_action(self, instance, parameters):
         """Switch the current room to a first-person voxel view (single

@@ -337,6 +337,14 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
         <source>Stop Sound</source>
         <translation>Detener sonido</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Definir receta de fabricación</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Fabricar objeto</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -4461,6 +4469,14 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <source>Check Sound Playing</source>
         <translation>Comprobar si suena</translation>
+    </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>Definir receta de fabricación</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>Fabricar objeto</translation>
     </message>
 </context>
 <context>

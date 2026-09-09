@@ -2079,6 +2079,14 @@ Do you want to save anyway?</source>
         <source>Stop Sound</source>
         <translation>停止声音</translation>
     </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>设置合成配方</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>合成物品</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -4423,6 +4431,14 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Stop Sound</source>
         <translation>停止声音</translation>
+    </message>
+    <message>
+        <source>Set Crafting Recipe</source>
+        <translation>设置合成配方</translation>
+    </message>
+    <message>
+        <source>Craft Item</source>
+        <translation>合成物品</translation>
     </message>
 </context>
 <context>
