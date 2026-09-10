@@ -77,6 +77,8 @@ Code throughout, which isn't in the Beginner preset)
 3. Use orange/yellow colors
 4. Size: 16x16 pixels
 
+![The Sprite Editor with spr_lander open, Origin set to Center-Bottom (X 16, Y 32); spr_lander, spr_pad, spr_ground and spr_flame in the resource tree](images/tutorial-lunarlander-02-sprites.png)
+
 ---
 
 ## Step 3: Create the Ground Object
@@ -89,6 +91,8 @@ The ground is dangerous terrain that causes a crash.
 4. **Check the "Solid" checkbox**
 5. No events needed
 
+![obj_ground's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-lunarlander-03-ground-object.png)
+
 ---
 
 ## Step 4: Create the Landing Pad Object
@@ -99,6 +103,8 @@ The landing pad is where the player must land safely.
 2. Set the sprite to `spr_pad`
 3. **Check the "Solid" checkbox**
 4. No events needed (collision handled by lander)
+
+![obj_pad's Object Events panel: empty, with Solid checked](images/tutorial-lunarlander-04-pad-object.png)
 
 ---
 
@@ -209,6 +215,8 @@ moment of touchdown, so the player has already seen the number.
 2. Add Action: **Output** → **Show Message** (Message: `Crashed into terrain!`)
 3. Add Action: **Room** → **Restart Room**
 
+![obj_lander's Object Events panel: Create (Set Gravity + Execute Code), Step (Execute Code), Collision with obj_pad (the Test Expression landing check), Collision with obj_ground (Set Variable + Show Message + Restart Room)](images/tutorial-lunarlander-05-lander-object.png)
+
 ---
 
 ## Step 6: Create the Flame Object (Optional)
@@ -221,6 +229,8 @@ Visual feedback when thrusting.
 This will be created by the lander when thrusting (advanced feature).
 
 For a simpler approach, you can draw the flame in the lander's Draw event.
+
+![obj_flame's Object Events panel: empty -- it just needs the spr_flame sprite](images/tutorial-lunarlander-06-flame-object.png)
 
 ---
 
@@ -280,6 +290,8 @@ Then the two warning lines, each gated by **Control** → **Test Expression**
     X: `10`, Y: `440`) — pick a Y near the bottom of whatever room size you
     use in Step 8.
 
+![obj_game_controller's Object Events panel: a Draw event with 12 actions -- the Execute Code HUD-value calculation, then the Set Draw Color / Draw Text / Draw Variable chain and the two Test Expression warning blocks -- with no sprite set](images/tutorial-lunarlander-07-controller-object.png)
+
 ---
 
 ## Step 8: Design Your Level
@@ -311,6 +323,8 @@ GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 
 G = Ground    L = Lander    P = Landing Pad
 ```
+
+![The Room Editor for room_game: a solid terrain row along the bottom with rocky chunks above it, a yellow landing pad in a clear gap, the white lander near the top-left, and the obj_game_controller marker near the top-right, all on a black space background](images/tutorial-lunarlander-08-room.png)
 
 ---
 
