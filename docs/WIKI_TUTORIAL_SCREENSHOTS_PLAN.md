@@ -1,12 +1,21 @@
 # Plan: per-tutorial-step screenshots for the 6 build-along wiki tutorials
 
-Status: **not started** — one of the few genuinely open initiatives in
-the repo; see `docs/PROJECT_STATUS.md` for the current overall picture.
-Written 2026-08-15. This was the sole open item carried over from the
-wiki completeness effort's Phase 3 (that plan is otherwise fully closed —
-Phases 0-3 and 5 done, Phase 4 explicitly decided against; its own doc
-has since been removed as closed, but this plan is self-contained and
-doesn't depend on it).
+Status: **Phase 1 DONE (2026-09-11) — Breakout, the proof of concept.**
+Written 2026-08-15; picked up on an explicit ask. This was the sole open
+item carried over from the wiki completeness effort's Phase 3 (that plan
+is otherwise fully closed — Phases 0-3 and 5 done, Phase 4 explicitly
+decided against; its own doc has since been removed as closed, but this
+plan is self-contained and doesn't depend on it).
+
+**Phase 1 result, answering the plan's own open question**: scripting
+the Room Editor specifically turned out to be **no harder than scripting
+any other editor** — placing an instance is just an entry in the room's
+`instances` list (`{"object_name", "x", "y", "rotation", "scale_x",
+"scale_y", "visible"}`), no different in mechanism from creating a
+sprite or an object. The premise that this would be the hard, uncertain
+part did not hold up; see "What Phase 1 actually found" below for the
+full account, including the one real placement bug the screenshots
+themselves caught.
 
 ## The six tutorials, and why none of them can reuse an existing sample
 
@@ -87,17 +96,74 @@ this plan doesn't revise it — six tutorials × several steps each × the
 scripting-a-full-authoring-sequence problem above is genuinely
 comparable in scope to the six pages Phase 1 built from nothing.
 
+## What Phase 1 actually found (2026-09-11)
+
+Read all six tutorials' line counts before picking one, per this plan's
+own instruction rather than guessing: Breakout (225 lines) was clearly
+shortest — Pong 362, Sokoban 368, Maze 380, Platformer 428,
+LunarLander 438. Also re-checked (not just trusted from 2026-08-15) that
+no bundled `samples/` folder matches any of the six by name — still
+true.
+
+**The capture mechanism, end to end, in one committed script**
+(`tools/capture_tutorial_screenshots.py`): construct a real
+`PyGameMakerIDE` offscreen, create a scratch project via
+`ProjectManager.create_project` (never the bundled `samples/` path
+directly), then for each of the tutorial's own "## Step N" headings,
+mutate the project directly through the same `AssetManager` calls the
+real UI menu actions use (`import_asset` for sprites — origin already
+defaults to center on import, matching "Click Center" for free;
+`create_asset` for objects/rooms, with `events`/`instances` passed
+straight in), sync that into `project_manager.current_project_data` +
+refresh the visible asset tree (`AssetManager.save_assets_to_project_data`
++ `AssetTreeWidget.refresh_from_project` — the exact same sync
+`ProjectManager.save_project()` already relies on before writing to
+disk, reused here instead of re-deriving something new), open the
+relevant editor (`open_sprite_editor`/`open_object_editor`/
+`open_room_editor`, all three already take `(name, data)` directly), and
+grab the window.
+
+**The plan's own flagged open question — "how mechanically painful is
+scripting the Room Editor specifically" — is answered: it isn't.**
+Placing an instance needed no new mechanism at all: a room's
+`instances` list is `{"object_name", "x", "y", "rotation", "scale_x",
+"scale_y", "visible"}` dicts, populated directly, then handed to
+`open_room_editor` exactly like any other editor's data — the same
+"set the data, open the widget that renders it" shape that already
+worked for sprites and objects. The screenshot needs to show what the
+IDE looks like *after* a step, which depends only on the resulting
+project data and which editor is on screen — not on replaying the exact
+mouse-drag that a human would have used to get there. This is the
+finding the plan itself said should "reshape the plan for the remaining
+five" if placement turned out easy, not just if it turned out hard: **no
+per-tutorial risk assessment is needed for the Room Editor step in any
+of the remaining five** — it's the same mechanism as every other step.
+
+**One real bug the screenshots themselves caught, not assumed correct
+from the coordinates alone**: the first placement draft put the ball at
+the room's exact grid center, which landed inside the brick rows —
+the brick instance at that same cell rendered on top of it, so the ball
+was completely invisible in the captured Room Editor screenshot. Only
+visible by actually looking at the resulting image (matching this
+repo's "verify via a real GameRunner, not just reading code" discipline
+applied here to a capture script instead); fixed by moving the ball to
+the open gap between the brick rows and the paddle.
+
+**Shipped**: `wiki/images/tutorial-breakout-{01-sprites,
+02-paddle-object, 03-ball-object, 04-brick-object, 05-wall-object,
+06-room}.png` (6 screenshots, ~524 KB total), embedded into
+`wiki/Tutorial-Breakout.md` at the end of each corresponding "## Step N"
+section. `Tutorial-Breakout_fr.md` and the other 5 tutorials are
+untouched — see "Suggested phase breakdown" below for what's next.
+
 ## Suggested phase breakdown
 
-1. **One tutorial, fully, as the proof of concept.** Pick the shortest
-   tutorial (read all six's current step counts first — don't guess which
-   is shortest) and build its complete scratch project + capture script +
-   embedded screenshots, end to end. This phase answers the real open
-   question — "how mechanically painful is scripting the Room Editor
-   specifically" — before committing to the approach for the other five.
-   If placing instances programmatically turns out to be much harder than
-   creating objects/sprites, that finding should reshape the plan for the
-   remaining five, not get discovered mid-way through tutorial four.
+1. **DONE (2026-09-11) — One tutorial, fully, as the proof of concept.**
+   Breakout; see "What Phase 1 actually found" above for the full
+   account. If placing instances programmatically turns out to be much
+   harder than creating objects/sprites, that finding should reshape the
+   plan for the remaining five, not get discovered mid-way through
+   tutorial four — moot now; it turned out to be no harder at all.
 2. **The remaining five**, applying whatever pattern phase 1 validated.
    Each tutorial is its own scratch project + capture script + embed pass
    — independent units, doable in any order, each its own commit+push
