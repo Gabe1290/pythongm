@@ -151,10 +151,26 @@ the open gap between the brick rows and the paddle.
 
 **Shipped**: `wiki/images/tutorial-breakout-{01-sprites,
 02-paddle-object, 03-ball-object, 04-brick-object, 05-wall-object,
-06-room}.png` (6 screenshots, ~524 KB total), embedded into
+06-room}.png` (6 screenshots), embedded into
 `wiki/Tutorial-Breakout.md` at the end of each corresponding "## Step N"
-section. `Tutorial-Breakout_fr.md` and the other 5 tutorials are
-untouched — see "Suggested phase breakdown" below for what's next.
+section.
+
+**Phase 2 kickoff (2026-09-10) refined two capture-tool defaults; the
+Breakout shots were regenerated to match:**
+
+- **Window is now 1680×980, not 1440×900.** A 640×480-ish tutorial room
+  is wider than the room editor's scroll viewport at the old width, so a
+  full-window `ide.grab()` silently clipped the room's right edge (right
+  wall column, right goal column) out of the frame. Pong's room needs the
+  extra width; the others likely will too.
+- **Placeholder wall/goal sprites are no longer neutral grey.** A grey
+  wall row (150,150,150) is nearly indistinguishable from the IDE's own
+  grey chrome in a full-window screenshot — the walls *were* rendering in
+  the Phase 1 Breakout room shot, they just read as "window border". Walls
+  are now a warm tan; Pong's invisible goals a translucent green (with a
+  caption noting they're invisible in-game). Verified by pixel-probing the
+  saved PNGs, not just eyeballing the downscaled preview (which is exactly
+  what hid the problem the first time).
 
 ## Suggested phase breakdown
 
