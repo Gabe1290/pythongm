@@ -12,6 +12,8 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table.cells { border-collapse: collapse; margin: 8px 0; }
+        table.cells td, table.cells th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
 
         .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
         .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
@@ -33,82 +35,91 @@
     <strong>both</strong> computers agree on the board &mdash; and makes sure
     only the player whose turn it is can click at all.</p>
 
-    <h2>Give Every Cell a Unique Name</h2>
-    <div class="info">
-        Since every cell shares the same <code>x</code>/<code>y</code>-based
-        position, we can build a name for its shared variable straight from
-        that position &mdash; no per-cell setup needed, every cell runs the
-        exact same code. We'll write that name as
-        <code>"cell_" + string(x) + "_" + string(y)</code> wherever we need
-        it below.
-    </div>
-
-    <h2>Whose Turn Is It?</h2>
+    <h2>Track Whose Turn It Is</h2>
     <div class="step">
-        <p>Two players alternate, and <code>global.round_number</code>
-        counts up by one every time a move is confirmed. The player whose
-        turn it is right now is whichever <code>global.player_id</code>
-        matches the round number's remainder after dividing by 2:</p>
+        <ol>
+            <li>Add to <code>obj_game</code>'s <strong>Create</strong> event
+            (from Phase 1): set <code>last_round_acted</code> to
+            <code>0</code> and <code>my_turn</code> to <code>0</code></li>
+            <li>Add a <strong>Step</strong> event:</li>
+        </ol>
         <div class="blockly-group">
-            <span class="block block-control">If <span class="block-text">global.turn_ready == 1 and global.round_number mod 2 == global.player_id</span> then</span>
+            <span class="block block-control">If <span class="block-text">(global.round_number mod 2 == 1 and my_mark == "X") or (global.round_number mod 2 == 0 and my_mark == "O")</span> then</span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">my_turn</span> to <span class="block-text">1</span></span><br>
+            <span class="block block-control">Else</span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">my_turn</span> to <span class="block-text">0</span></span>
         </div>
-        <p style="margin-top: 8px; font-style: italic;">Player 0 (the host,
-        X) goes on round 0, 2, 4&hellip; Player 1 (O) goes on round 1, 3,
-        5&hellip; <code>global.turn_ready</code> makes sure this doesn't
-        fire again mid-round, before the last move has actually resolved.</p>
+        <p style="margin-top: 8px; font-style: italic;">The first published
+        round is round <strong>1</strong>, not 0 &mdash; so X (the host)
+        goes on the odd rounds, O on the even ones.</p>
+        <p style="margin-top: 4px;">Still in the same <strong>Step</strong>
+        event, right after: the player who is <em>not</em> on turn still
+        needs to submit something, or the round would sit waiting out the
+        full deadline every time:</p>
+        <div class="blockly-group">
+            <span class="block block-control">If <span class="block-text">my_turn == 0 and last_round_acted != global.round_number</span> then</span><br>
+            <span class="block block-network block-indent">End Turn (File Exchange)</span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">last_round_acted</span> to <span class="block-text">global.round_number</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> a "pass" &mdash; submitted with
+            nothing staged, once per round (<code>last_round_acted</code>
+            stops it firing every single frame). The active player will
+            submit something real instead, from the click handler below.
+        </div>
     </div>
 
     <h2>Rewrite the Click Handler</h2>
     <div class="step">
-        <ol>
-            <li>Open <code>obj_cell</code>'s <strong>Mouse: Left Button
-            Pressed</strong> event and replace it with this:</li>
-        </ol>
+        <p>Guard every one of Phase 1's nine click checks with
+        <code>my_turn == 1</code>, and replace the local
+        <strong>Set Variable</strong> with a real network write + submit.
+        Cell (0,0), fully worked out:</p>
         <div class="blockly-group">
             <span class="block block-event">Mouse: Left Button Pressed</span><br>
-            <span class="block block-control block-indent">If <span class="block-text">mark == "" and global.turn_ready == 1 and global.round_number mod 2 == global.player_id</span> then</span>
+            <span class="block block-control block-indent">If <span class="block-text">cell_0_0 == "" and my_turn == 1 and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> then</span><br>
+            <span class="block block-network block-indent2">Set a Shared Variable (File Exchange)
+            name:<span class="block-text">cell_0_0</span>
+            value:<span class="block-text">my_mark</span></span><br>
+            <span class="block block-network block-indent2">End Turn (File Exchange)</span>
         </div>
-        <p style="margin-top: 4px;">Then, still inside that <strong>If</strong>,
-        one branch per player &mdash; each writes its own symbol to this
-        cell's shared variable:</p>
-        <div class="blockly-group">
-            <span class="block block-control block-indent2">If <span class="block-text">global.player_id == 0</span> then</span><br>
-            <span class="block block-network block-indent2">Set Shared Variable
-            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
-            = <span class="block-text">X</span></span><br>
-            <span class="block block-control block-indent2">Else</span><br>
-            <span class="block block-network block-indent2">Set Shared Variable
-            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
-            = <span class="block-text">O</span></span><br>
-            <span class="block block-network block-indent2">End Turn</span>
-        </div>
+        <p style="margin-top: 8px; font-style: italic;">Same shape for the
+        other eight &mdash; same rectangles as Phase 1's table, each
+        writing its own literal cell name.</p>
         <div class="info" style="margin-top: 8px;">
             <strong>What this does:</strong> the active player writes their
-            own symbol into this cell's own shared variable, then
-            <strong>End Turn</strong> submits it. Nobody else can write to
-            this cell this round &mdash; only the player whose turn it is
-            gets past the outer <strong>If</strong> at all.
+            own mark into that cell's shared variable by its literal name
+            (the <strong>Name</strong> parameter is always a plain typed
+            name here, never a computed expression), then <strong>End Turn
+            (File Exchange)</strong> submits it.
         </div>
     </div>
 
-    <h2>Redraw the Board When a Round Resolves</h2>
+    <h2>Draw From the Published Board, Not the Local Guess</h2>
     <div class="step">
-        <p>Right now <code>mark</code> only ever changes locally. Let's make
-        it follow the <em>published</em> state instead:</p>
+        <p>Replace Phase 1's drawing check for each cell &mdash; read the
+        <em>shared</em> version instead of the local one. A shared variable
+        nobody has set yet reads as the number <code>0</code>, not an empty
+        string. Cell (0,0):</p>
         <div class="blockly-group">
-            <span class="block block-event">Round Resolved</span><br>
-            <span class="block block-network block-indent">Get Shared Variable
-            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
-            into <span class="block-text">mark</span></span>
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">global.cell_0_0 != 0</span> then</span><br>
+            <span class="block block-draw block-indent2">Draw text <span class="block-text">global.cell_0_0</span> at x:<span class="block-num">205</span> y:<span class="block-num">115</span></span>
         </div>
+        <p style="font-style: italic;">Same shape for the other eight, same
+        positions as Phase 1.</p>
         <div class="info" style="margin-top: 8px;">
-            <strong>What this does:</strong> <strong>Round Resolved</strong>
-            fires on every machine once the host has published the new
-            state for a round. Each cell asks "what does the shared
-            variable with my name say now?" and updates its own
-            <code>mark</code> &mdash; the same <strong>When drawing</strong>
-            event from Phase 1 draws whatever that turns out to be, with no
-            changes needed there at all.
+            <strong>What this does:</strong> a variable set with <strong>Set
+            a Shared Variable (File Exchange)</strong> is readable
+            <em>everywhere</em>, on every machine, as
+            <code>global.&lt;name&gt;</code> &mdash; no extra action needed
+            to fetch it, as long as the name is a literal like
+            <code>cell_0_0</code> here (a name built at runtime, like a
+            position-derived one, would need <strong>Read a Shared
+            Variable (File Exchange)</strong> instead, since that action's
+            own <strong>Name</strong> field does accept an expression).
+            This only takes effect once the host has actually published a
+            round, though &mdash; not the instant you click.
         </div>
     </div>
 

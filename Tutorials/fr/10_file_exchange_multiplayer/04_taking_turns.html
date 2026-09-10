@@ -12,6 +12,8 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table.cells { border-collapse: collapse; margin: 8px 0; }
+        table.cells td, table.cells th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
 
         .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
         .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
@@ -34,83 +36,96 @@
     grille &mdash; et s'assure que seul le joueur dont c'est le tour peut
     cliquer.</p>
 
-    <h2>Donner un nom unique à chaque case</h2>
-    <div class="info">
-        Puisque chaque case a sa propre position <code>x</code>/<code>y</code>,
-        nous pouvons construire le nom de sa variable partagée directement à
-        partir de cette position &mdash; aucun réglage par case, chaque case
-        exécute exactement le même code. Nous écrirons ce nom comme
-        <code>"cell_" + string(x) + "_" + string(y)</code> partout où nous
-        en avons besoin ci-dessous.
-    </div>
-
     <h2>À qui le tour ?</h2>
     <div class="step">
-        <p>Les deux joueurs alternent, et <code>global.round_number</code>
-        augmente de un à chaque coup confirmé. Le joueur dont c'est le tour
-        en ce moment est celui dont le <code>global.player_id</code>
-        correspond au reste de la division du numéro de tour par 2 :</p>
+        <ol>
+            <li>Ajoutez à l'événement <strong>Création</strong> de
+            <code>obj_game</code> (de la Phase 1) : définissez
+            <code>last_round_acted</code> à <code>0</code> et
+            <code>my_turn</code> à <code>0</code></li>
+            <li>Ajoutez un événement <strong>Step</strong> :</li>
+        </ol>
         <div class="blockly-group">
-            <span class="block block-control">Si <span class="block-text">global.turn_ready == 1 and global.round_number mod 2 == global.player_id</span> alors</span>
+            <span class="block block-control">Si <span class="block-text">(global.round_number mod 2 == 1 and my_mark == "X") or (global.round_number mod 2 == 0 and my_mark == "O")</span> alors</span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">my_turn</span> à <span class="block-text">1</span></span><br>
+            <span class="block block-control">Sinon</span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">my_turn</span> à <span class="block-text">0</span></span>
         </div>
-        <p style="margin-top: 8px; font-style: italic;">Le joueur 0 (l'hôte,
-        X) joue au tour 0, 2, 4&hellip; Le joueur 1 (O) joue au tour 1, 3,
-        5&hellip; <code>global.turn_ready</code> garantit que ça ne se
-        redéclenche pas en plein milieu d'un tour, avant que le dernier coup
-        ne soit vraiment résolu.</p>
+        <p style="margin-top: 8px; font-style: italic;">Le premier tour
+        publié est le tour <strong>1</strong>, pas 0 &mdash; donc X (l'hôte)
+        joue aux tours impairs, O aux tours pairs.</p>
+        <p style="margin-top: 4px;">Toujours dans le même événement
+        <strong>Step</strong>, juste après : le joueur dont ce <em>n'est
+        pas</em> le tour doit quand même soumettre quelque chose, sinon le
+        tour resterait bloqué en attendant tout le délai à chaque fois :</p>
+        <div class="blockly-group">
+            <span class="block block-control">Si <span class="block-text">my_turn == 0 and last_round_acted != global.round_number</span> alors</span><br>
+            <span class="block block-network block-indent">Terminer le tour (échange de fichiers)</span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">last_round_acted</span> à <span class="block-text">global.round_number</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Ce que ça fait :</strong> un « passe » &mdash; soumis
+            sans rien préparer, une seule fois par tour
+            (<code>last_round_acted</code> empêche que ça se redéclenche à
+            chaque image). Le joueur actif soumettra quelque chose de réel
+            à la place, depuis le gestionnaire de clic ci-dessous.
+        </div>
     </div>
 
     <h2>Réécrire le gestionnaire de clic</h2>
     <div class="step">
-        <ol>
-            <li>Ouvrez l'événement <strong>Souris : Bouton gauche pressé</strong>
-            de <code>obj_cell</code> et remplacez-le par ceci :</li>
-        </ol>
+        <p>Ajoutez <code>my_turn == 1</code> comme condition à chacun des
+        neuf clics de la Phase 1, et remplacez le
+        <strong>Définir la variable</strong> local par une vraie écriture
+        réseau + soumission. Case (0,0), entièrement détaillée :</p>
         <div class="blockly-group">
             <span class="block block-event">Souris : Bouton gauche pressé</span><br>
-            <span class="block block-control block-indent">Si <span class="block-text">mark == "" and global.turn_ready == 1 and global.round_number mod 2 == global.player_id</span> alors</span>
+            <span class="block block-control block-indent">Si <span class="block-text">cell_0_0 == "" and my_turn == 1 and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> alors</span><br>
+            <span class="block block-network block-indent2">Définir une variable partagée (échange de fichiers)
+            nom :<span class="block-text">cell_0_0</span>
+            valeur :<span class="block-text">my_mark</span></span><br>
+            <span class="block block-network block-indent2">Terminer le tour (échange de fichiers)</span>
         </div>
-        <p style="margin-top: 4px;">Puis, toujours à l'intérieur de ce
-        <strong>Si</strong>, une branche par joueur &mdash; chacune écrit
-        son propre symbole dans la variable partagée de cette case :</p>
-        <div class="blockly-group">
-            <span class="block block-control block-indent2">Si <span class="block-text">global.player_id == 0</span> alors</span><br>
-            <span class="block block-network block-indent2">Définir une variable partagée
-            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
-            = <span class="block-text">X</span></span><br>
-            <span class="block block-control block-indent2">Sinon</span><br>
-            <span class="block block-network block-indent2">Définir une variable partagée
-            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
-            = <span class="block-text">O</span></span><br>
-            <span class="block block-network block-indent2">Terminer le tour</span>
-        </div>
+        <p style="margin-top: 8px; font-style: italic;">Même forme pour les
+        huit autres &mdash; les mêmes rectangles que le tableau de la
+        Phase 1, chacune écrivant son propre nom de case littéral.</p>
         <div class="info" style="margin-top: 8px;">
             <strong>Ce que ça fait :</strong> le joueur actif écrit son
-            propre symbole dans la variable partagée de cette case, puis
-            <strong>Terminer le tour</strong> le soumet. Personne d'autre
-            ne peut écrire dans cette case ce tour-ci &mdash; seul le
-            joueur dont c'est le tour passe le <strong>Si</strong> extérieur.
+            propre symbole dans la variable partagée de cette case, en
+            utilisant son nom littéral (le paramètre <strong>Nom</strong>
+            est toujours un nom simplement tapé ici, jamais une expression
+            calculée), puis <strong>Terminer le tour (échange de
+            fichiers)</strong> le soumet.
         </div>
     </div>
 
-    <h2>Redessiner la grille quand un tour se résout</h2>
+    <h2>Dessiner depuis la grille publiée, pas la supposition locale</h2>
     <div class="step">
-        <p>Pour l'instant, <code>mark</code> ne change que localement.
-        Faisons-le suivre l'état <em>publié</em> à la place :</p>
+        <p>Remplacez la vérification de dessin de la Phase 1 pour chaque
+        case &mdash; lisez la version <em>partagée</em> au lieu de la
+        locale. Une variable partagée jamais définie se lit comme le
+        nombre <code>0</code>, pas comme une chaîne vide. Case (0,0) :</p>
         <div class="blockly-group">
-            <span class="block block-event">Tour résolu</span><br>
-            <span class="block block-network block-indent">Lire une variable partagée
-            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
-            dans <span class="block-text">mark</span></span>
+            <span class="block block-event">Au dessin</span><br>
+            <span class="block block-control block-indent">Si <span class="block-text">global.cell_0_0 != 0</span> alors</span><br>
+            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">global.cell_0_0</span> à x:<span class="block-num">205</span> y:<span class="block-num">115</span></span>
         </div>
+        <p style="font-style: italic;">Même forme pour les huit autres,
+        mêmes positions que la Phase 1.</p>
         <div class="info" style="margin-top: 8px;">
-            <strong>Ce que ça fait :</strong> <strong>Tour résolu</strong>
-            se déclenche sur chaque machine une fois que l'hôte a publié le
-            nouvel état d'un tour. Chaque case demande « que dit maintenant
-            la variable partagée à mon nom ? » et met à jour son propre
-            <code>mark</code> &mdash; le même événement <strong>Au dessin</strong>
-            de la Phase 1 dessine ce qui en résulte, sans aucun changement
-            nécessaire là-bas.
+            <strong>Ce que ça fait :</strong> une variable définie avec
+            <strong>Définir une variable partagée (échange de fichiers)</strong>
+            est lisible <em>partout</em>, sur toutes les machines, en tant
+            que <code>global.&lt;nom&gt;</code> &mdash; aucune action
+            supplémentaire n'est nécessaire pour la récupérer, tant que le
+            nom est littéral comme <code>cell_0_0</code> ici (un nom
+            construit à l'exécution, comme un nom dérivé d'une position,
+            aurait besoin de <strong>Lire une variable partagée (échange
+            de fichiers)</strong> à la place, puisque le champ
+            <strong>Nom</strong> de cette action accepte bien une
+            expression). Cela ne prend effet qu'une fois que l'hôte a
+            réellement publié un tour, pas instantanément au moment du
+            clic.
         </div>
     </div>
 

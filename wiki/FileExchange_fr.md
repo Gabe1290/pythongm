@@ -4,15 +4,6 @@
 
 ---
 
-> **Pas encore livré.** Cette page documente la conception prévue
-> (`docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md`) pour qu'elle soit prête dès que
-> l'extension sera là. **Ne publiez pas cette page (ni les liens croisés
-> vers elle sur Accueil/Extensions/Réseau) sur le wiki en ligne avant que
-> `extensions/multiplayer_files/` existe réellement et que cette remarque
-> soit retirée.**
-
----
-
 PyGameMaker peut aussi transformer un projet en **jeu multijoueur au tour
 par tour qui échange son état via des fichiers sur un lecteur partagé**,
 plutôt que par une connexion réseau en direct. C'est une bonne solution
@@ -23,9 +14,12 @@ déjà ouvert à toutes les machines. Cette fonctionnalité est fournie par
 l'**extension Multijoueur par échange de fichiers**
 [(voir Extensions)](Extensions_fr).
 
-L'exemple fourni **Morpion par échange de fichiers** est un jeu complet et
-jouable : deux joueurs jouent chacun leur tour, chaque coup étant écrit
-dans un fichier sur le lecteur partagé et lu par l'autre machine.
+L'exemple fourni **`fichier_1`, « Multijoueur par échange de fichiers —
+Morpion »** est un jeu complet et jouable : deux joueurs jouent chacun
+leur tour, chaque coup étant écrit dans un fichier sur le lecteur partagé
+et lu par l'autre machine. Appuyez sur **Tester le jeu** sur les deux
+machines, puis sur **H** pour héberger sur l'une et **J** pour rejoindre
+sur l'autre.
 
 Pris en charge aujourd'hui : l'export **ordinateur** (pygame) uniquement,
 en hôte comme en client. Voir « Pourquoi pas tous les exports » ci-dessous
@@ -98,25 +92,34 @@ gratuitement les jeux par correspondance d'origine, puisqu'une seule lettre
 
 ## Comment ça fonctionne
 
-- Un joueur exécute **Héberger une partie (fichiers)**, en indiquant un
-  dossier partagé que les deux machines peuvent atteindre. Cette machine
-  devient l'**hôte** et l'arbitre de la partie.
-- Les autres joueurs exécutent **Rejoindre une partie (fichiers)** avec le
-  même dossier. Si l'hôte est injoignable, **la partie continue en solo**,
-  la même garantie que donne déjà le [Réseau (multijoueur LAN)](Network_fr).
-- À chaque tour, chaque joueur écrit son coup dans son propre fichier puis
-  exécute **Terminer le tour**. Une fois que l'hôte a reçu le coup de
-  chaque joueur (ou qu'un délai d'attente est dépassé), il publie le
-  nouvel état de la partie pour que tout le monde le lise.
+- Un joueur exécute **Héberger une partie (échange de fichiers)**, en
+  indiquant un dossier partagé que les deux machines peuvent atteindre.
+  Cette machine devient l'**hôte** et l'arbitre de la partie
+  (`global.player_id` devient `0`).
+- Les autres joueurs exécutent **Rejoindre une partie (échange de
+  fichiers)** avec le même dossier. Si l'hôte est injoignable, **la
+  partie continue en solo**, la même garantie que donne déjà le [Réseau
+  (multijoueur LAN)](Network_fr). `global.player_id` est assigné par
+  l'hôte (`1`, `2`, ...).
+- À chaque tour, chaque joueur écrit son coup dans son propre fichier
+  puis exécute **Terminer le tour (échange de fichiers)** — même un
+  joueur qui passe sans rien préparer doit l'exécuter, pour que le tour
+  se résolve rapidement plutôt que d'attendre tout le délai. Une fois que
+  l'hôte a reçu le coup de chaque joueur attendu (ou que le délai
+  d'attente est dépassé), il publie le nouvel état de la partie pour que
+  tout le monde le lise.
 - L'identité du joueur et l'état du tour sont toujours lisibles via des
   variables globales : `global.is_host`, `global.player_id`,
-  `global.player_count`, `global.round_number`, `global.turn_ready`,
-  `global.waiting_for_players`.
-- Une variable partagée définie avec **Définir une variable partagée**
-  devient lisible *partout* via `global.<nom>` — mais seulement une fois
-  que l'hôte a publié le tour suivant, pas instantanément comme avec la
-  version du [Réseau (multijoueur LAN)](Network_fr). Votre propre
-  changement n'apparaît pas non plus en avance sur votre propre écran.
+  `global.player_count`, `global.round_number` (commence à **1**, pas 0),
+  `global.turn_ready`, `global.waiting_for_players`.
+- Une variable partagée définie avec **Définir une variable partagée
+  (échange de fichiers)** devient lisible *partout* via `global.<nom>` —
+  mais seulement une fois que l'hôte a publié le tour suivant, pas
+  instantanément comme avec la version du [Réseau (multijoueur
+  LAN)](Network_fr). Votre propre changement n'apparaît pas non plus en
+  avance sur votre propre écran. **Une variable partagée jamais définie
+  se lit comme `0`**, pas comme une chaîne vide — testez `global.<nom> !=
+  0` pour savoir si elle a déjà été définie.
 
 ---
 
@@ -124,25 +127,30 @@ gratuitement les jeux par correspondance d'origine, puisqu'une seule lettre
 
 | Action | Ce qu'elle fait |
 |--------|-----------------|
-| **Héberger une partie (fichiers)** | Devenir l'hôte ; créer/réserver le dossier partagé de la partie. |
-| **Rejoindre une partie (fichiers)** | Se connecter au dossier partagé d'un hôte. |
-| **Quitter la partie (fichiers)** | Arrêter de jouer ; laisse les fichiers des autres joueurs intacts. |
-| **Définir une variable partagée** | Préparer une variable à publier avec votre prochain tour. |
-| **Lire une variable partagée** | Copier une variable partagée dans une variable globale (pour un calcul). |
-| **Terminer le tour** | Soumettre tout ce qui a été préparé ce tour comme votre coup. |
-| **Envoyer un message réseau** | Joindre un petit événement personnalisé à votre prochain tour. |
+| **Héberger une partie (échange de fichiers)** | Devenir l'hôte ; créer/réserver le dossier partagé de la partie. |
+| **Rejoindre une partie (échange de fichiers)** | Se connecter au dossier partagé d'un hôte. |
+| **Quitter la partie (échange de fichiers)** | Arrêter de jouer ; laisse les fichiers des autres joueurs intacts. |
+| **Définir une variable partagée (échange de fichiers)** | Préparer une variable à publier avec votre prochain tour. |
+| **Lire une variable partagée (échange de fichiers)** | Copier une variable partagée dans une variable globale (pour un calcul). |
+| **Terminer le tour (échange de fichiers)** | Soumettre tout ce qui a été préparé ce tour comme votre coup. |
+| **Envoyer un message réseau (échange de fichiers)** | Joindre un petit événement personnalisé à votre prochain tour. |
 
 Voir la [Référence Complète des Actions](Full-Action-Reference_fr) pour
 tous les paramètres.
 
 ## Les événements
 
+Les événements de cette extension ne sont pas (encore) traduits dans
+l'IDE — leur nom réel dans le sélecteur d'événements reste en anglais,
+indiqué ici entre parenthèses.
+
 | Événement | Se déclenche quand |
 |-----------|---------------------|
 | **Session de fichiers démarrée** *(File Session Started)* | Un client termine sa connexion au dossier partagé de l'hôte. |
-| **Joueur connecté (fichiers)** *(Player Joined Files)* | La demande de connexion d'un nouveau joueur est acceptée. |
+| **Joueur connecté (fichiers)** *(Player Joined (Files))* | La demande de connexion d'un nouveau joueur est acceptée. `global.network_sender` / `global.network_player_name` l'identifient. |
 | **Tour résolu** *(Round Resolved)* | L'hôte a publié l'état d'un nouveau tour et cette machine l'a récupéré. |
 | **Tour manqué** *(Player Skipped Round)* | Le tour d'un joueur n'a pas été soumis avant la fin du délai d'attente. |
+| **Message réseau (échange de fichiers)** *(Network Message (File Exchange))* | Un **Envoyer un message réseau (échange de fichiers)** arrive — `global.network_event` / `global.network_data` / `global.network_sender`. |
 | **Session de fichiers perdue** *(File Session Lost)* | Le dossier partagé est devenu illisible (lecteur déconnecté, droits modifiés). |
 
 ---
@@ -151,14 +159,25 @@ tous les paramètres.
 
 Dans un objet contrôleur de salle :
 
-- **Création :** `Héberger une partie (fichiers)` pointant vers le dossier
-  partagé, si c'est la machine de l'enseignant, sinon `Rejoindre une
-  partie (fichiers)` avec le même dossier.
-- Au clic sur une case, gardé par `global.turn_ready` et le fait que ce
-  soit le tour de ce joueur : `Définir une variable partagée` enregistrant
-  la case choisie, puis `Terminer le tour`.
+- **Création :** `Héberger une partie (échange de fichiers)` pointant
+  vers le dossier partagé, si c'est la machine de l'enseignant, sinon
+  `Rejoindre une partie (échange de fichiers)` avec le même dossier —
+  puis enregistrez `my_mark` (« X » pour l'hôte, « O » pour qui rejoint)
+  une fois, directement là.
+- Au clic sur une case, gardé par le fait que ce soit le tour de ce
+  joueur : `Définir une variable partagée (échange de fichiers)`
+  enregistrant la case choisie avec `my_mark`, puis `Terminer le tour
+  (échange de fichiers)`.
+- Chaque tour où ce n'est *pas* votre tour, exécutez aussi `Terminer le
+  tour (échange de fichiers)` sans rien préparer — un « passe » — pour
+  que le tour avance immédiatement plutôt que d'attendre tout le délai.
 - **Tour résolu :** redessiner la grille à partir des variables partagées
-  publiées, et vérifier une victoire.
+  publiées (en se rappelant le test `!= 0` ci-dessus), et vérifier une
+  victoire.
+
+Voir l'exemple fourni **`samples/fichier_1`** (« Multijoueur par échange
+de fichiers — Morpion ») pour la version complète, vérification de
+victoire comprise.
 
 ---
 

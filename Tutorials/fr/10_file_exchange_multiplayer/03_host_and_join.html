@@ -29,80 +29,88 @@
     <h1>Phase 2 : Héberger une partie / Rejoindre une partie</h1>
 
     <p>Connectons maintenant deux ordinateurs via un dossier partagé. L'un
-    va <strong>héberger</strong> (l'arbitre), l'autre va <strong>rejoindre</strong>.</p>
+    va <strong>héberger</strong> (l'arbitre), l'autre va <strong>rejoindre</strong>.
+    Tout ce qui suit reste sur <code>obj_game</code>, le même objet que
+    celui de la Phase 1.</p>
 
     <div class="info">
         <strong>Avant de commencer :</strong> choisissez un dossier que les
         deux ordinateurs peuvent atteindre et dans lequel ils peuvent
         écrire &mdash; un lecteur réseau partagé, ou (pour construire et
-        tester le câblage seul d'abord) simplement un dossier sur votre
-        propre ordinateur. Nous l'écrirons dans les deux actions ci-dessous
-        comme <code>Z:\jeux\morpion</code> &mdash; remplacez-le par votre
-        propre chemin.
-    </div>
-
-    <h2>Créer le contrôleur de partie</h2>
-    <div class="step">
-        <ol>
-            <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
-            <li>Nommez-le <code>obj_controller</code>, aucun sprite nécessaire
-            (laissez-le invisible)</li>
-            <li>Placez-en <strong>une instance</strong> n'importe où dans <code>room_board</code></li>
-        </ol>
+        tester le câblage seul d'abord) simplement un nom de dossier tout
+        simple, créé à côté d'où le jeu s'exécute. Nous l'écrirons dans les
+        deux actions ci-dessous comme <code>tictactoe_files</code> &mdash;
+        pour une vraie partie à deux ordinateurs, remplacez-le par un
+        chemin que les deux machines peuvent atteindre (une lettre de
+        lecteur mappé, ou un chemin UNC comme
+        <code>\\serveur\partage\morpion</code>).
     </div>
 
     <h2>Héberger avec la touche H, rejoindre avec la touche J</h2>
     <div class="step">
-        <p>Un seul objet, deux façons de le démarrer &mdash; lancez
-        exactement le même projet sur les deux ordinateurs, et appuyez sur
-        une touche différente sur chacun :</p>
+        <p>Lancez exactement le même projet sur les deux ordinateurs, et
+        appuyez sur une touche différente sur chacun. Chaque branche fixe
+        aussi une fois pour toutes le symbole de cette machine, dans
+        <code>my_mark</code> :</p>
         <div class="blockly-group">
             <span class="block block-event">Touche pressée : H</span><br>
             <span class="block block-network block-indent">Héberger une partie
-            (fichiers) dossier :<span class="block-text">Z:\jeux\morpion</span>
+            (échange de fichiers) dossier :<span class="block-text">tictactoe_files</span>
             joueurs max :<span class="block-num">2</span>
-            nom du joueur :<span class="block-text">Joueur 1</span></span>
+            nom du joueur :<span class="block-text">Joueur 1</span></span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">my_mark</span> à <span class="block-text">X</span></span>
         </div>
         <div class="blockly-group">
             <span class="block block-event">Touche pressée : J</span><br>
             <span class="block block-network block-indent">Rejoindre une partie
-            (fichiers) dossier :<span class="block-text">Z:\jeux\morpion</span>
-            nom du joueur :<span class="block-text">Joueur 2</span></span>
+            (échange de fichiers) dossier :<span class="block-text">tictactoe_files</span>
+            nom du joueur :<span class="block-text">Joueur 2</span></span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">my_mark</span> à <span class="block-text">O</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Pourquoi des touches, pas un menu ?</strong> C'est le
             moyen le plus simple de tester les deux rôles depuis le même
             projet &mdash; appuyez sur H sur un ordinateur, sur J sur
-            l'autre. Un vrai jeu de classe pourrait plutôt demander
-            « Héberger ou rejoindre ? » sur un écran-titre, mais c'est une
-            finition d'interface, pas quelque chose que ce tutoriel a
-            besoin d'enseigner.
+            l'autre (ou les deux, dans deux fenêtres de Test du jeu sur un
+            seul ordinateur, comme le permet l'exemple fourni
+            <code>fichier_1</code> pour une vérification rapide en solo).
+            Un vrai jeu de classe pourrait plutôt demander « Héberger ou
+            rejoindre ? » sur un écran-titre, mais c'est une finition
+            d'interface, pas quelque chose que ce tutoriel a besoin
+            d'enseigner.
         </div>
     </div>
 
     <h2>Afficher l'état de la connexion</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez un événement <strong>Au dessin</strong> à
-            <code>obj_controller</code> :</li>
+            <li>Ajoutez à l'événement <strong>Au dessin</strong> de
+            <code>obj_game</code>, avant le dessin de la grille de la
+            Phase 1 :</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Au dessin</span><br>
-            <span class="block block-control block-indent">Si <span class="block-text">global.player_count &lt; 2</span> alors</span><br>
-            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">En attente d'un adversaire...</span> à x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+            <span class="block block-control block-indent">Si <span class="block-text">global.waiting_for_players == 1</span> alors</span><br>
+            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">En attente d'un adversaire...</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span><br>
+            <span class="block block-draw block-indent2">Quitter l'événement</span>
         </div>
         <div class="blockly-group">
-            <span class="block block-control">Sinon si <span class="block-text">global.player_id == 0</span> alors</span><br>
-            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">Vous êtes X</span> à x:<span class="block-num">20</span> y:<span class="block-num">20</span></span><br>
-            <span class="block block-control">Sinon</span><br>
-            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">Vous êtes O</span> à x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+            <span class="block block-draw">Dessiner le texte <span class="block-text">"Vous êtes " + my_mark</span> à x:<span class="block-num">170</span> y:<span class="block-num">40</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
-            <strong>Ce que ça fait :</strong> <code>global.player_id</code>
-            est attribué automatiquement &mdash; l'hôte est toujours
-            <code>0</code> (donc c'est X, qui commence), et chaque joueur
-            qui rejoint compte à partir de là. <code>global.player_count</code>
-            indique combien de joueurs se sont connectés jusqu'ici.
+            <strong>Ce que ça fait :</strong> <code>global.waiting_for_players</code>
+            vaut <code>1</code> tant que la partie n'a pas autant de joueurs
+            que son réglage <strong>Joueurs max</strong> (ici, 2), puis
+            <code>0</code> &mdash; pas besoin de compter les joueurs
+            vous-même. <strong>Quitter l'événement</strong> empêche la
+            grille de se dessiner tant qu'on attend, de la même façon que
+            l'exemple fourni garde son écran « appuyez sur H / appuyez sur
+            J » jusqu'à ce que quelqu'un se connecte.
+            <code>global.player_id</code> est attribué automatiquement :
+            l'hôte est toujours <code>0</code>, et chaque joueur qui
+            rejoint compte à partir de là &mdash; pas utilisé directement
+            ici puisque <code>my_mark</code> contient déjà la même
+            information.
         </div>
     </div>
 
@@ -112,7 +120,8 @@
         <ul>
             <li>Appuyez sur <strong>H</strong> sur l'un, <strong>J</strong> sur l'autre</li>
             <li>Les deux devraient arrêter d'afficher « En attente d'un
-            adversaire... » et afficher « Vous êtes X » / « Vous êtes O »</li>
+            adversaire... » et afficher « Vous êtes X » / « Vous êtes O »,
+            suivi de la grille</li>
             <li>Si l'hôte est injoignable, la partie continue en solo
             &mdash; elle ne se fige ni ne plante jamais</li>
         </ul>

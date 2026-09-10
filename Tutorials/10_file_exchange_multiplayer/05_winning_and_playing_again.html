@@ -36,54 +36,57 @@
     <h2>Check One Line</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_controller</code>'s <strong>Round Resolved</strong>
-            event (add one if it doesn't have it yet) and add this, checking
-            the top row:</li>
+            <li>Add a <strong>Round Resolved</strong> event to
+            <code>obj_game</code> and add this, checking the top row
+            (<code>cell_0_0</code>, <code>cell_1_0</code>, <code>cell_2_0</code>):</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Round Resolved</span><br>
-            <span class="block block-control block-indent">If <span class="block-text">global.cell_100_100 == global.cell_300_100 and global.cell_300_100 == global.cell_500_100 and global.cell_100_100 != ""</span> then</span><br>
-            <span class="block block-control block-indent2">Set variable <span class="block-text">winner</span> to <span class="block-text">global.cell_100_100</span></span>
+            <span class="block block-control block-indent">If <span class="block-text">global.cell_0_0 == global.cell_1_0 and global.cell_1_0 == global.cell_2_0 and global.cell_0_0 != 0</span> then</span><br>
+            <span class="block block-control block-indent2">Set variable <span class="block-text">winner</span> to <span class="block-text">global.cell_0_0</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>What this does:</strong> if all three cells in the line
-            hold the <em>same</em> mark, and that mark isn't blank, someone
-            just won on this line &mdash; <code>winner</code> becomes
-            whichever mark it was.
+            hold the <em>same</em> mark, and that shared variable has
+            actually been set (remember, an untouched one reads as the
+            number <code>0</code>, not blank), someone just won on this
+            line &mdash; <code>winner</code> becomes whichever mark it was.
         </div>
     </div>
 
     <h2>Check the Other Seven Lines</h2>
     <div class="step">
         <p>Repeat the exact same pattern for each of these lines &mdash;
-        three cell names, all equal, not blank:</p>
+        three cell names, all equal, not <code>0</code>:</p>
         <table class="lines">
             <tr><th>Line</th><th>Cell A</th><th>Cell B</th><th>Cell C</th></tr>
-            <tr><td>Middle row</td><td>cell_100_300</td><td>cell_300_300</td><td>cell_500_300</td></tr>
-            <tr><td>Bottom row</td><td>cell_100_500</td><td>cell_300_500</td><td>cell_500_500</td></tr>
-            <tr><td>Left column</td><td>cell_100_100</td><td>cell_100_300</td><td>cell_100_500</td></tr>
-            <tr><td>Middle column</td><td>cell_300_100</td><td>cell_300_300</td><td>cell_300_500</td></tr>
-            <tr><td>Right column</td><td>cell_500_100</td><td>cell_500_300</td><td>cell_500_500</td></tr>
-            <tr><td>Diagonal &#8598;&#8600;</td><td>cell_100_100</td><td>cell_300_300</td><td>cell_500_500</td></tr>
-            <tr><td>Diagonal &#8599;&#8601;</td><td>cell_500_100</td><td>cell_300_300</td><td>cell_100_500</td></tr>
+            <tr><td>Middle row</td><td>cell_0_1</td><td>cell_1_1</td><td>cell_2_1</td></tr>
+            <tr><td>Bottom row</td><td>cell_0_2</td><td>cell_1_2</td><td>cell_2_2</td></tr>
+            <tr><td>Left column</td><td>cell_0_0</td><td>cell_0_1</td><td>cell_0_2</td></tr>
+            <tr><td>Middle column</td><td>cell_1_0</td><td>cell_1_1</td><td>cell_1_2</td></tr>
+            <tr><td>Right column</td><td>cell_2_0</td><td>cell_2_1</td><td>cell_2_2</td></tr>
+            <tr><td>Diagonal &#8598;&#8600;</td><td>cell_0_0</td><td>cell_1_1</td><td>cell_2_2</td></tr>
+            <tr><td>Diagonal &#8599;&#8601;</td><td>cell_2_0</td><td>cell_1_1</td><td>cell_0_2</td></tr>
         </table>
         <p style="font-style: italic;">Eight <strong>If</strong> blocks
         total in the <strong>Round Resolved</strong> event &mdash; tedious
-        to type, but each one is identical in shape to the first.</p>
+        to type, but each one is identical in shape to the first (and
+        matches the bundled <code>fichier_1</code> sample's own board
+        layout exactly, if you want to compare).</p>
     </div>
 
     <h2>Show the Winner</h2>
     <div class="step">
         <ol>
-            <li>Add a <strong>Create</strong> event to
-            <code>obj_controller</code> that sets <code>winner</code> to
-            <code>""</code> (so there's no leftover winner from a previous game)</li>
-            <li>Add a <strong>When drawing</strong> event:</li>
+            <li>Add to <code>obj_game</code>'s <strong>Create</strong> event:
+            set <code>winner</code> to <code>""</code> (so there's no
+            leftover winner from a previous game)</li>
+            <li>Add to the <strong>When drawing</strong> event, after
+            everything from Phases 1&ndash;3:</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">When drawing</span><br>
-            <span class="block block-control block-indent">If <span class="block-text">winner != ""</span> then</span><br>
-            <span class="block block-draw block-indent2">Draw text <span class="block-text">winner + " wins! Press SPACE to play again."</span> at x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
+            <span class="block block-control">If <span class="block-text">winner != ""</span> then</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">winner + " wins! Press SPACE to play again."</span> at x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
         </div>
     </div>
 
@@ -93,13 +96,17 @@
         <div class="blockly-group">
             <span class="block block-event">Key press: Space</span><br>
             <span class="block block-control block-indent">If <span class="block-text">winner != ""</span> then</span><br>
-            <span class="block block-network block-indent2">Leave Game (Files)</span>
+            <span class="block block-network block-indent2">Leave the Game (File Exchange)</span>
         </div>
         <div class="info" style="margin-top: 8px;">
-            <strong>What this does:</strong> <strong>Leave Game (Files)</strong>
-            stops this session cleanly without touching the other player's
-            files. Press <strong>H</strong> or <strong>J</strong> again (from
-            Phase 2) on both computers to start a fresh game.
+            <strong>What this does:</strong> <strong>Leave the Game (File
+            Exchange)</strong> stops this session cleanly without touching
+            the other player's files. Press <strong>H</strong> or
+            <strong>J</strong> again (from Phase 2) on both computers to
+            start a fresh game &mdash; the nine <code>cell_*</code>
+            variables and <code>winner</code> all need resetting too if you
+            want a truly clean rematch without restarting the whole
+            project (left as a "Try this next," below).
         </div>
     </div>
 
@@ -120,16 +127,19 @@
     connection, no firewall problem, just files on a shared folder:</p>
     <ul>
         <li>Hosting and joining through a shared folder instead of a direct connection</li>
-        <li>Staging a move and submitting it with <strong>End Turn</strong></li>
-        <li>Gating whose turn it is</li>
+        <li>Staging a move and submitting it with <strong>End Turn (File Exchange)</strong></li>
+        <li>Gating whose turn it is, and passing when it isn't</li>
         <li>Reacting to <strong>Round Resolved</strong> to stay in sync across machines</li>
         <li>A complete win check and a way to play again</li>
     </ul>
 
     <div class="highlight">
-        <strong>Try this next:</strong> add a "Player Skipped Round" message
-        for when someone's taking too long, or a running score across
-        several games using another shared variable.
+        <strong>Try this next:</strong> reset the nine <code>cell_*</code>
+        variables and <code>winner</code> on <strong>Leave the Game (File
+        Exchange)</strong> for a true rematch without restarting; add a
+        "Player Skipped Round" message for when someone's taking too long;
+        or a running score across several games using another shared
+        variable.
     </div>
 </body>
 </html>
