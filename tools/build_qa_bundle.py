@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the artefacts the hand-verification pass needs, into one folder.
 
-`docs/PLATFORM_DISPLAY_CHECKLIST.md` and `docs/NOW_PLAN_2026-09-06.md`'s Track B
+`docs/RELEASE_QA_CHECKLIST.md` and `docs/NOW_PLAN_2026-09-06.md`'s Track B
 ask a human to do things a script cannot: decide whether a `.exe` trips an
 antivirus scanner, whether holding a key down *feels* right, whether a page
 renders correctly in a real browser. None of that is automatable -- but the
@@ -133,7 +133,7 @@ Built by `tools/build_qa_bundle.py` on {when}. Nothing here needs a build step
 or a terminal -- it is all double-click-and-look.
 
 This covers Track B of `docs/NOW_PLAN_2026-09-06.md` (B1, B3, B4). Tick what you
-cover in `docs/PLATFORM_DISPLAY_CHECKLIST.md` afterwards, so the next pass
+cover in `docs/RELEASE_QA_CHECKLIST.md` afterwards, so the next pass
 starts from a real baseline.
 
 ## exe/ -- the desktop builds  (B1, B4)

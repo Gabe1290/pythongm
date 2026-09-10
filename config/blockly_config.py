@@ -613,7 +613,7 @@ class BlocklyConfig:
         - Phase 6: Zelda-like RPG
 
         Enable blocks here only after they pass testing.
-        See docs/TESTING_CHECKLIST.md for the full testing plan.
+        See docs/RELEASE_QA_CHECKLIST.md for the full testing plan.
         """
         config = cls(preset_name="testing")
 
