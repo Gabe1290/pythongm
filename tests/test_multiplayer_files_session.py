@@ -335,6 +335,88 @@ class TestPollGating:
             assert host._last_poll == first_poll  # the gate held -- no second poll ran
 
 
+class TestNetworkMessages:
+    """send_message / network_message_files (Phase 2)."""
+
+    def test_target_all_message_fires_on_both_machines(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host, client, hlog, clog = _joined_pair(tmp)
+            host.send_message("ping", {"n": 1})
+            host.end_turn()
+            client.end_turn()
+            for _ in range(5):
+                _pump(host, client)
+                hlog.collect(); clog.collect()
+                if client.round == 2:
+                    break
+            expected = ("network_message_files", "ping", {"n": 1}, 0)
+            assert expected in hlog.events
+            assert expected in clog.events
+
+    def test_target_host_message_only_fires_on_the_host(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host, client, hlog, clog = _joined_pair(tmp)
+            client.send_message("whisper", "secret", target="host")
+            host.end_turn()
+            client.end_turn()
+            for _ in range(5):
+                _pump(host, client)
+                hlog.collect(); clog.collect()
+                if client.round == 2:
+                    break
+            expected = ("network_message_files", "whisper", "secret", 1)
+            assert expected in hlog.events
+            assert not any(e[0] == "network_message_files" and e[1] == "whisper"
+                            for e in clog.events)
+            # a host-only message is never published in session.json --
+            # confirm it didn't leak into the round-resolution the client read
+            assert client.shared == host.shared  # sanity: shared state unaffected
+
+    def test_default_target_is_all(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host = FileSession(mode="host", folder=tmp)
+            assert host.start()
+            host.send_message("no_target_given")
+            assert host._pending_messages == [
+                {"event": "no_target_given", "data": None, "target": "all"}]
+
+    def test_an_invalid_target_falls_back_to_all(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host = FileSession(mode="host", folder=tmp)
+            assert host.start()
+            host.send_message("x", target="bogus")
+            assert host._pending_messages[0]["target"] == "all"
+
+    def test_multiple_staged_messages_all_deliver_in_one_round(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host, client, hlog, clog = _joined_pair(tmp)
+            host.send_message("first")
+            host.send_message("second")
+            host.end_turn()
+            client.end_turn()
+            for _ in range(5):
+                _pump(host, client)
+                clog.collect()
+                if client.round == 2:
+                    break
+            names = [e[1] for e in clog.events if e[0] == "network_message_files"]
+            assert names == ["first", "second"]
+
+    def test_a_stale_staged_message_is_dropped_after_being_skipped(self):
+        """Mirrors TestDeadlineSkip's stale-vars test -- a message staged
+        but never submitted (end_turn never called) must not leak into a
+        later round."""
+        with tempfile.TemporaryDirectory() as tmp:
+            host, client, _, _ = _joined_pair(tmp)
+            host.round_deadline = 0.05
+            client.send_message("never_sent")
+            host.send_message("go")
+            host.end_turn()
+            host._round_started_at -= 1000
+            _pump(host, client)
+            assert client._pending_messages == []
+
+
 class TestSharedVarValidation:
     def test_reserved_names_are_rejected(self):
         assert not is_valid_shared_name("is_host")

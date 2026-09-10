@@ -369,6 +369,10 @@ Usa los operadores de Python en su lugar (and / or / not), por ejemplo "vspeed &
         <source>End Turn (File Exchange)</source>
         <translation>Terminar turno (intercambio de archivos)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Enviar mensaje de red (intercambio de archivos)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -4525,6 +4529,10 @@ La acción en sí no se ve afectada y se conservará tal cual al guardar.</trans
     <message>
         <source>End Turn (File Exchange)</source>
         <translation>Terminar turno (intercambio de archivos)</translation>
+    </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Enviar mensaje de red (intercambio de archivos)</translation>
     </message>
 </context>
 <context>
@@ -9666,6 +9674,10 @@ Do you want to save anyway?</source>
         <location filename="../widgets/welcome_tab.py" line="195"/>
         <source>📖  Sample guides</source>
         <translation>📖  Guías de ejemplos</translation>
+    </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Intercambio de archivos — Tres en raya</translation>
     </message>
 </context>
 <context>

@@ -419,6 +419,10 @@ Deseja salvar mesmo assim?</translation>
         <source>📖  Sample guides</source>
         <translation>📖  Guias dos exemplos</translation>
     </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Troca de ficheiros — Jogo do Galo</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>
@@ -2017,6 +2021,10 @@ Deseja salvar mesmo assim?</translation>
     <message>
         <source>End Turn (File Exchange)</source>
         <translation>Terminar turno (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Enviar mensagem de rede (troca de ficheiros)</translation>
     </message>
 </context>
 <context>
@@ -4487,6 +4495,10 @@ A ação em si não é afetada e será mantida exatamente como está ao salvar.<
     <message>
         <source>End Turn (File Exchange)</source>
         <translation>Terminar turno (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Enviar mensagem de rede (troca de ficheiros)</translation>
     </message>
 </context>
 <context>

@@ -1,0 +1,1040 @@
+{
+  "name": "fichier_1",
+  "version": "1.0.0",
+  "created": "2026-09-10T00:00:00.000000",
+  "modified": "2026-09-10T00:00:00.000000",
+  "settings": {
+    "window_title": "Tic-Tac-Toe -- Multijoueur par echange de fichiers",
+    "window_width": 640,
+    "window_height": 480,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {},
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_game": {
+        "name": "obj_game",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "connected",
+                  "value": "0",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "my_mark",
+                  "value": "\"\"",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "won",
+                  "value": "0",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "last_round_acted",
+                  "value": "0",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "my_turn",
+                  "value": "0",
+                  "scope": "self"
+                }
+              }
+            ]
+          },
+          "keyboard_press": {
+            "h": {
+              "actions": [
+                {
+                  "action": "host_game_files",
+                  "parameters": {
+                    "folder": "tictactoe_files",
+                    "max_players": "2",
+                    "player_name": "Hote",
+                    "round_deadline": "20"
+                  }
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "connected",
+                    "value": "1",
+                    "scope": "self"
+                  }
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "my_mark",
+                    "value": "\"X\"",
+                    "scope": "self"
+                  }
+                }
+              ]
+            },
+            "j": {
+              "actions": [
+                {
+                  "action": "join_game_files",
+                  "parameters": {
+                    "folder": "tictactoe_files",
+                    "player_name": "Invite"
+                  }
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "connected",
+                    "value": "1",
+                    "scope": "self"
+                  }
+                },
+                {
+                  "action": "set_variable",
+                  "parameters": {
+                    "variable": "my_mark",
+                    "value": "\"O\"",
+                    "scope": "self"
+                  }
+                }
+              ]
+            }
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "connected == 1 and won == 0 and global.waiting_for_players == 0",
+                  "then_actions": [
+                    {
+                      "action": "if_condition",
+                      "parameters": {
+                        "condition_type": "expression",
+                        "expression": "(global.round_number % 2 == 1 and my_mark == 'X') or (global.round_number % 2 == 0 and my_mark == 'O')",
+                        "then_actions": [
+                          {
+                            "action": "set_variable",
+                            "parameters": {
+                              "variable": "my_turn",
+                              "value": "1",
+                              "scope": "self"
+                            }
+                          }
+                        ],
+                        "else_actions": [
+                          {
+                            "action": "set_variable",
+                            "parameters": {
+                              "variable": "my_turn",
+                              "value": "0",
+                              "scope": "self"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "action": "if_condition",
+                      "parameters": {
+                        "condition_type": "expression",
+                        "expression": "my_turn == 0 and last_round_acted != global.round_number",
+                        "then_actions": [
+                          {
+                            "action": "end_turn",
+                            "parameters": {}
+                          },
+                          {
+                            "action": "set_variable",
+                            "parameters": {
+                              "variable": "last_round_acted",
+                              "value": "global.round_number",
+                              "scope": "self"
+                            }
+                          }
+                        ],
+                        "else_actions": []
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "won == 0 and ((global.cell_0_0 == 'X' and global.cell_1_0 == 'X' and global.cell_2_0 == 'X') or (global.cell_0_1 == 'X' and global.cell_1_1 == 'X' and global.cell_2_1 == 'X') or (global.cell_0_2 == 'X' and global.cell_1_2 == 'X' and global.cell_2_2 == 'X') or (global.cell_0_0 == 'X' and global.cell_0_1 == 'X' and global.cell_0_2 == 'X') or (global.cell_1_0 == 'X' and global.cell_1_1 == 'X' and global.cell_1_2 == 'X') or (global.cell_2_0 == 'X' and global.cell_2_1 == 'X' and global.cell_2_2 == 'X') or (global.cell_0_0 == 'X' and global.cell_1_1 == 'X' and global.cell_2_2 == 'X') or (global.cell_0_2 == 'X' and global.cell_1_1 == 'X' and global.cell_2_0 == 'X'))",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "won",
+                        "value": "1",
+                        "scope": "self"
+                      }
+                    },
+                    {
+                      "action": "if_condition",
+                      "parameters": {
+                        "condition_type": "expression",
+                        "expression": "my_mark == 'X'",
+                        "then_actions": [
+                          {
+                            "action": "set_score",
+                            "parameters": {
+                              "value": "100",
+                              "relative": true
+                            }
+                          },
+                          {
+                            "action": "show_message",
+                            "parameters": {
+                              "message": "You win! Three marks in a row.",
+                              "message_translations": {
+                                "fr": "Vous avez gagne ! Trois marques alignees."
+                              }
+                            }
+                          }
+                        ],
+                        "else_actions": [
+                          {
+                            "action": "show_message",
+                            "parameters": {
+                              "message": "You lose -- the other player got three in a row.",
+                              "message_translations": {
+                                "fr": "Vous avez perdu -- l'adversaire a aligne trois marques."
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "won == 0 and ((global.cell_0_0 == 'O' and global.cell_1_0 == 'O' and global.cell_2_0 == 'O') or (global.cell_0_1 == 'O' and global.cell_1_1 == 'O' and global.cell_2_1 == 'O') or (global.cell_0_2 == 'O' and global.cell_1_2 == 'O' and global.cell_2_2 == 'O') or (global.cell_0_0 == 'O' and global.cell_0_1 == 'O' and global.cell_0_2 == 'O') or (global.cell_1_0 == 'O' and global.cell_1_1 == 'O' and global.cell_1_2 == 'O') or (global.cell_2_0 == 'O' and global.cell_2_1 == 'O' and global.cell_2_2 == 'O') or (global.cell_0_0 == 'O' and global.cell_1_1 == 'O' and global.cell_2_2 == 'O') or (global.cell_0_2 == 'O' and global.cell_1_1 == 'O' and global.cell_2_0 == 'O'))",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "won",
+                        "value": "1",
+                        "scope": "self"
+                      }
+                    },
+                    {
+                      "action": "if_condition",
+                      "parameters": {
+                        "condition_type": "expression",
+                        "expression": "my_mark == 'O'",
+                        "then_actions": [
+                          {
+                            "action": "set_score",
+                            "parameters": {
+                              "value": "100",
+                              "relative": true
+                            }
+                          },
+                          {
+                            "action": "show_message",
+                            "parameters": {
+                              "message": "You win! Three marks in a row.",
+                              "message_translations": {
+                                "fr": "Vous avez gagne ! Trois marques alignees."
+                              }
+                            }
+                          }
+                        ],
+                        "else_actions": [
+                          {
+                            "action": "show_message",
+                            "parameters": {
+                              "message": "You lose -- the other player got three in a row.",
+                              "message_translations": {
+                                "fr": "Vous avez perdu -- l'adversaire a aligne trois marques."
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "won == 0 and global.cell_0_0 != 0 and global.cell_1_0 != 0 and global.cell_2_0 != 0 and global.cell_0_1 != 0 and global.cell_1_1 != 0 and global.cell_2_1 != 0 and global.cell_0_2 != 0 and global.cell_1_2 != 0 and global.cell_2_2 != 0",
+                  "then_actions": [
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "won",
+                        "value": "1",
+                        "scope": "self"
+                      }
+                    },
+                    {
+                      "action": "show_message",
+                      "parameters": {
+                        "message": "Draw! The board is full.",
+                        "message_translations": {
+                          "fr": "Match nul ! La grille est pleine."
+                        }
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          },
+          "mouse_left_press": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_0_0 == 0 and mouse_x >= 170 and mouse_x < 270 and mouse_y >= 90 and mouse_y < 190",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_0_0",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_1_0 == 0 and mouse_x >= 270 and mouse_x < 370 and mouse_y >= 90 and mouse_y < 190",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_1_0",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_2_0 == 0 and mouse_x >= 370 and mouse_x < 470 and mouse_y >= 90 and mouse_y < 190",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_2_0",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_0_1 == 0 and mouse_x >= 170 and mouse_x < 270 and mouse_y >= 190 and mouse_y < 290",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_0_1",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_1_1 == 0 and mouse_x >= 270 and mouse_x < 370 and mouse_y >= 190 and mouse_y < 290",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_1_1",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_2_1 == 0 and mouse_x >= 370 and mouse_x < 470 and mouse_y >= 190 and mouse_y < 290",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_2_1",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_0_2 == 0 and mouse_x >= 170 and mouse_x < 270 and mouse_y >= 290 and mouse_y < 390",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_0_2",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_1_2 == 0 and mouse_x >= 270 and mouse_x < 370 and mouse_y >= 290 and mouse_y < 390",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_1_2",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_turn == 1 and won == 0 and global.cell_2_2 == 0 and mouse_x >= 370 and mouse_x < 470 and mouse_y >= 290 and mouse_y < 390",
+                  "then_actions": [
+                    {
+                      "action": "set_shared_var_files",
+                      "parameters": {
+                        "name": "cell_2_2",
+                        "value": "my_mark"
+                      }
+                    },
+                    {
+                      "action": "end_turn",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "set_variable",
+                      "parameters": {
+                        "variable": "last_round_acted",
+                        "value": "global.round_number",
+                        "scope": "self"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          },
+          "file_session_lost": {
+            "actions": [
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "The game was interrupted (the shared folder became unreachable).",
+                  "message_translations": {
+                    "fr": "La partie a ete interrompue (dossier partage inaccessible)."
+                  }
+                }
+              }
+            ]
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "connected == 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"Tic-Tac-Toe -- Multijoueur par echange de fichiers\"",
+                        "x": "60",
+                        "y": "40",
+                        "color": "#ffd040"
+                      }
+                    },
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"H = heberger la partie (vous jouez X)\"",
+                        "x": "90",
+                        "y": "140",
+                        "color": "#ffffff"
+                      }
+                    },
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"J = rejoindre la partie (vous jouez O)\"",
+                        "x": "90",
+                        "y": "175",
+                        "color": "#ffffff"
+                      }
+                    },
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"(H sur une machine, J sur l'autre -- ou les deux ici pour tester)\"",
+                        "x": "60",
+                        "y": "230",
+                        "color": "#888888"
+                      }
+                    },
+                    {
+                      "action": "exit_event",
+                      "parameters": {}
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#2c2f38"
+                }
+              },
+              {
+                "action": "draw_rectangle",
+                "parameters": {
+                  "x1": "170",
+                  "y1": "90",
+                  "x2": "470",
+                  "y2": "390",
+                  "filled": true
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "#e8e8e8"
+                }
+              },
+              {
+                "action": "draw_line",
+                "parameters": {
+                  "x1": "270",
+                  "y1": "90",
+                  "x2": "270",
+                  "y2": "390"
+                }
+              },
+              {
+                "action": "draw_line",
+                "parameters": {
+                  "x1": "370",
+                  "y1": "90",
+                  "x2": "370",
+                  "y2": "390"
+                }
+              },
+              {
+                "action": "draw_line",
+                "parameters": {
+                  "x1": "170",
+                  "y1": "190",
+                  "x2": "470",
+                  "y2": "190"
+                }
+              },
+              {
+                "action": "draw_line",
+                "parameters": {
+                  "x1": "170",
+                  "y1": "290",
+                  "x2": "470",
+                  "y2": "290"
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_0_0 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_0_0",
+                        "x": "205",
+                        "y": "115",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_1_0 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_1_0",
+                        "x": "305",
+                        "y": "115",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_2_0 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_2_0",
+                        "x": "405",
+                        "y": "115",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_0_1 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_0_1",
+                        "x": "205",
+                        "y": "215",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_1_1 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_1_1",
+                        "x": "305",
+                        "y": "215",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_2_1 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_2_1",
+                        "x": "405",
+                        "y": "215",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_0_2 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_0_2",
+                        "x": "205",
+                        "y": "315",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_1_2 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_1_2",
+                        "x": "305",
+                        "y": "315",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.cell_2_2 != 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "global.cell_2_2",
+                        "x": "405",
+                        "y": "315",
+                        "color": "#ffffff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_mark == 'X'",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"Vous jouez : X\"",
+                        "x": "20",
+                        "y": "20",
+                        "color": "#ffd040"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "my_mark == 'O'",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"Vous jouez : O\"",
+                        "x": "20",
+                        "y": "20",
+                        "color": "#4fd1ff"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.waiting_for_players == 1",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"En attente d'un second joueur...\"",
+                        "x": "20",
+                        "y": "420",
+                        "color": "#cccccc"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.waiting_for_players == 0 and won == 0 and my_turn == 1",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"A vous de jouer !\"",
+                        "x": "20",
+                        "y": "420",
+                        "color": "#7CFC00"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "global.waiting_for_players == 0 and won == 0 and my_turn == 0",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"Tour de l'adversaire...\"",
+                        "x": "20",
+                        "y": "420",
+                        "color": "#cccccc"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              },
+              {
+                "action": "if_condition",
+                "parameters": {
+                  "condition_type": "expression",
+                  "expression": "won == 1",
+                  "then_actions": [
+                    {
+                      "action": "draw_text",
+                      "parameters": {
+                        "text": "\"Partie terminee\"",
+                        "x": "20",
+                        "y": "420",
+                        "color": "#ffd040"
+                      }
+                    }
+                  ],
+                  "else_actions": []
+                }
+              }
+            ]
+          }
+        },
+        "imported": false,
+        "created": "2026-09-10T00:00:00.000000",
+        "modified": "2026-09-10T00:00:00.000000",
+        "parent": "",
+        "remember_destroyed": false
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 640,
+        "height": 480,
+        "background_color": "#1c1e26",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 1,
+        "instances": [],
+        "created": "2026-09-10T00:00:00.000000",
+        "modified": "2026-09-10T00:00:00.000000",
+        "imported": false,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

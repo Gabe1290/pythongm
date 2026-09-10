@@ -28,6 +28,7 @@ logger = get_logger(__name__)
 _STATUS_GLOBALS = (
     "player_id", "player_count", "is_host", "round_number", "turn_ready",
     "waiting_for_players", "network_sender", "network_player_name",
+    "network_event", "network_data",
 )
 
 
@@ -217,6 +218,19 @@ class PluginExecutor:
         if session is not None:
             session.end_turn()
 
+    def execute_send_network_message_files_action(self, instance, parameters):
+        session = self._session_for(instance)
+        if session is None:
+            return
+        ae = self._executor(instance)
+        event = _raw(parameters, "event")
+        if not event:
+            return
+        data = _pv(ae, instance, parameters.get("data"), None)
+        target = parameters.get("target", "all")
+        target = target if target in ("all", "host") else "all"
+        session.send_message(event, data, target)
+
     @staticmethod
     def _session_for(instance):
         ae = getattr(instance, "action_executor", None)
@@ -274,6 +288,11 @@ def _apply_session_state(game_runner, session):
         elif name == "player_skipped_round":
             _, slot = event
             gv["network_sender"] = slot
+        elif name == "network_message_files":
+            _, ev_name, data, sender = event
+            gv["network_event"] = ev_name
+            gv["network_data"] = data
+            gv["network_sender"] = sender
         elif name == "file_session_lost":
             gv["turn_ready"] = 0
         _fire_event(room, name)

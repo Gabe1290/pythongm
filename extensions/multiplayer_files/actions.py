@@ -18,7 +18,12 @@ silently shadow whichever extension's folder happens to sort first --
 ``sorted(extension_dir.iterdir())`` walk, so without the rename this
 extension would have silently disabled the already-shipped LAN version's
 own set_shared_var/get_shared_var the moment both were installed. Same
-reasoning will apply to Phase 2's send_network_message_files. Recorded in
+reasoning applies to send_network_message_files below (its socket-version
+sibling is named send_network_message) and to the event name it fires --
+"network_message_files", not "network_message", for the identical reason
+one level up: events/plugin_loader.py's _load_events has the same
+skip-if-already-registered behaviour for EVENT_TYPES as _load_actions has
+for ACTION_TYPES. Recorded in
 docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md's "Proposed action surface" too.
 
 There are no dedicated *condition* actions here either, matching
@@ -121,7 +126,8 @@ PLUGIN_ACTIONS = {
         display_name="Read a Shared Variable (File Exchange)",
         description="Copy a shared variable into a global variable, to "
                         "use it in a calculation. The same as reading "
-                        "global.<name> directly.",
+                        "global.<name> directly -- the value as of the "
+                        "last round the host published, not live.",
         category=_CATEGORY,
         icon="📥",
         parameters=[
@@ -148,5 +154,31 @@ PLUGIN_ACTIONS = {
         category=_CATEGORY,
         icon="✅",
         parameters=[],
+    ),
+    "send_network_message_files": ActionType(
+        name="send_network_message_files",
+        display_name="Send a Network Message (File Exchange)",
+        description="Stage a message of your own, delivered the same "
+                        "way \"Set a Shared Variable (File Exchange)\" is "
+                        "-- at the next round boundary, not instantly. "
+                        "Fires the \"Network Message (File Exchange)\" "
+                        "event, with global.network_event / "
+                        "global.network_data / global.network_sender.",
+        category=_CATEGORY,
+        icon="✉️",
+        parameters=[
+            ActionParameter(name="event", display_name="Message name",
+                param_type="string", default_value="",
+                description="A label of your choosing that the "
+                                "handler tests (e.g. \"buzz\", \"answer\")"),
+            ActionParameter(name="data", display_name="Data", param_type="string",
+                default_value="", required=False,
+                description="A number, text, true/false, or a short list"),
+            ActionParameter(name="target", display_name="Send to",
+                param_type="choice", default_value="all", choices=["all", "host"],
+                description="all = everyone, once they pick up the next "
+                                "round; host = the host only, processed "
+                                "immediately when the round resolves"),
+        ],
     ),
 }

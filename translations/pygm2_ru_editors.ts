@@ -2028,6 +2028,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>End Turn (File Exchange)</source>
         <translation>Завершить ход (обмен файлами)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Отправить сетевое сообщение (обмен файлами)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

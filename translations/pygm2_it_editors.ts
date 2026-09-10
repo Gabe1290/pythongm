@@ -2028,6 +2028,10 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <source>End Turn (File Exchange)</source>
         <translation>Fine turno (Scambio di file)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Invia messaggio di rete (Scambio di file)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

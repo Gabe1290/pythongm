@@ -2287,6 +2287,10 @@ Do you want to save anyway?</source>
         <source>End Turn (File Exchange)</source>
         <translation>ターンを終了 (ファイル交換)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>ネットワークメッセージを送る (ファイル交換)</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -2594,6 +2598,10 @@ Do you want to save anyway?</source>
         <location filename="../widgets/welcome_tab.py" line="214"/>
         <source>📖  Sample guides</source>
         <translation>📖  サンプルガイド</translation>
+    </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>ファイル交換 — 三目並べ</translation>
     </message>
 </context>
 <context>
@@ -4487,6 +4495,10 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>End Turn (File Exchange)</source>
         <translation>ターンを終了 (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>ネットワークメッセージを送る (ファイル交換)</translation>
     </message>
 </context>
 <context>

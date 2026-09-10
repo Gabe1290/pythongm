@@ -2810,6 +2810,10 @@ Vsa dejanja iz njih bodo preskočena in projekt se lahko prikazuje ali obnaša n
         <source>📖  Sample guides</source>
         <translation>📖  Vodniki po vzorcih</translation>
     </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Izmenjava datotek — Križci in krožci</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

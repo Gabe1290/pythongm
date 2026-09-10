@@ -266,6 +266,10 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <source>End Turn (File Exchange)</source>
         <translation>Končaj potezo (izmenjava datotek)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Pošlji omrežno sporočilo (izmenjava datotek)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
