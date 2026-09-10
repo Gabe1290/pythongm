@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .history { background-color: #eef2fb; padding: 10px; border-left: 4px solid #5b67a5; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Turn-Based Multiplayer: Tic-Tac-Toe by File Exchange</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/10_file_exchange_multiplayer.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128196;</p>
+        <p><strong>Two players, one shared folder, no live connection.</strong></p>
+        <p>Play Tic-Tac-Toe against a friend on another computer &mdash; your
+        moves travel as small files on a shared drive instead of over a direct
+        network connection.</p>
+    </div>
+
+    <h2>What We'll Build</h2>
+    <p>A two-player Tic-Tac-Toe game. One computer hosts, the other joins, and
+    every move is written to (and read from) a shared folder both computers
+    can reach &mdash; no direct connection between the two machines at all.
+    The game is playable at the end of every phase, so you can stop and try
+    it whenever you want.</p>
+
+    <div class="history">
+        <strong>This isn't a new idea.</strong> Before everyone had an
+        always-on internet connection, whole genres of multiplayer games
+        worked exactly this way: a player's turn was written to a file,
+        handed to (or shared with) the next player, and the game read
+        whichever file was current. Classic strategy games like
+        <strong>VGA Planets</strong> (1992) and <strong>Stars!</strong>
+        (1995) worked this way, and the idea itself goes back further still
+        &mdash; to play-by-mail games, where a human "judge" collected every
+        player's mailed-in move and mailed back the result. We're building a
+        small, modern version of the same idea.
+    </div>
+
+    <h2>How This Tutorial Works</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; The Board</strong><br>
+        Build a 3&times;3 grid you can click to place an X. No networking
+        yet &mdash; test it entirely on your own first.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Host a Game / Join a Game</strong><br>
+        Connect two computers through a shared folder and find out whether
+        you're playing X or O.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Taking Real Turns</strong><br>
+        Only let the player whose turn it is click, submit the move, and
+        redraw the board once both computers agree what happened.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 4 &mdash; Winning and Playing Again</strong><br>
+        Check for three in a row, announce the winner, and let both players
+        start a fresh game.
+    </div>
+
+    <h2>What You'll Learn</h2>
+    <ul>
+        <li>The <strong>Host Game (Files)</strong> / <strong>Join Game (Files)</strong>
+        actions, and why this extension uses a shared folder instead of a
+        live connection</li>
+        <li>Reading identity globals like <code>global.player_id</code> and
+        <code>global.round_number</code></li>
+        <li>Staging a move with <strong>Set Shared Variable</strong> and
+        submitting it with <strong>End Turn</strong></li>
+        <li>Reacting to the <strong>Round Resolved</strong> event to redraw
+        the board once a turn is confirmed</li>
+        <li>Using an <strong>If</strong> action to gate whose turn it is</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Time Required:</strong> About 25&ndash;30 minutes.
+        <strong>Note:</strong> Phases 1 and most of Phase 2 can be built and
+        tested alone; fully testing Phases 2&ndash;4 needs a second computer
+        (or a friend) and a shared folder both computers can reach.
+    </div>
+
+    <div class="info">
+        <strong>Not seeing an action below in your Action Picker?</strong>
+        This tutorial needs the <strong>File Exchange Multiplayer</strong>
+        extension. If it's missing, this build of the IDE may not have it
+        yet &mdash; check with whoever set up your copy, or try updating.
+    </div>
+
+    <div class="info">
+        <strong>Ready?</strong> Click "Next" to start building.
+    </div>
+</body>
+</html>

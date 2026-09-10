@@ -112,6 +112,19 @@
                 "04_catching_and_crashing.html",
                 "05_winning.html"
             ]
+        },
+        {
+            "title": "Multijoueur au tour par tour : Morpion par échange de fichiers",
+            "folder": "10_file_exchange_multiplayer",
+            "description": "Jouez au morpion contre un autre ordinateur via un dossier partagé, sans aucune connexion en direct",
+            "thumbnail": "thumbnails/10_file_exchange_multiplayer.png",
+            "pages": [
+                "01_introduction.html",
+                "02_the_board.html",
+                "03_host_and_join.html",
+                "04_taking_turns.html",
+                "05_winning_and_playing_again.html"
+            ]
         }
     ]
 }

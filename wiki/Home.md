@@ -39,6 +39,7 @@ See the [Preset Guide](Preset-Guide) for a complete overview of the preset syste
 | **Skill-Based Presets** | Beginner, Intermediate, and Advanced feature sets |
 | **2.5D / First-Person View** | Optional Doom/Wolfenstein-style raycast rendering — see [3D View](3D-View) |
 | **LAN Multiplayer** | Host/join a game over the local network, shared variables and networked avatars — see [Network](Network) |
+| **File Exchange Multiplayer** | Turn-based multiplayer through a shared drive — works even when a school firewall blocks direct connections, see [File Exchange Multiplayer](FileExchange) |
 | **Multi-Platform Export** | Windows EXE, macOS app, HTML5, Linux, Kivy (mobile/desktop) |
 | **Asset Management** | Sprites, sounds, backgrounds, fonts, and rooms |
 | **Multi-Language UI** | English, French, German, Italian, Spanish, Portuguese, Slovenian, Ukrainian, Russian |
@@ -185,7 +186,8 @@ project_name/
 ### Advanced Features
 - [3D View](3D-View) - Doom-style first-person (raycast) rendering
 - [Network](Network) - LAN multiplayer: host/join, shared variables, networked avatars
-- [Extensions](Extensions) - Add-on actions and renderers (how 3D View and Network ship)
+- [File Exchange Multiplayer](FileExchange) - Turn-based multiplayer through a shared drive, firewall-friendly
+- [Extensions](Extensions) - Add-on actions and renderers (how 3D View, Network, and File Exchange Multiplayer ship)
 
 ### Guides
 - [Object-Editor](Object-Editor) - Working with game objects

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Héberger une partie / Rejoindre une partie</h1>
+
+    <p>Connectons maintenant deux ordinateurs via un dossier partagé. L'un
+    va <strong>héberger</strong> (l'arbitre), l'autre va <strong>rejoindre</strong>.</p>
+
+    <div class="info">
+        <strong>Avant de commencer :</strong> choisissez un dossier que les
+        deux ordinateurs peuvent atteindre et dans lequel ils peuvent
+        écrire &mdash; un lecteur réseau partagé, ou (pour construire et
+        tester le câblage seul d'abord) simplement un dossier sur votre
+        propre ordinateur. Nous l'écrirons dans les deux actions ci-dessous
+        comme <code>Z:\jeux\morpion</code> &mdash; remplacez-le par votre
+        propre chemin.
+    </div>
+
+    <h2>Créer le contrôleur de partie</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
+            <li>Nommez-le <code>obj_controller</code>, aucun sprite nécessaire
+            (laissez-le invisible)</li>
+            <li>Placez-en <strong>une instance</strong> n'importe où dans <code>room_board</code></li>
+        </ol>
+    </div>
+
+    <h2>Héberger avec la touche H, rejoindre avec la touche J</h2>
+    <div class="step">
+        <p>Un seul objet, deux façons de le démarrer &mdash; lancez
+        exactement le même projet sur les deux ordinateurs, et appuyez sur
+        une touche différente sur chacun :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Touche pressée : H</span><br>
+            <span class="block block-network block-indent">Héberger une partie
+            (fichiers) dossier :<span class="block-text">Z:\jeux\morpion</span>
+            joueurs max :<span class="block-num">2</span>
+            nom du joueur :<span class="block-text">Joueur 1</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Touche pressée : J</span><br>
+            <span class="block block-network block-indent">Rejoindre une partie
+            (fichiers) dossier :<span class="block-text">Z:\jeux\morpion</span>
+            nom du joueur :<span class="block-text">Joueur 2</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Pourquoi des touches, pas un menu ?</strong> C'est le
+            moyen le plus simple de tester les deux rôles depuis le même
+            projet &mdash; appuyez sur H sur un ordinateur, sur J sur
+            l'autre. Un vrai jeu de classe pourrait plutôt demander
+            « Héberger ou rejoindre ? » sur un écran-titre, mais c'est une
+            finition d'interface, pas quelque chose que ce tutoriel a
+            besoin d'enseigner.
+        </div>
+    </div>
+
+    <h2>Afficher l'état de la connexion</h2>
+    <div class="step">
+        <ol>
+            <li>Ajoutez un événement <strong>Au dessin</strong> à
+            <code>obj_controller</code> :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Au dessin</span><br>
+            <span class="block block-control block-indent">Si <span class="block-text">global.player_count &lt; 2</span> alors</span><br>
+            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">En attente d'un adversaire...</span> à x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-control">Sinon si <span class="block-text">global.player_id == 0</span> alors</span><br>
+            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">Vous êtes X</span> à x:<span class="block-num">20</span> y:<span class="block-num">20</span></span><br>
+            <span class="block block-control">Sinon</span><br>
+            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">Vous êtes O</span> à x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Ce que ça fait :</strong> <code>global.player_id</code>
+            est attribué automatiquement &mdash; l'hôte est toujours
+            <code>0</code> (donc c'est X, qui commence), et chaque joueur
+            qui rejoint compte à partir de là. <code>global.player_count</code>
+            indique combien de joueurs se sont connectés jusqu'ici.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez la connexion !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 sur les deux ordinateurs !</strong></p>
+        <ul>
+            <li>Appuyez sur <strong>H</strong> sur l'un, <strong>J</strong> sur l'autre</li>
+            <li>Les deux devraient arrêter d'afficher « En attente d'un
+            adversaire... » et afficher « Vous êtes X » / « Vous êtes O »</li>
+            <li>Si l'hôte est injoignable, la partie continue en solo
+            &mdash; elle ne se fige ni ne plante jamais</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour rendre la grille réellement jouable
+        entre les deux ordinateurs.
+    </div>
+</body>
+</html>

@@ -39,6 +39,7 @@ Consultez le [Guide des Préréglages](Preset-Guide_fr) pour un aperçu complet 
 | **Préréglages par Niveau** | Ensembles de fonctionnalités Débutant, Intermédiaire et Avancé |
 | **Vue 2.5D / Première personne** | Rendu optionnel par lancer de rayons façon Doom/Wolfenstein — voir [Vue 3D](3D-View_fr) |
 | **Multijoueur LAN** | Héberger/rejoindre une partie sur le réseau local, variables partagées et avatars en réseau — voir [Réseau](Network_fr) |
+| **Multijoueur par échange de fichiers** | Multijoueur au tour par tour via un lecteur partagé — fonctionne même quand un pare-feu scolaire bloque les connexions directes, voir [Multijoueur par échange de fichiers](FileExchange_fr) |
 | **Export Multi-Plateforme** | Windows EXE, application macOS, HTML5, Linux, Kivy (mobile/bureau) |
 | **Gestion des Ressources** | Sprites, sons, arrière-plans, polices et salles |
 | **Interface Multilingue** | Anglais, Français, Allemand, Italien, Espagnol, Portugais, Slovène, Ukrainien, Russe |
@@ -186,7 +187,8 @@ nom_du_projet/
 ### Fonctionnalités Avancées
 - [Vue 3D](3D-View_fr) - Rendu à la première personne façon Doom (lancer de rayons)
 - [Réseau](Network_fr) - Multijoueur LAN : héberger/rejoindre, variables partagées, avatars en réseau
-- [Extensions](Extensions_fr) - Actions et moteurs de rendu additionnels (comment la Vue 3D et le Réseau sont fournis)
+- [Multijoueur par échange de fichiers](FileExchange_fr) - Multijoueur au tour par tour via un lecteur partagé, compatible pare-feu
+- [Extensions](Extensions_fr) - Actions et moteurs de rendu additionnels (comment la Vue 3D, le Réseau et le Multijoueur par échange de fichiers sont fournis)
 
 ### Guides
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu
