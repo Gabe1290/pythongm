@@ -116,9 +116,17 @@ This is the complete list. Everything else that used to be tracked in
    not to start Phase 2/3 without a clear need. Re-open only on a fresh,
    explicit ask.
 
-6. **`TODO.md`'s own small leftover** (tracked there, not duplicated here): a
-   low-priority asset-type-registration formalization note, with no current
-   asset type actually affected by its absence.
+6. **`TODO.md`'s own small leftover — DONE 2026-09-09, before this note was
+   last touched.** *(This entry described the item as still open; TODO.md
+   itself already marked it `~~DONE~~` — caught 2026-09-11 while working
+   through this same list on an explicit ask, the same stale-doc pattern
+   as item 4 above.)* `ASSET_TYPE_REGISTRY`
+   (`widgets/asset_tree/asset_utils.py`) is the single source for all 8
+   asset types; `PyGameMakerIDE.__init__` calls
+   `AssetsMixin._verify_asset_editor_registry()` at startup, which raises
+   if a registered `editor_method` doesn't exist on the class — a new
+   asset type now fails loudly at startup instead of silently at first
+   double-click. Commit `61b16a0e`. **No open work here.**
 
 7. **`docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md` — 1990s-style file-exchange
    multiplayer. Track E Phases 1–2–4 of 5 done; Track T done and
