@@ -1,9 +1,11 @@
 # Release QA Checklist — PyGameMaker IDE
 
-**The single master checklist for signing off a release.** Work it top to
-bottom. It sequences every manual test into one pass and folds in the
-"still needs human eyes" caveats that had accumulated across the session
-notes and `docs/PROJECT_STATUS.md`.
+**The single, self-contained checklist for signing off a release.** It
+replaces the older split set (`test_checklist.md`,
+`PLATFORM_DISPLAY_CHECKLIST.md`, `TESTING_CHECKLIST.md`,
+`TESTING_PRESET_CHECKLIST.md`, `blockly_editor_test_checklist.md` — all
+removed) and folds in the "still needs human eyes" caveats that had
+accumulated across the session notes and `docs/PROJECT_STATUS.md`.
 
 Release being validated: `________`   (current shipped: 1.3.1)
 
@@ -12,10 +14,27 @@ Release being validated: `________`   (current shipped: 1.3.1)
 > are platform-agnostic (run once) or platform-specific (only that box
 > exists).
 
-> **This document does not replace the deep sub-checklists** — it drives
-> them. Where a section says "→ `docs/X.md`", that file has the
-> exhaustive per-feature list; come back here and tick the summary box
-> once you've worked it.
+### Why so much of this is manual
+
+The automated suite is large and green — and every visual/UX bug in the
+last "eyeball pass" shipped *with a green suite*. Five of them had one
+cause: the exported build was a different engine than the IDE runs, so
+nothing the tests covered applied to it. That is fixed (desktop exports
+freeze the real pygame engine now), but the lesson stands:
+
+1. **Building is not playing.** The tests prove an export renders the
+   same pixels as the IDE. They do not prove it feels right to hold a
+   key down on.
+2. **A machine cannot tell you the layout looks wrong.** Every automated
+   check runs offscreen at a fixed size.
+
+So Section 1 does the mechanical half, and the rest spends your attention
+on what only a human at a real screen (and, for §10–§11 and §15, a
+second machine or a real device) can confirm.
+
+Last full automated green run on record: **Linux 2026-08-19,
+`verify_desktop_export.py --all --compare` → 20/20 verified, every sample
+0.00% different from the IDE's own rendering.**
 
 ---
 
@@ -27,12 +46,13 @@ Release being validated: `________`   (current shipped: 1.3.1)
 2. **Sections 2–12** are the desktop IDE + runtime regression pass. Do
    them on all three OSes for a full release; a patch release touching
    one subsystem can be scoped to that section + Section 1.
-3. **Sections 13–17** are the export targets. Each needs its own
-   platform (PyInstaller can't cross-compile; Kivy/Android needs a
-   device).
-4. **Sections 18–22** are localization, the live wiki, the packaged IDE,
-   and per-platform gotchas.
-5. **Section 23** is the release sign-off matrix — fill it in last.
+3. **Sections 13–16** are the export targets. Each needs its own platform
+   (PyInstaller can't cross-compile; Kivy/Android needs a device).
+4. **Sections 17–22** are localization, help/docs, the live wiki, the
+   packaged IDE, error recovery and per-platform gotchas.
+5. **Section 23** is the 2026-06-11 audit-fix regression spot-check.
+6. **Release sign-off** (at the end) is the per-OS matrix — fill it in
+   last.
 
 Anything you find: one line — **platform, screen/sample, expected, saw.**
 A screenshot beats prose for layout. Group findings by root cause before
@@ -42,8 +62,20 @@ filing bugs.
 
 ## 1. Automated pre-flight (do this first, on each OS)
 
-From the repo root. **Windows: `py -3.12` for every command** — bare
-`python3` there is the Store stub or an unsupported 3.14.
+From the repo root.
+
+**On Windows, use `py -3.12` in place of `python3` for every command
+below.** Bare `python3` there hits the **Microsoft Store** stub ("Python
+was not found"); if that stub is disabled it resolves to an unsupported
+3.14, which is worse because it runs and then fails oddly. So each
+command has both forms:
+
+```
+# Linux / macOS                          :: Windows
+python3 -m pytest tests/ -q              py -3.12 -m pytest tests/ -q
+python3 tools/smoke_run_samples.py       py -3.12 tools/smoke_run_samples.py
+python3 tools/verify_desktop_export.py   py -3.12 tools/verify_desktop_export.py
+```
 
 - [ ] L · [ ] W · [ ] m — **Full test suite, CI-equivalent.** Install
   `pytest-qt` first (without it ~41 `qapp`-fixture tests *error* rather
@@ -78,9 +110,6 @@ From the repo root. **Windows: `py -3.12` for every command** — bare
 ---
 
 ## 2. IDE application shell
-
-→ deeper: `docs/test_checklist.md` §1, and `docs/PLATFORM_DISPLAY_CHECKLIST.md`
-§1 (proportion / clipping / DPI — genuinely per-platform).
 
 - L [ ] M [ ] W [ ] Launches with **no console error**; Welcome tab shown
   by default with no project.
@@ -119,8 +148,6 @@ From the repo root. **Windows: `py -3.12` for every command** — bare
 
 ## 3. Project lifecycle
 
-→ deeper: `docs/test_checklist.md` §2, §14.
-
 - L [ ] M [ ] W [ ] New Project (File → New Project) — dialog defaults to
   the **localised Documents folder**; description persists into Project
   Settings later.
@@ -158,9 +185,6 @@ From the repo root. **Windows: `py -3.12` for every command** — bare
 ---
 
 ## 4. Asset tree & editors
-
-→ deeper: `docs/test_checklist.md` §3, §6, §7, §8; §15.3 (audit-fix
-editor regressions); `docs/blockly_editor_test_checklist.md`.
 
 ### Sprites / sounds / backgrounds / fonts
 
@@ -226,53 +250,192 @@ editor regressions); `docs/blockly_editor_test_checklist.md`.
 - L [ ] M [ ] W [ ] A room and an object that share a name can both be
   open; deleting one doesn't close the other.
 
-### Blockly & code editor
+### Blockly editor
 
-→ full: `docs/blockly_editor_test_checklist.md`,
-`docs/TESTING_PRESET_CHECKLIST.md`.
+- L [ ] M [ ] W [ ] Opens for an object/event; every toolbox category
+  visible and colour-distinct; categories expand/collapse.
+- L [ ] M [ ] W [ ] Blocks drag from the toolbox; snap together;
+  disconnect; delete (Delete key or drag-to-trash); duplicate (Ctrl+D);
+  copy/paste (Ctrl+C / Ctrl+V).
+- L [ ] M [ ] W [ ] Undo (Ctrl+Z) / Redo (Ctrl+Y); multiple undo steps.
+- L [ ] M [ ] W [ ] Block params: dropdowns, number inputs, text inputs;
+  the object / sprite / sound / room selection dropdowns **populate** from
+  the project.
+- L [ ] M [ ] W [ ] Workspace: zoom in/out, pan/scroll; the layout
+  **saves** and reloads with the project.
+- L [ ] M [ ] W [ ] Generated code runs in a real Test Game.
+- L [ ] M [ ] W [ ] Presets (Full / Beginner / Intermediate / Platformer /
+  Grid RPG / Sokoban / Implemented-Only): switching one updates the
+  toolbox; disabled blocks aren't shown; the choice persists. Tools →
+  Configure Action Blocks changes what's offered; Select All / Select
+  None on the left; Save commits, Cancel discards.
 
-- L [ ] M [ ] W [ ] Blockly editor opens; blocks drag from the toolbox,
-  snap together, delete; undo/redo; workspace layout **saves** and
-  reloads; code generation from blocks runs in-game.
-- L [ ] M [ ] W [ ] All action categories present in the toolbox for the
-  active preset; Tools → Configure Action Blocks changes what's offered.
-- L [ ] M [ ] W [ ] Python code editor: syntax highlighting; toolbar
-  Undo/Redo and Edit → Undo (not just Ctrl+Z); save; executes in-game;
-  `execute_code` binds `self`, `other`, `game`, `keyboard`.
+### Code editor
+
+- L [ ] M [ ] W [ ] Python code editor opens; syntax highlighting; toolbar
+  Undo/Redo and Edit → Undo work (not just Ctrl+Z); saves; executes
+  in-game; `execute_code` binds `self`, `other`, `game`, `keyboard`,
+  `math`.
 
 ---
 
 ## 5. Events & actions — runtime pass
 
-Build (or reuse the bundled samples as) test projects and verify every
-event fires and every action does what it should, in a real Test Game
-run. This is the largest section; work it from the dedicated docs:
+The largest section. Build test projects (or reuse the bundled samples)
+and verify **every event fires** and **every action does what it should**
+in a real Test Game run. A good coverage plan is one small project per
+game genre, each adding the events/actions the previous didn't need:
 
-- [ ] L · [ ] W · [ ] m — **`docs/TESTING_CHECKLIST.md`** — events &
-  actions by game-type phase (Sokoban → Labyrinth → Platformer → Shooter
-  → Racing → Zelda-like), plus the rc.12 runtime features (pixel-perfect
-  collision, single-view and split-screen camera).
-- [ ] L · [ ] W · [ ] m — **`docs/TESTING_PRESET_CHECKLIST.md`** — every
-  event/action in the "Testing (Validated Only)" preset, plus conditional
-  flow (Start/End Block, Else, Exit Event), edge cases and a 50+-instance
-  performance check.
-- [ ] L · [ ] W · [ ] m — **`docs/test_checklist.md` §4–§5** — the flat
-  per-event / per-action list (Create/Destroy/Step/Alarm/Keyboard/Mouse/
-  Collision/Other/Draw; Movement/Instance/Control/Room/Variable/Score/
-  Drawing/Sound/Timing/Game actions).
-- [ ] L · [ ] W · [ ] m — **`docs/test_checklist.md` §15.1** — the
-  2026-06-11 audit-fix runtime spot-checks (GMK `room_speed` honoured;
-  spawner doesn't hang the frame; spawned instances visible + inherit
-  parent events; `exit_event` in a branch aborts the event; persistent
-  player survives `restart_room`; held key released during a dialog
-  doesn't stick; `key_pressed` arrows + `mouse_check` fire; `test_health`
-  death checks; `outside_room` for nonzero-origin sprites).
+1. **Sokoban** — grid movement, push, `if_collision`, blocks, `next_room`
+2. **Labyrinth / rogue-like** — `keyboard_press`, alarms, `destroy`,
+   chase AI, health/lives, sound
+3. **Platformer** — `keyboard_release`, `begin/end_step`, gravity,
+   friction, `move_to_contact`, `bounce`, `set_sprite`
+4. **Scrolling shooter** — `outside_room`, `animation_end`,
+   `no_more_lives/health`, `create_moving_instance`, `wrap_around_room`
+5. **Racing** — `intersect_boundary`, `room_start/end`, `set_room_speed`,
+   views/camera, high-score table
+6. **Zelda-like** — `draw`, `game_start/end`, mouse events, user events,
+   `test_question`, `test_expression`, `goto_room`, `set_room_persistent`
+
+### 5.1 Events — each one fires and its actions run
+
+- L [ ] M [ ] W [ ] **Create** — runs when an instance is created (room
+  start *and* dynamically via `create_instance`); variable init works;
+  fires **once per instance**.
+- L [ ] M [ ] W [ ] **Destroy** — runs when an instance is destroyed.
+- L [ ] M [ ] W [ ] **Step / Begin Step / End Step** — every frame, in
+  that order relative to movement.
+- L [ ] M [ ] W [ ] **Alarm 0–11** — settable; fires at the right step
+  count; can be reset.
+- L [ ] M [ ] W [ ] **Keyboard (held)** — fires continuously while held;
+  arrow keys, WASD, Space, Enter, numpad, punctuation.
+- L [ ] M [ ] W [ ] **Key Press** — once on key-down; every letter/number
+  key.
+- L [ ] M [ ] W [ ] **Key Release** — once on key-up.
+- L [ ] M [ ] W [ ] **No Key** — fires when nothing is held (order: runs
+  before Step).
+- L [ ] M [ ] W [ ] **Any Key**.
+- L [ ] M [ ] W [ ] **Mouse** — left/right/middle press, release, held;
+  mouse enter / leave an instance; global (anywhere on screen) variants.
+- L [ ] M [ ] W [ ] **Collision with <object>** — fires on the first step
+  the footprints overlap (a continuous overlap = one hit); solid vs
+  non-solid; multiple collision events on one object.
+- L [ ] M [ ] W [ ] **Outside Room** — fires when the sprite is fully
+  off-screen, **including for a nonzero-origin sprite**.
+- L [ ] M [ ] W [ ] **Intersect Boundary**.
+- L [ ] M [ ] W [ ] **Game Start** — fires once, survives a room restart
+  (authored score/lives/caption setup runs).
+- L [ ] M [ ] W [ ] **Game End**, **Room Start**, **Room End**,
+  **Animation End**, **No More Lives**, **No More Health**.
+- L [ ] M [ ] W [ ] **User-defined events** (called via Call Parent /
+  trigger).
+- L [ ] M [ ] W [ ] **Draw** — overrides default sprite drawing; **Draw
+  GUI** for a HUD over a scrolling view; Draw Begin / Draw End.
+
+### 5.2 Actions — each one does what it should
+
+- L [ ] M [ ] W [ ] **Movement** — Move Fixed (8 dirs + stop), Move Free,
+  Move Towards Point, Set Speed / Direction, Set H/V Speed, Reverse
+  H/V, Set Gravity, Set Friction, Jump to Position / Start / Random,
+  Snap to Grid, Wrap Screen, Move to Contact, Bounce, Move Grid.
+- L [ ] M [ ] W [ ] **Instance** — Create, Create with Motion, Create
+  Random, Change Instance, Destroy Instance (self / other), Destroy at
+  Position. Spawned instances are **visible next frame** and inherit
+  parent events/collisions; a spawner in Step does **not** hang the
+  frame; a collision-spawned instance's Create event reads **its own**
+  speed, not the colliding pair's.
+- L [ ] M [ ] W [ ] **Control flow** — If Variable / Instance Count /
+  Dice / Question / Expression / Mouse Button / Aligned-with-Grid; Start
+  Block / End Block; Else; Exit Event; Repeat; Call Parent Event.
+  `set_sprite` keeps `<self>`. `if_condition` runs its then-branch
+  **once**, not twice.
+- L [ ] M [ ] W [ ] **Room** — Next / Previous / Restart Room, Go to Room,
+  If Next/Previous Room Exists, Set Room Speed, Set Room Caption, Set
+  Room Persistent, Set Background Color, Set Background.
+- L [ ] M [ ] W [ ] **Variable** — Set Variable (self / other / global,
+  relative), If Variable, Draw Variable.
+- L [ ] M [ ] W [ ] **Score / Lives / Health** — Set / If / Draw for each;
+  Draw Health Bar; `test_health` `<=0` / `>=N` death checks trigger;
+  `no_more_health` / `no_more_lives` fire on the 0 crossing.
+- L [ ] M [ ] W [ ] **Drawing** — Draw Sprite / Background / Text / Text
+  Transformed / Rectangle / Ellipse / Line / Arrow; Set Color (honours a
+  `color` param on `draw_text`); Set Font; Set Full Screen; the minimap
+  and DOOM-HUD macro actions.
+- L [ ] M [ ] W [ ] **Sound** — Play Sound / Stop Sound / If Sound
+  Playing / Set Volume / Set Pan; Play Music / Stop Music.
+- L [ ] M [ ] W [ ] **Timing** — Set Alarm, Sleep, Set Timeline.
+- L [ ] M [ ] W [ ] **Info / Game** — Display Message, Show Info, Show
+  Video, Restart Game, End Game, Save Game, Load Game, Show/Clear
+  Highscore.
+- L [ ] M [ ] W [ ] **Execute Code / Execute Script** — real Python;
+  `self`, `other`, `game`, `keyboard`, `math` all bound; a raw
+  `self.<var>` runs with no silent `NameError`; `self.restart_room_flag`
+  / `self.next_room_flag` trigger the matching navigation.
+
+### 5.3 Conditional-flow edge cases
+
+- L [ ] M [ ] W [ ] Single-action conditional (no block): the **one**
+  following action skips when false.
+- L [ ] M [ ] W [ ] Start Block / End Block: **all** actions in the block
+  run when true, **all** skip when false.
+- L [ ] M [ ] W [ ] Else: first action vs else-action alternate correctly
+  on true/false; an Else inside a then/else branch resolves to the right
+  parent.
+- L [ ] M [ ] W [ ] `exit_event` inside an if/else branch or a Repeat
+  aborts the **whole** event.
+
+### 5.4 rc.12 runtime features
+
+- L [ ] M [ ] W [ ] **Pixel-perfect collision** (static, opt-in per
+  sprite): two `precise=True` sprites whose AABBs overlap but whose masks
+  don't → **no** collision; masks do overlap → collision fires; a
+  rotated / non-unity-scaled `precise` instance falls back to AABB; GMK
+  import carries the per-sprite flag through.
+- L [ ] M [ ] W [ ] **Views / single camera**: `views_enabled = False`
+  renders identically to no-views (regression guard); one visible view →
+  only its port rect is drawn into; the follow target stays inside
+  `(hborder, vborder)` and clamps to the room bounds.
+- L [ ] M [ ] W [ ] **Views / split-screen**: two adjacent views with
+  different follow targets render both; the gap shows the room background
+  colour, not stale pixels; per-view `hspeed`/`vspeed` clamps camera
+  movement (`-1` = instant); `room.current_view_index` is queryable in a
+  draw event.
+
+### 5.5 Runtime spot-checks from the 2026-06-11 audit
+
+- L [ ] M [ ] W [ ] Imported maze/platformer samples run at the **authored
+  speed**, not double-speed (GMK `room_speed` honoured).
+- L [ ] M [ ] W [ ] Pushing a sprite with a transparent margin / nonzero
+  origin lands **flush** against a wall (no jitter / off-grid).
+- L [ ] M [ ] W [ ] A **persistent** player survives `restart_room`;
+  after `restart_game` rooms 2..N are fresh; re-entering a room doesn't
+  re-run its Create events.
+- L [ ] M [ ] W [ ] Releasing a movement key **while a message dialog is
+  open** does NOT leave the character moving after it closes.
+- L [ ] M [ ] W [ ] `key_pressed` arrow conditions and `mouse_check`
+  button / over-object conditions actually fire.
+- L [ ] M [ ] W [ ] Next / Previous / Restart-Room dropdown options
+  navigate.
+
+### 5.6 Edge cases & performance
+
+- L [ ] M [ ] W [ ] `create_instance` with a non-existent object name →
+  warning, no crash; an invalid expression → falls back to 0, no crash.
+- L [ ] M [ ] W [ ] Instance at a room edge / outside room bounds; Jump
+  to Random in a very small room; Next Room from the last room / Previous
+  from the first → no-op, no crash.
+- L [ ] M [ ] W [ ] Multiple instances of one object have independent
+  state; destroying one doesn't affect the others; two moving instances
+  collide.
+- L [ ] M [ ] W [ ] Press several arrow keys at once; rapid press/release
+  → no stuck movement.
+- L [ ] M [ ] W [ ] **50+ instances** each with a Step event → acceptable
+  frame rate; rapid create/destroy cycles → no leak or slowdown.
 
 ---
 
 ## 6. Game execution — Test Game / Debug
-
-→ deeper: `docs/test_checklist.md` §9.
 
 - L [ ] M [ ] W [ ] F5 opens a game window; first room loads; objects at
   correct positions; sprites + animations render; events fire; collisions
@@ -291,10 +454,6 @@ run. This is the largest section; work it from the dedicated docs:
 ---
 
 ## 7. Bundled samples — the play-through pass
-
-→ this is `docs/PLATFORM_DISPLAY_CHECKLIST.md` §3. Open each from the
-Welcome tab, press Test Game, **play far enough to reach its own goal** —
-controls responding is the point.
 
 - L [ ] M [ ] W [ ] **Welcome-tab flow**: each sample opens *immediately*
   (no destination prompt, no GMK wait); the title bar shows the sample
@@ -326,10 +485,6 @@ controls responding is the point.
 ---
 
 ## 8. 2.5D raycast extension (`raycast_1`–`4`)
-
-→ deeper: sample READMEs. **Standing "needs human eyes" caveat**: nobody
-has *watched* `raycast_3` / `raycast_4` render in a browser or on Android
-after their last engine changes — verify here.
 
 - L [ ] M [ ] W [ ] **raycast_1** — first-person view draws: textured
   walls, floor cast, sky, billboard sprites (`obj_goal` is visible);
@@ -423,8 +578,6 @@ sharing a folder (network drive / synced folder).
 
 ## 12. Preferences & settings
 
-→ `docs/test_checklist.md` §11.
-
 - L [ ] M [ ] W [ ] Preferences dialog opens; **every tab's content fits
   its panel**, including Extensions.
 - L [ ] M [ ] W [ ] Language selection changes visible labels at runtime.
@@ -436,11 +589,6 @@ sharing a folder (network drive / synced folder).
 ---
 
 ## 13. Export — HTML5 (in a **real browser**)
-
-→ `docs/PLATFORM_DISPLAY_CHECKLIST.md` §5, `docs/EXPORT_TESTING_GUIDE.md`.
-The priority path — nothing installed, works on a locked-down school
-machine. Check **more than one sample** (a single injected-JS syntax
-error once broke every export at once).
 
 - L [ ] M [ ] W [ ] Export a sample → a single `.html` file is written.
 - L [ ] M [ ] W [ ] Open it by **double-click** (`file://`) — the game
@@ -464,11 +612,6 @@ error once broke every export at once).
 ---
 
 ## 14. Export — Desktop (`.exe` / Linux binary / `.app`)
-
-→ `docs/PLATFORM_DISPLAY_CHECKLIST.md` §4. **Two ticks per target** —
-"it built" is what the tests check and is exactly how five bugs shipped;
-"it plays" is the one that matters. Export only works **on** the target
-platform.
 
 - L [ ] M [ ] W [ ] Build → the platform's own export completes with no
   error; the artifact appears where the dialog said (single `.exe` /
@@ -503,10 +646,12 @@ platform.
 
 ## 15. Export — Mobile (Kivy → Android / iOS)
 
-→ `docs/PLATFORM_DISPLAY_CHECKLIST.md` §6, `docs/ANDROID_EXPORT.md`.
-Kivy can't run in CI, so **every fix was verified by executing the
-generated code, not by playing a build**. This section is where an actual
-device pass happens. Each row names what used to be wrong.
+Desktop export moved off Kivy, but **Android and iOS still use it**. Its
+four known gaps (tiles, keyboard handling, collision, physics/subimages)
+were fixed 2026-08-17 — but every fix was verified by *executing the
+generated code*, not by running a build, so **nobody has actually played
+an exported mobile build**. This section is where that gets found out;
+each row names what used to be wrong so a regression is recognisable.
 
 - L [ ] M [ ] W [ ] Build → Mobile export produces a project / APK
   without crashing the IDE; an **accented project name** builds; a
@@ -542,9 +687,6 @@ device pass happens. Each row names what used to be wrong.
 
 ## 17. Localization
 
-→ `docs/PLATFORM_DISPLAY_CHECKLIST.md` §2. **French must carry its
-accents** — a stripped accent is a defect, not cosmetics.
-
 - L [ ] M [ ] W [ ] Tools → Preferences → Language lists all **11**
   entries (English + de es fr it ja pt ru sl uk zh).
 - L [ ] M [ ] W [ ] Switch to **French**: menus, dialogs, Welcome tab are
@@ -572,8 +714,6 @@ accents** — a stripped accent is a defect, not cosmetics.
 ---
 
 ## 18. Help / About / documentation
-
-→ `docs/test_checklist.md` §12.
 
 - L [ ] M [ ] W [ ] Help menu accessible; About dialog shows the **right
   version**; website / GitHub / LICENSE links open the right targets.
@@ -614,9 +754,9 @@ screenshots publish. Open <https://github.com/Gabe1290/pythongm/wiki>:
 
 ## 20. Packaged IDE (PyInstaller one-file build for students)
 
-→ `docs/test_checklist.md` §13, `scripts/build_pyinstaller.py` +
-`PyGameMaker.spec` (CI/lite) / `PyGameMaker-full.spec` (adds Kivy, so the
-packaged IDE can also do EXE export). Build **on** the target OS.
+Build **on** the target OS with `python3 scripts/build_pyinstaller.py`
+(spec: `PyGameMaker.spec` — CI/lite; `PyGameMaker-full.spec` adds Kivy so
+the packaged IDE can also do EXE export).
 
 - L [ ] M [ ] W [ ] The IDE launches from the packaged one-file
   executable (`.app` bundle on macOS); **no empty directories** created
@@ -637,8 +777,6 @@ packaged IDE can also do EXE export). Build **on** the target OS.
 ---
 
 ## 21. Error handling & recovery
-
-→ `docs/test_checklist.md` §14, §15.7.
 
 - L [ ] M [ ] W [ ] `project.json` survives a simulated mid-save failure
   (atomic write); a folder save **rolls back across files** on an error
@@ -671,16 +809,84 @@ packaged IDE can also do EXE export). Build **on** the target OS.
 
 ---
 
-## 23. Audit-fix regression sign-off
+## 23. Audit-fix regression sign-off (2026-06-11 full audit — 111 findings)
 
-- [ ] L · [ ] W · [ ] m — Work
-  **`docs/test_checklist.md` §15.1–§15.7** on each OS (the 2026-06-11
-  full audit: editors, events/actions dialogs, importers, exporters,
-  assets/project/widgets/IDE lifecycle). §15.0 (the automated suite) is
-  already covered by Section 1 above.
+The automated suite (Section 1) is the primary validator for these — it
+carries a regression test per fix. Re-run these platform-sensitive
+spot-checks on **each** desktop OS. Runtime items are in §5.5 above; the
+rest:
+
+### 23.1 Editors
+
+- L [ ] M [ ] W [ ] **Sprite editor**: eyedropper drag doesn't paint;
+  frame add / duplicate / **delete** are undoable; drawing during
+  playback doesn't lose strokes; margin clicks don't paint edge pixels;
+  a selection marquee doesn't dirty the sprite.
+- L [ ] M [ ] W [ ] **Room editor**: Clear All / Shift All are undoable;
+  paste / duplicate / paint **redo** works; scaled instances are
+  clickable over their whole footprint; Ctrl+D doesn't clobber the copy
+  clipboard.
+- L [ ] M [ ] W [ ] **Script editor**: toolbar Undo/Redo and Edit → Undo
+  work (not just Ctrl+Z).
+- L [ ] M [ ] W [ ] A room and an object that **share a name** can both
+  be open; deleting one doesn't close the other.
+
+### 23.2 Events / actions config dialogs
+
+- L [ ] M [ ] W [ ] Editing a `set_sprite` action keeps `<self>` (doesn't
+  silently re-point to the first sprite); a `draw_lives` empty-sprite is
+  reachable.
+- L [ ] M [ ] W [ ] `check_empty` dropdown shows only solid / all (no
+  bogus object names); an unknown / Blockly-only action still appears as
+  a row so Remove / Move hit the right action.
+
+### 23.3 Importers
+
+- L [ ] M [ ] W [ ] A normal `.gmk` imports; a hostile / corrupt one
+  (huge declared image / zlib sizes) is rejected with a warning, not an
+  OOM hang; GMK image dimensions are clamped.
+
+### 23.4 Exporters (run the native target per OS)
+
+- L [ ] M [ ] W [ ] Desktop export of a project **named with an
+  apostrophe** (`L'aventure`) builds; a **locked output folder** reports
+  failure and keeps the build, not fake success.
+- L [ ] M [ ] W [ ] Kivy / desktop export: collision actions, jump,
+  keyboard-release and non-PNG backgrounds all work; a quoted / newline
+  message doesn't break the build.
+- L [ ] M [ ] Android export (Linux/macOS native): an **accented project
+  name** builds; a failed / cancelled build cleans its temp dir and
+  doesn't double-report.
+- L [ ] M [ ] W [ ] Object / Room **package** export+import round-trips
+  **non-PNG** sprite / background assets.
+
+### 23.5 Assets / project / widgets / IDE lifecycle
+
+- L [ ] M [ ] W [ ] Deleting / renaming a room, object or playground
+  removes / moves its `<type>/<name>.json` side file — no resurrection on
+  reuse.
+- L [ ] M [ ] W [ ] Editing object properties in the right panel with
+  **no editor open** writes through and marks dirty; a drag-reorder isn't
+  discarded by a later asset delete.
+- L [ ] M [ ] W [ ] Importing an object / room package **after unsaved
+  edits** doesn't silently discard them.
+- L [ ] M [ ] W [ ] Imported assets are readable under the **dark theme**
+  (not black-on-dark).
+- L [ ] M [ ] W [ ] New Project description persists into Project
+  Settings; Export Options checkboxes (Debug / Optimize) take effect.
+- L [ ] M [ ] W [ ] Opening a `.zip` project then quitting / switching
+  doesn't leave a temp extraction behind in TEMP.
+- L [ ] M [ ] W [ ] A tutorial with an external link doesn't blank the
+  page; a tutorial-gating edition shows a placeholder, not an empty
+  list, when a curated tutorial is missing under a non-en/fr language.
+- L [ ] M [ ] W [ ] `project.json` survives a simulated mid-save failure
+  (atomic write); a folder save rolls back across files on error.
+
+### 23.6 Latest audit
+
 - [ ] Confirm no open **high**-severity items in
-  `docs/FULL_AUDIT_2026-09-07.md` (the most recent audit; 6 high / 13
-  medium / 20 low — work the queue top-down).
+  `docs/FULL_AUDIT_2026-09-07.md` (6 high / 13 medium / 20 low — work the
+  queue top-down; each fix lands with a regression test).
 
 ---
 
@@ -722,17 +928,19 @@ explicitly waived in writing (with who waived it and why).
 
 ---
 
-## Also available
+## Related docs (guides, not checklists)
 
-- `docs/test_checklist.md` — the exhaustive feature-regression list
-  (per-event / per-action, L/M/W tri-boxes) + §15 audit-fix validation
-- `docs/PLATFORM_DISPLAY_CHECKLIST.md` — the eyes-only "how it looks and
-  whether an export plays" pass
-- `docs/TESTING_CHECKLIST.md` — events & actions by game-type phase
-- `docs/TESTING_PRESET_CHECKLIST.md` — the "Testing (Validated Only)"
-  Blockly preset, conditional flow, edge cases, performance
-- `docs/blockly_editor_test_checklist.md` — Blockly editor
-- `docs/EXPORT_TESTING_GUIDE.md` — export deep-dive
+- `docs/EXPORT_TESTING_GUIDE.md` — export deep-dive (per-target
+  prerequisites, known limitations, how to diagnose a bad build)
 - `docs/ANDROID_EXPORT.md`, `docs/BUILDING.md` — build prerequisites
-- `docs/PyGameMaker_Test_{Linux,Windows,macOS}.pdf` — printable
-  per-platform PDFs (`scripts/generate_platform_test_pdfs.py`)
+- `docs/MULTIPLAYER_LAN_V2_PLAN.md`,
+  `docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md` — the multiplayer QA lists
+  §10 / §11 draw from
+- `docs/FULL_AUDIT_2026-09-07.md` — the open-findings queue behind §23
+
+### Formats
+
+- **ODT**: `docs/RELEASE_QA_CHECKLIST.odt` (regenerate with
+  `python3 scripts/generate_release_qa_odt.py`)
+- **PDF**: `docs/PyGameMaker_Release_QA_Checklist.pdf` (regenerate with
+  `python3 scripts/generate_checklist_pdf.py`)

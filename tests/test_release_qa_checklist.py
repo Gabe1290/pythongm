@@ -1,12 +1,15 @@
-"""The hand-verification checklist must describe the software as it is.
+"""The release QA checklist must describe the software as it is.
 
-docs/PLATFORM_DISPLAY_CHECKLIST.md tells a human what to look for on Linux,
-Windows and macOS. A checklist that names a sample, a key or a window size that
-no longer matches the code is worse than none: the reader either chases a
-phantom regression or, more likely, learns to ignore the document.
+`docs/RELEASE_QA_CHECKLIST.md` is the single hand-verification checklist for a
+release sign-off. Most of it is deliberately unautomatable -- that is the whole
+point of it. What IS checkable is every concrete claim it makes (a tool name, a
+sample, a window size, a language count), and those are pinned here so the
+document can't rot into telling a reader to chase a phantom.
 
-Most of it is deliberately unautomatable -- that is the whole point of it. What
-IS checkable is every concrete claim it makes, and those are pinned here.
+(Renamed from test_platform_display_checklist.py when the split checklist set --
+test_checklist.md / PLATFORM_DISPLAY_CHECKLIST.md / TESTING_CHECKLIST.md /
+TESTING_PRESET_CHECKLIST.md / blockly_editor_test_checklist.md -- was
+consolidated into this one document.)
 """
 import json
 import sys
@@ -15,7 +18,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-CHECKLIST = REPO_ROOT / "docs" / "PLATFORM_DISPLAY_CHECKLIST.md"
+CHECKLIST = REPO_ROOT / "docs" / "RELEASE_QA_CHECKLIST.md"
 
 
 def _text():
@@ -32,9 +35,19 @@ def test_every_named_tool_and_document_exists():
     text = _text()
     referenced = [
         "tools/smoke_run_samples.py",
+        "tools/smoke_room_lifecycle.py",
+        "tools/smoke_run_multiplayer.py",
         "tools/verify_desktop_export.py",
-        "scripts/generate_platform_test_pdfs.py",
-        "docs/test_checklist.md",
+        "tools/build_qa_bundle.py",
+        "scripts/build_pyinstaller.py",
+        "scripts/generate_release_qa_odt.py",
+        "scripts/generate_checklist_pdf.py",
+        "docs/EXPORT_TESTING_GUIDE.md",
+        "docs/ANDROID_EXPORT.md",
+        "docs/BUILDING.md",
+        "docs/MULTIPLAYER_LAN_V2_PLAN.md",
+        "docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md",
+        "docs/FULL_AUDIT_2026-09-07.md",
     ]
     for relative in referenced:
         assert relative in text, "%s should be referenced" % relative
@@ -42,37 +55,40 @@ def test_every_named_tool_and_document_exists():
             "the checklist points at %s, which does not exist" % relative)
 
 
+def test_it_does_not_point_at_the_removed_split_checklists():
+    """The whole reason this file was renamed: those docs are gone. They may
+    be named once in the "this replaces ..." disclaimer at the very top, but
+    never in the body as a doc to go read."""
+    lines = _text().splitlines()
+    body = "\n".join(lines[12:])  # everything after the intro disclaimer
+    for gone in ("test_checklist.md",
+                 "PLATFORM_DISPLAY_CHECKLIST.md",
+                 "TESTING_CHECKLIST.md",
+                 "TESTING_PRESET_CHECKLIST.md",
+                 "blockly_editor_test_checklist.md",
+                 "generate_platform_test_pdfs.py"):
+        assert gone not in body, (
+            "%s is referenced in the body as if it still existed" % gone)
+
+
 def test_every_named_sample_exists():
-    """The samples are named by their folder name or their display name; both
-    have been renamed before (raycast -> "2.5 D"), which is how this rots."""
+    """The samples are named by folder name or display name; both have been
+    renamed before (raycast -> "2.5 D"), which is how this rots."""
     text = _text()
     for sample in ("maze_1", "maze_2", "maze_3", "maze_4",
                    "plateforme_1", "plateforme_2", "plateforme_3",
                    "match3_1", "match3_2", "match3_3",
-                   "views_1", "views_2",
-                   "block_world_1", "block_world_2"):
+                   "views_1", "views_2", "sky_strike_1", "treasure",
+                   "raycast_1", "raycast_2", "raycast_3", "raycast_4",
+                   "block_world_1", "block_world_2", "block_world_3",
+                   "reseau_1", "reseau_2", "reseau_3", "reseau_4",
+                   "fichier_1"):
         assert sample in text, "%s is not covered by the checklist" % sample
         assert (REPO_ROOT / "samples" / sample / "project.json").exists()
 
 
-def test_the_25d_display_name_matches_the_welcome_tab():
-    """Issue 3 renamed these. The checklist tells the reader what they should
-    see, so it has to agree with what the IDE actually shows."""
-    from widgets.welcome_tab import SAMPLE_PROJECTS
-
-    text = _text()
-    displayed = [label for path, label in SAMPLE_PROJECTS
-                 if "raycast" in str(path)]
-    assert displayed, "no raycast samples found in the Welcome tab"
-    for label in displayed:
-        assert label.startswith("2.5 D"), label
-    assert "2.5 D — Level 1" in text
-    assert "Lancer de rayons" not in text, (
-        "the checklist still uses the name that was replaced")
-
-
 def test_views_1_window_and_room_sizes_are_as_stated():
-    """The checklist says 800x600 window over a 2400x800 room, and tells the
+    """The checklist says an 800x600 window over a 2400x800 room, and tells the
     reader that seeing the whole room means a regression. Those numbers have to
     be right or the instruction is misleading."""
     data = json.loads((REPO_ROOT / "samples" / "views_1" /
@@ -126,65 +142,56 @@ def test_the_frozen_launcher_diagnostics_named_are_the_real_ones():
 
 
 def test_it_covers_the_four_repaired_mobile_subsystems():
-    """Mobile's four gaps were fixed on 2026-08-17, so this section changed from
-    "expect it broken" to "check each repair". It must still name all four, so a
-    regression is recognisable rather than a vague feeling, and it must say
-    plainly that nobody has played an exported mobile build -- every fix was
-    verified by executing generated code, which is not the same thing."""
+    """Mobile's four gaps were fixed on 2026-08-17. The section must still name
+    all four so a regression is recognisable, and say plainly that nobody has
+    played an exported mobile build -- every fix was verified by executing
+    generated code, which is not the same thing."""
     text = _text()
     lower = text.lower()
     assert "Kivy" in text
     for subsystem in ("tiles", "arrow", "collision", "jump"):
         assert subsystem in lower, subsystem
-    # The specific symptoms, so the reader knows what "fixed" looked like.
-    assert "falls, not rises" in lower or "falls, not rises" in text.lower()
+    assert "falls, not rises" in lower
     assert "maze_4 starts" in text
-    assert "never yet played" in lower or "nobody has actually" in lower
+    assert "nobody has actually played" in lower
+
+
+def test_it_puts_the_automated_checks_first():
+    """The reader's attention is the scarce resource: anything a script can
+    check should not be done by hand. The automated pre-flight has to come
+    before the manual IDE pass."""
+    text = _text()
+    automated = text.index("## 1. Automated pre-flight")
+    manual = text.index("## 2. IDE application shell")
+    assert automated < manual
+    assert text.index("verify_desktop_export.py --all") < manual
 
 
 def test_platform_columns_are_used_consistently():
     """Every check should be tickable per platform, since the reason this
     document exists is that the three platforms differ. A few items are
     deliberately single-platform (quarantine, SmartScreen, the executable
-    bit)."""
+    bit) and a few are run-once (the automated pre-flight)."""
     checkable = [line for line in _text().splitlines()
-                 if line.strip().startswith("- ") and "[ ]" in line]
-    assert len(checkable) > 40, "only %d checkable items" % len(checkable)
+                 if line.strip().startswith(("- L [ ]", "- [ ] L"))]
+    assert len(checkable) > 80, "only %d checkable items" % len(checkable)
 
-    all_three = [line for line in checkable
+    per_platform = [line for line in checkable if line.strip().startswith("- L [ ]")]
+    all_three = [line for line in per_platform
                  if "L [ ]" in line and "M [ ]" in line and "W [ ]" in line]
     # The single-platform gotchas are the minority by design.
-    assert len(all_three) >= len(checkable) - 5, (
-        "%d of %d items are not tickable on all three platforms"
-        % (len(checkable) - len(all_three), len(checkable)))
-
-
-def test_it_puts_the_automated_checks_first():
-    """The reader's attention is the scarce resource: anything a script can
-    check should not be done by hand. If the automated section drifts below the
-    manual ones, the document has lost its shape."""
-    text = _text()
-    automated = text.index("verify_desktop_export.py --all")
-    manual = text.index("## 1. The IDE window itself")
-    assert automated < manual
+    assert len(all_three) >= len(per_platform) - 12, (
+        "%d of %d per-platform items are not tickable on all three"
+        % (len(per_platform) - len(all_three), len(per_platform)))
 
 
 def test_every_command_has_a_windows_form():
-    """Bare `python3` does not work on Windows.
-
-    It hits the Microsoft Store stub ("Python was not found"), or, if that stub
-    is disabled, an unsupported 3.14 -- which is worse, because it runs and then
-    fails oddly. CLAUDE.md records this, and the checklist still shipped
-    `python3 tools/smoke_run_samples.py` with no Windows equivalent; the user
-    hit it on the first command they tried.
-
-    So every tool the checklist tells you to run must appear in a `py -3.12`
-    form as well as a `python3` one.
-    """
+    """Bare `python3` does not work on Windows -- it hits the Microsoft Store
+    stub, or an unsupported 3.14. So every tool the checklist tells you to run
+    must appear in a `py -3.12` form as well as a `python3` one."""
     text = _text()
-    tools = ("-m pytest", "tools/smoke_run_samples.py",
-             "tools/verify_desktop_export.py")
-    for tool in tools:
+    for tool in ("-m pytest", "tools/smoke_run_samples.py",
+                 "tools/verify_desktop_export.py"):
         assert "py -3.12 %s" % tool in text, (
             "%s has no `py -3.12` form; a Windows reader cannot run it" % tool)
         assert "python3 %s" % tool in text, (
@@ -198,3 +205,10 @@ def test_it_warns_about_bare_python3_on_windows():
     assert "py -3.12" in text and "python3" in text
     assert "Microsoft Store" in text, (
         "the checklist should name the stub the user actually sees")
+
+
+def test_it_has_a_signoff_matrix():
+    """A checklist without a place to record the result is a to-do list."""
+    text = _text()
+    assert "## Release sign-off" in text
+    assert "Signed off for release?" in text

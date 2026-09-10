@@ -198,9 +198,13 @@ dozen now-deleted docs:
   packaging decision, not a code fix.
 - Published GitHub wiki spot-check (accents, language-switcher banners,
   ToC anchors) — not viewed live since the 2026-07-29 sweep.
-- `docs/PLATFORM_DISPLAY_CHECKLIST.md` — the standing, currently-blank
-  Linux/macOS/Windows manual pass. Use this checklist when picking up
-  any of the above rather than inventing a new one.
+- `docs/RELEASE_QA_CHECKLIST.md` — the standing, currently-blank
+  Linux/macOS/Windows manual pass (it absorbed the old split checklist
+  set: `test_checklist.md`, `PLATFORM_DISPLAY_CHECKLIST.md`,
+  `TESTING_CHECKLIST.md`, `TESTING_PRESET_CHECKLIST.md`,
+  `blockly_editor_test_checklist.md`). Use it when picking up any of the
+  above rather than inventing a new one. ODT/PDF regenerate via
+  `scripts/generate_release_qa_odt.py` / `generate_checklist_pdf.py`.
 - Antivirus false-positive scan on the Windows `.exe`; real mobile-
   browser/touch testing for HTML5 exports.
 
@@ -284,11 +288,13 @@ log — historical narrative; its own stale doc-path mentions inside past
 session notes weren't rewritten, same reasoning as the code-comment
 trade-off above), `docs/BUILDING.md`, `docs/ANDROID_EXPORT.md`,
 `docs/EXPORT_TESTING_GUIDE.md`, `docs/ASSET_LICENSES.md`,
-`docs/test_checklist.md` (+`.fr.md`), `docs/TESTING_CHECKLIST.md`,
-`docs/TESTING_PRESET_CHECKLIST.md`, `docs/blockly_editor_test_checklist.md`,
-`docs/PLATFORM_DISPLAY_CHECKLIST.md`, the `docs/USER_MANUAL*.md` /
-`docs/FLYER*.md` language sets, and `docs/session-notes/*.md` +
-`docs/SESSION_NOTES.md` (the append-only session log).
+`docs/RELEASE_QA_CHECKLIST.md` (the master manual-test checklist — it
+replaced the older split set `test_checklist.md` / `TESTING_CHECKLIST.md`
+/ `TESTING_PRESET_CHECKLIST.md` / `blockly_editor_test_checklist.md` /
+`PLATFORM_DISPLAY_CHECKLIST.md`, all removed 2026-09-11), the
+`docs/USER_MANUAL*.md` / `docs/FLYER*.md` language sets, and
+`docs/session-notes/*.md` + `docs/SESSION_NOTES.md` (the append-only
+session log).
 
 `TODO.md` stays the registry for small, feature-level deferred items —
 this doc is for the handful of larger initiatives and for knowing, at a

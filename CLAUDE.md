@@ -1858,7 +1858,9 @@ sub-images stuck on frame 0), with a green suite behind every one of them.
   `core/logger.ConsoleSafeHandler` sanitizes in `format()` — `emit()` catches
   its own exceptions, so a subclass cannot intercept there. Text the console
   CAN encode passes through untouched, so French accents survive exactly.
-- **Deliverable for the user:** `docs/PLATFORM_DISPLAY_CHECKLIST.md` — the
+- **Deliverable for the user:** the eyeball checklist (later folded, with
+  the rest of the split checklist set, into `docs/RELEASE_QA_CHECKLIST.md`
+  on 2026-09-11) — the
   eyes-only cross-platform pass, deliberately NOT an extension of
   `docs/test_checklist.md` (the exhaustive 1.0.0 feature list). It opens with
   the automated commands so no human time goes on what a script can check, and

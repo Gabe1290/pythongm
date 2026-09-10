@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Render docs/test_checklist.md into a printable PDF.
+"""Render docs/RELEASE_QA_CHECKLIST.md into a printable PDF.
 
-Produces docs/PyGameMaker_Test_Checklist.pdf from the Markdown source so the
+Produces docs/PyGameMaker_Release_QA_Checklist.pdf from the Markdown source so the
 feature-by-feature checklist can be printed and ticked off per platform.
 
 This is a pragmatic Markdown-subset renderer (headings, blockquotes, list
@@ -17,8 +17,8 @@ import re
 from fpdf import FPDF
 
 ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
-SRC = os.path.join(ROOT, "docs", "test_checklist.md")
-OUT = os.path.join(ROOT, "docs", "PyGameMaker_Test_Checklist.pdf")
+SRC = os.path.join(ROOT, "docs", "RELEASE_QA_CHECKLIST.md")
+OUT = os.path.join(ROOT, "docs", "PyGameMaker_Release_QA_Checklist.pdf")
 
 FONT_FAMILY = "DejaVu"
 
