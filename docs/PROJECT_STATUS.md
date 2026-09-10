@@ -85,10 +85,14 @@ This is the complete list. Everything else that used to be tracked in
    Outputs stay block types (no new "item" asset type); no crafting-table
    gating, no dedicated crafting HUD (all explicit, written cuts — see
    the plan's own "Explicitly out of scope"). The one thing found along
-   the way and deliberately not chased: Kivy has no `set_block_reward`
-   port at all (Tier 7b, pre-existing, unrelated to crafting) — logged in
-   `TODO.md`'s Block World section with the exact fix shape, genuinely
-   ready to pick up.
+   the way and logged rather than chased at the time — Kivy had no
+   `set_block_reward` port at all (Tier 7b, pre-existing, unrelated to
+   crafting) — is **also closed now (2026-09-11)**: `_bw_set_block_reward`
+   + `_cg_set_block_reward` added to `extensions/block_world/export_kivy.py`,
+   mirroring `set_block_protection`'s exact shape, with 15 new tests
+   (`tests/test_kivy_block_world_reward.py` +
+   `tests/test_block_world_reward_export_parity.py`, mutation-tested).
+   **This item has no open threads left at all.**
 
 5. **`docs/BLOCK_WORLD_PERF_PLAN.md` — the Block World fps gap. CLOSED
    2026-09-09; Phase 1 shipped, re-measured, stopping there per the plan's

@@ -215,7 +215,13 @@ def _stub_kivy_env(game_dir: Path):
         mod("kivy.core.window", Window=_WindowCls())
         mod("kivy.core.image", Image=object)
         mod("kivy.core.text", Label=object)
-        mod("main", get_game_app=lambda: None, _ScriptGameProxy=_StubScriptGameProxy)
+        score_calls = []
+
+        def _fake_set_score(value, relative=False):
+            score_calls.append((value, relative))
+
+        mod("main", get_game_app=lambda: None, _ScriptGameProxy=_StubScriptGameProxy,
+            set_score=_fake_set_score, score_calls=score_calls)
         for name in [n for n in sys.modules
                      if n == "utils" or n.startswith(("utils.", "scenes",
                                                        "objects", "asset_paths"))]:

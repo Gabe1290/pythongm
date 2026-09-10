@@ -928,20 +928,34 @@ existed. Regenerated; 0 untranslated strings reported now.
   need. The "set aside"/Welcome-tab decision above still stands — this was
   a re-measurement, not a reversal. Full detail in
   `docs/PROJECT_STATUS.md` item 5.
-- **Found while porting Tier 8 crafting to Kivy (2026-09-09), not fixed —
-  logged so it isn't lost: `set_block_reward` (Tier 7b's mine-to-collect
-  score payout) is entirely unported on the Kivy export target.** Neither
-  a `_bw_set_block_reward` scene method nor a `_cg_set_block_reward`
-  codegen entry exists in `extensions/block_world/export_kivy.py` — the
-  action falls through to the generic unsupported-action no-op. Desktop
-  and HTML5 both implement it correctly (`tests/test_block_world_reward.py`,
-  `tests/test_html5_block_world_reward.py`); there is no
-  `tests/test_kivy_block_world_reward.py`, which is how this went
-  unnoticed. Out of scope for `docs/BLOCK_WORLD_CRAFTING_PLAN.md`'s own
-  Unit 2 (a different action); fix by mirroring
-  `_bw_set_block_protection`'s scene method + `_cg_set_block_protection`'s
-  codegen shape (same call-once-per-type-on-camera-config pattern) plus a
-  `rewards` payout check added to `_bw_break_block`, when picked up.
+### ~~`set_block_reward` missing on the Kivy export target~~ (DONE 2026-09-11)
+- Found while porting Tier 8 crafting to Kivy (2026-09-09), logged rather
+  than fixed there (a different action, out of that plan's own Unit 2
+  scope) — picked up on an explicit ask to work through the open-items
+  list. `_bw_set_block_reward` (scene method, mirroring
+  `_bw_set_block_protection`'s validation shape exactly) +
+  `_cg_set_block_reward` (codegen, mirroring `_cg_set_block_protection`)
+  added to `extensions/block_world/export_kivy.py`, plus a `rewards`
+  payout check in `_bw_break_block` calling `from main import set_score;
+  set_score(int(points), relative=True)` — the same lazy-import pattern
+  every other score/lives/health action on this export target already
+  uses, matching desktop's own `game_runner.score += int(points)`
+  semantics.
+  `tests/test_kivy_block_world_reward.py` (11 tests: codegen, a
+  compile-check, and real execution against `_blank_scene` covering the
+  same registration/payout/protection-wins-first/accumulation scenarios
+  `tests/test_block_world_reward.py` already covers on desktop) +
+  `tests/test_block_world_reward_export_parity.py` (4 tests: desktop vs.
+  Kivy outcome equality — the registered reward value and the total
+  points paid out for a given break sequence match across both engines,
+  even though the payout *mechanism* differs by design, mirroring
+  `test_block_world_crafting_export_parity.py`'s own two-tier approach).
+  Mutation-tested for real (temporarily disabled the Kivy payout —
+  4 of the 15 new tests failed exactly as expected, reverted after).
+  `tests/test_kivy_block_world.py`'s shared `_stub_kivy_env` harness
+  gained a `set_score`/`score_calls` stub on its fake `main` module
+  (used by every sibling Kivy Block World test file, not just this one).
+  Full suite: 4804 passed, 0 failed, 11 skipped.
 
 ## Kivy export: variable NAMES and VALUES (fixed 2026-09-06)
 
