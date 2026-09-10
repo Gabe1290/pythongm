@@ -43,7 +43,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 IMAGES_DIR = REPO_ROOT / "wiki" / "images"
-WINDOW_SIZE = (1440, 900)
+# Wide enough that the room editor's scroll viewport (roughly window_width
+# minus ~970px of side panels) fully contains a 640x480-ish tutorial room --
+# a narrower window clips the room's right edge out of a full-window grab.
+WINDOW_SIZE = (1680, 980)
 
 
 def _make_app():
@@ -145,7 +148,10 @@ def capture_breakout():
             ("spr_paddle", (64, 16), "rect", (90, 170, 250, 255)),
             ("spr_ball", (16, 16), "circle", (240, 200, 80, 255)),
             ("spr_brick", (48, 24), "rect", (200, 90, 90, 255)),
-            ("spr_wall", (32, 32), "rect", (120, 120, 130, 255)),
+            # A warm tan rather than a neutral grey: a grey wall row reads as
+            # window chrome against the IDE's own grey panels in a full-window
+            # screenshot (found by inspecting the Phase 1 room capture).
+            ("spr_wall", (32, 32), "rect", (150, 110, 70, 255)),
         ]
         for name, size, shape, color in sprites:
             png_path = sprite_dir / f"{name}.png"
@@ -283,8 +289,226 @@ def capture_breakout():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------------
+# Pong (wiki/Tutorial-Pong.md) -- Phase 2, tutorial 1 of the remaining five.
+# ---------------------------------------------------------------------------
+
+def capture_pong():
+    app = _make_app()
+    ide = _make_ide(app)
+    scratch = _new_scratch_project(ide, "scratch_pong")
+    am = ide.asset_manager
+    sprite_dir = scratch / "_capture_sprites"
+    sprite_dir.mkdir(exist_ok=True)
+
+    try:
+        # -- Step 2: Create the Sprites -------------------------------------
+        # Sizes/shapes/colors straight from the tutorial's own text (2.1-2.4).
+        sprites = [
+            ("spr_ball", (16, 16), "circle", (240, 240, 240, 255)),
+            ("spr_paddle_left", (16, 64), "rect", (90, 140, 240, 255)),
+            ("spr_paddle_right", (16, 64), "rect", (220, 90, 90, 255)),
+            # Warm tan, not neutral grey -- a grey wall blends into the IDE's
+            # own grey chrome in a full-window screenshot.
+            ("spr_wall", (32, 32), "rect", (150, 110, 70, 255)),
+            # The goal is invisible in-game (the tutorial says so); a
+            # translucent green here just makes the placement legible in the
+            # Room Editor screenshot.
+            ("spr_goal", (32, 32), "rect", (80, 180, 140, 110)),
+        ]
+        for name, size, shape, color in sprites:
+            png_path = sprite_dir / f"{name}.png"
+            _sprite_png(png_path, size, shape, color)
+            asset_data = am.import_asset(png_path, "sprites", name)
+            if asset_data is None:
+                raise RuntimeError(f"failed to import sprite {name!r}")
+        _sync(ide)
+        ide.open_sprite_editor("spr_ball", am.get_asset("sprites", "spr_ball"))
+        _capture(ide, app, "tutorial-pong-02-sprites.png")
+
+        # -- Step 3: Create the Wall Object ----------------------------------
+        am.create_asset("obj_wall", "objects", sprite="spr_wall",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_wall", am.get_asset("objects", "obj_wall"))
+        _capture(ide, app, "tutorial-pong-03-wall-object.png")
+
+        # -- Step 4: Create the Paddle Objects --------------------------------
+        def paddle_events(up_key, down_key):
+            return {
+                "keyboard": {
+                    up_key: {"actions": [
+                        {"action": "set_vspeed", "parameters": {"speed": "-8"}},
+                    ]},
+                    down_key: {"actions": [
+                        {"action": "set_vspeed", "parameters": {"speed": "8"}},
+                    ]},
+                },
+                "keyboard_release": {
+                    up_key: {"actions": [
+                        {"action": "set_vspeed", "parameters": {"speed": "0"}},
+                    ]},
+                    down_key: {"actions": [
+                        {"action": "set_vspeed", "parameters": {"speed": "0"}},
+                    ]},
+                },
+                "collision_with_obj_wall": {"actions": [
+                    {"action": "bounce", "parameters": {}},
+                ]},
+            }
+
+        # 4.1 Left Paddle (Player 1): W / S.
+        am.create_asset("obj_paddle_left", "objects", sprite="spr_paddle_left",
+                        solid=True, visible=True,
+                        events=paddle_events("w", "s"))
+        # 4.2 Right Paddle (Player 2): Up / Down arrows.
+        am.create_asset("obj_paddle_right", "objects", sprite="spr_paddle_right",
+                        solid=True, visible=True,
+                        events=paddle_events("up", "down"))
+        _sync(ide)
+        ide.open_object_editor("obj_paddle_left", am.get_asset("objects", "obj_paddle_left"))
+        _capture(ide, app, "tutorial-pong-04-paddle-objects.png")
+
+        # -- Step 5: Create the Ball Object -----------------------------------
+        ball_events = {
+            "create": {"actions": [
+                {"action": "start_moving_direction", "parameters": {
+                    "directions": ["down-right"], "direction_expr": "", "speed": 6.0,
+                }},
+            ]},
+            "collision_with_obj_paddle_left": {"actions": [
+                {"action": "bounce", "parameters": {}},
+            ]},
+            "collision_with_obj_paddle_right": {"actions": [
+                {"action": "bounce", "parameters": {}},
+            ]},
+            "collision_with_obj_wall": {"actions": [
+                {"action": "bounce", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_ball", "objects", sprite="spr_ball",
+                        solid=False, visible=True, events=ball_events)
+        _sync(ide)
+        ide.open_object_editor("obj_ball", am.get_asset("objects", "obj_ball"))
+        _capture(ide, app, "tutorial-pong-05-ball-object.png")
+
+        # -- Step 6: Create the Goal Objects ------------------------------------
+        am.create_asset("obj_goal_left", "objects", sprite="spr_goal",
+                        solid=True, visible=False, events={})
+        am.create_asset("obj_goal_right", "objects", sprite="spr_goal",
+                        solid=True, visible=False, events={})
+        # 6.3: the goal-collision events go on obj_ball -- p2 scores when the
+        # ball reaches the LEFT goal, p1 scores on the RIGHT goal.
+        ball_asset = am.get_asset("objects", "obj_ball")
+        ball_asset["events"]["collision_with_obj_goal_left"] = {"actions": [
+            {"action": "jump_to_start", "parameters": {}},
+            {"action": "set_variable", "parameters": {
+                "variable": "p2score", "value": "1", "scope": "global", "relative": True,
+            }},
+        ]}
+        ball_asset["events"]["collision_with_obj_goal_right"] = {"actions": [
+            {"action": "jump_to_start", "parameters": {}},
+            {"action": "set_variable", "parameters": {
+                "variable": "p1score", "value": "1", "scope": "global", "relative": True,
+            }},
+        ]}
+        _sync(ide)
+        # The goal objects themselves have no events -- what this step is
+        # really teaching is the scoring logic just added to obj_ball above,
+        # so that's what's worth showing here (matching the step's own
+        # emphasis, not just the two newly-created empty objects).
+        ide.open_object_editor("obj_ball", am.get_asset("objects", "obj_ball"))
+        _capture(ide, app, "tutorial-pong-06-goal-objects.png")
+
+        # -- Step 7: Create the Score Display Object ------------------------------
+        score_events = {
+            "create": {"actions": [
+                {"action": "set_variable", "parameters": {
+                    "variable": "p1score", "value": "0", "scope": "global", "relative": False,
+                }},
+                {"action": "set_variable", "parameters": {
+                    "variable": "p2score", "value": "0", "scope": "global", "relative": False,
+                }},
+            ]},
+            "draw": {"actions": [
+                {"action": "draw_text", "parameters": {
+                    "text": "\"Player 1:\"", "x": "10", "y": "10",
+                }},
+                {"action": "draw_variable", "parameters": {
+                    "variable": "global.p1score", "x": "100", "y": "10",
+                }},
+                {"action": "draw_text", "parameters": {
+                    "text": "\"Player 2:\"", "x": "10", "y": "30",
+                }},
+                {"action": "draw_variable", "parameters": {
+                    "variable": "global.p2score", "x": "100", "y": "30",
+                }},
+            ]},
+        }
+        am.create_asset("obj_score", "objects", sprite=None,
+                        solid=False, visible=True, events=score_events)
+        _sync(ide)
+        ide.open_object_editor("obj_score", am.get_asset("objects", "obj_score"))
+        _capture(ide, app, "tutorial-pong-07-score-object.png")
+
+        # -- Step 8: Design the Room ----------------------------------------------
+        CELL = 32
+        COLS, ROWS = 20, 15
+        room_w, room_h = COLS * CELL, ROWS * CELL   # 640 x 480, per 8.2
+
+        def cell_center(col, row):
+            return col * CELL + CELL // 2, row * CELL + CELL // 2
+
+        instances = []
+
+        def place(obj, col, row):
+            x, y = cell_center(col, row)
+            instances.append({
+                "object_name": obj, "x": x, "y": y, "rotation": 0,
+                "scale_x": 1.0, "scale_y": 1.0, "visible": True,
+            })
+
+        # Walls: top and bottom rows, per the tutorial's own room layout
+        # diagram.
+        for col in range(COLS):
+            place("obj_wall", col, 0)
+            place("obj_wall", col, ROWS - 1)
+
+        # Goals: left and right edges, behind where each paddle sits.
+        for row in range(1, ROWS - 1):
+            place("obj_goal_left", 0, row)
+            place("obj_goal_right", COLS - 1, row)
+
+        # Paddles: near the left/right edges, centered vertically -- single
+        # instances (the sprite itself is the full 64px-tall paddle, not a
+        # per-cell tile like the walls/goals).
+        place("obj_paddle_left", 2, ROWS // 2)
+        place("obj_paddle_right", COLS - 3, ROWS // 2)
+
+        # Ball: center of the room -- safe here (no bricks/other objects
+        # occupy the center cell in this layout, unlike Breakout's).
+        place("obj_ball", COLS // 2, ROWS // 2)
+
+        # Score display: position is irrelevant (no sprite -- it draws
+        # fixed-position text), placed just inside the top wall, centered.
+        place("obj_score", COLS // 2, 1)
+
+        room_data = am.create_asset(
+            "room_pong", "rooms",
+            width=room_w, height=room_h, background_color="#0a0a12",
+            instances=instances)
+        _sync(ide)
+        ide.open_room_editor("room_pong", room_data)
+        _capture(ide, app, "tutorial-pong-08-room.png")
+
+        print("Pong capture complete.")
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 SCENARIOS = {
     "breakout": capture_breakout,
+    "pong": capture_pong,
 }
 
 
