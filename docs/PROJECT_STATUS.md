@@ -107,8 +107,8 @@ This is the complete list. Everything else that used to be tracked in
    asset type actually affected by its absence.
 
 7. **`docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md` — 1990s-style file-exchange
-   multiplayer. Track E Phases 1–2 of 5 done; Track T done; reconciliation
-   pass still open (2026-09-10).** A new, additional extension
+   multiplayer. Track E Phases 1–2 of 5 done; Track T done and reconciled
+   against the landed API (2026-09-10).** A new, additional extension
    (`extensions/multiplayer_files/`) alongside — not a replacement for —
    the socket-based `multiplayer_lan`: turn-based games played over a
    shared folder instead of a live connection, for a school LAN whose
@@ -123,12 +123,19 @@ This is the complete list. Everything else that used to be tracked in
    independent tracks for parallel work on two machines (see the plan
    doc's own "Splitting the work across two machines" section) — Track E
    (Engine: Phases 1–2) is done; Phase 4 (connect-screen UX) and Phase 5
-   (real-hardware QA) remain. Track T (Teaching: `wiki/FileExchange.md` +
-   Tutorial 10) is also done, but was written against the plan's
-   *original* action surface before Track E's `..._files` renames and
-   `send_network_message_files` landed — **the one remaining item across
-   both tracks is reconciling Track T's content against the actual landed
-   API**, called for in the plan doc's own "How to decide" section.
+   (real-hardware QA) remain. **Track T (Teaching: `wiki/FileExchange.md`
+   + Tutorial 10) was written in parallel against the plan's original
+   action surface, then reconciled against the real landed API once both
+   tracks synced** (action/event renames, `global.round_number` starting
+   at 1 not 0, an unset shared variable reading as `0` not `""`, the
+   non-active-player-must-call-End-Turn requirement, and — the one finding
+   big enough to force a rewrite — `set_shared_var_files`'s `name` param
+   being always literal, never a computed expression, which meant
+   Tutorial 10's original nine-`obj_cell`-instances design wasn't
+   buildable at all; rearchitected around a single `obj_game` object
+   matching `fichier_1`'s own proven layout). All three deliverables
+   (extension, sample, Tutorial) are now consistent with each other; only
+   Track E's Phase 4/5 remain.
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 

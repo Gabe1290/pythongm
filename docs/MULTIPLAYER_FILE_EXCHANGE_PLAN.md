@@ -1,7 +1,8 @@
 # Plan: 1990s-style turn-based file-exchange multiplayer
 
-**Status 2026-09-10: Track E Phases 1–2 DONE; Track T DONE, awaiting
-reconciliation.** `extensions/multiplayer_files/` (Track E) now has its
+**Status 2026-09-10: Track E Phases 1–2 DONE; Track T DONE and
+reconciled against the landed API.** `extensions/multiplayer_files/`
+(Track E) now has its
 whole first-cut action surface: `host_game_files`/`join_game_files`/
 `leave_game_files`/`set_shared_var_files`/`get_shared_var_files`/
 `end_turn`/`send_network_message_files`, the join/welcome handshake,
@@ -15,20 +16,33 @@ finished bundled Tic-Tac-Toe sample exercising the whole loop end to end
 + `_fr.md` plus Tutorial 10 (Track T) were written and committed the same
 day, on a second machine, before either track could see the other's work.
 
-**The coupling point flagged when Track T started is a confirmed, real
-gap, now slightly larger**: Track T was written against this doc's
-*original* "Proposed action surface" — `set_shared_var`/`get_shared_var`,
-four events, no `network_sender`/`network_player_name` globals, and no
-`send_network_message_files` at all yet. Track E's actual implementation
-renamed the shared-var actions to `..._files` (a real `plugin_loader`
-naming-collision bug found via testing — see "Proposed action surface"
-below), added the two payload globals, and landed
+**Reconciliation pass — DONE 2026-09-10.** The coupling point flagged when
+Track T started was a confirmed, real gap: Track T was written against
+this doc's *original* "Proposed action surface" — `set_shared_var`/
+`get_shared_var`, four events, no `network_sender`/`network_player_name`
+globals, and no `send_network_message_files` at all yet. Track E's actual
+implementation renamed the shared-var actions to `..._files` (a real
+`plugin_loader` naming-collision bug found via testing — see "Proposed
+action surface" below), added the two payload globals, and landed
 `send_network_message_files`/`network_message_files` with the same
-`..._files` naming. **Track T's wiki page and Tutorial 10 have not yet
-been reconciled against the landed API** — that reconciliation pass,
-called for in "How to decide" below, is the one remaining item before
-this plan's three original deliverables (extension, sample, Tutorial) are
-all genuinely finished and consistent with each other.
+`..._files` naming. Diffed `wiki/FileExchange.md`/`_fr.md` and Tutorial 10
+against the real `extensions/multiplayer_files/` source and
+`samples/fichier_1` and fixed every drift — action/event names, the
+`global.round_number` starting at **1** not 0, an unset shared variable
+reading as **`0`**, and the "non-active player must also call End Turn
+(File Exchange) every round" requirement (missed originally, confirmed
+real by reading the bundled sample's own `obj_game` Step event). **The
+one finding big enough to force a rewrite, not just a rename**:
+`set_shared_var_files`'s `name` parameter is always taken **literally**
+(`handlers.py`'s `_raw()`, "never run through the expression evaluator")
+— Track T's original design (nine `obj_cell` instances computing their
+own shared-var name from position) is not buildable against the real
+action at all, since names can never be computed expressions. Tutorial
+10's Phases 1/3/4 were rearchitected around a single `obj_game` object
+with nine literal cell names, matching `fichier_1`'s own proven design
+(same board coordinates) rather than inventing a second, incompatible
+one. Both tracks' three original deliverables (extension, sample,
+Tutorial) are now genuinely finished and consistent with each other.
 
 Originally written on explicit ask (2026-09) after the user described
 hitting school-LAN firewall problems with `extensions/multiplayer_lan/`'s
