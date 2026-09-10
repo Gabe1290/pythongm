@@ -450,6 +450,68 @@ to a lesson roughly `09_catch_the_coins`-sized) — call it two sessions for
 Phase 3 as currently scoped, not one, Phase 4 (UX) a session, Phase 5
 (real hardware) needs the user and a second machine, not just agent time.
 
+## Splitting the work across two machines
+
+The five phases above split cleanly into two independent tracks — an
+**Engine track** (the extension + sample + UX) and a **Teaching track**
+(the wiki page + Tutorial 10) — because the plan already made the two
+concrete deliverables independent of each other on purpose (see "The
+concrete game" above: sample and Tutorial each build Tic-Tac-Toe from
+scratch, neither depending on the other's code). That same independence
+is what lets two computers work at once without stepping on each other.
+
+- **Track E (Engine)** — Phase 1 (core session + blackboard) → Phase 2
+  (`send_network_message` + the bundled sample) → Phase 4 (connect-screen
+  UX), then joins Track T for Phase 5.
+- **Track T (Teaching)** — `wiki/FileExchange.md` + `wiki/FileExchange_fr.md`
+  (the historical-grounding content, plus whatever `Home.md`/`Network.md`/
+  `Extensions.md` cross-links point at it) → Tutorial 10, English pages
+  first, then the French folder shipping alongside them (see "Effort
+  estimate" — budget it as its own two sessions' worth, not one), then
+  joins Track E for Phase 5.
+
+**Why Track T doesn't have to wait on Track E.** The Tutorial's HTML pages
+are static teaching content, not code that imports the extension — writing
+them, and the wiki page, only needs the **"Proposed action surface"**
+section above as a stable name/parameter contract to write examples
+against, not working code. `tests/test_tutorial_panel_i18n_verification.py`'s
+pattern (extended for Tutorial 10) drives the `TutorialPanel` widget
+through every page and checks none of its own error/placeholder branches
+fire — it never executes a sample project's actions, so it can go green
+before Track E's implementation exists at all.
+
+**The one real coupling point, and how to handle it.** If Track E's actual
+implementation ends up wanting a different action name or parameter than
+what's written in "Proposed action surface" (a realistic outcome — the
+real shape of an API is often clearer once it's half-built), that changes
+what Track T is teaching too. Handle it the same way a two-machine session
+handles any shared decision: whichever track changes the surface edits
+this doc's "Proposed action surface" section in the same commit as the
+code change and says so when the two sessions next sync, and Track T does
+one deliberate pass reconciling the Tutorial's code snippets against the
+real landed API before treating Phase 3 as done — not a running
+line-by-line sync the whole time.
+
+**File ownership, to keep both tracks pushing straight to `main` (no
+feature branches, per this repo's standing convention) without fighting
+over the same file:**
+
+| Track E owns | Track T owns |
+|---|---|
+| `extensions/multiplayer_files/**` | `wiki/FileExchange.md` + `_fr.md` (+ cross-links in other wiki pages) |
+| `samples/<name>/**` + its generator script | `Tutorials/10_file_exchange_multiplayer/**` + `Tutorials/fr/10_file_exchange_multiplayer/**` |
+| the sample's `README.md`/`README.fr.md` | `Tutorials/thumbnails/10_file_exchange_multiplayer.png` |
+| its own addition to `tools/smoke_run_samples.py` | its own addition to `Tutorials/index.json` |
+| its own addition to `tests/test_edition_sample_filter.py`'s advanced-prefix tuple | its own exclusion added to `config/editions.py`'s `tutorial_folders` whitelist |
+| — | its extension to `tests/test_tutorial_panel_i18n_verification.py` |
+
+No file above is written by both tracks, so ordinary frequent
+commit-and-push (this repo's existing "one task ≈ one commit, push after
+each" discipline, applied per-track rather than per-session) should merge
+without conflicts — each machine should still `git pull` before starting
+a work unit and push right after finishing it, the same discipline either
+track would follow solo.
+
 ## How to decide
 
 This is genuinely optional, scoped work with a real, if narrower, use
@@ -463,4 +525,6 @@ questions that were open earlier are now decided: the sanitizers get
 "Reused pieces" above), and **French for Tutorial 10 ships on day one**,
 budgeted into Phase 3 (see "Effort estimate"). No open questions remain —
 if the answer is "yes, build it," Phase 1 is the right place to start and
-review before continuing.
+review before continuing. If two machines are picking this up together,
+see "Splitting the work across two machines" above for how the phases
+divide between them.
