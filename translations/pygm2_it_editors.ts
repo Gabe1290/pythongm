@@ -2004,6 +2004,30 @@ L'azione stessa non è interessata e verrà mantenuta esattamente com'è al salv
         <source>Craft Item</source>
         <translation>Crea oggetto</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Ospita una partita (Scambio di file)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Unisciti a una partita (Scambio di file)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Esci dalla partita (Scambio di file)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Imposta variabile condivisa (Scambio di file)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Leggi variabile condivisa (Scambio di file)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Fine turno (Scambio di file)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

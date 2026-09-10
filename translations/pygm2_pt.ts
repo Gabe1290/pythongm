@@ -1994,6 +1994,30 @@ Deseja salvar mesmo assim?</translation>
         <source>Craft Item</source>
         <translation>Fabricar item</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Alojar um jogo (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Entrar num jogo (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Sair do jogo (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Definir variável partilhada (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Ler variável partilhada (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Terminar turno (troca de ficheiros)</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -4439,6 +4463,30 @@ A ação em si não é afetada e será mantida exatamente como está ao salvar.<
     <message>
         <source>Craft Item</source>
         <translation>Fabricar item</translation>
+    </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Alojar um jogo (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Entrar num jogo (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Sair do jogo (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Definir variável partilhada (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Ler variável partilhada (troca de ficheiros)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Terminar turno (troca de ficheiros)</translation>
     </message>
 </context>
 <context>

@@ -2263,6 +2263,30 @@ Do you want to save anyway?</source>
         <source>Craft Item</source>
         <translation>アイテムをクラフト</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>ゲームをホストする (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>ゲームに参加する (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>ゲームから抜ける (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>共有変数を設定 (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>共有変数を読む (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>ターンを終了 (ファイル交換)</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -4439,6 +4463,30 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Craft Item</source>
         <translation>アイテムをクラフト</translation>
+    </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>ゲームをホストする (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>ゲームに参加する (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>ゲームから抜ける (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>共有変数を設定 (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>共有変数を読む (ファイル交換)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>ターンを終了 (ファイル交換)</translation>
     </message>
 </context>
 <context>

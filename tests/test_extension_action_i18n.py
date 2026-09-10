@@ -86,7 +86,11 @@ def test_the_network_actions_are_registered_under_an_english_category():
     from events.action_types import ACTION_TYPES
 
     actions = _network_actions()
-    assert len(actions) == 15, sorted(actions)
+    # 15 from multiplayer_lan + 6 from multiplayer_files (Phase 1,
+    # docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md) -- both extensions share the
+    # "Network" category on purpose (see multiplayer_files/actions.py's
+    # own module docstring), so this count grows with either one.
+    assert len(actions) == 21, sorted(actions)
     assert not any(getattr(a, "category", "") == "R\u00e9seau"
                    for a in ACTION_TYPES.values()), (
         "the French category name is back")
@@ -228,7 +232,7 @@ def _extension_actions():
 
 
 def test_there_are_extension_actions_to_check():
-    """39, not 35.
+    """45, not 35.
 
     The first count came from "what did load_all_plugins ADD to
     ACTION_TYPES?", which misses check_sound and stop_sound -- both sit in the
@@ -238,9 +242,12 @@ def test_there_are_extension_actions_to_check():
     World's Tier 8 crafting actions (set_crafting_recipe, craft_item) landed
     (docs/BLOCK_WORLD_CRAFTING_PLAN.md) -- translated into all 10 shipped
     languages the same day, so this count and the i18n coverage below moved
-    together rather than the count updating first and coverage lagging."""
+    together rather than the count updating first and coverage lagging. 39 ->
+    45 when multiplayer_files' 6 Phase 1 actions landed
+    (docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md), same discipline: display names
+    translated the same commit, not left to lag."""
     actions = _extension_actions()
-    assert len(actions) == 39, sorted(actions)
+    assert len(actions) == 45, sorted(actions)
 
 
 @pytest.mark.parametrize("lang", SHIPPED)

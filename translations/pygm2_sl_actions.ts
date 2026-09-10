@@ -242,6 +242,30 @@ Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt
         <source>Craft Item</source>
         <translation>Izdelaj predmet</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Gosti igro (izmenjava datotek)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Pridruži se igri (izmenjava datotek)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Zapusti igro (izmenjava datotek)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Nastavi skupno spremenljivko (izmenjava datotek)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Preberi skupno spremenljivko (izmenjava datotek)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Končaj potezo (izmenjava datotek)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

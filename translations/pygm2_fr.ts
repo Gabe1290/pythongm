@@ -688,6 +688,30 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <source>Craft Item</source>
         <translation>Fabriquer un objet</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Héberger une partie (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Rejoindre une partie (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Quitter la partie (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Définir une variable partagée (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Lire une variable partagée (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Terminer le tour (échange de fichiers)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -4825,6 +4849,30 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
     <message>
         <source>Craft Item</source>
         <translation>Fabriquer un objet</translation>
+    </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Héberger une partie (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Rejoindre une partie (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Quitter la partie (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Définir une variable partagée (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Lire une variable partagée (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Terminer le tour (échange de fichiers)</translation>
     </message>
 </context>
 <context>
