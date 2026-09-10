@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Host a Game / Join a Game</h1>
+
+    <p>Now let's connect two computers through a shared folder. One will
+    <strong>host</strong> (the referee), and the other will <strong>join</strong>.</p>
+
+    <div class="info">
+        <strong>Before you start:</strong> pick a folder both computers can
+        reach and write to &mdash; a shared network drive, or (to build and
+        test the wiring alone first) just a folder on your own computer.
+        We'll write it into both actions below as
+        <code>Z:\games\tictactoe</code> &mdash; replace it with your own path.
+    </div>
+
+    <h2>Create the Game Controller</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_controller</code>, no sprite needed
+            (leave it invisible)</li>
+            <li>Place <strong>one instance</strong> of it anywhere in <code>room_board</code></li>
+        </ol>
+    </div>
+
+    <h2>Host on Key H, Join on Key J</h2>
+    <div class="step">
+        <p>One object, two ways to start it &mdash; run the exact same
+        project on both computers, and press a different key on each:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: H</span><br>
+            <span class="block block-network block-indent">Host Game (Files)
+            folder:<span class="block-text">Z:\games\tictactoe</span>
+            max players:<span class="block-num">2</span>
+            player name:<span class="block-text">Player 1</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: J</span><br>
+            <span class="block block-network block-indent">Join Game (Files)
+            folder:<span class="block-text">Z:\games\tictactoe</span>
+            player name:<span class="block-text">Player 2</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Why keys, not a menu?</strong> It's the simplest way to
+            test both roles from the very same project &mdash; press H on
+            one computer, J on the other. A real classroom game might
+            instead ask "Host or Join?" on a title screen, but that's UI
+            polish, not something this tutorial needs to teach.
+        </div>
+    </div>
+
+    <h2>Show Connection Status</h2>
+    <div class="step">
+        <ol>
+            <li>Add a <strong>When drawing</strong> event to
+            <code>obj_controller</code>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">global.player_count &lt; 2</span> then</span><br>
+            <span class="block block-draw block-indent2">Draw text <span class="block-text">Waiting for opponent...</span> at x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-control">Else if <span class="block-text">global.player_id == 0</span> then</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">You are X</span> at x:<span class="block-num">20</span> y:<span class="block-num">20</span></span><br>
+            <span class="block block-control">Else</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">You are O</span> at x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> <code>global.player_id</code>
+            is assigned automatically &mdash; the host is always
+            <code>0</code> (so it's X, going first), and each joining
+            player counts up from there. <code>global.player_count</code>
+            tells you how many players have connected so far.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test the Connection!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 on two computers!</strong></p>
+        <ul>
+            <li>Press <strong>H</strong> on one, <strong>J</strong> on the other</li>
+            <li>Both should stop showing "Waiting for opponent..." and
+            show "You are X" / "You are O"</li>
+            <li>If the host can't be reached, the game keeps running
+            single-player &mdash; it never freezes or crashes</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to make the board actually playable across both computers.
+    </div>
+</body>
+</html>

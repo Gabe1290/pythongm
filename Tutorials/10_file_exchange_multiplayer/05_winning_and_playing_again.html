@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.lines { border-collapse: collapse; margin: 8px 0; }
+        table.lines td, table.lines th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Winning and Playing Again</h1>
+
+    <p>Last piece: check for three marks in a row, announce the winner on
+    both screens, and let both players start over.</p>
+
+    <h2>Check One Line</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>obj_controller</code>'s <strong>Round Resolved</strong>
+            event (add one if it doesn't have it yet) and add this, checking
+            the top row:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Round Resolved</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">global.cell_100_100 == global.cell_300_100 and global.cell_300_100 == global.cell_500_100 and global.cell_100_100 != ""</span> then</span><br>
+            <span class="block block-control block-indent2">Set variable <span class="block-text">winner</span> to <span class="block-text">global.cell_100_100</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> if all three cells in the line
+            hold the <em>same</em> mark, and that mark isn't blank, someone
+            just won on this line &mdash; <code>winner</code> becomes
+            whichever mark it was.
+        </div>
+    </div>
+
+    <h2>Check the Other Seven Lines</h2>
+    <div class="step">
+        <p>Repeat the exact same pattern for each of these lines &mdash;
+        three cell names, all equal, not blank:</p>
+        <table class="lines">
+            <tr><th>Line</th><th>Cell A</th><th>Cell B</th><th>Cell C</th></tr>
+            <tr><td>Middle row</td><td>cell_100_300</td><td>cell_300_300</td><td>cell_500_300</td></tr>
+            <tr><td>Bottom row</td><td>cell_100_500</td><td>cell_300_500</td><td>cell_500_500</td></tr>
+            <tr><td>Left column</td><td>cell_100_100</td><td>cell_100_300</td><td>cell_100_500</td></tr>
+            <tr><td>Middle column</td><td>cell_300_100</td><td>cell_300_300</td><td>cell_300_500</td></tr>
+            <tr><td>Right column</td><td>cell_500_100</td><td>cell_500_300</td><td>cell_500_500</td></tr>
+            <tr><td>Diagonal &#8598;&#8600;</td><td>cell_100_100</td><td>cell_300_300</td><td>cell_500_500</td></tr>
+            <tr><td>Diagonal &#8599;&#8601;</td><td>cell_500_100</td><td>cell_300_300</td><td>cell_100_500</td></tr>
+        </table>
+        <p style="font-style: italic;">Eight <strong>If</strong> blocks
+        total in the <strong>Round Resolved</strong> event &mdash; tedious
+        to type, but each one is identical in shape to the first.</p>
+    </div>
+
+    <h2>Show the Winner</h2>
+    <div class="step">
+        <ol>
+            <li>Add a <strong>Create</strong> event to
+            <code>obj_controller</code> that sets <code>winner</code> to
+            <code>""</code> (so there's no leftover winner from a previous game)</li>
+            <li>Add a <strong>When drawing</strong> event:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">winner != ""</span> then</span><br>
+            <span class="block block-draw block-indent2">Draw text <span class="block-text">winner + " wins! Press SPACE to play again."</span> at x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
+        </div>
+    </div>
+
+    <h2>Play Again</h2>
+    <div class="step">
+        <p>Either player can restart once there's a winner:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: Space</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">winner != ""</span> then</span><br>
+            <span class="block block-network block-indent2">Leave Game (Files)</span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> <strong>Leave Game (Files)</strong>
+            stops this session cleanly without touching the other player's
+            files. Press <strong>H</strong> or <strong>J</strong> again (from
+            Phase 2) on both computers to start a fresh game.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test the Full Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 on both computers!</strong></p>
+        <ul>
+            <li>Host and join as in Phase 2</li>
+            <li>Take turns as in Phase 3, X then O</li>
+            <li>Get three in a row &rarr; both screens announce the winner</li>
+            <li>Press <strong>SPACE</strong>, then H/J again, to play a fresh game</li>
+        </ul>
+    </div>
+
+    <h2>You Built a File-Exchange Multiplayer Game!</h2>
+    <p>That's a complete turn-based multiplayer loop, using the same idea
+    games like <strong>VGA Planets</strong> used decades ago &mdash; no live
+    connection, no firewall problem, just files on a shared folder:</p>
+    <ul>
+        <li>Hosting and joining through a shared folder instead of a direct connection</li>
+        <li>Staging a move and submitting it with <strong>End Turn</strong></li>
+        <li>Gating whose turn it is</li>
+        <li>Reacting to <strong>Round Resolved</strong> to stay in sync across machines</li>
+        <li>A complete win check and a way to play again</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Try this next:</strong> add a "Player Skipped Round" message
+        for when someone's taking too long, or a running score across
+        several games using another shared variable.
+    </div>
+</body>
+</html>
