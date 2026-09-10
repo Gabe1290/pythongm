@@ -1,12 +1,19 @@
 # Plan: per-tutorial-step screenshots for the 6 build-along wiki tutorials
 
-Status: **Phases 1 + 2 DONE, Phase 3 mostly DONE (2026-09-10/11).** All
-six English tutorials carry per-step screenshots; 32 of the 48 translated
-variant pages (Breakout/Pong/Sokoban/Maze × 8 langs) reuse the same
-English-UI shots. The remaining 16 (Platformer + LunarLander × 8) are
-DEFERRED because their translations are structurally behind the current
-English — see Phase 3 below. Publishing to the live GitHub wiki is the
-last step (needs its own handling for the non-`.md` image files).
+Status: **Phases 1 + 2 DONE, Phase 3 mostly DONE, PUBLISHED (2026-09-10/11).**
+All six English tutorials carry per-step screenshots; 32 of the 48
+translated variant pages (Breakout/Pong/Sokoban/Maze × 8 langs) reuse the
+same English-UI shots. The remaining 16 (Platformer + LunarLander × 8)
+are DEFERRED because their translations are structurally behind the
+current English — see Phase 3 below. **The 38 finished tutorial pages +
+their screenshot images were published to the live GitHub wiki**
+(`Gabe1290/pythongm.wiki`, commit `4d4a07b`) as a targeted push of just
+those files — NOT a full `scripts/sync_wiki.sh push`, because the repo's
+`wiki/` folder carries a large backlog of unrelated un-published drift
+from other sessions (FileExchange page, Full-Action-Reference regens,
+Home/Network/Extensions edits) that isn't this task's to publish.
+`sync_wiki.sh` itself now carries `wiki/images/` (the old "only .md"
+landmine is fixed); the manual push was purely about *scope*.
 Written 2026-08-15; picked up on an explicit ask. This was the sole open
 item carried over from the wiki completeness effort's Phase 3 (that plan
 is otherwise fully closed — Phases 0-3 and 5 done, Phase 4 explicitly
