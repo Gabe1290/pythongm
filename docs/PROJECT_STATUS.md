@@ -64,8 +64,8 @@ This is the complete list. Everything else that used to be tracked in
 
 3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md` — Phase 1 done (2026-09-11),
    Phase 2 in progress (2026-09-10), picked up on an explicit ask.**
-   Breakout and now **Pong** each have per-step screenshots
-   (`wiki/images/tutorial-{breakout,pong}-*.png`) embedded at their
+   Breakout, Pong and now **Sokoban** each have per-step screenshots
+   (`wiki/images/tutorial-{breakout,pong,sokoban}-*.png`) embedded at their
    `## Step N` headings, produced by a committed, re-runnable tool
    (`tools/capture_tutorial_screenshots.py`) that drives a real offscreen
    `PyGameMakerIDE` through a scratch project matching the tutorial's own
@@ -78,7 +78,7 @@ This is the complete list. Everything else that used to be tracked in
    warm-tan instead of grey placeholder walls so they don't read as IDE
    chrome) and the Breakout shots regenerated to match. **Remaining,
    explicit-ask-only per this plan's own "pick up only on an explicit
-   ask" framing**: Sokoban/Maze/Platformer/LunarLander (Phase 2) and all
+   ask" framing**: Maze/Platformer/LunarLander (Phase 2) and all
    translated-variant pages (Phase 3, `Tutorial-Breakout_fr.md`/
    `Tutorial-Pong_fr.md` included).
 
