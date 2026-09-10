@@ -2004,6 +2004,30 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
         <source>Craft Item</source>
         <translation>Скрафтити предмет</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Створити гру (обмін файлами)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Приєднатися до гри (обмін файлами)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Покинути гру (обмін файлами)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Задати спільну змінну (обмін файлами)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Прочитати спільну змінну (обмін файлами)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Завершити хід (обмін файлами)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

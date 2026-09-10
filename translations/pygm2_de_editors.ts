@@ -2004,6 +2004,30 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <source>Craft Item</source>
         <translation>Gegenstand herstellen</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Spiel hosten (Dateiaustausch)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Spiel beitreten (Dateiaustausch)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Spiel verlassen (Dateiaustausch)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Geteilte Variable setzen (Dateiaustausch)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Geteilte Variable lesen (Dateiaustausch)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Zug beenden (Dateiaustausch)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

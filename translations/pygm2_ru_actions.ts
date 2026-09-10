@@ -242,6 +242,30 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <source>Craft Item</source>
         <translation>Скрафтить предмет</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>Создать игру (обмен файлами)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>Присоединиться к игре (обмен файлами)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>Покинуть игру (обмен файлами)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>Задать общую переменную (обмен файлами)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>Прочитать общую переменную (обмен файлами)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>Завершить ход (обмен файлами)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

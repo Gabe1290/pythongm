@@ -2087,6 +2087,30 @@ Do you want to save anyway?</source>
         <source>Craft Item</source>
         <translation>合成物品</translation>
     </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>创建游戏 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>加入游戏 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>离开游戏 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>设置共享变量 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>读取共享变量 (文件交换)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>结束回合 (文件交换)</translation>
+    </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
@@ -4439,6 +4463,30 @@ The action itself is unaffected and will be kept exactly as-is when you save.</s
     <message>
         <source>Craft Item</source>
         <translation>合成物品</translation>
+    </message>
+    <message>
+        <source>Host a Game (File Exchange)</source>
+        <translation>创建游戏 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Join a Game (File Exchange)</source>
+        <translation>加入游戏 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Leave the Game (File Exchange)</source>
+        <translation>离开游戏 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Set a Shared Variable (File Exchange)</source>
+        <translation>设置共享变量 (文件交换)</translation>
+    </message>
+    <message>
+        <source>Read a Shared Variable (File Exchange)</source>
+        <translation>读取共享变量 (文件交换)</translation>
+    </message>
+    <message>
+        <source>End Turn (File Exchange)</source>
+        <translation>结束回合 (文件交换)</translation>
     </message>
 </context>
 <context>

@@ -1,6 +1,6 @@
-# Plan (proposal, not started): 1990s-style turn-based file-exchange multiplayer
+# Plan: 1990s-style turn-based file-exchange multiplayer
 
-**Status: PROPOSAL ONLY — nothing here is built.** Written on explicit ask
+**Status: Phase 1 of 5 DONE (2026-09-10).** Written on explicit ask
 (2026-09) after the user described hitting school-LAN firewall problems with
 `extensions/multiplayer_lan/`'s socket-based transport, and asked specifically
 for a plan for the old "games exchanged state through a shared file" pattern
@@ -9,8 +9,19 @@ explicit ask, from "just the extension" to three deliverables together: the
 extension itself, a bundled sample, and a full in-app Tutorial (with the
 historical examples discussed folded in as motivation/context) — so a
 student doesn't just get the capability, they get taught how to use it and
-where the idea comes from. This doc is the decision material for all three,
-not a commitment — see "How to decide" at the end.
+where the idea comes from. The user then approved starting Track E (see
+"Splitting the work across two machines" below) and Phase 1 —
+`extensions/multiplayer_files/`'s core session/blackboard — landed the same
+session: `host_game_files`/`join_game_files`/`leave_game_files`/
+`set_shared_var_files`/`get_shared_var_files`/`end_turn`, the join/welcome
+handshake, host-authoritative round advancement with a deadline, the
+identity/status globals, and all five lifecycle events, with real
+translated action names in all 10 shipped languages. 29 new tests, full
+suite green (4731 passed / 10 skipped / 2 confirmed-pre-existing-flake
+raycast timing tests, per CLAUDE.md's own note on that test class).
+Phase 2 (the bundled Tic-Tac-Toe sample) and Phase 4 (connect-screen UX)
+are next on Track E; Track T (the wiki historical page + Tutorial 10) is
+untouched so far. See "Proposed phases" below for the full breakdown.
 
 ## Why this is a real option, and why it's a *different* thing from `multiplayer_lan`
 
@@ -206,9 +217,19 @@ not a reinvention:
 - **`leave_game_files()`** — write a "left" marker file (matches the
   one-writer-per-file rule — even leaving doesn't touch anyone else's
   file) and stop polling.
-- **`set_shared_var(name, value)` / `get_shared_var(name, into)`** — reused
-  verbatim in spirit from Tier A: readable everywhere as `global.<name>`.
-  The difference from the socket version is *when* a client's write takes
+- **`set_shared_var_files(name, value)` / `get_shared_var_files(name, into)`**
+  — the file-exchange counterpart of Tier A's `set_shared_var`/
+  `get_shared_var`, readable everywhere as `global.<name>` once published.
+  **Built as `..._files`, not the identical name**: `events/plugin_loader.py`'s
+  `_load_actions` skips any plugin action whose name already exists in
+  `ACTION_TYPES` (the landmine CLAUDE.md documents), and
+  `multiplayer_files` sorts before `multiplayer_lan` in the loader's
+  alphabetical folder walk — reusing the exact name would have silently
+  disabled the already-shipped LAN version's own actions the moment both
+  extensions were installed together. Found and fixed during Phase 1
+  implementation, not anticipated when this section was first drafted; see
+  `extensions/multiplayer_files/actions.py`'s own module docstring. The
+  difference from the socket version is *when* a client's write takes
   effect: it's staged in that player's own move file and only becomes
   visible to everyone once the host folds it into the next `session.json`
   — an honest consequence of there being no live connection, and worth
@@ -217,24 +238,41 @@ not a reinvention:
   screen either, matching what the host will actually publish, not an
   optimistic local guess).
 - **`end_turn()`** — marks the current round's move file as final and
-  ready for the host to consume. Split out from `set_shared_var` itself
-  (rather than every var-write being an implicit "I'm done") so a player
-  can set several variables while composing their move before submitting
-  it as one round file.
-- **`send_network_message(event, data, target)`** — same shape as the
-  socket version's custom messages, staged the same way `set_shared_var`
-  is (delivered on the next round boundary, not instantly).
+  ready for the host to consume. Split out from `set_shared_var_files`
+  itself (rather than every var-write being an implicit "I'm done") so a
+  player can set several variables while composing their move before
+  submitting it as one round file. No naming collision with
+  `multiplayer_lan` (it has no `end_turn` action), so this one kept its
+  plain name.
+- **`send_network_message_files(event, data, target)`** (Phase 2, not
+  built yet) — same shape as the socket version's custom messages, staged
+  the same way `set_shared_var_files` is (delivered on the next round
+  boundary, not instantly). Named `..._files` up front this time, for the
+  same `plugin_loader` collision reason `set_shared_var_files` was
+  renamed to during Phase 1 — no need to rediscover it at Phase 2 time.
 - Read-only identity globals: `global.is_host`, `global.player_id`,
   `global.player_count`, `global.round_number`, `global.turn_ready`
-  (whether the current round has resolved and new state is safe to act
-  on), `global.waiting_for_players` (for an authored "waiting on player 2…"
-  message).
+  (whether this machine has read or published at least one `session.json`
+  — the point at which published state, not just local defaults, is safe
+  to act on), `global.waiting_for_players` (for an authored "waiting on
+  player 2…" message). Plus, mirroring `multiplayer_lan`'s own
+  `network_sender`/`network_player_name` payload globals (not called out
+  in the first draft of this section, added during Phase 1 once it was
+  clear an author reacting to "who joined" / "who was skipped" needed
+  them the same way the socket version's own `player_joined` handler
+  does): `global.network_sender` (the slot) is set before
+  `player_joined_files` and `player_skipped_round` fire;
+  `global.network_player_name` (their name) is set before
+  `player_joined_files`.
 - Events (mirroring `network_started`/`player_joined`/`network_message`/
   `connection_lost`): `file_session_started`, `player_joined_files`,
   `round_resolved` (fires on every machine once a round's state is
   published and picked up), `player_skipped_round` (a player's deadline
   lapsed this round), `file_session_lost` (the shared folder became
-  unreadable — drive disconnected, permissions changed, etc.).
+  unreadable — drive disconnected, permissions changed, etc.). A player
+  leaving deliberately gets **no** dedicated event — it's visible via
+  `global.player_count` dropping, same information without growing the
+  event list for something a poll already surfaces.
 
 **Deliberately not proposed**: `network_spawn`/`sync_instance`/
 `bind_network_input` (Tier B, live networked instances) have no sensible
@@ -384,21 +422,37 @@ Sized the same way `docs/MULTIPLAYER_LAN_V2_PLAN.md` was: one phase per
 review/commit boundary, full suite green after each, matching this repo's
 "one task ≈ one commit" discipline throughout.
 
-1. **Core session + shared blackboard, desktop only, no UX polish.**
-   `extensions/multiplayer_files/{state,session,handlers,actions}.py`.
+1. **DONE (2026-09-10) — Core session + shared blackboard, desktop only,
+   no UX polish.** `extensions/multiplayer_files/{state,fileio,session,
+   handlers,actions}.py` (a `fileio.py` transport module, not anticipated
+   in the original file list, split out the atomic-write/read primitives
+   from the protocol logic in `session.py` — the same split
+   `multiplayer_lan/network.py` vs `session.py` already uses).
    `host_game_files`/`join_game_files`/`leave_game_files`, join/welcome
-   handshake, `set_shared_var`/`get_shared_var`/`end_turn`, round
-   advancement with a deadline, the identity/status globals, the four
-   events above. Folder path is an explicit action parameter (a plain
-   string) — no picker yet.
-   **Testing**: this is *easier* to test solidly than sockets ever were —
-   point two real `NetworkSession`-equivalent instances at the same real
-   `tempfile.TemporaryDirectory()` and drive them through several rounds,
-   no mocking, no loopback networking, deterministic. A slow-filesystem
-   simulation (inject an artificial delay on read/write) is worth adding
-   specifically to prove the round-deadline/timeout logic actually works
-   under real latency, not just on a fast local temp dir.
-2. **`send_network_message` + the bundled sample.** Tic-Tac-Toe over file
+   handshake, `set_shared_var_files`/`get_shared_var_files`/`end_turn`
+   (renamed from the originally-proposed `set_shared_var`/
+   `get_shared_var` — see "Proposed action surface" above), round
+   advancement with a deadline, the identity/status globals, all five
+   events above (not four — the doc text above this phase historically
+   undercounted; all five cost nothing extra to implement together).
+   Folder path is an explicit action parameter (a plain string) — no
+   picker yet. Action display names translated into all 10 shipped
+   languages in the same commit
+   (`tests/test_extension_action_i18n.py`), matching the bar
+   `multiplayer_lan` and Block World's crafting actions were already
+   held to.
+   **Testing**: `tests/test_multiplayer_files_session.py` (17 tests,
+   pure protocol against a real `tempfile.TemporaryDirectory()` — join/
+   welcome, multi-client, round resolution, last-write-wins merge order,
+   deadline skip, leave, file_session_lost, a slow-filesystem simulation
+   via a monkeypatched I/O delay, and the poll-interval gate) +
+   `tests/test_multiplayer_files_tier_a.py` (12 tests, the full action/
+   event/globals wiring through a real `ActionExecutor` and room-change
+   migration). 29 new tests; full suite 4731 passed / 10 skipped (two
+   raycast timing-sensitive smoke tests flaked under the full-suite load
+   and passed clean in isolation — CLAUDE.md's own documented flake
+   class for that file, not a regression).
+2. **`send_network_message_files` + the bundled sample.** Tic-Tac-Toe over file
    exchange (see "The concrete game" above), the finished/polished version
    — exercising the whole loop (join, submit a move each round, see the
    resolved result). Register in `tools/smoke_run_samples.py`; add
