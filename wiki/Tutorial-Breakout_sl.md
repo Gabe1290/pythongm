@@ -49,6 +49,8 @@ Najprej moramo ustvariti vizualne elemente za našo igro.
 2. Poimenujte ga `bg_game`
 3. Narišite ali naložite sliko ozadja
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Korak 2: Ustvari objekt loparja
@@ -84,6 +86,8 @@ Lopar se premika tudi po sproščeni tipki! Popravimo to.
 
 Zdaj se lopar ustavi, ko sprostite puščične tipke.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Korak 3: Ustvari objekt žogice
@@ -110,6 +114,8 @@ To povzroči, da se žogica začne premikati ob začetku igre.
 2. Dodajte akcijo **Reverse Horizontal** ali **Reverse Vertical** po potrebi
    - Ali uporabite obe za obravnavo odbijanja v kotih
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Korak 4: Ustvari objekt opeke
@@ -134,6 +140,8 @@ To uniči opeko, ko jo žogica zadene!
 2. **Add Event** → **Collision** → izberite `obj_brick`
 3. Dodajte akcijo **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Korak 5: Ustvari objekt stene
@@ -144,6 +152,8 @@ To uniči opeko, ko jo žogica zadene!
 3. Označite polje **Solid**
 
 To je vse - stena mora biti samo trdna, da se žogica odbije.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@ Zdaj postavite svoje objekte v sobo:
 3. **Postavi žogico:** Postavite `obj_ball` nekje na sredino
 
 4. **Postavi opeke:** Razporedite instance `obj_brick` v vrstah na vrhu sobe
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 

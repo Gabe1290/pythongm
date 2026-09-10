@@ -85,6 +85,8 @@ Vsi sprite-i za stene in tla naj bodo 32x32 pikslov za pravilno mrežo.
 3. Uporabi svetlo nevtralno barvo
 4. Velikost: 32x32 pikslov
 
+![The Sprite Editor with spr_player open (24x24), origin centered; spr_player, spr_wall, spr_exit, spr_coin and spr_floor in the resource tree](images/tutorial-maze-02-sprites.png)
+
 ---
 
 ## Korak 3: Ustvari Objekt Stena
@@ -96,6 +98,8 @@ Stena blokira gibanje igralca.
 3. Nastavi sprite na `spr_wall`
 4. **Označi polje "Solid"**
 5. Dogodki niso potrebni
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-maze-03-wall-object.png)
 
 ---
 
@@ -116,6 +120,8 @@ Besedilo Show Message je fiksen niz — ne more vsebovati žive vrednosti,
 kot je pretečen čas. Časovnik ostane viden v HUD-u (Korak 7) vse do
 zmage, zato je igralec svoj čas že videl.
 
+![obj_exit's Object Events panel: a Collision with obj_player event holding Show Message and Next Room](images/tutorial-maze-04-exit-object.png)
+
 ---
 
 ## Korak 5: Ustvari Objekt Kovanec
@@ -132,6 +138,8 @@ Kovanci dodajajo k rezultatu, ko so pobrani.
    - Označi "Relative" za dodajanje 10 točk
 3. Add Action: **Instance** → **Destroy Instance**
    - Applies to: Self
+
+![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
 
 ---
 
@@ -167,6 +175,8 @@ preden je sličica narisana (`obj_wall` je Solid), zato se igralec
 nikoli dejansko ne prekriva s steno — dogodek trka zgoraj samo
 izniči morebitno preostalo hitrost, tako da igralec ne "pritiska"
 naprej vanjo.
+
+![obj_player's Object Events panel: Keyboard (held) with four Set Speed actions, Keyboard <No Key> with two, and Collision with obj_wall (Stop Movement)](images/tutorial-maze-06-player-object.png)
 
 ---
 
@@ -223,6 +233,8 @@ self.coins_left = sum(
 
 (nato nastavi polje Variable 3. akcije Draw Variable na `self.coins_left`).
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
+
 ---
 
 ## Korak 8: Oblikuj Svoj Labirint
@@ -264,6 +276,8 @@ W W W W W W W W W W W W W W W W W W W W
 
 W = Stena    P = Igralec    E = Izhod    C = Kovanec    . = Prazno
 ```
+
+![The Room Editor for room_maze: a full slate wall border with maze corridors, the blue player at the top-left entrance, four gold coins along the paths, the green exit at the bottom-right, and the obj_game_controller marker on a corridor cell](images/tutorial-maze-08-room.png)
 
 ---
 

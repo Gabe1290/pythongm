@@ -73,6 +73,8 @@
 2. Розмір: 32x32 пікселів
 3. Залиште його прозорим або зробіть суцільним кольором (він буде невидимим у грі)
 
+![The Sprite Editor with spr_ball open, origin centered; spr_ball, spr_paddle_left, spr_paddle_right, spr_wall and spr_goal in the resource tree](images/tutorial-pong-02-sprites.png)
+
 ---
 
 ## Крок 3: Створення об'єкту стіни
@@ -84,6 +86,8 @@
 3. Встановіть спрайт на `spr_wall`
 4. **Встановіть прапорець "Solid"** — це важливо для відскоків!
 5. Жодних подій не потрібно — стіна просто перебуває там
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-pong-03-wall-object.png)
 
 ---
 
@@ -155,6 +159,8 @@
 2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
 
+![obj_paddle_left's Object Events panel: Keyboard (held) and Keyboard Release with W/S, plus Collision with obj_wall (Bounce). obj_paddle_right is the same with the Up/Down arrows](images/tutorial-pong-04-paddle-objects.png)
+
 ---
 
 ## Крок 5: Створення об'єкту м'яча
@@ -182,6 +188,8 @@
 1. Add Event → Collision → obj_wall
 2. Add Action: **Move** → **Bounce** (налаштування не потрібне —
    завжди відскакує від твердих об'єктів)
+
+![obj_ball's Object Events panel: Create (Start Moving), and Collision with obj_paddle_left, obj_paddle_right and obj_wall (each a Bounce)](images/tutorial-pong-05-ball-object.png)
 
 ---
 
@@ -231,6 +239,8 @@
    - Scope: `global`
    - Встановіть прапорець "Relative"
 
+![obj_ball after Step 6: the two paddle/wall bounces from Step 5 plus Collision with obj_goal_left and obj_goal_right (Jump to Start + Set Variable). obj_goal_left/obj_goal_right themselves have no events -- they're invisible, solid, shown here in green only so the placement reads](images/tutorial-pong-06-goal-objects.png)
+
 ---
 
 ## Крок 7: Створення об'єкту для відображення очок
@@ -264,6 +274,8 @@
    - X: `100`
    - Y: `30`
 
+![obj_score's Object Events panel: Create (two Set Variable actions) and Draw (two Draw Text + two Draw Variable actions), with no sprite set](images/tutorial-pong-07-score-object.png)
+
 ---
 
 ## Крок 8: Дизайн кімнати
@@ -291,6 +303,8 @@
 [ЦІЛЬ]                                                      [ЦІЛЬ]
 [СТІНА СТІНА СТІНА СТІНА СТІНА СТІНА СТІНА СТІНА СТІНА СТІНА]
 ```
+
+![The Room Editor for room_pong: tan wall rows across the top and bottom, green goal columns down the left and right edges, the blue and red paddles near each side, the ball in the centre, and obj_score just inside the top wall](images/tutorial-pong-08-room.png)
 
 ---
 

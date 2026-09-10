@@ -85,6 +85,8 @@
 3. Використовуйте світлий нейтральний колір
 4. Розмір: 32x32 пікселі
 
+![The Sprite Editor with spr_player open (24x24), origin centered; spr_player, spr_wall, spr_exit, spr_coin and spr_floor in the resource tree](images/tutorial-maze-02-sprites.png)
+
 ---
 
 ## Крок 3: Створити Об'єкт Стіни
@@ -96,6 +98,8 @@
 3. Встановіть спрайт на `spr_wall`
 4. **Позначте прапорець "Solid"**
 5. Події не потрібні
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-maze-03-wall-object.png)
 
 ---
 
@@ -116,6 +120,8 @@
 значення, як-от витрачений час. Таймер лишається видимим у HUD (Крок
 7) аж до перемоги, тож гравець уже бачив свій час.
 
+![obj_exit's Object Events panel: a Collision with obj_player event holding Show Message and Next Room](images/tutorial-maze-04-exit-object.png)
+
 ---
 
 ## Крок 5: Створити Об'єкт Монети
@@ -132,6 +138,8 @@
    - Позначте "Relative" для додавання 10 очок
 3. Add Action: **Instance** → **Destroy Instance**
    - Applies to: Self
+
+![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
 
 ---
 
@@ -166,6 +174,8 @@
 кадр буде намальовано (`obj_wall` — Solid), тому гравець насправді
 ніколи не перекривається зі стіною — подія зіткнення вище лише
 скидає залишкову швидкість, щоб гравець не "тиснув" далі в неї.
+
+![obj_player's Object Events panel: Keyboard (held) with four Set Speed actions, Keyboard <No Key> with two, and Collision with obj_wall (Stop Movement)](images/tutorial-maze-06-player-object.png)
 
 ---
 
@@ -222,6 +232,8 @@ self.coins_left = sum(
 
 (потім встановіть поле Variable 3-ї дії Draw Variable на `self.coins_left`).
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
+
 ---
 
 ## Крок 8: Спроектуйте Свій Лабіринт
@@ -263,6 +275,8 @@ W W W W W W W W W W W W W W W W W W W W
 
 W = Стіна    P = Гравець    E = Вихід    C = Монета    . = Порожньо
 ```
+
+![The Room Editor for room_maze: a full slate wall border with maze corridors, the blue player at the top-left entrance, four gold coins along the paths, the green exit at the bottom-right, and the obj_game_controller marker on a corridor cell](images/tutorial-maze-08-room.png)
 
 ---
 

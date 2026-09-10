@@ -49,6 +49,8 @@
 2. Назовите его `bg_game`
 3. Нарисуйте или загрузите изображение фона
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Шаг 2: Создание объекта ракетки
@@ -84,6 +86,8 @@
 
 Теперь ракетка останавливается, когда вы отпускаете клавиши со стрелками.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Шаг 3: Создание объекта мяча
@@ -110,6 +114,8 @@
 2. Добавьте действие **Reverse Horizontal** или **Reverse Vertical** по необходимости
    - Или используйте оба для обработки отскоков в углах
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Шаг 4: Создание объекта кирпича
@@ -134,6 +140,8 @@
 2. **Add Event** → **Collision** → выберите `obj_brick`
 3. Добавьте действие **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Шаг 5: Создание объекта стены
@@ -144,6 +152,8 @@
 3. Поставьте флажок **Solid**
 
 Это все - стена просто должна быть твердой, чтобы мяч отскакивал.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@
 3. **Разместите мяч:** Поместите `obj_ball` где-нибудь посередине
 
 4. **Разместите кирпичи:** Расположите экземпляры `obj_brick` рядами в верхней части комнаты
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 

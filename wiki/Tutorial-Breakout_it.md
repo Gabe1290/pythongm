@@ -49,6 +49,8 @@ Prima di tutto, dobbiamo creare gli elementi visivi per il nostro gioco.
 2. Chiamalo `bg_game`
 3. Disegna o carica un'immagine di sfondo
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Passo 2: Creare l'Oggetto Paddle
@@ -84,6 +86,8 @@ Il paddle continua a muoversi anche dopo aver rilasciato il tasto! Risolviamo qu
 
 Ora il paddle si ferma quando rilasci i tasti freccia.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Passo 3: Creare l'Oggetto Palla
@@ -110,6 +114,8 @@ Questo fa partire la palla quando il gioco inizia.
 2. Aggiungi l'azione **Reverse Horizontal** o **Reverse Vertical** secondo necessità
    - Oppure usa entrambe per gestire i rimbalzi negli angoli
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Passo 4: Creare l'Oggetto Mattone
@@ -134,6 +140,8 @@ stare sulla palla, non sul mattone:
 2. **Add Event** -> **Collision** -> seleziona `obj_brick`
 3. Aggiungi l'azione **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Passo 5: Creare l'Oggetto Muro
@@ -144,6 +152,8 @@ stare sulla palla, non sul mattone:
 3. Spunta la casella **Solid**
 
 Questo è tutto - il muro deve solo essere solido perché la palla rimbalzi.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@ Ora posiziona i tuoi oggetti nella stanza:
 3. **Posiziona la Palla:** Metti `obj_ball` da qualche parte al centro
 
 4. **Posiziona i Mattoni:** Disponi istanze di `obj_brick` in righe nella parte superiore della stanza
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 

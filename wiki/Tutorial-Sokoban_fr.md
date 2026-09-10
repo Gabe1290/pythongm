@@ -92,6 +92,8 @@ Tous les sprites doivent avoir la même taille (32x32 pixels fonctionne bien) po
 3. Utilisez une couleur neutre
 4. Taille : 32x32 pixels
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Étape 3 : Créer l'Objet Mur
@@ -104,6 +106,8 @@ Le mur est l'objet le plus simple - il bloque simplement le mouvement.
 4. **Cochez la case "Solid"**
 5. Aucun événement nécessaire
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Étape 4 : Créer l'Objet Cible
@@ -114,6 +118,8 @@ Les cibles marquent l'endroit où les caisses doivent être placées.
 2. Définissez le sprite sur `spr_target`
 3. Aucun événement nécessaire - c'est juste un marqueur
 4. Laissez "Solid" décoché (le joueur et les caisses peuvent être dessus)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -140,6 +146,8 @@ La caisse est poussée par le joueur et change d'apparence quand elle est sur un
 Cela rend la caisse verte quand elle est sur un emplacement cible — **If
 Collision** avec les deux décalages à `0` vérifie si la position *actuelle*
 de la caisse chevauche un `obj_target`.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -186,6 +194,8 @@ nécessaire ici.
 se déplace le joueur) est libre et, si oui, pousse la caisse d'une case et
 déplace le joueur à sa place, le tout en une seule action. Si l'espace
 derrière la caisse est bloqué par un mur ou une autre caisse, rien ne bouge.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -239,6 +249,8 @@ redémarrage.
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Étape 9 : Concevoir Votre Niveau
@@ -280,6 +292,8 @@ T = Target
 ```
 
 **Important :** Ayez toujours le même nombre de caisses et de cibles !
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 ---
 

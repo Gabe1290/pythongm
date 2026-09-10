@@ -92,6 +92,8 @@ Todos los sprites deben tener el mismo tamaño (32x32 píxeles funciona bien) pa
 3. Usa un color neutral
 4. Tamaño: 32x32 píxeles
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Paso 3: Crear el Objeto Pared
@@ -104,6 +106,8 @@ La pared es el objeto más simple - simplemente bloquea el movimiento.
 4. **Marca la casilla "Solid"**
 5. No se necesitan eventos
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Paso 4: Crear el Objeto Objetivo
@@ -114,6 +118,8 @@ Los objetivos marcan dónde deben colocarse las cajas.
 2. Establece el sprite en `spr_target`
 3. No se necesitan eventos - es solo un marcador
 4. Deja "Solid" sin marcar (el jugador y las cajas pueden estar encima)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -140,6 +146,8 @@ La caja es empujada por el jugador y cambia de apariencia cuando está en un obj
 Esto hace que la caja se vuelva verde cuando está en un lugar objetivo —
 **If Collision** con ambos desplazamientos en `0` comprueba si la
 posición *actual* de la caja se superpone con un `obj_target`.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -186,6 +194,8 @@ dirección en la que se mueve el jugador) está libre y, si es así,
 empuja la caja una celda y mueve al jugador a su lugar, todo en una
 sola acción. Si el espacio detrás de la caja está bloqueado por una
 pared u otra caja, nada se mueve.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -237,6 +247,8 @@ popup antes del reinicio.
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Paso 9: Diseña Tu Nivel
@@ -278,6 +290,8 @@ T = Objetivo
 ```
 
 **Importante:** ¡Siempre ten el mismo número de cajas y objetivos!
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 ---
 

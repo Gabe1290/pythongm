@@ -92,6 +92,8 @@ Alle Sprites sollten die gleiche Größe haben (32x32 Pixel funktioniert gut), u
 3. Verwenden Sie eine neutrale Farbe
 4. Größe: 32x32 Pixel
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Schritt 3: Erstellen Sie das Wand-Objekt
@@ -104,6 +106,8 @@ Die Wand ist das einfachste Objekt - sie blockiert einfach die Bewegung.
 4. **Aktivieren Sie das Kontrollkästchen "Solid"**
 5. Keine Ereignisse nötig
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Schritt 4: Erstellen Sie das Ziel-Objekt
@@ -114,6 +118,8 @@ Ziele markieren, wo Kisten platziert werden sollen.
 2. Setzen Sie das Sprite auf `spr_target`
 3. Keine Ereignisse nötig - es ist nur eine Markierung
 4. Lassen Sie "Solid" deaktiviert (Spieler und Kisten können darüber stehen)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -140,6 +146,8 @@ Die Kiste wird vom Spieler geschoben und ändert ihr Aussehen, wenn sie auf eine
 Dadurch wird die Kiste grün, sobald sie auf einem Zielfeld steht — **If
 Collision** mit beiden Versätzen auf `0` prüft, ob die *aktuelle* Position
 der Kiste ein `obj_target` überlappt.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -185,6 +193,8 @@ die sich der Spieler bewegt) frei ist, und schiebt — falls ja — die Kiste
 um eine Zelle weiter und bewegt den Spieler an ihre bisherige Stelle,
 alles in einer einzigen Aktion. Ist der Platz hinter der Kiste durch eine
 Wand oder eine andere Kiste blockiert, bewegt sich nichts.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -235,6 +245,8 @@ hinzu, wenn Sie vor dem Neustart ein Popup anzeigen möchten.
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Schritt 9: Entwerfen Sie Ihr Level
@@ -276,6 +288,8 @@ T = Ziel
 ```
 
 **Wichtig:** Achten Sie immer darauf, dieselbe Anzahl an Kisten und Zielen zu haben!
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 ---
 

@@ -85,6 +85,8 @@ Todos os sprites de parede e chão devem ter 32x32 pixels para criar uma grade a
 3. Use uma cor neutra clara
 4. Tamanho: 32x32 pixels
 
+![The Sprite Editor with spr_player open (24x24), origin centered; spr_player, spr_wall, spr_exit, spr_coin and spr_floor in the resource tree](images/tutorial-maze-02-sprites.png)
+
 ---
 
 ## Passo 3: Criar o Objeto Parede
@@ -96,6 +98,8 @@ A parede bloqueia o movimento do jogador.
 3. Defina o sprite como `spr_wall`
 4. **Marque a caixa "Solid"**
 5. Nenhum evento necessário
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-maze-03-wall-object.png)
 
 ---
 
@@ -116,6 +120,8 @@ O texto de Show Message é uma string fixa — não pode incluir um valor
 dinâmico como o tempo decorrido. O cronômetro permanece visível no HUD
 (Passo 7) até a vitória, então o jogador já viu seu tempo.
 
+![obj_exit's Object Events panel: a Collision with obj_player event holding Show Message and Next Room](images/tutorial-maze-04-exit-object.png)
+
 ---
 
 ## Passo 5: Criar o Objeto Moeda
@@ -132,6 +138,8 @@ Moedas adicionam à pontuação quando coletadas.
    - Marque "Relative" para adicionar 10 pontos
 3. Add Action: **Instance** → **Destroy Instance**
    - Applies to: Self
+
+![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
 
 ---
 
@@ -167,6 +175,8 @@ dentro de um objeto sólido antes de o quadro ser desenhado (`obj_wall`
 é Solid), então o jogador nunca pode realmente se sobrepor a uma
 parede — o evento de colisão acima apenas zera qualquer velocidade
 restante, para que o jogador não continue "empurrando" contra ela.
+
+![obj_player's Object Events panel: Keyboard (held) with four Set Speed actions, Keyboard <No Key> with two, and Collision with obj_wall (Stop Movement)](images/tutorial-maze-06-player-object.png)
 
 ---
 
@@ -223,6 +233,8 @@ self.coins_left = sum(
 
 (depois defina o campo Variable da 3ª ação Draw Variable como `self.coins_left`).
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
+
 ---
 
 ## Passo 8: Projete Seu Labirinto
@@ -264,6 +276,8 @@ W W W W W W W W W W W W W W W W W W W W
 
 W = Parede    P = Jogador    E = Saída    C = Moeda    . = Vazio
 ```
+
+![The Room Editor for room_maze: a full slate wall border with maze corridors, the blue player at the top-left entrance, four gold coins along the paths, the green exit at the bottom-right, and the obj_game_controller marker on a corridor cell](images/tutorial-maze-08-room.png)
 
 ---
 

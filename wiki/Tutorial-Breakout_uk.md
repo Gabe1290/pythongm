@@ -49,6 +49,8 @@
 2. Назвіть його `bg_game`
 3. Намалюйте або завантажте зображення фону
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Крок 2: Створення об'єкта ракетки
@@ -84,6 +86,8 @@
 
 Тепер ракетка зупиняється, коли ви відпускаєте клавіші зі стрілками.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Крок 3: Створення об'єкта м'яча
@@ -110,6 +114,8 @@
 2. Додайте дію **Reverse Horizontal** або **Reverse Vertical** за потреби
    - Або використовуйте обидві для обробки відбивання в кутах
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Крок 4: Створення об'єкта цеглини
@@ -134,6 +140,8 @@
 2. **Add Event** → **Collision** → виберіть `obj_brick`
 3. Додайте дію **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Крок 5: Створення об'єкта стіни
@@ -144,6 +152,8 @@
 3. Поставте прапорець **Solid**
 
 Це все — стіна просто повинна бути твердою, щоб м'яч відбивався.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@
 3. **Розмістіть м'яч:** Покладіть `obj_ball` десь посередині
 
 4. **Розмістіть цеглини:** Розташуйте екземпляри `obj_brick` рядами у верхній частині кімнати
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 
