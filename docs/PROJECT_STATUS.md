@@ -62,25 +62,23 @@ This is the complete list. Everything else that used to be tracked in
    of `_register_action_handlers` are gone, with the live handlers folded into
    the mixins. **This plan now has no open work at all.**
 
-3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md` — Phase 1 done (2026-09-11),
-   Phase 2 in progress (2026-09-10), picked up on an explicit ask.**
-   Breakout, Pong, Sokoban, Maze and now **Platformer** each have per-step screenshots
-   (`wiki/images/tutorial-{breakout,pong,sokoban,maze,platformer}-*.png`) embedded at their
-   `## Step N` headings, produced by a committed, re-runnable tool
-   (`tools/capture_tutorial_screenshots.py`) that drives a real offscreen
-   `PyGameMakerIDE` through a scratch project matching the tutorial's own
-   text. **The plan's own flagged open question is answered**: scripting
-   the Room Editor turned out no harder than any other editor — an
-   instance placement is just an entry in the room's `instances` list,
-   the same "set the data, open the widget" mechanism that already
-   worked for sprites and objects. Two capture-tool defaults were refined
-   at the Phase 2 kickoff (wider window so a 640-wide room isn't clipped;
-   warm-tan instead of grey placeholder walls so they don't read as IDE
-   chrome) and the Breakout shots regenerated to match. **Remaining,
-   explicit-ask-only per this plan's own "pick up only on an explicit
-   ask" framing**: LunarLander (Phase 2) and all
-   translated-variant pages (Phase 3, `Tutorial-Breakout_fr.md`/
-   `Tutorial-Pong_fr.md` included).
+3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md` — Phase 1 + Phase 2 done
+   (2026-09-10/11), picked up on an explicit ask.** All six English
+   tutorials (Breakout, Pong, Sokoban, Maze, Platformer, LunarLander)
+   now carry per-step screenshots
+   (`wiki/images/tutorial-<name>-*.png`) embedded at their `## Step N`
+   headings, produced by a committed, re-runnable tool
+   (`tools/capture_tutorial_screenshots.py`, one `SCENARIOS` entry each)
+   that drives a real offscreen `PyGameMakerIDE` through a scratch
+   project matching the tutorial's own text. **The plan's own flagged
+   open question is answered**: scripting the Room Editor turned out no
+   harder than any other editor — an instance placement is just an entry
+   in the room's `instances` list. **Remaining**: the ~40 translated
+   variant pages (Phase 3 — same English-UI screenshots reused, per the
+   plan's own decision) and publishing `wiki/*` to the live GitHub wiki
+   (the sync script only carries `*.md`, so the `wiki/images/*.png` need
+   a separate step). Both explicitly asked for; in progress the same
+   sitting as Phase 2.
 
 4. **Full crafting system for Block World — DONE, all 4 units closed
    the same day it was written (2026-09-09).** *(This entry's own

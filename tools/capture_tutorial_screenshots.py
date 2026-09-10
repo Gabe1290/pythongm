@@ -1086,12 +1086,239 @@ def capture_platformer():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------------
+# Lunar Lander (wiki/Tutorial-LunarLander.md) -- Phase 2, tutorial 5 of five.
+# ---------------------------------------------------------------------------
+
+def capture_lunarlander():
+    app = _make_app()
+    ide = _make_ide(app)
+    scratch = _new_scratch_project(ide, "scratch_lunarlander")
+    am = ide.asset_manager
+    sprite_dir = scratch / "_capture_sprites"
+    sprite_dir.mkdir(exist_ok=True)
+
+    try:
+        # -- Step 2: Create the Sprites -------------------------------
+        sprites = [
+            ("spr_lander", (32, 32), "rect", (235, 235, 245, 255)),
+            ("spr_pad", (64, 16), "rect", (240, 220, 80, 255)),
+            ("spr_ground", (32, 32), "rect", (130, 120, 110, 255)),
+            ("spr_flame", (16, 16), "circle", (250, 160, 60, 255)),
+        ]
+        for name, size, shape, color in sprites:
+            png_path = sprite_dir / f"{name}.png"
+            _sprite_png(png_path, size, shape, color)
+            if am.import_asset(png_path, "sprites", name) is None:
+                raise RuntimeError(f"failed to import sprite {name!r}")
+        # 2.1: the lander's origin is center-BOTTOM (the tutorial calls this
+        # out as important for landing), not the centred default.
+        lander_sprite = am.get_asset("sprites", "spr_lander")
+        lander_sprite["origin_x"] = 16
+        lander_sprite["origin_y"] = 32
+        _sync(ide)
+        ide.open_sprite_editor("spr_lander", am.get_asset("sprites", "spr_lander"))
+        _capture(ide, app, "tutorial-lunarlander-02-sprites.png")
+
+        # -- Step 3: Create the Ground Object -----------------------
+        am.create_asset("obj_ground", "objects", sprite="spr_ground",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_ground", am.get_asset("objects", "obj_ground"))
+        _capture(ide, app, "tutorial-lunarlander-03-ground-object.png")
+
+        # -- Step 4: Create the Landing Pad Object ------------------
+        am.create_asset("obj_pad", "objects", sprite="spr_pad",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_pad", am.get_asset("objects", "obj_pad"))
+        _capture(ide, app, "tutorial-lunarlander-04-pad-object.png")
+
+        # -- Step 5: Create the Lander Object -----------------------
+        create_code = (
+            "self.thrust_force = 0.1\n"
+            "self.max_speed = 5\n"
+            "self.fuel = 100\n"
+            "self.fuel_use = 0.5\n"
+            "self.landed = False\n"
+            "self.crashed = False\n"
+            "self.safe_speed = 2\n"
+        )
+        step_code = (
+            "if not self.landed and not self.crashed:\n"
+            "    if keyboard.check('up') and self.fuel > 0:\n"
+            "        self.vspeed -= self.thrust_force\n"
+            "        self.fuel -= self.fuel_use\n"
+            "        if self.fuel < 0:\n"
+            "            self.fuel = 0\n"
+            "\n"
+            "    if keyboard.check('left'):\n"
+            "        self.hspeed -= 0.05\n"
+            "    if keyboard.check('right'):\n"
+            "        self.hspeed += 0.05\n"
+            "\n"
+            "    self.hspeed = max(-self.max_speed, min(self.max_speed, self.hspeed))\n"
+            "    self.vspeed = max(-self.max_speed, min(self.max_speed, self.vspeed))\n"
+        )
+        lander_events = {
+            "create": {"actions": [
+                {"action": "set_gravity",
+                 "parameters": {"direction": "270", "gravity": "0.05"}},
+                {"action": "execute_code", "parameters": {"code": create_code}},
+            ]},
+            "step": {"actions": [
+                {"action": "execute_code", "parameters": {"code": step_code}},
+            ]},
+            "collision_with_obj_pad": {"actions": [
+                {"action": "test_expression", "parameters": {
+                    "expression": "(self.hspeed**2 + self.vspeed**2)**0.5 <= self.safe_speed",
+                    "then_actions": [
+                        {"action": "set_variable", "parameters": {
+                            "variable": "landed", "value": "true",
+                            "scope": "self", "relative": False}},
+                        {"action": "stop_movement", "parameters": {}},
+                        {"action": "set_gravity",
+                         "parameters": {"direction": "270", "gravity": "0"}},
+                        {"action": "show_message",
+                         "parameters": {"message": "Perfect Landing! You Win!"}},
+                    ],
+                    "else_actions": [
+                        {"action": "set_variable", "parameters": {
+                            "variable": "crashed", "value": "true",
+                            "scope": "self", "relative": False}},
+                        {"action": "show_message",
+                         "parameters": {"message": "Crashed! Too fast!"}},
+                        {"action": "restart_room", "parameters": {}},
+                    ],
+                }},
+            ]},
+            "collision_with_obj_ground": {"actions": [
+                {"action": "set_variable", "parameters": {
+                    "variable": "crashed", "value": "true",
+                    "scope": "self", "relative": False}},
+                {"action": "show_message",
+                 "parameters": {"message": "Crashed into terrain!"}},
+                {"action": "restart_room", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_lander", "objects", sprite="spr_lander",
+                        solid=False, visible=True, events=lander_events)
+        _sync(ide)
+        ide.open_object_editor("obj_lander", am.get_asset("objects", "obj_lander"))
+        _capture(ide, app, "tutorial-lunarlander-05-lander-object.png")
+
+        # -- Step 6: Create the Flame Object (Optional) ------------
+        am.create_asset("obj_flame", "objects", sprite="spr_flame",
+                        solid=False, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_flame", am.get_asset("objects", "obj_flame"))
+        _capture(ide, app, "tutorial-lunarlander-06-flame-object.png")
+
+        # -- Step 7: Create the Game Controller -------------------
+        hud_code = (
+            "lander = None\n"
+            "for inst in game.current_room.instances:\n"
+            "    if inst.object_name == 'obj_lander':\n"
+            "        lander = inst\n"
+            "        break\n"
+            "\n"
+            "if lander is not None:\n"
+            "    self.fuel_display = round(lander.fuel)\n"
+            "    self.speed_display = round((lander.hspeed ** 2 + lander.vspeed ** 2) ** 0.5, 2)\n"
+            "    self.too_fast = self.speed_display > lander.safe_speed\n"
+            "    self.no_fuel = lander.fuel <= 0\n"
+            "else:\n"
+            "    self.fuel_display = 0\n"
+            "    self.speed_display = 0.0\n"
+            "    self.too_fast = False\n"
+            "    self.no_fuel = False\n"
+        )
+        controller_events = {
+            "draw": {"actions": [
+                {"action": "execute_code", "parameters": {"code": hud_code}},
+                {"action": "set_draw_color", "parameters": {"color": "#FFFFFF"}},
+                {"action": "draw_text", "parameters": {"text": "\"LUNAR LANDER\"", "x": "10", "y": "10"}},
+                {"action": "draw_text", "parameters": {"text": "\"Fuel:\"", "x": "10", "y": "30"}},
+                {"action": "draw_variable", "parameters": {"variable": "self.fuel_display", "x": "70", "y": "30"}},
+                {"action": "draw_text", "parameters": {"text": "\"Speed:\"", "x": "10", "y": "50"}},
+                {"action": "draw_variable", "parameters": {"variable": "self.speed_display", "x": "70", "y": "50"}},
+                {"action": "draw_text", "parameters": {"text": "\"Safe Speed: < 2\"", "x": "10", "y": "70"}},
+                {"action": "test_expression", "parameters": {
+                    "expression": "self.too_fast",
+                    "then_actions": [
+                        {"action": "set_draw_color", "parameters": {"color": "#FF0000"}},
+                        {"action": "draw_text", "parameters": {"text": "\"TOO FAST!\"", "x": "10", "y": "90"}},
+                    ],
+                    "else_actions": [
+                        {"action": "set_draw_color", "parameters": {"color": "#00FF00"}},
+                        {"action": "draw_text", "parameters": {"text": "\"Speed OK\"", "x": "10", "y": "90"}},
+                    ],
+                }},
+                {"action": "test_expression", "parameters": {
+                    "expression": "self.no_fuel",
+                    "then_actions": [
+                        {"action": "set_draw_color", "parameters": {"color": "#FF0000"}},
+                        {"action": "draw_text", "parameters": {"text": "\"NO FUEL!\"", "x": "10", "y": "110"}},
+                    ],
+                    "else_actions": [],
+                }},
+                {"action": "set_draw_color", "parameters": {"color": "#808080"}},
+                {"action": "draw_text", "parameters": {
+                    "text": "\"UP: Thrust | LEFT/RIGHT: Move\"", "x": "10", "y": "440"}},
+            ]},
+        }
+        am.create_asset("obj_game_controller", "objects", sprite=None,
+                        solid=False, visible=True, events=controller_events)
+        _sync(ide)
+        ide.open_object_editor("obj_game_controller",
+                               am.get_asset("objects", "obj_game_controller"))
+        _capture(ide, app, "tutorial-lunarlander-07-controller-object.png")
+
+        # -- Step 8: Design Your Level --------------------------
+        CELL = 32
+        COLS, ROWS = 20, 15   # 640 x 480, per Step 8's example
+        instances = []
+
+        def place(obj, col, row):
+            instances.append({
+                "object_name": obj,
+                "x": col * CELL + CELL // 2, "y": row * CELL + CELL // 2,
+                "rotation": 0, "scale_x": 1.0, "scale_y": 1.0, "visible": True,
+            })
+
+        # Bottom row: solid terrain all the way across.
+        for col in range(COLS):
+            place("obj_ground", col, ROWS - 1)
+        # Row above: rocky chunks with a clear gap where the pad sits.
+        for col in list(range(0, 3)) + list(range(6, 9)) + list(range(16, COLS)):
+            place("obj_ground", col, ROWS - 2)
+        # Landing pad in the gap (one 64px-wide instance).
+        place("obj_pad", 11, ROWS - 2)
+        # Lander up top; controller anywhere (invisible).
+        place("obj_lander", 3, 1)
+        place("obj_game_controller", 16, 1)
+
+        room_data = am.create_asset(
+            "room_game", "rooms",
+            width=COLS * CELL, height=ROWS * CELL, background_color="#05060a",
+            instances=instances)
+        _sync(ide)
+        ide.open_room_editor("room_game", room_data)
+        _fit_window_to_room(ide, app, "room_game")
+        _capture(ide, app, "tutorial-lunarlander-08-room.png")
+
+        print("Lunar Lander capture complete.")
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 SCENARIOS = {
     "breakout": capture_breakout,
     "pong": capture_pong,
     "sokoban": capture_sokoban,
     "maze": capture_maze,
     "platformer": capture_platformer,
+    "lunarlander": capture_lunarlander,
 }
 
 

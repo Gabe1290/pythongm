@@ -1,6 +1,10 @@
 # Plan: per-tutorial-step screenshots for the 6 build-along wiki tutorials
 
-Status: **Phase 1 DONE (2026-09-11) — Breakout, the proof of concept.**
+Status: **Phase 1 + Phase 2 DONE (2026-09-10/11) — all six English
+tutorials now carry per-step screenshots.** Phase 3 (the 40 translated
+variant pages) and publishing to the live GitHub wiki are the remaining
+work; both were explicitly asked for and are in progress in the same
+sitting as Phase 2.
 Written 2026-08-15; picked up on an explicit ask. This was the sole open
 item carried over from the wiki completeness effort's Phase 3 (that plan
 is otherwise fully closed — Phases 0-3 and 5 done, Phase 4 explicitly
@@ -218,7 +222,19 @@ Breakout shots were regenerated to match:**
      wider than the room editor's scroll viewport even at 1680px, so this
      grows the window until the canvas fits before grabbing (a no-op for
      the four narrower tutorials, so their shots are unchanged).
-   - LunarLander — not started.
+   - **LunarLander — DONE (2026-09-10).** `capture_lunarlander`; 7 shots
+     (`tutorial-lunarlander-02-sprites` … `-07-controller-object`,
+     `-08-room`), embedded in `wiki/Tutorial-LunarLander.md` at Steps
+     2–8. The lander sprite's origin is set to center-bottom (16, 32)
+     after import, matching Step 2.1's own emphasis (the IDE names that
+     preset "Center-Bottom"). Heavy `execute_code` + `test_expression`
+     (with `then_actions`/`else_actions`) use throughout, exactly as the
+     tutorial's own physics leans on Execute Code.
+
+   **Phase 2 is COMPLETE** — all six tutorials
+   (Breakout/Pong/Sokoban/Maze/Platformer/LunarLander) now carry
+   per-step screenshots. `tools/capture_tutorial_screenshots.py` has a
+   `SCENARIOS` entry for each, all re-runnable.
 3. **Translated variants.** Decide once phase 1-2 land: do the 8
    translated copies of each tutorial get the SAME English-captured
    screenshots (the IDE's own UI chrome would still be English unless the
