@@ -2554,10 +2554,21 @@ class GameRunner(InputMixin, CollisionMixin):
                         return ""
                     elif event.key == pygame.K_BACKSPACE:
                         player_name = player_name[:-1]
-                    elif event.unicode and len(player_name) < max_name_length:
-                        # Only allow printable characters
-                        if event.unicode.isprintable():
-                            player_name += event.unicode
+                    else:
+                        # getattr, not a bare event.unicode -- this loop
+                        # reads pygame.event.get(), the process-wide
+                        # queue, not one scoped to itself, so a KEYDOWN
+                        # arriving here without a unicode attribute (any
+                        # code building pygame.event.Event(pygame.KEYDOWN,
+                        # key=...) without it) must not crash the dialog.
+                        # Same bug class as extensions/multiplayer_lan
+                        # and multiplayer_files's connect_screen.py, both
+                        # fixed the same way.
+                        ch = getattr(event, "unicode", "")
+                        if ch and len(player_name) < max_name_length:
+                            # Only allow printable characters
+                            if ch.isprintable():
+                                player_name += ch
                 elif event.type == pygame.KEYUP:
                     self._release_held_key_silent(event.key)  # M54
                 elif event.type == pygame.MOUSEBUTTONDOWN:
