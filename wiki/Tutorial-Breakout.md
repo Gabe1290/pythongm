@@ -49,6 +49,8 @@ First, we need to create the visual elements for our game.
 2. Name it `bg_game`
 3. Draw or load a background image
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Step 2: Create the Paddle Object
@@ -84,6 +86,8 @@ The paddle keeps moving even after releasing the key! Let's fix that.
 
 Now the paddle stops when you release the arrow keys.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Step 3: Create the Ball Object
@@ -110,6 +114,8 @@ This makes the ball start moving when the game begins.
 2. Add the action **Reverse Horizontal** or **Reverse Vertical** as needed
    - Or use both to handle corner bounces
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Step 4: Create the Brick Object
@@ -134,6 +140,8 @@ the brick:
 2. **Add Event** → **Collision** → select `obj_brick`
 3. Add action **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Step 5: Create the Wall Object
@@ -144,6 +152,8 @@ the brick:
 3. Check the **Solid** checkbox
 
 That's all - the wall just needs to be solid for the ball to bounce off.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@ Now place your objects in the room:
 3. **Place the Ball:** Put `obj_ball` somewhere in the middle
 
 4. **Place the Bricks:** Arrange `obj_brick` instances in rows at the top of the room
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 
