@@ -144,6 +144,74 @@ def test_every_lesson_every_page_loads(language):
             assert html  # QTextBrowser always produces non-empty HTML once set
 
 
+class TestTutorial10FileExchangeMultiplayer:
+    """docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md's Track T, Phase 3: the new
+    lesson (Tutorials/10_file_exchange_multiplayer + its fr/ mirror) walked
+    the same way Section L verified every other lesson -- via the real
+    widget, not by asserting on file existence alone. The parametrized
+    tests above already re-verify the fr copy generically (it's just
+    another entry in Tutorials/fr/index.json now); this class adds the
+    ENGLISH root walk, which nothing above covers (LOCALIZED_LANGUAGES
+    only ever opens a Tutorials/<lang>/ subfolder, never the root
+    directly) and a direct pin on the new lesson's own shape.
+    """
+
+    def test_appears_in_both_language_indexes_with_matching_pages(self):
+        for index_path in (TUTORIALS_ROOT / "index.json", TUTORIALS_ROOT / "fr" / "index.json"):
+            with open(index_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            entries = [t for t in data["tutorials"] if t["folder"] == "10_file_exchange_multiplayer"]
+            assert len(entries) == 1, f"{index_path}: expected exactly one entry"
+            assert entries[0]["pages"] == [
+                "01_introduction.html",
+                "02_the_board.html",
+                "03_host_and_join.html",
+                "04_taking_turns.html",
+                "05_winning_and_playing_again.html",
+            ]
+            assert entries[0]["thumbnail"] == "thumbnails/10_file_exchange_multiplayer.png"
+
+    def test_thumbnail_file_exists(self):
+        assert (TUTORIALS_ROOT / "thumbnails" / "10_file_exchange_multiplayer.png").exists()
+
+    def test_english_root_every_page_loads(self):
+        """The English pages live directly under Tutorials/, not a
+        Tutorials/<lang>/ subfolder -- forcing the language to one with no
+        dedicated folder (matching test_ja_zh_fall_back_to_english_root_cleanly's
+        own technique) is what makes the panel resolve tutorials_path to
+        TUTORIALS_ROOT itself, so this walks the real English HTML files."""
+        _make_app()
+        from core.language_manager import get_language_manager
+        from widgets.tutorial_panel import TutorialPanel
+
+        manager = get_language_manager()
+        original = manager.current_language
+        try:
+            manager.current_language = "en"
+            panel = TutorialPanel()
+            panel.set_tutorials_path(TUTORIALS_ROOT)
+            assert panel.tutorials_path == TUTORIALS_ROOT
+
+            with open(TUTORIALS_ROOT / "index.json", "r", encoding="utf-8") as f:
+                index_data = json.load(f)
+            tutorial = next(t for t in index_data["tutorials"]
+                             if t["folder"] == "10_file_exchange_multiplayer")
+
+            panel.open_tutorial_by_data(tutorial)
+            assert panel.stack.currentIndex() == 1
+            assert len(panel.tutorial_pages) == len(tutorial["pages"])
+
+            for page_index in range(len(panel.tutorial_pages)):
+                panel.current_page_index = page_index
+                panel.load_current_page()
+                plain = panel.content_browser.toPlainText()
+                for marker in _ERROR_MARKERS:
+                    assert marker not in plain, f"page {page_index}: hit fallback branch {marker!r}"
+                assert len(plain.strip()) > 100, f"page {page_index}: suspiciously short content"
+        finally:
+            manager.current_language = original
+
+
 def test_ja_zh_fall_back_to_english_root_cleanly():
     """ja/zh have no Tutorials/<lang>/ folder yet (out of Section L's original
     scope) — the loader must fall back to the English root rather than error,

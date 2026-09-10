@@ -1,6 +1,6 @@
 # Extensions
 
-*[Accueil](Home_fr) | [Vue 3D](3D-View_fr) | [Réseau](Network_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
+*[Accueil](Home_fr) | [Vue 3D](3D-View_fr) | [Réseau](Network_fr) | [Multijoueur par échange de fichiers](FileExchange_fr) | [Référence Complète des Actions](Full-Action-Reference_fr)*
 
 ---
 
@@ -20,6 +20,14 @@ intégrée **Réseau (multijoueur LAN)** (la fonctionnalité [Réseau](Network_f
 est une seconde extension, plus grande : elle ajoute 15 actions « Réseau » et
 six événements, et met un jeu en réseau sur le réseau local depuis l'export
 ordinateur (en hôte ou en client) et l'export HTML5 (en client).
+L'extension **Multijoueur par échange de fichiers** (la fonctionnalité
+[Multijoueur par échange de fichiers](FileExchange_fr)) est une variante au
+tour par tour du Réseau (multijoueur LAN) : elle échange l'état du jeu via
+des fichiers sur un lecteur partagé plutôt que par une connexion en direct,
+pour une classe où un pare-feu bloque les connexions directes du Réseau
+(multijoueur LAN). Export ordinateur uniquement — voir la remarque
+« Pourquoi pas tous les exports » de la page [Multijoueur par échange de
+fichiers](FileExchange_fr).
 
 ---
 
@@ -97,5 +105,6 @@ l'extension exacte lorsqu'un projet a besoin d'une extension désactivée.
 
 - [Vue 3D](3D-View_fr) — la fonctionnalité fournie par l'extension 2.5D Raycast
 - [Réseau](Network_fr) — la fonctionnalité fournie par l'extension Réseau (multijoueur LAN)
+- [Multijoueur par échange de fichiers](FileExchange_fr) — la fonctionnalité fournie par l'extension Multijoueur par échange de fichiers
 - [Référence Complète des Actions](Full-Action-Reference_fr) — les actions d'extension y figurent aussi
 - [Exporter des Jeux](Exportation_fr) — les fonctionnalités d'extension sont conservées dans les exports

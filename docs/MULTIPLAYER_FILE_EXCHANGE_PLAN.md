@@ -1,6 +1,22 @@
-# Plan (proposal, not started): 1990s-style turn-based file-exchange multiplayer
+# Plan: 1990s-style turn-based file-exchange multiplayer
 
-**Status: PROPOSAL ONLY — nothing here is built.** Written on explicit ask
+**Status 2026-09-10: Track T (Teaching) DONE.** `wiki/FileExchange.md` +
+`_fr.md` (the historical grounding, action/event tables, a minimal example,
+cross-linked from `Home`/`Extensions`/`Network` in both languages) and
+Tutorial 10 (`Tutorials/10_file_exchange_multiplayer/` +
+`Tutorials/fr/10_file_exchange_multiplayer/`, 5 pages each, `index.json`
+entries in both languages, a placeholder thumbnail, real widget-driven test
+coverage in `tests/test_tutorial_panel_i18n_verification.py`) are both
+written against this doc's "Proposed action surface" as the stable
+contract, per "Why Track T doesn't have to wait on Track E" below — Track
+E (the actual `extensions/multiplayer_files/` code) had not started as of
+this writing. **The one real coupling point still open**: once Track E
+lands, do the reconciliation pass this doc's own "How to decide" section
+calls for — diff the landed action names/params against what the wiki page
+and Tutorial 10 currently describe, and fix any drift in the same commit
+as whichever side changes. Track E's phases below are still fully open.
+
+**Status before 2026-09-10: PROPOSAL ONLY — nothing here is built.** Written on explicit ask
 (2026-09) after the user described hitting school-LAN firewall problems with
 `extensions/multiplayer_lan/`'s socket-based transport, and asked specifically
 for a plan for the old "games exchanged state through a shared file" pattern

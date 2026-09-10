@@ -146,6 +146,8 @@ In the player object's Create event:
 
 ## See Also
 
+- [File Exchange Multiplayer](FileExchange) — the turn-based sibling, for a
+  classroom where a firewall blocks this extension's direct connections
 - [Extensions](Extensions) — how LAN Multiplayer ships and how to turn it off
 - [Full Action Reference](Full-Action-Reference-Network-Actions) — every action and parameter
 - [Event Reference](Event-Reference) — the six Network events in context

@@ -159,6 +159,9 @@ Dans l'événement Création de l'objet joueur :
 
 ## Voir aussi
 
+- [Multijoueur par échange de fichiers](FileExchange_fr) — la variante au
+  tour par tour, pour une classe où un pare-feu bloque les connexions
+  directes de cette extension
 - [Extensions](Extensions_fr) — comment le Réseau est fourni et comment le désactiver
 - [Référence Complète des Actions](Full-Action-Reference-Network-Actions_fr) — chaque action et paramètre
 - [Référence des Événements](Event-Reference_fr) — les six événements réseau en contexte

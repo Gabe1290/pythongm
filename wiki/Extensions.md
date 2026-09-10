@@ -1,6 +1,6 @@
 # Extensions
 
-*[Home](Home) | [3D View](3D-View) | [Network](Network) | [Full Action Reference](Full-Action-Reference)*
+*[Home](Home) | [3D View](3D-View) | [Network](Network) | [File Exchange Multiplayer](FileExchange) | [Full Action Reference](Full-Action-Reference)*
 
 ---
 
@@ -18,6 +18,12 @@ it exports to all three targets. The built-in **LAN Multiplayer** extension
 (the [Network](Network) feature) is a second, larger one: it adds 15
 "Network" actions and six events, and networks a game over the local network
 from the desktop export (as host or client) and the HTML5 export (as client).
+The **File Exchange Multiplayer** extension (the [File Exchange
+Multiplayer](FileExchange) feature) is a turn-based sibling to LAN
+Multiplayer: it exchanges game state through files on a shared drive instead
+of a live connection, for a classroom where a firewall blocks LAN
+Multiplayer's direct connections. Desktop export only — see [File Exchange
+Multiplayer](FileExchange)'s own "Why not every export" note.
 
 ---
 
@@ -92,5 +98,6 @@ extension when a project needs a disabled one.
 
 - [3D View](3D-View) — the feature the 2.5D Raycast extension provides
 - [Network](Network) — the feature the LAN Multiplayer extension provides
+- [File Exchange Multiplayer](FileExchange) — the feature the File Exchange Multiplayer extension provides
 - [Full Action Reference](Full-Action-Reference) — extension actions appear here too
 - [Exporting Games](Exporting-Games) — extension features carry into exports

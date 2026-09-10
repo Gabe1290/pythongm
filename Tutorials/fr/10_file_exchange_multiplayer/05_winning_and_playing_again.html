@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.lines { border-collapse: collapse; margin: 8px 0; }
+        table.lines td, table.lines th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4 : Gagner et rejouer</h1>
+
+    <p>Dernière pièce : vérifier trois symboles alignés, annoncer le
+    gagnant sur les deux écrans, et laisser les deux joueurs recommencer.</p>
+
+    <h2>Vérifier une ligne</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez l'événement <strong>Tour résolu</strong> de
+            <code>obj_controller</code> (ajoutez-en un s'il n'existe pas
+            encore) et ajoutez ceci, en vérifiant la rangée du haut :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Tour résolu</span><br>
+            <span class="block block-control block-indent">Si <span class="block-text">global.cell_100_100 == global.cell_300_100 and global.cell_300_100 == global.cell_500_100 and global.cell_100_100 != ""</span> alors</span><br>
+            <span class="block block-control block-indent2">Définir la variable <span class="block-text">winner</span> à <span class="block-text">global.cell_100_100</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Ce que ça fait :</strong> si les trois cases de la
+            ligne contiennent le <em>même</em> symbole, et que ce symbole
+            n'est pas vide, quelqu'un vient de gagner sur cette ligne
+            &mdash; <code>winner</code> devient ce symbole.
+        </div>
+    </div>
+
+    <h2>Vérifier les sept autres lignes</h2>
+    <div class="step">
+        <p>Répétez exactement le même modèle pour chacune de ces lignes
+        &mdash; trois noms de case, tous égaux, non vides :</p>
+        <table class="lines">
+            <tr><th>Ligne</th><th>Case A</th><th>Case B</th><th>Case C</th></tr>
+            <tr><td>Rangée du milieu</td><td>cell_100_300</td><td>cell_300_300</td><td>cell_500_300</td></tr>
+            <tr><td>Rangée du bas</td><td>cell_100_500</td><td>cell_300_500</td><td>cell_500_500</td></tr>
+            <tr><td>Colonne gauche</td><td>cell_100_100</td><td>cell_100_300</td><td>cell_100_500</td></tr>
+            <tr><td>Colonne du milieu</td><td>cell_300_100</td><td>cell_300_300</td><td>cell_300_500</td></tr>
+            <tr><td>Colonne droite</td><td>cell_500_100</td><td>cell_500_300</td><td>cell_500_500</td></tr>
+            <tr><td>Diagonale &#8598;&#8600;</td><td>cell_100_100</td><td>cell_300_300</td><td>cell_500_500</td></tr>
+            <tr><td>Diagonale &#8599;&#8601;</td><td>cell_500_100</td><td>cell_300_300</td><td>cell_100_500</td></tr>
+        </table>
+        <p style="font-style: italic;">Huit blocs <strong>Si</strong> au
+        total dans l'événement <strong>Tour résolu</strong> &mdash;
+        fastidieux à taper, mais chacun a exactement la même forme que le
+        premier.</p>
+    </div>
+
+    <h2>Afficher le gagnant</h2>
+    <div class="step">
+        <ol>
+            <li>Ajoutez un événement <strong>Création</strong> à
+            <code>obj_controller</code> qui définit <code>winner</code> à
+            <code>""</code> (pour qu'il ne reste pas un gagnant d'une
+            partie précédente)</li>
+            <li>Ajoutez un événement <strong>Au dessin</strong> :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Au dessin</span><br>
+            <span class="block block-control block-indent">Si <span class="block-text">winner != ""</span> alors</span><br>
+            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">winner + " gagne ! Appuyez sur ESPACE pour rejouer."</span> à x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
+        </div>
+    </div>
+
+    <h2>Rejouer</h2>
+    <div class="step">
+        <p>N'importe quel joueur peut recommencer une fois qu'il y a un gagnant :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Touche pressée : Espace</span><br>
+            <span class="block block-control block-indent">Si <span class="block-text">winner != ""</span> alors</span><br>
+            <span class="block block-network block-indent2">Quitter la partie (fichiers)</span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Ce que ça fait :</strong> <strong>Quitter la partie
+            (fichiers)</strong> arrête proprement cette session sans toucher
+            aux fichiers de l'autre joueur. Appuyez à nouveau sur
+            <strong>H</strong> ou <strong>J</strong> (comme en Phase 2) sur
+            les deux ordinateurs pour démarrer une nouvelle partie.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez le jeu complet !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 sur les deux ordinateurs !</strong></p>
+        <ul>
+            <li>Hébergez et rejoignez comme en Phase 2</li>
+            <li>Jouez chacun son tour comme en Phase 3, X puis O</li>
+            <li>Obtenez trois symboles alignés &rarr; les deux écrans annoncent le gagnant</li>
+            <li>Appuyez sur <strong>ESPACE</strong>, puis à nouveau sur H/J, pour rejouer</li>
+        </ul>
+    </div>
+
+    <h2>Vous avez construit un jeu multijoueur par échange de fichiers !</h2>
+    <p>C'est une boucle multijoueur au tour par tour complète, utilisant la
+    même idée que des jeux comme <strong>VGA Planets</strong> il y a des
+    décennies &mdash; aucune connexion en direct, aucun problème de
+    pare-feu, juste des fichiers sur un dossier partagé :</p>
+    <ul>
+        <li>Héberger et rejoindre via un dossier partagé plutôt qu'une connexion directe</li>
+        <li>Préparer un coup et le soumettre avec <strong>Terminer le tour</strong></li>
+        <li>Ne laisser jouer que le bon joueur</li>
+        <li>Réagir à <strong>Tour résolu</strong> pour rester synchronisé entre les machines</li>
+        <li>Une vérification de victoire complète et un moyen de rejouer</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Essayez ensuite :</strong> ajoutez un message « Tour manqué »
+        pour quand quelqu'un met trop de temps, ou un score cumulé sur
+        plusieurs parties avec une autre variable partagée.
+    </div>
+</body>
+</html>

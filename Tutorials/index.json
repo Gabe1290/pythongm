@@ -112,6 +112,19 @@
                 "04_catching_and_crashing.html",
                 "05_winning.html"
             ]
+        },
+        {
+            "title": "Turn-Based Multiplayer: Tic-Tac-Toe by File Exchange",
+            "folder": "10_file_exchange_multiplayer",
+            "description": "Play Tic-Tac-Toe against another computer through a shared folder, no live connection needed",
+            "thumbnail": "thumbnails/10_file_exchange_multiplayer.png",
+            "pages": [
+                "01_introduction.html",
+                "02_the_board.html",
+                "03_host_and_join.html",
+                "04_taking_turns.html",
+                "05_winning_and_playing_again.html"
+            ]
         }
     ]
 }
