@@ -694,10 +694,190 @@ def capture_sokoban():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------------
+# Maze (wiki/Tutorial-Maze.md) -- Phase 2, tutorial 3 of the remaining five.
+# NOTE: its object/sprite names (obj_player/obj_coin/obj_exit ...) do NOT
+# match the bundled samples/maze_1 (obj_person/obj_goal/obj_wall), so this
+# needs its own scratch project like every other one.
+# ---------------------------------------------------------------------------
+
+def capture_maze():
+    app = _make_app()
+    ide = _make_ide(app)
+    scratch = _new_scratch_project(ide, "scratch_maze")
+    am = ide.asset_manager
+    sprite_dir = scratch / "_capture_sprites"
+    sprite_dir.mkdir(exist_ok=True)
+
+    try:
+        # -- Step 2: Create the Sprites -----------------------------------
+        sprites = [
+            ("spr_player", (24, 24), "circle", (90, 200, 250, 255)),
+            ("spr_wall", (32, 32), "rect", (95, 105, 125, 255)),
+            ("spr_exit", (32, 32), "rect", (90, 200, 110, 255)),
+            ("spr_coin", (16, 16), "circle", (245, 205, 70, 255)),
+            ("spr_floor", (32, 32), "rect", (60, 60, 70, 255)),
+        ]
+        for name, size, shape, color in sprites:
+            png_path = sprite_dir / f"{name}.png"
+            _sprite_png(png_path, size, shape, color)
+            if am.import_asset(png_path, "sprites", name) is None:
+                raise RuntimeError(f"failed to import sprite {name!r}")
+        _sync(ide)
+        ide.open_sprite_editor("spr_player", am.get_asset("sprites", "spr_player"))
+        _capture(ide, app, "tutorial-maze-02-sprites.png")
+
+        # -- Step 3: Create the Wall Object ------------------------------
+        am.create_asset("obj_wall", "objects", sprite="spr_wall",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_wall", am.get_asset("objects", "obj_wall"))
+        _capture(ide, app, "tutorial-maze-03-wall-object.png")
+
+        # -- Step 4: Create the Exit Object -----------------------------
+        exit_events = {
+            "collision_with_obj_player": {"actions": [
+                {"action": "show_message", "parameters": {"message": "You Win!"}},
+                {"action": "next_room", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_exit", "objects", sprite="spr_exit",
+                        solid=False, visible=True, events=exit_events)
+        _sync(ide)
+        ide.open_object_editor("obj_exit", am.get_asset("objects", "obj_exit"))
+        _capture(ide, app, "tutorial-maze-04-exit-object.png")
+
+        # -- Step 5: Create the Coin Object ---------------------------
+        coin_events = {
+            "collision_with_obj_player": {"actions": [
+                {"action": "set_score",
+                 "parameters": {"value": "10", "relative": True}},
+                {"action": "destroy_instance", "parameters": {"target": "self"}},
+            ]},
+        }
+        am.create_asset("obj_coin", "objects", sprite="spr_coin",
+                        solid=False, visible=True, events=coin_events)
+        _sync(ide)
+        ide.open_object_editor("obj_coin", am.get_asset("objects", "obj_coin"))
+        _capture(ide, app, "tutorial-maze-05-coin-object.png")
+
+        # -- Step 6: Create the Player Object ------------------------
+        player_events = {
+            "keyboard": {
+                "right": {"actions": [
+                    {"action": "set_hspeed", "parameters": {"speed": "4"}}]},
+                "left": {"actions": [
+                    {"action": "set_hspeed", "parameters": {"speed": "-4"}}]},
+                "down": {"actions": [
+                    {"action": "set_vspeed", "parameters": {"speed": "4"}}]},
+                "up": {"actions": [
+                    {"action": "set_vspeed", "parameters": {"speed": "-4"}}]},
+            },
+            "keyboard_no_key": {"actions": [
+                {"action": "set_hspeed", "parameters": {"speed": "0"}},
+                {"action": "set_vspeed", "parameters": {"speed": "0"}},
+            ]},
+            "collision_with_obj_wall": {"actions": [
+                {"action": "stop_movement", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_player", "objects", sprite="spr_player",
+                        solid=False, visible=True, events=player_events)
+        _sync(ide)
+        ide.open_object_editor("obj_player", am.get_asset("objects", "obj_player"))
+        _capture(ide, app, "tutorial-maze-06-player-object.png")
+
+        # -- Step 7: Create the Game Controller ---------------------
+        coins_left_code = (
+            "self.coins_left = sum(\n"
+            "    1 for inst in game.current_room.instances\n"
+            "    if inst.object_name == 'obj_coin'\n"
+            ")\n"
+        )
+        controller_events = {
+            "create": {"actions": [
+                {"action": "execute_code", "parameters": {"code": "self.timer = 0.0\n"}},
+            ]},
+            "step": {"actions": [
+                {"action": "execute_code",
+                 "parameters": {"code": "self.timer += 1.0 / game.fps\n"}},
+            ]},
+            "draw": {"actions": [
+                {"action": "draw_text", "parameters": {"text": "\"Score:\"", "x": "10", "y": "10"}},
+                {"action": "draw_text", "parameters": {"text": "\"Time:\"", "x": "10", "y": "30"}},
+                {"action": "draw_text", "parameters": {"text": "\"Coins:\"", "x": "10", "y": "50"}},
+                {"action": "execute_code", "parameters": {"code": coins_left_code}},
+                {"action": "draw_variable", "parameters": {"variable": "score", "x": "70", "y": "10"}},
+                {"action": "draw_variable", "parameters": {"variable": "self.timer", "x": "70", "y": "30"}},
+                {"action": "draw_variable", "parameters": {"variable": "self.coins_left", "x": "70", "y": "50"}},
+            ]},
+        }
+        am.create_asset("obj_game_controller", "objects", sprite=None,
+                        solid=False, visible=True, events=controller_events)
+        _sync(ide)
+        ide.open_object_editor("obj_game_controller",
+                               am.get_asset("objects", "obj_game_controller"))
+        _capture(ide, app, "tutorial-maze-07-controller-object.png")
+
+        # -- Step 8: Design Your Maze --------------------------------
+        # The tutorial's own "Example Maze Layout" ASCII, transcribed
+        # verbatim (space-separated, 20 tokens x 15 rows).
+        CELL = 32
+        LAYOUT_RAW = [
+            "W W W W W W W W W W W W W W W W W W W W",
+            "W P . . . . W . . . . . . . W . . . . W",
+            "W . W W W . W . W W W W W . W . W W . W",
+            "W . W . . . . . . . . . . . . . . W . W",
+            "W . W . W W W W W . W W W W W W . W . W",
+            "W . . . W . . . . . . . . C . W . . . W",
+            "W W W . W . W W W W W W W . . W W W . W",
+            "W C . . . . W . . . . . W . . . . . . W",
+            "W . W W W W W . W W W . W W W W W W . W",
+            "W . . . . . . . . C . . . . . . . . . W",
+            "W . W W W W W W W W W . W W W W W W . W",
+            "W . . . . . . . . . . . W . . . . . . W",
+            "W W W W W W W W W W W . W . W W W W . W",
+            "W . . . . . . . . . . . . . W . C . E W",
+            "W W W W W W W W W W W W W W W W W W W W",
+        ]
+        norm = [line.split() for line in LAYOUT_RAW]
+        COLS, ROWS = len(norm[0]), len(norm)
+
+        instances = []
+
+        def place(obj, col, row):
+            instances.append({
+                "object_name": obj,
+                "x": col * CELL + CELL // 2, "y": row * CELL + CELL // 2,
+                "rotation": 0, "scale_x": 1.0, "scale_y": 1.0, "visible": True,
+            })
+
+        char_obj = {"W": "obj_wall", "C": "obj_coin", "E": "obj_exit", "P": "obj_player"}
+        for row, line in enumerate(norm):
+            for col, ch in enumerate(line):
+                if ch in char_obj:
+                    place(char_obj[ch], col, row)
+        # Controller: anywhere (invisible) -- a clear interior cell.
+        place("obj_game_controller", 3, 11)
+
+        room_data = am.create_asset(
+            "room_maze", "rooms",
+            width=COLS * CELL, height=ROWS * CELL, background_color="#101014",
+            instances=instances)
+        _sync(ide)
+        ide.open_room_editor("room_maze", room_data)
+        _capture(ide, app, "tutorial-maze-08-room.png")
+
+        print("Maze capture complete.")
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 SCENARIOS = {
     "breakout": capture_breakout,
     "pong": capture_pong,
     "sokoban": capture_sokoban,
+    "maze": capture_maze,
 }
 
 

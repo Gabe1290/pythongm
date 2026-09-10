@@ -85,6 +85,8 @@ All wall and floor sprites should be 32x32 pixels to create a proper grid.
 3. Use a light neutral color
 4. Size: 32x32 pixels
 
+![The Sprite Editor with spr_player open (24x24), origin centered; spr_player, spr_wall, spr_exit, spr_coin and spr_floor in the resource tree](images/tutorial-maze-02-sprites.png)
+
 ---
 
 ## Step 3: Create the Wall Object
@@ -96,6 +98,8 @@ The wall blocks player movement.
 3. Set the sprite to `spr_wall`
 4. **Check the "Solid" checkbox**
 5. No events needed
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-maze-03-wall-object.png)
 
 ---
 
@@ -116,6 +120,8 @@ Show Message's text is a plain, static string — it can't embed a live value
 like the elapsed time. The timer stays visible in the HUD (Step 7) right up
 to the win, so the player has already seen their time.
 
+![obj_exit's Object Events panel: a Collision with obj_player event holding Show Message and Next Room](images/tutorial-maze-04-exit-object.png)
+
 ---
 
 ## Step 5: Create the Coin Object
@@ -132,6 +138,8 @@ Coins add to the score when collected.
    - Check "Relative" to add 10 points
 3. Add Action: **Main1** → **Destroy Instance**
    - Applies to: Self
+
+![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-maze-05-coin-object.png)
 
 ---
 
@@ -166,6 +174,8 @@ loop already refuses to move an instance into a solid object before the
 frame is drawn (`obj_wall` is Solid), so the player can never actually
 overlap a wall — the collision event above just zeroes any leftover
 speed so the player doesn't keep "pushing" against it.
+
+![obj_player's Object Events panel: Keyboard (held) with four Set Speed actions, Keyboard <No Key> with two, and Collision with obj_wall (Stop Movement)](images/tutorial-maze-06-player-object.png)
 
 ---
 
@@ -222,6 +232,8 @@ self.coins_left = sum(
 
 (then set the 3rd Draw Variable's Variable field to `self.coins_left`).
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (three Draw Text, one Execute Code, three Draw Variable -- seven actions), with no sprite set](images/tutorial-maze-07-controller-object.png)
+
 ---
 
 ## Step 8: Design Your Maze
@@ -263,6 +275,8 @@ W W W W W W W W W W W W W W W W W W W W
 
 W = Wall    P = Player    E = Exit    C = Coin    . = Empty
 ```
+
+![The Room Editor for room_maze: a full slate wall border with maze corridors, the blue player at the top-left entrance, four gold coins along the paths, the green exit at the bottom-right, and the obj_game_controller marker on a corridor cell](images/tutorial-maze-08-room.png)
 
 ---
 
