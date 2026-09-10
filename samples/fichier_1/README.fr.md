@@ -21,28 +21,29 @@ lecteur réseau mappé, un dossier Dropbox/OneDrive synchronisé, ...) — ou
 une seule machine avec deux fenêtres Tester le Jeu pour une vérification
 rapide en local.
 
-1. **Sur les deux machines :** ouvrez cet échantillon et appuyez sur
-   **Tester le Jeu** (F5).
-2. Sur une machine, appuyez sur **H** pour héberger — vous jouez **X**.
-3. Sur l'autre, appuyez sur **J** pour rejoindre — vous jouez **O**.
-4. Cliquez sur une case à votre tour. Le bas de la fenêtre indique à qui
+1. **Sur la machine hôte :** ouvrez cet échantillon, appuyez sur
+   **Tester le Jeu** (F5), puis sur **H** — vous jouez **X**. Par
+   défaut, cela héberge dans un dossier nommé `tictactoe_files`, créé à
+   côté de l'endroit où le jeu est lancé (suffisant pour un test sur une
+   seule machine ; pour une vraie partie à deux machines, ouvrez
+   l'événement clavier `h` de `obj_game` et changez le paramètre
+   **Dossier partagé** de `Héberger une partie (échange de fichiers)`
+   pour un chemin réel accessible depuis les deux machines — une lettre
+   de lecteur mappé, ou un chemin UNC du type
+   `\\serveur\partage\morpion`).
+2. **Sur la machine qui rejoint :** appuyez sur **Tester le Jeu**, puis
+   sur **J** — un petit écran apparaît demandant le chemin du dossier
+   partagé. Tapez le *même* chemin que celui utilisé par l'hôte
+   (`tictactoe_files` pour un test sur une seule machine) et appuyez sur
+   Entrée ou sur **Se connecter**. Vous jouez **O**.
+3. Cliquez sur une case à votre tour. Le bas de la fenêtre indique à qui
    c'est le tour.
-
-Par défaut, les deux actions pointent vers un dossier nommé
-`tictactoe_files`, créé à côté de l'endroit où le jeu est lancé —
-suffisant pour un test sur une seule machine. **Pour une vraie partie à
-deux machines**, ouvrez les événements clavier `h`/`j` de `obj_game` et
-changez le paramètre **Dossier partagé** des deux actions `Héberger une
-partie (échange de fichiers)` et `Rejoindre une partie (échange de
-fichiers)` pour le *même* chemin réel accessible depuis les deux
-machines (par exemple une lettre de lecteur mappé, ou un chemin UNC du
-type `\\serveur\partage\morpion`).
 
 ## Comment ça marche
 
 | Objet | Rôle |
 |---|---|
-| `obj_game` | Tout — la seule instance de la salle. Ses événements clavier `h`/`j` appellent `Héberger une partie (échange de fichiers)` / `Rejoindre une partie (échange de fichiers)` et fixent la marque de cette machine (l'hôte joue toujours X, le joueur qui rejoint joue toujours O). Son événement **Step** détermine à qui c'est le tour d'après la parité de `global.round_number` et, sur la machine dont ce n'est *pas* le tour, appelle `Terminer le tour (échange de fichiers)` sans rien avoir préparé — un « passe » — pour que la manche se résolve rapidement plutôt que d'attendre tout le `round_deadline`. |
+| `obj_game` | Tout — la seule instance de la salle. Son événement clavier `h` appelle directement `Héberger une partie (échange de fichiers)` et fixe immédiatement la marque de cette machine à X (héberger réussit ou échoue de façon synchrone — aucune incertitude à attendre). Son événement clavier `j` appelle `Rejoindre une partie (échange de fichiers)` avec **Dossier partagé = `"auto"`**, ce qui ouvre l'écran de connexion intégré pour taper le chemin ; la marque n'est fixée à O que dans l'événement **Session de fichiers démarrée**, une fois que l'hôte a réellement accueilli cette machine — jamais de façon synchrone juste après l'appui sur la touche, car une connexion en `"auto"` peut être annulée à cet écran, et le jeu ne doit pas croire qu'il joue une partie qui n'a jamais commencé. Son événement **Step** détermine à qui c'est le tour d'après la parité de `global.round_number` et, sur la machine dont ce n'est *pas* le tour, appelle `Terminer le tour (échange de fichiers)` sans rien avoir préparé — un « passe » — pour que la manche se résolve rapidement plutôt que d'attendre tout le `round_deadline`. |
 
 Le plateau est composé de neuf variables partagées (`cell_0_0` …
 `cell_2_2`, colonne puis ligne), chacune définie avec `Définir une
@@ -81,9 +82,13 @@ alignée est un match nul.
   voici la solution de repli : il ne faut qu'un accès en lecture/écriture
   à un lecteur partagé que la classe utilise déjà.
 - **Le dossier partagé doit être réel et accessible depuis les deux
-  machines** — contrairement à la découverte automatique du multijoueur
-  LAN, il n'y a pas encore d'option « auto » ici (Phase 4 du plan).
-  Pointez les deux machines vers exactement le même chemin.
+  machines** — contrairement à la découverte de serveurs du multijoueur
+  LAN, il n'y a ici aucun balayage réseau, juste un chemin tapé au
+  clavier (Phase 4 du plan ; un véritable navigateur de dossiers reste
+  explicitement hors du périmètre). Pointez les deux machines vers
+  exactement le même chemin ; l'écran de connexion refuse un chemin
+  inexistant ou non accessible en écriture avant même de tenter de se
+  connecter.
 - Une manche peut prendre quelques secondes à se résoudre sur un lecteur
   réseau lent ou très chargé — l'extension vérifie une fois par seconde,
   pas à chaque image, c'est voulu (voir la section « pourquoi c'est

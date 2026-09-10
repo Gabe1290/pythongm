@@ -70,6 +70,11 @@ PLUGIN_ACTIONS = {
                                 "move before advancing the round anyway "
                                 "(a missing player is skipped that round, "
                                 "not left blocking the game forever)"),
+            ActionParameter(name="show_lobby", display_name="Waiting room",
+                param_type="boolean", default_value=False, required=False,
+                description="Show a \"Waiting for players...\" screen "
+                                "with a Start button before handing "
+                                "control back to the game"),
         ],
     ),
     "join_game_files": ActionType(
@@ -83,7 +88,9 @@ PLUGIN_ACTIONS = {
         parameters=[
             ActionParameter(name="folder", display_name="Shared folder",
                 param_type="string", default_value="", required=True,
-                description="Path to the SAME shared folder the host used"),
+                description="Path to the SAME shared folder the host used "
+                                "(\"auto\" opens the built-in screen to "
+                                "type it in)"),
             ActionParameter(name="player_name", display_name="Player name",
                 param_type="string", default_value="", required=False,
                 description="This player's name (empty = "

@@ -40,9 +40,11 @@ _CATEGORY = "Network"
 PLUGIN_EVENTS = {
     "file_session_started": EventType(
         name="file_session_started", display_name="File Session Started",
-        description="This machine's file-exchange session is up -- a "
-                        "client was welcomed by the host, or hosting "
-                        "began. global.player_id is set.",
+        description="A client was welcomed by the host -- global.player_id "
+                        "is now set. Client-only: the host already knows "
+                        "synchronously, right after \"Host a Game (File "
+                        "Exchange)\" returns, that hosting worked, so this "
+                        "never fires on the host.",
         category=_CATEGORY, icon="🗂️", parameters=[]),
     "player_joined_files": EventType(
         name="player_joined_files", display_name="Player Joined (Files)",

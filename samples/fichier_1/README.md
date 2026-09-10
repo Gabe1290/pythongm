@@ -19,25 +19,26 @@ Two machines that can both reach the same shared folder (a mapped
 network drive, a synced Dropbox/OneDrive folder, ...) — or one machine
 with two Test Game windows for a quick local check.
 
-1. **Both machines:** open this sample and press **Test Game** (F5).
-2. On one machine, press **H** to host — you play **X**.
-3. On the other, press **J** to join — you play **O**.
-4. Click a cell on your turn. The bottom of the window shows whose turn
+1. **On the host machine:** open this sample, press **Test Game** (F5),
+   then press **H** — you play **X**. By default this hosts in a folder
+   named `tictactoe_files`, created next to wherever the game is run
+   from (fine for a one-machine test; for real two-machine play, open
+   `obj_game`'s `h` keyboard event and change `Host a Game (File
+   Exchange)`'s **Shared folder** parameter to a real path both machines
+   can reach — a mapped drive letter, or a UNC path like
+   `\\server\share\tictactoe`).
+2. **On the joining machine:** press **Test Game**, then **J** — a small
+   screen appears asking for the shared folder's path. Type the *same*
+   path the host is using (`tictactoe_files` for a one-machine test) and
+   press Enter or **Se connecter**. You play **O**.
+3. Click a cell on your turn. The bottom of the window shows whose turn
    it is.
-
-By default both actions point at a folder named `tictactoe_files`,
-created next to wherever the game is run from — fine for a one-machine
-test. **For real two-machine play**, open `obj_game`'s `h`/`j` keyboard
-events and change the **Shared folder** parameter on both `Host a Game
-(File Exchange)` and `Join a Game (File Exchange)` to the *same* real
-path both machines can reach (for example a mapped drive letter, or a
-UNC path like `\\server\share\tictactoe`).
 
 ## How it works
 
 | Object | Role |
 |---|---|
-| `obj_game` | Everything — the sole instance in the room. Its `h`/`j` keyboard events call `Host a Game (File Exchange)` / `Join a Game (File Exchange)` and fix this machine's mark (host is always X, the joining player always O). Its **Step** event works out whose turn it is from `global.round_number`'s parity and, on the machine that is *not* on turn, calls `End Turn (File Exchange)` with nothing staged — a "pass" — so the round still resolves promptly instead of waiting out the full `round_deadline`. |
+| `obj_game` | Everything — the sole instance in the room. Its `h` keyboard event calls `Host a Game (File Exchange)` directly and fixes this machine's mark to X immediately (hosting either works or fails synchronously — no ambiguity to wait on). Its `j` keyboard event calls `Join a Game (File Exchange)` with **Shared folder = `"auto"`**, which opens the built-in connect screen to type the path in; the mark only gets fixed to O in the **File Session Started** event, once the host has actually welcomed this machine — never synchronously right after the keypress, since a `"auto"` join can be cancelled at that screen and the game must not think it's playing a match that never started. Its **Step** event works out whose turn it is from `global.round_number`'s parity and, on the machine that is *not* on turn, calls `End Turn (File Exchange)` with nothing staged — a "pass" — so the round still resolves promptly instead of waiting out the full `round_deadline`. |
 
 The board is nine shared variables (`cell_0_0` … `cell_2_2`, column then
 row), each set with `Set a Shared Variable (File Exchange)` and
@@ -71,9 +72,11 @@ board with no line evaluates as a draw.
   this is the fallback: it only needs read/write access to a shared
   drive the classroom already uses.
 - **The shared folder must be real and reachable from both machines** —
-  unlike LAN multiplayer's auto-discovery, there is no "auto" option
-  here yet (Phase 4 of the plan). Point both machines at the exact same
-  path.
+  unlike LAN multiplayer's server discovery, there is no scanning here,
+  just a typed path (Phase 4 of the plan; a folder *browser* is still
+  explicitly out of scope). Point both machines at the exact same path;
+  the join screen rejects a path that doesn't exist or isn't writable
+  before it ever tries to connect.
 - A round can take a few seconds to resolve on a slow or heavily-loaded
   network drive — the extension polls once a second, not every frame,
   by design (see the wiki page's "why this is a different thing from

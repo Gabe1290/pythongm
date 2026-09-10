@@ -172,6 +172,46 @@ class TestRegistration:
         assert EVENT_TYPES["round_resolved"].category == "Network"
 
 
+class TestConnectFlow:
+    """Phase 4: host_game_files(show_lobby=True) / join_game_files
+    (folder="auto") route through FileConnectScreen.run(), which on a
+    headless GameRunner (no .screen, as here) short-circuits per its own
+    documented fallback -- host always "start"s immediately, client
+    "cancel"s with no path given. Real screen-interaction coverage lives
+    in test_multiplayer_files_connect_screen.py; this just confirms the
+    action handlers wire into that fallback correctly."""
+
+    def test_show_lobby_still_hosts_on_a_headless_runner(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            room, gr, ex, ctrl = _make_side()
+            _do(ex, "host_game_files", ctrl, {"folder": tmp, "show_lobby": True})
+            st = peek_multiplayer_files(room)
+            assert st is not None and st.get("session") is not None
+            assert st["session"].mode == "host"
+
+    def test_folder_auto_with_no_screen_cancels_and_leaves_single_player(self):
+        room, gr, ex, ctrl = _make_side()
+        _do(ex, "join_game_files", ctrl, {"folder": "auto"})
+        st = peek_multiplayer_files(room)
+        assert st is None or st.get("session") is None
+
+    def test_cancelling_the_lobby_tears_down_hosting(self):
+        """A real modal run this time (gr.screen set to a real Surface),
+        driven to "cancel" by pre-posting a QUIT event -- proves
+        execute_host_game_files_action's "cancel" branch actually calls
+        _teardown, not just that the wiring compiles."""
+        with tempfile.TemporaryDirectory() as tmp:
+            pygame.display.set_mode((640, 480))
+            room, gr, ex, ctrl = _make_side()
+            gr.screen = pygame.display.get_surface()
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+            _do(ex, "host_game_files", ctrl, {"folder": tmp, "show_lobby": True})
+            st = peek_multiplayer_files(room)
+            assert st is not None
+            assert st.get("session") is None
+            assert st.get("enabled") is False
+
+
 class TestIdentity:
     def test_host_and_client_identity_globals(self):
         with tempfile.TemporaryDirectory() as tmp:

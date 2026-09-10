@@ -110,11 +110,21 @@ class TestWiring:
         assert "host_game_files" in blob
         assert "'X'" in blob or '"X"' in blob
 
-    def test_j_joins_and_becomes_o(self):
+    def test_j_joins_via_the_connect_screen(self):
         acts = self._events()["keyboard_press"]["j"]["actions"]
         blob = repr(acts)
         assert "join_game_files" in blob
+        assert "'auto'" in blob or '"auto"' in blob
+
+    def test_becomes_o_only_once_actually_welcomed(self):
+        """my_mark/connected are set from file_session_started (fires
+        once the client is genuinely welcomed), not synchronously right
+        after the keypress -- folder="auto" can be cancelled at the
+        connect screen, and setting them unconditionally in "j" would
+        have left the game thinking it was playing when it wasn't."""
+        blob = repr(self._events()["file_session_started"])
         assert "'O'" in blob or '"O"' in blob
+        assert "connected" in blob
 
     def test_step_ends_turn_on_the_non_active_player(self):
         assert "end_turn" in repr(self._events()["step"])

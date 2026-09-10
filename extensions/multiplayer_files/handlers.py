@@ -10,7 +10,7 @@ registered via PLUGIN_FRAME_UPDATES in __init__.py.
 
 Per-room state lives at room.extension_state["multiplayer_files"] (see
 state.py). Unlike multiplayer_lan there is only ever one path here (no
-v1/v2 split to carry) -- Phase 1 is this extension's whole first cut.
+v1/v2 split to carry).
 """
 
 from core.logger import get_logger
@@ -97,6 +97,27 @@ def _notify(ae, message):
             pass
 
 
+def _truthy(v):
+    return v not in (None, False, 0, "", "0", "false", "False", "no")
+
+
+def _run_connect_flow(mode, game_runner, *, folder="", roster_fn=None, tick_fn=None):
+    """Build and run the modal connect/lobby screen (Phase 4). Returns
+    its result string ("folder:<path>" / "start" / "cancel"). On a
+    headless runner FileConnectScreen.run() short-circuits to a sensible
+    default."""
+    from .connect_screen import FileConnectScreen
+    cs = FileConnectScreen(
+        mode, getattr(game_runner, "screen", None),
+        folder=folder, roster_fn=roster_fn, tick_fn=tick_fn)
+    return cs.run()
+
+
+def _lobby_tick(session):
+    session.pump_before_step()
+    session.pump_after_update()
+
+
 class PluginExecutor:
     """Handles execution of the file-exchange multiplayer actions."""
 
@@ -137,6 +158,20 @@ class PluginExecutor:
         st["session"] = session
         st["enabled"] = True
 
+        if _truthy(parameters.get("show_lobby")):
+            # Unlike multiplayer_lan's host_game, the round is already
+            # running the moment session.start() succeeds -- there is no
+            # separate "leave the lobby" step to trigger (no
+            # start_networked_game_files action -- see "Proposed action
+            # surface"). "start" just dismisses the modal; only "cancel"
+            # needs to actually undo anything.
+            result = _run_connect_flow(
+                "host", ae.game_runner, folder=folder,
+                roster_fn=lambda: session.roster,
+                tick_fn=lambda: _lobby_tick(session))
+            if result == "cancel":
+                self._teardown(room, ae)
+
     def execute_join_game_files_action(self, instance, parameters):
         room, ae = _room_and_executor(instance)
         if room is None:
@@ -145,14 +180,19 @@ class PluginExecutor:
         if st and st.get("session") is not None:
             return
         folder = _raw(parameters, "folder")
+        player_name = _player_name(ae.game_runner, _raw(parameters, "player_name"))
+
+        if folder == "auto":
+            result = _run_connect_flow("client", ae.game_runner)
+            if not result or not result.startswith("folder:"):
+                return                     # cancelled -- game continues single-player
+            _, _, folder = result.partition("folder:")
+
         if not folder:
             _notify(ae, "Il faut indiquer le dossier partagé de la partie "
                         "à rejoindre.")
             return
-        session = FileSession(
-            mode="client", folder=folder,
-            player_name=_player_name(ae.game_runner, _raw(parameters, "player_name")),
-        )
+        session = FileSession(mode="client", folder=folder, player_name=player_name)
         if not session.start():
             _notify(ae,
                     "Impossible d'accéder à « %s ».\n\n"

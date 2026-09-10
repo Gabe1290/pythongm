@@ -1,20 +1,27 @@
 # Plan: 1990s-style turn-based file-exchange multiplayer
 
-**Status 2026-09-10: Track E Phases 1–2 DONE; Track T DONE and
+**Status 2026-09-10: Track E Phases 1–2–4 DONE; Track T DONE and
 reconciled against the landed API.** `extensions/multiplayer_files/`
-(Track E) now has its
-whole first-cut action surface: `host_game_files`/`join_game_files`/
-`leave_game_files`/`set_shared_var_files`/`get_shared_var_files`/
-`end_turn`/`send_network_message_files`, the join/welcome handshake,
+(Track E) now has its whole first-cut action surface:
+`host_game_files`/`join_game_files`/`leave_game_files`/
+`set_shared_var_files`/`get_shared_var_files`/`end_turn`/
+`send_network_message_files`, the join/welcome handshake,
 host-authoritative round advancement with a deadline, the identity/status
-globals, and all six lifecycle events (`file_session_started`,
+globals, all six lifecycle events (`file_session_started`,
 `player_joined_files`, `round_resolved`, `player_skipped_round`,
-`network_message_files`, `file_session_lost`), with real translated
-action names in all 10 shipped languages — plus `samples/fichier_1`, the
-finished bundled Tic-Tac-Toe sample exercising the whole loop end to end
-(42 new tests across both phases, full suite green). `wiki/FileExchange.md`
-+ `_fr.md` plus Tutorial 10 (Track T) were written and committed the same
-day, on a second machine, before either track could see the other's work.
+`network_message_files`, `file_session_lost`), and a built-in connect
+screen (`host_game_files(show_lobby=true)` / `join_game_files(folder=
+"auto")`) so a player can type a real shared-folder path instead of
+hand-editing the action — with real translated action names in all 10
+shipped languages — plus `samples/fichier_1`, the finished bundled
+Tic-Tac-Toe sample exercising the whole loop end to end, including the
+new connect-screen join flow (74 dedicated tests across
+`test_multiplayer_files_{session,tier_a,connect_screen}.py` +
+`test_fichier_1_sample.py`, full suite green). `wiki/FileExchange.md` + `_fr.md` plus Tutorial 10
+(Track T) were written and committed the same day, on a second machine,
+before either track could see the other's work. Only Phase 5 (manual QA
+on real hardware, needs the user and a second machine) remains open on
+Track E.
 
 **Reconciliation pass — DONE 2026-09-10.** The coupling point flagged when
 Track T started was a confirmed, real gap: Track T was written against
@@ -543,10 +550,62 @@ review/commit boundary, full suite green after each, matching this repo's
    rather than the original nine-`obj_cell`-instances-with-computed-names
    plan, since `set_shared_var_files`'s `name` parameter is always taken
    literally — see the status note at the top of this doc.
-4. **Connect-screen UX**: a pygame folder-path entry + waiting-room
-   screen, mirroring `connect_screen.py`'s shape. Still no folder
-   *browsing* (out of scope above) — typed/pasted path, validated for
-   existence and writability with a clear on-screen error if not.
+4. **DONE (2026-09-10) — Connect-screen UX.**
+   `extensions/multiplayer_files/connect_screen.py`'s `FileConnectScreen`,
+   mirroring `multiplayer_lan/connect_screen.py`'s shape (same palette,
+   same `roster_fn`/`tick_fn` decoupling from the session, same
+   headless-fallback contract) but for a folder path instead of an
+   address: no server list (no discovery in this extension at all, so
+   nothing to scan for), just a single validated text field. Still no
+   folder *browsing* (out of scope above) — typed/pasted path, rejected
+   with a clear on-screen error if it doesn't exist or isn't writable,
+   checked before ever starting a session.
+   `host_game_files` gained a `show_lobby` parameter (mirroring
+   `host_game`'s own) that shows the waiting-room screen after hosting
+   starts; `join_game_files`'s `folder` parameter accepts `"auto"`
+   (mirroring `join_game`'s `host="auto"`) to open the screen and type
+   the path in, instead of hand-editing the action's parameter.
+   **One real correctness bug found while wiring this into
+   `samples/fichier_1`, not anticipated when this phase was scoped**:
+   `join_game_files(folder="auto")` can be cancelled at the connect
+   screen, but the sample's own `h`/`j` handlers set `my_mark`/`connected`
+   *synchronously* right after the join/host call, GameMaker-action-list
+   style — for the host that's always safe (hosting succeeds or fails
+   synchronously, no screen involved), but a cancelled *client* join
+   would have left the game thinking it was mid-match with nobody
+   actually connected. Fixed by moving the client's `my_mark`/`connected`
+   setup into a handler on the `file_session_started` event (which only
+   fires once the client is genuinely welcomed) instead of the `j`
+   keypress itself — the same pattern `reseau_4`'s own `network_spawn`
+   already uses for the identical reason on the socket side. Also
+   tightened `file_session_started`'s own `EventType` description, which
+   had incorrectly claimed it fires "on hosting" too; it's client-only,
+   confirmed against the actual code, not assumed from the name.
+   **A second real bug, found only by the full-suite gate, not this
+   extension's own tests run in isolation**: `handle_event` read
+   `event.unicode` unconditionally for any `KEYDOWN` while typing a
+   path, but this screen reads `pygame.event.get()` -- the process-wide
+   queue, not one scoped to itself -- so a `KEYDOWN` posted anywhere
+   else in the whole suite without a `unicode` kwarg (ordinary when a
+   test only cares about the key, e.g. `pygame.event.Event(pygame.
+   KEYDOWN, key=pygame.K_h)`) crashed the modal loop with an
+   `AttributeError` the moment it happened to still be queued when this
+   screen's own tests ran later in the same process. Fixed with
+   `getattr(event, "unicode", "")`; `multiplayer_lan/connect_screen.py`
+   has the identical bare `event.unicode` access and is presumably
+   exposed to the same latent risk, just not yet tripped by the current
+   test order -- noted here, not fixed there, since that file belongs to
+   the other extension and this finding is out of this phase's scope.
+   `tests/test_multiplayer_files_connect_screen.py` (19 tests: typing,
+   the `event.unicode` regression above, validation of a real/fake/
+   non-directory path, host lobby rendering, headless fallbacks, the
+   real pygame modal loop exiting on QUIT) + 4 new tests in
+   `test_multiplayer_files_tier_a.py` (`show_lobby` still hosts
+   headlessly, `folder="auto"` with no screen cancels cleanly, and --
+   driven through a REAL pygame modal with a pre-posted QUIT event, not
+   just asserting the wiring compiles -- cancelling the lobby actually
+   tears hosting down). `samples/fichier_1` and both READMEs
+   updated to the new join flow.
 5. **Manual QA on real hardware**: two machines against a real school (or
    at least a real Windows-share-mounted) drive, not just a local temp
    directory — the specific risks this whole plan exists to catch
@@ -647,16 +706,13 @@ replace anything and risks nothing in what already ships. Both design
 questions that were open at the start are now decided: the sanitizers got
 **duplicated**, not imported, into `multiplayer_files/state.py` (see
 "Reused pieces" above), and **French for Tutorial 10 shipped on day one**
-(Track T, Phase 3). Track E (Phases 1–2, the extension + sample) and
-Track T (the wiki page + Tutorial) are both individually done — the one
-remaining item is the **reconciliation pass**: Track T's content still
-describes the `..._files`-unrenamed action surface and doesn't mention
-`send_network_message_files`/`network_message_files` at all, so before
-either the wiki page or Tutorial 10 can be considered finished, someone
-needs to diff them against `extensions/multiplayer_files/actions.py` /
-`__init__.py` (the actual, current source of truth) and fix the drift —
-smaller than either track's own original work, and doesn't need two
-machines, just one pass reading both sides. After that: Phase 4
-(connect-screen UX) and Phase 5 (real-hardware QA) are what's left on
-Track E; see "Proposed phases" and "Splitting the work across two
-machines" above for the full breakdown.
+(Track T, Phase 3). Track E (Phases 1, 2 and 4 — the extension, sample,
+and connect-screen UX) and Track T (the wiki page + Tutorial) are both
+done, and the reconciliation pass between them is done too — Track T's
+content was diffed against the actual landed
+`extensions/multiplayer_files/` source and every drift fixed. The one
+thing left across the whole plan is **Phase 5: manual QA on real
+hardware** — two machines against a real school (or at least a real
+Windows-share-mounted) drive, needing the user and a second machine, not
+just agent time; see "Proposed phases" and "Splitting the work across
+two machines" above for the full breakdown.

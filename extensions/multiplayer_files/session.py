@@ -146,6 +146,16 @@ class FileSession:
     def waiting_for_players(self) -> bool:
         return self.player_count < self.max_players
 
+    @property
+    def roster(self) -> list:
+        """Host: ``[(slot, name), ...]`` including the host itself (slot
+        0) -- mirrors multiplayer_lan's own NetworkSession.roster, so
+        connect_screen.py's host-mode lobby display can be driven the
+        same way on both extensions."""
+        out = [(0, self.player_name)]
+        out.extend((slot, info["name"]) for slot, info in sorted(self._roster.items()))
+        return out
+
     def set_shared(self, name: str, value) -> None:
         if not is_valid_shared_name(name):
             logger.warning(
@@ -376,12 +386,10 @@ class FileSession:
             self._queue_event("player_skipped_round", slot)
 
     def _publish_session(self, skipped=None, messages=None) -> None:
-        roster = [[0, self.player_name]] + [
-            [slot, info["name"]] for slot, info in sorted(self._roster.items())]
         payload = {
             "round": self.round,
             "shared": self.shared,
-            "roster": roster,
+            "roster": [list(entry) for entry in self.roster],
             "player_count": self.player_count,
             "max_players": self.max_players,
             "skipped": list(skipped or []),
