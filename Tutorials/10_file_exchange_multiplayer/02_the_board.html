@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: The Board</h1>
+
+    <p>Before any networking, let's build a Tic-Tac-Toe board you can click
+    on &mdash; entirely local, testable by yourself right away.</p>
+
+    <h2>Create a New Project</h2>
+    <div class="step">
+        <ol>
+            <li>Go to <code>File &gt; New Project</code></li>
+            <li>Name it <strong>TicTacToeFiles</strong></li>
+            <li>For the <strong>Template</strong>, choose <strong>"Empty Project"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Create the Cell Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Sprites</strong> in the Asset Tree &rarr; <strong>Create New Sprite</strong></li>
+            <li>Name it <code>spr_cell</code></li>
+            <li>Double-click it to open the Sprite Editor and draw a
+            120&times;120 square with a border (a light fill with a darker
+            outline works well). Press <strong>Ctrl+S</strong> to save.</li>
+        </ol>
+    </div>
+
+    <h2>Create the Cell Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_cell</code></li>
+            <li>Set the sprite to <code>spr_cell</code></li>
+        </ol>
+    </div>
+
+    <h2>Create the Board Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Rooms</strong> &rarr; <strong>Create New Room</strong></li>
+            <li>Name it <code>room_board</code></li>
+            <li>Place <strong>9 instances</strong> of <code>obj_cell</code>
+            at exactly these positions (drag each one, then use the
+            Properties panel to fine-tune its <code>x</code>/<code>y</code>
+            if it isn't exact):</li>
+        </ol>
+        <table style="border-collapse: collapse; margin: 8px 0;">
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:100</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:100</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:100</code></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:300</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:300</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:300</code></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:500</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:500</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:500</code></td>
+            </tr>
+        </table>
+        <p style="margin-top: 8px; font-style: italic;">The exact positions
+        matter here &mdash; Phase 3 builds each cell's shared-variable name
+        straight from its <code>x</code>/<code>y</code>, and Phase 4's win
+        check spells out these same nine positions. Matching this table
+        means every step after this one just works.</p>
+    </div>
+
+    <h2>Track Whether a Cell Is Marked</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_cell</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Add a <strong>Create</strong> event:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">mark</span> to <span class="block-text"></span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> every cell starts with its own
+            <code>mark</code> variable, empty. We'll set it to
+            <code>"X"</code> when the cell is clicked, and draw whatever
+            it holds.
+        </div>
+    </div>
+
+    <h2>Mark a Cell on Click</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Mouse: Left Button Pressed</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">mark == ""</span> then</span><br>
+            <span class="block block-control block-indent2">Set variable <span class="block-text">mark</span> to <span class="block-text">X</span></span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Only X for now &mdash;
+        alternating between X and O for two real players is what Phase 3
+        adds.</p>
+    </div>
+
+    <h2>Draw the Mark</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">mark</span> at x:<span class="block-num">x</span> y:<span class="block-num">y</span></span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Using the cell's own
+        <code>x</code> and <code>y</code> means every cell draws its own
+        mark in its own place, with the exact same event on every instance.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test the Board!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Click any cell &rarr; an <strong>X</strong> appears</li>
+            <li>Click it again &rarr; nothing happens (it's already marked)</li>
+            <li>No turns, no opponent yet &mdash; that's next</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to connect two computers.
+    </div>
+</body>
+</html>

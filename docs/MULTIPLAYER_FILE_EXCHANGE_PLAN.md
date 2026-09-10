@@ -1,27 +1,44 @@
 # Plan: 1990s-style turn-based file-exchange multiplayer
 
-**Status: Phase 1 of 5 DONE (2026-09-10).** Written on explicit ask
-(2026-09) after the user described hitting school-LAN firewall problems with
-`extensions/multiplayer_lan/`'s socket-based transport, and asked specifically
-for a plan for the old "games exchanged state through a shared file" pattern
-before deciding whether to build it. Scope was then widened, on a second
-explicit ask, from "just the extension" to three deliverables together: the
-extension itself, a bundled sample, and a full in-app Tutorial (with the
-historical examples discussed folded in as motivation/context) — so a
-student doesn't just get the capability, they get taught how to use it and
-where the idea comes from. The user then approved starting Track E (see
-"Splitting the work across two machines" below) and Phase 1 —
-`extensions/multiplayer_files/`'s core session/blackboard — landed the same
-session: `host_game_files`/`join_game_files`/`leave_game_files`/
-`set_shared_var_files`/`get_shared_var_files`/`end_turn`, the join/welcome
-handshake, host-authoritative round advancement with a deadline, the
-identity/status globals, and all five lifecycle events, with real
-translated action names in all 10 shipped languages. 29 new tests, full
-suite green (4731 passed / 10 skipped / 2 confirmed-pre-existing-flake
-raycast timing tests, per CLAUDE.md's own note on that test class).
-Phase 2 (the bundled Tic-Tac-Toe sample) and Phase 4 (connect-screen UX)
-are next on Track E; Track T (the wiki historical page + Tutorial 10) is
-untouched so far. See "Proposed phases" below for the full breakdown.
+**Status 2026-09-10: Track E Phase 1 DONE and Track T DONE — landed in
+parallel on two machines, then merged.** `extensions/multiplayer_files/`'s
+core session/blackboard (Track E Phase 1) — `host_game_files`/
+`join_game_files`/`leave_game_files`/`set_shared_var_files`/
+`get_shared_var_files`/`end_turn`, the join/welcome handshake,
+host-authoritative round advancement with a deadline, the identity/status
+globals, and all five lifecycle events, with real translated action names
+in all 10 shipped languages (29 new tests, full suite green) — and
+`wiki/FileExchange.md` + `_fr.md` plus Tutorial 10
+(`Tutorials/10_file_exchange_multiplayer/` +
+`Tutorials/fr/10_file_exchange_multiplayer/`, 5 pages each, `index.json`
+entries in both languages, a placeholder thumbnail, real widget-driven
+test coverage) (Track T) were both written and committed the same day, on
+two different machines, before either could see the other's work.
+
+**The one real coupling point flagged when Track T started is now a
+confirmed, real gap, not just a theoretical risk**: Track T was written
+against this doc's *original* "Proposed action surface" — `set_shared_var`/
+`get_shared_var`, four events, no `network_sender`/`network_player_name`
+globals — but Track E's actual implementation renamed the first two to
+`set_shared_var_files`/`get_shared_var_files` (a real `plugin_loader`
+naming-collision bug found via testing, see "Proposed action surface"
+below) and added the two payload globals. **Track T's wiki page and
+Tutorial 10 have not yet been reconciled against the landed API** — that
+reconciliation pass, called for in "How to decide" below, is now the
+immediate next step, ahead of Track E's own Phase 2.
+
+Originally written on explicit ask (2026-09) after the user described
+hitting school-LAN firewall problems with `extensions/multiplayer_lan/`'s
+socket-based transport, and asked specifically for a plan for the old
+"games exchanged state through a shared file" pattern before deciding
+whether to build it. Scope was then widened, on a second explicit ask,
+from "just the extension" to three deliverables together: the extension
+itself, a bundled sample, and a full in-app Tutorial (with the historical
+examples discussed folded in as motivation/context) — so a student
+doesn't just get the capability, they get taught how to use it and where
+the idea comes from. The user then approved starting both tracks (see
+"Splitting the work across two machines" below), one per machine — see
+the status paragraphs above for what each landed.
 
 ## Why this is a real option, and why it's a *different* thing from `multiplayer_lan`
 

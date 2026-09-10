@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Taking Real Turns</h1>
+
+    <p>Right now, clicking a cell only changes it on <em>your</em> screen.
+    This phase makes a click travel through the shared folder so
+    <strong>both</strong> computers agree on the board &mdash; and makes sure
+    only the player whose turn it is can click at all.</p>
+
+    <h2>Give Every Cell a Unique Name</h2>
+    <div class="info">
+        Since every cell shares the same <code>x</code>/<code>y</code>-based
+        position, we can build a name for its shared variable straight from
+        that position &mdash; no per-cell setup needed, every cell runs the
+        exact same code. We'll write that name as
+        <code>"cell_" + string(x) + "_" + string(y)</code> wherever we need
+        it below.
+    </div>
+
+    <h2>Whose Turn Is It?</h2>
+    <div class="step">
+        <p>Two players alternate, and <code>global.round_number</code>
+        counts up by one every time a move is confirmed. The player whose
+        turn it is right now is whichever <code>global.player_id</code>
+        matches the round number's remainder after dividing by 2:</p>
+        <div class="blockly-group">
+            <span class="block block-control">If <span class="block-text">global.turn_ready == 1 and global.round_number mod 2 == global.player_id</span> then</span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Player 0 (the host,
+        X) goes on round 0, 2, 4&hellip; Player 1 (O) goes on round 1, 3,
+        5&hellip; <code>global.turn_ready</code> makes sure this doesn't
+        fire again mid-round, before the last move has actually resolved.</p>
+    </div>
+
+    <h2>Rewrite the Click Handler</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>obj_cell</code>'s <strong>Mouse: Left Button
+            Pressed</strong> event and replace it with this:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Mouse: Left Button Pressed</span><br>
+            <span class="block block-control block-indent">If <span class="block-text">mark == "" and global.turn_ready == 1 and global.round_number mod 2 == global.player_id</span> then</span>
+        </div>
+        <p style="margin-top: 4px;">Then, still inside that <strong>If</strong>,
+        one branch per player &mdash; each writes its own symbol to this
+        cell's shared variable:</p>
+        <div class="blockly-group">
+            <span class="block block-control block-indent2">If <span class="block-text">global.player_id == 0</span> then</span><br>
+            <span class="block block-network block-indent2">Set Shared Variable
+            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
+            = <span class="block-text">X</span></span><br>
+            <span class="block block-control block-indent2">Else</span><br>
+            <span class="block block-network block-indent2">Set Shared Variable
+            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
+            = <span class="block-text">O</span></span><br>
+            <span class="block block-network block-indent2">End Turn</span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> the active player writes their
+            own symbol into this cell's own shared variable, then
+            <strong>End Turn</strong> submits it. Nobody else can write to
+            this cell this round &mdash; only the player whose turn it is
+            gets past the outer <strong>If</strong> at all.
+        </div>
+    </div>
+
+    <h2>Redraw the Board When a Round Resolves</h2>
+    <div class="step">
+        <p>Right now <code>mark</code> only ever changes locally. Let's make
+        it follow the <em>published</em> state instead:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Round Resolved</span><br>
+            <span class="block block-network block-indent">Get Shared Variable
+            <span class="block-text">"cell_" + string(x) + "_" + string(y)</span>
+            into <span class="block-text">mark</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>What this does:</strong> <strong>Round Resolved</strong>
+            fires on every machine once the host has published the new
+            state for a round. Each cell asks "what does the shared
+            variable with my name say now?" and updates its own
+            <code>mark</code> &mdash; the same <strong>When drawing</strong>
+            event from Phase 1 draws whatever that turns out to be, with no
+            changes needed there at all.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Real Turns!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 on both computers, host and join as in Phase 2!</strong></p>
+        <ul>
+            <li>Only the player whose turn it is can click a cell</li>
+            <li>The mark appears on <strong>both</strong> screens once the
+            round resolves &mdash; not instantly on your own screen either</li>
+            <li>Turns alternate automatically: X, then O, then X&hellip;</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to check for a winner and let both players play again.
+    </div>
+</body>
+</html>

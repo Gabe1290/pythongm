@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : La grille</h1>
+
+    <p>Avant tout réseau, construisons une grille de morpion cliquable
+    &mdash; entièrement locale, testable seul dès maintenant.</p>
+
+    <h2>Créer un nouveau projet</h2>
+    <div class="step">
+        <ol>
+            <li>Allez dans <code>Fichier &gt; Nouveau projet</code></li>
+            <li>Nommez-le <strong>TicTacToeFiles</strong></li>
+            <li>Pour le <strong>Modèle</strong>, choisissez <strong>« Projet vide »</strong></li>
+        </ol>
+    </div>
+
+    <h2>Créer le sprite de case</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Sprites</strong> dans l'Arbre des ressources &rarr; <strong>Créer un nouveau sprite</strong></li>
+            <li>Nommez-le <code>spr_cell</code></li>
+            <li>Double-cliquez dessus pour ouvrir l'éditeur de sprite et
+            dessinez un carré de 120&times;120 avec une bordure (un
+            remplissage clair avec un contour plus foncé fonctionne bien).
+            Appuyez sur <strong>Ctrl+S</strong> pour enregistrer.</li>
+        </ol>
+    </div>
+
+    <h2>Créer l'objet case</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
+            <li>Nommez-le <code>obj_cell</code></li>
+            <li>Réglez le sprite sur <code>spr_cell</code></li>
+        </ol>
+    </div>
+
+    <h2>Créer la salle de la grille</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Rooms</strong> &rarr; <strong>Créer une nouvelle salle</strong></li>
+            <li>Nommez-la <code>room_board</code></li>
+            <li>Placez <strong>9 instances</strong> de <code>obj_cell</code>
+            exactement à ces positions (faites glisser chacune, puis
+            ajustez son <code>x</code>/<code>y</code> dans le panneau des
+            propriétés si ce n'est pas exact) :</li>
+        </ol>
+        <table style="border-collapse: collapse; margin: 8px 0;">
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:100</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:100</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:100</code></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:300</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:300</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:300</code></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:500</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:500</code></td>
+                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:500</code></td>
+            </tr>
+        </table>
+        <p style="margin-top: 8px; font-style: italic;">Les positions
+        exactes comptent ici &mdash; la Phase 3 construit le nom de la
+        variable partagée de chaque case directement à partir de son
+        <code>x</code>/<code>y</code>, et la vérification de victoire de la
+        Phase 4 utilise ces neuf mêmes positions. Respecter ce tableau fait
+        que chaque étape suivante fonctionne directement.</p>
+    </div>
+
+    <h2>Suivre si une case est marquée</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_cell</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Ajoutez un événement <strong>Création</strong> :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">À la création</span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">mark</span> à <span class="block-text"></span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Ce que ça fait :</strong> chaque case démarre avec sa
+            propre variable <code>mark</code>, vide. Nous la définirons à
+            <code>"X"</code> quand la case est cliquée, et dessinerons ce
+            qu'elle contient.
+        </div>
+    </div>
+
+    <h2>Marquer une case au clic</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Souris : Bouton gauche pressé</span><br>
+            <span class="block block-control block-indent">Si <span class="block-text">mark == ""</span> alors</span><br>
+            <span class="block block-control block-indent2">Définir la variable <span class="block-text">mark</span> à <span class="block-text">X</span></span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Seulement X pour
+        l'instant &mdash; alterner entre X et O pour deux vrais joueurs,
+        c'est ce que la Phase 3 ajoute.</p>
+    </div>
+
+    <h2>Dessiner le marquage</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Au dessin</span><br>
+            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">mark</span> à x:<span class="block-num">x</span> y:<span class="block-num">y</span></span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Utiliser les propres
+        <code>x</code> et <code>y</code> de la case fait que chaque case
+        dessine son marquage à sa propre place, avec exactement le même
+        événement sur chaque instance.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez la grille !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Cliquez sur une case &rarr; un <strong>X</strong> apparaît</li>
+            <li>Cliquez à nouveau &rarr; rien ne se passe (elle est déjà marquée)</li>
+            <li>Pas encore de tours, pas encore d'adversaire &mdash; c'est pour la suite</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour connecter deux ordinateurs.
+    </div>
+</body>
+</html>
