@@ -63,24 +63,24 @@ This is the complete list. Everything else that used to be tracked in
    the mixins. **This plan now has no open work at all.**
 
 3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md` — Phase 1 done (2026-09-11),
-   picked up on an explicit ask.** Breakout (shortest of the six
-   tutorials, 225 lines) now has 6 real screenshots
-   (`wiki/images/tutorial-breakout-*.png`) embedded at each of its
-   `## Step N` headings, produced by a new committed, re-runnable tool
+   Phase 2 in progress (2026-09-10), picked up on an explicit ask.**
+   Breakout and now **Pong** each have per-step screenshots
+   (`wiki/images/tutorial-{breakout,pong}-*.png`) embedded at their
+   `## Step N` headings, produced by a committed, re-runnable tool
    (`tools/capture_tutorial_screenshots.py`) that drives a real offscreen
    `PyGameMakerIDE` through a scratch project matching the tutorial's own
    text. **The plan's own flagged open question is answered**: scripting
    the Room Editor turned out no harder than any other editor — an
    instance placement is just an entry in the room's `instances` list,
    the same "set the data, open the widget" mechanism that already
-   worked for sprites and objects — so no per-tutorial risk exists for
-   the remaining five. One real placement bug found by actually looking
-   at the captured screenshot (a ball placed dead-center landed inside a
-   brick's cell and rendered invisible) — fixed, see the plan doc's own
-   "What Phase 1 actually found" section. **Remaining, explicit-ask-only
-   per this plan's own "pick up only on an explicit ask" framing**:
-   Pong/Sokoban/Maze/Platformer/LunarLander (Phase 2) and all 48
-   translated-variant pages (Phase 3, `Tutorial-Breakout_fr.md` included).
+   worked for sprites and objects. Two capture-tool defaults were refined
+   at the Phase 2 kickoff (wider window so a 640-wide room isn't clipped;
+   warm-tan instead of grey placeholder walls so they don't read as IDE
+   chrome) and the Breakout shots regenerated to match. **Remaining,
+   explicit-ask-only per this plan's own "pick up only on an explicit
+   ask" framing**: Sokoban/Maze/Platformer/LunarLander (Phase 2) and all
+   translated-variant pages (Phase 3, `Tutorial-Breakout_fr.md`/
+   `Tutorial-Pong_fr.md` included).
 
 4. **Full crafting system for Block World — DONE, all 4 units closed
    the same day it was written (2026-09-09).** *(This entry's own
