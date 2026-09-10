@@ -506,9 +506,198 @@ def capture_pong():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------------
+# Sokoban (wiki/Tutorial-Sokoban.md) -- Phase 2, tutorial 2 of the remaining
+# five. Intermediate preset (grid movement + push mechanic).
+# ---------------------------------------------------------------------------
+
+def capture_sokoban():
+    app = _make_app()
+    ide = _make_ide(app)
+    scratch = _new_scratch_project(ide, "scratch_sokoban")
+    am = ide.asset_manager
+    sprite_dir = scratch / "_capture_sprites"
+    sprite_dir.mkdir(exist_ok=True)
+
+    try:
+        # -- Step 2: Create the Sprites (all 32x32, per the tutorial) --------
+        sprites = [
+            ("spr_player", (32, 32), "circle", (100, 150, 240, 255)),
+            ("spr_crate", (32, 32), "rect", (170, 120, 70, 255)),
+            ("spr_crate_ok", (32, 32), "rect", (90, 190, 110, 255)),
+            # "gray or dark colors" per the tutorial -- a dark slate, which
+            # also stays distinct from the IDE's own grey chrome.
+            ("spr_wall", (32, 32), "rect", (95, 105, 125, 255)),
+            ("spr_target", (32, 32), "circle", (240, 200, 60, 255)),
+            ("spr_floor", (32, 32), "rect", (55, 55, 65, 255)),
+        ]
+        for name, size, shape, color in sprites:
+            png_path = sprite_dir / f"{name}.png"
+            _sprite_png(png_path, size, shape, color)
+            if am.import_asset(png_path, "sprites", name) is None:
+                raise RuntimeError(f"failed to import sprite {name!r}")
+        _sync(ide)
+        ide.open_sprite_editor("spr_crate", am.get_asset("sprites", "spr_crate"))
+        _capture(ide, app, "tutorial-sokoban-02-sprites.png")
+
+        # -- Step 3: Create the Wall Object --------------------------------
+        am.create_asset("obj_wall", "objects", sprite="spr_wall",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_wall", am.get_asset("objects", "obj_wall"))
+        _capture(ide, app, "tutorial-sokoban-03-wall-object.png")
+
+        # -- Step 4: Create the Target Object ------------------------------
+        am.create_asset("obj_target", "objects", sprite="spr_target",
+                        solid=False, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_target", am.get_asset("objects", "obj_target"))
+        _capture(ide, app, "tutorial-sokoban-04-target-object.png")
+
+        # -- Step 5: Create the Crate Object -------------------------------
+        crate_events = {
+            "step": {"actions": [
+                {"action": "if_collision", "parameters": {
+                    "x": "0", "y": "0", "object": "obj_target",
+                    "then_actions": [
+                        {"action": "set_sprite",
+                         "parameters": {"sprite": "spr_crate_ok"}},
+                    ],
+                    "else_actions": [
+                        {"action": "set_sprite",
+                         "parameters": {"sprite": "spr_crate"}},
+                    ],
+                }},
+            ]},
+        }
+        am.create_asset("obj_crate", "objects", sprite="spr_crate",
+                        solid=True, visible=True, events=crate_events)
+        _sync(ide)
+        ide.open_object_editor("obj_crate", am.get_asset("objects", "obj_crate"))
+        _capture(ide, app, "tutorial-sokoban-05-crate-object.png")
+
+        # -- Step 6: Create the Player Object ------------------------------
+        player_events = {
+            "keyboard_press": {
+                d: {"actions": [
+                    {"action": "move_grid",
+                     "parameters": {"direction": d, "grid_size": "32"}},
+                ]}
+                for d in ("right", "left", "up", "down")
+            },
+            "collision_with_obj_wall": {"actions": [
+                {"action": "stop_movement", "parameters": {}},
+            ]},
+            "collision_with_obj_crate": {"actions": [
+                {"action": "if_can_push", "parameters": {
+                    "direction": "facing", "object_type": "obj_crate",
+                    "then_action": "push_and_move",
+                    "else_action": "stop_movement",
+                }},
+            ]},
+        }
+        am.create_asset("obj_player", "objects", sprite="spr_player",
+                        solid=False, visible=True, events=player_events)
+        _sync(ide)
+        ide.open_object_editor("obj_player", am.get_asset("objects", "obj_player"))
+        _capture(ide, app, "tutorial-sokoban-06-player-object.png")
+
+        # -- Step 7: Create the Win Condition Checker ----------------------
+        create_code = (
+            "# Count how many target spots exist in the room\n"
+            "self.total_targets = sum(\n"
+            "    1 for inst in game.current_room.instances\n"
+            "    if inst.object_name == 'obj_target'\n"
+            ")\n"
+        )
+        step_code = (
+            "# Count crates currently overlapping a target\n"
+            "crates_on_targets = sum(\n"
+            "    1 for inst in game.current_room.instances\n"
+            "    if inst.object_name == 'obj_crate'\n"
+            "    and game.check_collision_at_position(inst, inst.x, inst.y, 'obj_target')\n"
+            ")\n"
+            "\n"
+            "if self.total_targets > 0 and crates_on_targets >= self.total_targets:\n"
+            "    self.restart_room_flag = True\n"
+        )
+        controller_events = {
+            "create": {"actions": [
+                {"action": "execute_code", "parameters": {"code": create_code}},
+            ]},
+            "step": {"actions": [
+                {"action": "execute_code", "parameters": {"code": step_code}},
+            ]},
+            "draw": {"actions": [
+                {"action": "draw_text", "parameters": {
+                    "text": "\"Sokoban - Push all crates to targets!\"",
+                    "x": "10", "y": "10",
+                }},
+            ]},
+        }
+        am.create_asset("obj_game_controller", "objects", sprite=None,
+                        solid=False, visible=True, events=controller_events)
+        _sync(ide)
+        ide.open_object_editor("obj_game_controller",
+                               am.get_asset("objects", "obj_game_controller"))
+        _capture(ide, app, "tutorial-sokoban-07-controller-object.png")
+
+        # -- Step 9: Design Your Level ------------------------------------
+        # The tutorial's own "Example Level Layout" ASCII, 10 cols x 9 rows,
+        # translated cell-for-cell (W/P/C/T). Room is exactly that size so
+        # the screenshot matches the diagram.
+        CELL = 32
+        LAYOUT = [
+            "WWWWWWWWWW",
+            "W........W",
+            "W.P...C..W",
+            "W..WW....W",
+            "W..WT..C.W",
+            "W.....WW.W",
+            "W.T......W",
+            "W........W",
+            "WWWWWWWWWW",
+        ]
+        COLS, ROWS = len(LAYOUT[0]), len(LAYOUT)
+        room_w, room_h = COLS * CELL, ROWS * CELL
+
+        instances = []
+
+        def place(obj, col, row):
+            instances.append({
+                "object_name": obj,
+                "x": col * CELL + CELL // 2, "y": row * CELL + CELL // 2,
+                "rotation": 0, "scale_x": 1.0, "scale_y": 1.0, "visible": True,
+            })
+
+        char_obj = {"W": "obj_wall", "C": "obj_crate",
+                    "T": "obj_target", "P": "obj_player"}
+        for row, line in enumerate(LAYOUT):
+            for col, ch in enumerate(line):
+                if ch in char_obj:
+                    place(char_obj[ch], col, row)
+        # Controller: anywhere (invisible in-game) -- a clear interior cell
+        # well away from the border, so its no-sprite placeholder (drawn a
+        # little larger than one cell) doesn't overlap a wall.
+        place("obj_game_controller", 3, 5)
+
+        room_data = am.create_asset(
+            "room_level1", "rooms",
+            width=room_w, height=room_h, background_color="#141414",
+            instances=instances)
+        _sync(ide)
+        ide.open_room_editor("room_level1", room_data)
+        _capture(ide, app, "tutorial-sokoban-09-room.png")
+
+        print("Sokoban capture complete.")
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 SCENARIOS = {
     "breakout": capture_breakout,
     "pong": capture_pong,
+    "sokoban": capture_sokoban,
 }
 
 

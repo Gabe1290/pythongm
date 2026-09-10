@@ -191,7 +191,15 @@ Breakout shots were regenerated to match:**
      in-game so their placeholder is drawn translucent-green purely for
      the room shot, noted in that caption. `Tutorial-Pong_*` translated
      variants still untouched (Phase 3).
-   - Sokoban, Maze, Platformer, LunarLander — not started.
+   - **Sokoban — DONE (2026-09-10).** `capture_sokoban`; 7 shots
+     (`tutorial-sokoban-02-sprites` … `-07-controller-object`, `-09-room`
+     — the tutorial numbers its steps 1,2,…,7,9,10, no step 8), embedded
+     in `wiki/Tutorial-Sokoban.md`. The room is the tutorial's own
+     "Example Level Layout" ASCII translated cell-for-cell. Conditional
+     actions (the crate's `if_collision`, the player's `if_can_push`)
+     serialize as `then_actions`/`else_actions` nested in `parameters`,
+     matching the bundled samples.
+   - Maze, Platformer, LunarLander — not started.
 3. **Translated variants.** Decide once phase 1-2 land: do the 8
    translated copies of each tutorial get the SAME English-captured
    screenshots (the IDE's own UI chrome would still be English unless the

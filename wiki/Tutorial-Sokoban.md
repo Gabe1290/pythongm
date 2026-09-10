@@ -92,6 +92,8 @@ All sprites should be the same size (32x32 pixels works well) to create a proper
 3. Use a neutral color
 4. Size: 32x32 pixels
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Step 3: Create the Wall Object
@@ -104,6 +106,8 @@ The wall is the simplest object - it just blocks movement.
 4. **Check the "Solid" checkbox**
 5. No events needed
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Step 4: Create the Target Object
@@ -114,6 +118,8 @@ Targets mark where crates should be placed.
 2. Set the sprite to `spr_target`
 3. No events needed - it's just a marker
 4. Leave "Solid" unchecked (player and crates can be on top of it)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -140,6 +146,8 @@ The crate is pushed by the player and changes appearance when on a target.
 This makes the crate turn green when it's on a target spot — **If Collision**
 with both offsets at `0` checks whether the crate's *current* position
 overlaps an `obj_target`.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -184,6 +192,8 @@ needed here.
 player is moving) is free, and — if so — pushes the crate one cell and moves the
 player into its place, all in a single action. If the space behind the crate is
 blocked by a wall or another crate, nothing moves.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -232,6 +242,8 @@ right after the Execute Code block if you want a popup before the restart.
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Step 9: Design Your Level
@@ -271,6 +283,8 @@ C = Crate
 T = Target
 . = Empty floor
 ```
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 **Important:** Always have the same number of crates and targets!
 
