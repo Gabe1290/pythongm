@@ -107,23 +107,28 @@ This is the complete list. Everything else that used to be tracked in
    asset type actually affected by its absence.
 
 7. **`docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md` — 1990s-style file-exchange
-   multiplayer. Phase 1 of 5 done (2026-09-10).** A new, additional
-   extension (`extensions/multiplayer_files/`) alongside — not a
-   replacement for — the socket-based `multiplayer_lan`: turn-based games
-   played over a shared folder instead of a live connection, for a school
-   LAN whose firewall blocks the direct connections sockets need.
+   multiplayer. Track E Phases 1–2 of 5 done; Track T done; reconciliation
+   pass still open (2026-09-10).** A new, additional extension
+   (`extensions/multiplayer_files/`) alongside — not a replacement for —
+   the socket-based `multiplayer_lan`: turn-based games played over a
+   shared folder instead of a live connection, for a school LAN whose
+   firewall blocks the direct connections sockets need.
    Host-authoritative rounds; `host_game_files`/`join_game_files`/
    `leave_game_files`/`set_shared_var_files`/`get_shared_var_files`/
-   `end_turn`, plus the file-session lifecycle events, all shipped with
-   real translated action names in all 10 languages
-   (`tests/test_extension_action_i18n.py`). Split across two independent
-   tracks for parallel work on two machines (see the plan doc's own
-   "Splitting the work across two machines" section) — this entry is
-   Track E (Engine): Phase 1 done, Phase 2 (`send_network_message_files` +
-   the bundled Tic-Tac-Toe sample) and Phase 4 (connect-screen UX) still
-   open, then Phase 5's real-hardware QA joins Track T. Track T (Teaching:
-   the `wiki/FileExchange.md` historical page + Tutorial 10) is separately
-   open and untouched so far.
+   `end_turn`/`send_network_message_files`, plus the six file-session
+   lifecycle events, all shipped with real translated action names in all
+   10 languages (`tests/test_extension_action_i18n.py`); `samples/fichier_1`
+   ("File Exchange — Tic-Tac-Toe") is the finished bundled sample,
+   `h`/`j` hosts/joins straight from Test Game. Split across two
+   independent tracks for parallel work on two machines (see the plan
+   doc's own "Splitting the work across two machines" section) — Track E
+   (Engine: Phases 1–2) is done; Phase 4 (connect-screen UX) and Phase 5
+   (real-hardware QA) remain. Track T (Teaching: `wiki/FileExchange.md` +
+   Tutorial 10) is also done, but was written against the plan's
+   *original* action surface before Track E's `..._files` renames and
+   `send_network_message_files` landed — **the one remaining item across
+   both tracks is reconciling Track T's content against the actual landed
+   API**, called for in the plan doc's own "How to decide" section.
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 

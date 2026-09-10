@@ -68,7 +68,8 @@ class _RecordingExecutor(ActionExecutor):
 
 
 _LISTENER_EVENTS = ("file_session_started", "player_joined_files",
-                    "round_resolved", "player_skipped_round", "file_session_lost")
+                    "round_resolved", "player_skipped_round",
+                    "network_message_files", "file_session_lost")
 
 
 def _make_side():
@@ -130,22 +131,40 @@ class TestRegistration:
     def test_actions_and_events_registered_after_plugin_load(self):
         load_all_plugins(ActionExecutor())
         for a in ("host_game_files", "join_game_files", "leave_game_files",
-                  "set_shared_var_files", "get_shared_var_files", "end_turn"):
+                  "set_shared_var_files", "get_shared_var_files", "end_turn",
+                  "send_network_message_files"):
             assert a in ACTION_TYPES, a
         for e in _LISTENER_EVENTS:
             assert e in EVENT_TYPES, e
 
     def test_no_collision_with_multiplayer_lan_actions(self):
-        """The whole reason set_shared_var_files/get_shared_var_files
-        aren't named set_shared_var/get_shared_var -- plugin_loader skips
-        a same-named action from a second extension (the landmine
+        """The whole reason set_shared_var_files/get_shared_var_files/
+        send_network_message_files aren't named set_shared_var/
+        get_shared_var/send_network_message -- plugin_loader skips a
+        same-named action from a second extension (the landmine
         actions.py's own module docstring documents), so both must be
         present with their OWN, distinct descriptions."""
         load_all_plugins(ActionExecutor())
-        assert "set_shared_var" in ACTION_TYPES
-        assert "set_shared_var_files" in ACTION_TYPES
-        assert ACTION_TYPES["set_shared_var"].description != \
-            ACTION_TYPES["set_shared_var_files"].description
+        for name, files_name in (
+            ("set_shared_var", "set_shared_var_files"),
+            ("get_shared_var", "get_shared_var_files"),
+            ("send_network_message", "send_network_message_files"),
+        ):
+            assert name in ACTION_TYPES
+            assert files_name in ACTION_TYPES
+            assert ACTION_TYPES[name].description != \
+                ACTION_TYPES[files_name].description
+
+    def test_no_collision_with_multiplayer_lan_events(self):
+        """Same landmine, one level up: events/plugin_loader.py's
+        _load_events has the identical skip-if-already-registered
+        behaviour for EVENT_TYPES -- network_message_files, not
+        network_message."""
+        load_all_plugins(ActionExecutor())
+        assert "network_message" in EVENT_TYPES
+        assert "network_message_files" in EVENT_TYPES
+        assert EVENT_TYPES["network_message"].description != \
+            EVENT_TYPES["network_message_files"].description
 
     def test_category(self):
         load_all_plugins(ActionExecutor())
@@ -243,6 +262,50 @@ class TestEvents:
             assert "player_id" not in hgr.global_variables
             assert "is_host" not in hgr.global_variables
             _close(client)
+
+
+class TestNetworkMessage:
+    def test_send_network_message_files_fires_on_both_machines_with_globals_set(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host, client = _connect(tmp)
+            try:
+                hroom, hgr, hex_, hctrl = host
+                croom, cgr, cex, cctrl = client
+                _do(hex_, "send_network_message_files", hctrl,
+                    {"event": "buzz", "data": "42", "target": "all"})
+                _do(hex_, "end_turn", hctrl, {})
+                _do(cex, "end_turn", cctrl, {})
+                for _ in range(10):
+                    _pump(hgr, cgr, rounds=1)
+                    if cgr.global_variables.get("round_number") == 2:
+                        break
+                assert "network_message_files" in hex_.fired
+                assert "network_message_files" in cex.fired
+                assert cgr.global_variables.get("network_event") == "buzz"
+                assert cgr.global_variables.get("network_data") == 42
+                assert cgr.global_variables.get("network_sender") == 0
+            finally:
+                _close(host, client)
+
+    def test_target_host_message_does_not_fire_on_the_client(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            host, client = _connect(tmp)
+            try:
+                hroom, hgr, hex_, hctrl = host
+                croom, cgr, cex, cctrl = client
+                cex.fired.clear()
+                _do(cex, "send_network_message_files", cctrl,
+                    {"event": "whisper", "target": "host"})
+                _do(hex_, "end_turn", hctrl, {})
+                _do(cex, "end_turn", cctrl, {})
+                for _ in range(10):
+                    _pump(hgr, cgr, rounds=1)
+                    if cgr.global_variables.get("round_number") == 2:
+                        break
+                assert "network_message_files" in hex_.fired
+                assert "network_message_files" not in cex.fired
+            finally:
+                _close(host, client)
 
 
 class TestRoomChangeMigration:

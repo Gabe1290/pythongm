@@ -2810,6 +2810,10 @@ Any actions from them will be skipped, and the project may look or behave wrong.
         <source>📖  Sample guides</source>
         <translation>📖  Руководства по примерам</translation>
     </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Обмен файлами — Крестики-нолики</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

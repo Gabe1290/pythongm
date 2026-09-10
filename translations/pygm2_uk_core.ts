@@ -2674,6 +2674,10 @@ Any actions from them will be skipped, and the project may look or behave wrong.
         <source>📖  Sample guides</source>
         <translation>📖  Посібники до прикладів</translation>
     </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Обмін файлами — Хрестики-нулики</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -1,31 +1,34 @@
 # Plan: 1990s-style turn-based file-exchange multiplayer
 
-**Status 2026-09-10: Track E Phase 1 DONE and Track T DONE — landed in
-parallel on two machines, then merged.** `extensions/multiplayer_files/`'s
-core session/blackboard (Track E Phase 1) — `host_game_files`/
-`join_game_files`/`leave_game_files`/`set_shared_var_files`/
-`get_shared_var_files`/`end_turn`, the join/welcome handshake,
+**Status 2026-09-10: Track E Phases 1–2 DONE; Track T DONE, awaiting
+reconciliation.** `extensions/multiplayer_files/` (Track E) now has its
+whole first-cut action surface: `host_game_files`/`join_game_files`/
+`leave_game_files`/`set_shared_var_files`/`get_shared_var_files`/
+`end_turn`/`send_network_message_files`, the join/welcome handshake,
 host-authoritative round advancement with a deadline, the identity/status
-globals, and all five lifecycle events, with real translated action names
-in all 10 shipped languages (29 new tests, full suite green) — and
-`wiki/FileExchange.md` + `_fr.md` plus Tutorial 10
-(`Tutorials/10_file_exchange_multiplayer/` +
-`Tutorials/fr/10_file_exchange_multiplayer/`, 5 pages each, `index.json`
-entries in both languages, a placeholder thumbnail, real widget-driven
-test coverage) (Track T) were both written and committed the same day, on
-two different machines, before either could see the other's work.
+globals, and all six lifecycle events (`file_session_started`,
+`player_joined_files`, `round_resolved`, `player_skipped_round`,
+`network_message_files`, `file_session_lost`), with real translated
+action names in all 10 shipped languages — plus `samples/fichier_1`, the
+finished bundled Tic-Tac-Toe sample exercising the whole loop end to end
+(42 new tests across both phases, full suite green). `wiki/FileExchange.md`
++ `_fr.md` plus Tutorial 10 (Track T) were written and committed the same
+day, on a second machine, before either track could see the other's work.
 
-**The one real coupling point flagged when Track T started is now a
-confirmed, real gap, not just a theoretical risk**: Track T was written
-against this doc's *original* "Proposed action surface" — `set_shared_var`/
-`get_shared_var`, four events, no `network_sender`/`network_player_name`
-globals — but Track E's actual implementation renamed the first two to
-`set_shared_var_files`/`get_shared_var_files` (a real `plugin_loader`
-naming-collision bug found via testing, see "Proposed action surface"
-below) and added the two payload globals. **Track T's wiki page and
-Tutorial 10 have not yet been reconciled against the landed API** — that
-reconciliation pass, called for in "How to decide" below, is now the
-immediate next step, ahead of Track E's own Phase 2.
+**The coupling point flagged when Track T started is a confirmed, real
+gap, now slightly larger**: Track T was written against this doc's
+*original* "Proposed action surface" — `set_shared_var`/`get_shared_var`,
+four events, no `network_sender`/`network_player_name` globals, and no
+`send_network_message_files` at all yet. Track E's actual implementation
+renamed the shared-var actions to `..._files` (a real `plugin_loader`
+naming-collision bug found via testing — see "Proposed action surface"
+below), added the two payload globals, and landed
+`send_network_message_files`/`network_message_files` with the same
+`..._files` naming. **Track T's wiki page and Tutorial 10 have not yet
+been reconciled against the landed API** — that reconciliation pass,
+called for in "How to decide" below, is the one remaining item before
+this plan's three original deliverables (extension, sample, Tutorial) are
+all genuinely finished and consistent with each other.
 
 Originally written on explicit ask (2026-09) after the user described
 hitting school-LAN firewall problems with `extensions/multiplayer_lan/`'s
@@ -469,15 +472,50 @@ review/commit boundary, full suite green after each, matching this repo's
    raycast timing-sensitive smoke tests flaked under the full-suite load
    and passed clean in isolation — CLAUDE.md's own documented flake
    class for that file, not a regression).
-2. **`send_network_message_files` + the bundled sample.** Tic-Tac-Toe over file
-   exchange (see "The concrete game" above), the finished/polished version
-   — exercising the whole loop (join, submit a move each round, see the
-   resolved result). Register in `tools/smoke_run_samples.py`; add
-   whichever prefix (`fichier_`, or extend the existing `("raycast",
-   "block_world", "multiplayer_lan", "reseau")` advanced-prefix tuple in
-   `tests/test_edition_sample_filter.py`) keeps it out of the beginner
-   edition, matching every other multiplayer sample's precedent. README.md
-   + README.fr.md, matching every other bundled sample.
+2. **DONE (2026-09-10) — `send_network_message_files` + the bundled
+   sample.** `send_network_message_files(event, data, target)` staged
+   the same way `set_shared_var_files` is, folded into the round the
+   same way, and fired on every machine as a new event --
+   `network_message_files`, not `network_message`, for the identical
+   plugin_loader collision reason the two `..._files` actions were
+   renamed in Phase 1 (see "Proposed action surface" above).
+   `samples/fichier_1` ("File Exchange — Tic-Tac-Toe"): the finished,
+   polished Tic-Tac-Toe sample, host is X, joiner is O, `h`/`j`
+   keyboard-press hosts/joins straight from Test Game (the reseau_4
+   pattern), turn order from `global.round_number`'s parity, the
+   non-active player calls `end_turn()` every round with nothing staged
+   so the round resolves promptly instead of idling out the deadline.
+   Registered in `tools/smoke_run_samples.py` and `widgets/welcome_tab.py`
+   `SAMPLE_PROJECTS` (English source label, translated into all 10
+   shipped languages in the same commit — this extension's Welcome-tab
+   entry does NOT repeat the French-first mistake `multiplayer_lan`'s
+   own actions originally shipped with); `fichier` added to the
+   advanced-prefix tuple in `tests/test_edition_sample_filter.py` to
+   keep it out of the beginner edition. README.md + README.fr.md.
+   **Two real bugs found by actually playing a full game through two
+   real `GameRunner` instances (not by reading the code), both fixed
+   rather than worked around:**
+   - `FileSession` never republished `session.json` when a player
+     joined outside of a round resolving — a client's own
+     `global.waiting_for_players` stayed stuck at "still waiting" even
+     after it had already joined itself, which deadlocks completely the
+     moment gameplay (reasonably) gates on that global reaching 0,
+     since the round that would have refreshed it never gets permission
+     to start. Fixed in `session.py`'s `_host_poll`: a join/leave now
+     publishes immediately, not just at the next round resolve.
+   - The sample's first win-check only tested "did *my own* mark win",
+     so the *losing* player's own instance never learned the game had
+     ended at all — the winner's message showed correctly and the
+     loser's screen simply never said anything. Fixed by checking both
+     marks' win lines on every machine regardless of `my_mark`, mirrored
+     in the README's "How it works" section as a worked design note.
+   `tests/test_fichier_1_sample.py` (13 tests): the H/J authoring is
+   present and correctly assigns marks, a full game played to an X win
+   with both machines agreeing on the outcome, a full game played to a
+   draw, and an out-of-turn click correctly ignored — all driven through
+   two real `GameRunner` instances over a real
+   `tempfile.TemporaryDirectory()`, the same "real engine, not mocked
+   classes" discipline `test_reseau_4_sample.py` established.
 3. **Tutorial 10** (see "Tutorial: outline" above): the four build phases
    as HTML pages, the intro page (including the short historical callout),
    `Tutorials/index.json` entry, a thumbnail, **and the French
@@ -591,11 +629,19 @@ game that needs to survive a firewall the LAN extension can't get through,
 now explicitly paired with the teaching material (Tutorial + historical
 context) to go with it, not just the raw capability. It does **not**
 replace anything and risks nothing in what already ships. Both design
-questions that were open earlier are now decided: the sanitizers get
+questions that were open at the start are now decided: the sanitizers got
 **duplicated**, not imported, into `multiplayer_files/state.py` (see
-"Reused pieces" above), and **French for Tutorial 10 ships on day one**,
-budgeted into Phase 3 (see "Effort estimate"). No open questions remain —
-if the answer is "yes, build it," Phase 1 is the right place to start and
-review before continuing. If two machines are picking this up together,
-see "Splitting the work across two machines" above for how the phases
-divide between them.
+"Reused pieces" above), and **French for Tutorial 10 shipped on day one**
+(Track T, Phase 3). Track E (Phases 1–2, the extension + sample) and
+Track T (the wiki page + Tutorial) are both individually done — the one
+remaining item is the **reconciliation pass**: Track T's content still
+describes the `..._files`-unrenamed action surface and doesn't mention
+`send_network_message_files`/`network_message_files` at all, so before
+either the wiki page or Tutorial 10 can be considered finished, someone
+needs to diff them against `extensions/multiplayer_files/actions.py` /
+`__init__.py` (the actual, current source of truth) and fix the drift —
+smaller than either track's own original work, and doesn't need two
+machines, just one pass reading both sides. After that: Phase 4
+(connect-screen UX) and Phase 5 (real-hardware QA) are what's left on
+Track E; see "Proposed phases" and "Splitting the work across two
+machines" above for the full breakdown.

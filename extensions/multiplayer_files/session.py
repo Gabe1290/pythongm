@@ -19,16 +19,21 @@ plan's own Phase 1 testing note.
 Round model (host-authoritative lockstep, the plan's "Design decision"):
 each round, every player currently in the roster submits exactly one
 move file (``end_turn()``), containing whatever they staged via
-``set_shared(name, value)`` since the round began. The host polls,
-resolves the round once it has a move from everyone currently in the
-roster (or ``round_deadline`` seconds pass, whichever comes first),
-folds every move's vars into ``shared`` -- host's own pending vars
-first, then each client's in ascending slot order, so the LAST write
-for a given name wins (the plan's own "no merge engine, just last write
-wins per named var" out-of-scope note) -- and publishes an incremented
-``session.json``. A player who missed the deadline is reported as
-skipped, never as blocking the round forever -- including a player who
-joins mid-round and hasn't had a chance to move yet: they are simply
+``set_shared(name, value)`` / ``send_message(event, data, target)``
+since the round began. The host polls, resolves the round once it has a
+move from everyone currently in the roster (or ``round_deadline``
+seconds pass, whichever comes first), folds every move's vars into
+``shared`` -- host's own pending vars first, then each client's in
+ascending slot order, so the LAST write for a given name wins (the
+plan's own "no merge engine, just last write wins per named var"
+out-of-scope note) -- and publishes an incremented ``session.json``,
+including every ``target="all"`` message from the round so every
+machine fires ``network_message_files`` once it picks up the update (a
+``target="host"`` message is delivered by being processed locally on
+the host only, during the same resolve -- never published, since no one
+else is meant to see it). A player who missed the deadline is reported
+as skipped, never as blocking the round forever -- including a player
+who joins mid-round and hasn't had a chance to move yet: they are simply
 skipped that one round (a generous ``round_deadline`` is the author's
 lever for how much grace a fresh joiner gets) and participate normally
 from the next round on.
@@ -42,9 +47,9 @@ from core.logger import get_logger
 from . import fileio
 from .state import (
     CONSECUTIVE_FAILURES_BEFORE_LOST, DEFAULT_MAX_PLAYERS,
-    DEFAULT_ROUND_DEADLINE, MIN_ROUND_DEADLINE, POLL_INTERVAL, SESSION_FILE,
-    is_valid_shared_name, join_file_name, leave_file_name, move_file_name,
-    sanitize_name, sanitize_value, welcome_file_name,
+    DEFAULT_ROUND_DEADLINE, MAX_STR_LEN, MIN_ROUND_DEADLINE, POLL_INTERVAL,
+    SESSION_FILE, is_valid_shared_name, join_file_name, leave_file_name,
+    move_file_name, sanitize_name, sanitize_value, welcome_file_name,
 )
 
 logger = get_logger(__name__)
@@ -100,6 +105,7 @@ class FileSession:
 
         # staged writes not yet submitted this round (both host and client)
         self._pending_vars = {}
+        self._pending_messages = []      # [{"event", "data", "target"}, ...]
         self._move_submitted_round = 0   # client: last round a move file was written for
 
         self._events = []
@@ -150,23 +156,46 @@ class FileSession:
     def get_shared(self, name: str, default=None):
         return self.shared.get(name, default)
 
+    def send_message(self, event: str, data=None, target: str = "all") -> None:
+        """Stage a custom message, delivered the same way a shared-var
+        write is: folded in at the next round boundary, not instantly --
+        there's no live connection to deliver it over immediately.
+        ``target="host"`` is processed locally on the host only during
+        that resolve and never published; ``target="all"`` (the default)
+        reaches every machine via the round's published session.json."""
+        target = target if target in ("all", "host") else "all"
+        self._pending_messages.append({
+            "event": str(event)[:MAX_STR_LEN],
+            "data": sanitize_value(data),
+            "target": target,
+        })
+
     def end_turn(self) -> None:
         """Submit this round's move: whatever was staged via
-        ``set_shared`` since the last call, as one file (client) or
-        folded straight into the host's own pending state (host -- it
-        never needs to write and then re-read its own move, since it is
-        already the authority). Calling it again with nothing new staged
-        this round is a harmless no-op."""
+        ``set_shared``/``send_message`` since the last call, as one file
+        (client) or folded straight into the host's own pending state
+        (host -- it never needs to write and then re-read its own move,
+        since it is already the authority). Calling it again with
+        nothing new staged this round is a harmless no-op."""
         if self.mode == "host":
-            self._round_moves[0] = dict(self._pending_vars)
+            self._round_moves[0] = {
+                "vars": dict(self._pending_vars),
+                "messages": list(self._pending_messages),
+            }
             self._pending_vars = {}
+            self._pending_messages = []
             return
         if self.player_id < 0 or self._move_submitted_round == self.round:
             return
         path = self.folder / move_file_name(self.player_id, self.round)
-        if fileio.atomic_write_json(path, {"vars": dict(self._pending_vars)}):
+        payload = {
+            "vars": dict(self._pending_vars),
+            "messages": list(self._pending_messages),
+        }
+        if fileio.atomic_write_json(path, payload):
             self._move_submitted_round = self.round
             self._pending_vars = {}
+            self._pending_messages = []
 
     def leave(self) -> None:
         """Client: leave a mark the host will notice and drop from the
@@ -205,16 +234,34 @@ class FileSession:
     # -- host internals -----------------------------------------------
 
     def _host_poll(self) -> None:
-        ok_joins = self._accept_joins()
-        ok_leaves = self._accept_leaves()
+        ok_joins, joins_changed = self._accept_joins()
+        ok_leaves, leaves_changed = self._accept_leaves()
         self._collect_moves()
         self._note_result(ok_joins and ok_leaves)
+        if joins_changed or leaves_changed:
+            # A join/leave changes player_count/roster/waiting_for_players
+            # -- publish right away rather than waiting for the next round
+            # to resolve. Without this, a client's own view of
+            # player_count stays stuck at whatever session.json said at
+            # the last publish (its own welcome, at the latest), which
+            # can never self-correct if gameplay itself is gated on
+            # global.waiting_for_players reaching 0 -- an author who
+            # (reasonably) waits for that before letting anyone move
+            # would deadlock forever, since the round that would have
+            # refreshed it never gets permission to start. Found via
+            # testing the bundled fichier_1 sample end to end, not code
+            # review.
+            self._publish_session(skipped=[], messages=[])
         self._maybe_resolve_round()
 
-    def _accept_joins(self) -> bool:
+    def _accept_joins(self):
+        """Returns (ok, changed): ok is False if the folder couldn't be
+        listed; changed is True if at least one new player was welcomed
+        this poll."""
         names = fileio.list_files(self.folder, "join_")
         if names is None:
-            return False
+            return False, False
+        changed = False
         for name in names:
             client_id = name[len("join_"):-len(".json")]
             if client_id in self._seen_joins:
@@ -238,12 +285,15 @@ class FileSession:
                 self.folder / welcome_file_name(client_id),
                 {"player_id": slot, "round": self.round})
             self._queue_event("player_joined_files", slot, player_name)
-        return True
+            changed = True
+        return True, changed
 
-    def _accept_leaves(self) -> bool:
+    def _accept_leaves(self):
+        """Returns (ok, changed) -- see _accept_joins."""
         names = fileio.list_files(self.folder, "left_")
         if names is None:
-            return False
+            return False, False
+        changed = False
         for name in names:
             client_id = name[len("left_"):-len(".json")]
             if client_id in self._seen_leaves:
@@ -257,7 +307,8 @@ class FileSession:
                 self._roster.pop(slot, None)
                 self._round_moves.pop(slot, None)
                 self.player_count = 1 + len(self._roster)
-        return True
+                changed = True
+        return True, changed
 
     def _collect_moves(self) -> None:
         for slot in self._roster:
@@ -267,7 +318,11 @@ class FileSession:
             if data is None:
                 continue
             vars_ = data.get("vars")
-            self._round_moves[slot] = vars_ if isinstance(vars_, dict) else {}
+            messages_ = data.get("messages")
+            self._round_moves[slot] = {
+                "vars": vars_ if isinstance(vars_, dict) else {},
+                "messages": messages_ if isinstance(messages_, list) else [],
+            }
 
     def _maybe_resolve_round(self) -> None:
         expected = set(self._roster.keys())
@@ -280,22 +335,47 @@ class FileSession:
 
     def _resolve_round(self, expected) -> None:
         skipped = sorted(expected - self._round_moves.keys())
-        merged = dict(self._round_moves.get(0, {}))
+
+        merged = dict(self._round_moves.get(0, {}).get("vars", {}))
         for slot in sorted(s for s in self._round_moves if s != 0):
-            merged.update(self._round_moves[slot])
+            merged.update(self._round_moves[slot].get("vars", {}))
         changed = {k: v for k, v in merged.items() if self.shared.get(k) != v}
         self.shared.update(changed)
+
+        published_messages = []
+        move_slots = [0] + sorted(s for s in self._round_moves if s != 0)
+        for slot in move_slots:
+            row = self._round_moves.get(slot)
+            if not row:
+                continue
+            for msg in row.get("messages") or ():
+                if not isinstance(msg, dict):
+                    continue
+                event = msg.get("event")
+                if not isinstance(event, str) or not event:
+                    continue
+                data = sanitize_value(msg.get("data"))
+                target = msg.get("target") if msg.get("target") in ("all", "host") else "all"
+                # The host fires every message locally regardless of
+                # target -- for target="all" this is the same event
+                # every OTHER machine gets once it picks up the
+                # published round; for target="host" this IS the
+                # delivery, since it's never published at all.
+                self._queue_event("network_message_files", event, data, slot)
+                if target == "all":
+                    published_messages.append(
+                        {"event": event, "data": data, "sender": slot})
 
         self.round += 1
         self._round_moves = {}
         self._round_started_at = time.monotonic()
 
-        self._publish_session(skipped=skipped)
+        self._publish_session(skipped=skipped, messages=published_messages)
         self._queue_event("round_resolved")
         for slot in skipped:
             self._queue_event("player_skipped_round", slot)
 
-    def _publish_session(self, skipped=None) -> None:
+    def _publish_session(self, skipped=None, messages=None) -> None:
         roster = [[0, self.player_name]] + [
             [slot, info["name"]] for slot, info in sorted(self._roster.items())]
         payload = {
@@ -305,6 +385,7 @@ class FileSession:
             "player_count": self.player_count,
             "max_players": self.max_players,
             "skipped": list(skipped or []),
+            "messages": list(messages or []),
         }
         ok = fileio.atomic_write_json(self.folder / SESSION_FILE, payload)
         self._note_result(ok)
@@ -361,10 +442,19 @@ class FileSession:
         if isinstance(new_round, int) and new_round > self.round:
             self.round = new_round
             self._pending_vars = {}      # last round's stale staged vars
+            self._pending_messages = []  # last round's stale staged messages
             self._queue_event("round_resolved")
             for slot in data.get("skipped") or ():
                 if isinstance(slot, int):
                     self._queue_event("player_skipped_round", slot)
+            for msg in data.get("messages") or ():
+                if not isinstance(msg, dict):
+                    continue
+                event = msg.get("event")
+                if not isinstance(event, str) or not event:
+                    continue
+                self._queue_event(
+                    "network_message_files", event, msg.get("data"), msg.get("sender", -1))
 
     # -- internals ---------------------------------------------------
 

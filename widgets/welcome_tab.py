@@ -64,6 +64,17 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/reseau_2", "Réseau — Quiz de classe"),
     ("samples/reseau_3", "Réseau — Récolte en équipe"),
     ("samples/reseau_4", "Réseau — Salle partagée (Test Game)"),
+    # fichier_1: the file-exchange multiplayer extension's own bundled
+    # sample (docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md Phase 2) -- a
+    # different transport from the reseau_*/multiplayer_lan_1 entries
+    # above (a shared folder, not a socket), but the same "hosts/joins
+    # straight from Test Game" shape as reseau_4. Source string is
+    # English, unlike the reseau_* labels above (authored back when that
+    # extension was still French-first, see test_extension_action_i18n.py's
+    # own docstring) -- translated into all 10 shipped languages in the
+    # same commit (scripts, not committed, mirroring
+    # add_sample_name_translations.py's approach).
+    ("samples/fichier_1", "File Exchange — Tic-Tac-Toe"),
     ("samples/treasure", "Treasure"),
     ("samples/sky_strike_1", "Sky Strike — Level 1"),
     # `treasure` and `maze_4` were dropped after rc.12 user testing, then

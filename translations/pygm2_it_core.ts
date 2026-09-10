@@ -2810,6 +2810,10 @@ Qualsiasi azione proveniente da esse verrà ignorata e il progetto potrebbe appa
         <source>📖  Sample guides</source>
         <translation>📖  Guide agli esempi</translation>
     </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Scambio di file — Tris</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -2028,6 +2028,10 @@ Die Aktion selbst ist davon nicht betroffen und wird beim Speichern unverändert
         <source>End Turn (File Exchange)</source>
         <translation>Zug beenden (Dateiaustausch)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Netzwerknachricht senden (Dateiaustausch)</translation>
+    </message>
 </context>
 <context>
     <name>ObjectPalette</name>

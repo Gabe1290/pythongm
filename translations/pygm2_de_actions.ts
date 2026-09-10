@@ -266,6 +266,10 @@ Verwenden Sie stattdessen die Python-Operatoren (and / or / not), z. B. "vspeed 
         <source>End Turn (File Exchange)</source>
         <translation>Zug beenden (Dateiaustausch)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Netzwerknachricht senden (Dateiaustausch)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

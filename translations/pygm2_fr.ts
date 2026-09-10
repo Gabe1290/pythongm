@@ -712,6 +712,10 @@ Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &g
         <source>End Turn (File Exchange)</source>
         <translation>Terminer le tour (échange de fichiers)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Envoyer un message réseau (échange de fichiers)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>
@@ -4873,6 +4877,10 @@ Faites plutôt un clic droit sur {1} et ajoutez l'action à cet endroit.</transl
     <message>
         <source>End Turn (File Exchange)</source>
         <translation>Terminer le tour (échange de fichiers)</translation>
+    </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Envoyer un message réseau (échange de fichiers)</translation>
     </message>
 </context>
 <context>
@@ -10422,6 +10430,10 @@ Voulez-vous quand même enregistrer ?</translation>
         <location filename="../widgets/welcome_tab.py" line="195"/>
         <source>📖  Sample guides</source>
         <translation>📖  Guides des exemples</translation>
+    </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Échange de fichiers — Morpion</translation>
     </message>
 </context>
 <context>

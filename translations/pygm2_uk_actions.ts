@@ -266,6 +266,10 @@ Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 an
         <source>End Turn (File Exchange)</source>
         <translation>Завершити хід (обмін файлами)</translation>
     </message>
+    <message>
+        <source>Send a Network Message (File Exchange)</source>
+        <translation>Надіслати мережеве повідомлення (обмін файлами)</translation>
+    </message>
 </context>
 <context>
     <name>ActionListWidget</name>

@@ -2810,6 +2810,10 @@ Alle Aktionen daraus werden übersprungen, und das Projekt sieht möglicherweise
         <source>📖  Sample guides</source>
         <translation>📖  Beispielanleitungen</translation>
     </message>
+    <message>
+        <source>File Exchange — Tic-Tac-Toe</source>
+        <translation>Dateiaustausch — Tic-Tac-Toe</translation>
+    </message>
 </context>
 <context>
     <name>SampleDocsDialog</name>

@@ -10,10 +10,10 @@ pattern comes from.
 Host-authoritative rounds, not a live connection: host_game_files /
 join_game_files / leave_game_files, a join/welcome handshake, a
 shared-variable blackboard staged per round and folded in by the host
-(set_shared_var_files / get_shared_var_files / end_turn), and the round/
-status globals + lifecycle events below. Phase 1 only
-(docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md "Proposed phases") --
-send_network_message_files and the bundled sample are Phase 2.
+(set_shared_var_files / get_shared_var_files / end_turn), custom messages
+staged the same way (send_network_message_files), and the round/status
+globals + lifecycle events below
+(docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md "Proposed phases" Phases 1-2).
 
 Hooks used: the generic per-frame hook (runtime/extension_hooks.py's
 register_frame_update) -- the actual disk I/O inside it is gated to once
@@ -64,6 +64,14 @@ PLUGIN_EVENTS = {
                         "this round. global.network_sender is their "
                         "number.",
         category=_CATEGORY, icon="⏭️", parameters=[]),
+    "network_message_files": EventType(
+        name="network_message_files", display_name="Network Message (File Exchange)",
+        description="A custom message arrived (sent with \"Send a "
+                        "Network Message (File Exchange)\"). "
+                        "global.network_event is its label, "
+                        "global.network_data its data, "
+                        "global.network_sender the sender.",
+        category=_CATEGORY, icon="✉️", parameters=[]),
     "file_session_lost": EventType(
         name="file_session_lost", display_name="File Session Lost",
         description="The shared folder became unreadable -- the drive "
