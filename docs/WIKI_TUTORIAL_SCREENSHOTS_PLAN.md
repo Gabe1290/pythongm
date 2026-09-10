@@ -1,19 +1,18 @@
 # Plan: per-tutorial-step screenshots for the 6 build-along wiki tutorials
 
-Status: **Phases 1 + 2 DONE, Phase 3 mostly DONE, PUBLISHED (2026-09-10/11).**
-All six English tutorials carry per-step screenshots; 32 of the 48
-translated variant pages (Breakout/Pong/Sokoban/Maze × 8 langs) reuse the
-same English-UI shots. The remaining 16 (Platformer + LunarLander × 8)
-are DEFERRED because their translations are structurally behind the
-current English — see Phase 3 below. **The 38 finished tutorial pages +
-their screenshot images were published to the live GitHub wiki**
-(`Gabe1290/pythongm.wiki`, commit `4d4a07b`) as a targeted push of just
-those files — NOT a full `scripts/sync_wiki.sh push`, because the repo's
-`wiki/` folder carries a large backlog of unrelated un-published drift
-from other sessions (FileExchange page, Full-Action-Reference regens,
-Home/Network/Extensions edits) that isn't this task's to publish.
-`sync_wiki.sh` itself now carries `wiki/images/` (the old "only .md"
-landmine is fixed); the manual push was purely about *scope*.
+Status: **COMPLETE (2026-09-10).** All six English tutorials and all 48
+translated variant pages carry per-step screenshots, published to the
+live GitHub wiki. The Platformer + LunarLander translations, which had
+drifted to ~half the current English length, were rewritten as full
+translations of the current English first, then screenshotted like the
+rest. **Publish mechanics:** targeted pushes of just the finished
+tutorial pages + `wiki/images/tutorial-*.png` — NOT a full
+`scripts/sync_wiki.sh push`, because the repo's `wiki/` folder carries a
+large backlog of unrelated un-published drift from other sessions
+(FileExchange page, Full-Action-Reference regens, Home/Network/Extensions
+edits) that isn't this task's to publish. `sync_wiki.sh` itself now
+carries `wiki/images/` (the old "only .md" landmine is fixed); the manual
+pushes were purely about *scope*.
 Written 2026-08-15; picked up on an explicit ask. This was the sole open
 item carried over from the wiki completeness effort's Phase 3 (that plan
 is otherwise fully closed — Phases 0-3 and 5 done, Phase 4 explicitly
@@ -244,34 +243,29 @@ Breakout shots were regenerated to match:**
    (Breakout/Pong/Sokoban/Maze/Platformer/LunarLander) now carry
    per-step screenshots. `tools/capture_tutorial_screenshots.py` has a
    `SCENARIOS` entry for each, all re-runnable.
-3. **Translated variants — DONE for 4 of 6 tutorials (2026-09-10).**
-   Breakout / Pong / Sokoban / Maze × 8 languages (32 files) now carry
-   the same English-UI screenshots the English pages do, inserted at the
-   equivalent translated `## Step N` sections (a section-ordinal mapping:
-   those four tutorials' translated pages are structurally 1:1 with the
-   current English — identical `## ` and `---` counts). Alt text was left
-   English (fallback / screen-reader text; localizing 200+ captions is a
-   separate future pass, not part of "reuse the same screenshots").
-   Script used: a throwaway `embed_translated.py` (not committed, same
-   category as the translation-catalog insert scripts).
-
-   **Platformer + LunarLander translated variants (16 files) — DEFERRED,
-   as its own finding.** Their translated pages are structurally *behind*
-   the current English: `Tutorial-Platformer_fr.md` has 13 `## ` headings
-   vs English's 17 (no separate "Create the Game Controller" step, no
-   Enhancements section, and the trailing steps are renumbered — FR's
-   "Étape 9" is English's Step 10); `Tutorial-Platformer_de.md` has only
-   10 and merges coin/spike/flag into one "Schritt 6-8" section;
-   LunarLander's translations are similarly condensed (9 `## ` vs 15).
-   A section-ordinal or step-number mapping can't place the screenshots
-   reliably there, and force-fitting them risks a misleading page (e.g.
-   the player-object screenshot under a merged "collectibles & hazards"
-   heading). Per this plan's own "Explicitly out of scope — Rewriting
-   tutorial prose ... fix staleness as its own separate finding", these
-   16 pages need their translations re-synced to the current English
-   structure *first*; the screenshots slot in trivially once they are.
-   The English Platformer/LunarLander pages and the other 32 translated
-   pages are unaffected.
+3. **Translated variants — DONE, all 48 (2026-09-10).**
+   - **Breakout / Pong / Sokoban / Maze × 8 languages (32 files)** carry
+     the same English-UI screenshots the English pages do, inserted at
+     the equivalent translated `## Step N` sections (a section-ordinal
+     mapping: those four tutorials' translated pages were already
+     structurally 1:1 with the current English). Alt text left English
+     (fallback / screen-reader text; localizing 200+ captions is a
+     separate future pass, not part of "reuse the same screenshots").
+   - **Platformer + LunarLander × 8 languages (16 files) — re-synced
+     first, then screenshotted.** These translated pages had gone
+     structurally *behind* the current English (Platformer translations
+     ~150–250 lines vs English's 446; LunarLander ~205 vs 452 — missing
+     the Game Controller step, the split coin/spike/flag steps, the whole
+     Enhancements section, Troubleshooting, Challenge Ideas). Each was
+     rewritten as a full translation of the current English (reusing the
+     existing prose where a section already existed), giving every one
+     the same 17- / 15-section structure as English, and then the
+     screenshots embedded the same way. Conventions: technical
+     identifiers (object/sprite/action/event names, JSON keys, code) stay
+     English; prose, headings, table headers and diagram labels
+     translated; accents/diacritics throughout.
+   Script used for the embed step: a throwaway `embed_translated.py` (not
+   committed, same category as the translation-catalog insert scripts).
 
 --- historical: the original Phase 3 question, now answered ---
 

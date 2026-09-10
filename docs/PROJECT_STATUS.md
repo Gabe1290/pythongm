@@ -62,25 +62,23 @@ This is the complete list. Everything else that used to be tracked in
    of `_register_action_handlers` are gone, with the live handlers folded into
    the mixins. **This plan now has no open work at all.**
 
-3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md` — Phases 1–3 essentially
-   done + PUBLISHED (2026-09-10/11), picked up on an explicit ask.** All
-   six English tutorials (Breakout, Pong, Sokoban, Maze, Platformer,
-   LunarLander) carry per-step screenshots
+3. **`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md` — DONE + PUBLISHED
+   (2026-09-10), picked up on an explicit ask.** All six English
+   tutorials (Breakout, Pong, Sokoban, Maze, Platformer, LunarLander) AND
+   all 48 translated variant pages carry per-step screenshots
    (`wiki/images/tutorial-<name>-*.png`) at their `## Step N` headings,
    from a committed re-runnable tool
    (`tools/capture_tutorial_screenshots.py`, one `SCENARIOS` entry each)
    that drives a real offscreen `PyGameMakerIDE` through a scratch
-   project matching the tutorial's own text. 32 of the 48 translated
-   variant pages (Breakout/Pong/Sokoban/Maze × 8 langs) reuse the same
-   English-UI shots. The 38 finished pages + images are live on the
-   GitHub wiki (targeted push, `pythongm.wiki` `4d4a07b` — not a full
-   `sync_wiki.sh push`, which would also carry unrelated cross-session
-   wiki drift). **Only genuinely open piece**: Platformer + LunarLander
-   translated variants (16 files) — their translations are structurally
-   behind the current English (fewer/merged/renumbered `## ` sections),
-   so screenshots can't be slotted in until those pages are re-synced to
-   the current English structure. Tracked as its own finding in the plan
-   doc's Phase 3 section.
+   project matching the tutorial's own text. The Platformer + LunarLander
+   translations had drifted to ~half the current English length and were
+   rewritten as full translations of the current English first (17-/15-
+   section structural parity), then screenshotted like the rest.
+   Everything is live on the GitHub wiki via targeted pushes (`pythongm.wiki`)
+   — not a full `sync_wiki.sh push`, which would also carry unrelated
+   cross-session wiki drift (FileExchange page, Full-Action-Reference
+   regens, Home/Network/Extensions edits — still un-published, a separate
+   concern). **This plan has no open work.**
 
 4. **Full crafting system for Block World — DONE, all 4 units closed
    the same day it was written (2026-09-09).** *(This entry's own
