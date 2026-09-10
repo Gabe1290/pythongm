@@ -98,6 +98,35 @@ def _sync(ide):
     ide.asset_tree.refresh_from_project(ide.project_manager.current_project_data)
 
 
+def _fit_window_to_room(ide, app, room_name):
+    """Grow the IDE window until the room editor's scroll viewport fully
+    contains the room canvas, so a full-window grab doesn't clip a wide
+    room's right/bottom edge. A no-op for rooms that already fit at the
+    default WINDOW_SIZE (so the smaller tutorials' shots stay unchanged)."""
+    from PySide6.QtWidgets import QScrollArea
+    key = ide._editor_key("rooms", room_name)
+    editor = ide.open_editors.get(key)
+    if editor is None or not hasattr(editor, "room_canvas"):
+        return
+    canvas = editor.room_canvas
+    sa = canvas.parentWidget()
+    while sa is not None and not isinstance(sa, QScrollArea):
+        sa = sa.parentWidget()
+    if sa is None:
+        return
+    for _ in range(6):
+        app.processEvents()
+        vw, vh = sa.viewport().width(), sa.viewport().height()
+        cw, ch = canvas.width(), canvas.height()
+        grow_w = max(0, cw + 8 - vw)
+        grow_h = max(0, ch + 8 - vh)
+        if grow_w <= 0 and grow_h <= 0:
+            return
+        ide.resize(ide.width() + grow_w, ide.height() + grow_h)
+        ide.show()
+    app.processEvents()
+
+
 def _capture(ide, app, filename):
     app.processEvents()
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
@@ -873,11 +902,196 @@ def capture_maze():
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+# ---------------------------------------------------------------------------
+# Platformer (wiki/Tutorial-Platformer.md) -- Phase 2, tutorial 4 of five.
+# ---------------------------------------------------------------------------
+
+def capture_platformer():
+    app = _make_app()
+    ide = _make_ide(app)
+    scratch = _new_scratch_project(ide, "scratch_platformer")
+    am = ide.asset_manager
+    sprite_dir = scratch / "_capture_sprites"
+    sprite_dir.mkdir(exist_ok=True)
+
+    try:
+        # -- Step 2: Create the Sprites ---------------------------------
+        sprites = [
+            ("spr_player", (32, 48), "rect", (230, 90, 90, 255)),
+            ("spr_ground", (32, 32), "rect", (140, 100, 60, 255)),
+            ("spr_platform", (64, 16), "rect", (170, 140, 90, 255)),
+            ("spr_coin", (16, 16), "circle", (245, 205, 70, 255)),
+            # "gray or red" per the tutorial -- grey, to stay distinct from
+            # the red player sprite in the room screenshot.
+            ("spr_spike", (32, 32), "rect", (190, 190, 200, 255)),
+            ("spr_flag", (32, 64), "rect", (90, 200, 110, 255)),
+        ]
+        for name, size, shape, color in sprites:
+            png_path = sprite_dir / f"{name}.png"
+            _sprite_png(png_path, size, shape, color)
+            if am.import_asset(png_path, "sprites", name) is None:
+                raise RuntimeError(f"failed to import sprite {name!r}")
+        _sync(ide)
+        ide.open_sprite_editor("spr_player", am.get_asset("sprites", "spr_player"))
+        _capture(ide, app, "tutorial-platformer-02-sprites.png")
+
+        # -- Step 3: Create the Ground Object -------------------------
+        am.create_asset("obj_ground", "objects", sprite="spr_ground",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_ground", am.get_asset("objects", "obj_ground"))
+        _capture(ide, app, "tutorial-platformer-03-ground-object.png")
+
+        # -- Step 4: Create the Platform Object -----------------------
+        am.create_asset("obj_platform", "objects", sprite="spr_platform",
+                        solid=True, visible=True, events={})
+        _sync(ide)
+        ide.open_object_editor("obj_platform", am.get_asset("objects", "obj_platform"))
+        _capture(ide, app, "tutorial-platformer-04-platform-object.png")
+
+        # -- Step 5: Create the Player Object -------------------------
+        player_events = {
+            "create": {"actions": [
+                {"action": "set_gravity",
+                 "parameters": {"direction": "270", "gravity": "0.5"}},
+            ]},
+            "keyboard": {
+                "left": {"actions": [
+                    {"action": "set_hspeed", "parameters": {"speed": "-4"}}]},
+                "right": {"actions": [
+                    {"action": "set_hspeed", "parameters": {"speed": "4"}}]},
+            },
+            "keyboard_no_key": {"actions": [
+                {"action": "set_hspeed", "parameters": {"speed": "0"}},
+            ]},
+            "keyboard_press": {
+                "up": {"actions": [
+                    {"action": "set_vspeed", "parameters": {"speed": "-10"}}]},
+            },
+            "collision_with_obj_ground": {"actions": [
+                {"action": "stop_movement", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_player", "objects", sprite="spr_player",
+                        solid=False, visible=True, events=player_events)
+        _sync(ide)
+        ide.open_object_editor("obj_player", am.get_asset("objects", "obj_player"))
+        _capture(ide, app, "tutorial-platformer-05-player-object.png")
+
+        # -- Step 6: Create the Coin Object -------------------------
+        coin_events = {
+            "collision_with_obj_player": {"actions": [
+                {"action": "set_score",
+                 "parameters": {"value": "10", "relative": True}},
+                {"action": "destroy_instance", "parameters": {"target": "self"}},
+            ]},
+        }
+        am.create_asset("obj_coin", "objects", sprite="spr_coin",
+                        solid=False, visible=True, events=coin_events)
+        _sync(ide)
+        ide.open_object_editor("obj_coin", am.get_asset("objects", "obj_coin"))
+        _capture(ide, app, "tutorial-platformer-06-coin-object.png")
+
+        # -- Step 7: Create the Spike Object ------------------------
+        spike_events = {
+            "collision_with_obj_player": {"actions": [
+                {"action": "show_message",
+                 "parameters": {"message": "Ouch! You hit a spike!"}},
+                {"action": "restart_room", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_spike", "objects", sprite="spr_spike",
+                        solid=False, visible=True, events=spike_events)
+        _sync(ide)
+        ide.open_object_editor("obj_spike", am.get_asset("objects", "obj_spike"))
+        _capture(ide, app, "tutorial-platformer-07-spike-object.png")
+
+        # -- Step 8: Create the Flag Object ------------------------
+        flag_events = {
+            "collision_with_obj_player": {"actions": [
+                {"action": "show_message",
+                 "parameters": {"message": "Level Complete!"}},
+                {"action": "next_room", "parameters": {}},
+            ]},
+        }
+        am.create_asset("obj_flag", "objects", sprite="spr_flag",
+                        solid=False, visible=True, events=flag_events)
+        _sync(ide)
+        ide.open_object_editor("obj_flag", am.get_asset("objects", "obj_flag"))
+        _capture(ide, app, "tutorial-platformer-08-flag-object.png")
+
+        # -- Step 9: Create the Game Controller --------------------
+        controller_events = {
+            "draw": {"actions": [
+                {"action": "draw_text",
+                 "parameters": {"text": "\"Score:\"", "x": "10", "y": "10"}},
+                {"action": "draw_variable",
+                 "parameters": {"variable": "score", "x": "70", "y": "10"}},
+            ]},
+        }
+        am.create_asset("obj_game_controller", "objects", sprite=None,
+                        solid=False, visible=True, events=controller_events)
+        _sync(ide)
+        ide.open_object_editor("obj_game_controller",
+                               am.get_asset("objects", "obj_game_controller"))
+        _capture(ide, app, "tutorial-platformer-09-controller-object.png")
+
+        # -- Step 10: Design Your Level ---------------------------
+        # A grid interpretation of the tutorial's loose "Example Level
+        # Layout" art: ground along the bottom with two pits, four floating
+        # platforms, coins on/near them, two spikes by a pit, the flag at
+        # the far right, the player at the far left.
+        CELL = 32
+        COLS, ROWS = 25, 15   # 800 x 480, per Step 10's own example size
+        instances = []
+
+        def place(obj, col, row):
+            instances.append({
+                "object_name": obj,
+                "x": col * CELL + CELL // 2, "y": row * CELL + CELL // 2,
+                "rotation": 0, "scale_x": 1.0, "scale_y": 1.0, "visible": True,
+            })
+
+        # Ground along row 14, with pits at cols 8-9 and 16-17.
+        pits = {8, 9, 16, 17}
+        for col in range(COLS):
+            if col not in pits:
+                place("obj_ground", col, 14)
+        # Floating platforms.
+        for col, row in [(5, 11), (10, 9), (15, 10), (20, 8)]:
+            place("obj_platform", col, row)
+        # Coins on / above the platforms and one over a pit.
+        for col, row in [(5, 10), (10, 8), (15, 9), (20, 7), (8, 12)]:
+            place("obj_coin", col, row)
+        # Spikes on the ground next to the pits.
+        for col in (7, 18):
+            place("obj_spike", col, 13)
+        # Flag at the end; player at the start (both standing on the ground).
+        place("obj_flag", 23, 12)
+        place("obj_player", 1, 13)
+        # Controller: anywhere (invisible) -- up in the open sky, top-left.
+        place("obj_game_controller", 2, 2)
+
+        room_data = am.create_asset(
+            "room_level1", "rooms",
+            width=COLS * CELL, height=ROWS * CELL, background_color="#12141c",
+            instances=instances)
+        _sync(ide)
+        ide.open_room_editor("room_level1", room_data)
+        _fit_window_to_room(ide, app, "room_level1")
+        _capture(ide, app, "tutorial-platformer-10-room.png")
+
+        print("Platformer capture complete.")
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 SCENARIOS = {
     "breakout": capture_breakout,
     "pong": capture_pong,
     "sokoban": capture_sokoban,
     "maze": capture_maze,
+    "platformer": capture_platformer,
 }
 
 
