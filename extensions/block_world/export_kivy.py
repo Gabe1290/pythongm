@@ -882,6 +882,12 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
             inventory[bt] = inventory.get(bt, 0) + 1
             obj.block_inventory = inventory
 
+        rewards = (cfg.get('rewards') if cfg else None) or {}
+        points = rewards.get(bt)
+        if points:
+            from main import set_score
+            set_score(int(points), relative=True)
+
     def _bw_set_block_protection(self, block_type, required_key):
         cfg = self.block_world_camera
         if not cfg or not cfg.get('enabled'):
@@ -891,6 +897,28 @@ SCENE_CODE = '''\n    # Precomputed per-block-type average face colors (see
         if block_type not in self.BLOCK_FACE_COLORS or required_key not in self.BLOCK_FACE_COLORS:
             return
         cfg.setdefault('protection', {})[block_type] = required_key
+
+    def _bw_set_block_reward(self, block_type, points):
+        """Tier 7b (mine-to-collect ore/gem), ported to Kivy on
+        docs/BLOCK_WORLD_CRAFTING_PLAN.md's own follow-up note -- this
+        was the one gap Tier 8's export-parity work found and logged
+        rather than chased. Mirrors
+        handlers.execute_set_block_reward_action exactly: same
+        call-once-per-type storage on the camera config, same
+        validation (a bad block_type or unparseable points is a silent
+        no-op, no clamp on points itself -- 0 or negative is stored as
+        given, same as desktop)."""
+        cfg = self.block_world_camera
+        if not cfg or not cfg.get('enabled'):
+            return
+        block_type = str(block_type) if block_type else ''
+        if block_type not in self.BLOCK_FACE_COLORS:
+            return
+        try:
+            points = float(points)
+        except (TypeError, ValueError):
+            return
+        cfg.setdefault('rewards', {})[block_type] = points
 
     def _bw_crafting_slot(self, block_type, count):
         """One recipe input slot's (block_type, count) pair, or None if
@@ -1280,6 +1308,12 @@ def _cg_set_block_protection(gen, params, event_type):
     required_key = str(params.get('required_key', ''))
     return f"self.scene._bw_set_block_protection({block_type!r}, {required_key!r})"
 
+def _cg_set_block_reward(gen, params, event_type):
+    from export.Kivy.code_generator import _num_code
+    block_type = str(params.get('block_type', ''))
+    points = _num_code(params.get('points', 10), 10)
+    return f"self.scene._bw_set_block_reward({block_type!r}, {points})"
+
 def _cg_set_crafting_recipe(gen, params, event_type):
     from export.Kivy.code_generator import _tofloat
     output = str(params.get('output', ''))
@@ -1337,6 +1371,7 @@ ACTION_CODEGEN = {
     'apply_gravity': _cg_apply_gravity,
     'jump': _cg_jump,
     'set_block_protection': _cg_set_block_protection,
+    'set_block_reward': _cg_set_block_reward,
     'draw_block_world_hud': _cg_draw_block_world_hud,
     'load_block_world': _cg_load_block_world,
     'set_look_pitch': _cg_set_look_pitch,
