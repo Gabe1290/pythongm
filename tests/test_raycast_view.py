@@ -818,9 +818,21 @@ class TestFloorCasting:
             assert screen.get_at((160, 236))[:3] == (200, 40, 160)
 
     def test_full_textured_pipeline_under_budget(self):
-        """Walls + sky + floor together stay well under a frame budget at the
-        real 480x480 sample size (floor casting is the expensive part; the
-        spike put 4x downsample at ~5ms)."""
+        """The low-res floor/ceiling cast must not blow up the frame time.
+
+        Phase 5's spike found a full-res per-pixel floor cast was ~13x
+        slower than the rest of the render; the 4x downsample brought it
+        down to a small fraction. This guards that ratio.
+
+        It is deliberately a *relative* check, not an absolute wall-clock
+        budget: GitHub's shared CI runners are too noisy for one (this
+        assertion used to be `< 25ms` and flaked at 28-35ms on loaded
+        runners). It renders the SAME scene with and without the floor
+        texture and asserts the floor cast adds no more than a few times
+        the cost of the rest of the render -- a regression back to the
+        per-pixel cast trips it hard, while runner noise (which inflates
+        BOTH measurements) does not.
+        """
         import time
         room = _room(480, 480)
         for gx in range(15):
@@ -834,21 +846,36 @@ class TestFloorCasting:
             'spr_sky': self._solid_tex((90, 150, 210)),
             'spr_floor': self._solid_tex((100, 96, 80)),
         }
-        raycast_state(room)["camera"] = {
+        base_cam = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 320,
-            'wall_color': '#993333', 'floor_color': '#464632', 'ceiling_color': '#87CEEB',
+            'wall_color': '#993333', 'floor_color': '#464632',
+            'ceiling_color': '#87CEEB',
             'wall_texture': 'spr_wall', 'sky_texture': 'spr_sky',
-            'floor_texture': 'spr_floor', 'floor_cast_res': 4,
         }
         screen = pygame.Surface((480, 480))
         frames = 20
-        start = time.perf_counter()
-        for i in range(frames):
-            camera.facing_angle = (i / frames) * 360.0
-            render_raycast_view(room, screen)
-        ms = (time.perf_counter() - start) / frames * 1000
-        assert ms < 25.0, f"full textured raycast took {ms:.1f}ms/frame (floor cast too slow?)"
+
+        def _ms_per_frame(cam):
+            raycast_state(room)["camera"] = cam
+            camera.facing_angle = 0.0
+            render_raycast_view(room, screen)  # warm-up (branch/import caches)
+            start = time.perf_counter()
+            for i in range(frames):
+                camera.facing_angle = (i / frames) * 360.0
+                render_raycast_view(room, screen)
+            return (time.perf_counter() - start) / frames * 1000
+
+        flat_ms = _ms_per_frame(dict(base_cam))
+        textured_ms = _ms_per_frame(
+            dict(base_cam, floor_texture='spr_floor', floor_cast_res=4))
+
+        ceiling = flat_ms * 6.0 + 15.0
+        assert textured_ms < ceiling, (
+            f"floor cast too slow: textured {textured_ms:.1f}ms/frame vs "
+            f"flat {flat_ms:.1f}ms/frame (ceiling {ceiling:.1f}ms) -- "
+            "a regression toward the per-pixel cast, not runner noise"
+        )
 
 
 class TestBillboardSprites:
