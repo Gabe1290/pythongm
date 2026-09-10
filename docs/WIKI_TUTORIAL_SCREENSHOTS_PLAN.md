@@ -199,7 +199,15 @@ Breakout shots were regenerated to match:**
      actions (the crate's `if_collision`, the player's `if_can_push`)
      serialize as `then_actions`/`else_actions` nested in `parameters`,
      matching the bundled samples.
-   - Maze, Platformer, LunarLander — not started.
+   - **Maze — DONE (2026-09-10).** `capture_maze`; 7 shots
+     (`tutorial-maze-02-sprites` … `-07-controller-object`, `-08-room`),
+     embedded in `wiki/Tutorial-Maze.md` at Steps 2–8. Confirmed again
+     that the tutorial's `obj_player`/`obj_coin`/`obj_exit` names don't
+     match `samples/maze_1` (`obj_person`/`obj_goal`/`obj_wall`), so this
+     is its own scratch project. Room is the tutorial's own "Example Maze
+     Layout" ASCII transcribed verbatim (`.split()` per row). Uses the
+     `keyboard_no_key` event for the stop-on-release behaviour.
+   - Platformer, LunarLander — not started.
 3. **Translated variants.** Decide once phase 1-2 land: do the 8
    translated copies of each tutorial get the SAME English-captured
    screenshots (the IDE's own UI chrome would still be English unless the
