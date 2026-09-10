@@ -69,16 +69,26 @@ This is the complete list. Everything else that used to be tracked in
    "pick up only on an explicit ask" — low value relative to its effort,
    not neglected. **Kept.**
 
-4. **Full crafting system for Block World — planned, not started.**
-   *(Updated 2026-09-09.)* `docs/BLOCK_WORLD_CRAFTING_PLAN.md` now exists
-   (written on an explicit ask). Scope: outputs stay block types (no new
-   "item" asset type), two new register/attempt actions
-   (`set_crafting_recipe`/`craft_item`) mirroring `set_block_protection`/
-   `set_block_reward`'s exact call-once-per-type pattern, fixed 3-input-slot
-   shapeless recipes, requires Tier 7c's Inventory on. No crafting-table
-   gating, no dedicated crafting HUD, no new export machinery beyond
-   porting the two actions to HTML5/Kivy — all explicit, written cuts.
-   Ready to pick up unit-by-unit whenever it's next in line.
+4. **Full crafting system for Block World — DONE, all 4 units closed
+   the same day it was written (2026-09-09).** *(This entry's own
+   previous "planned, not started" wording was written earlier the same
+   day the plan was drafted and never revisited once the units actually
+   landed a few hours later — stale in exactly the way this doc's own
+   "Discipline for future doc-writing" section warns about; caught and
+   fixed 2026-09-11 rather than trusted at face value.)*
+   `docs/BLOCK_WORLD_CRAFTING_PLAN.md` says "Closed 2026-09-09 — all 4
+   units done, same day" and the code backs it up:
+   `set_crafting_recipe`/`craft_item` (`extensions/block_world/actions.py`
+   + `handlers.py`) ship on desktop + HTML5 + Kivy, translated into all
+   10 UI languages + 8 wiki languages, documented in the extension's own
+   README, and covered by 46 tests including a cross-engine parity suite.
+   Outputs stay block types (no new "item" asset type); no crafting-table
+   gating, no dedicated crafting HUD (all explicit, written cuts — see
+   the plan's own "Explicitly out of scope"). The one thing found along
+   the way and deliberately not chased: Kivy has no `set_block_reward`
+   port at all (Tier 7b, pre-existing, unrelated to crafting) — logged in
+   `TODO.md`'s Block World section with the exact fix shape, genuinely
+   ready to pick up.
 
 5. **`docs/BLOCK_WORLD_PERF_PLAN.md` — the Block World fps gap. CLOSED
    2026-09-09; Phase 1 shipped, re-measured, stopping there per the plan's
