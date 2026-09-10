@@ -92,6 +92,8 @@
 3. Використовуйте нейтральний колір
 4. Розмір: 32x32 пікселі
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Крок 3: Створення об'єкта стіни
@@ -104,6 +106,8 @@
 4. **Позначте прапорець "Solid"**
 5. Події не потрібні
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Крок 4: Створення об'єкта цілі
@@ -114,6 +118,8 @@
 2. Встановіть спрайт на `spr_target`
 3. Події не потрібні — це просто позначка
 4. Залиште "Solid" непозначеним (гравець і ящики можуть стояти на ній)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -140,6 +146,8 @@
 Так ящик стає зеленим, щойно опиняється на цільовому місці — **If
 Collision** з обома зміщеннями `0` перевіряє, чи *поточна* позиція
 ящика перекривається з `obj_target`.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -185,6 +193,8 @@ Collision** з обома зміщеннями `0` перевіряє, чи *п�
 переміщує гравця на його попереднє місце — все в одній дії. Якщо
 місце за ящиком заблоковане стіною або іншим ящиком, нічого не
 рухається.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -235,6 +245,8 @@ if self.total_targets > 0 and crates_on_targets >= self.total_targets:
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Крок 9: Проєктування вашого рівня
@@ -276,6 +288,8 @@ T = Ціль
 ```
 
 **Важливо:** Завжди майте однакову кількість ящиків і цілей!
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 ---
 

@@ -73,6 +73,8 @@ Creeremo due racchette - una per ogni giocatore:
 2. Rendilo 32x32 pixel
 3. Lascialo trasparente o rendilo di un colore solido (sarà invisibile nel gioco)
 
+![The Sprite Editor with spr_ball open, origin centered; spr_ball, spr_paddle_left, spr_paddle_right, spr_wall and spr_goal in the resource tree](images/tutorial-pong-02-sprites.png)
+
 ---
 
 ## Passo 3: Crea l'Oggetto Muro
@@ -84,6 +86,8 @@ L'oggetto muro crea confini nella parte superiore e inferiore dell'area di gioco
 3. Imposta lo sprite su `spr_wall`
 4. **Spunta la casella "Solido"** - questo è importante per il rimbalzo!
 5. Non sono necessari eventi - il muro rimane semplicemente lì
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-pong-03-wall-object.png)
 
 ---
 
@@ -155,6 +159,8 @@ L'oggetto muro crea confini nella parte superiore e inferiore dell'area di gioco
 2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
    necessaria — rimbalza sempre dagli oggetti solidi)
 
+![obj_paddle_left's Object Events panel: Keyboard (held) and Keyboard Release with W/S, plus Collision with obj_wall (Bounce). obj_paddle_right is the same with the Up/Down arrows](images/tutorial-pong-04-paddle-objects.png)
+
 ---
 
 ## Passo 5: Crea l'Oggetto Palla
@@ -183,6 +189,8 @@ L'oggetto muro crea confini nella parte superiore e inferiore dell'area di gioco
 1. Aggiungi Evento → Collisione → obj_wall
 2. Aggiungi Azione: **Movimento** → **Rimbalza** (nessuna configurazione
    necessaria — rimbalza sempre dagli oggetti solidi)
+
+![obj_ball's Object Events panel: Create (Start Moving), and Collision with obj_paddle_left, obj_paddle_right and obj_wall (each a Bounce)](images/tutorial-pong-05-ball-object.png)
 
 ---
 
@@ -232,6 +240,8 @@ Torna a `obj_ball` e aggiungi questi eventi:
    - Ambito: `global`
    - Spunta "Relativo"
 
+![obj_ball after Step 6: the two paddle/wall bounces from Step 5 plus Collision with obj_goal_left and obj_goal_right (Jump to Start + Set Variable). obj_goal_left/obj_goal_right themselves have no events -- they're invisible, solid, shown here in green only so the placement reads](images/tutorial-pong-06-goal-objects.png)
+
 ---
 
 ## Passo 7: Crea l'Oggetto Visualizzazione del Punteggio
@@ -265,6 +275,8 @@ Torna a `obj_ball` e aggiungi questi eventi:
    - X: `100`
    - Y: `30`
 
+![obj_score's Object Events panel: Create (two Set Variable actions) and Draw (two Draw Text + two Draw Variable actions), with no sprite set](images/tutorial-pong-07-score-object.png)
+
 ---
 
 ## Passo 8: Progetta la Stanza
@@ -292,6 +304,8 @@ Torna a `obj_ball` e aggiungi questi eventi:
 [GOAL]                                                      [GOAL]
 [MURO MURO MURO MURO MURO MURO MURO MURO MURO MURO]
 ```
+
+![The Room Editor for room_pong: tan wall rows across the top and bottom, green goal columns down the left and right edges, the blue and red paddles near each side, the ball in the centre, and obj_score just inside the top wall](images/tutorial-pong-08-room.png)
 
 ---
 

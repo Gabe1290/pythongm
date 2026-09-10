@@ -49,6 +49,8 @@ Primeiro, precisamos criar os elementos visuais para o nosso jogo.
 2. Nomeie-o `bg_game`
 3. Desenhe ou carregue uma imagem de fundo
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Passo 2: Criar o Objeto Raquete
@@ -84,6 +86,8 @@ A raquete continua a mover-se mesmo após libertar a tecla! Vamos corrigir isso.
 
 Agora a raquete para quando liberta as teclas de seta.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Passo 3: Criar o Objeto Bola
@@ -110,6 +114,8 @@ Isto faz a bola começar a mover-se quando o jogo começa.
 2. Adicione a ação **Reverse Horizontal** ou **Reverse Vertical** conforme necessário
    - Ou use ambos para lidar com ricochetes nos cantos
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Passo 4: Criar o Objeto Tijolo
@@ -134,6 +140,8 @@ estar na bola, não no tijolo:
 2. **Add Event** → **Collision** → selecione `obj_brick`
 3. Adicione a ação **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Passo 5: Criar o Objeto Parede
@@ -144,6 +152,8 @@ estar na bola, não no tijolo:
 3. Marque a caixa **Solid**
 
 É só isso - a parede só precisa de ser sólida para a bola ricochetear.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@ Agora coloque os seus objetos na sala:
 3. **Colocar a Bola:** Ponha `obj_ball` algures no meio
 
 4. **Colocar os Tijolos:** Arranje instâncias de `obj_brick` em filas no topo da sala
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 

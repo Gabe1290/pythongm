@@ -93,6 +93,8 @@ Vsi sprite-i naj bodo enake velikosti (32x32 pikslov dobro deluje), da ustvariš
 3. Uporabi nevtralno barvo
 4. Velikost: 32x32 pikslov
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Korak 3: Ustvari Objekt Stena
@@ -105,6 +107,8 @@ Stena je najpreprostejši objekt - samo blokira gibanje.
 4. **Označi polje "Solid"**
 5. Ni potrebnih dogodkov
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Korak 4: Ustvari Objekt Cilj
@@ -115,6 +119,8 @@ Cilji označujejo, kamor morajo biti postavljeni zaboji.
 2. Nastavi sprite na `spr_target`
 3. Ni potrebnih dogodkov - to je samo oznaka
 4. Pusti "Solid" neoznačeno (igralec in zaboji so lahko na njem)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -141,6 +147,8 @@ Zaboj potiska igralec in spremeni videz, ko je na cilju.
 Zaboj tako postane zelen, ko je na ciljnem polju — **If Collision** z
 obema odmikoma na `0` preveri, ali se *trenutni* položaj zaboja
 prekriva z `obj_target`.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -186,6 +194,8 @@ se premika igralec) prost, in če je, potisne zaboj za eno celico ter
 premakne igralca na njegovo mesto, vse v eni sami akciji. Če je
 prostor za zabojem blokiran s steno ali drugim zabojem, se nič ne
 premakne.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -236,6 +246,8 @@ akcijo **Show Message** (iz **Output**, sporočilo `Level Complete!`).
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Korak 9: Oblikuj Svoj Nivo
@@ -277,6 +289,8 @@ T = Cilj
 ```
 
 **Pomembno:** Vedno imej enako število zabojev in ciljev!
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 ---
 

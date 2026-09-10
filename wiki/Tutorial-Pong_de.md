@@ -73,6 +73,8 @@ Wir erstellen zwei Schläger - einen für jeden Spieler:
 2. Machen Sie es 32x32 Pixel groß
 3. Lassen Sie es transparent oder machen Sie es einfarbig (es wird im Spiel unsichtbar sein)
 
+![The Sprite Editor with spr_ball open, origin centered; spr_ball, spr_paddle_left, spr_paddle_right, spr_wall and spr_goal in the resource tree](images/tutorial-pong-02-sprites.png)
+
 ---
 
 ## Schritt 3: Erstellen Sie das Wand-Objekt
@@ -84,6 +86,8 @@ Das Wand-Objekt erzeugt Grenzen am oberen und unteren Rand des Spielbereichs.
 3. Stellen Sie das Sprite auf `spr_wall` ein
 4. **Aktivieren Sie das Kontrollkästchen "Solid"** - das ist wichtig zum Abprallen!
 5. Keine Ereignisse erforderlich - die Wand sitzt einfach dort
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-pong-03-wall-object.png)
 
 ---
 
@@ -155,6 +159,8 @@ Das Wand-Objekt erzeugt Grenzen am oberen und unteren Rand des Spielbereichs.
 2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
    — es prallt immer von soliden Objekten ab)
 
+![obj_paddle_left's Object Events panel: Keyboard (held) and Keyboard Release with W/S, plus Collision with obj_wall (Bounce). obj_paddle_right is the same with the Up/Down arrows](images/tutorial-pong-04-paddle-objects.png)
+
 ---
 
 ## Schritt 5: Erstellen Sie das Ball-Objekt
@@ -183,6 +189,8 @@ Das Wand-Objekt erzeugt Grenzen am oberen und unteren Rand des Spielbereichs.
 1. Ereignis hinzufügen → Kollision → obj_wall
 2. Aktion hinzufügen: **Bewegen** → **Abprallen** (keine Konfiguration nötig
    — es prallt immer von soliden Objekten ab)
+
+![obj_ball's Object Events panel: Create (Start Moving), and Collision with obj_paddle_left, obj_paddle_right and obj_wall (each a Bounce)](images/tutorial-pong-05-ball-object.png)
 
 ---
 
@@ -233,6 +241,8 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
    - Gültigkeitsbereich: `global`
    - Aktivieren Sie "Relativ"
 
+![obj_ball after Step 6: the two paddle/wall bounces from Step 5 plus Collision with obj_goal_left and obj_goal_right (Jump to Start + Set Variable). obj_goal_left/obj_goal_right themselves have no events -- they're invisible, solid, shown here in green only so the placement reads](images/tutorial-pong-06-goal-objects.png)
+
 ---
 
 ## Schritt 7: Erstellen Sie das Punkteanzeige-Objekt
@@ -266,6 +276,8 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
    - X: `100`
    - Y: `30`
 
+![obj_score's Object Events panel: Create (two Set Variable actions) and Draw (two Draw Text + two Draw Variable actions), with no sprite set](images/tutorial-pong-07-score-object.png)
+
 ---
 
 ## Schritt 8: Entwerfen Sie den Raum
@@ -293,6 +305,8 @@ Gehen Sie zurück zu `obj_ball` und fügen Sie diese Ereignisse hinzu:
 [GOAL]                                                      [GOAL]
 [WALL WALL WALL WALL WALL WALL WALL WALL WALL WALL]
 ```
+
+![The Room Editor for room_pong: tan wall rows across the top and bottom, green goal columns down the left and right edges, the blue and red paddles near each side, the ball in the centre, and obj_score just inside the top wall](images/tutorial-pong-08-room.png)
 
 ---
 

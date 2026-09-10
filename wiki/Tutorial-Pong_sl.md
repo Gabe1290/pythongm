@@ -73,6 +73,8 @@ Ustvarili bomo dve vesli - eno za vsakega igralca:
 2. Naredi ga 32x32 pikslov
 3. Pusti ga prosojnega ali naredi trdno barvo (v igri bo nevidna)
 
+![The Sprite Editor with spr_ball open, origin centered; spr_ball, spr_paddle_left, spr_paddle_right, spr_wall and spr_goal in the resource tree](images/tutorial-pong-02-sprites.png)
+
 ---
 
 ## Korak 3: Ustvari objekt stene
@@ -84,6 +86,8 @@ Objekt stene ustvari meje na vrhu in dnu igrišča.
 3. Nastavi lik na `spr_wall`
 4. **Označite okence "Trdna"** - to je pomembno za odbijanje!
 5. Ni potrebnih dogodkov - stena se samo nahaja tam
+
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-pong-03-wall-object.png)
 
 ---
 
@@ -155,6 +159,8 @@ Objekt stene ustvari meje na vrhu in dnu igrišča.
 2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
    potrebna — vedno se odbije od trdnih predmetov)
 
+![obj_paddle_left's Object Events panel: Keyboard (held) and Keyboard Release with W/S, plus Collision with obj_wall (Bounce). obj_paddle_right is the same with the Up/Down arrows](images/tutorial-pong-04-paddle-objects.png)
+
 ---
 
 ## Korak 5: Ustvari objekt žoge
@@ -182,6 +188,8 @@ Objekt stene ustvari meje na vrhu in dnu igrišča.
 1. Dodaj dogodek → Trčenje → obj_wall
 2. Dodaj akcijo: **Gibanje** → **Odbij se** (konfiguracija ni
    potrebna — vedno se odbije od trdnih predmetov)
+
+![obj_ball's Object Events panel: Create (Start Moving), and Collision with obj_paddle_left, obj_paddle_right and obj_wall (each a Bounce)](images/tutorial-pong-05-ball-object.png)
 
 ---
 
@@ -231,6 +239,8 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
    - Obseg: `global`
    - Označite "Relative"
 
+![obj_ball after Step 6: the two paddle/wall bounces from Step 5 plus Collision with obj_goal_left and obj_goal_right (Jump to Start + Set Variable). obj_goal_left/obj_goal_right themselves have no events -- they're invisible, solid, shown here in green only so the placement reads](images/tutorial-pong-06-goal-objects.png)
+
 ---
 
 ## Korak 7: Ustvari objekt za prikaz točk
@@ -264,6 +274,8 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
    - X: `100`
    - Y: `30`
 
+![obj_score's Object Events panel: Create (two Set Variable actions) and Draw (two Draw Text + two Draw Variable actions), with no sprite set](images/tutorial-pong-07-score-object.png)
+
 ---
 
 ## Korak 8: Oblikuj sobo
@@ -291,6 +303,8 @@ Pojdi nazaj k `obj_ball` in dodaj te dogodke:
 [CILJ]                                                    [CILJ]
 [STENA STENA STENA STENA STENA STENA STENA STENA STENA STENA]
 ```
+
+![The Room Editor for room_pong: tan wall rows across the top and bottom, green goal columns down the left and right edges, the blue and red paddles near each side, the ball in the centre, and obj_score just inside the top wall](images/tutorial-pong-08-room.png)
 
 ---
 

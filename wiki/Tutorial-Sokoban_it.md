@@ -92,6 +92,8 @@ Tutti gli sprite devono avere la stessa dimensione (32x32 pixel funziona bene) p
 3. Usa un colore neutro
 4. Dimensione: 32x32 pixel
 
+![The Sprite Editor with spr_crate open, origin centered; spr_player, spr_crate, spr_crate_ok, spr_wall, spr_target and spr_floor all in the resource tree](images/tutorial-sokoban-02-sprites.png)
+
 ---
 
 ## Step 3: Crea l'oggetto muro
@@ -104,6 +106,8 @@ Il muro è l'oggetto più semplice - blocca semplicemente il movimento.
 4. **Seleziona la casella "Solid"**
 5. Non sono necessari eventi
 
+![obj_wall's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-sokoban-03-wall-object.png)
+
 ---
 
 ## Step 4: Crea l'oggetto bersaglio
@@ -114,6 +118,8 @@ I bersagli indicano dove devono essere posizionate le casse.
 2. Imposta lo sprite su `spr_target`
 3. Non sono necessari eventi - è solo un marcatore
 4. Lascia "Solid" deselezionato (il giocatore e le casse possono stare sopra)
+
+![obj_target's Object Events panel: empty, and Solid left unchecked](images/tutorial-sokoban-04-target-object.png)
 
 ---
 
@@ -140,6 +146,8 @@ La cassa viene spinta dal giocatore e cambia aspetto quando si trova su un bersa
 Questo fa diventare la cassa verde quando si trova su un punto bersaglio —
 **If Collision** con entrambi gli offset a `0` verifica se la posizione
 *attuale* della cassa sovrappone un `obj_target`.
+
+![obj_crate's Object Events panel: a Step event holding the If Collision / Set Sprite / Else / Set Sprite chain, with Solid checked](images/tutorial-sokoban-05-crate-object.png)
 
 ---
 
@@ -186,6 +194,8 @@ cui si muove il giocatore) è libero e, in tal caso, spinge la cassa di una
 cella e sposta il giocatore al suo posto, tutto in un'unica azione. Se lo
 spazio dietro la cassa è bloccato da un muro o da un'altra cassa, nulla si
 muove.
+
+![obj_player's Object Events panel: Keyboard Press (four Move Grid actions), Collision with obj_wall (Stop Movement), Collision with obj_crate (If Can Push)](images/tutorial-sokoban-06-player-object.png)
 
 ---
 
@@ -237,6 +247,8 @@ prima del riavvio.
    - X: `10`
    - Y: `10`
 
+![obj_game_controller's Object Events panel: Create and Step (each an Execute Code action) plus Draw (Draw Text), with no sprite set](images/tutorial-sokoban-07-controller-object.png)
+
 ---
 
 ## Step 9: Progetta il tuo livello
@@ -278,6 +290,8 @@ T = Bersaglio
 ```
 
 **Importante:** Avere sempre lo stesso numero di casse e bersagli!
+
+![The Room Editor for room_level1: a slate wall border with a few internal walls, the blue player, two brown crates, two yellow targets, and the obj_game_controller marker on a clear interior cell](images/tutorial-sokoban-09-room.png)
 
 ---
 

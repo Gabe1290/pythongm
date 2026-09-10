@@ -49,6 +49,8 @@ Zuerst müssen wir die visuellen Elemente für unser Spiel erstellen.
 2. Nenne es `bg_game`
 3. Zeichne oder lade ein Hintergrundbild
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Schritt 2: Das Paddle-Objekt erstellen
@@ -84,6 +86,8 @@ Das Paddle bewegt sich weiter, auch nachdem die Taste losgelassen wurde! Lass un
 
 Jetzt stoppt das Paddle, wenn du die Pfeiltasten loslässt.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Schritt 3: Das Ball-Objekt erstellen
@@ -110,6 +114,8 @@ Dies lässt den Ball starten, wenn das Spiel beginnt.
 2. Füge die Aktion **Reverse Horizontal** oder **Reverse Vertical** nach Bedarf hinzu
    - Oder verwende beide, um Eckabpraller zu handhaben
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Schritt 4: Das Brick-Objekt erstellen
@@ -134,6 +140,8 @@ Ball stehen, nicht beim Brick:
 2. **Add Event** -> **Collision** -> wähle `obj_brick`
 3. Füge die Aktion **Reverse Vertical** hinzu
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Schritt 5: Das Wall-Objekt erstellen
@@ -144,6 +152,8 @@ Ball stehen, nicht beim Brick:
 3. Aktiviere das **Solid**-Kontrollkästchen
 
 Das ist alles - die Wand muss nur solid sein, damit der Ball davon abprallt.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@ Jetzt platziere deine Objekte im Raum:
 3. **Platziere den Ball:** Setze `obj_ball` irgendwo in die Mitte
 
 4. **Platziere die Bricks:** Ordne `obj_brick`-Instanzen in Reihen oben im Raum an
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 

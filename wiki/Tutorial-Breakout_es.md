@@ -49,6 +49,8 @@ Primero, necesitamos crear los elementos visuales para nuestro juego.
 2. Nómbralo `bg_game`
 3. Dibuja o carga una imagen de fondo
 
+![The Sprite Editor with spr_ball open, origin already centered](images/tutorial-breakout-01-sprites.png)
+
 ---
 
 ## Paso 2: Crear el Objeto Paddle
@@ -84,6 +86,8 @@ Ahora programemos el paddle que el jugador controla.
 
 Ahora el paddle se detiene cuando sueltas las teclas de flecha.
 
+![obj_paddle's Object Events panel: Keyboard (held) and Keyboard Release, two actions each](images/tutorial-breakout-02-paddle-object.png)
+
 ---
 
 ## Paso 3: Crear el Objeto Pelota
@@ -110,6 +114,8 @@ Esto hace que la pelota comience a moverse cuando el juego inicia.
 2. Agrega la acción **Reverse Horizontal** o **Reverse Vertical** según sea necesario
    - O usa ambas para manejar rebotes en esquinas
 
+![obj_ball's Object Events panel: Create, Collision with obj_paddle, Collision with obj_wall](images/tutorial-breakout-03-ball-object.png)
+
 ---
 
 ## Paso 4: Crear el Objeto Ladrillo
@@ -134,6 +140,8 @@ debe ir en la pelota, no en el ladrillo:
 2. **Add Event** -> **Collision** -> selecciona `obj_brick`
 3. Agrega la acción **Reverse Vertical**
 
+![obj_brick's Object Events panel: Collision with obj_ball, one action (Destroy Instance)](images/tutorial-breakout-04-brick-object.png)
+
 ---
 
 ## Paso 5: Crear el Objeto Pared
@@ -144,6 +152,8 @@ debe ir en la pelota, no en el ladrillo:
 3. Marca la casilla **Solid**
 
 Eso es todo - la pared solo necesita ser sólida para que la pelota rebote.
+
+![obj_wall's Object Events panel: empty -- solid is all it needs](images/tutorial-breakout-05-wall-object.png)
 
 ---
 
@@ -173,6 +183,8 @@ Ahora coloca tus objetos en la sala:
 3. **Coloca la Pelota:** Pon `obj_ball` en algún lugar del centro
 
 4. **Coloca los Ladrillos:** Organiza instancias de `obj_brick` en filas en la parte superior de la sala
+
+![The Room Editor with walls around three edges, three rows of bricks, the paddle near the bottom, and the ball in the gap between them](images/tutorial-breakout-06-room.png)
 
 ---
 
