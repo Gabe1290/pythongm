@@ -176,6 +176,11 @@ This is the complete list. Everything else that used to be tracked in
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 
+**`docs/RELEASE_QA_CHECKLIST.md`** is the master checklist that sequences
+every manual test into one release-validation pass and folds in the
+items below. Use it for a release sign-off; the list here is the
+quick index.
+
 Consolidated from what used to be repeated caveats scattered across a
 dozen now-deleted docs:
 
