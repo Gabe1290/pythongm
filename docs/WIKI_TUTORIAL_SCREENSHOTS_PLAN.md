@@ -184,6 +184,14 @@ Breakout shots were regenerated to match:**
    Each tutorial is its own scratch project + capture script + embed pass
    — independent units, doable in any order, each its own commit+push
    (matching every other unit of work across this whole effort).
+   - **Pong — DONE (2026-09-10).** `capture_pong` in the capture tool; 7
+     shots (`tutorial-pong-02-sprites` … `-08-room`) at Steps 2–8 (Step 1
+     is a planning table, Step 9 is "run it" — no screenshot), embedded in
+     `wiki/Tutorial-Pong.md`. No surprises: the goal objects are invisible
+     in-game so their placeholder is drawn translucent-green purely for
+     the room shot, noted in that caption. `Tutorial-Pong_*` translated
+     variants still untouched (Phase 3).
+   - Sokoban, Maze, Platformer, LunarLander — not started.
 3. **Translated variants.** Decide once phase 1-2 land: do the 8
    translated copies of each tutorial get the SAME English-captured
    screenshots (the IDE's own UI chrome would still be English unless the
