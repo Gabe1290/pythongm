@@ -1,10 +1,12 @@
 # Plan: per-tutorial-step screenshots for the 6 build-along wiki tutorials
 
-Status: **Phase 1 + Phase 2 DONE (2026-09-10/11) — all six English
-tutorials now carry per-step screenshots.** Phase 3 (the 40 translated
-variant pages) and publishing to the live GitHub wiki are the remaining
-work; both were explicitly asked for and are in progress in the same
-sitting as Phase 2.
+Status: **Phases 1 + 2 DONE, Phase 3 mostly DONE (2026-09-10/11).** All
+six English tutorials carry per-step screenshots; 32 of the 48 translated
+variant pages (Breakout/Pong/Sokoban/Maze × 8 langs) reuse the same
+English-UI shots. The remaining 16 (Platformer + LunarLander × 8) are
+DEFERRED because their translations are structurally behind the current
+English — see Phase 3 below. Publishing to the live GitHub wiki is the
+last step (needs its own handling for the non-`.md` image files).
 Written 2026-08-15; picked up on an explicit ask. This was the sole open
 item carried over from the wiki completeness effort's Phase 3 (that plan
 is otherwise fully closed — Phases 0-3 and 5 done, Phase 4 explicitly
@@ -235,12 +237,42 @@ Breakout shots were regenerated to match:**
    (Breakout/Pong/Sokoban/Maze/Platformer/LunarLander) now carry
    per-step screenshots. `tools/capture_tutorial_screenshots.py` has a
    `SCENARIOS` entry for each, all re-runnable.
-3. **Translated variants.** Decide once phase 1-2 land: do the 8
-   translated copies of each tutorial get the SAME English-captured
-   screenshots (the IDE's own UI chrome would still be English unless the
-   capture script also switches language per screenshot — matching this
-   session's own `get_language_manager().set_language()` pattern), or
-   does each language get its own captures? **Recommendation: same
+3. **Translated variants — DONE for 4 of 6 tutorials (2026-09-10).**
+   Breakout / Pong / Sokoban / Maze × 8 languages (32 files) now carry
+   the same English-UI screenshots the English pages do, inserted at the
+   equivalent translated `## Step N` sections (a section-ordinal mapping:
+   those four tutorials' translated pages are structurally 1:1 with the
+   current English — identical `## ` and `---` counts). Alt text was left
+   English (fallback / screen-reader text; localizing 200+ captions is a
+   separate future pass, not part of "reuse the same screenshots").
+   Script used: a throwaway `embed_translated.py` (not committed, same
+   category as the translation-catalog insert scripts).
+
+   **Platformer + LunarLander translated variants (16 files) — DEFERRED,
+   as its own finding.** Their translated pages are structurally *behind*
+   the current English: `Tutorial-Platformer_fr.md` has 13 `## ` headings
+   vs English's 17 (no separate "Create the Game Controller" step, no
+   Enhancements section, and the trailing steps are renumbered — FR's
+   "Étape 9" is English's Step 10); `Tutorial-Platformer_de.md` has only
+   10 and merges coin/spike/flag into one "Schritt 6-8" section;
+   LunarLander's translations are similarly condensed (9 `## ` vs 15).
+   A section-ordinal or step-number mapping can't place the screenshots
+   reliably there, and force-fitting them risks a misleading page (e.g.
+   the player-object screenshot under a merged "collectibles & hazards"
+   heading). Per this plan's own "Explicitly out of scope — Rewriting
+   tutorial prose ... fix staleness as its own separate finding", these
+   16 pages need their translations re-synced to the current English
+   structure *first*; the screenshots slot in trivially once they are.
+   The English Platformer/LunarLander pages and the other 32 translated
+   pages are unaffected.
+
+--- historical: the original Phase 3 question, now answered ---
+
+   Do the 8 translated copies of each tutorial get the SAME
+   English-captured screenshots (the IDE's own UI chrome would still be
+   English unless the capture script also switches language per
+   screenshot), or does each language get its own captures?
+   **Recommendation: same
    screenshots across all languages for v1** (matching how Phase 1's
    original English-only images were embedded with no per-language
    variants planned) — recapturing 54 pages × per-step screenshots in 8
