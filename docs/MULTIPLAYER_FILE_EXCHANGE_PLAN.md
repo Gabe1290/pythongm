@@ -530,18 +530,19 @@ review/commit boundary, full suite green after each, matching this repo's
    two real `GameRunner` instances over a real
    `tempfile.TemporaryDirectory()`, the same "real engine, not mocked
    classes" discipline `test_reseau_4_sample.py` established.
-3. **Tutorial 10** (see "Tutorial: outline" above): the four build phases
-   as HTML pages, the intro page (including the short historical callout),
-   `Tutorials/index.json` entry, a thumbnail, **and the French
+3. **DONE (Track T, reconciled 2026-09-10) — Tutorial 10** (see "Tutorial:
+   outline" above): the four build phases as HTML pages, the intro page
+   (including the short historical callout), `Tutorials/index.json`
+   entry, a thumbnail, and the French
    (`Tutorials/fr/10_file_exchange_multiplayer/`) translation shipped in
-   the same phase, not a follow-up** — decided, not deferred; budget the
-   phase accordingly (see "Effort estimate"). Exclude from the beginner
-   edition's `tutorial_folders` whitelist, matching the sample's own
-   exclusion in the same phase. Regression coverage mirrors
-   `tests/test_tutorial_panel_i18n_verification.py`'s existing pattern:
-   drive the real `TutorialPanel` through every page of the new lesson
-   **in both languages** and assert none of the widget's own error/
-   placeholder branches fire.
+   the same phase. Excluded from the beginner edition's
+   `tutorial_folders` whitelist, matching the sample's own exclusion.
+   Regression coverage in `tests/test_tutorial_panel_i18n_verification.py`.
+   Rearchitected during reconciliation around a single `obj_game` object
+   with nine literal cell names (matching `fichier_1`'s own design)
+   rather than the original nine-`obj_cell`-instances-with-computed-names
+   plan, since `set_shared_var_files`'s `name` parameter is always taken
+   literally — see the status note at the top of this doc.
 4. **Connect-screen UX**: a pygame folder-path entry + waiting-room
    screen, mirroring `connect_screen.py`'s shape. Still no folder
    *browsing* (out of scope above) — typed/pasted path, validated for
