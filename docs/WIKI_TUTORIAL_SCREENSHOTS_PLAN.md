@@ -207,7 +207,18 @@ Breakout shots were regenerated to match:**
      is its own scratch project. Room is the tutorial's own "Example Maze
      Layout" ASCII transcribed verbatim (`.split()` per row). Uses the
      `keyboard_no_key` event for the stop-on-release behaviour.
-   - Platformer, LunarLander — not started.
+   - **Platformer — DONE (2026-09-10).** `capture_platformer`; 9 shots
+     (`tutorial-platformer-02-sprites` … `-09-controller-object`,
+     `-10-room`), embedded in `wiki/Tutorial-Platformer.md` at Steps 2–10.
+     Uses `set_gravity` in Create, `keyboard_press` for the jump impulse,
+     `keyboard_no_key` for horizontal-only stop. The room is a clean
+     25×15 grid reading of the tutorial's loose "Example Level Layout"
+     art (ground with two pits, four platforms, coins, spikes, flag).
+     **New tool helper `_fit_window_to_room`**: the 800-wide room is
+     wider than the room editor's scroll viewport even at 1680px, so this
+     grows the window until the canvas fits before grabbing (a no-op for
+     the four narrower tutorials, so their shots are unchanged).
+   - LunarLander — not started.
 3. **Translated variants.** Decide once phase 1-2 land: do the 8
    translated copies of each tutorial get the SAME English-captured
    screenshots (the IDE's own UI chrome would still be English unless the

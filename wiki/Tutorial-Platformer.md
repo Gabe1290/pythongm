@@ -91,6 +91,8 @@ only needs Beginner-preset actions)
 3. Use bright colors (green flag, brown pole)
 4. Size: 32x64 pixels
 
+![The Sprite Editor with spr_player open (32x48), origin centered; spr_player, spr_ground, spr_platform, spr_coin, spr_spike and spr_flag in the resource tree](images/tutorial-platformer-02-sprites.png)
+
 ---
 
 ## Step 3: Create the Ground Object
@@ -102,6 +104,8 @@ The ground is a solid platform that stops the player from falling.
 3. Set the sprite to `spr_ground`
 4. **Check the "Solid" checkbox**
 5. No events needed
+
+![obj_ground's Object Events panel: empty -- Solid checked is all it needs](images/tutorial-platformer-03-ground-object.png)
 
 ---
 
@@ -115,6 +119,8 @@ Platforms work the same as ground but can be placed in the air.
 4. No events needed
 
 **Tip:** You can make the platform a child of `obj_ground` to share the same collision behavior.
+
+![obj_platform's Object Events panel: empty, with Solid checked -- a wide, thin sprite is the only difference from obj_ground](images/tutorial-platformer-04-platform-object.png)
 
 ---
 
@@ -158,6 +164,8 @@ Two details that make this feel right:
   the ground in the first place; the event here just clears the leftover
   fall speed.
 
+![obj_player's Object Events panel: Create (Set Gravity), Keyboard (held) with two Set Horizontal Speed actions, Keyboard <No Key>, Keyboard Press with the Up-Arrow jump, and Collision with obj_ground (Stop Movement)](images/tutorial-platformer-05-player-object.png)
+
 ---
 
 ## Step 6: Create the Coin Object
@@ -175,6 +183,8 @@ Coins add to the score when collected.
 3. Add Action: **Main1** → **Destroy Instance**
    - Applies to: Self
 
+![obj_coin's Object Events panel: a Collision with obj_player event holding Set Score (Relative) and Destroy Instance](images/tutorial-platformer-06-coin-object.png)
+
 ---
 
 ## Step 7: Create the Spike Object
@@ -189,6 +199,8 @@ Spikes hurt the player and restart the level.
 2. Add Action: **Main2** → **Show Message**
    - Message: `Ouch! You hit a spike!`
 3. Add Action: **Main1** → **Restart Room**
+
+![obj_spike's Object Events panel: a Collision with obj_player event holding Show Message and Restart Room](images/tutorial-platformer-07-spike-object.png)
 
 ---
 
@@ -209,6 +221,8 @@ Show Message's text is a fixed string — it can't embed a live value like the
 score. The game controller's HUD (Step 9) already shows the score on
 screen throughout the level, so the player has already seen it.
 
+![obj_flag's Object Events panel: a Collision with obj_player event holding Show Message and Next Room](images/tutorial-platformer-08-flag-object.png)
+
 ---
 
 ## Step 9: Create the Game Controller
@@ -226,6 +240,8 @@ The game controller displays the score.
 Optional: add a **Draw Text** (`Lives:`, X `10`, Y `30`) + **Draw Variable**
 (`lives`, X `70`, Y `30`) pair the same way, once the Lives System
 enhancement below is in place.
+
+![obj_game_controller's Object Events panel: a Draw event with one Draw Text and one Draw Variable action, with no sprite set](images/tutorial-platformer-09-controller-object.png)
 
 ---
 
@@ -265,6 +281,8 @@ Build your level following these guidelines:
 G = Ground    P = Player    F = Flag    C = Coin
 X = Spike     === = Platform
 ```
+
+![The Room Editor for room_level1: a brown ground row with two pit gaps, four tan floating platforms at rising heights, gold coins on and above them, two grey spikes on the ground, the red player at the far left and the green flag at the far right](images/tutorial-platformer-10-room.png)
 
 ---
 
