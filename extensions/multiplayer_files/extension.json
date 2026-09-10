@@ -1,8 +1,8 @@
 {
     "name": "File Exchange Multiplayer",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": "PyGameMaker",
-    "description": "1990s-DOS-style turn-based multiplayer over a shared folder (a mapped network drive, a synced Dropbox/OneDrive folder, a school SMB share) -- for turn-based classroom games (quizzes, Tic-Tac-Toe, negotiation games) on a LAN whose firewall blocks the direct connections extensions/multiplayer_lan/ needs. Host-authoritative rounds: host_game_files / join_game_files / set_shared_var_files / send_network_message_files / end_turn, plus the file-session lifecycle events. Desktop only. See docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md.",
+    "description": "1990s-DOS-style turn-based multiplayer over a shared folder (a mapped network drive, a synced Dropbox/OneDrive folder, a school SMB share) -- for turn-based classroom games (quizzes, Tic-Tac-Toe, negotiation games) on a LAN whose firewall blocks the direct connections extensions/multiplayer_lan/ needs. Host-authoritative rounds: host_game_files / join_game_files / set_shared_var_files / send_network_message_files / end_turn, plus the file-session lifecycle events. Built-in connect screen: host_game_files(show_lobby=true) shows a waiting room, join_game_files(folder=\"auto\") lets a player type the shared folder's path instead of hand-editing the action. Desktop only. See docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md.",
     "enabled": true,
     "provides_actions": [
         "host_game_files",

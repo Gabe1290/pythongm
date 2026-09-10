@@ -110,28 +110,32 @@
                 {
                   "action": "join_game_files",
                   "parameters": {
-                    "folder": "tictactoe_files",
+                    "folder": "auto",
                     "player_name": "Invite"
-                  }
-                },
-                {
-                  "action": "set_variable",
-                  "parameters": {
-                    "variable": "connected",
-                    "value": "1",
-                    "scope": "self"
-                  }
-                },
-                {
-                  "action": "set_variable",
-                  "parameters": {
-                    "variable": "my_mark",
-                    "value": "\"O\"",
-                    "scope": "self"
                   }
                 }
               ]
             }
+          },
+          "file_session_started": {
+            "actions": [
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "connected",
+                  "value": "1",
+                  "scope": "self"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "my_mark",
+                  "value": "\"O\"",
+                  "scope": "self"
+                }
+              }
+            ]
           },
           "step": {
             "actions": [
