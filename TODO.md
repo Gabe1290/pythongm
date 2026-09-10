@@ -599,38 +599,24 @@ Other:
 
 ## Translations / i18n
 
-### Wiki: `Tutorial-Platformer` / `Tutorial-LunarLander` translations are ~half the English length (found 2026-09-10)
+### ~~Wiki: `Tutorial-Platformer` / `Tutorial-LunarLander` translations are ~half the English length~~ (DONE 2026-09-10)
 
 Surfaced while adding per-step screenshots to the wiki tutorials
 (`docs/WIKI_TUTORIAL_SCREENSHOTS_PLAN.md`). The English pages for these
-two tutorials were substantially expanded at some point — detailed
-step-by-step instructions, an Enhancements section, more granular steps
-(coin/spike/flag became separate steps; a dedicated "Create the Game
-Controller" step was added) — and none of their **16 translated
-variants** (`_de/_es/_fr/_it/_pt/_ru/_sl/_uk` × 2) were updated:
+two tutorials had been substantially expanded at some point (detailed
+step-by-step instructions, an Enhancements section, split coin/spike/flag
+steps, a dedicated "Create the Game Controller" step) and none of their
+**16 translated variants** (`_de/_es/_fr/_it/_pt/_ru/_sl/_uk` × 2) had
+been updated — Platformer translations ~150–250 lines vs English's 446;
+LunarLander ~205 vs 452.
 
-| page | English | translations |
-|---|---|---|
-| `Tutorial-Platformer.md` | 446 lines, 17 `## ` sections | 150–250 lines, 9–13 sections |
-| `Tutorial-LunarLander.md` | 452 lines, 15 `## ` sections | ~205–212 lines, 9 sections |
-
-For contrast, Breakout/Pong/Sokoban/Maze translations are line-for-line
-matched to English and are fully current.
-
-Because the structure diverged (fewer, merged, and renumbered sections),
-the per-step screenshots **could not be slotted into these 16 pages** —
-that's the only piece of the screenshots initiative left open. The
-screenshots land trivially once the translations are re-synced to the
-current English structure.
-
-This is a real re-translation task (~2,000 lines of new/changed prose
-across 8 languages × 2 tutorials), not a screenshots task — budget it
-like the ja/pt/zh UI-translation arc (roughly one language ≈ a
-meaningful fraction of a session). Same conventions as the rest of the
-wiki: technical identifiers stay English, prose/tables/diagram labels
-translated, French/Slavic accents mandatory. The English pages and the
-32 already-updated translated pages are unaffected and already published
-to the live wiki.
+**Fixed same day:** all 16 rewritten as full translations of the current
+English (reusing existing prose where a section already existed), giving
+each the same 17-/15-section structure; then the per-step screenshots
+embedded like the other 32 translated tutorials, and published to the
+live wiki. Conventions: technical identifiers stay English, prose/tables/
+diagram labels translated, accents/diacritics throughout. Commits
+`5a977665` (Platformer ×8) and `73243df3` (LunarLander ×8).
 
 ### ~~`tools/action_ref_i18n.py` missing entries for 4 room actions~~ (DONE 2026-08-12)
 Found 2026-08-11 while splitting the reference pages: `set_room_speed`,
