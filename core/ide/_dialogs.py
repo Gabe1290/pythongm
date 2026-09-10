@@ -18,7 +18,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QMessageBox, QDialog
 from PySide6.QtGui import QDesktopServices
-from PySide6.QtCore import QUrl
+from PySide6.QtCore import QUrl, Qt
 
 from utils.config import Config
 from dialogs.blockly_config_dialog import BlocklyConfigDialog
