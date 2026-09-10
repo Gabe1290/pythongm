@@ -591,11 +591,11 @@ review/commit boundary, full suite green after each, matching this repo's
    KEYDOWN, key=pygame.K_h)`) crashed the modal loop with an
    `AttributeError` the moment it happened to still be queued when this
    screen's own tests ran later in the same process. Fixed with
-   `getattr(event, "unicode", "")`; `multiplayer_lan/connect_screen.py`
-   has the identical bare `event.unicode` access and is presumably
-   exposed to the same latent risk, just not yet tripped by the current
-   test order -- noted here, not fixed there, since that file belongs to
-   the other extension and this finding is out of this phase's scope.
+   `getattr(event, "unicode", "")`. **`multiplayer_lan/connect_screen.py`
+   had the identical bare `event.unicode` access, exposed to the same
+   latent risk (just not yet tripped by the current test order) — fixed
+   there too, on explicit ask, same commit-adjacent follow-up, with its
+   own regression test in `test_multiplayer_lan_connect_screen.py`.**
    `tests/test_multiplayer_files_connect_screen.py` (19 tests: typing,
    the `event.unicode` regression above, validation of a real/fake/
    non-directory path, host lobby rendering, headless fallbacks, the

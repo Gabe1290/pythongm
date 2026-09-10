@@ -74,6 +74,19 @@ class TestClientScreen:
             cs.handle_event(_key(ch))
         assert cs.manual_ip == "10.0.0.9"
 
+    def test_a_keydown_with_no_unicode_attribute_does_not_crash(self):
+        """The same class of bug caught in
+        multiplayer_files/connect_screen.py by the full suite: this
+        screen reads the process-wide pygame.event.get() queue, not one
+        scoped to itself, so a KEYDOWN posted elsewhere with no
+        `unicode` kwarg (any code building pygame.event.Event(pygame.
+        KEYDOWN, key=...) without it) must not crash the modal loop."""
+        cs = ConnectScreen("client", _surface())
+        bare = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_a)
+        assert not hasattr(bare, "unicode")
+        cs.handle_event(bare)          # must not raise
+        assert cs.manual_ip == ""      # no char appended either
+
     def test_letters_are_ignored_in_the_address_field(self):
         cs = ConnectScreen("client", _surface())
         for ch in "1a2b.3":
