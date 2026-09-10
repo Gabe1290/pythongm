@@ -126,7 +126,20 @@ class ConnectScreen:
                     self.manual_ip = self.manual_ip[:-1]
                     self.selected = -1
                 else:
-                    ch = event.unicode
+                    # getattr, not a bare event.unicode -- this screen
+                    # reads pygame.event.get(), the process-wide queue,
+                    # not one scoped to itself, so a KEYDOWN posted
+                    # elsewhere (any code building pygame.event.Event
+                    # (pygame.KEYDOWN, key=...) without a unicode kwarg,
+                    # ordinary when a test only cares about the key)
+                    # is not guaranteed to carry one. Confirmed as a
+                    # real, reachable crash in the sibling
+                    # multiplayer_files/connect_screen.py's own copy of
+                    # this exact access, caught by the full suite (not
+                    # this file's own tests run in isolation) -- fixed
+                    # here for the identical reason before it does the
+                    # same here.
+                    ch = getattr(event, "unicode", "")
                     if ch and (ch.isdigit() or ch in ".:"):
                         self.manual_ip += ch
                         self.selected = -1
