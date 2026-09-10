@@ -22,9 +22,10 @@ six événements, et met un jeu en réseau sur le réseau local depuis l'export
 ordinateur (en hôte ou en client) et l'export HTML5 (en client).
 L'extension **Multijoueur par échange de fichiers** (la fonctionnalité
 [Multijoueur par échange de fichiers](FileExchange_fr)) est une variante au
-tour par tour du Réseau (multijoueur LAN) : elle échange l'état du jeu via
-des fichiers sur un lecteur partagé plutôt que par une connexion en direct,
-pour une classe où un pare-feu bloque les connexions directes du Réseau
+tour par tour du Réseau (multijoueur LAN) : elle ajoute 7 actions
+« Réseau » et six événements, échangeant l'état du jeu via des fichiers
+sur un lecteur partagé plutôt que par une connexion en direct, pour une
+classe où un pare-feu bloque les connexions directes du Réseau
 (multijoueur LAN). Export ordinateur uniquement — voir la remarque
 « Pourquoi pas tous les exports » de la page [Multijoueur par échange de
 fichiers](FileExchange_fr).

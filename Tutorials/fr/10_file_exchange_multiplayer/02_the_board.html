@@ -12,6 +12,8 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table.cells { border-collapse: collapse; margin: 8px 0; }
+        table.cells td, table.cells th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
 
         .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
         .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
@@ -28,7 +30,11 @@
     <h1>Phase 1 : La grille</h1>
 
     <p>Avant tout réseau, construisons une grille de morpion cliquable
-    &mdash; entièrement locale, testable seul dès maintenant.</p>
+    &mdash; entièrement locale, testable seul dès maintenant. Tout, dans ce
+    jeu, vit sur <strong>un seul objet</strong>, <code>obj_game</code>
+    &mdash; il dessine toute la grille, et (à partir de la Phase 2) héberge
+    ou rejoint aussi, si bien que rien d'autre n'a besoin de connaître
+    l'état de la grille.</p>
 
     <h2>Créer un nouveau projet</h2>
     <div class="step">
@@ -39,103 +45,104 @@
         </ol>
     </div>
 
-    <h2>Créer le sprite de case</h2>
-    <div class="step">
-        <ol>
-            <li>Clic droit sur <strong>Sprites</strong> dans l'Arbre des ressources &rarr; <strong>Créer un nouveau sprite</strong></li>
-            <li>Nommez-le <code>spr_cell</code></li>
-            <li>Double-cliquez dessus pour ouvrir l'éditeur de sprite et
-            dessinez un carré de 120&times;120 avec une bordure (un
-            remplissage clair avec un contour plus foncé fonctionne bien).
-            Appuyez sur <strong>Ctrl+S</strong> pour enregistrer.</li>
-        </ol>
-    </div>
-
-    <h2>Créer l'objet case</h2>
+    <h2>Créer l'objet de jeu et la salle</h2>
     <div class="step">
         <ol>
             <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
-            <li>Nommez-le <code>obj_cell</code></li>
-            <li>Réglez le sprite sur <code>spr_cell</code></li>
+            <li>Nommez-le <code>obj_game</code>, aucun sprite nécessaire
+            (laissez-le invisible)</li>
+            <li>Clic droit sur <strong>Rooms</strong> &rarr; <strong>Créer une nouvelle salle</strong>,
+            nommez-la <code>room_board</code></li>
+            <li>Placez <strong>une instance</strong> de <code>obj_game</code>
+            n'importe où dans <code>room_board</code></li>
         </ol>
     </div>
 
-    <h2>Créer la salle de la grille</h2>
+    <h2>Suivre neuf cases</h2>
     <div class="step">
         <ol>
-            <li>Clic droit sur <strong>Rooms</strong> &rarr; <strong>Créer une nouvelle salle</strong></li>
-            <li>Nommez-la <code>room_board</code></li>
-            <li>Placez <strong>9 instances</strong> de <code>obj_cell</code>
-            exactement à ces positions (faites glisser chacune, puis
-            ajustez son <code>x</code>/<code>y</code> dans le panneau des
-            propriétés si ce n'est pas exact) :</li>
-        </ol>
-        <table style="border-collapse: collapse; margin: 8px 0;">
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:100</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:100</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:100</code></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:300</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:300</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:300</code></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:500</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:500</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:500</code></td>
-            </tr>
-        </table>
-        <p style="margin-top: 8px; font-style: italic;">Les positions
-        exactes comptent ici &mdash; la Phase 3 construit le nom de la
-        variable partagée de chaque case directement à partir de son
-        <code>x</code>/<code>y</code>, et la vérification de victoire de la
-        Phase 4 utilise ces neuf mêmes positions. Respecter ce tableau fait
-        que chaque étape suivante fonctionne directement.</p>
-    </div>
-
-    <h2>Suivre si une case est marquée</h2>
-    <div class="step">
-        <ol>
-            <li>Double-cliquez sur <code>obj_cell</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Double-cliquez sur <code>obj_game</code> pour ouvrir l'éditeur d'objets</li>
             <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
-            <li>Ajoutez un événement <strong>Création</strong> :</li>
+            <li>Ajoutez un événement <strong>Création</strong> qui vide neuf
+            variables &mdash; <code>cell_0_0</code>, <code>cell_1_0</code>,
+            <code>cell_2_0</code>, <code>cell_0_1</code>,
+            <code>cell_1_1</code>, <code>cell_2_1</code>,
+            <code>cell_0_2</code>, <code>cell_1_2</code>,
+            <code>cell_2_2</code> (colonne, puis rangée) &mdash; un bloc
+            <strong>Définir la variable</strong> par case :</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-event">À la création</span><br>
-            <span class="block block-control block-indent">Définir la variable <span class="block-text">mark</span> à <span class="block-text"></span></span>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">cell_0_0</span> à <span class="block-text"></span></span><br>
+            <span class="block block-control block-indent">Définir la variable <span class="block-text">cell_1_0</span> à <span class="block-text"></span></span><br>
+            <span class="block block-control block-indent">... (les neuf)</span>
         </div>
         <div class="info" style="margin-top: 8px;">
-            <strong>Ce que ça fait :</strong> chaque case démarre avec sa
-            propre variable <code>mark</code>, vide. Nous la définirons à
-            <code>"X"</code> quand la case est cliquée, et dessinerons ce
-            qu'elle contient.
+            <strong>Pourquoi neuf variables plutôt que neuf objets ?</strong>
+            Il n'existe aucun moyen, dans ce moteur, pour deux instances
+            différentes de se transmettre un nom calculé à lire ou écrire
+            &mdash; seulement <code>self</code>, <code>global</code>, et (lors
+            d'une collision) <code>other</code>. Neuf variables sur un seul
+            objet, chacune avec son propre nom fixe, contourne totalement
+            ce problème : chaque action ci-dessous nomme exactement la case
+            qu'elle vise.
+        </div>
+    </div>
+
+    <h2>Dessiner la grille</h2>
+    <div class="step">
+        <p>Une grille de 300&times;300 commençant à (170, 90) &mdash; trois
+        colonnes de 100 pixels, trois rangées de 100 pixels :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Au dessin</span><br>
+            <span class="block block-draw block-indent">Dessiner une ligne de x:<span class="block-num">270</span> y:<span class="block-num">90</span> à x:<span class="block-num">270</span> y:<span class="block-num">390</span></span><br>
+            <span class="block block-draw block-indent">Dessiner une ligne de x:<span class="block-num">370</span> y:<span class="block-num">90</span> à x:<span class="block-num">370</span> y:<span class="block-num">390</span></span><br>
+            <span class="block block-draw block-indent">Dessiner une ligne de x:<span class="block-num">170</span> y:<span class="block-num">190</span> à x:<span class="block-num">470</span> y:<span class="block-num">190</span></span><br>
+            <span class="block block-draw block-indent">Dessiner une ligne de x:<span class="block-num">170</span> y:<span class="block-num">290</span> à x:<span class="block-num">470</span> y:<span class="block-num">290</span></span>
         </div>
     </div>
 
     <h2>Marquer une case au clic</h2>
     <div class="step">
+        <p>Un <strong>Si</strong> par case, comparant la position de la
+        souris au rectangle propre à cette case. Case (0,0), entièrement
+        détaillée :</p>
         <div class="blockly-group">
             <span class="block block-event">Souris : Bouton gauche pressé</span><br>
-            <span class="block block-control block-indent">Si <span class="block-text">mark == ""</span> alors</span><br>
-            <span class="block block-control block-indent2">Définir la variable <span class="block-text">mark</span> à <span class="block-text">X</span></span>
+            <span class="block block-control block-indent">Si <span class="block-text">cell_0_0 == "" and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> alors</span><br>
+            <span class="block block-control block-indent2">Définir la variable <span class="block-text">cell_0_0</span> à <span class="block-text">X</span></span>
         </div>
-        <p style="margin-top: 8px; font-style: italic;">Seulement X pour
-        l'instant &mdash; alterner entre X et O pour deux vrais joueurs,
-        c'est ce que la Phase 3 ajoute.</p>
+        <p style="margin-top: 8px; font-style: italic;">Répétez exactement
+        la même forme pour les huit autres, chacune vérifiant sa propre
+        variable et son propre rectangle :</p>
+        <table class="cells">
+            <tr><th>Case</th><th>plage x</th><th>plage y</th></tr>
+            <tr><td>cell_1_0</td><td>270&ndash;370</td><td>90&ndash;190</td></tr>
+            <tr><td>cell_2_0</td><td>370&ndash;470</td><td>90&ndash;190</td></tr>
+            <tr><td>cell_0_1</td><td>170&ndash;270</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_1_1</td><td>270&ndash;370</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_2_1</td><td>370&ndash;470</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_0_2</td><td>170&ndash;270</td><td>290&ndash;390</td></tr>
+            <tr><td>cell_1_2</td><td>270&ndash;370</td><td>290&ndash;390</td></tr>
+            <tr><td>cell_2_2</td><td>370&ndash;470</td><td>290&ndash;390</td></tr>
+        </table>
+        <p style="font-style: italic;">Seulement X pour l'instant &mdash;
+        alterner entre X et O pour deux vrais joueurs, c'est ce que la
+        Phase 3 ajoute.</p>
     </div>
 
-    <h2>Dessiner le marquage</h2>
+    <h2>Dessiner chaque marquage</h2>
     <div class="step">
+        <p>Case (0,0) à nouveau, entièrement détaillée &mdash; texte centré
+        approximativement dans sa case :</p>
         <div class="blockly-group">
             <span class="block block-event">Au dessin</span><br>
-            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">mark</span> à x:<span class="block-num">x</span> y:<span class="block-num">y</span></span>
+            <span class="block block-control block-indent">Si <span class="block-text">cell_0_0 != ""</span> alors</span><br>
+            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">cell_0_0</span> à x:<span class="block-num">205</span> y:<span class="block-num">115</span></span>
         </div>
-        <p style="margin-top: 8px; font-style: italic;">Utiliser les propres
-        <code>x</code> et <code>y</code> de la case fait que chaque case
-        dessine son marquage à sa propre place, avec exactement le même
-        événement sur chaque instance.</p>
+        <p style="font-style: italic;">Même forme pour les huit autres
+        (ajoutez 100 à x par colonne, 100 à y par rangée, selon le tableau
+        ci-dessus).</p>
     </div>
 
     <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez la grille !</h1>

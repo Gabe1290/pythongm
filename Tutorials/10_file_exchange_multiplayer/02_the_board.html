@@ -12,6 +12,8 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table.cells { border-collapse: collapse; margin: 8px 0; }
+        table.cells td, table.cells th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
 
         .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
         .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
@@ -28,7 +30,10 @@
     <h1>Phase 1: The Board</h1>
 
     <p>Before any networking, let's build a Tic-Tac-Toe board you can click
-    on &mdash; entirely local, testable by yourself right away.</p>
+    on &mdash; entirely local, testable by yourself right away. Everything
+    in this game lives on <strong>one object</strong>, <code>obj_game</code>
+    &mdash; it draws the whole board, and (from Phase 2 on) hosts or joins
+    too, so there's nothing else that needs to know about the board's state.</p>
 
     <h2>Create a New Project</h2>
     <div class="step">
@@ -39,100 +44,100 @@
         </ol>
     </div>
 
-    <h2>Create the Cell Sprite</h2>
-    <div class="step">
-        <ol>
-            <li>Right-click <strong>Sprites</strong> in the Asset Tree &rarr; <strong>Create New Sprite</strong></li>
-            <li>Name it <code>spr_cell</code></li>
-            <li>Double-click it to open the Sprite Editor and draw a
-            120&times;120 square with a border (a light fill with a darker
-            outline works well). Press <strong>Ctrl+S</strong> to save.</li>
-        </ol>
-    </div>
-
-    <h2>Create the Cell Object</h2>
+    <h2>Create the Game Object and Room</h2>
     <div class="step">
         <ol>
             <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
-            <li>Name it <code>obj_cell</code></li>
-            <li>Set the sprite to <code>spr_cell</code></li>
+            <li>Name it <code>obj_game</code>, no sprite needed (leave it invisible)</li>
+            <li>Right-click <strong>Rooms</strong> &rarr; <strong>Create New Room</strong>,
+            name it <code>room_board</code></li>
+            <li>Place <strong>one instance</strong> of <code>obj_game</code>
+            anywhere in <code>room_board</code></li>
         </ol>
     </div>
 
-    <h2>Create the Board Room</h2>
+    <h2>Track Nine Cells</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> &rarr; <strong>Create New Room</strong></li>
-            <li>Name it <code>room_board</code></li>
-            <li>Place <strong>9 instances</strong> of <code>obj_cell</code>
-            at exactly these positions (drag each one, then use the
-            Properties panel to fine-tune its <code>x</code>/<code>y</code>
-            if it isn't exact):</li>
-        </ol>
-        <table style="border-collapse: collapse; margin: 8px 0;">
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:100</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:100</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:100</code></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:300</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:300</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:300</code></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:100 y:500</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:300 y:500</code></td>
-                <td style="border: 1px solid #ccc; padding: 6px 14px;"><code>x:500 y:500</code></td>
-            </tr>
-        </table>
-        <p style="margin-top: 8px; font-style: italic;">The exact positions
-        matter here &mdash; Phase 3 builds each cell's shared-variable name
-        straight from its <code>x</code>/<code>y</code>, and Phase 4's win
-        check spells out these same nine positions. Matching this table
-        means every step after this one just works.</p>
-    </div>
-
-    <h2>Track Whether a Cell Is Marked</h2>
-    <div class="step">
-        <ol>
-            <li>Double-click <code>obj_cell</code> to open the Object Editor</li>
+            <li>Double-click <code>obj_game</code> to open the Object Editor</li>
             <li>Click the <strong>Blockly</strong> tab</li>
-            <li>Add a <strong>Create</strong> event:</li>
+            <li>Add a <strong>Create</strong> event that sets nine
+            variables empty &mdash; <code>cell_0_0</code>,
+            <code>cell_1_0</code>, <code>cell_2_0</code>,
+            <code>cell_0_1</code>, <code>cell_1_1</code>,
+            <code>cell_2_1</code>, <code>cell_0_2</code>,
+            <code>cell_1_2</code>, <code>cell_2_2</code> (column, then
+            row) &mdash; one <strong>Set Variable</strong> block each:</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-event">When created</span><br>
-            <span class="block block-control block-indent">Set variable <span class="block-text">mark</span> to <span class="block-text"></span></span>
+            <span class="block block-control block-indent">Set variable <span class="block-text">cell_0_0</span> to <span class="block-text"></span></span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">cell_1_0</span> to <span class="block-text"></span></span><br>
+            <span class="block block-control block-indent">... (all nine)</span>
         </div>
         <div class="info" style="margin-top: 8px;">
-            <strong>What this does:</strong> every cell starts with its own
-            <code>mark</code> variable, empty. We'll set it to
-            <code>"X"</code> when the cell is clicked, and draw whatever
-            it holds.
+            <strong>Why nine plain variables instead of nine objects?</strong>
+            There's no way in this engine for two different instances to
+            hand each other a computed name to read or write &mdash; only
+            <code>self</code>, <code>global</code>, and (in a collision)
+            <code>other</code>. Nine variables on one object, each with its
+            own fixed name, sidesteps that entirely: every action below
+            just names the exact cell it means.
+        </div>
+    </div>
+
+    <h2>Draw the Grid</h2>
+    <div class="step">
+        <p>A 300&times;300 board starting at (170, 90) &mdash; three
+        100-pixel columns, three 100-pixel rows:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-draw block-indent">Draw line from x:<span class="block-num">270</span> y:<span class="block-num">90</span> to x:<span class="block-num">270</span> y:<span class="block-num">390</span></span><br>
+            <span class="block block-draw block-indent">Draw line from x:<span class="block-num">370</span> y:<span class="block-num">90</span> to x:<span class="block-num">370</span> y:<span class="block-num">390</span></span><br>
+            <span class="block block-draw block-indent">Draw line from x:<span class="block-num">170</span> y:<span class="block-num">190</span> to x:<span class="block-num">470</span> y:<span class="block-num">190</span></span><br>
+            <span class="block block-draw block-indent">Draw line from x:<span class="block-num">170</span> y:<span class="block-num">290</span> to x:<span class="block-num">470</span> y:<span class="block-num">290</span></span>
         </div>
     </div>
 
     <h2>Mark a Cell on Click</h2>
     <div class="step">
+        <p>One <strong>If</strong> per cell, checking the mouse position
+        against that cell's own pixel rectangle. Cell (0,0), fully worked
+        out:</p>
         <div class="blockly-group">
             <span class="block block-event">Mouse: Left Button Pressed</span><br>
-            <span class="block block-control block-indent">If <span class="block-text">mark == ""</span> then</span><br>
-            <span class="block block-control block-indent2">Set variable <span class="block-text">mark</span> to <span class="block-text">X</span></span>
+            <span class="block block-control block-indent">If <span class="block-text">cell_0_0 == "" and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> then</span><br>
+            <span class="block block-control block-indent2">Set variable <span class="block-text">cell_0_0</span> to <span class="block-text">X</span></span>
         </div>
-        <p style="margin-top: 8px; font-style: italic;">Only X for now &mdash;
-        alternating between X and O for two real players is what Phase 3
-        adds.</p>
+        <p style="margin-top: 8px; font-style: italic;">Repeat the exact
+        same shape for the other eight, each checking its own variable and
+        its own rectangle:</p>
+        <table class="cells">
+            <tr><th>Cell</th><th>x range</th><th>y range</th></tr>
+            <tr><td>cell_1_0</td><td>270&ndash;370</td><td>90&ndash;190</td></tr>
+            <tr><td>cell_2_0</td><td>370&ndash;470</td><td>90&ndash;190</td></tr>
+            <tr><td>cell_0_1</td><td>170&ndash;270</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_1_1</td><td>270&ndash;370</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_2_1</td><td>370&ndash;470</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_0_2</td><td>170&ndash;270</td><td>290&ndash;390</td></tr>
+            <tr><td>cell_1_2</td><td>270&ndash;370</td><td>290&ndash;390</td></tr>
+            <tr><td>cell_2_2</td><td>370&ndash;470</td><td>290&ndash;390</td></tr>
+        </table>
+        <p style="font-style: italic;">Only X for now &mdash; alternating
+        between X and O for two real players is what Phase 3 adds.</p>
     </div>
 
-    <h2>Draw the Mark</h2>
+    <h2>Draw Each Mark</h2>
     <div class="step">
+        <p>Cell (0,0) again, fully worked out &mdash; text centred roughly
+        in its cell:</p>
         <div class="blockly-group">
             <span class="block block-event">When drawing</span><br>
-            <span class="block block-draw block-indent">Draw text <span class="block-text">mark</span> at x:<span class="block-num">x</span> y:<span class="block-num">y</span></span>
+            <span class="block block-control block-indent">If <span class="block-text">cell_0_0 != ""</span> then</span><br>
+            <span class="block block-draw block-indent2">Draw text <span class="block-text">cell_0_0</span> at x:<span class="block-num">205</span> y:<span class="block-num">115</span></span>
         </div>
-        <p style="margin-top: 8px; font-style: italic;">Using the cell's own
-        <code>x</code> and <code>y</code> means every cell draws its own
-        mark in its own place, with the exact same event on every instance.</p>
+        <p style="font-style: italic;">Same shape for the other eight (add
+        100 to x per column, 100 to y per row, matching the table above).</p>
     </div>
 
     <h1 style="color: #28a745; border-bottom-color: #28a745;">Test the Board!</h1>

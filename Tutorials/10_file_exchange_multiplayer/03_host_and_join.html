@@ -29,47 +29,46 @@
     <h1>Phase 2: Host a Game / Join a Game</h1>
 
     <p>Now let's connect two computers through a shared folder. One will
-    <strong>host</strong> (the referee), and the other will <strong>join</strong>.</p>
+    <strong>host</strong> (the referee), and the other will <strong>join</strong>.
+    Everything below still goes on <code>obj_game</code>, the same object
+    from Phase 1.</p>
 
     <div class="info">
         <strong>Before you start:</strong> pick a folder both computers can
         reach and write to &mdash; a shared network drive, or (to build and
-        test the wiring alone first) just a folder on your own computer.
-        We'll write it into both actions below as
-        <code>Z:\games\tictactoe</code> &mdash; replace it with your own path.
-    </div>
-
-    <h2>Create the Game Controller</h2>
-    <div class="step">
-        <ol>
-            <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
-            <li>Name it <code>obj_controller</code>, no sprite needed
-            (leave it invisible)</li>
-            <li>Place <strong>one instance</strong> of it anywhere in <code>room_board</code></li>
-        </ol>
+        test the wiring alone first) just a plain folder name, created next
+        to wherever the game runs from. We'll write it into both actions
+        below as <code>tictactoe_files</code> &mdash; for real two-computer
+        play, change it to a path both machines can reach (a mapped drive
+        letter, or a UNC path like <code>\\server\share\tictactoe</code>).
     </div>
 
     <h2>Host on Key H, Join on Key J</h2>
     <div class="step">
-        <p>One object, two ways to start it &mdash; run the exact same
-        project on both computers, and press a different key on each:</p>
+        <p>Run the exact same project on both computers, and press a
+        different key on each. Each branch also fixes this machine's mark
+        once, in <code>my_mark</code>:</p>
         <div class="blockly-group">
             <span class="block block-event">Key press: H</span><br>
-            <span class="block block-network block-indent">Host Game (Files)
-            folder:<span class="block-text">Z:\games\tictactoe</span>
+            <span class="block block-network block-indent">Host a Game (File Exchange)
+            folder:<span class="block-text">tictactoe_files</span>
             max players:<span class="block-num">2</span>
-            player name:<span class="block-text">Player 1</span></span>
+            player name:<span class="block-text">Player 1</span></span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">my_mark</span> to <span class="block-text">X</span></span>
         </div>
         <div class="blockly-group">
             <span class="block block-event">Key press: J</span><br>
-            <span class="block block-network block-indent">Join Game (Files)
-            folder:<span class="block-text">Z:\games\tictactoe</span>
-            player name:<span class="block-text">Player 2</span></span>
+            <span class="block block-network block-indent">Join a Game (File Exchange)
+            folder:<span class="block-text">tictactoe_files</span>
+            player name:<span class="block-text">Player 2</span></span><br>
+            <span class="block block-control block-indent">Set variable <span class="block-text">my_mark</span> to <span class="block-text">O</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Why keys, not a menu?</strong> It's the simplest way to
             test both roles from the very same project &mdash; press H on
-            one computer, J on the other. A real classroom game might
+            one computer, J on the other (or both, in two Test Game windows
+            on one computer, the way the bundled <code>fichier_1</code>
+            sample supports a quick solo check). A real classroom game might
             instead ask "Host or Join?" on a title screen, but that's UI
             polish, not something this tutorial needs to teach.
         </div>
@@ -78,26 +77,30 @@
     <h2>Show Connection Status</h2>
     <div class="step">
         <ol>
-            <li>Add a <strong>When drawing</strong> event to
-            <code>obj_controller</code>:</li>
+            <li>Add to <code>obj_game</code>'s <strong>When drawing</strong>
+            event, before the grid-drawing from Phase 1:</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-event">When drawing</span><br>
-            <span class="block block-control block-indent">If <span class="block-text">global.player_count &lt; 2</span> then</span><br>
-            <span class="block block-draw block-indent2">Draw text <span class="block-text">Waiting for opponent...</span> at x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+            <span class="block block-control block-indent">If <span class="block-text">global.waiting_for_players == 1</span> then</span><br>
+            <span class="block block-draw block-indent2">Draw text <span class="block-text">Waiting for opponent...</span> at x:<span class="block-num">170</span> y:<span class="block-num">40</span></span><br>
+            <span class="block block-draw block-indent2">Exit Event</span>
         </div>
         <div class="blockly-group">
-            <span class="block block-control">Else if <span class="block-text">global.player_id == 0</span> then</span><br>
-            <span class="block block-draw block-indent">Draw text <span class="block-text">You are X</span> at x:<span class="block-num">20</span> y:<span class="block-num">20</span></span><br>
-            <span class="block block-control">Else</span><br>
-            <span class="block block-draw block-indent">Draw text <span class="block-text">You are O</span> at x:<span class="block-num">20</span> y:<span class="block-num">20</span></span>
+            <span class="block block-draw">Draw text <span class="block-text">"You are " + my_mark</span> at x:<span class="block-num">170</span> y:<span class="block-num">40</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
-            <strong>What this does:</strong> <code>global.player_id</code>
-            is assigned automatically &mdash; the host is always
-            <code>0</code> (so it's X, going first), and each joining
-            player counts up from there. <code>global.player_count</code>
-            tells you how many players have connected so far.
+            <strong>What this does:</strong> <code>global.waiting_for_players</code>
+            is <code>1</code> until the game has as many players as its
+            <strong>Max Players</strong> setting (here, 2), then <code>0</code>
+            &mdash; no need to count players yourself.
+            <strong>Exit Event</strong> stops the grid from drawing at all
+            while still waiting, the same way the bundled sample keeps its
+            "press H / press J" screen up until someone connects.
+            <code>global.player_id</code> is assigned automatically: the
+            host is always <code>0</code>, and each joining player counts
+            up from there &mdash; not used directly here since
+            <code>my_mark</code> already captures the same information.
         </div>
     </div>
 
@@ -107,7 +110,7 @@
         <ul>
             <li>Press <strong>H</strong> on one, <strong>J</strong> on the other</li>
             <li>Both should stop showing "Waiting for opponent..." and
-            show "You are X" / "You are O"</li>
+            show "You are X" / "You are O", followed by the board</li>
             <li>If the host can't be reached, the game keeps running
             single-player &mdash; it never freezes or crashes</li>
         </ul>

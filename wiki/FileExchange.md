@@ -4,14 +4,6 @@
 
 ---
 
-> **Not shipped yet.** This page documents the planned design
-> (`docs/MULTIPLAYER_FILE_EXCHANGE_PLAN.md`) so it's ready the moment the
-> extension lands. **Do not publish this page (or the cross-links to it on
-> Home/Extensions/Network) to the live wiki until `extensions/multiplayer_files/`
-> actually exists and this note is removed.**
-
----
-
 PyGameMaker can also turn a project into a **turn-based multiplayer game
 that exchanges state through files on a shared drive**, instead of a live
 network connection. This is a good fit for a school where [LAN
@@ -20,9 +12,11 @@ a firewall (common on a managed "Public" network profile), but the
 classroom's shared drive is already open to every machine. This is
 provided by the **File Exchange Multiplayer** [extension](Extensions).
 
-The bundled sample **Tic-Tac-Toe by File Exchange** is a complete, playable
-example: two players take alternating turns, each move written to a file on
-the shared drive and picked up by the other machine.
+The bundled sample **`fichier_1`, "File Exchange — Tic-Tac-Toe"** is a
+complete, playable example: two players take alternating turns, each move
+written to a file on the shared drive and picked up by the other machine.
+Press **Test Game** on both machines, then **H** to host on one and **J**
+to join on the other.
 
 Supported today: the **desktop** (pygame) export only, as host or client.
 See "Why not every export" below for why HTML5 and Kivy/Android don't have
@@ -84,22 +78,30 @@ being read one letter at a time.
 
 ## How it works
 
-- One player calls **Host Game (Files)**, pointing it at a shared folder
-  both machines can reach. This machine becomes the **host** and referee
-  for the game.
-- Other players call **Join Game (Files)** with the same folder. If the
-  host can't be reached, **the game keeps running single-player**, the
-  same promise [LAN Multiplayer](Network) makes.
+- One player calls **Host a Game (File Exchange)**, pointing it at a
+  shared folder both machines can reach. This machine becomes the
+  **host** and referee for the game (`global.player_id` becomes `0`).
+- Other players call **Join a Game (File Exchange)** with the same
+  folder. If the host can't be reached, **the game keeps running
+  single-player**, the same promise [LAN Multiplayer](Network) makes.
+  `global.player_id` is assigned by the host (`1`, `2`, ...).
 - Each round, every player writes their move to their own file and calls
-  **End Turn**. Once the host has every player's move (or a wait limit
-  passes), it publishes the new game state for everyone to read.
+  **End Turn (File Exchange)** — even a player passing with nothing
+  staged still needs to call it, so the round resolves promptly instead
+  of waiting out the full deadline. Once the host has every expected
+  player's move (or the deadline passes), it publishes the new game
+  state for everyone to read.
 - Player identity and round status are always readable as globals:
   `global.is_host`, `global.player_id`, `global.player_count`,
-  `global.round_number`, `global.turn_ready`, `global.waiting_for_players`.
-- A shared variable set with **Set Shared Variable** becomes readable
-  *everywhere* as `global.<name>` — but only once the host publishes the
-  next round, not instantly the way [LAN Multiplayer](Network)'s version
-  is. Your own change doesn't jump ahead on your own screen either.
+  `global.round_number` (starts at **1**, not 0), `global.turn_ready`,
+  `global.waiting_for_players`.
+- A shared variable set with **Set a Shared Variable (File Exchange)**
+  becomes readable *everywhere* as `global.<name>` — but only once the
+  host publishes the next round, not instantly the way [LAN
+  Multiplayer](Network)'s version is. Your own change doesn't jump ahead
+  on your own screen either. **An unset shared variable reads as `0`**,
+  not an empty string — check `global.<name> != 0` to ask "has this been
+  set yet."
 
 ---
 
@@ -107,13 +109,13 @@ being read one letter at a time.
 
 | Action | What it does |
 |--------|--------------|
-| **Host Game (Files)** | Become the host; create/claim the shared game folder. |
-| **Join Game (Files)** | Connect to a host's shared folder. |
-| **Leave Game (Files)** | Stop playing; leaves the other players' files untouched. |
-| **Set Shared Variable** | Stage a variable to publish with your next turn. |
-| **Get Shared Variable** | Copy a shared variable into a global (for use in a calculation). |
-| **End Turn** | Submit everything staged this round as your move. |
-| **Send Network Message** | Attach a small custom event to your next turn. |
+| **Host a Game (File Exchange)** | Become the host; create/claim the shared game folder. |
+| **Join a Game (File Exchange)** | Connect to a host's shared folder. |
+| **Leave the Game (File Exchange)** | Stop playing; leaves the other players' files untouched. |
+| **Set a Shared Variable (File Exchange)** | Stage a variable to publish with your next turn. |
+| **Read a Shared Variable (File Exchange)** | Copy a shared variable into a global (for use in a calculation). |
+| **End Turn (File Exchange)** | Submit everything staged this round as your move. |
+| **Send a Network Message (File Exchange)** | Attach a small custom event to your next turn. |
 
 See the [Full Action Reference](Full-Action-Reference) for every parameter.
 
@@ -122,9 +124,10 @@ See the [Full Action Reference](Full-Action-Reference) for every parameter.
 | Event | Fires when |
 |-------|------------|
 | **File Session Started** | A client finishes connecting to the host's shared folder. |
-| **Player Joined (Files)** | A new player's join request is accepted. |
+| **Player Joined (Files)** | A new player's join request is accepted. `global.network_sender` / `global.network_player_name` name them. |
 | **Round Resolved** | The host has published a new round's state and this machine picked it up. |
 | **Player Skipped Round** | A player's turn wasn't submitted before the round's wait limit passed. |
+| **Network Message (File Exchange)** | A **Send a Network Message (File Exchange)** arrives — `global.network_event` / `global.network_data` / `global.network_sender`. |
 | **File Session Lost** | The shared folder became unreadable (drive disconnected, permissions changed). |
 
 ---
@@ -133,12 +136,22 @@ See the [Full Action Reference](Full-Action-Reference) for every parameter.
 
 In a room-controller object:
 
-- **Create:** `Host Game (Files)` pointing at the shared folder, if this is
-  the teacher's machine, else `Join Game (Files)` with the same folder.
-- On a cell click, gated on `global.turn_ready` and it being this player's
-  turn: `Set Shared Variable` recording the chosen cell, then `End Turn`.
+- **Create:** `Host a Game (File Exchange)` pointing at the shared
+  folder, if this is the teacher's machine, else `Join a Game (File
+  Exchange)` with the same folder — then record `my_mark` ("X" for the
+  host, "O" for whoever joined) once, right there.
+- On a cell click, gated on it being this player's turn: `Set a Shared
+  Variable (File Exchange)` recording the chosen cell as `my_mark`, then
+  `End Turn (File Exchange)`.
+- Every round it *isn't* your turn, call `End Turn (File Exchange)` with
+  nothing staged too — a "pass" — so the round advances immediately
+  instead of waiting out the full deadline.
 - **Round Resolved:** redraw the board from the published shared
-  variables, and check for a win.
+  variables (remembering the `!= 0` empty check above), and check for a
+  win.
+
+See the bundled sample **`samples/fichier_1`** ("File Exchange —
+Tic-Tac-Toe") for this worked out in full, including the win check.
 
 ---
 

@@ -20,10 +20,11 @@ it exports to all three targets. The built-in **LAN Multiplayer** extension
 from the desktop export (as host or client) and the HTML5 export (as client).
 The **File Exchange Multiplayer** extension (the [File Exchange
 Multiplayer](FileExchange) feature) is a turn-based sibling to LAN
-Multiplayer: it exchanges game state through files on a shared drive instead
-of a live connection, for a classroom where a firewall blocks LAN
-Multiplayer's direct connections. Desktop export only — see [File Exchange
-Multiplayer](FileExchange)'s own "Why not every export" note.
+Multiplayer: it adds 7 "Network" actions and six events, exchanging game
+state through files on a shared drive instead of a live connection, for a
+classroom where a firewall blocks LAN Multiplayer's direct connections.
+Desktop export only — see [File Exchange Multiplayer](FileExchange)'s own
+"Why not every export" note.
 
 ---
 

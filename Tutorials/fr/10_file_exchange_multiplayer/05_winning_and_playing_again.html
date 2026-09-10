@@ -36,56 +36,60 @@
     <h2>Vérifier une ligne</h2>
     <div class="step">
         <ol>
-            <li>Ouvrez l'événement <strong>Tour résolu</strong> de
-            <code>obj_controller</code> (ajoutez-en un s'il n'existe pas
-            encore) et ajoutez ceci, en vérifiant la rangée du haut :</li>
+            <li>Ajoutez un événement <strong>Tour résolu</strong> à
+            <code>obj_game</code> et ajoutez ceci, en vérifiant la rangée
+            du haut (<code>cell_0_0</code>, <code>cell_1_0</code>,
+            <code>cell_2_0</code>) :</li>
         </ol>
         <div class="blockly-group">
             <span class="block block-event">Tour résolu</span><br>
-            <span class="block block-control block-indent">Si <span class="block-text">global.cell_100_100 == global.cell_300_100 and global.cell_300_100 == global.cell_500_100 and global.cell_100_100 != ""</span> alors</span><br>
-            <span class="block block-control block-indent2">Définir la variable <span class="block-text">winner</span> à <span class="block-text">global.cell_100_100</span></span>
+            <span class="block block-control block-indent">Si <span class="block-text">global.cell_0_0 == global.cell_1_0 and global.cell_1_0 == global.cell_2_0 and global.cell_0_0 != 0</span> alors</span><br>
+            <span class="block block-control block-indent2">Définir la variable <span class="block-text">winner</span> à <span class="block-text">global.cell_0_0</span></span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Ce que ça fait :</strong> si les trois cases de la
-            ligne contiennent le <em>même</em> symbole, et que ce symbole
-            n'est pas vide, quelqu'un vient de gagner sur cette ligne
-            &mdash; <code>winner</code> devient ce symbole.
+            ligne contiennent le <em>même</em> symbole, et que cette
+            variable partagée a réellement été définie (rappel : une case
+            jamais jouée se lit comme le nombre <code>0</code>, pas comme
+            vide), quelqu'un vient de gagner sur cette ligne &mdash;
+            <code>winner</code> devient ce symbole.
         </div>
     </div>
 
     <h2>Vérifier les sept autres lignes</h2>
     <div class="step">
         <p>Répétez exactement le même modèle pour chacune de ces lignes
-        &mdash; trois noms de case, tous égaux, non vides :</p>
+        &mdash; trois noms de case, tous égaux, non <code>0</code> :</p>
         <table class="lines">
             <tr><th>Ligne</th><th>Case A</th><th>Case B</th><th>Case C</th></tr>
-            <tr><td>Rangée du milieu</td><td>cell_100_300</td><td>cell_300_300</td><td>cell_500_300</td></tr>
-            <tr><td>Rangée du bas</td><td>cell_100_500</td><td>cell_300_500</td><td>cell_500_500</td></tr>
-            <tr><td>Colonne gauche</td><td>cell_100_100</td><td>cell_100_300</td><td>cell_100_500</td></tr>
-            <tr><td>Colonne du milieu</td><td>cell_300_100</td><td>cell_300_300</td><td>cell_300_500</td></tr>
-            <tr><td>Colonne droite</td><td>cell_500_100</td><td>cell_500_300</td><td>cell_500_500</td></tr>
-            <tr><td>Diagonale &#8598;&#8600;</td><td>cell_100_100</td><td>cell_300_300</td><td>cell_500_500</td></tr>
-            <tr><td>Diagonale &#8599;&#8601;</td><td>cell_500_100</td><td>cell_300_300</td><td>cell_100_500</td></tr>
+            <tr><td>Rangée du milieu</td><td>cell_0_1</td><td>cell_1_1</td><td>cell_2_1</td></tr>
+            <tr><td>Rangée du bas</td><td>cell_0_2</td><td>cell_1_2</td><td>cell_2_2</td></tr>
+            <tr><td>Colonne gauche</td><td>cell_0_0</td><td>cell_0_1</td><td>cell_0_2</td></tr>
+            <tr><td>Colonne du milieu</td><td>cell_1_0</td><td>cell_1_1</td><td>cell_1_2</td></tr>
+            <tr><td>Colonne droite</td><td>cell_2_0</td><td>cell_2_1</td><td>cell_2_2</td></tr>
+            <tr><td>Diagonale &#8598;&#8600;</td><td>cell_0_0</td><td>cell_1_1</td><td>cell_2_2</td></tr>
+            <tr><td>Diagonale &#8599;&#8601;</td><td>cell_2_0</td><td>cell_1_1</td><td>cell_0_2</td></tr>
         </table>
         <p style="font-style: italic;">Huit blocs <strong>Si</strong> au
         total dans l'événement <strong>Tour résolu</strong> &mdash;
         fastidieux à taper, mais chacun a exactement la même forme que le
-        premier.</p>
+        premier (et correspond exactement à la disposition de la grille de
+        l'exemple fourni <code>fichier_1</code>, si vous voulez comparer).</p>
     </div>
 
     <h2>Afficher le gagnant</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez un événement <strong>Création</strong> à
-            <code>obj_controller</code> qui définit <code>winner</code> à
+            <li>Ajoutez à l'événement <strong>Création</strong> de
+            <code>obj_game</code> : définissez <code>winner</code> à
             <code>""</code> (pour qu'il ne reste pas un gagnant d'une
             partie précédente)</li>
-            <li>Ajoutez un événement <strong>Au dessin</strong> :</li>
+            <li>Ajoutez à l'événement <strong>Au dessin</strong>, après
+            tout ce qui vient des Phases 1 à 3 :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Au dessin</span><br>
-            <span class="block block-control block-indent">Si <span class="block-text">winner != ""</span> alors</span><br>
-            <span class="block block-draw block-indent2">Dessiner le texte <span class="block-text">winner + " gagne ! Appuyez sur ESPACE pour rejouer."</span> à x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
+            <span class="block block-control">Si <span class="block-text">winner != ""</span> alors</span><br>
+            <span class="block block-draw block-indent">Dessiner le texte <span class="block-text">winner + " gagne ! Appuyez sur ESPACE pour rejouer."</span> à x:<span class="block-num">80</span> y:<span class="block-num">650</span></span>
         </div>
     </div>
 
@@ -95,14 +99,18 @@
         <div class="blockly-group">
             <span class="block block-event">Touche pressée : Espace</span><br>
             <span class="block block-control block-indent">Si <span class="block-text">winner != ""</span> alors</span><br>
-            <span class="block block-network block-indent2">Quitter la partie (fichiers)</span>
+            <span class="block block-network block-indent2">Quitter la partie (échange de fichiers)</span>
         </div>
         <div class="info" style="margin-top: 8px;">
             <strong>Ce que ça fait :</strong> <strong>Quitter la partie
-            (fichiers)</strong> arrête proprement cette session sans toucher
-            aux fichiers de l'autre joueur. Appuyez à nouveau sur
-            <strong>H</strong> ou <strong>J</strong> (comme en Phase 2) sur
-            les deux ordinateurs pour démarrer une nouvelle partie.
+            (échange de fichiers)</strong> arrête proprement cette session
+            sans toucher aux fichiers de l'autre joueur. Appuyez à nouveau
+            sur <strong>H</strong> ou <strong>J</strong> (comme en Phase 2)
+            sur les deux ordinateurs pour démarrer une nouvelle partie
+            &mdash; les neuf variables <code>cell_*</code> et
+            <code>winner</code> ont aussi besoin d'être réinitialisées pour
+            une vraie revanche sans redémarrer tout le projet (laissé en
+            « Essayez ensuite » ci-dessous).
         </div>
     </div>
 
@@ -124,16 +132,19 @@
     pare-feu, juste des fichiers sur un dossier partagé :</p>
     <ul>
         <li>Héberger et rejoindre via un dossier partagé plutôt qu'une connexion directe</li>
-        <li>Préparer un coup et le soumettre avec <strong>Terminer le tour</strong></li>
-        <li>Ne laisser jouer que le bon joueur</li>
+        <li>Préparer un coup et le soumettre avec <strong>Terminer le tour (échange de fichiers)</strong></li>
+        <li>Ne laisser jouer que le bon joueur, et passer quand ce n'est pas son tour</li>
         <li>Réagir à <strong>Tour résolu</strong> pour rester synchronisé entre les machines</li>
         <li>Une vérification de victoire complète et un moyen de rejouer</li>
     </ul>
 
     <div class="highlight">
-        <strong>Essayez ensuite :</strong> ajoutez un message « Tour manqué »
-        pour quand quelqu'un met trop de temps, ou un score cumulé sur
-        plusieurs parties avec une autre variable partagée.
+        <strong>Essayez ensuite :</strong> réinitialisez les neuf variables
+        <code>cell_*</code> et <code>winner</code> lors de <strong>Quitter
+        la partie (échange de fichiers)</strong> pour une vraie revanche
+        sans redémarrer ; ajoutez un message « Tour manqué » pour quand
+        quelqu'un met trop de temps ; ou un score cumulé sur plusieurs
+        parties avec une autre variable partagée.
     </div>
 </body>
 </html>
