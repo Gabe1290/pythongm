@@ -227,7 +227,8 @@ class TestMinimizeForTestGame:
         stub = self._window_stub(maximized=False)
         stub._pre_test_game_maximized = False
 
-        ide._restore_after_test_game(stub)
+        with patch('core.ide._test_game.QApplication.alert'):
+            ide._restore_after_test_game(stub)
 
         stub.showNormal.assert_called_once()
         stub.showMaximized.assert_not_called()
@@ -238,7 +239,8 @@ class TestMinimizeForTestGame:
         stub = self._window_stub(maximized=True)
         stub._pre_test_game_maximized = True
 
-        ide._restore_after_test_game(stub)
+        with patch('core.ide._test_game.QApplication.alert'):
+            ide._restore_after_test_game(stub)
 
         stub.showMaximized.assert_called_once()
         stub.showNormal.assert_not_called()
@@ -254,10 +256,26 @@ class TestMinimizeForTestGame:
         stub = self._window_stub(maximized=False)
         stub._pre_test_game_maximized = False
 
-        ide._restore_after_test_game(stub)
+        with patch('core.ide._test_game.QApplication.alert'):
+            ide._restore_after_test_game(stub)
 
         stub.raise_.assert_called_once()
         stub.activateWindow.assert_called_once()
+
+    def test_restore_alerts_as_a_fallback_for_strict_focus_stealing_prevention(self):
+        """On a compositor that refuses to hand a background app focus at
+        all (confirmed: GNOME/Mutter under Wayland), raise_()/
+        activateWindow() are silently ignored -- QApplication.alert() is the
+        one signal that still gets through, flashing the IDE's taskbar/dock
+        entry so the student has something to click."""
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=False)
+        stub._pre_test_game_maximized = False
+
+        with patch('core.ide._test_game.QApplication.alert') as alert:
+            ide._restore_after_test_game(stub)
+
+        alert.assert_called_once_with(stub)
 
     def test_minimize_then_restore_round_trip(self):
         ide = _ide_cls()
@@ -266,7 +284,9 @@ class TestMinimizeForTestGame:
         ide._minimize_for_test_game(stub)
         stub.showMinimized.assert_called_once()
 
-        ide._restore_after_test_game(stub)
+        with patch('core.ide._test_game.QApplication.alert'):
+            ide._restore_after_test_game(stub)
+
         stub.showMaximized.assert_called_once()
         stub.raise_.assert_called_once()
         stub.activateWindow.assert_called_once()
