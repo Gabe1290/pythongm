@@ -21,7 +21,7 @@ import tempfile
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from utils.config import Config
 from core.logger import get_logger
@@ -95,8 +95,18 @@ class TestGameMixin:
         NOT raise/focus a window just because it un-minimized, so the IDE
         came back as an unminimized-but-still-buried window behind whatever
         the student had since clicked on. raise_() + activateWindow() are
-        the explicit "bring to front and focus" request; still best-effort
-        (a strict WM can refuse it), but this is as far as Qt goes.
+        the explicit "bring to front and focus" request, but they're still
+        best-effort: a strict compositor (confirmed: GNOME/Mutter under
+        Wayland) deliberately refuses to hand focus to a background app at
+        all, by design, so the IDE can come back unminimized and still not
+        be the focused window -- whatever had focus (e.g. the terminal the
+        IDE was launched from) stays focused instead. QApplication.alert()
+        is the fallback for exactly that case: it flashes/highlights the
+        IDE's taskbar or dock entry instead of forcing focus, and unlike
+        raise_()/activateWindow() it IS honored under GNOME's strict
+        focus-stealing prevention, so the student always has an obvious,
+        clickable "the IDE is back" signal even when nothing can force it
+        to the front automatically.
         """
         was_maximized = getattr(self, '_pre_test_game_maximized', False)
         self._pre_test_game_maximized = False
@@ -106,6 +116,7 @@ class TestGameMixin:
             self.showNormal()
         self.raise_()
         self.activateWindow()
+        QApplication.alert(self)
 
     def _run_project_json(self, project_path: Path):
         """Launch project_path/project.json's game in a subprocess (or
