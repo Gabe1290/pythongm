@@ -201,6 +201,8 @@ class TestMinimizeForTestGame:
             showMinimized=MagicMock(),
             showMaximized=MagicMock(),
             showNormal=MagicMock(),
+            raise_=MagicMock(),
+            activateWindow=MagicMock(),
         )
 
     def test_minimize_records_normal_state_and_minimizes(self):
@@ -242,6 +244,21 @@ class TestMinimizeForTestGame:
         stub.showNormal.assert_not_called()
         assert stub._pre_test_game_maximized is False
 
+    def test_restore_raises_and_activates_the_window(self):
+        """show{Normal,Maximized}() alone only clears the minimized state --
+        most Linux window managers won't raise/focus a window just because
+        it un-minimized, so restore must also explicitly ask to be brought
+        to front, or the IDE comes back buried behind whatever the student
+        clicked on while the game was running."""
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=False)
+        stub._pre_test_game_maximized = False
+
+        ide._restore_after_test_game(stub)
+
+        stub.raise_.assert_called_once()
+        stub.activateWindow.assert_called_once()
+
     def test_minimize_then_restore_round_trip(self):
         ide = _ide_cls()
         stub = self._window_stub(maximized=True)
@@ -251,6 +268,8 @@ class TestMinimizeForTestGame:
 
         ide._restore_after_test_game(stub)
         stub.showMaximized.assert_called_once()
+        stub.raise_.assert_called_once()
+        stub.activateWindow.assert_called_once()
 
     def test_check_game_process_restores_on_normal_exit(self):
         """The common path: a student just closes the game window (not via
