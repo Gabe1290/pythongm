@@ -2,9 +2,9 @@
 """Render the Tutorial-1 student handouts / teacher guides into printable PDFs.
 
 A pragmatic Markdown-subset renderer (title, headings, paragraphs with
-**bold**, bullet/checkbox/numbered-step list items, TIP/INFO callout boxes,
-a blank ruled "notes" block, a simple table, and a rule) built on fpdf2 --
-not a general Markdown engine. Font resolution mirrors
+**bold**, bullet/checkbox/numbered-step list items, TIP/INFO/DONE callout
+boxes, a blank ruled "notes" block, a simple table, and a rule) built on
+fpdf2 -- not a general Markdown engine. Font resolution mirrors
 scripts/generate_flyer_pdf.py so this runs on Linux, Windows and macOS.
 
 Extra line-level syntax beyond plain Markdown:
@@ -13,6 +13,8 @@ Extra line-level syntax beyond plain Markdown:
     > TIP: text         yellow "tip" callout box (can wrap onto more
     > more text          "> "-prefixed lines)
     > INFO: text         blue "info" callout box, same wrapping rule
+    > DONE: text         green "success" callout box (mirrors the in-app
+                          tutorial's own .success box), same wrapping rule
     [[notes:4]]         4 blank ruled lines for handwriting
 
 Usage:
@@ -66,6 +68,8 @@ TIP_BG = (255, 243, 205)   # #fff3cd
 TIP_BORDER = (255, 193, 7)  # #ffc107
 INFO_BG = (209, 236, 241)  # #d1ecf1
 INFO_BORDER = (23, 162, 184)  # #17a2b8
+DONE_BG = (212, 237, 218)   # #d4edda -- matches the in-app tutorial's .success box
+DONE_BORDER = (40, 167, 69)  # #28a745
 BADGE_BG = ACCENT
 
 
@@ -186,7 +190,11 @@ class Handout(FPDF):
         self.ln(1.6)
 
     def render_callout(self, kind, text):
-        bg, border = (TIP_BG, TIP_BORDER) if kind == "TIP" else (INFO_BG, INFO_BORDER)
+        bg, border = {
+            "TIP": (TIP_BG, TIP_BORDER),
+            "INFO": (INFO_BG, INFO_BORDER),
+            "DONE": (DONE_BG, DONE_BORDER),
+        }.get(kind, (TIP_BG, TIP_BORDER))
         self.ln(0.5)
         pad = 3.0
         self.set_font("body", "", 9.5)
@@ -339,7 +347,7 @@ def render(src_path, out_path):
                 i += 1
             text = " ".join(block).strip()
             kind = "TIP"
-            m2 = re.match(r"(TIP|INFO):\s*(.*)", text)
+            m2 = re.match(r"(TIP|INFO|DONE):\s*(.*)", text)
             if m2:
                 kind, text = m2.group(1), m2.group(2)
             pdf.render_callout(kind, text)
