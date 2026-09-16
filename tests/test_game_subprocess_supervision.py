@@ -96,6 +96,9 @@ class _FakeProcess:
         self.terminated = False
         self.killed = False
 
+    def poll(self):
+        return self.exit_code
+
     def terminate(self):
         self.terminated = True
 
@@ -118,6 +121,7 @@ def _stop_stub(ide, proc):
         _game_stderr_path=path,
         update_status=lambda *a, **k: None,
         tr=lambda s: s,
+        _restore_after_test_game=lambda: None,
     )
     # Bind the real drain method so stop_game's self._drain_game_stderr resolves.
     stub._drain_game_stderr = ide._drain_game_stderr.__get__(stub)
@@ -149,6 +153,125 @@ class TestStopGame:
 
     def test_safe_with_no_running_game(self):
         ide = _ide_cls()
-        stub = SimpleNamespace(update_status=lambda *a, **k: None, tr=lambda s: s)
+        stub = SimpleNamespace(
+            update_status=lambda *a, **k: None,
+            tr=lambda s: s,
+            _restore_after_test_game=lambda: None,
+        )
         stub._drain_game_stderr = ide._drain_game_stderr.__get__(stub)
         ide.stop_game(stub)  # no process / timer / capture — must not raise
+
+    def test_restores_the_ide_window(self):
+        """stop_game (e.g. IDE-close or a manual stop) must un-minimize the
+        IDE, not just terminate the child — otherwise a student who closes
+        the game is left with a minimized IDE and nothing on screen."""
+        ide = _ide_cls()
+        proc = _FakeProcess(exit_code=0)
+        handle, path = _capture("x")
+        restored = MagicMock()
+        stub = SimpleNamespace(
+            _game_process=proc,
+            _check_game_timer=None,
+            _game_stderr_handle=handle,
+            _game_stderr_path=path,
+            update_status=lambda *a, **k: None,
+            tr=lambda s: s,
+            _restore_after_test_game=restored,
+        )
+        stub._drain_game_stderr = ide._drain_game_stderr.__get__(stub)
+
+        ide.stop_game(stub)
+
+        restored.assert_called_once()
+
+
+class TestMinimizeForTestGame:
+    """The IDE minimizes itself while a test game runs (and restores
+    afterward) so a student clicking the IDE can't bury the game window
+    behind it with no way back -- worst on Linux, where SDL/Qt have no
+    portable "always on top" flag."""
+
+    def _window_stub(self, maximized: bool):
+        # Imported lazily (not at module scope) so this file's PySide6-less
+        # skip path still collects cleanly.
+        from PySide6.QtCore import Qt
+        state = Qt.WindowMaximized if maximized else Qt.WindowNoState
+        return SimpleNamespace(
+            windowState=lambda: state,
+            showMinimized=MagicMock(),
+            showMaximized=MagicMock(),
+            showNormal=MagicMock(),
+        )
+
+    def test_minimize_records_normal_state_and_minimizes(self):
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=False)
+
+        ide._minimize_for_test_game(stub)
+
+        stub.showMinimized.assert_called_once()
+        assert stub._pre_test_game_maximized is False
+
+    def test_minimize_records_maximized_state(self):
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=True)
+
+        ide._minimize_for_test_game(stub)
+
+        assert stub._pre_test_game_maximized is True
+
+    def test_restore_returns_to_normal_when_it_was_not_maximized(self):
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=False)
+        stub._pre_test_game_maximized = False
+
+        ide._restore_after_test_game(stub)
+
+        stub.showNormal.assert_called_once()
+        stub.showMaximized.assert_not_called()
+        assert stub._pre_test_game_maximized is False
+
+    def test_restore_returns_to_maximized_when_it_was_maximized(self):
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=True)
+        stub._pre_test_game_maximized = True
+
+        ide._restore_after_test_game(stub)
+
+        stub.showMaximized.assert_called_once()
+        stub.showNormal.assert_not_called()
+        assert stub._pre_test_game_maximized is False
+
+    def test_minimize_then_restore_round_trip(self):
+        ide = _ide_cls()
+        stub = self._window_stub(maximized=True)
+
+        ide._minimize_for_test_game(stub)
+        stub.showMinimized.assert_called_once()
+
+        ide._restore_after_test_game(stub)
+        stub.showMaximized.assert_called_once()
+
+    def test_check_game_process_restores_on_normal_exit(self):
+        """The common path: a student just closes the game window (not via
+        a stop_game call) -- _check_game_process's QTimer poll is what
+        notices the exit, so it must restore the IDE too."""
+        ide = _ide_cls()
+        proc = _FakeProcess(exit_code=0)
+        handle, path = _capture("")
+        restored = MagicMock()
+        stub = SimpleNamespace(
+            _game_process=proc,
+            _check_game_timer=MagicMock(),
+            _game_stderr_handle=handle,
+            _game_stderr_path=path,
+            update_status=lambda *a, **k: None,
+            tr=lambda s: s,
+            _restore_after_test_game=restored,
+        )
+        stub._drain_game_stderr = ide._drain_game_stderr.__get__(stub)
+
+        ide._check_game_process(stub)
+
+        restored.assert_called_once()
+        assert stub._game_process is None

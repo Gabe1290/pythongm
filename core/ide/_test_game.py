@@ -20,7 +20,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QMessageBox
 
 from utils.config import Config
@@ -72,6 +72,29 @@ class TestGameMixin:
         self._show_validation_warnings()
 
         self._run_project_json(self.current_project_path)
+
+    def _minimize_for_test_game(self):
+        """Minimize the IDE window for the duration of a running test game.
+
+        Students clicking the IDE while a test game is running brings the
+        IDE in front of the game window, with no easy way for them to get
+        the game window back (worst on Linux, where "always on top" isn't a
+        portable Qt/SDL flag). Minimizing the IDE removes it as a clickable
+        target instead. Remembers whether the window was maximized so
+        _restore_after_test_game can put it back the way it was rather than
+        always landing on "normal".
+        """
+        self._pre_test_game_maximized = bool(self.windowState() & Qt.WindowMaximized)
+        self.showMinimized()
+
+    def _restore_after_test_game(self):
+        """Undo _minimize_for_test_game once the test game has exited."""
+        was_maximized = getattr(self, '_pre_test_game_maximized', False)
+        self._pre_test_game_maximized = False
+        if was_maximized:
+            self.showMaximized()
+        else:
+            self.showNormal()
 
     def _run_project_json(self, project_path: Path):
         """Launch project_path/project.json's game in a subprocess (or
@@ -130,10 +153,14 @@ class TestGameMixin:
             if is_packaged:
                 # When packaged, run game in-process using the game runner
                 # This works because pygame is bundled in the package
-                if self.game_runner.test_game(str(project_path), Config.get('language', 'en')):
-                    self.update_status(self.tr("Game closed"))
-                else:
-                    self.update_status(self.tr("Game test failed"))
+                self._minimize_for_test_game()
+                try:
+                    if self.game_runner.test_game(str(project_path), Config.get('language', 'en')):
+                        self.update_status(self.tr("Game closed"))
+                    else:
+                        self.update_status(self.tr("Game test failed"))
+                finally:
+                    self._restore_after_test_game()
                 return
 
             # Run the game subprocess
@@ -183,6 +210,7 @@ class TestGameMixin:
 
             # Store reference to allow stopping the game
             self._game_process = process
+            self._minimize_for_test_game()
 
             # Use QTimer to check when game exits without blocking
             self._check_game_timer = QTimer(self)
@@ -333,6 +361,7 @@ class TestGameMixin:
                 logger.debug(f"Game exited with code: {return_code}")
 
             self._drain_game_stderr(return_code)
+            self._restore_after_test_game()
             self.update_status(self.tr("Game closed"))
 
     def _drain_game_stderr(self, return_code):
@@ -399,6 +428,7 @@ class TestGameMixin:
         if hasattr(self, '_check_game_timer') and self._check_game_timer:
             self._check_game_timer.stop()
         self._drain_game_stderr(return_code)
+        self._restore_after_test_game()
 
     def debug_game(self):
         """Run game in debug mode with additional logging"""
@@ -431,15 +461,19 @@ class TestGameMixin:
         )
 
         # Run game in test mode (debug mode to be implemented)
-        if self.game_runner.test_game(str(self.current_project_path), Config.get('language', 'en')):
-            self.update_status(self.tr("Game started in debug mode - Check console for debug output"))
-        else:
-            self.update_status(self.tr("Failed to start game"))
-            QMessageBox.warning(
-                self,
-                self.tr("Game Error"),
-                self.tr("Failed to start the game. Check console for details.")
-            )
+        self._minimize_for_test_game()
+        try:
+            if self.game_runner.test_game(str(self.current_project_path), Config.get('language', 'en')):
+                self.update_status(self.tr("Game started in debug mode - Check console for debug output"))
+            else:
+                self.update_status(self.tr("Failed to start game"))
+                QMessageBox.warning(
+                    self,
+                    self.tr("Game Error"),
+                    self.tr("Failed to start the game. Check console for details.")
+                )
+        finally:
+            self._restore_after_test_game()
 
     def _show_validation_warnings(self):
         """Validate project and show any warnings to the user"""
