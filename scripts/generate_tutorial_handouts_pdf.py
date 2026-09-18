@@ -15,6 +15,8 @@ Extra line-level syntax beyond plain Markdown:
     > INFO: text         blue "info" callout box, same wrapping rule
     > DONE: text         green "success" callout box (mirrors the in-app
                           tutorial's own .success box), same wrapping rule
+    ![alt](path.png)    an image, scaled to the page's content width,
+                          path relative to the source .md's own folder
     [[notes:4]]         4 blank ruled lines for handwriting
 
 Usage:
@@ -226,6 +228,29 @@ class Handout(FPDF):
             self.set_y(y)
         self.ln(3)
 
+    def render_image(self, path):
+        """Scale to the full content width, preserving aspect ratio; if the
+        page doesn't have room left, start a fresh one (mirrors the
+        page-break-before-drawing discipline _fits_or_break already
+        established for badge+text items, since fpdf2's own image() call
+        has no auto-page-break of its own)."""
+        from PIL import Image as PILImage
+        with PILImage.open(path) as im:
+            iw, ih = im.size
+        w = self.epw
+        h = w * ih / iw
+        y0 = self.get_y()
+        avail = self.h - self.b_margin - y0
+        if h > avail:
+            self.add_page()
+            y0 = self.get_y()
+            avail = self.h - self.b_margin - y0
+            if h > avail:
+                h, w = avail, avail * iw / ih
+        self.image(path, x=self.l_margin + (self.epw - w) / 2, y=y0, w=w, h=h)
+        self.set_y(y0 + h)
+        self.ln(3)
+
     def render_rule(self):
         self.ln(1.5)
         self.set_draw_color(*RULE)
@@ -278,8 +303,9 @@ class Handout(FPDF):
 # --- markdown-subset parse -------------------------------------------------
 
 _BLOCK_START = re.compile(
-    r"^(#{1,3}\s|-\s|>|\|.*\||\d+\.\s|---$|\[\[notes:\d+\]\]$)"
+    r"^(#{1,3}\s|-\s|>|\|.*\||\d+\.\s|---$|\[\[notes:\d+\]\]$|!\[)"
 )
+_IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)$")
 
 
 def _merge_soft_wraps(lines):
@@ -363,6 +389,14 @@ def render(src_path, out_path):
                 i += 1
             if tbl:
                 pdf.render_table(tbl)
+            continue
+
+        m_img = _IMAGE.match(stripped)
+        if m_img:
+            flush_para()
+            img_path = os.path.join(os.path.dirname(src_path), m_img.group(2))
+            pdf.render_image(img_path)
+            i += 1
             continue
 
         if stripped.startswith("# "):

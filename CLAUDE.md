@@ -2267,3 +2267,24 @@ drop tiles/views/object sprites (use the `merge_room_file`/
 with a regression test, flip the checkbox with the hash. Baseline on this
 Windows box (`py -3.12`, two halves because one process exceeds the agent
 tool's 10-minute cap): see the registry's Baseline section.
+
+**2026-09-17 — Tutorial-1 student handout round-trip (hand-edit an
+.odt, fold it back into the real .md source) is now a documented
+procedure.** `docs/TUTORIAL_HANDOUT_WORKFLOW.md` — read it before doing
+this again, don't re-derive. Built `scripts/extract_odt_text.py` (real
+ODF-DOM extraction via `odfpy`, not tag-stripping) and taught both
+`generate_tutorial_handouts_{pdf,odt}.py` a `![alt](path.png)` markdown
+image line. Two real bugs found and fixed in
+`generate_tutorial_handouts_odt.py`: a malformed LibreOffice profile
+`file://` URI that hung the whole conversion the moment an image also
+needed real `file://` resolution, and an `<img src="file://...">` that
+LibreOffice's HTML import links rather than embeds (broken relative
+path the instant the `.odt` moves) — fixed by inlining images as base64
+`data:` URIs instead. **Landmine that cost real data once:**
+regenerating an `.odt` overwrites a human's in-progress hand-edit in
+place with no undo; the workflow doc's steps 2 and 5 (commit the draft
+before edits, back up before any regeneration) exist because that
+happened for real on `TUTORIAL_01_STUDENT_HANDOUT_FR.odt` this session
+— no content was lost (the diff into `.md` had already been done
+carefully first), but the human's own file, as an artifact, was gone.
+Don't skip those two steps next time.

@@ -4,21 +4,17 @@
 
 This handout follows the 4 pages of the in-app tutorial, found under
 **Help > Tutorials > First Steps**. Read each part here, then do the
-matching part on your screen — the section titles below match the
-tutorial's own page titles. Tick the checkboxes as you complete each
+matching part on your screen. Tick the checkboxes as you complete each
 task, and use the **My Notes** section at the end to write down
 anything you want to remember.
 
 ## Part 1: Welcome to PyGameMaker
 
-PyGameMaker is a visual game-making program, similar in spirit to tools
-like GameMaker Studio. You build 2D games by creating **assets** —
-sprites (images), objects (things that behave), and rooms (levels) —
-and connecting them together. You do not need any programming
-experience to get started: PyGameMaker's visual system is designed for
-beginners.
-
-By the end of this whole tutorial series, you will be able to:
+PyGameMaker is a visual game-making program. You build 2D games by
+creating **assets** — sprites (images), objects (things that are
+programmed to behave a certain way), and rooms (levels) — and
+connecting them together. By the end of this tutorial, you will be
+able to:
 
 - Navigate the PyGameMaker interface confidently
 - Create and manage game assets (sprites, objects, rooms)
@@ -28,6 +24,18 @@ By the end of this whole tutorial series, you will be able to:
 > TIP: You can close the tutorial panel at any time with the "Close"
 > button at the top. To open it again later, use **Help > Tutorials**
 > from the menu.
+
+![A first look at the PyGameMaker IDE window](tutorial_01_handout_welcome_en.png)
+
+- **Title Bar**
+- **Close**
+- **Fullscreen**
+- **Minimize**
+- **Menu Bar**
+- **Toolbar**
+- **Assets**
+- **Editor Area**
+- **Properties**
 
 ## Part 2: The PyGameMaker Interface
 
@@ -66,20 +74,21 @@ are editing a room or an object, this is where you change its details.
 - **Build** — test and export your game
 - **Help** — tutorials and documentation
 
-> TIP: Press **F5** at any time to quickly test your game!
+> TIP: Press **F5**, or click the green triangle in the toolbar, at
+> any time to quickly test your game!
 
 ## Part 3: Build Your First Project
 
-Now it is time to build something! Follow these six steps in order.
-Each one explains what you are doing and why, before telling you what
-to click.
+Now it is time to build something! Follow these six steps in order,
+and each one explains what you are doing and why, before telling you
+what to click.
 
 - [ ] **1. Create a new project.** Every game starts as a project, which is a folder that holds all of its assets. Go to **File > New Project** (or press **Ctrl+N**), give your project a name, and choose where to save it.
 - [ ] **2. Create a sprite.** A sprite is the image your character (or any object) will use. Right-click **Sprites**, choose **Create New Sprite**, and name it `spr_player`. Then either draw a simple character in the Sprite Editor, or right-click it and choose **Import Image...** to use an existing picture.
-- [ ] **3. Create an object.** A sprite is just a picture — an object is what actually appears and behaves in your game. Right-click **Objects**, choose **Create New Object**, name it `obj_player`, and assign it the sprite you just made in its properties.
+- [ ] **3. Create an object.** A sprite is just a picture carried by an object — an object is what actually behaves in your game. Right-click **Objects**, choose **Create New Object**, name it `obj_player`, and assign it the sprite you just made in its properties.
 - [ ] **4. Create a room.** A room is a level or screen in your game. Right-click **Rooms**, choose **Create New Room**, and name it `room_game`. This will be your very first level.
-- [ ] **5. Place your object.** An object only appears in the game once it has been placed in a room. Double-click your room to open the Room Editor, select `obj_player` from the list, and click inside the room to place it.
-- [ ] **6. Test your game.** Press **F5** (or go to **Build > Test Game**). A window will open showing your room, with the object you placed inside it!
+- [ ] **5. Place an object.** An object only appears in the game once it has been placed in a room. Double-click your room to open the Room Editor, select `obj_player` from the list, and click inside the room to place it.
+- [ ] **6. Test the game.** Press **F5** (or click the green triangle icon in the toolbar, or go to **Build > Test Game**). A window will open showing your room, with the object you placed inside it!
 
 > DONE: Congratulations! You have just created your first PyGameMaker
 > project. It doesn't do much yet — your object won't move or react to
@@ -94,9 +103,9 @@ know what to look forward to.
 
 - **Adding movement** — using a Keyboard event and actions like "Move in Direction" to make your object respond to key presses
 - **Collision detection** — making objects react when they touch each other, like stopping at a wall
-- **Visual programming with Blockly** — building behaviors by connecting blocks instead of writing code
+- **Visual programming with Blockly** — building behaviors by connecting blocks to each other instead of writing code
 - **Multiple rooms** — creating several levels and moving between them
-- **Exporting your game** — turning your finished project into a game other people can play, for example as a web page
+- **Exporting your game** — turning your finished project into a game other people can play, for example as a web page or an executable file
 
 > INFO: Need help? Ask your teacher, or press **F1** in PyGameMaker for
 > documentation.
@@ -111,4 +120,4 @@ know what to look forward to.
 
 ## My Notes
 
-[[notes:14]]
+[[notes:10]]

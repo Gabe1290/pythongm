@@ -18,6 +18,8 @@ canonical description of each):
     > more text          "> "-prefixed lines)
     > INFO: text         blue "info" callout box, same wrapping rule
     > DONE: text         green "success" callout box, same wrapping rule
+    ![alt](path.png)    an image, scaled to the page's content width,
+                          path relative to the source .md's own folder
     [[notes:4]]         4 blank ruled lines for handwriting
 
 Usage:
@@ -29,14 +31,17 @@ matching .odt next to it.
 Requires `soffice` / `libreoffice` on PATH.
 """
 
+import base64
 import glob
 import html
+import mimetypes
 import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 DOCS = os.path.join(ROOT, "docs")
@@ -95,8 +100,9 @@ _CALLOUT_COLORS = {
 _NOTES_LINE = "_" * 78
 
 _BLOCK_START = re.compile(
-    r"^(#{1,3}\s|-\s|>|\|.*\||\d+\.\s|---$|\[\[notes:\d+\]\]$)"
+    r"^(#{1,3}\s|-\s|>|\|.*\||\d+\.\s|---$|\[\[notes:\d+\]\]$|!\[)"
 )
+_IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)$")
 
 
 def _merge_soft_wraps(lines):
@@ -114,6 +120,22 @@ def _merge_soft_wraps(lines):
     return merged
 
 
+def _data_uri(path):
+    """Read a local image file into a base64 data: URI, so LibreOffice's
+    HTML import EMBEDS the picture into the ODT rather than importing it
+    as a linked <draw:frame> pointing at a relative path computed from the
+    throwaway conversion tempdir (verified empirically: an
+    <img src="file:///..."> line -- even an absolute, correctly-formed
+    file:// URI -- lands as an external link with a path like
+    "../../../../../pygm/docs/x.png", broken the moment the .odt is moved
+    to its real home; the generated document must carry its own picture
+    data, not a pointer)."""
+    mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
+    with open(path, "rb") as fh:
+        b64 = base64.b64encode(fh.read()).decode("ascii")
+    return f"data:{mime};base64,{b64}"
+
+
 def _inline(text):
     text = html.escape(text, quote=False)
     text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
@@ -121,7 +143,10 @@ def _inline(text):
     return text
 
 
-def md_to_html(md_text):
+def md_to_html(md_text, src_dir=None):
+    """src_dir -- the source .md's own folder, so an image's relative path
+    resolves against it (not the temp dir the HTML gets written to for the
+    LibreOffice conversion). Required if md_text contains an image line."""
     lines = _merge_soft_wraps(md_text.replace("\r\n", "\n").split("\n"))
     out = []
     para, list_buf, list_tag = [], [], None
@@ -205,6 +230,19 @@ def md_to_html(md_text):
                 out.append("</table>")
             continue
 
+        m_img = _IMAGE.match(stripped)
+        if m_img:
+            flush_para()
+            flush_list()
+            alt, relpath = m_img.group(1), m_img.group(2)
+            abspath = os.path.abspath(os.path.join(src_dir or "", relpath))
+            out.append(
+                f'<p><img src="{_data_uri(abspath)}" '
+                f'alt="{html.escape(alt, quote=True)}" width="100%"></p>'
+            )
+            i += 1
+            continue
+
         if stripped.startswith("# "):
             flush_para()
             flush_list()
@@ -275,14 +313,21 @@ def _soffice():
 
 def render(src_path, out_path):
     with open(src_path, encoding="utf-8") as fh:
-        html_doc = md_to_html(fh.read())
+        html_doc = md_to_html(fh.read(), src_dir=os.path.dirname(src_path))
 
     base = os.path.splitext(os.path.basename(out_path))[0]
     with tempfile.TemporaryDirectory() as tmp:
         html_path = os.path.join(tmp, base + ".html")
         with open(html_path, "w", encoding="utf-8") as fh:
             fh.write(html_doc)
-        profile = "file://" + os.path.join(tmp, "loprofile")
+        # A real file:// URI (Path.as_uri(), not string-glued "file://" +
+        # a Windows backslash path -- "file://C:\..." is missing the third
+        # slash a Windows drive-letter URI needs). The malformed form
+        # apparently tolerated text-only conversions on this machine but
+        # hung indefinitely once an <img src="file:///..."> (added for
+        # image support, see md_to_html) also needed real file:// URI
+        # resolution in the same LibreOffice process.
+        profile = Path(tmp, "loprofile").as_uri()
         subprocess.run(
             [
                 _soffice(), "--headless", "--norestore",
