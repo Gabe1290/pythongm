@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Tune the Look</h1>
+    <h2>Everything Has a Plain-Colour Fallback</h2>
+    <table class="t"><tr><th>Texture</th><th>Colour used when it is empty</th></tr>
+    <tr><td>Wall Texture</td><td>Wall Color (default dark red)</td></tr>
+    <tr><td>Floor Texture</td><td>Floor Color (default dark olive)</td></tr>
+    <tr><td>Sky Texture / Ceiling Texture</td><td>Ceiling Color (default sky blue)</td></tr></table>
+    <div class="step"><p>Try it: clear <strong>Sky Texture</strong> and press F5 &mdash; you get the flat blue ceiling back, and nothing else changes.
+    Set <strong>Textured Walls</strong> to off to see flat wall colours <em>even though</em> a Wall Texture is still set &mdash; handy for comparing.</p></div>
+    <h2>Detail Versus Speed</h2>
+    <p>A 2.5D view is drawn column by column, and the floor is the most expensive part. Two settings control the trade:</p>
+    <table class="t"><tr><th>Setting</th><th>Lower means</th><th>Higher means</th></tr>
+    <tr><td><strong>Columns</strong> (default 320)</td><td>Chunkier walls, faster</td><td>Smoother walls, slower</td></tr>
+    <tr><td><strong>Floor Detail</strong> (default 4)</td><td>Sharper floor, slower</td><td>Blockier floor, faster</td></tr></table>
+    <div class="highlight"><strong>Rule of thumb:</strong> if your game feels slow, raise Floor Detail to 6 or 8 first &mdash; you will barely notice the difference &mdash;
+    then lower Columns. If it looks too blocky, go the other way.</div>
+    <h2>Challenges</h2>
+    <div class="step"><ul>
+        <li>Make a second wall look (mossy stone) &mdash; then swap textures by changing one name</li>
+        <li>Design an indoor room: leave the sky empty and give it a <strong>Ceiling Texture</strong> of wooden planks</li>
+        <li>Make a dark cave with a nearly black <strong>Ceiling Color</strong> and a very short <strong>Render Distance</strong> (5)</li></ul></div>
+    <h2>You Dressed Your 2.5D World!</h2>
+    <ul><li>A texture is just a sprite chosen in <strong>Enable Raycast View</strong></li><li>The sky pans with your turning; the floor tiles per cell</li>
+        <li>Every texture can fall back to a plain colour</li></ul>
+    <div class="highlight"><strong>Next lesson:</strong> <em>Goals, Gems and Monsters</em> &mdash; put things in the world to collect and to run from.</div>
+</body>
+</html>

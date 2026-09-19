@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>2.5D: Textures, Sky and Floor</h1>
+    <div class="game-preview">
+        <img src="thumbnails/12_raycast_textures.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#129521;</p>
+        <p><strong>From flat grey boxes to a real brick dungeon!</strong></p>
+        <p>Paint the walls, add a sky that turns as you turn, and lay a tiled stone floor.</p>
+    </div>
+    <h2>What We'll Build</h2>
+    <p>We take the room from <em>2.5D: First Steps</em> and dress it up. Nothing about how the game plays changes &mdash;
+    only what it looks like. If you no longer have that project, finish Lesson 11 first (about 20 minutes).</p>
+    <h2>How This Tutorial Works</h2>
+    <div class="phase"><strong>Phase 1 &mdash; Textured Walls</strong><br>Draw a brick picture and wrap every wall in it.</div>
+    <div class="phase"><strong>Phase 2 &mdash; Sky and Floor</strong><br>Add a panoramic sky and a tiled floor.</div>
+    <div class="phase"><strong>Phase 3 &mdash; Tune the Look</strong><br>Switch textures on and off, and trade detail for speed.</div>
+    <h2>What You'll Learn</h2>
+    <ul>
+        <li>How a <strong>texture</strong> is just a sprite chosen in <strong>Enable Raycast View</strong></li>
+        <li>What the sky does when you turn (and why it never gets closer)</li>
+        <li>How the floor is drawn, and what <strong>Floor Detail</strong> trades away</li>
+        <li>How to fall back to plain colours</li>
+    </ul>
+    <div class="highlight"><strong>Time Required:</strong> About 20&ndash;25 minutes.</div>
+    <div class="info"><strong>Ready?</strong> Click "Next" to start.</div>
+</body>
+</html>

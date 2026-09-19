@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Régler l'apparence</h1>
+    <h2>Tout a une couleur unie de secours</h2>
+    <table class="t"><tr><th>Texture</th><th>Couleur utilisée quand elle est vide</th></tr>
+    <tr><td>Wall Texture</td><td>Wall Color (rouge sombre par défaut)</td></tr>
+    <tr><td>Floor Texture</td><td>Floor Color (olive sombre par défaut)</td></tr>
+    <tr><td>Sky Texture / Ceiling Texture</td><td>Ceiling Color (bleu ciel par défaut)</td></tr></table>
+    <div class="step"><p>Essayez : videz <strong>Sky Texture</strong> et appuyez sur F5 &mdash; vous retrouvez le plafond bleu uni, sans rien d'autre de changé.
+    Mettez <strong>Textured Walls</strong> sur non pour voir des murs de couleur unie <em>même si</em> une Wall Texture est toujours définie &mdash; pratique pour comparer.</p></div>
+    <h2>Détail contre vitesse</h2>
+    <p>Une vue 2.5D est dessinée colonne par colonne, et le sol est la partie la plus coûteuse. Deux réglages gèrent ce compromis :</p>
+    <table class="t"><tr><th>Réglage</th><th>Plus bas signifie</th><th>Plus haut signifie</th></tr>
+    <tr><td><strong>Columns</strong> (320 par défaut)</td><td>Murs plus grossiers, plus rapide</td><td>Murs plus lisses, plus lent</td></tr>
+    <tr><td><strong>Floor Detail</strong> (4 par défaut)</td><td>Sol plus net, plus lent</td><td>Sol plus pixellisé, plus rapide</td></tr></table>
+    <div class="highlight"><strong>Règle pratique :</strong> si votre jeu est lent, montez d'abord Floor Detail à 6 ou 8 &mdash; vous verrez à peine la différence &mdash;
+    puis baissez Columns. Si l'image est trop grossière, faites l'inverse.</div>
+    <h2>Défis</h2>
+    <div class="step"><ul>
+        <li>Créez un second aspect de mur (pierre moussue) &mdash; puis changez de texture en modifiant un seul nom</li>
+        <li>Concevez une salle intérieure : laissez le ciel vide et donnez-lui une <strong>Ceiling Texture</strong> en planches de bois</li>
+        <li>Faites une grotte sombre avec une <strong>Ceiling Color</strong> presque noire et une <strong>Render Distance</strong> très courte (5)</li></ul></div>
+    <h2>Vous avez habillé votre monde 2.5D !</h2>
+    <ul><li>Une texture n'est qu'un sprite choisi dans <strong>Enable Raycast View</strong></li><li>Le ciel défile avec vos rotations ; le sol se répète par case</li>
+        <li>Chaque texture peut revenir à une couleur unie</li></ul>
+    <div class="highlight"><strong>Prochaine leçon :</strong> <em>Objectifs, gemmes et monstres</em> &mdash; placez dans le monde des choses à collecter et à fuir.</div>
+</body>
+</html>

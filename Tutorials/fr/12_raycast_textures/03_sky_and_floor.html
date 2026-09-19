@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Ciel et sol</h1>
+    <h2>Dessiner le ciel</h2>
+    <div class="step"><ol>
+        <li>Créez un sprite nommé <code>spr_sky</code> de <strong>256&times;64</strong> pixels &mdash; large et bas, comme une bande découpée dans un panorama</li>
+        <li>Remplissez-le de bleu ciel et ajoutez quelques nuages blancs, un soleil, ou des montagnes le long du bord inférieur. Enregistrez.</li></ol>
+        <div class="info" style="margin-top: 8px;"><strong>Comportement du ciel :</strong> il <em>défile latéralement quand vous tournez</em> &mdash; un tour complet de 360&deg; fait passer toute la bande une fois &mdash;
+        mais il ne grossit ni ne rétrécit quand vous marchez. C'est exactement ce que fait un horizon lointain, et c'est ainsi que les jeux classiques le simulaient.</div></div>
+    <h2>Dessiner la dalle de sol</h2>
+    <div class="step"><ol>
+        <li>Créez un sprite nommé <code>spr_floor</code> de <strong>32&times;32</strong> pixels &mdash; la taille d'une case de la grille</li>
+        <li>Faites un damier, des dalles ou des planches. Enregistrez.</li></ol>
+        <p style="font-style: italic;">La dalle est répétée une fois par case de la grille et s'aligne sur le bas des murs : le sol ne semble donc jamais glisser.</p></div>
+    <h2>Activer les deux</h2>
+    <div class="step"><div class="blockly-group"><span class="block block-event">Quand créé</span><br>
+        <span class="block block-view block-indent">Activer la vue Raycast &mdash; &hellip; Wall Texture <span class="block-text">spr_wall_texture</span> Sky Texture <span class="block-text">spr_sky</span> Floor Texture <span class="block-text">spr_floor</span></span><br>
+        </div></div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez !</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 !</strong></p>
+    <ul><li>Tournez sur place : le ciel défile pendant que les murs restent en place</li>
+        <li>Regardez le sol : les dalles rétrécissent vers l'horizon et rejoignent proprement les murs</li></ul></div>
+    <div class="highlight"><strong>Pas de ciel ? Utilisez un plafond.</strong> Si vous laissez <strong>Sky Texture</strong> vide, vous pouvez régler <strong>Ceiling Texture</strong> à la place :
+    elle est projetée sur le plafond comme le sol l'est sur le sol &mdash; idéal pour les salles intérieures. Un ciel, s'il est défini, l'emporte toujours.</div>
+    <div class="info">Cliquez sur « Suivant » pour régler l'apparence.</div>
+</body>
+</html>
