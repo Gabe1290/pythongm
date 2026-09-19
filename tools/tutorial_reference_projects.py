@@ -132,8 +132,65 @@ def build_t02(root, phase=4):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 03 - Classic Pong   (phases 1..3)
+# ---------------------------------------------------------------------------
+
+T03_PHASES = ["paddles_and_ball", "goals_and_scoring", "score_display"]
+
+
+def build_t03(root, phase=3):
+    p = Project(root, "Pong")
+    p.sprite("spr_ball", "circle", 16, 16, (255, 255, 255, 255))
+    p.sprite("spr_paddle", "rect", 16, 64, (255, 255, 255, 255))
+    p.sprite("spr_wall", "rect", 32, 32, (128, 128, 128, 255))
+    p.obj("obj_wall", "spr_wall", solid=True)
+
+    def paddle(up, down):
+        return {"keyboard": {
+            up: {"actions": [act("set_vspeed", speed=-8)]},
+            down: {"actions": [act("set_vspeed", speed=8)]},
+            "nokey": {"actions": [act("stop_movement")]}},
+            "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [act("stop_movement")]}}
+
+    p.obj("obj_paddle_left", "spr_paddle", paddle("w", "s"), solid=True)
+    p.obj("obj_paddle_right", "spr_paddle", paddle("up", "down"), solid=True)
+    bounce = {"actions": [act("bounce")]}
+    ball_ev = {
+        "create": {"actions": [act("start_moving_direction", directions=[], direction_expr="45", speed=6)]},
+        "collision_with_obj_wall": {"target_object": "obj_wall", **bounce},
+        "collision_with_obj_paddle_left": {"target_object": "obj_paddle_left", **bounce},
+        "collision_with_obj_paddle_right": {"target_object": "obj_paddle_right", **bounce}}
+    placements = [("obj_paddle_left", 48, 208), ("obj_paddle_right", 576, 208), ("obj_ball", 312, 232)]
+    for x in range(0, 640, 32):
+        placements += [("obj_wall", x, 0), ("obj_wall", x, 448)]
+    if phase >= 2:
+        p.sprite("spr_goal", "rect", 32, 32, (200, 0, 0, 255))
+        p.obj("obj_goal_left", "spr_goal", solid=True, visible=False)
+        p.obj("obj_goal_right", "spr_goal", solid=True, visible=False)
+        ball_ev["collision_with_obj_goal_left"] = {"target_object": "obj_goal_left", "actions": [
+            act("set_variable", variable="p2score", value=1, scope="global", relative=True), act("jump_to_start")]}
+        ball_ev["collision_with_obj_goal_right"] = {"target_object": "obj_goal_right", "actions": [
+            act("set_variable", variable="p1score", value=1, scope="global", relative=True), act("jump_to_start")]}
+        for y in range(32, 448, 32):
+            placements += [("obj_goal_left", 0, y), ("obj_goal_right", 608, y)]
+    if phase >= 3:
+        p.obj("obj_score", "", {
+            "create": {"actions": [act("set_variable", variable="p1score", value=0, scope="global"),
+                                   act("set_variable", variable="p2score", value=0, scope="global")]},
+            "draw": {"actions": [act("draw_text", text='"Player 1:"', x=10, y=10),
+                                 act("draw_variable", x=100, y=10, variable="global.p1score"),
+                                 act("draw_text", text='"Player 2:"', x=10, y=30),
+                                 act("draw_variable", x=100, y=30, variable="global.p2score")]}})
+        placements.append(("obj_score", 300, 100))
+    p.obj("obj_ball", "spr_ball", ball_ev)
+    p.room("room_pong", 640, 480, placements)
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
+    "03_pong": (build_t03, T03_PHASES),
 }
 
 
