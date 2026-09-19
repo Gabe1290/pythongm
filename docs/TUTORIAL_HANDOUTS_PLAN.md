@@ -133,7 +133,7 @@ Each tutorial unit = EN + FR handout + guide + worksheet(+key, rubric) +
 starter/solution zip + generated `.odt`/`.pdf` + guard tests, committed and
 pushed on its own so a session-limit stop loses nothing.
 
-- [ ] **U0 — Foundations.** Templates (handout, guide, worksheet) written
+- [x] **U0 — Foundations (DONE 2026-09-19).** Templates (handout, guide, worksheet) written
       from Tutorial 1's pair; move existing files to `docs/handouts/`
       (update `TUTORIAL_HANDOUT_WORKFLOW.md`); guard-test scaffold;
       `scripts/sync_wiki.sh` carries `downloads/`; generator that turns
@@ -204,3 +204,15 @@ the bottom of the Worksheet page, clearly labelled teachers-only; the
 Translating the in-app tutorial pages themselves; re-recording screenshots
 (reuse existing ones; new ones only for the finished-result picture);
 slide decks; video.
+
+### U0 as built
+
+- Sources: `docs/handouts/<NN_slug>/{student,teacher,worksheet}.<en|fr>.md` (+ images, hand-edited `.odt`); `docs/handouts/course_overview.<lang>.md`.
+- The **answer key and rubric live in the teacher guide** (not a separate worksheet page), so the student-facing worksheet and its PDF need no filtering.
+- `python scripts/build_teacher_wiki.py` writes the wiki pages (`Student-Handout-NN-slug`, `Worksheet-…`, `Teacher-Guide-…`, `Teacher-Resources` landing, all with `_fr`), copies PDFs/ODTs into `wiki/downloads/` and images into `wiki/images/handouts/`. It generates a missing `.odt` (needs `soffice`, on Windows `export PATH="$PATH:/c/Program Files/LibreOffice/program"`) but **never overwrites an existing one** (hand-edit risk).
+- `scripts/sync_wiki.sh` now also carries `downloads/`.
+- `tests/test_teacher_resources.py` is the guard: complete set per tutorial, EN/FR structure parity, French accents, page-count claims vs the tutorial index, wiki pages current with sources, links resolve. Mutation-checked.
+- The sequence/time/prerequisite table in `course_overview.*.md` is **provisional** (times from each tutorial's own "Time Required", prerequisites reasoned from content): confirm each row as its teacher guide is written.
+- Known nit in Tutorial 1 FR handout: "Appuye sur" should be "Appuie sur" (hand-edited text; fix on the next round-trip).
+- Unit recipe for U1+: (1) run the tutorial's build-along in code/real runner and record where it breaks; (2) write student/worksheet/teacher EN then FR; (3) `build_teacher_wiki.py`; (4) tests; (5) reference solutions zip -> `wiki/downloads/solutions/` (decision for U1: build with the raycast builders' approach).
+

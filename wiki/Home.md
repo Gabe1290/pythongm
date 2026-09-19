@@ -213,6 +213,7 @@ project_name/
 - [Tutorial: Platformer Game](Tutorial-Platformer) - Run, jump, and collect coins
 - [Tutorial: Lunar Lander Game](Tutorial-LunarLander) - Land a spacecraft using thrust and fuel management
 - [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
+- [Teacher Resources](Teacher-Resources) - Student handouts, worksheets and teacher guides for the in-app tutorials
 
 ### Where do I find...?
 

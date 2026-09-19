@@ -1,5 +1,11 @@
 # PyGameMaker — Tutoriel 1 : Premiers pas — Guide de l'enseignant·e
 
+*[Accueil](Home_fr) | [Ressources pour enseignants](Teacher-Resources_fr)*
+
+**Télécharger :** [PDF](downloads/Teacher-Guide-01-getting-started_fr.pdf) · [ODT](downloads/Teacher-Guide-01-getting-started_fr.odt)
+
+---
+
 Document d'accompagnement pour guider les élèves à travers le tutoriel
 intégré (**Aide > Tutoriels > Premiers pas**, 4 pages) et la fiche élève
 correspondante. Aucune expérience de programmation n'est nécessaire, ni
@@ -11,7 +17,7 @@ Ce premier tutoriel est une visite guidée de l'interface suivie d'un
 projet pratique. À la fin, chaque élève aura un projet avec un sprite, un
 objet et une salle, et aura appuyé sur **F5** pour le voir fonctionner.
 
-> INFO: L'objet placé par les élèves ne bougera pas encore et ne réagira
+> **Info:** L'objet placé par les élèves ne bougera pas encore et ne réagira
 > à rien — les événements et les comportements sont introduits au
 > Tutoriel 2 (« Premier jeu »). Si un·e élève demande « pourquoi il ne
 > se passe rien ? », c'est le résultat attendu et correct pour cette
@@ -23,11 +29,13 @@ Ce sont des points de départ — adaptez librement selon votre classe et
 votre salle informatique.
 
 | Étape | Durée | Déroulement |
+|---|---|---|
 | Accueil et discussion | 5 min | Ouvrez le panneau de tutoriel (page 1), présentez ce que couvre la série |
 | Visite de l'interface | 10 min | Page 2 — montrez les 3 zones en direct sur votre écran / au projecteur |
 | Pratique : premier projet | 20-25 min | Page 3 — les 6 étapes ci-dessous, circulez dans la salle |
 | Test et célébration | 5 min | Chaque élève appuie sur F5 et voit son objet apparaître |
 | Conclusion / la prochaine fois | 5 min | Page 4 — aperçu de ce qu'apporte le Tutoriel 2 |
+
 
 ## Déroulé étape par étape et difficultés fréquentes
 
@@ -57,7 +65,7 @@ fenêtre s'ouvre montrant la salle et le sprite placé. Il ne bougera pas
 et ne réagira pas aux touches pour l'instant — ce sera la prochaine
 leçon.
 
-> TIP: La fenêtre de test du jeu. Quand un·e élève appuie sur F5, la
+> **Astuce:** La fenêtre de test du jeu. Quand un·e élève appuie sur F5, la
 > fenêtre de PyGameMaker se réduit automatiquement pendant la durée du
 > test et revient dès que l'élève ferme la fenêtre du jeu. Cela évite
 > que la fenêtre du jeu ne se retrouve cachée derrière l'éditeur. Sur la
@@ -69,10 +77,12 @@ leçon.
 ## Vocabulaire introduit
 
 | Terme | Ce que cela signifie ici |
+|---|---|
 | Ressource (Asset) | Tout élément de votre projet : un sprite, un son, un objet ou une salle |
 | Sprite | Une image (ou animation) utilisée pour dessiner quelque chose à l'écran |
 | Objet | Une entité de jeu — ce qui apparaît et se comporte réellement dans une salle |
 | Salle | Un niveau ou un écran de jeu ; l'endroit où l'on place les objets |
+
 
 ## S'il reste du temps / aperçu
 
@@ -90,7 +100,7 @@ encore d'événement auquel l'accrocher.
 - [ ] Notez qui souhaite continuer à explorer — de bons binômes pour
 aider un·e camarade en difficulté la prochaine fois
 
-> INFO: Série complète des tutoriels : `Aide > Tutoriels` dans
+> **Info:** Série complète des tutoriels : `Aide > Tutoriels` dans
 > PyGameMaker. Documentation écrite et exemples de projets
 > supplémentaires : le wiki du projet.
 
@@ -111,7 +121,9 @@ aider un·e camarade en difficulté la prochaine fois
 ## Grille d'évaluation : le premier projet
 
 | Niveau | Ce que montre le projet |
+|---|---|
 | 4 - Complet | Projet enregistré avec un sprite nommé, un objet qui utilise ce sprite, une salle où l'objet est placé, et un jeu qui se lance avec F5 ; les noms suivent le modèle `spr_` / `obj_` / `room_` |
 | 3 - Fonctionnel | Se lance avec F5 et l'objet est visible ; une petite entorse aux noms ou à l'organisation |
 | 2 - À moitié | Toutes les ressources existent, mais l'objet n'est pas dans la salle ou n'a pas de sprite |
 | 1 - Commencé | Projet créé, mais moins de trois éléments parmi sprite, objet, salle existent |
+

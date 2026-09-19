@@ -214,6 +214,7 @@ nom_du_projet/
 - [Tutoriel : Platformer](Tutorial-Platformer_fr) - Courez, sautez et collectez des pièces
 - [Tutoriel : Atterrissage Lunaire](Tutorial-LunarLander_fr) - Posez un vaisseau sur la lune
 - [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
+- [Ressources pour enseignants](Teacher-Resources_fr) - Fiches élèves, feuilles d'exercices et guides de l'enseignant·e pour les tutoriels intégrés
 
 ### Où trouver...?
 

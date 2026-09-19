@@ -1,5 +1,11 @@
 # PyGameMaker — Tutorial 1: First Steps — Teacher Guide
 
+*[Home](Home) | [Teacher resources](Teacher-Resources)*
+
+**Download:** [PDF](downloads/Teacher-Guide-01-getting-started.pdf) · [ODT](downloads/Teacher-Guide-01-getting-started.odt)
+
+---
+
 Companion for leading students through the in-app tutorial
 (**Help > Tutorials > First Steps**, 4 pages) and the matching student
 handout. No programming experience is assumed for you or the students.
@@ -10,7 +16,7 @@ This first tutorial is an interface tour plus one hands-on project. By
 the end, every student will have a project with one sprite, one object,
 one room, and will have pressed **F5** to see it run.
 
-> INFO: The object students place will not move or react to anything
+> **Info:** The object students place will not move or react to anything
 > yet — events and behaviors are introduced in Tutorial 2 ("First
 > Game"). If a student asks "why doesn't it do anything?", that is the
 > expected, correct result for this lesson, not a mistake.
@@ -20,11 +26,13 @@ one room, and will have pressed **F5** to see it run.
 These are starting points — adjust freely to your class and lab setup.
 
 | Segment | Time | What happens |
+|---|---|---|
 | Welcome & discussion | 5 min | Open the tutorial panel (page 1), talk through what the series covers |
 | Interface tour | 10 min | Page 2 — point out the 3 panels live on your own screen/projector |
 | Hands-on: first project | 20-25 min | Page 3 — the 6 steps below, walk the room |
 | Test & celebrate | 5 min | Everyone presses F5 and sees their object appear |
 | Wrap-up / next time | 5 min | Page 4 — preview what Tutorial 2 adds |
+
 
 ## Step-by-Step Walkthrough & Common Issues
 
@@ -50,7 +58,7 @@ position for this exercise — anywhere in the room is fine.
 showing the room and the placed sprite. It will not move or respond to
 keys yet — that is next lesson.
 
-> TIP: The Test Game window. When a student presses F5, the PyGameMaker
+> **Tip:** The Test Game window. When a student presses F5, the PyGameMaker
 > editor window automatically minimizes itself for the duration of the
 > test and comes back when the student closes the game window. This
 > stops the game window from getting lost behind the editor. On most
@@ -62,10 +70,12 @@ keys yet — that is next lesson.
 ## Vocabulary Introduced
 
 | Term | What it means here |
+|---|---|
 | Asset | Any resource in your project: a sprite, sound, object, or room |
 | Sprite | An image (or animation) used to draw something on screen |
 | Object | A game entity — what actually appears and behaves in a room |
 | Room | A game level or screen; where objects are placed |
+
 
 ## If Time Allows / Sneak Peek
 
@@ -82,7 +92,7 @@ not yet an event to attach it to.
 - [ ] Note which students want to keep exploring — good candidates to
 pair with a struggling classmate next session
 
-> INFO: Full tutorial series: `Help > Tutorials` inside PyGameMaker.
+> **Info:** Full tutorial series: `Help > Tutorials` inside PyGameMaker.
 > Written documentation and more sample projects: the project wiki.
 
 ## Worksheet Answer Key
@@ -102,7 +112,9 @@ pair with a struggling classmate next session
 ## Rubric: The First Project
 
 | Level | What the project shows |
+|---|---|
 | 4 - Complete | Saved project with a named sprite, an object using that sprite, a room with the object placed, and a game that runs with F5; names follow the `spr_` / `obj_` / `room_` pattern |
 | 3 - Working | Runs with F5 and the object is visible; one naming or organisation slip |
 | 2 - Partly there | All assets exist, but the object is missing from the room, or has no sprite |
 | 1 - Started | Project created, but fewer than three of sprite, object, room exist |
+
