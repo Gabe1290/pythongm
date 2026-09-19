@@ -25,7 +25,7 @@ canonical description of each):
 Usage:
     python3 scripts/generate_tutorial_handouts_odt.py [SRC.md [OUT.odt]]
 
-Default (no arguments): renders every docs/TUTORIAL_01_*.md sibling into its
+Default (no arguments): renders every docs/handouts/<NN_slug>/*.md file into its
 matching .odt next to it.
 
 Requires `soffice` / `libreoffice` on PATH.
@@ -357,7 +357,7 @@ def main(argv):
         return 0
 
     made = 0
-    for src in sorted(glob.glob(os.path.join(DOCS, "TUTORIAL_01_*.md"))):
+    for src in sorted(glob.glob(os.path.join(DOCS, "handouts", "*", "*.md"))):
         out = os.path.splitext(src)[0] + ".odt"
         render(src, out)
         print(f"  wrote {os.path.relpath(out, ROOT)}")
