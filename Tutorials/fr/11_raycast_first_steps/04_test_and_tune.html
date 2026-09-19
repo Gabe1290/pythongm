@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Tester et ajuster</h1>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+    <ul>
+        <li>La salle apparaît à la <strong>première personne</strong> &mdash; murs gris, plafond bleu ciel et sol sombre</li>
+        <li>Les flèches <strong>gauche</strong> et <strong>droite</strong> font tourner ; <strong>haut</strong> et <strong>bas</strong> font marcher</li>
+        <li>Vous butez contre les murs du bord et les trois blocs du milieu au lieu de les traverser</li></ul></div>
+    <h2>Si quelque chose ne va pas</h2>
+    <table class="t"><tr><th>Ce que vous voyez</th><th>Cause probable</th></tr>
+    <tr><td>La salle normale vue du dessus</td><td>L'événement Création avec <strong>Activer la vue Raycast</strong> manque, ou il est sur un objet absent de la salle</td></tr>
+    <tr><td>Vous traversez les murs</td><td>L'événement <strong>Quand collision avec obj_wall</strong> manque, ou <code>obj_wall</code> n'est pas <strong>Solide</strong></td></tr>
+    <tr><td>Les murs sont bizarres ou ont des trous</td><td>Un bloc n'est pas sur la grille de 32 pixels, ou la <strong>Taille de case</strong> n'est pas 32</td></tr>
+    <tr><td>Vous tournez dans le mauvais sens</td><td>Échangez le <code>3</code> et le <code>-3</code> des deux événements de rotation</td></tr></table>
+    <h2>Expérimentez</h2>
+    <div class="step"><p>Changez une seule chose à la fois sur <strong>Activer la vue Raycast</strong> puis appuyez à nouveau sur F5 :</p><ul>
+        <li><strong>Champ de vision</strong> &mdash; essayez 40 (comme un télescope) et 100 (très large, un peu « œil de poisson »)</li>
+        <li><strong>Distance de rendu</strong> &mdash; essayez 3 : les murs lointains disparaissent dans le fond</li>
+        <li><strong>Couleur des murs</strong>, <strong>du sol</strong>, <strong>du plafond</strong> &mdash; créez un donjon ou une base sur Mars</li>
+        <li><strong>Colonnes</strong> &mdash; moins de colonnes s'affichent plus vite mais paraissent plus grossières</li></ul></div>
+    <h2>Vous avez construit votre premier monde 2.5D !</h2>
+    <ul><li>Des blocs solides sur une grille de 32 pixels deviennent des murs</li><li>L'objet joueur est la caméra</li>
+        <li>Un seul angle de vue pilote à la fois ce que vous voyez et où vous marchez</li></ul>
+    <div class="highlight"><strong>Prochaine leçon :</strong> les murs sont d'un gris uni. Dans <em>Textures, ciel et sol</em>, vous les peindrez en briques, puis ajouterez un ciel qui défile et un sol en pierre.</div>
+</body>
+</html>

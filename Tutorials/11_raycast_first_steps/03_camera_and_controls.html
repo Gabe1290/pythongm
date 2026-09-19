@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: The Camera and the Controls</h1>
+    <p>In a 2.5D game the <strong>player object is the camera</strong>: the view is drawn from wherever it stands, looking wherever it faces.
+    Open <code>obj_player</code>, click the <strong>Blockly</strong> tab, and add these events.</p>
+    <h2>Turn On the 2.5D View</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">When created</span><br>
+        <span class="block block-view block-indent">Enable Raycast View &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span><br>
+    </div>
+    <div class="info" style="margin-top: 8px;"><strong>What this does:</strong> from now on this room is drawn in first person.
+    <em>Cell Size</em> must match your wall grid (32). <em>Render Distance</em> is how many cells far the camera can see.
+    Leave <em>Camera Object</em> empty &mdash; that means "the object running this action", i.e. the player.</div></div>
+    <h2>Turn Left and Right</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Keyboard: Left Arrow (held)</span><br>
+        <span class="block block-view block-indent">Set Facing Angle <span class="block-num">3</span> &nbsp;Relative: on</span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Keyboard: Right Arrow (held)</span><br>
+        <span class="block block-view block-indent">Set Facing Angle <span class="block-num">-3</span> &nbsp;Relative: on</span><br>
+    </div>
+    <p style="font-style: italic;">The <strong>facing angle</strong> is the direction you look, in degrees (0 = right, 90 = up, 180 = left, 270 = down).
+    <em>Relative</em> means "add to the current angle" &mdash; so holding the key keeps turning, 3 degrees at a time.</p></div>
+    <h2>Walk Forward and Backward</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Keyboard: Up Arrow (held)</span><br>
+        <span class="block block-move block-indent">Set Direction &amp; Speed &mdash; direction <span class="block-text">facing_angle</span> speed <span class="block-num">3</span></span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Keyboard: Down Arrow (held)</span><br>
+        <span class="block block-move block-indent">Set Direction &amp; Speed &mdash; direction <span class="block-text">facing_angle+180</span> speed <span class="block-num">3</span></span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Keyboard: No key</span><br>
+        <span class="block block-move block-indent">Set Direction &amp; Speed &mdash; direction <span class="block-num">0</span> speed <span class="block-num">0</span></span><br>
+    </div>
+    <p style="font-style: italic;">Walking uses the <em>same</em> facing angle as the camera, so "forward" is always the way you are looking.</p></div>
+    <h2>Make the Walls Solid to the Player</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Collision with obj_wall</span><br>
+        <span class="block block-move block-indent">(no actions &mdash; leave it empty)</span><br>
+    </div>
+    <div class="highlight"><strong>Don't skip this!</strong> An empty collision event looks pointless, but without it the player walks straight
+    through every wall. A solid object only stops another object that has a collision event for it &mdash; the event can be empty.</div></div>
+    <div class="info">Click "Next" to play your room.</div>
+</body>
+</html>
