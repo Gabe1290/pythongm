@@ -39,7 +39,7 @@
         <span class="block block-move block-indent">Draw score at x: <span class="block-num">8</span> y: <span class="block-num">8</span> caption <span class="block-text">Score: </span></span><br>
         <span class="block block-move block-indent">Draw lives at x: <span class="block-num">230</span> y: <span class="block-num">6</span> sprite <span class="block-text">spr_player</span></span><br>
         </div>
-        <div class="highlight"><strong>Set the colour first.</strong> Text is drawn in black unless you say otherwise &mdash; invisible against a dark wall.</div></div>
+        <div class="highlight"><strong>Set the colour first.</strong> <strong>Draw text</strong> is black unless you say otherwise &mdash; invisible against a dark wall &mdash; while <strong>Draw score</strong> is white. Setting the colour once at the top of the Draw event keeps everything predictable.</div></div>
     <div class="info"><strong>The HUD object must be visible.</strong> Its Draw event only runs while the object is visible. Your player is the camera, and a camera is never drawn in the 3D view &mdash; but the object itself is still <em>visible</em>, so its Draw event works. If you put the HUD on a separate object, keep <strong>Visible</strong> checked or nothing will appear.</div>
     <h1 style="color: #28a745; border-bottom-color: #28a745;">Test It!</h1>
     <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Press F5!</strong></p>
