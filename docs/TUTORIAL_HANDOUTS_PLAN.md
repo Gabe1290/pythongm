@@ -142,7 +142,7 @@ pushed on its own so a session-limit stop loses nothing.
       prerequisites, pacing, assessment map). Includes Tutorial 1's missing
       worksheet.
 - [x] **U1 — Tutorial 02 First Game (DONE 2026-09-19;** found + fixed: alarm 60 = 1 s not 2 s in the tutorial; checkpoint zip opens in the IDE loader**)**
-- [ ] **U2 — Tutorial 03 Pong**
+- [x] **U2 — Tutorial 03 Pong (DONE 2026-09-19;** found + fixed: numeric `direction_expr` read as 0 in the runtime; score text was black-on-black and overlapped the wall row (EN+FR tutorial fixed; other 6 languages use an older page layout, still to review); HTML5/Kivy ignore `direction_expr` -> TODO.md**)**
 - [ ] **U3 — Tutorial 04 Breakout**
 - [ ] **U4 — Tutorial 05 Sokoban**
 - [ ] **U5 — Tutorial 06 Maze**
