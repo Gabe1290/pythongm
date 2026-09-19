@@ -178,10 +178,11 @@ def build_t03(root, phase=3):
         p.obj("obj_score", "", {
             "create": {"actions": [act("set_variable", variable="p1score", value=0, scope="global"),
                                    act("set_variable", variable="p2score", value=0, scope="global")]},
-            "draw": {"actions": [act("draw_text", text='"Player 1:"', x=10, y=10),
-                                 act("draw_variable", x=100, y=10, variable="global.p1score"),
-                                 act("draw_text", text='"Player 2:"', x=10, y=30),
-                                 act("draw_variable", x=100, y=30, variable="global.p2score")]}})
+            "draw": {"actions": [act("set_draw_color", color="#ffffff"),
+                                 act("draw_text", text='"Player 1:"', x=10, y=40),
+                                 act("draw_variable", x=100, y=40, variable="global.p1score"),
+                                 act("draw_text", text='"Player 2:"', x=10, y=60),
+                                 act("draw_variable", x=100, y=60, variable="global.p2score")]}})
         placements.append(("obj_score", 300, 100))
     p.obj("obj_ball", "spr_ball", ball_ev)
     p.room("room_pong", 640, 480, placements)

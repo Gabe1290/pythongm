@@ -253,17 +253,31 @@ def test_t03_goal_scores_for_the_other_player_and_resets_the_ball(tmp_path):
     assert 0 <= snap["ball"][0] <= 640              # reset inside the room and playing again
 
 
-def test_t03_score_text_is_drawn_top_left(tmp_path):
+def _t03_score_region_pixels(tmp_path, with_colour):
     from PIL import Image
     path = trp.build_t03(tmp_path, 3)
+    if not with_colour:
+        data = trp.json.loads(path.read_text(encoding="utf-8"))
+        acts = data["assets"]["objects"]["obj_score"]["events"]["draw"]["actions"]
+        acts[:] = [a for a in acts if a["action"] != "set_draw_color"]
+        path.write_text(trp.json.dumps(data), encoding="utf-8")
     got = {}
 
     def script(f, post, r, seen):
         if f == 5:
             got["img"] = Image.frombytes("RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB"))
     play(path, script, 6)
-    region = got["img"].crop((5, 5, 140, 50))
-    assert sum(1 for p in region.getdata() if p != (0, 0, 0)) > 100
+    region = got["img"].crop((5, 36, 140, 82))       # below the wall row, over the black room
+    return sum(1 for p in region.getdata() if p != (0, 0, 0))
+
+
+def test_t03_score_text_is_visible_below_the_walls_when_colour_is_white(tmp_path):
+    assert _t03_score_region_pixels(tmp_path, True) > 100
+
+
+def test_t03_score_text_is_invisible_without_set_draw_color(tmp_path):
+    """Why the tutorial adds Set draw color: default text is black on the black room."""
+    assert _t03_score_region_pixels(tmp_path, False) == 0
 
 
 def test_start_moving_direction_accepts_a_plain_number_of_degrees(tmp_path):

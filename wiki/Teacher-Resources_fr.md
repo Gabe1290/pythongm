@@ -43,3 +43,4 @@ Chaque guide se termine par une grille à quatre niveaux pour le projet terminé
 |---|---|---|---|
 | 01 getting started | [Fiche élève](Student-Handout-01-getting-started_fr) | [Feuille d'exercices](Worksheet-01-getting-started_fr) | [Guide de l'enseignant](Teacher-Guide-01-getting-started_fr) |
 | 02 first game | [Fiche élève](Student-Handout-02-first-game_fr) | [Feuille d'exercices](Worksheet-02-first-game_fr) | [Guide de l'enseignant](Teacher-Guide-02-first-game_fr) |
+| 03 pong | [Fiche élève](Student-Handout-03-pong_fr) | [Feuille d'exercices](Worksheet-03-pong_fr) | [Guide de l'enseignant](Teacher-Guide-03-pong_fr) |
