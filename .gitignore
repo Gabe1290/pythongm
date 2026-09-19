@@ -35,6 +35,7 @@ PyGameMaker-linux.zip
 
 # Generated docs
 docs/*.pdf
+docs/handouts/**/*.pdf
 docs/*.html
 
 # Work folders

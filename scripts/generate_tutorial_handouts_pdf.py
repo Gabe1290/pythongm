@@ -22,7 +22,7 @@ Extra line-level syntax beyond plain Markdown:
 Usage:
     python3 scripts/generate_tutorial_handouts_pdf.py [SRC.md [OUT.pdf]]
 
-Default (no arguments): renders every docs/TUTORIAL_01_*.md sibling into its
+Default (no arguments): renders every docs/handouts/<NN_slug>/*.md file into its
 matching .pdf next to it.
 """
 
@@ -454,7 +454,7 @@ def main(argv):
         return 0
 
     made = 0
-    for src in sorted(glob.glob(os.path.join(DOCS, "TUTORIAL_01_*.md"))):
+    for src in sorted(glob.glob(os.path.join(DOCS, "handouts", "*", "*.md"))):
         out = os.path.splitext(src)[0] + ".pdf"
         render(src, out)
         print(f"  wrote {os.path.relpath(out, ROOT)}")

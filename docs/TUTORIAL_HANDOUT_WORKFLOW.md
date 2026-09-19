@@ -1,7 +1,11 @@
 # Tutorial handout round-trip workflow
 
+> **2026-09-19:** sources moved to `docs/handouts/<NN_slug>/{student,teacher,worksheet}.<lang>.md`
+> (was `docs/TUTORIAL_01_*`). Older mentions of the old names below are historical.
+
+
 How a human edit made directly in an .odt draft gets folded back into
-the real source (the `.md` files under `docs/TUTORIAL_01_*.md`) instead
+the real source (the `.md` files under `docs/handouts/*/*.md`) instead
 of living only in that one Writer document. Written 2026-09-17 after
 doing this once by hand for `TUTORIAL_01_STUDENT_HANDOUT_FR` and finding
 two real bugs in the generator along the way (see "Landmines" below) —
@@ -15,7 +19,7 @@ folded back into its `.md`, not a new parallel source.
 ## The procedure
 
 1. **Generate a fresh `.odt` draft** from the current `.md`:
-   `python scripts/generate_tutorial_handouts_odt.py DOCS/TUTORIAL_01_X.md`
+   `python scripts/generate_tutorial_handouts_odt.py docs/handouts/01_getting_started/student.en.md`
    (or the no-argument form to regenerate every `TUTORIAL_01_*.md`
    sibling at once).
 2. **Commit that draft before anyone edits it.** This is the checkpoint
