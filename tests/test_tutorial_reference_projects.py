@@ -194,3 +194,88 @@ def test_t02_destroy_this_instead_of_other_removes_the_player(tmp_path):
             n["players"] = len(insts(r, "obj_player"))
     play(path, script, 81)
     assert n["players"] == 0
+
+
+# ----------------------------------------------------------------- Tutorial 03
+
+def _ball(r):
+    return insts(r, "obj_ball")[0]
+
+
+def test_t03_ball_moves_diagonally_and_bounces_off_walls(tmp_path):
+    path = trp.build_t03(tmp_path, 1)
+    ys = []
+
+    def script(f, post, r, seen):
+        ys.append(_ball(r).y)
+    play(path, script, 70)      # before it can reach the paddle column (no goals in phase 1)
+    assert max(ys) < 448 and min(ys) > 0, (min(ys), max(ys))        # never leaves through top/bottom
+    assert min(ys) < 232 - 100                                        # it really travelled up (direction 45)
+    dys = [b - a for a, b in zip(ys, ys[1:]) if b != a]
+    assert any(d > 0 for d in dys) and any(d < 0 for d in dys)       # it turned around
+
+
+def test_t03_paddles_move_with_their_own_keys_and_stop_at_walls(tmp_path):
+    path = trp.build_t03(tmp_path, 1)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_w)
+            post(pygame.KEYDOWN, pygame.K_DOWN)
+        if f == 120:
+            snap["l"] = insts(r, "obj_paddle_left")[0].y
+            snap["r"] = insts(r, "obj_paddle_right")[0].y
+    play(path, script, 121)
+    assert snap["l"] < 208 and snap["r"] > 208          # W goes up, Down goes down
+    assert snap["l"] >= 32 - 8 and snap["r"] <= 448 - 64 + 8   # held at the walls (one step of slack)
+
+
+def test_t03_goal_scores_for_the_other_player_and_resets_the_ball(tmp_path):
+    path = trp.build_t03(tmp_path, 3)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    # aim the ball left along the middle row, past the (inert) left paddle position
+    for i in data["assets"]["rooms"]["room_pong"]["instances"]:
+        if i["object_name"] == "obj_paddle_left":
+            i["y"] = 32       # out of the ball's way
+    data["assets"]["objects"]["obj_ball"]["events"]["create"]["actions"][0]["parameters"]["direction_expr"] = "180"
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    snap = {"scores": []}
+
+    def script(f, post, r, seen):
+        snap["scores"].append((r.global_variables.get("p1score"), r.global_variables.get("p2score")))
+        if f == 150:
+            b = _ball(r)
+            snap["ball"] = (b.x, b.y)
+    play(path, script, 151)
+    p1, p2 = snap["scores"][-1]
+    assert p1 == 0 and p2 >= 1                      # left goal -> Player 2 scores (again after each reset)
+    assert 0 <= snap["ball"][0] <= 640              # reset inside the room and playing again
+
+
+def test_t03_score_text_is_drawn_top_left(tmp_path):
+    from PIL import Image
+    path = trp.build_t03(tmp_path, 3)
+    got = {}
+
+    def script(f, post, r, seen):
+        if f == 5:
+            got["img"] = Image.frombytes("RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB"))
+    play(path, script, 6)
+    region = got["img"].crop((5, 5, 140, 50))
+    assert sum(1 for p in region.getdata() if p != (0, 0, 0)) > 100
+
+
+def test_start_moving_direction_accepts_a_plain_number_of_degrees(tmp_path):
+    """Regression: direction_expr "45" used to be read as 0 (moving right)."""
+    path = trp.build_t03(tmp_path, 1)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 5:
+            b = _ball(r)
+            snap["v"] = (b.hspeed, b.vspeed)
+    play(path, script, 6)
+    hs, vs = snap["v"]
+    assert hs > 0 and vs < 0                                                        # up-right
+    assert abs(abs(hs) - abs(vs)) < 1e-6

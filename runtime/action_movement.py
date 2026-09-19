@@ -685,7 +685,14 @@ class MovementMixin:
                 '*' in directions or
                 '/' in directions
             )
-            if is_expression and directions.lower() not in direction_map:
+            try:
+                # a plain number typed into "Direction Expression" (e.g. "45") is degrees
+                numeric = float(directions) if directions.lower() not in direction_map else None
+            except ValueError:
+                numeric = None
+            if numeric is not None:
+                direction = numeric
+            elif is_expression and directions.lower() not in direction_map:
                 direction = self._evaluate_expression(directions, instance)
                 if not isinstance(direction, (int, float)):
                     logger.debug(f"   ⚠️ Could not evaluate direction expression: {directions}")
