@@ -161,6 +161,18 @@
                 "03_monster_and_lives.html",
                 "04_the_exit.html"
             ]
+        },
+        {
+            "title": "2.5D: HUD and Minimap",
+            "folder": "14_raycast_hud_minimap",
+            "description": "Show score, lives, a minimap and a DOOM-style status bar over your first-person view",
+            "thumbnail": "thumbnails/14_raycast_hud_minimap.png",
+            "pages": [
+                "01_introduction.html",
+                "02_score_and_lives.html",
+                "03_minimap.html",
+                "04_status_bar.html"
+            ]
         }
     ]
 }

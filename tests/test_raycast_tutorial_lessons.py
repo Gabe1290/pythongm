@@ -44,6 +44,12 @@ LESSONS = {
         "03_monster_and_lives.html",
         "04_the_exit.html",
     ],
+    "14_raycast_hud_minimap": [
+        "01_introduction.html",
+        "02_score_and_lives.html",
+        "03_minimap.html",
+        "04_status_bar.html",
+    ],
 }
 
 
@@ -479,3 +485,83 @@ def test_lesson13_exit_is_gated_on_the_gems(tmp_path):
                 r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
         _play(path, script, frames=60)
         assert expect in msgs, (gems, msgs)
+
+
+# ---------------------------------------------------------------------------
+# Lesson 14: HUD text, minimap, DOOM status bar (built on the Lesson 13 project)
+# ---------------------------------------------------------------------------
+
+def _build_lesson14(root, draw_actions, viewport_height=None):
+    path = _build_lesson13(root, monster=None, gems=())
+    project = json.loads(path.read_text(encoding="utf-8"))
+    pev = project["assets"]["objects"]["obj_player"]["events"]
+    if viewport_height is not None:
+        pev["create"]["actions"][0]["parameters"]["viewport_height"] = str(viewport_height)
+    pev["game_start"]["actions"].append(
+        {"action": "set_health", "parameters": {"value": "100", "relative": False}})
+    pev["draw"] = {"actions": draw_actions}
+    path.write_text(json.dumps(project), encoding="utf-8")
+    return path
+
+
+def _screen(path, frame=6):
+    holder = {}
+
+    def script(f, post, player, seen):
+        if f == frame:
+            r = seen["runner"]
+            holder["img"] = Image.frombytes("RGB", r.screen.get_size(),
+                                            pygame.image.tostring(r.screen, "RGB"))
+    _play(path, script, frames=frame + 1)
+    return holder["img"]
+
+
+def _count(img, box, rgb):
+    region = img.crop(box)
+    return sum(1 for p in region.getdata() if p == rgb)
+
+
+def test_lesson14_score_and_lives_text_appears_where_you_put_it(tmp_path):
+    hud = [
+        {"action": "set_draw_color", "parameters": {"color": "#ffffff"}},
+        {"action": "draw_score", "parameters": {"x": "8", "y": "8", "caption": "Score: "}},
+        {"action": "draw_lives", "parameters": {"x": "230", "y": "6", "sprite": "spr_player"}},
+    ]
+    with_hud = _screen(_build_lesson14(tmp_path / "a", hud))
+    without = _screen(_build_lesson14(tmp_path / "b", []))
+    box = (4, 4, 110, 26)
+    assert _count(with_hud, box, (255, 255, 255)) > 20
+    assert _count(without, box, (255, 255, 255)) == 0
+    lives_box = (226, 2, 320, 30)   # one spr_player icon per life, top right
+    assert _count(with_hud, lives_box, (60, 200, 90)) > 200
+    assert _count(without, lives_box, (60, 200, 90)) == 0
+
+
+def test_lesson14_minimap_lands_at_its_corner_with_walls_and_player(tmp_path):
+    hud = [{"action": "draw_minimap", "parameters": {
+        "x": "230", "y": "10", "size": "80", "back_color": "#101018",
+        "wall_color": "#8080a0", "player_color": "#ffd040"}}]
+    img = _screen(_build_lesson14(tmp_path, hud))
+    box = (230, 10, 310, 90)
+    assert _count(img, box, (16, 16, 24)) > 500          # the panel
+    assert _count(img, box, (128, 128, 160)) > 20        # the wall lines
+    assert _count(img, box, (255, 208, 64)) > 3          # the player marker
+    assert _count(img, (0, 100, 220, 320), (255, 208, 64)) == 0   # nothing leaks elsewhere
+
+
+def test_lesson14_doom_bar_needs_viewport_height_to_leave_room(tmp_path):
+    bar = [{"action": "draw_doom_hud", "parameters": {
+        "x": "0", "y": "-1", "width": "0", "height": "64",
+        "health_label": "HEALTH", "score_label": "SCORE "}}]
+    letterboxed = _screen(_build_lesson14(tmp_path / "a", bar, viewport_height=256))
+    # bottom band is the bar's dark panel, with the green health bar in it
+    assert _count(letterboxed, (0, 262, 320, 320), (16, 16, 16)) > 5000
+    assert _count(letterboxed, (0, 256, 320, 320), (32, 192, 32)) > 100
+    # the 3D view still fills the top band (sky/wall/floor colours, not the panel)
+    assert _count(letterboxed, (0, 0, 320, 250), (16, 16, 16)) == 0
+
+    full = _screen(_build_lesson14(tmp_path / "b", bar))
+    # without viewport_height the 3D view is not squeezed into the top band
+    top = (0, 0, 320, 250)
+    differing = sum(1 for a, b in zip(full.crop(top).getdata(), letterboxed.crop(top).getdata()) if a != b)
+    assert differing > 1000

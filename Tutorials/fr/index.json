@@ -161,6 +161,18 @@
                 "03_monster_and_lives.html",
                 "04_the_exit.html"
             ]
+        },
+        {
+            "title": "2.5D : ATH et minicarte",
+            "folder": "14_raycast_hud_minimap",
+            "description": "Affichez score, vies, une minicarte et une barre d'état façon DOOM par-dessus votre vue à la première personne",
+            "thumbnail": "thumbnails/14_raycast_hud_minimap.png",
+            "pages": [
+                "01_introduction.html",
+                "02_score_and_lives.html",
+                "03_minimap.html",
+                "04_status_bar.html"
+            ]
         }
     ]
 }

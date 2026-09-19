@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: The Status Bar</h1>
+    <p>Corner text is fine, but classic shooters keep a solid bar along the bottom. There are two steps: <strong>make room</strong>, then <strong>draw the bar</strong>.</p>
+    <h2>Step 1: Make Room</h2>
+    <div class="step"><p>Our room is 320 pixels tall and we want a 64-pixel bar. So the 3D view gets <strong>320 &minus; 64 = 256</strong> pixels.
+    In <code>obj_player</code>'s <strong>When created</strong> event, set <strong>Viewport Height</strong> on <strong>Enable Raycast View</strong>:</p>
+        <div class="blockly-group"><span class="block block-event">When created</span><br>
+        <span class="block block-view block-indent">Enable Raycast View &mdash; &hellip; Viewport Height <span class="block-num">256</span></span><br>
+        </div>
+        <p style="font-style: italic;">Left at 0, the 3D view fills the whole window and the bar would cover part of it.</p></div>
+    <h2>Step 2: Give the Player Health</h2>
+    <div class="step"><p>In <strong>Game Start</strong>, add <strong>Set health</strong> = 100 after the score and lives. The bar shows this number.</p></div>
+    <h2>Step 3: Draw the Bar</h2>
+    <div class="step"><p>In the <strong>Draw</strong> event, replace the score and lives with one action:</p>
+        <div class="blockly-group"><span class="block block-event">Draw</span><br>
+        <span class="block block-view block-indent">Draw DOOM HUD &mdash; X <span class="block-num">0</span> Y <span class="block-num">-1</span> Width <span class="block-num">0</span> Height <span class="block-num">64</span> Health Label <span class="block-text">HEALTH</span> Score Label <span class="block-text">SCORE </span></span><br>
+        <span class="block block-move block-indent">Draw Minimap &mdash; X <span class="block-num">230</span> Y <span class="block-num">10</span> Size <span class="block-num">80</span></span><br>
+        </div>
+        <ul><li><strong>Y = -1</strong> means "put the bar at the bottom of the window"</li>
+        <li><strong>Width = 0</strong> means "full width"</li>
+        <li><strong>Height</strong> must match the band you reserved (64)</li></ul></div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test It!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Press F5!</strong></p>
+    <ul><li>The 3D view now sits above a dark bar showing a green health bar with its number, your score and your lives</li>
+        <li>The minimap is still in the corner of the 3D view</li></ul></div>
+    <h2>Challenges</h2>
+    <div class="step"><ul>
+        <li>Make the monster take <strong>25 health</strong> (<strong>Set health</strong> &minus;25 relative) instead of a life, and refill health when a life is lost &mdash; like <code>raycast_3</code></li>
+        <li>Draw a <strong>face</strong> in the bar: a sprite strip of four faces, healthiest first, set as <strong>Face Sprite</strong> with <strong>Face Frames</strong> = 4. The face changes as health drops</li>
+        <li>The bar has a counter labelled <strong>Objective Label</strong> ("Keys: "): count your gems in an instance variable and give its name to <strong>Objective Value</strong></li></ul></div>
+    <h2>You Finished the Series!</h2>
+    <ul><li>Draw events put the HUD over the 3D view</li><li><strong>Draw Minimap</strong> and <strong>Draw DOOM HUD</strong> do the heavy lifting</li>
+        <li><strong>Viewport Height</strong> reserves room for a bar</li></ul>
+    <div class="highlight"><strong>Where next?</strong> Open the four samples <code>raycast_1</code> to <code>raycast_4</code> from the Welcome tab: they are finished versions of everything in these lessons. And the same project exports to the web and to Android.</div>
+</body>
+</html>
