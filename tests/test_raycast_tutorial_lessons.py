@@ -565,3 +565,14 @@ def test_lesson14_doom_bar_needs_viewport_height_to_leave_room(tmp_path):
     top = (0, 0, 320, 250)
     differing = sum(1 for a, b in zip(full.crop(top).getdata(), letterboxed.crop(top).getdata()) if a != b)
     assert differing > 1000
+
+
+def test_lesson14_default_draw_colours_are_what_the_page_says(tmp_path):
+    """Page: Draw text is black by default, Draw score is white."""
+    box = (4, 4, 110, 26)
+    txt = _screen(_build_lesson14(tmp_path / "t", [
+        {"action": "draw_text", "parameters": {"text": "Hello", "x": "8", "y": "8"}}]))
+    score = _screen(_build_lesson14(tmp_path / "s", [
+        {"action": "draw_score", "parameters": {"x": "8", "y": "8", "caption": "Score: "}}]))
+    assert _count(txt, box, (0, 0, 0)) > 20 and _count(txt, box, (255, 255, 255)) == 0
+    assert _count(score, box, (255, 255, 255)) > 20 and _count(score, box, (0, 0, 0)) == 0
