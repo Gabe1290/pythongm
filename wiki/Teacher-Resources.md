@@ -42,3 +42,4 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 | Tutorial | Student handout | Worksheet | Teacher guide |
 |---|---|---|---|
 | 01 getting started | [Student handout](Student-Handout-01-getting-started) | [Worksheet](Worksheet-01-getting-started) | [Teacher guide](Teacher-Guide-01-getting-started) |
+| 02 first game | [Student handout](Student-Handout-02-first-game) | [Worksheet](Worksheet-02-first-game) | [Teacher guide](Teacher-Guide-02-first-game) |
