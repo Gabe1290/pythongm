@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: The Exit</h1>
+    <h2>A Goal That Checks the Gems</h2>
+    <div class="step"><ol>
+        <li>Draw a <strong>16&times;16</strong> blue door or portal sprite <code>spr_goal</code> and create a non-solid <code>obj_goal</code></li>
+        <li>Add a <strong>Collision with obj_player</strong> event. It needs two checks, one for each case:</li></ol>
+        <div class="blockly-group"><span class="block block-event">Collision with obj_player</span><br>
+        <span class="block block-move block-indent">If count of <b>obj_gem</b> is <b>equal</b> to <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Start block</span><br>
+        <span class="block block-move block-indent">Show message <span class="block-text">You win!</span></span><br>
+        <span class="block block-move block-indent">Restart Game</span><br>
+        <span class="block block-move block-indent">End block</span><br>
+        <span class="block block-move block-indent">If count of <b>obj_gem</b> is <b>greater than</b> <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Start block</span><br>
+        <span class="block block-move block-indent">Show message <span class="block-text">Collect all the gems first!</span></span><br>
+        <span class="block block-move block-indent">End block</span><br>
+        </div>
+        <p style="font-style: italic;">The <strong>If count of</strong> action asks &laquo;how many <code>obj_gem</code> instances exist right now?&raquo;. Every collected gem is destroyed, so when the count reaches 0 you have them all.
+        <br>Set its options: <strong>Object</strong> = <code>obj_gem</code>, <strong>Number</strong> = 0, <strong>Operation</strong> = equal / greater.</p></div>
+    <div class="highlight"><strong>Put quoted text in messages.</strong> Text in a message is quoted so that a dash or a plus sign in it isn't mistaken for arithmetic.</div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test It!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Press F5!</strong></p>
+    <ul><li>Walk into the goal with gems left: you get the "Collect all the gems first!" message and the game continues</li>
+        <li>Collect every gem, then walk into the goal: "You win!"</li></ul></div>
+    <h2>Challenges</h2>
+    <div class="step"><ul>
+        <li>Add a second, faster monster (speed 4) patrolling a different corridor</li>
+        <li>Make a second room, and use <strong>Next room</strong> instead of <strong>Restart Game</strong> at the exit. Give the second room its <em>own</em> camera object &mdash; for example one with different textures &mdash; and set its <strong>Camera Object</strong> to <code>obj_player</code>. This is what <code>raycast_2</code> does.</li>
+        <li>Give a gem 50 points instead of 10 to make a "treasure"</li></ul></div>
+    <h2>You Made a Game!</h2>
+    <ul><li>Non-solid sprited objects are billboards, hidden behind walls</li><li>Score and lives live in <strong>Game Start</strong></li>
+        <li><strong>If count of</strong> gates the exit on the gems</li></ul>
+    <div class="highlight"><strong>Next lesson:</strong> <em>HUD and Minimap</em> &mdash; show the score, lives, a health bar and a map right on the screen.</div>
+</body>
+</html>

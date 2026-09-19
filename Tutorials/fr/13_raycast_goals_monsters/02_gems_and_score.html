@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : Gemmes et score</h1>
+    <div class="info"><strong>Bonne nouvelle :</strong> vous n'avez rien de spécial à faire pour faire apparaître des objets en 2.5D.
+    Tout objet <em>visible et non solide</em> qui a un sprite est dessiné automatiquement comme un panneau.
+    (Les murs sont solides, donc ils deviennent des murs ; votre joueur est la caméra, donc il n'est jamais dessiné.)</div>
+    <h2>Créer la gemme</h2>
+    <div class="step"><ol>
+        <li>Dessinez un diamant jaune de <strong>16&times;16</strong> nommé <code>spr_gem</code></li>
+        <li>Créez un objet <code>obj_gem</code> avec ce sprite. Laissez <strong>Solide</strong> décoché.</li>
+        <li>Ajoutez un événement <strong>Quand collision avec obj_player</strong> :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Quand collision avec obj_player</span><br>
+        <span class="block block-move block-indent">Détruire cette instance</span><br>
+        </div>
+        <ol start="4"><li>Ajoutez un événement <strong>Destroy</strong> (destruction) à <code>obj_gem</code>. Il s'exécute chaque fois que la gemme disparaît :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Destroy</span><br>
+        <span class="block block-move block-indent">Ajouter au score <span class="block-num">10</span></span><br>
+        </div></div>
+    <h2>Préparer le score et les vies</h2>
+    <div class="step"><ol>
+        <li>Ouvrez <code>obj_player</code> et ajoutez un événement <strong>Game Start</strong> (démarrage du jeu) :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Game Start</span><br>
+        <span class="block block-move block-indent">Définir le score à <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Définir les vies à <span class="block-num">3</span></span><br>
+        </div>
+        <div class="highlight"><strong>Pourquoi Game Start et pas Create ?</strong> Create se relance à chaque redémarrage de la salle &mdash; et nous redémarrerons la salle à chaque vie perdue.
+        Si les vies étaient réglées à 3 dans Create, vous récupéreriez vos trois vies à chaque mort. <strong>Game Start</strong> ne s'exécute qu'une fois, au début de la partie.</div></div>
+    <h2>Placer les gemmes</h2>
+    <div class="step"><p>Ouvrez la salle et placez quelques gemmes dans les couloirs dégagés, en dehors des blocs de mur.
+    Dans cette leçon, le joueur démarre en haut à gauche, tourné vers la droite : placez la première gemme en ligne droite devant lui.</p></div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez !</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 !</strong></p>
+    <ul><li>Les gemmes flottent devant vous et grossissent quand vous approchez</li>
+        <li>Marchez dedans : elle disparaît et vous gagnez 10 points</li>
+        <li>Tournez pour qu'un mur se trouve entre vous et une gemme : elle est <strong>cachée</strong> tant que le mur la masque</li></ul></div>
+    <div class="info"><strong>Où est mon score ?</strong> La vue 3D ne l'affiche pas toute seule &mdash; c'est l'objet de la leçon suivante.</div>
+    <div class="info">Cliquez sur « Suivant » pour ajouter du danger.</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Le monstre et les vies</h1>
+    <h2>Un monstre qui patrouille</h2>
+    <div class="step"><ol>
+        <li>Dessinez un monstre rouge de <strong>16&times;16</strong>, <code>spr_monster</code>, et créez un <code>obj_monster</code> non solide</li>
+        <li>Faites-le patrouiller à gauche et à droite :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Quand créé</span><br>
+        <span class="block block-move block-indent">Commencer à bouger (direction) : gauche, droite &mdash; Speed <span class="block-num">2</span></span><br>
+        </div>
+        <ol start="3"><li>Faites-le faire demi-tour quand il atteint un mur :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Quand collision avec obj_wall</span><br>
+        <span class="block block-move block-indent">Inverser horizontalement</span><br>
+        </div>
+        <p style="font-style: italic;">Placez le monstre dans une longue rangée droite (par exemple le couloir du bas) pour qu'il ait de la place. Les blocs solides l'arrêtent comme le joueur.</p></div>
+    <h2>Perdre une vie</h2>
+    <div class="step"><p>Retournez dans <code>obj_player</code> et ajoutez deux événements :</p>
+        <div class="blockly-group"><span class="block block-event">Quand collision avec obj_monster</span><br>
+        <span class="block block-move block-indent">Définir les vies à <span class="block-num">-1</span> (Relatif)</span><br>
+        <span class="block block-move block-indent">Redémarrer la salle</span><br>
+        </div>
+        <div class="blockly-group"><span class="block block-event">No More Lives</span><br>
+        <span class="block block-move block-indent">Redémarrer le jeu</span><br>
+        </div></div>
+    <p>Redémarrer la salle vous ramène au départ et remet les gemmes en place &mdash; mais les vies restantes et votre score sont conservés,
+    car ils ont été réglés dans Game Start.</p>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez !</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 !</strong></p>
+    <ul><li>Le monstre glisse le long de son couloir et fait demi-tour à chaque bout</li>
+        <li>Vous le voyez approcher ; il se cache derrière les murs comme les gemmes</li>
+        <li>Le toucher coûte une vie ; après la troisième, la partie recommence</li></ul></div>
+    <div class="highlight"><strong>Bon à savoir :</strong> un événement de collision se déclenche quand deux objets <em>commencent</em> à se toucher. Si vous restez immobile sur le monstre, vous perdez une vie, pas une par image.</div>
+    <div class="info">Cliquez sur « Suivant » pour construire la sortie.</div>
+</body>
+</html>

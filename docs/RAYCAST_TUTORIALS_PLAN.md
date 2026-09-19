@@ -74,8 +74,8 @@ the thumbnail from the real result.
       camera and controls, testing/tuning) + thumbnail + EN/FR + index +
       test pin.
 - [x] **Unit 2 — Lesson 12 (DONE 2026-09-19)** (textures, sky, floor, Columns/Floor Detail trade-offs); truth-tested in `tests/test_raycast_tutorial_lessons.py`.
-- [ ] **Unit 3 — Lesson 13** (billboards, gems/score, monster/lives,
-      gem-gated exit).
+- [x] **Unit 3 — Lesson 13 (DONE 2026-09-19)** (billboards, gems/score, monster/lives,
+      gem-gated exit); truth-tested.
 - [ ] **Unit 4 — Lesson 14** (HUD text, minimap, DOOM bar).
 - [ ] **Unit 5 — wrap-up:** cross-links from `wiki/3D-View.md`,
       `samples/raycast_*` READMEs ("follow the tutorial"), PROJECT_STATUS note.
@@ -111,3 +111,9 @@ the seven other UI languages.
 - Textures are ordinary sprites; blank names fall back to flat colours, and
   `Textured Walls` off forces flat wall colour even with a texture set (all
   pinned by tests). Ceiling texture applies only when no sky is set.
+
+## Findings recorded while building Lesson 13
+
+- The camera object is never drawn as a billboard (`renderer.py`: `inst is camera`).
+- A monster touching the player after a `restart_room` can hit again if the key is still held, so the lives test asserts only the first drop (3 -> 2).
+- Score is not shown in the 3D view without a HUD object; the lesson defers that to Lesson 14 rather than promising a caption.

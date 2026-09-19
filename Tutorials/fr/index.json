@@ -149,6 +149,18 @@
                 "03_sky_and_floor.html",
                 "04_tune_the_look.html"
             ]
+        },
+        {
+            "title": "2.5D : Objectifs, gemmes et monstres",
+            "folder": "13_raycast_goals_monsters",
+            "description": "Remplissez votre labyrinthe à la première personne : gemmes, monstre qui patrouille, vies et sortie conditionnée aux gemmes",
+            "thumbnail": "thumbnails/13_raycast_goals_monsters.png",
+            "pages": [
+                "01_introduction.html",
+                "02_gems_and_score.html",
+                "03_monster_and_lives.html",
+                "04_the_exit.html"
+            ]
         }
     ]
 }
