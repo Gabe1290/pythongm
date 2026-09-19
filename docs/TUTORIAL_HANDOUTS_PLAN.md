@@ -115,7 +115,7 @@ Modelled on `tests/test_platform_display_checklist.py` and
 - generated `.pdf`/`.odt` are current with their `.md` (regen + byte
   compare, or a mtime/hash stamp) so an edit can't ship without regeneration.
 
-## Delivery: how teachers get them
+## Delivery: how teachers get them (superseded by the settled decisions below; kept for the reasoning)
 
 Today they sit in `docs/` where a teacher won't look. Options (needs a decision):
 
@@ -129,31 +129,33 @@ Recommended: 1 + 2 now, 3 as a later small unit.
 
 ## Units of work (one commit each, session-sized)
 
-Order is by how likely a class is to use the tutorial, and by how much
-verified material already exists.
+Each tutorial unit = EN + FR handout + guide + worksheet(+key, rubric) +
+starter/solution zip + generated `.odt`/`.pdf` + guard tests, committed and
+pushed on its own so a session-limit stop loses nothing.
 
-- [ ] **U0 — Foundations.** Decide the open questions below; write the
-      handout + guide *templates* (from Tutorial 1's pair), move existing
-      files into `docs/handouts/` (update `TUTORIAL_HANDOUT_WORKFLOW.md`
-      paths), add the guard-test scaffold and `TEACHER_COURSE_OVERVIEW.md`.
-- [ ] **U1 — Tutorial 02 First Game** (the natural second lesson).
-- [ ] **U2 — Tutorial 03 Pong.**
-- [ ] **U3 — Tutorial 06 Maze.**
-- [ ] **U4 — Tutorial 09 Catch the Coins** (win/lose; teaches conditions).
-- [ ] **U5 — Tutorial 07 Platformer.**
-- [ ] **U6–U9 — Tutorials 11, 12, 13, 14 (2.5D).** Cheapest: content is
-      fresh and the truth tests supply mistakes + reference projects.
-      Group 11+12 and 13+14 if the docs are short.
-- [ ] **U10 — Tutorials 04 Breakout, 05 Sokoban, 08 Lunar Lander.**
-- [ ] **U11 — Tutorial 10 File-exchange multiplayer** (needs two computers
-      or two folders — the guide must cover lab setup and shared-drive
-      permissions; the most teacher-support-hungry tutorial).
-- [ ] **U12 — Delivery:** wiki "For Teachers" pages (EN+FR), release attachment
-      script, optional Help menu entry.
-- [ ] **U13 — Other languages** (only if wanted; see cost).
-
-Each unit = EN + FR handout + EN + FR guide + regenerated `.odt`/`.pdf` +
-tests, committed and pushed on its own so a session-limit stop loses nothing.
+- [ ] **U0 — Foundations.** Templates (handout, guide, worksheet) written
+      from Tutorial 1's pair; move existing files to `docs/handouts/`
+      (update `TUTORIAL_HANDOUT_WORKFLOW.md`); guard-test scaffold;
+      `scripts/sync_wiki.sh` carries `downloads/`; generator that turns
+      `docs/handouts/*.md` into wiki pages + downloads; the wiki
+      `Teacher-Resources` landing page with the course overview (sequence,
+      prerequisites, pacing, assessment map). Includes Tutorial 1's missing
+      worksheet.
+- [ ] **U1 — Tutorial 02 First Game**
+- [ ] **U2 — Tutorial 03 Pong**
+- [ ] **U3 — Tutorial 04 Breakout**
+- [ ] **U4 — Tutorial 05 Sokoban**
+- [ ] **U5 — Tutorial 06 Maze**
+- [ ] **U6 — Tutorial 07 Platformer**
+- [ ] **U7 — Tutorial 08 Lunar Lander**
+- [ ] **U8 — Tutorial 09 Catch the Coins**
+- [ ] **U9 — Tutorial 10 File-exchange multiplayer** (lab setup: two
+      computers or two folders, shared-drive permissions)
+- [ ] **U10–U13 — Tutorials 11, 12, 13, 14 (2.5D).** Reference solutions
+      come straight from `tests/test_raycast_tutorial_lessons.py` builders.
+- [ ] **U14 — Publish:** run the sync, spot-check the live wiki (links,
+      accents, downloads resolve). Publishing is outward-facing — get
+      explicit approval before the push.
 
 ## Cost estimate
 
@@ -165,20 +167,37 @@ later is roughly the translation cost only (~3% per language per tutorial).
 `.pdf` generation needs the existing script's dependencies; LibreOffice is
 only needed if converting an `.odt` back.
 
-## Decisions needed
+## Decisions (settled 2026-09-19)
 
-1. **Scope of "course elements".** Handout + guide only, or also
-   worksheets/quizzes with answer keys and an assessment rubric file? (The
-   plan above folds a short self-check, rubric and answer key *into* each
-   guide; separate quiz files are a bigger add.)
-2. **Reference solutions.** Ship finished/starter `project.json` folders for
-   teachers? Where — a `Tutorials/solutions/` folder bundled in the app, or
-   only in the teacher pack download?
-3. **Languages.** EN + FR (Tutorial 1 precedent and the 2.5D lessons) — or
-   include DE/IT/… where tutorial translations already exist?
-4. **Delivery** (options 1/2/3 above).
-5. **Order.** Confirm the priority list, especially whether the 2.5D series
-   goes first (cheapest) or 02/03/06/09 (most used).
+1. **Scope: everything.** Per tutorial: student handout, teacher guide,
+   **and** a worksheet/quiz with an answer key + a project rubric. All 14
+   tutorials (Tutorial 1's pair gets the missing worksheet).
+2. **Reference solutions: yes, but NOT bundled in the app.** Finished and
+   starter `project.json` folders are teacher resources, distributed
+   separately through the Wiki.
+3. **Languages: English + French** first (no other language until asked).
+4. **Delivery: the Wiki, only.** Each document is published as a wiki page
+   (readable and printable from the browser), with downloadable files
+   (`.pdf`, `.odt`, solution `.zip`) committed to the wiki repo under
+   `downloads/` and linked relatively, exactly like `images/` today.
+   `scripts/sync_wiki.sh` currently carries only `*.md` + `images/`, so
+   U0 extends it to carry `downloads/` too. No IDE menu entry, no release
+   attachment.
+5. **Order: all tutorials**, in the order of the units below.
+
+### Delivery layout (wiki repo)
+
+    Teacher-Resources.md / Teacher-Resources_fr.md      landing page + course overview
+    Teacher-Tutorial-NN-<slug>.md / _fr.md              teacher guide (one page each)
+    Student-Handout-NN-<slug>.md / _fr.md               printable student handout
+    Worksheet-NN-<slug>.md / _fr.md                     worksheet/quiz + answer key + rubric
+    downloads/                                          .pdf, .odt, solutions/NN_<slug>_{starter,solution}.zip
+
+The **answer key stays out of the student-facing pages** (own section at
+the bottom of the Worksheet page, clearly labelled teachers-only; the
+`.pdf` student copy is generated without it). Repo source stays in
+`docs/handouts/*.md` (single source of truth); `wiki/` pages and the
+`downloads/` files are generated from it by a script, never hand-edited.
 
 ## Not in scope
 
