@@ -15,6 +15,7 @@ The wiki pages and downloads are GENERATED -- edit the docs/handouts sources.
 Usage:  python scripts/build_teacher_wiki.py [--no-pdf]
 """
 import glob
+import importlib.util
 import os
 import re
 import shutil
@@ -33,6 +34,7 @@ LANGS = {"en": "", "fr": "_fr"}
 HOME = {"en": ("Home", "Home", "Teacher-Resources", "Teacher resources"),
         "fr": ("Home_fr", "Accueil", "Teacher-Resources_fr", "Ressources pour enseignants")}
 DL_LABEL = {"en": "Download:", "fr": "Télécharger :"}
+SOLUTIONS_LABEL = {"en": "Reference projects (ZIP)", "fr": "Projets de référence (ZIP)"}
 NOTES = {"en": "My notes", "fr": "Mes notes"}
 CALLOUT = {"en": {"TIP": "Tip", "INFO": "Info", "DONE": "Done"},
            "fr": {"TIP": "Astuce", "INFO": "Info", "DONE": "Réussi"}}
@@ -79,6 +81,16 @@ def convert(md, lang, img_dir_rel):
     return "\n".join(out) + "\n"
 
 
+def _build_solutions():
+    """Checkpoint project zips (tools/tutorial_reference_projects.py) -> wiki/downloads/solutions/."""
+    spec = importlib.util.spec_from_file_location(
+        "tutorial_reference_projects", os.path.join(ROOT, "tools", "tutorial_reference_projects.py"))
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules["tutorial_reference_projects"] = mod
+    spec.loader.exec_module(mod)
+    mod.build_checkpoint_zips(os.path.join(WIKI, "downloads", "solutions"))
+
+
 def title_of(md):
     for ln in md.splitlines():
         if ln.startswith("# "):
@@ -89,6 +101,7 @@ def title_of(md):
 def build(make_pdf=True):
     os.makedirs(os.path.join(WIKI, "downloads"), exist_ok=True)
     catalogue = {}  # nn_slug -> {lang: {kind: (stem, title)}}
+    _build_solutions()
     for d in sorted(glob.glob(os.path.join(SRC, "[0-9][0-9]_*"))):
         nn_slug = os.path.basename(d)
         for src in sorted(glob.glob(os.path.join(d, "*.md"))):
@@ -112,6 +125,9 @@ def build(make_pdf=True):
                 if os.path.exists(f):
                     shutil.copy(f, os.path.join(WIKI, "downloads", f"{name}.{ext}"))
                     downloads.append(f"[{ext.upper()}](downloads/{name}.{ext})")
+            zip_rel = f"downloads/solutions/{nn_slug}_checkpoints.zip"
+            if kind == "teacher" and os.path.exists(os.path.join(WIKI, zip_rel)):
+                downloads.append(f"[{SOLUTIONS_LABEL[lang]}]({zip_rel})")
             imgs = glob.glob(os.path.join(d, "*.png"))
             if imgs:
                 dst = os.path.join(WIKI, "images", "handouts", nn_slug)

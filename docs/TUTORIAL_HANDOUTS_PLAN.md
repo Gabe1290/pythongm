@@ -141,7 +141,7 @@ pushed on its own so a session-limit stop loses nothing.
       `Teacher-Resources` landing page with the course overview (sequence,
       prerequisites, pacing, assessment map). Includes Tutorial 1's missing
       worksheet.
-- [ ] **U1 — Tutorial 02 First Game**
+- [x] **U1 — Tutorial 02 First Game (DONE 2026-09-19;** found + fixed: alarm 60 = 1 s not 2 s in the tutorial; checkpoint zip opens in the IDE loader**)**
 - [ ] **U2 — Tutorial 03 Pong**
 - [ ] **U3 — Tutorial 04 Breakout**
 - [ ] **U4 — Tutorial 05 Sokoban**

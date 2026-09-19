@@ -42,3 +42,4 @@ Chaque guide se termine par une grille à quatre niveaux pour le projet terminé
 | Tutoriel | Fiche élève | Feuille d'exercices | Guide de l'enseignant |
 |---|---|---|---|
 | 01 getting started | [Fiche élève](Student-Handout-01-getting-started_fr) | [Feuille d'exercices](Worksheet-01-getting-started_fr) | [Guide de l'enseignant](Teacher-Guide-01-getting-started_fr) |
+| 02 first game | [Fiche élève](Student-Handout-02-first-game_fr) | [Feuille d'exercices](Worksheet-02-first-game_fr) | [Guide de l'enseignant](Teacher-Guide-02-first-game_fr) |

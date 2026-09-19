@@ -163,3 +163,34 @@ def test_t02_checkpoint_zip_contains_every_phase(tmp_path):
     names = zipfile.ZipFile(z).namelist()
     for i, ph in enumerate(trp.T02_PHASES, 1):
         assert f"phase{i}_{ph}/project.json" in names
+
+
+def test_t02_spawner_makes_one_star_per_second_at_60_fps(tmp_path):
+    """Guide + handout: 'Set Alarm 0 to 60' = one star per second."""
+    path = trp.build_t02(tmp_path, 2)
+    n = {}
+
+    def script(f, post, r, seen):
+        if f == 190:
+            n["stars"] = len(insts(r, "obj_star"))
+    play(path, script, 191)
+    assert n["stars"] == 3          # created at steps ~60, 120, 180
+
+
+def test_t02_destroy_this_instead_of_other_removes_the_player(tmp_path):
+    """Guide's discussion prompt: destroying 'this' in the player's collision deletes the player."""
+    path = trp.build_t02(tmp_path, 3)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    ev = data["assets"]["objects"]["obj_player"]["events"]["collision_with_obj_star"]["actions"]
+    ev[1]["parameters"]["target"] = "self"
+    data["assets"]["rooms"]["room_game"]["instances"].append(
+        {"object_name": "obj_star", "x": 304, "y": 380, "rotation": 0,
+         "scale_x": 1.0, "scale_y": 1.0, "visible": True})
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    n = {}
+
+    def script(f, post, r, seen):
+        if f == 80:
+            n["players"] = len(insts(r, "obj_player"))
+    play(path, script, 81)
+    assert n["players"] == 0
