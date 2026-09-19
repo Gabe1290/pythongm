@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Test and Tune</h1>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+    <ul>
+        <li>The room appears in <strong>first person</strong> &mdash; grey walls, a sky-blue ceiling and a dark floor</li>
+        <li><strong>Left</strong> and <strong>Right</strong> arrows turn you; <strong>Up</strong> and <strong>Down</strong> walk</li>
+        <li>You bump into the border walls and the three blocks in the middle instead of walking through them</li></ul></div>
+    <h2>If Something Looks Wrong</h2>
+    <table class="t"><tr><th>What you see</th><th>Likely cause</th></tr>
+    <tr><td>The normal top-down room</td><td>The Create event with <strong>Enable Raycast View</strong> is missing, or is on an object that isn't in the room</td></tr>
+    <tr><td>You walk through walls</td><td>The <strong>Collision with obj_wall</strong> event is missing, or <code>obj_wall</code> is not <strong>Solid</strong></td></tr>
+    <tr><td>Walls look wrong or gaps appear</td><td>A wall block is off the 32-pixel grid, or <strong>Cell Size</strong> is not 32</td></tr>
+    <tr><td>You turn the wrong way</td><td>Swap the <code>3</code> and <code>-3</code> on the two turning events</td></tr></table>
+    <h2>Experiment</h2>
+    <div class="step"><p>Change one thing at a time on <strong>Enable Raycast View</strong> and press F5 again:</p><ul>
+        <li><strong>Field of View</strong> &mdash; try 40 (like a telescope) and 100 (very wide, a little fish-eyed)</li>
+        <li><strong>Render Distance</strong> &mdash; try 3: far walls simply vanish into the background</li>
+        <li><strong>Wall Color</strong>, <strong>Floor Color</strong>, <strong>Ceiling Color</strong> &mdash; make a dungeon or a Mars base</li>
+        <li><strong>Columns</strong> &mdash; fewer columns draw faster but look chunkier</li></ul></div>
+    <h2>You Built Your First 2.5D World!</h2>
+    <ul><li>Solid blocks on a 32-pixel grid become walls</li><li>The player object is the camera</li>
+        <li>One facing angle drives both what you see and where you walk</li></ul>
+    <div class="highlight"><strong>Next lesson:</strong> the walls are plain grey. In <em>Textures, Sky and Floor</em> you will paint them with bricks, add a panning sky and a stone floor.</div>
+</body>
+</html>

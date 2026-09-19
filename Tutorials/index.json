@@ -125,6 +125,18 @@
                 "04_taking_turns.html",
                 "05_winning_and_playing_again.html"
             ]
+        },
+        {
+            "title": "2.5D: First Steps",
+            "folder": "11_raycast_first_steps",
+            "description": "Build a first-person room in the Doom/Wolfenstein style: walls, a camera, and controls",
+            "thumbnail": "thumbnails/11_raycast_first_steps.png",
+            "pages": [
+                "01_introduction.html",
+                "02_room_and_walls.html",
+                "03_camera_and_controls.html",
+                "04_test_and_tune.html"
+            ]
         }
     ]
 }

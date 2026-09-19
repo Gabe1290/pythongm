@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : La salle et les murs</h1>
+    <p>Tout, dans une salle 2.5D, repose sur une <strong>grille</strong> de cases de 32&times;32 pixels. Nous construisons une salle de 10 cases de large et 10 de haut
+    (320&times;320 pixels) avec un bloc de mur dans chaque case du bord.</p>
+    <h2>Créer un nouveau projet</h2>
+    <div class="step"><ol>
+        <li>Allez dans <code>Fichier &gt; Nouveau projet</code></li>
+        <li>Nommez-le <strong>FirstPerson</strong> et choisissez le modèle <strong>« Projet vide »</strong></li></ol></div>
+    <h2>Créer les sprites</h2>
+    <div class="step"><ol>
+        <li>Créez un sprite nommé <code>spr_wall</code>. Dessinez un carré de <strong>32&times;32</strong> rempli de gris clair ou d'un motif de briques.</li>
+        <li>Créez un sprite nommé <code>spr_player</code>. Dessinez un carré de <strong>16&times;16</strong> (n'importe quelle couleur) &mdash; vous ne le verrez jamais,
+        puisque le joueur <em>est</em> la caméra, mais tout objet a besoin d'un sprite.</li></ol>
+        <p style="font-style: italic;">Le sprite de mur doit avoir exactement la taille d'une case (32&times;32). Un sprite de mur à peu près carré bloque les quatre côtés de sa case.</p></div>
+    <h2>Créer l'objet mur</h2>
+    <div class="step"><ol>
+        <li>Créez un objet nommé <code>obj_wall</code> avec le sprite <code>spr_wall</code></li>
+        <li>Cochez la propriété <strong>Solide</strong> &mdash; c'est ce qui dit à la vue 2.5D « ceci est un mur »</li></ol></div>
+    <h2>Créer l'objet joueur</h2>
+    <div class="step"><ol>
+        <li>Créez un objet nommé <code>obj_player</code> avec le sprite <code>spr_player</code>. Laissez-le non solide. Nous ajouterons son comportement en Phase 2.</li></ol></div>
+    <h2>Construire la salle</h2>
+    <div class="step"><ol>
+        <li>Créez une salle nommée <code>room_main</code>. Dans ses propriétés, réglez la <strong>largeur et la hauteur à 320</strong>.</li>
+        <li>Cliquez sur le bouton <strong>Grille</strong> de la barre d'outils de l'éditeur de salles pour afficher la grille. Elle vaut <strong>32</strong> pixels par défaut, les blocs s'alignent donc exactement sur les bonnes cases.</li>
+        <li>Placez <code>obj_wall</code> à ces positions :
+        <table class="t"><tr><th>Position (x, y)</th><th>Blocs</th></tr><tr><td><code>(0, 0) &hellip; (288, 0)</code></td><td>la rangée du haut : 10 blocs, un tous les 32 pixels</td></tr><tr><td><code>(0, 288) &hellip; (288, 288)</code></td><td>la rangée du bas : 10 blocs</td></tr><tr><td><code>(0, 32) &hellip; (0, 256)</code></td><td>la colonne de gauche, entre les coins : 8 blocs</td></tr><tr><td><code>(288, 32) &hellip; (288, 256)</code></td><td>la colonne de droite : 8 blocs</td></tr><tr><td><code>(128, 128), (160, 128), (128, 160)</code></td><td>trois blocs à l'intérieur, pour avoir quelque chose à regarder</td></tr></table></li>
+        <li>Placez <strong>un seul</strong> <code>obj_player</code> en <code>(48, 48)</code> &mdash; à l'intérieur de la salle, loin des murs.</li></ol></div>
+    <div class="info"><strong>Pourquoi une si petite salle :</strong> la fenêtre de jeu prend la taille de la salle ; une salle de 320&times;320 donne donc une vue de 320&times;320.
+    Plus tard vous pourrez construire de plus grandes salles &mdash; gardez simplement chaque mur sur la grille de 32 pixels.</div>
+    <div class="info">Cliquez sur « Suivant » pour donner vie à la salle.</div>
+</body>
+</html>

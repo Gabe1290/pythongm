@@ -70,7 +70,7 @@ the thumbnail from the real result.
 
 ## Units (one commit each, full-suite gate after each)
 
-- [ ] **Unit 1 — Lesson 11** (pages: introduction, the room and walls, the
+- [x] **Unit 1 — Lesson 11 (DONE 2026-09-19; `tests/test_raycast_tutorial_lessons.py` rebuilds the lesson and runs it through the real GameRunner)** (pages: introduction, the room and walls, the
       camera and controls, testing/tuning) + thumbnail + EN/FR + index +
       test pin.
 - [ ] **Unit 2 — Lesson 12** (textures, sky, floor, fov/columns).
@@ -86,3 +86,18 @@ Block World (voxel) tutorials — a separate series if wanted; HTML5/Kivy
 export walkthroughs (the tutorials build and test on desktop, with one
 closing note that the same project exports); wiki write-ups of the lessons;
 the seven other UI languages.
+
+## Findings recorded while building Lesson 11
+
+- **Solid walls only stop an object that has a collision event for them —
+  even an empty one.** Without `collision_with_obj_wall` on the player, it
+  walked straight out of the room (verified, y = -401); with the empty event
+  it stopped at the border. raycast_1 has exactly these empty events for the
+  same reason. The lesson says so in a "Don't skip this!" box, and the test
+  file pins both directions.
+- The game window takes the **room's** size (a 320x320 room -> 320x320 view),
+  not the project's `window_width/height`.
+- A plain 32x32 solid block works as a wall (all four edges) — no thin-wall
+  sprites needed for a first lesson.
+- Room-editor grid defaults to 32 and snaps; the toolbar button is
+  `Grid` / `Grille`.

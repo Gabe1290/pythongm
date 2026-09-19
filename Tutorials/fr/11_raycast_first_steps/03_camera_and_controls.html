@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : La caméra et les commandes</h1>
+    <p>Dans un jeu 2.5D, l'<strong>objet joueur est la caméra</strong> : la vue est dessinée depuis l'endroit où il se trouve, dans la direction où il regarde.
+    Ouvrez <code>obj_player</code>, cliquez sur l'onglet <strong>Blockly</strong> et ajoutez ces événements.</p>
+    <h2>Activer la vue 2.5D</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Quand créé</span><br>
+        <span class="block block-view block-indent">Activer la vue Raycast &mdash; Champ de vision <span class="block-num">66</span> Taille de case <span class="block-num">32</span> Distance de rendu <span class="block-num">20</span></span><br>
+    </div>
+    <div class="info" style="margin-top: 8px;"><strong>Ce que ça fait :</strong> dès maintenant, cette salle est dessinée à la première personne.
+    La <em>taille de case</em> doit correspondre à votre grille de murs (32). La <em>distance de rendu</em> est le nombre de cases que la caméra peut voir.
+    Laissez <em>Objet caméra</em> vide &mdash; cela veut dire « l'objet qui exécute cette action », donc le joueur.</div></div>
+    <h2>Tourner à gauche et à droite</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Clavier : Flèche gauche (maintenue)</span><br>
+        <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">3</span> &nbsp;Relatif : oui</span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Clavier : Flèche droite (maintenue)</span><br>
+        <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">-3</span> &nbsp;Relatif : oui</span><br>
+    </div>
+    <p style="font-style: italic;">L'<strong>angle de vue</strong> est la direction du regard, en degrés (0 = droite, 90 = haut, 180 = gauche, 270 = bas).
+    <em>Relatif</em> signifie « ajouter à l'angle actuel » &mdash; en maintenant la touche, vous continuez de tourner, 3 degrés à la fois.</p></div>
+    <h2>Avancer et reculer</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Clavier : Flèche haut (maintenue)</span><br>
+        <span class="block block-move block-indent">Définir direction et vitesse &mdash; direction <span class="block-text">facing_angle</span> vitesse <span class="block-num">3</span></span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Clavier : Flèche bas (maintenue)</span><br>
+        <span class="block block-move block-indent">Définir direction et vitesse &mdash; direction <span class="block-text">facing_angle+180</span> vitesse <span class="block-num">3</span></span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Clavier : Aucune touche</span><br>
+        <span class="block block-move block-indent">Définir direction et vitesse &mdash; direction <span class="block-num">0</span> vitesse <span class="block-num">0</span></span><br>
+    </div>
+    <p style="font-style: italic;">La marche utilise le <em>même</em> angle de vue que la caméra : « devant » est donc toujours la direction où vous regardez.</p></div>
+    <h2>Rendre les murs solides pour le joueur</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Quand collision avec obj_wall</span><br>
+        <span class="block block-move block-indent">(aucune action &mdash; laissez-le vide)</span><br>
+    </div>
+    <div class="highlight"><strong>Ne sautez pas cette étape !</strong> Un événement de collision vide semble inutile, mais sans lui le joueur traverse
+    tous les murs. Un objet solide n'arrête qu'un autre objet qui possède un événement de collision avec lui &mdash; l'événement peut être vide.</div></div>
+    <div class="info">Cliquez sur « Suivant » pour jouer dans votre salle.</div>
+</body>
+</html>
