@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : La sortie</h1>
+    <h2>Un but qui vérifie les gemmes</h2>
+    <div class="step"><ol>
+        <li>Dessinez une porte ou un portail bleu de <strong>16&times;16</strong>, <code>spr_goal</code>, et créez un <code>obj_goal</code> non solide</li>
+        <li>Ajoutez un événement <strong>Quand collision avec obj_player</strong>. Il faut deux vérifications, une pour chaque cas :</li></ol>
+        <div class="blockly-group"><span class="block block-event">Quand collision avec obj_player</span><br>
+        <span class="block block-move block-indent">Tester le nombre d'instances de <b>obj_gem</b> : <b>égal à</b> <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Début de bloc</span><br>
+        <span class="block block-move block-indent">Afficher un message <span class="block-text">You win!</span></span><br>
+        <span class="block block-move block-indent">Redémarrer le jeu</span><br>
+        <span class="block block-move block-indent">Fin de bloc</span><br>
+        <span class="block block-move block-indent">Tester le nombre d'instances de <b>obj_gem</b> : <b>supérieur à</b> <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Début de bloc</span><br>
+        <span class="block block-move block-indent">Afficher un message <span class="block-text">Collect all the gems first!</span></span><br>
+        <span class="block block-move block-indent">Fin de bloc</span><br>
+        </div>
+        <p style="font-style: italic;">L'action <strong>Tester le nombre d'instances</strong> demande « combien d'instances de <code>obj_gem</code> existent en ce moment ? ». Chaque gemme ramassée est détruite : quand le compte atteint 0, vous les avez toutes.
+        <br>Ses options : <strong>Object</strong> = <code>obj_gem</code>, <strong>Number</strong> = 0, <strong>Operation</strong> = equal / greater.</p></div>
+    <div class="highlight"><strong>Les messages sont entre guillemets.</strong> Le texte d'un message est mis entre guillemets pour qu'un tiret ou un signe plus ne soit pas pris pour un calcul. Vous pouvez écrire votre message en français : il s'affichera tel quel.</div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez !</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 !</strong></p>
+    <ul><li>Entrez dans le but alors qu'il reste des gemmes : vous obtenez le message d'avertissement et le jeu continue</li>
+        <li>Ramassez toutes les gemmes, puis entrez dans le but : victoire !</li></ul></div>
+    <h2>Défis</h2>
+    <div class="step"><ul>
+        <li>Ajoutez un second monstre, plus rapide (vitesse 4), qui patrouille dans un autre couloir</li>
+        <li>Créez une seconde salle et utilisez <strong>Salle suivante</strong> au lieu de <strong>Redémarrer le jeu</strong> à la sortie. Donnez à la seconde salle son <em>propre</em> objet caméra &mdash; par exemple avec d'autres textures &mdash; et réglez son <strong>Camera Object</strong> sur <code>obj_player</code>. C'est ce que fait <code>raycast_2</code>.</li>
+        <li>Faites valoir une gemme 50 points au lieu de 10 pour créer un « trésor »</li></ul></div>
+    <h2>Vous avez fait un jeu !</h2>
+    <ul><li>Les objets non solides avec sprite sont des panneaux, cachés derrière les murs</li><li>Le score et les vies se règlent dans <strong>Game Start</strong></li>
+        <li><strong>Tester le nombre d'instances</strong> conditionne la sortie aux gemmes</li></ul>
+    <div class="highlight"><strong>Prochaine leçon :</strong> <em>HUD et minicarte</em> &mdash; affichez le score, les vies, une barre de santé et une carte directement à l'écran.</div>
+</body>
+</html>

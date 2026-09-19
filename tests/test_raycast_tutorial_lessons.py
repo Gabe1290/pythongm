@@ -38,6 +38,12 @@ LESSONS = {
         "03_sky_and_floor.html",
         "04_tune_the_look.html",
     ],
+    "13_raycast_goals_monsters": [
+        "01_introduction.html",
+        "02_gems_and_score.html",
+        "03_monster_and_lives.html",
+        "04_the_exit.html",
+    ],
 }
 
 
@@ -151,7 +157,7 @@ def _play(project_path, script, frames):
     runner = GameRunner(str(project_path))
     runner.language = "en"
     runner.show_message_dialog = lambda *a, **k: None
-    seen = {"frame": 0}
+    seen = {"frame": 0, "runner": runner}
 
     def post(kind, key):
         pygame.event.post(pygame.event.Event(kind, key=key))
@@ -342,3 +348,134 @@ def test_lesson12_blank_texture_names_fall_back_to_flat_colours(tmp_path):
     w, h = img.size
     assert len({img.getpixel((x, 2)) for x in range(0, w, 8)}) == 1   # flat ceiling
     assert len({img.getpixel((x, h - 3)) for x in range(0, w, 4)}) == 1  # flat floor
+
+
+# ---------------------------------------------------------------------------
+# Lesson 13: gems, a monster, a gem-gated exit (built on the Lesson 11 project)
+# ---------------------------------------------------------------------------
+
+def _build_lesson13(root, gems=((96, 48),), monster=(48, 240), goal=(256, 48)):
+    path = _build_lesson11(root, with_collision_event=True)
+    project = json.loads(path.read_text(encoding="utf-8"))
+    for name, colour in (("spr_gem", (240, 210, 40, 255)), ("spr_monster", (200, 40, 40, 255)),
+                         ("spr_goal", (60, 120, 230, 255))):
+        Image.new("RGBA", (16, 16), colour).save(root / "sprites" / f"{name}.png")
+        project["assets"]["sprites"][name] = {
+            "name": name, "asset_type": "sprite", "file_path": f"sprites/{name}.png",
+            "width": 16, "height": 16, "origin_x": 0, "origin_y": 0, "frames": 1,
+            "frame_width": 16, "frame_height": 16, "animation_type": "single",
+            "speed": 10.0, "imported": True}
+
+    def obj(name, sprite, events):
+        project["assets"]["objects"][name] = {
+            "name": name, "asset_type": "object", "sprite": sprite,
+            "solid": False, "visible": True, "events": events}
+
+    obj("obj_gem", "spr_gem", {
+        "collision_with_obj_player": {"target_object": "obj_player", "actions": [
+            {"action": "destroy_instance", "parameters": {"target": "self"}}]},
+        "destroy": {"actions": [
+            {"action": "set_score", "parameters": {"value": "10", "relative": True}}]}})
+    obj("obj_monster", "spr_monster", {
+        "create": {"actions": [{"action": "start_moving_direction",
+                                "parameters": {"directions": ["left", "right"], "speed": "2"}}]},
+        "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [
+            {"action": "reverse_horizontal", "parameters": {}}]}})
+    obj("obj_goal", "spr_goal", {
+        "collision_with_obj_player": {"target_object": "obj_player", "actions": [
+            {"action": "test_instance_count",
+             "parameters": {"object": "obj_gem", "number": "0", "operation": "equal"}},
+            {"action": "start_block", "parameters": {}},
+            {"action": "show_message", "parameters": {"message": "You win!"}},
+            {"action": "restart_game", "parameters": {}},
+            {"action": "end_block", "parameters": {}},
+            {"action": "test_instance_count",
+             "parameters": {"object": "obj_gem", "number": "0", "operation": "greater"}},
+            {"action": "start_block", "parameters": {}},
+            {"action": "show_message", "parameters": {"message": "Collect all the gems first!"}},
+            {"action": "end_block", "parameters": {}}]}})
+
+    pev = project["assets"]["objects"]["obj_player"]["events"]
+    pev["game_start"] = {"actions": [
+        {"action": "set_score", "parameters": {"value": "0", "relative": False}},
+        {"action": "set_lives", "parameters": {"value": "3"}}]}
+    pev["collision_with_obj_monster"] = {"target_object": "obj_monster", "actions": [
+        {"action": "set_lives", "parameters": {"value": "-1", "relative": True}},
+        {"action": "restart_room", "parameters": {"transition": "0"}}]}
+    pev["no_more_lives"] = {"actions": [{"action": "restart_game", "parameters": {}}]}
+
+    room = project["assets"]["rooms"]["room_main"]
+    def inst(o, x, y):
+        return {"object_name": o, "x": x, "y": y, "rotation": 0,
+                "scale_x": 1.0, "scale_y": 1.0, "visible": True}
+    for x, y in gems:
+        room["instances"].append(inst("obj_gem", x, y))
+    if monster:
+        room["instances"].append(inst("obj_monster", *monster))
+    room["instances"].append(inst("obj_goal", *goal))
+    path.write_text(json.dumps(project), encoding="utf-8")
+    return path
+
+
+def _walk_east(frame, post, player, seen, until=120):
+    if frame == 3:
+        post(pygame.KEYDOWN, pygame.K_UP)
+
+
+def _instances(seen, name):
+    return [i for i in seen["runner"].current_room.instances if i.object_name == name]
+
+
+def test_lesson13_gem_is_collected_and_scores_ten(tmp_path):
+    path = _build_lesson13(tmp_path, monster=None)
+    def script(frame, post, player, seen):
+        _walk_east(frame, post, player, seen)
+        if frame == 40:
+            seen["gems"] = len(_instances(seen, "obj_gem"))
+            seen["score"] = seen["runner"].score
+    seen = _play(path, script, frames=41)
+    assert seen["gems"] == 0 and seen["score"] == 10
+
+
+def test_lesson13_monster_patrols_between_walls_and_stays_in_its_corridor(tmp_path):
+    path = _build_lesson13(tmp_path)
+    xs = []
+    def script(frame, post, player, seen):
+        m = _instances(seen, "obj_monster")
+        if m:
+            xs.append(m[0].x)
+    _play(path, script, frames=200)
+    assert max(xs) - min(xs) > 100, "monster never patrolled"
+    assert min(xs) >= 32 - 4 and max(xs) <= 288 - 16 + 4, (min(xs), max(xs))
+
+
+def test_lesson13_monster_touch_costs_a_life_and_restarts_the_room(tmp_path):
+    path = _build_lesson13(tmp_path, monster=(80, 48), gems=())
+    def script(frame, post, player, seen):
+        _walk_east(frame, post, player, seen)
+        history = seen.setdefault("history", [])
+        lives = seen["runner"].lives
+        if not history or history[-1] != lives:
+            history.append(lives)
+    seen = _play(path, script, frames=91)
+    # the first touch costs exactly one life (later touches depend on timing)
+    assert seen["history"][:2] == [3, 2]
+
+
+def test_lesson13_exit_is_gated_on_the_gems(tmp_path):
+    """With a gem still on the map the exit only complains; with none left it
+    finishes the game (restart_game resets the score)."""
+    shown = []
+    for gems, expect in (((), "You win!"), (((200, 200),), "Collect all the gems first!")):
+        root = tmp_path / str(len(gems)); root.mkdir()
+        path = _build_lesson13(root, gems=gems, monster=None, goal=(96, 48))
+        from runtime.game_runner import GameRunner
+        msgs = []
+        def script(frame, post, player, seen, msgs=msgs):
+            _walk_east(frame, post, player, seen)
+            r = seen["runner"]
+            if not getattr(r, "_patched13", False):
+                r._patched13 = True
+                r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+        _play(path, script, frames=60)
+        assert expect in msgs, (gems, msgs)

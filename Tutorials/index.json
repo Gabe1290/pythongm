@@ -149,6 +149,18 @@
                 "03_sky_and_floor.html",
                 "04_tune_the_look.html"
             ]
+        },
+        {
+            "title": "2.5D: Goals, Gems and Monsters",
+            "folder": "13_raycast_goals_monsters",
+            "description": "Fill your first-person maze with gems, a patrolling monster, lives and a gem-gated exit",
+            "thumbnail": "thumbnails/13_raycast_goals_monsters.png",
+            "pages": [
+                "01_introduction.html",
+                "02_gems_and_score.html",
+                "03_monster_and_lives.html",
+                "04_the_exit.html"
+            ]
         }
     ]
 }
