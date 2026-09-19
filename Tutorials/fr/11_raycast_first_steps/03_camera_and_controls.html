@@ -34,34 +34,34 @@
     <h2>Activer la vue 2.5D</h2>
     <div class="step"><div class="blockly-group">
         <span class="block block-event">Quand créé</span><br>
-        <span class="block block-view block-indent">Activer la vue Raycast &mdash; Champ de vision <span class="block-num">66</span> Taille de case <span class="block-num">32</span> Distance de rendu <span class="block-num">20</span></span><br>
+        <span class="block block-view block-indent">Activer la vue Raycast &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span><br>
     </div>
     <div class="info" style="margin-top: 8px;"><strong>Ce que ça fait :</strong> dès maintenant, cette salle est dessinée à la première personne.
-    La <em>taille de case</em> doit correspondre à votre grille de murs (32). La <em>distance de rendu</em> est le nombre de cases que la caméra peut voir.
-    Laissez <em>Objet caméra</em> vide &mdash; cela veut dire « l'objet qui exécute cette action », donc le joueur.</div></div>
+    Les noms des paramètres restent en anglais dans l'IDE : <em>Cell Size</em> (taille de case) doit correspondre à votre grille de murs (32) ; <em>Render Distance</em> (distance de rendu) est le nombre de cases que la caméra peut voir.
+    Laissez <em>Camera Object</em> (objet caméra) vide &mdash; cela veut dire « l'objet qui exécute cette action », donc le joueur.</div></div>
     <h2>Tourner à gauche et à droite</h2>
     <div class="step"><div class="blockly-group">
         <span class="block block-event">Clavier : Flèche gauche (maintenue)</span><br>
-        <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">3</span> &nbsp;Relatif : oui</span><br>
+        <span class="block block-view block-indent">Définir l'angle de vue &mdash; Angle <span class="block-num">3</span> &nbsp;Relatif : oui</span><br>
     </div>
     <div class="blockly-group">
         <span class="block block-event">Clavier : Flèche droite (maintenue)</span><br>
-        <span class="block block-view block-indent">Définir l'angle de vue <span class="block-num">-3</span> &nbsp;Relatif : oui</span><br>
+        <span class="block block-view block-indent">Définir l'angle de vue &mdash; Angle <span class="block-num">-3</span> &nbsp;Relatif : oui</span><br>
     </div>
     <p style="font-style: italic;">L'<strong>angle de vue</strong> est la direction du regard, en degrés (0 = droite, 90 = haut, 180 = gauche, 270 = bas).
     <em>Relatif</em> signifie « ajouter à l'angle actuel » &mdash; en maintenant la touche, vous continuez de tourner, 3 degrés à la fois.</p></div>
     <h2>Avancer et reculer</h2>
     <div class="step"><div class="blockly-group">
         <span class="block block-event">Clavier : Flèche haut (maintenue)</span><br>
-        <span class="block block-move block-indent">Définir direction et vitesse &mdash; direction <span class="block-text">facing_angle</span> vitesse <span class="block-num">3</span></span><br>
+        <span class="block block-move block-indent">Définir direction et vitesse &mdash; Direction <span class="block-text">facing_angle</span> Speed <span class="block-num">3</span></span><br>
     </div>
     <div class="blockly-group">
         <span class="block block-event">Clavier : Flèche bas (maintenue)</span><br>
-        <span class="block block-move block-indent">Définir direction et vitesse &mdash; direction <span class="block-text">facing_angle+180</span> vitesse <span class="block-num">3</span></span><br>
+        <span class="block block-move block-indent">Définir direction et vitesse &mdash; Direction <span class="block-text">facing_angle+180</span> Speed <span class="block-num">3</span></span><br>
     </div>
     <div class="blockly-group">
         <span class="block block-event">Clavier : Aucune touche</span><br>
-        <span class="block block-move block-indent">Définir direction et vitesse &mdash; direction <span class="block-num">0</span> vitesse <span class="block-num">0</span></span><br>
+        <span class="block block-move block-indent">Définir direction et vitesse &mdash; Direction <span class="block-num">0</span> Speed <span class="block-num">0</span></span><br>
     </div>
     <p style="font-style: italic;">La marche utilise le <em>même</em> angle de vue que la caméra : « devant » est donc toujours la direction où vous regardez.</p></div>
     <h2>Rendre les murs solides pour le joueur</h2>

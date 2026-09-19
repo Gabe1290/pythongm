@@ -73,7 +73,7 @@ the thumbnail from the real result.
 - [x] **Unit 1 — Lesson 11 (DONE 2026-09-19; `tests/test_raycast_tutorial_lessons.py` rebuilds the lesson and runs it through the real GameRunner)** (pages: introduction, the room and walls, the
       camera and controls, testing/tuning) + thumbnail + EN/FR + index +
       test pin.
-- [ ] **Unit 2 — Lesson 12** (textures, sky, floor, fov/columns).
+- [x] **Unit 2 — Lesson 12 (DONE 2026-09-19)** (textures, sky, floor, Columns/Floor Detail trade-offs); truth-tested in `tests/test_raycast_tutorial_lessons.py`.
 - [ ] **Unit 3 — Lesson 13** (billboards, gems/score, monster/lives,
       gem-gated exit).
 - [ ] **Unit 4 — Lesson 14** (HUD text, minimap, DOOM bar).
@@ -101,3 +101,13 @@ the seven other UI languages.
   sprites needed for a first lesson.
 - Room-editor grid defaults to 32 and snaps; the toolbar button is
   `Grid` / `Grille`.
+
+## Findings recorded while building Lesson 12
+
+- **Action parameter labels are NOT translated in the IDE** (only action
+  names and event labels are), so French pages show the English parameter
+  label (`Wall Texture`, `Render Distance`...) with a French gloss. Lesson 11's
+  French pages were corrected to match.
+- Textures are ordinary sprites; blank names fall back to flat colours, and
+  `Textured Walls` off forces flat wall colour even with a texture set (all
+  pinned by tests). Ceiling texture applies only when no sky is set.

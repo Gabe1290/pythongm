@@ -32,6 +32,12 @@ LESSONS = {
         "03_camera_and_controls.html",
         "04_test_and_tune.html",
     ],
+    "12_raycast_textures": [
+        "01_introduction.html",
+        "02_textured_walls.html",
+        "03_sky_and_floor.html",
+        "04_tune_the_look.html",
+    ],
 }
 
 
@@ -212,3 +218,127 @@ def test_lesson11_without_the_empty_collision_event_walls_do_not_block(tmp_path)
     seen = _play(path, script, frames=260)
     x, y = seen["final_xy"]
     assert not (0 <= x <= 320 and 0 <= y <= 320), f"expected escape, stayed at {(x, y)}"
+
+
+# ---------------------------------------------------------------------------
+# Lesson 12 build-along: textures, sky and floor
+# ---------------------------------------------------------------------------
+
+def _texture_pngs(root):
+    """The three sprites Lesson 12 has students draw: a 64x64 brick wall, a
+    256x64 sky panorama, a 32x32 checkered floor tile."""
+    from PIL import ImageDraw
+    sprites = root / "sprites"
+    brick = Image.new("RGBA", (64, 64), (170, 60, 50, 255))
+    d = ImageDraw.Draw(brick)
+    for y in range(0, 64, 16):
+        d.line([(0, y), (63, y)], fill=(230, 220, 200, 255))
+        off = 0 if (y // 16) % 2 == 0 else 16
+        for x in range(off, 64, 32):
+            d.line([(x, y), (x, y + 15)], fill=(230, 220, 200, 255))
+    brick.save(sprites / "spr_wall_texture.png")
+    sky = Image.new("RGBA", (256, 64), (40, 90, 200, 255))
+    ImageDraw.Draw(sky).ellipse([90, 10, 150, 34], fill=(255, 255, 255, 255))
+    sky.save(sprites / "spr_sky.png")
+    floor = Image.new("RGBA", (32, 32), (90, 90, 90, 255))
+    ImageDraw.Draw(floor).rectangle([0, 0, 15, 15], fill=(140, 140, 140, 255))
+    ImageDraw.Draw(floor).rectangle([16, 16, 31, 31], fill=(140, 140, 140, 255))
+    floor.save(sprites / "spr_floor.png")
+
+
+def _build_lesson12(root, **create_overrides):
+    path = _build_lesson11(root, with_collision_event=True)
+    _texture_pngs(root)
+    project = json.loads(path.read_text(encoding="utf-8"))
+    for name, w, h in (("spr_wall_texture", 64, 64), ("spr_sky", 256, 64), ("spr_floor", 32, 32)):
+        project["assets"]["sprites"][name] = {
+            "name": name, "asset_type": "sprite", "file_path": f"sprites/{name}.png",
+            "width": w, "height": h, "origin_x": 0, "origin_y": 0, "frames": 1,
+            "frame_width": w, "frame_height": h, "animation_type": "single",
+            "speed": 10.0, "imported": True}
+    params = project["assets"]["objects"]["obj_player"]["events"]["create"]["actions"][0]["parameters"]
+    params.update({"wall_texture": "spr_wall_texture", "sky_texture": "spr_sky",
+                   "floor_texture": "spr_floor"})
+    params.update(create_overrides)
+    path.write_text(json.dumps(project), encoding="utf-8")
+    return path
+
+
+def _frame(project_path, turn_frames=10):
+    """Render a few frames (turning right a bit so a wall corner is in view)
+    and return the final screen as an RGB PIL image plus the camera config."""
+    holder = {}
+
+    def script(frame, post, player, seen):
+        if frame == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if frame == 3 + turn_frames:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+
+    from runtime.game_runner import GameRunner
+    from extensions.raycast_2_5d.state import peek_camera
+    runner = GameRunner(str(project_path))
+    runner.language = "en"
+    runner.show_message_dialog = lambda *a, **k: None
+    n = {"f": 0}
+
+    class Clock:
+        def tick(self, fps=0):
+            n["f"] += 1
+            script(n["f"], lambda k, key: pygame.event.post(pygame.event.Event(k, key=key)), None, None)
+            if n["f"] >= 30:
+                holder["img"] = Image.frombytes(
+                    "RGB", runner.screen.get_size(),
+                    pygame.image.tostring(runner.screen, "RGB"))
+                holder["cam"] = peek_camera(runner.current_room)
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real = pygame.time.Clock
+    pygame.time.Clock = Clock
+    try:
+        runner.run()
+    finally:
+        pygame.time.Clock = real
+    return holder["img"], holder["cam"]
+
+
+def test_lesson12_textures_change_the_picture(tmp_path):
+    flat_img, flat_cam = _frame(_build_lesson11(tmp_path / "flat", with_collision_event=True))
+    tex_img, tex_cam = _frame(_build_lesson12(tmp_path / "tex"))
+    assert tex_cam["wall_texture"] == "spr_wall_texture"
+    assert tex_cam["sky_texture"] == "spr_sky"
+    assert tex_cam["floor_texture"] == "spr_floor"
+    assert flat_cam["sky_texture"] == "" and flat_cam["floor_texture"] == ""
+    w, h = tex_img.size
+    # Flat ceiling is one solid colour; a textured sky (sky-blue base + cloud)
+    # differs from the flat ceiling colour along the top row.
+    top_flat = {flat_img.getpixel((x, 2)) for x in range(0, w, 8)}
+    top_tex = {tex_img.getpixel((x, 2)) for x in range(0, w, 8)}
+    assert len(top_flat) == 1 and top_flat != top_tex
+    # The checkered floor produces at least two distinct floor shades near the
+    # bottom; the flat floor is a single colour.
+    floor_flat = {flat_img.getpixel((x, h - 3)) for x in range(0, w, 4)}
+    floor_tex = {tex_img.getpixel((x, h - 3)) for x in range(0, w, 4)}
+    assert len(floor_flat) == 1 and len(floor_tex) >= 2
+    assert tex_img.tobytes() != flat_img.tobytes()
+
+
+def test_lesson12_textured_walls_off_restores_flat_wall_colour(tmp_path):
+    img, cam = _frame(_build_lesson12(tmp_path, wall_textured=False, wall_color="#993333"))
+    assert cam["wall_textured"] is False
+    w, h = img.size
+    centre_column = [img.getpixel((x, h // 2)) for x in range(0, w, 4)]
+    assert any(abs(p[0] - 0x99) < 40 and p[1] < 90 for p in centre_column), \
+        "expected the flat wall colour (#993333, shaded) in the middle rows"
+
+
+def test_lesson12_blank_texture_names_fall_back_to_flat_colours(tmp_path):
+    img, cam = _frame(_build_lesson12(tmp_path, sky_texture="", floor_texture="",
+                                      wall_texture=""))
+    w, h = img.size
+    assert len({img.getpixel((x, 2)) for x in range(0, w, 8)}) == 1   # flat ceiling
+    assert len({img.getpixel((x, h - 3)) for x in range(0, w, 4)}) == 1  # flat floor

@@ -137,6 +137,18 @@
                 "03_camera_and_controls.html",
                 "04_test_and_tune.html"
             ]
+        },
+        {
+            "title": "2.5D : Textures, ciel et sol",
+            "folder": "12_raycast_textures",
+            "description": "Habillez votre monde à la première personne : murs en briques, ciel panoramique et sol dallé",
+            "thumbnail": "thumbnails/12_raycast_textures.png",
+            "pages": [
+                "01_introduction.html",
+                "02_textured_walls.html",
+                "03_sky_and_floor.html",
+                "04_tune_the_look.html"
+            ]
         }
     ]
 }

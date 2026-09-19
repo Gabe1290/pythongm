@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Textured Walls</h1>
+    <p>A <strong>texture</strong> is nothing special: it is an ordinary sprite. The 2.5D view cuts it into thin vertical strips and
+    stretches each strip onto the wall in front of it &mdash; taller when the wall is close, shorter when it is far away.</p>
+    <h2>Draw the Brick Sprite</h2>
+    <div class="step"><ol>
+        <li>Create a sprite named <code>spr_wall_texture</code></li>
+        <li>In the Sprite Editor, make it <strong>64&times;64</strong> pixels. Fill it with a brick red, then draw light mortar lines:
+        a horizontal line every 16 pixels, and short vertical lines between the bricks, shifted by half a brick on every other row.</li>
+        <li>Save with <strong>Ctrl+S</strong></li></ol>
+        <p style="font-style: italic;">Prefer a photo or a picture from the internet? Use <strong>Import Image...</strong> instead. Any picture works &mdash;
+        square ones (like 64&times;64) look best because the texture is repeated the same way on every wall.</p></div>
+    <h2>Give It to the Walls</h2>
+    <div class="step"><ol>
+        <li>Open <code>obj_player</code> &rarr; Blockly tab &rarr; its <strong>When created</strong> event</li>
+        <li>On <strong>Enable Raycast View</strong>, set <strong>Wall Texture</strong> to <code>spr_wall_texture</code></li></ol>
+        <div class="blockly-group"><span class="block block-event">When created</span><br>
+        <span class="block block-view block-indent">Enable Raycast View &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span> Wall Texture <span class="block-text">spr_wall_texture</span></span><br>
+        </div></div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test It!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Press F5!</strong></p>
+    <ul><li>Every wall is now covered in bricks</li>
+        <li>Walls facing away from the light look <strong>darker</strong> &mdash; the game shades the two directions differently, a cheap trick that makes corners look solid</li>
+        <li>Walk up close: the bricks grow; step back: they shrink</li></ul></div>
+    <div class="info">Click "Next" to add the sky and the floor.</div>
+</body>
+</html>

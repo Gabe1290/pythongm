@@ -39,14 +39,14 @@
     <table class="t"><tr><th>Ce que vous voyez</th><th>Cause probable</th></tr>
     <tr><td>La salle normale vue du dessus</td><td>L'événement Création avec <strong>Activer la vue Raycast</strong> manque, ou il est sur un objet absent de la salle</td></tr>
     <tr><td>Vous traversez les murs</td><td>L'événement <strong>Quand collision avec obj_wall</strong> manque, ou <code>obj_wall</code> n'est pas <strong>Solide</strong></td></tr>
-    <tr><td>Les murs sont bizarres ou ont des trous</td><td>Un bloc n'est pas sur la grille de 32 pixels, ou la <strong>Taille de case</strong> n'est pas 32</td></tr>
+    <tr><td>Les murs sont bizarres ou ont des trous</td><td>Un bloc n'est pas sur la grille de 32 pixels, ou <strong>Cell Size</strong> n'est pas 32</td></tr>
     <tr><td>Vous tournez dans le mauvais sens</td><td>Échangez le <code>3</code> et le <code>-3</code> des deux événements de rotation</td></tr></table>
     <h2>Expérimentez</h2>
     <div class="step"><p>Changez une seule chose à la fois sur <strong>Activer la vue Raycast</strong> puis appuyez à nouveau sur F5 :</p><ul>
-        <li><strong>Champ de vision</strong> &mdash; essayez 40 (comme un télescope) et 100 (très large, un peu « œil de poisson »)</li>
-        <li><strong>Distance de rendu</strong> &mdash; essayez 3 : les murs lointains disparaissent dans le fond</li>
-        <li><strong>Couleur des murs</strong>, <strong>du sol</strong>, <strong>du plafond</strong> &mdash; créez un donjon ou une base sur Mars</li>
-        <li><strong>Colonnes</strong> &mdash; moins de colonnes s'affichent plus vite mais paraissent plus grossières</li></ul></div>
+        <li><strong>Field of View</strong> (champ de vision) &mdash; essayez 40 (comme un télescope) et 100 (très large, un peu « œil de poisson »)</li>
+        <li><strong>Render Distance</strong> (distance de rendu) &mdash; essayez 3 : les murs lointains disparaissent dans le fond</li>
+        <li><strong>Wall Color</strong>, <strong>Floor Color</strong>, <strong>Ceiling Color</strong> (couleurs des murs, du sol, du plafond) &mdash; créez un donjon ou une base sur Mars</li>
+        <li><strong>Columns</strong> (colonnes) &mdash; moins de colonnes s'affichent plus vite mais paraissent plus grossières</li></ul></div>
     <h2>Vous avez construit votre premier monde 2.5D !</h2>
     <ul><li>Des blocs solides sur une grille de 32 pixels deviennent des murs</li><li>L'objet joueur est la caméra</li>
         <li>Un seul angle de vue pilote à la fois ce que vous voyez et où vous marchez</li></ul>
