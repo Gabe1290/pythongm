@@ -90,3 +90,5 @@ jeux :
 - L'**origine du sprite** compte : une origine centrée décalait les *billboards*
   d'une demi-image, pile sur les lignes de la grille où se trouvent les murs —
   les gemmes apparaissaient coupées en deux.
+
+**Apprendre à le construire :** le panneau Tutoriels de l'IDE contient une série 2.5D (Leçons 11 à 14) ; voir Leçon 13.

@@ -93,3 +93,7 @@ exactement comme les exemples `maze_*` — le moteur transforme ces murs en coul
 - [Extensions](Extensions_fr) — comment la Vue 3D est fournie et comment la désactiver
 - [Référence Complète des Actions](Full-Action-Reference-3D-View-Actions_fr) — les quatre actions en détail
 - [Éditeur de Salles](Editeur_Salles_fr) — placer les objets-murs à partir desquels la vue est construite
+
+## Tutoriels
+
+Le panneau Tutoriels de l'IDE contient une série 2.5D de quatre leçons : Premiers pas, Textures/ciel/sol, Objectifs/gemmes/monstres, et ATH/minicarte (Leçons 11 à 14). Elles sont masquées dans l'édition débutant.

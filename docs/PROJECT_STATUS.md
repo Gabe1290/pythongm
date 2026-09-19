@@ -240,7 +240,9 @@ for "wasn't there a doc about X":
   `BLOCK_WORLD_INFINITE_TERRAIN_PLAN.md`, the whole raycast/2.5D arc
   (`RAYCAST_2_5D_PLAN.md`, `RAYCAST_2_SAMPLE_PLAN.md`,
   `RAYCAST_HUD_PLAN.md`, `RAYCAST_DOOM_HUD_PLAN.md`,
-  `RAYCAST_MINIMAP_PLAN.md`, `RAYCAST_EXTENSION_PLAN.md`),
+  `RAYCAST_MINIMAP_PLAN.md`, `RAYCAST_EXTENSION_PLAN.md`,
+  `RAYCAST_TUTORIALS_PLAN.md` — the 4-lesson in-app 2.5D tutorial series,
+  Lessons 11-14, EN+FR, closed 2026-09-19),
   `extension_compat_2_0/PLAN.md` (+ its `compat_demo.py`/
   `project_2_0.json` fixtures — format guard shipped as v1.1.2),
   `MULTIPLAYER_LAN_PLAN.md` (the v1 spectator-only plan; v2 above is

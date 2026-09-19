@@ -127,3 +127,5 @@ letterbox `viewport_height` in the camera config, `draw_doom_hud`, the
 multi-frame face — but the per-target **visual** playtest is the last step and is
 worth doing by eye: this is the first raycast sample whose *view shape* changes,
 so it's the one most worth watching render in a browser and on Android.
+
+**Learn how it's built:** the in-app Tutorials panel has a 2.5D series (Lessons 11-14); see Lesson 14.

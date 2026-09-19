@@ -85,3 +85,7 @@ Build the room out of solid wall objects on a 32-pixel grid, exactly like the
 - [Extensions](Extensions) — how the 3D View ships and how to turn it off
 - [Full Action Reference](Full-Action-Reference-3D-View-Actions) — the four actions in full
 - [Room Editor](Room-Editor) — placing the wall objects the view is built from
+
+## Tutorials
+
+The in-app Tutorials panel has a four-lesson 2.5D series: First Steps, Textures/Sky/Floor, Goals/Gems/Monsters, and HUD/Minimap (Lessons 11-14). They are hidden in the beginner edition.
