@@ -150,3 +150,5 @@ toujours vider `floor_texture` pour obtenir un sol plat en `floor_color`.
 Disponible depuis l'onglet d'accueil de l'IDE — choisis **« 2.5 D —
 Niveau 1 »** dans la liste déroulante *Choisir un exemple* (ouvrir un exemple le
 copie dans tes Documents, l'original fourni reste donc intact).
+
+**Apprendre à le construire :** le panneau Tutoriels de l'IDE contient une série 2.5D (Leçons 11 à 14) ; voir Leçons 11 et 12.

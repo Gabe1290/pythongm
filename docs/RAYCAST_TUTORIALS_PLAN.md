@@ -77,8 +77,8 @@ the thumbnail from the real result.
 - [x] **Unit 3 — Lesson 13 (DONE 2026-09-19)** (billboards, gems/score, monster/lives,
       gem-gated exit); truth-tested.
 - [x] **Unit 4 — Lesson 14 (DONE 2026-09-19)** (HUD text, minimap, DOOM bar); truth-tested by pixel position.
-- [ ] **Unit 5 — wrap-up:** cross-links from `wiki/3D-View.md`,
-      `samples/raycast_*` READMEs ("follow the tutorial"), PROJECT_STATUS note.
+- [x] **Unit 5 — wrap-up (DONE 2026-09-19):** cross-links from `wiki/3D-View.md` (EN+FR),
+      `samples/raycast_1-4` READMEs (EN+FR), PROJECT_STATUS note.
 
 ## Out of scope
 

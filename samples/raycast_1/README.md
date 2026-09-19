@@ -130,3 +130,5 @@ still clear `floor_texture` for a flat `floor_color` floor.
 Available from the IDE's Welcome tab — pick **"2.5 D — Level 1"** from the
 *Choose a sample* dropdown (opening a sample copies it into your Documents so
 the bundled original stays pristine).
+
+**Learn how it's built:** the in-app Tutorials panel has a 2.5D series (Lessons 11-14); see Lessons 11 and 12.

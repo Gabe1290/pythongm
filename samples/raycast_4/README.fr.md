@@ -138,3 +138,5 @@ chaque cible reste la dernière étape et mérite d'être fait de visu : c'est l
 premier exemple en lancer de rayons dont la *forme de la vue* change, donc celui
 qu'il vaut le plus la peine de regarder s'afficher dans un navigateur et sur
 Android.
+
+**Apprendre à le construire :** le panneau Tutoriels de l'IDE contient une série 2.5D (Leçons 11 à 14) ; voir Leçon 14.

@@ -171,3 +171,5 @@ Il a été vérifié que les exports Kivy et HTML5 emportent bien toute la boucl
 `no_more_health`, `alarm_0`, `draw_health_bar`, `obj_hud` et `spr_medkit`
 survivent tous à la génération de code — mais le test *visuel* sur chaque cible
 mérite d'être fait de visu avant une publication.
+
+**Apprendre à le construire :** le panneau Tutoriels de l'IDE contient une série 2.5D (Leçons 11 à 14) ; voir Leçon 14.

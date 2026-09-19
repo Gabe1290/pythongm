@@ -81,3 +81,5 @@ player.
 is *level and gameplay authoring on the finished engine*, not new rendering
 code. The gem and monster art (Units 2–3) are the only new assets, and none of
 the game logic depends on the specific art, so they're reskinnable.
+
+**Learn how it's built:** the in-app Tutorials panel has a 2.5D series (Lessons 11-14); see Lesson 13.

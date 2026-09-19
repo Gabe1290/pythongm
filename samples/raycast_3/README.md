@@ -155,3 +155,5 @@ The Kivy and HTML5 exports were verified to carry the whole loop —
 `no_more_health`, `alarm_0`, `draw_health_bar`, `obj_hud` and `spr_medkit` all
 survive codegen — but the per-target *visual* playtest is worth doing by eye
 before a release.
+
+**Learn how it's built:** the in-app Tutorials panel has a 2.5D series (Lessons 11-14); see Lesson 14.
