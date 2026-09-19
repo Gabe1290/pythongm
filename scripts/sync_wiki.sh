@@ -11,7 +11,8 @@
 #   scripts/sync_wiki.sh pull    # live wiki  -> repo wiki/   (then commit wiki/)
 #   scripts/sync_wiki.sh push    # repo wiki/ -> live wiki    (commits + pushes the wiki repo)
 #
-# Carries wiki/*.md AND wiki/images/ (screenshots referenced by the pages).
+# Carries wiki/*.md, wiki/images/ (screenshots referenced by the pages) AND
+# wiki/downloads/ (teacher-resource PDF/ODT/solution zips, linked relatively).
 # GitHub wikis serve any file committed to the wiki repo, so images/*.png
 # referenced from a page as a relative path (e.g. `images/foo.png`) render
 # fine once pushed the same way as the .md pages.
@@ -45,6 +46,10 @@ case "${1:-check}" in
       mkdir -p "$REPO_WIKI/images"
       cp -r "$LIVE"/images/. "$REPO_WIKI/images"/
     fi
+    if [ -d "$LIVE/downloads" ]; then
+      mkdir -p "$REPO_WIKI/downloads"
+      cp -r "$LIVE"/downloads/. "$REPO_WIKI/downloads"/
+    fi
     echo "Pulled live wiki -> wiki/. Review, then commit:"
     echo "    git add wiki/ && git commit -m 'docs(wiki): sync from live wiki'"
     ;;
@@ -53,6 +58,10 @@ case "${1:-check}" in
     if [ -d "$REPO_WIKI/images" ]; then
       mkdir -p "$LIVE/images"
       cp -r "$REPO_WIKI"/images/. "$LIVE/images"/
+    fi
+    if [ -d "$REPO_WIKI/downloads" ]; then
+      mkdir -p "$LIVE/downloads"
+      cp -r "$REPO_WIKI"/downloads/. "$LIVE/downloads"/
     fi
     git -C "$LIVE" add -A
     if git -C "$LIVE" diff --cached --quiet; then
