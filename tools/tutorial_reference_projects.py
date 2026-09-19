@@ -189,9 +189,74 @@ def build_t03(root, phase=3):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 04 - Breakout   (phases 1..4)
+# ---------------------------------------------------------------------------
+
+T04_PHASES = ["bouncing_ball", "first_bricks", "more_bricks", "game_controller"]
+T04_BRICKS = [("red", (220, 40, 40, 255)), ("orange", (240, 140, 30, 255)),
+              ("yellow", (240, 220, 40, 255)), ("green", (50, 190, 70, 255))]
+
+
+def build_t04(root, phase=4):
+    p = Project(root, "Breakout")
+    p.sprite("spr_ball", "circle", 16, 16, (255, 230, 60, 255))
+    p.sprite("spr_paddle", "rect", 64, 16, (60, 110, 230, 255))
+    p.sprite("spr_wall", "rect", 32, 32, (128, 128, 128, 255))
+    p.sprite("spr_death_zone", "rect", 32, 32, (120, 0, 0, 255))
+    p.obj("obj_wall_side", "spr_wall", solid=True)
+    p.obj("obj_wall_top", "spr_wall", solid=True)
+    p.obj("obj_death_zone", "spr_death_zone", visible=False)
+    p.obj("obj_paddle", "spr_paddle", {"keyboard": {
+        "left": {"actions": [act("set_hspeed", speed=-8)]},
+        "right": {"actions": [act("set_hspeed", speed=8)]},
+        "nokey": {"actions": [act("stop_movement")]}},
+        "collision_with_obj_wall_side": {"target_object": "obj_wall_side", "actions": [act("stop_movement")]}},
+        solid=True)
+    death = [act("jump_to_position", x=320, y=100)]
+    if phase >= 4:
+        death.insert(0, act("set_lives", value=-1, relative=True))
+    ball_ev = {
+        "create": {"actions": [act("set_hspeed", speed=3), act("set_vspeed", speed=-3)]},
+        "collision_with_obj_wall_side": {"target_object": "obj_wall_side", "actions": [act("reverse_horizontal")]},
+        "collision_with_obj_wall_top": {"target_object": "obj_wall_top", "actions": [act("reverse_vertical")]},
+        "collision_with_obj_paddle": {"target_object": "obj_paddle", "actions": [act("reverse_vertical")]},
+        "collision_with_obj_death_zone": {"target_object": "obj_death_zone", "actions": death}}
+    placements = [("obj_paddle", 288, 416), ("obj_ball", 312, 300)]
+    for y in range(0, 448, 32):
+        placements += [("obj_wall_side", 0, y), ("obj_wall_side", 608, y)]
+    for x in range(32, 608, 32):
+        placements.append(("obj_wall_top", x, 0))
+    for x in range(0, 640, 32):
+        placements.append(("obj_death_zone", x, 448))
+    if phase >= 2:
+        p.obj("obj_brick_parent", "", solid=True)
+        ball_ev["collision_with_obj_brick_parent"] = {"target_object": "obj_brick_parent", "actions": [
+            act("reverse_vertical"), act("destroy_instance", target="other"), act("set_score", value=10, relative=True)]}
+        colours = T04_BRICKS if phase >= 3 else T04_BRICKS[:1]
+        for row, (name, rgba) in enumerate(colours):
+            p.sprite(f"spr_brick_{name}", "rect", 32, 16, rgba)
+            p.obj(f"obj_brick_{name}", f"spr_brick_{name}", solid=True)
+            p.data["assets"]["objects"][f"obj_brick_{name}"]["parent"] = "obj_brick_parent"
+            for x in range(64, 576, 32):
+                placements.append((f"obj_brick_{name}", x, 64 + 16 * row))
+    if phase >= 4:
+        p.obj("obj_game_controller", "", {
+            "create": {"actions": [act("set_lives", value=3), act("set_score", value=0)]},
+            "draw": {"actions": [act("draw_score", x=10, y=10, caption="Score: "),
+                                 act("draw_lives", x=200, y=10)]},
+            "no_more_lives": {"actions": [act("show_message", message="Game Over!"),
+                                          act("show_highscore"), act("end_game")]}})
+        placements.append(("obj_game_controller", 300, 200))
+    p.obj("obj_ball", "spr_ball", ball_ev)
+    p.room("room_breakout", 640, 480, placements)
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
+    "04_breakout": (build_t04, T04_PHASES),
 }
 
 
