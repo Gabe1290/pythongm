@@ -1633,3 +1633,7 @@ lines rather than matching their text.
   from being auto-promoted to the App menu.
 - **Blockly visual ↔ events sync** — automatic, no manual button needed. See
   `SyncCoordinator` in `editors/object_editor/object_editor_main.py`.
+
+## start_moving_direction: `direction_expr` ignored on HTML5 and Kivy (found 2026-09-19)
+
+The desktop runtime honours `direction_expr` (a degrees number/expression; plain-number bug fixed 2026-09-19). `export/HTML5/templates/engine.js` and the Kivy codegen read only `directions`, so a ball made with "Direction Expression = 45" (Tutorial 3 style) does not move on those targets. Needs a JS + Kivy codegen change with parity tests.
