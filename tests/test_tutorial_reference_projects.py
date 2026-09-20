@@ -658,3 +658,133 @@ def test_t06_a_player_placed_off_the_grid_jams_in_one_tile_corridors(tmp_path):
         ys.append(insts(r, "obj_player")[0].y)
     play(path, script, 60)
     assert ys[-1] < 40                                # jammed at the mouth of column 1's corridor
+
+
+# ----------------------------------------------------------------- Tutorial 07
+
+def _t07(tmp_path, phase=3, mod=None, player_xy=None):
+    path = trp.build_t07(tmp_path, phase)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    if player_xy:
+        for i in data["assets"]["rooms"]["room_level1"]["instances"]:
+            if i["object_name"] == "obj_player":
+                i["x"], i["y"] = player_xy
+    if mod:
+        mod(data)
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    return path
+
+
+def test_t07_player_falls_lands_and_stands_on_the_ground(tmp_path):
+    ys = []
+
+    def script(f, post, r, seen):
+        ys.append(insts(r, "obj_player")[0].y)
+    play(_t07(tmp_path, 1, player_xy=(32, 200)), script, 120)
+    assert ys[0] < 250 and ys[-1] == 416 and ys[-2] == 416    # lands on the ground row (y=448) and rests
+
+
+def test_t07_jump_leaves_the_ground_and_comes_back(tmp_path):
+    ys = []
+
+    def script(f, post, r, seen):
+        if f == 60:
+            post(pygame.KEYDOWN, pygame.K_UP)
+            post(pygame.KEYUP, pygame.K_UP)
+        ys.append(insts(r, "obj_player")[0].y)
+    play(_t07(tmp_path, 1), script, 160)
+    assert min(ys[60:]) < 416 - 80 and ys[-1] == 416           # about 95 px high, then lands
+
+
+def test_t07_no_key_only_zeroes_horizontal_speed_so_gravity_keeps_working(tmp_path):
+    """The tutorial's warning: 'No key' must be Set horizontal speed 0, not Stop Movement."""
+    def use_stop_movement(data):
+        ev = data["assets"]["objects"]["obj_player"]["events"]["keyboard"]["nokey"]
+        ev["actions"] = [trp.act("stop_movement")]
+
+    def fall(mod, sub):
+        ys = []
+
+        def script(f, post, r, seen):
+            ys.append(insts(r, "obj_player")[0].y)
+        play(_t07(tmp_path / sub, 1, mod, player_xy=(32, 100)), script, 30)
+        return ys[-1] - ys[0]
+    assert fall(None, "a") > 100                      # tutorial version: falls freely
+    assert fall(use_stop_movement, "b") < 25          # Stop Movement wipes the speed gravity builds
+
+
+def test_t07_runs_left_and_right_and_stops_when_keys_are_released(tmp_path):
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 40:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 60:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        xs.append(insts(r, "obj_player")[0].x)
+    play(_t07(tmp_path, 1), script, 90)
+    assert xs[45] > xs[35] and xs[80] == xs[85]
+
+
+def test_t07_coin_scores_ten_and_disappears(tmp_path):
+    def coin_ahead(data):
+        for i in data["assets"]["rooms"]["room_level1"]["instances"]:
+            if i["object_name"] == "obj_coin" and not done:
+                i["x"], i["y"] = 128, 416
+                done.append(1)
+    done = []
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 60:
+            snap["score"] = r.score
+    play(_t07(tmp_path, 3, coin_ahead), script, 61)
+    assert snap["score"] == 10
+
+
+def test_t07_flag_shows_you_win(tmp_path):
+    def flag_ahead(data):
+        for i in data["assets"]["rooms"]["room_level1"]["instances"]:
+            if i["object_name"] == "obj_flag":
+                i["x"], i["y"] = 128, 416
+    msgs = []
+
+    def script(f, post, r, seen):
+        if f == 1:
+            r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+    play(_t07(tmp_path, 2, flag_ahead), script, 60)
+    assert msgs and msgs[0] == "You Win!"
+
+
+def _lives_history(tmp_path, mod=None):
+    def spike_at_start(data):
+        for i in data["assets"]["rooms"]["room_level1"]["instances"]:
+            if i["object_name"] == "obj_spike":
+                i["x"], i["y"] = 32, 416                # right on the player's start
+        if mod:
+            mod(data)
+    hist = []
+
+    def script(f, post, r, seen):
+        if not hist or hist[-1] != r.lives:
+            hist.append(r.lives)
+    play(_t07(tmp_path, 3, spike_at_start), script, 80)
+    return hist
+
+
+def test_t07_each_spike_hit_costs_a_life_when_lives_are_set_in_game_start(tmp_path):
+    hist = _lives_history(tmp_path)
+    assert hist[-3:] == [2, 1, 0] and hist == sorted(hist, reverse=True)    # counts down and stays down
+
+
+def test_t07_lives_set_in_create_are_refilled_by_every_restart(tmp_path):
+    """The bug the tutorial used to have: Create re-runs on restart_room, so lives never run out."""
+    def use_create(data):
+        c = data["assets"]["objects"]["obj_game_controller"]["events"]
+        c["create"] = c.pop("game_start")
+    hist = _lives_history(tmp_path, use_create)
+    assert min(hist) >= 2 and hist.count(3) > 3
