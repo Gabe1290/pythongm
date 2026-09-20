@@ -414,3 +414,103 @@ def test_t04_score_and_lives_are_drawn_without_a_lives_sprite(tmp_path):
     play(path, script, 6)
     for box in ((8, 6, 110, 30), (198, 6, 300, 30)):
         assert sum(1 for p in got["img"].crop(box).getdata() if p == (255, 255, 255)) > 20, box
+
+
+# ----------------------------------------------------------------- Tutorial 05
+
+def _sok(tmp_path, rows, presses, frames=None, phase=3):
+    """Run a mini Sokoban level; presses = [(frame, key)]. Returns state snapshots per frame."""
+    from PIL import Image
+    path = trp.build_t05(tmp_path, phase, level=rows)
+    snaps = {}
+    keys = dict(presses)
+
+    def script(f, post, r, seen):
+        if f in keys:
+            post(pygame.KEYDOWN, keys[f])
+            post(pygame.KEYUP, keys[f])
+        pl = insts(r, "obj_player")[0]
+        snaps[f] = {"player": (pl.x, pl.y),
+                    "crates": sorted((c.x, c.y) for c in insts(r, "obj_crate")),
+                    "img": Image.frombytes("RGB", r.screen.get_size(),
+                                           pygame.image.tostring(r.screen, "RGB"))}
+    play(path, script, frames or (max(k for k, _ in presses) + 20))
+    return snaps
+
+
+ROW3 = ["WWWWWWWWWW", "W.PC.T...W", "WWWWWWWWWW"]
+
+
+def test_t05_player_moves_exactly_one_cell_per_key_press(tmp_path):
+    s = _sok(tmp_path, ["WWWWWWWWWW", "W.P......W", "WWWWWWWWWW"], [(5, pygame.K_RIGHT), (15, pygame.K_RIGHT)], phase=1)
+    assert s[4]["player"] == (64, 32) and s[10]["player"] == (96, 32) and s[20]["player"] == (128, 32)
+
+
+def test_t05_walls_block_the_player(tmp_path):
+    s = _sok(tmp_path, ["WWWWWWWWWW", "WP.......W", "WWWWWWWWWW"], [(5, pygame.K_LEFT), (15, pygame.K_UP)], phase=1)
+    assert s[25]["player"] == (32, 32)
+
+
+def test_t05_a_push_moves_the_crate_one_cell(tmp_path):
+    s = _sok(tmp_path, ROW3, [(5, pygame.K_RIGHT)])
+    assert s[4]["crates"] == [(96, 32)]
+    assert s[12]["crates"] == [(128, 32)] and s[12]["player"] == (96, 32)
+
+
+def test_t05_crate_cannot_be_pushed_into_a_wall(tmp_path):
+    s = _sok(tmp_path, ["WWWWWWWWWW", "W.PCW....W", "WWWWWWWWWW"], [(5, pygame.K_RIGHT), (15, pygame.K_RIGHT)])
+    assert s[25]["crates"] == [(96, 32)] and s[25]["player"] == (64, 32)
+
+
+def test_t05_crate_cannot_be_pushed_into_another_crate(tmp_path):
+    s = _sok(tmp_path, ["WWWWWWWWWW", "W.PCC...WW", "WWWWWWWWWW"], [(5, pygame.K_RIGHT)])
+    assert s[15]["crates"] == [(96, 32), (128, 32)] and s[15]["player"] == (64, 32)
+
+
+def test_t05_crate_turns_green_on_a_target_and_back_when_pushed_off(tmp_path):
+    s = _sok(tmp_path, ROW3, [(5, pygame.K_RIGHT), (15, pygame.K_RIGHT), (25, pygame.K_RIGHT)])
+    brown, green = (170, 110, 50), (60, 180, 80)
+    at = lambda f, x: s[f]["img"].getpixel((x + 16, 32 + 16))
+    assert at(4, 96) == brown                    # not on a target
+    assert at(22, 160) == green                  # pushed onto the target at x=160
+    assert at(32, 192) == brown                  # pushed off again
+
+
+def test_t05_r_restarts_the_level(tmp_path):
+    s = _sok(tmp_path, ROW3, [(5, pygame.K_RIGHT), (15, pygame.K_r)])
+    assert s[12]["crates"] == [(128, 32)]
+    assert s[25]["crates"] == [(96, 32)] and s[25]["player"] == (64, 32)
+
+
+def test_t05_instruction_text_is_drawn_top_left(tmp_path):
+    s = _sok(tmp_path, ["WWWWWWWWWW", "W.P......W", "WWWWWWWWWW"], [(5, pygame.K_RIGHT)], frames=8)
+    region = s[6]["img"].crop((8, 6, 300, 26))
+    # black text on the black room would be invisible; here it lands on the wall row, so it shows
+    assert len({p for p in region.getdata()}) > 2
+
+
+def test_t05_the_tutorial_level_is_well_formed():
+    rows = trp.T05_LEVEL
+    assert all(len(r) == 10 for r in rows) and len(rows) == 10
+    flat = "".join(rows)
+    assert flat.count("C") == flat.count("T") == 2 and flat.count("P") == 1
+
+
+def test_t05_targets_placed_after_the_crate_are_drawn_over_it(tmp_path):
+    """Why the tutorial says to place targets first: draw order is placement order."""
+    path = trp.build_t05(tmp_path, 3, level=ROW3)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    ins = data["assets"]["rooms"]["room_sokoban"]["instances"]
+    ins.sort(key=lambda i: i["object_name"] == "obj_target")       # targets LAST (the student's usual order)
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    got = {}
+
+    def script(f, post, r, seen):
+        if f in (5, 15):
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        if f == 30:
+            got["px"] = trp and __import__("PIL.Image", fromlist=["x"]).frombytes(
+                "RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB")).getpixel((160 + 16, 48))
+    play(path, script, 31)
+    assert got["px"] == (230, 60, 60)          # the red target, not the green crate

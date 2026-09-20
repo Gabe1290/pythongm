@@ -45,3 +45,4 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 | 02 first game | [Student handout](Student-Handout-02-first-game) | [Worksheet](Worksheet-02-first-game) | [Teacher guide](Teacher-Guide-02-first-game) |
 | 03 pong | [Student handout](Student-Handout-03-pong) | [Worksheet](Worksheet-03-pong) | [Teacher guide](Teacher-Guide-03-pong) |
 | 04 breakout | [Student handout](Student-Handout-04-breakout) | [Worksheet](Worksheet-04-breakout) | [Teacher guide](Teacher-Guide-04-breakout) |
+| 05 sokoban | [Student handout](Student-Handout-05-sokoban) | [Worksheet](Worksheet-05-sokoban) | [Teacher guide](Teacher-Guide-05-sokoban) |
