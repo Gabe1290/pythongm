@@ -51,3 +51,7 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 | 08 lunar lander | [Student handout](Student-Handout-08-lunar-lander) | [Worksheet](Worksheet-08-lunar-lander) | [Teacher guide](Teacher-Guide-08-lunar-lander) |
 | 09 catch the coins | [Student handout](Student-Handout-09-catch-the-coins) | [Worksheet](Worksheet-09-catch-the-coins) | [Teacher guide](Teacher-Guide-09-catch-the-coins) |
 | 10 file exchange multiplayer | [Student handout](Student-Handout-10-file-exchange-multiplayer) | [Worksheet](Worksheet-10-file-exchange-multiplayer) | [Teacher guide](Teacher-Guide-10-file-exchange-multiplayer) |
+| 11 raycast first steps | [Student handout](Student-Handout-11-raycast-first-steps) | [Worksheet](Worksheet-11-raycast-first-steps) | [Teacher guide](Teacher-Guide-11-raycast-first-steps) |
+| 12 raycast textures | [Student handout](Student-Handout-12-raycast-textures) | [Worksheet](Worksheet-12-raycast-textures) | [Teacher guide](Teacher-Guide-12-raycast-textures) |
+| 13 raycast goals monsters | [Student handout](Student-Handout-13-raycast-goals-monsters) | [Worksheet](Worksheet-13-raycast-goals-monsters) | [Teacher guide](Teacher-Guide-13-raycast-goals-monsters) |
+| 14 raycast hud minimap | [Student handout](Student-Handout-14-raycast-hud-minimap) | [Worksheet](Worksheet-14-raycast-hud-minimap) | [Teacher guide](Teacher-Guide-14-raycast-hud-minimap) |

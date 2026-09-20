@@ -51,3 +51,7 @@ Chaque guide se termine par une grille à quatre niveaux pour le projet terminé
 | 08 lunar lander | [Fiche élève](Student-Handout-08-lunar-lander_fr) | [Feuille d'exercices](Worksheet-08-lunar-lander_fr) | [Guide de l'enseignant](Teacher-Guide-08-lunar-lander_fr) |
 | 09 catch the coins | [Fiche élève](Student-Handout-09-catch-the-coins_fr) | [Feuille d'exercices](Worksheet-09-catch-the-coins_fr) | [Guide de l'enseignant](Teacher-Guide-09-catch-the-coins_fr) |
 | 10 file exchange multiplayer | [Fiche élève](Student-Handout-10-file-exchange-multiplayer_fr) | [Feuille d'exercices](Worksheet-10-file-exchange-multiplayer_fr) | [Guide de l'enseignant](Teacher-Guide-10-file-exchange-multiplayer_fr) |
+| 11 raycast first steps | [Fiche élève](Student-Handout-11-raycast-first-steps_fr) | [Feuille d'exercices](Worksheet-11-raycast-first-steps_fr) | [Guide de l'enseignant](Teacher-Guide-11-raycast-first-steps_fr) |
+| 12 raycast textures | [Fiche élève](Student-Handout-12-raycast-textures_fr) | [Feuille d'exercices](Worksheet-12-raycast-textures_fr) | [Guide de l'enseignant](Teacher-Guide-12-raycast-textures_fr) |
+| 13 raycast goals monsters | [Fiche élève](Student-Handout-13-raycast-goals-monsters_fr) | [Feuille d'exercices](Worksheet-13-raycast-goals-monsters_fr) | [Guide de l'enseignant](Teacher-Guide-13-raycast-goals-monsters_fr) |
+| 14 raycast hud minimap | [Fiche élève](Student-Handout-14-raycast-hud-minimap_fr) | [Feuille d'exercices](Worksheet-14-raycast-hud-minimap_fr) | [Guide de l'enseignant](Teacher-Guide-14-raycast-hud-minimap_fr) |
