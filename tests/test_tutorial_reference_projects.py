@@ -1010,3 +1010,201 @@ def test_t09_with_no_coins_placed_the_win_room_appears_at_once(tmp_path):
             rooms.append((f, r.current_room.name))
     play(_t09(tmp_path, 4, coin_xs=(), enemy_x=10), script, 20)
     assert rooms[-1][1] == "room_win" and rooms[-1][0] <= 5
+
+
+# ----------------------------------------------------------------- Tutorial 10
+# Two real GameRunner instances over a real shared folder (the technique used by
+# test_fichier_1_sample.py), running the project built exactly as the pages say.
+
+import copy as _copy
+import time as _time
+
+GRID_X0, GRID_Y0, CELL = 170, 90, 100
+
+
+def _t10_project(tmp_path, phase=4, **kw):
+    return str(trp.build_t10(tmp_path / "proj", phase, **kw))
+
+
+def _t10_runner(project_json):
+    from runtime.game_runner import GameRunner
+    r = GameRunner(project_json)
+    r.language = "en"
+    r.show_message_dialog = lambda *a, **k: None
+    assert r.load_project_data_only(project_json)
+    start = r.find_starting_room()
+    r.current_room = r.rooms[start]
+    r._visited_rooms.add(start)
+    c = next(i for i in r.current_room.instances if i.object_name == "obj_game")
+    if getattr(c, "_cached_object_data", None) is None:
+        c.set_object_data(r.project_data["assets"]["objects"]["obj_game"])
+    return r, c
+
+
+def _t10_run(inst, event_key, sub_key=None, **override):
+    node = inst._cached_object_data["events"][event_key]
+    if sub_key is not None:
+        node = node[sub_key]
+    data = _copy.deepcopy(node["actions"])
+
+    def walk(actions):
+        for a in actions:
+            params = a.get("parameters", {})
+            for k, v in override.items():
+                if k in params:
+                    params[k] = v
+            walk(params.get("then_actions") or [])
+            walk(params.get("else_actions") or [])
+    if override:
+        walk(data)
+    inst.action_executor.execute_action_list(inst, data)
+
+
+def _t10_tick(*runners):
+    from runtime import extension_hooks
+    from extensions.multiplayer_files.state import peek_multiplayer_files
+    for r in runners:
+        st = peek_multiplayer_files(r.current_room)
+        if st and st.get("session") is not None:
+            st["session"]._last_poll = 0.0
+        extension_hooks.run_frame_updates(r, "before_step")
+    for r in runners:
+        extension_hooks.run_frame_updates(r, "after_update")
+
+
+def _t10_connect(tmp_path, phase=4, timeout=8.0):
+    pj = _t10_project(tmp_path, phase)
+    shared = str(tmp_path / "shared")
+    host, hc = _t10_runner(pj)
+    _t10_run(hc, "create")
+    _t10_run(hc, "keyboard_press", "h", folder=shared)
+    client, cc = _t10_runner(pj)
+    _t10_run(cc, "create")
+    _t10_run(cc, "keyboard_press", "j", folder=shared)
+    end = _time.time() + timeout
+    while _time.time() < end and (
+            client.global_variables.get("player_id", -1) != 1
+            or host.global_variables.get("waiting_for_players", 1) != 0
+            or client.global_variables.get("waiting_for_players", 1) != 0):
+        _t10_tick(host, client)
+        _time.sleep(0.02)
+    return host, hc, client, cc
+
+
+def _t10_click(inst, col, row):
+    inst.mouse_x = GRID_X0 + col * CELL + CELL // 2
+    inst.mouse_y = GRID_Y0 + row * CELL + CELL // 2
+    _t10_run(inst, "mouse_left_press")
+
+
+def _t10_move(host, hc, client, cc, who, col, row, timeout=8.0):
+    inst = hc if who == "host" else cc
+    end = _time.time() + timeout
+    while True:
+        _t10_run(hc, "step")
+        _t10_run(cc, "step")
+        _t10_tick(host, client)
+        if inst.my_turn == 1:
+            break
+        assert _time.time() < end, f"never became {who}'s turn"
+        _time.sleep(0.02)
+    _t10_click(inst, col, row)
+    target = host.global_variables.get("round_number", 1) + 1
+    end = _time.time() + timeout
+    while (host.global_variables.get("round_number", 0) < target
+           or client.global_variables.get("round_number", 0) < target):
+        _t10_tick(host, client)
+        _time.sleep(0.02)
+        assert _time.time() < end, "round did not resolve"
+
+
+def test_t10_phase1_board_is_invisible_without_a_draw_colour_and_visible_with_one(tmp_path):
+    from PIL import Image
+
+    def nonblack(colour, sub):
+        path = trp.build_t10(tmp_path / sub, 1, draw_colour=colour)
+        got = {}
+
+        def script(f, post, r, seen):
+            if f == 3:
+                inst = insts(r, "obj_game")[0]
+                inst.mouse_x, inst.mouse_y = 220, 140
+                inst.action_executor.execute_event(inst, "mouse_left_press", inst._cached_object_data["events"])
+            if f == 6:
+                got["img"] = Image.frombytes("RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB"))
+        play(path, script, 7)
+        return sum(1 for p in got["img"].getdata() if p != (0, 0, 0))
+    assert nonblack(True, "a") > 500
+    assert nonblack(False, "b") == 0        # black lines and text on the default black room
+
+
+def test_t10_phase1_click_marks_an_empty_cell_once(tmp_path):
+    path = trp.build_t10(tmp_path, 1)
+    snap = {}
+
+    def script(f, post, r, seen):
+        inst = insts(r, "obj_game")[0]
+        if f in (3, 4):
+            inst.mouse_x, inst.mouse_y = 220, 140
+            inst.action_executor.execute_event(inst, "mouse_left_press", inst._cached_object_data["events"])
+            inst.cell_0_0_first = getattr(inst, "cell_0_0", None)
+        if f == 3:
+            snap["after_first"] = inst.cell_0_0
+        if f == 5:
+            snap["after_second"] = inst.cell_0_0
+            snap["other"] = inst.cell_1_0
+    play(path, script, 6)
+    assert snap["after_first"] == "X" and snap["after_second"] == "X" and snap["other"] == ""
+
+
+def test_t10_phases_2_to_4_connect_and_each_side_gets_its_mark(tmp_path):
+    host, hc, client, cc = _t10_connect(tmp_path)
+    assert hc.my_mark == "X" and cc.my_mark == "O"
+    assert host.global_variables.get("waiting_for_players") == 0
+    assert client.global_variables.get("waiting_for_players") == 0
+    assert host.global_variables.get("player_id") == 0 and client.global_variables.get("player_id") == 1
+
+
+def test_t10_only_the_player_on_turn_can_place_a_mark_and_turns_alternate(tmp_path):
+    host, hc, client, cc = _t10_connect(tmp_path)
+    _t10_run(hc, "step")
+    _t10_run(cc, "step")
+    assert hc.my_turn == 1 and cc.my_turn == 0                  # round 1 = X (the host)
+    _t10_click(cc, 1, 1)                                         # O clicks out of turn
+    assert host.global_variables.get("cell_1_1", 0) == 0 and client.global_variables.get("cell_1_1", 0) == 0
+    _t10_move(host, hc, client, cc, "host", 0, 0)
+    assert host.global_variables["cell_0_0"] == "X" == client.global_variables["cell_0_0"]
+    _t10_move(host, hc, client, cc, "client", 1, 1)
+    assert host.global_variables["cell_1_1"] == "O" == client.global_variables["cell_1_1"]
+
+
+def test_t10_a_full_game_x_wins_the_top_row_and_both_screens_know(tmp_path):
+    host, hc, client, cc = _t10_connect(tmp_path)
+    for who, c, r in [("host", 0, 0), ("client", 0, 1), ("host", 1, 0), ("client", 1, 1), ("host", 2, 0)]:
+        _t10_move(host, hc, client, cc, who, c, r)
+    assert hc.winner == "X" and cc.winner == "X"
+    board = {k: v for k, v in host.global_variables.items() if k.startswith("cell_")}
+    assert board == {k: v for k, v in client.global_variables.items() if k.startswith("cell_")}
+
+
+def test_t10_as_built_play_continues_after_a_win_and_a_full_board_is_not_announced(tmp_path):
+    """Limits of the tutorial's game that the guide mentions: no 'game over' guard on clicks, no draw message."""
+    host, hc, client, cc = _t10_connect(tmp_path)
+    for who, c, r in [("host", 0, 0), ("client", 0, 1), ("host", 1, 0), ("client", 1, 1), ("host", 2, 0)]:
+        _t10_move(host, hc, client, cc, who, c, r)
+    assert hc.winner == "X"
+    _t10_move(host, hc, client, cc, "client", 2, 2)          # O can still play after X has won
+    assert host.global_variables["cell_2_2"] == "O"
+    assert hc.winner == "X"                                    # and the announcement stays
+
+
+def test_t10_space_after_a_win_leaves_the_game(tmp_path):
+    host, hc, client, cc = _t10_connect(tmp_path)
+    for who, c, r in [("host", 0, 0), ("client", 0, 1), ("host", 1, 0), ("client", 1, 1), ("host", 2, 0)]:
+        _t10_move(host, hc, client, cc, who, c, r)
+    from extensions.multiplayer_files.state import peek_multiplayer_files
+    st = peek_multiplayer_files(client.current_room)
+    assert st.get("session") is not None
+    _t10_run(cc, "keyboard_press", "space")
+    st2 = peek_multiplayer_files(client.current_room)
+    assert st2 is None or st2.get("session") is None

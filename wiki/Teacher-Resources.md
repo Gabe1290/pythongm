@@ -50,3 +50,4 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 | 07 platformer | [Student handout](Student-Handout-07-platformer) | [Worksheet](Worksheet-07-platformer) | [Teacher guide](Teacher-Guide-07-platformer) |
 | 08 lunar lander | [Student handout](Student-Handout-08-lunar-lander) | [Worksheet](Worksheet-08-lunar-lander) | [Teacher guide](Teacher-Guide-08-lunar-lander) |
 | 09 catch the coins | [Student handout](Student-Handout-09-catch-the-coins) | [Worksheet](Worksheet-09-catch-the-coins) | [Teacher guide](Teacher-Guide-09-catch-the-coins) |
+| 10 file exchange multiplayer | [Student handout](Student-Handout-10-file-exchange-multiplayer) | [Worksheet](Worksheet-10-file-exchange-multiplayer) | [Teacher guide](Teacher-Guide-10-file-exchange-multiplayer) |
