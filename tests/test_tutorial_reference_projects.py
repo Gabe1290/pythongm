@@ -788,3 +788,120 @@ def test_t07_lives_set_in_create_are_refilled_by_every_restart(tmp_path):
         c["create"] = c.pop("game_start")
     hist = _lives_history(tmp_path, use_create)
     assert min(hist) >= 2 and hist.count(3) > 3
+
+
+# ----------------------------------------------------------------- Tutorial 08
+
+def _t08(tmp_path, phase=3, lander_xy=None, **kw):
+    path = trp.build_t08(tmp_path, phase, **kw)
+    if lander_xy:
+        data = trp.json.loads(path.read_text(encoding="utf-8"))
+        for i in data["assets"]["rooms"]["room_game"]["instances"]:
+            if i["object_name"] == "obj_lander":
+                i["x"], i["y"] = lander_xy
+        path.write_text(trp.json.dumps(data), encoding="utf-8")
+    return path
+
+
+def test_t08_lunar_gravity_is_slow_and_thrust_is_a_steady_climb(tmp_path):
+    log = {}
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_UP)
+        if f == 40:
+            log["y_up"] = insts(r, "obj_lander")[0].y
+            post(pygame.KEYUP, pygame.K_UP)
+        if f == 41:
+            log["vs_after_release"] = insts(r, "obj_lander")[0].vspeed
+        if f == 90:
+            log["vs_later"] = insts(r, "obj_lander")[0].vspeed
+    play(_t08(tmp_path, 1, lander_xy=(64, 200)), script, 91)
+    assert log["y_up"] < 200 - 60                     # thrust (vspeed -2) lifts it against gravity
+    assert -2.1 < log["vs_after_release"] < -1.8      # then gravity slowly cancels the climb
+    assert log["vs_later"] > log["vs_after_release"]
+
+
+def test_t08_steering_and_no_key_only_stops_horizontal_movement(tmp_path):
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 20:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        l = insts(r, "obj_lander")[0]
+        xs.append((l.x, l.y))
+    play(_t08(tmp_path, 1, lander_xy=(64, 100)), script, 50)
+    assert xs[15][0] > xs[5][0] and xs[45][0] == xs[40][0]     # moves, then stops sideways
+    assert xs[45][1] > xs[25][1]                                # but keeps falling
+
+
+def test_t08_hitting_the_ground_crashes_and_restarts_the_room(tmp_path):
+    msgs, ys = [], []
+
+    def script(f, post, r, seen):
+        if f == 1:
+            r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+        ys.append(insts(r, "obj_lander")[0].y)
+    play(_t08(tmp_path, 2), script, 300)
+    assert msgs and set(msgs) == {"Crashed!"} and len(msgs) >= 2      # crashes again after each restart
+    assert ys[0] < 40 and max(ys) < 352                               # never sinks into the terrain
+
+
+def test_t08_landing_on_the_pad_succeeds_once_and_the_lander_stays(tmp_path):
+    msgs, ys = [], []
+
+    def script(f, post, r, seen):
+        if f == 1:
+            r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+        ys.append(insts(r, "obj_lander")[0].y)
+    play(_t08(tmp_path, 2, lander_xy=(512, 250)), script, 250)
+    assert msgs == ["Landing successful!"]                            # one message, not one per frame (gravity is switched off)
+    assert ys[-1] == ys[-40] and ys[-1] > 250                          # it stays put on the pad
+
+
+def test_t08_landing_speed_makes_no_difference_yet(tmp_path):
+    """The tutorial's challenge idea: as built, a hard landing on the pad still counts as a success."""
+    msgs = []
+
+    def script(f, post, r, seen):
+        if f == 1:
+            r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+        if f == 2:
+            insts(r, "obj_lander")[0].vspeed = 12       # slam into the pad
+    play(_t08(tmp_path, 2, lander_xy=(512, 250)), script, 80)
+    assert msgs and msgs[0] == "Landing successful!"
+
+
+def _t08_text_pixels(tmp_path, colour):
+    from PIL import Image
+    path = _t08(tmp_path, 3, draw_colour=colour)
+    got = {}
+
+    def script(f, post, r, seen):
+        if f == 5:
+            got["img"] = Image.frombytes("RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB"))
+    play(path, script, 6)
+    return sum(1 for p in got["img"].crop((8, 6, 200, 28)).getdata() if p != (0, 0, 0))
+
+
+def test_t08_hud_text_needs_a_white_draw_colour_on_the_black_room(tmp_path):
+    assert _t08_text_pixels(tmp_path / "a", True) > 50
+    assert _t08_text_pixels(tmp_path / "b", False) == 0
+
+
+def test_t08_without_switching_gravity_off_the_landing_message_repeats_every_frame(tmp_path):
+    """Why the tutorial adds Set Gravity 0 to the landing event."""
+    path = _t08(tmp_path, 2, lander_xy=(512, 250))
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    acts = data["assets"]["objects"]["obj_lander"]["events"]["collision_with_obj_pad"]["actions"]
+    acts[:] = [a for a in acts if a["action"] != "set_gravity"]
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    msgs = []
+
+    def script(f, post, r, seen):
+        if f == 1:
+            r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
+    play(path, script, 250)
+    assert len(msgs) > 50

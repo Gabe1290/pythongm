@@ -48,3 +48,4 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 | 05 sokoban | [Student handout](Student-Handout-05-sokoban) | [Worksheet](Worksheet-05-sokoban) | [Teacher guide](Teacher-Guide-05-sokoban) |
 | 06 maze | [Student handout](Student-Handout-06-maze) | [Worksheet](Worksheet-06-maze) | [Teacher guide](Teacher-Guide-06-maze) |
 | 07 platformer | [Student handout](Student-Handout-07-platformer) | [Worksheet](Worksheet-07-platformer) | [Teacher guide](Teacher-Guide-07-platformer) |
+| 08 lunar lander | [Student handout](Student-Handout-08-lunar-lander) | [Worksheet](Worksheet-08-lunar-lander) | [Teacher guide](Teacher-Guide-08-lunar-lander) |

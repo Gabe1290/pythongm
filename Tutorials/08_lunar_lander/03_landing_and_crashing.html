@@ -61,11 +61,16 @@
         <div class="blockly-group">
             <span class="block block-event">When colliding with obj_pad</span><br>
             <span class="block block-move block-indent">Stop movement</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction 270, strength <span class="block-val">0</span></span><br>
             <span class="block block-game block-indent">Show Message <span class="block-val">"Landing successful!"</span></span>
         </div>
         <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_pad</code>.
         Add <strong>Stop Movement</strong> (from <em>Movement</em>) to halt the lander.
-        Then add <strong>Show Message</strong> (from <em>Game</em>) with your victory text.</p>
+        Add <strong>Set Gravity</strong> (from <em>Movement</em>) with direction <strong>270</strong> and strength <strong>0</strong>,
+        then add <strong>Show Message</strong> (from <em>Game</em>) with your victory text.</p>
+        <div class="highlight"><strong>Why turn gravity off?</strong> Gravity keeps pushing the resting lander into the pad on every frame,
+        and each push triggers the collision again &mdash; so the message would pop up over and over. Switching gravity off after landing
+        makes it appear just once.</div>
     </div>
 
     <h2>2. Crashing into the Ground (Failure!)</h2>

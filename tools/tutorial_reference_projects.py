@@ -447,6 +447,71 @@ def build_t07(root, phase=3, level=None):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 08 - Lunar Lander   (phases 1..3)
+# ---------------------------------------------------------------------------
+
+T08_PHASES = ["flying_lander", "landing_and_crashing", "game_controller"]
+
+# 20 x 15 tiles of 32 px = 640 x 480 (G ground, L lander start, P landing pad)
+T08_LEVEL = [
+    "                    ",
+    "  L                 ",
+    "                    ",
+    "                    ",
+    "                    ",
+    "                    ",
+    "                    ",
+    "                    ",
+    "                    ",
+    "                    ",
+    "GG       GG         ",
+    "GGG     GGGG    PP  ",
+    "GGGGG   GGGGG  GGGGG",
+    "GGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGG",
+]
+
+
+def build_t08(root, phase=3, level=None, draw_colour=True):
+    level = level or T08_LEVEL
+    p = Project(root, "LunarLander")
+    p.sprite("spr_lander", "ship", 32, 32, (220, 220, 230, 255))
+    p.sprite("spr_ground", "rect", 32, 32, (120, 110, 100, 255))
+    p.obj("obj_ground", "spr_ground", solid=True)
+    lander_ev = {
+        "create": {"actions": [act("set_gravity", direction=270, gravity=0.05)]},
+        "keyboard": {
+            "up": {"actions": [act("set_vspeed", speed=-2)]},
+            "left": {"actions": [act("set_hspeed", speed=-2)]},
+            "right": {"actions": [act("set_hspeed", speed=2)]},
+            "nokey": {"actions": [act("set_hspeed", speed=0)]}}}
+    kinds = {"G": "obj_ground", "L": "obj_lander"}
+    if phase >= 2:
+        p.sprite("spr_pad", "rect", 32, 32, (40, 220, 80, 255))
+        p.obj("obj_pad", "spr_pad", solid=True)
+        lander_ev["collision_with_obj_pad"] = {"target_object": "obj_pad", "actions": [
+            act("stop_movement"), act("set_gravity", direction=270, gravity=0),
+            act("show_message", message="Landing successful!")]}
+        lander_ev["collision_with_obj_ground"] = {"target_object": "obj_ground", "actions": [
+            act("show_message", message="Crashed!"), act("restart_room", transition=0)]}
+        kinds["P"] = "obj_pad"
+    if phase >= 3:
+        draw = [act("draw_text", text='"Lunar Lander"', x=10, y=10),
+                act("draw_text", text='"Land on the green pad!"', x=10, y=30)]
+        if draw_colour:
+            draw.insert(0, act("set_draw_color", color="#ffffff"))
+        p.obj("obj_game_controller", "", {
+            "create": {"actions": [act("set_score", value=0)]}, "draw": {"actions": draw}})
+    p.obj("obj_lander", "spr_lander", lander_ev)
+    placements = [(kinds[ch], c * 32, r * 32) for r, row in enumerate(level)
+                  for c, ch in enumerate(row) if ch in kinds]
+    if phase >= 3:
+        placements.append(("obj_game_controller", 300, 100))
+    p.room("room_game", 640, 480, placements, "#000000")
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
@@ -454,6 +519,7 @@ BUILDERS = {  # folder -> (builder, phase names)
     "05_sokoban": (build_t05, T05_PHASES),
     "06_maze": (build_t06, T06_PHASES),
     "07_platformer": (build_t07, T07_PHASES),
+    "08_lunar_lander": (build_t08, T08_PHASES),
 }
 
 
