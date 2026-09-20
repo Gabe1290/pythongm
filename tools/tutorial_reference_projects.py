@@ -253,10 +253,78 @@ def build_t04(root, phase=4):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 05 - Sokoban   (phases 1..3)
+# ---------------------------------------------------------------------------
+
+T05_PHASES = ["player_and_walls", "pushing_crates", "targets_and_controller"]
+
+# The tutorial's example level (W wall, T target, P player, C crate, . empty).
+T05_LEVEL = [
+    "WWWWWWWWWW",
+    "W........W",
+    "W.P...C..W",
+    "W..WW....W",
+    "W..WT..C.W",
+    "W.....WW.W",
+    "W.T......W",
+    "W........W",
+    "W........W",
+    "WWWWWWWWWW",
+]
+
+
+def build_t05(root, phase=3, level=None):
+    level = level or T05_LEVEL
+    p = Project(root, "Sokoban", 320, 320)
+    p.sprite("spr_player", "circle", 32, 32, (70, 200, 240, 255))
+    p.sprite("spr_wall", "rect", 32, 32, (90, 90, 100, 255))
+    p.obj("obj_wall", "spr_wall", solid=True)
+    grid = lambda d: {"actions": [act("move_grid", direction=d, grid_size=32)]}
+    player_ev = {"keyboard_press": {"right": grid("right"), "left": grid("left"),
+                                    "up": grid("up"), "down": grid("down")},
+                 "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [act("stop_movement")]}}
+    kinds = {"W": "obj_wall", "P": "obj_player", "C": "obj_crate", "T": "obj_target"}
+    if phase >= 2:
+        p.sprite("spr_crate", "rect", 32, 32, (170, 110, 50, 255))
+        p.obj("obj_crate", "spr_crate", {
+            "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [act("stop_movement")]}}, solid=True)
+        player_ev["collision_with_obj_crate"] = {"target_object": "obj_crate", "actions": [
+            act("if_can_push", direction="facing", object_type="box",
+                then_action="push_and_move", else_action="stop_movement")]}
+    if phase >= 3:
+        p.sprite("spr_target", "circle", 32, 32, (230, 60, 60, 255))
+        p.sprite("spr_crate_ok", "rect", 32, 32, (60, 180, 80, 255))
+        p.obj("obj_target", "spr_target")
+        p.data["assets"]["objects"]["obj_crate"]["events"]["step"] = {"actions": [
+            act("if_collision", x=0, y=0, object="obj_target"),
+            act("start_block"), act("set_sprite", sprite="spr_crate_ok"), act("end_block"),
+            act("else_action"),
+            act("start_block"), act("set_sprite", sprite="spr_crate"), act("end_block")]}
+        p.obj("obj_controller", "", {
+            "draw": {"actions": [act("draw_text", text='"Push crates onto targets!"', x=10, y=10)]},
+            "keyboard_press": {"r": {"actions": [act("restart_room", transition=0)]}}})
+    p.obj("obj_player", "spr_player", player_ev)
+    placements = []
+    for r, row in enumerate(level):
+        for c, ch in enumerate(row):
+            if ch in kinds and not (ch == "C" and phase < 2) and not (ch == "T" and phase < 3):
+                placements.append((kinds[ch], c * 32, r * 32))
+                if ch in "CTP":       # crates/targets/player stand on empty floor
+                    pass
+    if phase >= 3:
+        placements.append(("obj_controller", 100, 100))
+    # Things are drawn in placement order: targets go first so crates/player draw on top of them
+    placements.sort(key=lambda t: t[0] != "obj_target")
+    p.room("room_sokoban", 320, 320, placements)
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
     "04_breakout": (build_t04, T04_PHASES),
+    "05_sokoban": (build_t05, T05_PHASES),
 }
 
 
