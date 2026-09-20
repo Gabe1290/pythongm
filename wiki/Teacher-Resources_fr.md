@@ -46,3 +46,4 @@ Chaque guide se termine par une grille à quatre niveaux pour le projet terminé
 | 03 pong | [Fiche élève](Student-Handout-03-pong_fr) | [Feuille d'exercices](Worksheet-03-pong_fr) | [Guide de l'enseignant](Teacher-Guide-03-pong_fr) |
 | 04 breakout | [Fiche élève](Student-Handout-04-breakout_fr) | [Feuille d'exercices](Worksheet-04-breakout_fr) | [Guide de l'enseignant](Teacher-Guide-04-breakout_fr) |
 | 05 sokoban | [Fiche élève](Student-Handout-05-sokoban_fr) | [Feuille d'exercices](Worksheet-05-sokoban_fr) | [Guide de l'enseignant](Teacher-Guide-05-sokoban_fr) |
+| 06 maze | [Fiche élève](Student-Handout-06-maze_fr) | [Feuille d'exercices](Worksheet-06-maze_fr) | [Guide de l'enseignant](Teacher-Guide-06-maze_fr) |

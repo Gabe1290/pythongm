@@ -145,7 +145,7 @@ pushed on its own so a session-limit stop loses nothing.
 - [x] **U2 — Tutorial 03 Pong (DONE 2026-09-19;** found + fixed: numeric `direction_expr` read as 0 in the runtime; score text was black-on-black and overlapped the wall row (EN+FR tutorial fixed; other 6 languages use an older page layout, still to review); HTML5/Kivy ignore `direction_expr` -> TODO.md**)**
 - [x] **U3 — Tutorial 04 Breakout (DONE 2026-09-19;** verified: parent inheritance, death zone, lives, Game Over; the tutorial's "order matters" for Show Highscore/End Game is not true on the desktop player (guide keeps the safe order)**)**
 - [x] **U4 — Tutorial 05 Sokoban (DONE 2026-09-20;** found + fixed in EN/FR: targets placed after crates/player are drawn over them (draw order = placement order, no depth UI) so the green feedback was hidden**)**
-- [ ] **U5 — Tutorial 06 Maze**
+- [x] **U5 — Tutorial 06 Maze (DONE 2026-09-20;** verified by a scripted full playthrough of the tutorial's own maze; off-grid placement jams 1-tile corridors**)**
 - [ ] **U6 — Tutorial 07 Platformer**
 - [ ] **U7 — Tutorial 08 Lunar Lander**
 - [ ] **U8 — Tutorial 09 Catch the Coins**

@@ -514,3 +514,147 @@ def test_t05_targets_placed_after_the_crate_are_drawn_over_it(tmp_path):
                 "RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB")).getpixel((160 + 16, 48))
     play(path, script, 31)
     assert got["px"] == (230, 60, 60)          # the red target, not the green crate
+
+
+# ----------------------------------------------------------------- Tutorial 06
+
+def _bfs_path(level, start="P", goal="E"):
+    from collections import deque
+    pos = {ch: (c, r) for r, row in enumerate(level) for c, ch in enumerate(row) if ch in (start, goal)}
+    s, g = pos[start], pos[goal]
+    prev, q = {s: None}, deque([s])
+    while q:
+        cur = q.popleft()
+        if cur == g:
+            break
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (cur[0] + dx, cur[1] + dy)
+            if level[n[1]][n[0]] != "W" and n not in prev:
+                prev[n] = cur
+                q.append(n)
+    path, cur = [], g
+    while cur is not None:
+        path.append(cur)
+        cur = prev.get(cur)
+    return path[::-1] if s in path else None
+
+
+def test_t06_level_is_solvable_and_every_coin_is_reachable():
+    lv = trp.T06_LEVEL
+    assert all(len(r) == 20 for r in lv) and len(lv) == 15
+    assert _bfs_path(lv) is not None
+    start = next((c, r) for r, row in enumerate(lv) for c, ch in enumerate(row) if ch == "P")
+    seen, todo = {start}, [start]
+    while todo:
+        x, y = todo.pop()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (x + dx, y + dy)
+            if lv[n[1]][n[0]] != "W" and n not in seen:
+                seen.add(n)
+                todo.append(n)
+    coins = {(c, r) for r, row in enumerate(lv) for c, ch in enumerate(row) if ch == "C"}
+    assert len(coins) == 5 and coins <= seen
+
+
+def test_t06_player_stops_at_walls_and_when_keys_are_released(tmp_path):
+    path = trp.build_t06(tmp_path, 1)
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 100:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        xs.append(insts(r, "obj_player")[0].x)
+    play(path, script, 130)
+    assert xs[95] == 160 and xs[125] == 160         # wall at column 6 stops it at column 5
+
+
+def _drive(path_cells, post, f, pending):
+    """Turn a cell path into (frame, KEYDOWN/KEYUP) posts: 32 px at 4 px/frame = 8 frames per cell."""
+    dirs = {(1, 0): pygame.K_RIGHT, (-1, 0): pygame.K_LEFT, (0, 1): pygame.K_DOWN, (0, -1): pygame.K_UP}
+    t = 3
+    steps = []
+    for a, b in zip(path_cells, path_cells[1:]):
+        k = dirs[(b[0] - a[0], b[1] - a[1])]
+        if steps and steps[-1][0] == k:
+            steps[-1][1] += 1
+        else:
+            steps.append([k, 1])
+    for k, n in steps:
+        pending.append((t, pygame.KEYDOWN, k))
+        t += 8 * n
+        pending.append((t, pygame.KEYUP, k))
+        t += 1
+    return t
+
+
+def test_t06_a_full_playthrough_collects_a_coin_and_wins_then_restarts(tmp_path):
+    path = trp.build_t06(tmp_path, 3)
+    lv = trp.T06_LEVEL
+    route = _bfs_path(lv)
+    pending = []
+    end = _drive(route, None, 0, pending)
+    by_frame = {}
+    for f, kind, k in pending:
+        by_frame.setdefault(f, []).append((kind, k))
+    log = {"msgs": [], "score_before_exit": None, "coins_after": None, "score_after": None}
+
+    def script(f, post, r, seen):
+        if f == 1:
+            r.show_message_dialog = lambda m, *a, **k: log["msgs"].append(m)
+        for kind, k in by_frame.get(f, []):
+            post(kind, k)
+        if f == end - 2:
+            log["score_before_exit"] = r.score
+        if f == end + 40:
+            log["coins_after"] = len(insts(r, "obj_coin"))
+            log["score_after"] = r.score
+    play(path, script, end + 45)
+    assert log["msgs"] == ["You Win!"]
+    assert log["coins_after"] == 5 and log["score_after"] == 0      # room restarted: coins back, score reset
+
+
+def test_t06_coin_gives_ten_points_and_disappears(tmp_path):
+    path = trp.build_t06(tmp_path, 3)
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 45:
+            snap["score"] = r.score
+            snap["coins"] = len(insts(r, "obj_coin"))
+    play(path, script, 46)
+    assert snap["score"] == 10 and snap["coins"] == 4
+
+
+def test_t06_score_is_drawn_top_left(tmp_path):
+    from PIL import Image
+    path = trp.build_t06(tmp_path, 3)
+    got = {}
+
+    def script(f, post, r, seen):
+        if f == 5:
+            got["img"] = Image.frombytes("RGB", r.screen.get_size(), pygame.image.tostring(r.screen, "RGB"))
+    play(path, script, 6)
+    assert sum(1 for p in got["img"].crop((8, 6, 110, 30)).getdata() if p == (255, 255, 255)) > 20
+
+
+def test_t06_a_player_placed_off_the_grid_jams_in_one_tile_corridors(tmp_path):
+    """Why the tutorial says to Snap to Grid: a few pixels off the grid (8 here; this test art has a
+    2 px transparent margin) the player cannot travel down a 1-tile corridor."""
+    path = trp.build_t06(tmp_path, 1)
+    data = trp.json.loads(path.read_text(encoding="utf-8"))
+    for i in data["assets"]["rooms"]["room_maze"]["instances"]:
+        if i["object_name"] == "obj_player":
+            i["x"] += 8
+    path.write_text(trp.json.dumps(data), encoding="utf-8")
+    ys = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_DOWN)
+        ys.append(insts(r, "obj_player")[0].y)
+    play(path, script, 60)
+    assert ys[-1] < 40                                # jammed at the mouth of column 1's corridor
