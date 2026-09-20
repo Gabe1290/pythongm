@@ -152,7 +152,7 @@ pushed on its own so a session-limit stop loses nothing.
 - [x] **U9 — Tutorial 10 File-exchange multiplayer (DONE 2026-09-20;** the tutorial's game built exactly as written and run on two real GameRunners over a shared folder; found + fixed in EN/FR: Phase 1 board invisible (black on black) -> Set draw color white**)** (lab setup: two
       computers or two folders, shared-drive permissions)
 - [x] **U10-U13 — Tutorials 11, 12, 13, 14 (2.5D) (DONE 2026-09-20;** checkpoint zips reuse the lesson truth-test builders: `start` and `finished` projects**).**
-- [ ] **U14 — Publish:** run the sync, spot-check the live wiki (links,
+- [x] **U14 — Publish (DONE 2026-09-20, wiki `da40fdb`; downloads + images resolve):** run the sync, spot-check the live wiki (links,
       accents, downloads resolve). Publishing is outward-facing — get
       explicit approval before the push.
 
