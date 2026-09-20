@@ -70,6 +70,21 @@
         </div>
     </div>
 
+    <h2>Ramener les pièces manquées en haut</h2>
+    <div class="step">
+        <p>Une pièce que vous ratez tombe hors du bas de la salle &mdash; mais elle existe toujours, donc le jeu ne pourrait jamais constater « plus aucune pièce ».
+        Donnez <strong>aux deux</strong> objets <code>obj_coin</code> et <code>obj_enemy</code> cet événement, pour que tout ce qui sort par le bas
+        réapparaisse en haut :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Hors de la salle</span><br>
+            <span class="block block-move block-indent">Définir variable <code>y</code> à <span class="block-num">0</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Pourquoi ?</strong> Désormais, la seule façon de se débarrasser d'une pièce est de l'attraper : « attraper toutes les pièces » fonctionne donc toujours
+            &mdash; et l'ennemi revient sans cesse, il faut continuer à l'esquiver.
+        </div>
+    </div>
+
     <h2>Les placer dans la salle</h2>
     <div class="step">
         <ol>

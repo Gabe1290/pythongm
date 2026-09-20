@@ -49,3 +49,4 @@ Chaque guide se termine par une grille à quatre niveaux pour le projet terminé
 | 06 maze | [Fiche élève](Student-Handout-06-maze_fr) | [Feuille d'exercices](Worksheet-06-maze_fr) | [Guide de l'enseignant](Teacher-Guide-06-maze_fr) |
 | 07 platformer | [Fiche élève](Student-Handout-07-platformer_fr) | [Feuille d'exercices](Worksheet-07-platformer_fr) | [Guide de l'enseignant](Teacher-Guide-07-platformer_fr) |
 | 08 lunar lander | [Fiche élève](Student-Handout-08-lunar-lander_fr) | [Feuille d'exercices](Worksheet-08-lunar-lander_fr) | [Guide de l'enseignant](Teacher-Guide-08-lunar-lander_fr) |
+| 09 catch the coins | [Fiche élève](Student-Handout-09-catch-the-coins_fr) | [Feuille d'exercices](Worksheet-09-catch-the-coins_fr) | [Guide de l'enseignant](Teacher-Guide-09-catch-the-coins_fr) |

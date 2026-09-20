@@ -148,7 +148,7 @@ pushed on its own so a session-limit stop loses nothing.
 - [x] **U5 — Tutorial 06 Maze (DONE 2026-09-20;** verified by a scripted full playthrough of the tutorial's own maze; off-grid placement jams 1-tile corridors**)**
 - [x] **U6 — Tutorial 07 Platformer (DONE 2026-09-20;** found + fixed in EN/FR: lives set in the controller's Create were refilled by every restart_room, so they could never run out -> Game Start**)**
 - [x] **U7 — Tutorial 08 Lunar Lander (DONE 2026-09-20;** found + fixed in EN/FR: the pad's success message re-fired every frame (gravity pushing into the pad) -> Set gravity 0; HUD text was black on the black room -> Set draw color white**)**
-- [ ] **U8 — Tutorial 09 Catch the Coins**
+- [x] **U8 — Tutorial 09 Catch the Coins (DONE 2026-09-20;** found + fixed in EN/FR: a missed coin fell off-screen but stayed alive, so the win check (count == 0) could never fire -> Outside Room sets y = 0**)**
 - [ ] **U9 — Tutorial 10 File-exchange multiplayer** (lab setup: two
       computers or two folders, shared-drive permissions)
 - [ ] **U10–U13 — Tutorials 11, 12, 13, 14 (2.5D).** Reference solutions

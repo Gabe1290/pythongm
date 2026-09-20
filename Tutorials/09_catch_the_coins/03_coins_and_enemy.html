@@ -70,6 +70,21 @@
         </div>
     </div>
 
+    <h2>Bring Missed Coins Back to the Top</h2>
+    <div class="step">
+        <p>A coin you miss falls out of the bottom of the room &mdash; but it still exists, so the game could never count "no coins left".
+        Give <strong>both</strong> <code>obj_coin</code> and <code>obj_enemy</code> this event, so anything that falls off the bottom
+        reappears at the top:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Outside Room</span><br>
+            <span class="block block-move block-indent">Set variable <code>y</code> to <span class="block-num">0</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Why?</strong> Now the only way to get rid of a coin is to catch it, so "catch every coin" always works &mdash;
+            and the enemy keeps coming back, so you have to keep dodging.
+        </div>
+    </div>
+
     <h2>Place Them in the Room</h2>
     <div class="step">
         <ol>

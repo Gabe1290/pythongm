@@ -905,3 +905,108 @@ def test_t08_without_switching_gravity_off_the_landing_message_repeats_every_fra
             r.show_message_dialog = lambda m, *a, **k: msgs.append(m)
     play(path, script, 250)
     assert len(msgs) > 50
+
+
+# ----------------------------------------------------------------- Tutorial 09
+
+def _t09(tmp_path, phase=4, mod=None, **kw):
+    path = trp.build_t09(tmp_path, phase, **kw)
+    if mod:
+        data = trp.json.loads(path.read_text(encoding="utf-8"))
+        mod(data)
+        path.write_text(trp.json.dumps(data), encoding="utf-8")
+    return path
+
+
+def test_t09_player_moves_left_and_right_and_stops(tmp_path):
+    xs = []
+
+    def script(f, post, r, seen):
+        if f == 3:
+            post(pygame.KEYDOWN, pygame.K_RIGHT)
+        if f == 30:
+            post(pygame.KEYUP, pygame.K_RIGHT)
+        xs.append(insts(r, "obj_player")[0].x)
+    play(_t09(tmp_path, 1), script, 60)
+    assert xs[25] > xs[5] and xs[55] == xs[50]
+
+
+def test_t09_coins_and_the_enemy_fall_from_the_top(tmp_path):
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 60:
+            snap["ys"] = [c.y for c in insts(r, "obj_coin")] + [e.y for e in insts(r, "obj_enemy")]
+    play(_t09(tmp_path, 2), script, 61)
+    assert len(snap["ys"]) == 6 and all(y > 100 for y in snap["ys"])
+
+
+def test_t09_catching_a_coin_scores_one_and_removes_it(tmp_path):
+    snap = {}
+
+    def script(f, post, r, seen):
+        if f == 250:
+            snap["score"] = r.score
+            snap["coins"] = len(insts(r, "obj_coin"))
+    # a coin directly above the player (player x=496)
+    play(_t09(tmp_path, 3, coin_xs=(500,), enemy_x=10), script, 251)
+    assert snap["score"] == 1 and snap["coins"] == 0
+
+
+def test_t09_touching_the_enemy_goes_to_the_game_over_room_and_space_restarts(tmp_path):
+    log = {"rooms": []}
+
+    def script(f, post, r, seen):
+        if not log["rooms"] or log["rooms"][-1] != r.current_room.name:
+            log["rooms"].append(r.current_room.name)
+        if f == 250:
+            post(pygame.KEYDOWN, pygame.K_SPACE)
+            post(pygame.KEYUP, pygame.K_SPACE)
+    play(_t09(tmp_path, 3, coin_xs=(10,), enemy_x=500), script, 300)
+    assert log["rooms"][:3] == ["room_main", "room_gameover", "room_main"]
+
+
+def test_t09_win_room_appears_when_every_coin_is_caught(tmp_path):
+    rooms = []
+
+    def script(f, post, r, seen):
+        if not rooms or rooms[-1] != r.current_room.name:
+            rooms.append(r.current_room.name)
+    play(_t09(tmp_path, 4, coin_xs=(500,), enemy_x=10), script, 300)
+    assert rooms == ["room_main", "room_win"]
+
+
+def test_t09_without_the_outside_room_event_a_missed_coin_makes_the_game_unwinnable(tmp_path):
+    """Why the tutorial brings missed coins back: off-screen coins still exist, so the count never reaches 0."""
+    def no_wrap(data):
+        for o in ("obj_coin", "obj_enemy"):
+            data["assets"]["objects"][o]["events"].pop("outside_room")
+    rooms, counts = [], []
+
+    def script(f, post, r, seen):
+        if not rooms or rooms[-1] != r.current_room.name:
+            rooms.append(r.current_room.name)
+        if f % 100 == 0:
+            counts.append(len(insts(r, "obj_coin")))
+    play(_t09(tmp_path, 4, no_wrap, coin_xs=(500, 900), enemy_x=10), script, 800)
+    assert rooms == ["room_main"] and counts[-1] == 1         # the missed coin is still alive, far off screen
+
+
+def test_t09_missed_coins_reappear_so_the_game_stays_winnable(tmp_path):
+    counts = []
+
+    def script(f, post, r, seen):
+        if f % 200 == 0:
+            counts.append(len(insts(r, "obj_coin")))
+    play(_t09(tmp_path, 4, coin_xs=(900,), enemy_x=10), script, 1000)
+    assert counts and all(c == 1 for c in counts)              # never lost, keeps falling again
+
+
+def test_t09_with_no_coins_placed_the_win_room_appears_at_once(tmp_path):
+    rooms = []
+
+    def script(f, post, r, seen):
+        if not rooms or rooms[-1][1] != r.current_room.name:
+            rooms.append((f, r.current_room.name))
+    play(_t09(tmp_path, 4, coin_xs=(), enemy_x=10), script, 20)
+    assert rooms[-1][1] == "room_win" and rooms[-1][0] <= 5
