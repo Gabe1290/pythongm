@@ -57,16 +57,19 @@
         </ol>
     </div>
 
-    <h2>Initialiser le score et les vies (Événement Création)</h2>
+    <h2>Initialiser le score et les vies (Événement Démarrage du jeu)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Créer</span><br>
+            <span class="block block-event">Démarrage du jeu (Game Start)</span><br>
             <span class="block block-score block-indent">Définir le score à <span class="block-val">0</span></span><br>
             <span class="block block-score block-indent">Définir les vies à <span class="block-val">3</span></span>
         </div>
-        <p>Trouvez <strong>Créer</strong> dans <em>Événements</em>.
+        <p>Trouvez <strong>Autres événements</strong> dans <em>Événements</em> et choisissez <strong>Game Start</strong> (démarrage du jeu).
         Depuis <em>Score/Vies/Santé</em>, ajoutez <strong>Définir le score</strong> avec la valeur <strong>0</strong>
         et <strong>Définir les vies</strong> avec la valeur <strong>3</strong>.</p>
+        <div class="highlight"><strong>Pourquoi Game Start et pas Création ?</strong> Un événement Création se relance à chaque
+        redémarrage de la salle &mdash; et un piège redémarre la salle. Si les vies étaient réglées à 3 dans Création, chaque
+        piège vous rendrait vos vies et vous n'en manqueriez jamais. <strong>Game Start</strong> ne s'exécute qu'une fois, au début de la partie.</div>
     </div>
 
     <h2>Dessiner le score et les vies (Événement Dessin)</h2>
@@ -85,7 +88,7 @@
     <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Créer + Dessiner)</li>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Game Start + Dessiner)</li>
         </ol>
     </div>
 

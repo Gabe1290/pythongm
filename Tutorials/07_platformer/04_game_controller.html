@@ -57,16 +57,19 @@
         </ol>
     </div>
 
-    <h2>Initialize Score and Lives (Create Event)</h2>
+    <h2>Initialize Score and Lives (Game Start Event)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Create</span><br>
+            <span class="block block-event">Game Start</span><br>
             <span class="block block-score block-indent">Set score to <span class="block-val">0</span></span><br>
             <span class="block block-score block-indent">Set lives to <span class="block-val">3</span></span>
         </div>
-        <p>Find <strong>Create</strong> in <em>Events</em>.
+        <p>Find <strong>Other Events</strong> in <em>Events</em> and choose <strong>Game Start</strong>.
         From <em>Score/Lives/Health</em>, snap <strong>Set Score</strong> with value <strong>0</strong>
         and <strong>Set Lives</strong> with value <strong>3</strong>.</p>
+        <div class="highlight"><strong>Why Game Start and not Create?</strong> A Create event runs again every time the room
+        restarts &mdash; and a spike restarts the room. If lives were set to 3 in Create, every spike would give
+        you your lives back and you would never run out. <strong>Game Start</strong> runs only once, when the game begins.</div>
     </div>
 
     <h2>Draw Score and Lives (Draw Event)</h2>
@@ -85,7 +88,7 @@
     <h2>Apply Your Blocks</h2>
     <div class="step">
         <ol>
-            <li>You should have <strong>2 event blocks</strong> (Create + Draw)</li>
+            <li>You should have <strong>2 event blocks</strong> (Game Start + Draw)</li>
         </ol>
     </div>
 

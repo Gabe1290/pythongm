@@ -47,3 +47,4 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 | 04 breakout | [Student handout](Student-Handout-04-breakout) | [Worksheet](Worksheet-04-breakout) | [Teacher guide](Teacher-Guide-04-breakout) |
 | 05 sokoban | [Student handout](Student-Handout-05-sokoban) | [Worksheet](Worksheet-05-sokoban) | [Teacher guide](Teacher-Guide-05-sokoban) |
 | 06 maze | [Student handout](Student-Handout-06-maze) | [Worksheet](Worksheet-06-maze) | [Teacher guide](Teacher-Guide-06-maze) |
+| 07 platformer | [Student handout](Student-Handout-07-platformer) | [Worksheet](Worksheet-07-platformer) | [Teacher guide](Teacher-Guide-07-platformer) |

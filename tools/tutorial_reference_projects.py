@@ -380,12 +380,80 @@ def build_t06(root, phase=3, level=None):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 07 - Platformer: Run, Jump, Collect   (phases 1..3)
+# ---------------------------------------------------------------------------
+
+T07_PHASES = ["jumping_player", "coins_and_hazards", "game_controller"]
+
+# 25 columns x 15 rows of 32 px = 800 x 480 (G ground/platform, P player, C coin, X spike, F flag)
+T07_LEVEL = [
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                       F ",
+    "                      GGG",
+    "            C   C        ",
+    "         GGGG  GGGG      ",
+    "      C                  ",
+    "     GGG     C     GGG   ",
+    " P        X      X       ",
+    "GGGGGGG  GGGGGG  GGGGGGGG",
+]
+
+
+def build_t07(root, phase=3, level=None):
+    level = level or T07_LEVEL
+    p = Project(root, "Platformer")
+    p.sprite("spr_player", "rect", 32, 32, (60, 120, 240, 255))
+    p.sprite("spr_ground", "rect", 32, 32, (90, 160, 60, 255))
+    p.obj("obj_ground", "spr_ground", solid=True)
+    player_ev = {
+        "create": {"actions": [act("set_gravity", direction=270, gravity=0.5)]},
+        "keyboard": {
+            "left": {"actions": [act("set_hspeed", speed=-4)]},
+            "right": {"actions": [act("set_hspeed", speed=4)]},
+            "nokey": {"actions": [act("set_hspeed", speed=0)]}},
+        "keyboard_press": {"up": {"actions": [act("set_vspeed", speed=-10)]}},
+        "collision_with_obj_ground": {"target_object": "obj_ground", "actions": [act("stop_movement")]}}
+    kinds = {"G": "obj_ground", "P": "obj_player"}
+    if phase >= 2:
+        p.sprite("spr_coin", "circle", 32, 32, (250, 210, 40, 255))
+        p.sprite("spr_spike", "ship", 32, 32, (200, 200, 210, 255))
+        p.sprite("spr_flag", "rect", 32, 32, (230, 60, 60, 255))
+        for n in ("coin", "spike", "flag"):
+            p.obj(f"obj_{n}", f"spr_{n}")
+        player_ev["collision_with_obj_coin"] = {"target_object": "obj_coin", "actions": [
+            act("set_score", value=10, relative=True), act("destroy_instance", target="other")]}
+        player_ev["collision_with_obj_spike"] = {"target_object": "obj_spike", "actions": [act("restart_room", transition=0)]}
+        player_ev["collision_with_obj_flag"] = {"target_object": "obj_flag", "actions": [act("show_message", message="You Win!")]}
+        kinds.update({"C": "obj_coin", "X": "obj_spike", "F": "obj_flag"})
+    if phase >= 3:
+        player_ev["collision_with_obj_spike"]["actions"].insert(0, act("set_lives", value=-1, relative=True))
+        p.obj("obj_game_controller", "", {
+            "game_start": {"actions": [act("set_score", value=0), act("set_lives", value=3)]},
+            "draw": {"actions": [act("draw_score", x=10, y=10, caption="Score: "),
+                                 act("draw_lives", x=200, y=10)]}})
+    p.obj("obj_player", "spr_player", player_ev)
+    placements = [(kinds[ch], c * 32, r * 32) for r, row in enumerate(level)
+                  for c, ch in enumerate(row) if ch in kinds]
+    if phase >= 3:
+        placements.append(("obj_game_controller", 400, 100))
+    p.room("room_level1", 800, 480, placements, "#87CEEB")
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
     "04_breakout": (build_t04, T04_PHASES),
     "05_sokoban": (build_t05, T05_PHASES),
     "06_maze": (build_t06, T06_PHASES),
+    "07_platformer": (build_t07, T07_PHASES),
 }
 
 
