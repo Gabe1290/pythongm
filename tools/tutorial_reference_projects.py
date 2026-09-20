@@ -320,11 +320,72 @@ def build_t05(root, phase=3, level=None):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 06 - Maze: Navigate to the Exit   (phases 1..3)
+# ---------------------------------------------------------------------------
+
+T06_PHASES = ["player_and_maze", "coins_and_exit", "game_controller"]
+
+# The tutorial's example maze (W wall, P player, C coin, E exit); coins and exit added.
+T06_LEVEL = [
+    "WWWWWWWWWWWWWWWWWWWW",
+    "WP.C..W.......W....W",
+    "W.WWW.W.WWWWW.W.WW.W",
+    "W.W......C......W..W",
+    "W.W.WWWWW.WWWWWW.W.W",
+    "W...W..........WC..W",
+    "WWW.W.WWWWWWW..WWW.W",
+    "W.....W.....W......W",
+    "W.WWWWW.WWW.WWWWWW.W",
+    "W........C.........W",
+    "W.WWWWWWWWW.WWWWWW.W",
+    "W..........W......CW",
+    "WWWWWWWWWWW.W.WWWW.W",
+    "WE............W....W",
+    "WWWWWWWWWWWWWWWWWWWW",
+]
+
+
+def build_t06(root, phase=3, level=None):
+    level = level or T06_LEVEL
+    p = Project(root, "Maze")
+    p.sprite("spr_player", "circle", 32, 32, (60, 120, 240, 255))
+    p.sprite("spr_wall", "rect", 32, 32, (120, 100, 80, 255))
+    p.obj("obj_wall", "spr_wall", solid=True)
+    p.obj("obj_player", "spr_player", {
+        "keyboard": {
+            "right": {"actions": [act("set_hspeed", speed=4)]},
+            "left": {"actions": [act("set_hspeed", speed=-4)]},
+            "down": {"actions": [act("set_vspeed", speed=4)]},
+            "up": {"actions": [act("set_vspeed", speed=-4)]},
+            "nokey": {"actions": [act("stop_movement")]}},
+        "collision_with_obj_wall": {"target_object": "obj_wall", "actions": [act("stop_movement")]}})
+    kinds = {"W": "obj_wall", "P": "obj_player"}
+    if phase >= 2:
+        p.sprite("spr_coin", "circle", 32, 32, (250, 210, 40, 255))
+        p.sprite("spr_exit", "rect", 32, 32, (40, 200, 90, 255))
+        p.obj("obj_coin", "spr_coin", {"collision_with_obj_player": {"target_object": "obj_player", "actions": [
+            act("set_score", value=10, relative=True), act("destroy_instance", target="self")]}})
+        p.obj("obj_exit", "spr_exit", {"collision_with_obj_player": {"target_object": "obj_player", "actions": [
+            act("show_message", message="You Win!"), act("restart_room", transition=0)]}})
+        kinds.update({"C": "obj_coin", "E": "obj_exit"})
+    placements = [(kinds[ch], c * 32, r * 32) for r, row in enumerate(level)
+                  for c, ch in enumerate(row) if ch in kinds]
+    if phase >= 3:
+        p.obj("obj_game_controller", "", {
+            "create": {"actions": [act("set_score", value=0)]},
+            "draw": {"actions": [act("draw_score", x=10, y=10, caption="Score: ")]}})
+        placements.append(("obj_game_controller", 40, 40))
+    p.room("room_maze", 640, 480, placements)
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
     "04_breakout": (build_t04, T04_PHASES),
     "05_sokoban": (build_t05, T05_PHASES),
+    "06_maze": (build_t06, T06_PHASES),
 }
 
 
