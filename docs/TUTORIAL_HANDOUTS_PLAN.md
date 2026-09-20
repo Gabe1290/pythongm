@@ -151,8 +151,7 @@ pushed on its own so a session-limit stop loses nothing.
 - [x] **U8 — Tutorial 09 Catch the Coins (DONE 2026-09-20;** found + fixed in EN/FR: a missed coin fell off-screen but stayed alive, so the win check (count == 0) could never fire -> Outside Room sets y = 0**)**
 - [x] **U9 — Tutorial 10 File-exchange multiplayer (DONE 2026-09-20;** the tutorial's game built exactly as written and run on two real GameRunners over a shared folder; found + fixed in EN/FR: Phase 1 board invisible (black on black) -> Set draw color white**)** (lab setup: two
       computers or two folders, shared-drive permissions)
-- [ ] **U10–U13 — Tutorials 11, 12, 13, 14 (2.5D).** Reference solutions
-      come straight from `tests/test_raycast_tutorial_lessons.py` builders.
+- [x] **U10-U13 — Tutorials 11, 12, 13, 14 (2.5D) (DONE 2026-09-20;** checkpoint zips reuse the lesson truth-test builders: `start` and `finished` projects**).**
 - [ ] **U14 — Publish:** run the sync, spot-check the live wiki (links,
       accents, downloads resolve). Publishing is outward-facing — get
       explicit approval before the push.

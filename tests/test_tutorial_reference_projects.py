@@ -1208,3 +1208,21 @@ def test_t10_space_after_a_win_leaves_the_game(tmp_path):
     _t10_run(cc, "keyboard_press", "space")
     st2 = peek_multiplayer_files(client.current_room)
     assert st2 is None or st2.get("session") is None
+
+
+# ----------------------------------------------------------------- Tutorials 11-14 zips
+
+@pytest.mark.parametrize("folder", ["11_raycast_first_steps", "12_raycast_textures",
+                                    "13_raycast_goals_monsters", "14_raycast_hud_minimap"])
+def test_raycast_checkpoint_projects_load_and_render(tmp_path, folder):
+    builder, names = trp.BUILDERS[folder]
+    for i, name in enumerate(names, 1):
+        path = builder(tmp_path / f"{i}_{name}", i)
+        play(path, lambda f, post, r, seen: None, 5)         # runs through the real GameRunner
+        from core.project_manager import ProjectManager
+        assert ProjectManager().load_project(str(path.parent))
+
+
+def test_every_tutorial_with_a_builder_ships_a_checkpoint_zip(tmp_path):
+    zips = {p.name for p in trp.build_checkpoint_zips(tmp_path)}
+    assert {f"{f}_checkpoints.zip" for f in trp.BUILDERS} == zips

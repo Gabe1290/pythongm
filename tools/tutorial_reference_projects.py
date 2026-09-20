@@ -643,6 +643,50 @@ def build_t10(root, phase=4, folder="tictactoe_files", draw_colour=True):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorials 11-14 - the 2.5D series. The lesson projects are built by the
+# truth-test builders in tests/test_raycast_tutorial_lessons.py (one source, so
+# the zips teachers download are exactly what the tests run).
+# ---------------------------------------------------------------------------
+
+def _raycast_lessons():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "test_raycast_tutorial_lessons", ROOT / "tests" / "test_raycast_tutorial_lessons.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+T11_PHASES = ["finished"]
+T12_PHASES = ["start", "finished"]
+T13_PHASES = ["start", "finished"]
+T14_PHASES = ["start", "finished"]
+
+
+def build_t11(root, phase=1):
+    return _raycast_lessons()._build_lesson11(Path(root), with_collision_event=True)
+
+
+def build_t12(root, phase=2):
+    m = _raycast_lessons()
+    return m._build_lesson11(Path(root), True) if phase == 1 else m._build_lesson12(Path(root))
+
+
+def build_t13(root, phase=2):
+    m = _raycast_lessons()
+    return m._build_lesson11(Path(root), True) if phase == 1 else m._build_lesson13(Path(root))
+
+
+def build_t14(root, phase=2):
+    m = _raycast_lessons()
+    if phase == 1:
+        return m._build_lesson13(Path(root))
+    hud = [act("draw_doom_hud", x=0, y=-1, width=0, height=64, health_label="HEALTH", score_label="SCORE "),
+           act("draw_minimap", x=230, y=10, size=80)]
+    return m._build_lesson14(Path(root), hud, viewport_height=256)
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
@@ -653,6 +697,10 @@ BUILDERS = {  # folder -> (builder, phase names)
     "08_lunar_lander": (build_t08, T08_PHASES),
     "09_catch_the_coins": (build_t09, T09_PHASES),
     "10_file_exchange_multiplayer": (build_t10, T10_PHASES),
+    "11_raycast_first_steps": (build_t11, T11_PHASES),
+    "12_raycast_textures": (build_t12, T12_PHASES),
+    "13_raycast_goals_monsters": (build_t13, T13_PHASES),
+    "14_raycast_hud_minimap": (build_t14, T14_PHASES),
 }
 
 
