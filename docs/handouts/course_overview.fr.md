@@ -17,14 +17,14 @@ Tout ce qu'il faut à l'enseignant·e pour mener les tutoriels intégrés (**Aid
 | 1 | Premiers pas | interface, sprite, objet, salle, F5 | aucun | 45 min |
 | 2 | Premier jeu : Attrape l'étoile | événement clavier, mouvement, collisions, score | 1 | 45-60 min |
 | 3 | Attrape les pièces : gagner et perdre | conditions de victoire et de défaite, fin de partie | 2 | 45 min |
-| 4 | Pong classique | deux joueurs, rebonds, score | 2 | 60 min |
-| 5 | Casse-briques | nombreux objets, rebonds sur les briques | 4 | 60 min |
+| 4 | Pong classique | deux joueurs, rebonds, score | 2 | 45-60 min |
+| 5 | Casse-briques | objets parents, briques, vies, Game Over | 2, 4 | 60-90 min |
 | 6 | Labyrinthe | murs, pièces, sortie | 2 | 45-60 min |
-| 7 | Sokoban | pousser, logique de grille | 6 | 45-60 min |
-| 8 | Jeu de plateforme | gravité, saut | 6 | 60 min |
-| 9 | Alunissage | poussée, carburant | 8 | 45-60 min |
-| 10 | Multijoueur au tour par tour (échange de fichiers) | deux ordinateurs, tours de jeu | 4 | 60 min + mise en place |
-| 11 à 14 | Série 2.5D : Premiers pas, Textures, Objectifs et monstres, ATH et minicarte | vue à la première personne, textures, panneaux, ATH | 6 | 45 min chacun |
+| 7 | Sokoban | déplacement sur grille, pousser, conception de niveau | 2 | 45-60 min |
+| 8 | Jeu de plateforme | gravité, saut, vies | 2, 6 | 60 min |
+| 9 | Alunissage | gravité faible, poussée, atterrissage | 8 | 45 min |
+| 10 | Multijoueur au tour par tour (échange de fichiers) | deux ordinateurs, dossier partagé, tours de jeu | 4 ou 6 | 75-90 min, deux séances, mise en place |
+| 11 à 14 | Série 2.5D : Premiers pas, Textures, Objectifs et monstres, ATH et minicarte | vue à la première personne, textures, panneaux, ATH | 2, 6 | 45-60 min chacun |
 
 > TIP: Les durées valent pour une classe qui fait toute la leçon ; chaque guide propose une variante raccourcie pour une séance de 45 minutes. Les élèves rapides peuvent poursuivre avec les défis imprimés sur la fiche.
 

@@ -2288,3 +2288,20 @@ happened for real on `TUTORIAL_01_STUDENT_HANDOUT_FR.odt` this session
 — no content was lost (the diff into `.md` had already been done
 carefully first), but the human's own file, as an artifact, was gone.
 Don't skip those two steps next time.
+
+**2026-09-20 — Teacher resources for all 14 tutorials (EN + FR), built but NOT yet
+published to the live wiki.** Plan + settled decisions: `docs/TUTORIAL_HANDOUTS_PLAN.md`
+(U0-U13 done; U14 = publish, needs explicit approval). Sources live in
+`docs/handouts/<NN_slug>/{student,worksheet,teacher}.<en|fr>.md` (answer key + rubric are
+inside the teacher guide); `scripts/build_teacher_wiki.py` generates the wiki pages,
+PDFs/ODTs (`wiki/downloads/`) and checkpoint zips (`wiki/downloads/solutions/`, from
+`tools/tutorial_reference_projects.py`, which the truth tests in
+`tests/test_tutorial_reference_projects.py` also run through the real GameRunner).
+`tests/test_teacher_resources.py` guards structure/parity/accents/freshness. **Never hand-edit
+`wiki/Student-Handout-*`, `Worksheet-*`, `Teacher-Guide-*`, `Teacher-Resources*` or
+`wiki/downloads/`** — regenerate (LibreOffice needed on PATH for new `.odt`; it never
+overwrites an existing one). Building the reference projects found and fixed real tutorial
+bugs (EN/FR): Tutorial 2 alarm timing; 3, 8, 10, 14 invisible black text on black rooms;
+5 targets drawn over crates; 7 lives refilled by Create; 8 landing message repeating;
+9 missed coins making the win check impossible; plus a runtime fix
+(`direction_expr` "45"). HTML5/Kivy still ignore `direction_expr` (TODO.md).
