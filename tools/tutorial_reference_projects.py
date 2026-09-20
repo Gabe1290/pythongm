@@ -567,6 +567,82 @@ def build_t09(root, phase=4, coin_xs=(100, 260, 420, 580, 740), enemy_x=340):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 10 - Turn-Based Multiplayer: Tic-Tac-Toe by File Exchange (phases 1..4)
+# Built exactly as the pages describe (NOT the bundled fichier_1 sample, which
+# is a differently-structured finished version).
+# ---------------------------------------------------------------------------
+
+T10_PHASES = ["the_board", "host_and_join", "taking_turns", "winning_and_playing_again"]
+T10_CELLS = [(c, r) for r in range(3) for c in range(3)]
+T10_LINES = [((0, 0), (1, 0), (2, 0)), ((0, 1), (1, 1), (2, 1)), ((0, 2), (1, 2), (2, 2)),
+             ((0, 0), (0, 1), (0, 2)), ((1, 0), (1, 1), (1, 2)), ((2, 0), (2, 1), (2, 2)),
+             ((0, 0), (1, 1), (2, 2)), ((2, 0), (1, 1), (0, 2))]
+
+
+def _cond(expression, then_actions, else_actions=None):
+    return act("if_condition", condition_type="expression", expression=expression,
+               then_actions=then_actions, else_actions=else_actions or [])
+
+
+def build_t10(root, phase=4, folder="tictactoe_files", draw_colour=True):
+    p = Project(root, "TicTacToeFiles", 1024, 768)
+    name = lambda c, r: f"cell_{c}_{r}"
+    box = lambda c, r: f"mouse_x >= {170 + 100 * c} and mouse_x < {270 + 100 * c} and mouse_y >= {90 + 100 * r} and mouse_y < {190 + 100 * r}"
+    create = [act("set_variable", variable=name(c, r), value='""') for c, r in T10_CELLS]
+    draw = []
+    if draw_colour:
+        draw.append(act("set_draw_color", color="#ffffff"))
+    ev = {}
+    if phase >= 2:
+        create.append(act("set_variable", variable="my_mark", value='""'))
+        ev["keyboard_press"] = {
+            "h": {"actions": [act("host_game_files", folder=folder, max_players=2, player_name="Player 1",
+                                  round_deadline=20),
+                              act("set_variable", variable="my_mark", value='"X"')]},
+            "j": {"actions": [act("join_game_files", folder=folder, player_name="Player 2"),
+                              act("set_variable", variable="my_mark", value='"O"')]}}
+        draw.append(_cond("global.waiting_for_players == 1", [
+            act("draw_text", text='"Waiting for opponent..."', x=170, y=40), act("exit_event")],
+            [act("draw_text", text='"You are " + my_mark', x=170, y=40)]))
+    draw += [act("draw_line", x1=270, y1=90, x2=270, y2=390), act("draw_line", x1=370, y1=90, x2=370, y2=390),
+             act("draw_line", x1=170, y1=190, x2=470, y2=190), act("draw_line", x1=170, y1=290, x2=470, y2=290)]
+    if phase < 3:
+        draw += [_cond(f'{name(c, r)} != ""', [act("draw_text", text=name(c, r), x=205 + 100 * c, y=115 + 100 * r)])
+                 for c, r in T10_CELLS]
+        ev["mouse_left_press"] = {"actions": [
+            _cond(f'{name(c, r)} == "" and {box(c, r)}', [act("set_variable", variable=name(c, r), value='"X"')])
+            for c, r in T10_CELLS]}
+    else:
+        create += [act("set_variable", variable="last_round_acted", value=0),
+                   act("set_variable", variable="my_turn", value=0)]
+        ev["step"] = {"actions": [
+            _cond('(global.round_number % 2 == 1 and my_mark == "X") or (global.round_number % 2 == 0 and my_mark == "O")',
+                  [act("set_variable", variable="my_turn", value=1)],
+                  [act("set_variable", variable="my_turn", value=0)]),
+            _cond("my_turn == 0 and last_round_acted != global.round_number", [
+                act("end_turn"), act("set_variable", variable="last_round_acted", value="global.round_number")])]}
+        ev["mouse_left_press"] = {"actions": [
+            _cond(f'{name(c, r)} == "" and my_turn == 1 and {box(c, r)}', [
+                act("set_shared_var_files", name=name(c, r), value="my_mark"), act("end_turn")])
+            for c, r in T10_CELLS]}
+        draw += [_cond(f"global.{name(c, r)} != 0", [act("draw_text", text=f"global.{name(c, r)}", x=205 + 100 * c, y=115 + 100 * r)])
+                 for c, r in T10_CELLS]
+    if phase >= 4:
+        create.append(act("set_variable", variable="winner", value='""'))
+        ev["round_resolved"] = {"actions": [
+            _cond(f"global.{name(*a)} == global.{name(*b)} and global.{name(*b)} == global.{name(*c)} and global.{name(*a)} != 0",
+                  [act("set_variable", variable="winner", value=f"global.{name(*a)}")])
+            for a, b, c in T10_LINES]}
+        draw.append(_cond('winner != ""', [act("draw_text", text='winner + " wins! Press SPACE to play again."', x=80, y=650)]))
+        ev.setdefault("keyboard_press", {})["space"] = {"actions": [_cond('winner != ""', [act("leave_game_files")])]}
+    ev["create"] = {"actions": create}
+    ev["draw"] = {"actions": draw}
+    p.obj("obj_game", "", ev)
+    p.room("room_board", 1024, 768, [("obj_game", 10, 10)])
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
@@ -576,6 +652,7 @@ BUILDERS = {  # folder -> (builder, phase names)
     "07_platformer": (build_t07, T07_PHASES),
     "08_lunar_lander": (build_t08, T08_PHASES),
     "09_catch_the_coins": (build_t09, T09_PHASES),
+    "10_file_exchange_multiplayer": (build_t10, T10_PHASES),
 }
 
 
