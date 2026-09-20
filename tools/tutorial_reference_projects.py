@@ -512,6 +512,61 @@ def build_t08(root, phase=3, level=None, draw_colour=True):
     return p.save()
 
 
+# ---------------------------------------------------------------------------
+# Tutorial 09 - Catch the Coins: Win and Lose   (phases 1..4)
+# ---------------------------------------------------------------------------
+
+T09_PHASES = ["moving_player", "coins_and_enemy", "catching_and_crashing", "winning"]
+
+
+def build_t09(root, phase=4, coin_xs=(100, 260, 420, 580, 740), enemy_x=340):
+    """Room 1024x768 (the IDE's default room size). The 'With Game Over Screen'
+    template's room_gameover is reproduced with a tiny controller object."""
+    p = Project(root, "CatchTheCoins", 1024, 768)
+    p.sprite("spr_player", "rect", 32, 32, (60, 200, 90, 255))
+    p.obj("obj_player", "spr_player", {"keyboard": {
+        "left": {"actions": [act("set_hspeed", speed=-5)]},
+        "right": {"actions": [act("set_hspeed", speed=5)]},
+        "nokey": {"actions": [act("stop_movement")]}}})
+    placements = [("obj_player", 496, 700)]
+    if phase >= 2:
+        p.sprite("spr_coin", "circle", 24, 24, (250, 210, 40, 255))
+        p.sprite("spr_enemy", "rect", 32, 32, (220, 40, 40, 255))
+        # missed coins/enemies reappear at the top (Outside Room -> Set variable y = 0)
+        fall = lambda: {"create": {"actions": [act("set_vspeed", speed=3)]},
+                        "outside_room": {"actions": [act("set_variable", variable="y", value=0)]}}
+        p.obj("obj_coin", "spr_coin", fall())
+        p.obj("obj_enemy", "spr_enemy", fall())
+        placements += [("obj_coin", x, 20) for x in coin_xs] + [("obj_enemy", enemy_x, 20)]
+    ev = p.data["assets"]["objects"]["obj_player"]["events"]
+    if phase >= 3:
+        ev["create"] = {"actions": [act("set_score", value=0)]}
+        ev["collision_with_obj_coin"] = {"target_object": "obj_coin", "actions": [
+            act("set_score", value=1, relative=True), act("destroy_instance", target="other")]}
+        ev["collision_with_obj_enemy"] = {"target_object": "obj_enemy", "actions": [
+            act("goto_room", room="room_gameover")]}
+        ev["draw"] = {"actions": [act("draw_score", x=10, y=10, caption="Score: ")]}
+        p.obj("obj_gameover", "", {
+            "draw": {"actions": [act("set_draw_color", color="#ffffff"),
+                                 act("draw_text", text='"GAME OVER"', x=440, y=320),
+                                 act("draw_text", text='"Press SPACE to play again"', x=380, y=400)]},
+            "keyboard_press": {"space": {"actions": [act("restart_game")]}}})
+    if phase >= 4:
+        p.obj("obj_win_text", "", {
+            "draw": {"actions": [act("draw_text", text='"YOU WIN!"', x=412, y=320),
+                                 act("draw_text", text='"Press SPACE to play again"', x=340, y=400)]},
+            "keyboard_press": {"space": {"actions": [act("restart_game")]}}})
+        ev["step"] = {"actions": [
+            act("test_instance_count", object="obj_coin", number=0, operation="equal"),
+            act("start_block"), act("goto_room", room="room_win"), act("end_block")]}
+    p.room("room_main", 1024, 768, placements)
+    if phase >= 3:
+        p.room("room_gameover", 1024, 768, [("obj_gameover", 10, 10)], "#400000")
+    if phase >= 4:
+        p.room("room_win", 1024, 768, [("obj_win_text", 10, 10)], "#B0E8A0")
+    return p.save()
+
+
 BUILDERS = {  # folder -> (builder, phase names)
     "02_first_game": (build_t02, T02_PHASES),
     "03_pong": (build_t03, T03_PHASES),
@@ -520,6 +575,7 @@ BUILDERS = {  # folder -> (builder, phase names)
     "06_maze": (build_t06, T06_PHASES),
     "07_platformer": (build_t07, T07_PHASES),
     "08_lunar_lander": (build_t08, T08_PHASES),
+    "09_catch_the_coins": (build_t09, T09_PHASES),
 }
 
 
