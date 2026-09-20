@@ -61,11 +61,16 @@
         <div class="blockly-group">
             <span class="block block-event">Collision avec obj_pad</span><br>
             <span class="block block-move block-indent">Arrêter le mouvement</span><br>
+            <span class="block block-move block-indent">Définir la gravité : direction 270, force <span class="block-val">0</span></span><br>
             <span class="block block-game block-indent">Afficher un message <span class="block-val">"Landing successful!"</span></span>
         </div>
         <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_pad</code>.
         Ajoutez <strong>Arrêter le mouvement</strong> (depuis <em>Mouvement</em>) pour stopper l'atterrisseur.
-        Puis ajoutez <strong>Afficher un message</strong> (depuis <em>Jeu</em>) avec votre texte de victoire.</p>
+        Ajoutez <strong>Définir la gravité</strong> (depuis <em>Mouvement</em>) avec la direction <strong>270</strong> et la force <strong>0</strong>,
+        puis ajoutez <strong>Afficher un message</strong> (depuis <em>Jeu</em>) avec votre texte de victoire.</p>
+        <div class="highlight"><strong>Pourquoi couper la gravité ?</strong> La gravité pousse en continu l'atterrisseur posé contre l'aire,
+        et chaque poussée redéclenche la collision &mdash; le message apparaîtrait donc encore et encore. Couper la gravité après l'atterrissage
+        le fait apparaître une seule fois.</div>
     </div>
 
     <h2>2. S'écraser sur le sol (Échec !)</h2>
