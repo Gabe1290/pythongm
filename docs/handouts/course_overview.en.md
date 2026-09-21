@@ -14,6 +14,7 @@ Everything a teacher needs to run the in-app tutorials (**Help > Tutorials**) wi
 ## Suggested sequence
 
 | Step | Tutorial | New ideas | Needs first | Time |
+|---|---|---|---|---|
 | 1 | Getting Started | interface, sprite, object, room, F5 | nothing | 45 min |
 | 2 | First Game: Catch the Star | keyboard event, movement, collisions, score | 1 | 45-60 min |
 | 3 | Catch the Coins: Win and Lose | win and lose conditions, game over | 2 | 45 min |
