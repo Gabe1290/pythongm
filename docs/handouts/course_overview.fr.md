@@ -14,6 +14,7 @@ Tout ce qu'il faut à l'enseignant·e pour mener les tutoriels intégrés (**Aid
 ## Progression suggérée
 
 | Étape | Tutoriel | Notions nouvelles | Prérequis | Durée |
+|---|---|---|---|---|
 | 1 | Premiers pas | interface, sprite, objet, salle, F5 | aucun | 45 min |
 | 2 | Premier jeu : Attrape l'étoile | événement clavier, mouvement, collisions, score | 1 | 45-60 min |
 | 3 | Attrape les pièces : gagner et perdre | conditions de victoire et de défaite, fin de partie | 2 | 45 min |
