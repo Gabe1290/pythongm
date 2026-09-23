@@ -7,7 +7,7 @@ replaces the older split set (`test_checklist.md`,
 removed) and folds in the "still needs human eyes" caveats that had
 accumulated across the session notes and `docs/PROJECT_STATUS.md`.
 
-Release being validated: `________`   (current shipped: 1.3.1)
+Release being validated: `________`   (current shipped: 1.4.0)
 
 > **Box convention** — `L [ ]` Linux · `M [ ]` macOS · `W [ ]` Windows.
 > Tick each box on each OS you verified it on. Items with a single box
