@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-04-breakout_fr.pdf) · [ODT](downloads/Worksheet-04-breakout_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-04-breakout_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

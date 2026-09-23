@@ -4,6 +4,8 @@
 
 **Download:** [PDF](downloads/Worksheet-13-raycast-goals-monsters.pdf) · [ODT](downloads/Worksheet-13-raycast-goals-monsters.odt)
 
+**For teachers:** [Answer key](Answer-Key-13-raycast-goals-monsters)
+
 ---
 
 Name: ______________________________   Date: ______________

@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-02-first-game_fr.pdf) · [ODT](downloads/Worksheet-02-first-game_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-02-first-game_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

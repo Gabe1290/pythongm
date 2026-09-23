@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-10-file-exchange-multiplayer_fr.pdf) · [ODT](downloads/Worksheet-10-file-exchange-multiplayer_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-10-file-exchange-multiplayer_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

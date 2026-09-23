@@ -187,14 +187,17 @@ only needed if converting an `.odt` back.
 ### Delivery layout (wiki repo)
 
     Teacher-Resources.md / Teacher-Resources_fr.md      landing page + course overview
-    Teacher-Tutorial-NN-<slug>.md / _fr.md              teacher guide (one page each)
+    Teacher-Tutorial-NN-<slug>.md / _fr.md              teacher guide (one page each; still has the answer key + rubric)
     Student-Handout-NN-<slug>.md / _fr.md               printable student handout
-    Worksheet-NN-<slug>.md / _fr.md                     worksheet/quiz + answer key + rubric
+    Worksheet-NN-<slug>.md / _fr.md                     worksheet/quiz (links to the Answer Key page)
+    Answer-Key-NN-<slug>.md / _fr.md                    standalone answer key (added 2026-09-23, see below)
     downloads/                                          .pdf, .odt, solutions/NN_<slug>_{starter,solution}.zip
 
-The **answer key stays out of the student-facing pages** (own section at
-the bottom of the Worksheet page, clearly labelled teachers-only; the
-`.pdf` student copy is generated without it). Repo source stays in
+The **answer key stays out of the student-facing pages** (as built: its own
+`Answer-Key-NN-<slug>` page, not a section on the Worksheet page -- clearly
+labelled teachers-only, linked from the Worksheet page rather than printed
+on it, so the Worksheet's own `.pdf` stays student-safe with no filtering
+needed; see "Standalone Answer Key page added" below). Repo source stays in
 `docs/handouts/*.md` (single source of truth); `wiki/` pages and the
 `downloads/` files are generated from it by a script, never hand-edited.
 
@@ -214,4 +217,46 @@ slide decks; video.
 - The sequence/time/prerequisite table in `course_overview.*.md` is **provisional** (times from each tutorial's own "Time Required", prerequisites reasoned from content): confirm each row as its teacher guide is written.
 - Known nit in Tutorial 1 FR handout: "Appuye sur" should be "Appuie sur" (hand-edited text; fix on the next round-trip).
 - Unit recipe for U1+: (1) run the tutorial's build-along in code/real runner and record where it breaks; (2) write student/worksheet/teacher EN then FR; (3) `build_teacher_wiki.py`; (4) tests; (5) reference solutions zip -> `wiki/downloads/solutions/` (decision for U1: build with the raycast builders' approach).
+
+### 2026-09-23 — Standalone Answer Key page added (revises the U0-as-built line above)
+
+Asked for explicitly: a printable answer page per worksheet, separate from
+the teacher guide, so a teacher can hand out just the worksheet and keep
+just the answers, without the timing table/rubric/vocabulary that fills the
+rest of the teacher guide.
+
+- **Still single-sourced from the teacher guide** -- no new hand-authored
+  content. `scripts/extract_worksheet_answer_keys.py` mechanically slices
+  each teacher guide's existing `## Worksheet Answer Key` ("## Corrigé de la
+  feuille d'exercices") section (verified identically headed and positioned
+  -- right before the Rubric heading -- across all 14 tutorials x 2
+  languages) and wraps it with a title (the worksheet's own title, suffix
+  swapped: "Worksheet" -> "Answer Key" / "Feuille d'exercices" -> "Corrigé")
+  and a teachers-only notice. Output:
+  `docs/handouts/<NN_slug>/answer_key.<en|fr>.md` -- GENERATED, do not
+  hand-edit; edit the teacher guide's own answer-key section and re-run
+  (`scripts/build_teacher_wiki.py` calls it automatically, so a plain
+  `python scripts/build_teacher_wiki.py` keeps it current).
+- `answer_key` is now a 4th kind in `build_teacher_wiki.py`'s `KINDS`, so it
+  gets the same treatment as the other three for free: a
+  `Answer-Key-NN-slug[_fr]` wiki page, `.pdf`/`.odt` downloads, and its own
+  column on the `Teacher-Resources` landing table. The generated Worksheet
+  wiki page also gets a `**For teachers:** [Answer key](Answer-Key-...)`
+  pointer line.
+- **Real bug found and fixed along the way**: the printable PDF/ODT
+  renderers (`scripts/generate_tutorial_handouts_{pdf,odt}.py`) had no
+  concept of an HTML comment -- a `<!-- GENERATED ... -->` marker line
+  (needed so the generated-file notice stays invisible on the GitHub wiki,
+  which already hides HTML comments) rendered as ugly literal visible text
+  on the printed page. Fixed generically in both renderers (skip any
+  full-line `<!--...-->`), not just worked around in this one file, since
+  any future handout source sharing wiki + print output would hit the same
+  gap. `tests/test_extract_worksheet_answer_keys.py` pins both the
+  extraction logic and this regression (via `md_to_html()` directly for
+  ODT, and a real rendered PDF's extracted text via `pymupdf` for PDF,
+  `pytest.importorskip`-gated the same way `test_student_download_flyer.py`
+  already gates on `fpdf`/`pymupdf`).
+- Not done: publishing this to the live wiki (`scripts/sync_wiki.sh push`)
+  -- outward-facing, needs explicit approval per the publishing-mechanics
+  note above; the U14 entry only covered the original 3-kind set.
 

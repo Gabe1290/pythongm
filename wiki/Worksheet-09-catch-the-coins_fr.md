@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-09-catch-the-coins_fr.pdf) · [ODT](downloads/Worksheet-09-catch-the-coins_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-09-catch-the-coins_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

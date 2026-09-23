@@ -18,6 +18,9 @@ Extra line-level syntax beyond plain Markdown:
     ![alt](path.png)    an image, scaled to the page's content width,
                           path relative to the source .md's own folder
     [[notes:4]]         4 blank ruled lines for handwriting
+    <!-- text -->      a full-line HTML comment, dropped entirely (hidden by
+                          GitHub's markdown renderer too, so a source shared
+                          between wiki and print stays silent in both)
 
 Usage:
     python3 scripts/generate_tutorial_handouts_pdf.py [SRC.md [OUT.pdf]]
@@ -355,6 +358,10 @@ def render(src_path, out_path):
         if stripped == "---":
             flush_para()
             pdf.render_rule()
+            i += 1
+            continue
+
+        if re.fullmatch(r"<!--.*-->", stripped):
             i += 1
             continue
 

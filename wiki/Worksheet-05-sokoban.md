@@ -4,6 +4,8 @@
 
 **Download:** [PDF](downloads/Worksheet-05-sokoban.pdf) · [ODT](downloads/Worksheet-05-sokoban.odt)
 
+**For teachers:** [Answer key](Answer-Key-05-sokoban)
+
 ---
 
 Name: ______________________________   Date: ______________
