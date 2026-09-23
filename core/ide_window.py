@@ -959,5 +959,35 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
             self.update_ui_state()
             logger.debug("✅ Menus and toolbars recreated with new language")
 
+        if event.type() == QEvent.Type.ActivationChange and self.isActiveWindow():
+            self._reraise_blocked_modal_child()
+
         # Call parent class handler
         super().changeEvent(event)
+
+    def _reraise_blocked_modal_child(self):
+        """A student clicking the main window can bring IT to the front even
+        while one of the IDE's own application-modal dialogs is open (e.g.
+        the color picker -- editors/sprite_editor/color_palette.py,
+        events/action_editor.py, and others all use QColorDialog.getColor).
+        Confirmed on GNOME/Mutter under Wayland, the school lab's actual
+        environment (see project memory), where the window manager's
+        raise-on-click decision doesn't consult Qt's own modality — Qt only
+        blocks INPUT to the main window, it doesn't stop the WM from
+        activating it. The student ends up doubly stuck: the main window is
+        unusable (input-blocked by the modal dialog) and the dialog itself
+        is now hidden behind it with no way to alt-tab back, since it's the
+        same application.
+
+        Unlike the Test-Game focus-restore (core/ide/_test_game.py), which
+        fights a strict compositor for focus it's willing to refuse to a
+        background *process*, this dialog is our own window in the SAME
+        process — re-raising it the instant the main window notices it
+        became active is a same-app stacking request, not a cross-app
+        focus-steal, so it's reliable everywhere rather than best-effort.
+        """
+        from PySide6.QtWidgets import QApplication
+        modal = QApplication.activeModalWidget()
+        if modal is not None and modal is not self:
+            modal.raise_()
+            modal.activateWindow()
