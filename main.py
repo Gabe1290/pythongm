@@ -350,6 +350,25 @@ def main():
     try:
         app = setup_application()
 
+        # One IDE process per machine. Multiple instances of the same
+        # project silently corrupt it (each instance's saves write only the
+        # asset files IT knows about, so several live instances' saves
+        # accumulate into the folder rather than overwriting each other —
+        # a real classroom incident, 10+ instances producing a Test Game
+        # that was a union of every one of them). PYGM_ALLOW_MULTIPLE_
+        # INSTANCES=1 opts back out for a developer who deliberately wants
+        # two IDEs open on two different projects.
+        guard = None
+        if os.environ.get('PYGM_ALLOW_MULTIPLE_INSTANCES') != '1':
+            from core.single_instance import SingleInstanceGuard
+            guard = SingleInstanceGuard()
+            if not guard.is_primary:
+                # Another instance is already running and has been asked to
+                # raise itself -- exit now, before touching any project.
+                sys.exit(0)
+            app._single_instance_guard = guard  # keep alive; would GC otherwise
+            app.aboutToQuit.connect(guard.close)
+
         app_dir, projects_dir = setup_directories()
 
         # Load plugins/extensions BEFORE the IDE is constructed: the action
@@ -362,6 +381,8 @@ def main():
         ensure_plugins_loaded()
 
         ide = PyGameMakerIDE()
+        if guard is not None:
+            guard.raise_requested.connect(ide.bring_to_front)
         ide.show()
 
         # If translator was installed, trigger retranslation of all widgets

@@ -196,14 +196,19 @@ class TestMinimizeForTestGame:
         # skip path still collects cleanly.
         from PySide6.QtCore import Qt
         state = Qt.WindowMaximized if maximized else Qt.WindowNoState
-        return SimpleNamespace(
+        stub = SimpleNamespace(
             windowState=lambda: state,
+            isMinimized=MagicMock(return_value=False),
             showMinimized=MagicMock(),
             showMaximized=MagicMock(),
             showNormal=MagicMock(),
             raise_=MagicMock(),
             activateWindow=MagicMock(),
         )
+        # bring_to_front is exercised for real (not stubbed) so restore's
+        # delegation to it is actually verified, not just assumed.
+        stub.bring_to_front = _ide_cls().bring_to_front.__get__(stub)
+        return stub
 
     def test_minimize_records_normal_state_and_minimizes(self):
         ide = _ide_cls()
