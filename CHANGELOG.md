@@ -7,6 +7,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-09-23
+
+New content plus reliability fixes: Block World crafting, a second
+folder-shared LAN multiplayer extension for firewalled classrooms, four new
+2.5D tutorial lessons, and a full teacher-resources package (student
+handouts, worksheets, answer keys and teacher guides for every tutorial,
+EN+FR, published to the wiki).
+
+### Added
+- **Block World crafting (Tier 8).** `set_crafting_recipe` / `craft_item`
+  actions (desktop + HTML5 + Kivy parity); `set_block_reward` now also
+  works on the Kivy export target (previously desktop/HTML5 only). New
+  sample: `block_world_3`, a standalone crafting demo.
+- **File-exchange multiplayer** (`extensions/multiplayer_files/`) — a
+  second, independent LAN multiplayer extension alongside
+  `multiplayer_lan`: 1990s-BBS-style turn-based play over a shared folder
+  instead of a direct socket connection, for classroom LANs where a
+  firewall blocks the peer-to-peer connections the socket-based extension
+  needs. Host-authoritative rounds (`host_game_files` / `join_game_files`
+  / `leave_game_files` / `set_shared_var_files` / `get_shared_var_files` /
+  `end_turn`), a deadline-based round advance that skips a missing player
+  instead of blocking the game, its own built-in connect/lobby screen, and
+  a new sample, `fichier_1`.
+- **Four new in-app 2.5D tutorial lessons (11-14):** First Steps,
+  Textures/Sky/Floor, Goals/Gems/Monsters, and HUD/Minimap (EN+FR).
+- **Teacher resources for all 14 tutorials, EN+FR** — a student handout, a
+  worksheet, an answer key and a teacher guide (timing, common mistakes,
+  differentiation, a rubric) for every tutorial, plus reference-solution
+  checkpoint projects, all published to the wiki's new "Teacher Resources"
+  section. The answer key is its own printable page, separate from the
+  teacher guide, so a teacher can hand out just the worksheet and keep
+  just the answers.
+- A one-page student download flyer (EN+FR) with a QR code to the latest
+  release.
+
+### Fixed
+- **`start_moving_direction`'s Direction Expression read a plain number as
+  a direction *name*, not degrees** — `"45"` fell back to 0° (right)
+  instead of pointing the object at 45°.
+- **HTML5 exports had no "stay destroyed" (`remember_destroyed`) support
+  at all** — desktop and Kivy already honoured it; a destroyed instance
+  respawned on room re-entry in an exported HTML5 game.
+- **Test Game window focus, three fixes:** the IDE now minimizes itself
+  the moment a test game launches and reliably comes back on top when it
+  closes (`raise_()` + `activateWindow()`, plus a `QApplication.alert()`
+  fallback for window managers — confirmed on GNOME/Wayland — that refuse
+  to hand focus to a background app at all). Previously the game window
+  could get buried behind the editor with no reliable way back.
+- Two modal text-entry loops (the `multiplayer_lan` and
+  `multiplayer_files` connect screens, and
+  `GameRunner._show_name_entry_dialog`) read `event.unicode`
+  unconditionally off the whole process's event queue; a keystroke posted
+  anywhere else in the app while the modal was open could crash it.
+- A missing `Qt` import, dropped during an earlier IDE refactor, broke the
+  GameMaker-import event picker and the Blockly-workspace dock.
+- The asset-type editor registry is now a single formalized table that
+  fails loudly at startup instead of three independently hand-kept lists
+  that had already drifted (one was missing the `playgrounds` asset type
+  entirely).
+- Two false claims caught while writing the teacher guides: Tutorial 2's
+  alarm timing (60 steps is 1 second at the default 60 fps, not 2) and
+  Tutorial 14's default draw-text colour.
+
 ## [1.3.1] - 2026-09-08
 
 Patch release. The downloadable 1.3.0 builds were missing their bundled
