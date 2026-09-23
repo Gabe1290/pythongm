@@ -88,31 +88,35 @@ class TestGameMixin:
         self.showMinimized()
 
     def _restore_after_test_game(self):
-        """Undo _minimize_for_test_game once the test game has exited.
-
-        show{Normal,Maximized}() alone only clears the minimized *state* --
-        most Linux window managers apply focus-stealing prevention and will
-        NOT raise/focus a window just because it un-minimized, so the IDE
-        came back as an unminimized-but-still-buried window behind whatever
-        the student had since clicked on. raise_() + activateWindow() are
-        the explicit "bring to front and focus" request, but they're still
-        best-effort: a strict compositor (confirmed: GNOME/Mutter under
-        Wayland) deliberately refuses to hand focus to a background app at
-        all, by design, so the IDE can come back unminimized and still not
-        be the focused window -- whatever had focus (e.g. the terminal the
-        IDE was launched from) stays focused instead. QApplication.alert()
-        is the fallback for exactly that case: it flashes/highlights the
-        IDE's taskbar or dock entry instead of forcing focus, and unlike
-        raise_()/activateWindow() it IS honored under GNOME's strict
-        focus-stealing prevention, so the student always has an obvious,
-        clickable "the IDE is back" signal even when nothing can force it
-        to the front automatically.
-        """
+        """Undo _minimize_for_test_game once the test game has exited."""
         was_maximized = getattr(self, '_pre_test_game_maximized', False)
         self._pre_test_game_maximized = False
         if was_maximized:
             self.showMaximized()
         else:
+            self.showNormal()
+        self.bring_to_front()
+
+    def bring_to_front(self):
+        """Best-effort "get this window in front of everything else" --
+        shared by _restore_after_test_game and the single-instance guard
+        (core/single_instance.py): a second launch of the IDE asks the
+        already-running instance to do exactly this instead of opening a
+        second editor.
+
+        raise_() + activateWindow() are the explicit "bring to front and
+        focus" request, but they're still best-effort: a strict compositor
+        (confirmed: GNOME/Mutter under Wayland) deliberately refuses to hand
+        focus to a background app at all, by design, so the IDE can stay
+        buried behind whatever the student had since clicked on.
+        QApplication.alert() is the fallback for exactly that case: it
+        flashes/highlights the IDE's taskbar or dock entry instead of
+        forcing focus, and unlike raise_()/activateWindow() it IS honored
+        under GNOME's strict focus-stealing prevention, so the student
+        always has an obvious, clickable "the IDE is back" signal even when
+        nothing can force it to the front automatically.
+        """
+        if self.isMinimized():
             self.showNormal()
         self.raise_()
         self.activateWindow()
