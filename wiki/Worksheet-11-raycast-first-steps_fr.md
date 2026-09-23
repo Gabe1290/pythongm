@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-11-raycast-first-steps_fr.pdf) · [ODT](downloads/Worksheet-11-raycast-first-steps_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-11-raycast-first-steps_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

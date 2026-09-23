@@ -4,6 +4,8 @@
 
 **Download:** [PDF](downloads/Worksheet-08-lunar-lander.pdf) · [ODT](downloads/Worksheet-08-lunar-lander.odt)
 
+**For teachers:** [Answer key](Answer-Key-08-lunar-lander)
+
 ---
 
 Name: ______________________________   Date: ______________

@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-12-raycast-textures_fr.pdf) · [ODT](downloads/Worksheet-12-raycast-textures_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-12-raycast-textures_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

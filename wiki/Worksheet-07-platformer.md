@@ -4,6 +4,8 @@
 
 **Download:** [PDF](downloads/Worksheet-07-platformer.pdf) · [ODT](downloads/Worksheet-07-platformer.odt)
 
+**For teachers:** [Answer key](Answer-Key-07-platformer)
+
 ---
 
 Name: ______________________________   Date: ______________

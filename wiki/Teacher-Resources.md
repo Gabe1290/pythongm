@@ -40,19 +40,19 @@ Each teacher guide ends with a four-level rubric for the finished project and an
 
 ## All resources
 
-| Tutorial | Student handout | Worksheet | Teacher guide |
-|---|---|---|---|
-| 01 getting started | [Student handout](Student-Handout-01-getting-started) | [Worksheet](Worksheet-01-getting-started) | [Teacher guide](Teacher-Guide-01-getting-started) |
-| 02 first game | [Student handout](Student-Handout-02-first-game) | [Worksheet](Worksheet-02-first-game) | [Teacher guide](Teacher-Guide-02-first-game) |
-| 03 pong | [Student handout](Student-Handout-03-pong) | [Worksheet](Worksheet-03-pong) | [Teacher guide](Teacher-Guide-03-pong) |
-| 04 breakout | [Student handout](Student-Handout-04-breakout) | [Worksheet](Worksheet-04-breakout) | [Teacher guide](Teacher-Guide-04-breakout) |
-| 05 sokoban | [Student handout](Student-Handout-05-sokoban) | [Worksheet](Worksheet-05-sokoban) | [Teacher guide](Teacher-Guide-05-sokoban) |
-| 06 maze | [Student handout](Student-Handout-06-maze) | [Worksheet](Worksheet-06-maze) | [Teacher guide](Teacher-Guide-06-maze) |
-| 07 platformer | [Student handout](Student-Handout-07-platformer) | [Worksheet](Worksheet-07-platformer) | [Teacher guide](Teacher-Guide-07-platformer) |
-| 08 lunar lander | [Student handout](Student-Handout-08-lunar-lander) | [Worksheet](Worksheet-08-lunar-lander) | [Teacher guide](Teacher-Guide-08-lunar-lander) |
-| 09 catch the coins | [Student handout](Student-Handout-09-catch-the-coins) | [Worksheet](Worksheet-09-catch-the-coins) | [Teacher guide](Teacher-Guide-09-catch-the-coins) |
-| 10 file exchange multiplayer | [Student handout](Student-Handout-10-file-exchange-multiplayer) | [Worksheet](Worksheet-10-file-exchange-multiplayer) | [Teacher guide](Teacher-Guide-10-file-exchange-multiplayer) |
-| 11 raycast first steps | [Student handout](Student-Handout-11-raycast-first-steps) | [Worksheet](Worksheet-11-raycast-first-steps) | [Teacher guide](Teacher-Guide-11-raycast-first-steps) |
-| 12 raycast textures | [Student handout](Student-Handout-12-raycast-textures) | [Worksheet](Worksheet-12-raycast-textures) | [Teacher guide](Teacher-Guide-12-raycast-textures) |
-| 13 raycast goals monsters | [Student handout](Student-Handout-13-raycast-goals-monsters) | [Worksheet](Worksheet-13-raycast-goals-monsters) | [Teacher guide](Teacher-Guide-13-raycast-goals-monsters) |
-| 14 raycast hud minimap | [Student handout](Student-Handout-14-raycast-hud-minimap) | [Worksheet](Worksheet-14-raycast-hud-minimap) | [Teacher guide](Teacher-Guide-14-raycast-hud-minimap) |
+| Tutorial | Student handout | Worksheet | Answer key | Teacher guide |
+|---|---|---|---|---|
+| 01 getting started | [Student handout](Student-Handout-01-getting-started) | [Worksheet](Worksheet-01-getting-started) | [Answer key](Answer-Key-01-getting-started) | [Teacher guide](Teacher-Guide-01-getting-started) |
+| 02 first game | [Student handout](Student-Handout-02-first-game) | [Worksheet](Worksheet-02-first-game) | [Answer key](Answer-Key-02-first-game) | [Teacher guide](Teacher-Guide-02-first-game) |
+| 03 pong | [Student handout](Student-Handout-03-pong) | [Worksheet](Worksheet-03-pong) | [Answer key](Answer-Key-03-pong) | [Teacher guide](Teacher-Guide-03-pong) |
+| 04 breakout | [Student handout](Student-Handout-04-breakout) | [Worksheet](Worksheet-04-breakout) | [Answer key](Answer-Key-04-breakout) | [Teacher guide](Teacher-Guide-04-breakout) |
+| 05 sokoban | [Student handout](Student-Handout-05-sokoban) | [Worksheet](Worksheet-05-sokoban) | [Answer key](Answer-Key-05-sokoban) | [Teacher guide](Teacher-Guide-05-sokoban) |
+| 06 maze | [Student handout](Student-Handout-06-maze) | [Worksheet](Worksheet-06-maze) | [Answer key](Answer-Key-06-maze) | [Teacher guide](Teacher-Guide-06-maze) |
+| 07 platformer | [Student handout](Student-Handout-07-platformer) | [Worksheet](Worksheet-07-platformer) | [Answer key](Answer-Key-07-platformer) | [Teacher guide](Teacher-Guide-07-platformer) |
+| 08 lunar lander | [Student handout](Student-Handout-08-lunar-lander) | [Worksheet](Worksheet-08-lunar-lander) | [Answer key](Answer-Key-08-lunar-lander) | [Teacher guide](Teacher-Guide-08-lunar-lander) |
+| 09 catch the coins | [Student handout](Student-Handout-09-catch-the-coins) | [Worksheet](Worksheet-09-catch-the-coins) | [Answer key](Answer-Key-09-catch-the-coins) | [Teacher guide](Teacher-Guide-09-catch-the-coins) |
+| 10 file exchange multiplayer | [Student handout](Student-Handout-10-file-exchange-multiplayer) | [Worksheet](Worksheet-10-file-exchange-multiplayer) | [Answer key](Answer-Key-10-file-exchange-multiplayer) | [Teacher guide](Teacher-Guide-10-file-exchange-multiplayer) |
+| 11 raycast first steps | [Student handout](Student-Handout-11-raycast-first-steps) | [Worksheet](Worksheet-11-raycast-first-steps) | [Answer key](Answer-Key-11-raycast-first-steps) | [Teacher guide](Teacher-Guide-11-raycast-first-steps) |
+| 12 raycast textures | [Student handout](Student-Handout-12-raycast-textures) | [Worksheet](Worksheet-12-raycast-textures) | [Answer key](Answer-Key-12-raycast-textures) | [Teacher guide](Teacher-Guide-12-raycast-textures) |
+| 13 raycast goals monsters | [Student handout](Student-Handout-13-raycast-goals-monsters) | [Worksheet](Worksheet-13-raycast-goals-monsters) | [Answer key](Answer-Key-13-raycast-goals-monsters) | [Teacher guide](Teacher-Guide-13-raycast-goals-monsters) |
+| 14 raycast hud minimap | [Student handout](Student-Handout-14-raycast-hud-minimap) | [Worksheet](Worksheet-14-raycast-hud-minimap) | [Answer key](Answer-Key-14-raycast-hud-minimap) | [Teacher guide](Teacher-Guide-14-raycast-hud-minimap) |

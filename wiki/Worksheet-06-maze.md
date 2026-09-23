@@ -4,6 +4,8 @@
 
 **Download:** [PDF](downloads/Worksheet-06-maze.pdf) · [ODT](downloads/Worksheet-06-maze.odt)
 
+**For teachers:** [Answer key](Answer-Key-06-maze)
+
 ---
 
 Name: ______________________________   Date: ______________

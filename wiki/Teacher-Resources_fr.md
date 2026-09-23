@@ -40,19 +40,19 @@ Chaque guide se termine par une grille à quatre niveaux pour le projet terminé
 
 ## Toutes les ressources
 
-| Tutoriel | Fiche élève | Feuille d'exercices | Guide de l'enseignant |
-|---|---|---|---|
-| 01 getting started | [Fiche élève](Student-Handout-01-getting-started_fr) | [Feuille d'exercices](Worksheet-01-getting-started_fr) | [Guide de l'enseignant](Teacher-Guide-01-getting-started_fr) |
-| 02 first game | [Fiche élève](Student-Handout-02-first-game_fr) | [Feuille d'exercices](Worksheet-02-first-game_fr) | [Guide de l'enseignant](Teacher-Guide-02-first-game_fr) |
-| 03 pong | [Fiche élève](Student-Handout-03-pong_fr) | [Feuille d'exercices](Worksheet-03-pong_fr) | [Guide de l'enseignant](Teacher-Guide-03-pong_fr) |
-| 04 breakout | [Fiche élève](Student-Handout-04-breakout_fr) | [Feuille d'exercices](Worksheet-04-breakout_fr) | [Guide de l'enseignant](Teacher-Guide-04-breakout_fr) |
-| 05 sokoban | [Fiche élève](Student-Handout-05-sokoban_fr) | [Feuille d'exercices](Worksheet-05-sokoban_fr) | [Guide de l'enseignant](Teacher-Guide-05-sokoban_fr) |
-| 06 maze | [Fiche élève](Student-Handout-06-maze_fr) | [Feuille d'exercices](Worksheet-06-maze_fr) | [Guide de l'enseignant](Teacher-Guide-06-maze_fr) |
-| 07 platformer | [Fiche élève](Student-Handout-07-platformer_fr) | [Feuille d'exercices](Worksheet-07-platformer_fr) | [Guide de l'enseignant](Teacher-Guide-07-platformer_fr) |
-| 08 lunar lander | [Fiche élève](Student-Handout-08-lunar-lander_fr) | [Feuille d'exercices](Worksheet-08-lunar-lander_fr) | [Guide de l'enseignant](Teacher-Guide-08-lunar-lander_fr) |
-| 09 catch the coins | [Fiche élève](Student-Handout-09-catch-the-coins_fr) | [Feuille d'exercices](Worksheet-09-catch-the-coins_fr) | [Guide de l'enseignant](Teacher-Guide-09-catch-the-coins_fr) |
-| 10 file exchange multiplayer | [Fiche élève](Student-Handout-10-file-exchange-multiplayer_fr) | [Feuille d'exercices](Worksheet-10-file-exchange-multiplayer_fr) | [Guide de l'enseignant](Teacher-Guide-10-file-exchange-multiplayer_fr) |
-| 11 raycast first steps | [Fiche élève](Student-Handout-11-raycast-first-steps_fr) | [Feuille d'exercices](Worksheet-11-raycast-first-steps_fr) | [Guide de l'enseignant](Teacher-Guide-11-raycast-first-steps_fr) |
-| 12 raycast textures | [Fiche élève](Student-Handout-12-raycast-textures_fr) | [Feuille d'exercices](Worksheet-12-raycast-textures_fr) | [Guide de l'enseignant](Teacher-Guide-12-raycast-textures_fr) |
-| 13 raycast goals monsters | [Fiche élève](Student-Handout-13-raycast-goals-monsters_fr) | [Feuille d'exercices](Worksheet-13-raycast-goals-monsters_fr) | [Guide de l'enseignant](Teacher-Guide-13-raycast-goals-monsters_fr) |
-| 14 raycast hud minimap | [Fiche élève](Student-Handout-14-raycast-hud-minimap_fr) | [Feuille d'exercices](Worksheet-14-raycast-hud-minimap_fr) | [Guide de l'enseignant](Teacher-Guide-14-raycast-hud-minimap_fr) |
+| Tutoriel | Fiche élève | Feuille d'exercices | Corrigé | Guide de l'enseignant |
+|---|---|---|---|---|
+| 01 getting started | [Fiche élève](Student-Handout-01-getting-started_fr) | [Feuille d'exercices](Worksheet-01-getting-started_fr) | [Corrigé](Answer-Key-01-getting-started_fr) | [Guide de l'enseignant](Teacher-Guide-01-getting-started_fr) |
+| 02 first game | [Fiche élève](Student-Handout-02-first-game_fr) | [Feuille d'exercices](Worksheet-02-first-game_fr) | [Corrigé](Answer-Key-02-first-game_fr) | [Guide de l'enseignant](Teacher-Guide-02-first-game_fr) |
+| 03 pong | [Fiche élève](Student-Handout-03-pong_fr) | [Feuille d'exercices](Worksheet-03-pong_fr) | [Corrigé](Answer-Key-03-pong_fr) | [Guide de l'enseignant](Teacher-Guide-03-pong_fr) |
+| 04 breakout | [Fiche élève](Student-Handout-04-breakout_fr) | [Feuille d'exercices](Worksheet-04-breakout_fr) | [Corrigé](Answer-Key-04-breakout_fr) | [Guide de l'enseignant](Teacher-Guide-04-breakout_fr) |
+| 05 sokoban | [Fiche élève](Student-Handout-05-sokoban_fr) | [Feuille d'exercices](Worksheet-05-sokoban_fr) | [Corrigé](Answer-Key-05-sokoban_fr) | [Guide de l'enseignant](Teacher-Guide-05-sokoban_fr) |
+| 06 maze | [Fiche élève](Student-Handout-06-maze_fr) | [Feuille d'exercices](Worksheet-06-maze_fr) | [Corrigé](Answer-Key-06-maze_fr) | [Guide de l'enseignant](Teacher-Guide-06-maze_fr) |
+| 07 platformer | [Fiche élève](Student-Handout-07-platformer_fr) | [Feuille d'exercices](Worksheet-07-platformer_fr) | [Corrigé](Answer-Key-07-platformer_fr) | [Guide de l'enseignant](Teacher-Guide-07-platformer_fr) |
+| 08 lunar lander | [Fiche élève](Student-Handout-08-lunar-lander_fr) | [Feuille d'exercices](Worksheet-08-lunar-lander_fr) | [Corrigé](Answer-Key-08-lunar-lander_fr) | [Guide de l'enseignant](Teacher-Guide-08-lunar-lander_fr) |
+| 09 catch the coins | [Fiche élève](Student-Handout-09-catch-the-coins_fr) | [Feuille d'exercices](Worksheet-09-catch-the-coins_fr) | [Corrigé](Answer-Key-09-catch-the-coins_fr) | [Guide de l'enseignant](Teacher-Guide-09-catch-the-coins_fr) |
+| 10 file exchange multiplayer | [Fiche élève](Student-Handout-10-file-exchange-multiplayer_fr) | [Feuille d'exercices](Worksheet-10-file-exchange-multiplayer_fr) | [Corrigé](Answer-Key-10-file-exchange-multiplayer_fr) | [Guide de l'enseignant](Teacher-Guide-10-file-exchange-multiplayer_fr) |
+| 11 raycast first steps | [Fiche élève](Student-Handout-11-raycast-first-steps_fr) | [Feuille d'exercices](Worksheet-11-raycast-first-steps_fr) | [Corrigé](Answer-Key-11-raycast-first-steps_fr) | [Guide de l'enseignant](Teacher-Guide-11-raycast-first-steps_fr) |
+| 12 raycast textures | [Fiche élève](Student-Handout-12-raycast-textures_fr) | [Feuille d'exercices](Worksheet-12-raycast-textures_fr) | [Corrigé](Answer-Key-12-raycast-textures_fr) | [Guide de l'enseignant](Teacher-Guide-12-raycast-textures_fr) |
+| 13 raycast goals monsters | [Fiche élève](Student-Handout-13-raycast-goals-monsters_fr) | [Feuille d'exercices](Worksheet-13-raycast-goals-monsters_fr) | [Corrigé](Answer-Key-13-raycast-goals-monsters_fr) | [Guide de l'enseignant](Teacher-Guide-13-raycast-goals-monsters_fr) |
+| 14 raycast hud minimap | [Fiche élève](Student-Handout-14-raycast-hud-minimap_fr) | [Feuille d'exercices](Worksheet-14-raycast-hud-minimap_fr) | [Corrigé](Answer-Key-14-raycast-hud-minimap_fr) | [Guide de l'enseignant](Teacher-Guide-14-raycast-hud-minimap_fr) |

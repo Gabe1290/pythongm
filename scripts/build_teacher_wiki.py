@@ -3,12 +3,16 @@
 
 Source of truth: docs/handouts/<NN_slug>/{student,teacher,worksheet}.<en|fr>.md
 (plus optional images and hand-edited .odt drafts alongside), and the course
-overview docs/handouts/course_overview.<lang>.md.
+overview docs/handouts/course_overview.<lang>.md. answer_key.<lang>.md is
+ALSO generated (by scripts/extract_worksheet_answer_keys.py, called below) --
+it is a slice of teacher.<lang>.md's own "Worksheet Answer Key" section, not
+a second hand-authored source; edit the teacher guide, not this file.
 
 Output (all under wiki/, then pushed by scripts/sync_wiki.sh):
     Student-Handout-<NN>-<slug>[_fr].md     Teacher-Guide-<NN>-<slug>[_fr].md
-    Worksheet-<NN>-<slug>[_fr].md           Teacher-Resources[_fr].md (landing)
-    images/handouts/...                     downloads/<same stem>.pdf / .odt
+    Worksheet-<NN>-<slug>[_fr].md           Answer-Key-<NN>-<slug>[_fr].md
+    Teacher-Resources[_fr].md (landing)     images/handouts/...
+    downloads/<same stem>.pdf / .odt
 
 The wiki pages and downloads are GENERATED -- edit the docs/handouts sources.
 
@@ -28,6 +32,7 @@ WIKI = os.path.join(ROOT, "wiki")
 KINDS = {  # kind -> (wiki prefix, label en, label fr)
     "student": ("Student-Handout", "Student handout", "Fiche élève"),
     "worksheet": ("Worksheet", "Worksheet", "Feuille d'exercices"),
+    "answer_key": ("Answer-Key", "Answer key", "Corrigé"),
     "teacher": ("Teacher-Guide", "Teacher guide", "Guide de l'enseignant"),
 }
 LANGS = {"en": "", "fr": "_fr"}
@@ -35,6 +40,7 @@ HOME = {"en": ("Home", "Home", "Teacher-Resources", "Teacher resources"),
         "fr": ("Home_fr", "Accueil", "Teacher-Resources_fr", "Ressources pour enseignants")}
 DL_LABEL = {"en": "Download:", "fr": "Télécharger :"}
 SOLUTIONS_LABEL = {"en": "Reference projects (ZIP)", "fr": "Projets de référence (ZIP)"}
+ANSWER_KEY_POINTER = {"en": "For teachers:", "fr": "Pour les enseignant·e·s :"}
 NOTES = {"en": "My notes", "fr": "Mes notes"}
 CALLOUT = {"en": {"TIP": "Tip", "INFO": "Info", "DONE": "Done"},
            "fr": {"TIP": "Astuce", "INFO": "Info", "DONE": "Réussi"}}
@@ -81,6 +87,18 @@ def convert(md, lang, img_dir_rel):
     return "\n".join(out) + "\n"
 
 
+def _refresh_answer_keys():
+    """Regenerate docs/handouts/*/answer_key.<lang>.md from each teacher guide's
+    own "Worksheet Answer Key" section (single source of truth stays the
+    teacher guide -- see scripts/extract_worksheet_answer_keys.py)."""
+    spec = importlib.util.spec_from_file_location(
+        "extract_worksheet_answer_keys", os.path.join(ROOT, "scripts", "extract_worksheet_answer_keys.py"))
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules["extract_worksheet_answer_keys"] = mod
+    spec.loader.exec_module(mod)
+    mod.build()
+
+
 def _build_solutions():
     """Checkpoint project zips (tools/tutorial_reference_projects.py) -> wiki/downloads/solutions/."""
     spec = importlib.util.spec_from_file_location(
@@ -101,6 +119,7 @@ def title_of(md):
 def build(make_pdf=True):
     os.makedirs(os.path.join(WIKI, "downloads"), exist_ok=True)
     catalogue = {}  # nn_slug -> {lang: {kind: (stem, title)}}
+    _refresh_answer_keys()
     _build_solutions()
     for d in sorted(glob.glob(os.path.join(SRC, "[0-9][0-9]_*"))):
         nn_slug = os.path.basename(d)
@@ -128,6 +147,13 @@ def build(make_pdf=True):
             zip_rel = f"downloads/solutions/{nn_slug}_checkpoints.zip"
             if kind == "teacher" and os.path.exists(os.path.join(WIKI, zip_rel)):
                 downloads.append(f"[{SOLUTIONS_LABEL[lang]}]({zip_rel})")
+            ak_link = ""
+            if kind == "worksheet":
+                # answer_key sorts before worksheet, so it is already catalogued
+                ak = catalogue.get(nn_slug, {}).get(lang, {}).get("answer_key")
+                if ak:
+                    ak_label = KINDS["answer_key"][1 if lang == "en" else 2]
+                    ak_link = f"\n**{ANSWER_KEY_POINTER[lang]}** [{ak_label}]({ak[0]})\n"
             imgs = glob.glob(os.path.join(d, "*.png"))
             if imgs:
                 dst = os.path.join(WIKI, "images", "handouts", nn_slug)
@@ -139,7 +165,7 @@ def build(make_pdf=True):
             banner = f"*[{home_l}]({home}) | [{res_l}]({res})*"
             dl = f"\n**{DL_LABEL[lang]}** " + " · ".join(downloads) + "\n" if downloads else ""
             open(os.path.join(WIKI, name + ".md"), "w", encoding="utf-8", newline="\n").write(
-                f"{first}\n\n{banner}\n{dl}\n---\n{rest}")
+                f"{first}\n\n{banner}\n{dl}{ak_link}\n---\n{rest}")
             catalogue.setdefault(nn_slug, {}).setdefault(lang, {})[kind] = (name, title_of(md))
     for lang in LANGS:
         write_landing(lang, catalogue)
@@ -149,15 +175,15 @@ def build(make_pdf=True):
 def write_landing(lang, catalogue):
     ov = os.path.join(SRC, f"course_overview.{lang}.md")
     head = open(ov, encoding="utf-8").read() if os.path.exists(ov) else f"# {HOME[lang][3]}\n"
-    hdr = ["Tutorial", "Student handout", "Worksheet", "Teacher guide"] if lang == "en" else \
-          ["Tutoriel", "Fiche élève", "Feuille d'exercices", "Guide de l'enseignant"]
-    rows = [f"| {' | '.join(hdr)} |", "|---|---|---|---|"]
+    hdr = ["Tutorial", "Student handout", "Worksheet", "Answer key", "Teacher guide"] if lang == "en" else \
+          ["Tutoriel", "Fiche élève", "Feuille d'exercices", "Corrigé", "Guide de l'enseignant"]
+    rows = [f"| {' | '.join(hdr)} |", "|---|---|---|---|---|"]
     for nn_slug in sorted(catalogue):
         kinds = catalogue[nn_slug].get(lang, {})
         if not kinds:
             continue
         cells = [f"[{KINDS[k][1 if lang == 'en' else 2]}]({kinds[k][0]})" if k in kinds else "—"
-                 for k in ("student", "worksheet", "teacher")]
+                 for k in ("student", "worksheet", "answer_key", "teacher")]
         rows.append(f"| {nn_slug.replace('_', ' ', 1).replace('_', ' ')} | " + " | ".join(cells) + " |")
     title, _, rest = head.partition("\n")
     home, home_l = HOME[lang][0], HOME[lang][1]

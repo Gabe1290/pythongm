@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-06-maze_fr.pdf) · [ODT](downloads/Worksheet-06-maze_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-06-maze_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-01-getting-started_fr.pdf) · [ODT](downloads/Worksheet-01-getting-started_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-01-getting-started_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________

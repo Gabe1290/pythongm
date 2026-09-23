@@ -15,7 +15,7 @@ REPO = Path(__file__).resolve().parent.parent
 HANDOUTS = REPO / "docs" / "handouts"
 WIKI = REPO / "wiki"
 TUTORIALS = REPO / "Tutorials"
-KINDS = ("student", "worksheet", "teacher")
+KINDS = ("student", "worksheet", "answer_key", "teacher")
 LANGS = ("en", "fr")
 
 DIRS = sorted(p for p in HANDOUTS.glob("[0-9][0-9]_*") if p.is_dir())

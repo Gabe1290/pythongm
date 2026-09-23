@@ -4,6 +4,8 @@
 
 **Download:** [PDF](downloads/Worksheet-09-catch-the-coins.pdf) · [ODT](downloads/Worksheet-09-catch-the-coins.odt)
 
+**For teachers:** [Answer key](Answer-Key-09-catch-the-coins)
+
 ---
 
 Name: ______________________________   Date: ______________

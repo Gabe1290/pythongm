@@ -4,6 +4,8 @@
 
 **Télécharger :** [PDF](downloads/Worksheet-03-pong_fr.pdf) · [ODT](downloads/Worksheet-03-pong_fr.odt)
 
+**Pour les enseignant·e·s :** [Corrigé](Answer-Key-03-pong_fr)
+
 ---
 
 Nom : ______________________________   Date : ______________
