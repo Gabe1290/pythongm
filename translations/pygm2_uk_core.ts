@@ -365,6 +365,21 @@ Some changes may require restarting the IDE to take effect.</source>
         <source>v{0}</source>
         <translation>v{0}</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="252"/>
+        <source>Multiple IDE windows</source>
+        <translation>Кілька вікон IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="256"/>
+        <source>Allow several IDE instances at the same time</source>
+        <translation>Дозволити одночасний запуск кількох екземплярів IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="257"/>
+        <source>By default only one PyGameMaker IDE runs at a time, because two instances saving into the same project folder corrupt it. Enable this only if you open different projects in each instance. Takes effect the next time the IDE starts.</source>
+        <translation>За замовчуванням одночасно працює лише одна IDE PyGameMaker, тому що два екземпляри, які зберігають дані в одну й ту саму папку проєкту, пошкоджують її. Вмикайте цю опцію, лише якщо в кожному екземплярі відкрито окремий проєкт. Набуває чинності під час наступного запуску IDE.</translation>
+    </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>

@@ -247,6 +247,21 @@ class PreferencesDialog(QDialog):
         perf_form.addRow(self.tr("Maximum undo steps:"), self.max_undo)
 
         advanced_layout.addWidget(perf_group)
+
+        # Multiple IDE instances (core/single_instance.py)
+        instances_group = QGroupBox(self.tr("Multiple IDE windows"))
+        instances_form = QFormLayout(instances_group)
+
+        self.allow_multiple_instances = QCheckBox(
+            self.tr("Allow several IDE instances at the same time"))
+        self.allow_multiple_instances.setToolTip(self.tr(
+            "By default only one PyGameMaker IDE runs at a time, because two "
+            "instances saving into the same project folder corrupt it. "
+            "Enable this only if you open different projects in each "
+            "instance. Takes effect the next time the IDE starts."))
+        instances_form.addRow("", self.allow_multiple_instances)
+
+        advanced_layout.addWidget(instances_group)
         advanced_layout.addStretch()
 
         self.tabs.addTab(advanced_tab, self.tr("Advanced"))
@@ -358,6 +373,8 @@ class PreferencesDialog(QDialog):
         self.debug_mode.setChecked(advanced_config['debug_mode'])
         self.max_undo.setValue(advanced_config['max_undo_steps'])
         self.console_output.setChecked(advanced_config['console_output'])
+        self.allow_multiple_instances.setChecked(
+            advanced_config['allow_multiple_instances'])
 
         # Extensions settings
         from events.plugin_loader import list_available_extensions
@@ -462,7 +479,8 @@ class PreferencesDialog(QDialog):
         Config.set_advanced_config(
             debug_mode=self.debug_mode.isChecked(),
             max_undo_steps=self.max_undo.value(),
-            console_output=self.console_output.isChecked()
+            console_output=self.console_output.isChecked(),
+            allow_multiple_instances=self.allow_multiple_instances.isChecked()
         )
 
         # Extensions settings

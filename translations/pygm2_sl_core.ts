@@ -369,6 +369,21 @@ Nekatere spremembe lahko zahtevajo ponovni zagon IDE, da začnejo veljati.</tran
         <source>v{0}</source>
         <translation>v{0}</translation>
     </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="252"/>
+        <source>Multiple IDE windows</source>
+        <translation>Več oken IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="256"/>
+        <source>Allow several IDE instances at the same time</source>
+        <translation>Dovoli več hkratnih primerkov IDE</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/preferences_dialog.py" line="257"/>
+        <source>By default only one PyGameMaker IDE runs at a time, because two instances saving into the same project folder corrupt it. Enable this only if you open different projects in each instance. Takes effect the next time the IDE starts.</source>
+        <translation>Privzeto hkrati deluje samo ena PyGameMaker IDE, ker dva primerka, ki shranjujeta v isto mapo projekta, mapo poškodujeta. To možnost vklopite le, če v vsakem primerku odprete drug projekt. Začne veljati ob naslednjem zagonu IDE.</translation>
+    </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>
