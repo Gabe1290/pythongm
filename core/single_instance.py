@@ -33,6 +33,8 @@ even in the worst case (the compositor refuses to raise it) the real fix
 here is that a SECOND process never gets to open the project at all.
 """
 
+import os
+
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
@@ -42,6 +44,20 @@ logger = get_logger(__name__)
 
 SERVER_NAME = "PyGameMakerIDE-single-instance"
 _CONNECT_TIMEOUT_MS = 500
+
+
+def multiple_instances_allowed() -> bool:
+    """True when the user has opted out of the one-IDE-per-machine guard.
+
+    Two opt-outs, either is enough: the ``PYGM_ALLOW_MULTIPLE_INSTANCES=1``
+    environment variable (developers, wrapper scripts) or the Preferences ->
+    Advanced checkbox, stored as ``advanced.allow_multiple_instances``.
+    Read once at startup, so a change takes effect on the next launch.
+    """
+    if os.environ.get('PYGM_ALLOW_MULTIPLE_INSTANCES') == '1':
+        return True
+    from utils.config import Config
+    return bool(Config.get_advanced_config()['allow_multiple_instances'])
 
 
 class SingleInstanceGuard(QObject):

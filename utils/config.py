@@ -330,6 +330,8 @@ class Config:
             'debug_mode': advanced_config.get('debug_mode', False),
             'max_undo_steps': advanced_config.get('max_undo_steps', 50),
             'console_output': advanced_config.get('console_output', True),
+            'allow_multiple_instances': advanced_config.get(
+                'allow_multiple_instances', False),
         }
 
     @classmethod

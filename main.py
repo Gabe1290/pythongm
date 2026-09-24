@@ -355,12 +355,14 @@ def main():
         # asset files IT knows about, so several live instances' saves
         # accumulate into the folder rather than overwriting each other —
         # a real classroom incident, 10+ instances producing a Test Game
-        # that was a union of every one of them). PYGM_ALLOW_MULTIPLE_
-        # INSTANCES=1 opts back out for a developer who deliberately wants
-        # two IDEs open on two different projects.
+        # that was a union of every one of them). Opt out with
+        # PYGM_ALLOW_MULTIPLE_INSTANCES=1 or Preferences -> Advanced, for
+        # someone who deliberately wants two IDEs open on two different
+        # projects.
         guard = None
-        if os.environ.get('PYGM_ALLOW_MULTIPLE_INSTANCES') != '1':
-            from core.single_instance import SingleInstanceGuard
+        from core.single_instance import (
+            SingleInstanceGuard, multiple_instances_allowed)
+        if not multiple_instances_allowed():
             guard = SingleInstanceGuard()
             if not guard.is_primary:
                 # Another instance is already running and has been asked to
