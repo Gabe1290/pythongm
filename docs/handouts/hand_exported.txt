@@ -1,0 +1,14 @@
+# Handouts whose .odt AND .pdf are finished BY HAND in LibreOffice Writer.
+#
+# For every stem listed here (<NN_slug>/<kind>.<lang>, no extension):
+#   * the .pdf is exported by hand from the .odt (keeps drawn callouts etc.)
+#   * scripts/generate_tutorial_handouts_pdf.py / _odt.py refuse to write it
+#     (pass --force to override on purpose)
+#   * scripts/build_teacher_wiki.py never regenerates or overwrites its PDF in
+#     wiki/downloads/; publish a new export deliberately with
+#       python scripts/build_teacher_wiki.py --adopt-exports
+#     (copies docs/handouts/<stem>.pdf -> wiki/downloads/)
+# The .md still feeds the wiki page text; sync it to the final ODT wording.
+# See docs/TUTORIAL_HANDOUT_WORKFLOW.md.
+01_getting_started/student.fr
+01_getting_started/student.en

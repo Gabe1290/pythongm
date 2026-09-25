@@ -11,10 +11,35 @@ doing this once by hand for `TUTORIAL_01_STUDENT_HANDOUT_FR` and finding
 two real bugs in the generator along the way (see "Landmines" below) —
 this doc exists so the next round doesn't re-derive any of it.
 
-**The `.md` files stay the single source of truth.** `.odt` and `.pdf`
-are *generated* from them (`scripts/generate_tutorial_handouts_odt.py` /
-`_pdf.py`). A hand-edited `.odt` is a temporary fork that must get
-folded back into its `.md`, not a new parallel source.
+**Two kinds of handout (2026-09-25 rule).**
+
+1. *Draft handouts* (most of them): the `.md` is the source; the `.odt`
+   and `.pdf` are *generated* from it (`scripts/generate_tutorial_handouts_odt.py`
+   / `_pdf.py`, run by `scripts/build_teacher_wiki.py`).
+2. *Hand-finished handouts*, listed in `docs/handouts/hand_exported.txt`
+   (Tutorial 1 student handout, FR + EN, so far): the **`.odt` is the
+   source and the `.pdf` is exported BY HAND from it** in Writer (this keeps
+   the drawn callouts, red circles and placed screenshots, which the `.md`
+   pipeline cannot represent). The `.md` is then synced *to* the final ODT
+   wording so the wiki page matches, but its generated PDF is never the
+   deliverable.
+
+For a listed handout the tooling is fenced off, on purpose:
+
+- `generate_tutorial_handouts_pdf.py` / `_odt.py` **refuse** to write it
+  (exit 2) unless you pass `--force`; their bulk mode skips it.
+- `build_teacher_wiki.py` never regenerates its PDF and never overwrites
+  `wiki/downloads/<name>.pdf`; it still copies the `.odt` and rebuilds the
+  wiki page from the `.md`. It fails loudly if the published PDF is missing.
+- To publish a new hand export: save it next to the ODT as
+  `docs/handouts/<NN_slug>/<kind>.<lang>.pdf` (that folder's PDFs are
+  gitignored), then run `python scripts/build_teacher_wiki.py --adopt-exports`
+  and commit `wiki/downloads/`.
+- `tests/test_hand_exported_handouts.py` pins all of the above.
+
+To hand-finish another handout, add its stem to `hand_exported.txt`
+*before* the first hand edit. A hand-edited `.odt` of a draft handout is
+still a temporary fork that must be folded back into its `.md`.
 
 ## The procedure
 

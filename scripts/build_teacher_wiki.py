@@ -16,7 +16,13 @@ Output (all under wiki/, then pushed by scripts/sync_wiki.sh):
 
 The wiki pages and downloads are GENERATED -- edit the docs/handouts sources.
 
-Usage:  python scripts/build_teacher_wiki.py [--no-pdf]
+HAND-FINISHED HANDOUTS (docs/handouts/hand_exported.txt): the PDF of a listed
+handout is exported by hand from its hand-edited .odt. This script never
+regenerates it and never overwrites its copy in wiki/downloads/. To publish a
+new hand export (saved next to the .odt as docs/handouts/<stem>.pdf):
+    python scripts/build_teacher_wiki.py --adopt-exports
+
+Usage:  python scripts/build_teacher_wiki.py [--no-pdf | --adopt-exports]
 """
 import glob
 import importlib.util
@@ -25,6 +31,9 @@ import re
 import shutil
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from hand_exported import hand_exported_stems, is_hand_exported  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "docs", "handouts")
@@ -118,6 +127,62 @@ def title_of(md):
     return "Untitled"
 
 
+def _run_generators(src, make_pdf):
+    """Generate the derived .pdf/.odt next to a source .md -- except a
+    hand-finished handout's PDF (never regenerated) and any existing .odt
+    (it may hold a human's hand edits)."""
+    if make_pdf and not is_hand_exported(src):
+        subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "generate_tutorial_handouts_pdf.py"), src],
+                       check=True, stdout=subprocess.DEVNULL)
+    odt = src[:-2] + "odt"
+    if make_pdf and not os.path.exists(odt) and shutil.which("soffice"):
+        subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "generate_tutorial_handouts_odt.py"), src],
+                       check=True, stdout=subprocess.DEVNULL)
+
+
+def _publish_downloads(src, name, downloads_dir):
+    """Copy the derived files into wiki/downloads and return their wiki links.
+    A hand-finished handout's PDF is NOT copied (that would overwrite the real
+    export with whatever sits next to the .md); the committed download is kept."""
+    hand = is_hand_exported(src)
+    links = []
+    for ext in ("pdf", "odt"):
+        f = src[:-2] + ext
+        dst = os.path.join(downloads_dir, f"{name}.{ext}")
+        if hand and ext == "pdf":
+            if not os.path.exists(dst):
+                raise SystemExit(f"hand-finished PDF missing: {os.path.relpath(dst, ROOT)} -- "
+                                 f"export it from the .odt, then run --adopt-exports")
+            links.append(f"[PDF](downloads/{name}.pdf)")
+        elif os.path.exists(f):
+            shutil.copy(f, dst)
+            links.append(f"[{ext.upper()}](downloads/{name}.{ext})")
+    return links
+
+
+def adopt_exports(handouts_dir=SRC, downloads_dir=None, stems=None):
+    """Deliberately publish hand-exported PDFs: docs/handouts/<stem>.pdf ->
+    wiki/downloads/<wiki stem>.pdf, for the stems in hand_exported.txt."""
+    downloads_dir = downloads_dir or os.path.join(WIKI, "downloads")
+    os.makedirs(downloads_dir, exist_ok=True)
+    adopted = []
+    for st in sorted(hand_exported_stems() if stems is None else stems):
+        nn_slug, base = st.split("/")
+        kind, lang = base.split(".")
+        pdf = os.path.join(handouts_dir, nn_slug, base + ".pdf")
+        if not os.path.exists(pdf):
+            print(f"  no export for {st} (expected {os.path.relpath(pdf, handouts_dir)}) -- skipped")
+            continue
+        with open(pdf, "rb") as fh:
+            if fh.read(5) != b"%PDF-":
+                raise SystemExit(f"{pdf} is not a PDF")
+        dst = os.path.join(downloads_dir, f"{stem(kind, nn_slug, lang)}.pdf")
+        shutil.copy(pdf, dst)
+        print(f"  adopted {st}.pdf -> {os.path.relpath(dst, ROOT)}")
+        adopted.append(st)
+    return adopted
+
+
 def build(make_pdf=True):
     os.makedirs(os.path.join(WIKI, "downloads"), exist_ok=True)
     catalogue = {}  # nn_slug -> {lang: {kind: (stem, title)}}
@@ -132,20 +197,8 @@ def build(make_pdf=True):
             md = open(src, encoding="utf-8").read()
             name = stem(kind, nn_slug, lang)
             home, home_l, res, res_l = HOME[lang]
-            downloads = []
-            if make_pdf:
-                subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "generate_tutorial_handouts_pdf.py"), src],
-                               check=True, stdout=subprocess.DEVNULL)
-            odt = src[:-2] + "odt"
-            if make_pdf and not os.path.exists(odt) and shutil.which("soffice"):
-                # never regenerate an existing .odt: it may hold a human's hand edits
-                subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "generate_tutorial_handouts_odt.py"), src],
-                               check=True, stdout=subprocess.DEVNULL)
-            for ext in ("pdf", "odt"):
-                f = src[:-2] + ext
-                if os.path.exists(f):
-                    shutil.copy(f, os.path.join(WIKI, "downloads", f"{name}.{ext}"))
-                    downloads.append(f"[{ext.upper()}](downloads/{name}.{ext})")
+            _run_generators(src, make_pdf)
+            downloads = _publish_downloads(src, name, os.path.join(WIKI, "downloads"))
             zip_rel = f"downloads/solutions/{nn_slug}_checkpoints.zip"
             if kind == "teacher" and os.path.exists(os.path.join(WIKI, zip_rel)):
                 downloads.append(f"[{SOLUTIONS_LABEL[lang]}]({zip_rel})")
@@ -195,5 +248,8 @@ def write_landing(lang, catalogue):
 
 
 if __name__ == "__main__":
+    if "--adopt-exports" in sys.argv:
+        adopt_exports()
+        raise SystemExit(0)
     cat = build(make_pdf="--no-pdf" not in sys.argv)
     print(f"built {sum(len(k) for v in cat.values() for k in v.values())} pages for {len(cat)} tutorial(s)")
