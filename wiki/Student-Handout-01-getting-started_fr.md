@@ -55,14 +55,14 @@ organisées par type. Fais un clic droit sur une catégorie pour créer
 une nouvelle ressource de ce type.
 
 - **Sprites** — les images et animations utilisées par ton jeu.
-- **Sons** — effets sonores et musique.
-- **Objets** — les entités du jeu qui font réellement quelque chose.
-- **Salles** — les niveaux ou écrans de ton jeu.
+- **Sounds** — effets sonores et musique.
+- **Objects** — les entités du jeu qui font réellement quelque chose.
+- **Rooms** — les salles, c'est-à-dire les niveaux ou écrans de ton jeu.
 
 ### 2. Zone d'édition (centre)
 
 C'est ici que tu édites les ressources. Double-clique sur une ressource
-dans l'arborescence, et son éditeur s'ouvre ici dans un onglet.
+dans la liste des ressources, et son éditeur s'ouvre ici dans un onglet.
 
 - L'**éditeur de sprites** permet de visualiser et dessiner des sprites.
 - L'**éditeur d'objets** permet de définir ce que fait un objet, à l'aide d'événements.
@@ -95,19 +95,19 @@ C'est maintenant le moment de construire quelque chose ! Suis ces huit
 avant de te dire sur quoi cliquer.
 
 - [ ] **1. Créer un nouveau projet.** Chaque jeu commence par un projet, qui est un dossier contenant toutes ses ressources. Va dans **Fichier > Nouveau projet** (ou appuie sur **Ctrl+N**), donne un nom à ton projet et choisis où l'enregistrer.
-- [ ] **2. Créer un sprite.** Un sprite est l'image qu'utilisera ton personnage (ou tout autre objet). Fais un clic droit sur **Sprites**, choisis **Créer un sprite**, et donne-lui un nom, par exemple `spr_player`.
+- [ ] **2. Créer un sprite.** Un sprite est l'image qu'utilisera ton personnage (ou tout autre objet). Fais un clic droit sur **Sprites**, choisis **+ Créer un nouveau Sprite...**, et donne-lui un nom, par exemple `spr_player`.
 - [ ] **3. Éditer le sprite.** Double-clique sur le nom du sprite, puis dessine un personnage simple dans l'éditeur de sprites.
 
 ![L'éditeur de sprites avec spr_player](images/handouts/01_getting_started/tutorial_01_handout_sprite_fr.png)
 
-- [ ] **4. Créer un objet.** Un sprite n'est qu'une image portée par un objet — un objet est ce qui se comporte réellement dans ton jeu. Fais un clic droit sur **Objets**, choisis **Créer un objet**, et donne-lui un nom, par exemple `obj_player`.
-- [ ] **5. Assigner un sprite.** Assigne un sprite à l'objet que tu viens de créer en choisissant dans la liste affichée dans les propriétés de l'objet.
+- [ ] **4. Créer un objet.** Un sprite n'est qu'une image portée par un objet — un objet est ce qui se comporte réellement dans ton jeu. Fais un clic droit sur **Objects**, choisis **+ Créer un nouveau Object...**, et donne-lui un nom, par exemple `obj_player`.
+- [ ] **5. Assigner un sprite.** Assigne un sprite à l'objet que tu viens de créer en choisissant `spr_player` dans la liste affichée dans les propriétés de l'objet.
 
 ![Choisir le sprite dans les propriétés de l'objet](images/handouts/01_getting_started/tutorial_01_handout_object_fr.png)
 
 - [ ] **6. Renommer la salle.** Une salle est un niveau de ton jeu ou l'écran de ton jeu. Fais un clic droit sur la salle `room0` et renomme-la `room_game`. Ce sera ton tout premier niveau.
 - [ ] **7. Placer un objet.** Un objet n'apparaît dans le jeu qu'une fois placé dans une salle. Double-clique sur ta salle pour ouvrir l'éditeur de salles, sélectionne `obj_player` dans la liste, puis clique dans la salle pour le placer.
-- [ ] **8. Tester le jeu.** Appuie sur **F5** (ou clique sur le triangle vert ▶ dans la barre d'icônes, ou va dans **Compiler > Tester le jeu**). Une fenêtre s'ouvrira montrant ta salle, avec l'objet que tu as placé dedans !
+- [ ] **8. Tester le jeu.** Appuie sur **F5** (ou clique sur ▶ (triangle vert) dans la barre d'icônes ou va dans **Compiler > Tester le jeu**). Une fenêtre s'ouvrira montrant ta salle, avec l'objet que tu as placé dedans !
 
 > **Réussi:** Félicitations ! Tu viens de créer ton premier projet
 > PyGameMaker. Il ne fait pas encore grand-chose — ton objet ne
