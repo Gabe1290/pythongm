@@ -8,7 +8,7 @@
 
 **Part A:** 1-B, 2-D, 3-C, 4-A.
 
-**Part B:** 1. The Asset Tree (left panel). 2. The Sprite Editor (Editor Area, opened by double-clicking the sprite). 3. The Properties panel (right). 4. The toolbar (or **Build > Test Game**, or F5).
+**Part B:** 1. The Asset List (left panel). 2. The Sprite Editor (Editor Area, opened by double-clicking the sprite). 3. The Properties panel (right). 4. The toolbar (or **Build > Test Game**, or F5).
 
 **Part C:**
 

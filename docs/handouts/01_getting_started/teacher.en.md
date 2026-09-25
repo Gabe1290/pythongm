@@ -22,7 +22,7 @@ These are starting points — adjust freely to your class and lab setup.
 | Segment | Time | What happens |
 | Welcome & discussion | 5 min | Open the tutorial panel (page 1), talk through what the series covers |
 | Interface tour | 10 min | Page 2 — point out the 3 panels live on your own screen/projector |
-| Hands-on: first project | 20-25 min | Page 3 — the 6 steps below, walk the room |
+| Hands-on: first project | 20-25 min | Page 3 — the 8 steps below, walk the room |
 | Test & celebrate | 5 min | Everyone presses F5 and sees their object appear |
 | Wrap-up / next time | 5 min | Page 4 — preview what Tutorial 2 adds |
 
@@ -33,20 +33,28 @@ to a location they will remember (their own folder / the class shared
 drive). Decide this convention before class starts.
 2. **Create a Sprite** (`spr_player`) — The `spr_` prefix is a
 PyGameMaker naming convention, not a requirement, but establishing it
-now keeps later projects organized. Students can import an image or
-draw one; drawing takes longer, so set a time limit (e.g. "2 minutes,
-just a quick shape") if the session is tight.
-3. **Create an Object** (`obj_player`) — **Most common mistake**:
-forgetting to assign the sprite to the object. If a student's character
-does not appear later, this is almost always why — check the object's
-Sprite field first.
-4. **Create a Room** (`room_game`) — Nothing visual happens at this
-step; that is expected, not an error.
-5. **Place the Object** — **Common mistake**: opening the room editor
+now keeps later projects organized.
+3. **Edit the Sprite** — Students draw a simple character in the Sprite
+Editor. Drawing takes longer than anything else in this lesson, so set
+a time limit (e.g. "2 minutes, just a quick shape") if the session is
+tight.
+4. **Create an Object** (`obj_player`) — Nothing visual happens yet;
+that is expected, not an error.
+5. **Assign a Sprite** — **Most common mistake**: forgetting to assign
+the sprite to the object. If a student's character does not appear
+later, this is almost always why — check the object's Sprite field
+first.
+6. **Rename the Room** (`room0` → `room_game`) — Every new project
+already contains a room called `room0`, so students rename it rather
+than create one. **Common mistake**: adding a second room instead. The
+game starts in the *first* room, so F5 then opens an empty black
+window while the object sits in the other room — rename `room0`, or
+place the object in it.
+7. **Place the Object** — **Common mistake**: opening the room editor
 but not actually selecting `obj_player` in the object list before
 clicking in the room, so nothing gets placed. There is no "correct"
 position for this exercise — anywhere in the room is fine.
-6. **Test the Game** (`F5` or `Build > Test Game`) — A window opens
+8. **Test the Game** (`F5` or `Build > Test Game`) — A window opens
 showing the room and the placed sprite. It will not move or respond to
 keys yet — that is next lesson.
 
@@ -89,7 +97,7 @@ pair with a struggling classmate next session
 
 **Part A:** 1-B, 2-D, 3-C, 4-A.
 
-**Part B:** 1. The Asset Tree (left panel). 2. The Sprite Editor (Editor Area, opened by double-clicking the sprite). 3. The Properties panel (right). 4. The toolbar (or **Build > Test Game**, or F5).
+**Part B:** 1. The Asset List (left panel). 2. The Sprite Editor (Editor Area, opened by double-clicking the sprite). 3. The Properties panel (right). 4. The toolbar (or **Build > Test Game**, or F5).
 
 **Part C:**
 

@@ -15,7 +15,8 @@ Extra line-level syntax beyond plain Markdown:
     > INFO: text         blue "info" callout box, same wrapping rule
     > DONE: text         green "success" callout box (mirrors the in-app
                           tutorial's own .success box), same wrapping rule
-    ![alt](path.png)    an image, scaled to the page's content width,
+    ![alt](path.png)    an image, scaled to the page's content width
+                        (optional width hint: ![alt](path.png "50%")),
                           path relative to the source .md's own folder
     [[notes:4]]         4 blank ruled lines for handwriting
     <!-- text -->      a full-line HTML comment, dropped entirely (hidden by
@@ -231,7 +232,7 @@ class Handout(FPDF):
             self.set_y(y)
         self.ln(3)
 
-    def render_image(self, path):
+    def render_image(self, path, width_pct=100):
         """Scale to the full content width, preserving aspect ratio; if the
         page doesn't have room left, start a fresh one (mirrors the
         page-break-before-drawing discipline _fits_or_break already
@@ -240,7 +241,7 @@ class Handout(FPDF):
         from PIL import Image as PILImage
         with PILImage.open(path) as im:
             iw, ih = im.size
-        w = self.epw
+        w = self.epw * width_pct / 100
         h = w * ih / iw
         y0 = self.get_y()
         avail = self.h - self.b_margin - y0
@@ -309,6 +310,17 @@ _BLOCK_START = re.compile(
     r"^(#{1,3}\s|-\s|>|\|.*\||\d+\.\s|---$|\[\[notes:\d+\]\]$|!\[)"
 )
 _IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)$")
+_IMAGE_SIZE = re.compile(r'^(.*?)\s+"(\d{1,3})%"$')
+
+
+def split_image_target(target):
+    """``path.png "50%"`` -> (``path.png``, 50). The optional quoted title is
+    a width hint (percent of the content width); it is also valid markdown, so
+    the wiki renders it as a harmless tooltip. No hint -> (target, 100)."""
+    m = _IMAGE_SIZE.match(target.strip())
+    if not m:
+        return target.strip(), 100
+    return m.group(1), max(10, min(100, int(m.group(2))))
 
 
 def _merge_soft_wraps(lines):
@@ -401,8 +413,9 @@ def render(src_path, out_path):
         m_img = _IMAGE.match(stripped)
         if m_img:
             flush_para()
-            img_path = os.path.join(os.path.dirname(src_path), m_img.group(2))
-            pdf.render_image(img_path)
+            rel, pct = split_image_target(m_img.group(2))
+            img_path = os.path.join(os.path.dirname(src_path), rel)
+            pdf.render_image(img_path, pct)
             i += 1
             continue
 
