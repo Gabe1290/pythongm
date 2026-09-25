@@ -68,6 +68,8 @@ def convert(md, lang, img_dir_rel):
             n = int(re.match(r"^\[\[notes:(\d+)\]\]$", ln).group(1))
             out.extend(["<br>", ""] * min(n, 6))
         elif re.match(r"^!\[.*\]\(.+\)$", ln):
+            # the print-only width hint ("50%") means nothing on the wiki -- drop it
+            ln = re.sub(r'\s+"\d{1,3}%"(?=\)$)', "", ln)
             out.append(re.sub(r"\]\((?!http)([^)]+)\)", lambda mm: f"]({img_dir_rel}/{mm.group(1)})", ln))
         elif ln.startswith("|"):
             gap()

@@ -32,7 +32,7 @@ votre salle informatique.
 |---|---|---|
 | Accueil et discussion | 5 min | Ouvrez le panneau de tutoriel (page 1), présentez ce que couvre la série |
 | Visite de l'interface | 10 min | Page 2 — montrez les 3 zones en direct sur votre écran / au projecteur |
-| Pratique : premier projet | 20-25 min | Page 3 — les 6 étapes ci-dessous, circulez dans la salle |
+| Pratique : premier projet | 20-25 min | Page 3 — les 8 étapes ci-dessous, circulez dans la salle |
 | Test et célébration | 5 min | Chaque élève appuie sur F5 et voit son objet apparaître |
 | Conclusion / la prochaine fois | 5 min | Page 4 — aperçu de ce qu'apporte le Tutoriel 2 |
 
@@ -45,22 +45,29 @@ aux élèves d'enregistrer dans un endroit qu'ils retrouveront facilement
 convention avant le cours.
 2. **Créer un sprite** (`spr_player`) — Le préfixe `spr_` est une
 convention de nommage de PyGameMaker, pas une obligation, mais
-l'adopter dès maintenant garde les projets suivants bien organisés. Les
-élèves peuvent importer une image ou dessiner la leur ; dessiner prend
-plus de temps, donc fixez une limite (par ex. « 2 minutes, juste une
-forme rapide ») si le temps est compté.
-3. **Créer un objet** (`obj_player`) — **Erreur la plus fréquente** :
-oublier d'assigner le sprite à l'objet. Si le personnage d'un·e élève
+l'adopter dès maintenant garde les projets suivants bien organisés.
+3. **Éditer le sprite** — Les élèves dessinent un personnage simple dans
+l'éditeur de sprites. C'est l'étape qui prend le plus de temps de cette
+leçon, donc fixez une limite (par ex. « 2 minutes, juste une forme
+rapide ») si le temps est compté.
+4. **Créer un objet** (`obj_player`) — Rien de visuel ne se passe
+encore ; c'est normal, ce n'est pas une erreur.
+5. **Assigner un sprite** — **Erreur la plus fréquente** : oublier
+d'assigner le sprite à l'objet. Si le personnage d'un·e élève
 n'apparaît pas plus tard, c'est presque toujours la raison — vérifiez
 d'abord le champ Sprite de l'objet.
-4. **Créer une salle** (`room_game`) — Rien de visuel ne se passe à
-cette étape ; c'est normal, ce n'est pas une erreur.
-5. **Placer l'objet** — **Erreur fréquente** : ouvrir l'éditeur de
+6. **Renommer la salle** (`room0` → `room_game`) — Chaque nouveau projet
+contient déjà une salle nommée `room0` : les élèves la renomment au lieu
+d'en créer une. **Erreur fréquente** : ajouter une deuxième salle. Le
+jeu démarre dans la *première* salle, donc F5 ouvre alors une fenêtre
+noire vide pendant que l'objet se trouve dans l'autre salle — renommez
+`room0`, ou placez l'objet dedans.
+7. **Placer l'objet** — **Erreur fréquente** : ouvrir l'éditeur de
 salle mais oublier de réellement sélectionner `obj_player` dans la
 liste des objets avant de cliquer dans la salle, donc rien n'est placé.
 Il n'y a pas de « bonne » position pour cet exercice — n'importe où
 dans la salle convient.
-6. **Tester le jeu** (`F5` ou `Compilation > Tester le jeu`) — Une
+8. **Tester le jeu** (`F5` ou `Compiler > Tester le jeu`) — Une
 fenêtre s'ouvre montrant la salle et le sprite placé. Il ne bougera pas
 et ne réagira pas aux touches pour l'instant — ce sera la prochaine
 leçon.
@@ -108,7 +115,7 @@ aider un·e camarade en difficulté la prochaine fois
 
 **Partie A :** 1-B, 2-D, 3-C, 4-A.
 
-**Partie B :** 1. L'arborescence des ressources (panneau de gauche). 2. L'éditeur de sprites (zone d'édition, ouvert par un double-clic sur le sprite). 3. Le panneau des propriétés (à droite). 4. La barre d'outils (ou **Compilation > Tester le jeu**, ou F5).
+**Partie B :** 1. La liste des ressources (panneau de gauche). 2. L'éditeur de sprites (zone d'édition, ouvert par un double-clic sur le sprite). 3. Le panneau des propriétés (à droite). 4. La barre d'outils (ou **Compiler > Tester le jeu**, ou F5).
 
 **Partie C :**
 

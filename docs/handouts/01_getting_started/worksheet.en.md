@@ -46,7 +46,7 @@ Name the part of the window where you would go to do each job.
 - [ ] I made a new project and saved it where I can find it again
 - [ ] I created a sprite named `spr_player`
 - [ ] I created an object named `obj_player` and gave it that sprite
-- [ ] I created a room and placed my object in it
+- [ ] I renamed the room `room_game` and placed my object in it
 - [ ] I pressed **F5** and saw my object
 
 ## Part E: Look back

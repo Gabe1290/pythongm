@@ -69,7 +69,7 @@ Nomme la partie de la fenêtre où tu vas pour faire chaque tâche.
 - [ ] J'ai créé un nouveau projet et je l'ai enregistré à un endroit où je peux le retrouver
 - [ ] J'ai créé un sprite nommé `spr_player`
 - [ ] J'ai créé un objet nommé `obj_player` et je lui ai donné ce sprite
-- [ ] J'ai créé une salle et j'y ai placé mon objet
+- [ ] J'ai renommé la salle `room_game` et j'y ai placé mon objet
 - [ ] J'ai appuyé sur **F5** et j'ai vu mon objet
 
 ## Partie E : Bilan

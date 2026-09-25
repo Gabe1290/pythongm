@@ -18,7 +18,8 @@ canonical description of each):
     > more text          "> "-prefixed lines)
     > INFO: text         blue "info" callout box, same wrapping rule
     > DONE: text         green "success" callout box, same wrapping rule
-    ![alt](path.png)    an image, scaled to the page's content width,
+    ![alt](path.png)    an image, scaled to the page's content width
+                        (optional width hint: ![alt](path.png "50%")),
                           path relative to the source .md's own folder
     [[notes:4]]         4 blank ruled lines for handwriting
     <!-- text -->      a full-line HTML comment, dropped entirely (hidden by
@@ -106,6 +107,16 @@ _BLOCK_START = re.compile(
     r"^(#{1,3}\s|-\s|>|\|.*\||\d+\.\s|---$|\[\[notes:\d+\]\]$|!\[)"
 )
 _IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)$")
+_IMAGE_SIZE = re.compile(r'^(.*?)\s+"(\d{1,3})%"$')
+
+
+def split_image_target(target):
+    """``path.png "50%"`` -> (``path.png``, 50): optional width hint, percent
+    of the page width (same convention as the PDF generator)."""
+    m = _IMAGE_SIZE.match(target.strip())
+    if not m:
+        return target.strip(), 100
+    return m.group(1), max(10, min(100, int(m.group(2))))
 
 
 def _merge_soft_wraps(lines):
@@ -241,11 +252,12 @@ def md_to_html(md_text, src_dir=None):
         if m_img:
             flush_para()
             flush_list()
-            alt, relpath = m_img.group(1), m_img.group(2)
+            alt = m_img.group(1)
+            relpath, pct = split_image_target(m_img.group(2))
             abspath = os.path.abspath(os.path.join(src_dir or "", relpath))
             out.append(
                 f'<p><img src="{_data_uri(abspath)}" '
-                f'alt="{html.escape(alt, quote=True)}" width="100%"></p>'
+                f'alt="{html.escape(alt, quote=True)}" width="{pct}%"></p>'
             )
             i += 1
             continue

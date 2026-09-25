@@ -8,7 +8,7 @@
 
 **Partie A :** 1-B, 2-D, 3-C, 4-A.
 
-**Partie B :** 1. L'arborescence des ressources (panneau de gauche). 2. L'éditeur de sprites (zone d'édition, ouvert par un double-clic sur le sprite). 3. Le panneau des propriétés (à droite). 4. La barre d'outils (ou **Compilation > Tester le jeu**, ou F5).
+**Partie B :** 1. La liste des ressources (panneau de gauche). 2. L'éditeur de sprites (zone d'édition, ouvert par un double-clic sur le sprite). 3. Le panneau des propriétés (à droite). 4. La barre d'outils (ou **Compiler > Tester le jeu**, ou F5).
 
 **Partie C :**
 
