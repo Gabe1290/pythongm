@@ -108,3 +108,6 @@ debug_tests/
 
 # Editor atomic-write temp artifacts (Dropbox-delayed cleanup)
 *.tmp.*
+
+# LibreOffice/Writer lock files (appear while a handout .odt is open)
+.~lock.*#
