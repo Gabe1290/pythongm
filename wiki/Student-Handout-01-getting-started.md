@@ -9,8 +9,8 @@
 ## How to Use This Handout
 
 This handout follows the 4 pages of the in-app tutorial, found under
-**Help > Tutorials > First Steps**. Read each part here, then do the
-matching part on your screen. Tick the checkboxes as you complete each
+**Help > Tutorials > Getting Started**. Read each part here, then do the
+matching part on your screen. Tick the check-boxes as you complete each
 task, and use the **My Notes** section at the end to write down
 anything you want to remember.
 
@@ -61,7 +61,7 @@ Right-click any category here to create a new asset of that type.
 ### 2. Editor Area (center)
 
 This is where you actually edit things. Double-click an asset in the
-tree, and its editor opens here in a tab.
+asset list, and its editor opens here in a tab.
 
 - The **Sprite Editor** lets you view and draw sprites.
 - The **Object Editor** lets you define what an object does, using events.
@@ -94,13 +94,13 @@ and each one explains what you are doing and why, before telling you
 what to click.
 
 - [ ] **1. Create a new project.** Every game starts as a project, which is a folder that holds all of its assets. Go to **File > New Project** (or press **Ctrl+N**), give your project a name, and choose where to save it.
-- [ ] **2. Create a sprite.** A sprite is the image your character (or any object) will use. Right-click **Sprites**, choose **Create New Sprite**, and give it a name, for example `spr_player`.
+- [ ] **2. Create a sprite.** A sprite is the image your character (or any object) will use. Right-click **Sprites**, choose **+ Create New Sprite...**, and give it a name, for example `spr_player`.
 - [ ] **3. Edit the sprite.** Double-click the sprite's name, then draw a simple character in the Sprite Editor.
 
 ![The Sprite Editor with spr_player](images/handouts/01_getting_started/tutorial_01_handout_sprite_en.png)
 
-- [ ] **4. Create an object.** A sprite is just a picture carried by an object — an object is what actually behaves in your game. Right-click **Objects**, choose **Create New Object**, and give it a name, for example `obj_player`.
-- [ ] **5. Assign a sprite.** Assign a sprite to the object you just created by choosing one from the list shown in the object's properties.
+- [ ] **4. Create an object.** A sprite is just a picture carried by an object — an object is what actually behaves in your game. Right-click **Objects**, choose **+ Create New Object...**, and give it a name, for example `obj_player`.
+- [ ] **5. Assign a sprite.** Assign a sprite to the object you just created by choosing `spr_player` from the list shown in the object's properties.
 
 ![Choosing the sprite in the object's properties](images/handouts/01_getting_started/tutorial_01_handout_object_en.png)
 
