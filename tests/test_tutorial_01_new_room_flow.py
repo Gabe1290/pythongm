@@ -10,6 +10,7 @@ not catch this; this pins the new-project default against the handout text.
 """
 import importlib.util
 import re
+import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -21,6 +22,20 @@ def _load(name, rel):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+def _load_generator(monkeypatch, name, rel):
+    """Load a scripts/ generator. CI has no fpdf2 (a dev-tool-only dependency),
+    and the PDF generator imports it at module level, so stub just enough of it
+    for the import when it is absent -- the logic under test never renders."""
+    try:
+        import fpdf  # noqa: F401
+    except ImportError:
+        import types
+        stub = types.ModuleType("fpdf")
+        stub.FPDF = type("FPDF", (), {})
+        monkeypatch.setitem(sys.modules, "fpdf", stub)
+    return _load(name, rel)
 
 
 def _read(name):
@@ -64,10 +79,10 @@ def test_referenced_handout_images_exist():
             assert (T1 / m.group(1)).exists(), f"missing image {m.group(1)}"
 
 
-def test_image_width_hint_parsing_in_both_generators():
+def test_image_width_hint_parsing_in_both_generators(monkeypatch):
     for name, rel in (("pdfgen", "scripts/generate_tutorial_handouts_pdf.py"),
                       ("odtgen", "scripts/generate_tutorial_handouts_odt.py")):
-        mod = _load(name, rel)
+        mod = _load_generator(monkeypatch, name, rel)
         assert mod.split_image_target("a.png") == ("a.png", 100)
         assert mod.split_image_target('a.png "45%"') == ("a.png", 45)
         assert mod.split_image_target('dir/a b.png "5%"') == ("dir/a b.png", 10)   # clamped up

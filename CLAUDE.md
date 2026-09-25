@@ -2305,3 +2305,17 @@ bugs (EN/FR): Tutorial 2 alarm timing; 3, 8, 10, 14 invisible black text on blac
 5 targets drawn over crates; 7 lives refilled by Create; 8 landing message repeating;
 9 missed coins making the win check impossible; plus a runtime fix
 (`direction_expr` "45"). HTML5/Kivy still ignore `direction_expr` (TODO.md).
+
+**2026-09-25 — Tutorial 1 handouts finished by hand; hand-exported PDFs are now
+fenced off from the generators.** The Tutorial 1 student handout (FR + EN) is
+`docs/handouts/01_getting_started/student.<lang>.odt` edited in Writer, with the
+PDF **exported by hand from the ODT** (drawn callouts the `.md` pipeline cannot
+represent). `docs/handouts/hand_exported.txt` lists such handouts; for them the
+PDF/ODT generators refuse to write (`--force` overrides) and
+`build_teacher_wiki.py` never regenerates or overwrites the PDF in
+`wiki/downloads/` (publish a new export with `--adopt-exports`). Tutorials 2–14
+are still md-generated drafts. The rename-`room0` change (a new project already
+contains `room0`; the game starts in the first room) landed in the handouts and
+all nine in-app Tutorial 1 pages. Details: `docs/TUTORIAL_HANDOUT_WORKFLOW.md`.
+**CI has no `fpdf2`** — a test that imports the PDF generator must stub it (see
+`_load_generator` in `tests/test_hand_exported_handouts.py`).

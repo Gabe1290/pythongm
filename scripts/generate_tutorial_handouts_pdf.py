@@ -35,6 +35,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from hand_exported import is_hand_exported  # noqa: E402
+
 from fpdf import FPDF
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -466,15 +469,25 @@ def render(src_path, out_path):
 
 
 def main(argv):
+    force = "--force" in argv
+    argv = [a for a in argv if a != "--force"]
     if len(argv) >= 2:
         src = os.path.abspath(argv[1])
         out = os.path.abspath(argv[2]) if len(argv) >= 3 else os.path.splitext(src)[0] + ".pdf"
+        if not force and is_hand_exported(src):
+            print(f"refusing: {os.path.relpath(src, ROOT)} is hand-finished (listed in "
+                  "docs/handouts/hand_exported.txt); its .pdf must not be regenerated. "
+                  "Pass --force to override.")
+            return 2
         print(f"{os.path.relpath(src, ROOT)} -> {os.path.relpath(out, ROOT)}")
         render(src, out)
         return 0
 
     made = 0
     for src in sorted(glob.glob(os.path.join(DOCS, "handouts", "*", "*.md"))):
+        if not force and is_hand_exported(src):
+            print(f"  skipped {os.path.relpath(src, ROOT)} (hand-finished)")
+            continue
         out = os.path.splitext(src)[0] + ".pdf"
         render(src, out)
         print(f"  wrote {os.path.relpath(out, ROOT)}")
