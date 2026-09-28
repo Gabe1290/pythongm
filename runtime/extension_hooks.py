@@ -262,17 +262,20 @@ def run_mouse_up(game_runner, button: int, x: int, y: int) -> bool:
 #
 #     PLUGIN_FRAME_UPDATES = [(my_frame_update, "before_step")]
 #
-# `phase` is one of the two points in GameRunner.run_game_loop this module
+# `phase` is one of the three points in GameRunner.run_game_loop this module
 # knows about: "before_step" (top of the frame, before begin-step/alarm/step
-# events) or "after_update" (after movement/collision/destroy cleanup, right
-# before the frame is drawn). Named phases rather than a single generic
-# "runs once a frame" hook, because WHEN in the frame a hook runs is
-# load-bearing for anything doing client/host-style state sync -- a client
-# must apply inbound state before Step runs against it; a host must
-# broadcast only after the frame's state has actually settled.
+# events), "after_collision" (after movement and collision events, before
+# end-step/destroy -- where a simulated device advances its physics and
+# fires its sensor events, docs/THYMIO_EXTENSION_PLAN.md Stage A5) or
+# "after_update" (after movement/collision/destroy cleanup, right before the
+# frame is drawn). Named phases rather than a single generic "runs once a
+# frame" hook, because WHEN in the frame a hook runs is load-bearing for
+# anything doing client/host-style state sync -- a client must apply
+# inbound state before Step runs against it; a host must broadcast only
+# after the frame's state has actually settled.
 # ---------------------------------------------------------------------------
 
-_VALID_PHASES = ("before_step", "after_update")
+_VALID_PHASES = ("before_step", "after_collision", "after_update")
 
 # Registered (func, phase) pairs, in registration order.
 _frame_updates = []
@@ -280,7 +283,7 @@ _frame_updates = []
 
 def register_frame_update(func, phase: str) -> None:
     """Register a ``(game_runner) -> None`` function to run every frame at
-    the given ``phase`` ("before_step" or "after_update")."""
+    the given ``phase`` ("before_step", "after_collision" or "after_update")."""
     if not callable(func):
         logger.error(f"Frame update is not callable: {func!r}")
         return

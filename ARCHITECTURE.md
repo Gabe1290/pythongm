@@ -287,7 +287,8 @@ After per-instance pass:
      f. separate_overlapping_instances
      g. update spatial grid, check outside_room events
      h. RE-SYNC intended_x/y to current x/y (post-collision invariant)
-  8. update_thymio_robots()
+  8. extension frame updates, "after_collision" phase (the Thymio robot
+     step, extensions/thymio/runtime.py)
 
 For each instance:
   9. end_step event

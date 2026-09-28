@@ -14,6 +14,8 @@ is the map. What lives here so far:
 * ``simulator.py`` — ``ThymioSimulator``: differential drive, proximity/
   ground sensors, LEDs, tones, timers (A4). Pure logic; the engine still
   constructs it for ``thymio*`` instances until Stage B.
+* ``runtime.py`` — the per-frame simulator step + sensor events, run
+  through the ``after_collision`` frame-update hook (A5).
 
 The rest — renderer, input, playground editor, the Aseba/Open Roberta
 interop — still lives in core and moves in Stages B–F.
@@ -33,3 +35,12 @@ register_action_tabs(THYMIO_TAB)
 # a core event (A3).
 PLUGIN_EVENTS = THYMIO_EVENT_TYPES
 PLUGIN_EVENT_BLOCKLY_MAP = {name: name for name in THYMIO_EVENT_TYPES}
+
+
+def _frame_update_robots(game_runner):
+    # Imported lazily: pygame stays out of the IDE's schema-only load.
+    from .runtime import update_thymio_robots
+    update_thymio_robots(game_runner)
+
+
+PLUGIN_FRAME_UPDATES = [(_frame_update_robots, "after_collision")]
