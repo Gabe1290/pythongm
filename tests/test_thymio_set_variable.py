@@ -14,10 +14,9 @@ type.
 
 import pytest
 
-from conftest import import_module_directly
 from editors.object_editor.python_code_parser import python_to_events
 
-_handlers_mod = import_module_directly("extensions/thymio/handlers.py")
+from extensions.thymio import handlers as _handlers_mod
 
 
 def _create_actions(body_line):

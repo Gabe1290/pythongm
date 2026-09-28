@@ -12,10 +12,12 @@ from typing import Any, Dict, Union
 
 from core.logger import get_logger
 
+from .state import simulator_of
+
 logger = get_logger(__name__)
 
 # Type aliases for clarity
-Instance = Any  # Game instance with thymio_simulator attribute
+Instance = Any  # Game instance; its robot state lives in extension_state (state.py)
 Parameters = Dict[str, Any]
 
 # Choice params (sensor_index, sound_id) are persisted as their full label
@@ -39,52 +41,52 @@ def register_thymio_actions(action_executor: Any) -> None:
 
     def execute_thymio_set_motor_speed_action(instance, parameters):
         """Set left and right motor speeds independently"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         left_speed = _parse_value(parameters.get('left_speed', 0), instance)
         right_speed = _parse_value(parameters.get('right_speed', 0), instance)
 
-        instance.thymio_simulator.set_motor_speed(int(left_speed), int(right_speed))
+        simulator_of(instance).set_motor_speed(int(left_speed), int(right_speed))
 
     def execute_thymio_move_forward_action(instance, parameters):
         """Move forward at specified speed"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         speed = _parse_value(parameters.get('speed', 200), instance)
-        instance.thymio_simulator.set_motor_speed(int(speed), int(speed))
+        simulator_of(instance).set_motor_speed(int(speed), int(speed))
 
     def execute_thymio_move_backward_action(instance, parameters):
         """Move backward at specified speed"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         speed = _parse_value(parameters.get('speed', 200), instance)
-        instance.thymio_simulator.set_motor_speed(-int(speed), -int(speed))
+        simulator_of(instance).set_motor_speed(-int(speed), -int(speed))
 
     def execute_thymio_turn_left_action(instance, parameters):
         """Turn left in place"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         speed = _parse_value(parameters.get('speed', 300), instance)
-        instance.thymio_simulator.set_motor_speed(0, int(speed))
+        simulator_of(instance).set_motor_speed(0, int(speed))
 
     def execute_thymio_turn_right_action(instance, parameters):
         """Turn right in place"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         speed = _parse_value(parameters.get('speed', 300), instance)
-        instance.thymio_simulator.set_motor_speed(int(speed), 0)
+        simulator_of(instance).set_motor_speed(int(speed), 0)
 
     def execute_thymio_stop_motors_action(instance, parameters):
         """Stop both motors"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
-        instance.thymio_simulator.set_motor_speed(0, 0)
+        simulator_of(instance).set_motor_speed(0, 0)
 
     # ========================================================================
     # LED CONTROL ACTIONS
@@ -92,50 +94,50 @@ def register_thymio_actions(action_executor: Any) -> None:
 
     def execute_thymio_set_led_top_action(instance, parameters):
         """Set top RGB LED color"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         r = _parse_value(parameters.get('red', 0), instance)
         g = _parse_value(parameters.get('green', 0), instance)
         b = _parse_value(parameters.get('blue', 0), instance)
 
-        instance.thymio_simulator.set_led_top(int(r), int(g), int(b))
+        simulator_of(instance).set_led_top(int(r), int(g), int(b))
 
     def execute_thymio_set_led_bottom_left_action(instance, parameters):
         """Set bottom left RGB LED color"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         r = _parse_value(parameters.get('red', 0), instance)
         g = _parse_value(parameters.get('green', 0), instance)
         b = _parse_value(parameters.get('blue', 0), instance)
 
-        instance.thymio_simulator.set_led_bottom_left(int(r), int(g), int(b))
+        simulator_of(instance).set_led_bottom_left(int(r), int(g), int(b))
 
     def execute_thymio_set_led_bottom_right_action(instance, parameters):
         """Set bottom right RGB LED color"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         r = _parse_value(parameters.get('red', 0), instance)
         g = _parse_value(parameters.get('green', 0), instance)
         b = _parse_value(parameters.get('blue', 0), instance)
 
-        instance.thymio_simulator.set_led_bottom_right(int(r), int(g), int(b))
+        simulator_of(instance).set_led_bottom_right(int(r), int(g), int(b))
 
     def execute_thymio_set_led_circle_action(instance, parameters):
         """Set one circle LED"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         led_index = _parse_value(parameters.get('led_index', 0), instance)
         intensity = _parse_value(parameters.get('intensity', 32), instance)
 
-        instance.thymio_simulator.set_led_circle(int(led_index), int(intensity))
+        simulator_of(instance).set_led_circle(int(led_index), int(intensity))
 
     def execute_thymio_set_led_circle_all_action(instance, parameters):
         """Set all 8 circle LEDs"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         intensities = []
@@ -143,14 +145,14 @@ def register_thymio_actions(action_executor: Any) -> None:
             value = _parse_value(parameters.get(f'led{i}', 0), instance)
             intensities.append(int(value))
 
-        instance.thymio_simulator.set_led_circle_all(intensities)
+        simulator_of(instance).set_led_circle_all(intensities)
 
     def execute_thymio_leds_off_action(instance, parameters):
         """Turn off all LEDs"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
-        instance.thymio_simulator.leds_off()
+        simulator_of(instance).leds_off()
 
     # ========================================================================
     # SOUND ACTIONS
@@ -158,13 +160,13 @@ def register_thymio_actions(action_executor: Any) -> None:
 
     def execute_thymio_play_tone_action(instance, parameters):
         """Play a tone"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         frequency = _parse_value(parameters.get('frequency', 440), instance)
         duration = _parse_value(parameters.get('duration', 60), instance)
 
-        instance.thymio_simulator.play_tone(int(frequency), int(duration))
+        simulator_of(instance).play_tone(int(frequency), int(duration))
 
     def execute_thymio_play_system_sound_action(instance, parameters):
         """Approximate a Thymio system sound with a distinct tone.
@@ -173,7 +175,7 @@ def register_thymio_actions(action_executor: Any) -> None:
         so each of the 8 built-in system sounds is rendered as a half-second
         tone at a distinguishing frequency.
         """
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         sound_id = _parse_value(parameters.get('sound_id', 0), instance)
@@ -190,14 +192,14 @@ def register_thymio_actions(action_executor: Any) -> None:
         }
 
         freq = sound_frequencies.get(int(sound_id), 440)
-        instance.thymio_simulator.play_tone(freq, 30)  # 30/60s = 0.5s
+        simulator_of(instance).play_tone(freq, 30)  # 30/60s = 0.5s
 
     def execute_thymio_stop_sound_action(instance, parameters):
         """Stop currently playing sound"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
-        instance.thymio_simulator.stop_sound()
+        simulator_of(instance).stop_sound()
 
     # ========================================================================
     # SENSOR READING ACTIONS
@@ -205,37 +207,37 @@ def register_thymio_actions(action_executor: Any) -> None:
 
     def execute_thymio_read_proximity_action(instance, parameters):
         """Read proximity sensor value and store in variable"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         sensor_index = int(_parse_value(parameters.get('sensor_index', 2), instance))
         variable = parameters.get('variable', 'prox_value')
 
         if 0 <= sensor_index < 7:
-            value = instance.thymio_simulator.sensors.proximity[sensor_index]
+            value = simulator_of(instance).sensors.proximity[sensor_index]
             setattr(instance, variable, value)
 
     def execute_thymio_read_ground_action(instance, parameters):
         """Read ground sensor value and store in variable"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         sensor_index = int(_parse_value(parameters.get('sensor_index', 0), instance))
         variable = parameters.get('variable', 'ground_value')
 
         if 0 <= sensor_index < 2:
-            value = instance.thymio_simulator.sensors.ground_delta[sensor_index]
+            value = simulator_of(instance).sensors.ground_delta[sensor_index]
             setattr(instance, variable, value)
 
     def execute_thymio_read_button_action(instance, parameters):
         """Read button state and store in variable"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         button = parameters.get('button', 'center')
         variable = parameters.get('variable', 'button_state')
 
-        value = instance.thymio_simulator.get_button(button)
+        value = simulator_of(instance).get_button(button)
         setattr(instance, variable, value)
 
     # ========================================================================
@@ -244,7 +246,7 @@ def register_thymio_actions(action_executor: Any) -> None:
 
     def execute_thymio_if_proximity_action(instance, parameters):
         """Check if proximity sensor detects obstacle"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return False
 
         sensor_index = int(_parse_value(parameters.get('sensor_index', 2), instance))
@@ -252,54 +254,54 @@ def register_thymio_actions(action_executor: Any) -> None:
         comparison = parameters.get('comparison', '>')
 
         if 0 <= sensor_index < 7:
-            sensor_value = instance.thymio_simulator.sensors.proximity[sensor_index]
+            sensor_value = simulator_of(instance).sensors.proximity[sensor_index]
             return _compare_values(sensor_value, comparison, threshold)
 
         return False
 
     def execute_thymio_if_ground_dark_action(instance, parameters):
         """Check if ground sensor detects dark surface"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return False
 
         sensor_index = int(_parse_value(parameters.get('sensor_index', 0), instance))
         threshold = _parse_value(parameters.get('threshold', 300), instance)
 
         if 0 <= sensor_index < 2:
-            sensor_value = instance.thymio_simulator.sensors.ground_delta[sensor_index]
+            sensor_value = simulator_of(instance).sensors.ground_delta[sensor_index]
             return sensor_value < threshold
 
         return False
 
     def execute_thymio_if_ground_light_action(instance, parameters):
         """Check if ground sensor detects light surface"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return False
 
         sensor_index = int(_parse_value(parameters.get('sensor_index', 0), instance))
         threshold = _parse_value(parameters.get('threshold', 300), instance)
 
         if 0 <= sensor_index < 2:
-            sensor_value = instance.thymio_simulator.sensors.ground_delta[sensor_index]
+            sensor_value = simulator_of(instance).sensors.ground_delta[sensor_index]
             return sensor_value >= threshold
 
         return False
 
     def execute_thymio_if_button_pressed_action(instance, parameters):
         """Check if button is pressed"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return False
 
         button = parameters.get('button', 'center')
-        return instance.thymio_simulator.get_button(button) == 1
+        return simulator_of(instance).get_button(button) == 1
 
     def execute_thymio_if_button_released_action(instance, parameters):
         """Check if button is released"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return False
 
         button = parameters.get('button', 'center')
-        return instance.thymio_simulator.get_button(button) == 0
+        return simulator_of(instance).get_button(button) == 0
 
     # ========================================================================
     # TIMER ACTIONS
@@ -307,13 +309,13 @@ def register_thymio_actions(action_executor: Any) -> None:
 
     def execute_thymio_set_timer_period_action(instance, parameters):
         """Set timer period in milliseconds"""
-        if getattr(instance, 'thymio_simulator', None) is None:
+        if simulator_of(instance) is None:
             return
 
         timer_id = int(_parse_value(parameters.get('timer_id', 0), instance))
         period = _parse_value(parameters.get('period', 1000), instance)
 
-        instance.thymio_simulator.set_timer_period(timer_id, int(period))
+        simulator_of(instance).set_timer_period(timer_id, int(period))
 
     # ========================================================================
     # VARIABLE ACTIONS

@@ -13,9 +13,8 @@ exporter routes sensor_index through the same split it already used for
 sound_id.
 """
 
-from conftest import import_module_directly
 
-_handlers = import_module_directly("extensions/thymio/handlers.py")
+from extensions.thymio import handlers as _handlers
 _parse_value = _handlers._parse_value
 
 

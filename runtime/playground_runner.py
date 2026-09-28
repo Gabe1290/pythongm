@@ -114,8 +114,10 @@ class _FakeInstance:
         self.to_destroy = False
         self.alarm = [-1] * 12
         self.keys_pressed = set()
-        self.is_thymio = True
         self.thymio_simulator = simulator
+        # The shared handlers read the robot through extensions.thymio.state.
+        self.extension_state = {"thymio": {"simulator": simulator}}
+        self.custom_rendered = True
         self.object_data = object_data
         self._cached_object_data = object_data
         self.action_executor = action_executor

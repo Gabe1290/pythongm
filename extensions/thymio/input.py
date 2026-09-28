@@ -14,6 +14,8 @@ used to carry, verbatim in behaviour, now declared through the input hook
 """
 from core.logger import get_logger
 
+from .state import simulator_of
+
 logger = get_logger(__name__)
 
 # key name -> (simulator button, event name)
@@ -30,10 +32,7 @@ _KEY_TO_BUTTON = {
 _mouse_presses = {}
 
 
-def _simulator(instance):
-    if not getattr(instance, 'is_thymio', False):
-        return None
-    return getattr(instance, 'thymio_simulator', None)
+_simulator = simulator_of
 
 
 def key_down(instance, key):
@@ -90,7 +89,7 @@ def mouse_up(game_runner, button, mouse_x, mouse_y):
     if press is None:
         return False
     instance, btn_name = press
-    sim = getattr(instance, 'thymio_simulator', None)
+    sim = simulator_of(instance)
     if sim is not None:
         sim.set_button(btn_name, False)
     return True

@@ -12,8 +12,10 @@ is the map. What lives here so far:
   same set for the playground runner, which has no plugin loader (A2).
 * ``events.py`` — the 14 robot events, ``PLUGIN_EVENTS`` (A3).
 * ``simulator.py`` — ``ThymioSimulator``: differential drive, proximity/
-  ground sensors, LEDs, tones, timers (A4). Pure logic; the engine still
-  constructs it for ``thymio*`` instances until Stage B.
+  ground sensors, LEDs, tones, timers (A4).
+* ``state.py`` — the robot's per-instance state under
+  ``instance.extension_state["thymio"]``; ``on_instance_created`` below
+  attaches a simulator to ``thymio*`` instances as a room builds (B3).
 * ``runtime.py`` — the per-frame simulator step + sensor events, run
   through the ``after_collision`` frame-update hook (A5).
 * ``renderer.py`` — ``ThymioRenderer`` (robot body, LEDs, sensor rays,
@@ -28,7 +30,11 @@ lives in core and moves in Stages C–F.
 
 PLUGIN_NAME = "Thymio Robot"
 
+from core.logger import get_logger
 from actions.core import register_action_tabs
+from .state import attach_simulator, simulator_of, is_robot
+
+logger = get_logger(__name__)
 from .actions import THYMIO_ACTIONS, THYMIO_TAB
 from .handlers import PluginExecutor, register_thymio_actions
 from .events import THYMIO_EVENT_TYPES
@@ -53,14 +59,27 @@ PLUGIN_FRAME_UPDATES = [(_frame_update_robots, "after_collision")]
 
 def draw_robot(instance, screen):
     """Instance-overlay hook: draw a robot body over its instance (B1)."""
-    sim = getattr(instance, "thymio_simulator", None)
-    if not getattr(instance, "is_thymio", False) or sim is None:
+    sim = simulator_of(instance)
+    if sim is None:
         return
     from .renderer import shared_renderer
     shared_renderer().render(screen, sim.get_render_data())
 
 
 PLUGIN_INSTANCE_OVERLAYS = [draw_robot]
+
+
+def on_instance_created(instance, instance_data, room):
+    """Instance-created hook: a ``thymio*``-named object, or one whose room
+    entry sets ``is_thymio``, gets a simulator at its start position (B3)."""
+    name = instance.object_name or ''
+    if name.lower().startswith('thymio') or instance_data.get('is_thymio', False):
+        from .simulator import ThymioSimulator
+        attach_simulator(instance, ThymioSimulator(x=instance.x, y=instance.y, angle=0))
+        logger.debug(f"🤖 Created Thymio robot: {instance.object_name}")
+
+
+PLUGIN_INSTANCE_CREATED = [on_instance_created]
 
 # Arrow keys / space drive the robot's buttons; a click on a drawn button
 # presses it (B2). See input.py.

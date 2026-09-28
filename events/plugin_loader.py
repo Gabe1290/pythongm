@@ -136,6 +136,11 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
                 self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
 
+            # Instance-created hooks (extension_hooks) — attach per-instance
+            # state as a room builds its instances (a robot's simulator)
+            if hasattr(module, 'PLUGIN_INSTANCE_CREATED'):
+                self._load_instance_created_hooks(module.PLUGIN_INSTANCE_CREATED)
+
             # Side-file asset types (core/asset_types) — a plugin may add a
             # new kind of project asset (a robot arena)
             if hasattr(module, 'PLUGIN_ASSET_TYPES'):
@@ -249,6 +254,8 @@ class PluginLoader:
                 self._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
             if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
                 self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
+            if hasattr(module, 'PLUGIN_INSTANCE_CREATED'):
+                self._load_instance_created_hooks(module.PLUGIN_INSTANCE_CREATED)
             if hasattr(module, 'PLUGIN_ASSET_TYPES'):
                 self._load_asset_types(module.PLUGIN_ASSET_TYPES)
             self._load_ide_contributions(module)
@@ -322,6 +329,17 @@ class PluginLoader:
         count = 0
         for entry in (handlers or []):
             register_input_handler(entry)
+            count += 1
+        return count
+
+    def _load_instance_created_hooks(self, hooks) -> int:
+        """Register an extension's PLUGIN_INSTANCE_CREATED (see
+        runtime/extension_hooks). Lets an extension attach per-instance state
+        as a room builds its instances (docs/THYMIO_EXTENSION_PLAN.md, B3)."""
+        from runtime.extension_hooks import register_instance_created_hook
+        count = 0
+        for func in (hooks or []):
+            register_instance_created_hook(func)
             count += 1
         return count
 
@@ -757,6 +775,8 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
             _shared_loader._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
         if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
             _shared_loader._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
+        if hasattr(module, 'PLUGIN_INSTANCE_CREATED'):
+            _shared_loader._load_instance_created_hooks(module.PLUGIN_INSTANCE_CREATED)
         if hasattr(module, 'PLUGIN_ASSET_TYPES'):
             _shared_loader._load_asset_types(module.PLUGIN_ASSET_TYPES)
         _shared_loader._load_ide_contributions(module)

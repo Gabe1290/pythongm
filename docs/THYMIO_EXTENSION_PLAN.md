@@ -361,16 +361,19 @@ real code onto them.
     and `game_runner.py` now contain **zero** Thymio references (pinned by
     a test). The B3 grep sweep therefore folded into B2; what remains for
     Stage B is the state/creation seam below.
-- [ ] B3 (re-scoped). `runtime/room.py` still (a) constructs the
-    `ThymioSimulator` for `thymio*`-named / `is_thymio` instances, (b) skips
-    the sprite blit and draw event for `is_thymio` instances, and
-    `runtime/instance.py` still declares `is_thymio`/`thymio_simulator`.
-    Needs: a generic instance-created hook (`PLUGIN_INSTANCE_CREATED`, run
-    at that one room-build site), a generic `GameInstance.custom_rendered`
-    flag the engine's sprite/draw-event passes honour, and the two attrs
-    moving into `instance.extension_state["thymio"]` (handlers, runtime,
-    overlay, input, playground runner and tests all read through one
-    `simulator_of(instance)` helper).
+- [x] B3 (re-scoped). Two more generic seams: `PLUGIN_INSTANCE_CREATED`
+    (`(instance, instance_data, room)`, run once at `GameRoom`'s
+    instance-build site — the only place the engine ever attached robot
+    state) and `GameInstance.custom_rendered` (the sprite pass and both
+    draw-event passes skip it; an overlay draws it). `is_thymio` /
+    `thymio_simulator` are gone from `GameInstance`; the robot's state is
+    `instance.extension_state["thymio"]["simulator"]`, reached only via
+    `extensions/thymio/state.py`'s `simulator_of`. `room.py` and
+    `instance.py` now contain zero Thymio references (pinned). The
+    `is_thymio` **room-JSON flag** (written by the Roberta importer) is
+    project data and still honoured — by the extension's hook.
+    **Stage B complete: `runtime/` has no Thymio code left except
+    `playground_runner.py`, which is Stage C2.**
 
 Proof method for B1/B2, per this repo's established pattern for exactly this
 class of move (`test_raycast_view.py`'s note about needing a real

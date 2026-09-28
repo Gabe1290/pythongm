@@ -24,7 +24,7 @@ from extensions.thymio.handlers import register_thymio_actions
 class _FakeInstance:
     """Mimics a non-Thymio GameInstance: thymio_simulator is defined as None."""
     def __init__(self):
-        self.thymio_simulator = None  # game_runner.py:578 default
+        self.extension_state = {}  # no robot state attached
         self.object_name = "MonRobot"  # no 'thymio' prefix -> no simulator
 
 
@@ -135,7 +135,7 @@ def test_condition_still_works_for_real_thymio_instance():
         sensors = _Sensors()
 
     class _ThymioInstance:
-        thymio_simulator = _Sim()
+        extension_state = {"thymio": {"simulator": _Sim()}}
 
     inst = _ThymioInstance()
     handler = ex.action_handlers['thymio_if_ground_dark']

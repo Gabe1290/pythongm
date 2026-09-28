@@ -137,6 +137,50 @@ def test_game_runner_render_offers_every_instance_to_overlays(clean_overlays):
     assert all(s is screen for _, s in got)
 
 
+def test_instance_created_hook_runs_per_room_instance_and_survives_a_raise():
+    """Stage B3 seam: a room offers each instance it builds to the hooks."""
+    from runtime import extension_hooks
+    from runtime.game_runner import GameRoom
+    saved = extension_hooks.get_instance_created_hooks()
+    extension_hooks.clear_instance_created_hooks()
+    try:
+        seen = []
+        extension_hooks.register_instance_created_hook(lambda i, d, r: 1 / 0)
+        extension_hooks.register_instance_created_hook(
+            lambda i, d, r: seen.append((i.object_name, d.get("x"), r)))
+        extension_hooks.register_instance_created_hook("nope")
+        assert len(extension_hooks.get_instance_created_hooks()) == 2
+        room = GameRoom("r", {"width": 64, "height": 64, "instances": [
+            {"object": "a", "x": 1, "y": 2}, {"object": "b", "x": 3, "y": 4}]},
+            action_executor=None)
+        assert seen == [("a", 1, room), ("b", 3, room)]
+    finally:
+        extension_hooks.clear_instance_created_hooks()
+        for f in saved:
+            extension_hooks.register_instance_created_hook(f)
+
+
+def test_custom_rendered_instance_skips_sprite_and_draw_event():
+    """The engine leaves a custom_rendered instance to the overlay pass."""
+    from types import SimpleNamespace
+    from runtime.game_runner import GameRoom
+    import pygame
+    pygame.display.init()
+    screen = pygame.display.set_mode((32, 32))
+    room = GameRoom("r", {"width": 32, "height": 32}, action_executor=None)
+    calls = []
+    for name, custom in (("plain", False), ("robot", True)):
+        inst = SimpleNamespace(
+            depth=0, visible=True, custom_rendered=custom,
+            render=lambda s, view_offset=(0, 0), n=name: calls.append(("render", n)),
+            run_draw_event=lambda s, n=name: calls.append(("draw", n)))
+        room.instances.append(inst)
+    room._depth_dirty = True
+    room._render_room(screen, (0, 0))
+    room._render_draw_events(screen)
+    assert calls == [("render", "plain"), ("draw", "plain")]
+
+
 def test_after_collision_is_a_valid_frame_update_phase():
     """Stage A5 added the third phase (between collision and end-step)."""
     from runtime import extension_hooks
