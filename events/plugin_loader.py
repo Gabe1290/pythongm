@@ -133,6 +133,11 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
                 self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
 
+            # Side-file asset types (core/asset_types) — a plugin may add a
+            # new kind of project asset (a robot arena)
+            if hasattr(module, 'PLUGIN_ASSET_TYPES'):
+                self._load_asset_types(module.PLUGIN_ASSET_TYPES)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -233,6 +238,8 @@ class PluginLoader:
                 self._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
             if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
                 self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
+            if hasattr(module, 'PLUGIN_ASSET_TYPES'):
+                self._load_asset_types(module.PLUGIN_ASSET_TYPES)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -302,6 +309,17 @@ class PluginLoader:
         count = 0
         for entry in (handlers or []):
             register_input_handler(entry)
+            count += 1
+        return count
+
+    def _load_asset_types(self, specs) -> int:
+        """Register an extension's PLUGIN_ASSET_TYPES (see core/asset_types).
+        Lets an extension add a new kind of project asset stored as
+        <plural>/<name>.json (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.4)."""
+        from core.asset_types import register_side_file_asset_type
+        count = 0
+        for spec in (specs or []):
+            register_side_file_asset_type(spec)
             count += 1
         return count
 
@@ -665,6 +683,8 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
             _shared_loader._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
         if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
             _shared_loader._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
+        if hasattr(module, 'PLUGIN_ASSET_TYPES'):
+            _shared_loader._load_asset_types(module.PLUGIN_ASSET_TYPES)
     return _shared_loader
 
 

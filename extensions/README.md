@@ -172,6 +172,26 @@ that instance's own keyboard events. Mouse handlers run before any mouse
 event, with raw screen coordinates; returning `True` means "that click was
 mine" and no mouse event fires for it.
 
+### Adding a new kind of project asset (the asset-type hook)
+
+Rooms, objects and sprites keep their payload in `<type>/<name>.json` next
+to `project.json`. An extension can add a kind of its own — a robot arena,
+say — and the project manager saves, loads, strips and cleans up its side
+files exactly like the built-in ones:
+
+```python
+from core.asset_types import SideFileAssetType
+
+PLUGIN_ASSET_TYPES = [SideFileAssetType(
+    plural="arenas", singular="arena", description="Robot arenas",
+    file_keys=("size", "walls"),   # merged from arenas/<name>.json on load
+    strip_keys=("walls",),         # kept only in the side file on save
+)]
+```
+
+`project.json` keeps the rest of each entry as a summary. Register it
+before any project loads (extensions load at startup, so that's automatic).
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE

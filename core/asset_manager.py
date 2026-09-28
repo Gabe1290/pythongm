@@ -11,6 +11,7 @@ from PySide6.QtCore import QObject, Signal
 from PIL import Image, ImageOps
 import pygame
 
+from core.asset_types import side_file_type_names
 from core.logger import get_logger
 logger = get_logger(__name__)
 
@@ -390,7 +391,7 @@ class AssetManager(QObject):
             # for M59) — trash_asset moves it alongside the main file/thumbnail
             # rather than leaving it on disk.
             side_file_rel = None
-            if asset_type in ("rooms", "objects", "playgrounds", "sprites"):
+            if asset_type in side_file_type_names():
                 side_file = self.project_directory / asset_type / f"{asset_name}.json"
                 if side_file.exists():
                     side_file_rel = f"{asset_type}/{asset_name}.json"
@@ -549,7 +550,7 @@ class AssetManager(QObject):
             # (audit H3; playgrounds for M59; sprites for M2,
             # docs/FULL_AUDIT_2026-09-07.md -- delete_asset already handled
             # all four types, this rename path was missing "sprites").
-            if asset_type in ("rooms", "objects", "playgrounds", "sprites"):
+            if asset_type in side_file_type_names():
                 old_side = self.project_directory / asset_type / f"{old_name}.json"
                 if old_side.exists():
                     old_side.replace(self.project_directory / asset_type / f"{new_name}.json")

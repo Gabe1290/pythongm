@@ -12,6 +12,9 @@ from PySide6.QtCore import QObject, Signal, QTimer
 from utils.project_compression import ProjectCompressor
 from utils.project_file_merge import merge_room_file, merge_object_file
 from core.project_format import check_project_format, ProjectTooNewError
+from core.asset_types import (
+    get_registered_asset_types, plural_to_singular, side_file_type_names,
+)
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -109,11 +112,23 @@ class ProjectManager(QObject):
         "backgrounds": "Background images",
         "objects": "Game objects",
         "rooms": "Game rooms/levels",
-        "playgrounds": "Aseba playground environments",
         "scripts": "GML scripts",
         "fonts": "Font assets",
         "data": "Data files"
     }
+
+    @classmethod
+    def _project_structure(cls) -> Dict[str, str]:
+        """DEFAULT_PROJECT_STRUCTURE plus every registered side-file asset
+        type (core/asset_types), slotted after "rooms" so a project.json's
+        asset-key order is what it always was."""
+        out: Dict[str, str] = {}
+        for key, desc in cls.DEFAULT_PROJECT_STRUCTURE.items():
+            out[key] = desc
+            if key == "rooms":
+                for spec in get_registered_asset_types():
+                    out[spec.plural] = spec.description
+        return out
 
     def __init__(self, asset_manager=None):
         super().__init__()
@@ -301,7 +316,7 @@ class ProjectManager(QObject):
             self._load_rooms_from_files(project_path, project_data)
             self._load_objects_from_files(project_path, project_data)
             self._load_sprites_from_files(project_path, project_data)
-            self._load_playgrounds_from_files(project_path, project_data)
+            self._load_registered_types_from_files(project_path, project_data)
 
             # Normalise legacy add_score/add_lives/add_health actions to the
             # consolidated set_*(relative=True) form so older projects edit and
@@ -589,7 +604,9 @@ class ProjectManager(QObject):
     # atomically (tmp + os.replace), but there was no transaction *across*
     # files, so a failure on file 3 of 10 left files 1–2 committed with no
     # way back.
-    _SAVE_MANAGED_NAMES = ("rooms", "objects", "sprites", "playgrounds", PROJECT_FILE)
+    @property
+    def _SAVE_MANAGED_NAMES(self) -> tuple:
+        return side_file_type_names() + (self.PROJECT_FILE,)
 
     def _snapshot_for_rollback(self, save_path: Path) -> Optional[Path]:
         """Copy the save-managed paths to a temp dir so the save can roll back.
@@ -732,8 +749,8 @@ class ProjectManager(QObject):
             # Save sprites to separate files (if sprites/ directory exists)
             self._save_sprites_to_files(save_path)
 
-            # Save playgrounds to separate files
-            self._save_playgrounds_to_files(save_path)
+            # Save registered side-file asset types (core/asset_types)
+            self._save_registered_types_to_files(save_path)
 
             # Create a copy of project data without room instance data for main file
             # (room metadata stays in project.json, instance data goes to room files)
@@ -877,54 +894,54 @@ class ProjectManager(QObject):
 
             logger.debug(f"💾 Saved sprite: {sprite_name}")
 
-    def _load_playgrounds_from_files(self, project_path: Path, project_data: dict) -> None:
-        """Load playground data from separate files in playgrounds/ directory"""
-        playgrounds_dir = project_path / "playgrounds"
-
-        if not playgrounds_dir.exists():
-            return
-
-        playgrounds_data = project_data.get('assets', {}).get('playgrounds', {})
-
-        for pg_name, pg_data in list(playgrounds_data.items()):
-            pg_file = _safe_asset_path(playgrounds_dir, pg_name)
-            if pg_file is None:
+    def _load_registered_types_from_files(self, project_path: Path, project_data: dict) -> None:
+        """Merge each registered side-file asset type's ``<plural>/<name>.json``
+        into its project.json entry (core/asset_types)."""
+        for spec in get_registered_asset_types():
+            type_dir = project_path / spec.dir_name
+            if not type_dir.exists():
                 continue
 
-            if isinstance(pg_data, str):
-                pg_data = {"name": pg_name, "asset_type": "playground"}
-                playgrounds_data[pg_name] = pg_data
+            entries = project_data.get('assets', {}).get(spec.plural, {})
 
-            if pg_file.exists():
-                try:
-                    with open(pg_file, 'r', encoding='utf-8') as f:
-                        file_data = json.load(f)
-                    # Merge file data into playground data
-                    for key in ['arena', 'colors', 'walls', 'robots']:
-                        if key in file_data:
-                            pg_data[key] = file_data[key]
-                    if '_external_file' in pg_data:
-                        del pg_data['_external_file']
-                    logger.debug(f"Loaded playground: {pg_name}")
-                except Exception as e:
-                    logger.warning(f"Failed to load playground file {pg_file}: {e}")
+            for name, data in list(entries.items()):
+                side_file = _safe_asset_path(type_dir, name)
+                if side_file is None:
+                    continue
 
-    def _save_playgrounds_to_files(self, project_path: Path) -> None:
-        """Save each playground's data to a separate file in playgrounds/ directory"""
-        playgrounds_dir = project_path / "playgrounds"
-        playgrounds_data = self.current_project_data.get('assets', {}).get('playgrounds', {})
+                if isinstance(data, str):
+                    data = {"name": name, "asset_type": spec.singular}
+                    entries[name] = data
 
-        if not playgrounds_data:
-            return
+                if side_file.exists():
+                    try:
+                        with open(side_file, 'r', encoding='utf-8') as f:
+                            file_data = json.load(f)
+                        for key in spec.file_keys:
+                            if key in file_data:
+                                data[key] = file_data[key]
+                        if '_external_file' in data:
+                            del data['_external_file']
+                        logger.debug(f"Loaded {spec.singular}: {name}")
+                    except Exception as e:
+                        logger.warning(f"Failed to load {spec.singular} file {side_file}: {e}")
 
-        playgrounds_dir.mkdir(exist_ok=True)
-
-        for pg_name, pg_data in playgrounds_data.items():
-            pg_file = _safe_asset_path(playgrounds_dir, pg_name)
-            if pg_file is None:
+    def _save_registered_types_to_files(self, project_path: Path) -> None:
+        """Write each registered side-file asset to ``<plural>/<name>.json``."""
+        for spec in get_registered_asset_types():
+            entries = self.current_project_data.get('assets', {}).get(spec.plural, {})
+            if not entries:
                 continue
-            _atomic_write_json(pg_file, pg_data)
-            logger.debug(f"Saved playground: {pg_name}")
+
+            type_dir = project_path / spec.dir_name
+            type_dir.mkdir(exist_ok=True)
+
+            for name, data in entries.items():
+                side_file = _safe_asset_path(type_dir, name)
+                if side_file is None:
+                    continue
+                _atomic_write_json(side_file, data)
+                logger.debug(f"Saved {spec.singular}: {name}")
 
     def _prepare_project_data_for_save(self, save_path: Optional[Path] = None) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
@@ -994,14 +1011,14 @@ class ProjectManager(QObject):
                         '_external_file': f"sprites/{sprite_name}.json",
                     }
 
-        # For playgrounds, strip detail data (walls/robots go to separate files)
-        if 'assets' in data and 'playgrounds' in data['assets']:
-            playgrounds = data['assets']['playgrounds']
-            for pg_name, pg_data in playgrounds.items():
-                pg_data.pop('walls', None)
-                pg_data.pop('robots', None)
-                pg_data.pop('colors', None)
-                pg_data['_external_file'] = f"playgrounds/{pg_name}.json"
+        # Registered side-file types keep only their summary in project.json;
+        # the stripped keys live in <plural>/<name>.json (core/asset_types).
+        for spec in get_registered_asset_types():
+            if 'assets' in data and spec.plural in data['assets']:
+                for name, entry in data['assets'][spec.plural].items():
+                    for key in spec.strip_keys:
+                        entry.pop(key, None)
+                    entry['_external_file'] = f"{spec.dir_name}/{name}.json"
 
         # Record which extensions this project's actions depend on. Auto-derived
         # from the used action names so it stays accurate; omitted when empty so
@@ -1154,7 +1171,7 @@ class ProjectManager(QObject):
 
         # Add asset counts
         assets = self.current_project_data.get("assets", {})
-        for asset_type in self.DEFAULT_PROJECT_STRUCTURE.keys():
+        for asset_type in self._project_structure().keys():
             info[f"{asset_type}_count"] = len(assets.get(asset_type, {}))
 
         return info
@@ -1315,9 +1332,10 @@ class ProjectManager(QObject):
             asset_type_singular = asset_type_plural[:-1] if asset_type_plural.endswith('s') else asset_type_plural
             plural_to_singular_map = {
                 'sprites': 'sprite', 'sounds': 'sound', 'backgrounds': 'background',
-                'objects': 'object', 'rooms': 'room', 'playgrounds': 'playground',
+                'objects': 'object', 'rooms': 'room',
                 'scripts': 'script', 'fonts': 'font',
                 'enemies': 'enemy', 'entities': 'entity',
+                **plural_to_singular(),
             }
             if asset_type_plural in plural_to_singular_map:
                 asset_type_singular = plural_to_singular_map[asset_type_plural]
@@ -1562,7 +1580,7 @@ class ProjectManager(QObject):
 
     def _create_project_structure(self, project_path: Path):
         """Create the default directory structure for a new project"""
-        for asset_type in self.DEFAULT_PROJECT_STRUCTURE.keys():
+        for asset_type in self._project_structure().keys():
             (project_path / asset_type).mkdir(exist_ok=True)
 
         # Create thumbnails directory
@@ -1597,7 +1615,7 @@ class ProjectManager(QObject):
         }
 
         # Initialize empty asset categories
-        for asset_type in self.DEFAULT_PROJECT_STRUCTURE.keys():
+        for asset_type in self._project_structure().keys():
             project_data["assets"][asset_type] = {}
 
         # Create default room
