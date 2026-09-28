@@ -374,7 +374,8 @@ class AssetOperations:
             # (L16, docs/FULL_AUDIT_2026-09-07.md). Same asset-type set and
             # <type>/<name>.json convention delete_asset/rename_asset
             # already use (core/asset_manager.py).
-            if asset_category in ("rooms", "objects", "playgrounds", "sprites"):
+            from core.asset_types import side_file_type_names
+            if asset_category in side_file_type_names():
                 old_side = project_path / asset_category / f"{asset_name}.json"
                 if old_side.exists():
                     new_side = project_path / asset_category / f"{new_name}.json"

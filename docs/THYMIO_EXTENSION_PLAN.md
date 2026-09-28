@@ -232,9 +232,22 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
     `(runner, button, x, y) -> bool` in raw screen space, placed directly
     after the existing `_handle_thymio_button_press` precedence check so
     Stage B2 replaces that call with the hook in place.
-- [ ] 0.4 Pluggable asset-type registry in `ProjectManager`/`AssetManager`
-    (highest-risk unit — needs the broadest regression coverage: every
-    bundled sample round-trips save→load byte-identical before/after).
+- [x] 0.4 Pluggable asset-type registry: `core/asset_types.py`
+    (`SideFileAssetType`, `register_side_file_asset_type`,
+    `side_file_type_names`, `PLUGIN_ASSET_TYPES` in the loader). Generic
+    `_load/_save_registered_types_*` replaced the playground-specific
+    loaders in `ProjectManager`; the delete/rename/duplicate side-file
+    tuples in `AssetManager`/`asset_operations.py` derive from the registry;
+    `_project_structure()` slots registered types after "rooms" so a
+    project.json's asset-key order is unchanged. **Playgrounds still
+    register from `core/asset_types.py` itself** until Stage C5 moves that
+    one call — so core's on-disk behaviour today is byte-identical. Proof:
+    scratch script loaded+saved all 27 bundled samples, a synthetic
+    3-playground project (full entry, legacy string entry, side-file-only
+    payload) and a fresh `create_new_project`, hashing every file with the
+    `modified` timestamp normalized — 969/969 lines identical HEAD vs. new.
+    Note: the "rooms/objects/playgrounds" *import-menu exclusion* in
+    `asset_tree_widget.py` is IDE chrome, left for 0.5.
 - [ ] 0.5 `core/ide_extension_points.py` (menu contribution + asset-tree category
     + object-editor panel registries) + the three call sites that switch
     from a direct import/hardcode to iterating the registry.

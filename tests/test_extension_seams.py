@@ -263,3 +263,136 @@ def test_mouse_hooks_swallow_the_click_before_mouse_events(clean_input):
     GameRunner.handle_mouse_press(runner, 1, (12, 34))
     GameRunner.handle_mouse_release(runner, 1, (12, 34))
     assert fired == [["press"], ["release"]]
+
+
+# ---------------------------------------------------------------------------
+# 0.4 — PLUGIN_ASSET_TYPES (core/asset_types)
+# ---------------------------------------------------------------------------
+
+import json
+
+
+@pytest.fixture
+def clean_asset_types():
+    from core import asset_types
+    saved = asset_types.get_registered_asset_types()
+    asset_types.clear_registered_asset_types()
+    yield asset_types
+    asset_types.clear_registered_asset_types()
+    for spec in saved:
+        asset_types.register_side_file_asset_type(spec)
+
+
+def _arena_spec():
+    from core.asset_types import SideFileAssetType
+    return SideFileAssetType(
+        plural="arenas", singular="arena", description="Dummy arenas",
+        file_keys=("size", "walls"), strip_keys=("walls",))
+
+
+def test_asset_type_registry_validates_and_is_idempotent(clean_asset_types):
+    at = clean_asset_types
+    from core.asset_types import SideFileAssetType
+    spec = _arena_spec()
+    at.register_side_file_asset_type(spec)
+    at.register_side_file_asset_type(spec)                       # re-run
+    at.register_side_file_asset_type("nope")                     # not a spec
+    at.register_side_file_asset_type(SideFileAssetType(          # core type
+        "rooms", "room", "", (), ()))
+    at.register_side_file_asset_type(SideFileAssetType(          # conflict
+        "arenas", "arena", "other", ("x",), ()))
+    assert at.get_registered_asset_types() == [spec]
+    assert at.side_file_type_names() == ("rooms", "objects", "sprites", "arenas")
+    assert at.plural_to_singular() == {"arenas": "arena"}
+
+
+def test_playgrounds_are_registered_by_default():
+    """Until Stage C5 moves the call into the extension, core registers
+    playgrounds itself so on-disk behaviour is unchanged."""
+    from core.asset_types import get_registered_asset_types, side_file_type_names
+    assert "playgrounds" in side_file_type_names()
+    spec = {s.plural: s for s in get_registered_asset_types()}["playgrounds"]
+    assert spec.file_keys == ("arena", "colors", "walls", "robots")
+    assert spec.strip_keys == ("walls", "robots", "colors")
+
+
+def test_loader_registers_plugin_asset_types(clean_asset_types):
+    from events.plugin_loader import PluginLoader
+    spec = _arena_spec()
+    assert PluginLoader._load_asset_types(object.__new__(PluginLoader), [spec]) == 1
+    assert spec in clean_asset_types.get_registered_asset_types()
+
+
+def test_project_structure_slots_registered_types_after_rooms(clean_asset_types):
+    from core.project_manager import ProjectManager
+    clean_asset_types.register_side_file_asset_type(_arena_spec())
+    keys = list(ProjectManager._project_structure())
+    assert keys == ["sprites", "sounds", "backgrounds", "objects", "rooms",
+                    "arenas", "scripts", "fonts", "data"]
+    assert "playgrounds" not in ProjectManager.DEFAULT_PROJECT_STRUCTURE
+
+
+def test_registered_type_round_trips_through_project_manager(clean_asset_types, tmp_path):
+    """A dummy 'arenas' type saves to arenas/<name>.json with strip_keys
+    removed from project.json, and loads back merged — including a legacy
+    string entry and one whose payload lives only in the side file."""
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from core.project_manager import ProjectManager
+
+    clean_asset_types.register_side_file_asset_type(_arena_spec())
+    proj = tmp_path / "p"
+    (proj / "arenas").mkdir(parents=True)
+    (proj / "arenas" / "b.json").write_text(json.dumps(
+        {"size": [3, 4], "walls": [1], "ignored": True}), encoding="utf-8")
+    (proj / "project.json").write_text(json.dumps({
+        "name": "p", "version": "1.0.0", "created": "x", "modified": "x",
+        "settings": {}, "assets": {
+            "rooms": {"room0": {"name": "room0", "asset_type": "room",
+                                "width": 64, "height": 64}},
+            "arenas": {
+                "a": {"name": "a", "asset_type": "arena", "size": [1, 2], "walls": [9]},
+                "b": "b",
+            }}}), encoding="utf-8")
+
+    pm = ProjectManager()
+    assert pm.load_project(proj)
+    arenas = pm.current_project_data["assets"]["arenas"]
+    assert arenas["b"] == {"name": "b", "asset_type": "arena",
+                           "size": [3, 4], "walls": [1]}      # file_keys only
+    assert arenas["a"]["walls"] == [9]
+    assert pm.get_project_info()["arenas_count"] == 2
+    assert pm.save_project()
+
+    on_disk = json.loads((proj / "project.json").read_text(encoding="utf-8"))
+    assert on_disk["assets"]["arenas"]["a"] == {
+        "name": "a", "asset_type": "arena", "size": [1, 2],
+        "_external_file": "arenas/a.json"}                     # walls stripped
+    side = json.loads((proj / "arenas" / "a.json").read_text(encoding="utf-8"))
+    assert side["walls"] == [9] and side["size"] == [1, 2]
+    assert (proj / "arenas" / "b.json").exists()
+    # Rollback bookkeeping covers the new directory too.
+    assert "arenas" in pm._SAVE_MANAGED_NAMES
+
+
+def test_unregistered_type_is_left_alone_on_disk(clean_asset_types, tmp_path):
+    """With no extension registering it, an unknown asset dict in a shared
+    project is preserved verbatim in project.json (no side file, no strip)."""
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from core.project_manager import ProjectManager
+
+    proj = tmp_path / "q"
+    proj.mkdir()
+    entry = {"name": "z", "asset_type": "arena", "size": [1], "walls": [2]}
+    (proj / "project.json").write_text(json.dumps({
+        "name": "q", "version": "1.0.0", "created": "x", "modified": "x",
+        "settings": {}, "assets": {"rooms": {}, "arenas": {"z": entry}}}),
+        encoding="utf-8")
+    pm = ProjectManager()
+    assert pm.load_project(proj) and pm.save_project()
+    on_disk = json.loads((proj / "project.json").read_text(encoding="utf-8"))
+    assert on_disk["assets"]["arenas"]["z"] == entry
+    assert not (proj / "arenas").exists()
