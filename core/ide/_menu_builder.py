@@ -314,6 +314,15 @@ class MenuBuilderMixin:
         help_menu.addSeparator()
         help_menu.addAction(self.create_action(self.tr("&About PyGameMaker"), None, self.about))
 
+        # Extension contributions (core/ide_extension_points) go after the
+        # built-in entries of each menu.
+        from core.ide_extension_points import apply_menu_contributions
+        self._extension_menus = {
+            "file": file_menu, "edit": edit_menu, "assets": assets_menu,
+            "build": self.build_menu, "tools": tools_menu, "help": help_menu,
+        }
+        apply_menu_contributions(self, self._extension_menus)
+
     def create_language_menu(self, menu):
         """Create language selection submenu"""
         from core.language_manager import get_language_manager
@@ -492,6 +501,10 @@ class MenuBuilderMixin:
         )
         self._update_window_mode_action_label()
         toolbar.addAction(self.window_mode_action)
+
+        # Extension contributions (core/ide_extension_points).
+        from core.ide_extension_points import apply_toolbar_contributions
+        apply_toolbar_contributions(self, toolbar)
 
         toolbar.update()
 

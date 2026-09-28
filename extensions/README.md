@@ -192,6 +192,27 @@ PLUGIN_ASSET_TYPES = [SideFileAssetType(
 `project.json` keeps the rest of each entry as a summary. Register it
 before any project loads (extensions load at startup, so that's automatic).
 
+### Adding menu entries and toolbar buttons (the IDE hooks)
+
+A feature with its own tooling — a robot simulator window, a code export
+for a device — needs a way in from the IDE window. Declare builders; each
+gets the live Qt menu or toolbar once the built-in entries exist:
+
+```python
+def build_tools_menu(ide, menu):
+    menu.addSeparator()
+    sub = menu.addMenu(ide.tr("My Feature"))
+    sub.addAction(ide.create_action(ide.tr("Open Simulator..."), None, lambda: ...))
+
+def build_toolbar(ide, toolbar):
+    toolbar.addAction(ide.create_action(ide.tr("My Feature"), None, lambda: ...))
+
+PLUGIN_IDE_MENUS = [("tools", build_tools_menu)]   # file/edit/assets/build/tools/help
+PLUGIN_IDE_TOOLBAR = [build_toolbar]
+```
+
+These only run in the IDE; the game process ignores them.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE

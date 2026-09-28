@@ -138,6 +138,9 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_ASSET_TYPES'):
                 self._load_asset_types(module.PLUGIN_ASSET_TYPES)
 
+            # IDE chrome (core/ide_extension_points) — menus / toolbar
+            self._load_ide_contributions(module)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -240,6 +243,7 @@ class PluginLoader:
                 self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
             if hasattr(module, 'PLUGIN_ASSET_TYPES'):
                 self._load_asset_types(module.PLUGIN_ASSET_TYPES)
+            self._load_ide_contributions(module)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -320,6 +324,23 @@ class PluginLoader:
         count = 0
         for spec in (specs or []):
             register_side_file_asset_type(spec)
+            count += 1
+        return count
+
+    def _load_ide_contributions(self, module) -> int:
+        """Register an extension's PLUGIN_IDE_MENUS / PLUGIN_IDE_TOOLBAR (see
+        core/ide_extension_points). Lets an extension add menu entries and
+        toolbar buttons to the IDE window (docs/THYMIO_EXTENSION_PLAN.md,
+        Stage 0.5). Harmless in the game process: nothing applies them."""
+        from core.ide_extension_points import (
+            register_menu_contribution, register_toolbar_contribution,
+        )
+        count = 0
+        for menu_key, build in (getattr(module, 'PLUGIN_IDE_MENUS', None) or []):
+            register_menu_contribution(menu_key, build)
+            count += 1
+        for build in (getattr(module, 'PLUGIN_IDE_TOOLBAR', None) or []):
+            register_toolbar_contribution(build)
             count += 1
         return count
 
@@ -685,6 +706,7 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
             _shared_loader._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
         if hasattr(module, 'PLUGIN_ASSET_TYPES'):
             _shared_loader._load_asset_types(module.PLUGIN_ASSET_TYPES)
+        _shared_loader._load_ide_contributions(module)
     return _shared_loader
 
 

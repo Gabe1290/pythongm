@@ -248,9 +248,23 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
     `modified` timestamp normalized — 969/969 lines identical HEAD vs. new.
     Note: the "rooms/objects/playgrounds" *import-menu exclusion* in
     `asset_tree_widget.py` is IDE chrome, left for 0.5.
-- [ ] 0.5 `core/ide_extension_points.py` (menu contribution + asset-tree category
-    + object-editor panel registries) + the three call sites that switch
-    from a direct import/hardcode to iterating the registry.
+- [ ] 0.5 `core/ide_extension_points.py` — split into three units while
+    implementing, each its own commit:
+  - [x] 0.5a menus + toolbar: `PLUGIN_IDE_MENUS = [(menu_key, build)]` /
+        `PLUGIN_IDE_TOOLBAR = [build]`, builders get the live `QMenu`/
+        `QToolBar` after the built-in entries; `_menu_builder.py` now stores
+        `self._extension_menus` and applies contributions at the end of
+        `create_menu_bar`/`create_toolbar`. Proven by constructing the real
+        `PyGameMakerIDE` offscreen with dummy builders
+        (`tests/test_ide_extension_points.py`).
+  - [ ] 0.5b asset-tree categories: a registration that feeds
+        `ASSET_TYPE_REGISTRY` (singular + how to open the editor),
+        `setup_categories` (label, slot after "rooms"), `asset_tree_item`'s
+        icon map, and the import-menu exclusion.
+  - [ ] 0.5c object-editor panels: `ObjectEditorMain` iterates registered
+        panel specs (label, factory, visibility fn, owned event names) for
+        its extra tabs instead of importing `ThymioEventsPanel`; generic
+        merge-back of the panel's events replaces `_on_thymio_events_modified`.
 - [ ] 0.6 `PLUGIN_BLOCK_CATEGORIES` + the `blockly_config.py` merge point.
 
 Each of 0.1–0.6 ships with its own test file proving the seam works with a
