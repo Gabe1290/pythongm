@@ -63,6 +63,18 @@ BUTTON_HITBOXES = [
 ]
 
 
+_shared_renderer = None
+
+
+def shared_renderer() -> "ThymioRenderer":
+    """The one full-scale renderer a game process shares for every robot
+    (drawing and button hit-testing must agree, so they use the same one)."""
+    global _shared_renderer
+    if _shared_renderer is None:
+        _shared_renderer = ThymioRenderer()
+    return _shared_renderer
+
+
 class ThymioRenderer:
     """Renders Thymio robot with LEDs and sensor feedback.
 

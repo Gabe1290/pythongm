@@ -349,8 +349,11 @@ real code onto them.
 
 ### Stage B — rendering + input (needs seams 0.2, 0.3)
 
-B1. `runtime/thymio_renderer.py` → `extensions/thymio/renderer.py`, wired
-    through `PLUGIN_INSTANCE_RENDERERS`.
+- [x] B1. `runtime/thymio_renderer.py` → `extensions/thymio/renderer.py`;
+    `draw_robot` registered via `PLUGIN_INSTANCE_OVERLAYS` replaces the
+    robot loop in `GameRunner.render` (same spot, same order). A
+    module-level `shared_renderer()` gives the overlay and — until B2 —
+    `GameRunner.thymio_renderer` (the input hit-test) one instance.
 B2. The button-press/hit-test logic currently inside `InputHandler` moves to
     `extensions/thymio/input.py`, wired through `PLUGIN_INPUT_HANDLERS`.
     `_thymio_mouse_presses` (currently a `GameRunner` dict) becomes
