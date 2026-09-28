@@ -309,9 +309,14 @@ real code onto them.
     now on records `requires_extensions: ["thymio"]` (the standard
     extension dependency line; no bundled sample uses a Thymio action).
     `tests/test_thymio_extension.py` pins the move.
-A2. `runtime/thymio_action_handlers.py` → `extensions/thymio/handlers.py` as
-    `PluginExecutor` (same `execute_<action>_action` naming
-    `events/plugin_loader.py` already expects).
+- [x] A2. `runtime/thymio_action_handlers.py` → `extensions/thymio/handlers.py`.
+    The closure-based `register_thymio_actions(executor)` moved verbatim
+    (the playground runner, which has no plugin loader, still calls it);
+    a `PluginExecutor` built by *capturing* what that function registers
+    gives the loader its `execute_<name>_action` attributes without a
+    second copy of any handler. `GameRunner.__init__` dropped its explicit
+    registration — `load_all_plugins(self.action_executor)` on the next
+    line now supplies the same 28 handlers.
 A3. `events/thymio_events.py` → `extensions/thymio/events.py` as
     `PLUGIN_EVENTS`.
 A4. `runtime/thymio_simulator.py` → `extensions/thymio/simulator.py`

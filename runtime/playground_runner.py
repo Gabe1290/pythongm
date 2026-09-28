@@ -22,7 +22,7 @@ from PySide6.QtGui import QImage, QPixmap, QKeyEvent, QMouseEvent
 from runtime.thymio_simulator import ThymioSimulator
 from runtime.thymio_renderer import ThymioRenderer
 from runtime.action_executor import ActionExecutor
-from runtime.thymio_action_handlers import register_thymio_actions
+from extensions.thymio.handlers import register_thymio_actions
 
 from core.logger import get_logger
 logger = get_logger(__name__)

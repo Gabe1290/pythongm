@@ -15,7 +15,7 @@ sound_id.
 
 from conftest import import_module_directly
 
-_handlers = import_module_directly("runtime/thymio_action_handlers.py")
+_handlers = import_module_directly("extensions/thymio/handlers.py")
 _parse_value = _handlers._parse_value
 
 

@@ -36,7 +36,6 @@ from events.plugin_loader import load_all_plugins
 from runtime import extension_hooks
 from config.blockly_translations import get_runtime_translation
 from runtime.thymio_renderer import ThymioRenderer
-from runtime.thymio_action_handlers import register_thymio_actions
 from core.logger import get_logger
 logger = get_logger(__name__)
 
@@ -236,10 +235,8 @@ class GameRunner(InputMixin, CollisionMixin):
         # Shared action executor for all instances (pass self for global state access)
         self.action_executor = ActionExecutor(game_runner=self)
 
-        # Register Thymio action handlers
-        register_thymio_actions(self.action_executor)
-
-        # Load plugins
+        # Load plugins (the Thymio handlers arrive here too, from
+        # extensions/thymio's PluginExecutor)
         logger.debug("🔌 Loading action/event plugins...")
         self.plugin_loader = load_all_plugins(self.action_executor)
 
