@@ -212,16 +212,16 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
 
 ### Stage 0 — the six core seams, Thymio-free
 
-0.1 `Instance.extension_state`.
-0.2 `PLUGIN_INSTANCE_RENDERERS` + engine call site in the sprite draw pass.
-0.3 `PLUGIN_INPUT_HANDLERS` + call sites in `InputHandler`.
-0.4 Pluggable asset-type registry in `ProjectManager`/`AssetManager`
+- [x] 0.1 `Instance.extension_state`. (`tests/test_extension_seams.py`)
+- [ ] 0.2 `PLUGIN_INSTANCE_RENDERERS` + engine call site in the sprite draw pass.
+- [ ] 0.3 `PLUGIN_INPUT_HANDLERS` + call sites in `InputHandler`.
+- [ ] 0.4 Pluggable asset-type registry in `ProjectManager`/`AssetManager`
     (highest-risk unit — needs the broadest regression coverage: every
     bundled sample round-trips save→load byte-identical before/after).
-0.5 `core/ide_extension_points.py` (menu contribution + asset-tree category
+- [ ] 0.5 `core/ide_extension_points.py` (menu contribution + asset-tree category
     + object-editor panel registries) + the three call sites that switch
     from a direct import/hardcode to iterating the registry.
-0.6 `PLUGIN_BLOCK_CATEGORIES` + the `blockly_config.py` merge point.
+- [ ] 0.6 `PLUGIN_BLOCK_CATEGORIES` + the `blockly_config.py` merge point.
 
 Each of 0.1–0.6 ships with its own test file proving the seam works with a
 synthetic/dummy registrant (not Thymio) — mirrors how `test_raycast_extension.py`
