@@ -174,8 +174,9 @@ This is the complete list. Everything else that used to be tracked in
    layout). All three deliverables (extension, sample, Tutorial) are now
    consistent with each other and fully done modulo Phase 5.
 
-8. **`docs/THYMIO_EXTENSION_PLAN.md` — planned 2026-09-28, zero units
-   started.** Turns Thymio-robot support (currently hidden from the UI via
+8. **`docs/THYMIO_EXTENSION_PLAN.md` — planned 2026-09-28; Stage 0 (all
+   six core seams) DONE the same day, Stages A–G not started.** Turns
+   Thymio-robot support (currently hidden from the UI via
    `# [1.0]` markers, code still living in core — see CLAUDE.md's
    "Thymio hidden for 1.0" note) into a real `extensions/thymio/` folder
    extension. Much bigger than the raycast/multiplayer/block-world
@@ -186,7 +187,12 @@ This is the complete list. Everything else that used to be tracked in
    object-editor's Thymio tab, and a Blockly-category registry) before the
    ~9,300 lines of actions/handlers/simulator/renderer/playground-editor/
    Aseba+Roberta-export code can move. Staged Stage 0 → A → B → C → D → E →
-   F → G in the plan doc; pick up at Stage 0 when this becomes active work.
+   F → G in the plan doc. Stage 0 landed as `52eb8640`..`d6e69b87` + the
+   0.6 commit (`Instance.extension_state`, `PLUGIN_INSTANCE_OVERLAYS`,
+   `PLUGIN_INPUT_HANDLERS`, `core/asset_types.py`,
+   `core/ide_extension_points.py` menus/toolbar/asset-tree/object-editor
+   panels, Blockly category merge points), each dummy-proven with no
+   Thymio code moved; pick up at Stage A1 from clean `main`.
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 

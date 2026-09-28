@@ -396,3 +396,84 @@ def test_unregistered_type_is_left_alone_on_disk(clean_asset_types, tmp_path):
     on_disk = json.loads((proj / "project.json").read_text(encoding="utf-8"))
     assert on_disk["assets"]["arenas"]["z"] == entry
     assert not (proj / "arenas").exists()
+
+
+# ---------------------------------------------------------------------------
+# 0.6 — PLUGIN_BLOCK_CATEGORIES (config/blockly_config + blockly_translations)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def clean_blocks():
+    from config import blockly_config as bc, blockly_translations as bt
+    before_cats = set(bc.BLOCK_REGISTRY)
+    before_presets = set(bc.PRESETS)
+    saved_cat_tr = {lang: dict(t) for lang, t in bt.CATEGORY_TRANSLATIONS.items()}
+    saved_block_tr = set(bt.BLOCK_TRANSLATIONS)
+    yield bc, bt
+    bc.unregister_block_categories(set(bc.BLOCK_REGISTRY) - before_cats)
+    for name in set(bc.PRESETS) - before_presets:
+        del bc.PRESETS[name]
+    bt.CATEGORY_TRANSLATIONS.clear()
+    bt.CATEGORY_TRANSLATIONS.update(saved_cat_tr)
+    for name in set(bt.BLOCK_TRANSLATIONS) - saved_block_tr:
+        del bt.BLOCK_TRANSLATIONS[name]
+
+
+_DUMMY_CATS = {"Dummy Robot": [
+    {"type": "dummy_beep", "name": "Beep", "description": "Beep once", "implemented": True},
+    {"type": "dummy_fly", "name": "Fly", "description": "Not yet", "implemented": False},
+]}
+
+
+def test_block_categories_merge_and_refresh_full_presets(clean_blocks):
+    bc, _bt = clean_blocks
+    assert bc.register_block_categories(_DUMMY_CATS) == 1
+    assert bc.register_block_categories(_DUMMY_CATS) == 0          # idempotent
+    assert bc.register_block_categories({"Events": []}) == 0        # core wins
+    assert "Dummy Robot" in bc.BLOCK_REGISTRY
+    assert {"dummy_beep", "dummy_fly"} <= bc.get_all_block_types()
+    assert bc.is_block_implemented("dummy_beep") and not bc.is_block_implemented("dummy_fly")
+    assert "dummy_beep" in bc.PRESETS["full"].enabled_blocks
+    assert "Dummy Robot" in bc.PRESETS["full"].enabled_categories
+    assert "dummy_beep" in bc.PRESETS["implemented_only"].enabled_blocks
+    assert "dummy_fly" not in bc.PRESETS["implemented_only"].enabled_blocks
+    cfg = bc.BlocklyConfig(preset_name="x")
+    cfg.enable_category("Dummy Robot")
+    assert cfg.enabled_blocks == {"dummy_beep", "dummy_fly"}
+
+
+def test_blockly_presets_and_translations_merge(clean_blocks):
+    bc, bt = clean_blocks
+    bc.register_block_categories(_DUMMY_CATS)
+    preset = bc.BlocklyConfig(preset_name="dummy")
+    preset.enable_category("Dummy Robot")
+    assert bc.register_blockly_presets({"dummy": preset, "full": preset, "bad": 3}) == 1
+    assert bc.PRESETS["dummy"] is preset
+    assert bc.PRESETS["full"] is not preset
+
+    bt.register_category_translations({"fr": {"Dummy Robot": "Robot factice", "Events": "NOPE"}})
+    assert bt.get_translated_category("Dummy Robot", "fr") == "Robot factice"
+    assert bt.get_translated_category("Events", "fr") != "NOPE"      # existing kept
+    bt.register_block_translations({"dummy_beep": {
+        "name": {"fr": "Bip"}, "description": {"fr": "Un bip"}}})
+    assert bt.get_translated_block_name("dummy_beep", "fr") == "Bip"
+    assert bt.get_translated_block_description("dummy_beep", "fr") == "Un bip"
+
+
+def test_loader_registers_block_categories(clean_blocks):
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    bc, bt = clean_blocks
+    preset = bc.BlocklyConfig(preset_name="dummy")
+    module = SimpleNamespace(
+        PLUGIN_BLOCK_CATEGORIES=_DUMMY_CATS,
+        PLUGIN_BLOCKLY_PRESETS={"dummy": preset},
+        PLUGIN_BLOCK_CATEGORY_TRANSLATIONS={"de": {"Dummy Robot": "Attrappe"}},
+        PLUGIN_BLOCK_TRANSLATIONS={"dummy_beep": {"name": {"de": "Piep"}, "description": {}}},
+    )
+    loader = object.__new__(PluginLoader)
+    assert PluginLoader._load_block_categories(loader, module) == 2
+    assert "Dummy Robot" in bc.BLOCK_REGISTRY and "dummy" in bc.PRESETS
+    assert bt.get_translated_category("Dummy Robot", "de") == "Attrappe"
+    assert bt.get_translated_block_name("dummy_beep", "de") == "Piep"
+    assert PluginLoader._load_block_categories(loader, SimpleNamespace()) == 0

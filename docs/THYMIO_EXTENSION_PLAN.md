@@ -275,7 +275,17 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
         / `_on_extension_event_selected` / `_sync_extension_panels` from
         `load_data`. The hardcoded Thymio tab still sits alongside until
         Stage E2 swaps it onto this seam.
-- [ ] 0.6 `PLUGIN_BLOCK_CATEGORIES` + the `blockly_config.py` merge point.
+- [x] 0.6 `PLUGIN_BLOCK_CATEGORIES` / `PLUGIN_BLOCKLY_PRESETS` /
+    `PLUGIN_BLOCK_CATEGORY_TRANSLATIONS` / `PLUGIN_BLOCK_TRANSLATIONS`:
+    `register_block_categories` + `register_blockly_presets` in
+    `config/blockly_config.py` (first name wins; "full"/"implemented_only"
+    presets rebuilt), `register_category_translations` +
+    `register_block_translations` in `config/blockly_translations.py`;
+    loader `_load_block_categories` at all three sites. The Thymio
+    categories, preset and translations stay inline until Stage F1.
+
+**Stage 0 is complete.** Every seam is generic, dummy-proven, and Thymio's
+code is untouched — Stage A can start on any machine from clean `main`.
 
 Each of 0.1–0.6 ships with its own test file proving the seam works with a
 synthetic/dummy registrant (not Thymio) — mirrors how `test_raycast_extension.py`
