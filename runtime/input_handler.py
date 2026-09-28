@@ -137,7 +137,7 @@ class InputMixin:
 
     Not usable standalone -- every method here reads/writes attributes
     GameRunner.__init__ sets up (self.current_room, self._objects_data,
-    self._thymio_mouse_presses, self.thymio_renderer, ...) and calls
+    ...) and calls
     sibling GameRunner methods (self.change_room, self.restart_game,
     self.check_movement_collision_with_blocker, ...).
     """
@@ -201,27 +201,8 @@ class InputMixin:
             # Note: keyboard (held) events are handled per-frame in _process_held_keys,
             # NOT here on KEYDOWN, to avoid double-firing with keyboard_press events
 
-            # Handle Thymio button events (keyboard mapping)
-            if instance.is_thymio and instance.thymio_simulator:
-                thymio_button_map = {
-                    'up': ('forward', 'thymio_button_forward'),
-                    'down': ('backward', 'thymio_button_backward'),
-                    'left': ('left', 'thymio_button_left'),
-                    'right': ('right', 'thymio_button_right'),
-                    'space': ('center', 'thymio_button_center')
-                }
-
-                if sub_key in thymio_button_map:
-                    button_name, event_name = thymio_button_map[sub_key]
-                    instance.thymio_simulator.set_button(button_name, True)
-
-                    # Trigger Thymio button event
-                    if event_name in events:
-                        logger.debug(f"  🤖 Executing {event_name} for {instance.object_name}")
-                        events_found = True
-                        instance.action_executor.execute_event(instance, event_name, events)
-
-            # Extension input hooks (runtime/extension_hooks), per instance.
+            # Extension input hooks (runtime/extension_hooks), per instance
+            # (a simulated robot's key-to-button mapping lives there).
             if extension_hooks.run_key_down(instance, sub_key):
                 events_found = True
 
@@ -350,20 +331,6 @@ class InputMixin:
                         if isinstance(anykey_data, dict) and "actions" in anykey_data:
                             instance.action_executor.execute_action_list(instance, anykey_data["actions"])
 
-            # Handle Thymio button release
-            if instance.is_thymio and instance.thymio_simulator:
-                thymio_button_map = {
-                    'up': 'forward',
-                    'down': 'backward',
-                    'left': 'left',
-                    'right': 'right',
-                    'space': 'center'
-                }
-
-                if sub_key in thymio_button_map:
-                    button_name = thymio_button_map[sub_key]
-                    instance.thymio_simulator.set_button(button_name, False)
-
             # Extension input hooks (runtime/extension_hooks), per instance.
             extension_hooks.run_key_up(instance, sub_key)
 
@@ -387,19 +354,14 @@ class InputMixin:
         # Screen -> room space (L6, docs/FULL_AUDIT_2026-09-07.md) -- a
         # scrolled view's offset must be undone before it reaches
         # instance.mouse_x/mouse_y, which authors compare against room
-        # coordinates. Thymio hit-testing below stays in raw screen space
-        # on purpose: thymio_renderer draws in screen space too.
+        # coordinates. Extension hooks get the raw screen position on
+        # purpose: an on-screen widget (a robot's buttons) lives there.
         room_mouse_x, room_mouse_y = self.current_room.screen_to_room(mouse_x, mouse_y)
         logger.debug(f"\n🖱️  Mouse pressed: {button_name} at ({mouse_x}, {mouse_y})")
 
-        # Thymio button click takes precedence over generic mouse events:
-        # if the click lands on a Thymio button, fire that robot's button event
-        # and don't fall through to the per-instance mouse handlers.
-        if button == 1 and self._handle_thymio_button_press(button, mouse_x, mouse_y):
-            return
-
-        # Extension input hooks (runtime/extension_hooks): same precedence,
-        # raw screen space; a handler returning True swallows the click.
+        # Extension input hooks (runtime/extension_hooks) take precedence
+        # over generic mouse events: a handler returning True swallows the
+        # click so no per-instance mouse handler sees it.
         if extension_hooks.run_mouse_down(self, button, mouse_x, mouse_y):
             return
 
@@ -419,44 +381,13 @@ class InputMixin:
                 instance.mouse_y = room_mouse_y
                 instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
-    def _handle_thymio_button_press(self, mouse_button, mouse_x, mouse_y):
-        """Hit-test Thymio buttons under the mouse and fire the matching event.
-
-        Returns True if a Thymio button was pressed (caller should swallow the click).
-        """
-        for instance in self.current_room.instances:
-            if not (instance.is_thymio and instance.thymio_simulator):
-                continue
-            sim = instance.thymio_simulator
-            hit = self.thymio_renderer.hit_test_button(sim.x, sim.y, sim.angle, mouse_x, mouse_y)
-            if not hit:
-                continue
-
-            sim.set_button(hit, True)
-            self._thymio_mouse_presses[mouse_button] = (instance, hit)
-
-            event_name = f"thymio_button_{hit}"
-            events = (instance.object_data or {}).get('events', {})
-            if event_name in events:
-                logger.debug(f"  🤖 Mouse-clicked {event_name} on {instance.object_name}")
-                instance.action_executor.execute_event(instance, event_name, events)
-            return True
-        return False
-
     def handle_mouse_release(self, button, pos):
         """Handle mouse button release event"""
         if not self.current_room:
             return
 
-        # If this mouse button had pressed a Thymio button, release it and stop here.
-        press = self._thymio_mouse_presses.pop(button, None)
-        if press is not None:
-            instance, btn_name = press
-            if instance.thymio_simulator:
-                instance.thymio_simulator.set_button(btn_name, False)
-            return
-
-        # Extension input hooks (runtime/extension_hooks), raw screen space.
+        # Extension input hooks (runtime/extension_hooks), raw screen space;
+        # True means the release belonged to an extension's on-screen widget.
         if extension_hooks.run_mouse_up(self, button, *pos):
             return
 

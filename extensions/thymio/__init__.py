@@ -19,9 +19,11 @@ is the map. What lives here so far:
 * ``renderer.py`` — ``ThymioRenderer`` (robot body, LEDs, sensor rays,
   button hit-testing); ``draw_robot`` below is the instance overlay that
   draws every robot over the room (B1).
+* ``input.py`` — keyboard/mouse control of the robot's buttons, through
+  the input hook (B2).
 
-The rest — input, playground editor, the Aseba/Open Roberta interop —
-still lives in core and moves in Stages B–F.
+The rest — the playground editor, the Aseba/Open Roberta interop — still
+lives in core and moves in Stages C–F.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -59,3 +61,8 @@ def draw_robot(instance, screen):
 
 
 PLUGIN_INSTANCE_OVERLAYS = [draw_robot]
+
+# Arrow keys / space drive the robot's buttons; a click on a drawn button
+# presses it (B2). See input.py.
+from .input import INPUT_HANDLERS
+PLUGIN_INPUT_HANDLERS = [INPUT_HANDLERS]
