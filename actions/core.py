@@ -127,13 +127,19 @@ GM80_ACTION_TABS = {
         "order": 13,
         "description": "Resource replacement"
     },
-    "thymio": {
-        "name": "Thymio",
-        "icon": "🤖",
-        "order": 100,
-        "description": "Thymio robot control actions"
-    }
 }
+
+
+def register_action_tabs(tabs: Dict[str, Dict]) -> int:
+    """Merge extension-owned tabs (same shape as the entries above) into
+    GM80_ACTION_TABS; first name wins. Returns how many were added."""
+    added = 0
+    for key, info in (tabs or {}).items():
+        if key in GM80_ACTION_TABS:
+            continue
+        GM80_ACTION_TABS[key] = dict(info)
+        added += 1
+    return added
 
 
 def get_actions_by_tab(all_actions: Dict, tab: str) -> List[ActionDefinition]:

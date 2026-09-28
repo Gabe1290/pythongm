@@ -22,7 +22,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from actions.thymio_actions import THYMIO_ACTIONS
+from extensions.thymio.actions import THYMIO_ACTIONS
 
 
 def test_play_system_sound_description_discloses_the_simulator_approximation():

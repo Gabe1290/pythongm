@@ -19,7 +19,7 @@ from widgets.thymio_diagram_widget import (
 from events.thymio_events import (
     THYMIO_EVENT_TYPES, THYMIO_EVENT_CATEGORIES, EVENT_TO_REGIONS
 )
-from actions.thymio_actions import THYMIO_ACTIONS
+from extensions.thymio.actions import THYMIO_ACTIONS
 from editors.object_editor.gm80_action_dialog import GM80ActionDialog
 
 from core.logger import get_logger

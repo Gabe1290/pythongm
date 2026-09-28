@@ -12,19 +12,17 @@ importers/gmk_mappings.py. Those category modules have been removed.
 What remains in this package:
 
 * ``actions.core`` — the ``ActionDefinition`` / ``ActionParameter``
-  classes used by ``editors/object_editor/gm80_action_dialog.py``
-  (which the Thymio panels still rely on).
-* ``actions.thymio_actions`` — ``THYMIO_ACTIONS`` and ``THYMIO_TAB``,
-  consumed directly by ``editors/object_editor/thymio_events_panel.py``
-  and ``dialogs/thymio_action_selector.py``.
+  classes used by ``editors/object_editor/gm80_action_dialog.py``, plus
+  the GM80 tab registry an extension can add a tab to.
+
+The Thymio action schemas that used to live here as
+``actions.thymio_actions`` are the Thymio extension's now
+(``extensions/thymio/actions.py``, docs/THYMIO_EXTENSION_PLAN.md Stage A1).
 """
 
 from actions.core import ActionParameter, ActionDefinition
-from actions.thymio_actions import THYMIO_ACTIONS, THYMIO_TAB
 
 __all__ = [
     'ActionParameter',
     'ActionDefinition',
-    'THYMIO_ACTIONS',
-    'THYMIO_TAB',
 ]
