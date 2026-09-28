@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QImage, QPixmap, QKeyEvent, QMouseEvent
 
-from runtime.thymio_simulator import ThymioSimulator
+from extensions.thymio.simulator import ThymioSimulator
 from runtime.thymio_renderer import ThymioRenderer
 from runtime.action_executor import ActionExecutor
 from extensions.thymio.handlers import register_thymio_actions

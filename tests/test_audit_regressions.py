@@ -386,7 +386,7 @@ class TestThymioKeyButtonStateMapping:
 
     def test_key_event_map_buttons_are_settable(self):
         from runtime.playground_runner import PlaygroundRunnerWindow
-        from runtime.thymio_simulator import ThymioSimulator
+        from extensions.thymio.simulator import ThymioSimulator
         sim = ThymioSimulator(x=0, y=0, angle=0)
         assert PlaygroundRunnerWindow._KEY_EVENT_MAP, "key->event map is empty"
         for event_name in PlaygroundRunnerWindow._KEY_EVENT_MAP.values():

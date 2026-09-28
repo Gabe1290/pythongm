@@ -52,7 +52,9 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from runtime.sprite import GameSprite
 from runtime.instance import GameInstance
-from runtime.thymio_simulator import ThymioSimulator
+# Temporary core->extension import: the robot-instance creation below moves
+# onto an extension hook in Stage B (docs/THYMIO_EXTENSION_PLAN.md).
+from extensions.thymio.simulator import ThymioSimulator
 from runtime import extension_hooks
 # Safe only because of WHERE game_runner.py re-imports GameRoom from this
 # module -- see the module docstring above before touching either side.

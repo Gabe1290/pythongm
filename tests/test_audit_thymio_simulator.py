@@ -1,4 +1,4 @@
-"""Regression tests for audit findings M55 and M56 in runtime/thymio_simulator.py.
+"""Regression tests for audit findings M55 and M56 in extensions/thymio/simulator.py.
 
 M55 — ground sensors must sample in FRONT of the robot (matching the rendered
        indicators), not 90 degrees off to the side.
@@ -18,7 +18,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 import pytest
 
-from runtime.thymio_simulator import (
+from extensions.thymio.simulator import (
     ThymioSimulator,
     GROUND_SENSOR_POSITIONS,
     GROUND_SENSOR_OFFSET,
