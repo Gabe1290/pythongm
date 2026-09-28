@@ -8,6 +8,8 @@ end-step/destroy -- exactly where the engine called it.
 """
 import pygame
 
+from .state import simulator_of
+
 
 def update_thymio_robots(game_runner):
     """Advance every Thymio robot simulator in the current room and fire the
@@ -21,8 +23,8 @@ def update_thymio_robots(game_runner):
     # (Profiling on a 131-instance maze showed this function consumed ~10%
     # of per-frame work time despite no Thymios being present.)
     thymio_instances = [
-        inst for inst in room.instances
-        if inst.is_thymio and inst.thymio_simulator
+        (inst, simulator_of(inst)) for inst in room.instances
+        if simulator_of(inst) is not None
     ]
     if not thymio_instances:
         return
@@ -33,7 +35,7 @@ def update_thymio_robots(game_runner):
         # Check solid from cached object data
         obj_data = instance._cached_object_data
         is_solid = obj_data.get('solid', False) if obj_data else False
-        if is_solid and not instance.is_thymio:
+        if is_solid and simulator_of(instance) is None:
             if instance.sprite:
                 rect = pygame.Rect(
                     int(instance.x - instance.sprite.width / 2),
@@ -44,15 +46,15 @@ def update_thymio_robots(game_runner):
                 obstacles.append(rect)
 
     # Update each Thymio robot
-    for instance in thymio_instances:
+    for instance, sim in thymio_instances:
 
         # Update simulator (returns dict of events that occurred)
         dt = 1/60  # 60 FPS
-        thymio_events = instance.thymio_simulator.update(dt, obstacles, game_runner.screen)
+        thymio_events = sim.update(dt, obstacles, game_runner.screen)
 
         # Sync instance position with simulator
-        instance.x = instance.thymio_simulator.x
-        instance.y = instance.thymio_simulator.y
+        instance.x = sim.x
+        instance.y = sim.y
 
         # Trigger Thymio events if they occurred
         if not instance.object_data or "events" not in instance.object_data:

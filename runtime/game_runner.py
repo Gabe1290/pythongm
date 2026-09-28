@@ -1049,7 +1049,7 @@ class GameRunner(InputMixin, CollisionMixin):
                 self.handle_mouse_motion(event.pos)
 
     # handle_keyboard_press/_process_held_keys/_release_held_key_silent/
-    # handle_keyboard_release/handle_mouse_press/_handle_thymio_button_press/
+    # handle_keyboard_release/handle_mouse_press/
     # handle_mouse_release/handle_mouse_motion/_room_transition_pending/
     # update/_get_key_name moved to runtime/input_handler.py's InputMixin
     # (docs/POST_1_0_REFACTOR.md File 3, cluster 4) -- GameRunner now

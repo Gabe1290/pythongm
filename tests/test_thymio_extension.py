@@ -174,10 +174,10 @@ def test_frame_update_advances_robots_and_fires_sensor_events():
             return {"proximity_update": True, "timer_0": False}
 
     robot = SimpleNamespace(
-        is_thymio=True, thymio_simulator=_Sim(), x=0, y=0,
+        extension_state={"thymio": {"simulator": _Sim()}}, x=0, y=0,
         object_data={"events": {"thymio_proximity_update": {}, "thymio_timer_0": {}}},
         action_executor=_Exec(), _cached_object_data={}, sprite=None)
-    wall = SimpleNamespace(is_thymio=False, thymio_simulator=None, x=10, y=10,
+    wall = SimpleNamespace(extension_state={}, x=10, y=10,
                            _cached_object_data={"solid": True},
                            sprite=SimpleNamespace(width=8, height=8))
     runner = SimpleNamespace(current_room=SimpleNamespace(instances=[robot, wall]),
@@ -209,10 +209,10 @@ def test_renderer_lives_in_the_extension_and_draws_through_the_overlay():
     renderer_mod.ThymioRenderer.render = lambda self, screen, data: drawn.append(data)
     try:
         import extensions.thymio as ext
-        robot = SimpleNamespace(is_thymio=True, thymio_simulator=SimpleNamespace(
-            get_render_data=lambda: {"x": 1}))
+        robot = SimpleNamespace(extension_state={"thymio": {"simulator": SimpleNamespace(
+            get_render_data=lambda: {"x": 1})}})
         ext.draw_robot(robot, object())
-        ext.draw_robot(SimpleNamespace(is_thymio=False, thymio_simulator=None), object())
+        ext.draw_robot(SimpleNamespace(extension_state={}), object())
         ext.draw_robot(SimpleNamespace(), object())
     finally:
         renderer_mod.ThymioRenderer.render = real
@@ -238,7 +238,7 @@ def _robot(events):
         def execute_event(self, inst, name, evs):
             fired.append(name)
 
-    robot = SimpleNamespace(is_thymio=True, thymio_simulator=_Sim(),
+    robot = SimpleNamespace(extension_state={"thymio": {"simulator": _Sim()}},
                             object_name="thymio_1", object_data={"events": events},
                             action_executor=_Exec())
     return robot, presses, fired
@@ -275,7 +275,7 @@ def test_keys_press_and_release_robot_buttons():
     inp.key_up(robot, "up")
     assert presses == [("forward", True), ("center", True), ("forward", False)]
     assert fired == ["thymio_button_forward"]
-    assert inp.key_down(SimpleNamespace(is_thymio=False, thymio_simulator=None), "up") is False
+    assert inp.key_down(SimpleNamespace(extension_state={}), "up") is False
 
 
 def test_click_on_a_drawn_button_presses_it_and_is_swallowed():
@@ -296,6 +296,38 @@ def test_click_on_a_drawn_button_presses_it_and_is_swallowed():
         renderer_mod.ThymioRenderer.hit_test_button = real
     assert presses == [("center", True), ("center", False)]
     assert fired == ["thymio_button_center"]
+
+
+# ---------------------------------------------------------------------------
+# B3 — robot state in extension_state, attached by the instance-created hook
+# ---------------------------------------------------------------------------
+
+def test_core_instance_and_room_carry_no_robot_state():
+    from runtime.instance import GameInstance
+    inst = GameInstance("obj", 0, 0, {}, action_executor=None)
+    assert not hasattr(inst, "is_thymio") and not hasattr(inst, "thymio_simulator")
+    assert inst.custom_rendered is False and inst.extension_state == {}
+    for fname in ("runtime/room.py", "runtime/instance.py"):
+        src = (REPO_ROOT / fname).read_text(encoding="utf-8")
+        assert "thymio" not in src.lower(), fname
+
+
+def test_room_build_attaches_a_simulator_through_the_hook():
+    from events.plugin_loader import load_all_plugins
+    from runtime.game_runner import GameRoom
+    from extensions.thymio.state import simulator_of
+    load_all_plugins()
+    room = GameRoom("r", {"width": 200, "height": 200, "instances": [
+        {"object": "thymio_bot", "x": 40, "y": 50},
+        {"object": "obj_wall", "x": 10, "y": 10},
+        {"object": "obj_flagged", "x": 1, "y": 2, "is_thymio": True},
+    ]}, action_executor=None)
+    bot, wall, flagged = room.instances
+    sim = simulator_of(bot)
+    assert sim is not None and (sim.x, sim.y) == (40, 50)
+    assert bot.custom_rendered is True
+    assert simulator_of(wall) is None and wall.custom_rendered is False
+    assert simulator_of(flagged) is not None
 
 
 def test_extension_is_discovered_and_registers_its_tab():

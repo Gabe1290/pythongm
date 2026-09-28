@@ -241,6 +241,56 @@ def run_mouse_up(game_runner, button: int, x: int, y: int) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Instance-created hooks: attach per-instance state when a room builds an
+# instance. A simulated robot needs its simulator to exist before the
+# instance's create event can run its first robot action
+# (docs/THYMIO_EXTENSION_PLAN.md, Stage B3). Runs once per instance, right
+# after GameRoom constructs it from the room's instance data (not for
+# instances an action creates later -- the engine never attached robot
+# state to those either).
+#
+#     def on_instance_created(instance, instance_data, room):
+#         if instance_data.get("is_robot"):
+#             instance.extension_state["my_ext"] = {...}
+#             instance.custom_rendered = True   # my overlay draws it
+#
+#     PLUGIN_INSTANCE_CREATED = [on_instance_created]
+# ---------------------------------------------------------------------------
+
+_instance_created_hooks = []
+
+
+def register_instance_created_hook(func) -> None:
+    """Register an ``(instance, instance_data, room) -> None`` hook."""
+    if not callable(func):
+        logger.error(f"Instance-created hook is not callable: {func!r}")
+        return
+    if func in _instance_created_hooks:
+        return                      # idempotent: the loader may re-run
+    _instance_created_hooks.append(func)
+    logger.debug(f"Registered instance-created hook: {getattr(func, '__name__', func)}")
+
+
+def get_instance_created_hooks() -> list:
+    return list(_instance_created_hooks)
+
+
+def clear_instance_created_hooks() -> None:
+    _instance_created_hooks.clear()
+
+
+def run_instance_created(instance, instance_data, room) -> None:
+    """Offer a freshly built instance to every registered hook. A hook that
+    raises is logged and skipped, same contract as the other runners."""
+    for func in _instance_created_hooks:
+        try:
+            func(instance, instance_data, room)
+        except Exception as exc:
+            logger.error(
+                f"Instance-created hook {getattr(func, '__name__', func)} failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # Frame-update hooks: run every frame, unconditional on any authored action.
 #
 # A room renderer only runs during the draw pass, for whichever room is

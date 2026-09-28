@@ -34,9 +34,9 @@ move that import earlier in game_runner.py** (e.g. to the top-of-file
 import block) -- that would reintroduce a real circular-import failure
 at process start.
 
-``GameSprite`` (already its own module), ``ThymioSimulator``, and
-``runtime.extension_hooks`` have no dependency on ``game_runner.py`` and
-import here directly with no such ordering constraint.
+``GameSprite`` (already its own module) and ``runtime.extension_hooks``
+have no dependency on ``game_runner.py`` and import here directly with no
+such ordering constraint.
 
 ``game_runner.py`` re-exports ``GameRoom``/``_sane_room_dimension``/
 ``ROOM_MIN_DIMENSION``/``ROOM_MAX_DIMENSION`` (same precedent as
@@ -52,9 +52,6 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from runtime.sprite import GameSprite
 from runtime.instance import GameInstance
-# Temporary core->extension import: the robot-instance creation below moves
-# onto an extension hook in Stage B (docs/THYMIO_EXTENSION_PLAN.md).
-from extensions.thymio.simulator import ThymioSimulator
 from runtime import extension_hooks
 # Safe only because of WHERE game_runner.py re-imports GameRoom from this
 # module -- see the module docstring above before touching either side.
@@ -223,17 +220,9 @@ class GameRoom:
                 action_executor=self.action_executor
             )
 
-            # Check if this is a Thymio robot (by object name or special property)
-            if (object_name or '').lower().startswith('thymio') or \
-               instance_data.get('is_thymio', False):
-                # Attach Thymio simulator to this instance
-                instance.thymio_simulator = ThymioSimulator(
-                    x=instance.x,
-                    y=instance.y,
-                    angle=0  # Initial angle
-                )
-                instance.is_thymio = True
-                logger.debug(f"🤖 Created Thymio robot: {instance.object_name}")
+            # Extensions attach per-instance state here (a robot's
+            # simulator) -- see runtime/extension_hooks.py.
+            extension_hooks.run_instance_created(instance, instance_data, self)
 
             self.instances.append(instance)
 
@@ -559,8 +548,9 @@ class GameRoom:
             self._sorted_instances = sorted(self.instances, key=lambda inst: inst.depth, reverse=True)
             self._depth_dirty = False
         for instance in self._sorted_instances:
-            # Regular instances render their sprites
-            if not instance.is_thymio:
+            # An extension overlay draws custom_rendered instances (a robot
+            # body) after this pass; everything else renders its sprite.
+            if not instance.custom_rendered:
                 instance.render(screen, view_offset=offset)
 
         # Draw foreground background layers
@@ -568,13 +558,6 @@ class GameRoom:
             self._render_bg_layers(screen, foreground=True, view_offset=offset)
         elif self.background_surface and self.background_foreground:
             self._render_legacy_background(screen, view_offset=offset)
-
-        # Render Thymio robots separately (on top)
-        for instance in self.instances:
-            if instance.is_thymio and instance.thymio_simulator:
-                # Get render data from simulator and pass to renderer
-                # Note: thymio_renderer is accessed from game_runner
-                pass  # Will be handled by game_runner's render method
 
     def _render_draw_events(self, screen: pygame.Surface):
         """Composite per-instance draw events over a finished raycast frame.
@@ -590,7 +573,8 @@ class GameRoom:
           - invisible instances are skipped — render() returns early on
             `not self.visible`, so an invisible instance's draw event does not
             fire in normal mode either;
-          - Thymio instances are skipped, as in the normal loop.
+          - custom_rendered instances (an extension overlay draws them) are
+            skipped, as in the normal loop.
 
         Screen space: no view offset, so a HUD draw at (8, 8) lands 8 px from
         the window's top-left. World-space draws (draw_self, draw_sprite at
@@ -601,7 +585,7 @@ class GameRoom:
             self._sorted_instances = sorted(self.instances, key=lambda inst: inst.depth, reverse=True)
             self._depth_dirty = False
         for instance in self._sorted_instances:
-            if instance.is_thymio or not instance.visible:
+            if instance.custom_rendered or not instance.visible:
                 continue
             instance.run_draw_event(screen)
 

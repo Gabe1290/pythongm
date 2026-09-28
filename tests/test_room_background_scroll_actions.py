@@ -322,7 +322,7 @@ class TestBackgroundForeground:
         inst.scale_x = 1.0
         inst.scale_y = 1.0
         inst.visible = True
-        inst.is_thymio = False
+        inst.custom_rendered = False
         inst.object_data = None
         room.instances.append(inst)
         room._depth_dirty = True
@@ -376,7 +376,7 @@ class TestBackgroundForeground:
         inst.scale_x = 1.0
         inst.scale_y = 1.0
         inst.visible = True
-        inst.is_thymio = False
+        inst.custom_rendered = False
         inst.object_data = None
         room.instances.append(inst)
         room._depth_dirty = True

@@ -70,13 +70,14 @@ class GameInstance:
         self._collision_targets = {}  # Pre-parsed collision events: {target_object_name: event_data}
         self.to_destroy = False
         self.depth = 0  # Drawing depth (higher = drawn behind, lower = drawn in front)
-        self.is_thymio = False  # Default false, set true for Thymio robot instances
-        self.thymio_simulator = None  # Thymio simulator (set for Thymio instances)
-
         # Scratch space extensions can attach per-instance state to, the
         # per-instance twin of GameRoom.extension_state. Namespace your own
         # key — see runtime/extension_hooks.py.
         self.extension_state: Dict[str, Any] = {}
+        # True when an extension overlay draws this instance itself (a
+        # simulated robot body): the engine then skips its sprite blit and
+        # its draw event.
+        self.custom_rendered = False
 
         # Cached dimensions (updated when sprite is set)
         self._cached_width = 32
