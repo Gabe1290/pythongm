@@ -136,3 +136,130 @@ def test_game_runner_render_offers_every_instance_to_overlays(clean_overlays):
     assert order == ["views", "room"]
     assert [i for i, _ in got] == [a, b]
     assert all(s is screen for _, s in got)
+
+
+# ---------------------------------------------------------------------------
+# 0.3 — PLUGIN_INPUT_HANDLERS
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def clean_input():
+    from runtime import extension_hooks
+    saved = extension_hooks.get_input_handlers()
+    extension_hooks.clear_input_handlers()
+    yield extension_hooks
+    extension_hooks.clear_input_handlers()
+    for h in saved:
+        extension_hooks.register_input_handler(h)
+
+
+def test_input_registry_validates_and_is_idempotent(clean_input):
+    hooks = clean_input
+    good = {"key_down": lambda i, k: False}
+    hooks.register_input_handler(good)
+    hooks.register_input_handler(good)
+    hooks.register_input_handler({"bogus": lambda: None})      # unknown kind
+    hooks.register_input_handler({"key_up": "not callable"})
+    hooks.register_input_handler(["not", "a", "dict"])
+    assert hooks.get_input_handlers() == [good]
+
+
+def test_run_input_aggregates_and_survives_a_raise(clean_input):
+    hooks = clean_input
+    hooks.register_input_handler({"mouse_down": lambda r, b, x, y: 1 / 0})
+    hooks.register_input_handler({"mouse_down": lambda r, b, x, y: True})
+    hooks.register_input_handler({"key_up": lambda i, k: None})   # no mouse_down
+    assert hooks.run_mouse_down(object(), 1, 0, 0) is True
+    assert hooks.run_mouse_up(object(), 1, 0, 0) is False           # nobody handles
+    assert hooks.run_key_down(object(), "up") is False
+
+
+def test_loader_registers_plugin_input_handlers(clean_input):
+    from events.plugin_loader import PluginLoader
+    h = {"key_down": lambda i, k: True}
+    assert PluginLoader._load_input_handlers(object.__new__(PluginLoader), [h]) == 1
+    assert h in clean_input.get_input_handlers()
+
+
+def _runner_with(instances):
+    """Minimal stand-in for the InputMixin's `self`, with a room whose
+    screen_to_room is the identity."""
+    from types import SimpleNamespace
+    import pygame
+    room = SimpleNamespace(instances=instances,
+                           screen_to_room=lambda x, y: (x, y))
+    return SimpleNamespace(current_room=room, _thymio_mouse_presses={},
+                           thymio_renderer=None,
+                           # Core's own Thymio precedence check, still in
+                           # place until Stage B2 moves it onto this hook.
+                           _handle_thymio_button_press=lambda b, x, y: False,
+                           _get_key_name=lambda key: "up" if key == pygame.K_UP else None)
+
+
+def _instance_with_events(name, events):
+    inst = _instance(name)
+    inst.object_data = {"events": events}
+    inst.keys_pressed = set()
+    inst.action_executor = None
+    return inst
+
+
+def test_keyboard_hooks_run_per_instance_in_loop_order(clean_input):
+    """key_down/key_up see each instance, interleaved with the engine's own
+    per-instance dispatch — so the extension's ordering matches authored
+    keyboard events exactly. Orphan instances (no object_data) are skipped
+    like everywhere else."""
+    import pygame
+    from runtime.game_runner import GameRunner
+    a = _instance_with_events("obj_a", {})
+    b = _instance_with_events("obj_b", {})
+    orphan = _instance("obj_gone")
+    orphan.keys_pressed = set()
+    runner = _runner_with([a, orphan, b])
+
+    seen = []
+    clean_input.register_input_handler({
+        "key_down": lambda inst, key: seen.append(("down", inst, key)) or True,
+        "key_up": lambda inst, key: seen.append(("up", inst, key)),
+    })
+    GameRunner.handle_keyboard_press(runner, pygame.K_UP)
+    GameRunner.handle_keyboard_release(runner, pygame.K_UP)
+    assert seen == [("down", a, "up"), ("down", b, "up"),
+                    ("up", a, "up"), ("up", b, "up")]
+
+
+def test_mouse_hooks_swallow_the_click_before_mouse_events(clean_input):
+    """A handler returning True on mouse_down/mouse_up stops the engine's
+    per-instance mouse dispatch, with raw screen coordinates; returning
+    False lets it through untouched."""
+    import pygame
+    from runtime.game_runner import GameRunner
+
+    fired = []
+
+    class _Exec:
+        def execute_action_list(self, inst, actions):
+            fired.append(actions)
+
+    inst = _instance_with_events("obj_a", {
+        "mouse": {"left_button": {"actions": ["press"]},
+                  "left_button_released": {"actions": ["release"]}},
+    })
+    inst.action_executor = _Exec()
+    runner = _runner_with([inst])
+
+    calls = []
+    swallow = {"v": True}
+    clean_input.register_input_handler({
+        "mouse_down": lambda r, b, x, y: calls.append(("down", b, x, y)) or swallow["v"],
+        "mouse_up": lambda r, b, x, y: calls.append(("up", b, x, y)) or swallow["v"],
+    })
+    GameRunner.handle_mouse_press(runner, 1, (12, 34))
+    GameRunner.handle_mouse_release(runner, 1, (12, 34))
+    assert calls == [("down", 1, 12, 34), ("up", 1, 12, 34)]
+    assert fired == [], "swallowed click must not reach mouse events"
+
+    swallow["v"] = False
+    GameRunner.handle_mouse_press(runner, 1, (12, 34))
+    GameRunner.handle_mouse_release(runner, 1, (12, 34))
+    assert fired == [["press"], ["release"]]

@@ -152,6 +152,26 @@ Per-instance state goes in `instance.extension_state[<your key>]`, the
 per-instance twin of the room dict above. Overlays don't claim; several may
 draw on the same instance.
 
+### Seeing raw input (the input hook)
+
+On-screen buttons the player clicks, or keys that drive a simulated device,
+aren't authored keyboard/mouse events. Declare a dict of the handlers you
+need:
+
+```python
+PLUGIN_INPUT_HANDLERS = [{
+    "key_down":   lambda instance, key: ...,        # per instance; -> True if you fired something
+    "key_up":     lambda instance, key: ...,        # per instance
+    "mouse_down": lambda runner, button, x, y: ...,  # once per click; -> True swallows it
+    "mouse_up":   lambda runner, button, x, y: ...,  # once per release; -> True swallows it
+}]
+```
+
+Keyboard handlers run inside the engine's per-instance loop right after
+that instance's own keyboard events. Mouse handlers run before any mouse
+event, with raw screen coordinates; returning `True` means "that click was
+mine" and no mouse event fires for it.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE

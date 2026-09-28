@@ -145,6 +145,102 @@ def run_instance_overlays(instance, screen) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Input hooks: see raw keyboard/mouse input before the engine's own dispatch.
+#
+# A simulated robot has on-screen buttons a player clicks, and keyboard keys
+# that map to those buttons (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.3).
+# Neither is an authored keyboard/mouse EVENT, so actions can't express it.
+# An extension declares a dict of optional callables:
+#
+#     PLUGIN_INPUT_HANDLERS = [{
+#         "key_down":   lambda instance, key: ...,     # -> bool: fired something
+#         "key_up":     lambda instance, key: ...,     # -> None
+#         "mouse_down": lambda runner, button, x, y: ...,  # -> bool: swallow
+#         "mouse_up":   lambda runner, button, x, y: ...,  # -> bool: swallow
+#     }]
+#
+# Keyboard hooks run PER INSTANCE, inside InputHandler's instance loop,
+# right after that instance's own keyboard_press/release events -- so
+# ordering between instances is exactly what it is for authored events.
+# Mouse hooks run ONCE per click, BEFORE the per-instance mouse events, with
+# raw screen coordinates (no view offset -- an on-screen widget lives in
+# screen space); returning True swallows the click so no mouse event fires,
+# mirroring how a click on a robot button already behaves.
+# ---------------------------------------------------------------------------
+
+_INPUT_KINDS = ("key_down", "key_up", "mouse_down", "mouse_up")
+
+# Registered handler dicts, in registration order.
+_input_handlers = []
+
+
+def register_input_handler(handlers: dict) -> None:
+    """Register a dict of optional ``key_down``/``key_up``/``mouse_down``/
+    ``mouse_up`` callables (see the module comment for signatures)."""
+    if not isinstance(handlers, dict):
+        logger.error(f"Input handler is not a dict: {handlers!r}")
+        return
+    unknown = set(handlers) - set(_INPUT_KINDS)
+    if unknown:
+        logger.error(f"Input handler has unknown kinds {sorted(unknown)}")
+        return
+    if any(not callable(f) for f in handlers.values()):
+        logger.error(f"Input handler has a non-callable entry: {handlers!r}")
+        return
+    if handlers in _input_handlers:
+        return                      # idempotent: the loader may re-run
+    _input_handlers.append(handlers)
+    logger.debug(f"Registered input handler: {sorted(handlers)}")
+
+
+def get_input_handlers() -> list:
+    """The registered handler dicts (a copy — callers must not mutate)."""
+    return list(_input_handlers)
+
+
+def clear_input_handlers() -> None:
+    """Drop every registered input handler. For tests and for reloading extensions."""
+    _input_handlers.clear()
+
+
+def _run_input(kind: str, *args) -> bool:
+    """Run every handler of ``kind``; True if any returned truthy. A handler
+    that raises is logged and skipped, same contract as the other runners."""
+    hit = False
+    for handlers in _input_handlers:
+        func = handlers.get(kind)
+        if func is None:
+            continue
+        try:
+            if func(*args):
+                hit = True
+        except Exception as exc:
+            logger.error(
+                f"Input handler {kind} {getattr(func, '__name__', func)} failed: {exc}")
+    return hit
+
+
+def run_key_down(instance, key: str) -> bool:
+    """Per-instance key press. True if some handler fired an event."""
+    return _run_input("key_down", instance, key)
+
+
+def run_key_up(instance, key: str) -> None:
+    """Per-instance key release."""
+    _run_input("key_up", instance, key)
+
+
+def run_mouse_down(game_runner, button: int, x: int, y: int) -> bool:
+    """Once per click, before mouse events. True = swallow the click."""
+    return _run_input("mouse_down", game_runner, button, x, y)
+
+
+def run_mouse_up(game_runner, button: int, x: int, y: int) -> bool:
+    """Once per release, before mouse-release events. True = swallow it."""
+    return _run_input("mouse_up", game_runner, button, x, y)
+
+
+# ---------------------------------------------------------------------------
 # Frame-update hooks: run every frame, unconditional on any authored action.
 #
 # A room renderer only runs during the draw pass, for whichever room is

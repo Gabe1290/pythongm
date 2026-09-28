@@ -223,7 +223,15 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
     `(instance, screen) -> None`, no claim, run for every instance of the
     current room between `room.render()` and the `draw_gui` pass — the
     exact spot the Thymio loop occupies, so Stage B1 is a one-loop swap.
-- [ ] 0.3 `PLUGIN_INPUT_HANDLERS` + call sites in `InputHandler`.
+- [x] 0.3 `PLUGIN_INPUT_HANDLERS` + call sites in `InputHandler`. Shape as
+    designed, with one precision from the code: keyboard hooks are
+    **per instance, inside the instance loop** (`(instance, key)`), because
+    the Thymio key→button mapping runs interleaved with each instance's own
+    `keyboard_press`/`release` dispatch today and moving it after the loop
+    would reorder events between instances; mouse hooks are once-per-click
+    `(runner, button, x, y) -> bool` in raw screen space, placed directly
+    after the existing `_handle_thymio_button_press` precedence check so
+    Stage B2 replaces that call with the hook in place.
 - [ ] 0.4 Pluggable asset-type registry in `ProjectManager`/`AssetManager`
     (highest-risk unit — needs the broadest regression coverage: every
     bundled sample round-trips save→load byte-identical before/after).
