@@ -73,6 +73,61 @@ class AssetTreeCategory:
 _asset_tree_categories: Dict[str, AssetTreeCategory] = {}
 
 
+# ---------------------------------------------------------------------------
+# Object-editor panels: an extra tab beside "Standard" in the object editor's
+# events column, owning a family of events (a robot's sensor/button events).
+#
+# The panel widget the factory returns must provide:
+#   events_modified  Signal()      emitted after the user edits in the panel
+#   event_selected   Signal(str)   emitted with an event name on selection
+#   load_events_data(dict)         given the object's whole events dict
+#   get_events_data() -> dict      the panel's own events (subset)
+# The editor merges get_events_data() back into the object's events and
+# drops any event in owned_events() the panel no longer lists.
+#
+#     PLUGIN_OBJECT_EDITOR_PANELS = [ObjectEditorPanel(
+#         key="robot", label="🤖 Robot", factory=RobotEventsPanel,
+#         owned_events=lambda: ROBOT_EVENT_TYPES.keys(),
+#         is_visible=lambda: Config.get("show_robot_tab", False),
+#         event_label=lambda name: ...,   # optional, for the info label
+#     )]
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class ObjectEditorPanel:
+    key: str
+    label: str
+    factory: Callable                       # () -> QWidget
+    owned_events: Callable                  # () -> Iterable[str]
+    is_visible: Callable = lambda: True     # () -> bool
+    event_label: Optional[Callable] = None  # (event_name) -> Optional[str]
+
+
+_object_editor_panels: Dict[str, ObjectEditorPanel] = {}
+
+
+def register_object_editor_panel(spec: ObjectEditorPanel) -> None:
+    if (not isinstance(spec, ObjectEditorPanel) or not callable(spec.factory)
+            or not callable(spec.owned_events) or not callable(spec.is_visible)):
+        logger.error(f"Object-editor panel is not a valid ObjectEditorPanel: {spec!r}")
+        return
+    existing = _object_editor_panels.get(spec.key)
+    if existing is not None:
+        if existing != spec:
+            logger.error(f"Object-editor panel {spec.key!r} already registered; kept first")
+        return
+    _object_editor_panels[spec.key] = spec
+    logger.debug(f"Registered object-editor panel: {spec.key}")
+
+
+def get_object_editor_panels() -> List[ObjectEditorPanel]:
+    return list(_object_editor_panels.values())
+
+
+def clear_object_editor_panels() -> None:
+    _object_editor_panels.clear()
+
+
 def register_asset_tree_category(spec: AssetTreeCategory) -> None:
     if not isinstance(spec, AssetTreeCategory) or not callable(spec.open_editor):
         logger.error(f"Asset tree category is not a valid AssetTreeCategory: {spec!r}")
@@ -152,6 +207,7 @@ def clear_ide_contributions() -> None:
     _menu_builders.clear()
     _toolbar_builders.clear()
     clear_asset_tree_categories()
+    clear_object_editor_panels()
 
 
 def apply_menu_contributions(ide, menus: Dict[str, object]) -> None:

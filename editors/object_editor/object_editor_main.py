@@ -20,6 +20,7 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 from utils.config import Config
+from core.ide_extension_points import get_object_editor_panels
 from ..base_editor import BaseEditor
 from .object_properties_panel import ObjectPropertiesPanel
 from .events import ObjectEventsPanel
@@ -275,6 +276,11 @@ class ObjectEditor(BaseEditor):
         self.thymio_events_panel.events_modified.connect(self._on_thymio_events_modified)
         self.thymio_events_panel.event_selected.connect(self._on_thymio_event_selected)
 
+        # Extension panels (core/ide_extension_points): one extra tab each.
+        self._extension_panels = {}
+        for spec in get_object_editor_panels():
+            self._add_extension_panel(spec)
+
         # Apply project-specific blockly config to events panel (if set)
         self._apply_project_config_to_events_panel()
 
@@ -287,6 +293,85 @@ class ObjectEditor(BaseEditor):
         logger.debug("Left panel created with events_panel and thymio_events_panel")
 
         return panel
+
+    # -- extension panels ---------------------------------------------------
+
+    def _add_extension_panel(self, spec):
+        try:
+            panel = spec.factory()
+        except Exception as e:
+            logger.error(f"Object-editor panel {spec.key!r} failed to build: {e}")
+            return
+        tab = QWidget()
+        tab_layout = QVBoxLayout(tab)
+        tab_layout.setContentsMargins(0, 5, 0, 0)
+        panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        tab_layout.addWidget(panel)
+        self._extension_panels[spec.key] = (spec, tab, panel)
+        panel.events_modified.connect(lambda k=spec.key: self._on_extension_panel_modified(k))
+        panel.event_selected.connect(lambda name, k=spec.key: self._on_extension_event_selected(k, name))
+        try:
+            visible = bool(spec.is_visible())
+        except Exception as e:
+            logger.error(f"Object-editor panel {spec.key!r} is_visible failed: {e}")
+            visible = False
+        if visible:
+            self.events_tab_widget.addTab(tab, spec.label)
+
+    def set_extension_panel_visible(self, key: str, visible: bool):
+        """Show or hide a registered extension panel's tab."""
+        entry = self._extension_panels.get(key)
+        if entry is None:
+            return
+        spec, tab, _panel = entry
+        index = self.events_tab_widget.indexOf(tab)
+        if visible and index == -1:
+            self.events_tab_widget.addTab(tab, spec.label)
+        elif not visible and index != -1:
+            self.events_tab_widget.removeTab(index)
+
+    def switch_to_extension_panel(self, key: str):
+        """Make a registered panel visible, current, and in sync."""
+        entry = self._extension_panels.get(key)
+        if entry is None:
+            return
+        self.set_extension_panel_visible(key, True)
+        _spec, tab, panel = entry
+        self.events_tab_widget.setCurrentWidget(tab)
+        if hasattr(self, 'events_panel'):
+            panel.load_events_data(self.events_panel.current_events_data)
+
+    def _on_extension_panel_modified(self, key: str):
+        """Merge a panel's events back into the object's events."""
+        entry = self._extension_panels.get(key)
+        if entry is None or not hasattr(self, 'events_panel'):
+            return
+        spec, _tab, panel = entry
+        panel_data = panel.get_events_data()
+        current = self.events_panel.current_events_data
+        for event_name, event_data in panel_data.items():
+            current[event_name] = event_data
+        owned = set(spec.owned_events())
+        for event_name in list(current.keys()):
+            if event_name in owned and event_name not in panel_data:
+                del current[event_name]
+        self.events_panel.events_modified.emit()
+
+    def _on_extension_event_selected(self, key: str, event_name: str):
+        entry = self._extension_panels.get(key)
+        if entry is None or not hasattr(self, 'event_info_label'):
+            return
+        spec = entry[0]
+        if spec.event_label is not None:
+            text = spec.event_label(event_name)
+            if text:
+                self.event_info_label.setText(text)
+
+    def _sync_extension_panels(self, events_data):
+        for _spec, _tab, panel in self._extension_panels.values():
+            panel.load_events_data(events_data)
+
+    # -- Thymio tab (moves onto the extension-panel seam in Stage E) ---------
 
     def set_thymio_tab_visible(self, visible: bool):
         """Show or hide the Thymio tab"""
@@ -926,6 +1011,8 @@ class ObjectEditor(BaseEditor):
                 if hasattr(self, 'thymio_events_panel') and self.thymio_events_panel:
                     self.thymio_events_panel.load_events_data(events_data)
                     logger.debug("Synced events data to Thymio panel")
+                if hasattr(self, '_extension_panels'):
+                    self._sync_extension_panels(events_data)
             else:
                 logger.debug("Events panel not initialized yet, storing for later")
 

@@ -208,6 +208,122 @@ def test_ide_dispatches_and_creates_registered_category(_qapp, clean_points):
         ide.deleteLater()
 
 
+# ---------------------------------------------------------------------------
+# Object-editor panels (0.5c)
+# ---------------------------------------------------------------------------
+
+def _dummy_panel_class():
+    from PySide6.QtCore import Signal
+    from PySide6.QtWidgets import QWidget
+
+    class DummyPanel(QWidget):
+        events_modified = Signal()
+        event_selected = Signal(str)
+        instances = []
+
+        def __init__(self):
+            super().__init__()
+            self.loaded = []
+            self.own = {}
+            DummyPanel.instances.append(self)
+
+        def load_events_data(self, events):
+            self.loaded.append(dict(events))
+
+        def get_events_data(self):
+            return dict(self.own)
+
+    return DummyPanel
+
+
+def _panel_spec(cls, visible=True):
+    from core.ide_extension_points import ObjectEditorPanel
+    return ObjectEditorPanel(
+        key="dummy", label="Dummy Panel", factory=cls,
+        owned_events=lambda: ["dummy_evt", "dummy_evt2"],
+        is_visible=lambda: visible,
+        event_label=lambda name: f"label:{name}",
+    )
+
+
+def test_panel_registry_validates(clean_points):
+    from core.ide_extension_points import ObjectEditorPanel
+    cls = _dummy_panel_class()
+    spec = _panel_spec(cls)
+    clean_points.register_object_editor_panel(spec)
+    clean_points.register_object_editor_panel(spec)
+    clean_points.register_object_editor_panel(
+        ObjectEditorPanel("bad", "x", factory="nope", owned_events=list))
+    assert clean_points.get_object_editor_panels() == [spec]
+
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    clean_points.clear_object_editor_panels()
+    module = SimpleNamespace(PLUGIN_OBJECT_EDITOR_PANELS=[spec])
+    assert PluginLoader._load_ide_contributions(object.__new__(PluginLoader), module) == 1
+    assert clean_points.get_object_editor_panels() == [spec]
+
+
+def test_object_editor_hosts_registered_panel(_qapp, clean_points):
+    cls = _dummy_panel_class()
+    cls.instances.clear()
+    clean_points.register_object_editor_panel(_panel_spec(cls))
+    from editors.object_editor.object_editor_main import ObjectEditor
+    editor = ObjectEditor()
+    try:
+        tabs = editor.events_tab_widget
+        labels = [tabs.tabText(i) for i in range(tabs.count())]
+        assert "Dummy Panel" in labels
+        panel = cls.instances[-1]
+
+        # load_data syncs the whole events dict into the panel.
+        act = {"action": "set_variable", "parameters": {"name": "x", "value": "1"}}
+        editor.load_data({"name": "obj", "events": {
+            "create": {"actions": []}, "dummy_evt": {"actions": [act]}}})
+        assert panel.loaded[-1] == {"create": {"actions": []}, "dummy_evt": {"actions": [act]}}
+
+        # The panel edits its own family: one owned event dropped, one added;
+        # the merge keeps "create" untouched.
+        saved = []
+        editor.events_panel.events_modified.connect(lambda: saved.append(True))
+        panel.own = {"dummy_evt2": {"actions": [act]}}
+        panel.events_modified.emit()
+        current = editor.events_panel.current_events_data
+        assert "dummy_evt" not in current
+        assert current["dummy_evt2"] == {"actions": [act]}
+        assert current["create"] == {"actions": []}
+        assert saved == [True]
+
+        # Selection feeds the info label (when the editor has one) through
+        # event_label — same hasattr guard the Thymio tab uses.
+        from PySide6.QtWidgets import QLabel
+        editor.event_info_label = QLabel()
+        panel.event_selected.emit("dummy_evt2")
+        assert editor.event_info_label.text() == "label:dummy_evt2"
+
+        # Visibility toggling removes/re-adds the tab; switch_to makes it current.
+        editor.set_extension_panel_visible("dummy", False)
+        assert "Dummy Panel" not in [tabs.tabText(i) for i in range(tabs.count())]
+        editor.switch_to_extension_panel("dummy")
+        assert tabs.tabText(tabs.currentIndex()) == "Dummy Panel"
+        assert panel.loaded[-1] == current
+    finally:
+        editor.deleteLater()
+
+
+def test_hidden_panel_is_built_but_not_shown(_qapp, clean_points):
+    cls = _dummy_panel_class()
+    clean_points.register_object_editor_panel(_panel_spec(cls, visible=False))
+    from editors.object_editor.object_editor_main import ObjectEditor
+    editor = ObjectEditor()
+    try:
+        tabs = editor.events_tab_widget
+        assert "Dummy Panel" not in [tabs.tabText(i) for i in range(tabs.count())]
+        assert "dummy" in editor._extension_panels
+    finally:
+        editor.deleteLater()
+
+
 def test_ide_without_contributions_has_no_extra_entries(_qapp, clean_points):
     from core.ide_window import PyGameMakerIDE
     ide = PyGameMakerIDE()

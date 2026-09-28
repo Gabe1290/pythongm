@@ -267,10 +267,14 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
         import-menu exclusion derives from `importable`;
         `_canonical_category` now reads the registry live rather than at
         class-definition time. Playgrounds' static entries stay until C5.
-  - [ ] 0.5c object-editor panels: `ObjectEditorMain` iterates registered
-        panel specs (label, factory, visibility fn, owned event names) for
-        its extra tabs instead of importing `ThymioEventsPanel`; generic
-        merge-back of the panel's events replaces `_on_thymio_events_modified`.
+  - [x] 0.5c object-editor panels: `ObjectEditorPanel` +
+        `PLUGIN_OBJECT_EDITOR_PANELS`. `ObjectEditorMain` builds one tab per
+        registered spec (`_add_extension_panel`), with generic
+        `set_extension_panel_visible` / `switch_to_extension_panel` /
+        `_on_extension_panel_modified` (merge-back + drop of owned events)
+        / `_on_extension_event_selected` / `_sync_extension_panels` from
+        `load_data`. The hardcoded Thymio tab still sits alongside until
+        Stage E2 swaps it onto this seam.
 - [ ] 0.6 `PLUGIN_BLOCK_CATEGORIES` + the `blockly_config.py` merge point.
 
 Each of 0.1–0.6 ships with its own test file proving the seam works with a
