@@ -219,6 +219,85 @@ def test_renderer_lives_in_the_extension_and_draws_through_the_overlay():
     assert drawn == [{"x": 1}]
 
 
+# ---------------------------------------------------------------------------
+# B2 — button input through the input hook
+# ---------------------------------------------------------------------------
+
+def _robot(events):
+    from types import SimpleNamespace
+    fired = []
+    presses = []
+
+    class _Sim:
+        x, y, angle = 100.0, 100.0, 0.0
+
+        def set_button(self, name, state):
+            presses.append((name, state))
+
+    class _Exec:
+        def execute_event(self, inst, name, evs):
+            fired.append(name)
+
+    robot = SimpleNamespace(is_thymio=True, thymio_simulator=_Sim(),
+                            object_name="thymio_1", object_data={"events": events},
+                            action_executor=_Exec())
+    return robot, presses, fired
+
+
+def test_input_handlers_are_registered_and_core_has_no_thymio_input():
+    from events.plugin_loader import load_all_plugins
+    from runtime import extension_hooks
+    from extensions.thymio.input import INPUT_HANDLERS
+    load_all_plugins()
+    # The loader imports the extension under a synthetic package name, so
+    # its function objects differ from a direct import -- compare by name.
+    registered = [
+        {k: (f.__module__.rsplit(".", 1)[-1], f.__name__) for k, f in h.items()}
+        for h in extension_hooks.get_input_handlers()
+    ]
+    assert {k: ("input", k) for k in INPUT_HANDLERS} in registered
+    assert set(INPUT_HANDLERS) == {"key_down", "key_up", "mouse_down", "mouse_up"}
+    src = (REPO_ROOT / "runtime" / "input_handler.py").read_text(encoding="utf-8")
+    for ident in ("is_thymio", "thymio_simulator", "thymio_button",
+                  "_handle_thymio", "thymio_renderer"):
+        assert ident not in src, ident
+    src = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    assert "thymio_renderer" not in src and "_thymio_mouse_presses" not in src
+
+
+def test_keys_press_and_release_robot_buttons():
+    from types import SimpleNamespace
+    from extensions.thymio import input as inp
+    robot, presses, fired = _robot({"thymio_button_forward": {}})
+    assert inp.key_down(robot, "up") is True           # event fired
+    assert inp.key_down(robot, "space") is False       # button set, no event
+    assert inp.key_down(robot, "a") is False           # unmapped key
+    inp.key_up(robot, "up")
+    assert presses == [("forward", True), ("center", True), ("forward", False)]
+    assert fired == ["thymio_button_forward"]
+    assert inp.key_down(SimpleNamespace(is_thymio=False, thymio_simulator=None), "up") is False
+
+
+def test_click_on_a_drawn_button_presses_it_and_is_swallowed():
+    from types import SimpleNamespace
+    from extensions.thymio import input as inp, renderer as renderer_mod
+    robot, presses, fired = _robot({"thymio_button_center": {}})
+    runner = SimpleNamespace(current_room=SimpleNamespace(instances=[robot]))
+    real = renderer_mod.ThymioRenderer.hit_test_button
+    renderer_mod.ThymioRenderer.hit_test_button = \
+        lambda self, rx, ry, ang, mx, my: "center" if (mx, my) == (100, 100) else None
+    try:
+        assert inp.mouse_down(runner, 1, 5, 5) is False        # miss
+        assert inp.mouse_down(runner, 3, 100, 100) is False    # not left button
+        assert inp.mouse_down(runner, 1, 100, 100) is True     # hit
+        assert inp.mouse_up(runner, 1, 100, 100) is True       # release maps back
+        assert inp.mouse_up(runner, 1, 100, 100) is False      # nothing pending
+    finally:
+        renderer_mod.ThymioRenderer.hit_test_button = real
+    assert presses == [("center", True), ("center", False)]
+    assert fired == ["thymio_button_center"]
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

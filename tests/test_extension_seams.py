@@ -206,11 +206,7 @@ def _runner_with(instances):
     import pygame
     room = SimpleNamespace(instances=instances,
                            screen_to_room=lambda x, y: (x, y))
-    return SimpleNamespace(current_room=room, _thymio_mouse_presses={},
-                           thymio_renderer=None,
-                           # Core's own Thymio precedence check, still in
-                           # place until Stage B2 moves it onto this hook.
-                           _handle_thymio_button_press=lambda b, x, y: False,
+    return SimpleNamespace(current_room=room,
                            _get_key_name=lambda key: "up" if key == pygame.K_UP else None)
 
 

@@ -354,13 +354,23 @@ real code onto them.
     robot loop in `GameRunner.render` (same spot, same order). A
     module-level `shared_renderer()` gives the overlay and — until B2 —
     `GameRunner.thymio_renderer` (the input hit-test) one instance.
-B2. The button-press/hit-test logic currently inside `InputHandler` moves to
-    `extensions/thymio/input.py`, wired through `PLUGIN_INPUT_HANDLERS`.
-    `_thymio_mouse_presses` (currently a `GameRunner` dict) becomes
-    extension-local state.
-B3. Delete the now-dead Thymio branches from `game_runner.py` and
-    `input_handler.py`; confirm (grep) zero Thymio references remain in
-    either file.
+- [x] B2. The button-press/hit-test logic inside `InputHandler` →
+    `extensions/thymio/input.py`, wired through `PLUGIN_INPUT_HANDLERS`;
+    `_thymio_mouse_presses` and `GameRunner.thymio_renderer` are gone from
+    core (extension-local dict + `shared_renderer()`). `input_handler.py`
+    and `game_runner.py` now contain **zero** Thymio references (pinned by
+    a test). The B3 grep sweep therefore folded into B2; what remains for
+    Stage B is the state/creation seam below.
+- [ ] B3 (re-scoped). `runtime/room.py` still (a) constructs the
+    `ThymioSimulator` for `thymio*`-named / `is_thymio` instances, (b) skips
+    the sprite blit and draw event for `is_thymio` instances, and
+    `runtime/instance.py` still declares `is_thymio`/`thymio_simulator`.
+    Needs: a generic instance-created hook (`PLUGIN_INSTANCE_CREATED`, run
+    at that one room-build site), a generic `GameInstance.custom_rendered`
+    flag the engine's sprite/draw-event passes honour, and the two attrs
+    moving into `instance.extension_state["thymio"]` (handlers, runtime,
+    overlay, input, playground runner and tests all read through one
+    `simulator_of(instance)` helper).
 
 Proof method for B1/B2, per this repo's established pattern for exactly this
 class of move (`test_raycast_view.py`'s note about needing a real

@@ -247,16 +247,6 @@ class GameRunner(InputMixin, CollisionMixin):
         self.rooms: Dict[str, GameRoom] = {}
         self.current_room = None
 
-        # Thymio robot renderer, kept only for InputMixin's button hit-test
-        # until Stage B2 moves that onto the input hook
-        # (docs/THYMIO_EXTENSION_PLAN.md).
-        from extensions.thymio.renderer import shared_renderer
-        self.thymio_renderer = shared_renderer()
-
-        # Tracks Thymio button presses originating from the mouse so that
-        # release maps back to the same instance/button: {pygame_button: (instance, button_name)}
-        self._thymio_mouse_presses = {}
-
         # Game settings
         self.fps = 60
         self.window_width = 800
