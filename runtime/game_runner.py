@@ -35,7 +35,6 @@ from utils.project_file_merge import merge_room_file, merge_object_file
 from events.plugin_loader import load_all_plugins
 from runtime import extension_hooks
 from config.blockly_translations import get_runtime_translation
-from runtime.thymio_renderer import ThymioRenderer
 from core.logger import get_logger
 logger = get_logger(__name__)
 
@@ -248,8 +247,11 @@ class GameRunner(InputMixin, CollisionMixin):
         self.rooms: Dict[str, GameRoom] = {}
         self.current_room = None
 
-        # Thymio robot renderer (shared for all Thymio robots)
-        self.thymio_renderer = ThymioRenderer()
+        # Thymio robot renderer, kept only for InputMixin's button hit-test
+        # until Stage B2 moves that onto the input hook
+        # (docs/THYMIO_EXTENSION_PLAN.md).
+        from extensions.thymio.renderer import shared_renderer
+        self.thymio_renderer = shared_renderer()
 
         # Tracks Thymio button presses originating from the mouse so that
         # release maps back to the same instance/button: {pygame_button: (instance, button_name)}
@@ -1697,14 +1699,9 @@ class GameRunner(InputMixin, CollisionMixin):
         # Render current room
         self.current_room.render(self.screen)
 
-        # Render Thymio robots (on top of regular sprites)
-        for instance in self.current_room.instances:
-            if instance.is_thymio and instance.thymio_simulator:
-                render_data = instance.thymio_simulator.get_render_data()
-                self.thymio_renderer.render(self.screen, render_data)
-
         # Extension overlays per instance (runtime/extension_hooks), screen
-        # space, above the room and below the GUI layer.
+        # space, above the room and below the GUI layer -- the Thymio robot
+        # bodies draw here, from extensions/thymio.
         if extension_hooks.get_instance_overlays():
             for instance in self.current_room.instances:
                 extension_hooks.run_instance_overlays(instance, self.screen)

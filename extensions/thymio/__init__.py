@@ -16,9 +16,12 @@ is the map. What lives here so far:
   constructs it for ``thymio*`` instances until Stage B.
 * ``runtime.py`` — the per-frame simulator step + sensor events, run
   through the ``after_collision`` frame-update hook (A5).
+* ``renderer.py`` — ``ThymioRenderer`` (robot body, LEDs, sensor rays,
+  button hit-testing); ``draw_robot`` below is the instance overlay that
+  draws every robot over the room (B1).
 
-The rest — renderer, input, playground editor, the Aseba/Open Roberta
-interop — still lives in core and moves in Stages B–F.
+The rest — input, playground editor, the Aseba/Open Roberta interop —
+still lives in core and moves in Stages B–F.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -44,3 +47,15 @@ def _frame_update_robots(game_runner):
 
 
 PLUGIN_FRAME_UPDATES = [(_frame_update_robots, "after_collision")]
+
+
+def draw_robot(instance, screen):
+    """Instance-overlay hook: draw a robot body over its instance (B1)."""
+    sim = getattr(instance, "thymio_simulator", None)
+    if not getattr(instance, "is_thymio", False) or sim is None:
+        return
+    from .renderer import shared_renderer
+    shared_renderer().render(screen, sim.get_render_data())
+
+
+PLUGIN_INSTANCE_OVERLAYS = [draw_robot]

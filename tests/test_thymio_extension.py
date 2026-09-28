@@ -187,6 +187,38 @@ def test_frame_update_advances_robots_and_fires_sensor_events():
     assert fired == ["thymio_proximity_update"]
 
 
+# ---------------------------------------------------------------------------
+# B1 — renderer as an instance overlay
+# ---------------------------------------------------------------------------
+
+def test_renderer_lives_in_the_extension_and_draws_through_the_overlay():
+    from types import SimpleNamespace
+    from events.plugin_loader import load_all_plugins
+    from runtime import extension_hooks
+    from extensions.thymio import renderer as renderer_mod
+    assert not (REPO_ROOT / "runtime" / "thymio_renderer.py").exists()
+    src = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    assert "thymio_simulator.get_render_data" not in src
+
+    load_all_plugins()
+    names = [getattr(f, "__name__", "") for f in extension_hooks.get_instance_overlays()]
+    assert "draw_robot" in names
+
+    drawn = []
+    real = renderer_mod.ThymioRenderer.render
+    renderer_mod.ThymioRenderer.render = lambda self, screen, data: drawn.append(data)
+    try:
+        import extensions.thymio as ext
+        robot = SimpleNamespace(is_thymio=True, thymio_simulator=SimpleNamespace(
+            get_render_data=lambda: {"x": 1}))
+        ext.draw_robot(robot, object())
+        ext.draw_robot(SimpleNamespace(is_thymio=False, thymio_simulator=None), object())
+        ext.draw_robot(SimpleNamespace(), object())
+    finally:
+        renderer_mod.ThymioRenderer.render = real
+    assert drawn == [{"x": 1}]
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}
