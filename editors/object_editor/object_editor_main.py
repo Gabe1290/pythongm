@@ -400,7 +400,7 @@ class ObjectEditor(BaseEditor):
             for event_name, event_data in thymio_data.items():
                 self.events_panel.current_events_data[event_name] = event_data
             # Remove Thymio events that were deleted
-            from events.thymio_events import THYMIO_EVENT_TYPES
+            from extensions.thymio.events import THYMIO_EVENT_TYPES
             for event_name in list(self.events_panel.current_events_data.keys()):
                 if event_name in THYMIO_EVENT_TYPES and event_name not in thymio_data:
                     del self.events_panel.current_events_data[event_name]
@@ -411,7 +411,7 @@ class ObjectEditor(BaseEditor):
         """Handle event selection in Thymio panel"""
         # Update info label
         if hasattr(self, 'event_info_label'):
-            from events.thymio_events import THYMIO_EVENT_TYPES
+            from extensions.thymio.events import THYMIO_EVENT_TYPES
             event_type = THYMIO_EVENT_TYPES.get(event_name)
             if event_type:
                 self.event_info_label.setText(f"{event_type.icon} {event_type.display_name}")

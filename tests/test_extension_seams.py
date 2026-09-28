@@ -113,6 +113,8 @@ def test_game_runner_render_offers_every_instance_to_overlays(clean_overlays):
     from types import SimpleNamespace
     from runtime.game_runner import GameRunner
 
+    # Init but never quit the display: other tests (the pygame name-entry
+    # dialog) rely on the session-wide display staying up.
     pygame.display.init()
     screen = pygame.display.set_mode((32, 32))
     order = []
@@ -128,10 +130,7 @@ def test_game_runner_render_offers_every_instance_to_overlays(clean_overlays):
     got = []
     clean_overlays.register_instance_overlay(
         lambda inst, s: got.append((inst, s)))
-    try:
-        GameRunner.render(fake)
-    finally:
-        pygame.display.quit()
+    GameRunner.render(fake)
 
     assert order == ["views", "room"]
     assert [i for i, _ in got] == [a, b]

@@ -9,7 +9,6 @@ from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from events.keyboard_events_complete import get_all_keyboard_events
 from events.mouse_events_complete import get_all_mouse_events
-from events.thymio_events import THYMIO_EVENT_TYPES
 
 @dataclass
 class EventType:
@@ -243,11 +242,8 @@ EVENT_TYPES = {
         icon="🎬",
         parameters=[]
     ),
-
-    # ========================================================================
-    # THYMIO ROBOT EVENTS
-    # ========================================================================
-    **THYMIO_EVENT_TYPES
+    # Extension events (the Thymio robot's, LAN multiplayer's, ...) arrive
+    # here through events/plugin_loader's PLUGIN_EVENTS merge at startup.
 }
 
 def get_event_type(event_name: str) -> Optional[EventType]:
@@ -292,9 +288,9 @@ EVENT_TO_BLOCKLY_MAP = {
     "no_more_health": "event_other",
     "animation_end": "event_other",
 }
-# Thymio events map directly (event name == blockly block type)
-for _thymio_name in THYMIO_EVENT_TYPES:
-    EVENT_TO_BLOCKLY_MAP[_thymio_name] = _thymio_name
+# An extension whose events have Blockly blocks (and so should be gated by
+# the Blockly config like core events) adds its own entries here via
+# PLUGIN_EVENT_BLOCKLY_MAP; events with no entry are always available.
 
 
 def get_available_events(blockly_config=None) -> List[EventType]:

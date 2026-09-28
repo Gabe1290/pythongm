@@ -4,19 +4,10 @@ Thymio Robot Event Types
 Events specific to the Thymio educational robot
 """
 
-from dataclasses import dataclass, field
-
-
-# Define EventType locally to avoid circular import
-@dataclass
-class EventType:
-    """Defines an event type"""
-    name: str
-    display_name: str
-    description: str
-    category: str
-    icon: str = None
-    parameters: list = field(default_factory=list)
+# The real EventType: the old local copy existed only to dodge a circular
+# import with events/event_types.py, which no longer imports this module
+# (docs/THYMIO_EXTENSION_PLAN.md, Stage A3).
+from events.event_types import EventType
 
 
 # ============================================================================

@@ -98,6 +98,9 @@ class PluginLoader:
                 events_loaded = self._load_events(module.PLUGIN_EVENTS)
                 plugin_info.events_count = events_loaded
 
+            if hasattr(module, 'PLUGIN_EVENT_BLOCKLY_MAP'):
+                self._load_event_blockly_map(module.PLUGIN_EVENT_BLOCKLY_MAP)
+
             # Load actions from plugin
             actions_loaded = 0
             if hasattr(module, 'PLUGIN_ACTIONS'):
@@ -230,6 +233,8 @@ class PluginLoader:
             )
             if hasattr(module, 'PLUGIN_EVENTS'):
                 info.events_count = self._load_events(module.PLUGIN_EVENTS)
+            if hasattr(module, 'PLUGIN_EVENT_BLOCKLY_MAP'):
+                self._load_event_blockly_map(module.PLUGIN_EVENT_BLOCKLY_MAP)
             if hasattr(module, 'PLUGIN_ACTIONS'):
                 info.actions_count = self._load_actions(module.PLUGIN_ACTIONS)
             if hasattr(module, 'PluginExecutor'):
@@ -400,6 +405,20 @@ class PluginLoader:
             count += 1
             logger.debug(f"Registered event: {event_name}")
 
+        return count
+
+    def _load_event_blockly_map(self, mapping) -> int:
+        """Merge an extension's PLUGIN_EVENT_BLOCKLY_MAP ({event: block type})
+        into EVENT_TO_BLOCKLY_MAP so its events are gated by the Blockly
+        config like core events (docs/THYMIO_EXTENSION_PLAN.md, Stage A3).
+        First entry wins."""
+        from events.event_types import EVENT_TO_BLOCKLY_MAP
+        count = 0
+        for event_name, block_type in (mapping or {}).items():
+            if event_name in EVENT_TO_BLOCKLY_MAP:
+                continue
+            EVENT_TO_BLOCKLY_MAP[event_name] = block_type
+            count += 1
         return count
 
     def _load_actions(self, plugin_actions: Dict[str, ActionType]) -> int:
