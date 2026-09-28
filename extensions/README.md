@@ -213,6 +213,22 @@ PLUGIN_IDE_TOOLBAR = [build_toolbar]
 
 These only run in the IDE; the game process ignores them.
 
+A new asset kind (see the asset-type hook above) also needs a row in the
+asset tree and a way to open it:
+
+```python
+from core.ide_extension_points import AssetTreeCategory
+
+PLUGIN_ASSET_TREE_CATEGORIES = [AssetTreeCategory(
+    plural="arenas", singular="arena", label="Arenas", icon="🏟️",
+    open_editor=lambda ide, name, data: ...,          # double-click
+    new_asset_template=lambda name: {"name": name, "asset_type": "arena", "imported": True},
+)]
+```
+
+The category appears after "Rooms"; `importable=False` (the default) means
+it's authored in its editor rather than imported from a file.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE

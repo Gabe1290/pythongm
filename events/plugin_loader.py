@@ -342,6 +342,10 @@ class PluginLoader:
         for build in (getattr(module, 'PLUGIN_IDE_TOOLBAR', None) or []):
             register_toolbar_contribution(build)
             count += 1
+        from core.ide_extension_points import register_asset_tree_category
+        for spec in (getattr(module, 'PLUGIN_ASSET_TREE_CATEGORIES', None) or []):
+            register_asset_tree_category(spec)
+            count += 1
         return count
 
     def _extract_plugin_info(self, module, plugin_file: Path) -> PluginInfo:

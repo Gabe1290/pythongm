@@ -10,6 +10,7 @@ from PySide6.QtWidgets import QTreeWidgetItem
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 
+from core.ide_extension_points import get_asset_tree_category
 from core.logger import get_logger
 logger = get_logger(__name__)
 
@@ -55,6 +56,10 @@ class AssetTreeItem(QTreeWidgetItem):
 
                 if self.asset_type in icon_map:
                     self.setText(0, icon_map[self.asset_type])
+                else:
+                    ext = get_asset_tree_category(self.asset_type)
+                    if ext is not None:
+                        self.setText(0, f"{ext.icon} {ext.label}")
 
                 # Make categories non-selectable but expandable
                 self.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDropEnabled)
@@ -108,6 +113,10 @@ class AssetTreeItem(QTreeWidgetItem):
                         self.setText(0, f"📜 {self.asset_name}")
                     elif self.asset_type == "fonts":
                         self.setText(0, f"🔤 {self.asset_name}")
+                    else:
+                        ext = get_asset_tree_category(self.asset_type)
+                        if ext is not None:
+                            self.setText(0, f"{ext.icon} {self.asset_name}")
                 else:
                     # Show not-imported assets in gray
                     self.setText(0, f"❌ {self.asset_name} (not imported)")

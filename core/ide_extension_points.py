@@ -32,13 +32,80 @@ entries of that menu (a builder may ``insertAction`` earlier if it must).
 A builder that raises is logged and skipped — a broken extension must not
 stop the IDE from starting.
 """
-from typing import Callable, Dict, List, Tuple
+from dataclasses import dataclass
+from typing import Callable, Dict, List, Optional, Tuple
 
 from core.logger import get_logger
 
 logger = get_logger(__name__)
 
 MENU_KEYS = ("file", "edit", "assets", "build", "tools", "help")
+
+
+# ---------------------------------------------------------------------------
+# Asset-tree categories: a new kind of asset the tree shows and can open.
+#
+# Pairs with core/asset_types (which stores the asset on disk). This is the
+# IDE half: the category row in the asset tree (slotted after "Rooms"), its
+# icon, how to open one in an editor, and what a freshly created one looks
+# like. Registering here also enters the type in ASSET_TYPE_REGISTRY
+# (widgets/asset_tree/asset_utils) so double-click dispatch, editor keys
+# and the singular/plural vocabulary all know it.
+#
+#     PLUGIN_ASSET_TREE_CATEGORIES = [AssetTreeCategory(
+#         plural="arenas", singular="arena", label="Arenas", icon="🏟️",
+#         open_editor=lambda ide, name, data: ...,
+#         new_asset_template=lambda name: {...},
+#     )]
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class AssetTreeCategory:
+    plural: str
+    singular: str
+    label: str
+    icon: str
+    open_editor: Callable                      # (ide, name, data) -> None
+    new_asset_template: Optional[Callable] = None   # (name) -> dict
+    importable: bool = False
+
+
+_asset_tree_categories: Dict[str, AssetTreeCategory] = {}
+
+
+def register_asset_tree_category(spec: AssetTreeCategory) -> None:
+    if not isinstance(spec, AssetTreeCategory) or not callable(spec.open_editor):
+        logger.error(f"Asset tree category is not a valid AssetTreeCategory: {spec!r}")
+        return
+    existing = _asset_tree_categories.get(spec.plural)
+    if existing is not None:
+        if existing != spec:
+            logger.error(f"Asset tree category {spec.plural!r} already registered; kept first")
+        return
+    _asset_tree_categories[spec.plural] = spec
+    from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
+    ASSET_TYPE_REGISTRY.setdefault(spec.plural, {
+        "singular": spec.singular, "open_editor": spec.open_editor,
+    })
+    logger.debug(f"Registered asset tree category: {spec.plural}")
+
+
+def get_asset_tree_categories() -> List[AssetTreeCategory]:
+    return list(_asset_tree_categories.values())
+
+
+def get_asset_tree_category(plural: str) -> Optional[AssetTreeCategory]:
+    return _asset_tree_categories.get(plural)
+
+
+def clear_asset_tree_categories() -> None:
+    """Drop every registered category (and its ASSET_TYPE_REGISTRY entry)."""
+    from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
+    for plural in _asset_tree_categories:
+        entry = ASSET_TYPE_REGISTRY.get(plural)
+        if entry is not None and "open_editor" in entry:
+            del ASSET_TYPE_REGISTRY[plural]
+    _asset_tree_categories.clear()
 
 # Registered (menu_key, build) pairs, in registration order.
 _menu_builders: List[Tuple[str, Callable]] = []
@@ -84,6 +151,7 @@ def clear_ide_contributions() -> None:
     """Drop every registered contribution. For tests and for reloading."""
     _menu_builders.clear()
     _toolbar_builders.clear()
+    clear_asset_tree_categories()
 
 
 def apply_menu_contributions(ide, menus: Dict[str, object]) -> None:

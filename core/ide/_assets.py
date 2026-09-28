@@ -19,6 +19,7 @@ from PySide6.QtWidgets import QMessageBox, QFileDialog, QInputDialog, QDialog
 
 from dialogs.import_dialogs import ImportAssetDialog
 from widgets.asset_tree.asset_utils import validate_asset_name, ASSET_TYPE_REGISTRY
+from core.ide_extension_points import get_asset_tree_category
 
 from core.logger import get_logger
 
@@ -577,6 +578,9 @@ class AssetsMixin:
                     'walls': [],
                     'robots': [],
                 }
+            elif (ext := get_asset_tree_category(asset_type)) is not None \
+                    and ext.new_asset_template is not None:
+                asset_data = ext.new_asset_template(asset_name)
             else:
                 # Generic asset data
                 asset_data = {
@@ -689,6 +693,10 @@ class AssetsMixin:
         if entry is None:
             logger.warning(f"No editor registered for asset type '{asset_type}' (asset: {asset_name})")
             return
+        if 'open_editor' in entry:
+            # Extension-registered category (core/ide_extension_points).
+            entry['open_editor'](self, asset_name, asset_info)
+            return
         getattr(self, entry['editor_method'])(asset_name, asset_info)
 
     def _verify_asset_editor_registry(self):
@@ -701,7 +709,7 @@ class AssetsMixin:
         ordering artifact.
         """
         missing = [info['editor_method'] for info in ASSET_TYPE_REGISTRY.values()
-                   if not hasattr(self, info['editor_method'])]
+                   if 'editor_method' in info and not hasattr(self, info['editor_method'])]
         if missing:
             raise RuntimeError(
                 "ASSET_TYPE_REGISTRY (widgets/asset_tree/asset_utils.py) "

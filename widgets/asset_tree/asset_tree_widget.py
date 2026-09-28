@@ -14,6 +14,7 @@ from PySide6.QtGui import QAction, QPainter, QPalette
 from core.logger import get_logger
 logger = get_logger(__name__)
 
+from core.ide_extension_points import get_asset_tree_categories
 from .asset_tree_item import AssetTreeItem
 from .asset_operations import AssetOperations
 from .asset_dialogs import AssetPropertiesDialog
@@ -243,6 +244,8 @@ class AssetTreeWidget(QTreeWidget):
             # is absent, so projects that already contain playground assets still
             # load and round-trip on save; they're just not shown or creatable.
             # ("playgrounds", self.tr("Playgrounds")),
+            # Extension categories (core/ide_extension_points) slot here.
+            *[(c.plural, c.label) for c in get_asset_tree_categories()],
             "separator",  # Second separator
             ("scripts", self.tr("Scripts")),
             ("fonts", self.tr("Fonts"))
@@ -399,7 +402,7 @@ class AssetTreeWidget(QTreeWidget):
             context_menu.addAction(create_action)
 
             # Import asset action (only for sprites, sounds, backgrounds - not rooms/objects/playgrounds)
-            if item.asset_type not in ["rooms", "objects", "playgrounds"]:
+            if item.asset_type not in self._non_importable_categories():
                 import_action = QAction(self.tr("📥 Import {0}...").format(item.asset_type.title()), self)
                 import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
                 context_menu.addAction(import_action)
@@ -891,6 +894,12 @@ class AssetTreeWidget(QTreeWidget):
             self.add_asset(asset_type, name, asset_data)
 
     # Tree management methods
+    @staticmethod
+    def _non_importable_categories() -> List[str]:
+        """Categories whose assets are authored, not imported from a file."""
+        return ["rooms", "objects", "playgrounds"] + [
+            c.plural for c in get_asset_tree_categories() if not c.importable]
+
     def add_asset(self, asset_type: str, asset_name: str, asset_data: Dict):
         """Add an asset to the tree"""
         # Find the appropriate category
