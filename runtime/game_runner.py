@@ -1704,6 +1704,12 @@ class GameRunner(InputMixin, CollisionMixin):
                 render_data = instance.thymio_simulator.get_render_data()
                 self.thymio_renderer.render(self.screen, render_data)
 
+        # Extension overlays per instance (runtime/extension_hooks), screen
+        # space, above the room and below the GUI layer.
+        if extension_hooks.get_instance_overlays():
+            for instance in self.current_room.instances:
+                extension_hooks.run_instance_overlays(instance, self.screen)
+
         # Draw GUI layer (drawn on top of everything, in screen coordinates)
         for instance in self.current_room.instances:
             if not instance.object_data:

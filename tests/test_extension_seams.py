@@ -46,3 +46,93 @@ def test_instance_extension_state_mirrors_room_pattern():
     room = GameRoom("r", {"width": 64, "height": 64}, action_executor=None)
     inst = _instance()
     assert type(inst.extension_state) is type(room.extension_state) is dict
+
+
+# ---------------------------------------------------------------------------
+# 0.2 — PLUGIN_INSTANCE_OVERLAYS
+# ---------------------------------------------------------------------------
+
+import pytest
+
+
+@pytest.fixture
+def clean_overlays():
+    from runtime import extension_hooks
+    saved = extension_hooks.get_instance_overlays()
+    extension_hooks.clear_instance_overlays()
+    yield extension_hooks
+    extension_hooks.clear_instance_overlays()
+    for f in saved:
+        extension_hooks.register_instance_overlay(f)
+
+
+def test_instance_overlay_registry_is_idempotent_and_skips_bad_input(clean_overlays):
+    hooks = clean_overlays
+
+    def ov(instance, screen):
+        pass
+
+    hooks.register_instance_overlay(ov)
+    hooks.register_instance_overlay(ov)          # loader may re-run
+    hooks.register_instance_overlay("nope")      # logged, not registered
+    assert hooks.get_instance_overlays() == [ov]
+
+
+def test_run_instance_overlays_offers_to_all_and_survives_a_raise(clean_overlays):
+    hooks = clean_overlays
+    seen = []
+
+    def broken(instance, screen):
+        raise RuntimeError("boom")
+
+    def good(instance, screen):
+        seen.append(instance)
+
+    hooks.register_instance_overlay(broken)
+    hooks.register_instance_overlay(good)
+    inst = _instance()
+    hooks.run_instance_overlays(inst, object())
+    assert seen == [inst], "a raising overlay must not stop the next one"
+
+
+def test_loader_registers_plugin_instance_overlays(clean_overlays):
+    from events.plugin_loader import PluginLoader
+
+    def ov(instance, screen):
+        pass
+
+    assert PluginLoader._load_instance_overlays(object.__new__(PluginLoader), [ov]) == 1
+    assert ov in clean_overlays.get_instance_overlays()
+
+
+def test_game_runner_render_offers_every_instance_to_overlays(clean_overlays):
+    """Drive the real GameRunner.render on a minimal stand-in: every instance
+    of the current room reaches the overlay, after the room is drawn and
+    with the real screen surface."""
+    import pygame
+    from types import SimpleNamespace
+    from runtime.game_runner import GameRunner
+
+    pygame.display.init()
+    screen = pygame.display.set_mode((32, 32))
+    order = []
+    a, b = _instance("obj_a"), _instance("obj_b")
+    room = SimpleNamespace(
+        instances=[a, b],
+        update_views=lambda: order.append("views"),
+        render=lambda s: order.append("room"),
+    )
+    fake = SimpleNamespace(screen=screen, current_room=room,
+                           update_caption=lambda: None)
+
+    got = []
+    clean_overlays.register_instance_overlay(
+        lambda inst, s: got.append((inst, s)))
+    try:
+        GameRunner.render(fake)
+    finally:
+        pygame.display.quit()
+
+    assert order == ["views", "room"]
+    assert [i for i, _ in got] == [a, b]
+    assert all(s is screen for _, s in got)
