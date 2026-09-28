@@ -174,6 +174,20 @@ This is the complete list. Everything else that used to be tracked in
    layout). All three deliverables (extension, sample, Tutorial) are now
    consistent with each other and fully done modulo Phase 5.
 
+8. **`docs/THYMIO_EXTENSION_PLAN.md` — planned 2026-09-28, zero units
+   started.** Turns Thymio-robot support (currently hidden from the UI via
+   `# [1.0]` markers, code still living in core — see CLAUDE.md's
+   "Thymio hidden for 1.0" note) into a real `extensions/thymio/` folder
+   extension. Much bigger than the raycast/multiplayer/block-world
+   precedents: needs **six new generic core seams** first (an
+   `Instance.extension_state` slot, a per-instance render hook, an input
+   hook, a pluggable asset-type registry for "Playgrounds," an IDE-chrome
+   contribution point for menus/dialogs/asset-tree categories/the
+   object-editor's Thymio tab, and a Blockly-category registry) before the
+   ~9,300 lines of actions/handlers/simulator/renderer/playground-editor/
+   Aseba+Roberta-export code can move. Staged Stage 0 → A → B → C → D → E →
+   F → G in the plan doc; pick up at Stage 0 when this becomes active work.
+
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 
 **`docs/RELEASE_QA_CHECKLIST.md`** is the master checklist that sequences
