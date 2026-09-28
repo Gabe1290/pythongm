@@ -531,6 +531,22 @@ def get_translated_block_description(block_type: str, language: str = "en") -> s
     return BLOCK_TRANSLATIONS[block_type]["description"].get(language)
 
 
+def register_category_translations(mapping) -> None:
+    """Merge ``{lang: {category: translated}}`` from an extension
+    (PLUGIN_BLOCK_CATEGORY_TRANSLATIONS). Existing entries are kept."""
+    for language, categories in (mapping or {}).items():
+        table = CATEGORY_TRANSLATIONS.setdefault(language, {})
+        for category, text in categories.items():
+            table.setdefault(category, text)
+
+
+def register_block_translations(mapping) -> None:
+    """Merge ``{block_type: {"name": {lang: ..}, "description": {lang: ..}}}``
+    from an extension (PLUGIN_BLOCK_TRANSLATIONS). Existing entries are kept."""
+    for block_type, entry in (mapping or {}).items():
+        BLOCK_TRANSLATIONS.setdefault(block_type, entry)
+
+
 # Runtime translations for Pygame dialogs (highscore, etc.)
 # These are used by game_runner.py since it can't use Qt's translation system
 # Languages: de, es, fr, it, ru, sl, uk (active IDE languages)

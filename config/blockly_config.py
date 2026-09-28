@@ -1114,3 +1114,45 @@ def get_all_block_types() -> Set[str]:
         for block in blocks:
             all_blocks.add(block["type"])
     return all_blocks
+
+
+# ============================================================================
+# EXTENSION MERGE POINT (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.6)
+# ============================================================================
+# An extension contributes hand-curated toolbox categories (the same shape
+# as the entries above) via PLUGIN_BLOCK_CATEGORIES, and presets via
+# PLUGIN_BLOCKLY_PRESETS; events/plugin_loader calls these at startup.
+
+def register_block_categories(categories: Dict[str, List[Dict]]) -> int:
+    """Merge extension categories into BLOCK_REGISTRY (first name wins, so a
+    re-run is a no-op). Presets that mean "everything" are rebuilt so they
+    include the new blocks. Returns how many categories were added."""
+    added = 0
+    for name, blocks in (categories or {}).items():
+        if name in BLOCK_REGISTRY:
+            continue
+        BLOCK_REGISTRY[name] = [dict(block) for block in blocks]
+        added += 1
+    if added:
+        PRESETS["full"] = BlocklyConfig.get_full()
+        PRESETS["implemented_only"] = BlocklyConfig.get_implemented_only()
+    return added
+
+
+def unregister_block_categories(names) -> None:
+    """Drop categories added by register_block_categories. For tests."""
+    for name in names:
+        BLOCK_REGISTRY.pop(name, None)
+    PRESETS["full"] = BlocklyConfig.get_full()
+    PRESETS["implemented_only"] = BlocklyConfig.get_implemented_only()
+
+
+def register_blockly_presets(presets: Dict[str, BlocklyConfig]) -> int:
+    """Add extension presets to PRESETS (first name wins)."""
+    added = 0
+    for name, config in (presets or {}).items():
+        if name in PRESETS or not isinstance(config, BlocklyConfig):
+            continue
+        PRESETS[name] = config
+        added += 1
+    return added

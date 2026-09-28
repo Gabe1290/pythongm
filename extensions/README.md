@@ -246,6 +246,28 @@ The panel widget exposes `events_modified`/`event_selected` signals and
 `load_events_data(dict)`/`get_events_data()`; the editor merges the panel's
 events back into the object and drops owned events the panel removed.
 
+### Curated Blockly toolbox categories (the block-category hook)
+
+Every action auto-generates its Blockly block. Separately, the Blockly
+*configuration* dialogs (Tools → Configure Action Blocks…) work from a
+hand-curated registry of categories and presets a teacher can switch on and
+off. An extension adds its own:
+
+```python
+from config.blockly_config import BlocklyConfig
+
+PLUGIN_BLOCK_CATEGORIES = {"Robot Motors": [
+    {"type": "robot_forward", "name": "Move Forward", "description": "...", "implemented": True},
+]}
+_preset = BlocklyConfig(preset_name="robot"); _preset.enable_category("Robot Motors")
+PLUGIN_BLOCKLY_PRESETS = {"robot": _preset}
+PLUGIN_BLOCK_CATEGORY_TRANSLATIONS = {"fr": {"Robot Motors": "Moteurs du robot"}}
+PLUGIN_BLOCK_TRANSLATIONS = {"robot_forward": {"name": {"fr": "Avancer"}, "description": {"fr": "..."}}}
+```
+
+Core names win on a clash; the "full"/"implemented_only" presets are rebuilt
+to include the new blocks.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE

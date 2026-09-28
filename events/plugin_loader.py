@@ -141,6 +141,9 @@ class PluginLoader:
             # IDE chrome (core/ide_extension_points) — menus / toolbar
             self._load_ide_contributions(module)
 
+            # Blockly toolbox categories / presets / translations
+            self._load_block_categories(module)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -244,6 +247,7 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_ASSET_TYPES'):
                 self._load_asset_types(module.PLUGIN_ASSET_TYPES)
             self._load_ide_contributions(module)
+            self._load_block_categories(module)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -350,6 +354,28 @@ class PluginLoader:
         for spec in (getattr(module, 'PLUGIN_OBJECT_EDITOR_PANELS', None) or []):
             register_object_editor_panel(spec)
             count += 1
+        return count
+
+    def _load_block_categories(self, module) -> int:
+        """Register an extension's PLUGIN_BLOCK_CATEGORIES /
+        PLUGIN_BLOCKLY_PRESETS / PLUGIN_BLOCK_CATEGORY_TRANSLATIONS /
+        PLUGIN_BLOCK_TRANSLATIONS (see config/blockly_config and
+        config/blockly_translations; docs/THYMIO_EXTENSION_PLAN.md,
+        Stage 0.6). Curated toolbox categories the Blockly config dialogs
+        show, distinct from the blocks auto-generated per action."""
+        cats = getattr(module, 'PLUGIN_BLOCK_CATEGORIES', None)
+        presets = getattr(module, 'PLUGIN_BLOCKLY_PRESETS', None)
+        cat_tr = getattr(module, 'PLUGIN_BLOCK_CATEGORY_TRANSLATIONS', None)
+        block_tr = getattr(module, 'PLUGIN_BLOCK_TRANSLATIONS', None)
+        if not (cats or presets or cat_tr or block_tr):
+            return 0
+        from config.blockly_config import register_block_categories, register_blockly_presets
+        from config.blockly_translations import (
+            register_category_translations, register_block_translations,
+        )
+        count = register_block_categories(cats) + register_blockly_presets(presets)
+        register_category_translations(cat_tr)
+        register_block_translations(block_tr)
         return count
 
     def _extract_plugin_info(self, module, plugin_file: Path) -> PluginInfo:
@@ -715,6 +741,7 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
         if hasattr(module, 'PLUGIN_ASSET_TYPES'):
             _shared_loader._load_asset_types(module.PLUGIN_ASSET_TYPES)
         _shared_loader._load_ide_contributions(module)
+        _shared_loader._load_block_categories(module)
     return _shared_loader
 
 
