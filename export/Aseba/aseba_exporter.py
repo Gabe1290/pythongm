@@ -269,7 +269,7 @@ class AsebaExporter:
 
     def _generate_event_handlers(self, obj_data: Dict) -> str:
         """Generate all onevent handlers"""
-        from events.thymio_events import THYMIO_EVENT_TO_ASEBA
+        from extensions.thymio.events import THYMIO_EVENT_TO_ASEBA
 
         events = obj_data.get('events', {})
         lines = []

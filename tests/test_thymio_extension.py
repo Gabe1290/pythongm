@@ -90,6 +90,42 @@ def test_game_executor_gets_the_handlers_through_the_loader():
     assert ex.action_handlers["thymio_if_proximity"](_Inst(), {}) is False
 
 
+# ---------------------------------------------------------------------------
+# A3 — event types
+# ---------------------------------------------------------------------------
+
+def test_events_live_in_the_extension_and_use_the_real_event_type():
+    from extensions.thymio import PLUGIN_EVENTS, PLUGIN_EVENT_BLOCKLY_MAP
+    from extensions.thymio.events import THYMIO_EVENT_TYPES, is_thymio_event
+    from events.event_types import EventType
+    assert PLUGIN_EVENTS is THYMIO_EVENT_TYPES and len(THYMIO_EVENT_TYPES) == 14
+    assert all(type(e) is EventType for e in THYMIO_EVENT_TYPES.values())
+    assert PLUGIN_EVENT_BLOCKLY_MAP == {n: n for n in THYMIO_EVENT_TYPES}
+    assert is_thymio_event("thymio_button_forward") and not is_thymio_event("create")
+
+
+def test_core_no_longer_carries_the_events():
+    assert not (REPO_ROOT / "events" / "thymio_events.py").exists()
+    src = (REPO_ROOT / "events" / "event_types.py").read_text(encoding="utf-8")
+    assert "THYMIO_EVENT_TYPES" not in src and "thymio_events" not in src
+
+
+def test_events_register_through_the_loader_with_blockly_gating():
+    from events.plugin_loader import load_all_plugins
+    from events.event_types import (
+        EVENT_TYPES, EVENT_TO_BLOCKLY_MAP, get_available_events,
+    )
+    from config.blockly_config import BlocklyConfig
+    load_all_plugins()
+    assert "thymio_button_forward" in EVENT_TYPES
+    assert EVENT_TO_BLOCKLY_MAP["thymio_button_forward"] == "thymio_button_forward"
+    # Gated by the Blockly config exactly as before the move.
+    names = {e.name for e in get_available_events(BlocklyConfig.get_beginner())}
+    assert "thymio_button_forward" not in names
+    names = {e.name for e in get_available_events(BlocklyConfig.get_thymio())}
+    assert "thymio_button_forward" in names
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

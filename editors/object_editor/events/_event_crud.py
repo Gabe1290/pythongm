@@ -13,7 +13,7 @@ from PySide6.QtWidgets import QMessageBox, QMenu, QDialog, QTreeWidgetItem
 from PySide6.QtCore import Qt
 
 from events.event_types import get_available_events
-from events.thymio_events import THYMIO_EVENT_CATEGORIES, is_thymio_event
+from extensions.thymio.events import THYMIO_EVENT_CATEGORIES, is_thymio_event
 
 
 class EventCrudMixin:

@@ -15,7 +15,7 @@ from PySide6.QtGui import QFont
 from widgets.thymio_diagram_widget import (
     ThymioDiagramWidget, get_events_for_region
 )
-from events.thymio_events import (
+from extensions.thymio.events import (
     THYMIO_EVENT_TYPES, THYMIO_EVENT_CATEGORIES, EVENT_TO_REGIONS
 )
 

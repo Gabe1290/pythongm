@@ -317,8 +317,21 @@ real code onto them.
     second copy of any handler. `GameRunner.__init__` dropped its explicit
     registration — `load_all_plugins(self.action_executor)` on the next
     line now supplies the same 28 handlers.
-A3. `events/thymio_events.py` → `extensions/thymio/events.py` as
-    `PLUGIN_EVENTS`.
+- [x] A3. `events/thymio_events.py` → `extensions/thymio/events.py` as
+    `PLUGIN_EVENTS`. The module's private `EventType` copy (a circular-
+    import dodge) became the real `events.event_types.EventType` — same
+    fields. `event_types.py` no longer imports or splices the 14 events;
+    they arrive through the loader. **One new generic loader attribute,
+    `PLUGIN_EVENT_BLOCKLY_MAP`** (`{event: block_type}` merged into
+    `EVENT_TO_BLOCKLY_MAP`), because core used to map every Thymio event to
+    a same-named Blockly block so the Blockly *config* gates them — an
+    extension event with no entry is always available (the multiplayer
+    precedent), which would have silently un-gated Thymio events. Core
+    consumers (`_panel.py`, `_event_crud.py`, `object_editor_main.py`, the
+    event selector/panel, the Aseba exporter) import the new path until
+    their own stages. Landmine: `EVENT_TYPES` only contains `thymio_*`
+    after `load_all_plugins()` — the same class as the `play_sound`
+    gotcha.
 A4. `runtime/thymio_simulator.py` → `extensions/thymio/simulator.py`
     unchanged (it's already engine-decoupled: physics/sensor math given an
     obstacle list, no Qt, no direct `GameRunner` reference).

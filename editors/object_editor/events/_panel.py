@@ -16,7 +16,7 @@ from PySide6.QtGui import QFont, QColor, QBrush
 
 # Import our new event/action system
 from events.event_types import get_available_events, get_event_type
-from events.thymio_events import THYMIO_EVENT_CATEGORIES, is_thymio_event
+from extensions.thymio.events import THYMIO_EVENT_CATEGORIES, is_thymio_event
 from events.action_types import get_actions_by_category
 from events.conditional_editor import create_action_dialog
 

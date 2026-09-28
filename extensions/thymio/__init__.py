@@ -20,5 +20,12 @@ PLUGIN_NAME = "Thymio Robot"
 from actions.core import register_action_tabs
 from .actions import THYMIO_ACTIONS, THYMIO_TAB
 from .handlers import PluginExecutor, register_thymio_actions
+from .events import THYMIO_EVENT_TYPES
 
 register_action_tabs(THYMIO_TAB)
+
+# The 14 robot events (buttons, sensors, timers, sound, IR). Each has a
+# Blockly block of the same name, so it is gated by the Blockly config like
+# a core event (A3).
+PLUGIN_EVENTS = THYMIO_EVENT_TYPES
+PLUGIN_EVENT_BLOCKLY_MAP = {name: name for name in THYMIO_EVENT_TYPES}
