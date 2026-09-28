@@ -46,6 +46,50 @@ def test_manifest_declares_every_action():
     assert manifest["enabled"] is True
 
 
+# ---------------------------------------------------------------------------
+# A2 — runtime handlers
+# ---------------------------------------------------------------------------
+
+def test_handlers_live_in_the_extension_as_a_plugin_executor():
+    from extensions.thymio.actions import THYMIO_ACTIONS
+    from extensions.thymio.handlers import PluginExecutor, register_thymio_actions
+    ex = PluginExecutor()
+    for name in THYMIO_ACTIONS:
+        assert callable(getattr(ex, f"execute_{name}_action", None)), name
+    captured = {}
+
+    class _Sink:
+        def register_custom_action(self, n, h):
+            captured[n] = h
+
+    register_thymio_actions(_Sink())
+    assert set(captured) == set(THYMIO_ACTIONS)
+
+
+def test_core_no_longer_carries_the_handlers():
+    assert not (REPO_ROOT / "runtime" / "thymio_action_handlers.py").exists()
+    src = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    assert "register_thymio_actions" not in src
+    assert "thymio_action_handlers" not in src
+
+
+def test_game_executor_gets_the_handlers_through_the_loader():
+    """GameRunner no longer registers Thymio handlers itself; load_all_plugins
+    (which it calls) does, via the extension's PluginExecutor."""
+    from runtime.action_executor import ActionExecutor
+    from events.plugin_loader import load_all_plugins
+    ex = ActionExecutor(game_runner=None)
+    assert "thymio_set_motor_speed" not in ex.action_handlers
+    load_all_plugins(ex)
+    assert "thymio_set_motor_speed" in ex.action_handlers
+    assert "thymio_if_variable" in ex.action_handlers
+
+    class _Inst:
+        thymio_simulator = None
+
+    assert ex.action_handlers["thymio_if_proximity"](_Inst(), {}) is False
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

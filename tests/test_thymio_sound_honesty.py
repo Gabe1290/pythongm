@@ -5,7 +5,7 @@ is NOT tone-only for "Play System Sound" -- export/Aseba/aseba_exporter.py's
 _translate_play_system_sound emits the real `sound.system(id)` Aseba
 primitive, so an exported/uploaded program plays the robot's own authentic
 melody for that sound. The gap is narrower than the plan assumed: only the
-in-app SIMULATOR preview (runtime/thymio_action_handlers.py's
+in-app SIMULATOR preview (extensions/thymio/handlers.py's
 execute_thymio_play_system_sound_action) approximates it as a single tone,
 which could mislead a student previewing in the simulator into thinking
 that beep is what the real robot sounds like. Fixed by disclosing the

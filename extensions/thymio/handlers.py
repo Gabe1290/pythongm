@@ -423,6 +423,26 @@ def register_thymio_actions(action_executor: Any) -> None:
     logger.debug(f"✅ Registered {len(handlers)} Thymio action handlers")
 
 
+class PluginExecutor:
+    """The loader-facing face of the handlers above (events/plugin_loader
+    registers every ``execute_<name>_action`` attribute it finds). Built by
+    capturing exactly what ``register_thymio_actions`` registers, so the two
+    paths can never drift: the game process gets them through
+    ``load_all_plugins(executor)``, the playground runner (no plugin loader)
+    still calls ``register_thymio_actions`` directly."""
+
+    def __init__(self):
+        captured: Dict[str, Any] = {}
+
+        class _Sink:
+            def register_custom_action(self, name, handler):
+                captured[name] = handler
+
+        register_thymio_actions(_Sink())
+        for name, handler in captured.items():
+            setattr(self, f"execute_{name}_action", handler)
+
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================

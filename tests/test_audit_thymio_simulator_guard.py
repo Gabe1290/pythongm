@@ -18,7 +18,7 @@ sentinel without raising.
 """
 
 from runtime.action_executor import ActionExecutor
-from runtime.thymio_action_handlers import register_thymio_actions
+from extensions.thymio.handlers import register_thymio_actions
 
 
 class _FakeInstance:

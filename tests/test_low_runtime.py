@@ -21,7 +21,7 @@ pygame_available = __import__("importlib").util.find_spec("pygame") is not None
 
 class TestThymioGuard:
     def _executor(self):
-        from runtime.thymio_action_handlers import register_thymio_actions
+        from extensions.thymio.handlers import register_thymio_actions
         ex = ActionExecutor(game_runner=None)
         if "thymio_if_proximity" not in ex.action_handlers:
             register_thymio_actions(ex)
