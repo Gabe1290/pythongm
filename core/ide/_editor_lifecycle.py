@@ -110,15 +110,16 @@ class EditorLifecycleMixin:
     # ``_verify_asset_editor_registry`` (core/ide/_assets.py) and TODO.md's
     # "Formalizing the registration" note. Adding a type to the registry
     # makes it known here for free; nothing to keep in sync by hand.
-    _SINGULAR_TO_PLURAL = {
-        info['singular']: plural for plural, info in ASSET_TYPE_REGISTRY.items()
-    }
-
+    # Read live (not at class-definition time) so a category an extension
+    # registers is known too.
     @staticmethod
     def _canonical_category(category: str) -> str:
         """Normalize singular/plural asset-type vocabulary (the rename signal
         uses 'object', delete uses 'objects') so composite editor keys agree."""
-        return EditorLifecycleMixin._SINGULAR_TO_PLURAL.get(category, category)
+        singular_to_plural = {
+            info['singular']: plural for plural, info in ASSET_TYPE_REGISTRY.items()
+        }
+        return singular_to_plural.get(category, category)
 
     def _editor_key(self, category: str, name: str) -> str:
         """Composite open-editor key: "<category>:<name>" (L5)."""

@@ -257,10 +257,16 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
         `create_menu_bar`/`create_toolbar`. Proven by constructing the real
         `PyGameMakerIDE` offscreen with dummy builders
         (`tests/test_ide_extension_points.py`).
-  - [ ] 0.5b asset-tree categories: a registration that feeds
-        `ASSET_TYPE_REGISTRY` (singular + how to open the editor),
-        `setup_categories` (label, slot after "rooms"), `asset_tree_item`'s
-        icon map, and the import-menu exclusion.
+  - [x] 0.5b asset-tree categories: `AssetTreeCategory` +
+        `PLUGIN_ASSET_TREE_CATEGORIES`. Registration enters the type in
+        `ASSET_TYPE_REGISTRY` with an `open_editor` callable (dispatch and
+        `_verify_asset_editor_registry` accept that alongside the core
+        `editor_method` strings); `setup_categories` slots it after
+        "Rooms"; `asset_tree_item`/`get_asset_icon_emoji` use its icon;
+        `create_asset_with_data` uses its `new_asset_template`; the
+        import-menu exclusion derives from `importable`;
+        `_canonical_category` now reads the registry live rather than at
+        class-definition time. Playgrounds' static entries stay until C5.
   - [ ] 0.5c object-editor panels: `ObjectEditorMain` iterates registered
         panel specs (label, factory, visibility fn, owned event names) for
         its extra tabs instead of importing `ThymioEventsPanel`; generic

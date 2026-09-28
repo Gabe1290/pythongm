@@ -70,6 +70,11 @@ def get_asset_icon_emoji(asset_type: str) -> str:
         "fonts": "🔤",
         "data": "📄"
     }
+    if asset_type.lower() not in icon_map:
+        from core.ide_extension_points import get_asset_tree_category
+        ext = get_asset_tree_category(asset_type.lower())
+        if ext is not None:
+            return ext.icon
     return icon_map.get(asset_type.lower(), "📄")
 
 

@@ -137,6 +137,77 @@ def test_ide_builds_contributed_menu_and_toolbar_entries(_qapp, clean_points):
         ide.deleteLater()
 
 
+# ---------------------------------------------------------------------------
+# Asset-tree categories (0.5b)
+# ---------------------------------------------------------------------------
+
+def _arena_category(opened):
+    from core.ide_extension_points import AssetTreeCategory
+    return AssetTreeCategory(
+        plural="arenas", singular="arena", label="Arenas", icon="🏟️",
+        open_editor=lambda ide, name, data: opened.append((name, data)),
+        new_asset_template=lambda name: {"name": name, "asset_type": "arena",
+                                         "imported": True, "size": [1, 2]},
+    )
+
+
+def test_category_registry_feeds_asset_type_registry(clean_points):
+    from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
+    opened = []
+    spec = _arena_category(opened)
+    clean_points.register_asset_tree_category(spec)
+    clean_points.register_asset_tree_category(spec)             # idempotent
+    clean_points.register_asset_tree_category("nope")           # invalid
+    assert clean_points.get_asset_tree_categories() == [spec]
+    assert ASSET_TYPE_REGISTRY["arenas"]["singular"] == "arena"
+    assert ASSET_TYPE_REGISTRY["arenas"]["open_editor"] is spec.open_editor
+    clean_points.clear_asset_tree_categories()
+    assert "arenas" not in ASSET_TYPE_REGISTRY
+    assert "rooms" in ASSET_TYPE_REGISTRY                       # core untouched
+
+
+def test_loader_registers_asset_tree_categories(clean_points):
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    spec = _arena_category([])
+    module = SimpleNamespace(PLUGIN_ASSET_TREE_CATEGORIES=[spec])
+    assert PluginLoader._load_ide_contributions(object.__new__(PluginLoader), module) == 1
+    assert spec in clean_points.get_asset_tree_categories()
+
+
+def test_asset_tree_shows_category_after_rooms_with_icons(_qapp, clean_points):
+    from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
+    from widgets.asset_tree.asset_tree_item import AssetTreeItem
+    from widgets.asset_tree.asset_utils import get_asset_icon_emoji
+    clean_points.register_asset_tree_category(_arena_category([]))
+    tree = AssetTreeWidget()
+    cats = [tree.topLevelItem(i) for i in range(tree.topLevelItemCount())]
+    types = [c.asset_type for c in cats if isinstance(c, AssetTreeItem) and c.is_category]
+    assert types.index("arenas") == types.index("rooms") + 1
+    arena_cat = next(c for c in cats if getattr(c, "asset_type", "") == "arenas")
+    assert arena_cat.text(0) == "🏟️ Arenas"
+    tree.add_asset("arenas", "a1", {"imported": True})
+    assert arena_cat.child(0).text(0) == "🏟️ a1"
+    assert get_asset_icon_emoji("arenas") == "🏟️"
+    assert "arenas" in tree._non_importable_categories()
+
+
+def test_ide_dispatches_and_creates_registered_category(_qapp, clean_points):
+    opened = []
+    clean_points.register_asset_tree_category(_arena_category(opened))
+    from core.ide_window import PyGameMakerIDE
+    ide = PyGameMakerIDE()             # _verify_asset_editor_registry must pass
+    try:
+        ide.on_asset_double_clicked({"asset_type": "arenas", "name": "a1", "data": {"k": 1}})
+        assert opened == [("a1", {"k": 1})]
+        assert ide._canonical_category("arena") == "arenas"
+        ide.current_project_data = {"assets": {}}
+        ide.create_asset_with_data("arenas", "a2")
+        assert ide.current_project_data["assets"]["arenas"]["a2"]["size"] == [1, 2]
+    finally:
+        ide.deleteLater()
+
+
 def test_ide_without_contributions_has_no_extra_entries(_qapp, clean_points):
     from core.ide_window import PyGameMakerIDE
     ide = PyGameMakerIDE()
