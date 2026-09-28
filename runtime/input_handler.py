@@ -53,6 +53,7 @@ exactly where these methods actually live.
 import math
 from typing import Optional
 
+from runtime import extension_hooks
 from runtime._keymap import pygame_key_name
 
 from core.logger import get_logger
@@ -220,6 +221,10 @@ class InputMixin:
                         events_found = True
                         instance.action_executor.execute_event(instance, event_name, events)
 
+            # Extension input hooks (runtime/extension_hooks), per instance.
+            if extension_hooks.run_key_down(instance, sub_key):
+                events_found = True
+
         if not events_found:
             logger.debug(f"  ℹ️  No objects have keyboard events for '{sub_key}'")
 
@@ -359,6 +364,9 @@ class InputMixin:
                     button_name = thymio_button_map[sub_key]
                     instance.thymio_simulator.set_button(button_name, False)
 
+            # Extension input hooks (runtime/extension_hooks), per instance.
+            extension_hooks.run_key_up(instance, sub_key)
+
     def handle_mouse_press(self, button, pos):
         """Handle mouse button press event"""
         if not self.current_room:
@@ -388,6 +396,11 @@ class InputMixin:
         # if the click lands on a Thymio button, fire that robot's button event
         # and don't fall through to the per-instance mouse handlers.
         if button == 1 and self._handle_thymio_button_press(button, mouse_x, mouse_y):
+            return
+
+        # Extension input hooks (runtime/extension_hooks): same precedence,
+        # raw screen space; a handler returning True swallows the click.
+        if extension_hooks.run_mouse_down(self, button, mouse_x, mouse_y):
             return
 
         # Execute mouse events for all instances (snapshot, M49)
@@ -441,6 +454,10 @@ class InputMixin:
             instance, btn_name = press
             if instance.thymio_simulator:
                 instance.thymio_simulator.set_button(btn_name, False)
+            return
+
+        # Extension input hooks (runtime/extension_hooks), raw screen space.
+        if extension_hooks.run_mouse_up(self, button, *pos):
             return
 
         button_map = {

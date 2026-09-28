@@ -128,6 +128,11 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_INSTANCE_OVERLAYS'):
                 self._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
 
+            # Input hooks (extension_hooks) — a plugin may see raw
+            # keyboard/mouse input (on-screen robot buttons)
+            if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
+                self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -226,6 +231,8 @@ class PluginLoader:
                 self._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
             if hasattr(module, 'PLUGIN_INSTANCE_OVERLAYS'):
                 self._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
+            if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
+                self._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -282,6 +289,19 @@ class PluginLoader:
         count = 0
         for func in (overlays or []):
             register_instance_overlay(func)
+            count += 1
+        return count
+
+    def _load_input_handlers(self, handlers) -> int:
+        """Register an extension's PLUGIN_INPUT_HANDLERS (see
+        runtime/extension_hooks). Lets an extension see raw keyboard/mouse
+        input ahead of the engine's own dispatch — what on-screen robot
+        buttons need (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.3).
+        ``handlers`` is a list of dicts of optional callables."""
+        from runtime.extension_hooks import register_input_handler
+        count = 0
+        for entry in (handlers or []):
+            register_input_handler(entry)
             count += 1
         return count
 
@@ -643,6 +663,8 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
             _shared_loader._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
         if hasattr(module, 'PLUGIN_INSTANCE_OVERLAYS'):
             _shared_loader._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
+        if hasattr(module, 'PLUGIN_INPUT_HANDLERS'):
+            _shared_loader._load_input_handlers(module.PLUGIN_INPUT_HANDLERS)
     return _shared_loader
 
 
