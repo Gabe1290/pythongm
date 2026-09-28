@@ -123,6 +123,11 @@ class PluginLoader:
             if hasattr(module, 'PLUGIN_ROOM_CHANGE_HOOKS'):
                 self._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
 
+            # Instance overlays (extension_hooks) — a plugin may draw extra
+            # on top of individual instances (a simulated robot body)
+            if hasattr(module, 'PLUGIN_INSTANCE_OVERLAYS'):
+                self._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
+
             # Store plugin info
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
@@ -219,6 +224,8 @@ class PluginLoader:
                 self._load_frame_updates(module.PLUGIN_FRAME_UPDATES)
             if hasattr(module, 'PLUGIN_ROOM_CHANGE_HOOKS'):
                 self._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
+            if hasattr(module, 'PLUGIN_INSTANCE_OVERLAYS'):
+                self._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
 
             self.loaded_plugins.append(info)
             self.plugin_modules.append(module)
@@ -263,6 +270,18 @@ class PluginLoader:
         count = 0
         for func in (hooks or []):
             register_room_change_hook(func)
+            count += 1
+        return count
+
+    def _load_instance_overlays(self, overlays) -> int:
+        """Register an extension's PLUGIN_INSTANCE_OVERLAYS (see
+        runtime/extension_hooks). Lets an extension draw on top of individual
+        instances in an otherwise ordinary room — what a simulated robot
+        body needs (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.2)."""
+        from runtime.extension_hooks import register_instance_overlay
+        count = 0
+        for func in (overlays or []):
+            register_instance_overlay(func)
             count += 1
         return count
 
@@ -622,6 +641,8 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
             _shared_loader._load_frame_updates(module.PLUGIN_FRAME_UPDATES)
         if hasattr(module, 'PLUGIN_ROOM_CHANGE_HOOKS'):
             _shared_loader._load_room_change_hooks(module.PLUGIN_ROOM_CHANGE_HOOKS)
+        if hasattr(module, 'PLUGIN_INSTANCE_OVERLAYS'):
+            _shared_loader._load_instance_overlays(module.PLUGIN_INSTANCE_OVERLAYS)
     return _shared_loader
 
 

@@ -132,6 +132,26 @@ and skipped, never crashing the game. Store per-room state in
 `room.extension_state[<your key>]` rather than adding attributes to engine
 classes. [`raycast_2_5d/`](raycast_2_5d/) is a full worked example.
 
+### Drawing on top of one instance (the overlay hook)
+
+The opposite shape: the room is ordinary, but *one instance* needs extra
+drawing — a simulated robot body with its on-screen buttons. Declare an
+**instance overlay**; after the room is drawn, every instance is offered to
+it in screen space, below the GUI layer:
+
+```python
+def draw_robot(instance, screen):
+    st = instance.extension_state.get("my_robot")
+    if st:
+        ...draw at st["x"], st["y"]...
+
+PLUGIN_INSTANCE_OVERLAYS = [draw_robot]
+```
+
+Per-instance state goes in `instance.extension_state[<your key>]`, the
+per-instance twin of the room dict above. Overlays don't claim; several may
+draw on the same instance.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE

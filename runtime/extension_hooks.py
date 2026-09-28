@@ -85,6 +85,66 @@ def render_room(room, screen) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Instance-overlay hooks: draw something FOR an instance, on top of the room.
+#
+# A room renderer replaces the whole top-down pass. Some features instead
+# want one ordinary instance in an otherwise ordinary room to get extra
+# drawing -- a simulated robot body with its on-screen buttons, say
+# (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.2). The engine draws the room
+# normally, then offers every instance of the current room to each overlay,
+# in screen space (no view offset -- matches where the engine composites
+# HUD/GUI layers), before the draw_gui pass. An overlay decides for itself
+# whether an instance is its business (typically by looking in
+# instance.extension_state[<its key>]) and simply returns; there is no
+# "claim" -- several overlays may each draw on the same instance.
+#
+#     def my_overlay(instance, screen):
+#         st = instance.extension_state.get("my_ext")
+#         if st: ...draw...
+#
+#     PLUGIN_INSTANCE_OVERLAYS = [my_overlay]
+# ---------------------------------------------------------------------------
+
+# Registered (instance, screen) -> None overlays, in registration order.
+_instance_overlays = []
+
+
+def register_instance_overlay(func) -> None:
+    """Register an ``(instance, screen) -> None`` instance overlay."""
+    if not callable(func):
+        logger.error(f"Instance overlay is not callable: {func!r}")
+        return
+    if func in _instance_overlays:
+        return                      # idempotent: the loader may re-run
+    _instance_overlays.append(func)
+    logger.debug(f"Registered instance overlay: {getattr(func, '__name__', func)}")
+
+
+def get_instance_overlays() -> list:
+    """The registered overlays (a copy — callers must not mutate the list)."""
+    return list(_instance_overlays)
+
+
+def clear_instance_overlays() -> None:
+    """Drop every registered overlay. For tests and for reloading extensions."""
+    _instance_overlays.clear()
+
+
+def run_instance_overlays(instance, screen) -> None:
+    """Offer one instance to every registered overlay.
+
+    An overlay that raises is logged and skipped, same "a broken extension
+    must not take the game down" contract the other runners have.
+    """
+    for func in _instance_overlays:
+        try:
+            func(instance, screen)
+        except Exception as exc:
+            logger.error(
+                f"Instance overlay {getattr(func, '__name__', func)} failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
 # Frame-update hooks: run every frame, unconditional on any authored action.
 #
 # A room renderer only runs during the draw pass, for whichever room is

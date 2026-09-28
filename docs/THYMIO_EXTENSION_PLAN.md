@@ -213,7 +213,16 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
 ### Stage 0 — the six core seams, Thymio-free
 
 - [x] 0.1 `Instance.extension_state`. (`tests/test_extension_seams.py`)
-- [ ] 0.2 `PLUGIN_INSTANCE_RENDERERS` + engine call site in the sprite draw pass.
+- [x] 0.2 `PLUGIN_INSTANCE_OVERLAYS` + call site in `GameRunner.render`.
+    **Shape changed from the design section above while implementing:** the
+    engine draws Thymio robots *after* `room.render()`, in screen space with
+    no view offset, on top of every sprite (`game_runner.py` `render()`),
+    not inside the depth-sorted per-instance blit. A "claim and skip the
+    sprite" hook would therefore have changed behavior (a robot object with
+    a sprite draws both today). The seam is an **overlay**:
+    `(instance, screen) -> None`, no claim, run for every instance of the
+    current room between `room.render()` and the `draw_gui` pass — the
+    exact spot the Thymio loop occupies, so Stage B1 is a one-loop swap.
 - [ ] 0.3 `PLUGIN_INPUT_HANDLERS` + call sites in `InputHandler`.
 - [ ] 0.4 Pluggable asset-type registry in `ProjectManager`/`AssetManager`
     (highest-risk unit — needs the broadest regression coverage: every
@@ -389,6 +398,14 @@ Same discipline this repo has used for every prior consolidation
   strings, the `self.ide` context bug) that only a live run surfaces.
 
 ## Risks and landmines to carry in
+
+- **Pre-existing order-dependent test flake, not ours** (seen during 0.2,
+  reproduced on clean HEAD): running `tests/test_raycast_view.py` *before*
+  `tests/test_multiplayer_lan_ghosts.py` in one process fails
+  `TestNamedInput::test_default_inputs_are_bound` with `KeyError:
+  'input_binds'`; each file passes alone. Something raycast_view leaves in
+  process-global hook/plugin state that the ghosts test assumes fresh. Don't
+  chase it as a Stage-0 regression; re-run the ghosts file alone.
 
 - **Translation contexts.** `QObject.tr()` resolves its context from the
   *concrete runtime class* (verified for PySide6 6.9, documented in
