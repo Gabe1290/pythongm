@@ -294,8 +294,21 @@ real code onto them.
 
 ### Stage A — pure logic (lowest risk, no new seam needed)
 
-A1. `actions/thymio_actions.py` → `extensions/thymio/actions.py` as
-    `PLUGIN_ACTIONS`.
+- [x] A1. `actions/thymio_actions.py` → `extensions/thymio/actions.py`.
+    **Not as `PLUGIN_ACTIONS`** — investigation showed the Thymio schemas
+    are `actions.core.ActionDefinition`s for the GM80 action *dialog*
+    (a separate schema system from `events.action_types.ActionType` /
+    `ACTION_TYPES`; Thymio actions were never in `ACTION_TYPES` and the
+    runtime dispatches them by registered handler name). Moved verbatim,
+    keeping the shape; consumers (`thymio_events_panel`,
+    `thymio_action_selector`, one test) now import
+    `extensions.thymio.actions`. The GM80 "Thymio" tab left
+    `actions/core.py` too: new `register_action_tabs()` merge point, the
+    extension registers `THYMIO_TAB` on import. `extension.json` declares
+    all 28 actions in `provides_actions`, so a Thymio project saved from
+    now on records `requires_extensions: ["thymio"]` (the standard
+    extension dependency line; no bundled sample uses a Thymio action).
+    `tests/test_thymio_extension.py` pins the move.
 A2. `runtime/thymio_action_handlers.py` → `extensions/thymio/handlers.py` as
     `PluginExecutor` (same `execute_<action>_action` naming
     `events/plugin_loader.py` already expects).

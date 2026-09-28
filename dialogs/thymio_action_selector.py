@@ -16,7 +16,7 @@ from PySide6.QtGui import QFont
 from widgets.thymio_diagram_widget import (
     ThymioDiagramWidget, get_actions_for_region
 )
-from actions.thymio_actions import THYMIO_ACTIONS
+from extensions.thymio.actions import THYMIO_ACTIONS
 
 
 # Action categories with display info
