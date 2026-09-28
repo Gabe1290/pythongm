@@ -346,6 +346,10 @@ class PluginLoader:
         for spec in (getattr(module, 'PLUGIN_ASSET_TREE_CATEGORIES', None) or []):
             register_asset_tree_category(spec)
             count += 1
+        from core.ide_extension_points import register_object_editor_panel
+        for spec in (getattr(module, 'PLUGIN_OBJECT_EDITOR_PANELS', None) or []):
+            register_object_editor_panel(spec)
+            count += 1
         return count
 
     def _extract_plugin_info(self, module, plugin_file: Path) -> PluginInfo:

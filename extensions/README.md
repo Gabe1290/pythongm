@@ -229,6 +229,23 @@ PLUGIN_ASSET_TREE_CATEGORIES = [AssetTreeCategory(
 The category appears after "Rooms"; `importable=False` (the default) means
 it's authored in its editor rather than imported from a file.
 
+A feature that owns a *family of events* (a robot's sensors and buttons)
+can add its own tab beside "Standard" in the object editor:
+
+```python
+from core.ide_extension_points import ObjectEditorPanel
+
+PLUGIN_OBJECT_EDITOR_PANELS = [ObjectEditorPanel(
+    key="robot", label="🤖 Robot", factory=RobotEventsPanel,   # a QWidget class
+    owned_events=lambda: ROBOT_EVENT_TYPES.keys(),
+    is_visible=lambda: Config.get("show_robot_tab", False),
+)]
+```
+
+The panel widget exposes `events_modified`/`event_selected` signals and
+`load_events_data(dict)`/`get_events_data()`; the editor merges the panel's
+events back into the object and drops owned events the panel removed.
+
 ## How loading works
 
 `events/plugin_loader.py` is the single load point, called by **both** the IDE
