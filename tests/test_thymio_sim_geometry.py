@@ -15,7 +15,7 @@ import pytest
 
 pygame = pytest.importorskip("pygame")
 
-from runtime.thymio_simulator import (
+from extensions.thymio.simulator import (
     ThymioSimulator, GROUND_SENSOR_POSITIONS, GROUND_SENSOR_OFFSET,
 )
 

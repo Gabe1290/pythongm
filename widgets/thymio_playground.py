@@ -27,7 +27,7 @@ if _original_sdl_driver not in ('x11', 'windows', 'cocoa'):
     os.environ['SDL_VIDEODRIVER'] = 'dummy'
 import pygame
 
-from runtime.thymio_simulator import ThymioSimulator
+from extensions.thymio.simulator import ThymioSimulator
 from runtime.thymio_renderer import ThymioRenderer
 
 from core.logger import get_logger

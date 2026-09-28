@@ -10,9 +10,13 @@ is the map. What lives here so far:
 * ``handlers.py`` — the 28 runtime handlers. ``PluginExecutor`` is what the
   loader registers in the game process; ``register_thymio_actions`` is the
   same set for the playground runner, which has no plugin loader (A2).
+* ``events.py`` — the 14 robot events, ``PLUGIN_EVENTS`` (A3).
+* ``simulator.py`` — ``ThymioSimulator``: differential drive, proximity/
+  ground sensors, LEDs, tones, timers (A4). Pure logic; the engine still
+  constructs it for ``thymio*`` instances until Stage B.
 
-The rest — events, simulator, renderer, playground editor, the Aseba/Open
-Roberta interop — still lives in core and moves in Stages A–F.
+The rest — renderer, input, playground editor, the Aseba/Open Roberta
+interop — still lives in core and moves in Stages B–F.
 """
 
 PLUGIN_NAME = "Thymio Robot"

@@ -126,6 +126,17 @@ def test_events_register_through_the_loader_with_blockly_gating():
     assert "thymio_button_forward" in names
 
 
+# ---------------------------------------------------------------------------
+# A4 — simulator
+# ---------------------------------------------------------------------------
+
+def test_simulator_lives_in_the_extension():
+    from extensions.thymio.simulator import ThymioSimulator
+    sim = ThymioSimulator(x=10, y=20, angle=0)
+    assert (sim.x, sim.y) == (10, 20)
+    assert not (REPO_ROOT / "runtime" / "thymio_simulator.py").exists()
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

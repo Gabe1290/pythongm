@@ -332,9 +332,10 @@ real code onto them.
     their own stages. Landmine: `EVENT_TYPES` only contains `thymio_*`
     after `load_all_plugins()` — the same class as the `play_sound`
     gotcha.
-A4. `runtime/thymio_simulator.py` → `extensions/thymio/simulator.py`
-    unchanged (it's already engine-decoupled: physics/sensor math given an
-    obstacle list, no Qt, no direct `GameRunner` reference).
+- [x] A4. `runtime/thymio_simulator.py` → `extensions/thymio/simulator.py`
+    unchanged. `runtime/room.py` (robot-instance creation) and
+    `runtime/playground_runner.py` import the new path for now — the
+    room.py one is the temporary core→extension import Stage B removes.
 A5. `update_thymio_robots()`'s body moves out of `game_runner.py` into a
     `PLUGIN_FRAME_UPDATES` entry at `after_update` (matches its current
     call site: after movement/collision, before draw) — the collision/
