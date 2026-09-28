@@ -336,13 +336,16 @@ real code onto them.
     unchanged. `runtime/room.py` (robot-instance creation) and
     `runtime/playground_runner.py` import the new path for now — the
     room.py one is the temporary core→extension import Stage B removes.
-A5. `update_thymio_robots()`'s body moves out of `game_runner.py` into a
-    `PLUGIN_FRAME_UPDATES` entry at `after_update` (matches its current
-    call site: after movement/collision, before draw) — the collision/
-    obstacle-gathering logic it needs is expressible as
-    "every solid instance without `extension_state['thymio']`," so it needs
-    no new hook beyond what Stage 0 already built and what
-    `multiplayer_lan` already proved works for this exact phase.
+- [x] A5. `update_thymio_robots()`'s body → `extensions/thymio/runtime.py`,
+    run through `PLUGIN_FRAME_UPDATES`. **Not at `after_update` as
+    planned**: the engine called it between `update()` (movement +
+    collision) and the end-step/destroy loop, and `after_update` runs
+    after destroy cleanup — moving it there would have given end-step
+    handlers a one-frame-stale robot position and skipped sensor events
+    for a robot destroyed that frame. Added a third generic phase,
+    `"after_collision"`, at the exact old call site instead. Still reads
+    `inst.is_thymio`/`thymio_simulator` (Stage B moves those into
+    `extension_state`).
 
 ### Stage B — rendering + input (needs seams 0.2, 0.3)
 

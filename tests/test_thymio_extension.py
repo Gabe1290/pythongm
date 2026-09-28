@@ -137,6 +137,56 @@ def test_simulator_lives_in_the_extension():
     assert not (REPO_ROOT / "runtime" / "thymio_simulator.py").exists()
 
 
+# ---------------------------------------------------------------------------
+# A5 — per-frame simulation through the after_collision hook
+# ---------------------------------------------------------------------------
+
+def test_robot_frame_update_is_registered_and_core_method_is_gone():
+    from events.plugin_loader import load_all_plugins
+    from runtime import extension_hooks
+    from runtime.game_runner import GameRunner
+    load_all_plugins()
+    phases = {getattr(f, "__name__", ""): p for f, p in extension_hooks.get_frame_updates()}
+    assert phases.get("_frame_update_robots") == "after_collision"
+    assert not hasattr(GameRunner, "update_thymio_robots")
+    src = (REPO_ROOT / "runtime" / "game_runner.py").read_text(encoding="utf-8")
+    assert 'run_frame_updates(self, "after_collision")' in src
+
+
+def test_frame_update_advances_robots_and_fires_sensor_events():
+    """Drive the extension's update with a minimal stand-in runner: the
+    robot's position follows its simulator and a reported sensor event
+    reaches the instance's event dispatch."""
+    from types import SimpleNamespace
+    from extensions.thymio.runtime import update_thymio_robots
+
+    fired = []
+
+    class _Exec:
+        def execute_event(self, inst, name, events):
+            fired.append(name)
+
+    class _Sim:
+        x, y = 40.0, 50.0
+
+        def update(self, dt, obstacles, screen):
+            self.x += 1
+            return {"proximity_update": True, "timer_0": False}
+
+    robot = SimpleNamespace(
+        is_thymio=True, thymio_simulator=_Sim(), x=0, y=0,
+        object_data={"events": {"thymio_proximity_update": {}, "thymio_timer_0": {}}},
+        action_executor=_Exec(), _cached_object_data={}, sprite=None)
+    wall = SimpleNamespace(is_thymio=False, thymio_simulator=None, x=10, y=10,
+                           _cached_object_data={"solid": True},
+                           sprite=SimpleNamespace(width=8, height=8))
+    runner = SimpleNamespace(current_room=SimpleNamespace(instances=[robot, wall]),
+                             screen=None)
+    update_thymio_robots(runner)
+    assert (robot.x, robot.y) == (41.0, 50.0)
+    assert fired == ["thymio_proximity_update"]
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

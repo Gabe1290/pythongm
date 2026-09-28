@@ -137,6 +137,25 @@ def test_game_runner_render_offers_every_instance_to_overlays(clean_overlays):
     assert all(s is screen for _, s in got)
 
 
+def test_after_collision_is_a_valid_frame_update_phase():
+    """Stage A5 added the third phase (between collision and end-step)."""
+    from runtime import extension_hooks
+    saved = extension_hooks.get_frame_updates()
+    extension_hooks.clear_frame_updates()
+    try:
+        calls = []
+        extension_hooks.register_frame_update(lambda r: calls.append(r), "after_collision")
+        extension_hooks.register_frame_update(lambda r: calls.append("bad"), "nope")
+        assert len(extension_hooks.get_frame_updates()) == 1
+        extension_hooks.run_frame_updates("R", "after_collision")
+        extension_hooks.run_frame_updates("R", "after_update")
+        assert calls == ["R"]
+    finally:
+        extension_hooks.clear_frame_updates()
+        for f, p in saved:
+            extension_hooks.register_frame_update(f, p)
+
+
 # ---------------------------------------------------------------------------
 # 0.3 — PLUGIN_INPUT_HANDLERS
 # ---------------------------------------------------------------------------
