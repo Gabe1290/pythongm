@@ -73,6 +73,11 @@ class GameInstance:
         self.is_thymio = False  # Default false, set true for Thymio robot instances
         self.thymio_simulator = None  # Thymio simulator (set for Thymio instances)
 
+        # Scratch space extensions can attach per-instance state to, the
+        # per-instance twin of GameRoom.extension_state. Namespace your own
+        # key — see runtime/extension_hooks.py.
+        self.extension_state: Dict[str, Any] = {}
+
         # Cached dimensions (updated when sprite is set)
         self._cached_width = 32
         self._cached_height = 32
