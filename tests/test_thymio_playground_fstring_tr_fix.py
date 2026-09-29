@@ -1,7 +1,8 @@
 """Regression test: the ThymioPlaygroundWindow f-string-in-tr() dead
 translation bug.
 
-widgets/thymio_playground.py used `self.tr(f"Zoom: {int(...)}%")` style
+widgets/thymio_playground.py (now extensions/thymio/playground_window.py,
+docs/THYMIO_EXTENSION_PLAN.md Stage C3b) used `self.tr(f"Zoom: {int(...)}%")` style
 calls in 7 messages (8 call sites) — an f-string is fully interpolated
 BEFORE being passed to tr(), so Qt's translate() only ever saw the
 already-substituted runtime string (e.g. "Zoom: 150%"), never the literal
@@ -23,7 +24,7 @@ Two more wrinkles specific to this bug, both fixed here:
   tr() — fixed by translating the word at its point of construction
   instead of just the surrounding template.
 
-Fixed in widgets/thymio_playground.py to use
+Fixed in extensions/thymio/playground_window.py to use
 self.tr("Zoom: {0}%").format(...) placeholder-style calls, and every
 already-shipped language's real translation was re-filed under the new
 placeholder source text (un-vanished + given real <location> tags where
@@ -37,7 +38,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANS_DIR = REPO_ROOT / "translations"
-SOURCE_FILE = REPO_ROOT / "widgets" / "thymio_playground.py"
+SOURCE_FILE = REPO_ROOT / "extensions" / "thymio" / "playground_window.py"
 
 SHIPPED_QM = {
     "de": TRANS_DIR / "pygm2_de_misc.qm",
@@ -53,7 +54,7 @@ SHIPPED_QM = {
 def test_source_has_no_fstring_tr_calls():
     content = SOURCE_FILE.read_text(encoding="utf-8")
     assert 'self.tr(f"' not in content, (
-        "widgets/thymio_playground.py still calls self.tr() with an "
+        "extensions/thymio/playground_window.py still calls self.tr() with an "
         "f-string — the interpolated value would bypass translation "
         "entirely (fix regressed)"
     )
@@ -64,7 +65,7 @@ def test_runtime_zoom_and_pan_labels_translate():
     from PySide6.QtCore import QTranslator
 
     app = QApplication.instance() or QApplication([])
-    from widgets.thymio_playground import ThymioPlaygroundWindow
+    from extensions.thymio.playground_window import ThymioPlaygroundWindow
 
     for lang, qm_path in SHIPPED_QM.items():
         if not qm_path.exists():
@@ -97,7 +98,7 @@ def test_runtime_sensor_state_word_is_translated():
     from PySide6.QtCore import QTranslator
 
     app = QApplication.instance() or QApplication([])
-    from widgets.thymio_playground import ThymioPlaygroundWindow
+    from extensions.thymio.playground_window import ThymioPlaygroundWindow
 
     translator = QTranslator()
     de_qm = SHIPPED_QM["de"]

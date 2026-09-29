@@ -368,15 +368,32 @@ def test_playground_runner_lives_in_the_extension():
 def test_pygame_widget_is_shared_not_extension_owned():
     """PygameWidget has zero Thymio-specific code and block_world_editor
     reuses it verbatim -- it must live somewhere BOTH extensions can import
-    without one depending on the other."""
+    without one depending on the other. (widgets/thymio_playground.py, which
+    re-exported it in C3a, is itself gone as of C3b -- see the next test.)"""
     from widgets.pygame_widget import PygameWidget
-    from widgets.thymio_playground import PygameWidget as ReExported
+    from extensions.thymio.playground_window import PygameWidget as ReExported
     assert PygameWidget is ReExported
     src = (REPO_ROOT / "editors" / "block_world_editor" / "window.py").read_text(encoding="utf-8")
     assert "widgets.pygame_widget import PygameWidget" in src
     assert "widgets.thymio_playground" not in src
-    tp_src = (REPO_ROOT / "widgets" / "thymio_playground.py").read_text(encoding="utf-8")
+    tp_src = (REPO_ROOT / "extensions" / "thymio" / "playground_window.py").read_text(encoding="utf-8")
     assert "class PygameWidget" not in tp_src
+
+
+# ---------------------------------------------------------------------------
+# C3b — the live test/config window
+# ---------------------------------------------------------------------------
+
+def test_playground_window_lives_in_the_extension():
+    assert not (REPO_ROOT / "widgets" / "thymio_playground.py").exists()
+    from extensions.thymio.playground_window import ThymioPlaygroundWindow
+    assert callable(ThymioPlaygroundWindow)
+    src = (REPO_ROOT / "extensions" / "thymio" / "playground_window.py").read_text(encoding="utf-8")
+    assert "widgets.thymio_playground" not in src
+    assert "class PygameWidget" not in src, "PygameWidget stayed in core (C3a)"
+    widgets_init = (REPO_ROOT / "widgets" / "__init__.py").read_text(encoding="utf-8")
+    assert "__getattr__" not in widgets_init, "the lazy accessor should be gone"
+    assert "'ThymioPlaygroundWindow'" not in widgets_init, "no longer in __all__"
 
 
 def test_extension_is_discovered_and_registers_its_tab():

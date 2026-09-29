@@ -27,10 +27,13 @@ is the map. What lives here so far:
 * ``playground_runner.py`` — ``PlaygroundRunnerWindow``: a standalone
   simulation window that embeds pygame in Qt and runs linked objects'
   code against a playground arena, independent of a full game project (C2).
+* ``playground_window.py`` — ``ThymioPlaygroundWindow``: the live test/
+  config window for a single robot (C3b). ``PygameWidget``, the generic
+  pygame-in-Qt widget it and ``playground_runner.py`` both use, stayed in
+  core (``widgets/pygame_widget.py``, C3a) since Block World reuses it too.
 
-The rest — the live test/config window (``widgets/thymio_playground.py``),
-the Aseba/Open Roberta interop — still lives in core and moves in
-Stages C3–F.
+The rest — the Aseba/Open Roberta interop — still lives in core and moves
+in Stages D–F.
 """
 
 PLUGIN_NAME = "Thymio Robot"
