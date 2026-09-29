@@ -18,10 +18,11 @@ from .project_dialogs import (
 # Import dialogs
 from .import_dialogs import ImportAssetsDialog
 
-# Thymio dialogs
-from .thymio_event_selector import ThymioEventSelector
-from .thymio_action_selector import ThymioActionSelector
-from .thymio_config_dialog import ThymioConfigDialog
+# Thymio dialogs moved to extensions/thymio/dialogs/
+# (docs/THYMIO_EXTENSION_PLAN.md, Stage C6).
+# Use: from extensions.thymio.dialogs.thymio_event_selector import ThymioEventSelector
+# Use: from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
+# Use: from extensions.thymio.dialogs.thymio_config_dialog import ThymioConfigDialog
 
 # Export everything
 __all__ = [
@@ -30,7 +31,4 @@ __all__ = [
     'AutoSaveSettingsDialog',
     'ProjectSettingsDialog',
     'ImportAssetsDialog',
-    'ThymioEventSelector',
-    'ThymioActionSelector',
-    'ThymioConfigDialog',
 ]

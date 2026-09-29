@@ -22,7 +22,7 @@ from PySide6.QtCore import QUrl, Qt
 
 from utils.config import Config
 from dialogs.blockly_config_dialog import BlocklyConfigDialog
-from dialogs.thymio_config_dialog import ThymioConfigDialog
+from extensions.thymio.dialogs.thymio_config_dialog import ThymioConfigDialog
 from core.logger import get_logger
 
 logger = get_logger(__name__)
@@ -196,7 +196,7 @@ class DialogsMixin:
 
     def show_thymio_event_selector(self):
         """Show the Thymio event selector dialog"""
-        from dialogs.thymio_event_selector import ThymioEventSelector
+        from extensions.thymio.dialogs.thymio_event_selector import ThymioEventSelector
 
         dialog = ThymioEventSelector(self)
         if dialog.exec() == QDialog.Accepted:
@@ -228,7 +228,7 @@ class DialogsMixin:
 
     def show_thymio_action_selector(self):
         """Show the Thymio action selector dialog"""
-        from dialogs.thymio_action_selector import ThymioActionSelector
+        from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
 
         # Check if we have an object editor open
         current_widget = self.editor_tabs.currentWidget()

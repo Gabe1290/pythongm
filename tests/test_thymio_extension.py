@@ -406,8 +406,8 @@ def test_diagram_widget_lives_in_the_extension():
     from extensions.thymio.diagram_widget import ThymioDiagramWidget, get_events_for_region
     assert callable(ThymioDiagramWidget) and callable(get_events_for_region)
     for fname, needle in (
-        ("dialogs/thymio_action_selector.py", "widgets.thymio_diagram_widget"),
-        ("dialogs/thymio_event_selector.py", "widgets.thymio_diagram_widget"),
+        ("extensions/thymio/dialogs/thymio_action_selector.py", "widgets.thymio_diagram_widget"),
+        ("extensions/thymio/dialogs/thymio_event_selector.py", "widgets.thymio_diagram_widget"),
         ("editors/object_editor/thymio_events_panel.py", "widgets.thymio_diagram_widget"),
     ):
         assert needle not in (REPO_ROOT / fname).read_text(encoding="utf-8"), fname
@@ -499,6 +499,45 @@ def test_open_playground_editor_lives_in_the_extension_and_opens_a_tab():
         assert ide.editor_tabs.count() == before + 1
     finally:
         ide.deleteLater()
+
+
+# ---------------------------------------------------------------------------
+# C6 — the config/event/action selector dialogs
+# ---------------------------------------------------------------------------
+
+def test_config_dialogs_live_in_the_extension():
+    for old in ("thymio_config_dialog.py", "thymio_action_selector.py",
+               "thymio_event_selector.py"):
+        assert not (REPO_ROOT / "dialogs" / old).exists(), old
+
+    from extensions.thymio.dialogs.thymio_config_dialog import ThymioConfigDialog
+    from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
+    from extensions.thymio.dialogs.thymio_event_selector import ThymioEventSelector
+    assert callable(ThymioConfigDialog) and callable(ThymioActionSelector) \
+        and callable(ThymioEventSelector)
+
+    dialogs_init = (REPO_ROOT / "dialogs" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .thymio" not in dialogs_init
+    assert "'ThymioConfigDialog'" not in dialogs_init
+    assert "'ThymioActionSelector'" not in dialogs_init
+    assert "'ThymioEventSelector'" not in dialogs_init
+
+    # The shared base (genuinely shared with BlocklyConfigDialog) stays in
+    # core; only the Thymio subclasses moved.
+    assert (REPO_ROOT / "dialogs" / "_block_config_dialog_base.py").exists()
+    from dialogs._block_config_dialog_base import THYMIO_CATEGORIES, BaseBlockConfigDialog
+    from extensions.thymio.dialogs.thymio_config_dialog import THYMIO_CATEGORIES as reexported
+    assert THYMIO_CATEGORIES is reexported
+    assert ThymioConfigDialog.__bases__[0] is BaseBlockConfigDialog
+
+    # blockly_config_dialog.py (core, unrelated extension surface) must not
+    # depend on the moved Thymio dialogs -- it already imports
+    # THYMIO_CATEGORIES from the shared base directly. Mentioning the CLASS
+    # NAME in a comment ("...their own ThymioConfigDialog") is fine; an
+    # import of the module it now lives in is not.
+    blockly_src = (REPO_ROOT / "dialogs" / "blockly_config_dialog.py").read_text(encoding="utf-8")
+    assert "thymio_config_dialog" not in blockly_src
+    assert "extensions.thymio" not in blockly_src
 
 
 def test_extension_is_discovered_and_registers_its_tab():

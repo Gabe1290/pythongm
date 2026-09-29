@@ -467,12 +467,23 @@ sub-arc.
     `current_project_data['name']`. Same landmine class as the Stage-C1
     native-crash note above; fixed by initializing
     `current_project_data` in the test, not by touching production code.
-C6. Config dialogs — `dialogs/thymio_config_dialog.py`,
+- [x] C6. Config dialogs — `dialogs/thymio_config_dialog.py`,
     `thymio_action_selector.py`, `thymio_event_selector.py` →
-    `extensions/thymio/dialogs/`. `dialogs/_block_config_dialog_base.py`
-    **stays in core** (it's the genuinely shared base with
-    `BlocklyConfigDialog`); only the Thymio subclass moves, importing the
-    base from core same as `BlocklyConfigDialog` does.
+    `extensions/thymio/dialogs/` via `git mv`, no content changes (all
+    three already imported their dependencies from `extensions.thymio.*`
+    or core, with no cross-imports among themselves).
+    `dialogs/_block_config_dialog_base.py` **stayed in core** exactly as
+    planned — `THYMIO_CATEGORIES` is genuinely defined there and both
+    `ThymioConfigDialog` and (unrelated, core-owned) `BlocklyConfigDialog`
+    import it from that one shared place, so moving the Thymio dialog
+    creates no cross-extension dependency. `core/ide_window.py` had one
+    dead top-level `ThymioConfigDialog` import (unused outside
+    `core/ide/_dialogs.py`'s own local import) — removed as an
+    in-scope cleanup, not scope creep, since leaving a reference to the
+    now-wrong old path would have been actively broken.
+    `dialogs/__init__.py` drops its three eager re-exports (same "nothing
+    outside this file used the package-level name" pattern as C4).
+    **Stage C is now fully closed** (C1–C6).
 
 ### Stage D — external interop (self-contained, low risk)
 

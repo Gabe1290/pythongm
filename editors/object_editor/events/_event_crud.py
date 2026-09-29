@@ -317,7 +317,7 @@ class EventCrudMixin:
 
     def add_thymio_event_with_selector(self):
         """Add a Thymio event using the visual Thymio event selector dialog"""
-        from dialogs.thymio_event_selector import ThymioEventSelector
+        from extensions.thymio.dialogs.thymio_event_selector import ThymioEventSelector
 
         dialog = ThymioEventSelector(self)
         if dialog.exec() == QDialog.Accepted:
