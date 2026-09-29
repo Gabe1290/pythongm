@@ -6,7 +6,7 @@ Converts Thymio programs exported from Open Roberta Lab (.xml, NEPO
 blockly format) into pygm2 Thymio projects.
 
 Usage:
-    from importers.roberta_importer import import_roberta
+    from extensions.thymio.export.roberta_importer import import_roberta
 
     result = import_roberta("path/to/program.xml", "path/to/output_project")
 """
