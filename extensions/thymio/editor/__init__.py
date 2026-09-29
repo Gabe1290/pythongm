@@ -620,7 +620,7 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
             logger.warning(f"Could not load project data: {e}")
 
         try:
-            from runtime.playground_runner import PlaygroundRunnerWindow
+            from ..playground_runner import PlaygroundRunnerWindow
             self._runner_window = PlaygroundRunnerWindow(data, project_data, self)
             self._runner_window.show()
         except Exception as e:

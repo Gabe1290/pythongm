@@ -23,9 +23,14 @@ is the map. What lives here so far:
   draws every robot over the room (B1).
 * ``input.py`` — keyboard/mouse control of the robot's buttons, through
   the input hook (B2).
+* ``editor/`` — the arena-authoring editor (C1).
+* ``playground_runner.py`` — ``PlaygroundRunnerWindow``: a standalone
+  simulation window that embeds pygame in Qt and runs linked objects'
+  code against a playground arena, independent of a full game project (C2).
 
-The rest — the playground editor, the Aseba/Open Roberta interop — still
-lives in core and moves in Stages C–F.
+The rest — the live test/config window (``widgets/thymio_playground.py``),
+the Aseba/Open Roberta interop — still lives in core and moves in
+Stages C3–F.
 """
 
 PLUGIN_NAME = "Thymio Robot"
