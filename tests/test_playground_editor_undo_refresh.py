@@ -28,8 +28,8 @@ def _qapp():
 
 
 def test_undo_resyncs_properties_panel(_qapp, tmp_path):
-    from editors.playground_editor import PlaygroundEditor
-    from editors.playground_editor.playground_undo_commands import MoveElementCommand
+    from extensions.thymio.editor import PlaygroundEditor
+    from extensions.thymio.editor.playground_undo_commands import MoveElementCommand
 
     editor = PlaygroundEditor(str(tmp_path))
     robot = editor.canvas.add_robot()

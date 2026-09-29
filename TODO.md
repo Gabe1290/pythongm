@@ -1100,7 +1100,7 @@ lines rather than matching their text.
       Safe as-is.
     - `editors/object_editor/blockly_widget.py` — both hits only touch
       `settings.blockly_preset`, never `assets.objects`. Safe as-is.
-    - `editors/playground_editor/__init__.py` (`_refresh_linkable_objects`)
+    - `extensions/thymio/editor/__init__.py` (`_refresh_linkable_objects`)
       — **real bug, fixed.** Detected Thymio objects via
       `event_name.startswith('thymio_')` reading straight off the
       unmerged disk copy; an object identifiable as Thymio only by its

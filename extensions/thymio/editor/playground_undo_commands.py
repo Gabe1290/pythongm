@@ -21,7 +21,7 @@ class AddElementCommand(QUndoCommand):
         self._list_name = self._get_list_name()
 
     def _get_list_name(self):
-        from editors.playground_editor.playground_elements import PlaygroundWall
+        from .playground_elements import PlaygroundWall
         return 'walls' if isinstance(self.element, PlaygroundWall) else 'robots'
 
     def _get_list(self):
@@ -66,7 +66,7 @@ class RemoveElementCommand(QUndoCommand):
         self._list_name = self._get_list_name()
 
     def _get_list_name(self):
-        from editors.playground_editor.playground_elements import PlaygroundWall
+        from .playground_elements import PlaygroundWall
         return 'walls' if isinstance(self.element, PlaygroundWall) else 'robots'
 
     def _get_list(self):

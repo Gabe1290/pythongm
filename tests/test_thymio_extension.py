@@ -330,6 +330,25 @@ def test_room_build_attaches_a_simulator_through_the_hook():
     assert simulator_of(flagged) is not None
 
 
+# ---------------------------------------------------------------------------
+# C1 — the playground (arena) editor package
+# ---------------------------------------------------------------------------
+
+def test_playground_editor_package_lives_in_the_extension():
+    assert not (REPO_ROOT / "editors" / "playground_editor").exists()
+    pkg = REPO_ROOT / "extensions" / "thymio" / "editor"
+    assert {p.name for p in pkg.glob("*.py")} >= {
+        "__init__.py", "playground_canvas.py", "playground_elements.py",
+        "playground_properties.py", "playground_tool_palette.py",
+        "playground_undo_commands.py", "color_manager.py"}
+    # Self-imports are relative, so the package works under the loader's
+    # synthetic package name too.
+    for p in pkg.glob("*.py"):
+        assert "editors.playground_editor" not in p.read_text(encoding="utf-8"), p.name
+    from extensions.thymio.editor.playground_elements import PlaygroundWall, PlaygroundRobot
+    assert PlaygroundWall and PlaygroundRobot
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

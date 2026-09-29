@@ -1482,7 +1482,7 @@ soft-delete Trash, not `QUndoCommand` undo/redo.** New session, picked
 up the one explicitly-flagged open thread from the note above. Real
 investigation before deciding (this repo's standing discipline):
 checked what undo infrastructure already exists — `editors/
-room_undo_commands.py`, `editors/playground_editor/
+room_undo_commands.py`, `extensions/thymio/editor/
 playground_undo_commands.py`, the sprite editor — and found it's all
 real Qt `QUndoStack`/`QUndoCommand`, but scoped entirely to live,
 in-memory canvas edits with zero file I/O (moving a room instance,

@@ -38,13 +38,13 @@ def _qapp():
 def _place_via_tool(canvas):
     """Mirror mousePressEvent's ROBOT branch: build with the current next-port,
     then hand the dict to add_robot (the data path)."""
-    from editors.playground_editor.playground_elements import PlaygroundRobot
+    from extensions.thymio.editor.playground_elements import PlaygroundRobot
     robot = PlaygroundRobot(port=canvas._next_port, name=f"Thymio{len(canvas.robots)}")
     canvas.add_robot(robot.to_dict())
 
 
 def test_tool_placed_robots_get_distinct_ports(_qapp):
-    from editors.playground_editor.playground_canvas import PlaygroundCanvas
+    from extensions.thymio.editor.playground_canvas import PlaygroundCanvas
     canvas = PlaygroundCanvas()
     for _ in range(3):
         _place_via_tool(canvas)
@@ -55,7 +55,7 @@ def test_tool_placed_robots_get_distinct_ports(_qapp):
 
 def test_build_here_path_still_increments(_qapp):
     """add_robot(None) (no robot_data) must keep its original behaviour."""
-    from editors.playground_editor.playground_canvas import PlaygroundCanvas
+    from extensions.thymio.editor.playground_canvas import PlaygroundCanvas
     canvas = PlaygroundCanvas()
     r1 = canvas.add_robot()
     r2 = canvas.add_robot()
@@ -65,8 +65,8 @@ def test_build_here_path_still_increments(_qapp):
 def test_next_port_never_regresses_below_existing(_qapp):
     """A robot loaded with a high port must push _next_port past it so a later
     tool placement doesn't collide."""
-    from editors.playground_editor.playground_canvas import PlaygroundCanvas
-    from editors.playground_editor.playground_elements import PlaygroundRobot
+    from extensions.thymio.editor.playground_canvas import PlaygroundCanvas
+    from extensions.thymio.editor.playground_elements import PlaygroundRobot
     canvas = PlaygroundCanvas()
     canvas.add_robot(PlaygroundRobot(port=40000).to_dict())
     _place_via_tool(canvas)

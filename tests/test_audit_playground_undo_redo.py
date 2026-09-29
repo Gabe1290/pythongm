@@ -38,7 +38,7 @@ def _qapp():
 
 
 def _make_canvas(_qapp):
-    from editors.playground_editor.playground_canvas import PlaygroundCanvas
+    from extensions.thymio.editor.playground_canvas import PlaygroundCanvas
     return PlaygroundCanvas()
 
 

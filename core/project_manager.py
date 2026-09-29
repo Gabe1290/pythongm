@@ -974,7 +974,7 @@ class ProjectManager(QObject):
         # runtime/game_runner.py, export/base_exporter.py,
         # export/HTML5/html5_exporter.py, export/android/android_exporter.py,
         # export/ios/ios_exporter.py, export/Aseba/aseba_exporter.py,
-        # utils/resource_packager.py, editors/playground_editor/__init__.py,
+        # utils/resource_packager.py, extensions/thymio/editor/__init__.py,
         # widgets/asset_tree/asset_operations.py's legacy delete path --
         # audited 2026-08-14, see TODO.md) already restores it. A project
         # with no objects/ dir (legacy/embedded-only) is left untouched.

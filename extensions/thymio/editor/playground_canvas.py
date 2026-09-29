@@ -14,8 +14,8 @@ from PySide6.QtGui import (
     QUndoStack,
 )
 
-from editors.playground_editor.playground_elements import PlaygroundWall, PlaygroundRobot
-from editors.playground_editor.playground_undo_commands import (
+from .playground_elements import PlaygroundWall, PlaygroundRobot
+from .playground_undo_commands import (
     AddElementCommand, RemoveElementCommand, MoveElementCommand,
 )
 

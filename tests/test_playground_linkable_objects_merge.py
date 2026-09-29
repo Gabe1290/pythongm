@@ -53,7 +53,7 @@ def _write_project_with_manifest_object(tmp_path):
 
 
 def test_thymio_object_detected_only_via_merged_events(_qapp, tmp_path):
-    from editors.playground_editor import PlaygroundEditor
+    from extensions.thymio.editor import PlaygroundEditor
 
     proj_dir = _write_project_with_manifest_object(tmp_path)
     editor = PlaygroundEditor(str(proj_dir))
@@ -69,7 +69,7 @@ def test_thymio_object_detected_only_via_merged_events(_qapp, tmp_path):
 
 
 def test_non_thymio_object_not_linkable(_qapp, tmp_path):
-    from editors.playground_editor import PlaygroundEditor
+    from extensions.thymio.editor import PlaygroundEditor
 
     proj_dir = tmp_path / "proj2"
     proj_dir.mkdir()

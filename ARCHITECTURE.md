@@ -24,7 +24,7 @@ editors/                 Per-asset-type editors
   room_editor/             Canvas, palette, tile painter
   object_editor/           Events panel + Blockly + Python tabs
   sprite_editor/           Frame timeline, mask preview
-  playground_editor/       Thymio robot arena
+  (the Thymio robot-arena editor lives in extensions/thymio/editor/)
   script_editor.py         Minimal QPlainTextEdit fallback
   base_editor.py           Shared lifecycle (save_requested signal, auto-save)
 widgets/                 Reusable Qt widgets
