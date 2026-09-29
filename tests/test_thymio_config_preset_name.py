@@ -19,7 +19,7 @@ from config.blockly_config import BlocklyConfig
 
 
 def _dialog_with_config():
-    from dialogs.thymio_config_dialog import ThymioConfigDialog
+    from extensions.thymio.dialogs.thymio_config_dialog import ThymioConfigDialog
     dlg = ThymioConfigDialog.__new__(ThymioConfigDialog)
     dlg.config = BlocklyConfig(preset_name="full")
     # select_none calls load_config_to_ui; stub it (no UI in this test).

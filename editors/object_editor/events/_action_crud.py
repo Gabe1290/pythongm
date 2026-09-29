@@ -28,7 +28,7 @@ class ActionCrudMixin:
 
     def add_thymio_action_with_selector(self, event_name: str):
         """Add a Thymio action using the visual Thymio action selector dialog"""
-        from dialogs.thymio_action_selector import ThymioActionSelector
+        from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
 
         dialog = ThymioActionSelector(self)
         if dialog.exec() == QDialog.Accepted:
@@ -51,7 +51,7 @@ class ActionCrudMixin:
 
     def add_thymio_action_to_sub_event(self, event_name: str, sub_event_key: str):
         """Add a Thymio action to a keyboard sub-event using the visual selector dialog"""
-        from dialogs.thymio_action_selector import ThymioActionSelector
+        from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
 
         dialog = ThymioActionSelector(self)
         if dialog.exec() == QDialog.Accepted:

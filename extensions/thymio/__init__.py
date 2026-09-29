@@ -34,15 +34,17 @@ is the map. What lives here so far:
 * ``diagram_widget.py`` — ``ThymioDiagramWidget``: the interactive robot
   diagram the config/event/action dialogs and the object-editor panel
   embed (C4).
+* ``dialogs/`` — the config/event/action selector dialogs (C6).
+  ``dialogs/_block_config_dialog_base.py`` (core) stays put — it's the
+  genuinely shared base ``BlocklyConfigDialog`` also uses.
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-The rest — the config/event/action dialogs (C6), the Aseba/Open Roberta
-interop (D), the object-editor tab (E) and the Blockly toolbox (F) —
-still lives in core.
+Stage C is closed. The rest — the Aseba/Open Roberta interop (D), the
+object-editor tab (E) and the Blockly toolbox (F) — still lives in core.
 """
 
 PLUGIN_NAME = "Thymio Robot"

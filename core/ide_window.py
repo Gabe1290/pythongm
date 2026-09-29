@@ -17,7 +17,6 @@ from core.ide_exporters import IDEExporters
 from dialogs.project_dialogs import NewProjectDialog, ProjectSettingsDialog
 from dialogs.import_dialogs import ImportAssetDialog
 from dialogs.blockly_config_dialog import BlocklyConfigDialog
-from dialogs.thymio_config_dialog import ThymioConfigDialog
 from utils.config import Config
 from runtime.game_runner import GameRunner
 
