@@ -5,7 +5,7 @@ Exports pygm2 Thymio projects to Open Roberta Lab XML (.xml) format
 that can be imported back into https://lab.open-roberta.org/
 
 Usage:
-    from export.Roberta import RobertaExporter
+    from extensions.thymio.export.roberta_exporter import RobertaExporter
     exporter = RobertaExporter()
     exporter.export("path/to/project.json", "path/to/output.xml")
 """
