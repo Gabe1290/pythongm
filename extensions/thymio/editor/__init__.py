@@ -677,3 +677,63 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
             QMessageBox.critical(
                 self, self.tr("Export Failed"),
                 self.tr("Error exporting playground:\n{}").format(str(e)))
+
+
+def open_playground_editor(ide, playground_name: str, playground_data: dict) -> None:
+    """Open a playground in the playground editor.
+
+    Registered as the "playgrounds" asset-tree category's ``open_editor``
+    (core/ide_extension_points, docs/THYMIO_EXTENSION_PLAN.md Stage C5) --
+    moved verbatim out of ``core/ide/_editor_lifecycle.py``'s
+    ``open_playground_editor`` method, ``self`` renamed to the explicit
+    ``ide`` parameter the category contract passes. ``ide.tr()`` still
+    resolves translations under the ``PyGameMakerIDE`` context (Qt resolves
+    by the concrete runtime class the call lands on, not by which module the
+    call site lives in), so every shipped language's translation is
+    unaffected by this move.
+    """
+    # Check if already open — focus tab or detached window
+    key = ide._editor_key('playgrounds', playground_name)
+    if key in ide.open_editors:
+        if ide._focus_detached_editor(key):
+            return
+        for i in range(ide.editor_tabs.count()):
+            # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
+            if ide.editor_tabs.widget(i) is ide.open_editors[key]:
+                ide.editor_tabs.setCurrentIndex(i)
+                return
+
+    try:
+        editor = PlaygroundEditor(str(ide.current_project_path), ide)
+        editor.load_asset(playground_name, playground_data)
+
+        # Connect signals
+        editor.save_requested.connect(
+            ide.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+        editor.close_requested.connect(
+            ide.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+        editor.data_modified.connect(
+            ide.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+        editor.float_requested.connect(
+            ide.float_editor, Qt.ConnectionType.UniqueConnection)
+        editor.reattach_requested.connect(
+            ide.reattach_editor, Qt.ConnectionType.UniqueConnection)
+
+        # Add to tabs
+        tab_index = ide.editor_tabs.addTab(editor, playground_name)
+        ide.editor_tabs.setCurrentIndex(tab_index)
+        editor._open_editor_key = key
+        ide.open_editors[key] = editor
+
+        ide.update_status(ide.tr("Opened playground: {0}").format(playground_name))
+
+        # Honor global window mode.
+        if ide.window_mode == 'floating':
+            ide.float_editor(editor)
+
+    except Exception as e:
+        logger.error(f"Error opening playground editor: {e}")
+        import traceback
+        traceback.print_exc()
+        QMessageBox.critical(ide, ide.tr("Error"),
+                             ide.tr("Failed to open playground editor: {0}").format(e))

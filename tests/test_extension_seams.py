@@ -364,14 +364,13 @@ def test_asset_type_registry_validates_and_is_idempotent(clean_asset_types):
     assert at.plural_to_singular() == {"arenas": "arena"}
 
 
-def test_playgrounds_are_registered_by_default():
-    """Until Stage C5 moves the call into the extension, core registers
-    playgrounds itself so on-disk behaviour is unchanged."""
-    from core.asset_types import get_registered_asset_types, side_file_type_names
-    assert "playgrounds" in side_file_type_names()
-    spec = {s.plural: s for s in get_registered_asset_types()}["playgrounds"]
-    assert spec.file_keys == ("arena", "colors", "walls", "robots")
-    assert spec.strip_keys == ("walls", "robots", "colors")
+def test_core_asset_types_registers_nothing_by_default(clean_asset_types):
+    """Since Stage C5, core/asset_types.py registers nothing at import time
+    -- "playgrounds" is the Thymio extension's own PLUGIN_ASSET_TYPES entry,
+    registered through the loader like any other extension asset type (see
+    test_thymio_extension.py's Stage C5 coverage for that)."""
+    from core.asset_types import get_registered_asset_types
+    assert get_registered_asset_types() == []
 
 
 def test_loader_registers_plugin_asset_types(clean_asset_types):

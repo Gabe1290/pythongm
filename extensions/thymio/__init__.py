@@ -35,8 +35,12 @@ is the map. What lives here so far:
   diagram the config/event/action dialogs and the object-editor panel
   embed (C4).
 
-The rest — wiring "Playgrounds" fully through the Stage-0.4/0.5 registries
-(C5), the config/event/action dialogs (C6), the Aseba/Open Roberta
+"Playgrounds" (the robot arena asset type) is registered below through the
+Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
+shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
+the IDE (C5).
+
+The rest — the config/event/action dialogs (C6), the Aseba/Open Roberta
 interop (D), the object-editor tab (E) and the Blockly toolbox (F) —
 still lives in core.
 """
@@ -98,3 +102,54 @@ PLUGIN_INSTANCE_CREATED = [on_instance_created]
 # presses it (B2). See input.py.
 from .input import INPUT_HANDLERS
 PLUGIN_INPUT_HANDLERS = [INPUT_HANDLERS]
+
+
+# "Playgrounds" — the robot arena asset type (C5). Storage shape (core/
+# asset_types) and IDE presentation (core/ide_extension_points) used to be
+# a static entry each in core; both are extension-owned now.
+from core.asset_types import SideFileAssetType
+
+PLUGIN_ASSET_TYPES = [SideFileAssetType(
+    plural="playgrounds",
+    singular="playground",
+    description="Aseba playground environments",
+    file_keys=("arena", "colors", "walls", "robots"),
+    strip_keys=("walls", "robots", "colors"),
+)]
+
+
+def _new_playground_data(name: str) -> dict:
+    return {
+        'name': name,
+        'asset_type': 'playground',
+        'imported': True,
+        'arena': {
+            'width': 400,
+            'height': 400,
+            'color': 'white',
+            'ground_texture': '',
+        },
+        'colors': [
+            {'name': 'white', 'r': 1.0, 'g': 1.0, 'b': 1.0},
+            {'name': 'wall', 'r': 0.45, 'g': 0.45, 'b': 0.5},
+        ],
+        'walls': [],
+        'robots': [],
+    }
+
+
+def _open_playground_editor(ide, name, data):
+    from .editor import open_playground_editor
+    open_playground_editor(ide, name, data)
+
+
+def _register_asset_tree_category():
+    from core.ide_extension_points import AssetTreeCategory
+    return AssetTreeCategory(
+        plural="playgrounds", singular="playground", label="Playgrounds",
+        icon="🏟️", open_editor=_open_playground_editor,
+        new_asset_template=_new_playground_data,
+    )
+
+
+PLUGIN_ASSET_TREE_CATEGORIES = [_register_asset_tree_category()]

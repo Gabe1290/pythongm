@@ -35,6 +35,16 @@ from conftest import skip_without_pyside6
 pytestmark = skip_without_pyside6
 
 
+@pytest.fixture(scope="module", autouse=True)
+def _plugins_loaded():
+    # "playgrounds" (extensions/thymio) is registered by the loader now, not
+    # a static ASSET_TYPE_REGISTRY entry (docs/THYMIO_EXTENSION_PLAN.md,
+    # Stage C5) -- every test below assumes it's present, same as the
+    # long-standing play_sound/load_all_plugins() landmine.
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+
+
 @pytest.fixture(scope="module")
 def _qapp():
     from PySide6.QtWidgets import QApplication
@@ -62,10 +72,17 @@ def test_registry_has_all_eight_known_asset_types():
         "sprites", "sounds", "backgrounds", "objects",
         "rooms", "scripts", "fonts", "playgrounds",
     }
-    # Every entry carries both pieces every dispatch site needs.
+    # Every entry carries a singular, plus exactly one way to open it: a
+    # core "editor_method" name, or an extension-registered "open_editor"
+    # callable (core/ide_extension_points, Stage C5's "playgrounds" is the
+    # first of these).
     for plural, info in ASSET_TYPE_REGISTRY.items():
         assert info["singular"], plural
-        assert info["editor_method"].startswith("open_"), plural
+        if "open_editor" in info:
+            assert callable(info["open_editor"]), plural
+            assert "editor_method" not in info, plural
+        else:
+            assert info["editor_method"].startswith("open_"), plural
 
 
 def test_get_asset_categories_includes_playgrounds():
@@ -99,23 +116,31 @@ def test_canonical_category_covers_every_registered_singular(ide):
 # on_asset_double_clicked dispatches through the registry via getattr.
 # ---------------------------------------------------------------------------
 
-def test_double_click_dispatches_to_every_registered_editor(ide):
+def test_double_click_dispatches_to_every_registered_editor(ide, monkeypatch):
     from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
 
     calls = {}
-    for info in ASSET_TYPE_REGISTRY.values():
-        method_name = info["editor_method"]
-        def make_spy(name):
-            def spy(asset_name, asset_info):
-                calls[name] = (asset_name, asset_info)
-            return spy
-        setattr(ide, method_name, make_spy(method_name))
+    for plural, info in ASSET_TYPE_REGISTRY.items():
+        if "open_editor" in info:
+            def make_spy(name):
+                def spy(_ide, asset_name, asset_info):
+                    calls[name] = (asset_name, asset_info)
+                return spy
+            monkeypatch.setitem(info, "open_editor", make_spy(plural))
+        else:
+            method_name = info["editor_method"]
+            def make_spy(name):
+                def spy(asset_name, asset_info):
+                    calls[name] = (asset_name, asset_info)
+                return spy
+            setattr(ide, method_name, make_spy(method_name))
 
     for plural, info in ASSET_TYPE_REGISTRY.items():
         ide.on_asset_double_clicked({
             "asset_type": plural, "name": f"thing_{plural}", "data": {"x": 1},
         })
-        assert calls[info["editor_method"]] == (f"thing_{plural}", {"x": 1})
+        key = plural if "open_editor" in info else info["editor_method"]
+        assert calls[key] == (f"thing_{plural}", {"x": 1})
 
 
 def test_double_click_unknown_type_warns_and_calls_nothing(ide, caplog):

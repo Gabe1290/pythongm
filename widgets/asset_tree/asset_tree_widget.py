@@ -239,12 +239,9 @@ class AssetTreeWidget(QTreeWidget):
             "separator",  # First separator
             ("objects", self.tr("Objects")),
             ("rooms", self.tr("Rooms")),
-            # [1.0] Playgrounds category hidden until the Thymio extension ships —
-            # see docs/POST_1_0_REFACTOR.md. add_asset() no-ops when the category
-            # is absent, so projects that already contain playground assets still
-            # load and round-trip on save; they're just not shown or creatable.
-            # ("playgrounds", self.tr("Playgrounds")),
-            # Extension categories (core/ide_extension_points) slot here.
+            # Extension categories (core/ide_extension_points) slot here —
+            # "Playgrounds" (extensions/thymio) is one of these now, not a
+            # static entry (docs/THYMIO_EXTENSION_PLAN.md, Stage C5).
             *[(c.plural, c.label) for c in get_asset_tree_categories()],
             "separator",  # Second separator
             ("scripts", self.tr("Scripts")),
@@ -897,7 +894,7 @@ class AssetTreeWidget(QTreeWidget):
     @staticmethod
     def _non_importable_categories() -> List[str]:
         """Categories whose assets are authored, not imported from a file."""
-        return ["rooms", "objects", "playgrounds"] + [
+        return ["rooms", "objects"] + [
             c.plural for c in get_asset_tree_categories() if not c.importable]
 
     def add_asset(self, asset_type: str, asset_name: str, asset_data: Dict):

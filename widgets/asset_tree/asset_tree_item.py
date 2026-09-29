@@ -48,7 +48,6 @@ class AssetTreeItem(QTreeWidgetItem):
                     "backgrounds": "🖼️ Backgrounds",
                     "objects": "📦 Objects",
                     "rooms": "🏠 Rooms",
-                    "playgrounds": "🏟️ Playgrounds",
                     "scripts": "📜 Scripts",
                     "fonts": "🔤 Fonts",
                     "data": "📄 Data"
@@ -107,8 +106,6 @@ class AssetTreeItem(QTreeWidgetItem):
                             self.setText(0, f"📦 {self.asset_name}")
                     elif self.asset_type == "rooms":
                         self.setText(0, f"🏠 {self.asset_name}")
-                    elif self.asset_type == "playgrounds":
-                        self.setText(0, f"🏟️ {self.asset_name}")
                     elif self.asset_type == "scripts":
                         self.setText(0, f"📜 {self.asset_name}")
                     elif self.asset_type == "fonts":

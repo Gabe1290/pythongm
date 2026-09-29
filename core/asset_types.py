@@ -81,15 +81,3 @@ def side_file_type_names() -> Tuple[str, ...]:
 def plural_to_singular() -> Dict[str, str]:
     """``{plural: singular}`` for every registered type."""
     return {p: s.singular for p, s in _registered.items()}
-
-
-# Playgrounds (the Thymio robot arena) register here for now so on-disk
-# behaviour is unchanged; docs/THYMIO_EXTENSION_PLAN.md Stage C5 moves this
-# call into extensions/thymio/ and core then carries no playground code.
-register_side_file_asset_type(SideFileAssetType(
-    plural="playgrounds",
-    singular="playground",
-    description="Aseba playground environments",
-    file_keys=("arena", "colors", "walls", "robots"),
-    strip_keys=("walls", "robots", "colors"),
-))
