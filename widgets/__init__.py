@@ -8,9 +8,9 @@ from .enhanced_properties_panel import EnhancedPropertiesPanel
 from .welcome_tab import WelcomeTab
 from .thymio_diagram_widget import ThymioDiagramWidget
 
-# ThymioPlaygroundWindow is imported lazily (on demand) to avoid
-# setting SDL_VIDEODRIVER=dummy and importing pygame at IDE startup.
-# Use: from widgets.thymio_playground import ThymioPlaygroundWindow
+# ThymioPlaygroundWindow moved to extensions/thymio/playground_window.py
+# (docs/THYMIO_EXTENSION_PLAN.md, Stage C3b).
+# Use: from extensions.thymio.playground_window import ThymioPlaygroundWindow
 
 # Aliases for compatibility
 PropertiesPanel = EnhancedPropertiesPanel
@@ -20,14 +20,5 @@ __all__ = [
     'EnhancedPropertiesPanel',
     'WelcomeTab',
     'ThymioDiagramWidget',
-    'ThymioPlaygroundWindow',
     'PropertiesPanel',  # Alias
 ]
-
-
-def __getattr__(name):
-    """Lazy import for ThymioPlaygroundWindow to avoid pygame init at startup."""
-    if name == 'ThymioPlaygroundWindow':
-        from .thymio_playground import ThymioPlaygroundWindow
-        return ThymioPlaygroundWindow
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

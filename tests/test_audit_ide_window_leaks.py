@@ -109,7 +109,7 @@ def test_show_thymio_playground_reuses_window_and_deletes_on_close(_qapp, monkey
     """L4: second open reuses the first live window; WA_DeleteOnClose is set."""
     from PySide6.QtCore import Qt
     from core.ide_window import PyGameMakerIDE
-    import widgets.thymio_playground as tp
+    import extensions.thymio.playground_window as tp
 
     created = []
 

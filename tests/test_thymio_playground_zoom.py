@@ -9,7 +9,7 @@ single '-' press.
 import pygame
 import pytest
 
-from widgets.thymio_playground import ThymioPlaygroundWindow
+from extensions.thymio.playground_window import ThymioPlaygroundWindow
 
 
 @pytest.fixture

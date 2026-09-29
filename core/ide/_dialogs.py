@@ -176,7 +176,7 @@ class DialogsMixin:
         and mark it WA_DeleteOnClose so closing it frees the C++ object rather
         than keeping a dangling handle around.
         """
-        from widgets.thymio_playground import ThymioPlaygroundWindow
+        from extensions.thymio.playground_window import ThymioPlaygroundWindow
         import shiboken6
 
         existing = getattr(self, "thymio_playground", None)

@@ -411,11 +411,19 @@ sub-arc.
     import it from there now. Same "keep the generic part in core"
     judgment call the raycast Stage B2 precedent already established for
     `_render_draw_events`/`_sprite_top_left`/`_find_first_instance`.
-- [ ] C3b. `widgets/thymio_playground.py` (now `EditMode` +
-    `ThymioPlaygroundWindow` only) → `extensions/thymio/playground_window.py`
-    (1,339 → ~1,250 lines after C3a — still the largest single file to
-    move; consider splitting it further *after* the move lands, not
-    during, to keep the move itself a pure relocation).
+- [x] C3b. `widgets/thymio_playground.py` (now `EditMode` +
+    `ThymioPlaygroundWindow` only, ~1,250 lines) →
+    `extensions/thymio/playground_window.py` via `git mv`, no further
+    content changes (splitting it further stays a later, optional
+    cleanup, not part of this move). `core/ide/_dialogs.py`'s
+    `show_thymio_playground` and every test importer moved to the new
+    path; `widgets/__init__.py`'s lazy `ThymioPlaygroundWindow`
+    `__getattr__` accessor removed (nothing outside this file used it —
+    every real caller already imported the class directly). Translation
+    safety confirmed: `.tr()` resolves by runtime **class name**
+    (`ThymioPlaygroundWindow`), not file path, so the move doesn't affect
+    any shipped language's translations (same rule this doc's landmines
+    section already carries from the i18n session notes).
 C4. `widgets/thymio_diagram_widget.py` → `extensions/thymio/diagram_widget.py`.
 C5. Wire "Playgrounds" through the Stage-0.4 asset-type registry and the
     Stage-0.5 asset-tree-category registry; delete the hardcoded entries

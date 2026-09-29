@@ -26,7 +26,7 @@ def _qapp():
 
 def test_thymio_playground_window_delete_on_close(_qapp):  # L4
     from PySide6.QtCore import Qt
-    from widgets.thymio_playground import ThymioPlaygroundWindow
+    from extensions.thymio.playground_window import ThymioPlaygroundWindow
     win = ThymioPlaygroundWindow()
     win.timer.stop()
     assert win.testAttribute(Qt.WA_DeleteOnClose) is True
