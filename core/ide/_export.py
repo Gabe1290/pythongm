@@ -379,66 +379,6 @@ class ExportMixin:
             cancel_status_message=self.tr("iOS export cancelled"),
         )
 
-    def export_aseba_code(self):
-        """Export Thymio objects from the project as Aseba AESL code.
-
-        Aseba export is synchronous and fast (it just writes text files),
-        so it bypasses the progress-dialog helper used by the platform
-        binary exporters and runs inline with a status update + a single
-        completion dialog.
-        """
-        if not self._require_open_project():
-            return
-        output_dir = self._ask_export_dir('_aseba')
-        if not output_dir:
-            return
-
-        from export.Aseba.aseba_exporter import AsebaExporter
-        project_file = str(Path(self.current_project_path) / "project.json")
-
-        self.update_status(self.tr("Exporting Aseba code..."))
-        try:
-            success = AsebaExporter().export(project_file, output_dir)
-        except Exception as e:
-            logger.error(f"Aseba export failed: {e}", exc_info=True)
-            QMessageBox.critical(
-                self,
-                self.tr("Aseba Export Failed"),
-                self.tr("Failed to export Aseba code:\n\n{0}").format(str(e))
-            )
-            self.update_status(self.tr("Aseba export failed"))
-            return
-
-        if not success:
-            QMessageBox.warning(
-                self,
-                self.tr("Aseba Export"),
-                self.tr(
-                    "No Thymio objects found in this project, so no Aseba "
-                    "code was generated. Add a Thymio object to the project "
-                    "and try again."
-                )
-            )
-            self.update_status(self.tr("Aseba export: nothing to export"))
-            return
-
-        self.update_status(self.tr("Aseba export complete"))
-        result = QMessageBox.information(
-            self,
-            self.tr("Aseba Export Complete"),
-            self.tr("Aseba .aesl files written to:\n{0}\n\n"
-                    "Would you like to open the output folder?").format(output_dir),
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-        if result == QMessageBox.StandardButton.Yes:
-            import platform
-            if platform.system() == 'Windows':
-                os.startfile(output_dir)
-            elif platform.system() == 'Darwin':  # macOS
-                subprocess.run(['open', output_dir])
-            else:  # Linux
-                subprocess.run(['xdg-open', output_dir])
-
     def build_game(self):
         """Build → Build Game... (F7): build a native desktop artifact for
         the current host, without going through the multi-target Export

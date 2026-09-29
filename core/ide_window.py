@@ -709,7 +709,7 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
         # they must stay enabled even when no project is currently loaded. The
         # generic "Import" substring match below would otherwise grey them out.
         always_enabled_imports = set()
-        for attr in ('import_roberta_action', 'import_gmk_action', 'thymio_import_roberta_action'):
+        for attr in ('import_gmk_action', 'thymio_import_roberta_action'):
             if hasattr(self, attr):
                 always_enabled_imports.add(getattr(self, attr))
 

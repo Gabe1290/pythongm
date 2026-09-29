@@ -11,6 +11,9 @@ Usage:
 """
 
 from importers.gmk_importer import import_gmk, GmkImportError
-from importers.roberta_importer import import_roberta, RobertaImportError
 
-__all__ = ['import_gmk', 'GmkImportError', 'import_roberta', 'RobertaImportError']
+# Open Roberta Lab import moved to extensions/thymio/export/roberta_importer.py
+# (docs/THYMIO_EXTENSION_PLAN.md, Stage D2).
+# Use: from extensions.thymio.export.roberta_importer import import_roberta, RobertaImportError
+
+__all__ = ['import_gmk', 'GmkImportError']

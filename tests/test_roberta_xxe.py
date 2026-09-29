@@ -9,7 +9,7 @@ file is rejected as a clean RobertaImportError rather than being expanded
 
 import pytest
 
-from importers.roberta_importer import (
+from extensions.thymio.export.roberta_importer import (
     import_roberta,
     import_roberta_detailed,
     RobertaImportError,

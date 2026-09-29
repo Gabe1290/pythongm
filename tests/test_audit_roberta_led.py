@@ -15,7 +15,7 @@ Pure-logic tests (XML element fixtures), no Qt needed.
 import logging
 import xml.etree.ElementTree as ET
 
-from importers.roberta_importer import (
+from extensions.thymio.export.roberta_importer import (
     _convert_block,
     _extract_color,
     RobertaImportResult,
@@ -134,7 +134,7 @@ class _capture_roberta_warnings:
 
     def __init__(self, caplog):
         self._caplog = caplog
-        self._logger = logging.getLogger("pygm.importers.roberta_importer")
+        self._logger = logging.getLogger("pygm.extensions.thymio.export.roberta_importer")
         self._prev_level = None
         self._prev_propagate = None
 

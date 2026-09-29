@@ -50,7 +50,7 @@ class TestParseValueChoiceLabels:
 
 class TestAsebaSensorIndex:
     def _exporter(self):
-        from export.Aseba.aseba_exporter import AsebaExporter
+        from extensions.thymio.export.aseba_exporter import AsebaExporter
         return AsebaExporter()
 
     def test_if_proximity_strips_label(self):

@@ -10,7 +10,7 @@ Pure-logic tests: the exporter has no Qt dependency, so no QApplication needed.
 
 import xml.etree.ElementTree as ET
 
-from export.Aseba.aseba_exporter import AsebaExporter
+from extensions.thymio.export.aseba_exporter import AsebaExporter
 
 
 def _make_exporter():
