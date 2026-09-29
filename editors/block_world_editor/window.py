@@ -3,7 +3,7 @@
 
 Phase 1: embeds the real extensions.block_world.renderer.
 render_block_world_view output in a Qt widget, with a free-fly build-mode
-camera. Reuses widgets.thymio_playground.PygameWidget verbatim for the
+camera. Reuses widgets.pygame_widget.PygameWidget verbatim for the
 pygame-surface-to-QPixmap plumbing (it has zero Thymio-specific code)
 rather than reinventing that pattern.
 
@@ -45,7 +45,7 @@ from PySide6.QtWidgets import (
 
 import pygame
 
-from widgets.thymio_playground import PygameWidget
+from widgets.pygame_widget import PygameWidget
 from extensions.block_world.renderer import (
     render_block_world_view, clamp_pitch, draw_cell_outline, eye_z_for,
     horizon_for, march_ray, pick_voxel, screen_ray, unproject_to_plane,

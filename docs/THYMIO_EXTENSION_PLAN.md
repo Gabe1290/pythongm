@@ -398,10 +398,24 @@ sub-arc.
     (`extensions/thymio/editor/__init__.py`'s "Run" button) now uses a
     relative `..playground_runner` import; the two test files that
     constructed the window import the new absolute path.
-C3. `widgets/thymio_playground.py` → `extensions/thymio/playground_window.py`
-    (1,339 lines — the largest single file to move; consider splitting it
-    further *after* the move lands, not during, to keep the move itself a
-    pure relocation).
+- [x] C3a (found while starting C3, not in the original plan). Before
+    moving the file: `editors/block_world_editor/window.py` — a
+    **different** extension's editor — imports `PygameWidget` from
+    `widgets/thymio_playground.py` verbatim ("it has zero Thymio-specific
+    code", its own docstring says). Moving the whole file into
+    `extensions/thymio/` would have made Block World depend on the Thymio
+    extension, which breaks independent enable/disable. `PygameWidget`
+    (a generic pygame-surface-to-QPixmap Qt widget, confirmed zero Thymio
+    references) extracted to new `widgets/pygame_widget.py` (core, shared);
+    `widgets/thymio_playground.py` and `block_world_editor/window.py` both
+    import it from there now. Same "keep the generic part in core"
+    judgment call the raycast Stage B2 precedent already established for
+    `_render_draw_events`/`_sprite_top_left`/`_find_first_instance`.
+- [ ] C3b. `widgets/thymio_playground.py` (now `EditMode` +
+    `ThymioPlaygroundWindow` only) → `extensions/thymio/playground_window.py`
+    (1,339 → ~1,250 lines after C3a — still the largest single file to
+    move; consider splitting it further *after* the move lands, not
+    during, to keep the move itself a pure relocation).
 C4. `widgets/thymio_diagram_widget.py` → `extensions/thymio/diagram_widget.py`.
 C5. Wire "Playgrounds" through the Stage-0.4 asset-type registry and the
     Stage-0.5 asset-tree-category registry; delete the hardcoded entries
