@@ -424,7 +424,15 @@ sub-arc.
     (`ThymioPlaygroundWindow`), not file path, so the move doesn't affect
     any shipped language's translations (same rule this doc's landmines
     section already carries from the i18n session notes).
-C4. `widgets/thymio_diagram_widget.py` → `extensions/thymio/diagram_widget.py`.
+- [x] C4. `widgets/thymio_diagram_widget.py` → `extensions/thymio/diagram_widget.py`
+    via `git mv`, no content changes (pure Qt/`QPainter`, no pygame — was
+    the one thing `widgets/__init__.py` imported eagerly, not lazily).
+    `dialogs/thymio_action_selector.py`, `thymio_event_selector.py` and
+    `editors/object_editor/thymio_events_panel.py` import the new path;
+    `widgets/__init__.py` drops the eager import and the `__all__` entry
+    entirely (no package-level `from widgets import ThymioDiagramWidget`
+    caller existed to keep even a lazy accessor for). No dedicated test
+    file existed for this widget before or after.
 C5. Wire "Playgrounds" through the Stage-0.4 asset-type registry and the
     Stage-0.5 asset-tree-category registry; delete the hardcoded entries
     from `core/project_manager.py` and `widgets/asset_tree/asset_tree_widget.py`.

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
-from widgets.thymio_diagram_widget import (
+from extensions.thymio.diagram_widget import (
     ThymioDiagramWidget, get_actions_for_region
 )
 from extensions.thymio.actions import THYMIO_ACTIONS

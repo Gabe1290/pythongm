@@ -31,9 +31,14 @@ is the map. What lives here so far:
   config window for a single robot (C3b). ``PygameWidget``, the generic
   pygame-in-Qt widget it and ``playground_runner.py`` both use, stayed in
   core (``widgets/pygame_widget.py``, C3a) since Block World reuses it too.
+* ``diagram_widget.py`` — ``ThymioDiagramWidget``: the interactive robot
+  diagram the config/event/action dialogs and the object-editor panel
+  embed (C4).
 
-The rest — the Aseba/Open Roberta interop — still lives in core and moves
-in Stages D–F.
+The rest — wiring "Playgrounds" fully through the Stage-0.4/0.5 registries
+(C5), the config/event/action dialogs (C6), the Aseba/Open Roberta
+interop (D), the object-editor tab (E) and the Blockly toolbox (F) —
+still lives in core.
 """
 
 PLUGIN_NAME = "Thymio Robot"
