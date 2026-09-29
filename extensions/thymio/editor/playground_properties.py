@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Signal
 
-from editors.playground_editor.playground_elements import PlaygroundWall, PlaygroundRobot
+from .playground_elements import PlaygroundWall, PlaygroundRobot
 
 
 class PlaygroundElementProperties(QWidget):

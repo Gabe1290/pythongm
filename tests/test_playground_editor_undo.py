@@ -12,8 +12,8 @@ the element was lost.
 
 import pytest
 
-from editors.playground_editor.playground_canvas import PlaygroundCanvas
-from editors.playground_editor.playground_elements import PlaygroundRobot
+from extensions.thymio.editor.playground_canvas import PlaygroundCanvas
+from extensions.thymio.editor.playground_elements import PlaygroundRobot
 
 
 @pytest.fixture

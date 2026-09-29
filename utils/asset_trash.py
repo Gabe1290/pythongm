@@ -4,7 +4,7 @@ Design decision (2026-08-09, see docs/ASSET_MANAGER_PLAN.md /
 docs/CLEAN_PROJECT_PLAN.md — "the bulk-delete-undo design question"):
 deliberately NOT a QUndoCommand-based undo/redo. The existing QUndoStack
 usage elsewhere in this codebase (editors/room_undo_commands.py,
-editors/playground_editor/playground_undo_commands.py, the sprite editor)
+extensions/thymio/editor/playground_undo_commands.py, the sprite editor)
 is scoped to live, in-memory canvas edits with no file I/O — undo/redo
 of a room instance move, say, never touches disk. Asset deletion is a
 different problem: it removes a project.json entry, deletes a physical

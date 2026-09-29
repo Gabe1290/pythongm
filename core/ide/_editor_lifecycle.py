@@ -205,7 +205,7 @@ class EditorLifecycleMixin:
                     return
 
         try:
-            from editors.playground_editor import PlaygroundEditor
+            from extensions.thymio.editor import PlaygroundEditor
 
             editor = PlaygroundEditor(str(self.current_project_path), self)
             editor.load_asset(playground_name, playground_data)

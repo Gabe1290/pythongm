@@ -386,8 +386,11 @@ rendered frames / dispatched events, not just source structure.
 The biggest chunk of UI code in the whole feature; treat it as its own
 sub-arc.
 
-C1. `editors/playground_editor/*` → `extensions/thymio/editor/` (the
-    arena-authoring canvas/elements/properties).
+- [x] C1. `editors/playground_editor/*` → `extensions/thymio/editor/` (all
+    seven modules, `git mv`); the package's absolute self-imports became
+    relative so it also works under the loader's synthetic package name.
+    `core/ide/_editor_lifecycle.py`'s `open_playground_editor` imports the
+    new path until C5 hands opening to the asset-tree category.
 C2. `runtime/playground_runner.py` → `extensions/thymio/playground_runner.py`.
 C3. `widgets/thymio_playground.py` → `extensions/thymio/playground_window.py`
     (1,339 lines — the largest single file to move; consider splitting it
@@ -512,6 +515,34 @@ Same discipline this repo has used for every prior consolidation
   'input_binds'`; each file passes alone. Something raycast_view leaves in
   process-global hook/plugin state that the ghosts test assumes fresh. Don't
   chase it as a Stage-0 regression; re-run the ghosts file alone.
+
+- **Pre-existing Qt native crash across a long chain of IDE-constructing
+  tests, not ours** (found during C1, reproduced identically on clean
+  Stage-B3 HEAD by stashing C1 and re-running the same file list). Running
+  enough test files that each construct a real `PyGameMakerIDE()` in one
+  pytest process — 15+ files deep, e.g. the combined
+  `test_asset_trash.py` + `test_asset_type_registry.py` +
+  `test_extension_action_i18n.py`, or separately
+  `...+ test_extension_ui_translations.py` — sometimes crashes the whole
+  process with `Windows fatal exception: access violation` inside
+  `core/ide_window.py`'s `changeEvent`, called from `pytestqt.plugin.
+  _process_events` during `pytest_runtest_setup`. Reads as a dangling/
+  already-destroyed `QMainWindow` still receiving a queued Qt event from a
+  prior test's window that wasn't torn down before the next test's `QApplication.
+  processEvents()` ran. Non-deterministic — the exact same file combo
+  sometimes crashes and sometimes instead produces ordinary (real,
+  pre-existing, unrelated) i18n-resolution failures instead, consistent with
+  reading unreliable freed memory rather than a logic bug. **Don't chase
+  it as a Stage-C regression and don't try to fix the underlying window
+  leak here** — it's out of scope for this plan and was confirmed
+  pre-existing. Workaround used for this stage's gate: split a long
+  IDE-window-heavy file list into sub-batches of ~4 files each; every
+  sub-batch of the full 48-file Stage-C1 gate passed clean (388 passed, 0
+  failed) run this way. If a future stage's gate hits the same crash,
+  split further rather than treating it as a real failure — but it may be
+  worth its own audit finding at some point (a real window leak, most
+  likely a floated/detached editor or a test's `PyGameMakerIDE()` missing
+  `deleteLater()` + an event-loop pump before the next test builds another).
 
 - **Translation contexts.** `QObject.tr()` resolves its context from the
   *concrete runtime class* (verified for PySide6 6.9, documented in

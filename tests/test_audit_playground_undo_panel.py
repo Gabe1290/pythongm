@@ -23,14 +23,14 @@ def _app():
 
 
 def _make_editor(tmp_path):
-    from editors.playground_editor import PlaygroundEditor
+    from extensions.thymio.editor import PlaygroundEditor
     return PlaygroundEditor(str(tmp_path))
 
 
 def test_undo_property_change_resyncs_panel(tmp_path):
     _app()
-    from editors.playground_editor.playground_elements import PlaygroundWall
-    from editors.playground_editor.playground_undo_commands import (
+    from extensions.thymio.editor.playground_elements import PlaygroundWall
+    from extensions.thymio.editor.playground_undo_commands import (
         ModifyElementCommand,
     )
 
@@ -69,8 +69,8 @@ def test_undo_property_change_resyncs_panel(tmp_path):
 
 def test_undo_move_resyncs_panel(tmp_path):
     _app()
-    from editors.playground_editor.playground_elements import PlaygroundWall
-    from editors.playground_editor.playground_undo_commands import (
+    from extensions.thymio.editor.playground_elements import PlaygroundWall
+    from extensions.thymio.editor.playground_undo_commands import (
         MoveElementCommand,
     )
 
@@ -95,8 +95,8 @@ def test_undo_move_resyncs_panel(tmp_path):
 
 def test_undo_with_no_selection_clears_panel(tmp_path):
     _app()
-    from editors.playground_editor.playground_elements import PlaygroundWall
-    from editors.playground_editor.playground_undo_commands import (
+    from extensions.thymio.editor.playground_elements import PlaygroundWall
+    from extensions.thymio.editor.playground_undo_commands import (
         ModifyElementCommand,
     )
 
