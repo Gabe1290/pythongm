@@ -349,6 +349,18 @@ def test_playground_editor_package_lives_in_the_extension():
     assert PlaygroundWall and PlaygroundRobot
 
 
+# ---------------------------------------------------------------------------
+# C2 — the standalone playground (arena) simulation runner
+# ---------------------------------------------------------------------------
+
+def test_playground_runner_lives_in_the_extension():
+    assert not (REPO_ROOT / "runtime" / "playground_runner.py").exists()
+    from extensions.thymio.playground_runner import PlaygroundRunnerWindow
+    assert callable(PlaygroundRunnerWindow)
+    src = (REPO_ROOT / "extensions" / "thymio" / "playground_runner.py").read_text(encoding="utf-8")
+    assert "runtime.playground_runner" not in src
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

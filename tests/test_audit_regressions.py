@@ -385,7 +385,7 @@ class TestThymioKeyButtonStateMapping:
     always read 0. Every key→event in the map must derive a settable button."""
 
     def test_key_event_map_buttons_are_settable(self):
-        from runtime.playground_runner import PlaygroundRunnerWindow
+        from extensions.thymio.playground_runner import PlaygroundRunnerWindow
         from extensions.thymio.simulator import ThymioSimulator
         sim = ThymioSimulator(x=0, y=0, angle=0)
         assert PlaygroundRunnerWindow._KEY_EVENT_MAP, "key->event map is empty"

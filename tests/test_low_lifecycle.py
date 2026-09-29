@@ -35,7 +35,7 @@ def test_thymio_playground_window_delete_on_close(_qapp):  # L4
 
 def test_playground_runner_window_delete_on_close(_qapp):  # L4
     from PySide6.QtCore import Qt
-    from runtime.playground_runner import PlaygroundRunnerWindow
+    from extensions.thymio.playground_runner import PlaygroundRunnerWindow
     win = PlaygroundRunnerWindow({"width": 400, "height": 400, "walls": [],
                                   "robots": []}, {})
     if getattr(win, "timer", None) is not None:

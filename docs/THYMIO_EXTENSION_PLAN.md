@@ -391,7 +391,13 @@ sub-arc.
     relative so it also works under the loader's synthetic package name.
     `core/ide/_editor_lifecycle.py`'s `open_playground_editor` imports the
     new path until C5 hands opening to the asset-tree category.
-C2. `runtime/playground_runner.py` → `extensions/thymio/playground_runner.py`.
+- [x] C2. `runtime/playground_runner.py` → `extensions/thymio/playground_runner.py`
+    (`git mv`, no content changes — it already imported everything it
+    needed from `extensions.thymio.*` and core's `ActionExecutor`, so this
+    was a pure relocation). The editor's own opener
+    (`extensions/thymio/editor/__init__.py`'s "Run" button) now uses a
+    relative `..playground_runner` import; the two test files that
+    constructed the window import the new absolute path.
 C3. `widgets/thymio_playground.py` → `extensions/thymio/playground_window.py`
     (1,339 lines — the largest single file to move; consider splitting it
     further *after* the move lands, not during, to keep the move itself a
