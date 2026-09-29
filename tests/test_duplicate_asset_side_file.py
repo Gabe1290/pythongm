@@ -36,6 +36,15 @@ def _qapp():
     yield app
 
 
+@pytest.fixture(scope="module", autouse=True)
+def _plugins_loaded():
+    # "playgrounds" is a loader-registered side-file type now
+    # (extensions/thymio, docs/THYMIO_EXTENSION_PLAN.md Stage C5), not a
+    # static core/asset_types.py entry -- same landmine as play_sound.
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+
+
 def _tree_stub(project_path):
     calls = {"add_asset": [], "emitted": []}
     tree = SimpleNamespace(

@@ -335,7 +335,10 @@ ASSET_TYPE_REGISTRY = {
     "rooms":       {"singular": "room",       "editor_method": "open_room_editor"},
     "scripts":     {"singular": "script",     "editor_method": "open_script_editor"},
     "fonts":       {"singular": "font",       "editor_method": "open_font_editor"},
-    "playgrounds": {"singular": "playground", "editor_method": "open_playground_editor"},
+    # "playgrounds" is no longer a static entry here -- an extension
+    # (extensions/thymio) registers it via core/ide_extension_points'
+    # register_asset_tree_category at startup (docs/THYMIO_EXTENSION_PLAN.md,
+    # Stage C5).
 }
 
 

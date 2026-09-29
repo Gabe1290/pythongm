@@ -190,57 +190,6 @@ class EditorLifecycleMixin:
             QMessageBox.critical(self, self.tr("Error"),
                             self.tr("Failed to open room editor: {0}").format(e))
 
-    def open_playground_editor(self, playground_name: str, playground_data: dict):
-        """Open a playground in the playground editor"""
-
-        # Check if already open — focus tab or detached window
-        key = self._editor_key('playgrounds', playground_name)
-        if key in self.open_editors:
-            if self._focus_detached_editor(key):
-                return
-            for i in range(self.editor_tabs.count()):
-                # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
-                if self.editor_tabs.widget(i) is self.open_editors[key]:
-                    self.editor_tabs.setCurrentIndex(i)
-                    return
-
-        try:
-            from extensions.thymio.editor import PlaygroundEditor
-
-            editor = PlaygroundEditor(str(self.current_project_path), self)
-            editor.load_asset(playground_name, playground_data)
-
-            # Connect signals
-            editor.save_requested.connect(
-                self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
-            editor.close_requested.connect(
-                self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
-            editor.data_modified.connect(
-                self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
-            editor.float_requested.connect(
-                self.float_editor, Qt.ConnectionType.UniqueConnection)
-            editor.reattach_requested.connect(
-                self.reattach_editor, Qt.ConnectionType.UniqueConnection)
-
-            # Add to tabs
-            tab_index = self.editor_tabs.addTab(editor, playground_name)
-            self.editor_tabs.setCurrentIndex(tab_index)
-            editor._open_editor_key = key
-            self.open_editors[key] = editor
-
-            self.update_status(self.tr("Opened playground: {0}").format(playground_name))
-
-            # Honor global window mode.
-            if self.window_mode == 'floating':
-                self.float_editor(editor)
-
-        except Exception as e:
-            logger.error(f"Error opening playground editor: {e}")
-            import traceback
-            traceback.print_exc()
-            QMessageBox.critical(self, self.tr("Error"),
-                                 self.tr("Failed to open playground editor: {0}").format(e))
-
     def open_object_editor(self, object_name: str, object_data: dict):
         """Open an object in the object editor"""
 

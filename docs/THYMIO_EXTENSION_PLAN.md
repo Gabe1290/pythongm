@@ -433,9 +433,40 @@ sub-arc.
     entirely (no package-level `from widgets import ThymioDiagramWidget`
     caller existed to keep even a lazy accessor for). No dedicated test
     file existed for this widget before or after.
-C5. Wire "Playgrounds" through the Stage-0.4 asset-type registry and the
-    Stage-0.5 asset-tree-category registry; delete the hardcoded entries
-    from `core/project_manager.py` and `widgets/asset_tree/asset_tree_widget.py`.
+- [x] C5. "Playgrounds" wired fully through the Stage-0.4/0.5 registries;
+    every hardcoded core entry deleted, not just `core/project_manager.py`
+    (already generic since Stage 0.4) — the actual remaining hardcodes
+    turned out to be `core/asset_types.py`'s module-level registration call
+    (→ `extensions/thymio/__init__.py`'s `PLUGIN_ASSET_TYPES`),
+    `widgets/asset_tree/asset_utils.py`'s static `ASSET_TYPE_REGISTRY`
+    entry, `widgets/asset_tree/asset_tree_item.py`'s icon-map/elif
+    branches (both already had generic `get_asset_tree_category()`
+    fallbacks from Stage 0.5b — just needed the shadowing hardcodes
+    removed), `core/ide/_assets.py`'s default-template `elif` branch, and
+    **`core/ide/_editor_lifecycle.py`'s whole `open_playground_editor`
+    method** — moved verbatim to a free function
+    `extensions/thymio/editor/open_playground_editor(ide, name, data)`
+    (the `AssetTreeCategory.open_editor` contract exists precisely so an
+    extension can implement this without living in core; confirmed
+    `ide.tr()` still resolves under the `PyGameMakerIDE` context regardless
+    of which module the call site is in). New `PLUGIN_ASSET_TREE_CATEGORIES`
+    registers the category with that opener + a `new_asset_template`
+    matching the old hardcoded default arena/colors JSON exactly.
+    **Landmine hit and fixed**: three pre-existing tests
+    (`test_asset_type_registry.py`'s eight/dispatch tests,
+    `test_asset_side_file_cleanup.py`, `test_duplicate_asset_side_file.py`)
+    assumed "playgrounds" was always present/`editor_method`-shaped without
+    calling `load_all_plugins()` first — same class as the long-standing
+    `play_sound` gotcha; added the `editor_method`-or-`open_editor` branch
+    and `autouse` `load_all_plugins()` fixtures. **Also found and fixed a
+    real test bug of my own** (not a production regression): a C5 pin test
+    left a real `PyGameMakerIDE()` with `current_project_data` still
+    `None` and only `deleteLater()`'d (schedules, doesn't destroy) — a
+    later, unrelated test's pytest-qt event pump delivered a deferred
+    `changeEvent` to the lingering window and crashed on
+    `current_project_data['name']`. Same landmine class as the Stage-C1
+    native-crash note above; fixed by initializing
+    `current_project_data` in the test, not by touching production code.
 C6. Config dialogs — `dialogs/thymio_config_dialog.py`,
     `thymio_action_selector.py`, `thymio_event_selector.py` →
     `extensions/thymio/dialogs/`. `dialogs/_block_config_dialog_base.py`

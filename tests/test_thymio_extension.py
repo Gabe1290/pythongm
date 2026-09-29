@@ -15,6 +15,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 # ---------------------------------------------------------------------------
@@ -413,6 +414,91 @@ def test_diagram_widget_lives_in_the_extension():
     widgets_init = (REPO_ROOT / "widgets" / "__init__.py").read_text(encoding="utf-8")
     assert "thymio_diagram_widget" not in widgets_init
     assert "'ThymioDiagramWidget'" not in widgets_init
+
+
+# ---------------------------------------------------------------------------
+# C5 — "Playgrounds" wired through the Stage-0.4/0.5 registries, no
+# hardcoded core entry left
+# ---------------------------------------------------------------------------
+
+def test_playground_asset_type_registers_through_the_extension():
+    from events.plugin_loader import load_all_plugins
+    from core.asset_types import get_registered_asset_types, side_file_type_names
+    load_all_plugins()
+    assert "playgrounds" in side_file_type_names()
+    spec = {s.plural: s for s in get_registered_asset_types()}["playgrounds"]
+    assert spec.singular == "playground"
+    assert spec.file_keys == ("arena", "colors", "walls", "robots")
+    assert spec.strip_keys == ("walls", "robots", "colors")
+
+
+def test_playground_asset_tree_category_registers_through_the_extension():
+    from events.plugin_loader import load_all_plugins
+    from widgets.asset_tree.asset_utils import ASSET_TYPE_REGISTRY
+    load_all_plugins()
+    entry = ASSET_TYPE_REGISTRY["playgrounds"]
+    assert entry["singular"] == "playground"
+    assert callable(entry["open_editor"])
+    assert "editor_method" not in entry
+
+    from core.ide_extension_points import get_asset_tree_category
+    cat = get_asset_tree_category("playgrounds")
+    assert cat.label == "Playgrounds" and cat.icon == "🏟️"
+    template = cat.new_asset_template("arena_1")
+    assert template["name"] == "arena_1" and template["arena"]["width"] == 400
+    assert template["walls"] == [] and template["robots"] == []
+
+
+def test_core_carries_no_hardcoded_playground_entries():
+    needle_by_file = {
+        "core/asset_types.py": 'plural="playgrounds"',
+        "widgets/asset_tree/asset_utils.py": '"playgrounds": {"singular"',
+        "widgets/asset_tree/asset_tree_item.py": '"playgrounds": "',
+        "core/ide/_editor_lifecycle.py": "def open_playground_editor",
+        "core/ide/_assets.py": "asset_type == 'playgrounds'",
+    }
+    for rel_path, needle in needle_by_file.items():
+        src = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        assert needle not in src, rel_path
+
+
+def test_open_playground_editor_lives_in_the_extension_and_opens_a_tab():
+    """The IDE method moved to a free function taking `ide` explicitly, so
+    it can be registered as the category's open_editor without living in
+    core. Drives it against a real IDE, matching the generic dispatch
+    test_ide_extension_points.py already proved for a dummy category."""
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from extensions.thymio.editor import open_playground_editor
+    from core.ide._editor_lifecycle import EditorLifecycleMixin
+    assert not hasattr(EditorLifecycleMixin, "open_playground_editor")
+
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_window import PyGameMakerIDE
+    import tempfile
+    ide = PyGameMakerIDE()
+    try:
+        ide.current_project_path = tempfile.mkdtemp()
+        # A lingering window (deleteLater only schedules destruction) can
+        # receive a deferred changeEvent from pytest-qt's next-test event
+        # pump, which reads current_project_data['name'] -- leaving it None
+        # crashes that unrelated later test (found the hard way; same
+        # landmine class as the plan doc's pre-existing-crash note).
+        ide.current_project_data = {"name": "test_project", "assets": {}}
+        data = {"name": "arena_1", "asset_type": "playground",
+               "arena": {"width": 400, "height": 400}, "walls": [], "robots": []}
+        before = ide.editor_tabs.count()
+        ide.on_asset_double_clicked({"asset_type": "playgrounds", "name": "arena_1", "data": data})
+        assert ide.editor_tabs.count() == before + 1
+        key = ide._editor_key("playgrounds", "arena_1")
+        assert key in ide.open_editors
+
+        # Reopening the same live tab must not duplicate it.
+        ide.on_asset_double_clicked({"asset_type": "playgrounds", "name": "arena_1", "data": data})
+        assert ide.editor_tabs.count() == before + 1
+    finally:
+        ide.deleteLater()
 
 
 def test_extension_is_discovered_and_registers_its_tab():

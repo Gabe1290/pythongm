@@ -351,7 +351,7 @@ class TestGameMixin:
                             'tiles': [],
                         },
                     },
-                    'playgrounds': {}, 'scripts': {}, 'fonts': {}, 'data': {},
+                    'scripts': {}, 'fonts': {}, 'data': {},
                 },
                 'room_order': [room_name],
             }

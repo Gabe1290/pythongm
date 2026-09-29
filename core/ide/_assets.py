@@ -560,24 +560,6 @@ class AssetsMixin:
                     'imported': True,
                     'events': {}
                 }
-            elif asset_type == 'playgrounds':
-                asset_data = {
-                    'name': asset_name,
-                    'asset_type': 'playground',
-                    'imported': True,
-                    'arena': {
-                        'width': 400,
-                        'height': 400,
-                        'color': 'white',
-                        'ground_texture': '',
-                    },
-                    'colors': [
-                        {'name': 'white', 'r': 1.0, 'g': 1.0, 'b': 1.0},
-                        {'name': 'wall', 'r': 0.45, 'g': 0.45, 'b': 0.5},
-                    ],
-                    'walls': [],
-                    'robots': [],
-                }
             elif (ext := get_asset_tree_category(asset_type)) is not None \
                     and ext.new_asset_template is not None:
                 asset_data = ext.new_asset_template(asset_name)
