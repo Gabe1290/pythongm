@@ -396,6 +396,25 @@ def test_playground_window_lives_in_the_extension():
     assert "'ThymioPlaygroundWindow'" not in widgets_init, "no longer in __all__"
 
 
+# ---------------------------------------------------------------------------
+# C4 — the interactive robot diagram
+# ---------------------------------------------------------------------------
+
+def test_diagram_widget_lives_in_the_extension():
+    assert not (REPO_ROOT / "widgets" / "thymio_diagram_widget.py").exists()
+    from extensions.thymio.diagram_widget import ThymioDiagramWidget, get_events_for_region
+    assert callable(ThymioDiagramWidget) and callable(get_events_for_region)
+    for fname, needle in (
+        ("dialogs/thymio_action_selector.py", "widgets.thymio_diagram_widget"),
+        ("dialogs/thymio_event_selector.py", "widgets.thymio_diagram_widget"),
+        ("editors/object_editor/thymio_events_panel.py", "widgets.thymio_diagram_widget"),
+    ):
+        assert needle not in (REPO_ROOT / fname).read_text(encoding="utf-8"), fname
+    widgets_init = (REPO_ROOT / "widgets" / "__init__.py").read_text(encoding="utf-8")
+    assert "thymio_diagram_widget" not in widgets_init
+    assert "'ThymioDiagramWidget'" not in widgets_init
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}
