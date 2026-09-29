@@ -121,22 +121,22 @@ class TestRobertaDecreaseVariableSign:
         return field.text
 
     def test_decrease_negates_amount(self):
-        from export.Roberta.roberta_exporter import _build_decrease_variable
+        from extensions.thymio.export.roberta_exporter import _build_decrease_variable
         block = _build_decrease_variable({"variable": "counter", "amount": "3"})
         assert self._delta(block) == "-3"
 
     def test_increase_stays_positive(self):
-        from export.Roberta.roberta_exporter import _build_increase_variable
+        from extensions.thymio.export.roberta_exporter import _build_increase_variable
         block = _build_increase_variable({"variable": "counter", "amount": "3"})
         assert self._delta(block) == "3"
 
     def test_decrease_registered_to_dedicated_builder(self):
-        from export.Roberta import roberta_exporter as r
+        from extensions.thymio.export import roberta_exporter as r
         assert r._ACTION_BUILDERS["thymio_decrease_variable"] is r._build_decrease_variable
         assert r._ACTION_BUILDERS["thymio_decrease_variable"] is not r._build_increase_variable
 
     def test_decrease_handles_non_numeric_amount(self):
-        from export.Roberta.roberta_exporter import _build_decrease_variable
+        from extensions.thymio.export.roberta_exporter import _build_decrease_variable
         # Must not raise; falls back to a "-<amount>" expression.
         block = _build_decrease_variable({"variable": "counter", "amount": "speed"})
         assert self._delta(block) == "-speed"

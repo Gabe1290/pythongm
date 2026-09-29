@@ -121,25 +121,22 @@ class MenuBuilderMixin:
         self.export_html5_action = self.create_action(self.tr("Export as HTML5..."), None, self.export_html5)
         self.export_zip_action = self.create_action(self.tr("Export as &Zip..."), None, self.export_project_zip)
         self.export_kivy_action = self.create_action(self.tr("Export to Kivy..."), None, self.export_kivy)
-        # [1.0] Aseba/Thymio export hidden from the menu — see docs/POST_1_0_REFACTOR.md.
-        # The export_aseba_code method is retained for the planned Thymio extension.
-        # self.export_aseba_action = self.create_action(self.tr("Export &Aseba (Thymio) code..."), None, self.export_aseba_code)
+        # Aseba (Thymio) export moved to extensions/thymio's PLUGIN_IDE_MENUS
+        # (docs/THYMIO_EXTENSION_PLAN.md, Stage D3) — appended to this menu
+        # by core/ide_extension_points, not built here.
         self.export_project_action = self.create_action(self.tr("Export Project..."), "Ctrl+E", self.export_project)
 
         file_menu.addAction(self.export_html5_action)
         file_menu.addAction(self.export_zip_action)
         file_menu.addAction(self.export_kivy_action)
-        # file_menu.addAction(self.export_aseba_action)
         file_menu.addAction(self.export_project_action)
 
         file_menu.addAction(self.create_action(self.tr("Open &Zip Project..."), None, self.open_project_zip))
         # Import-as-new-project actions: stored on self so update_ui_state can keep
         # them enabled regardless of whether a project is currently loaded.
-        # [1.0] Open Roberta import hidden from the menu — see docs/POST_1_0_REFACTOR.md.
-        # The import_roberta_xml method is retained for the planned Thymio extension.
-        # self.import_roberta_action = self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml)
+        # Open Roberta import moved to extensions/thymio's PLUGIN_IDE_MENUS
+        # (Stage D3), same as the Aseba export above.
         self.import_gmk_action = self.create_action(self.tr("Import &GameMaker .gmk File..."), None, self.import_gmk_file)
-        # file_menu.addAction(self.import_roberta_action)
         file_menu.addAction(self.import_gmk_action)
         file_menu.addSeparator()
 

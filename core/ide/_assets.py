@@ -128,66 +128,6 @@ class AssetsMixin:
                 )
                 self.update_status(self.tr("Import failed"))
 
-    def import_roberta_xml(self):
-        """Import an Open Roberta Lab XML program as a new project"""
-        file_path, _ = QFileDialog.getOpenFileName(
-            self,
-            self.tr("Import Open Roberta XML"),
-            str(Path.home()),
-            self.tr("Open Roberta XML (*.xml)")
-        )
-
-        if not file_path:
-            return
-
-        # Ask user where to save the new project
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Output Directory for Imported Project"),
-            str(Path.home())
-        )
-
-        if not output_dir:
-            return
-
-        from importers.roberta_importer import import_roberta_detailed, RobertaImportError
-
-        self.update_status(self.tr("Importing Open Roberta program..."))
-
-        try:
-            result = import_roberta_detailed(file_path, output_dir)
-
-            # Show warnings if any
-            warning_text = ""
-            if result.warnings:
-                warning_text = self.tr("\n\nWarnings:\n") + "\n".join(
-                    f"  - {w}" for w in result.warnings[:20])
-
-            QMessageBox.information(
-                self,
-                self.tr("Import Successful"),
-                self.tr("Project '{0}' imported successfully!\n"
-                         "Events: {1}, Actions: {2}{3}").format(
-                    result.project_name,
-                    result.events_imported,
-                    result.actions_imported,
-                    warning_text)
-            )
-            self.update_status(self.tr("Roberta import complete: {0}").format(result.project_name))
-
-            # Open the newly imported project
-            project_file = Path(output_dir) / "project.json"
-            if project_file.exists():
-                self.load_project(Path(output_dir))
-
-        except RobertaImportError as exc:
-            QMessageBox.warning(
-                self,
-                self.tr("Import Failed"),
-                self.tr("Failed to import Open Roberta XML:\n{0}").format(str(exc))
-            )
-            self.update_status(self.tr("Roberta import failed"))
-
     def import_gmk_file(self):
         """Import a legacy GameMaker 8.0/8.1 .gmk file as a new project."""
         gmk_path, _ = QFileDialog.getOpenFileName(

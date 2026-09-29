@@ -86,7 +86,7 @@ class TestRobertaRgbGuard:  # L27
         return ET.fromstring(xml)
 
     def test_variable_driven_channel_does_not_crash(self):
-        from importers.roberta_importer import _convert_block, RobertaImportResult
+        from extensions.thymio.export.roberta_importer import _convert_block, RobertaImportResult
         # RED driven by a variable block -> non-literal; must not raise.
         var_block = '<block type="variables_get"><field name="VAR">x</field></block>'
         actions = _convert_block(self._rgb_led_block(var_block), RobertaImportResult())

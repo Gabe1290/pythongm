@@ -37,14 +37,21 @@ is the map. What lives here so far:
 * ``dialogs/`` — the config/event/action selector dialogs (C6).
   ``dialogs/_block_config_dialog_base.py`` (core) stays put — it's the
   genuinely shared base ``BlocklyConfigDialog`` also uses.
+* ``export/`` — Aseba (.aesl) export, Open Roberta Lab XML import/export
+  (D1/D2), plus ``export_aseba_code(ide)``/``import_roberta_xml(ide)``,
+  the File-menu action handlers ``PLUGIN_IDE_MENUS`` below wires in (D3).
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-Stage C is closed. The rest — the Aseba/Open Roberta interop (D), the
-object-editor tab (E) and the Blockly toolbox (F) — still lives in core.
+Stages C and D are closed. The rest — the object-editor tab (E) and the
+Blockly toolbox (F) — still lives in core. The Tools→Thymio Programming
+submenu (playground/event-selector/action-selector openers,
+show_thymio_tab toggle) is also still hidden — not part of D's
+File-menu-only scope; folds into a small follow-up or Stage G's re-enable
+pass.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -155,3 +162,37 @@ def _register_asset_tree_category():
 
 
 PLUGIN_ASSET_TREE_CATEGORIES = [_register_asset_tree_category()]
+
+
+# File-menu entries: Aseba export, Open Roberta import (D3). Appended after
+# the built-in File-menu entries (core/ide_extension_points) rather than
+# interleaved at their old positions -- the generic menu-contribution
+# contract only supports appending (or insertAction with a known sibling,
+# which the built-in menu doesn't expose here).
+def _build_file_menu(ide, menu):
+    from .export import export_aseba_code, import_roberta_xml
+
+    # Attached to ide under their pre-hidden names (bound methods before
+    # this stage, plain callables now -- Python doesn't care which for a
+    # `self.<name>` / `hasattr` call site). widgets/welcome_tab.py's
+    # "Import Open Roberta XML..." dropdown entry (`_on_import_roberta`)
+    # and core/ide_window.py's `update_ui_state()` (the export_aseba_action
+    # enable/disable check below) both rely on these exact names, unchanged.
+    ide.export_aseba_code = lambda: export_aseba_code(ide)
+    ide.import_roberta_xml = lambda: import_roberta_xml(ide)
+
+    menu.addSeparator()
+    ide.export_aseba_action = ide.create_action(
+        ide.tr("Export &Aseba (Thymio) code..."), None, ide.export_aseba_code)
+    menu.addAction(ide.export_aseba_action)
+    import_action = ide.create_action(
+        ide.tr("Import Open &Roberta XML..."), None, ide.import_roberta_xml)
+    # Imports a new PROJECT (like GameMaker .gmk import), so it must stay
+    # usable with no project open -- the generic "Import" substring match
+    # in update_ui_state() would otherwise grey it out (core/ide_window.py;
+    # same exemption WelcomeTab._dropdown_button uses).
+    import_action.setProperty("pygm_always_enabled", True)
+    menu.addAction(import_action)
+
+
+PLUGIN_IDE_MENUS = [("file", _build_file_menu)]

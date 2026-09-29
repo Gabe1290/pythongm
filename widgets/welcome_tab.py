@@ -195,9 +195,12 @@ class WelcomeTab(QWidget):
             [
                 (self.tr("🗜  Open ZIP Project..."),         self._on_open_zip),
                 (self.tr("📥  Import GameMaker .gmk..."),    self._on_import_gmk),
-                # [1.0] Open Roberta import hidden — see docs/POST_1_0_REFACTOR.md.
-                # The _on_import_roberta handler is retained for the planned extension.
-                # (self.tr("📥  Import Open Roberta XML..."),  self._on_import_roberta),
+                # Open Roberta import: extensions/thymio attaches
+                # main_window.import_roberta_xml at startup
+                # (docs/THYMIO_EXTENSION_PLAN.md, Stage D3); _on_import_roberta
+                # below no-ops via its own hasattr guard if the extension is
+                # disabled.
+                (self.tr("📥  Import Open Roberta XML..."),  self._on_import_roberta),
             ],
         ))
 

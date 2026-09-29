@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from export.Aseba.aseba_exporter import AsebaExporter
+from extensions.thymio.export.aseba_exporter import AsebaExporter
 
 
 def _project_with_thymio():

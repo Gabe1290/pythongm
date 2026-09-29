@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from importers.roberta_importer import _convert_block, RobertaImportResult
+from extensions.thymio.export.roberta_importer import _convert_block, RobertaImportResult
 
 
 def _led_block(led="TOP", hex_colour="#ff0000"):

@@ -540,6 +540,101 @@ def test_config_dialogs_live_in_the_extension():
     assert "extensions.thymio" not in blockly_src
 
 
+# ---------------------------------------------------------------------------
+# D1/D2 — the Aseba/Open Roberta export+import interop
+# ---------------------------------------------------------------------------
+
+def test_aseba_and_roberta_interop_live_in_the_extension():
+    for old in ("export/Aseba", "export/Roberta", "importers/roberta_importer.py"):
+        assert not (REPO_ROOT / old).exists(), old
+
+    ext_export = REPO_ROOT / "extensions" / "thymio" / "export"
+    for fname in ("aseba_exporter.py", "playground_exporter.py",
+                  "roberta_exporter.py", "roberta_importer.py"):
+        assert (ext_export / fname).exists(), fname
+
+    from extensions.thymio.export.aseba_exporter import AsebaExporter
+    from extensions.thymio.export.playground_exporter import PlaygroundExporter
+    from extensions.thymio.export.roberta_exporter import RobertaExporter
+    from extensions.thymio.export.roberta_importer import import_roberta, RobertaImportError
+    assert all(callable(c) for c in
+              (AsebaExporter, PlaygroundExporter, RobertaExporter, import_roberta))
+    assert issubclass(RobertaImportError, Exception)
+
+    importers_init = (REPO_ROOT / "importers" / "__init__.py").read_text(encoding="utf-8")
+    assert "from importers.roberta" not in importers_init
+    assert "'import_roberta'" not in importers_init
+    assert "'RobertaImportError'" not in importers_init
+
+
+# ---------------------------------------------------------------------------
+# D3 — the Aseba export / Open Roberta import File-menu entries
+# ---------------------------------------------------------------------------
+
+def test_core_no_longer_carries_the_menu_action_bodies():
+    for fname, needle in (
+        ("core/ide/_export.py", "def export_aseba_code"),
+        ("core/ide/_assets.py", "def import_roberta_xml"),
+    ):
+        src = (REPO_ROOT / fname).read_text(encoding="utf-8")
+        assert needle not in src, fname
+    # The File-menu section no longer builds these actions itself (the
+    # still-dormant, out-of-scope Tools->Thymio Programming submenu further
+    # down the same file also mentions self.import_roberta_xml -- that's
+    # fine, it now correctly resolves to the lambda the extension attaches).
+    menu_src = (REPO_ROOT / "core" / "ide" / "_menu_builder.py").read_text(encoding="utf-8")
+    file_menu_section = menu_src.split("edit_menu = menubar.addMenu")[0]
+    assert "self.export_aseba_code" not in file_menu_section
+    assert "self.import_roberta_xml" not in file_menu_section
+    assert "[1.0] Aseba" not in menu_src
+    assert "[1.0] Open Roberta import hidden from the menu" not in menu_src
+
+
+def test_file_menu_gets_the_aseba_and_roberta_entries():
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_window import PyGameMakerIDE
+    ide = PyGameMakerIDE()
+    try:
+        texts = [a.text() for a in ide._extension_menus["file"].actions()]
+        assert "Export &Aseba (Thymio) code..." in texts
+        assert "Import Open &Roberta XML..." in texts
+
+        # Reuses core's own generic enable/disable + always-enabled seams,
+        # with no core change needed beyond what Stage 0.5/C5 already built.
+        assert callable(ide.export_aseba_code) and callable(ide.import_roberta_xml)
+        assert ide.export_aseba_action.isEnabled() is False   # no project yet
+        ide.current_project_path = "/tmp/whatever"
+        # A lingering window can receive a deferred changeEvent from a
+        # later test's pytest-qt event pump, which reads this -- same
+        # landmine as Stage C5's note (docs/THYMIO_EXTENSION_PLAN.md).
+        ide.current_project_data = {"name": "test_project", "assets": {}}
+        ide.update_ui_state()
+        assert ide.export_aseba_action.isEnabled() is True
+
+        import_action = next(a for a in ide._extension_menus["file"].actions()
+                             if a.text() == "Import Open &Roberta XML...")
+        assert import_action.property("pygm_always_enabled") is True
+    finally:
+        ide.deleteLater()
+
+
+def test_welcome_tab_roberta_entry_is_no_longer_hidden_and_calls_through():
+    src = (REPO_ROOT / "widgets" / "welcome_tab.py").read_text(encoding="utf-8")
+    assert "# (self.tr(\"📥  Import Open Roberta XML...\")" not in src
+    assert '(self.tr("📥  Import Open Roberta XML..."),  self._on_import_roberta)' in src
+
+    from types import SimpleNamespace
+    called = []
+    stub = SimpleNamespace(main_window=SimpleNamespace(
+        import_roberta_xml=lambda: called.append(True)))
+    from widgets.welcome_tab import WelcomeTab
+    WelcomeTab._on_import_roberta(stub)   # ordinary method, called unbound
+    assert called == [True]
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}

@@ -7,8 +7,8 @@ diverges from project.json's embedded copy (e.g. edited since the last full
 project save — the exact drift this repo's dual-storage setup already
 documents as a hazard).
 
-- export/Aseba/aseba_exporter.py: AsebaExporter.export() is handed a raw
-  project.json PATH by core/ide_window.py's export_aseba_code (not the live
+- extensions/thymio/export/aseba_exporter.py: AsebaExporter.export() is handed a raw
+  project.json PATH by extensions/thymio's export_aseba_code (not the live
   merged current_project_data) and read events straight from it with no
   merge step -- exporting a Thymio object whose events only live in its
   objects/<name>.json produced an EMPTY .aesl (no onevent blocks at all).
@@ -24,7 +24,7 @@ from pathlib import Path
 
 import pytest
 
-from export.Aseba.aseba_exporter import AsebaExporter
+from extensions.thymio.export.aseba_exporter import AsebaExporter
 from utils.resource_packager import ResourcePackager
 
 

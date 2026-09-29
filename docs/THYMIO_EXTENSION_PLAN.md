@@ -487,14 +487,61 @@ sub-arc.
 
 ### Stage D — external interop (self-contained, low risk)
 
-D1. `export/Aseba/{aseba_exporter,playground_exporter}.py` →
-    `extensions/thymio/export/aseba.py` (+ split if that reads better).
-D2. `export/Roberta/roberta_exporter.py` + `importers/roberta_importer.py` →
-    `extensions/thymio/export/roberta.py` / `.../import_roberta.py`.
-D3. Wire the "Export Aseba (Thymio) code…" / "Import Open Roberta XML…" menu
-    entries through the Stage-0.5 menu-contribution registry, replacing the
-    `# [1.0]`-commented direct calls in `core/ide/_export.py` and
-    `widgets/welcome_tab.py`.
+- [x] D1. `export/Aseba/{aseba_exporter,playground_exporter}.py` →
+    `extensions/thymio/export/{aseba_exporter,playground_exporter}.py`
+    via `git mv`, kept as two files (they're genuinely separate concerns —
+    whole-project export vs. one playground's export — merging would have
+    been restructuring, not a move). Both already depended on nothing but
+    stdlib + `core.logger`. `export/Aseba/` had no `__init__.py` (an
+    implicit namespace package) and is now fully deleted.
+- [x] D2. `export/Roberta/roberta_exporter.py` + `importers/roberta_importer.py`
+    → `extensions/thymio/export/{roberta_exporter,roberta_importer}.py`
+    (kept the original basenames for grep-ability, matching every other
+    stage's convention, rather than the `roberta.py`/`import_roberta.py`
+    names sketched here originally). `export/Roberta/__init__.py` (which
+    only re-exported `RobertaExporter`, no other content in that dir) is
+    deleted with it. **Landmine caught by a test, not by inspection**:
+    `core/logger.get_logger(__name__)` bakes the *module path* into the
+    logger name (`pygm.<name>`) — moving `roberta_importer.py` changed its
+    logger from `pygm.importers.roberta_importer` to
+    `pygm.extensions.thymio.export.roberta_importer`, silently breaking
+    `test_audit_roberta_led.py`'s `logging.getLogger(<old name>)` capture
+    shim (would have made that regression test always pass vacuously,
+    capturing nothing, rather than failing loudly — caught only because
+    the test suite was run, not from reading the diff).
+- [x] D3. Wired "Export Aseba (Thymio) code…" / "Import Open Roberta XML…"
+    through `PLUGIN_IDE_MENUS` (Stage 0.5a), replacing the `# [1.0]`
+    comments in `core/ide/_menu_builder.py`. Both method **bodies** moved
+    into `extensions/thymio/export/__init__.py` as free functions
+    (`export_aseba_code(ide)`/`import_roberta_xml(ide)`, `self`→`ide`,
+    same pattern as C5's `open_playground_editor`) — not left as thin core
+    wrappers, since they're genuinely Thymio-specific, unlike the
+    `open_*_editor` methods every asset type needs. Two things the naive
+    move would have silently broken, both fixed by **attaching the
+    callables to `ide` under their exact pre-hidden method names**
+    (`ide.export_aseba_code`, `ide.import_roberta_xml` — Python doesn't
+    care that they're lambdas now, not bound methods) rather than only
+    wiring the new QActions: (1) `core/ide_window.py`'s existing generic
+    `update_ui_state()` already has `if hasattr(self,
+    'export_aseba_action'): ...` — storing the QAction as
+    `ide.export_aseba_action` (matching the original attribute name) means
+    that **zero-line-changed** core code keeps disabling it correctly with
+    no project open; (2) `widgets/welcome_tab.py`'s `_on_import_roberta`
+    already does `hasattr(self.main_window, 'import_roberta_xml')` — same
+    zero-core-change reuse. The Roberta-import action needs
+    `pygm_always_enabled` (it creates a project, must work with none
+    open) — reused the existing generic property `update_ui_state()`
+    already checks for `WelcomeTab`'s own buttons, rather than adding a
+    new exemption mechanism. Un-hid `widgets/welcome_tab.py`'s "More
+    options" Roberta-import entry as part of the same commit (it was the
+    other explicitly-named `# [1.0]` site in this plan's D3 description).
+    **Deliberately out of scope, left commented**: the whole Tools→Thymio
+    Programming submenu (`show_thymio_playground`/
+    `show_thymio_event_selector`/`show_thymio_action_selector`/
+    `configure_thymio`/`toggle_thymio_tab` and their toolbar button) —
+    none of those are File-menu Aseba/Roberta actions, so they weren't
+    named in D3's scope; they're either a small D4 or fold into Stage G's
+    re-enable pass.
 
 ### Stage E — the object-editor tab (needs seam 0.5; do this one last among the UI stages — it's the deepest coupling point)
 

@@ -1,7 +1,7 @@
 """Regression for docs/DEFERRED_GAPS_2026_PLAN.md Tier 2.3.
 
 Investigated first (per the plan's own instruction): real Thymio hardware
-is NOT tone-only for "Play System Sound" -- export/Aseba/aseba_exporter.py's
+is NOT tone-only for "Play System Sound" -- extensions/thymio/export/aseba_exporter.py's
 _translate_play_system_sound emits the real `sound.system(id)` Aseba
 primitive, so an exported/uploaded program plays the robot's own authentic
 melody for that sound. The gap is narrower than the plan assumed: only the
@@ -45,5 +45,5 @@ def test_real_hardware_export_uses_the_authentic_system_sound_primitive():
     """The honesty fix is scoped to the simulator preview, not the feature
     itself -- confirm the Aseba export (real hardware path) still calls the
     real sound.system Aseba primitive, not an approximation."""
-    src = (REPO_ROOT / "export" / "Aseba" / "aseba_exporter.py").read_text(encoding="utf-8")
+    src = (REPO_ROOT / "extensions" / "thymio" / "export" / "aseba_exporter.py").read_text(encoding="utf-8")
     assert "call sound.system(" in src

@@ -654,7 +654,7 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
 
     def export_playground(self):
         """Export current playground as .playground file"""
-        from export.Aseba.playground_exporter import PlaygroundExporter
+        from ..export.playground_exporter import PlaygroundExporter
 
         path, _ = QFileDialog.getSaveFileName(
             self, self.tr("Export Playground"),
