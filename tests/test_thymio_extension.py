@@ -361,6 +361,24 @@ def test_playground_runner_lives_in_the_extension():
     assert "runtime.playground_runner" not in src
 
 
+# ---------------------------------------------------------------------------
+# C3a — PygameWidget extracted to a shared core home (block_world reuses it)
+# ---------------------------------------------------------------------------
+
+def test_pygame_widget_is_shared_not_extension_owned():
+    """PygameWidget has zero Thymio-specific code and block_world_editor
+    reuses it verbatim -- it must live somewhere BOTH extensions can import
+    without one depending on the other."""
+    from widgets.pygame_widget import PygameWidget
+    from widgets.thymio_playground import PygameWidget as ReExported
+    assert PygameWidget is ReExported
+    src = (REPO_ROOT / "editors" / "block_world_editor" / "window.py").read_text(encoding="utf-8")
+    assert "widgets.pygame_widget import PygameWidget" in src
+    assert "widgets.thymio_playground" not in src
+    tp_src = (REPO_ROOT / "widgets" / "thymio_playground.py").read_text(encoding="utf-8")
+    assert "class PygameWidget" not in tp_src
+
+
 def test_extension_is_discovered_and_registers_its_tab():
     from events.plugin_loader import list_available_extensions, load_all_plugins
     found = {e["folder"]: e for e in list_available_extensions()}
