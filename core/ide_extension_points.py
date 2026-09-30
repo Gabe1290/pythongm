@@ -208,6 +208,7 @@ def clear_ide_contributions() -> None:
     _toolbar_builders.clear()
     clear_asset_tree_categories()
     clear_object_editor_panels()
+    clear_toolbox_visibility_filters()
 
 
 def apply_menu_contributions(ide, menus: Dict[str, object]) -> None:
@@ -236,3 +237,62 @@ def apply_toolbar_contributions(ide, toolbar) -> None:
         except Exception as exc:
             logger.error(
                 f"Toolbar contribution {getattr(build, '__name__', build)} failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Toolbox visibility filters: an extension's blocks/categories shouldn't
+# show in the Blockly toolbox when they can't do anything yet (e.g. Thymio
+# blocks in a project with no playground to run them against). Lets a
+# widget stay ignorant of any particular extension while still hiding its
+# blocks conditionally (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b.1).
+#
+#     PLUGIN_TOOLBOX_VISIBILITY_FILTERS = [ToolboxVisibilityFilter(
+#         is_enabled=lambda widget: project_has_robots(widget),
+#         owns_block=lambda block_type: block_type.startswith("robot_"),
+#         owns_category=lambda category: category.startswith("Robot "),
+#     )]
+#
+# ``is_enabled`` returning True means "show them"; the filter only hides its
+# own blocks/categories when it returns False.
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class ToolboxVisibilityFilter:
+    is_enabled: Callable       # (widget) -> bool
+    owns_block: Callable       # (block_type: str) -> bool
+    owns_category: Callable    # (category: str) -> bool
+
+
+_toolbox_visibility_filters: List[ToolboxVisibilityFilter] = []
+
+
+def register_toolbox_visibility_filter(spec: ToolboxVisibilityFilter) -> None:
+    if (not isinstance(spec, ToolboxVisibilityFilter) or not callable(spec.is_enabled)
+            or not callable(spec.owns_block) or not callable(spec.owns_category)):
+        logger.error(f"Toolbox visibility filter is not valid: {spec!r}")
+        return
+    _toolbox_visibility_filters.append(spec)
+
+
+def get_toolbox_visibility_filters() -> List[ToolboxVisibilityFilter]:
+    return list(_toolbox_visibility_filters)
+
+
+def clear_toolbox_visibility_filters() -> None:
+    _toolbox_visibility_filters.clear()
+
+
+def apply_toolbox_visibility_filters(enabled_blocks, enabled_categories, widget):
+    """Drop any extension's blocks/categories whose filter says "not now"
+    for this ``widget`` (a Blockly-hosting widget with the same parent-chain
+    shape every caller here already has). A filter that raises is logged and
+    skipped -- a broken extension can't corrupt the whole toolbox."""
+    for f in _toolbox_visibility_filters:
+        try:
+            if f.is_enabled(widget):
+                continue
+            enabled_blocks = {b for b in enabled_blocks if not f.owns_block(b)}
+            enabled_categories = {c for c in enabled_categories if not f.owns_category(c)}
+        except Exception as exc:
+            logger.error(f"Toolbox visibility filter failed: {exc}")
+    return enabled_blocks, enabled_categories

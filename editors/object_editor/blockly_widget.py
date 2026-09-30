@@ -525,12 +525,13 @@ class BlocklyWidget(QWidget):
         enabled_blocks = set(config.enabled_blocks)
         enabled_categories = set(config.enabled_categories)
 
-        # Hide Thymio blocks/categories when the project has no playground
-        # to run them in — mirrors the gating in object_events_panel so the
-        # toolbox and events panel stay in sync.
-        if not self.project_has_playgrounds():
-            enabled_blocks = {b for b in enabled_blocks if not b.startswith("thymio_")}
-            enabled_categories = {c for c in enabled_categories if not c.startswith("Thymio ")}
+        # Let any registered extension hide its own blocks/categories when
+        # it can't do anything yet in this project (e.g. Thymio blocks with
+        # no playground to run them against) -- generic, no extension named
+        # here (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b.1).
+        from core.ide_extension_points import apply_toolbox_visibility_filters
+        enabled_blocks, enabled_categories = apply_toolbox_visibility_filters(
+            enabled_blocks, enabled_categories, self)
 
         config_dict = {
             'enabled_blocks': list(enabled_blocks),
@@ -553,18 +554,9 @@ class BlocklyWidget(QWidget):
         # can make their own playground-aware decisions.
         self.config_changed.emit(config)
 
-    def project_has_playgrounds(self) -> bool:
-        """Check if the current project contains any playground assets"""
-        parent = self.parent()
-        while parent:
-            if hasattr(parent, 'current_project_data'):
-                project_data = parent.current_project_data
-                if project_data and 'assets' in project_data:
-                    playgrounds = project_data['assets'].get('playgrounds', {})
-                    return bool(playgrounds)
-                break
-            parent = parent.parent()
-        return False
+    # project_has_playgrounds() moved to extensions/thymio (Stage G5b.1) --
+    # apply_configuration() above now asks the generic
+    # ToolboxVisibilityFilter registry instead.
 
     def _collect_project_assets(self) -> Dict[str, list]:
         """Walk up to find project assets and return name lists for each

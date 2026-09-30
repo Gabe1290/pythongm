@@ -65,12 +65,22 @@ Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-Stages A-G are all closed — core carries no Thymio-specific code, only the
-generic seams every extension can use. Whether Thymio ships *visible* by
-default remains a separate product call (unchanged since 1.0): flip
-``show_thymio_tab``'s default in ``extensions/thymio/__init__.py``'s
-``_thymio_tab_visible()`` to bring the tab, the Tools-menu entries and the
-toolbar button back together.
+Stages A-G are closed. **Stage G5b (in progress)** is moving the remaining
+Thymio-aware code out of the object editor's *Standard* panel — reachable
+with the dedicated Thymio tab off, on any project with a `thymio*` object.
+G5b.1 is done: ``_project_has_playgrounds``/``_register_toolbox_visibility_filter``
+below hide the Thymio Blockly categories/blocks from the toolbox when the
+project has no playground, through the generic ``ToolboxVisibilityFilter``
+seam (``core/ide_extension_points``) — ``editors/object_editor/
+blockly_widget.py`` no longer names Thymio at all. G5b.2-4 (the Standard
+panel's add-event/add-action menu contributions and its execute_code
+Thymio-parsing pass) are not yet moved; see
+``docs/THYMIO_EXTENSION_PLAN.md``'s Stage G5b section for the design.
+
+Whether Thymio ships *visible* by default remains a separate product call
+(unchanged since 1.0): flip ``show_thymio_tab``'s default in
+``extensions/thymio/__init__.py``'s ``_thymio_tab_visible()`` to bring the
+tab, the Tools-menu entries and the toolbar button back together.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -333,6 +343,38 @@ def _register_object_editor_panel():
 
 
 PLUGIN_OBJECT_EDITOR_PANELS = [_register_object_editor_panel()]
+
+
+def _project_has_playgrounds(widget) -> bool:
+    """Walk up the Qt parent chain looking for ``current_project_data`` and
+    report whether the project has any playground assets. Shared by the
+    toolbox filter below and (from Stage G5b.2/G5b.3 on) the Standard-panel
+    add-event/add-action menu contributions -- moved verbatim out of
+    ``editors/object_editor/blockly_widget.py`` and
+    ``editors/object_editor/events/_panel.py``, which each had their own
+    byte-identical copy (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b)."""
+    parent = widget.parent()
+    while parent:
+        if hasattr(parent, 'current_project_data'):
+            project_data = parent.current_project_data
+            if project_data and 'assets' in project_data:
+                playgrounds = project_data['assets'].get('playgrounds', {})
+                return bool(playgrounds)
+            break
+        parent = parent.parent()
+    return False
+
+
+def _register_toolbox_visibility_filter():
+    from core.ide_extension_points import ToolboxVisibilityFilter
+    return ToolboxVisibilityFilter(
+        is_enabled=_project_has_playgrounds,
+        owns_block=lambda b: b.startswith("thymio_"),
+        owns_category=lambda c: c.startswith("Thymio "),
+    )
+
+
+PLUGIN_TOOLBOX_VISIBILITY_FILTERS = [_register_toolbox_visibility_filter()]
 
 
 # The Blockly toolbox: 8 categories, the "thymio" preset, category-name
