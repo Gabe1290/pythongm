@@ -1096,3 +1096,81 @@ def test_thymio_behavioural_tests_import_from_the_extension_not_old_paths():
         if old_path_import.search(path.read_text(encoding="utf-8")):
             offenders.append(name)
     assert offenders == []
+
+
+# ---------------------------------------------------------------------------
+# G5b.1 — the Blockly toolbox visibility filter. blockly_widget.py no
+# longer names Thymio at all; it asks the generic ToolboxVisibilityFilter
+# registry, which Thymio (among any future extension) registers into.
+# ---------------------------------------------------------------------------
+
+def test_blockly_widget_no_longer_names_thymio():
+    # The file may still mention "Thymio" in an illustrative comment (the
+    # ToolboxVisibilityFilter seam's own generic example, same as every
+    # other seam's docstring) -- what must be gone is actual code:
+    # startswith("thymio_") / "Thymio " prefix checks and the deleted method.
+    src = (REPO_ROOT / "editors" / "object_editor" / "blockly_widget.py").read_text(encoding="utf-8")
+    assert 'startswith("thymio_")' not in src
+    assert 'startswith("Thymio ")' not in src
+    assert "def project_has_playgrounds" not in src  # method deleted, a pointer comment mentioning it is fine
+    assert "extensions.thymio" not in src  # no direct import of the extension
+
+
+def test_thymio_toolbox_filter_registers_and_hides_only_without_playgrounds():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_extension_points import apply_toolbox_visibility_filters
+
+    blocks = {"thymio_set_motor_speed", "move_free"}
+    cats = {"Thymio Motors", "Movement"}
+
+    class _NoPlaygrounds:
+        def parent(self):
+            return None
+
+    filtered_blocks, filtered_cats = apply_toolbox_visibility_filters(
+        blocks, cats, _NoPlaygrounds())
+    assert filtered_blocks == {"move_free"}
+    assert filtered_cats == {"Movement"}
+
+    class _Parent:
+        current_project_data = {"assets": {"playgrounds": {"arena_1": {}}}}
+
+    class _WithPlaygrounds:
+        def parent(self):
+            return _Parent()
+
+    filtered_blocks, filtered_cats = apply_toolbox_visibility_filters(
+        blocks, cats, _WithPlaygrounds())
+    assert filtered_blocks == blocks
+    assert filtered_cats == cats
+
+
+def test_blockly_widget_apply_configuration_filters_thymio_end_to_end():
+    import json
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from editors.object_editor.blockly_widget import BlocklyWidget
+    from config.blockly_config import BlocklyConfig
+
+    widget = BlocklyWidget()  # no parent -> no project data -> no playgrounds
+    try:
+        sent = {}
+
+        def _capture(js):
+            payload = js[len("window.blocklyApi.reconfigureToolbox("):-1]
+            sent["config"] = json.loads(payload)
+
+        widget.web_view.page().runJavaScript = _capture
+
+        cfg = BlocklyConfig(preset_name="test")
+        cfg.enabled_blocks = {"thymio_set_motor_speed", "move_free"}
+        cfg.enabled_categories = {"Thymio Motors", "Movement"}
+        widget.apply_configuration(cfg)
+
+        assert set(sent["config"]["enabled_blocks"]) == {"move_free"}
+        assert set(sent["config"]["enabled_categories"]) == {"Movement"}
+    finally:
+        widget.deleteLater()

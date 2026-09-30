@@ -925,8 +925,12 @@ All four live in `core/ide_extension_points.py` (same module Stage 0.5's
 menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
 `register_*`/`get_*`/`clear_*` style as `ObjectEditorPanel`/`AssetTreeCategory`.
 
-- [ ] **G5b.1 — toolbox visibility filter** (`blockly_widget.py`,
-      `apply_configuration`). Smallest, safest, do first.
+- [x] **G5b.1 — toolbox visibility filter** (`blockly_widget.py`,
+      `apply_configuration`). Done, implemented exactly as drafted below
+      (one refinement: `is_enabled` really does mean "True = show" per the
+      dataclass's own docstring, so Thymio registers
+      `is_enabled=_project_has_playgrounds` directly — no inversion needed,
+      simpler than the draft's `lambda w: not _project_has_playgrounds(w)`).
   ```python
   @dataclass(frozen=True)
   class ToolboxVisibilityFilter:
@@ -945,15 +949,49 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
   `blockly_widget.py`'s `apply_configuration` calls
   `apply_toolbox_visibility_filters(enabled_blocks, enabled_categories, self)`
   instead of the inline `if not self.project_has_playgrounds(): ...` block;
-  `project_has_playgrounds()` (the method) can then be deleted from
+  `project_has_playgrounds()` (the method) was deleted from
   `blockly_widget.py` entirely — the extension's own registered
   `is_enabled` closure does the identical parent-walk internally (moved,
   not shared, since `is_enabled` only ever needs the widget, not two
-  copies of the same method on two different classes).
-  Thymio registers: `is_enabled=lambda w: not _project_has_playgrounds(w)`
-  (inverted — the filter fires when the project has NO playgrounds),
+  copies of the same method on two different classes). Thymio registers:
+  `is_enabled=_project_has_playgrounds`,
   `owns_block=lambda b: b.startswith("thymio_")`,
   `owns_category=lambda c: c.startswith("Thymio ")`.
+  `_project_has_playgrounds(widget)` lives in `extensions/thymio/__init__.py`
+  (not a new module — small enough to sit with the other registration
+  helpers), written to be reused unchanged by G5b.2/G5b.3's `is_visible`
+  checks later (same parent-walk contract works for the events panel too).
+  - New generic seam tests (dummy registrant, before Thymio depends on it):
+    `tests/test_extension_seams.py`'s "Toolbox visibility filters" section
+    — validation, correct hide-only-when-disabled behavior, a raising
+    filter is logged and skipped rather than corrupting the toolbox, and
+    the loader wiring. **Fixture landmine caught by the full-suite gate,
+    not the file run alone**: `clean_toolbox_filters` only snapshotted
+    state for teardown, not setup — passed every time run file-by-file,
+    then failed under the full `a-g` batch because an earlier test file
+    had already called `load_all_plugins()`, so Thymio's real filter was
+    already in the registry and an exact-equality assertion
+    (`get_toolbox_visibility_filters() == [good]`) saw two entries, not
+    one. Fixed by clearing at setup too, not just teardown — the same
+    "run the whole batch, not just the new file" discipline this plan has
+    hit before (the multiplayer-lan host-loss teardown bug, CLAUDE.md's
+    2026-09-02/03 note).
+  - Thymio-side pin tests in `tests/test_thymio_extension.py`'s new "G5b.1"
+    section: `blockly_widget.py`'s source no longer has any
+    `startswith("thymio_"/"Thymio ")` check, no `def project_has_playgrounds`,
+    no direct `extensions.thymio` import; the registered filter hides/shows
+    correctly through the generic function; and a real `BlocklyWidget()`
+    instance's `apply_configuration()` — with `web_view.page().runJavaScript`
+    intercepted to inspect the actual JSON payload sent to the toolbox JS —
+    confirms `thymio_set_motor_speed`/`"Thymio Motors"` are excluded
+    end-to-end while `move_free`/`"Movement"` survive.
+  - Suite: three alphabetical sub-batches after the fixture fix, a-g 2494
+    passed/0 failed, h-p 1671 passed/0 failed, q-z 1377 passed/0 failed (the
+    2 pre-existing `test_zip_save_state.py` failures plus one NEW isolated
+    flake, `test_tutorial_panel_i18n_verification.py::test_every_lesson_every_page_loads[pt]`
+    — unrelated subject matter, confirmed passing clean in isolation
+    (28/28), same pre-existing order-dependent-flakiness class as the zip
+    one, not a regression from this unit).
 
 - [ ] **G5b.2 — add-event-menu contribution** (`_event_crud.py`,
       `show_add_event_menu`). One seam, one call site.

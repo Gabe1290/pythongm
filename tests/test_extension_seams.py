@@ -534,3 +534,73 @@ def test_loader_registers_block_categories(clean_blocks):
     assert bt.get_translated_category("Dummy Robot", "de") == "Attrappe"
     assert bt.get_translated_block_name("dummy_beep", "de") == "Piep"
     assert PluginLoader._load_block_categories(loader, SimpleNamespace()) == 0
+
+
+# ---------------------------------------------------------------------------
+# Toolbox visibility filters (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b.1)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def clean_toolbox_filters():
+    from core import ide_extension_points as ep
+    # Cleared at setup too, not just torn down -- another test file in the
+    # same session may already have called load_all_plugins(), registering
+    # Thymio's real filter, and this fixture's own tests assert on exact
+    # registry contents (not just "contains"), so they need real isolation.
+    before = list(ep.get_toolbox_visibility_filters())
+    ep.clear_toolbox_visibility_filters()
+    yield ep
+    ep.clear_toolbox_visibility_filters()
+    for spec in before:
+        ep.register_toolbox_visibility_filter(spec)
+
+
+def test_toolbox_visibility_filter_validates_and_hides_only_when_disabled(clean_toolbox_filters):
+    ep = clean_toolbox_filters
+    good = ep.ToolboxVisibilityFilter(
+        is_enabled=lambda w: getattr(w, "enabled", False),
+        owns_block=lambda b: b.startswith("dummy_"),
+        owns_category=lambda c: c.startswith("Dummy "),
+    )
+    ep.register_toolbox_visibility_filter(good)
+    ep.register_toolbox_visibility_filter("not a filter")  # invalid, logged and skipped
+    assert ep.get_toolbox_visibility_filters() == [good]
+
+    blocks = {"dummy_beep", "move_free"}
+    cats = {"Dummy Robot", "Movement"}
+
+    class _Widget:
+        enabled = False
+    filtered_blocks, filtered_cats = ep.apply_toolbox_visibility_filters(blocks, cats, _Widget())
+    assert filtered_blocks == {"move_free"}
+    assert filtered_cats == {"Movement"}
+
+    _Widget.enabled = True
+    filtered_blocks, filtered_cats = ep.apply_toolbox_visibility_filters(blocks, cats, _Widget())
+    assert filtered_blocks == blocks
+    assert filtered_cats == cats
+
+
+def test_toolbox_visibility_filter_survives_a_raise(clean_toolbox_filters):
+    ep = clean_toolbox_filters
+
+    def _boom(w):
+        raise RuntimeError("broken extension")
+
+    ep.register_toolbox_visibility_filter(ep.ToolboxVisibilityFilter(
+        is_enabled=_boom, owns_block=lambda b: True, owns_category=lambda c: True))
+    blocks, cats = ep.apply_toolbox_visibility_filters({"a"}, {"B"}, object())
+    assert blocks == {"a"} and cats == {"B"}   # untouched, not crashed
+
+
+def test_loader_registers_plugin_toolbox_visibility_filters(clean_toolbox_filters):
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    ep = clean_toolbox_filters
+    spec = ep.ToolboxVisibilityFilter(
+        is_enabled=lambda w: True, owns_block=lambda b: False, owns_category=lambda c: False)
+    module = SimpleNamespace(PLUGIN_TOOLBOX_VISIBILITY_FILTERS=[spec])
+    loader = object.__new__(PluginLoader)
+    assert PluginLoader._load_ide_contributions(loader, module) == 1
+    assert spec in ep.get_toolbox_visibility_filters()
+    assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0
