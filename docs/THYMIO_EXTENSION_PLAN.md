@@ -916,6 +916,153 @@ G5. Full-repo grep sweep: zero `thymio`/`Thymio`/`aseba`/`Aseba`/`roberta`/
     as free functions the way Stage D/G1 did is an open design question for
     that follow-up, not decided here.
 
+### Stage G5b — the `editors/object_editor/` sweep (the design question above, answered)
+
+Read all six files in full before writing this. **Four new seams needed** —
+each one genuinely generic (any future extension with its own events/actions
+hits the exact same four gaps), not Thymio-specific machinery in disguise.
+All four live in `core/ide_extension_points.py` (same module Stage 0.5's
+menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
+`register_*`/`get_*`/`clear_*` style as `ObjectEditorPanel`/`AssetTreeCategory`.
+
+- [ ] **G5b.1 — toolbox visibility filter** (`blockly_widget.py`,
+      `apply_configuration`). Smallest, safest, do first.
+  ```python
+  @dataclass(frozen=True)
+  class ToolboxVisibilityFilter:
+      is_enabled: Callable       # (widget) -> bool; True = show, False = hide
+      owns_block: Callable       # (block_type: str) -> bool
+      owns_category: Callable    # (category: str) -> bool
+
+  PLUGIN_TOOLBOX_VISIBILITY_FILTERS: List[ToolboxVisibilityFilter] = []
+  def apply_toolbox_visibility_filters(enabled_blocks, enabled_categories, widget):
+      for f in _toolbox_visibility_filters:
+          if not f.is_enabled(widget):
+              enabled_blocks = {b for b in enabled_blocks if not f.owns_block(b)}
+              enabled_categories = {c for c in enabled_categories if not f.owns_category(c)}
+      return enabled_blocks, enabled_categories
+  ```
+  `blockly_widget.py`'s `apply_configuration` calls
+  `apply_toolbox_visibility_filters(enabled_blocks, enabled_categories, self)`
+  instead of the inline `if not self.project_has_playgrounds(): ...` block;
+  `project_has_playgrounds()` (the method) can then be deleted from
+  `blockly_widget.py` entirely — the extension's own registered
+  `is_enabled` closure does the identical parent-walk internally (moved,
+  not shared, since `is_enabled` only ever needs the widget, not two
+  copies of the same method on two different classes).
+  Thymio registers: `is_enabled=lambda w: not _project_has_playgrounds(w)`
+  (inverted — the filter fires when the project has NO playgrounds),
+  `owns_block=lambda b: b.startswith("thymio_")`,
+  `owns_category=lambda c: c.startswith("Thymio ")`.
+
+- [ ] **G5b.2 — add-event-menu contribution** (`_event_crud.py`,
+      `show_add_event_menu`). One seam, one call site.
+  ```python
+  @dataclass(frozen=True)
+  class AddEventMenuContribution:
+      key: str                   # matches an ObjectEditorPanel.key, so
+                                  # owned_events() can be reused rather than
+                                  # duplicating "which events are mine"
+      build: Callable            # (menu, panel, available_events) -> None
+                                  # -- builds its own submenu/separator iff
+                                  # it has anything to show; a no-op if not
+
+  PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS: List[AddEventMenuContribution] = []
+  ```
+  `show_add_event_menu` splits `available_events` into "not owned by any
+  registered contribution" (the existing standard-events loop, unchanged)
+  and hands the FULL `available_events` list to each contribution's
+  `build(menu, panel, available_events)` — the contribution itself filters
+  by its own `owned_events()` (via `get_object_editor_panels()`, keyed by
+  `key`) rather than the panel doing it. Thymio's `build` is
+  `_event_crud.py`'s lines 139-175 verbatim, `self`→`panel`,
+  `is_thymio_event`→membership in its own `owned_events()` set.
+  `add_thymio_event_with_selector` moves to `extensions/thymio/` as a free
+  function (`panel` param), alongside `configure_thymio`/etc. in
+  `tools_menu.py` or a new sibling module — same Stage-D/G1 pattern.
+
+- [ ] **G5b.3 — add-action-menu contribution** (`_context_menu.py`, 4 call
+      sites; `_action_crud.py`'s two Thymio methods move with it).
+  ```python
+  @dataclass(frozen=True)
+  class AddActionMenuContribution:
+      label: str                                          # e.g. "🤖 Thymio Action..."
+      is_visible: Callable                                # (panel) -> bool
+      handler: Callable    # (panel, event_name, sub_event_key: Optional[str]) -> None
+
+  PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS: List[AddActionMenuContribution] = []
+  def apply_add_action_menu_contributions(add_action_menu, panel, event_name, sub_event_key=None):
+      for c in _add_action_menu_contributions:
+          if not c.is_visible(panel):
+              continue
+          add_action_menu.addSeparator()
+          action = add_action_menu.addAction(panel.tr(c.label))
+          action.triggered.connect(
+              lambda checked=False, e=event_name, k=sub_event_key: c.handler(panel, e, k))
+  ```
+  Replaces all four near-identical
+  `if panel.project_has_playgrounds(): add_action_menu.addSeparator(); ...`
+  blocks in `_context_menu.py` with one call each:
+  `apply_add_action_menu_contributions(add_action_menu, panel, event_name)`
+  (three call sites) and `..., event_name, sub_event_key)` (the keyboard
+  sub-event call site). `add_thymio_action_with_selector`/
+  `add_thymio_action_to_sub_event` move out of `_action_crud.py` into the
+  extension as free functions (`panel` param); Thymio's `handler` dispatches
+  on whether `sub_event_key` is `None`. Reuses G5b.1's `_project_has_playgrounds`
+  helper for `is_visible` — don't write a third copy.
+
+- [ ] **G5b.4 — post-load events transform hook** (`_panel.py`,
+      `_parse_execute_code_actions`, called from `load_events_data`). Do
+      this LAST — it's the one with real regression risk
+      (`tests/test_object_events_panel_thymio_lossless_rewrite.py` pins
+      exact lossless-rewrite behavior; the "regenerate and re-parse to
+      confirm the rewrite round-trips" guard is the load-bearing safety
+      property, not incidental).
+  ```python
+  PLUGIN_EVENTS_DATA_TRANSFORMS: List[Callable] = []   # each: (panel) -> None
+  def apply_events_data_transforms(panel):
+      for fn in _events_data_transforms:
+          try:
+              fn(panel)
+          except Exception:
+              logger.exception(...)   # one broken extension can't corrupt load for the rest
+  ```
+  `load_events_data` calls `apply_events_data_transforms(self)` instead of
+  `self._parse_execute_code_actions()` directly; the Thymio-specific
+  method (the `'thymio.' in code` substring gate, the parse/regenerate/
+  re-parse round-trip check, `PythonToActionsParser`/
+  `ActionsToPythonGenerator` — both already-generic classes in
+  `python_code_parser.py`, untouched) moves to
+  `extensions/thymio/` as a free function taking `panel`. **Proof
+  obligation before deleting the core copy**: run
+  `test_object_events_panel_thymio_lossless_rewrite.py` and the parsing-
+  specific subset of `test_thymio_*`/`test_audit_thymio_*` against BOTH
+  the pre-move method (via `git show HEAD:...`) and the moved free
+  function across the same input matrix, diff `current_events_data`
+  byte-for-byte — this file's own established behavior-preservation bar,
+  not a new one.
+  - `python_code_parser.py`'s `THYMIO_METHOD_TO_ACTION` /
+    `ACTION_TO_PYTHON_CODE`'s thymio_* entries / the event-name mapping /
+    the `_try_parse_thymio_*` method family are the actual **parsing
+    engine** G5b.4's transform calls into — NOT covered by a new seam
+    here. Whether *that* also needs to move (a `PLUGIN_CODE_PARSERS`-style
+    hook so `PythonToActionsParser`/`ActionsToPythonGenerator` themselves
+    carry zero Thymio knowledge) is a **separate, larger design question**
+    deliberately deferred past G5b — the four seams above are enough to
+    get every *caller* of Thymio-specific logic out of the six files;
+    `python_code_parser.py` moving its *engine* internals is optional
+    follow-up work, not required to hit "core carries no Thymio-specific
+    code" for the six files this sweep is about (the parser file itself
+    would still be the one exception, same tier as `THYMIO_CATEGORIES`
+    staying in `dialogs/_block_config_dialog_base.py` — shared machinery
+    holding one extension's data, not core logic *about* Thymio).
+
+Order matters: G5b.1 is fully independent; G5b.2/G5b.3 both need
+`get_object_editor_panels()`'s `owned_events()` (already exists, Stage
+0.5c/E) but are otherwise independent of each other; G5b.4 is independent
+of the other three but riskiest, hence last. Each is its own commit, full
+suite green after each, per this plan's standing discipline.
+
 ## Testing / verification strategy
 
 Same discipline this repo has used for every prior consolidation
