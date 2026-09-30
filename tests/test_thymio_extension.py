@@ -1058,3 +1058,41 @@ def test_readme_exists_and_matches_reality():
 
     assert "tools_menu.py" in text
     assert "show_thymio_tab" in text  # the UI-visibility flag is documented
+
+
+# ---------------------------------------------------------------------------
+# G2 — every Thymio/Roberta/Aseba/playground test already imports from
+# extensions.thymio.* (each prior stage updated its own tests as it moved
+# code, so this turned out to already be done; pinned here rather than
+# re-migrated).
+# ---------------------------------------------------------------------------
+
+def test_thymio_behavioural_tests_import_from_the_extension_not_old_paths():
+    import re
+    old_path_import = re.compile(
+        r"^from (runtime\.thymio_|actions\.thymio_|events\.thymio_|"
+        r"widgets\.thymio_|dialogs\.thymio_|editors\.playground_editor|"
+        r"export\.Aseba|export\.Roberta|importers\.roberta_importer)",
+        re.MULTILINE,
+    )
+    names = (
+        "test_aseba_export.py", "test_aseba_resource_packager_object_file_merge.py",
+        "test_audit_aseba_export_format.py", "test_audit_playground_undo_panel.py",
+        "test_audit_playground_undo_redo.py", "test_audit_roberta_led.py",
+        "test_audit_thymio_simulator.py", "test_audit_thymio_simulator_guard.py",
+        "test_object_events_panel_thymio_lossless_rewrite.py",
+        "test_playground_editor_undo.py", "test_playground_editor_undo_refresh.py",
+        "test_playground_linkable_objects_merge.py", "test_playground_robot_ports.py",
+        "test_roberta_led_keys.py", "test_roberta_xxe.py",
+        "test_thymio_choice_labels.py", "test_thymio_config_preset_name.py",
+        "test_thymio_else_preserved.py", "test_thymio_playground_fstring_tr_fix.py",
+        "test_thymio_playground_zoom.py", "test_thymio_set_variable.py",
+        "test_thymio_sim_geometry.py", "test_thymio_sound_honesty.py",
+    )
+    offenders = []
+    for name in names:
+        path = REPO_ROOT / "tests" / name
+        assert path.exists(), f"expected test file missing: {name}"
+        if old_path_import.search(path.read_text(encoding="utf-8")):
+            offenders.append(name)
+    assert offenders == []

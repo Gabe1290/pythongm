@@ -766,14 +766,32 @@ sub-arc.
   - **G1 is NOT fully closed** — see G5's new sub-item below for the
     remaining, much larger piece.
 
-G2. Migrate the ~22 `test_thymio_*` + ~12 Roberta/Aseba + the Thymio-relevant
-    subset of the ~16 `*playground*` test files to import from
-    `extensions.thymio.*` (same "tests stay in `tests/`, only their imports
-    change" pattern every prior extension move used — see the
-    `PluginExecutor`-not-`ActionExecutor` dispatch-pattern landmine noted
-    for the raycast move, item 1 in its landmines list: these tests likely
-    need the same `load_all_plugins(ex)` + dispatch-through-`action_handlers`
-    rewrite). **Not started.**
+- [x] G2. Turned out to already be done — each prior stage (A–F) updated its
+      own tests' imports as it moved the code they exercised, the same
+      "tests stay in `tests/`, only their imports change" pattern this item
+      anticipated, just executed incrementally rather than as one pass at
+      the end. Verified rather than migrated: grepped all 22
+      Thymio/Roberta/Aseba/playground test files (`test_aseba_*`,
+      `test_audit_aseba_*`, `test_audit_playground_*`,
+      `test_audit_roberta_*`, `test_audit_thymio_*`,
+      `test_object_events_panel_thymio_*`, `test_playground_*` — the
+      Thymio-relevant subset, `test_roberta_*`, `test_thymio_*`) for any
+      import from an old pre-move path (`runtime.thymio_*`,
+      `actions.thymio_*`, `events.thymio_*`, `widgets.thymio_*`,
+      `dialogs.thymio_*`, `editors.playground_editor`, `export.Aseba`,
+      `export.Roberta`, `importers.roberta_importer`) — zero hits. Also
+      confirmed the specific landmine this item called out (the
+      `PluginExecutor`-not-`ActionExecutor` dispatch pattern) is already
+      correctly handled: `test_audit_thymio_simulator_guard.py` builds a
+      bare `ActionExecutor` and populates its `action_handlers` via
+      `extensions.thymio.handlers.register_thymio_actions(ex)`, not by
+      calling `ActionExecutor.execute_thymio_*_action` directly. Full
+      22-file battery: 106 passed, 0 failed. New pin test
+      (`test_thymio_behavioural_tests_import_from_the_extension_not_old_paths`)
+      locks this in for future stages, since without it a regression here
+      would be silent (a stale import only breaks if something actually
+      still exists at the old path to accidentally satisfy it, or errors
+      obscurely if not — worth a real check).
 - [x] G3. Verified `tools/action_ref_i18n.py`, `tools/gen_preset_docs.py`,
       `scripts/gen_translation_ts.py` — no code changes needed.
   - **Real architectural fact worth recording, not a bug**: Thymio's 28
