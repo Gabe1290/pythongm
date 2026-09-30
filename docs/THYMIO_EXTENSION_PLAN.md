@@ -601,18 +601,90 @@ sub-arc.
     moved file path directly — they test the Python↔JSON event parser,
     unaffected by where the Qt panel widget lives).
 
-### Stage F — Blockly toolbox (needs seam 0.6)
+### Stage F — Blockly toolbox (needs seam 0.6) — CLOSED
 
-F1. Move the `"Thymio Events"`/`"Thymio Motors"`/… category dicts out of
-    `config/blockly_config.py` into `extensions/thymio/blockly_categories.py`
-    as `PLUGIN_BLOCK_CATEGORIES`; move the matching entries out of
-    `config/blockly_translations.py` the same way (check first whether
-    translations need to move per-language file or can stay centralized —
-    follow whatever `config/blockly_translations.py`'s existing
-    per-language structure already does for consistency, don't invent a new
-    shape).
-F2. Confirm `ThymioConfigDialog` (now `extensions/thymio/dialogs/...`) still
-    resolves categories/presets correctly reading from the merged registry.
+- [x] F1. Moved the 8 `"Thymio Events"`/`"Thymio Motors"`/… category dicts
+      out of `config/blockly_config.py`'s `BLOCK_REGISTRY` into
+      `extensions/thymio/blockly_categories.py` as `PLUGIN_BLOCK_CATEGORIES`
+      (byte-identical dicts); moved the matching 8 per-language entries out
+      of `config/blockly_translations.py`'s `CATEGORY_TRANSLATIONS` into
+      `PLUGIN_BLOCK_CATEGORY_TRANSLATIONS`, keeping the existing
+      `{lang: {category: text}}` shape (no new structure invented — matches
+      what `register_category_translations()` already expected from Stage
+      0.6). `BLOCK_TRANSLATIONS` had zero Thymio entries to move (verified
+      by grep before starting — only category *names* were ever translated,
+      not individual Thymio block names/descriptions).
+  - **Ordering bug found and designed around before writing any code, not
+    after.** `BlocklyConfig.get_thymio()`'s old body built the preset with
+    `config.enable_category("Thymio Motors")` etc. — but `enable_category()`
+    only populates `enabled_blocks` when the category is already a key in
+    the *global* `BLOCK_REGISTRY` (`if category in BLOCK_REGISTRY: ...`),
+    and an extension's `PLUGIN_BLOCKLY_PRESETS` dict is evaluated at
+    *import* time, which is strictly before `events/plugin_loader.py`'s
+    `_load_block_categories` calls `register_block_categories()` to merge
+    `PLUGIN_BLOCK_CATEGORIES` into `BLOCK_REGISTRY` (both calls happen in
+    the same loader method, category-merge first, preset-merge second, but
+    the *module-level* preset object was already built — wrongly — before
+    either ran). Built the naive way, the preset would have silently ended
+    up with the right `enabled_categories` but an almost-empty
+    `enabled_blocks` — the toolbox would show the 8 Thymio category headers
+    with nothing inside them. Fixed by having
+    `extensions/thymio/blockly_categories.py`'s `_build_thymio_preset()`
+    read block types directly from the *local* `PLUGIN_BLOCK_CATEGORIES`
+    dict instead of going through `enable_category()`/the global registry —
+    sidesteps the ordering hazard entirely without touching the already-
+    shipped Stage 0.6 `register_blockly_presets()` contract.
+  - `THYMIO_CATEGORIES` (just the 8 category *names*, used by
+    `dialogs/_block_config_dialog_base.py` for exclusion filtering) stays in
+    core as originally decided — it's plain string data with no Thymio
+    logic, and core's own `BlocklyConfigDialog` needs it too.
+  - Two test call sites relied on the now-removed `BlocklyConfig.get_thymio()`
+    classmethod directly: `tests/test_audit_regressions.py`'s
+    `TestThymioPresetEnablesElseAction` and `tests/test_thymio_extension.py`'s
+    `test_events_register_through_the_loader_with_blockly_gating`. Both
+    switched to `load_all_plugins()` + `PRESETS["thymio"]`.
+  - New pin tests in `tests/test_thymio_extension.py` (Stage F section):
+    core's source no longer defines the categories/preset; the extension's
+    `PLUGIN_BLOCK_CATEGORIES` matches `BLOCK_REGISTRY` byte-for-byte once
+    loaded; the loaded preset's `enabled_blocks` is the *exact*
+    `get_thymio()` set (event_create + every category's block types +
+    start_block/end_block/else_action) — not just "categories enabled",
+    since that weaker assertion is exactly what the ordering bug above
+    would have passed vacuously; the 7-language translations register and
+    resolve through `get_translated_category`; `THYMIO_CATEGORIES` stays in
+    core and matches the extension's category names; and confirmation that
+    the pre-existing `register_block_categories()` mechanism (which already
+    rebuilds `PRESETS["full"]`/`"implemented_only"` whenever new categories
+    are merged in) picks the Thymio categories back up automatically, with
+    no changes needed there.
+  - One test-writing landmine hit and fixed immediately: a first draft of
+    `test_core_no_longer_carries_the_thymio_categories_or_preset` also
+    asserted against the runtime `BLOCK_REGISTRY`/`PRESETS` dicts, which
+    failed under the full suite (not in isolation) because those dicts are
+    process-global and an earlier test in the same session had already
+    called `load_all_plugins()`, merging the categories in — exactly the
+    behaviour the next test checks for. Narrowed to a source-text-only
+    check; the runtime-state assertions live in the "registers through the
+    extension" test instead, which calls `load_all_plugins()` itself first.
+- [x] F2. Confirmed `ThymioConfigDialog` (`extensions/thymio/dialogs/
+      thymio_config_dialog.py`) needed no code change — it never called
+      `get_thymio()` directly; it reads `BLOCK_REGISTRY` at dialog-open time
+      (always after `load_all_plugins()` has run in the real IDE) and
+      receives its starting `BlocklyConfig` from `core/ide/_dialogs.py`'s
+      `configure_thymio()`, which already goes through `PRESETS[project_preset]`
+      / `load_config()` — both now correctly see the extension-registered
+      `"thymio"` preset once loaded.
+  - Verification: targeted tests (`test_thymio_extension.py`,
+    `test_audit_regressions.py`, `test_extension_seams.py`,
+    `test_thymio_config_preset_name.py`, `test_blockly_i18n_uk.py`,
+    `test_blockly_sub_actions.py`, `test_blockly_workspace_xml.py`) all
+    green, then the full suite in three alphabetical sub-batches (this
+    box's established RAM-safe pattern): a-g 2492 passed/0 failed, h-p 1671
+    passed/0 failed, q-z 1366 passed/0 failed (2 pre-existing order-
+    dependent `test_zip_save_state.py` failures under the full q-z batch,
+    confirmed unrelated to this stage and passing clean in isolation —
+    same flakiness class CLAUDE.md already documents for this suite, not a
+    regression).
 
 ### Stage G — re-enable, remove the `# [1.0]` markers, tests/tooling sweep
 

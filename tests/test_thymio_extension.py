@@ -116,14 +116,14 @@ def test_events_register_through_the_loader_with_blockly_gating():
     from events.event_types import (
         EVENT_TYPES, EVENT_TO_BLOCKLY_MAP, get_available_events,
     )
-    from config.blockly_config import BlocklyConfig
+    from config.blockly_config import BlocklyConfig, PRESETS
     load_all_plugins()
     assert "thymio_button_forward" in EVENT_TYPES
     assert EVENT_TO_BLOCKLY_MAP["thymio_button_forward"] == "thymio_button_forward"
     # Gated by the Blockly config exactly as before the move.
     names = {e.name for e in get_available_events(BlocklyConfig.get_beginner())}
     assert "thymio_button_forward" not in names
-    names = {e.name for e in get_available_events(BlocklyConfig.get_thymio())}
+    names = {e.name for e in get_available_events(PRESETS["thymio"])}
     assert "thymio_button_forward" in names
 
 
@@ -719,3 +719,70 @@ def test_extension_is_discovered_and_registers_its_tab():
     from actions.core import GM80_ACTION_TABS, get_action_tabs_ordered
     assert GM80_ACTION_TABS["thymio"]["order"] == 100
     assert get_action_tabs_ordered()[-1][0] == "thymio"
+
+
+# ---------------------------------------------------------------------------
+# F — Blockly toolbox: categories, preset, translations
+# ---------------------------------------------------------------------------
+
+def test_core_no_longer_carries_the_thymio_categories_or_preset():
+    # Source-only: BLOCK_REGISTRY/PRESETS are process-global and another test
+    # in this same session may have already called load_all_plugins(), which
+    # merges the extension's categories/preset in (that merge is exactly what
+    # the next test below checks) -- so this test can't assert on runtime
+    # dict state, only that core's own source no longer defines them.
+    src = (REPO_ROOT / "config" / "blockly_config.py").read_text(encoding="utf-8")
+    assert "Thymio Events" not in src and "def get_thymio" not in src
+    tr_src = (REPO_ROOT / "config" / "blockly_translations.py").read_text(encoding="utf-8")
+    assert "Thymio Events" not in tr_src
+
+
+def test_thymio_categories_and_preset_register_through_the_extension():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import BLOCK_REGISTRY, PRESETS
+    from extensions.thymio.blockly_categories import PLUGIN_BLOCK_CATEGORIES
+
+    for name, blocks in PLUGIN_BLOCK_CATEGORIES.items():
+        assert BLOCK_REGISTRY[name] == blocks
+
+    cfg = PRESETS["thymio"]
+    assert cfg.preset_name == "thymio"
+    assert cfg.enabled_categories == set(PLUGIN_BLOCK_CATEGORIES)
+    # The exact get_thymio() shape: event_create + every category's blocks +
+    # the three control-flow blocks -- not just "categories enabled" (the
+    # ordering bug this module's docstring documents would leave
+    # enabled_blocks basically empty while enabled_categories looked fine).
+    expected = {"event_create", "start_block", "end_block", "else_action"}
+    for blocks in PLUGIN_BLOCK_CATEGORIES.values():
+        expected.update(b["type"] for b in blocks)
+    assert cfg.enabled_blocks == expected
+
+
+def test_thymio_category_translations_register_through_the_extension():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_translations import CATEGORY_TRANSLATIONS, get_translated_category
+    for lang in ("de", "es", "fr", "it", "ru", "sl", "uk"):
+        assert CATEGORY_TRANSLATIONS[lang]["Thymio Motors"]
+    assert get_translated_category("Thymio Motors", "fr") == "Moteurs Thymio"
+
+
+def test_thymio_categories_dialog_base_stays_in_core():
+    # THYMIO_CATEGORIES is just the 8 names, needed by core's own
+    # BlocklyConfigDialog for exclusion filtering -- deliberately not moved.
+    from dialogs._block_config_dialog_base import THYMIO_CATEGORIES
+    from extensions.thymio.blockly_categories import PLUGIN_BLOCK_CATEGORIES
+    assert THYMIO_CATEGORIES == set(PLUGIN_BLOCK_CATEGORIES)
+    assert (REPO_ROOT / "dialogs" / "_block_config_dialog_base.py").exists()
+
+
+def test_full_preset_regains_thymio_blocks_after_extension_loads():
+    # register_block_categories() rebuilds "full"/"implemented_only" once new
+    # categories are merged in (config/blockly_config.py) -- confirms that
+    # existing mechanism still picks up the extension's categories.
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.blockly_config import PRESETS
+    assert "thymio_set_motor_speed" in PRESETS["full"].enabled_blocks
+    assert "thymio_set_motor_speed" in PRESETS["implemented_only"].enabled_blocks
