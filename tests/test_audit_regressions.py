@@ -353,8 +353,10 @@ class TestThymioPresetEnablesElseAction:
     canonical "else_action", so the Else block never appeared in its toolbox."""
 
     def test_thymio_preset_has_else_action_block(self):
-        from config.blockly_config import BlocklyConfig
-        cfg = BlocklyConfig.get_thymio()
+        from events.plugin_loader import load_all_plugins
+        from config.blockly_config import PRESETS
+        load_all_plugins()
+        cfg = PRESETS["thymio"]
         assert "else_action" in cfg.enabled_blocks
         assert "else" not in cfg.enabled_blocks
 

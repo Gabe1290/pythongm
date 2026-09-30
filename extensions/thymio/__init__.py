@@ -46,17 +46,22 @@ is the map. What lives here so far:
   its ``show_thymio_tab`` config gate, and its event-selection label; the
   tab widget, merge-back and sync are the fully generic
   ``ObjectEditorPanel`` mechanism (core/ide_extension_points, Stage 0.5c).
+* ``blockly_categories.py`` — the 8 Thymio Blockly toolbox categories, the
+  "thymio" preset and its 7-language category-name translations (F).
+  ``THYMIO_CATEGORIES`` (just the 8 names, for exclusion filtering) stays
+  in ``dialogs/_block_config_dialog_base.py`` — core's own
+  ``BlocklyConfigDialog`` needs it too.
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-Stages C, D and E are closed. Only the Blockly toolbox (F) still lives in
-core. The Tools→Thymio Programming submenu (playground/event-selector/
-action-selector openers, the ``show_thymio_tab`` menu *toggle* itself --
-its effect is fully generic now) is also still hidden — out of D's and
-E's scope; folds into a small follow-up or Stage G's re-enable pass.
+Stages C, D, E and F are closed. The Tools→Thymio Programming submenu
+(playground/event-selector/action-selector openers, the ``show_thymio_tab``
+menu *toggle* itself -- its effect is fully generic now) is still hidden —
+out of scope for those stages; folds into a small follow-up or Stage G's
+re-enable pass.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -238,3 +243,13 @@ def _register_object_editor_panel():
 
 
 PLUGIN_OBJECT_EDITOR_PANELS = [_register_object_editor_panel()]
+
+
+# The Blockly toolbox: 8 categories, the "thymio" preset, category-name
+# translations (F). See blockly_categories.py's module docstring for why the
+# preset can't be built with BlocklyConfig.enable_category() the way core's
+# own presets are.
+from .blockly_categories import (
+    PLUGIN_BLOCK_CATEGORIES, PLUGIN_BLOCKLY_PRESETS,
+    PLUGIN_BLOCK_CATEGORY_TRANSLATIONS,
+)
