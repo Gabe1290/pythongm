@@ -24,7 +24,6 @@ from core.ide_extension_points import get_object_editor_panels
 from ..base_editor import BaseEditor
 from .object_properties_panel import ObjectPropertiesPanel
 from .events import ObjectEventsPanel
-from .thymio_events_panel import ThymioEventsPanel
 from .python_syntax_highlighter import PythonSyntaxHighlighter
 # Lazy import: BlocklyVisualProgrammingTab uses QtWebEngine which can
 # crash in some PyInstaller builds. Imported on first use instead.
@@ -258,25 +257,10 @@ class ObjectEditor(BaseEditor):
         # ✅ TRANSLATABLE: Tab titles
         self.events_tab_widget.addTab(standard_tab, self.tr("Standard"))
 
-        # Tab 2: Thymio Events Panel
-        self.thymio_tab = QWidget()
-        thymio_layout = QVBoxLayout(self.thymio_tab)
-        thymio_layout.setContentsMargins(0, 5, 0, 0)
-
-        self.thymio_events_panel = ThymioEventsPanel()
-        self.thymio_events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        thymio_layout.addWidget(self.thymio_events_panel)
-
-        # Only add Thymio tab if the preference is enabled
-        self.thymio_tab_index = -1
-        if Config.get('show_thymio_tab', False):
-            self.thymio_tab_index = self.events_tab_widget.addTab(self.thymio_tab, self.tr("🤖 Thymio"))
-
-        # Connect Thymio panel signals
-        self.thymio_events_panel.events_modified.connect(self._on_thymio_events_modified)
-        self.thymio_events_panel.event_selected.connect(self._on_thymio_event_selected)
-
-        # Extension panels (core/ide_extension_points): one extra tab each.
+        # Extension panels (core/ide_extension_points): one extra tab each --
+        # the Thymio tab is one of these now (docs/THYMIO_EXTENSION_PLAN.md,
+        # Stage E), registered via PLUGIN_OBJECT_EDITOR_PANELS instead of
+        # being built here by name.
         self._extension_panels = {}
         for spec in get_object_editor_panels():
             self._add_extension_panel(spec)
@@ -290,7 +274,7 @@ class ObjectEditor(BaseEditor):
         panel.setMaximumWidth(10000)
         panel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
 
-        logger.debug("Left panel created with events_panel and thymio_events_panel")
+        logger.debug(f"Left panel created with events_panel and {len(self._extension_panels)} extension panel(s)")
 
         return panel
 
@@ -316,7 +300,7 @@ class ObjectEditor(BaseEditor):
             logger.error(f"Object-editor panel {spec.key!r} is_visible failed: {e}")
             visible = False
         if visible:
-            self.events_tab_widget.addTab(tab, spec.label)
+            self.events_tab_widget.addTab(tab, self.tr(spec.label))
 
     def set_extension_panel_visible(self, key: str, visible: bool):
         """Show or hide a registered extension panel's tab."""
@@ -326,7 +310,7 @@ class ObjectEditor(BaseEditor):
         spec, tab, _panel = entry
         index = self.events_tab_widget.indexOf(tab)
         if visible and index == -1:
-            self.events_tab_widget.addTab(tab, spec.label)
+            self.events_tab_widget.addTab(tab, self.tr(spec.label))
         elif not visible and index != -1:
             self.events_tab_widget.removeTab(index)
 
@@ -371,66 +355,16 @@ class ObjectEditor(BaseEditor):
         for _spec, _tab, panel in self._extension_panels.values():
             panel.load_events_data(events_data)
 
-    # -- Thymio tab (moves onto the extension-panel seam in Stage E) ---------
+    # -- Thymio tab: a thin, generically-named wrapper stays here only
+    # because core/ide/_dialogs.py's (still-hidden, out of Stage D/E's
+    # scope) toggle_thymio_tab duck-types `widget.set_thymio_tab_visible`.
+    # The actual tab -- construction, merge-back, event-label sync -- is
+    # 100% the generic extension-panel mechanism above; this method and
+    # `Config.get('show_thymio_tab', ...)` gating live in
+    # extensions/thymio's `ObjectEditorPanel.is_visible` now, not here.
 
     def set_thymio_tab_visible(self, visible: bool):
-        """Show or hide the Thymio tab"""
-        if visible:
-            # Add tab if not already visible
-            if self.thymio_tab_index == -1:
-                self.thymio_tab_index = self.events_tab_widget.addTab(self.thymio_tab, self.tr("🤖 Thymio"))
-                logger.debug("Thymio tab shown")
-        else:
-            # Remove tab if currently visible
-            if self.thymio_tab_index != -1:
-                # Find the actual index (might have changed)
-                for i in range(self.events_tab_widget.count()):
-                    if self.events_tab_widget.widget(i) == self.thymio_tab:
-                        self.events_tab_widget.removeTab(i)
-                        break
-                self.thymio_tab_index = -1
-                logger.debug("Thymio tab hidden")
-
-    def _on_thymio_events_modified(self):
-        """Handle changes in Thymio events panel"""
-        # Merge Thymio events back to main events data
-        if hasattr(self, 'thymio_events_panel'):
-            thymio_data = self.thymio_events_panel.get_events_data()
-            # Update main events data with Thymio events
-            for event_name, event_data in thymio_data.items():
-                self.events_panel.current_events_data[event_name] = event_data
-            # Remove Thymio events that were deleted
-            from extensions.thymio.events import THYMIO_EVENT_TYPES
-            for event_name in list(self.events_panel.current_events_data.keys()):
-                if event_name in THYMIO_EVENT_TYPES and event_name not in thymio_data:
-                    del self.events_panel.current_events_data[event_name]
-            # Trigger save
-            self.events_panel.events_modified.emit()
-
-    def _on_thymio_event_selected(self, event_name: str):
-        """Handle event selection in Thymio panel"""
-        # Update info label
-        if hasattr(self, 'event_info_label'):
-            from extensions.thymio.events import THYMIO_EVENT_TYPES
-            event_type = THYMIO_EVENT_TYPES.get(event_name)
-            if event_type:
-                self.event_info_label.setText(f"{event_type.icon} {event_type.display_name}")
-
-    def switch_to_thymio_mode(self):
-        """Switch to Thymio events panel"""
-        if hasattr(self, 'events_tab_widget'):
-            # First ensure the Thymio tab is visible
-            self.set_thymio_tab_visible(True)
-
-            # Find and switch to the Thymio tab
-            for i in range(self.events_tab_widget.count()):
-                if self.events_tab_widget.widget(i) == self.thymio_tab:
-                    self.events_tab_widget.setCurrentIndex(i)
-                    break
-
-            # Sync events to Thymio panel
-            if hasattr(self, 'thymio_events_panel') and hasattr(self, 'events_panel'):
-                self.thymio_events_panel.load_events_data(self.events_panel.current_events_data)
+        self.set_extension_panel_visible('thymio', visible)
 
 
     def create_center_panel(self) -> QWidget:
@@ -961,9 +895,14 @@ class ObjectEditor(BaseEditor):
                         self.events_panel.apply_config(config)
                         logger.info(f"Applied project Blockly preset '{blockly_preset}' to events panel")
 
-                    # Auto-switch to Thymio panel if using Thymio preset
+                    # Auto-switch to the Thymio panel if using the Thymio
+                    # preset. A named exception, like set_thymio_tab_visible
+                    # above -- the blockly-preset system has no generic
+                    # "preset X switches to panel Y" mapping (out of this
+                    # stage's scope), but the actual switch is now the fully
+                    # generic extension-panel mechanism.
                     if blockly_preset == 'thymio':
-                        self.switch_to_thymio_mode()
+                        self.switch_to_extension_panel('thymio')
                         logger.info("Switched to Thymio mode (project uses thymio preset)")
 
         except Exception as e:
@@ -1007,10 +946,6 @@ class ObjectEditor(BaseEditor):
 
                 self.events_panel.load_events_data(events_data)
 
-                # Also sync to Thymio panel if it exists
-                if hasattr(self, 'thymio_events_panel') and self.thymio_events_panel:
-                    self.thymio_events_panel.load_events_data(events_data)
-                    logger.debug("Synced events data to Thymio panel")
                 if hasattr(self, '_extension_panels'):
                     self._sync_extension_panels(events_data)
             else:

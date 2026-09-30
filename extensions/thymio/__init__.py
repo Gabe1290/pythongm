@@ -40,18 +40,23 @@ is the map. What lives here so far:
 * ``export/`` — Aseba (.aesl) export, Open Roberta Lab XML import/export
   (D1/D2), plus ``export_aseba_code(ide)``/``import_roberta_xml(ide)``,
   the File-menu action handlers ``PLUGIN_IDE_MENUS`` below wires in (D3).
+* ``object_editor_panel.py`` — ``ThymioEventsPanel``, the object editor's
+  "🤖 Thymio" tab (E). ``PLUGIN_OBJECT_EDITOR_PANELS`` below is the whole
+  Thymio-specific side of it now — construction, which events it owns,
+  its ``show_thymio_tab`` config gate, and its event-selection label; the
+  tab widget, merge-back and sync are the fully generic
+  ``ObjectEditorPanel`` mechanism (core/ide_extension_points, Stage 0.5c).
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-Stages C and D are closed. The rest — the object-editor tab (E) and the
-Blockly toolbox (F) — still lives in core. The Tools→Thymio Programming
-submenu (playground/event-selector/action-selector openers,
-show_thymio_tab toggle) is also still hidden — not part of D's
-File-menu-only scope; folds into a small follow-up or Stage G's re-enable
-pass.
+Stages C, D and E are closed. Only the Blockly toolbox (F) still lives in
+core. The Tools→Thymio Programming submenu (playground/event-selector/
+action-selector openers, the ``show_thymio_tab`` menu *toggle* itself --
+its effect is fully generic now) is also still hidden — out of D's and
+E's scope; folds into a small follow-up or Stage G's re-enable pass.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -196,3 +201,40 @@ def _build_file_menu(ide, menu):
 
 
 PLUGIN_IDE_MENUS = [("file", _build_file_menu)]
+
+
+# The object-editor's Thymio tab (E). The panel widget, its merge-back and
+# its event-label sync are all the fully generic ObjectEditorPanel
+# mechanism (core/ide_extension_points, Stage 0.5c) now; only the
+# Thymio-specific *content* of these three callables lives here.
+def _thymio_panel_factory():
+    from .object_editor_panel import ThymioEventsPanel
+    return ThymioEventsPanel()
+
+
+def _thymio_owned_events():
+    return THYMIO_EVENT_TYPES.keys()
+
+
+def _thymio_tab_visible():
+    from utils.config import Config
+    return Config.get('show_thymio_tab', False)
+
+
+def _thymio_event_label(event_name):
+    event_type = THYMIO_EVENT_TYPES.get(event_name)
+    if event_type is None:
+        return None
+    return f"{event_type.icon} {event_type.display_name}"
+
+
+def _register_object_editor_panel():
+    from core.ide_extension_points import ObjectEditorPanel
+    return ObjectEditorPanel(
+        key="thymio", label="🤖 Thymio", factory=_thymio_panel_factory,
+        owned_events=_thymio_owned_events, is_visible=_thymio_tab_visible,
+        event_label=_thymio_event_label,
+    )
+
+
+PLUGIN_OBJECT_EDITOR_PANELS = [_register_object_editor_panel()]
