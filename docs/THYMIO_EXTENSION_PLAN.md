@@ -774,19 +774,63 @@ G2. Migrate the ~22 `test_thymio_*` + ~12 Roberta/Aseba + the Thymio-relevant
     for the raycast move, item 1 in its landmines list: these tests likely
     need the same `load_all_plugins(ex)` + dispatch-through-`action_handlers`
     rewrite). **Not started.**
-G3. Verify `tools/action_ref_i18n.py`, `tools/gen_preset_docs.py`,
-    `scripts/gen_translation_ts.py` still produce correct output once
-    Thymio actions load from `extensions/thymio/` instead of
-    `actions/thymio_actions.py` — they already handle raycast/block_world/
-    multiplayer this way (post-`load_all_plugins()` `ACTION_TYPES`), so this
-    should be a verification pass, not new code. **Not started.**
-G4. `extensions/thymio/extension.json` already exists (written back in an
-    earlier stage, `enabled: true` — this is the *loader*-level flag, i.e.
-    "existing Thymio-authored projects keep working," a different axis from
-    the UI-visibility flag G1 resolved; the two are independent and both
-    currently match pre-refactor behaviour). **Still open: write
-    `extensions/thymio/README.md`** (every sibling extension has one;
-    Thymio doesn't yet).
+- [x] G3. Verified `tools/action_ref_i18n.py`, `tools/gen_preset_docs.py`,
+      `scripts/gen_translation_ts.py` — no code changes needed.
+  - **Real architectural fact worth recording, not a bug**: Thymio's 28
+    actions have **never** registered into the generic `ACTION_TYPES`
+    registry, before or after this plan. `extensions/thymio/__init__.py`
+    exposes `THYMIO_ACTIONS` (built from `actions.core.ActionDefinition` —
+    the older GM80-dialog schema `THYMIO_TAB` reads) but deliberately no
+    `PLUGIN_ACTIONS` (the `events.action_types.ActionType`-based dict
+    `plugin_loader._load_actions` merges into `ACTION_TYPES`). Confirmed by
+    running `load_all_plugins()` then checking `ACTION_TYPES` directly: 0
+    `thymio_*` entries. `PluginExecutor` (the runtime handlers) still
+    registers fine — `plugin_loader` checks for it independently of
+    `PLUGIN_ACTIONS` — so gameplay is unaffected; only the *generic*
+    action-picker/Blockly-auto-block/wiki-reference machinery never sees
+    these 28 actions, exactly as before this stage. Confirmed against the
+    live wiki: `wiki/Full-Action-Reference.md`'s current 161-action count
+    sums its 13 listed categories exactly, with zero Thymio content and no
+    Thymio category — this generator has *always* excluded Thymio, not a
+    regression from the move.
+  - `tools/gen_preset_docs.py` already explicitly filters `thymio_` events
+    out of its beginner/intermediate preset docs (a pre-existing defensive
+    filter, unrelated to and unaffected by the move); ran it — completes
+    cleanly, zero `thymio_` entries in its missing-translation report.
+  - `tools/gen_action_reference.py` (the generator `action_ref_i18n.py`
+    feeds) ran cleanly for English; confirmed zero Thymio leakage in the
+    output. **Found, but explicitly out of scope here**: the run also
+    picked up 7 pre-existing, unrelated new actions in the Network
+    (multiplayer_lan) category (161 → 168 total) that had never been
+    regenerated into the wiki — genuine drift from other sessions' work,
+    nothing to do with Thymio. Reverted the regeneration (`git checkout --
+    wiki/`) rather than publish an unrelated fix inside this stage's
+    commit; regenerating+publishing the wiki is its own task for whoever
+    picks up the Network category next, not logged as a new TODO item
+    here since it isn't blocking anything.
+  - `scripts/gen_translation_ts.py` has no dependency on `ACTION_TYPES` at
+    all (it pulls source text from an existing reference `.ts` file, not
+    by scanning live Python) — confirmed by grep (one unrelated historical
+    comment) and a clean import.
+- [x] G4. `extensions/thymio/extension.json` already existed (written back in
+      an earlier stage, `enabled: true` — this is the *loader*-level flag,
+      i.e. "existing Thymio-authored projects keep working," a different
+      axis from the UI-visibility flag G1 resolved; the two are independent
+      and both currently match pre-refactor behaviour). Wrote
+      `extensions/thymio/README.md` (every sibling extension has one; it's
+      the largest one yet, since Thymio is the worked example for nearly
+      every seam `extensions/README.md` documents at once — actions,
+      events, instance overlay, input handler, frame-update, instance-
+      created, asset type, IDE menu/toolbar, object-editor panel, Blockly
+      categories). Pin test (`test_readme_exists_and_matches_reality` in
+      `tests/test_thymio_extension.py`) cross-checks its factual claims
+      (action/event/sensor/LED counts) against the real
+      `THYMIO_ACTIONS`/`THYMIO_EVENT_TYPES`/`ThymioSensorState`/
+      `ThymioLEDState` — **caught a real error in the README's first
+      draft** (wrote "5 proximity sensors"; the simulator actually has 7)
+      before it was ever committed, the same "write the test, don't trust
+      the prose" lesson `docs/EYEBALL_FIXES_2026-08-16.md`'s own README
+      pin-test note already recorded.
 G5. Full-repo grep sweep: zero `thymio`/`Thymio`/`aseba`/`Aseba`/`roberta`/
     `Roberta` references left in `core/`, `runtime/`, `editors/` (excluding
     `editors/object_editor/object_editor_main.py`'s now-generic panel-registry

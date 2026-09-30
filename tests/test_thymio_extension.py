@@ -1021,3 +1021,40 @@ def test_update_ui_state_gates_thymio_actions_generically_not_by_name():
         assert ide.thymio_toolbar_action.isEnabled() is True
     finally:
         Config.set('show_thymio_tab', saved)
+
+
+# ---------------------------------------------------------------------------
+# G4 — README.md. Every sibling extension has one; pin its factual claims
+# (counts drawn out of the simulator/schemas) so a future edit can't drift
+# from reality the way the README's own first draft did (7 proximity
+# sensors, not the 5 first written -- caught only by writing this test).
+# ---------------------------------------------------------------------------
+
+def test_readme_exists_and_matches_reality():
+    readme = (REPO_ROOT / "extensions" / "thymio" / "README.md")
+    assert readme.exists()
+    text = readme.read_text(encoding="utf-8")
+
+    from extensions.thymio.actions import THYMIO_ACTIONS
+    from extensions.thymio.events import THYMIO_EVENT_TYPES
+    assert f"{len(THYMIO_ACTIONS)} actions" in text
+    assert len(THYMIO_ACTIONS) == 28
+    assert f"{len(THYMIO_EVENT_TYPES)} events" in text
+    assert len(THYMIO_EVENT_TYPES) == 14
+
+    from extensions.thymio.simulator import ThymioSensorState, ThymioLEDState
+    prox = ThymioSensorState().proximity
+    ground = ThymioSensorState().ground_delta
+    leds = ThymioLEDState()
+    circle = leds.circle
+    assert f"{len(prox)} proximity" in text
+    assert f"{len(ground)} ground" in text
+    assert f"{len(circle)}-LED circle" in text
+    # top/bottom_left/bottom_right — the 3 named RGB LEDs the README counts
+    # separately from the circle.
+    named_rgb_leds = sum(1 for f in ("top", "bottom_left", "bottom_right")
+                          if hasattr(leds, f))
+    assert f"{named_rgb_leds} RGB LEDs" in text
+
+    assert "tools_menu.py" in text
+    assert "show_thymio_tab" in text  # the UI-visibility flag is documented
