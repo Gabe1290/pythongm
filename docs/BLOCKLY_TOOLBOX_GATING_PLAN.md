@@ -114,11 +114,11 @@ visible_actions(config, project_data) -> set[str]      # action names
     `restart_game` (maze_1/3/4, plateforme_3, treasure, sky_strike_1),
     `set_window_caption` (maze_2/3/4, plateforme_3, treasure),
     `set_draw_color` (maze_3/4), `set_draw_font` (maze_3/4),
-    `draw_sprite` (sky_strike_1). **Recommendation:** add `restart_game`,
-    `set_window_caption`, `set_draw_color`; leave `set_draw_font` and
-    `draw_sprite` out (a sample opening with a block not in the toolbox
-    still loads and runs — students just can't drag a new one). Confirm with
-    the user before committing this unit.
+    `draw_sprite` (sky_strike_1). **Decided (user, 2026-10-01):** add
+    `restart_game`, `set_window_caption`, `set_draw_color`; leave
+    `set_draw_font` and `draw_sprite` out (a sample opening with a block not
+    in the toolbox still loads and runs — students just can't drag a new
+    one).
   - Saved custom configs (`load_config`): a config saved before this change
     has no generated-action names; migrate it by adding all core generated
     actions (what the user saw before), marked with a config version field so
