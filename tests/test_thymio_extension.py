@@ -1156,14 +1156,20 @@ def test_blockly_widget_apply_configuration_filters_thymio_end_to_end():
     from config.blockly_config import BlocklyConfig
 
     widget = BlocklyWidget()  # no parent -> no project data -> no playgrounds
+    page = widget.web_view.page()
     try:
         sent = {}
+        prefix = "window.blocklyApi.reconfigureToolbox("
 
-        def _capture(js):
-            payload = js[len("window.blocklyApi.reconfigureToolbox("):-1]
-            sent["config"] = json.loads(payload)
+        def _capture(js, *args):
+            # The page keeps loading in the background; its loadFinished
+            # handler sends unrelated JS (setBlocklyLanguage, ...) through
+            # this same method, possibly during a LATER test's event loop.
+            # Only the toolbox call is ours to parse.
+            if js.startswith(prefix):
+                sent["config"] = json.loads(js[len(prefix):-1])
 
-        widget.web_view.page().runJavaScript = _capture
+        page.runJavaScript = _capture
 
         cfg = BlocklyConfig(preset_name="test")
         cfg.enabled_blocks = {"thymio_set_motor_speed", "move_free"}
@@ -1173,4 +1179,9 @@ def test_blockly_widget_apply_configuration_filters_thymio_end_to_end():
         assert set(sent["config"]["enabled_blocks"]) == {"move_free"}
         assert set(sent["config"]["enabled_categories"]) == {"Movement"}
     finally:
+        # Stop the pending page load and drop the monkeypatch before
+        # deleteLater, so nothing from this widget can fire into another
+        # test's event loop.
+        widget.web_view.stop()
+        del page.runJavaScript
         widget.deleteLater()
