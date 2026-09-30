@@ -786,3 +786,238 @@ def test_full_preset_regains_thymio_blocks_after_extension_loads():
     from config.blockly_config import PRESETS
     assert "thymio_set_motor_speed" in PRESETS["full"].enabled_blocks
     assert "thymio_set_motor_speed" in PRESETS["implemented_only"].enabled_blocks
+
+
+# ---------------------------------------------------------------------------
+# G — Tools menu / toolbar (configure_thymio, toggle_thymio_tab,
+# show_thymio_playground, show_thymio_event_selector,
+# show_thymio_action_selector); the generic pygm_requires_project sweep.
+# ---------------------------------------------------------------------------
+
+def test_tools_menu_methods_live_in_the_extension_not_core():
+    from extensions.thymio import tools_menu
+    for name in ("configure_thymio", "toggle_thymio_tab", "show_thymio_playground",
+                 "show_thymio_event_selector", "show_thymio_action_selector"):
+        assert callable(getattr(tools_menu, name))
+
+    from core.ide._dialogs import DialogsMixin
+    for name in ("configure_thymio", "toggle_thymio_tab", "show_thymio_playground",
+                 "show_thymio_event_selector", "show_thymio_action_selector"):
+        assert not hasattr(DialogsMixin, name)
+
+    src = (REPO_ROOT / "core" / "ide" / "_dialogs.py").read_text(encoding="utf-8")
+    assert "ThymioConfigDialog" not in src
+    assert "Config.set('show_thymio_tab'" not in src
+
+
+def test_no_1_0_markers_remain_anywhere():
+    # G1: the marker convention had exactly one user (Thymio) -- confirm
+    # zero real `# [1.0]` comments survive repo-wide (a literal mention
+    # inside this module's own docstring, describing what USED to be
+    # there, doesn't count -- it's prose, not a marker).
+    import subprocess
+    result = subprocess.run(
+        ["git", "grep", "-n", r"^\s*# \[1\.0\]"],
+        cwd=REPO_ROOT, capture_output=True, text=True,
+    )
+    # git grep exits 1 when nothing matches -- that's the expected outcome.
+    assert result.returncode == 1, f"real [1.0] markers still present:\n{result.stdout}"
+
+
+def test_show_thymio_playground_reuses_window_and_deletes_on_close(monkeypatch):
+    """Moved from tests/test_audit_ide_window_leaks.py (L4) once
+    show_thymio_playground moved into the extension (Stage G): second open
+    reuses the first live window; WA_DeleteOnClose is set."""
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from PySide6.QtCore import Qt
+    from extensions.thymio.tools_menu import show_thymio_playground
+    import extensions.thymio.playground_window as tp
+
+    created = []
+
+    class FakePlayground:
+        def __init__(self, parent):
+            self.parent = parent
+            self._attrs = set()
+            self.shown = 0
+            self.raised = 0
+            created.append(self)
+
+        def setAttribute(self, attr):
+            self._attrs.add(attr)
+
+        def show(self):
+            self.shown += 1
+
+        def showNormal(self):
+            self.shown += 1
+
+        def raise_(self):
+            self.raised += 1
+
+        def activateWindow(self):
+            pass
+
+    monkeypatch.setattr(tp, "ThymioPlaygroundWindow", FakePlayground)
+
+    import shiboken6
+    monkeypatch.setattr(shiboken6, "isValid", lambda obj: obj in created)
+
+    class Stub:
+        def tr(self, s, *a, **k):
+            return s
+
+    stub = Stub()
+
+    show_thymio_playground(stub)
+    assert len(created) == 1, "first open should construct one window"
+    first = created[0]
+    assert Qt.WA_DeleteOnClose in first._attrs, "WA_DeleteOnClose not set"
+
+    show_thymio_playground(stub)
+    assert len(created) == 1, "second open leaked a new window instead of reusing"
+    assert first.raised >= 1, "existing window not raised on reopen"
+
+    monkeypatch.setattr(shiboken6, "isValid", lambda obj: False)
+    show_thymio_playground(stub)
+    assert len(created) == 2, "a fresh window should be created once the old one is gone"
+
+
+def _stub_ide():
+    from PySide6.QtWidgets import QMainWindow, QApplication
+    from core.ide._menu_builder import MenuBuilderMixin
+    QApplication.instance() or QApplication([])
+
+    class _StubIDE(MenuBuilderMixin, QMainWindow):
+        pass
+
+    ide = _StubIDE()
+    ide.current_project_data = None
+
+    class _Label:
+        def setText(self, *a, **k):
+            pass
+
+    ide.project_label = _Label()
+    return ide
+
+
+def test_tools_menu_and_toolbar_build_nothing_when_hidden():
+    # Default: show_thymio_tab is False, so a default install's Tools menu
+    # and toolbar get nothing from the extension -- unchanged from before
+    # this move (when the equivalent UI was hardcoded and commented out).
+    from utils.config import Config
+    from PySide6.QtWidgets import QMenu, QToolBar
+    from extensions.thymio import _build_tools_menu, _build_toolbar
+
+    saved = Config.get('show_thymio_tab', False)
+    try:
+        Config.set('show_thymio_tab', False)
+        ide = _stub_ide()
+        menu = QMenu(ide)
+        toolbar = QToolBar(ide)
+        _build_tools_menu(ide, menu)
+        _build_toolbar(ide, toolbar)
+        assert menu.actions() == []
+        assert toolbar.actions() == []
+        assert not hasattr(ide, 'show_thymio_tab_action')
+        assert not hasattr(ide, 'thymio_toolbar_action')
+    finally:
+        Config.set('show_thymio_tab', saved)
+
+
+def test_tools_menu_and_toolbar_build_the_full_ui_when_visible():
+    from utils.config import Config
+    from PySide6.QtWidgets import QMenu, QToolBar
+    from extensions.thymio import _build_tools_menu, _build_toolbar
+
+    saved = Config.get('show_thymio_tab', False)
+    try:
+        Config.set('show_thymio_tab', True)
+        ide = _stub_ide()
+        menu = QMenu(ide)
+        toolbar = QToolBar(ide)
+        _build_tools_menu(ide, menu)
+        _build_toolbar(ide, toolbar)
+
+        # Configure action + the Thymio Programming submenu.
+        top_texts = [a.text() for a in menu.actions() if not a.isSeparator()]
+        assert any("Configure" in t and "Thymio" in t for t in top_texts)
+        # Look up each action's .menu() exactly once into a local -- calling
+        # it twice (e.g. inside a list-comprehension filter+value) triggers
+        # a PySide6/shiboken wrapper-ownership quirk on a QMenu parented to
+        # a Python QMainWindow subclass that deletes the real C++ submenu
+        # out from under a second lookup. Pure test-harness landmine, not a
+        # production bug -- _build_tools_menu itself only ever looks up its
+        # own addMenu() return value once and keeps that single reference.
+        thymio_menu = None
+        for a in menu.actions():
+            m = a.menu()
+            if m is not None:
+                thymio_menu = m
+        assert thymio_menu is not None
+        sub_texts = [a.text() for a in thymio_menu.actions() if not a.isSeparator()]
+        assert ide.show_thymio_tab_action in thymio_menu.actions()
+        assert ide.show_thymio_tab_action.isChecked() is True
+        assert any("Playground" in t for t in sub_texts)
+        assert ide.thymio_add_event_action in thymio_menu.actions()
+        assert ide.thymio_add_action_action in thymio_menu.actions()
+        assert ide.thymio_import_roberta_action in thymio_menu.actions()
+
+        # Requires-project gating: added, not requires-always-enabled.
+        assert ide.thymio_add_event_action.property("pygm_requires_project") is True
+        assert ide.thymio_add_action_action.property("pygm_requires_project") is True
+        # Imports a new project -- must stay enabled with none open.
+        assert ide.thymio_import_roberta_action.property("pygm_always_enabled") is True
+
+        # Toolbar quick-add button.
+        assert ide.thymio_toolbar_action in toolbar.actions()
+        assert ide.thymio_toolbar_action.property("pygm_requires_project") is True
+    finally:
+        Config.set('show_thymio_tab', saved)
+
+
+def test_update_ui_state_gates_thymio_actions_generically_not_by_name():
+    # core/ide_window.py no longer names any Thymio action; it enables/
+    # disables via the generic pygm_requires_project/pygm_always_enabled
+    # QAction properties an extension sets on its own actions instead.
+    # (Pointer comments referencing "extensions/thymio" by path, like every
+    # other moved-code comment in this codebase, are fine -- only a literal
+    # Thymio *action attribute name* would mean core still hardcodes one.)
+    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    for name in ("thymio_add_event_action", "thymio_add_action_action",
+                 "thymio_toolbar_action", "thymio_import_roberta_action",
+                 "export_aseba_action", "show_thymio_tab_action"):
+        assert name not in src, f"{name} still hardcoded in core/ide_window.py"
+
+    from utils.config import Config
+    saved = Config.get('show_thymio_tab', False)
+    try:
+        Config.set('show_thymio_tab', True)
+        ide = _stub_ide()
+        from PySide6.QtWidgets import QMenu, QToolBar
+        from extensions.thymio import _build_tools_menu, _build_toolbar
+        _build_tools_menu(ide, QMenu())
+        _build_toolbar(ide, QToolBar())
+
+        ide.current_project_path = None
+        # update_ui_state is a real PyGameMakerIDE method; run it unbound
+        # against the stub the same way other tests in this repo drive
+        # real IDE methods against lightweight stand-ins.
+        from core.ide_window import PyGameMakerIDE
+        PyGameMakerIDE.update_ui_state(ide)
+
+        assert ide.thymio_add_event_action.isEnabled() is False
+        assert ide.thymio_add_action_action.isEnabled() is False
+        assert ide.thymio_toolbar_action.isEnabled() is False
+        assert ide.thymio_import_roberta_action.isEnabled() is True  # always-enabled import
+
+        ide.current_project_path = REPO_ROOT  # any truthy path
+        ide.current_project_data = {'name': 'stub'}
+        PyGameMakerIDE.update_ui_state(ide)
+        assert ide.thymio_add_event_action.isEnabled() is True
+        assert ide.thymio_add_action_action.isEnabled() is True
+        assert ide.thymio_toolbar_action.isEnabled() is True
+    finally:
+        Config.set('show_thymio_tab', saved)

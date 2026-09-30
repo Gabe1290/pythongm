@@ -240,11 +240,6 @@ class MenuBuilderMixin:
         configure_blockly_action = self.create_action(self.tr("Configure &Action Blocks..."), None, self.configure_blockly)
         configure_blockly_action.setMenuRole(QAction.NoRole)
         tools_menu.addAction(configure_blockly_action)
-        # [1.0] Configure Thymio Blocks hidden from the menu — see docs/POST_1_0_REFACTOR.md.
-        # The configure_thymio method is retained for the planned Thymio extension.
-        # configure_thymio_action = self.create_action(self.tr("Configure &Thymio Blocks..."), None, self.configure_thymio)
-        # configure_thymio_action.setMenuRole(QAction.NoRole)
-        # tools_menu.addAction(configure_thymio_action)
         tools_menu.addSeparator()
         # Project-scoped tools: stored on self so update_ui_state() can
         # disable them when no project is open. Without the stored
@@ -274,35 +269,14 @@ class MenuBuilderMixin:
         language_menu = tools_menu.addMenu(self.tr("🌐 &Language"))
         self.create_language_menu(language_menu)
 
-        # [1.0] Thymio Programming submenu hidden — see docs/POST_1_0_REFACTOR.md.
-        # All underlying methods (toggle_thymio_tab, show_thymio_playground,
-        # show_thymio_event_selector, show_thymio_action_selector,
-        # import_roberta_xml) are retained for the planned Thymio extension.
-        # tools_menu.addSeparator()
-        # thymio_menu = tools_menu.addMenu(self.tr("🤖 &Thymio Programming"))
-        #
-        # # Show Thymio Tab checkbox
-        # self.show_thymio_tab_action = QAction(self.tr("Show Thymio Tab in Object Editor"), self)
-        # self.show_thymio_tab_action.setCheckable(True)
-        # self.show_thymio_tab_action.setChecked(Config.get('show_thymio_tab', False))
-        # self.show_thymio_tab_action.triggered.connect(self.toggle_thymio_tab)
-        # thymio_menu.addAction(self.show_thymio_tab_action)
-        # thymio_menu.addSeparator()
-        #
-        # thymio_menu.addAction(self.create_action(self.tr("Open &Playground..."), None, self.show_thymio_playground))
-        # thymio_menu.addSeparator()
-        # # Add Event/Action target the currently active object editor, which
-        # # can only exist when a project is open. Stored on self so
-        # # update_ui_state() can disable them in that case.
-        # self.thymio_add_event_action = self.create_action(
-        #     self.tr("Add &Event..."), None, self.show_thymio_event_selector)
-        # self.thymio_add_action_action = self.create_action(
-        #     self.tr("Add &Action..."), None, self.show_thymio_action_selector)
-        # thymio_menu.addAction(self.thymio_add_event_action)
-        # thymio_menu.addAction(self.thymio_add_action_action)
-        # thymio_menu.addSeparator()
-        # self.thymio_import_roberta_action = self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml)
-        # thymio_menu.addAction(self.thymio_import_roberta_action)
+        # The Thymio "Configure Blocks..."/"Programming" Tools-menu entries
+        # and quick-add toolbar button used to be hardcoded and commented out
+        # here (the 1.0 hiding decision, docs/POST_1_0_REFACTOR.md). They're
+        # built by extensions/thymio/__init__.py's _build_tools_menu /
+        # _build_toolbar now (docs/THYMIO_EXTENSION_PLAN.md, Stage G),
+        # through the generic PLUGIN_IDE_MENUS/PLUGIN_IDE_TOOLBAR seam below —
+        # still gated by the same show_thymio_tab config flag, so a default
+        # install shows nothing here, unchanged from before this move.
 
         help_menu = menubar.addMenu(self.tr("&Help"))
         help_menu.addAction(self.create_action(self.tr("&Documentation"), "F1", self.show_documentation))
@@ -477,15 +451,9 @@ class MenuBuilderMixin:
 
         toolbar.addSeparator()
 
-        # [1.0] Thymio quick-add toolbar button hidden — see docs/POST_1_0_REFACTOR.md.
-        # The show_thymio_event_selector method is retained for the planned extension.
-        # self.thymio_toolbar_action = self.create_action(
-        #     self.tr("Thymio"), None, self.show_thymio_event_selector, "SP_DriveNetIcon"
-        # )
-        # self.thymio_toolbar_action.setToolTip(self.tr("Add Thymio Event"))
-        # toolbar.addAction(self.thymio_toolbar_action)
-        #
-        # toolbar.addSeparator()
+        # The Thymio quick-add toolbar button (see the matching Tools-menu
+        # comment above) is built by extensions/thymio/__init__.py's
+        # _build_toolbar now, through PLUGIN_IDE_TOOLBAR.
 
         # Window-mode toggle — doubles as the recovery affordance when a
         # floating editor has been dragged off-screen (clicking "Tabbed"

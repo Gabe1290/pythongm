@@ -709,20 +709,28 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
         # they must stay enabled even when no project is currently loaded. The
         # generic "Import" substring match below would otherwise grey them out.
         always_enabled_imports = set()
-        for attr in ('import_gmk_action', 'thymio_import_roberta_action'):
-            if hasattr(self, attr):
-                always_enabled_imports.add(getattr(self, attr))
+        if hasattr(self, 'import_gmk_action'):
+            always_enabled_imports.add(self.import_gmk_action)
 
         for action in self.findChildren(QAction):
             if action in always_enabled_imports:
                 action.setEnabled(True)
                 continue
             # Actions marked exempt (e.g. the Welcome tab's "More options"
-            # entry points) must stay usable with no project loaded; the
-            # findChildren sweep would otherwise grey them via the Import/
-            # Create substring match below. See WelcomeTab._dropdown_button.
+            # entry points, or an extension's own "import as new project"
+            # action -- see extensions/thymio/__init__.py's Tools-submenu
+            # Roberta-import copy) must stay usable with no project loaded;
+            # the findChildren sweep would otherwise grey them via the
+            # Import/Create substring match below. See
+            # WelcomeTab._dropdown_button.
             if action.property("pygm_always_enabled"):
                 action.setEnabled(True)
+                continue
+            # Actions an extension marks as needing an open project (e.g. one
+            # that targets the active object editor, which can't exist
+            # without a project) -- see extensions/thymio/__init__.py.
+            if action.property("pygm_requires_project"):
+                action.setEnabled(has_project)
                 continue
             if action.text() in [self.tr("Save Project"), self.tr("Save Project As..."), self.tr("Project Settings...")]:
                 action.setEnabled(has_project)
@@ -739,8 +747,6 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
             self.export_zip_action.setEnabled(has_project)
         if hasattr(self, 'export_kivy_action'):
             self.export_kivy_action.setEnabled(has_project)
-        if hasattr(self, 'export_aseba_action'):
-            self.export_aseba_action.setEnabled(has_project)
         if hasattr(self, 'export_project_action'):
             self.export_project_action.setEnabled(has_project)
         # Tools-menu items that only make sense with an open project
@@ -756,12 +762,6 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
             self.clean_project_action.setEnabled(has_project)
         if hasattr(self, 'show_orphaned_files_action'):
             self.show_orphaned_files_action.setEnabled(has_project)
-        # Thymio Add Event/Action target the active object editor, which
-        # cannot exist without an open project.
-        if hasattr(self, 'thymio_add_event_action'):
-            self.thymio_add_event_action.setEnabled(has_project)
-        if hasattr(self, 'thymio_add_action_action'):
-            self.thymio_add_action_action.setEnabled(has_project)
         # File-menu / toolbar shared actions. Save and Save As require a
         # project; New and Open stay always-enabled (they're entry points).
         # These are stored as attributes specifically so update_ui_state
@@ -773,11 +773,6 @@ class PyGameMakerIDE(SamplesMixin, EditActionsMixin, DialogsMixin, TestGameMixin
             self.save_project_as_action.setEnabled(has_project)
         if hasattr(self, 'close_project_action'):
             self.close_project_action.setEnabled(has_project)
-        # Toolbar quick-add for Thymio events — same constraint as the
-        # submenu Add Event/Action (needs an object editor, which needs
-        # a project as the minimum precondition).
-        if hasattr(self, 'thymio_toolbar_action'):
-            self.thymio_toolbar_action.setEnabled(has_project)
         # Enable/disable build actions based on project state
         if hasattr(self, 'test_game_action'):
             self.test_game_action.setEnabled(has_project)
