@@ -408,7 +408,7 @@ def test_diagram_widget_lives_in_the_extension():
     for fname, needle in (
         ("extensions/thymio/dialogs/thymio_action_selector.py", "widgets.thymio_diagram_widget"),
         ("extensions/thymio/dialogs/thymio_event_selector.py", "widgets.thymio_diagram_widget"),
-        ("editors/object_editor/thymio_events_panel.py", "widgets.thymio_diagram_widget"),
+        ("extensions/thymio/object_editor_panel.py", "widgets.thymio_diagram_widget"),
     ):
         assert needle not in (REPO_ROOT / fname).read_text(encoding="utf-8"), fname
     widgets_init = (REPO_ROOT / "widgets" / "__init__.py").read_text(encoding="utf-8")
@@ -633,6 +633,82 @@ def test_welcome_tab_roberta_entry_is_no_longer_hidden_and_calls_through():
     from widgets.welcome_tab import WelcomeTab
     WelcomeTab._on_import_roberta(stub)   # ordinary method, called unbound
     assert called == [True]
+
+
+# ---------------------------------------------------------------------------
+# E1/E2 — the object-editor's Thymio tab
+# ---------------------------------------------------------------------------
+
+def test_object_editor_panel_lives_in_the_extension():
+    assert not (REPO_ROOT / "editors" / "object_editor" / "thymio_events_panel.py").exists()
+    from extensions.thymio.object_editor_panel import ThymioEventsPanel
+    assert callable(ThymioEventsPanel)
+
+    main_src = (REPO_ROOT / "editors" / "object_editor" / "object_editor_main.py").read_text(encoding="utf-8")
+    for needle in ("from .thymio_events_panel import", "self.thymio_events_panel",
+                  "self.thymio_tab", "def _on_thymio_events_modified",
+                  "def _on_thymio_event_selected", "def switch_to_thymio_mode"):
+        assert needle not in main_src, needle
+    # The one still-needed, thin, generically-implemented wrapper.
+    assert "def set_thymio_tab_visible" in main_src
+    assert "self.set_extension_panel_visible('thymio'" in main_src
+
+    init_src = (REPO_ROOT / "editors" / "object_editor" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .thymio_events_panel" not in init_src
+    assert "'ThymioEventsPanel'" not in init_src
+
+
+def test_thymio_panel_registers_through_the_extension():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from extensions.thymio import PLUGIN_OBJECT_EDITOR_PANELS
+    spec = PLUGIN_OBJECT_EDITOR_PANELS[0]
+    assert spec.key == "thymio" and spec.label == "🤖 Thymio"
+    panel = spec.factory()
+    from extensions.thymio.object_editor_panel import ThymioEventsPanel
+    assert isinstance(panel, ThymioEventsPanel)
+
+    from extensions.thymio.events import THYMIO_EVENT_TYPES
+    assert set(spec.owned_events()) == set(THYMIO_EVENT_TYPES)
+    text = spec.event_label("thymio_button_forward")
+    assert text and THYMIO_EVENT_TYPES["thymio_button_forward"].display_name in text
+    assert spec.event_label("not_a_real_event") is None
+
+    from utils.config import Config
+    saved = Config.get('show_thymio_tab', False)
+    try:
+        Config.set('show_thymio_tab', True)
+        assert spec.is_visible() is True
+        Config.set('show_thymio_tab', False)
+        assert spec.is_visible() is False
+    finally:
+        Config.set('show_thymio_tab', saved)
+
+
+def test_object_editor_hosts_the_registered_thymio_tab_and_translates_its_label():
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from utils.config import Config
+    saved = Config.get('show_thymio_tab', False)
+    try:
+        Config.set('show_thymio_tab', True)
+        from editors.object_editor.object_editor_main import ObjectEditor
+        editor = ObjectEditor()
+        try:
+            texts = [editor.events_tab_widget.tabText(i)
+                    for i in range(editor.events_tab_widget.count())]
+            # Untranslated in this test's default locale, but routed through
+            # self.tr(spec.label) -- the exact "🤖 Thymio" source text a real
+            # translation catalog resolves under the ObjectEditorMain context,
+            # same as the original hardcoded self.tr("🤖 Thymio") call did.
+            assert "🤖 Thymio" in texts
+            assert "thymio" in editor._extension_panels
+        finally:
+            editor.deleteLater()
+    finally:
+        Config.set('show_thymio_tab', saved)
 
 
 def test_extension_is_discovered_and_registers_its_tab():

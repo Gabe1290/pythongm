@@ -545,16 +545,61 @@ sub-arc.
 
 ### Stage E — the object-editor tab (needs seam 0.5; do this one last among the UI stages — it's the deepest coupling point)
 
-E1. `editors/object_editor/thymio_events_panel.py` →
-    `extensions/thymio/object_editor_panel.py`.
-E2. Replace `ObjectEditorMain`'s direct `from .thymio_events_panel import
-    ThymioEventsPanel` + hardcoded tab-add/signal-wiring with the Stage-0.5
-    object-editor-panel registry, preserving the existing
-    `Config.get('show_thymio_tab', ...)` visibility behavior exactly (this
-    is the unit most likely to regress something subtle — the existing
-    `test_object_events_panel_thymio_lossless_rewrite.py` and
-    `test_thymio_else_preserved.py` are the regression gate; re-run them,
-    don't just trust the diff).
+- [x] E1. `editors/object_editor/thymio_events_panel.py` →
+    `extensions/thymio/object_editor_panel.py` via `git mv`, no content
+    changes (already imported everything from `extensions.thymio.*` plus
+    the genuinely-shared `editors/object_editor/gm80_action_dialog.py`,
+    which stays in core).
+- [x] E2. `ObjectEditorMain`'s hardcoded Tab-2 construction, the whole
+    `_on_thymio_events_modified`/`_on_thymio_event_selected`/
+    `switch_to_thymio_mode` methods, and the `self.thymio_tab`/
+    `self.thymio_events_panel`/`self.thymio_tab_index` state are all
+    **deleted** — the already-shipped Stage-0.5c `PLUGIN_OBJECT_EDITOR_PANELS`
+    loop (`for spec in get_object_editor_panels(): self._add_extension_panel(spec)`,
+    already running since Stage 0.5c) now supplies the Thymio tab too,
+    with `extensions/thymio`'s new `ObjectEditorPanel(key="thymio", ...)`
+    reproducing `Config.get('show_thymio_tab', ...)` exactly via its
+    `is_visible` callable. `set_thymio_tab_visible` stays as a **one-line
+    named wrapper** (`self.set_extension_panel_visible('thymio', visible)`)
+    — `core/ide/_dialogs.py`'s still-hidden `toggle_thymio_tab` duck-types
+    this exact method name, and that method is out of D's/E's scope (the
+    Tools→Thymio Programming submenu, deferred). The `blockly_preset ==
+    'thymio'` auto-switch (`object_editor_main.py`) is the other
+    deliberately-kept named exception, now calling
+    `self.switch_to_extension_panel('thymio')` — the plan's own G5 bar
+    anticipates a small number of exactly these ("the handful of named
+    generic call sites").
+  - **Real, shipped-stage bug found and fixed, not just this stage's own
+    regression**: the Stage-0.5c seam itself (`_add_extension_panel`/
+    `set_extension_panel_visible`) added a tab via
+    `self.events_tab_widget.addTab(tab, spec.label)` — a **raw, never-`.tr()`'d
+    string**. The original hardcoded Thymio tab used `self.tr("🤖 Thymio")`,
+    a real, shipped, catalogued translation (confirmed in `translations/*.ts`,
+    `<source>🤖 Thymio</source>`, context `ObjectEditorMain`) — moving it onto
+    the untranslated seam would have silently reverted every non-English
+    IDE to an English-only tab label. Fixed at the **seam**, not the call
+    site: both spots now do `self.tr(spec.label)`. Safe because `.tr()`
+    resolves by the *runtime class of the object it's called on*
+    (`ObjectEditorMain` here, matching the original call site exactly) and
+    because this repo ships hand-maintained `.ts`/`.qm` files with no
+    `lupdate` re-extraction step, so a non-literal `.tr()` argument is not
+    a hazard here the way it would be in a project relying on automatic
+    string extraction. **Investigated the analogous C5 seam
+    (`AssetTreeCategory.label`, "Playgrounds") for the same bug and found
+    it's not one** — `AssetTreeItem` (a bare `QTreeWidgetItem`, no `.tr()`
+    available at all) already renders every BUILT-IN category's emoji
+    label from a hardcoded, never-translated Python dict; the `self.tr(...)`
+    call in `asset_tree_widget.py`'s `setup_categories` computes a value
+    that is unpacked and then **never actually used** (a pre-existing,
+    unrelated dead-code path, confirmed by reading it — not something this
+    plan's work touched or should fix). "Playgrounds" behaves exactly like
+    every other asset-tree category already did; no regression, nothing to
+    fix there.
+  - Regression gate re-run, not just trusted from the diff, per this
+    stage's own instruction: `test_object_events_panel_thymio_lossless_rewrite.py`
+    and `test_thymio_else_preserved.py` both green (neither references the
+    moved file path directly — they test the Python↔JSON event parser,
+    unaffected by where the Qt panel widget lives).
 
 ### Stage F — Blockly toolbox (needs seam 0.6)
 
