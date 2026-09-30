@@ -51,17 +51,26 @@ is the map. What lives here so far:
   ``THYMIO_CATEGORIES`` (just the 8 names, for exclusion filtering) stays
   in ``dialogs/_block_config_dialog_base.py`` — core's own
   ``BlocklyConfigDialog`` needs it too.
+* ``tools_menu.py`` — ``configure_thymio``/``toggle_thymio_tab``/
+  ``show_thymio_playground``/``show_thymio_event_selector``/
+  ``show_thymio_action_selector``, the Tools-menu + toolbar action
+  handlers (G). ``_build_tools_menu``/``_build_toolbar`` below wire them
+  in via ``PLUGIN_IDE_MENUS``/``PLUGIN_IDE_TOOLBAR`` — still gated by the
+  ``show_thymio_tab`` config flag (default ``False``), same as the
+  object-editor tab, so core carries the UI-hiding decision as data (one
+  config default), not as commented-out code naming Thymio.
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-Stages C, D, E and F are closed. The Tools→Thymio Programming submenu
-(playground/event-selector/action-selector openers, the ``show_thymio_tab``
-menu *toggle* itself -- its effect is fully generic now) is still hidden —
-out of scope for those stages; folds into a small follow-up or Stage G's
-re-enable pass.
+Stages A-G are all closed — core carries no Thymio-specific code, only the
+generic seams every extension can use. Whether Thymio ships *visible* by
+default remains a separate product call (unchanged since 1.0): flip
+``show_thymio_tab``'s default in ``extensions/thymio/__init__.py``'s
+``_thymio_tab_visible()`` to bring the tab, the Tools-menu entries and the
+toolbar button back together.
 """
 
 PLUGIN_NAME = "Thymio Robot"
@@ -194,6 +203,12 @@ def _build_file_menu(ide, menu):
     menu.addSeparator()
     ide.export_aseba_action = ide.create_action(
         ide.tr("Export &Aseba (Thymio) code..."), None, ide.export_aseba_code)
+    # Exporting needs an open project (same as export_html5_action/
+    # export_zip_action/export_kivy_action, which core enables/disables
+    # directly since those actions are core's own); flagged for core's
+    # generic update_ui_state() sweep instead of a hardcoded hasattr check
+    # naming this action (core/ide_window.py's pygm_requires_project check).
+    ide.export_aseba_action.setProperty("pygm_requires_project", True)
     menu.addAction(ide.export_aseba_action)
     import_action = ide.create_action(
         ide.tr("Import Open &Roberta XML..."), None, ide.import_roberta_xml)
@@ -205,7 +220,82 @@ def _build_file_menu(ide, menu):
     menu.addAction(import_action)
 
 
-PLUGIN_IDE_MENUS = [("file", _build_file_menu)]
+# Tools-menu "Configure Thymio Blocks..." + "Thymio Programming" submenu,
+# and the toolbar quick-add button (Stage G). These were core's own
+# hardcoded-but-commented-out `# [1.0]` UI (docs/POST_1_0_REFACTOR.md) --
+# now built here, still gated by the same show_thymio_tab config flag that
+# already gates the object-editor tab, so a default install shows none of
+# this, unchanged from before the move. Flipping that one flag brings the
+# whole UI (tab + these entries) back together -- see this plan's "Open
+# decision" section; that product call is deliberately not made by this
+# move.
+def _build_tools_menu(ide, menu):
+    if not _thymio_tab_visible():
+        return
+    from PySide6.QtGui import QAction
+    from .tools_menu import (
+        configure_thymio, toggle_thymio_tab, show_thymio_playground,
+        show_thymio_event_selector, show_thymio_action_selector,
+    )
+    from .export import import_roberta_xml
+
+    configure_action = ide.create_action(
+        ide.tr("Configure &Thymio Blocks..."), None, lambda: configure_thymio(ide))
+    configure_action.setMenuRole(QAction.NoRole)
+    menu.addAction(configure_action)
+
+    menu.addSeparator()
+    thymio_menu = menu.addMenu(ide.tr("🤖 &Thymio Programming"))
+
+    ide.show_thymio_tab_action = QAction(ide.tr("Show Thymio Tab in Object Editor"), ide)
+    ide.show_thymio_tab_action.setCheckable(True)
+    ide.show_thymio_tab_action.setChecked(_thymio_tab_visible())
+    ide.show_thymio_tab_action.triggered.connect(lambda: toggle_thymio_tab(ide))
+    thymio_menu.addAction(ide.show_thymio_tab_action)
+    thymio_menu.addSeparator()
+
+    thymio_menu.addAction(ide.create_action(
+        ide.tr("Open &Playground..."), None, lambda: show_thymio_playground(ide)))
+    thymio_menu.addSeparator()
+
+    # Target the active object editor, which can't exist without an open
+    # project -- flagged for core's generic update_ui_state() enable/disable
+    # sweep (core/ide_window.py's pygm_requires_project check).
+    ide.thymio_add_event_action = ide.create_action(
+        ide.tr("Add &Event..."), None, lambda: show_thymio_event_selector(ide))
+    ide.thymio_add_action_action = ide.create_action(
+        ide.tr("Add &Action..."), None, lambda: show_thymio_action_selector(ide))
+    ide.thymio_add_event_action.setProperty("pygm_requires_project", True)
+    ide.thymio_add_action_action.setProperty("pygm_requires_project", True)
+    thymio_menu.addAction(ide.thymio_add_event_action)
+    thymio_menu.addAction(ide.thymio_add_action_action)
+    thymio_menu.addSeparator()
+
+    # A second copy of the File menu's Roberta import, for convenience while
+    # already working in this submenu -- imports a new PROJECT, so it must
+    # stay usable with no project open, same as the File-menu copy.
+    ide.thymio_import_roberta_action = ide.create_action(
+        ide.tr("Import Open &Roberta XML..."), None, lambda: import_roberta_xml(ide))
+    ide.thymio_import_roberta_action.setProperty("pygm_always_enabled", True)
+    thymio_menu.addAction(ide.thymio_import_roberta_action)
+
+
+def _build_toolbar(ide, toolbar):
+    if not _thymio_tab_visible():
+        return
+    from .tools_menu import show_thymio_event_selector
+
+    toolbar.addSeparator()
+    ide.thymio_toolbar_action = ide.create_action(
+        ide.tr("Thymio"), None, lambda: show_thymio_event_selector(ide), "SP_DriveNetIcon")
+    ide.thymio_toolbar_action.setToolTip(ide.tr("Add Thymio Event"))
+    ide.thymio_toolbar_action.setProperty("pygm_requires_project", True)
+    toolbar.addAction(ide.thymio_toolbar_action)
+    toolbar.addSeparator()
+
+
+PLUGIN_IDE_MENUS = [("file", _build_file_menu), ("tools", _build_tools_menu)]
+PLUGIN_IDE_TOOLBAR = [_build_toolbar]
 
 
 # The object-editor's Thymio tab (E). The panel widget, its merge-back and

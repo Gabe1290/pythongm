@@ -688,10 +688,84 @@ sub-arc.
 
 ### Stage G — re-enable, remove the `# [1.0]` markers, tests/tooling sweep
 
-G1. Grep the whole repo for `# \[1\.0\]` and confirm every remaining hit is
-    non-Thymio (there may be other 1.0-deferred features under the same
-    marker convention — don't touch those). Delete the Thymio-specific
-    markers now that the code they guarded no longer lives in core to hide.
+- [x] **G1 (partial — UI-visibility product decision resolved, markers
+      removed).** Asked the user explicitly before touching this, since it's
+      the exact "product call, not architecture" fork this plan's Non-goals/
+      Open-decision sections already flagged: literally deleting the 3
+      `# [1.0]` marker comments in `core/ide/_menu_builder.py` means
+      uncommenting the Tools→Thymio Programming submenu, the Configure
+      Thymio Blocks menu item, and the toolbar button. **Decision: keep it
+      hidden** — matches the standing 1.0 decision (memory:
+      `thymio-hidden-for-1.0`), reversing it is out of scope for a
+      relocation. Confirmed via `git grep -n '^\s*# \[1\.0\]'`: the
+      convention had exactly one user (Thymio) — zero markers remain
+      anywhere in the repo now, not just non-Thymio ones. What actually
+      landed: the 5 Tools-menu/toolbar action handlers
+      (`configure_thymio`, `toggle_thymio_tab`, `show_thymio_playground`,
+      `show_thymio_event_selector`, `show_thymio_action_selector`) moved
+      from `core/ide/_dialogs.py` into new `extensions/thymio/tools_menu.py`
+      (free functions, `self`→`ide`, same pattern as `extensions/thymio/
+      export`'s `export_aseba_code`/`import_roberta_xml`). New
+      `_build_tools_menu`/`_build_toolbar` in `extensions/thymio/__init__.py`
+      build the same UI the commented-out core code used to, wired through
+      the existing `PLUGIN_IDE_MENUS`/`PLUGIN_IDE_TOOLBAR` seam (Stage 0.5) —
+      **still gated by the same `show_thymio_tab` config flag** that already
+      gates the object-editor tab, so build nothing on a default install;
+      core now carries the hiding decision as *data* (one config default),
+      not as commented-out code naming Thymio. Flipping that one flag later
+      (the "Open decision" section's promised one-line follow-up) brings the
+      tab, the Tools-menu entries and the toolbar button back together.
+  - **Generalized a second thing found en route**: `core/ide_window.py`'s
+    `update_ui_state()` also hardcoded three Thymio action-attribute names
+    directly (`thymio_add_event_action`/`thymio_add_action_action`/
+    `thymio_toolbar_action` — enable-with-project; `thymio_import_roberta_action`
+    — always-enabled; plus `export_aseba_action` — enable-with-project, a
+    Stage-D leftover). All five are real `QAction`s parented to `ide` via
+    `ide.create_action(...)`, so they're already visited by
+    `update_ui_state()`'s existing `findChildren(QAction)` sweep — added two
+    new QAction-property checks there (`pygm_requires_project`, alongside
+    the existing `pygm_always_enabled`) so an extension flags its own
+    actions instead of core naming them. All five hardcoded hasattr blocks
+    deleted; `_build_tools_menu`/`_build_file_menu` set the property on the
+    actions they build instead. This is the same class of generalization
+    `pygm_always_enabled` itself already established for the Welcome-tab
+    dropdown (2026-06-26) — reusing precedent, not inventing new
+    architecture.
+  - New tests in `tests/test_thymio_extension.py`'s "G — Tools menu /
+    toolbar" section: the 5 methods live in the extension and not on
+    `DialogsMixin`; zero real `# [1.0]` markers repo-wide (`git grep`, exit
+    code 1 = no matches); `_build_tools_menu`/`_build_toolbar` build nothing
+    when `show_thymio_tab` is False (default) and build the full UI —
+    correct actions, correct `pygm_requires_project`/`pygm_always_enabled`
+    properties — when True; `update_ui_state()` actually gates those
+    properties correctly end-to-end (disabled with no project, enabled with
+    one, roberta-import always enabled); `core/ide_window.py`'s source no
+    longer contains any of the five hardcoded action-attribute names. Also
+    moved `test_audit_ide_window_leaks.py`'s L4 test (`show_thymio_playground`
+    reuse/`WA_DeleteOnClose`) into this file, updated to call the now-free
+    function — that file's docstring/scope trimmed to just L3.
+  - **Test-harness landmine, not a production bug** (cost real debugging
+    time, worth remembering): a `QMenu` parented to a *Python-subclassed*
+    `QMainWindow` (even a trivial `class Stub(QMainWindow): pass`) hits a
+    PySide6/shiboken wrapper-ownership quirk if `QAction.menu()` is called
+    **twice** on the same action (e.g. once in a list-comprehension's filter
+    condition, once for its value) — the second lookup raises `RuntimeError:
+    Internal C++ object (QMenu) already deleted`, even though the submenu's
+    Qt-level C++ parent (the containing menu) is still alive and referenced.
+    Confirmed via a from-scratch minimal repro that a QMenu parented to a
+    **plain, non-subclassed** `QMainWindow()` does NOT hit this — subclassing
+    is the trigger. Real production code is unaffected (`_build_tools_menu`
+    only ever calls `.addMenu()`'s return value once and keeps that single
+    reference); fixed the test by looking up `.menu()` exactly once into a
+    local per action instead of a double-evaluated comprehension.
+  - Suite verified in three alphabetical sub-batches after this unit: a-g
+    2491 passed/0 failed, h-p 1671 passed/0 failed, q-z 1372 passed/0 failed
+    (the same 2 pre-existing order-dependent `test_zip_save_state.py`
+    failures as Stage F, re-confirmed passing in isolation — not a
+    regression).
+  - **G1 is NOT fully closed** — see G5's new sub-item below for the
+    remaining, much larger piece.
+
 G2. Migrate the ~22 `test_thymio_*` + ~12 Roberta/Aseba + the Thymio-relevant
     subset of the ~16 `*playground*` test files to import from
     `extensions.thymio.*` (same "tests stay in `tests/`, only their imports
@@ -699,24 +773,86 @@ G2. Migrate the ~22 `test_thymio_*` + ~12 Roberta/Aseba + the Thymio-relevant
     `PluginExecutor`-not-`ActionExecutor` dispatch-pattern landmine noted
     for the raycast move, item 1 in its landmines list: these tests likely
     need the same `load_all_plugins(ex)` + dispatch-through-`action_handlers`
-    rewrite).
+    rewrite). **Not started.**
 G3. Verify `tools/action_ref_i18n.py`, `tools/gen_preset_docs.py`,
     `scripts/gen_translation_ts.py` still produce correct output once
     Thymio actions load from `extensions/thymio/` instead of
     `actions/thymio_actions.py` — they already handle raycast/block_world/
     multiplayer this way (post-`load_all_plugins()` `ACTION_TYPES`), so this
-    should be a verification pass, not new code.
-G4. Write `extensions/thymio/README.md` and `extensions/thymio/extension.json`
-    (see "Open decision" below for the `enabled` default).
+    should be a verification pass, not new code. **Not started.**
+G4. `extensions/thymio/extension.json` already exists (written back in an
+    earlier stage, `enabled: true` — this is the *loader*-level flag, i.e.
+    "existing Thymio-authored projects keep working," a different axis from
+    the UI-visibility flag G1 resolved; the two are independent and both
+    currently match pre-refactor behaviour). **Still open: write
+    `extensions/thymio/README.md`** (every sibling extension has one;
+    Thymio doesn't yet).
 G5. Full-repo grep sweep: zero `thymio`/`Thymio`/`aseba`/`Aseba`/`roberta`/
     `Roberta` references left in `core/`, `runtime/`, `editors/` (excluding
     `editors/object_editor/object_editor_main.py`'s now-generic panel-registry
     call site), `widgets/` (excluding the now-generic asset-tree/menu
     call sites), `dialogs/` (excluding `_block_config_dialog_base.py`'s
-    still-accurate docstring mention), `config/` (excluding the
-    `PLUGIN_BLOCK_CATEGORIES` merge point) — this is the "fully independent"
-    bar this plan is named for, made checkable by a single command rather
-    than a judgment call.
+    still-accurate docstring mention, AND `dialogs/blockly_config_dialog.py`'s
+    use of `THYMIO_CATEGORIES` purely to *exclude* those category names from
+    the generic dialog — same already-decided "stays in core, it's just
+    string data" reasoning, not previously written down as its own
+    exception), `config/` (excluding the `PLUGIN_BLOCK_CATEGORIES` merge
+    point) — this is the "fully independent" bar this plan is named for,
+    made checkable by a single command rather than a judgment call.
+  - **`core/`, `runtime/`, `widgets/`, `dialogs/`, `config/`: done as of
+    this G1 unit** — re-ran the sweep after landing it; every remaining hit
+    in those five trees is a pointer comment ("moved to extensions/thymio",
+    a plan-doc/stage citation) or one of the two named exceptions above.
+    Confirmed by `git grep -niE 'thymio|aseba|roberta'` per directory.
+  - **`editors/`: NOT done — a real, previously-undiscovered gap, much
+    bigger than a grep-and-delete.** Stage E's own docstring claim ("the
+    whole Thymio-specific side of it now") only covered the *dedicated*
+    object-editor Thymio tab (`ObjectEditorPanel`); the *Standard* event
+    panel — reachable with the Thymio tab OFF, i.e. on every default
+    install with a `thymio*`-named object in the project — has deep, never-
+    before-touched Thymio awareness across six files:
+    - `editors/object_editor/events/_panel.py` — imports
+      `THYMIO_EVENT_CATEGORIES`/`is_thymio_event` from the extension;
+      `execute_code`-parsing logic specifically detects and re-derives
+      Thymio actions from Python source (the "lossless rewrite" guard —
+      has its own dedicated regression suite,
+      `tests/test_object_events_panel_thymio_lossless_rewrite.py`).
+    - `editors/object_editor/events/_event_crud.py` — same imports; builds
+      a whole "🤖 Thymio Events" submenu (grouped by category, sorted,
+      "Visual Selector..." entry) inside the Standard panel's Add-Event
+      context menu; `add_thymio_event_with_selector`.
+    - `editors/object_editor/events/_action_crud.py` —
+      `add_thymio_action_with_selector`/`add_thymio_action_to_sub_event`,
+      importing `ThymioActionSelector` directly.
+    - `editors/object_editor/events/_context_menu.py` — 4 call sites adding
+      a "🤖 Thymio Action..." context-menu entry, gated on
+      `panel.project_has_playgrounds()`.
+    - `editors/object_editor/blockly_widget.py` — filters Thymio blocks/
+      categories out of the Blockly toolbox when the project has no
+      playground.
+    - `editors/object_editor/python_code_parser.py` — the largest single
+      piece: `THYMIO_METHOD_TO_ACTION`, per-action Python-code-template
+      strings for every `thymio_*` action/event, and a family of
+      `_try_parse_thymio_*` methods (call/assignment/aug-assignment/
+      conditional/compare/button-check) implementing the Python↔action-JSON
+      round-trip for Thymio code specifically.
+    None of this was in scope for any A–F stage (they only ever touched the
+    *dedicated* Thymio tab and its own panel/dialogs); it was found only by
+    actually running G5's grep sweep, not anticipated when this plan was
+    written. It's real, working, tested functionality (Standard-mode users
+    can add Thymio events/actions without ever opening the dedicated tab),
+    not dead code — moving it needs the same behaviour-preservation rigor
+    every other stage used, and `python_code_parser.py`'s piece specifically
+    carries real regression risk given its existing dedicated test suite.
+    **Deliberately not attempted in the same session as G1** (this plan's
+    own session-limit discipline: one commit-sized, reviewable unit at a
+    time) — sized as its own follow-up pass, file by file, each with its
+    own before/after proof and test run, the same way Stage C's file-by-file
+    moves were sequenced. Whether this six-file sweep needs its own new
+    seam (an "editor contributes Standard-mode event/action menu entries"
+    extension point, mirroring `PLUGIN_OBJECT_EDITOR_PANELS`) or can move
+    as free functions the way Stage D/G1 did is an open design question for
+    that follow-up, not decided here.
 
 ## Testing / verification strategy
 

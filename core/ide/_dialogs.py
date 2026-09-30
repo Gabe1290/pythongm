@@ -20,9 +20,7 @@ from PySide6.QtWidgets import QMessageBox, QDialog
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl, Qt
 
-from utils.config import Config
 from dialogs.blockly_config_dialog import BlocklyConfigDialog
-from extensions.thymio.dialogs.thymio_config_dialog import ThymioConfigDialog
 from core.logger import get_logger
 
 logger = get_logger(__name__)
@@ -85,48 +83,8 @@ class DialogsMixin:
             logger.debug(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
             logger.debug(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
 
-    def configure_thymio(self):
-        """Open Thymio configuration dialog to customize available Thymio blocks"""
-        from config.blockly_config import load_config, save_config, PRESETS, BlocklyConfig
-
-        # Try to load preset from current project settings first
-        current_config = None
-        if self.current_project_data:
-            project_preset = self.current_project_data.get('settings', {}).get('blockly_preset')
-            if project_preset and project_preset in PRESETS:
-                current_config = BlocklyConfig.from_dict(PRESETS[project_preset].to_dict())
-
-        # Fall back to global config if no project preset
-        if not current_config:
-            current_config = load_config()
-
-        # Show Thymio-specific dialog
-        dialog = ThymioConfigDialog(self, current_config)
-        if dialog.exec() == QDialog.Accepted:
-            # Save the new configuration
-            new_config = dialog.config
-            save_config(new_config)
-
-            # Also save to project settings if a project is open
-            if self.current_project_path and self.current_project_data:
-                if 'settings' not in self.current_project_data:
-                    self.current_project_data['settings'] = {}
-                self.current_project_data['settings']['blockly_preset'] = new_config.preset_name
-                self.save_project()
-                logger.info("✅ Saved Thymio preset to project")
-
-            # Refresh any open events panels
-            self.refresh_event_panels_config()
-
-            # Show confirmation
-            QMessageBox.information(
-                self,
-                self.tr("Thymio Configuration Saved"),
-                self.tr("Thymio block configuration has been saved.\n\n"
-                        "The new Thymio event/action selection is now active.")
-            )
-
-            logger.info("✅ Thymio configuration updated")
+    # configure_thymio moved to extensions/thymio/tools_menu.py
+    # (docs/THYMIO_EXTENSION_PLAN.md, Stage G).
 
     def refresh_event_panels_config(self):
         """Refresh configuration in all open object editors (events panel + blockly)"""
@@ -154,127 +112,9 @@ class DialogsMixin:
                 if blockly_widget and hasattr(blockly_widget, 'apply_configuration'):
                     blockly_widget.apply_configuration(config)
 
-    def toggle_thymio_tab(self):
-        """Toggle visibility of Thymio tab in object editors"""
-        show_thymio = self.show_thymio_tab_action.isChecked()
-
-        # Save preference
-        Config.set('show_thymio_tab', show_thymio)
-
-        # Update all open object editors
-        for i in range(self.editor_tabs.count()):
-            widget = self.editor_tabs.widget(i)
-            if hasattr(widget, 'set_thymio_tab_visible'):
-                widget.set_thymio_tab_visible(show_thymio)
-
-        logger.info(f"Thymio tab visibility: {'shown' if show_thymio else 'hidden'}")
-
-    def show_thymio_playground(self):
-        """Open the Thymio Playground simulator window.
-
-        Reuse a still-live window instead of leaking a new one on every open,
-        and mark it WA_DeleteOnClose so closing it frees the C++ object rather
-        than keeping a dangling handle around.
-        """
-        from extensions.thymio.playground_window import ThymioPlaygroundWindow
-        import shiboken6
-
-        existing = getattr(self, "thymio_playground", None)
-        if existing is not None and shiboken6.isValid(existing):
-            # Already open and live — raise it instead of spawning another.
-            existing.showNormal()
-            existing.raise_()
-            existing.activateWindow()
-            logger.info("Raised existing Thymio Playground window")
-            return
-
-        from PySide6.QtCore import Qt
-        self.thymio_playground = ThymioPlaygroundWindow(self)
-        self.thymio_playground.setAttribute(Qt.WA_DeleteOnClose)
-        self.thymio_playground.show()
-        logger.info("Opened Thymio Playground window")
-
-    def show_thymio_event_selector(self):
-        """Show the Thymio event selector dialog"""
-        from extensions.thymio.dialogs.thymio_event_selector import ThymioEventSelector
-
-        dialog = ThymioEventSelector(self)
-        if dialog.exec() == QDialog.Accepted:
-            selected_event = dialog.get_selected_event()
-            if selected_event:
-                # Try to add event to current object editor
-                current_widget = self.editor_tabs.currentWidget()
-                if hasattr(current_widget, 'events_panel'):
-                    # Call the panel's Thymio event method
-                    if hasattr(current_widget.events_panel, 'add_thymio_event_with_selector'):
-                        # Directly add the event since we already selected it
-                        events_panel = current_widget.events_panel
-                        if selected_event in events_panel.current_events_data:
-                            QMessageBox.information(
-                                self,
-                                self.tr("Event Exists"),
-                                self.tr("This Thymio event already exists in the object.")
-                            )
-                        else:
-                            events_panel.current_events_data[selected_event] = {"actions": []}
-                            events_panel.refresh_events_display()
-                            events_panel.events_modified.emit()
-                else:
-                    QMessageBox.information(
-                        self,
-                        self.tr("No Object Editor"),
-                        self.tr("Please open an object editor first to add Thymio events.")
-                    )
-
-    def show_thymio_action_selector(self):
-        """Show the Thymio action selector dialog"""
-        from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
-
-        # Check if we have an object editor open
-        current_widget = self.editor_tabs.currentWidget()
-        if not hasattr(current_widget, 'events_panel'):
-            QMessageBox.information(
-                self,
-                self.tr("No Object Editor"),
-                self.tr("Please open an object editor first to add Thymio actions.")
-            )
-            return
-
-        events_panel = current_widget.events_panel
-        # Get the currently selected event
-        current_item = events_panel.events_tree.currentItem()
-        if not current_item:
-            QMessageBox.information(
-                self,
-                self.tr("No Event Selected"),
-                self.tr("Please select an event first to add actions to it.")
-            )
-            return
-
-        # Get event name (handle both top-level events and sub-events)
-        event_name = current_item.data(0, Qt.UserRole)
-        if not event_name or not isinstance(event_name, str):
-            QMessageBox.information(
-                self,
-                self.tr("Invalid Selection"),
-                self.tr("Please select an event (not an action) to add Thymio actions.")
-            )
-            return
-
-        dialog = ThymioActionSelector(self)
-        if dialog.exec() == QDialog.Accepted:
-            action_name, parameters = dialog.get_result()
-            if action_name:
-                # Add action to the selected event
-                action_data = {
-                    "action": action_name,
-                    "parameters": parameters
-                }
-
-                if event_name in events_panel.current_events_data:
-                    events_panel.current_events_data[event_name]["actions"].append(action_data)
-                    events_panel.refresh_events_display()
-                    events_panel.events_modified.emit()
+    # toggle_thymio_tab, show_thymio_playground, show_thymio_event_selector,
+    # show_thymio_action_selector moved to extensions/thymio/tools_menu.py
+    # (docs/THYMIO_EXTENSION_PLAN.md, Stage G).
 
     def validate_project(self):
         """Validate project structure and assets"""
