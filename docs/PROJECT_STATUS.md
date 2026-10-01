@@ -174,25 +174,50 @@ This is the complete list. Everything else that used to be tracked in
    layout). All three deliverables (extension, sample, Tutorial) are now
    consistent with each other and fully done modulo Phase 5.
 
-8. **`docs/THYMIO_EXTENSION_PLAN.md` — planned 2026-09-28; Stage 0 (all
-   six core seams) DONE the same day, Stages A–G not started.** Turns
-   Thymio-robot support (currently hidden from the UI via
-   `# [1.0]` markers, code still living in core — see CLAUDE.md's
-   "Thymio hidden for 1.0" note) into a real `extensions/thymio/` folder
-   extension. Much bigger than the raycast/multiplayer/block-world
-   precedents: needs **six new generic core seams** first (an
-   `Instance.extension_state` slot, a per-instance render hook, an input
-   hook, a pluggable asset-type registry for "Playgrounds," an IDE-chrome
-   contribution point for menus/dialogs/asset-tree categories/the
-   object-editor's Thymio tab, and a Blockly-category registry) before the
-   ~9,300 lines of actions/handlers/simulator/renderer/playground-editor/
-   Aseba+Roberta-export code can move. Staged Stage 0 → A → B → C → D → E →
-   F → G in the plan doc. Stage 0 landed as `52eb8640`..`d6e69b87` + the
-   0.6 commit (`Instance.extension_state`, `PLUGIN_INSTANCE_OVERLAYS`,
-   `PLUGIN_INPUT_HANDLERS`, `core/asset_types.py`,
-   `core/ide_extension_points.py` menus/toolbar/asset-tree/object-editor
-   panels, Blockly category merge points), each dummy-proven with no
-   Thymio code moved; pick up at Stage A1 from clean `main`.
+8. **`docs/THYMIO_EXTENSION_PLAN.md` — planned 2026-09-28; DONE, every
+   stage closed (2026-10-01).** *(This entry said "Stage 0 done, Stages
+   A–G not started" — true when written, stale within days; corrected
+   here rather than trusted at face value, same discipline this doc's own
+   "Discipline for future doc-writing" section asks for.)* Turned
+   Thymio-robot support (hidden from the UI via `# [1.0]` markers, code
+   previously living in core — see CLAUDE.md's "Thymio hidden for 1.0"
+   note; the markers and the hidden-by-default product decision are
+   unchanged by this move) into a real `extensions/thymio/` folder
+   extension — ~9,300 lines of actions/handlers/simulator/renderer/
+   playground-editor/Aseba+Roberta-export code, the biggest of the
+   raycast/multiplayer/block-world/Thymio extraction precedents. Needed
+   **six new generic core seams first** (Stage 0: an `Instance.
+   extension_state` slot, a per-instance render hook, an input hook, a
+   pluggable asset-type registry for "Playgrounds," an IDE-chrome
+   contribution point for menus/dialogs/asset-tree categories/object-editor
+   panels, a Blockly-category registry), then the actual code move across
+   Stages A (pure logic) → B (rendering/input) → C (playground editor/
+   runner/window) → D (Aseba/Roberta export) → E (object-editor tab) → F
+   (Blockly toolbox) → G (re-enable/markers/tooling sweep). **Stage G5b**
+   (a late addition, found while finishing G: the object editor's
+   *Standard* panel — reachable with the dedicated Thymio tab off, on any
+   project with a `thymio*` object — still had four Thymio-specific call
+   sites) needed **four more seams**: `ToolboxVisibilityFilter` (G5b.1,
+   hides Thymio Blockly blocks/categories without a playground),
+   `AddEventMenuContribution` (G5b.2, the "Add Event" menu's Thymio
+   submenu), `AddActionMenuContribution` (G5b.3, the events-tree context
+   menu's "🤖 Thymio Action..." entry), and `PLUGIN_EVENTS_DATA_TRANSFORMS`
+   (G5b.4, the post-load `execute_code`→`thymio_*` parsing pass) — all four
+   now-generic seams any future extension's own events/actions can reuse.
+   End state: none of `editors/object_editor/blockly_widget.py`,
+   `_event_crud.py`, `_context_menu.py`, `_action_crud.py`, or `_panel.py`
+   carry any Thymio-specific code at all; core carries zero Thymio
+   knowledge outside the one deliberately-accepted exception
+   (`python_code_parser.py`'s parsing *engine* internals, e.g.
+   `THYMIO_METHOD_TO_ACTION` — a separate, explicitly-deferred design
+   question, optional follow-up, not required for this plan's own stated
+   goal). Landed across many commits over several sessions (`52eb8640`
+   through `136518c3`), one cluster per commit, full suite green after
+   each (final state: 5607 passed, only the 2 pre-existing
+   `test_zip_save_state.py` flakes). The plan doc itself has no unchecked
+   boxes left; per this doc's own convention it's a candidate for deletion
+   + folding into this entry on a future bulk-cleanup pass, not done as
+   part of closing the last checkbox.
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 
