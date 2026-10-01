@@ -3,10 +3,13 @@
 docs/FULL_AUDIT_2026-06-11.md: _try_parse_thymio_conditional (and its
 compare/button helpers) parsed stmt.test and stmt.body into a thymio_if_*
 action but never read stmt.orelse — the entire else branch was silently
-deleted. Amplified by ObjectEventsPanel._parse_execute_code_actions,
-which re-parses any stored execute_code containing 'thymio.' on EVERY
-load and replaces it whenever the parse yields a thymio_ action — so a
-saved, working project lost its else logic just by being opened.
+deleted. Amplified by extensions/thymio/code_parsing.py's
+parse_execute_code_actions (formerly ObjectEventsPanel's own
+_parse_execute_code_actions method; moved verbatim,
+docs/THYMIO_EXTENSION_PLAN.md Stage G5b.4), which re-parses any stored
+execute_code containing 'thymio.' on EVERY load and replaces it whenever
+the parse yields a thymio_ action — so a saved, working project lost its
+else logic just by being opened.
 
 The parser now refuses to convert a Thymio if that has an else/elif and
 preserves the whole statement verbatim as execute_code (the lossless path
@@ -91,10 +94,10 @@ class TestEventsPanelAmplifier:
     """The on-load re-parse must not destroy a saved project's else logic."""
 
     def _run_panel_reparse(self, events_data):
-        from editors.object_editor.events import ObjectEventsPanel
+        from extensions.thymio.code_parsing import parse_execute_code_actions
         host = type('Host', (), {})()
         host.current_events_data = events_data
-        ObjectEventsPanel._parse_execute_code_actions(host)
+        parse_execute_code_actions(host)
         return host.current_events_data
 
     def test_saved_execute_code_with_else_survives_load(self, qapp):

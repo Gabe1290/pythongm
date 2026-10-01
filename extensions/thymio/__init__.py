@@ -67,30 +67,44 @@ is the map. What lives here so far:
   through the generic ``AddEventMenuContribution``/
   ``AddActionMenuContribution`` seams (``core/ide_extension_points``),
   gated by the same ``_project_has_playgrounds`` the toolbox filter uses.
+* ``code_parsing.py`` — the Standard panel's post-load events-data
+  transform: parses ``execute_code`` actions containing Thymio code back
+  into real ``thymio_*`` actions right after a project loads (G5b.4).
+  Registered below through the generic ``PLUGIN_EVENTS_DATA_TRANSFORMS``
+  seam (``core/ide_extension_points``), unconditionally (no playground
+  gate -- its own ``'thymio.' in code`` check decides whether there's
+  anything to do, same as before the move).
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
 shape, ``PLUGIN_ASSET_TREE_CATEGORIES`` for its row/icon/opener/template in
 the IDE (C5).
 
-Stages A-G are closed. **Stage G5b (in progress)** is moving the remaining
-Thymio-aware code out of the object editor's *Standard* panel — reachable
-with the dedicated Thymio tab off, on any project with a `thymio*` object.
-G5b.1 is done: ``_project_has_playgrounds``/``_register_toolbox_visibility_filter``
-below hide the Thymio Blockly categories/blocks from the toolbox when the
-project has no playground, through the generic ``ToolboxVisibilityFilter``
-seam (``core/ide_extension_points``) — ``editors/object_editor/
-blockly_widget.py`` no longer names Thymio at all. G5b.2 is done too:
-``panel_menus.py`` + ``_register_add_event_menu_contribution`` below
-contribute the "Add Event" menu's Thymio events submenu through the generic
+Stages A-G are closed. **Stage G5b is closed too** — it moved the
+remaining Thymio-aware code out of the object editor's *Standard* panel,
+reachable with the dedicated Thymio tab off, on any project with a
+`thymio*` object. G5b.1: ``_project_has_playgrounds``/
+``_register_toolbox_visibility_filter`` below hide the Thymio Blockly
+categories/blocks from the toolbox when the project has no playground,
+through the generic ``ToolboxVisibilityFilter`` seam
+(``core/ide_extension_points``) — ``editors/object_editor/
+blockly_widget.py`` no longer names Thymio at all. G5b.2: ``panel_menus.py``
++ ``_register_add_event_menu_contribution`` below contribute the "Add
+Event" menu's Thymio events submenu through the generic
 ``AddEventMenuContribution`` seam — ``editors/object_editor/events/
-_event_crud.py`` no longer names Thymio either. G5b.3 is done too:
-``panel_menus.py`` + ``_register_add_action_menu_contribution`` below
-contribute the events-tree context menu's "🤖 Thymio Action..." entry
-through the generic ``AddActionMenuContribution`` seam — ``editors/
-object_editor/events/_context_menu.py`` no longer names Thymio either.
-G5b.4 (the execute_code Thymio-parsing pass) is not yet moved; see
-``docs/THYMIO_EXTENSION_PLAN.md``'s Stage G5b section for the design.
+_event_crud.py`` no longer names Thymio either. G5b.3: ``panel_menus.py``
++ ``_register_add_action_menu_contribution`` below contribute the
+events-tree context menu's "🤖 Thymio Action..." entry through the generic
+``AddActionMenuContribution`` seam — ``editors/object_editor/events/
+_context_menu.py`` no longer names Thymio either. G5b.4: ``code_parsing.py``
++ the ``PLUGIN_EVENTS_DATA_TRANSFORMS`` registration below parse Thymio's
+``execute_code`` actions back into real ``thymio_*`` actions right after a
+project loads, through the generic events-data-transform seam —
+``editors/object_editor/events/_panel.py`` no longer names Thymio either.
+See ``docs/THYMIO_EXTENSION_PLAN.md``'s Stage G5b section for the full
+design; none of the files this sweep touched (``blockly_widget.py``,
+``_event_crud.py``, ``_context_menu.py``, ``_action_crud.py``,
+``_panel.py``) carry any Thymio-specific code any more.
 
 Whether Thymio ships *visible* by default remains a separate product call
 (unchanged since 1.0): flip ``show_thymio_tab``'s default in
@@ -429,6 +443,20 @@ def _register_add_action_menu_contribution():
 
 
 PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS = [_register_add_action_menu_contribution()]
+
+
+# The Standard panel's post-load events-data transform: parses execute_code
+# actions containing Thymio code back into real thymio_* actions right
+# after a project loads (G5b.4). Unlike the three contributions above, this
+# one isn't gated by _project_has_playgrounds -- it always runs, same as
+# before the move; its own 'thymio.' in code substring check is what
+# decides whether there's anything to do. code_parsing.py has no Qt
+# dependency at all (its own lazy import is of the parser engine, not Qt),
+# so this import is eager like events.py's, not lazy like the Qt-touching
+# ones above.
+from .code_parsing import parse_execute_code_actions
+
+PLUGIN_EVENTS_DATA_TRANSFORMS = [parse_execute_code_actions]
 
 
 # The Blockly toolbox: 8 categories, the "thymio" preset, category-name

@@ -775,3 +775,75 @@ def test_loader_registers_plugin_add_action_menu_contributions(clean_add_action_
     assert PluginLoader._load_ide_contributions(loader, module) == 1
     assert spec in ep.get_add_action_menu_contributions()
     assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0
+
+
+# ---------------------------------------------------------------------------
+# Events-data transforms (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b.4)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def clean_events_data_transforms():
+    from core import ide_extension_points as ep
+    before = list(ep.get_events_data_transforms())
+    ep.clear_events_data_transforms()
+    yield ep
+    ep.clear_events_data_transforms()
+    for fn in before:
+        ep.register_events_data_transform(fn)
+
+
+def test_events_data_transform_validates(clean_events_data_transforms):
+    ep = clean_events_data_transforms
+
+    def good(panel):
+        panel.current_events_data["touched"] = True
+
+    ep.register_events_data_transform(good)
+    ep.register_events_data_transform("not callable")  # invalid, logged and skipped
+    ep.register_events_data_transform(good)  # duplicate, idempotent
+    assert ep.get_events_data_transforms() == [good]
+
+
+def test_events_data_transform_mutates_in_place(clean_events_data_transforms):
+    ep = clean_events_data_transforms
+
+    def add_marker(panel):
+        panel.current_events_data["marker"] = True
+
+    ep.register_events_data_transform(add_marker)
+
+    class _Panel:
+        current_events_data = {}
+
+    panel = _Panel()
+    ep.apply_events_data_transforms(panel)
+    assert panel.current_events_data == {"marker": True}
+
+
+def test_events_data_transform_survives_a_raise(clean_events_data_transforms):
+    ep = clean_events_data_transforms
+
+    def _boom(panel):
+        raise RuntimeError("broken extension")
+
+    calls = []
+    ep.register_events_data_transform(_boom)
+    ep.register_events_data_transform(lambda panel: calls.append(1))
+
+    class _Panel:
+        current_events_data = {}
+
+    ep.apply_events_data_transforms(_Panel())  # must not raise
+    assert calls == [1]  # the second transform still ran
+
+
+def test_loader_registers_plugin_events_data_transforms(clean_events_data_transforms):
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    ep = clean_events_data_transforms
+    fn = lambda panel: None
+    module = SimpleNamespace(PLUGIN_EVENTS_DATA_TRANSFORMS=[fn])
+    loader = object.__new__(PluginLoader)
+    assert PluginLoader._load_ide_contributions(loader, module) == 1
+    assert fn in ep.get_events_data_transforms()
+    assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0

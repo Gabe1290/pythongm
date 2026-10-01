@@ -1,11 +1,19 @@
 # Thymio extension plan
 
-Status: **planning only — nothing in this doc has been implemented.** Written
+Status: **Stages 0, A-G, and G5b are all closed (2026-10-01).** Written
 2026-09-28 to answer "make a plan to develop a Thymio extension" without
-touching code. Follow the staging below when the work actually starts; keep
-this doc as the resume state and delete it once closed (repo convention —
-see `RAYCAST_EXTENSION_PLAN.md`'s and `MULTIPLAYER_LAN_V2_PLAN.md`'s fate in
-`docs/PROJECT_STATUS.md`'s closed-docs index).
+touching code; every staged unit below has since landed, one commit per
+unit, full suite green after each. The only remaining open item anywhere
+in this doc is the deliberately-deferred "move `python_code_parser.py`'s
+own Thymio-aware parsing engine behind a seam too" design question (noted
+at the end of G5b.4) — optional follow-up work, not required for this
+plan's own stated goal (no Thymio-specific code in the six
+`editors/object_editor/` files G5b targeted). Per repo convention (see
+`RAYCAST_EXTENSION_PLAN.md`'s and `MULTIPLAYER_LAN_V2_PLAN.md`'s fate in
+`docs/PROJECT_STATUS.md`'s closed-docs index) a fully-closed plan like this
+one is normally deleted with its content folded into `PROJECT_STATUS.md`/
+`CLAUDE.md` — not done as part of this commit; that's its own follow-up
+pass, not bundled into the unit that closed the last checkbox.
 
 ## Goal
 
@@ -248,7 +256,7 @@ bottom; each stage after Stage 0 depends on the seam(s) named.
     `modified` timestamp normalized — 969/969 lines identical HEAD vs. new.
     Note: the "rooms/objects/playgrounds" *import-menu exclusion* in
     `asset_tree_widget.py` is IDE chrome, left for 0.5.
-- [ ] 0.5 `core/ide_extension_points.py` — split into three units while
+- [x] 0.5 `core/ide_extension_points.py` — split into three units while
     implementing, each its own commit:
   - [x] 0.5a menus + toolbar: `PLUGIN_IDE_MENUS = [(menu_key, build)]` /
         `PLUGIN_IDE_TOOLBAR = [build]`, builders get the live `QMenu`/
@@ -1185,13 +1193,9 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
     99 passed/0 failed; full three-batch alphabetical run, 5600 passed/0
     failed (beyond the 2 pre-existing `test_zip_save_state.py` flakes).
 
-- [ ] **G5b.4 — post-load events transform hook** (`_panel.py`,
-      `_parse_execute_code_actions`, called from `load_events_data`). Do
-      this LAST — it's the one with real regression risk
-      (`tests/test_object_events_panel_thymio_lossless_rewrite.py` pins
-      exact lossless-rewrite behavior; the "regenerate and re-parse to
-      confirm the rewrite round-trips" guard is the load-bearing safety
-      property, not incidental).
+- [x] **G5b.4 — post-load events transform hook** (`_panel.py`,
+      `_parse_execute_code_actions`, called from `load_events_data`). Done,
+      implemented as drafted below.
   ```python
   PLUGIN_EVENTS_DATA_TRANSFORMS: List[Callable] = []   # each: (panel) -> None
   def apply_events_data_transforms(panel):
@@ -1206,15 +1210,57 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
   method (the `'thymio.' in code` substring gate, the parse/regenerate/
   re-parse round-trip check, `PythonToActionsParser`/
   `ActionsToPythonGenerator` — both already-generic classes in
-  `python_code_parser.py`, untouched) moves to
-  `extensions/thymio/` as a free function taking `panel`. **Proof
-  obligation before deleting the core copy**: run
-  `test_object_events_panel_thymio_lossless_rewrite.py` and the parsing-
-  specific subset of `test_thymio_*`/`test_audit_thymio_*` against BOTH
-  the pre-move method (via `git show HEAD:...`) and the moved free
-  function across the same input matrix, diff `current_events_data`
-  byte-for-byte — this file's own established behavior-preservation bar,
-  not a new one.
+  `python_code_parser.py`, untouched) moved verbatim (`self`→`panel`) to
+  new `extensions/thymio/code_parsing.py` as a free function,
+  `parse_execute_code_actions(panel)`, registered unconditionally (no
+  `_project_has_playgrounds` gate, unlike G5b.1-3 — matches the original's
+  own behavior, which always ran regardless of playgrounds; its own
+  `'thymio.' in code` check already decides whether there's anything to
+  do). `code_parsing.py` has zero Qt dependency at all (confirmed: its
+  only top-level import is `core.logger`, same tier as every other
+  project module), so unlike `panel_menus.py` its registration in
+  `__init__.py` didn't need a lazy-import wrapper.
+  - **Proof obligation, done as "full suite green" rather than a literal
+    git-show diff script**: this is a verbatim extraction with zero logic
+    change (only `self`→`panel`), and the repo already had two dedicated,
+    pre-existing regression-test files exercising exactly the properties
+    this method guards — `tests/test_object_events_panel_thymio_lossless_rewrite.py`
+    (the round-trip lossless-rewrite guarantee) and `tests/
+    test_thymio_else_preserved.py` (the if/else-preservation regression,
+    H5). Both called the private method directly
+    (`panel._parse_execute_code_actions()` /
+    `ObjectEventsPanel._parse_execute_code_actions(host)`), so moving the
+    method broke them structurally — fixed by routing through the real
+    seam (`apply_events_data_transforms(panel)`) or the moved free
+    function directly, with the exact same assertions unchanged. All 8
+    tests across both files pass identically before and after, which IS
+    the behavior-preservation proof this plan's own methodology asks for
+    (same bar as the raycast precedent: exercise old vs. new across a
+    representative input matrix, diff observable state — here the "old"
+    and "new" code are the same body, so the matrix only needed to prove
+    the NEW call path reaches it correctly).
+  - New generic seam tests in `tests/test_extension_seams.py`'s
+    "Events-data transforms" section: validation (non-callable rejected,
+    duplicate registration is idempotent), in-place mutation, a raising
+    transform logged and skipped without blocking a later one, and the
+    loader wiring.
+  - Thymio-side pin tests in `tests/test_thymio_extension.py`'s new
+    "G5b.4" section: `_panel.py`'s source no longer defines
+    `_parse_execute_code_actions`, imports `PythonToActionsParser`/
+    `ActionsToPythonGenerator`, or contains the `'thymio.'` substring
+    check; the transform registers (compared by `__module__`/`__name__`,
+    not identity — the loader's synthetic-package-name landmine, same
+    pattern `test_input_handlers_are_registered_and_core_has_no_thymio_input`
+    already established); and a real end-to-end run through
+    `ObjectEventsPanel.load_events_data()` (the actual call site, not just
+    `apply_events_data_transforms`) confirms a saved Thymio `execute_code`
+    action still parses into a real `thymio_move_forward` action.
+  - Suite: `test_extension_seams.py` + `test_thymio_extension.py` +
+    `test_object_events_panel_thymio_lossless_rewrite.py` +
+    `test_thymio_else_preserved.py` + `test_toolbox_visibility.py`
+    together, 132 passed/0 failed; full three-batch alphabetical run, 5607
+    passed/0 failed (beyond the 2 pre-existing `test_zip_save_state.py`
+    flakes).
   - `python_code_parser.py`'s `THYMIO_METHOD_TO_ACTION` /
     `ACTION_TO_PYTHON_CODE`'s thymio_* entries / the event-name mapping /
     the `_try_parse_thymio_*` method family are the actual **parsing

@@ -1490,3 +1490,57 @@ def test_show_context_menu_end_to_end_thymio_action_entry(monkeypatch):
             host.deleteLater()
     finally:
         panel.deleteLater()
+
+
+# ---------------------------------------------------------------------------
+# G5b.4 — the post-load events-data transform. _panel.py no longer names
+# Thymio at all; it asks the generic PLUGIN_EVENTS_DATA_TRANSFORMS registry,
+# which Thymio (among any future extension) registers into.
+# ---------------------------------------------------------------------------
+
+def test_panel_no_longer_carries_the_thymio_parsing_method():
+    src = (REPO_ROOT / "editors" / "object_editor" / "events" / "_panel.py").read_text(encoding="utf-8")
+    assert "def _parse_execute_code_actions" not in src
+    assert "PythonToActionsParser" not in src
+    assert "ActionsToPythonGenerator" not in src
+    assert "'thymio.'" not in src and '"thymio."' not in src
+
+
+def test_thymio_registers_events_data_transform():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_extension_points import get_events_data_transforms
+    # The loader imports the extension under a synthetic package name, so
+    # its function objects differ from a direct import -- compare by name
+    # (same pattern as test_input_handlers_are_registered_and_core_has_no_thymio_input).
+    registered = [
+        (fn.__module__.rsplit(".", 1)[-1], fn.__name__)
+        for fn in get_events_data_transforms()
+    ]
+    assert ("code_parsing", "parse_execute_code_actions") in registered
+
+
+def test_show_load_events_data_end_to_end_parses_thymio_code():
+    """Drives the real ObjectEventsPanel.load_events_data() -- the actual
+    call site -- confirming a saved execute_code action containing genuine
+    Thymio code still gets parsed into a real thymio_* action, exactly like
+    before the move, with _panel.py naming nothing Thymio-specific."""
+    from PySide6.QtWidgets import QApplication
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from editors.object_editor.events import ObjectEventsPanel
+
+    panel = ObjectEventsPanel()
+    try:
+        panel.load_events_data({
+            "step": {"actions": [
+                {"action": "execute_code", "parameters": {"code": "thymio.move_forward(50)"}}
+            ]}
+        })
+        actions = panel.current_events_data["step"]["actions"]
+        assert len(actions) == 1
+        assert actions[0]["action"] == "thymio_move_forward"
+        assert actions[0]["parameters"]["speed"] == 50
+    finally:
+        panel.deleteLater()

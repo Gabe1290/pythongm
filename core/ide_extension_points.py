@@ -211,6 +211,7 @@ def clear_ide_contributions() -> None:
     clear_toolbox_visibility_filters()
     clear_add_event_menu_contributions()
     clear_add_action_menu_contributions()
+    clear_events_data_transforms()
 
 
 def apply_menu_contributions(ide, menus: Dict[str, object]) -> None:
@@ -422,3 +423,49 @@ def apply_add_action_menu_contributions(add_action_menu, panel, event_name, sub_
                 lambda checked=False, e=event_name, k=sub_event_key, s=spec: s.handler(panel, e, k))
         except Exception as exc:
             logger.error(f"Add-action-menu contribution {spec.label!r} failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Events-data transforms: a post-load pass over the Standard panel's own
+# events data, for an extension that needs to reinterpret raw action data
+# right after a project loads -- e.g. parsing Thymio's execute_code actions
+# back into real thymio_* actions, so an object edited on a build without
+# the Thymio tab still round-trips correctly (docs/THYMIO_EXTENSION_PLAN.md,
+# G5b.4).
+#
+#     def transform_events_data(panel) -> None:
+#         ...mutate panel.current_events_data in place...
+#
+#     PLUGIN_EVENTS_DATA_TRANSFORMS = [transform_events_data]
+# ---------------------------------------------------------------------------
+
+_events_data_transforms: List[Callable] = []
+
+
+def register_events_data_transform(fn: Callable) -> None:
+    if not callable(fn):
+        logger.error(f"Events-data transform is not callable: {fn!r}")
+        return
+    if fn in _events_data_transforms:
+        return   # idempotent: the loader may re-run
+    _events_data_transforms.append(fn)
+
+
+def get_events_data_transforms() -> List[Callable]:
+    return list(_events_data_transforms)
+
+
+def clear_events_data_transforms() -> None:
+    _events_data_transforms.clear()
+
+
+def apply_events_data_transforms(panel) -> None:
+    """Run every registered events-data transform against ``panel``
+    (mutates ``panel.current_events_data`` in place). A transform that
+    raises is logged and skipped -- one broken extension can't corrupt
+    load for the rest."""
+    for fn in _events_data_transforms:
+        try:
+            fn(panel)
+        except Exception as exc:
+            logger.error(f"Events-data transform {getattr(fn, '__name__', fn)!r} failed: {exc}")
