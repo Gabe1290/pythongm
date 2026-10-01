@@ -93,13 +93,37 @@ visible_actions(config, project_data) -> set[str]      # action names
 
 ## Units — one commit + push each, full-suite CI green before the next
 
-- [ ] **U0 — this plan.** Commit + push.
-- [ ] **U1 — resolver + tests, not wired.** `config/toolbox_visibility.py`
+- [x] **U0 — this plan.** Committed + pushed (9ec05067, d8b8f9b5).
+- [x] **U1 — resolver + tests, not wired.** `config/toolbox_visibility.py`
   with `active_extensions` / `visible_actions`. Tests pin: extension action
   hidden when inactive in every preset; shown when active in beginner;
   activation via `settings.active_extensions`; activation via usage; a
   globally disabled extension never active; Audio always; hand-written block
   gating unchanged. Pure — no Qt, no JS.
+  - Implementation detail worth recording: `visible_actions` resolves each
+    action's block-type name via `ACTION_TO_BLOCKLY_MAP.get(name, name)`
+    once and checks membership in `config.enabled_blocks` — this single
+    lookup covers *both* the hand-written-block case (map has a real entry,
+    e.g. `move_set_hspeed` → `set_hspeed`) and the not-yet-added
+    auto-generated-action case (no map entry, falls back to the action name
+    itself) with no separate OR-branch needed, since the map genuinely has
+    no entry for any of the 82 currently-ungated actions.
+  - Thymio needed no special-casing: its 28 actions were already confirmed
+    (Stage G3 of `docs/THYMIO_EXTENSION_PLAN.md`) to never register into
+    `ACTION_TYPES` at all (it uses the older GM80-dialog `ActionDefinition`
+    schema, not `PLUGIN_ACTIONS`), so `visible_actions`'s iteration over
+    `ACTION_TYPES.items()` never encounters a `thymio_*` name in the first
+    place — decision 4 ("Thymio keeps its own gate") holds automatically,
+    not by an explicit exclusion.
+  - `tests/test_toolbox_visibility.py` (7 tests), using `raycast_2_5d`'s
+    4 real actions as the extension-gating fixture (closest to a worked
+    example already in the repo) rather than a dummy module, since the
+    resolver's only real dependency (`plugin_loader.extension_for_action`
+    reading `extension.json` manifests) needs real files on disk anyway.
+  - Full suite: a-g 2494 passed, h-p 1671 passed, q-z split q-s/t-z (the
+    documented pre-existing IDE-window access-violation landmine hit again
+    partway through the full q-z run, unrelated to this change — pure-Python
+    module, no Qt) 623 + 763 passed, 0 real failures throughout.
 - [ ] **U2 — presets learn about generated actions.** Presets gain the core
   auto-generated action names (`Game`, `Particles`, `Score`, `Views`, `Grid`,
   plus the unmapped actions that merge into hardcoded categories).
