@@ -153,3 +153,114 @@ def test_generated_action_names_matches_the_real_js_hardcoded_set():
     assert GENERATED_ACTION_NAMES == expected_generated, (
         f"missing from GENERATED_ACTION_NAMES: {expected_generated - GENERATED_ACTION_NAMES}; "
         f"stale entries no longer generated: {GENERATED_ACTION_NAMES - expected_generated}")
+
+
+# ---------------------------------------------------------------------------
+# U3 — BlocklyWidget.apply_configuration sends the resolved payload.
+# ---------------------------------------------------------------------------
+
+def _apply_and_capture(widget, config):
+    import json
+    sent = {}
+
+    def _capture(js):
+        payload = js[len("window.blocklyApi.reconfigureToolbox("):-1]
+        sent["config"] = json.loads(payload)
+
+    widget.web_view.page().runJavaScript = _capture
+    widget.apply_configuration(config)
+    return sent["config"]
+
+
+def test_apply_configuration_payload_for_beginner_with_and_without_raycast():
+    from PySide6.QtWidgets import QApplication, QMainWindow
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from editors.object_editor.blockly_widget import BlocklyWidget
+    from config.blockly_config import PRESETS
+
+    class _IDE(QMainWindow):
+        current_project_data = None
+
+    ide = _IDE()
+    widget = BlocklyWidget(ide)
+    try:
+        beginner = PRESETS["beginner"]
+
+        payload = _apply_and_capture(widget, beginner)
+        blocks = set(payload["enabled_blocks"])
+        assert "set_facing_angle" not in blocks       # raycast inactive
+        assert "enable_raycast_view" not in blocks
+        assert "restart_game" in blocks                # U2 addition, still works
+        assert "draw_sprite" not in blocks              # U2 deliberate exclusion
+        assert "event_create" in blocks                 # non-action entry preserved
+
+        ide.current_project_data = {"settings": {"active_extensions": ["raycast_2_5d"]}}
+        payload2 = _apply_and_capture(widget, beginner)
+        blocks2 = set(payload2["enabled_blocks"])
+        assert "set_facing_angle" in blocks2            # active overrides the preset
+        assert "enable_raycast_view" in blocks2
+        assert "draw_minimap" in blocks2
+        assert "draw_doom_hud" in blocks2
+        assert "restart_game" in blocks2                # unaffected by extension activation
+    finally:
+        widget.deleteLater()
+
+
+def test_apply_configuration_replaces_not_unions_action_entries():
+    """An inactive extension's action name, even if somehow present in
+    config.enabled_blocks directly, must not survive -- the payload is
+    built by REPLACING every action-governed entry with visible_actions'
+    answer, not merely adding to the preset's raw set."""
+    from PySide6.QtWidgets import QApplication, QMainWindow
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from editors.object_editor.blockly_widget import BlocklyWidget
+    from config.blockly_config import BlocklyConfig
+
+    class _IDE(QMainWindow):
+        current_project_data = None
+
+    ide = _IDE()
+    widget = BlocklyWidget(ide)
+    try:
+        cfg = BlocklyConfig(preset_name="custom")
+        cfg.enabled_blocks = {"event_create", "set_facing_angle"}  # planted directly
+        payload = _apply_and_capture(widget, cfg)
+        assert "set_facing_angle" not in set(payload["enabled_blocks"])
+        assert "event_create" in set(payload["enabled_blocks"])
+    finally:
+        widget.deleteLater()
+
+
+def test_register_custom_blocks_sends_every_action_unfiltered():
+    """docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, U3: "block definitions are
+    registered regardless of toolbox" -- a saved workspace referencing a
+    now-hidden block still loads, because Blockly.Blocks[blockType] exists
+    independent of which blocks the toolbox palette shows. Structural proof
+    (no JS engine to actually load a workspace in CI): _register_custom_blocks
+    sends the FULL, unfiltered ACTION_TYPES to registerCustomBlocks -- no
+    preset or project_data narrows this set, unlike apply_configuration's
+    toolbox payload above."""
+    src = (REPO_ROOT / "editors" / "object_editor" / "blockly_widget.py").read_text(encoding="utf-8")
+    body_start = src.index("def _register_custom_blocks")
+    body_end = src.index("\n    def ", body_start + 1)
+    body = src[body_start:body_end]
+    assert "for name, action_type in ACTION_TYPES.items():" in body
+    assert "visible_actions" not in body
+    assert "PRESETS" not in body
+    assert "project_data" not in body
+
+    # And on the JS side: registerCustomBlocks defines Blockly.Blocks[...]
+    # unconditionally, with no reference to enabledBlocks/enabledCategories
+    # at all (those only exist inside generateToolboxXml).
+    js_src = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
+              "blockly_workspace.html").read_text(encoding="utf-8")
+    fn_start = js_src.index("function registerCustomBlocks(actionDefs) {")
+    fn_end = js_src.index("generateActionCode = function", fn_start)
+    fn_body = js_src[fn_start:fn_end]
+    assert "enabledBlocks" not in fn_body
+    assert "enabledCategories" not in fn_body
+    assert "Blockly.Blocks[bt] = {" in fn_body

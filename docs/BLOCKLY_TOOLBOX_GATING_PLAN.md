@@ -184,14 +184,59 @@ visible_actions(config, project_data) -> set[str]      # action names
     split further — same non-deterministic-split-point behavior
     CLAUDE.md already documents, unrelated to this change), 0 real
     failures.
-- [ ] **U3 — Blockly toolbox uses the resolver.** `apply_configuration` sends
-  the resolved set (after the existing Thymio visibility filter). JS: the
-  unmerged-custom-category loop filters per block exactly like the merged
-  path. Structural regex test on `blockly_workspace.html` (no JS engine in
-  CI) + a Python test of the payload `apply_configuration` sends for
-  beginner-with/without-raycast. Verify a workspace containing a
-  now-hidden block still loads (block *definitions* are registered
-  regardless of toolbox; check it in the real widget).
+- [x] **U3 — Blockly toolbox uses the resolver.**
+  - **Python** (`editors/object_editor/blockly_widget.py`,
+    `apply_configuration`): resolves `visible_actions(config, project_data)`
+    (`project_data` from a new `_find_project_data()` parent-walk, mirroring
+    `_collect_project_assets`'s existing pattern but preferring the live
+    in-memory dict), maps each visible action to its block type via
+    `ACTION_TO_BLOCKLY_MAP`, and **replaces** (not unions) every
+    action-governed entry in `config.enabled_blocks` with that answer —
+    `action_block_types = {ACTION_TO_BLOCKLY_MAP.get(n, n) for n in
+    ACTION_TYPES}` splits the preset's raw `enabled_blocks` into "non-action
+    entries" (events, read-only value blocks, Thymio's own `thymio_*`
+    preset entries — none of which `visible_actions` has an opinion on,
+    since Thymio was never in `ACTION_TYPES`) kept as-is, and
+    "action-governed entries" fully replaced. A plain union was considered
+    and rejected: it can only ever ADD a block, never remove one
+    `visible_actions` says should be hidden, which would have been a latent
+    bug the moment any preset's `enabled_blocks` ever contained an inactive
+    extension's action name. The existing Thymio `ToolboxVisibilityFilter`
+    (Stage G5b.1) still runs last, unchanged.
+  - **JS** (`blockly_workspace.html`'s `generateToolboxXml`): the "append
+    dynamically registered custom categories (only those not merged)" loop
+    — the actual bug this whole plan fixes — now filters each block exactly
+    like the merged-category path already did
+    (`enabledBlocks.has(blockType) || enabledBlocks.has(baseName)`), instead
+    of pushing every block through with no check at all.
+  - **"Block definitions registered regardless of toolbox"** verified
+    structurally rather than by loading a real workspace (no JS engine in
+    CI, consistent with this repo's established limit for this file):
+    `_register_custom_blocks` sends `ACTION_TYPES` to `registerCustomBlocks`
+    completely unfiltered — no preset, no `project_data`, called once at
+    page setup, decoupled from `apply_configuration`'s per-reconfigure
+    payload — and `registerCustomBlocks` itself never references
+    `enabledBlocks`/`enabledCategories` (those names only exist inside
+    `generateToolboxXml`). A saved workspace referencing a now-hidden block
+    therefore still deserializes: `Blockly.Blocks[blockType]` exists
+    independent of whether the toolbox palette currently shows it.
+  - Tests: `tests/test_blockly_toolbox_js_filter.py` (4, the structural/regex
+    tier for the JS fix — brace-balance on `generateToolboxXml`, the old
+    unfiltered-push pattern is gone, the new per-block filter is present,
+    the already-correct merged path untouched); `tests/test_toolbox_visibility.py`
+    gained the Python payload tests (beginner with/without an active
+    raycast extension; replace-not-union proven with a planted inactive
+    extension action; the block-definitions-unconditional structural proof)
+    — 11 tests in that file now. Found and fixed one stale assertion in
+    `tests/test_thymio_extension.py`'s own G5b.1 test: it expected
+    `apply_configuration`'s output to be a passthrough of the input
+    `enabled_blocks` minus Thymio, but post-U3 it's the fully resolved set,
+    so Audio actions (always-visible, independent of the config) now
+    correctly appear too — the property that test actually cared about
+    (Thymio stays excluded) still holds; updated the assertion rather than
+    weaken it.
+  - Full suite: a-g 2503 passed, h-p 1671 passed, q-s 623 passed, t 629
+    passed, u-z 138 passed, 0 real failures.
 - [ ] **U4 — action-list editor uses the resolver.**
   `get_actions_by_category(config, project_data=None)`; callers
   (`_context_menu.py`, `action_editor.py`, `conditional_editor.py`) pass the
