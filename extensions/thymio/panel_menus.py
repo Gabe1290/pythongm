@@ -16,6 +16,13 @@ block, ``self`` -> ``panel``, ``is_thymio_event`` -> membership in the
 "thymio" ``ObjectEditorPanel``'s own ``owned_events()``.
 ``add_thymio_event_with_selector`` is moved verbatim out of the same file,
 ``self`` -> ``panel``.
+
+``add_thymio_action_with_selector``/``add_thymio_action_to_sub_event`` are
+moved verbatim out of ``editors/object_editor/events/_action_crud.py``,
+``self`` -> ``panel``; ``thymio_add_action_menu_handler`` is the
+``AddActionMenuContribution.handler`` the events-tree context menu's "Add
+Action" submenu now calls (G5b.3), dispatching on whether a sub-event key
+was given.
 """
 from PySide6.QtWidgets import QMessageBox, QDialog
 
@@ -94,3 +101,62 @@ def add_thymio_event_with_selector(panel) -> None:
 
             panel.refresh_events_display()
             panel.events_modified.emit()
+
+
+def add_thymio_action_with_selector(panel, event_name: str) -> None:
+    """Add a Thymio action using the visual Thymio action selector dialog"""
+    from .dialogs.thymio_action_selector import ThymioActionSelector
+
+    dialog = ThymioActionSelector(panel)
+    if dialog.exec() == QDialog.Accepted:
+        action_name, parameters = dialog.get_result()
+
+        if action_name:
+            # Create action data structure
+            action_data = {
+                "action": action_name,
+                "parameters": parameters
+            }
+
+            # Add to event
+            if event_name not in panel.current_events_data:
+                panel.current_events_data[event_name] = {"actions": []}
+
+            panel.current_events_data[event_name]["actions"].append(action_data)
+            panel.refresh_events_display()
+            panel.events_modified.emit()
+
+
+def add_thymio_action_to_sub_event(panel, event_name: str, sub_event_key: str) -> None:
+    """Add a Thymio action to a keyboard sub-event using the visual selector dialog"""
+    from .dialogs.thymio_action_selector import ThymioActionSelector
+
+    dialog = ThymioActionSelector(panel)
+    if dialog.exec() == QDialog.Accepted:
+        action_name, parameters = dialog.get_result()
+
+        if action_name:
+            # Create action data structure
+            action_data = {
+                "action": action_name,
+                "parameters": parameters
+            }
+
+            # Add to sub-event
+            if event_name in panel.current_events_data:
+                if sub_event_key in panel.current_events_data[event_name]:
+                    if "actions" not in panel.current_events_data[event_name][sub_event_key]:
+                        panel.current_events_data[event_name][sub_event_key]["actions"] = []
+                    panel.current_events_data[event_name][sub_event_key]["actions"].append(action_data)
+                    panel.refresh_events_display()
+                    panel.events_modified.emit()
+
+
+def thymio_add_action_menu_handler(panel, event_name, sub_event_key) -> None:
+    """``AddActionMenuContribution.handler`` for the events-tree context
+    menu's "Add Action" submenu: dispatches to the plain-event or
+    sub-event variant depending on whether a sub-event key was given."""
+    if sub_event_key is None:
+        add_thymio_action_with_selector(panel, event_name)
+    else:
+        add_thymio_action_to_sub_event(panel, event_name, sub_event_key)

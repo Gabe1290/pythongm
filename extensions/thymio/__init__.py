@@ -59,12 +59,14 @@ is the map. What lives here so far:
   ``show_thymio_tab`` config flag (default ``False``), same as the
   object-editor tab, so core carries the UI-hiding decision as data (one
   config default), not as commented-out code naming Thymio.
-* ``panel_menus.py`` — the Standard object-editor panel's "Add Event"
-  menu contribution: the Thymio events submenu (grouped by category) plus
-  the visual-selector dialog hookup (G5b.2). Registered below through the
-  generic ``AddEventMenuContribution`` seam
-  (``core/ide_extension_points``), gated by the same
-  ``_project_has_playgrounds`` the toolbox filter uses.
+* ``panel_menus.py`` — the Standard object-editor panel's "Add Event" menu
+  contribution: the Thymio events submenu (grouped by category) plus the
+  visual-selector dialog hookup (G5b.2); and its events-tree context
+  menu's "Add Action" contribution: the "🤖 Thymio Action..." entry plus
+  the plain-event/sub-event dialog hookups (G5b.3). Both registered below
+  through the generic ``AddEventMenuContribution``/
+  ``AddActionMenuContribution`` seams (``core/ide_extension_points``),
+  gated by the same ``_project_has_playgrounds`` the toolbox filter uses.
 
 "Playgrounds" (the robot arena asset type) is registered below through the
 Stage-0.4/0.5 seams — ``PLUGIN_ASSET_TYPES`` for its on-disk side-file
@@ -82,10 +84,13 @@ blockly_widget.py`` no longer names Thymio at all. G5b.2 is done too:
 ``panel_menus.py`` + ``_register_add_event_menu_contribution`` below
 contribute the "Add Event" menu's Thymio events submenu through the generic
 ``AddEventMenuContribution`` seam — ``editors/object_editor/events/
-_event_crud.py`` no longer names Thymio either. G5b.3-4 (the Standard
-panel's add-action menu contribution and its execute_code Thymio-parsing
-pass) are not yet moved; see ``docs/THYMIO_EXTENSION_PLAN.md``'s Stage G5b
-section for the design.
+_event_crud.py`` no longer names Thymio either. G5b.3 is done too:
+``panel_menus.py`` + ``_register_add_action_menu_contribution`` below
+contribute the events-tree context menu's "🤖 Thymio Action..." entry
+through the generic ``AddActionMenuContribution`` seam — ``editors/
+object_editor/events/_context_menu.py`` no longer names Thymio either.
+G5b.4 (the execute_code Thymio-parsing pass) is not yet moved; see
+``docs/THYMIO_EXTENSION_PLAN.md``'s Stage G5b section for the design.
 
 Whether Thymio ships *visible* by default remains a separate product call
 (unchanged since 1.0): flip ``show_thymio_tab``'s default in
@@ -403,6 +408,27 @@ def _register_add_event_menu_contribution():
 
 
 PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS = [_register_add_event_menu_contribution()]
+
+
+# The events-tree context menu's "Add Action" submenu: a single "🤖 Thymio
+# Action..." entry, shown only with a playground present (same gate as the
+# two contributions above). Dispatch logic lives in panel_menus.py (G5b.3)
+# -- imported lazily for the same PySide6-in-game-process reason.
+def _thymio_add_action_menu_handler(panel, event_name, sub_event_key):
+    from .panel_menus import thymio_add_action_menu_handler
+    thymio_add_action_menu_handler(panel, event_name, sub_event_key)
+
+
+def _register_add_action_menu_contribution():
+    from core.ide_extension_points import AddActionMenuContribution
+    return AddActionMenuContribution(
+        label="🤖 Thymio Action...",
+        is_visible=_project_has_playgrounds,
+        handler=_thymio_add_action_menu_handler,
+    )
+
+
+PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS = [_register_add_action_menu_contribution()]
 
 
 # The Blockly toolbox: 8 categories, the "thymio" preset, category-name

@@ -210,6 +210,7 @@ def clear_ide_contributions() -> None:
     clear_object_editor_panels()
     clear_toolbox_visibility_filters()
     clear_add_event_menu_contributions()
+    clear_add_action_menu_contributions()
 
 
 def apply_menu_contributions(ide, menus: Dict[str, object]) -> None:
@@ -362,3 +363,62 @@ def apply_add_event_menu_contributions(menu, panel, available_events) -> None:
             spec.build(menu, panel, available_events)
         except Exception as exc:
             logger.error(f"Add-event-menu contribution {spec.key!r} failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Add-action-menu contributions: an extension's own single entry at the
+# bottom of the events-tree context menu's "Add Action" submenu
+# (docs/THYMIO_EXTENSION_PLAN.md, G5b.3) -- e.g. "Thymio Action..." in a
+# project with a playground. Unlike the add-event-menu seam above (a whole
+# submenu, built by the extension), this one is a single labelled action per
+# contribution, built generically here; the extension supplies only the
+# label, a visibility check and what happens on click.
+#
+#     PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS = [AddActionMenuContribution(
+#         label="🤖 Robot Action...",
+#         is_visible=lambda panel: project_has_robots(panel),
+#         handler=lambda panel, event_name, sub_event_key: ...,
+#     )]
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class AddActionMenuContribution:
+    label: str
+    is_visible: Callable   # (panel) -> bool
+    handler: Callable      # (panel, event_name, sub_event_key: Optional[str]) -> None
+
+
+_add_action_menu_contributions: List[AddActionMenuContribution] = []
+
+
+def register_add_action_menu_contribution(spec: AddActionMenuContribution) -> None:
+    if (not isinstance(spec, AddActionMenuContribution) or not callable(spec.is_visible)
+            or not callable(spec.handler)):
+        logger.error(f"Add-action-menu contribution is not valid: {spec!r}")
+        return
+    _add_action_menu_contributions.append(spec)
+
+
+def get_add_action_menu_contributions() -> List[AddActionMenuContribution]:
+    return list(_add_action_menu_contributions)
+
+
+def clear_add_action_menu_contributions() -> None:
+    _add_action_menu_contributions.clear()
+
+
+def apply_add_action_menu_contributions(add_action_menu, panel, event_name, sub_event_key=None) -> None:
+    """Append one entry per visible, registered add-action-menu contribution
+    to ``add_action_menu`` (the "Add Action" submenu). A contribution whose
+    ``is_visible``/``handler`` raises is logged and skipped -- a broken
+    extension can't break the whole Add Action menu."""
+    for spec in _add_action_menu_contributions:
+        try:
+            if not spec.is_visible(panel):
+                continue
+            add_action_menu.addSeparator()
+            action = add_action_menu.addAction(panel.tr(spec.label))
+            action.triggered.connect(
+                lambda checked=False, e=event_name, k=sub_event_key, s=spec: s.handler(panel, e, k))
+        except Exception as exc:
+            logger.error(f"Add-action-menu contribution {spec.label!r} failed: {exc}")

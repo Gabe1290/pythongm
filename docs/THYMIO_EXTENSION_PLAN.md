@@ -1095,8 +1095,9 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
     pre-existing `test_zip_save_state.py` flakes, confirmed present
     identically on clean HEAD).
 
-- [ ] **G5b.3 — add-action-menu contribution** (`_context_menu.py`, 4 call
-      sites; `_action_crud.py`'s two Thymio methods move with it).
+- [x] **G5b.3 — add-action-menu contribution** (`_context_menu.py`, 4 call
+      sites; `_action_crud.py`'s two Thymio methods move with it). Done,
+      implemented as drafted below.
   ```python
   @dataclass(frozen=True)
   class AddActionMenuContribution:
@@ -1114,16 +1115,88 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
           action.triggered.connect(
               lambda checked=False, e=event_name, k=sub_event_key: c.handler(panel, e, k))
   ```
-  Replaces all four near-identical
+  Replaced all four near-identical
   `if panel.project_has_playgrounds(): add_action_menu.addSeparator(); ...`
   blocks in `_context_menu.py` with one call each:
   `apply_add_action_menu_contributions(add_action_menu, panel, event_name)`
   (three call sites) and `..., event_name, sub_event_key)` (the keyboard
   sub-event call site). `add_thymio_action_with_selector`/
-  `add_thymio_action_to_sub_event` move out of `_action_crud.py` into the
-  extension as free functions (`panel` param); Thymio's `handler` dispatches
-  on whether `sub_event_key` is `None`. Reuses G5b.1's `_project_has_playgrounds`
-  helper for `is_visible` — don't write a third copy.
+  `add_thymio_action_to_sub_event` moved out of `_action_crud.py` into
+  `panel_menus.py` (the same sibling module G5b.2's Thymio build lives in,
+  not `tools_menu.py` — same reasoning as G5b.2's note) as free functions
+  (`panel` param, verbatim bodies, `self`→`panel`). New
+  `thymio_add_action_menu_handler(panel, event_name, sub_event_key)` is the
+  actual `AddActionMenuContribution.handler` registered — it dispatches to
+  one or the other based on whether `sub_event_key` is `None`. Reused
+  G5b.1's `_project_has_playgrounds` helper for `is_visible` directly (no
+  wrapper needed, unlike the `build`/`handler` callables themselves, which
+  DO need a tiny lazy-import wrapper in `__init__.py` for the same
+  PySide6-in-game-process reason as G5b.2).
+  - Also removed, as a direct, confirmed consequence: `_panel.py`'s own
+    `project_has_playgrounds` method, now dead — `_event_crud.py` stopped
+    calling it in G5b.2 and `_context_menu.py` was its last remaining
+    caller.
+  - New generic seam tests in `tests/test_extension_seams.py`'s
+    "Add-action-menu contributions" section: dataclass validation (all
+    three ways an `AddActionMenuContribution` can be malformed), a raising
+    `is_visible` is logged and skipped without blocking a later visible
+    contribution (including a discovered detail worth noting: a visible
+    contribution's own leading `addSeparator()` shows up in `menu.actions()`
+    as an empty-text action — real Qt behavior, not a bug, and the test
+    filters it out explicitly rather than special-casing it away), a real
+    `QAction.trigger()` reaching the registered handler with the right
+    `(event_name, sub_event_key)`, and the loader wiring.
+  - Thymio-side pin tests in `tests/test_thymio_extension.py`'s new "G5b.3"
+    section: `_context_menu.py`/`_action_crud.py`/`_panel.py` source checks;
+    the contribution registers with a "Thymio Action" label; the dispatch
+    function routes to the right underlying function with a monkeypatch-based
+    unit test (no dialog/Qt involved at all); the gating behaves correctly
+    through `apply_add_action_menu_contributions` directly; and a real
+    end-to-end run through `_context_menu.build_context_menu()` (the actual
+    call site) confirms the "Thymio Action..." entry appears in the real
+    Add Action submenu iff the project has a playground.
+  - **Second real landmine, also caught only by running under pytest (not
+    a standalone script), worth remembering for any future test that reads
+    a live Qt submenu object.** The end-to-end test's first draft returned
+    the "Add Action" submenu's `QMenu` through a small local helper
+    function (`_add_action_submenu(menu): ... return submenu`). Every
+    single run under pytest — alone, in this file, in the full batch, even
+    copy-pasted into a brand-new minimal standalone test file — raised
+    `RuntimeError: Internal C++ object (QMenu) already deleted` on the very
+    next line that touched the returned object, with 100% reproducibility.
+    An otherwise byte-identical standalone `.py` script (no pytest
+    involved) run directly never reproduced it, not even once, including
+    under an explicit `gc.collect()`. Bisected by elimination (ruled out:
+    the `monkeypatch` fixture itself, `try/finally` structure, intermediate
+    `assert` statements, `built.clear()`) down to exactly one factor: a
+    Qt-object lookup that crosses a Python function-call boundary and
+    returns the live object, specifically under pytest's execution
+    environment. Root cause not fully understood (presumably a PySide6/
+    Shiboken ownership-tracking interaction with how pytest's own
+    machinery holds frames/references, not a bug in this seam's own code,
+    which is plain `.addMenu()`/`.addAction()`/`.actions()` calls no
+    different from the rest of this codebase's existing menu-building
+    tests) — not worth chasing further given it's a test-authoring
+    landmine, not a product bug. **Fix, and the rule to carry forward**:
+    look up and read a live Qt child object (a submenu, in this case) all
+    in the SAME function frame where it's obtained — never pass it out
+    through a nested helper function's return value.
+  - Suite: `test_extension_seams.py` + `test_thymio_extension.py` together,
+    99 passed/0 failed; full three-batch alphabetical run, 5600 passed/0
+    failed (beyond the 2 pre-existing `test_zip_save_state.py` flakes).
+
+- [ ] **G5b.4 — post-load events transform hook** (`_panel.py`,
+      `_parse_execute_code_actions`, called from `load_events_data`). Do
+      this LAST — it's the one with real regression risk
+      (`tests/test_object_events_panel_thymio_lossless_rewrite.py` pins
+      exact lossless-rewrite behavior; the "regenerate and re-parse to
+      confirm the rewrite round-trips" guard is the load-bearing safety
+      property, not incidental).
+  ```python
+  PLUGIN_EVENTS_DATA_TRANSFORMS: List[Callable] = []   # each: (panel) -> None
+  def apply_events_data_transforms(panel):
+      for fn in _events_data_transforms:
+          try:
 
 - [ ] **G5b.4 — post-load events transform hook** (`_panel.py`,
       `_parse_execute_code_actions`, called from `load_events_data`). Do

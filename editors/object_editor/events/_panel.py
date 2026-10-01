@@ -723,19 +723,6 @@ class ObjectEventsPanel(EventCrudMixin, ActionCrudMixin, RenderMixin, ClipboardM
 
         return []
 
-    def project_has_playgrounds(self) -> bool:
-        """Check if the current project contains any playground assets"""
-        parent = self.parent()
-        while parent:
-            if hasattr(parent, 'current_project_data'):
-                project_data = parent.current_project_data
-                if project_data and 'assets' in project_data:
-                    playgrounds = project_data['assets'].get('playgrounds', {})
-                    return bool(playgrounds)
-                break
-            parent = parent.parent()
-        return False
-
     def _find_project_data(self):
         """Walk up to the parent (the IDE window) that carries the live,
         in-memory project data -- same helper, same name, as
