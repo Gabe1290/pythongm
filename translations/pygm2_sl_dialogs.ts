@@ -1292,6 +1292,16 @@ Ali želite odpreti mapo izvoza?</translation>
         <source>Show Health in Caption:</source>
         <translation>Prikaži zdravje v naslovu:</translation>
     </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="231"/>
+        <source>Extensions</source>
+        <translation>Razširitve</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="311"/>
+        <source>used by {0} action(s)</source>
+        <translation>uporablja ga {0} dejanj</translation>
+    </message>
 </context>
 <context>
     <name>SpriteStripDialog</name>
