@@ -1325,3 +1325,168 @@ def test_show_add_event_menu_end_to_end_thymio_submenu(monkeypatch):
             host.deleteLater()
     finally:
         panel.deleteLater()
+
+
+# ---------------------------------------------------------------------------
+# G5b.3 — the events-tree context menu's "Add Action" submenu entry.
+# _context_menu.py no longer names Thymio at all; it asks the generic
+# AddActionMenuContribution registry, which Thymio (among any future
+# extension) registers into.
+# ---------------------------------------------------------------------------
+
+def test_context_menu_no_longer_names_thymio():
+    src = (REPO_ROOT / "editors" / "object_editor" / "events" / "_context_menu.py").read_text(encoding="utf-8")
+    assert "extensions.thymio" not in src
+    assert "project_has_playgrounds" not in src
+    assert "add_thymio_action" not in src
+
+
+def test_action_crud_no_longer_carries_the_thymio_methods():
+    src = (REPO_ROOT / "editors" / "object_editor" / "events" / "_action_crud.py").read_text(encoding="utf-8")
+    assert "extensions.thymio" not in src
+    assert "def add_thymio_action_with_selector" not in src
+    assert "def add_thymio_action_to_sub_event" not in src
+
+
+def test_panel_no_longer_carries_project_has_playgrounds():
+    src = (REPO_ROOT / "editors" / "object_editor" / "events" / "_panel.py").read_text(encoding="utf-8")
+    assert "def project_has_playgrounds" not in src
+
+
+def test_thymio_registers_add_action_menu_contribution():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_extension_points import get_add_action_menu_contributions
+    labels = [c.label for c in get_add_action_menu_contributions()]
+    assert any("Thymio Action" in label for label in labels)
+
+
+def test_thymio_add_action_menu_handler_dispatches_on_sub_event_key(monkeypatch):
+    """Direct unit test of the dispatch logic, no dialog/Qt involved at all:
+    a None sub_event_key routes to the plain-event variant, a real one to
+    the sub-event variant, with the right arguments."""
+    from extensions.thymio import panel_menus
+
+    calls = []
+    monkeypatch.setattr(panel_menus, "add_thymio_action_with_selector",
+                         lambda panel, e: calls.append(("plain", panel, e)))
+    monkeypatch.setattr(panel_menus, "add_thymio_action_to_sub_event",
+                         lambda panel, e, k: calls.append(("sub", panel, e, k)))
+
+    panel = object()
+    panel_menus.thymio_add_action_menu_handler(panel, "create", None)
+    panel_menus.thymio_add_action_menu_handler(panel, "keyboard", "left")
+
+    assert calls == [("plain", panel, "create"), ("sub", panel, "keyboard", "left")]
+
+
+def test_thymio_add_action_menu_handler_gated_by_playgrounds():
+    from PySide6.QtWidgets import QApplication, QMenu
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_extension_points import apply_add_action_menu_contributions
+
+    class _NoPlaygrounds:
+        def parent(self):
+            return None
+
+        def tr(self, s):
+            return s
+
+    menu = QMenu()
+    apply_add_action_menu_contributions(menu, _NoPlaygrounds(), "create")
+    assert menu.actions() == []  # gated off: no playground asset
+
+    class _Parent:
+        current_project_data = {"assets": {"playgrounds": {"arena_1": {}}}}
+
+    class _WithPlaygrounds:
+        def parent(self):
+            return _Parent()
+
+        def tr(self, s):
+            return s
+
+    menu2 = QMenu()
+    apply_add_action_menu_contributions(menu2, _WithPlaygrounds(), "create")
+    labels = [a.text() for a in menu2.actions()]
+    assert any("Thymio Action" in label for label in labels)
+
+
+def test_show_context_menu_end_to_end_thymio_action_entry(monkeypatch):
+    """Drives the real events-tree context menu
+    (_context_menu.build_context_menu -- the actual call site) confirming
+    the "🤖 Thymio Action..." entry appears in the Add Action submenu iff
+    the project has a playground, exactly like before the move."""
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QApplication, QWidget
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from editors.object_editor.events import ObjectEventsPanel
+    import editors.object_editor.events._context_menu as context_menu_mod
+
+    # Same per-instance exec() override as the G5b.2 end-to-end test, for
+    # the same reason (see its comment): a real menu.exec() nested event
+    # loop is a landmine for cross-test timer pollution in the full suite.
+    built = []
+    real_qmenu = context_menu_mod.QMenu
+
+    class _RecordingQMenu(real_qmenu):
+        def __init__(self, *a, **kw):
+            super().__init__(*a, **kw)
+            self.exec = lambda *a, **kw: None
+            built.append(self)
+
+    monkeypatch.setattr(context_menu_mod, "QMenu", _RecordingQMenu)
+
+    # The "Add Action" submenu's QMenu is looked up and read inline, in
+    # this same frame, deliberately not through a helper function: passing
+    # the result of action.menu() out through a nested function's return
+    # value was confirmed (empirically, by bisecting this exact test) to
+    # let PySide6/Shiboken's ownership tracking free the underlying C++
+    # QMenu the moment that frame returns -- raising "Internal C++ object
+    # already deleted" on the very next access, every time, ONLY under
+    # pytest (a standalone script with the identical steps never
+    # reproduced it). A real but underlying-library quirk, not a bug in
+    # this seam; the workaround is simply to not do that.
+    panel = ObjectEventsPanel()
+    try:
+        panel.current_events_data = {"create": {"actions": []}}
+        panel.refresh_events_display()
+
+        item = None
+        for i in range(panel.events_tree.topLevelItemCount()):
+            candidate = panel.events_tree.topLevelItem(i)
+            if candidate.data(0, Qt.UserRole) == "create":
+                item = candidate
+                break
+        assert item is not None
+        position = panel.events_tree.visualItemRect(item).center()
+
+        built.clear()
+        context_menu_mod.build_context_menu(panel, position)
+        assert built
+        add_action_action = [a for a in built[-1].actions() if a.text() == "Add Action"][0]
+        add_action_menu = add_action_action.menu()
+        assert add_action_menu is not None
+        labels = [a.text() for a in add_action_menu.actions()]
+        assert not any("Thymio Action" in label for label in labels)
+
+        host = QWidget()
+        host.current_project_data = {"assets": {"playgrounds": {"arena_1": {}}}}
+        panel.setParent(host)
+        try:
+            built.clear()
+            context_menu_mod.build_context_menu(panel, position)
+            add_action_action = [a for a in built[-1].actions() if a.text() == "Add Action"][0]
+            add_action_menu = add_action_action.menu()
+            assert add_action_menu is not None
+            labels = [a.text() for a in add_action_menu.actions()]
+            assert any("Thymio Action" in label for label in labels)
+        finally:
+            panel.setParent(None)
+            host.deleteLater()
+    finally:
+        panel.deleteLater()

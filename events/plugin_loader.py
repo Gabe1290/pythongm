@@ -357,12 +357,14 @@ class PluginLoader:
     def _load_ide_contributions(self, module) -> int:
         """Register an extension's PLUGIN_IDE_MENUS / PLUGIN_IDE_TOOLBAR /
         PLUGIN_ASSET_TREE_CATEGORIES / PLUGIN_OBJECT_EDITOR_PANELS /
-        PLUGIN_TOOLBOX_VISIBILITY_FILTERS / PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS
-        (see core/ide_extension_points). Lets an extension add menu entries
-        and toolbar buttons to the IDE window (docs/THYMIO_EXTENSION_PLAN.md,
-        Stage 0.5), a new asset type's row, an object-editor tab, hide its
-        own Blockly toolbox blocks/categories conditionally (Stage G5b.1),
-        and contribute its own events submenu to "Add Event" (Stage G5b.2).
+        PLUGIN_TOOLBOX_VISIBILITY_FILTERS / PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS /
+        PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS (see core/ide_extension_points).
+        Lets an extension add menu entries and toolbar buttons to the IDE
+        window (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.5), a new asset type's
+        row, an object-editor tab, hide its own Blockly toolbox blocks/
+        categories conditionally (Stage G5b.1), contribute its own events
+        submenu to "Add Event" (Stage G5b.2), and its own entry to the
+        events-tree context menu's "Add Action" submenu (Stage G5b.3).
         Harmless in the game process: nothing applies them."""
         from core.ide_extension_points import (
             register_menu_contribution, register_toolbar_contribution,
@@ -389,6 +391,10 @@ class PluginLoader:
         from core.ide_extension_points import register_add_event_menu_contribution
         for spec in (getattr(module, 'PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS', None) or []):
             register_add_event_menu_contribution(spec)
+            count += 1
+        from core.ide_extension_points import register_add_action_menu_contribution
+        for spec in (getattr(module, 'PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS', None) or []):
+            register_add_action_menu_contribution(spec)
             count += 1
         return count
 

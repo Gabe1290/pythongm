@@ -26,53 +26,6 @@ logger = get_logger(__name__)
 
 class ActionCrudMixin:
 
-    def add_thymio_action_with_selector(self, event_name: str):
-        """Add a Thymio action using the visual Thymio action selector dialog"""
-        from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
-
-        dialog = ThymioActionSelector(self)
-        if dialog.exec() == QDialog.Accepted:
-            action_name, parameters = dialog.get_result()
-
-            if action_name:
-                # Create action data structure
-                action_data = {
-                    "action": action_name,
-                    "parameters": parameters
-                }
-
-                # Add to event
-                if event_name not in self.current_events_data:
-                    self.current_events_data[event_name] = {"actions": []}
-
-                self.current_events_data[event_name]["actions"].append(action_data)
-                self.refresh_events_display()
-                self.events_modified.emit()
-
-    def add_thymio_action_to_sub_event(self, event_name: str, sub_event_key: str):
-        """Add a Thymio action to a keyboard sub-event using the visual selector dialog"""
-        from extensions.thymio.dialogs.thymio_action_selector import ThymioActionSelector
-
-        dialog = ThymioActionSelector(self)
-        if dialog.exec() == QDialog.Accepted:
-            action_name, parameters = dialog.get_result()
-
-            if action_name:
-                # Create action data structure
-                action_data = {
-                    "action": action_name,
-                    "parameters": parameters
-                }
-
-                # Add to sub-event
-                if event_name in self.current_events_data:
-                    if sub_event_key in self.current_events_data[event_name]:
-                        if "actions" not in self.current_events_data[event_name][sub_event_key]:
-                            self.current_events_data[event_name][sub_event_key]["actions"] = []
-                        self.current_events_data[event_name][sub_event_key]["actions"].append(action_data)
-                        self.refresh_events_display()
-                        self.events_modified.emit()
-
     def add_action_to_event(self, event_name: str, action_name: str):
         """Add an action to an event"""
         action_type = get_action_type(action_name)

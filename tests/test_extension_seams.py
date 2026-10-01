@@ -674,3 +674,104 @@ def test_loader_registers_plugin_add_event_menu_contributions(clean_add_event_me
     assert PluginLoader._load_ide_contributions(loader, module) == 1
     assert spec in ep.get_add_event_menu_contributions()
     assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0
+
+
+# ---------------------------------------------------------------------------
+# Add-action-menu contributions (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b.3)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def clean_add_action_menu_contributions():
+    from core import ide_extension_points as ep
+    before = list(ep.get_add_action_menu_contributions())
+    ep.clear_add_action_menu_contributions()
+    yield ep
+    ep.clear_add_action_menu_contributions()
+    for spec in before:
+        ep.register_add_action_menu_contribution(spec)
+
+
+def test_add_action_menu_contribution_validates(clean_add_action_menu_contributions):
+    ep = clean_add_action_menu_contributions
+    good = ep.AddActionMenuContribution(
+        label="Dummy Action...", is_visible=lambda panel: True, handler=lambda panel, e, k: None)
+    ep.register_add_action_menu_contribution(good)
+    ep.register_add_action_menu_contribution("not a contribution")  # invalid, logged and skipped
+    ep.register_add_action_menu_contribution(ep.AddActionMenuContribution(
+        label="bad", is_visible="not callable", handler=lambda p, e, k: None))  # invalid too
+    ep.register_add_action_menu_contribution(ep.AddActionMenuContribution(
+        label="bad2", is_visible=lambda p: True, handler="not callable"))  # invalid too
+    assert ep.get_add_action_menu_contributions() == [good]
+
+
+def test_add_action_menu_contribution_appends_only_when_visible(clean_add_action_menu_contributions):
+    from PySide6.QtWidgets import QApplication, QMenu
+    QApplication.instance() or QApplication([])
+    ep = clean_add_action_menu_contributions
+
+    calls = []
+    ep.register_add_action_menu_contribution(ep.AddActionMenuContribution(
+        label="Dummy Action...",
+        is_visible=lambda panel: panel.visible,
+        handler=lambda panel, e, k: calls.append((e, k)),
+    ))
+
+    class _Panel:
+        visible = False
+
+        def tr(self, s):
+            return s
+
+    panel = _Panel()
+    menu = QMenu()
+    ep.apply_add_action_menu_contributions(menu, panel, "create")
+    assert menu.actions() == []
+
+    panel.visible = True
+    menu2 = QMenu()
+    ep.apply_add_action_menu_contributions(menu2, panel, "create", "left")
+    labels = [a.text() for a in menu2.actions()]
+    assert "Dummy Action..." in labels
+    action = next(a for a in menu2.actions() if a.text() == "Dummy Action...")
+    action.trigger()
+    assert calls == [("create", "left")]
+
+
+def test_add_action_menu_contribution_survives_a_raise(clean_add_action_menu_contributions):
+    from PySide6.QtWidgets import QApplication, QMenu
+    QApplication.instance() or QApplication([])
+    ep = clean_add_action_menu_contributions
+
+    def _boom(panel):
+        raise RuntimeError("broken extension")
+
+    ep.register_add_action_menu_contribution(ep.AddActionMenuContribution(
+        label="Boom", is_visible=_boom, handler=lambda p, e, k: None))
+    ep.register_add_action_menu_contribution(ep.AddActionMenuContribution(
+        label="Ok", is_visible=lambda p: True, handler=lambda p, e, k: None))
+
+    class _Panel:
+        def tr(self, s):
+            return s
+
+    menu = QMenu()
+    ep.apply_add_action_menu_contributions(menu, _Panel(), "create")  # must not raise
+    # "Boom"'s is_visible raised before it ever added anything; "Ok" added
+    # its own leading separator (text "") plus its real action (clicking
+    # through to a handler is covered by
+    # test_add_action_menu_contribution_appends_only_when_visible).
+    labels = [a.text() for a in menu.actions() if a.text()]
+    assert labels == ["Ok"]
+
+
+def test_loader_registers_plugin_add_action_menu_contributions(clean_add_action_menu_contributions):
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    ep = clean_add_action_menu_contributions
+    spec = ep.AddActionMenuContribution(
+        label="Dummy", is_visible=lambda panel: True, handler=lambda panel, e, k: None)
+    module = SimpleNamespace(PLUGIN_ADD_ACTION_MENU_CONTRIBUTIONS=[spec])
+    loader = object.__new__(PluginLoader)
+    assert PluginLoader._load_ide_contributions(loader, module) == 1
+    assert spec in ep.get_add_action_menu_contributions()
+    assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0

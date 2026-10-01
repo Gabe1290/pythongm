@@ -11,12 +11,19 @@ context (PySide6 resolves it from the concrete runtime class).
 now (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 4), so the Add-Action
 submenu only offers an extension's actions when the open project has that
 extension active.
+
+The Add-Action submenu's single extra entry (e.g. Thymio's "🤖 Thymio
+Action...") is a registered ``AddActionMenuContribution``
+(``core/ide_extension_points``, docs/THYMIO_EXTENSION_PLAN.md Stage G5b.3)
+at each of the four call sites below -- this file no longer names Thymio
+at all.
 """
 
 from PySide6.QtWidgets import QMenu
 from PySide6.QtCore import Qt
 
 from events.action_types import get_actions_by_category
+from core.ide_extension_points import apply_add_action_menu_contributions
 
 
 def build_context_menu(panel, position):
@@ -49,11 +56,7 @@ def build_context_menu(panel, position):
                         lambda checked, e=event_name, a=action_type.name: panel.add_action_to_collision_event(e, a)
                     )
 
-            # Add Thymio action option (only visible when project has playgrounds)
-            if panel.project_has_playgrounds():
-                add_action_menu.addSeparator()
-                thymio_action = add_action_menu.addAction(panel.tr("🤖 Thymio Action..."))
-                thymio_action.triggered.connect(lambda checked, e=event_name: panel.add_thymio_action_with_selector(e))
+            apply_add_action_menu_contributions(add_action_menu, panel, event_name)
 
             panel._add_event_paste_menu(menu, item)
             menu.addSeparator()
@@ -74,11 +77,7 @@ def build_context_menu(panel, position):
                         lambda checked, e=event_name, a=action_type.name: panel.add_action_to_mouse_event(e, a)
                     )
 
-            # Add Thymio action option (only visible when project has playgrounds)
-            if panel.project_has_playgrounds():
-                add_action_menu.addSeparator()
-                thymio_action = add_action_menu.addAction(panel.tr("🤖 Thymio Action..."))
-                thymio_action.triggered.connect(lambda checked, e=event_name: panel.add_thymio_action_with_selector(e))
+            apply_add_action_menu_contributions(add_action_menu, panel, event_name)
 
             panel._add_event_paste_menu(menu, item)
             menu.addSeparator()
@@ -123,11 +122,7 @@ def build_context_menu(panel, position):
                         lambda checked, e=event_name, a=action_type.name: panel.add_action_to_event(e, a)
                     )
 
-            # Add Thymio action option (only visible when project has playgrounds)
-            if panel.project_has_playgrounds():
-                add_action_menu.addSeparator()
-                thymio_action = add_action_menu.addAction(panel.tr("🤖 Thymio Action..."))
-                thymio_action.triggered.connect(lambda checked, e=event_name: panel.add_thymio_action_with_selector(e))
+            apply_add_action_menu_contributions(add_action_menu, panel, event_name)
 
             panel._add_event_paste_menu(menu, item)
             menu.addSeparator()
@@ -162,13 +157,7 @@ def build_context_menu(panel, position):
                             panel.add_action_to_sub_event(e, k, a)
                         )
 
-                # Add Thymio action option (only visible when project has playgrounds)
-                if panel.project_has_playgrounds():
-                    add_action_menu.addSeparator()
-                    thymio_action = add_action_menu.addAction(panel.tr("🤖 Thymio Action..."))
-                    thymio_action.triggered.connect(
-                        lambda checked, e=event_name, k=sub_event_key: panel.add_thymio_action_to_sub_event(e, k)
-                    )
+                apply_add_action_menu_contributions(add_action_menu, panel, event_name, sub_event_key)
 
                 panel._add_event_paste_menu(menu, item)
                 menu.addSeparator()
