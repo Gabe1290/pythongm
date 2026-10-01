@@ -1634,6 +1634,43 @@ lines rather than matching their text.
 - **Blockly visual ↔ events sync** — automatic, no manual button needed. See
   `SyncCoordinator` in `editors/object_editor/object_editor_main.py`.
 
-## start_moving_direction: `direction_expr` ignored on HTML5 and Kivy (found 2026-09-19)
+## ~~start_moving_direction: `direction_expr` ignored on HTML5 and Kivy~~ (DONE 2026-10-01)
 
-The desktop runtime honours `direction_expr` (a degrees number/expression; plain-number bug fixed 2026-09-19). `export/HTML5/templates/engine.js` and the Kivy codegen read only `directions`, so a ball made with "Direction Expression = 45" (Tutorial 3 style) does not move on those targets. Needs a JS + Kivy codegen change with parity tests.
+Found 2026-09-19. The desktop runtime honours `direction_expr` (a degrees
+number/expression; plain-number bug fixed 2026-09-19); `export/HTML5/
+templates/engine.js` and the Kivy codegen read only `directions`, so a
+ball made with "Direction Expression = 45" (Tutorial 3 style) moved on
+desktop but not after export.
+
+Both targets now check `direction_expr` first (overriding `directions`
+entirely when non-empty, matching `execute_start_moving_direction_action`'s
+own priority order): a known direction name (incl. "stop") resolves the
+same as the directions picker; a plain number is degrees; anything else is
+evaluated as an expression — `gmExpressionValue` on HTML5 (self/other/
+global-aware, already used by several other actions), `_num_code` on Kivy
+(binds bare instance names to `self.<name>`, already used by
+`set_direction_speed` etc.). `move_fixed` has no `direction_expr` param, so
+it's unaffected either way.
+
+**Known residual gap, not fixed here (pre-existing, broader than this
+action):** `choose()`/`random()`/`irandom()` inside a `direction_expr`
+expression aren't supported on either export target — both targets'
+general-purpose expression evaluators (`gmExpressionValue` on HTML5,
+`_num_code`/`_resolve_instance_names` on Kivy) lack these three GameMaker
+functions already, for every action that takes a free expression, not
+specific to this one. Desktop supports them via `_evaluate_expression`'s
+own `gm_random`/`gm_irandom`/`gm_choose` substitution. Pick up as its own,
+separately-scoped item if a sample or tutorial ever needs it — the
+dedicated `directions` multi-choice picker already covers "pick a random
+direction each step" for the common case.
+
+`tests/test_start_moving_direction_expr_export.py` (22 tests): desktop
+reference behaviour (the existing baseline), Kivy codegen + real execution
+for a plain number/direction name/"stop"/an expression, a regression guard
+that an absent/empty `direction_expr` leaves the existing `directions`
+behaviour untouched, a desktop-vs-Kivy angle-parity check across 5
+representative inputs, and HTML5 structural checks (the override is read,
+checked before the `directions` fallback, "stop"/"none" short-circuit, a
+known name resolves via the angles map, the plain-number/expression
+fallback is present, brace-balanced). Full suite 5619 → 5641 passed, 0
+failed.
