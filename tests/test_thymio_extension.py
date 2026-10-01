@@ -1176,7 +1176,17 @@ def test_blockly_widget_apply_configuration_filters_thymio_end_to_end():
         cfg.enabled_categories = {"Thymio Motors", "Movement"}
         widget.apply_configuration(cfg)
 
-        assert set(sent["config"]["enabled_blocks"]) == {"move_free"}
+        # Since docs/BLOCKLY_TOOLBOX_GATING_PLAN.md's Unit 3, apply_configuration
+        # sends the resolved visible-action set, not a passthrough of
+        # cfg.enabled_blocks minus Thymio's filter -- Audio actions are
+        # always visible regardless of what the config says (the existing
+        # deliberate policy, see tests/test_toolbox_visibility.py), so they
+        # show up here too. The property this test actually pins -- Thymio
+        # stays excluded with no active playground -- still holds.
+        AUDIO_ACTIONS = {"check_sound", "stop_sound", "play_sound",
+                          "play_music", "stop_music", "set_volume"}
+        assert set(sent["config"]["enabled_blocks"]) == {"move_free"} | AUDIO_ACTIONS
+        assert not any(b.startswith("thymio_") for b in sent["config"]["enabled_blocks"])
         assert set(sent["config"]["enabled_categories"]) == {"Movement"}
     finally:
         # Stop the pending page load and drop the monkeypatch before

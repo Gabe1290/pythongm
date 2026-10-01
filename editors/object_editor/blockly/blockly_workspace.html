@@ -2786,13 +2786,28 @@
                 }
             }
 
-            // Append dynamically registered custom categories (only those not merged)
+            // Append dynamically registered custom categories (only those not
+            // merged). Filtered exactly like the merged path above
+            // (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 3) -- this used to
+            // append every block with NO check at all, the actual bug the
+            // whole plan fixes; apply_configuration() now sends the fully
+            // resolved visible-action set, so this loop just has to honor it
+            // the same way the merged categories above already do.
             for (var customName in customCategories) {
                 if (mergedCustomCats[customName]) continue;
                 var custom = customCategories[customName];
-                if (custom.blocks.length > 0) {
+                var filteredBlocks = [];
+                for (var k = 0; k < custom.blocks.length; k++) {
+                    var blockXml = custom.blocks[k];
+                    var blockType = extractBlockType(blockXml);
+                    var baseName = blockType.replace(/^custom_/, '');
+                    if (showAll || enabledBlocks.has(blockType) || enabledBlocks.has(baseName)) {
+                        filteredBlocks.push(blockXml);
+                    }
+                }
+                if (filteredBlocks.length > 0) {
                     xml += '<category name="' + getCategoryMessage(customName, window.BLOCKLY_LANG) + '" colour="' + custom.color + '">';
-                    xml += custom.blocks.join('');
+                    xml += filteredBlocks.join('');
                     xml += '</category>';
                 }
             }

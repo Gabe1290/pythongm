@@ -519,10 +519,50 @@ class BlocklyWidget(QWidget):
         except Exception as e:
             logger.error(f"Error saving project preset: {e}")
 
+    def _find_project_data(self):
+        """Walk up to the parent (the IDE window) that carries the live,
+        in-memory project data -- preferred over re-reading project.json
+        (see _collect_project_assets above) since it reflects unsaved
+        changes. Returns None outside a real IDE (e.g. a bare widget in a
+        test), which callers must treat as "no project open"."""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                return parent.current_project_data
+            parent = parent.parent()
+        return None
+
     def apply_configuration(self, config):
         """Apply a new block configuration to the toolbox"""
 
-        enabled_blocks = set(config.enabled_blocks)
+        # The resolved, visible action set (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md,
+        # Unit 3) -- replaces sending config.enabled_blocks/enabled_categories
+        # directly for anything that's actually an ACTION. Extension actions
+        # are gated by per-project activation instead of the preset
+        # (visible_actions handles that); every other action (hand-written
+        # or generated) is gated by the preset exactly as before.
+        #
+        # config.enabled_blocks also carries non-action block types --
+        # events (event_create...), read-only value blocks (value_x...),
+        # and Thymio's own "thymio" preset's thymio_* entries (Thymio
+        # actions were never in ACTION_TYPES at all, confirmed
+        # THYMIO_EXTENSION_PLAN.md Stage G3 -- its own
+        # ToolboxVisibilityFilter below governs them, untouched here) --
+        # which visible_actions has no opinion on, so those pass through
+        # unchanged. Only entries visible_actions DOES have an opinion on
+        # (every real ACTION_TYPES action, resolved to its block type) get
+        # replaced by its answer, not merely unioned in -- a plain union
+        # could only ever ADD blocks, never remove one visible_actions says
+        # should be hidden (e.g. an inactive extension's action that somehow
+        # ended up in a preset's enabled_blocks).
+        from config.toolbox_visibility import visible_actions
+        from events.action_types import ACTION_TYPES, ACTION_TO_BLOCKLY_MAP
+        project_data = self._find_project_data()
+        visible = visible_actions(config, project_data)
+        resolved_blocks = {ACTION_TO_BLOCKLY_MAP.get(name, name) for name in visible}
+        action_block_types = {ACTION_TO_BLOCKLY_MAP.get(name, name) for name in ACTION_TYPES}
+        non_action_entries = set(config.enabled_blocks) - action_block_types
+        enabled_blocks = non_action_entries | resolved_blocks
         enabled_categories = set(config.enabled_categories)
 
         # Let any registered extension hide its own blocks/categories when
