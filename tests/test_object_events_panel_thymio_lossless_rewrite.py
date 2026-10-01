@@ -1,8 +1,12 @@
-"""L14, docs/FULL_AUDIT_2026-09-07.md: _parse_execute_code_actions rewrites
-saved data on load.
+"""L14, docs/FULL_AUDIT_2026-09-07.md: Thymio's execute_code-parsing
+transform rewrites saved data on load.
 
-ObjectEventsPanel.load_events_data calls _parse_execute_code_actions the
-moment an object is opened -- before any user action. It checked
+ObjectEventsPanel.load_events_data calls apply_events_data_transforms,
+which runs Thymio's registered transform (moved to
+extensions/thymio/code_parsing.py's parse_execute_code_actions,
+docs/THYMIO_EXTENSION_PLAN.md Stage G5b.4; formerly the panel's own
+_parse_execute_code_actions method, same logic, self -> panel) the moment
+an object is opened -- before any user action. It checked
 `'thymio.' in code` as a raw substring against the WHOLE code text
 (comments included) to decide whether to try converting an execute_code
 action into real thymio_* actions. Inside the parser,
@@ -49,17 +53,20 @@ def _qapp():
 
 
 def _panel(_qapp):
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
     from editors.object_editor.events._panel import ObjectEventsPanel
     return ObjectEventsPanel()
 
 
 def _with_code(panel, code):
+    from core.ide_extension_points import apply_events_data_transforms
     panel.current_events_data = {
         "step": {"actions": [
             {"action": "execute_code", "parameters": {"code": code}}
         ]}
     }
-    panel._parse_execute_code_actions()
+    apply_events_data_transforms(panel)
     return panel.current_events_data["step"]["actions"]
 
 
