@@ -2668,8 +2668,56 @@ class GameObject {
                 // execute_start_moving_direction_action, including tolerating
                 // the stringified-list form "['down', 'up']" (see TODO.md,
                 // maze_3 list-param note).
-                let dirs = params.directions;
                 const moveSpeed = parseFloat(params.speed) || 0;
+                // GM angles (0=right, 90=up); diagonals move at `speed`
+                // magnitude along the angle, matching the IDE runtime.
+                const angles = {
+                    'right': 0, 'up-right': 45, 'upright': 45, 'up': 90,
+                    'up-left': 135, 'upleft': 135, 'left': 180,
+                    'down-left': 225, 'downleft': 225, 'down': 270,
+                    'down-right': 315, 'downright': 315,
+                };
+
+                const dirExpr = params.direction_expr;
+                if (typeof dirExpr === 'string' && dirExpr.trim() !== '') {
+                    // direction_expr OVERRIDES `directions` entirely (TODO.md,
+                    // "start_moving_direction's direction_expr ignored on
+                    // HTML5 and Kivy"), mirroring
+                    // execute_start_moving_direction_action's own priority: a
+                    // known direction name (incl. "stop") resolves the same
+                    // as the directions picker; otherwise a plain number is
+                    // degrees; anything else is evaluated as a self/other/
+                    // global-aware expression via gmExpressionValue.
+                    // choose()/random()/irandom() aren't supported in an
+                    // expression on this target yet -- a pre-existing,
+                    // broader gmExpressionValue gap (every action that takes
+                    // an expression shares it), not specific to this action.
+                    const trimmed = dirExpr.trim();
+                    const lower = trimmed.toLowerCase();
+                    if (lower === 'stop' || lower === 'none') {
+                        this.hspeed = 0;
+                        this.vspeed = 0;
+                        break;
+                    }
+                    let angleDeg;
+                    if (lower in angles) {
+                        angleDeg = angles[lower];
+                    } else {
+                        const numeric = parseFloat(trimmed);
+                        if (!isNaN(numeric) && String(numeric) === trimmed) {
+                            angleDeg = numeric;
+                        } else {
+                            const evaluated = gmExpressionValue(trimmed, this, game);
+                            angleDeg = (typeof evaluated === 'number' && !isNaN(evaluated)) ? evaluated : 0;
+                        }
+                    }
+                    const rad = angleDeg * Math.PI / 180;
+                    this.hspeed = moveSpeed * Math.cos(rad);
+                    this.vspeed = -moveSpeed * Math.sin(rad);
+                    break;
+                }
+
+                let dirs = params.directions;
                 if (typeof dirs === 'string' && dirs.trim().startsWith('[')) {
                     dirs = dirs.replace(/[\[\]'"\s]/g, '').split(',').filter(Boolean);
                 }
@@ -2681,14 +2729,6 @@ class GameObject {
                     this.vspeed = 0;
                     break;
                 }
-                // GM angles (0=right, 90=up); diagonals move at `speed`
-                // magnitude along the angle, matching the IDE runtime.
-                const angles = {
-                    'right': 0, 'up-right': 45, 'upright': 45, 'up': 90,
-                    'up-left': 135, 'upleft': 135, 'left': 180,
-                    'down-left': 225, 'downleft': 225, 'down': 270,
-                    'down-right': 315, 'downright': 315,
-                };
                 const angle = angles[choice];
                 if (angle === undefined) break;
                 const rad = angle * Math.PI / 180;

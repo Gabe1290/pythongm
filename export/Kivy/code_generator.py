@@ -1151,22 +1151,45 @@ class ActionCodeGenerator:
         elif action_type in ('move_fixed', 'start_moving_direction'):
             # start_moving_direction shares move_fixed's semantics (a set of
             # named directions + a speed; one is chosen at random, 'stop'
-            # halts). Numeric-angle / expression directions aren't covered
-            # here — the named-direction case is what the events panel emits.
-            # `directions` may be a LIST (what the events panel's 3x3 checkbox
-            # picker emits) or a plain STRING naming one direction (what the
-            # bundled samples and GMK imports store). Treating a string as a
-            # list of directions iterates its CHARACTERS: "right" became five
-            # unknown names, each mapped to 0, so every arrow key moved the
-            # player right until a wall and then stuck -- issue 5 of the
-            # 2026-08-16 pass, on every sample using start_moving_direction.
-            directions = _direction_names(params.get('directions', ['right']))
+            # halts). `directions` may be a LIST (what the events panel's 3x3
+            # checkbox picker emits) or a plain STRING naming one direction
+            # (what the bundled samples and GMK imports store). Treating a
+            # string as a list of directions iterates its CHARACTERS: "right"
+            # became five unknown names, each mapped to 0, so every arrow key
+            # moved the player right until a wall and then stuck -- issue 5 of
+            # the 2026-08-16 pass, on every sample using start_moving_direction.
             speed = params.get('speed', 4)
             dir_map = {
                 'right': 0, 'up-right': 45, 'up': 90, 'up-left': 135,
                 'left': 180, 'down-left': 225, 'down': 270, 'down-right': 315,
                 'stop': -1
             }
+
+            direction_expr = params.get('direction_expr', '')
+            if isinstance(direction_expr, str) and direction_expr.strip():
+                # direction_expr OVERRIDES `directions` entirely (TODO.md,
+                # "start_moving_direction's direction_expr ignored on HTML5
+                # and Kivy"), mirroring execute_start_moving_direction_action's
+                # own priority: a known direction name (incl. "stop") resolves
+                # via dir_map; a plain number is degrees; anything else is an
+                # expression resolved through _num_code, which binds bare
+                # instance names to self.<name>. move_fixed has no
+                # direction_expr param, so this is always skipped for it.
+                # random()/irandom()/choose() aren't supported in an
+                # expression on this target yet -- a pre-existing, broader
+                # _num_code/_resolve_instance_names gap (every action that
+                # takes a numeric expression shares it), not specific to this
+                # action.
+                expr = direction_expr.strip()
+                lowered = expr.lower()
+                if lowered in dir_map:
+                    deg = dir_map[lowered]
+                    if deg == -1:
+                        return "self.speed = 0"
+                    return f"self.direction = {deg}; self.speed = {speed}"
+                return f"self.direction = {_num_code(expr, 0)}; self.speed = {speed}"
+
+            directions = _direction_names(params.get('directions', ['right']))
             # Exact membership, not a substring test: `'stop' in "unstoppable"`
             # is True for a raw string.
             if 'stop' in directions:
