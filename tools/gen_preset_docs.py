@@ -71,7 +71,12 @@ PAGE_CHROME = {
                        "**`Tools > Configure Action Blocks...`** changes the preset "
                        "for the *currently open* project at any time. The IDE's "
                        "default edition is Beginner, so a fresh install's new "
-                       "projects start on this exact list.",
+                       "projects start on this exact list. This list doesn't cover "
+                       "[extension](Extensions) actions (3D View, Network, …): an "
+                       "extension's actions show in every preset, including this "
+                       "one, once it's active for the project — see "
+                       "[Extensions](Extensions)'s \"Which extension actions show "
+                       "in the toolbox\" section.",
         "overview": "Overview",
         "overview_text": "This preset enables **{n_events}** event types and "
                           "**{n_actions}** action types.",
@@ -383,7 +388,13 @@ PAGE_CHROME = {
                        "d'action...`** change le préréglage du projet *actuellement "
                        "ouvert* à tout moment. L'édition par défaut de l'IDE est "
                        "Débutant, donc les nouveaux projets d'une installation "
-                       "fraîche démarrent exactement sur cette liste.",
+                       "fraîche démarrent exactement sur cette liste. Cette liste ne "
+                       "couvre pas les actions d'[extension](Extensions_fr) (Vue 3D, "
+                       "Réseau, …) : les actions d'une extension apparaissent dans "
+                       "tous les préréglages, y compris celui-ci, une fois "
+                       "qu'elle est active pour le projet — voir la section « Quelles "
+                       "actions d'extension apparaissent dans la palette » de la page "
+                       "[Extensions](Extensions_fr).",
         "overview": "Aperçu",
         "overview_text": "Ce préréglage active **{n_events}** types d'événements et "
                           "**{n_actions}** types d'actions.",

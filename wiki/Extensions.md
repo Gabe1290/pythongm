@@ -61,6 +61,30 @@ Because an extension can be turned off, PyGameMaker helps you avoid surprises:
 
 ---
 
+## Which extension actions show in the toolbox
+
+An extension being enabled (above) controls whether its actions exist at
+all. A **second**, per-project setting controls whether they show in *this*
+project's Blockly toolbox and "Add Action"/"Add Event" menus: **File →
+Project Settings → Extensions**, one checkbox per enabled extension.
+
+- A project that **already uses** an extension's actions shows that
+  extension's checkbox checked and disabled — the project depends on it, so
+  turning it off isn't offered. Hovering (or the label) shows how many
+  actions depend on it.
+- Checking an extension you haven't used yet makes its actions available to
+  drag in, without waiting for you to use one by hand first.
+- This applies on top of whatever block preset (Beginner, Intermediate, …)
+  the project uses — an active extension's actions show in **every** preset,
+  including Beginner, since the preset itself has no opinion on extensions
+  it doesn't know about.
+
+Toggling takes effect immediately in already-open editors — no restart
+needed (unlike the global on/off switch above, which needs a restart since
+actions register at launch).
+
+---
+
 ## Extensions vs plugins
 
 Both add actions; they differ only in packaging:
