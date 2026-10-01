@@ -124,32 +124,66 @@ visible_actions(config, project_data) -> set[str]      # action names
     documented pre-existing IDE-window access-violation landmine hit again
     partway through the full q-z run, unrelated to this change — pure-Python
     module, no Qt) 623 + 763 passed, 0 real failures throughout.
-- [ ] **U2 — presets learn about generated actions.** Presets gain the core
-  auto-generated action names (`Game`, `Particles`, `Score`, `Views`, `Grid`,
-  plus the unmapped actions that merge into hardcoded categories).
-  - `full`: all of them (keep the existing "full = everything" migration in
-    `load_config`, extended to action names).
-  - `intermediate` and the focused presets (`platformer`, `grid_rpg`,
-    `sokoban`, `testing`, `code_editor`, `blockly_editor`): **behaviour-preserving**
-    — all core generated actions they show today. Trimming those is a
-    separate, later decision.
-  - `beginner`: only what its tutorials and beginner-edition samples need.
-    Newly hidden by the fix and used by beginner-edition samples:
-    `restart_game` (maze_1/3/4, plateforme_3, treasure, sky_strike_1),
-    `set_window_caption` (maze_2/3/4, plateforme_3, treasure),
-    `set_draw_color` (maze_3/4), `set_draw_font` (maze_3/4),
-    `draw_sprite` (sky_strike_1). **Decided (user, 2026-10-01):** add
-    `restart_game`, `set_window_caption`, `set_draw_color`; leave
-    `set_draw_font` and `draw_sprite` out (a sample opening with a block not
-    in the toolbox still loads and runs — students just can't drag a new
-    one).
-  - Saved custom configs (`load_config`): a config saved before this change
-    has no generated-action names; migrate it by adding all core generated
-    actions (what the user saw before), marked with a config version field so
-    it runs once.
-  - Test: the `test_*preset*` suite + a test asserting every beginner
-    tutorial / beginner-edition sample action is either enabled or on the
-    explicit "loads but not in toolbox" list above.
+- [x] **U2 — presets learn about generated actions.** `config/blockly_config.py`'s
+  new `GENERATED_ACTION_NAMES` frozenset (81 action names, computed by
+  extracting the REAL hardcoded `<block type="...">` set out of
+  `blockly_workspace.html`'s `categories` object and taking every
+  non-extension, non-Audio `ACTION_TYPES` action whose resolved block type
+  isn't in it — not derived from `BLOCK_REGISTRY`, which turned out to
+  diverge from the real hardcoded set for categories like Particles that
+  have config-dialog metadata but no actual hand-written block).
+  - `full` and `intermediate`/`platformer`/`grid_rpg`/`sokoban`/`testing`/
+    `code_editor`/`blockly_editor`: all 81, via one
+    `config.enabled_blocks.update(GENERATED_ACTION_NAMES)` line each —
+    behaviour-preserving as planned, including for `code_editor` (whose own
+    docstring claims a narrower Python-parser-matched scope; the pre-fix
+    bug showed everything there too, so trimming it is still a separate,
+    later decision, not done here).
+  - `beginner`: **the original 5-action audit (3 in, 2 out) was wrong —
+    found and corrected before landing, not after.** A full per-sample
+    audit (every beginner-edition sample's real `project.json`, not just
+    what the plan doc listed) found **17 more** generated actions actually
+    in use, several more widely used than the ones already decided on
+    (`start_moving_direction` in 6 samples; `comment`/`if_collision` in 5
+    each; `test_instance_count`/`sleep`/`move_to_contact`/`execute_code` in
+    3 each; 10 more in 1-2). Presented the full list with per-action usage
+    counts; **decided with the user, 2026-10-01: include all 17** (matches
+    the plan's own stated principle — "only what tutorials/samples need" —
+    rather than its incomplete original audit). Final beginner addition is
+    20 actions total; `set_draw_font`/`draw_sprite` remain the only two
+    deliberately excluded (sky_strike_1/maze_3/4 only, narrow usage, not
+    revisited).
+  - Saved custom configs (`load_config`): new `BlocklyConfig.config_version`
+    field (default 2; `from_dict` reads a missing key as `1`, so every file
+    saved before this unit is detected). `load_config()` now runs a
+    version-gated migration — independent of the existing `preset_name ==
+    "full"` one, which only ever covered `BLOCK_REGISTRY`-known blocks for
+    the full preset — adding `GENERATED_ACTION_NAMES` to `enabled_blocks`
+    and bumping to 2, for *any* saved preset_name, exactly once (verified:
+    second `load_config()` call on the same file makes no further write).
+  - **Drift guard, not just a one-time computation**:
+    `tests/test_toolbox_visibility.py::test_generated_action_names_matches_the_real_js_hardcoded_set`
+    re-extracts the JS hardcoded set the same way and asserts it against a
+    freshly-recomputed "expected generated" set — if `blockly_workspace.html`
+    ever gains or loses a hardcoded block without `GENERATED_ACTION_NAMES`
+    being updated to match, this fails loudly instead of silently
+    reintroducing a version of the exact bug this plan fixes.
+  - `tests/test_blockly_preset_generated_actions.py` (5 tests): every
+    "everything" preset has zero missing generated actions; beginner has
+    exactly its 20 decided additions and not the 2 exclusions; every
+    beginner-edition sample's actually-used generated actions are either
+    visible or on the exclusion list (this is the test that caught the
+    17-action undercount, by actually walking all 14 sample project.json
+    files rather than trusting the plan doc's own list); the saved-config
+    migration end to end (version bump, idempotent on reload, originally-
+    enabled blocks preserved); a fresh config/preset is already
+    `config_version == 2`.
+  - Full suite: a-g 2499 passed, h-p 1671 passed, q-s 623 passed, t 626
+    passed, u-z 138 passed (the t-z combined run hit the documented
+    pre-existing IDE-window access-violation landmine partway through,
+    split further — same non-deterministic-split-point behavior
+    CLAUDE.md already documents, unrelated to this change), 0 real
+    failures.
 - [ ] **U3 — Blockly toolbox uses the resolver.** `apply_configuration` sends
   the resolved set (after the existing Thymio visibility filter). JS: the
   unmerged-custom-category loop filters per block exactly like the merged

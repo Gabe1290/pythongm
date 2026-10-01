@@ -163,6 +163,63 @@ BLOCK_DEPENDENCIES: Dict[str, List[str]] = {
 
 
 # ============================================================================
+# GENERATED ACTION NAMES (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2)
+# ============================================================================
+# Every core (non-extension, non-Audio) action that has no hand-written
+# Blockly block -- editors/object_editor/blockly/blockly_workspace.html's
+# `registerCustomBlocks` builds its Blockly block for these automatically,
+# instead of the literal <block type="..."> XML every BLOCK_REGISTRY entry
+# above corresponds to. Until this unit, these names appeared in NO preset's
+# enabled_blocks at all (the bug docs/BLOCKLY_TOOLBOX_GATING_PLAN.md fixes),
+# so every preset effectively showed every one of them regardless of what it
+# actually declared. Grouped by ActionType.category for readability; the
+# grouping has no functional meaning (every preset below that wants "all of
+# them" just takes the whole set).
+#
+# Keep this in sync with the JS hardcoded block types in
+# blockly_workspace.html's `categories` object --
+# tests/test_toolbox_visibility.py's drift-detection test re-extracts that
+# set and fails loudly if this list and the JS disagree.
+GENERATED_ACTION_NAMES: frozenset = frozenset({
+    # Control
+    "check_empty", "comment", "else_action", "end_block", "execute_code",
+    "execute_script", "if_collision", "if_collision_at", "if_object_exists",
+    "repeat", "start_block", "test_chance", "test_expression", "test_question",
+    # Game
+    "draw_arrow", "draw_background", "draw_ellipse", "draw_line",
+    "draw_scaled_text", "draw_sprite", "draw_variable", "fill_color",
+    "load_game", "open_webpage", "restart_game", "save_game", "set_color",
+    "set_draw_color", "set_draw_font", "set_window_caption", "show_info",
+    "show_video", "splash_show_image", "splash_show_text",
+    # Grid
+    "test_alignment",
+    # Instance
+    "change_instance", "create_moving_instance", "create_random_instance",
+    "destroy_at_position", "set_image_index", "set_image_speed",
+    "start_animation", "stop_animation", "test_instance_count",
+    # Movement
+    "bounce", "jump_to_random", "jump_to_start", "move_grid",
+    "move_to_contact", "move_towards_point", "set_direction_speed",
+    "start_moving_direction",
+    # Particles
+    "burst_particles", "clear_particles", "create_emitter",
+    "create_particle_system", "create_particle_type", "destroy_emitter",
+    "destroy_particle_system", "stream_particles",
+    # Room
+    "check_room", "game_end", "set_background", "set_background_color",
+    "set_room_caption", "set_room_persistent", "set_room_speed",
+    # Score
+    "clear_highscore", "show_highscore", "test_health", "test_lives",
+    "test_score",
+    # Timing
+    "pause_timeline", "set_timeline", "set_timeline_position",
+    "set_timeline_speed", "sleep", "start_timeline", "stop_timeline",
+    # Views
+    "enable_views", "set_view",
+})
+
+
+# ============================================================================
 # CONFIGURATION DATA CLASS
 # ============================================================================
 
@@ -173,13 +230,21 @@ class BlocklyConfig:
     enabled_blocks: Set[str] = field(default_factory=set)
     enabled_categories: Set[str] = field(default_factory=set)
     preset_name: str = "full"
+    # Bumped to 2 when GENERATED_ACTION_NAMES (Unit 2) was added, so
+    # load_config() can tell a config saved before that change apart from
+    # one built fresh by current code (which already includes them) and
+    # migrate it exactly once. A config built directly by this module's own
+    # code (every get_*() preset, any fresh custom config) is current by
+    # construction, hence the default of 2, not 1.
+    config_version: int = 2
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for JSON serialization"""
         return {
             "enabled_blocks": list(self.enabled_blocks),
             "enabled_categories": list(self.enabled_categories),
-            "preset_name": self.preset_name
+            "preset_name": self.preset_name,
+            "config_version": self.config_version,
         }
 
     @classmethod
@@ -188,7 +253,10 @@ class BlocklyConfig:
         return cls(
             enabled_blocks=set(data.get("enabled_blocks", [])),
             enabled_categories=set(data.get("enabled_categories", [])),
-            preset_name=data.get("preset_name", "full")
+            preset_name=data.get("preset_name", "full"),
+            # A file saved before config_version existed has no such key --
+            # that absence IS the "needs migrating" signal (see load_config).
+            config_version=data.get("config_version", 1),
         )
 
     def is_block_enabled(self, block_type: str) -> bool:
@@ -239,6 +307,7 @@ class BlocklyConfig:
         config = cls(preset_name="full")
         for category, blocks in BLOCK_REGISTRY.items():
             config.enable_category(category)
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
         return config
 
     @classmethod
@@ -321,6 +390,38 @@ class BlocklyConfig:
         # Output
         config.enable_block("output_message")      # Game over messages
 
+        # Generated (no hand-written block) actions the fix in
+        # docs/BLOCKLY_TOOLBOX_GATING_PLAN.md newly gates. First decided with
+        # the user 2026-10-01 from a partial audit (3 actions); a full
+        # per-sample audit (every beginner-edition sample's project.json,
+        # tests/test_blockly_preset_generated_actions.py) found 17 more
+        # actually in use, several more widely used than those 3 --
+        # decided with the user the same day to include all of them.
+        # set_draw_font and draw_sprite are the only two left out
+        # (sky_strike_1 only, each): a sample using a block that's not in
+        # the toolbox still loads and runs, it just can't be added again
+        # from the picker.
+        config.enable_block("restart_game")          # maze_1/3/4, plateforme_3, treasure, sky_strike_1
+        config.enable_block("set_window_caption")    # maze_2/3/4, plateforme_3, treasure
+        config.enable_block("set_draw_color")        # maze_3/4
+        config.enable_block("start_moving_direction")  # maze_1/2/3/4, plateforme_3, treasure
+        config.enable_block("comment")                  # maze_3/4, plateforme_1/2/3
+        config.enable_block("if_collision")             # maze_3/4, plateforme_1/2/3
+        config.enable_block("test_instance_count")      # maze_3/4, treasure
+        config.enable_block("sleep")                    # maze_4, plateforme_3, treasure
+        config.enable_block("move_to_contact")          # plateforme_1/2/3
+        config.enable_block("execute_code")             # match3_1/2/3
+        config.enable_block("if_object_exists")         # maze_2, plateforme_3
+        config.enable_block("set_direction_speed")      # maze_3/4
+        config.enable_block("destroy_at_position")      # maze_3/4
+        config.enable_block("check_empty")              # maze_3/4
+        config.enable_block("jump_to_start")            # maze_4, treasure
+        config.enable_block("test_alignment")           # maze_4, treasure
+        config.enable_block("test_chance")              # maze_4, treasure
+        config.enable_block("test_expression")          # plateforme_3
+        config.enable_block("execute_script")           # treasure
+        config.enable_block("set_background")           # sky_strike_1
+
         # Enable categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing",
@@ -379,6 +480,11 @@ class BlocklyConfig:
 
         config.enabled_categories.update({"Sound"})
 
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2):
+        # every generated action already showed here, ungated, before this
+        # fix. Trimming this preset to a smaller set is a separate decision.
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+
         return config
 
     @classmethod
@@ -426,6 +532,9 @@ class BlocklyConfig:
 
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound"}
 
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+
         return config
 
     @classmethod
@@ -472,6 +581,9 @@ class BlocklyConfig:
 
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output", "Sound"}
 
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+
         return config
 
     @classmethod
@@ -515,6 +627,9 @@ class BlocklyConfig:
         config.enable_block("execute_code")
 
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Output"}
+
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
 
         return config
 
@@ -654,6 +769,9 @@ class BlocklyConfig:
         config.enable_block("execute_code")
 
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Output"}
+
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
 
         return config
 
@@ -801,6 +919,13 @@ class BlocklyConfig:
             "Score/Lives/Health", "Drawing", "Timing", "Sound", "Output"
         }
 
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2) --
+        # this preset's own docstring claims a narrower, Python-code-parser-
+        # matched scope, but the pre-fix bug showed every generated action
+        # regardless; trimming to the documented scope is a separate,
+        # later decision (not made here).
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+
         return config
 
     @classmethod
@@ -946,6 +1071,9 @@ class BlocklyConfig:
             "Instance", "Room", "Values", "Sound", "Output", "Game"
         }
 
+        # Behaviour-preserving (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 2).
+        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+
         return config
 
 
@@ -995,12 +1123,26 @@ def load_config() -> BlocklyConfig:
             with open(config_path, encoding='utf-8') as f:
                 data = json.load(f)
                 config = BlocklyConfig.from_dict(data)
+                needs_save = False
+
+                # Migrate (Unit 2, docs/BLOCKLY_TOOLBOX_GATING_PLAN.md): a
+                # config saved before GENERATED_ACTION_NAMES existed has none
+                # of them, which would newly hide every one of those actions
+                # for a custom (non-"full") config that previously saw them
+                # all, same as every preset's own migration below. Runs once
+                # per file -- config_version going to 2 is what stops it
+                # re-running on the next load.
+                if config.config_version < 2:
+                    added = GENERATED_ACTION_NAMES - config.enabled_blocks
+                    if added:
+                        print(f"Blockly config migration: Adding {len(added)} generated action names: {added}")
+                        config.enabled_blocks.update(GENERATED_ACTION_NAMES)
+                    config.config_version = 2
+                    needs_save = True
 
                 # Migrate: If using "full" preset, ensure all new blocks and categories are enabled
                 # This handles the case where new blocks/categories were added after config was saved
                 if config.preset_name == "full":
-                    needs_save = False
-
                     all_blocks = get_all_block_types()
                     new_blocks = all_blocks - config.enabled_blocks
                     if new_blocks:
@@ -1018,10 +1160,11 @@ def load_config() -> BlocklyConfig:
                             config.enabled_categories.add(category)
                         needs_save = True
 
-                    # Save the migrated config so it persists
-                    if needs_save:
-                        save_config(config)
-                        print("Blockly config migration: Saved updated configuration")
+                # Save the migrated config so it persists (either migration
+                # above may have set this, independent of preset_name).
+                if needs_save:
+                    save_config(config)
+                    print("Blockly config migration: Saved updated configuration")
 
                 return config
         except Exception as e:

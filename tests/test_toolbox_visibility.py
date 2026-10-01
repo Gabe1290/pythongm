@@ -25,7 +25,7 @@ def test_hand_written_block_gating_is_unchanged():
     cfg = _beginner()
     shown = visible_actions(cfg, project_data=None)
     assert "bounce" in shown            # in beginner's enabled_blocks
-    assert "restart_game" not in shown  # a core action, not yet in beginner (U2)
+    assert "draw_sprite" not in shown  # a generated action, deliberately excluded from beginner (U2)
 
 
 def test_audio_actions_are_always_visible_regardless_of_preset():
@@ -106,3 +106,50 @@ def test_active_extensions_ignores_malformed_settings():
     assert active_extensions({}) == set()
     assert active_extensions({"settings": {"active_extensions": "not-a-list"}}) == set()
     assert active_extensions({"settings": {"active_extensions": None}}) == set()
+
+
+def _js_hardcoded_action_block_types():
+    """Extract the real <block type="..."> set from blockly_workspace.html's
+    `categories` object -- the ground truth GENERATED_ACTION_NAMES must stay
+    in sync with (config/blockly_config.py's own comment on that constant
+    promises this test). Excludes the two shadow block types (math_number,
+    text) and the 9 read-only value_* blocks, neither of which are actions."""
+    import re
+    js_path = (REPO_ROOT / "editors" / "object_editor" / "blockly" /
+               "blockly_workspace.html")
+    text = js_path.read_text(encoding="utf-8")
+    start = text.index('var categories = {')
+    end = text.index('// Add Math and Logic categories')
+    blob = text[start:end]
+    types = set(re.findall(r'type="([a-zA-Z_][a-zA-Z0-9_]*)"', blob))
+    types -= {"math_number", "text"}
+    types = {t for t in types if not t.startswith("value_")}
+    return types
+
+
+def test_generated_action_names_matches_the_real_js_hardcoded_set():
+    """Drift guard: if blockly_workspace.html's hardcoded `categories` object
+    ever gains or loses a block, GENERATED_ACTION_NAMES
+    (config/blockly_config.py) must be updated to match, or the whole
+    docs/BLOCKLY_TOOLBOX_GATING_PLAN.md fix silently regresses for whatever
+    action changed sides."""
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from events.action_types import ACTION_TYPES, ACTION_TO_BLOCKLY_MAP
+    from events.plugin_loader import extension_for_action
+    from config.blockly_config import GENERATED_ACTION_NAMES
+
+    hardcoded = _js_hardcoded_action_block_types()
+    expected_generated = set()
+    for name, action in ACTION_TYPES.items():
+        if extension_for_action(name) is not None:
+            continue
+        if action.category == "Audio":
+            continue
+        block_type = ACTION_TO_BLOCKLY_MAP.get(name, name)
+        if block_type not in hardcoded:
+            expected_generated.add(name)
+
+    assert GENERATED_ACTION_NAMES == expected_generated, (
+        f"missing from GENERATED_ACTION_NAMES: {expected_generated - GENERATED_ACTION_NAMES}; "
+        f"stale entries no longer generated: {GENERATED_ACTION_NAMES - expected_generated}")
