@@ -2746,6 +2746,16 @@ Alle Aktionen daraus werden übersprungen, und das Projekt sieht möglicherweise
         <translation>Letzte Projekte löschen</translation>
     </message>
     <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Aktuelles Projekt schließen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(aktuell)</translation>
+    </message>
+    <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
         <translation>Dokumentation</translation>

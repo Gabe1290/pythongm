@@ -280,13 +280,26 @@ class WelcomeTab(QWidget):
         lay.addWidget(self._recent_list, 1)
         self._populate_recent_list()
 
-        # Clear-recent sits at the bottom-right and hides itself when the
-        # list is empty so an empty panel stays uncluttered.
+        # Bottom action row: "Close current project" on the left (only
+        # while a project is actually open), "Clear recent projects" on
+        # the right (only while there's history to clear). Kept in one row
+        # so the panel doesn't grow a line every time either becomes
+        # visible/hidden.
+        bottom_row = QHBoxLayout()
+        self._close_project_btn = QPushButton(self.tr("Close current project"))
+        self._close_project_btn.setFlat(True)
+        self._close_project_btn.setCursor(Qt.PointingHandCursor)
+        self._close_project_btn.clicked.connect(self._on_close_project)
+        bottom_row.addWidget(self._close_project_btn, 0, Qt.AlignLeft)
+        bottom_row.addStretch(1)
+
         self._clear_recent_btn = QPushButton(self.tr("Clear recent projects"))
         self._clear_recent_btn.setFlat(True)
         self._clear_recent_btn.clicked.connect(self._on_clear_recent)
-        lay.addWidget(self._clear_recent_btn, 0, Qt.AlignRight)
-        self._clear_recent_btn.setVisible(bool(Config.get("recent_projects", [])))
+        bottom_row.addWidget(self._clear_recent_btn, 0, Qt.AlignRight)
+        lay.addLayout(bottom_row)
+
+        self._refresh_bottom_row_visibility()
         return frame
 
     def _build_footer(self) -> QWidget:
@@ -311,41 +324,70 @@ class WelcomeTab(QWidget):
     # Recent-projects list (rebuilt on demand)
     # ------------------------------------------------------------------
 
+    def _current_project_path(self):
+        """The path of the project currently open in the IDE, or None.
+
+        Kept as a single accessor so every place that cares about "is a
+        project open right now" (the recent-projects list, the Close
+        Project button) reads the same live attribute instead of each
+        guarding ``hasattr`` separately.
+        """
+        if self.main_window is None:
+            return None
+        return getattr(self.main_window, 'current_project_path', None)
+
     def _populate_recent_list(self):
         """Fill self._recent_list (QListWidget) with the recent projects.
 
         Each entry is a QListWidgetItem hosting a small two-label widget
-        (project name on the left, mtime on the right). Stored as a custom
-        widget instead of plain item text so the mtime can be right-aligned
-        and visually de-emphasised without parsing the row text later.
+        (project name on the left, mtime — or "(current)" — on the right).
+        Stored as a custom widget instead of plain item text so that extra
+        label can be right-aligned and visually de-emphasised without
+        parsing the row text later.
+
+        The project currently open in the IDE always appears here, even if
+        "Clear recent projects" just emptied the persisted history —
+        otherwise clearing the list makes it look like nothing is open at
+        all, when a project may still be sitting open in the editor tabs
+        right behind the Welcome tab.
         """
         if not hasattr(self, '_recent_list') or self._recent_list is None:
             return
         self._recent_list.clear()
 
         recent = Config.get("recent_projects", []) or []
-        if not recent:
+        current_path = self._current_project_path()
+        current_path_str = str(current_path) if current_path else None
+
+        display_paths = list(recent)
+        if current_path_str and current_path_str not in display_paths:
+            display_paths.insert(0, current_path_str)
+
+        if not display_paths:
             placeholder = QListWidgetItem(self.tr("(No recent projects yet.)"))
             placeholder.setFlags(Qt.NoItemFlags)
             self._recent_list.addItem(placeholder)
             return
 
-        for project_path in recent[:8]:
+        for project_path in display_paths[:8]:
             item = QListWidgetItem(self._recent_list)
             item.setData(Qt.UserRole, project_path)
             item.setToolTip(project_path)
-            row_widget = self._recent_row_widget(project_path)
+            row_widget = self._recent_row_widget(
+                project_path, is_current=(project_path == current_path_str))
             # Lock the item's height to the row's preferred height so
             # uniformItemSizes can keep painting fast.
             item.setSizeHint(row_widget.sizeHint())
             self._recent_list.setItemWidget(item, row_widget)
 
-    def _recent_row_widget(self, project_path: str) -> QWidget:
+    def _recent_row_widget(self, project_path: str, is_current: bool = False) -> QWidget:
         """Build the per-row widget for the recent-projects list.
 
         Two labels in a tight horizontal layout. No button styling — the
         QListWidget itself owns hover / selection highlighting via the
-        active theme palette.
+        active theme palette. The currently-open project is bolded and
+        tagged "(current)" instead of showing its last-modified time, so
+        it reads as clearly different from an ordinary history entry.
         """
         path = Path(project_path)
         row = QWidget()
@@ -355,19 +397,29 @@ class WelcomeTab(QWidget):
 
         name_label = QLabel(path.name)
         name_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        if is_current:
+            f = name_label.font()
+            f.setBold(True)
+            name_label.setFont(f)
         row_lay.addWidget(name_label, 1)
 
-        mtime = _format_mtime(path)
-        if mtime and mtime != "—":
-            # Don't render anything when we can't read the mtime — an
-            # em-dash placeholder reads as broken data in a clean list.
-            time_label = QLabel(mtime)
-            time_label.setObjectName("welcomeMutedLabel")
-            time_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-            f = time_label.font()
-            f.setPointSizeF(max(f.pointSizeF() - 1, 8.0))
-            time_label.setFont(f)
-            row_lay.addWidget(time_label, 0, Qt.AlignRight | Qt.AlignVCenter)
+        if is_current:
+            tag_label = QLabel(self.tr("(current)"))
+            tag_label.setObjectName("welcomeMutedLabel")
+            tag_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+            row_lay.addWidget(tag_label, 0, Qt.AlignRight | Qt.AlignVCenter)
+        else:
+            mtime = _format_mtime(path)
+            if mtime and mtime != "—":
+                # Don't render anything when we can't read the mtime — an
+                # em-dash placeholder reads as broken data in a clean list.
+                time_label = QLabel(mtime)
+                time_label.setObjectName("welcomeMutedLabel")
+                time_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+                f = time_label.font()
+                f.setPointSizeF(max(f.pointSizeF() - 1, 8.0))
+                time_label.setFont(f)
+                row_lay.addWidget(time_label, 0, Qt.AlignRight | Qt.AlignVCenter)
         return row
 
     def _on_recent_item_clicked(self, item: QListWidgetItem):
@@ -375,13 +427,19 @@ class WelcomeTab(QWidget):
         if path:
             self._on_open_recent(path)
 
-    def refresh_recent_projects(self):
-        """Public hook for the IDE to call after recent-projects changes
-        (open / clear). Rebuilds only the right-column list.
-        """
-        self._populate_recent_list()
+    def _refresh_bottom_row_visibility(self):
         if hasattr(self, '_clear_recent_btn'):
             self._clear_recent_btn.setVisible(bool(Config.get("recent_projects", [])))
+        if hasattr(self, '_close_project_btn'):
+            self._close_project_btn.setVisible(self._current_project_path() is not None)
+
+    def refresh_recent_projects(self):
+        """Public hook for the IDE to call after recent-projects changes
+        (open / close / clear). Rebuilds the right-column list and the
+        bottom-row buttons' visibility.
+        """
+        self._populate_recent_list()
+        self._refresh_bottom_row_visibility()
 
     # ------------------------------------------------------------------
     # Small UI helpers
@@ -485,6 +543,14 @@ class WelcomeTab(QWidget):
         if self.main_window and hasattr(self.main_window, 'clear_recent_projects'):
             self.main_window.clear_recent_projects()
             # IDE-level method may not call us back; refresh defensively.
+            self.refresh_recent_projects()
+
+    def _on_close_project(self):
+        # close_project() itself refreshes us (same as every other IDE-side
+        # project-state change), but call defensively in case it doesn't --
+        # matches _on_clear_recent's own pattern above.
+        if self.main_window and hasattr(self.main_window, 'close_project'):
+            self.main_window.close_project()
             self.refresh_recent_projects()
 
     def _on_show_docs(self):
