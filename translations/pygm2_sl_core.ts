@@ -2746,6 +2746,16 @@ Vsa dejanja iz njih bodo preskočena in projekt se lahko prikazuje ali obnaša n
         <translation>Počisti nedavne projekte</translation>
     </message>
     <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Zapri trenutni projekt</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(trenutni)</translation>
+    </message>
+    <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
         <translation>Dokumentacija</translation>

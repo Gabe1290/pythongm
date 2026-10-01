@@ -372,6 +372,16 @@ Deseja salvar mesmo assim?</translation>
         <translation>Limpar projetos recentes</translation>
     </message>
     <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Fechar o projeto atual</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(atual)</translation>
+    </message>
+    <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
         <translation>Documentação</translation>

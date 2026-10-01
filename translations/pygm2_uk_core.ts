@@ -2610,6 +2610,16 @@ Any actions from them will be skipped, and the project may look or behave wrong.
         <translation>Очистити останні проекти</translation>
     </message>
     <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Закрити поточний проект</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(поточний)</translation>
+    </message>
+    <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
         <translation>Документація</translation>

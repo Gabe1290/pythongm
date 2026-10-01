@@ -2746,6 +2746,16 @@ Qualsiasi azione proveniente da esse verrà ignorata e il progetto potrebbe appa
         <translation>Cancella progetti recenti</translation>
     </message>
     <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Chiudi il progetto attuale</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(attuale)</translation>
+    </message>
+    <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
         <translation>Documentazione</translation>

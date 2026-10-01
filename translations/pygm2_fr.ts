@@ -10377,6 +10377,16 @@ Voulez-vous quand même enregistrer ?</translation>
         <translation>Effacer les projets récents</translation>
     </message>
     <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Fermer le projet actuel</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(actuel)</translation>
+    </message>
+    <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
         <translation>Documentation</translation>
