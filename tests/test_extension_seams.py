@@ -604,3 +604,73 @@ def test_loader_registers_plugin_toolbox_visibility_filters(clean_toolbox_filter
     assert PluginLoader._load_ide_contributions(loader, module) == 1
     assert spec in ep.get_toolbox_visibility_filters()
     assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0
+
+
+# ---------------------------------------------------------------------------
+# Add-event-menu contributions (docs/THYMIO_EXTENSION_PLAN.md, Stage G5b.2)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def clean_add_event_menu_contributions():
+    from core import ide_extension_points as ep
+    # Same isolation reasoning as clean_toolbox_filters above: another test
+    # file in the same session may have already called load_all_plugins(),
+    # registering Thymio's real contribution.
+    before = list(ep.get_add_event_menu_contributions())
+    ep.clear_add_event_menu_contributions()
+    yield ep
+    ep.clear_add_event_menu_contributions()
+    for spec in before:
+        ep.register_add_event_menu_contribution(spec)
+
+
+def test_add_event_menu_contribution_validates(clean_add_event_menu_contributions):
+    ep = clean_add_event_menu_contributions
+    good = ep.AddEventMenuContribution(key="dummy", build=lambda menu, panel, events: None)
+    ep.register_add_event_menu_contribution(good)
+    ep.register_add_event_menu_contribution("not a contribution")  # invalid, logged and skipped
+    ep.register_add_event_menu_contribution(
+        ep.AddEventMenuContribution(key="bad", build="not callable"))  # invalid too
+    assert ep.get_add_event_menu_contributions() == [good]
+
+
+def test_add_event_menu_contribution_survives_a_raise(clean_add_event_menu_contributions):
+    ep = clean_add_event_menu_contributions
+
+    def _boom(menu, panel, events):
+        raise RuntimeError("broken extension")
+
+    calls = []
+    ep.register_add_event_menu_contribution(ep.AddEventMenuContribution(key="boom", build=_boom))
+    ep.register_add_event_menu_contribution(
+        ep.AddEventMenuContribution(key="ok", build=lambda menu, panel, events: calls.append(1)))
+    ep.apply_add_event_menu_contributions(object(), object(), [])  # must not raise
+    assert calls == [1]  # the second contribution still ran
+
+
+def test_owned_event_names_reads_the_matching_object_editor_panel():
+    from core import ide_extension_points as ep
+    before_panels = list(ep.get_object_editor_panels())
+    ep.clear_object_editor_panels()
+    try:
+        ep.register_object_editor_panel(ep.ObjectEditorPanel(
+            key="dummy", label="Dummy", factory=lambda: None,
+            owned_events=lambda: {"dummy_a", "dummy_b"}))
+        assert ep.owned_event_names("dummy") == {"dummy_a", "dummy_b"}
+        assert ep.owned_event_names("nonexistent") == set()
+    finally:
+        ep.clear_object_editor_panels()
+        for spec in before_panels:
+            ep.register_object_editor_panel(spec)
+
+
+def test_loader_registers_plugin_add_event_menu_contributions(clean_add_event_menu_contributions):
+    from types import SimpleNamespace
+    from events.plugin_loader import PluginLoader
+    ep = clean_add_event_menu_contributions
+    spec = ep.AddEventMenuContribution(key="dummy", build=lambda menu, panel, events: None)
+    module = SimpleNamespace(PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS=[spec])
+    loader = object.__new__(PluginLoader)
+    assert PluginLoader._load_ide_contributions(loader, module) == 1
+    assert spec in ep.get_add_event_menu_contributions()
+    assert PluginLoader._load_ide_contributions(loader, SimpleNamespace()) == 0

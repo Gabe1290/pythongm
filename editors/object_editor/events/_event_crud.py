@@ -12,13 +12,22 @@ resolve on the concrete panel at runtime.
 ``self._find_project_data()`` now (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md,
 Unit 4), so an extension's events only appear when the open project has
 that extension active.
+
+``show_add_event_menu`` no longer names Thymio: its events submenu is a
+registered ``AddEventMenuContribution`` (``core/ide_extension_points``,
+docs/THYMIO_EXTENSION_PLAN.md Stage G5b.2) that
+``extensions/thymio/panel_menus.py`` contributes, same way any future
+extension with its own events would.
 """
 
 from PySide6.QtWidgets import QMessageBox, QMenu, QDialog, QTreeWidgetItem
 from PySide6.QtCore import Qt
 
 from events.event_types import get_available_events
-from extensions.thymio.events import THYMIO_EVENT_CATEGORIES, is_thymio_event
+from core.ide_extension_points import (
+    get_add_event_menu_contributions, owned_event_names,
+    apply_add_event_menu_contributions,
+)
 
 
 class EventCrudMixin:
@@ -48,18 +57,14 @@ class EventCrudMixin:
 
         available_events = get_available_events(self.blockly_config, self._find_project_data())
 
-        # Hide Thymio events unless the project has at least one playground
-        show_thymio = self.project_has_playgrounds()
-
-        # Separate standard events from Thymio events
-        standard_events = []
-        thymio_events = []
-        for event_type in available_events:
-            if is_thymio_event(event_type.name):
-                if show_thymio:
-                    thymio_events.append(event_type)
-            else:
-                standard_events.append(event_type)
+        # Events owned by a registered contribution (e.g. Thymio) are left
+        # out of the standard loop below; each contribution's own build()
+        # decides whether/how to show its events this time.
+        contributed = get_add_event_menu_contributions()
+        owned = set()
+        for contribution in contributed:
+            owned |= owned_event_names(contribution.key)
+        standard_events = [e for e in available_events if e.name not in owned]
 
         # --- Standard events ---
         for event_type in standard_events:
@@ -141,43 +146,8 @@ class EventCrudMixin:
                 action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
 
-        # --- Thymio events submenu (only if any Thymio events are enabled) ---
-        if thymio_events:
-            menu.addSeparator()
-            thymio_menu = menu.addMenu(self.tr("🤖 Thymio Events"))
-
-            # Group enabled Thymio events by category
-            thymio_by_category = {}
-            for event_type in thymio_events:
-                cat = event_type.category
-                if cat not in thymio_by_category:
-                    thymio_by_category[cat] = []
-                thymio_by_category[cat].append(event_type)
-
-            # Add category submenus in order
-            sorted_categories = sorted(
-                thymio_by_category.keys(),
-                key=lambda c: THYMIO_EVENT_CATEGORIES.get(c, {}).get("order", 999)
-            )
-            for category in sorted_categories:
-                cat_info = THYMIO_EVENT_CATEGORIES.get(category, {})
-                cat_icon = cat_info.get("icon", "🤖")
-                # Strip "Thymio " prefix for cleaner submenu names
-                cat_label = category.replace("Thymio ", "")
-                cat_submenu = thymio_menu.addMenu(f"{cat_icon} {self.tr(cat_label)}")
-
-                for event_type in thymio_by_category[category]:
-                    action = cat_submenu.addAction(
-                        f"{event_type.icon} {self.tr(event_type.display_name)}"
-                    )
-                    action.triggered.connect(
-                        lambda checked, name=event_type.name: self.add_event(name)
-                    )
-
-            # Visual selector at the bottom
-            thymio_menu.addSeparator()
-            visual_action = thymio_menu.addAction(self.tr("🤖 Visual Selector..."))
-            visual_action.triggered.connect(self.add_thymio_event_with_selector)
+        # --- Registered contributions (e.g. Thymio's events submenu) ---
+        apply_add_event_menu_contributions(menu, self, available_events)
 
         menu.exec(self.add_event_btn.mapToGlobal(self.add_event_btn.rect().bottomLeft()))
 
@@ -319,32 +289,6 @@ class EventCrudMixin:
 
         self.refresh_events_display()
         self.events_modified.emit()
-
-    def add_thymio_event_with_selector(self):
-        """Add a Thymio event using the visual Thymio event selector dialog"""
-        from extensions.thymio.dialogs.thymio_event_selector import ThymioEventSelector
-
-        dialog = ThymioEventSelector(self)
-        if dialog.exec() == QDialog.Accepted:
-            selected_event = dialog.get_selected_event()
-
-            if selected_event:
-                # Check if event already exists
-                if selected_event in self.current_events_data:
-                    QMessageBox.information(
-                        self,
-                        self.tr("Thymio Event Exists"),
-                        self.tr("This Thymio event already exists.")
-                    )
-                    return
-
-                # Add the Thymio event
-                self.current_events_data[selected_event] = {
-                    "actions": []
-                }
-
-                self.refresh_events_display()
-                self.events_modified.emit()
 
     def remove_selected_event(self):
         """Remove the currently selected event"""

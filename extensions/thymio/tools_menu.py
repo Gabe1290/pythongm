@@ -119,20 +119,18 @@ def show_thymio_event_selector(ide) -> None:
             # Try to add event to current object editor
             current_widget = ide.editor_tabs.currentWidget()
             if hasattr(current_widget, 'events_panel'):
-                # Call the panel's Thymio event method
-                if hasattr(current_widget.events_panel, 'add_thymio_event_with_selector'):
-                    # Directly add the event since we already selected it
-                    events_panel = current_widget.events_panel
-                    if selected_event in events_panel.current_events_data:
-                        QMessageBox.information(
-                            ide,
-                            ide.tr("Event Exists"),
-                            ide.tr("This Thymio event already exists in the object.")
-                        )
-                    else:
-                        events_panel.current_events_data[selected_event] = {"actions": []}
-                        events_panel.refresh_events_display()
-                        events_panel.events_modified.emit()
+                # Directly add the event since we already selected it
+                events_panel = current_widget.events_panel
+                if selected_event in events_panel.current_events_data:
+                    QMessageBox.information(
+                        ide,
+                        ide.tr("Event Exists"),
+                        ide.tr("This Thymio event already exists in the object.")
+                    )
+                else:
+                    events_panel.current_events_data[selected_event] = {"actions": []}
+                    events_panel.refresh_events_display()
+                    events_panel.events_modified.emit()
             else:
                 QMessageBox.information(
                     ide,

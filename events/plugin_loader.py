@@ -357,12 +357,13 @@ class PluginLoader:
     def _load_ide_contributions(self, module) -> int:
         """Register an extension's PLUGIN_IDE_MENUS / PLUGIN_IDE_TOOLBAR /
         PLUGIN_ASSET_TREE_CATEGORIES / PLUGIN_OBJECT_EDITOR_PANELS /
-        PLUGIN_TOOLBOX_VISIBILITY_FILTERS (see core/ide_extension_points).
-        Lets an extension add menu entries and toolbar buttons to the IDE
-        window (docs/THYMIO_EXTENSION_PLAN.md, Stage 0.5), a new asset type's
-        row, an object-editor tab, and hide its own Blockly toolbox blocks/
-        categories conditionally (Stage G5b.1). Harmless in the game
-        process: nothing applies them."""
+        PLUGIN_TOOLBOX_VISIBILITY_FILTERS / PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS
+        (see core/ide_extension_points). Lets an extension add menu entries
+        and toolbar buttons to the IDE window (docs/THYMIO_EXTENSION_PLAN.md,
+        Stage 0.5), a new asset type's row, an object-editor tab, hide its
+        own Blockly toolbox blocks/categories conditionally (Stage G5b.1),
+        and contribute its own events submenu to "Add Event" (Stage G5b.2).
+        Harmless in the game process: nothing applies them."""
         from core.ide_extension_points import (
             register_menu_contribution, register_toolbar_contribution,
         )
@@ -384,6 +385,10 @@ class PluginLoader:
         from core.ide_extension_points import register_toolbox_visibility_filter
         for spec in (getattr(module, 'PLUGIN_TOOLBOX_VISIBILITY_FILTERS', None) or []):
             register_toolbox_visibility_filter(spec)
+            count += 1
+        from core.ide_extension_points import register_add_event_menu_contribution
+        for spec in (getattr(module, 'PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS', None) or []):
+            register_add_event_menu_contribution(spec)
             count += 1
         return count
 

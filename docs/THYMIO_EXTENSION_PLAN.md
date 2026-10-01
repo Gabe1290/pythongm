@@ -993,8 +993,8 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
     (28/28), same pre-existing order-dependent-flakiness class as the zip
     one, not a regression from this unit).
 
-- [ ] **G5b.2 — add-event-menu contribution** (`_event_crud.py`,
-      `show_add_event_menu`). One seam, one call site.
+- [x] **G5b.2 — add-event-menu contribution** (`_event_crud.py`,
+      `show_add_event_menu`). Done, implemented as drafted below.
   ```python
   @dataclass(frozen=True)
   class AddEventMenuContribution:
@@ -1013,11 +1013,87 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
   `build(menu, panel, available_events)` — the contribution itself filters
   by its own `owned_events()` (via `get_object_editor_panels()`, keyed by
   `key`) rather than the panel doing it. Thymio's `build` is
-  `_event_crud.py`'s lines 139-175 verbatim, `self`→`panel`,
-  `is_thymio_event`→membership in its own `owned_events()` set.
-  `add_thymio_event_with_selector` moves to `extensions/thymio/` as a free
-  function (`panel` param), alongside `configure_thymio`/etc. in
-  `tools_menu.py` or a new sibling module — same Stage-D/G1 pattern.
+  `_event_crud.py`'s old inline Thymio submenu block, moved verbatim into
+  new `extensions/thymio/panel_menus.py`, `self`→`panel`,
+  `is_thymio_event`→membership in `owned_event_names("thymio")` (which
+  reads the "thymio" `ObjectEditorPanel`'s own `owned_events()`, the exact
+  same set `is_thymio_event` checked). `add_thymio_event_with_selector`
+  moved to the same new module as a free function (`panel` param) rather
+  than into `tools_menu.py` — that module is the IDE-chrome Tools-menu/
+  toolbar side (deals with `ide`, gated by `show_thymio_tab`); this one is
+  the Standard panel's own menus (deals with `panel`, gated by
+  `_project_has_playgrounds`), different enough seams to earn a sibling
+  module, per the plan text's own "or a new sibling module" option.
+  Registered via a tiny `_thymio_add_event_menu_build` wrapper in
+  `__init__.py` rather than passing `panel_menus.build_add_event_menu`
+  directly — `panel_menus.py` imports PySide6 at module top level (same as
+  every other Qt-touching module here), and `__init__.py`'s own
+  `PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS = [...]` list is built eagerly at
+  import time, so a direct reference would have made `import
+  extensions.thymio` pull in PySide6 even in the game process — the
+  wrapper's `from .panel_menus import ...` stays inside the function body,
+  only importing the module when a menu is actually about to be built in a
+  real IDE.
+  - Also fixed as a direct, confirmed consequence: `extensions/thymio/
+    tools_menu.py`'s `show_thymio_event_selector` had a dead `hasattr(...,
+    'add_thymio_event_with_selector')` guard (never actually called the
+    method — just used its presence as a type check); left unguarded it
+    would have permanently short-circuited that code path once the method
+    moved. Simplified to proceed directly, since the outer
+    `hasattr(current_widget, 'events_panel')` check already establishes
+    the right type. A second, already-fully-dead
+    `from extensions.thymio.events import THYMIO_EVENT_CATEGORIES,
+    is_thymio_event` import in `_panel.py` (unused anywhere in that file,
+    predating this unit) was removed too, directly adjacent to this
+    change.
+  - New generic seam tests, dummy registrant, in `tests/
+    test_extension_seams.py`'s "Add-event-menu contributions" section:
+    dataclass validation, a raising contribution is logged and skipped
+    without blocking the others, `owned_event_names()` against a real
+    `ObjectEditorPanel`, and the loader wiring.
+  - Thymio-side pin tests in `tests/test_thymio_extension.py`'s new
+    "G5b.2" section: `_event_crud.py`'s source no longer mentions
+    `extensions.thymio`, `is_thymio_event`, `THYMIO_EVENT_CATEGORIES`, or
+    `add_thymio_event_with_selector`; the contribution registers under key
+    `"thymio"`; `build_add_event_menu` hides/shows correctly with/without a
+    playground, called directly; and a real end-to-end run through
+    `ObjectEventsPanel.show_add_event_menu()` (the actual call site)
+    confirms the submenu appears iff the project has a playground.
+  - **Real landmine, caught by the full-suite gate, not the file run
+    alone — worth remembering for any future test that opens a real Qt
+    menu/dialog.** The end-to-end test's first draft called the real
+    `menu.exec(...)`, scheduling a `QTimer.singleShot` to close it — the
+    standard textbook way to drive a modal Qt call under test, and it
+    passed every time run alone or with its own two sibling files. Under
+    the full `q-z` batch it intermittently failed a DIFFERENT, unrelated
+    later test
+    (`test_toolbox_visibility.py::test_extension_action_shown_in_beginner_when_active_via_settings`)
+    with `RuntimeError: Internal... QLabel already deleted` inside
+    `core/ide_window.py`'s `QTimer.singleShot(3000, lambda: self.
+    status_label.setText(...))`. Root cause: `menu.exec()` starts a real
+    native Qt event loop, which dispatches EVERY due timer in the process,
+    not just the one this test scheduled — by the time this test ran deep
+    into the batch, an unrelated, already-stale 3-second status-bar timer
+    left behind by some earlier IDE-window-constructing test was already
+    overdue, and this test's `exec()` call was simply the first real
+    nested event-loop opportunity after it went stale. Confirmed by
+    bisection (clean HEAD: only the 2 already-known
+    `test_zip_save_state.py` flakes; this branch before the fix: that plus
+    the toolbox_visibility one; same batch after the fix: back to just the
+    2 known flakes). **Fix**: monkeypatching `exec` on the `QMenu` *class*
+    silently doesn't intercept the call at all (confirmed separately — it
+    hung instead, the real blocking loop still ran); a per-**instance**
+    `self.exec = lambda ...` assignment does shadow it (also confirmed),
+    needs no event loop or wall-clock time, and sidesteps the whole class
+    of "real nested loop processes unrelated stale timers" risk entirely.
+    The underlying `core/ide_window.py` dangling-timer landmine itself was
+    left alone — real, but a different, pre-existing bug outside this
+    unit's scope.
+  - Suite: `test_extension_seams.py` + `test_thymio_extension.py` +
+    `test_toolbox_visibility.py` together, 106 passed/0 failed; full
+    three-batch alphabetical run, 5589 passed/0 failed (beyond the 2
+    pre-existing `test_zip_save_state.py` flakes, confirmed present
+    identically on clean HEAD).
 
 - [ ] **G5b.3 — add-action-menu contribution** (`_context_menu.py`, 4 call
       sites; `_action_crud.py`'s two Thymio methods move with it).
