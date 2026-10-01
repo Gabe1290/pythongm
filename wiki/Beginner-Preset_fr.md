@@ -8,7 +8,7 @@
 
 ## Aperçu
 
-Ce préréglage active **19** types d'événements et **83** types d'actions.
+Ce préréglage active **19** types d'événements et **54** types d'actions.
 
 ---
 
@@ -46,9 +46,8 @@ Ce préréglage active **19** types d'événements et **83** types d'actions.
 |--------|------------|------------|
 | Rebondir | `bounce` | — |
 | Sauter à une position | `jump_to_position` | `x`, `y`, `relative` |
-| Sauter à une position aléatoire | `jump_to_random` | `snap_h`, `snap_v` |
 | Sauter à la position de départ | `jump_to_start` | — |
-| Se déplacer vers un point | `move_towards_point` | `x`, `y`, `speed` |
+| Déplacer jusqu'au contact | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Inverser horizontalement | `reverse_horizontal` | — |
 | Inverser verticalement | `reverse_vertical` | — |
 | Définir direction et vitesse | `set_direction_speed` | `direction`, `speed` |
@@ -70,29 +69,19 @@ Ce préréglage active **19** types d'événements et **83** types d'actions.
 |--------|------------|------------|
 | Changer d'instance | `change_instance` | `object`, `perform_events` |
 | Créer une instance | `create_instance` | `object`, `x`, `y`, `relative` |
-| Créer une instance en mouvement | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
-| Créer une instance aléatoire | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
 | Détruire une instance | `destroy_instance` | — |
 | Détruire à une position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
-| Définir l'image d'animation | `set_image_index` | `frame` |
-| Définir la vitesse d'animation | `set_image_speed` | `speed` |
-| Démarrer l'animation | `start_animation` | — |
-| Arrêter l'animation | `stop_animation` | — |
 | Tester le nombre d'instances | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Score
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Effacer le tableau des scores | `clear_highscore` | — |
 | Dessiner les vies | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Dessiner le score | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Définir les vies | `set_lives` | `value`, `relative` |
 | Définir le score | `set_score` | `value`, `relative` |
 | Afficher le tableau des scores | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Tester la santé | `test_health` | `operation`, `value` |
-| Tester les vies | `test_lives` | `value`, `operation` |
-| Tester le score | `test_score` | `value`, `operation` |
 
 ### Minuterie
 
@@ -105,12 +94,11 @@ Ce préréglage active **19** types d'événements et **83** types d'actions.
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Vérifier la salle | `check_room` | `room`, `not_flag` |
 | Terminer le jeu | `game_end` | — |
 | Si salle suivante existe | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Si salle précédente existe | `if_previous_room_exists` | `then_actions`, `else_actions` |
 | Redémarrer la salle | `restart_room` | — |
-| Définir le titre de la salle | `set_room_caption` | `caption` |
+| Définir l'arrière-plan | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
 ### Audio
 
@@ -127,28 +115,17 @@ Ce préréglage active **19** types d'événements et **83** types d'actions.
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Dessiner une flèche | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Dessiner un arrière-plan | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Dessiner une ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Dessiner une ligne | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Dessiner du texte mis à l'échelle | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Dessiner un sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative` |
-| Dessiner une variable | `draw_variable` | `x`, `y`, `variable` |
-| Remplir l'écran d'une couleur | `fill_color` | `color` |
-| Ouvrir une page web | `open_webpage` | `url` |
+| Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Redémarrer le jeu | `restart_game` | — |
-| Définir la couleur | `set_color` | `color`, `alpha` |
 | Définir la couleur de dessin | `set_draw_color` | `color` |
-| Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
 | Définir le titre de la fenêtre | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
-| Afficher les infos du jeu | `show_info` | — |
 | Afficher un message | `show_message` | `message` |
 
 ### Contrôle
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
+| Vérifier si vide | `check_empty` | `x`, `y`, `relative`, `objects` |
 | Commentaire | `comment` | `text` |
 | Sinon | `else_action` | — |
 | Fin de bloc | `end_block` | — |
@@ -159,24 +136,8 @@ Ce préréglage active **19** types d'événements et **83** types d'actions.
 | Si l'objet existe | `if_object_exists` | `object`, `not_flag` |
 | Début de bloc | `start_block` | — |
 | Tester la chance | `test_chance` | `sides` |
-| Poser une question | `test_question` | `question` |
+| Tester une expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Tester une variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
-
-### Vues
-
-| Action | Nom du bloc | Paramètres |
-|--------|------------|------------|
-| Activer les vues | `enable_views` | `enable` |
-| Définir une vue | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
-
-### Vue 3D
-
-| Action | Nom du bloc | Paramètres |
-|--------|------------|------------|
-| Dessiner l'ATH DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Dessiner la mini-carte | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Activer la vue Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Définir l'angle de vue | `set_facing_angle` | `angle`, `relative` |
 
 ---
 

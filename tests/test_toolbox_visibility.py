@@ -264,3 +264,98 @@ def test_register_custom_blocks_sends_every_action_unfiltered():
     assert "enabledBlocks" not in fn_body
     assert "enabledCategories" not in fn_body
     assert "Blockly.Blocks[bt] = {" in fn_body
+
+
+# ---------------------------------------------------------------------------
+# U4 (events-side fix, same session): get_available_events had the same
+# "no mapping -> include anyway" bug, found while regenerating the preset
+# wiki docs. visible_events / extension_for_event.
+# ---------------------------------------------------------------------------
+
+def test_extension_for_event_reads_the_manifest():
+    from events.plugin_loader import extension_for_event
+    info = extension_for_event("network_message")
+    assert info is not None and info["folder"] == "multiplayer_lan"
+    assert extension_for_event("create") is None  # a plain core event
+
+
+def test_visible_events_hides_network_events_when_inactive_shows_when_active():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from config.toolbox_visibility import visible_events
+
+    cfg = _beginner()
+    shown = visible_events(cfg, project_data=None)
+    assert "network_message" not in shown
+    assert "player_joined" not in shown
+    assert "create" in shown  # ordinary core event, unaffected
+
+    project_data = {"settings": {"active_extensions": ["multiplayer_lan"]}}
+    shown2 = visible_events(cfg, project_data=project_data)
+    assert "network_message" in shown2
+    assert "player_joined" in shown2
+
+
+def test_get_available_events_delegates_to_visible_events():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from events.event_types import get_available_events
+
+    names = {e.name for e in get_available_events()}
+    assert "network_message" not in names
+
+    project_data = {"settings": {"active_extensions": ["multiplayer_lan"]}}
+    names2 = {e.name for e in get_available_events(None, project_data)}
+    assert "network_message" in names2
+
+
+def test_event_crud_passes_project_data_to_get_available_events():
+    src = (REPO_ROOT / "editors" / "object_editor" / "events" / "_event_crud.py").read_text(encoding="utf-8")
+    assert "get_available_events(self.blockly_config, self._find_project_data())" in src
+
+
+# ---------------------------------------------------------------------------
+# U4 (actions side): get_actions_by_category(blockly_config=None,
+# project_data=None) and its callers.
+# ---------------------------------------------------------------------------
+
+def test_get_actions_by_category_gates_extensions_even_with_no_config():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from events.action_types import get_actions_by_category
+
+    cats = get_actions_by_category()  # no config, no project_data
+    all_actions = {a.name for actions in cats.values() for a in actions}
+    assert "set_facing_angle" not in all_actions   # inactive extension
+    assert "move_free" in all_actions               # ordinary core action, unrestricted
+
+    project_data = {"settings": {"active_extensions": ["raycast_2_5d"]}}
+    cats2 = get_actions_by_category(project_data=project_data)
+    all_actions2 = {a.name for actions in cats2.values() for a in actions}
+    assert "set_facing_angle" in all_actions2
+    assert "move_free" in all_actions2
+
+
+def test_get_actions_by_category_still_gates_core_actions_by_a_real_config():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from events.action_types import get_actions_by_category
+
+    cats = get_actions_by_category(_beginner())
+    all_actions = {a.name for actions in cats.values() for a in actions}
+    assert "bounce" in all_actions        # enabled in beginner
+    assert "draw_sprite" not in all_actions  # deliberately excluded from beginner (U2)
+
+
+def test_context_menu_and_dialog_callers_pass_project_data():
+    paths_and_needles = [
+        ("editors/object_editor/events/_context_menu.py",
+         "get_actions_by_category(panel.blockly_config, panel._find_project_data())"),
+        ("events/action_editor.py",
+         "get_actions_by_category(project_data=self._find_project_data())"),
+        ("events/conditional_editor.py",
+         "get_actions_by_category(project_data=self._find_project_data())"),
+    ]
+    for rel_path, needle in paths_and_needles:
+        src = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        assert needle in src, f"{rel_path} doesn't wire project_data through"

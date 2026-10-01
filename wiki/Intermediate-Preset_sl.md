@@ -8,7 +8,7 @@
 
 ## Pregled
 
-Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
+Ta preset omogoča **21** vrst dogodkov in **118** vrst dejanj.
 
 ---
 
@@ -50,7 +50,9 @@ Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
 | Skoči na položaj | `jump_to_position` | `x`, `y`, `relative` |
 | Skoči na naključni položaj | `jump_to_random` | `snap_h`, `snap_v` |
 | Skoči na začetni položaj | `jump_to_start` | — |
+| Premakni po mreži | `move_grid` | `direction`, `grid_size` |
 | Premakni proti točki | `move_towards_point` | `x`, `y`, `speed` |
+| Premakni do stika | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Obrni vodoravno | `reverse_horizontal` | — |
 | Obrni navpično | `reverse_vertical` | — |
 | Nastavi smer in hitrost | `set_direction_speed` | `direction`, `speed` |
@@ -106,8 +108,14 @@ Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|
+| Začasno ustavi časovnico | `pause_timeline` | — |
 | Nastavi budilko | `set_alarm` | `alarm_number`, `steps` |
+| Nastavi časovnico | `set_timeline` | `timeline` |
+| Nastavi mesto na časovnici | `set_timeline_position` | `position`, `relative` |
+| Nastavi hitrost časovnice | `set_timeline_speed` | `speed` |
 | Premor | `sleep` | `milliseconds` |
+| Zaženi časovnico | `start_timeline` | — |
+| Ustavi časovnico | `stop_timeline` | — |
 
 ### Soba
 
@@ -121,7 +129,11 @@ Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
 | Naslednja soba | `next_room` | — |
 | Prejšnja soba | `previous_room` | — |
 | Znova zaženi sobo | `restart_room` | — |
+| Nastavi ozadje | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
+| Nastavi barvo ozadja | `set_background_color` | `color`, `show_color` |
 | Nastavi naslov sobe | `set_room_caption` | `caption` |
+| Nastavi obstojnost sobe | `set_room_persistent` | `persistent` |
+| Nastavi hitrost sobe | `set_room_speed` | `speed` |
 
 ### Zvok
 
@@ -144,17 +156,22 @@ Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
 | Nariši črto | `draw_line` | `x1`, `y1`, `x2`, `y2` |
 | Nariši povečano besedilo | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
 | Nariši sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Nariši besedilo | `draw_text` | `text`, `x`, `y`, `relative` |
+| Nariši besedilo | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Nariši spremenljivko | `draw_variable` | `x`, `y`, `variable` |
 | Zapolni zaslon z barvo | `fill_color` | `color` |
+| Naloži igro | `load_game` | `filename` |
 | Odpri spletno stran | `open_webpage` | `url` |
 | Znova zaženi igro | `restart_game` | — |
+| Shrani igro | `save_game` | `filename` |
 | Nastavi barvo | `set_color` | `color`, `alpha` |
 | Nastavi barvo risanja | `set_draw_color` | `color` |
 | Nastavi pisavo risanja | `set_draw_font` | `font`, `halign`, `valign` |
 | Nastavi naslov okna | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Prikaži informacije o igri | `show_info` | — |
 | Prikaži sporočilo | `show_message` | `message` |
+| Predvajaj video | `show_video` | `filename`, `fullscreen` |
+| Uvodni zaslon: pokaži sliko | `splash_show_image` | `image` |
+| Uvodni zaslon: pokaži besedilo | `splash_show_text` | `text` |
 
 ### Nadzor
 
@@ -169,9 +186,12 @@ Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
 | Zapusti dogodek | `exit_event` | — |
 | Če je mogoče potisniti | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Če trk | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Če trk pri | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
 | Če predmet obstaja | `if_object_exists` | `object`, `not_flag` |
+| Ponovi | `repeat` | `times`, `actions` |
 | Začetek bloka | `start_block` | — |
 | Preveri verjetnost | `test_chance` | `sides` |
+| Preveri izraz | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Postavi vprašanje | `test_question` | `question` |
 | Preveri spremenljivko | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
@@ -182,14 +202,18 @@ Ta preset omogoča **21** vrst dogodkov in **94** vrst dejanj.
 | Omogoči poglede | `enable_views` | `enable` |
 | Nastavi pogled | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### Pogled 3D
+### Delci
 
 | Dejanje | Ime Bloka | Parametri |
 |--------|------------|------------|
-| Nariši HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Nariši mini zemljevid | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Omogoči pogled Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Nastavi kot pogleda | `set_facing_angle` | `angle`, `relative` |
+| Izpusti delce | `burst_particles` | `particle_type`, `number` |
+| Počisti delce | `clear_particles` | — |
+| Ustvari izvor | `create_emitter` | `x`, `y`, `width`, `height`, `shape` |
+| Ustvari sistem delcev | `create_particle_system` | `depth` |
+| Ustvari vrsto delca | `create_particle_type` | `sprite`, `size_min`, `size_max`, `size_increase`, `color`, `alpha`, `speed_min`, `speed_max`, `direction_min`, `direction_max`, `life_min`, `life_max` |
+| Odstrani izvor | `destroy_emitter` | — |
+| Odstrani sistem delcev | `destroy_particle_system` | — |
+| Neprekinjeno oddajaj delce | `stream_particles` | `particle_type`, `number` |
 
 ---
 

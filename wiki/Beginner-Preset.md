@@ -8,7 +8,7 @@
 
 ## Overview
 
-This preset enables **19** event types and **83** action types.
+This preset enables **19** event types and **54** action types.
 
 ---
 
@@ -46,9 +46,8 @@ This preset enables **19** event types and **83** action types.
 |--------|------------|------------|
 | Bounce | `bounce` | — |
 | Jump To Position | `jump_to_position` | `x`, `y`, `relative` |
-| Jump to Random Position | `jump_to_random` | `snap_h`, `snap_v` |
 | Jump to Start Position | `jump_to_start` | — |
-| Move Towards Point | `move_towards_point` | `x`, `y`, `speed` |
+| Move to Contact | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Reverse Horizontal | `reverse_horizontal` | — |
 | Reverse Vertical | `reverse_vertical` | — |
 | Set Direction & Speed | `set_direction_speed` | `direction`, `speed` |
@@ -70,29 +69,19 @@ This preset enables **19** event types and **83** action types.
 |--------|------------|------------|
 | Change Instance | `change_instance` | `object`, `perform_events` |
 | Create Instance | `create_instance` | `object`, `x`, `y`, `relative` |
-| Create Moving Instance | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
-| Create Random Instance | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
 | Destroy Instance | `destroy_instance` | — |
 | Destroy at Position | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
-| Set Image Index | `set_image_index` | `frame` |
-| Set Image Speed | `set_image_speed` | `speed` |
-| Start Animation | `start_animation` | — |
-| Stop Animation | `stop_animation` | — |
 | Test Instance Count | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Score
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Clear High-Score Table | `clear_highscore` | — |
 | Draw Lives | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Draw Score | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Set Lives | `set_lives` | `value`, `relative` |
 | Set Score | `set_score` | `value`, `relative` |
 | Show High-Score Table | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Test Health | `test_health` | `operation`, `value` |
-| Test Lives | `test_lives` | `value`, `operation` |
-| Test Score | `test_score` | `value`, `operation` |
 
 ### Timing
 
@@ -105,12 +94,11 @@ This preset enables **19** event types and **83** action types.
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Check Room | `check_room` | `room`, `not_flag` |
 | End Game | `game_end` | — |
 | If Next Room Exists | `if_next_room_exists` | `then_actions`, `else_actions` |
 | If Previous Room Exists | `if_previous_room_exists` | `then_actions`, `else_actions` |
 | Restart Room | `restart_room` | — |
-| Set Room Caption | `set_room_caption` | `caption` |
+| Set Background | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
 ### Audio
 
@@ -127,28 +115,17 @@ This preset enables **19** event types and **83** action types.
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Draw Arrow | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Draw Background | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Draw Ellipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Draw Line | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Draw Scaled Text | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Draw Text | `draw_text` | `text`, `x`, `y`, `relative` |
-| Draw Variable | `draw_variable` | `x`, `y`, `variable` |
-| Fill Screen Color | `fill_color` | `color` |
-| Open Webpage | `open_webpage` | `url` |
+| Draw Text | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Restart Game | `restart_game` | — |
-| Set Color | `set_color` | `color`, `alpha` |
 | Set Draw Color | `set_draw_color` | `color` |
-| Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
 | Set Window Caption | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
-| Show Game Info | `show_info` | — |
 | Show Message | `show_message` | `message` |
 
 ### Control
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
+| Check Empty | `check_empty` | `x`, `y`, `relative`, `objects` |
 | Comment | `comment` | `text` |
 | Else | `else_action` | — |
 | End Block | `end_block` | — |
@@ -159,24 +136,8 @@ This preset enables **19** event types and **83** action types.
 | If Object Exists | `if_object_exists` | `object`, `not_flag` |
 | Start Block | `start_block` | — |
 | Test Chance | `test_chance` | `sides` |
-| Test Question | `test_question` | `question` |
+| Test Expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Test Variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
-
-### Views
-
-| Action | Block Name | Parameters |
-|--------|------------|------------|
-| Enable Views | `enable_views` | `enable` |
-| Set View | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
-
-### 3D View
-
-| Action | Block Name | Parameters |
-|--------|------------|------------|
-| Draw DOOM HUD | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Draw Minimap | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Enable Raycast View | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Set Facing Angle | `set_facing_angle` | `angle`, `relative` |
 
 ---
 

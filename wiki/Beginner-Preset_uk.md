@@ -8,7 +8,7 @@
 
 ## Огляд
 
-Цей пресет вмикає **19** типів подій і **83** типів дій.
+Цей пресет вмикає **19** типів подій і **54** типів дій.
 
 ---
 
@@ -46,9 +46,8 @@
 |--------|------------|------------|
 | Відскок | `bounce` | — |
 | Перейти до позиції | `jump_to_position` | `x`, `y`, `relative` |
-| Перейти до випадкової позиції | `jump_to_random` | `snap_h`, `snap_v` |
 | Перейти до стартової позиції | `jump_to_start` | — |
-| Рух до точки | `move_towards_point` | `x`, `y`, `speed` |
+| Рух до контакту | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Обернути горизонтально | `reverse_horizontal` | — |
 | Обернути вертикально | `reverse_vertical` | — |
 | Задати напрямок і швидкість | `set_direction_speed` | `direction`, `speed` |
@@ -70,29 +69,19 @@
 |--------|------------|------------|
 | Змінити екземпляр | `change_instance` | `object`, `perform_events` |
 | Створити екземпляр | `create_instance` | `object`, `x`, `y`, `relative` |
-| Створити рухомий екземпляр | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
-| Створити випадковий екземпляр | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
 | Знищити екземпляр | `destroy_instance` | — |
 | Знищити в позиції | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
-| Задати індекс зображення | `set_image_index` | `frame` |
-| Задати швидкість зображення | `set_image_speed` | `speed` |
-| Запустити анімацію | `start_animation` | — |
-| Зупинити анімацію | `stop_animation` | — |
 | Перевірити кількість екземплярів | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Рахунок
 
 | Дія | Назва Блоку | Параметри |
 |--------|------------|------------|
-| Очистити таблицю рекордів | `clear_highscore` | — |
 | Намалювати життя | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Намалювати рахунок | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Задати життя | `set_lives` | `value`, `relative` |
 | Задати рахунок | `set_score` | `value`, `relative` |
 | Показати таблицю рекордів | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Перевірити здоров'я | `test_health` | `operation`, `value` |
-| Перевірити життя | `test_lives` | `value`, `operation` |
-| Перевірити рахунок | `test_score` | `value`, `operation` |
 
 ### Час
 
@@ -105,12 +94,11 @@
 
 | Дія | Назва Блоку | Параметри |
 |--------|------------|------------|
-| Перевірити кімнату | `check_room` | `room`, `not_flag` |
 | Завершити гру | `game_end` | — |
 | Якщо існує наступна кімната | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Якщо існує попередня кімната | `if_previous_room_exists` | `then_actions`, `else_actions` |
 | Перезапустити кімнату | `restart_room` | — |
-| Задати заголовок кімнати | `set_room_caption` | `caption` |
+| Задати фон | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
 ### Аудіо
 
@@ -127,28 +115,17 @@
 
 | Дія | Назва Блоку | Параметри |
 |--------|------------|------------|
-| Намалювати стрілку | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Намалювати тло | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Намалювати еліпс | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Намалювати лінію | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Намалювати масштабований текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Намалювати спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Намалювати текст | `draw_text` | `text`, `x`, `y`, `relative` |
-| Намалювати змінну | `draw_variable` | `x`, `y`, `variable` |
-| Заповнити екран кольором | `fill_color` | `color` |
-| Відкрити вебсторінку | `open_webpage` | `url` |
+| Намалювати текст | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Перезапустити гру | `restart_game` | — |
-| Задати колір | `set_color` | `color`, `alpha` |
 | Задати колір малювання | `set_draw_color` | `color` |
-| Задати шрифт малювання | `set_draw_font` | `font`, `halign`, `valign` |
 | Задати заголовок вікна | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
-| Показати інформацію про гру | `show_info` | — |
 | Показати повідомлення | `show_message` | `message` |
 
 ### Керування
 
 | Дія | Назва Блоку | Параметри |
 |--------|------------|------------|
+| Перевірити на порожнечу | `check_empty` | `x`, `y`, `relative`, `objects` |
 | Коментар | `comment` | `text` |
 | Інакше | `else_action` | — |
 | Кінець блоку | `end_block` | — |
@@ -159,24 +136,8 @@
 | Якщо об'єкт існує | `if_object_exists` | `object`, `not_flag` |
 | Початок блоку | `start_block` | — |
 | Перевірити шанс | `test_chance` | `sides` |
-| Поставити запитання | `test_question` | `question` |
+| Перевірити вираз | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Перевірити змінну | `test_variable` | `variable`, `value`, `scope`, `operation` |
-
-### Вигляди
-
-| Дія | Назва Блоку | Параметри |
-|--------|------------|------------|
-| Увімкнути вигляди | `enable_views` | `enable` |
-| Налаштувати вигляд | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
-
-### 3D-вигляд
-
-| Дія | Назва Блоку | Параметри |
-|--------|------------|------------|
-| Намалювати HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Намалювати мінікарту | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Увімкнути вигляд Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Задати кут погляду | `set_facing_angle` | `angle`, `relative` |
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## Обзор
 
-Этот пресет включает **19** типов событий и **83** типов действий.
+Этот пресет включает **19** типов событий и **54** типов действий.
 
 ---
 
@@ -46,9 +46,8 @@
 |--------|------------|------------|
 | Отскок | `bounce` | — |
 | Перейти к позиции | `jump_to_position` | `x`, `y`, `relative` |
-| Перейти в случайную позицию | `jump_to_random` | `snap_h`, `snap_v` |
 | Перейти к стартовой позиции | `jump_to_start` | — |
-| Движение к точке | `move_towards_point` | `x`, `y`, `speed` |
+| Движение до контакта | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Обратить горизонтально | `reverse_horizontal` | — |
 | Обратить вертикально | `reverse_vertical` | — |
 | Задать направление и скорость | `set_direction_speed` | `direction`, `speed` |
@@ -70,29 +69,19 @@
 |--------|------------|------------|
 | Изменить экземпляр | `change_instance` | `object`, `perform_events` |
 | Создать экземпляр | `create_instance` | `object`, `x`, `y`, `relative` |
-| Создать движущийся экземпляр | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
-| Создать случайный экземпляр | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
 | Уничтожить экземпляр | `destroy_instance` | — |
 | Уничтожить в позиции | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
-| Задать индекс изображения | `set_image_index` | `frame` |
-| Задать скорость изображения | `set_image_speed` | `speed` |
-| Запустить анимацию | `start_animation` | — |
-| Остановить анимацию | `stop_animation` | — |
 | Проверить количество экземпляров | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Счёт
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Очистить таблицу рекордов | `clear_highscore` | — |
 | Нарисовать жизни | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Нарисовать счёт | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Задать жизни | `set_lives` | `value`, `relative` |
 | Задать счёт | `set_score` | `value`, `relative` |
 | Показать таблицу рекордов | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Проверить здоровье | `test_health` | `operation`, `value` |
-| Проверить жизни | `test_lives` | `value`, `operation` |
-| Проверить счёт | `test_score` | `value`, `operation` |
 
 ### Время
 
@@ -105,12 +94,11 @@
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Проверить комнату | `check_room` | `room`, `not_flag` |
 | Завершить игру | `game_end` | — |
 | Если следующая комната существует | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Если предыдущая комната существует | `if_previous_room_exists` | `then_actions`, `else_actions` |
 | Перезапустить комнату | `restart_room` | — |
-| Задать заголовок комнаты | `set_room_caption` | `caption` |
+| Задать фон | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
 ### Аудио
 
@@ -127,28 +115,17 @@
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Нарисовать стрелку | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Нарисовать фон | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Нарисовать эллипс | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Нарисовать линию | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Нарисовать масштабированный текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Нарисовать спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Нарисовать текст | `draw_text` | `text`, `x`, `y`, `relative` |
-| Нарисовать переменную | `draw_variable` | `x`, `y`, `variable` |
-| Заполнить экран цветом | `fill_color` | `color` |
-| Открыть веб-страницу | `open_webpage` | `url` |
+| Нарисовать текст | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Перезапустить игру | `restart_game` | — |
-| Задать цвет | `set_color` | `color`, `alpha` |
 | Задать цвет рисования | `set_draw_color` | `color` |
-| Задать шрифт рисования | `set_draw_font` | `font`, `halign`, `valign` |
 | Задать заголовок окна | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
-| Показать информацию об игре | `show_info` | — |
 | Показать сообщение | `show_message` | `message` |
 
 ### Управление
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
+| Проверить на пустоту | `check_empty` | `x`, `y`, `relative`, `objects` |
 | Комментарий | `comment` | `text` |
 | Иначе | `else_action` | — |
 | Конец блока | `end_block` | — |
@@ -159,24 +136,8 @@
 | Если объект существует | `if_object_exists` | `object`, `not_flag` |
 | Начало блока | `start_block` | — |
 | Проверить шанс | `test_chance` | `sides` |
-| Задать вопрос | `test_question` | `question` |
+| Проверить выражение | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Проверить переменную | `test_variable` | `variable`, `value`, `scope`, `operation` |
-
-### Виды
-
-| Действие | Имя Блока | Параметры |
-|--------|------------|------------|
-| Включить виды | `enable_views` | `enable` |
-| Настроить вид | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
-
-### 3D-вид
-
-| Действие | Имя Блока | Параметры |
-|--------|------------|------------|
-| Нарисовать HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Нарисовать миникарту | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Включить вид Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Задать угол взгляда | `set_facing_angle` | `angle`, `relative` |
 
 ---
 

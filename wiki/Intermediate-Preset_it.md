@@ -8,7 +8,7 @@
 
 ## Panoramica
 
-Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
+Questo preset abilita **21** tipi di eventi e **118** tipi di azioni.
 
 ---
 
@@ -50,7 +50,9 @@ Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
 | Salta alla posizione | `jump_to_position` | `x`, `y`, `relative` |
 | Salta a posizione casuale | `jump_to_random` | `snap_h`, `snap_v` |
 | Salta alla posizione iniziale | `jump_to_start` | — |
+| Muovi sulla griglia | `move_grid` | `direction`, `grid_size` |
 | Muovi verso un punto | `move_towards_point` | `x`, `y`, `speed` |
+| Muovi fino al contatto | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Inverti orizzontale | `reverse_horizontal` | — |
 | Inverti verticale | `reverse_vertical` | — |
 | Imposta direzione e velocità | `set_direction_speed` | `direction`, `speed` |
@@ -106,8 +108,14 @@ Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
+| Metti in pausa la linea temporale | `pause_timeline` | — |
 | Imposta allarme | `set_alarm` | `alarm_number`, `steps` |
+| Imposta la linea temporale | `set_timeline` | `timeline` |
+| Imposta la posizione nella linea temporale | `set_timeline_position` | `position`, `relative` |
+| Imposta la velocità della linea temporale | `set_timeline_speed` | `speed` |
 | Pausa | `sleep` | `milliseconds` |
+| Avvia la linea temporale | `start_timeline` | — |
+| Ferma la linea temporale | `stop_timeline` | — |
 
 ### Stanza
 
@@ -121,7 +129,11 @@ Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
 | Stanza successiva | `next_room` | — |
 | Stanza precedente | `previous_room` | — |
 | Riavvia stanza | `restart_room` | — |
+| Imposta sfondo | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
+| Imposta colore di sfondo | `set_background_color` | `color`, `show_color` |
 | Imposta titolo stanza | `set_room_caption` | `caption` |
+| Imposta persistenza stanza | `set_room_persistent` | `persistent` |
+| Imposta velocità stanza | `set_room_speed` | `speed` |
 
 ### Audio
 
@@ -144,17 +156,22 @@ Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
 | Disegna linea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
 | Disegna testo scalato | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
 | Disegna sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Disegna testo | `draw_text` | `text`, `x`, `y`, `relative` |
+| Disegna testo | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Disegna variabile | `draw_variable` | `x`, `y`, `variable` |
 | Riempi schermo con colore | `fill_color` | `color` |
+| Carica la partita | `load_game` | `filename` |
 | Apri pagina web | `open_webpage` | `url` |
 | Riavvia gioco | `restart_game` | — |
+| Salva la partita | `save_game` | `filename` |
 | Imposta colore | `set_color` | `color`, `alpha` |
 | Imposta colore di disegno | `set_draw_color` | `color` |
 | Imposta font di disegno | `set_draw_font` | `font`, `halign`, `valign` |
 | Imposta titolo finestra | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostra info gioco | `show_info` | — |
 | Mostra messaggio | `show_message` | `message` |
+| Mostra un video | `show_video` | `filename`, `fullscreen` |
+| Schermata: mostra immagine | `splash_show_image` | `image` |
+| Schermata: mostra testo | `splash_show_text` | `text` |
 
 ### Controllo
 
@@ -169,9 +186,12 @@ Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
 | Esci dall'evento | `exit_event` | — |
 | Se si può spingere | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Se collisione | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Se collisione in | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
 | Se l'oggetto esiste | `if_object_exists` | `object`, `not_flag` |
+| Ripeti | `repeat` | `times`, `actions` |
 | Inizio blocco | `start_block` | — |
 | Verifica probabilità | `test_chance` | `sides` |
+| Verifica espressione | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Poni una domanda | `test_question` | `question` |
 | Verifica variabile | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
@@ -182,14 +202,18 @@ Questo preset abilita **21** tipi di eventi e **94** tipi di azioni.
 | Abilita viste | `enable_views` | `enable` |
 | Imposta vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### Vista 3D
+### Particelle
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
-| Disegna HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Disegna minimappa | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Abilita vista Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Imposta angolo di sguardo | `set_facing_angle` | `angle`, `relative` |
+| Emetti particelle | `burst_particles` | `particle_type`, `number` |
+| Cancella particelle | `clear_particles` | — |
+| Crea emettitore | `create_emitter` | `x`, `y`, `width`, `height`, `shape` |
+| Crea sistema di particelle | `create_particle_system` | `depth` |
+| Crea tipo di particella | `create_particle_type` | `sprite`, `size_min`, `size_max`, `size_increase`, `color`, `alpha`, `speed_min`, `speed_max`, `direction_min`, `direction_max`, `life_min`, `life_max` |
+| Elimina emettitore | `destroy_emitter` | — |
+| Elimina sistema di particelle | `destroy_particle_system` | — |
+| Emetti particelle in continuo | `stream_particles` | `particle_type`, `number` |
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
+Este preajuste habilita **19** tipos de eventos y **54** tipos de acciones.
 
 ---
 
@@ -46,9 +46,8 @@ Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
 |--------|------------|------------|
 | Rebotar | `bounce` | — |
 | Saltar a posición | `jump_to_position` | `x`, `y`, `relative` |
-| Saltar a posición aleatoria | `jump_to_random` | `snap_h`, `snap_v` |
 | Saltar a la posición inicial | `jump_to_start` | — |
-| Mover hacia un punto | `move_towards_point` | `x`, `y`, `speed` |
+| Mover hasta el contacto | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Invertir horizontal | `reverse_horizontal` | — |
 | Invertir vertical | `reverse_vertical` | — |
 | Establecer dirección y velocidad | `set_direction_speed` | `direction`, `speed` |
@@ -70,29 +69,19 @@ Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
 |--------|------------|------------|
 | Cambiar instancia | `change_instance` | `object`, `perform_events` |
 | Crear instancia | `create_instance` | `object`, `x`, `y`, `relative` |
-| Crear instancia en movimiento | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
-| Crear instancia aleatoria | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
 | Destruir instancia | `destroy_instance` | — |
 | Destruir en posición | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
-| Establecer índice de imagen | `set_image_index` | `frame` |
-| Establecer velocidad de imagen | `set_image_speed` | `speed` |
-| Iniciar animación | `start_animation` | — |
-| Detener animación | `stop_animation` | — |
 | Comprobar número de instancias | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Puntuación
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Borrar tabla de récords | `clear_highscore` | — |
 | Dibujar vidas | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Dibujar puntuación | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Establecer vidas | `set_lives` | `value`, `relative` |
 | Establecer puntuación | `set_score` | `value`, `relative` |
 | Mostrar tabla de récords | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Comprobar salud | `test_health` | `operation`, `value` |
-| Comprobar vidas | `test_lives` | `value`, `operation` |
-| Comprobar puntuación | `test_score` | `value`, `operation` |
 
 ### Tiempo
 
@@ -105,12 +94,11 @@ Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Comprobar sala | `check_room` | `room`, `not_flag` |
 | Finalizar juego | `game_end` | — |
 | Si existe sala siguiente | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Si existe sala anterior | `if_previous_room_exists` | `then_actions`, `else_actions` |
 | Reiniciar sala | `restart_room` | — |
-| Establecer título de sala | `set_room_caption` | `caption` |
+| Establecer fondo | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
 ### Audio
 
@@ -127,28 +115,17 @@ Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Dibujar flecha | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Dibujar fondo | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Dibujar elipse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Dibujar línea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Dibujar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative` |
-| Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
-| Rellenar pantalla con color | `fill_color` | `color` |
-| Abrir página web | `open_webpage` | `url` |
+| Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Reiniciar juego | `restart_game` | — |
-| Establecer color | `set_color` | `color`, `alpha` |
 | Establecer color de dibujo | `set_draw_color` | `color` |
-| Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
 | Establecer título de ventana | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
-| Mostrar información del juego | `show_info` | — |
 | Mostrar mensaje | `show_message` | `message` |
 
 ### Control
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
+| Comprobar si vacío | `check_empty` | `x`, `y`, `relative`, `objects` |
 | Comentario | `comment` | `text` |
 | Si no | `else_action` | — |
 | Fin de bloque | `end_block` | — |
@@ -159,24 +136,8 @@ Este preajuste habilita **19** tipos de eventos y **83** tipos de acciones.
 | Si el objeto existe | `if_object_exists` | `object`, `not_flag` |
 | Inicio de bloque | `start_block` | — |
 | Comprobar probabilidad | `test_chance` | `sides` |
-| Hacer una pregunta | `test_question` | `question` |
+| Comprobar expresión | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Comprobar variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
-
-### Vistas
-
-| Acción | Nombre del Bloque | Parámetros |
-|--------|------------|------------|
-| Habilitar vistas | `enable_views` | `enable` |
-| Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
-
-### Vista 3D
-
-| Acción | Nombre del Bloque | Parámetros |
-|--------|------------|------------|
-| Dibujar HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Dibujar minimapa | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Habilitar vista Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Establecer ángulo de mirada | `set_facing_angle` | `angle`, `relative` |
 
 ---
 

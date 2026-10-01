@@ -293,25 +293,31 @@ EVENT_TO_BLOCKLY_MAP = {
 # PLUGIN_EVENT_BLOCKLY_MAP; events with no entry are always available.
 
 
-def get_available_events(blockly_config=None) -> List[EventType]:
-    """Get list of available events, optionally filtered by BlocklyConfig.
+def get_available_events(blockly_config=None, project_data=None) -> List[EventType]:
+    """Get list of available events, filtered by
+    ``config.toolbox_visibility.visible_events`` (docs/
+    BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 4) -- the events-side twin of
+    ``action_types.get_actions_by_category``.
 
     Args:
-        blockly_config: Optional BlocklyConfig to filter events.
-                       If provided, only events enabled in the config are returned.
-    """
-    if blockly_config is None:
-        return list(EVENT_TYPES.values())
+        blockly_config: Optional BlocklyConfig to filter core (non-extension)
+                       events. ``None`` means no preset restriction on
+                       those.
+        project_data: The open project's data, for per-project extension
+                       activation. ``None`` means no extension is active.
 
-    result = []
-    for event in EVENT_TYPES.values():
-        blockly_type = EVENT_TO_BLOCKLY_MAP.get(event.name)
-        if blockly_type:
-            if not blockly_config.is_block_enabled(blockly_type):
-                continue
-        # If no mapping exists, include the event (backward compatibility)
-        result.append(event)
-    return result
+    Previously, any event with no ``EVENT_TO_BLOCKLY_MAP`` entry -- every
+    extension event -- was included unconditionally "for backward
+    compatibility", regardless of ``blockly_config``: every preset's
+    Add-Event menu showed all 12 multiplayer network events no matter what.
+    """
+    # Local import: config.toolbox_visibility imports from this module at
+    # its own top level, so importing it back from here at module scope
+    # would be circular.
+    from config.toolbox_visibility import visible_events
+
+    visible = visible_events(blockly_config, project_data)
+    return [event for name, event in EVENT_TYPES.items() if name in visible]
 
 def get_keyboard_events_for_selector() -> List[Dict]:
     """

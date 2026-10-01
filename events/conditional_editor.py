@@ -576,12 +576,27 @@ class ConditionalActionEditor(QDialog):
         for action_data in self.else_actions:
             self.else_list.addItem(self._action_display_text(action_data))
 
+    def _find_project_data(self):
+        """Walk up to the parent (the IDE window) that carries the live,
+        in-memory project data -- same helper, same name, as
+        BlocklyWidget._find_project_data / ObjectEventsPanel._find_project_data
+        (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 4). Returns None outside a
+        real IDE."""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                return parent.current_project_data
+            parent = parent.parent()
+        return None
+
     def add_action_to_list(self, list_type: str):
         """Show menu to add an action to then or else list"""
         from PySide6.QtWidgets import QMenu
 
         menu = QMenu(self)
-        actions_by_category = get_actions_by_category()
+        # No blockly_config here, same as before Unit 4; now correctly
+        # gates EXTENSION actions by per-project activation.
+        actions_by_category = get_actions_by_category(project_data=self._find_project_data())
 
         for category, actions in actions_by_category.items():
             category_menu = menu.addMenu(self.tr(category))

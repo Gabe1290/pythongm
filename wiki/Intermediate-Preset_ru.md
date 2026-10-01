@@ -8,7 +8,7 @@
 
 ## Обзор
 
-Этот пресет включает **21** типов событий и **94** типов действий.
+Этот пресет включает **21** типов событий и **118** типов действий.
 
 ---
 
@@ -50,7 +50,9 @@
 | Перейти к позиции | `jump_to_position` | `x`, `y`, `relative` |
 | Перейти в случайную позицию | `jump_to_random` | `snap_h`, `snap_v` |
 | Перейти к стартовой позиции | `jump_to_start` | — |
+| Движение по сетке | `move_grid` | `direction`, `grid_size` |
 | Движение к точке | `move_towards_point` | `x`, `y`, `speed` |
+| Движение до контакта | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Обратить горизонтально | `reverse_horizontal` | — |
 | Обратить вертикально | `reverse_vertical` | — |
 | Задать направление и скорость | `set_direction_speed` | `direction`, `speed` |
@@ -106,8 +108,14 @@
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
+| Приостановить шкалу | `pause_timeline` | — |
 | Установить будильник | `set_alarm` | `alarm_number`, `steps` |
+| Задать временную шкалу | `set_timeline` | `timeline` |
+| Задать позицию на шкале | `set_timeline_position` | `position`, `relative` |
+| Задать скорость шкалы | `set_timeline_speed` | `speed` |
 | Пауза | `sleep` | `milliseconds` |
+| Запустить шкалу | `start_timeline` | — |
+| Остановить шкалу | `stop_timeline` | — |
 
 ### Комната
 
@@ -121,7 +129,11 @@
 | Следующая комната | `next_room` | — |
 | Предыдущая комната | `previous_room` | — |
 | Перезапустить комнату | `restart_room` | — |
+| Задать фон | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
+| Задать цвет фона | `set_background_color` | `color`, `show_color` |
 | Задать заголовок комнаты | `set_room_caption` | `caption` |
+| Задать постоянство комнаты | `set_room_persistent` | `persistent` |
+| Задать скорость комнаты | `set_room_speed` | `speed` |
 
 ### Аудио
 
@@ -144,17 +156,22 @@
 | Нарисовать линию | `draw_line` | `x1`, `y1`, `x2`, `y2` |
 | Нарисовать масштабированный текст | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
 | Нарисовать спрайт | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Нарисовать текст | `draw_text` | `text`, `x`, `y`, `relative` |
+| Нарисовать текст | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Нарисовать переменную | `draw_variable` | `x`, `y`, `variable` |
 | Заполнить экран цветом | `fill_color` | `color` |
+| Загрузить игру | `load_game` | `filename` |
 | Открыть веб-страницу | `open_webpage` | `url` |
 | Перезапустить игру | `restart_game` | — |
+| Сохранить игру | `save_game` | `filename` |
 | Задать цвет | `set_color` | `color`, `alpha` |
 | Задать цвет рисования | `set_draw_color` | `color` |
 | Задать шрифт рисования | `set_draw_font` | `font`, `halign`, `valign` |
 | Задать заголовок окна | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Показать информацию об игре | `show_info` | — |
 | Показать сообщение | `show_message` | `message` |
+| Показать видео | `show_video` | `filename`, `fullscreen` |
+| Заставка: показать изображение | `splash_show_image` | `image` |
+| Заставка: показать текст | `splash_show_text` | `text` |
 
 ### Управление
 
@@ -169,9 +186,12 @@
 | Выйти из события | `exit_event` | — |
 | Если можно толкнуть | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Если столкновение | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Если столкновение в | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
 | Если объект существует | `if_object_exists` | `object`, `not_flag` |
+| Повторить | `repeat` | `times`, `actions` |
 | Начало блока | `start_block` | — |
 | Проверить шанс | `test_chance` | `sides` |
+| Проверить выражение | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Задать вопрос | `test_question` | `question` |
 | Проверить переменную | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
@@ -182,14 +202,18 @@
 | Включить виды | `enable_views` | `enable` |
 | Настроить вид | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### 3D-вид
+### Частицы
 
 | Действие | Имя Блока | Параметры |
 |--------|------------|------------|
-| Нарисовать HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Нарисовать миникарту | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Включить вид Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Задать угол взгляда | `set_facing_angle` | `angle`, `relative` |
+| Выпустить частицы | `burst_particles` | `particle_type`, `number` |
+| Очистить частицы | `clear_particles` | — |
+| Создать источник | `create_emitter` | `x`, `y`, `width`, `height`, `shape` |
+| Создать систему частиц | `create_particle_system` | `depth` |
+| Создать тип частиц | `create_particle_type` | `sprite`, `size_min`, `size_max`, `size_increase`, `color`, `alpha`, `speed_min`, `speed_max`, `direction_min`, `direction_max`, `life_min`, `life_max` |
+| Удалить источник | `destroy_emitter` | — |
+| Удалить систему частиц | `destroy_particle_system` | — |
+| Испускать частицы потоком | `stream_particles` | `particle_type`, `number` |
 
 ---
 

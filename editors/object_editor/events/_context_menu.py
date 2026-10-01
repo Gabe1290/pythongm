@@ -6,6 +6,11 @@ Extracted verbatim from ``ObjectEventsPanel.show_context_menu``
 ``panel``; the branch structure, menu wiring and ``menu.exec`` call are
 untouched. ``panel.tr(...)`` keeps the "ObjectEventsPanel" translation
 context (PySide6 resolves it from the concrete runtime class).
+
+``get_actions_by_category`` calls also pass ``panel._find_project_data()``
+now (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 4), so the Add-Action
+submenu only offers an extension's actions when the open project has that
+extension active.
 """
 
 from PySide6.QtWidgets import QMenu
@@ -34,7 +39,7 @@ def build_context_menu(panel, position):
         if isinstance(event_name, str) and (event_name.startswith("collision_with_") or event_name.startswith("not_collision_with_")):
             add_action_menu = menu.addMenu(panel.tr("Add Action"))
 
-            actions_by_category = get_actions_by_category(panel.blockly_config)
+            actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
             for category, actions in actions_by_category.items():
                 category_menu = add_action_menu.addMenu(panel.tr(category))
 
@@ -59,7 +64,7 @@ def build_context_menu(panel, position):
         elif isinstance(event_name, str) and event_name.startswith("mouse_"):
             add_action_menu = menu.addMenu(panel.tr("Add Action"))
 
-            actions_by_category = get_actions_by_category(panel.blockly_config)
+            actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
             for category, actions in actions_by_category.items():
                 category_menu = add_action_menu.addMenu(panel.tr(category))
 
@@ -108,7 +113,7 @@ def build_context_menu(panel, position):
             # Regular leaf events (create, step, etc.) accept actions.
             add_action_menu = menu.addMenu(panel.tr("Add Action"))
 
-            actions_by_category = get_actions_by_category(panel.blockly_config)
+            actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
             for category, actions in actions_by_category.items():
                 category_menu = add_action_menu.addMenu(panel.tr(category))
 
@@ -146,7 +151,7 @@ def build_context_menu(panel, position):
                 # Add action submenu for this specific key
                 add_action_menu = menu.addMenu(panel.tr("Add Action"))
 
-                actions_by_category = get_actions_by_category(panel.blockly_config)
+                actions_by_category = get_actions_by_category(panel.blockly_config, panel._find_project_data())
                 for category, actions in actions_by_category.items():
                     category_menu = add_action_menu.addMenu(panel.tr(category))
 
