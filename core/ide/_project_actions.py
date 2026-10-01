@@ -296,6 +296,13 @@ class ProjectActionsMixin:
             self.project_manager.current_project_data.update(settings)
             self.project_manager.mark_dirty()
             self.update_window_title()
+            # Refresh every open object editor's toolbox/action menus so a
+            # per-project extension-activation change (docs/
+            # BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 5) takes effect live --
+            # no restart needed, unlike the global extensions on/off switch
+            # (that one needs actions to re-register at startup; these are
+            # already registered, only their VISIBILITY changed).
+            self.refresh_event_panels_config()
 
     def close_project(self):
         """Close the open project and return the IDE to its no-project state.

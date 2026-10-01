@@ -15,7 +15,7 @@ from pathlib import Path
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
                                QLineEdit, QPushButton, QTextEdit, QFileDialog,
                                QDialogButtonBox, QGroupBox, QCheckBox,
-                               QComboBox, QSpinBox, QMessageBox)
+                               QComboBox, QSpinBox, QMessageBox, QLabel)
 
 from utils import documents_dir
 
@@ -223,6 +223,16 @@ class ProjectSettingsDialog(QDialog):
 
         layout.addWidget(game_group)
 
+        # Extensions group (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 5):
+        # per-project activation, one checkbox per globally-enabled
+        # extension. Built empty here; load_settings() populates it, since
+        # the checkbox set itself is data-driven (list_available_extensions())
+        # rather than static like the fields above.
+        self.extensions_group = QGroupBox(self.tr("Extensions"))
+        self.extensions_layout = QVBoxLayout(self.extensions_group)
+        self.extension_checks = {}  # folder name -> QCheckBox
+        layout.addWidget(self.extensions_group)
+
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
@@ -251,6 +261,8 @@ class ProjectSettingsDialog(QDialog):
                 self.show_score_check.setChecked(settings.get("show_score_in_caption", False))
                 self.starting_health_spin.setValue(int(settings.get("starting_health", 100)))
                 self.show_health_check.setChecked(settings.get("show_health_in_caption", False))
+
+                self._populate_extensions(settings)
             else:
                 self.project_name_edit.setText("Untitled Project")
                 self.auto_save_check.setChecked(True)
@@ -260,6 +272,55 @@ class ProjectSettingsDialog(QDialog):
             print(f"⚠️  Project settings error: {e}")
             self.project_name_edit.setText("Untitled Project")
             self.auto_save_check.setChecked(True)
+
+    def _populate_extensions(self, settings):
+        """Build one checkbox per globally-enabled extension that is
+        actually governed by per-project activation -- an extension whose
+        actions never appear in ACTION_TYPES (Thymio; it uses the older
+        GM80-dialog ActionDefinition schema, not PLUGIN_ACTIONS, confirmed
+        THYMIO_EXTENSION_PLAN.md Stage G3) has its own separate gate
+        ("project has playgrounds") and is deliberately left out of this
+        list -- a checkbox here would do nothing (docs/
+        BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 5, decision 4).
+
+        An extension the project already uses (its actions appear
+        somewhere in the project's events) is shown checked and disabled,
+        with a note naming how many actions depend on it -- turning it off
+        would hide blocks the project still needs; see
+        config.toolbox_visibility.active_extensions, which this mirrors.
+        """
+        from events.plugin_loader import list_available_extensions, collect_project_action_names
+        from events.action_types import ACTION_TYPES
+
+        used_actions = collect_project_action_names(self.project_data)
+        manually_active = set(settings.get("active_extensions") or [])
+
+        for info in list_available_extensions():
+            if not info.get("enabled", True):
+                continue
+            provided = set(info.get("provides_actions") or [])
+            if not (provided & set(ACTION_TYPES)):
+                continue  # not governed by this mechanism (e.g. Thymio)
+
+            used_count = len(provided & used_actions)
+            row = QHBoxLayout()
+            check = QCheckBox(info.get("name", info["folder"]))
+            if used_count > 0:
+                check.setChecked(True)
+                check.setEnabled(False)
+                note = QLabel(self.tr("used by {0} action(s)").format(used_count))
+                note.setStyleSheet("color: gray; font-style: italic;")
+                row.addWidget(check)
+                row.addWidget(note)
+            else:
+                check.setChecked(info["folder"] in manually_active)
+                row.addWidget(check)
+            row.addStretch()
+            self.extensions_layout.addLayout(row)
+            self.extension_checks[info["folder"]] = check
+
+        if not self.extension_checks:
+            self.extensions_group.setVisible(False)
 
     def accept_settings(self):
         if not isinstance(self.project_data, dict):
@@ -276,13 +337,23 @@ class ProjectSettingsDialog(QDialog):
         if "settings" not in self.project_data:
             self.project_data["settings"] = {}
 
+        # Only checkboxes the user actually toggled ON (enabled ones --
+        # a disabled, always-checked box means the project already uses
+        # that extension, which config.toolbox_visibility.active_extensions
+        # already detects by usage; no need to also list it here).
+        active_extensions = sorted(
+            folder for folder, check in self.extension_checks.items()
+            if check.isEnabled() and check.isChecked()
+        )
+
         self.project_data["settings"].update({
             "starting_lives": self.starting_lives_spin.value(),
             "show_lives_in_caption": self.show_lives_check.isChecked(),
             "starting_score": self.starting_score_spin.value(),
             "show_score_in_caption": self.show_score_check.isChecked(),
             "starting_health": self.starting_health_spin.value(),
-            "show_health_in_caption": self.show_health_check.isChecked()
+            "show_health_in_caption": self.show_health_check.isChecked(),
+            "active_extensions": active_extensions,
         })
 
         self.accept()

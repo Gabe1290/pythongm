@@ -300,19 +300,46 @@ visible_actions(config, project_data) -> set[str]      # action names
     three dialog callers' wiring confirmed structurally.
   - Full suite: a-g 2503 passed, h-p 1671 passed, q-s 623 passed, t 636
     passed, u-z 138 passed, 0 real failures.
-- [ ] **U5 — project activation setting + UI.**
+- [x] **U5a — project activation setting + UI logic.** Done; U5b
+  (translations, below) is its own follow-up commit, same session.
   `project_data["settings"]["active_extensions"]` (list of folder names,
-  default empty; saved by the normal save path). `ProjectSettingsDialog`
-  (`dialogs/project_dialogs.py`) gains an "Extensions" section: one checkbox
-  per globally enabled extension. An extension the project already uses is
-  shown checked and **disabled** with a note ("used by N actions") — turning
-  it off would hide blocks the project still depends on. Toggling refreshes
-  open Blockly editors and action menus live (no restart; unlike the global
-  switch, nothing needs reloading — the actions are already registered).
-  New UI strings go into **all 10 shipped languages'** `.ts` files, routed to
-  the correct split/monolithic file, French with full accents (same process
-  as the 2026-08-10 extension-UI strings; `tests/test_extension_ui_translations.py`
-  is the pattern). Offscreen `grab()` screenshot of the dialog in fr/en.
+  default empty; saved through `ProjectSettingsDialog.accept_settings`'s
+  existing `self.project_data["settings"].update({...})` call, so it rides
+  the normal save path with zero new persistence wiring). `ProjectSettingsDialog`
+  (`dialogs/project_dialogs.py`) gains an "Extensions" section, built
+  dynamically in a new `_populate_extensions()` (the checkbox *set* is
+  data-driven from `list_available_extensions()`, unlike every other field
+  in this dialog): one checkbox per globally-enabled extension whose
+  actions actually appear in `ACTION_TYPES` (`provided & set(ACTION_TYPES)`
+  -- Thymio is correctly excluded this way with no special-casing by name,
+  since its actions were never in `ACTION_TYPES` at all, confirmed
+  `THYMIO_EXTENSION_PLAN.md` Stage G3; decision 4, its own gate stays
+  separate). An extension the project already uses
+  (`collect_project_action_names(project_data) & provides_actions`) is
+  shown checked and **disabled** with a `"used by {0} action(s)"` note —
+  turning it off would hide blocks the project still depends on; `accept_settings`
+  only writes the *manually* checked (enabled-checkbox) folders into
+  `active_extensions`, since a disabled/used one is already detected by
+  usage (`config.toolbox_visibility.active_extensions` combines both sets
+  identically). Toggling refreshes live: `core/ide/_project_actions.py`'s
+  `project_settings()` now calls the existing `self.refresh_event_panels_config()`
+  after a successful accept — no new refresh mechanism needed, since
+  `apply_config`/`apply_configuration` already re-resolve `visible_actions`/
+  `visible_events` from the live `current_project_data` on every call (U3/U4).
+  8 new tests in `tests/test_project_settings_extensions.py`: Thymio
+  excluded; used-extension checked+disabled with the right count;
+  unused-extension unchecked+enabled; a globally-disabled extension isn't
+  listed at all; `accept_settings` persists only the manual selections;
+  reopening restores a previous manual activation; the saved settings dict
+  round-trips through the real resolver; `project_settings()`'s refresh
+  call confirmed structurally. Full suite: a-g 2503 passed, h-p 1679
+  passed, q-s 623 passed, t 636 passed, u-z 138 passed, 0 real failures.
+- [ ] **U5b — translations.** New UI strings ("Extensions" group title,
+  `"used by {0} action(s)"` note) go into **all 10 shipped languages'**
+  `.ts` files, routed to the correct split/monolithic file, French with
+  full accents (same process as the 2026-08-10 extension-UI strings;
+  `tests/test_extension_ui_translations.py` is the pattern). Offscreen
+  `grab()` screenshot of the dialog in fr/en.
 - [ ] **U6 — docs + eyeball.** `wiki/Extensions*.md` and the preset pages:
   explain per-project activation (en + fr now; other languages via the
   generator where generated, otherwise deferred like prior wiki arcs).
