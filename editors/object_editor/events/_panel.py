@@ -737,6 +737,20 @@ class ObjectEventsPanel(EventCrudMixin, ActionCrudMixin, RenderMixin, ClipboardM
             parent = parent.parent()
         return False
 
+    def _find_project_data(self):
+        """Walk up to the parent (the IDE window) that carries the live,
+        in-memory project data -- same helper, same name, as
+        BlocklyWidget._find_project_data (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md,
+        Unit 4). Returns None outside a real IDE, which callers must treat
+        as "no project open" (config.toolbox_visibility.active_extensions(None)
+        is empty)."""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                return parent.current_project_data
+            parent = parent.parent()
+        return None
+
     def add_collision_event(self, target_object: str):
         """Add a collision event for a specific object type with optional negation"""
 

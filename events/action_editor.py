@@ -939,13 +939,30 @@ class MultiActionEditor(QDialog):
             item.setData(0, Qt.ItemDataRole.UserRole, action_data)
             self.action_tree.addTopLevelItem(item)
 
+    def _find_project_data(self):
+        """Walk up to the parent (the IDE window) that carries the live,
+        in-memory project data -- same helper, same name, as
+        BlocklyWidget._find_project_data / ObjectEventsPanel._find_project_data
+        (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 4). Returns None outside a
+        real IDE."""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                return parent.current_project_data
+            parent = parent.parent()
+        return None
+
     def add_action(self):
         """Show menu to add a new action"""
         from events.action_types import get_actions_by_category
 
         menu = QMenu(self)
 
-        actions_by_category = get_actions_by_category()
+        # No blockly_config here, same as before Unit 4 -- this dialog
+        # (Then/Else branch action lists) has never restricted actions by
+        # preset. It now correctly gates EXTENSION actions by whether the
+        # open project has them active, independent of any preset.
+        actions_by_category = get_actions_by_category(project_data=self._find_project_data())
         for category, actions in actions_by_category.items():
             category_menu = menu.addMenu(self.tr(category))
 

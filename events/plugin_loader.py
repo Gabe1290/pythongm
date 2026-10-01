@@ -566,6 +566,7 @@ def list_available_extensions() -> List[dict]:
         except Exception:
             continue
         provides = manifest.get("provides_actions") or []
+        provides_events = manifest.get("provides_events") or []
         out.append({
             "folder": folder.name,
             "name": manifest.get("name", folder.name),
@@ -573,10 +574,12 @@ def list_available_extensions() -> List[dict]:
             "description": manifest.get("description", ""),
             "enabled": is_extension_enabled(folder.name,
                                             manifest.get("enabled", True)),
-            # Action names this extension owns, declared in its manifest so they
-            # are readable WITHOUT importing (loading) the extension — needed to
-            # tell a user which DISABLED extension a project's action belongs to.
+            # Action/event names this extension owns, declared in its
+            # manifest so they are readable WITHOUT importing (loading) the
+            # extension — needed to tell a user which DISABLED extension a
+            # project's action/event belongs to.
             "provides_actions": list(provides) if isinstance(provides, list) else [],
+            "provides_events": list(provides_events) if isinstance(provides_events, list) else [],
         })
     return out
 
@@ -638,6 +641,19 @@ def extension_for_action(action_name: str) -> Optional[dict]:
     """
     for info in list_available_extensions():
         if action_name in (info.get("provides_actions") or []):
+            return info
+    return None
+
+
+def extension_for_event(event_name: str) -> Optional[dict]:
+    """``extension_for_action``'s twin for events: the extension whose
+    manifest ``provides_events`` declares ``event_name``, or ``None`` (a
+    plain core event, same indistinguishable not-installed case noted on
+    ``extension_for_action``). Added for docs/BLOCKLY_TOOLBOX_GATING_PLAN.md
+    Unit 4's events-side fix — only `multiplayer_lan`/`multiplayer_files`
+    declare ``provides_events`` today."""
+    for info in list_available_extensions():
+        if event_name in (info.get("provides_events") or []):
             return info
     return None
 

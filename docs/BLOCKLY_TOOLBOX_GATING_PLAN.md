@@ -237,12 +237,69 @@ visible_actions(config, project_data) -> set[str]      # action names
     weaken it.
   - Full suite: a-g 2503 passed, h-p 1671 passed, q-s 623 passed, t 629
     passed, u-z 138 passed, 0 real failures.
-- [ ] **U4 — action-list editor uses the resolver.**
-  `get_actions_by_category(config, project_data=None)`; callers
-  (`_context_menu.py`, `action_editor.py`, `conditional_editor.py`) pass the
-  open project. Regenerate `tools/gen_preset_docs.py` output; the wiki preset
-  pages change (publishing to the live wiki needs explicit approval, as
-  always).
+- [x] **U4 — action-list editor uses the resolver.**
+  `events/action_types.py`'s `get_actions_by_category(blockly_config=None,
+  project_data=None)` now delegates entirely to `visible_actions` (lazy
+  import, avoiding a circular import with `config/toolbox_visibility.py`
+  importing this module at its own top level). `visible_actions` gained a
+  `config=None` mode -- "no preset restriction on core actions" -- since
+  `action_editor.py`/`conditional_editor.py` never passed a config at all;
+  they keep that exact behaviour for core actions while gaining correct
+  extension-activation gating, which is independent of a preset. Callers
+  (`_context_menu.py`'s 4 call sites, `action_editor.py`,
+  `conditional_editor.py`) each pass `project_data` via a new
+  `_find_project_data()` helper -- same name, same parent-walk body, added
+  to all three classes plus `ObjectEventsPanel` (`_panel.py`), matching
+  `BlocklyWidget._find_project_data` from U3.
+  - **Found and fixed a second, sibling bug in the same unit (decided with
+    the user after regenerating the wiki docs surfaced it):**
+    `events/event_types.py`'s `get_available_events` had the *identical*
+    "no mapping → include anyway, for backward compatibility" bug, for
+    events instead of actions -- all 12 multiplayer network events
+    (`connection_lost`, `network_message`, `player_joined`, ...) showed in
+    every preset's Add-Event menu unconditionally, regardless of preset or
+    extension activation. Not in the plan's original U4 wording, but
+    leaving it would have meant the Add-Event and Add-Action menus
+    disagreed with each other (actions correctly gated, events not) right
+    after fixing exactly that inconsistency for actions. Fixed the same
+    way: new `config/toolbox_visibility.visible_events` (no Audio-style
+    always-visible exception -- events have no equivalent), a new
+    `plugin_loader.extension_for_event` (mirrors `extension_for_action`;
+    `list_available_extensions()` now also reads each manifest's
+    `provides_events`, which `multiplayer_lan`/`multiplayer_files` already
+    declared but nothing read), `get_available_events` rewritten to
+    delegate to it, and `_event_crud.py`'s one real caller
+    (`show_add_event_menu`) updated to pass `project_data`. Extension
+    activation reuses the existing action-based `active_extensions()`
+    signal as-is -- not extended to detect event-only usage, since a
+    project using an extension's events without ever calling one of its
+    actions isn't a real scenario worth the complexity.
+  - **Regenerated `tools/gen_preset_docs.py` output for all 9 shipped
+    languages** (18 files: `Beginner-Preset[_<lang>].md` /
+    `Intermediate-Preset[_<lang>].md`). The diff mixes two causes: the
+    actions fix (beginner's doc actually shrank overall -- 83→54 action
+    types -- because the old doc showed every unmapped action
+    unconditionally, not just the ones beginner's own preset enables, so
+    several actions nobody had actually decided beginner should show, like
+    `jump_to_random`/`create_random_instance`, dropped out; intermediate's
+    action count rose 94→118 as its own real generated-action set, U2's
+    `GENERATED_ACTION_NAMES.update()`, became visible for the first time)
+    and the events fix (intermediate's event count, inflated to 33 by the
+    sibling bug on an unregenerated first pass, correctly returned to 21 --
+    matching what the previously-committed doc already showed, confirming
+    that doc predated the multiplayer events existing at all and was never
+    actually wrong until a regen would have exposed the bug). French
+    accents spot-checked intact. Not published to the live wiki (needs
+    explicit approval, as always) -- these are local `wiki/*.md` commits
+    only.
+  - 7 new tests in `tests/test_toolbox_visibility.py` (now 18 total in
+    that file across U1/U3/U4): `get_actions_by_category`/
+    `get_available_events` both correctly gate extensions with no config at
+    all and still gate core actions/events by a real preset;
+    `extension_for_event` reads `provides_events` from the manifest; all
+    three dialog callers' wiring confirmed structurally.
+  - Full suite: a-g 2503 passed, h-p 1671 passed, q-s 623 passed, t 636
+    passed, u-z 138 passed, 0 real failures.
 - [ ] **U5 — project activation setting + UI.**
   `project_data["settings"]["active_extensions"]` (list of folder names,
   default empty; saved by the normal save path). `ProjectSettingsDialog`

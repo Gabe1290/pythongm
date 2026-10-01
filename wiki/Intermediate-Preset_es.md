@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
+Este preajuste habilita **21** tipos de eventos y **118** tipos de acciones.
 
 ---
 
@@ -50,7 +50,9 @@ Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 | Saltar a posición | `jump_to_position` | `x`, `y`, `relative` |
 | Saltar a posición aleatoria | `jump_to_random` | `snap_h`, `snap_v` |
 | Saltar a la posición inicial | `jump_to_start` | — |
+| Mover por cuadrícula | `move_grid` | `direction`, `grid_size` |
 | Mover hacia un punto | `move_towards_point` | `x`, `y`, `speed` |
+| Mover hasta el contacto | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Invertir horizontal | `reverse_horizontal` | — |
 | Invertir vertical | `reverse_vertical` | — |
 | Establecer dirección y velocidad | `set_direction_speed` | `direction`, `speed` |
@@ -106,8 +108,14 @@ Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
+| Pausar la línea de tiempo | `pause_timeline` | — |
 | Establecer alarma | `set_alarm` | `alarm_number`, `steps` |
+| Definir la línea de tiempo | `set_timeline` | `timeline` |
+| Definir la posición en la línea de tiempo | `set_timeline_position` | `position`, `relative` |
+| Definir la velocidad de la línea de tiempo | `set_timeline_speed` | `speed` |
 | Pausa | `sleep` | `milliseconds` |
+| Iniciar la línea de tiempo | `start_timeline` | — |
+| Detener la línea de tiempo | `stop_timeline` | — |
 
 ### Sala
 
@@ -121,7 +129,11 @@ Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 | Sala siguiente | `next_room` | — |
 | Sala anterior | `previous_room` | — |
 | Reiniciar sala | `restart_room` | — |
+| Establecer fondo | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
+| Establecer color de fondo | `set_background_color` | `color`, `show_color` |
 | Establecer título de sala | `set_room_caption` | `caption` |
+| Establecer persistencia de la sala | `set_room_persistent` | `persistent` |
+| Establecer velocidad de la sala | `set_room_speed` | `speed` |
 
 ### Audio
 
@@ -144,17 +156,22 @@ Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 | Dibujar línea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
 | Dibujar texto escalado | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
 | Dibujar sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative` |
+| Dibujar texto | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Dibujar variable | `draw_variable` | `x`, `y`, `variable` |
 | Rellenar pantalla con color | `fill_color` | `color` |
+| Cargar la partida | `load_game` | `filename` |
 | Abrir página web | `open_webpage` | `url` |
 | Reiniciar juego | `restart_game` | — |
+| Guardar la partida | `save_game` | `filename` |
 | Establecer color | `set_color` | `color`, `alpha` |
 | Establecer color de dibujo | `set_draw_color` | `color` |
 | Establecer fuente de dibujo | `set_draw_font` | `font`, `halign`, `valign` |
 | Establecer título de ventana | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Mostrar información del juego | `show_info` | — |
 | Mostrar mensaje | `show_message` | `message` |
+| Mostrar un vídeo | `show_video` | `filename`, `fullscreen` |
+| Pantalla: mostrar imagen | `splash_show_image` | `image` |
+| Pantalla: mostrar texto | `splash_show_text` | `text` |
 
 ### Control
 
@@ -169,9 +186,12 @@ Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 | Salir del evento | `exit_event` | — |
 | Si se puede empujar | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Si colisión | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si colisión en | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
 | Si el objeto existe | `if_object_exists` | `object`, `not_flag` |
+| Repetir | `repeat` | `times`, `actions` |
 | Inicio de bloque | `start_block` | — |
 | Comprobar probabilidad | `test_chance` | `sides` |
+| Comprobar expresión | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Hacer una pregunta | `test_question` | `question` |
 | Comprobar variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
@@ -182,14 +202,18 @@ Este preajuste habilita **21** tipos de eventos y **94** tipos de acciones.
 | Habilitar vistas | `enable_views` | `enable` |
 | Configurar vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### Vista 3D
+### Partículas
 
 | Acción | Nombre del Bloque | Parámetros |
 |--------|------------|------------|
-| Dibujar HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Dibujar minimapa | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Habilitar vista Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Establecer ángulo de mirada | `set_facing_angle` | `angle`, `relative` |
+| Lanzar partículas | `burst_particles` | `particle_type`, `number` |
+| Borrar partículas | `clear_particles` | — |
+| Crear emisor | `create_emitter` | `x`, `y`, `width`, `height`, `shape` |
+| Crear sistema de partículas | `create_particle_system` | `depth` |
+| Crear tipo de partícula | `create_particle_type` | `sprite`, `size_min`, `size_max`, `size_increase`, `color`, `alpha`, `speed_min`, `speed_max`, `direction_min`, `direction_max`, `life_min`, `life_max` |
+| Destruir emisor | `destroy_emitter` | — |
+| Destruir sistema de partículas | `destroy_particle_system` | — |
+| Emitir partículas en continuo | `stream_particles` | `particle_type`, `number` |
 
 ---
 

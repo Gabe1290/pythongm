@@ -8,7 +8,7 @@
 
 ## Aperçu
 
-Ce préréglage active **21** types d'événements et **94** types d'actions.
+Ce préréglage active **21** types d'événements et **118** types d'actions.
 
 ---
 
@@ -50,7 +50,9 @@ Ce préréglage active **21** types d'événements et **94** types d'actions.
 | Sauter à une position | `jump_to_position` | `x`, `y`, `relative` |
 | Sauter à une position aléatoire | `jump_to_random` | `snap_h`, `snap_v` |
 | Sauter à la position de départ | `jump_to_start` | — |
+| Déplacer sur la grille | `move_grid` | `direction`, `grid_size` |
 | Se déplacer vers un point | `move_towards_point` | `x`, `y`, `speed` |
+| Déplacer jusqu'au contact | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Inverser horizontalement | `reverse_horizontal` | — |
 | Inverser verticalement | `reverse_vertical` | — |
 | Définir direction et vitesse | `set_direction_speed` | `direction`, `speed` |
@@ -106,8 +108,14 @@ Ce préréglage active **21** types d'événements et **94** types d'actions.
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
+| Mettre la frise en pause | `pause_timeline` | — |
 | Régler une alarme | `set_alarm` | `alarm_number`, `steps` |
+| Définir la frise chronologique | `set_timeline` | `timeline` |
+| Définir la position dans la frise | `set_timeline_position` | `position`, `relative` |
+| Définir la vitesse de la frise | `set_timeline_speed` | `speed` |
 | Attendre | `sleep` | `milliseconds` |
+| Démarrer la frise | `start_timeline` | — |
+| Arrêter la frise | `stop_timeline` | — |
 
 ### Salle
 
@@ -121,7 +129,11 @@ Ce préréglage active **21** types d'événements et **94** types d'actions.
 | Salle suivante | `next_room` | — |
 | Salle précédente | `previous_room` | — |
 | Redémarrer la salle | `restart_room` | — |
+| Définir l'arrière-plan | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
+| Définir la couleur d'arrière-plan | `set_background_color` | `color`, `show_color` |
 | Définir le titre de la salle | `set_room_caption` | `caption` |
+| Définir la persistance de la salle | `set_room_persistent` | `persistent` |
+| Définir la vitesse de la salle | `set_room_speed` | `speed` |
 
 ### Audio
 
@@ -144,17 +156,22 @@ Ce préréglage active **21** types d'événements et **94** types d'actions.
 | Dessiner une ligne | `draw_line` | `x1`, `y1`, `x2`, `y2` |
 | Dessiner du texte mis à l'échelle | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
 | Dessiner un sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative` |
+| Dessiner du texte | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Dessiner une variable | `draw_variable` | `x`, `y`, `variable` |
 | Remplir l'écran d'une couleur | `fill_color` | `color` |
+| Charger la partie | `load_game` | `filename` |
 | Ouvrir une page web | `open_webpage` | `url` |
 | Redémarrer le jeu | `restart_game` | — |
+| Sauvegarder la partie | `save_game` | `filename` |
 | Définir la couleur | `set_color` | `color`, `alpha` |
 | Définir la couleur de dessin | `set_draw_color` | `color` |
 | Définir la police de dessin | `set_draw_font` | `font`, `halign`, `valign` |
 | Définir le titre de la fenêtre | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Afficher les infos du jeu | `show_info` | — |
 | Afficher un message | `show_message` | `message` |
+| Afficher une vidéo | `show_video` | `filename`, `fullscreen` |
+| Écran d'accueil : afficher une image | `splash_show_image` | `image` |
+| Écran d'accueil : afficher un texte | `splash_show_text` | `text` |
 
 ### Contrôle
 
@@ -169,9 +186,12 @@ Ce préréglage active **21** types d'événements et **94** types d'actions.
 | Quitter l'événement | `exit_event` | — |
 | Si poussée possible | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | Si collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| Si collision à | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
 | Si l'objet existe | `if_object_exists` | `object`, `not_flag` |
+| Répéter | `repeat` | `times`, `actions` |
 | Début de bloc | `start_block` | — |
 | Tester la chance | `test_chance` | `sides` |
+| Tester une expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Poser une question | `test_question` | `question` |
 | Tester une variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
@@ -182,14 +202,18 @@ Ce préréglage active **21** types d'événements et **94** types d'actions.
 | Activer les vues | `enable_views` | `enable` |
 | Définir une vue | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### Vue 3D
+### Particules
 
 | Action | Nom du bloc | Paramètres |
 |--------|------------|------------|
-| Dessiner l'ATH DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Dessiner la mini-carte | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Activer la vue Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Définir l'angle de vue | `set_facing_angle` | `angle`, `relative` |
+| Émettre une salve de particules | `burst_particles` | `particle_type`, `number` |
+| Effacer les particules | `clear_particles` | — |
+| Créer un émetteur | `create_emitter` | `x`, `y`, `width`, `height`, `shape` |
+| Créer un système de particules | `create_particle_system` | `depth` |
+| Créer un type de particule | `create_particle_type` | `sprite`, `size_min`, `size_max`, `size_increase`, `color`, `alpha`, `speed_min`, `speed_max`, `direction_min`, `direction_max`, `life_min`, `life_max` |
+| Supprimer l'émetteur | `destroy_emitter` | — |
+| Supprimer le système de particules | `destroy_particle_system` | — |
+| Émettre des particules en continu | `stream_particles` | `particle_type`, `number` |
 
 ---
 

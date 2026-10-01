@@ -2831,26 +2831,40 @@ def get_action_type(action_name: str) -> Optional[ActionType]:
     return None
 
 
-def get_actions_by_category(blockly_config=None) -> Dict[str, List[ActionType]]:
-    """Get actions organized by category
+def get_actions_by_category(blockly_config=None, project_data=None) -> Dict[str, List[ActionType]]:
+    """Get actions organized by category, filtered by
+    ``config.toolbox_visibility.visible_actions`` (docs/
+    BLOCKLY_TOOLBOX_GATING_PLAN.md, Unit 4) -- the same resolver the Blockly
+    toolbox uses, so the action-list editor's right-click "Add Action" menu
+    and the Blockly block palette always agree on what's available.
 
     Args:
-        blockly_config: Optional BlocklyConfig to filter actions.
-                       If provided, only actions enabled in the config are returned.
-    """
-    categories = {}
-    for action in ACTION_TYPES.values():
-        # If a config is provided, check if action is enabled
-        if blockly_config is not None:
-            # Get the Blockly block type for this action
-            blockly_type = ACTION_TO_BLOCKLY_MAP.get(action.name)
-            if blockly_type:
-                # Check if this block is enabled in the config
-                if not blockly_config.is_block_enabled(blockly_type):
-                    continue
-            # If no mapping exists, include the action (backward compatibility)
+        blockly_config: Optional BlocklyConfig to filter core (non-extension)
+                       actions. ``None`` means no preset restriction on
+                       those -- the long-standing behaviour for the two
+                       callers that never passed one (``action_editor.py``,
+                       ``conditional_editor.py``); extension actions are
+                       still correctly gated by ``project_data`` either way.
+        project_data: The open project's data, for per-project extension
+                       activation. ``None`` means no extension is active
+                       (matches "no project open yet").
 
-        if action.category not in categories:
-            categories[action.category] = []
-        categories[action.category].append(action)
+    Previously (before Unit 4) any action with no ``ACTION_TO_BLOCKLY_MAP``
+    entry -- every extension action, every Audio action, and all 81
+    generated-action names -- was included unconditionally "for backward
+    compatibility", regardless of ``blockly_config``. That was the actual
+    bug (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md's "The action-list editor has
+    the same bug by a different route").
+    """
+    # Local import: config.toolbox_visibility imports from this module at
+    # its own top level, so importing it back from here at module scope
+    # would be circular.
+    from config.toolbox_visibility import visible_actions
+
+    visible = visible_actions(blockly_config, project_data)
+    categories: Dict[str, List[ActionType]] = {}
+    for action in ACTION_TYPES.values():
+        if action.name not in visible:
+            continue
+        categories.setdefault(action.category, []).append(action)
     return categories

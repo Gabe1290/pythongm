@@ -8,7 +8,7 @@
 
 ## Overview
 
-This preset enables **21** event types and **94** action types.
+This preset enables **21** event types and **118** action types.
 
 ---
 
@@ -50,7 +50,9 @@ This preset enables **21** event types and **94** action types.
 | Jump To Position | `jump_to_position` | `x`, `y`, `relative` |
 | Jump to Random Position | `jump_to_random` | `snap_h`, `snap_v` |
 | Jump to Start Position | `jump_to_start` | — |
+| Move Grid | `move_grid` | `direction`, `grid_size` |
 | Move Towards Point | `move_towards_point` | `x`, `y`, `speed` |
+| Move to Contact | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Reverse Horizontal | `reverse_horizontal` | — |
 | Reverse Vertical | `reverse_vertical` | — |
 | Set Direction & Speed | `set_direction_speed` | `direction`, `speed` |
@@ -106,8 +108,14 @@ This preset enables **21** event types and **94** action types.
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
+| Pause Timeline | `pause_timeline` | — |
 | Set Alarm | `set_alarm` | `alarm_number`, `steps` |
+| Set Timeline | `set_timeline` | `timeline` |
+| Set Timeline Position | `set_timeline_position` | `position`, `relative` |
+| Set Timeline Speed | `set_timeline_speed` | `speed` |
 | Sleep | `sleep` | `milliseconds` |
+| Start Timeline | `start_timeline` | — |
+| Stop Timeline | `stop_timeline` | — |
 
 ### Room
 
@@ -121,7 +129,11 @@ This preset enables **21** event types and **94** action types.
 | Next Room | `next_room` | — |
 | Previous Room | `previous_room` | — |
 | Restart Room | `restart_room` | — |
+| Set Background | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
+| Set Background Color | `set_background_color` | `color`, `show_color` |
 | Set Room Caption | `set_room_caption` | `caption` |
+| Set Room Persistent | `set_room_persistent` | `persistent` |
+| Set Room Speed | `set_room_speed` | `speed` |
 
 ### Audio
 
@@ -144,17 +156,22 @@ This preset enables **21** event types and **94** action types.
 | Draw Line | `draw_line` | `x1`, `y1`, `x2`, `y2` |
 | Draw Scaled Text | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
 | Draw Sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Draw Text | `draw_text` | `text`, `x`, `y`, `relative` |
+| Draw Text | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Draw Variable | `draw_variable` | `x`, `y`, `variable` |
 | Fill Screen Color | `fill_color` | `color` |
+| Load Game | `load_game` | `filename` |
 | Open Webpage | `open_webpage` | `url` |
 | Restart Game | `restart_game` | — |
+| Save Game | `save_game` | `filename` |
 | Set Color | `set_color` | `color`, `alpha` |
 | Set Draw Color | `set_draw_color` | `color` |
 | Set Draw Font | `set_draw_font` | `font`, `halign`, `valign` |
 | Set Window Caption | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
 | Show Game Info | `show_info` | — |
 | Show Message | `show_message` | `message` |
+| Show Video | `show_video` | `filename`, `fullscreen` |
+| Splash: Show Image | `splash_show_image` | `image` |
+| Splash: Show Text | `splash_show_text` | `text` |
 
 ### Control
 
@@ -169,9 +186,12 @@ This preset enables **21** event types and **94** action types.
 | Exit Event | `exit_event` | — |
 | If Can Push | `if_can_push` | `direction`, `object_type`, `then_action`, `else_action` |
 | If Collision | `if_collision` | `x`, `y`, `object`, `not_flag` |
+| If Collision At | `if_collision_at` | `x`, `y`, `object_type`, `then_actions`, `else_actions` |
 | If Object Exists | `if_object_exists` | `object`, `not_flag` |
+| Repeat | `repeat` | `times`, `actions` |
 | Start Block | `start_block` | — |
 | Test Chance | `test_chance` | `sides` |
+| Test Expression | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Test Question | `test_question` | `question` |
 | Test Variable | `test_variable` | `variable`, `value`, `scope`, `operation` |
 
@@ -182,14 +202,18 @@ This preset enables **21** event types and **94** action types.
 | Enable Views | `enable_views` | `enable` |
 | Set View | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
 
-### 3D View
+### Particles
 
 | Action | Block Name | Parameters |
 |--------|------------|------------|
-| Draw DOOM HUD | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Draw Minimap | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Enable Raycast View | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Set Facing Angle | `set_facing_angle` | `angle`, `relative` |
+| Burst Particles | `burst_particles` | `particle_type`, `number` |
+| Clear Particles | `clear_particles` | — |
+| Create Emitter | `create_emitter` | `x`, `y`, `width`, `height`, `shape` |
+| Create Particle System | `create_particle_system` | `depth` |
+| Create Particle Type | `create_particle_type` | `sprite`, `size_min`, `size_max`, `size_increase`, `color`, `alpha`, `speed_min`, `speed_max`, `direction_min`, `direction_max`, `life_min`, `life_max` |
+| Destroy Emitter | `destroy_emitter` | — |
+| Destroy Particle System | `destroy_particle_system` | — |
+| Stream Particles | `stream_particles` | `particle_type`, `number` |
 
 ---
 

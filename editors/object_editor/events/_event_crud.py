@@ -7,6 +7,11 @@ cluster 3). Methods are unchanged -- this is a mixin, not free functions, so
 working exactly as before; sibling methods/attributes
 (``refresh_events_display``, ``current_events_data``, ``events_modified`` …)
 resolve on the concrete panel at runtime.
+
+``show_add_event_menu``'s ``get_available_events`` call also passes
+``self._find_project_data()`` now (docs/BLOCKLY_TOOLBOX_GATING_PLAN.md,
+Unit 4), so an extension's events only appear when the open project has
+that extension active.
 """
 
 from PySide6.QtWidgets import QMessageBox, QMenu, QDialog, QTreeWidgetItem
@@ -41,7 +46,7 @@ class EventCrudMixin:
         """Show menu to add new events, filtered by blockly_config"""
         menu = QMenu(self)
 
-        available_events = get_available_events(self.blockly_config)
+        available_events = get_available_events(self.blockly_config, self._find_project_data())
 
         # Hide Thymio events unless the project has at least one playground
         show_thymio = self.project_has_playgrounds()

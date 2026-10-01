@@ -8,7 +8,7 @@
 
 ## Panoramica
 
-Questo preset abilita **19** tipi di eventi e **83** tipi di azioni.
+Questo preset abilita **19** tipi di eventi e **54** tipi di azioni.
 
 ---
 
@@ -46,9 +46,8 @@ Questo preset abilita **19** tipi di eventi e **83** tipi di azioni.
 |--------|------------|------------|
 | Rimbalza | `bounce` | — |
 | Salta alla posizione | `jump_to_position` | `x`, `y`, `relative` |
-| Salta a posizione casuale | `jump_to_random` | `snap_h`, `snap_v` |
 | Salta alla posizione iniziale | `jump_to_start` | — |
-| Muovi verso un punto | `move_towards_point` | `x`, `y`, `speed` |
+| Muovi fino al contatto | `move_to_contact` | `direction`, `max_distance`, `object` |
 | Inverti orizzontale | `reverse_horizontal` | — |
 | Inverti verticale | `reverse_vertical` | — |
 | Imposta direzione e velocità | `set_direction_speed` | `direction`, `speed` |
@@ -70,29 +69,19 @@ Questo preset abilita **19** tipi di eventi e **83** tipi di azioni.
 |--------|------------|------------|
 | Cambia istanza | `change_instance` | `object`, `perform_events` |
 | Crea istanza | `create_instance` | `object`, `x`, `y`, `relative` |
-| Crea istanza in movimento | `create_moving_instance` | `object`, `x`, `y`, `speed`, `direction` |
-| Crea istanza casuale | `create_random_instance` | `x`, `y`, `object1`, `object2`, `object3`, `object4` |
 | Distruggi istanza | `destroy_instance` | — |
 | Distruggi in posizione | `destroy_at_position` | `object`, `x`, `y`, `relative`, `radius` |
-| Imposta indice immagine | `set_image_index` | `frame` |
-| Imposta velocità immagine | `set_image_speed` | `speed` |
-| Avvia animazione | `start_animation` | — |
-| Ferma animazione | `stop_animation` | — |
 | Verifica numero di istanze | `test_instance_count` | `object`, `number`, `operation` |
 
 ### Punteggio
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
-| Cancella tabella dei record | `clear_highscore` | — |
 | Disegna vite | `draw_lives` | `x`, `y`, `sprite`, `scale`, `relative` |
 | Disegna punteggio | `draw_score` | `x`, `y`, `caption`, `relative` |
 | Imposta vite | `set_lives` | `value`, `relative` |
 | Imposta punteggio | `set_score` | `value`, `relative` |
 | Mostra tabella dei record | `show_highscore` | `background`, `new_color`, `other_color`, `allow_new_entry` |
-| Verifica salute | `test_health` | `operation`, `value` |
-| Verifica vite | `test_lives` | `value`, `operation` |
-| Verifica punteggio | `test_score` | `value`, `operation` |
 
 ### Tempo
 
@@ -105,12 +94,11 @@ Questo preset abilita **19** tipi di eventi e **83** tipi di azioni.
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
-| Verifica stanza | `check_room` | `room`, `not_flag` |
 | Termina gioco | `game_end` | — |
 | Se esiste stanza successiva | `if_next_room_exists` | `then_actions`, `else_actions` |
 | Se esiste stanza precedente | `if_previous_room_exists` | `then_actions`, `else_actions` |
 | Riavvia stanza | `restart_room` | — |
-| Imposta titolo stanza | `set_room_caption` | `caption` |
+| Imposta sfondo | `set_background` | `background`, `visible`, `foreground`, `tiled_h`, `tiled_v`, `hspeed`, `vspeed` |
 
 ### Audio
 
@@ -127,28 +115,17 @@ Questo preset abilita **19** tipi di eventi e **83** tipi di azioni.
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
-| Disegna freccia | `draw_arrow` | `x1`, `y1`, `x2`, `y2`, `tip_size` |
-| Disegna sfondo | `draw_background` | `background`, `x`, `y`, `tiled` |
-| Disegna ellisse | `draw_ellipse` | `x1`, `y1`, `x2`, `y2`, `filled` |
-| Disegna linea | `draw_line` | `x1`, `y1`, `x2`, `y2` |
-| Disegna testo scalato | `draw_scaled_text` | `text`, `x`, `y`, `xscale`, `yscale` |
-| Disegna sprite | `draw_sprite` | `sprite`, `x`, `y`, `subimage` |
-| Disegna testo | `draw_text` | `text`, `x`, `y`, `relative` |
-| Disegna variabile | `draw_variable` | `x`, `y`, `variable` |
-| Riempi schermo con colore | `fill_color` | `color` |
-| Apri pagina web | `open_webpage` | `url` |
+| Disegna testo | `draw_text` | `text`, `x`, `y`, `relative`, `color` |
 | Riavvia gioco | `restart_game` | — |
-| Imposta colore | `set_color` | `color`, `alpha` |
 | Imposta colore di disegno | `set_draw_color` | `color` |
-| Imposta font di disegno | `set_draw_font` | `font`, `halign`, `valign` |
 | Imposta titolo finestra | `set_window_caption` | `show_score`, `show_lives`, `show_health`, `caption` |
-| Mostra info gioco | `show_info` | — |
 | Mostra messaggio | `show_message` | `message` |
 
 ### Controllo
 
 | Azione | Nome Blocco | Parametri |
 |--------|------------|------------|
+| Verifica se vuoto | `check_empty` | `x`, `y`, `relative`, `objects` |
 | Commento | `comment` | `text` |
 | Altrimenti | `else_action` | — |
 | Fine blocco | `end_block` | — |
@@ -159,24 +136,8 @@ Questo preset abilita **19** tipi di eventi e **83** tipi di azioni.
 | Se l'oggetto esiste | `if_object_exists` | `object`, `not_flag` |
 | Inizio blocco | `start_block` | — |
 | Verifica probabilità | `test_chance` | `sides` |
-| Poni una domanda | `test_question` | `question` |
+| Verifica espressione | `test_expression` | `expression`, `then_actions`, `else_actions` |
 | Verifica variabile | `test_variable` | `variable`, `value`, `scope`, `operation` |
-
-### Viste
-
-| Azione | Nome Blocco | Parametri |
-|--------|------------|------------|
-| Abilita viste | `enable_views` | `enable` |
-| Imposta vista | `set_view` | `view`, `visible`, `view_x`, `view_y`, `view_w`, `view_h`, `port_x`, `port_y`, `port_w`, `port_h`, `follow`, `hborder`, `vborder`, `hspeed`, `vspeed` |
-
-### Vista 3D
-
-| Azione | Nome Blocco | Parametri |
-|--------|------------|------------|
-| Disegna HUD DOOM | `draw_doom_hud` | `x`, `y`, `width`, `height`, `back_color`, `divider_color`, `text_color`, `health_label`, `health_bar_width`, `health_bar_height`, `bar_color`, `face_sprite`, `face_frames`, `score_label`, `lives_sprite`, `lives_scale`, `objective_value`, `objective_label` |
-| Disegna minimappa | `draw_minimap` | `x`, `y`, `size`, `back_color`, `wall_color`, `player_color` |
-| Abilita vista Raycast | `enable_raycast_view` | `enable`, `camera_object`, `fov`, `render_distance`, `cell_size`, `columns`, `wall_color`, `floor_color`, `ceiling_color`, `wall_texture`, `sky_texture`, `floor_texture`, `ceiling_texture`, `wall_textured`, `floor_cast_res`, `viewport_height` |
-| Imposta angolo di sguardo | `set_facing_angle` | `angle`, `relative` |
 
 ---
 
