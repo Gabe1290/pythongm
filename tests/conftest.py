@@ -64,6 +64,62 @@ except ImportError:
 
 
 # ============================================================================
+# Isolate Config from the developer's real ~/.pygamemaker/config.json
+# ============================================================================
+# utils/config.py's Config is a class-level singleton (Config._config_data),
+# and its module runs `Config.load()` at IMPORT time -- the very first
+# `import utils.config` anywhere (events/plugin_loader.py, widgets/
+# welcome_tab.py, ...) reads the developer's real config file before any
+# fixture gets a chance to run. Left alone, the test suite sees -- and can
+# write back to -- that real file: a developer's own settings (e.g.
+# extensions disabled by default for students) leak into what hundreds of
+# tests see when they call events.plugin_loader.load_all_plugins(), which
+# consults Config for each extension's enabled/disabled override, caching the
+# result in a module-level singleton (plugin_loader._shared_loader) for the
+# rest of the process -- so whichever Config state existed at the FIRST call
+# anywhere sticks for the whole run. This bit a real session (2026-10-01): a
+# personal "extensions off" preference on disk made ~200 unrelated tests fail
+# with missing actions/presets/asset types, genuinely reproducing on a
+# byte-for-byte clean `main` checkout.
+#
+# A fixture is too late: several test files (test_doom_hud.py,
+# test_raycast_action_registration.py, test_raycast_export_parity.py, ...)
+# call load_all_plugins() at module scope -- it runs the moment pytest
+# IMPORTS that module during collection, before any fixture (even a
+# session-scoped autouse one) has run. conftest.py itself, by contrast, is
+# always imported before pytest collects any test module in its directory,
+# so redirecting Config here as plain module-level code -- not inside a
+# fixture -- is the only place guaranteed to run first. Config.load() against
+# a nonexistent path returns clean defaults (no "extensions" key at all), so
+# every extension's is_extension_enabled() check falls through to its
+# manifest default (normally True) regardless of what the developer has
+# configured for their own IDE. Any test's Config.set()/.save() during the
+# run only ever touches the temp file from here on -- the developer's real
+# config is never read or written by a test run again. The matching
+# session-scoped fixture below only restores the real path afterward, for
+# cleanliness; by the time it runs the redirect above has already done the
+# job that actually matters.
+#
+# tests/test_config.py is unaffected: it loads utils/config.py as its own
+# separate module via import_module_directly (its own docstring explains
+# why), so its Config class is a different object from the one redirected
+# here, and it already repoints _config_file itself per test class.
+from utils.config import Config as _Config
+
+_real_config_file = _Config._config_file
+_isolated_config_dir = Path(tempfile.mkdtemp(prefix="pygm_test_config_"))
+_Config._config_file = _isolated_config_dir / "config.json"
+_Config.load()  # populates clean defaults; the temp file doesn't exist yet
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _restore_real_config_file_at_session_end():
+    yield
+    _Config._config_file = _real_config_file
+    shutil.rmtree(_isolated_config_dir, ignore_errors=True)
+
+
+# ============================================================================
 # Shared Skip Markers
 # ============================================================================
 # Pre-configured skip markers for common dependency combinations
