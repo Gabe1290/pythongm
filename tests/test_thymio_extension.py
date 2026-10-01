@@ -1195,3 +1195,133 @@ def test_blockly_widget_apply_configuration_filters_thymio_end_to_end():
         widget.web_view.stop()
         del page.runJavaScript
         widget.deleteLater()
+
+
+# ---------------------------------------------------------------------------
+# G5b.2 — the "Add Event" menu's Thymio events submenu. _event_crud.py no
+# longer names Thymio at all; it asks the generic AddEventMenuContribution
+# registry, which Thymio (among any future extension) registers into.
+# ---------------------------------------------------------------------------
+
+def test_event_crud_no_longer_names_thymio():
+    src = (REPO_ROOT / "editors" / "object_editor" / "events" / "_event_crud.py").read_text(encoding="utf-8")
+    assert "extensions.thymio" not in src
+    assert "is_thymio_event" not in src
+    assert "THYMIO_EVENT_CATEGORIES" not in src
+    assert "def add_thymio_event_with_selector" not in src
+
+
+def test_thymio_registers_add_event_menu_contribution():
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from core.ide_extension_points import get_add_event_menu_contributions
+    keys = [c.key for c in get_add_event_menu_contributions()]
+    assert "thymio" in keys
+
+
+def test_thymio_add_event_menu_build_hidden_without_playgrounds():
+    from PySide6.QtWidgets import QApplication, QMenu
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from extensions.thymio.panel_menus import build_add_event_menu
+    from events.event_types import get_event_type
+
+    class _NoPlaygrounds:
+        def parent(self):
+            return None
+
+        def tr(self, s):
+            return s
+
+    menu = QMenu()
+    thymio_event = get_event_type("thymio_button_forward")
+    assert thymio_event is not None
+    build_add_event_menu(menu, _NoPlaygrounds(), [thymio_event])
+    assert menu.actions() == []  # gated off: no playground asset
+
+
+def test_thymio_add_event_menu_build_shown_with_playgrounds():
+    from PySide6.QtWidgets import QApplication, QMenu
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from extensions.thymio.panel_menus import build_add_event_menu
+    from events.event_types import get_event_type
+
+    class _Parent:
+        current_project_data = {"assets": {"playgrounds": {"arena_1": {}}}}
+
+    class _WithPlaygrounds:
+        def parent(self):
+            return _Parent()
+
+        def tr(self, s):
+            return s
+
+        def add_event(self, name):
+            pass
+
+    menu = QMenu()
+    thymio_event = get_event_type("thymio_button_forward")
+    build_add_event_menu(menu, _WithPlaygrounds(), [thymio_event])
+    labels = [a.text() for a in menu.actions()]
+    assert any("Thymio Events" in label for label in labels)
+
+
+def test_show_add_event_menu_end_to_end_thymio_submenu(monkeypatch):
+    """Drives the real ObjectEventsPanel.show_add_event_menu() -- the actual
+    call site -- confirming the Thymio submenu appears iff the project has a
+    playground, exactly like before the move, with _event_crud.py naming
+    nothing Thymio-specific."""
+    from PySide6.QtWidgets import QApplication, QWidget
+    QApplication.instance() or QApplication([])
+    from events.plugin_loader import load_all_plugins
+    load_all_plugins()
+    from editors.object_editor.events import ObjectEventsPanel
+    import editors.object_editor.events._event_crud as event_crud_mod
+
+    # menu.exec() starts its own nested, real native event loop waiting for
+    # a click. Monkeypatching exec() at the Python CLASS level does not
+    # intercept it -- it's a C++-bound method, confirmed by this test
+    # hanging when it tried that -- and scheduling a QTimer to close the
+    # menu instead means giving Qt's loop real wall-clock time to run,
+    # which risks firing an unrelated, already-overdue timer left behind by
+    # some earlier test in the same session (confirmed: this exact thing
+    # intermittently crashed a LATER, unrelated test in the full suite
+    # with "Internal C++ object (QLabel) already deleted" -- a stray
+    # core/ide_window.py 3-second status-bar timer with nothing to do with
+    # this test, surfaced only because this was the first real nested
+    # event-loop opportunity after it went stale). A per-INSTANCE
+    # attribute, by contrast, does shadow the bound method (confirmed) and
+    # needs no event loop or wall-clock time at all.
+    built = []
+    real_qmenu = event_crud_mod.QMenu
+
+    class _RecordingQMenu(real_qmenu):
+        def __init__(self, *a, **kw):
+            super().__init__(*a, **kw)
+            self.exec = lambda *a, **kw: None
+            built.append(self)
+
+    monkeypatch.setattr(event_crud_mod, "QMenu", _RecordingQMenu)
+
+    panel = ObjectEventsPanel()
+    try:
+        panel.show_add_event_menu()  # no parent -> no project data -> no playgrounds
+        assert built
+        labels = [a.text() for a in built[-1].actions()]
+        assert not any("Thymio Events" in label for label in labels)
+
+        host = QWidget()
+        host.current_project_data = {"assets": {"playgrounds": {"arena_1": {}}}}
+        panel.setParent(host)
+        try:
+            panel.show_add_event_menu()
+            labels = [a.text() for a in built[-1].actions()]
+            assert any("Thymio Events" in label for label in labels)
+        finally:
+            panel.setParent(None)
+            host.deleteLater()
+    finally:
+        panel.deleteLater()

@@ -209,6 +209,7 @@ def clear_ide_contributions() -> None:
     clear_asset_tree_categories()
     clear_object_editor_panels()
     clear_toolbox_visibility_filters()
+    clear_add_event_menu_contributions()
 
 
 def apply_menu_contributions(ide, menus: Dict[str, object]) -> None:
@@ -296,3 +297,68 @@ def apply_toolbox_visibility_filters(enabled_blocks, enabled_categories, widget)
         except Exception as exc:
             logger.error(f"Toolbox visibility filter failed: {exc}")
     return enabled_blocks, enabled_categories
+
+
+# ---------------------------------------------------------------------------
+# Add-event-menu contributions: an extension's own events submenu in the
+# object editor's "Add Event" menu (docs/THYMIO_EXTENSION_PLAN.md, G5b.2).
+#
+# ``key`` matches an already-registered ``ObjectEditorPanel.key``, so
+# ``owned_event_names`` can answer "which of these events are mine" from
+# that panel's own ``owned_events()`` instead of a second, divergeable copy.
+# ``build`` receives the FULL ``available_events`` list (not pre-filtered)
+# and is responsible for both picking its own events out of it and deciding
+# whether to show anything at all this time (e.g. Thymio's events stay
+# hidden with no playground asset, independent of its events being
+# "available" under the current preset).
+#
+#     PLUGIN_ADD_EVENT_MENU_CONTRIBUTIONS = [AddEventMenuContribution(
+#         key="robot",
+#         build=lambda menu, panel, available_events: ...,
+#     )]
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class AddEventMenuContribution:
+    key: str
+    build: Callable   # (menu, panel, available_events) -> None
+
+
+_add_event_menu_contributions: List[AddEventMenuContribution] = []
+
+
+def register_add_event_menu_contribution(spec: AddEventMenuContribution) -> None:
+    if not isinstance(spec, AddEventMenuContribution) or not callable(spec.build):
+        logger.error(f"Add-event-menu contribution is not valid: {spec!r}")
+        return
+    _add_event_menu_contributions.append(spec)
+
+
+def get_add_event_menu_contributions() -> List[AddEventMenuContribution]:
+    return list(_add_event_menu_contributions)
+
+
+def clear_add_event_menu_contributions() -> None:
+    _add_event_menu_contributions.clear()
+
+
+def owned_event_names(key: str) -> set:
+    """Event names ``owned_events()`` reports for the ``ObjectEditorPanel``
+    registered under ``key`` -- an empty set if no panel is registered under
+    it (a contribution naming one that doesn't exist owns nothing, rather
+    than erroring)."""
+    for panel in get_object_editor_panels():
+        if panel.key == key:
+            return set(panel.owned_events())
+    return set()
+
+
+def apply_add_event_menu_contributions(menu, panel, available_events) -> None:
+    """Run every registered add-event-menu contribution's ``build``. A
+    contribution that raises is logged and skipped -- a broken extension
+    can't break the whole Add Event menu."""
+    for spec in _add_event_menu_contributions:
+        try:
+            spec.build(menu, panel, available_events)
+        except Exception as exc:
+            logger.error(f"Add-event-menu contribution {spec.key!r} failed: {exc}")
