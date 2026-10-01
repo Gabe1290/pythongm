@@ -1197,19 +1197,6 @@ menu/toolbar/asset-tree/panel seams already live in), same `@dataclass` +
   def apply_events_data_transforms(panel):
       for fn in _events_data_transforms:
           try:
-
-- [ ] **G5b.4 — post-load events transform hook** (`_panel.py`,
-      `_parse_execute_code_actions`, called from `load_events_data`). Do
-      this LAST — it's the one with real regression risk
-      (`tests/test_object_events_panel_thymio_lossless_rewrite.py` pins
-      exact lossless-rewrite behavior; the "regenerate and re-parse to
-      confirm the rewrite round-trips" guard is the load-bearing safety
-      property, not incidental).
-  ```python
-  PLUGIN_EVENTS_DATA_TRANSFORMS: List[Callable] = []   # each: (panel) -> None
-  def apply_events_data_transforms(panel):
-      for fn in _events_data_transforms:
-          try:
               fn(panel)
           except Exception:
               logger.exception(...)   # one broken extension can't corrupt load for the rest
