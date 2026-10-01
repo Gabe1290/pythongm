@@ -2529,6 +2529,16 @@ Deseja salvar mesmo assim?</translation>
         <source>Show Health in Caption:</source>
         <translation>Mostrar Saúde no Título:</translation>
     </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="231"/>
+        <source>Extensions</source>
+        <translation>Extensões</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="311"/>
+        <source>used by {0} action(s)</source>
+        <translation>usado por {0} ação(ões)</translation>
+    </message>
 </context>
 <context>
     <name>ViewConfigDialog</name>

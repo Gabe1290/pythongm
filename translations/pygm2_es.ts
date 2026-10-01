@@ -5480,6 +5480,16 @@ Algunos cambios pueden requerir reiniciar el IDE para surtir efecto.</translatio
         <source>Show Health in Caption:</source>
         <translation>Mostrar salud en título:</translation>
     </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="231"/>
+        <source>Extensions</source>
+        <translation>Extensiones</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="311"/>
+        <source>used by {0} action(s)</source>
+        <translation>usado por {0} acción(es)</translation>
+    </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>

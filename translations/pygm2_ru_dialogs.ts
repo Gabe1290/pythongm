@@ -1292,6 +1292,16 @@ Would you like to open the export directory?</source>
         <source>Show Health in Caption:</source>
         <translation>Показать здоровье в заголовке:</translation>
     </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="231"/>
+        <source>Extensions</source>
+        <translation>Расширения</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="311"/>
+        <source>used by {0} action(s)</source>
+        <translation>используется в {0} действиях</translation>
+    </message>
 </context>
 <context>
     <name>SpriteStripDialog</name>

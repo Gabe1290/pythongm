@@ -334,12 +334,57 @@ visible_actions(config, project_data) -> set[str]      # action names
   round-trips through the real resolver; `project_settings()`'s refresh
   call confirmed structurally. Full suite: a-g 2503 passed, h-p 1679
   passed, q-s 623 passed, t 636 passed, u-z 138 passed, 0 real failures.
-- [ ] **U5b — translations.** New UI strings ("Extensions" group title,
-  `"used by {0} action(s)"` note) go into **all 10 shipped languages'**
-  `.ts` files, routed to the correct split/monolithic file, French with
-  full accents (same process as the 2026-08-10 extension-UI strings;
-  `tests/test_extension_ui_translations.py` is the pattern). Offscreen
-  `grab()` screenshot of the dialog in fr/en.
+- [x] **U5b — translations.** New `ProjectSettingsDialog` UI strings
+  ("Extensions" group title, `"used by {0} action(s)"` note) added to all
+  10 shipped languages' `.ts` files, routed to the correct split
+  (de/it/ru/sl/uk → `pygm2_<lang>_dialogs.ts`, confirmed by checking where
+  `ProjectSettingsDialog`'s existing context block already lived) or
+  monolithic (es/fr/pt/ja/zh → `pygm2_<lang>.ts`) file, each compiled
+  clean via `scripts/compile_translations.py` (35 files). "Extensions"
+  reuses each language's already-correct translation from
+  `PreferencesDialog`'s own context (extracted via the same `<source>` /
+  `<translation>` regex `tests/test_extension_ui_translations.py` uses —
+  Qt resolves by *context*, so it needs its own entry under
+  `ProjectSettingsDialog` too, not just an identical source string);
+  `"used by {0} action(s)"` is an original translation per language,
+  matching each language's existing noun for "action" already established
+  elsewhere in that language's catalog (verified against each language's
+  own `"Edit Action"` translation first, not assumed) — de "Aktion", es
+  "acción", fr "action", it "azione", pt "ação", ru "действие", sl
+  "dejanje", uk "дія", ja "アクション" (katakana), zh "操作" (matching "Add/Edit/
+  Remove Action", not the less-common "动作"). Pluralization simplified to
+  the conventional parenthetical/generic-plural forms software
+  localization normally uses for a template count, rather than attempting
+  exact grammatical number agreement (most pointed in Slavic/Slovenian,
+  which has 4 grammatical numbers) — French's "Extensions" stays the
+  established cognate exception.
+  - `tests/test_project_settings_extensions_translations.py` (3 tests,
+    mirrors `test_extension_ui_translations.py`'s structure exactly):
+    every source present in every language; every translation non-empty
+    and actually translated (not a stray English copy); a live
+    `QTranslator` resolves both strings in all 10 languages. Also re-ran
+    the existing `test_i18n_unfinished_{de,es,fr,it,ru,sl,uk}.py` guards
+    and `test_extension_ui_translations.py` itself — all still green,
+    confirming the new entries didn't disturb anything already there.
+  - **Offscreen `grab()` screenshot attempted, inconclusive on this
+    box — a genuine environment limit, not a code issue.** Built a real
+    `ProjectSettingsDialog` (with one extension pre-used, one manually
+    checked) under `en`/`fr` via `get_language_manager().set_language()`
+    and grabbed it; `QFontDatabase.families()` returns **zero** font
+    families under this Windows box's offscreen Qt platform (confirmed
+    directly, not inferred from the blank render), so every label painted
+    as a string of placeholder boxes — a known class of Qt offscreen-
+    platform limitation on Windows specifically (no DirectWrite/GDI font
+    backend wired to `-platform offscreen` here), unrelated to this
+    change. The screenshot's *shape* still confirmed the structural
+    layout (4 group boxes; the Extensions group's 4 checkboxes showing
+    the expected 2-unchecked / 1-manually-checked / 1-disabled-and-checked
+    pattern), matching this plan's own documented fallback ("if not, list
+    it as needs-human-eyes on a real display") — logged as still needing
+    a real display, same standing caveat this whole arc has carried since
+    raycast_3.
+  - Full suite: a-g 2503 passed, h-p 1682 passed, q-s 623 passed, t 636
+    passed, u-z 138 passed, 0 real failures.
 - [ ] **U6 — docs + eyeball.** `wiki/Extensions*.md` and the preset pages:
   explain per-project activation (en + fr now; other languages via the
   generator where generated, otherwise deferred like prior wiki arcs).

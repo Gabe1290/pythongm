@@ -2386,6 +2386,16 @@ Do you want to save anyway?</source>
         <source>Show Health in Caption:</source>
         <translation>在标题中显示生命值：</translation>
     </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="231"/>
+        <source>Extensions</source>
+        <translation>扩展</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="311"/>
+        <source>used by {0} action(s)</source>
+        <translation>已被 {0} 个操作使用</translation>
+    </message>
 </context>
 <context>
     <name>ViewConfigDialog</name>
