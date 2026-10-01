@@ -214,10 +214,40 @@ This is the complete list. Everything else that used to be tracked in
    goal). Landed across many commits over several sessions (`52eb8640`
    through `136518c3`), one cluster per commit, full suite green after
    each (final state: 5607 passed, only the 2 pre-existing
-   `test_zip_save_state.py` flakes). The plan doc itself has no unchecked
-   boxes left; per this doc's own convention it's a candidate for deletion
-   + folding into this entry on a future bulk-cleanup pass, not done as
-   part of closing the last checkbox.
+   `test_zip_save_state.py` flakes). The plan doc had no unchecked boxes
+   left and has been **deleted (2026-10-01)**, folded into this entry per
+   this doc's own convention (full original text still in `git log`).
+   Worth keeping from it:
+   - **Default stays `enabled: false`.** The plan explicitly left this as
+     an open product call rather than deciding it, but recommended keeping
+     the extension manifest disabled-by-default so the refactor itself
+     changes nothing about the shipped (Thymio-hidden) product — matches
+     the pre-existing `# [1.0]` hiding decision. Flipping it to `true` is
+     a one-line follow-up whenever that product call actually gets made;
+     this entry is where to look for why it's still `false`.
+   - **Explicitly out of scope, not forgotten:** splitting
+     `widgets/thymio_playground.py` (1,339 lines) into smaller modules;
+     redesigning the Blockly preset/category UX; and a generalized
+     "second robot platform" base class ahead of any second real use case
+     (the new seams are generic by *name*, not by a shared abstraction —
+     premature abstraction this repo's own standing preference argues
+     against).
+   - **Two pre-existing test-suite flakes documented while working through
+     this plan, neither caused by it, worth recognizing if hit again:**
+     (1) running `tests/test_raycast_view.py` before
+     `tests/test_multiplayer_lan_ghosts.py` in one process fails
+     `TestNamedInput::test_default_inputs_are_bound` with `KeyError:
+     'input_binds'` (each passes alone; re-run the ghosts file alone to
+     confirm it isn't a real regression). (2) A long chain of
+     IDE-window-constructing test files (15+ in one pytest process) can
+     crash the whole run with a Windows `access violation` inside
+     `core/ide_window.py`'s `changeEvent`, non-deterministically —
+     reads as a dangling `QMainWindow` from a prior test's window
+     receiving a queued Qt event during a later test's setup; split a long
+     IDE-heavy file list into ~4-file sub-batches rather than treating it
+     as a real failure (possibly worth its own audit finding some day — a
+     real window-leak, most likely a floated/detached editor or a test's
+     `PyGameMakerIDE()` missing `deleteLater()` + an event-loop pump).
 
 ### Standing manual-QA backlog (not code work — needs a human/real device)
 
