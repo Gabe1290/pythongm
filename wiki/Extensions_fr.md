@@ -67,6 +67,31 @@ mauvaises surprises :
 
 ---
 
+## Quelles actions d'extension apparaissent dans la palette
+
+Activer une extension (ci-dessus) détermine si ses actions existent. Un
+**second** réglage, propre à chaque projet, détermine si elles apparaissent
+dans la palette Blockly et les menus « Ajouter une action »/« Ajouter un
+événement » *de ce projet* : **Fichier → Paramètres du projet → Extensions**,
+une case à cocher par extension activée.
+
+- Un projet qui **utilise déjà** les actions d'une extension affiche sa case
+  cochée et désactivée — le projet en dépend, donc la désactiver n'est pas
+  proposée. Le libellé indique combien d'actions en dépendent.
+- Cocher une extension pas encore utilisée rend ses actions disponibles à
+  glisser-déposer, sans attendre d'en utiliser une à la main au préalable.
+- Ceci s'ajoute au préréglage de blocs du projet (Débutant, Intermédiaire,
+  …) — les actions d'une extension active apparaissent dans **tous** les
+  préréglages, y compris Débutant, puisque le préréglage n'a lui-même
+  aucun avis sur une extension qu'il ne connaît pas.
+
+Le changement prend effet immédiatement dans les éditeurs déjà ouverts —
+sans redémarrage (contrairement au commutateur global activer/désactiver
+ci-dessus, qui nécessite un redémarrage puisque les actions s'enregistrent
+au lancement).
+
+---
+
 ## Extensions et modules d'extension (plugins)
 
 Les deux ajoutent des actions ; ils ne diffèrent que par leur conditionnement :

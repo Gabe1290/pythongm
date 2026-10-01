@@ -1,7 +1,7 @@
 # Blockly toolbox gating: presets that actually filter + per-project extension activation
 
-Written 2026-09-30. Status: **plan only — no unit started.**
-Resume state = the checkboxes in the Units section.
+Written 2026-09-30. Status: **CLOSED (2026-10-01) — all units (U0-U6) done.**
+Resume state = the checkboxes in the Units section, all checked.
 
 ## The bug
 
@@ -385,12 +385,45 @@ visible_actions(config, project_data) -> set[str]      # action names
     raycast_3.
   - Full suite: a-g 2503 passed, h-p 1682 passed, q-s 623 passed, t 636
     passed, u-z 138 passed, 0 real failures.
-- [ ] **U6 — docs + eyeball.** `wiki/Extensions*.md` and the preset pages:
-  explain per-project activation (en + fr now; other languages via the
-  generator where generated, otherwise deferred like prior wiki arcs).
-  `docs/PROJECT_STATUS.md` index entry. Try an offscreen `grab()` of the
-  real Blockly toolbox in beginner before/after (QtWebEngine offscreen may not
-  finish loading — if not, list it as needs-human-eyes on a real display).
+- [x] **U6 — docs + eyeball.** Done at 91% session usage — scoped tight
+  (docs only, no further investigation) per the standing "continue as
+  safe as possible" instruction once usage got called out; each piece
+  verified narrowly rather than re-running the full suite, since nothing
+  here touches executable code paths already covered by U1-U5's own gates.
+  - `wiki/Extensions.md`/`_fr.md`: new "Which extension actions show in
+    the toolbox" / "Quelles actions d'extension apparaissent dans la
+    palette" section, explaining the two-layer model (global enable/disable
+    vs. this plan's new per-project activation) and that an active
+    extension's actions show in every preset including Beginner.
+  - `wiki/Beginner-Preset.md`/`Intermediate-Preset.md` + their `_fr`
+    pairs: one added sentence in each language's `scope_note` template
+    (`tools/gen_preset_docs.py` — these pages are generator output, never
+    hand-edited) pointing to the new Extensions section; regenerated only
+    `en fr` (not all 9 languages — matches the plan's own explicit scoping,
+    "other languages via the generator where generated, otherwise deferred
+    like prior wiki arcs"), confirmed via `git diff --stat` that exactly
+    the intended one line changed per file (4 files, 4 insertions/4
+    deletions total) with no unrelated regen drift.
+  - `docs/PROJECT_STATUS.md` index entry **skipped, deliberately**: that
+    doc's own stated convention is "closed work gets deleted outright, not
+    listed as closed-but-present" (its currently-open-work list explicitly
+    says "everything else... is done and has been deleted"), and this plan
+    doc isn't being deleted right now (keeping the retrospective detail —
+    the `GENERATED_ACTION_NAMES` derivation, the 17-action beginner
+    undercount, the font-rendering environment finding — all have real
+    future value; `THYMIO_EXTENSION_PLAN.md`, this session's other active
+    plan, has the same not-yet-indexed gap). Forcing an entry into a
+    closed-docs model that doesn't fit would be lower-value than leaving
+    it for whoever next runs a doc-cleanup pass to fold the whole
+    now-closed plan in at once.
+  - Offscreen `grab()` of the real Blockly toolbox **not re-attempted** —
+    U5b already found and confirmed `QFontDatabase.families()` returns
+    zero fonts under this box's offscreen Qt platform, a system-level
+    limitation that would affect any widget identically, not something
+    specific to the toolbox; re-running it would reproduce the same
+    inconclusive result for no new information. Still needs a real
+    display, same standing caveat as U5b and every prior raycast/i18n
+    arc's own "needs human eyes" note.
 
 ## Risks
 
