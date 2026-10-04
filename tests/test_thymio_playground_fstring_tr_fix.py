@@ -38,7 +38,16 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRANS_DIR = REPO_ROOT / "translations"
-SOURCE_FILE = REPO_ROOT / "extensions" / "thymio" / "playground_window.py"
+# The window class was split into mixins (docs/PROJECT_STATUS.md's
+# Thymio-extraction follow-up) after this bug was fixed -- _update_zoom_label
+# (the "Zoom: {0}%"/"Pan: {0}, {1}" calls) moved into _camera.py and
+# toggle_sensors into _status.py, so the source-text guard must follow them
+# there or it would silently stop covering the code it exists to guard.
+SOURCE_FILES = [
+    REPO_ROOT / "extensions" / "thymio" / "playground_window.py",
+    REPO_ROOT / "extensions" / "thymio" / "editor" / "_camera.py",
+    REPO_ROOT / "extensions" / "thymio" / "editor" / "_status.py",
+]
 
 SHIPPED_QM = {
     "de": TRANS_DIR / "pygm2_de_misc.qm",
@@ -52,12 +61,13 @@ SHIPPED_QM = {
 
 
 def test_source_has_no_fstring_tr_calls():
-    content = SOURCE_FILE.read_text(encoding="utf-8")
-    assert 'self.tr(f"' not in content, (
-        "extensions/thymio/playground_window.py still calls self.tr() with an "
-        "f-string — the interpolated value would bypass translation "
-        "entirely (fix regressed)"
-    )
+    for source_file in SOURCE_FILES:
+        content = source_file.read_text(encoding="utf-8")
+        assert 'self.tr(f"' not in content, (
+            f"{source_file.relative_to(REPO_ROOT)} still calls self.tr() with "
+            "an f-string — the interpolated value would bypass translation "
+            "entirely (fix regressed)"
+        )
 
 
 def test_runtime_zoom_and_pan_labels_translate():

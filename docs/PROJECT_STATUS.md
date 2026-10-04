@@ -225,13 +225,22 @@ This is the complete list. Everything else that used to be tracked in
      the pre-existing `# [1.0]` hiding decision. Flipping it to `true` is
      a one-line follow-up whenever that product call actually gets made;
      this entry is where to look for why it's still `false`.
-   - **Explicitly out of scope, not forgotten:** splitting
-     `widgets/thymio_playground.py` (1,339 lines) into smaller modules;
-     redesigning the Blockly preset/category UX; and a generalized
-     "second robot platform" base class ahead of any second real use case
-     (the new seams are generic by *name*, not by a shared abstraction —
-     premature abstraction this repo's own standing preference argues
-     against).
+   - **Explicitly out of scope, not forgotten:** redesigning the Blockly
+     preset/category UX; and a generalized "second robot platform" base
+     class ahead of any second real use case (the new seams are generic by
+     *name*, not by a shared abstraction — premature abstraction this
+     repo's own standing preference argues against). Splitting
+     `widgets/thymio_playground.py` into smaller modules — **done
+     2026-10-04**: that file had already moved to `extensions/thymio/
+     playground_window.py` (1,249 lines, not the "1,339"/`widgets/` path
+     recorded above — stale even before this fix) during the extraction
+     itself; split into six mixins under `extensions/thymio/editor/`
+     (`_camera.py`, `_simulation.py`, `_status.py`, `_input.py`,
+     `_resize.py`, `_undo.py`, plus a shared `_constants.py`), following
+     `core/ide_window.py`'s own File 2 mixin pattern exactly. Class name
+     and import path unchanged; `tests/
+     test_thymio_playground_mixins_resolve.py` mirrors
+     `test_ide_mixins_resolve.py`'s AST-resolves-every-name guard.
    - **Two pre-existing test-suite flakes documented while working through
      this plan, neither caused by it, worth recognizing if hit again:**
      (1) running `tests/test_raycast_view.py` before
