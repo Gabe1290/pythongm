@@ -19,6 +19,23 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import sys
 
+# Every individual test file in this repo defensively does this same
+# sys.path.insert for itself (so `from utils.config import ...`-style
+# repo-relative imports resolve regardless of CWD at invocation time), but
+# conftest.py itself never did -- harmless as long as pytest always runs
+# from the repo root (plain `python -m pytest`'s own sys.path[0] insertion
+# covers it then), which is how every local session in this repo's history
+# happened to invoke it. CI's actual jobs run `cd tests && pytest ...`
+# (.github/workflows/tests.yml), so CWD is tests/ at invocation and the
+# repo root was never on sys.path at all -- invisible locally, and it broke
+# every CI job the moment this file gained its first module-level
+# repo-relative import (the Config-isolation block below): "ModuleNotFoundError:
+# No module named 'utils'" raised while loading conftest.py itself, which
+# aborts the whole pytest session before a single test can even collect.
+# Reproduced locally with `cd tests && pytest test_config.py` (CI's own
+# first command) before fixing this.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 # ============================================================================
 # Centralized Dependency Detection
 # ============================================================================
