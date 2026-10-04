@@ -627,6 +627,16 @@ function gmExpressionValue(expr, inst, game) {
         room_width: room ? room.width : 0,
         room_height: room ? room.height : 0,
         abs: Math.abs, min: Math.min, max: Math.max, round: Math.round,
+        // GameMaker's random(n)/irandom(n)/choose(a,b,...), matching
+        // desktop's own gm_random/gm_irandom/gm_choose (runtime/
+        // action_executor.py's _evaluate_expression) exactly: random(n) is
+        // a FLOAT below n (never equal to it), irandom(n) an INT from 0
+        // through n inclusive, choose picks one argument at random. Kivy's
+        // export already supported these (GameObject.random/irandom/choose
+        // in base_object.py) -- this was HTML5-only.
+        random: (n) => Math.random() * n,
+        irandom: (n) => Math.floor(Math.random() * (Math.floor(n) + 1)),
+        choose: (...args) => args[Math.floor(Math.random() * args.length)],
     };
     // Expose the instance's own PRIMITIVE custom variables as bare names
     // (mirrors the runtime's instance.__dict__ spread; objects/functions

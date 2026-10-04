@@ -1652,17 +1652,9 @@ global-aware, already used by several other actions), `_num_code` on Kivy
 `set_direction_speed` etc.). `move_fixed` has no `direction_expr` param, so
 it's unaffected either way.
 
-**Known residual gap, not fixed here (pre-existing, broader than this
-action):** `choose()`/`random()`/`irandom()` inside a `direction_expr`
-expression aren't supported on either export target — both targets'
-general-purpose expression evaluators (`gmExpressionValue` on HTML5,
-`_num_code`/`_resolve_instance_names` on Kivy) lack these three GameMaker
-functions already, for every action that takes a free expression, not
-specific to this one. Desktop supports them via `_evaluate_expression`'s
-own `gm_random`/`gm_irandom`/`gm_choose` substitution. Pick up as its own,
-separately-scoped item if a sample or tutorial ever needs it — the
-dedicated `directions` multi-choice picker already covers "pick a random
-direction each step" for the common case.
+A residual gap was logged at the time (`choose()`/`random()`/`irandom()`
+inside a `direction_expr` expression) — **closed the same way, same day**,
+see the entry right below.
 
 `tests/test_start_moving_direction_expr_export.py` (22 tests): desktop
 reference behaviour (the existing baseline), Kivy codegen + real execution
@@ -1674,3 +1666,42 @@ checked before the `directions` fallback, "stop"/"none" short-circuit, a
 known name resolves via the angles map, the plain-number/expression
 fallback is present, brace-balanced). Full suite 5619 → 5641 passed, 0
 failed.
+
+## ~~GameMaker's random()/irandom()/choose() unsupported in a free expression on HTML5~~ (DONE 2026-10-04)
+
+Logged as a residual when `direction_expr` export parity was fixed, above.
+HTML5's general-purpose expression evaluator (`gmExpressionValue`) lacked
+these three GameMaker functions for EVERY action that takes a free
+expression — a custom variable's value, an `if_condition` expression,
+`direction_expr`, etc. — not just `start_moving_direction`. Desktop has
+always supported them via `_evaluate_expression`'s own `gm_random`/
+`gm_irandom`/`gm_choose` substitution.
+
+**Checked Kivy for the same gap before assuming it existed there too — it
+doesn't.** `_resolve_instance_names`'s ordinary default path already
+rewrites a bare `random`/`irandom`/`choose` call to `self.random`/
+`self.irandom`/`self.choose` (they're absent from `_EXPR_LEAVE_BARE`, same
+as any other GameMaker builtin meant to resolve onto the object), and
+`GameObject` (`base_object.py`) already ships real `random`/`irandom`/
+`choose` methods matching GameMaker's exact semantics — confirmed present
+well before this fix. So only HTML5 needed a change:
+
+- **HTML5** (`gmExpressionValue`): added `random`/`irandom`/`choose`
+  directly to the evaluator's scope object (`random: (n) => Math.random()
+  * n`, `irandom(n)` via `Math.floor`, `choose` indexing into its own
+  `...args`) — a plain JS object used as a `new Function(...)` argument
+  list, no AST step involved.
+- **Kivy**: no change. `GameObject.random`/`.irandom`/`.choose` already
+  worked and still do.
+
+`tests/test_gm_random_functions_export.py` (19 tests): desktop reference
+behaviour/value ranges (the baseline both targets match), Kivy's existing
+bare-name resolution onto `self.random`/`.irandom`/`.choose`, Kivy codegen
++ compile checks, a REAL execution proof against the actual exported
+`base_object.py`'s `GameObject` class (not just source text — built via a
+real `KivyExporter` export of `samples/plateforme_2`, matching
+`test_kivy_vertical_convention.py`'s own established harness) locking in
+the pre-existing methods' value ranges (nothing exercised those at
+runtime before), an end-to-end `direction_expr="choose(...)"` run against
+that real instance, and HTML5 structural checks. Full suite 5641 → 5660
+passed, 0 failed.

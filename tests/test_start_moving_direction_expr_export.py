@@ -15,12 +15,10 @@ own resulting angle for the same inputs, and a regression guard that an
 absent/empty direction_expr still falls back to the existing `directions`
 behaviour unchanged.
 
-choose()/random()/irandom() in a direction_expr are NOT covered here —
-confirmed to be a pre-existing, broader gap in both targets' expression
-evaluators (gmExpressionValue on HTML5, _num_code/_resolve_instance_names
-on Kivy), shared by every OTHER action that takes a free expression, not
-specific to this one. Out of scope for this fix; see the code comments at
-each new branch.
+choose()/random()/irandom() in a direction_expr were deliberately left
+out of THIS fix (a pre-existing, broader gap shared by every action that
+takes a free expression, not specific to this one) and closed separately
+-- see tests/test_gm_random_functions_export.py.
 """
 import math
 import sys
