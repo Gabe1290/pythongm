@@ -207,11 +207,11 @@ This is the complete list. Everything else that used to be tracked in
    End state: none of `editors/object_editor/blockly_widget.py`,
    `_event_crud.py`, `_context_menu.py`, `_action_crud.py`, or `_panel.py`
    carry any Thymio-specific code at all; core carries zero Thymio
-   knowledge outside the one deliberately-accepted exception
+   knowledge outside what was then the one deliberately-accepted exception
    (`python_code_parser.py`'s parsing *engine* internals, e.g.
-   `THYMIO_METHOD_TO_ACTION` — a separate, explicitly-deferred design
-   question, optional follow-up, not required for this plan's own stated
-   goal). Landed across many commits over several sessions (`52eb8640`
+   `THYMIO_METHOD_TO_ACTION`) — **also closed, 2026-10-04**: see the
+   dedicated entry right after this one for what moved and how. Landed
+   across many commits over several sessions (`52eb8640`
    through `136518c3`), one cluster per commit, full suite green after
    each (final state: 5607 passed, only the 2 pre-existing
    `test_zip_save_state.py` flakes). The plan doc had no unchecked boxes
@@ -241,6 +241,48 @@ This is the complete list. Everything else that used to be tracked in
      and import path unchanged; `tests/
      test_thymio_playground_mixins_resolve.py` mirrors
      `test_ide_mixins_resolve.py`'s AST-resolves-every-name guard.
+   - **Moving `python_code_parser.py`'s Thymio-aware parsing behind a
+     generic seam — done 2026-10-04.** Turned out to be more than a data
+     table: real AST pattern-matching (6 methods: call/assignment/
+     aug-assignment/conditional/compare/button-check dispatch), a
+     per-parse `self._code_uses_thymio` gate, and thymio_* rows mixed into
+     3 otherwise-generic dicts (`ACTION_TO_PYTHON`, `QUOTED_STRING_PARAMS`,
+     `EVENT_METHOD_NAMES`), plus one generator special-case
+     (`action_name.startswith('thymio_if_')`). Added a `RobotPlatformParser`
+     contract + `register_robot_platform_parser(platform)` to
+     `python_code_parser.py`; `ThymioParser(RobotPlatformParser)` (the
+     moved methods/tables, `self.` → `parser.` for the shared utilities
+     `_eval_value`/`_extract_actions_from_body`/`_get_compare_op_str`)
+     lives in `extensions/thymio/code_parsing.py` and self-registers at
+     its own module bottom. `python_code_parser.py` now names "thymio"
+     exactly once — a guarded bottom-of-file bootstrap
+     (`_register_builtin_robot_platforms`) that lazily imports
+     `extensions.thymio.code_parsing` for its registration side effect —
+     **required**, not just tidiness: several existing tests (e.g.
+     `test_audit_python_parser_string_escaping.py`) exercise Thymio
+     codegen through `python_code_parser.py` directly, without ever
+     importing `extensions.thymio`, and this module must keep working
+     standalone regardless of the Thymio extension's `enabled: false`
+     default (a parsing-engine concern, unrelated to that product flag).
+     The mutual import this implies resolves safely (whichever side's
+     import starts first finds the other already in `sys.modules`, with
+     every name it needs already bound by the time it's referenced).
+     **One real pre-existing quirk preserved, not fixed**: the
+     aug-assignment dispatch (`counter += 1` → `thymio_increase_variable`)
+     has no `_code_uses_thymio`-equivalent gate at all, unlike plain
+     assignment's heuristic branch — so it still misfires on an ordinary
+     non-Thymio game's `score += 5`; out of scope for a behaviour-
+     preserving refactor, logged here rather than silently fixed.
+     Verified with a throwaway proof harness (pre-refactor HEAD `bc5fc277`
+     vs. the new code, 68 checks across call/assignment/aug-assignment/
+     conditional dispatch with and without Thymio context, generator
+     templates including quoted-string escaping, the event-name reverse
+     map, and a full class round-trip) — 68/68 matched, including the
+     preserved aug-assignment quirk. Full suite: 5662 passed across the 3
+     CI-matching batches (`test_[a-g]/[h-p]/[q-z]*.py` from inside
+     `tests/`), identical to the mixin-split commit's own run — 0 failed
+     (pure refactor, no new runtime behaviour; the existing Thymio test
+     files already cover the moved code, so no new test file was added).
    - **Two pre-existing test-suite flakes documented while working through
      this plan, neither caused by it, worth recognizing if hit again:**
      (1) running `tests/test_raycast_view.py` before
