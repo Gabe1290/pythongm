@@ -97,38 +97,6 @@ METHOD_TO_ACTION = {
     ('self', 'set_alarm'): ('set_alarm', {'alarm': 0, 'steps': 0}),
 }
 
-# Mapping from Thymio Python method calls to action types
-# Key: method_name -> (action_name, parameter_mapping)
-# parameter_mapping maps positional arg index to parameter name
-THYMIO_METHOD_TO_ACTION = {
-    # Motor control
-    'set_motor_speed': ('thymio_set_motor_speed', ['left_speed', 'right_speed']),
-    'move_forward': ('thymio_move_forward', ['speed']),
-    'move_backward': ('thymio_move_backward', ['speed']),
-    'turn_left': ('thymio_turn_left', ['speed']),
-    'turn_right': ('thymio_turn_right', ['speed']),
-    'stop_motors': ('thymio_stop_motors', []),
-
-    # LED control
-    'set_led_top': ('thymio_set_led_top', ['red', 'green', 'blue']),
-    'set_led_bottom_left': ('thymio_set_led_bottom_left', ['red', 'green', 'blue']),
-    'set_led_bottom_right': ('thymio_set_led_bottom_right', ['red', 'green', 'blue']),
-    'set_led_circle': ('thymio_set_led_circle', ['led_index', 'intensity']),
-    'set_led_circle_all': ('thymio_set_led_circle_all', ['led0', 'led1', 'led2', 'led3', 'led4', 'led5', 'led6', 'led7']),
-    'leds_off': ('thymio_leds_off', []),
-
-    # Sound
-    'play_tone': ('thymio_play_tone', ['frequency', 'duration']),
-    'play_system_sound': ('thymio_play_system_sound', ['sound_id']),
-    'stop_sound': ('thymio_stop_sound', []),
-
-    # Timer
-    'set_timer_period': ('thymio_set_timer_period', ['timer_id', 'period']),
-
-    # Note: Sensor reads (read_proximity, read_ground, read_button) are handled specially
-    # because they return values and are typically used in assignments or conditions
-}
-
 def _escape_double_quoted(value: str) -> str:
     """Escape a string for safe embedding inside a double-quoted Python literal.
 
@@ -235,52 +203,6 @@ ACTION_TO_PYTHON = {
     'start_block': '',  # GM block grouping - no Python equivalent
     'end_block': '',    # GM block grouping - no Python equivalent
     'else_action': '',  # GM else marker - handled by conditional generation
-
-    # ========================================================================
-    # THYMIO ROBOT ACTIONS
-    # ========================================================================
-
-    # Motor control
-    'thymio_set_motor_speed': 'thymio.set_motor_speed({left_speed}, {right_speed})',
-    'thymio_move_forward': 'thymio.move_forward({speed})',
-    'thymio_move_backward': 'thymio.move_backward({speed})',
-    'thymio_turn_left': 'thymio.turn_left({speed})',
-    'thymio_turn_right': 'thymio.turn_right({speed})',
-    'thymio_stop_motors': 'thymio.stop_motors()',
-
-    # LED control
-    'thymio_set_led_top': 'thymio.set_led_top({red}, {green}, {blue})',
-    'thymio_set_led_bottom_left': 'thymio.set_led_bottom_left({red}, {green}, {blue})',
-    'thymio_set_led_bottom_right': 'thymio.set_led_bottom_right({red}, {green}, {blue})',
-    'thymio_set_led_circle': 'thymio.set_led_circle({led_index}, {intensity})',
-    'thymio_set_led_circle_all': 'thymio.set_led_circle_all({led0}, {led1}, {led2}, {led3}, {led4}, {led5}, {led6}, {led7})',
-    'thymio_leds_off': 'thymio.leds_off()',
-
-    # Sound
-    'thymio_play_tone': 'thymio.play_tone({frequency}, {duration})',
-    'thymio_play_system_sound': 'thymio.play_system_sound({sound_id})',
-    'thymio_stop_sound': 'thymio.stop_sound()',
-
-    # Sensor reading (store in variable)
-    'thymio_read_proximity': '{variable} = thymio.read_proximity({sensor_index})',
-    'thymio_read_ground': '{variable} = thymio.read_ground({sensor_index})',
-    'thymio_read_button': '{variable} = thymio.read_button("{button}")',
-
-    # Timer
-    'thymio_set_timer_period': 'thymio.set_timer_period({timer_id}, {period})',
-
-    # Variables
-    'thymio_set_variable': '{variable} = {value}',
-    'thymio_increase_variable': '{variable} += {amount}',
-    'thymio_decrease_variable': '{variable} -= {amount}',
-
-    # Conditionals (handled specially in _generate_action_code for sub_actions)
-    'thymio_if_proximity': 'if thymio.read_proximity({sensor_index}) {comparison} {threshold}:',
-    'thymio_if_ground_dark': 'if thymio.read_ground({sensor_index}) < {threshold}:',
-    'thymio_if_ground_light': 'if thymio.read_ground({sensor_index}) >= {threshold}:',
-    'thymio_if_button_pressed': 'if thymio.read_button("{button}"):',
-    'thymio_if_button_released': 'if not thymio.read_button("{button}"):',
-    'thymio_if_variable': 'if {variable} {comparison} {value}:',
 }
 
 # Parameters that the templates above interpolate *inside* a double-quoted
@@ -301,9 +223,6 @@ QUOTED_STRING_PARAMS = {
     'show_message': ('message',),
     'if_can_push': ('object_type', 'direction'),
     'if_collision_at': ('object_type',),
-    'thymio_read_button': ('button',),
-    'thymio_if_button_pressed': ('button',),
-    'thymio_if_button_released': ('button',),
 }
 
 
@@ -348,26 +267,92 @@ EVENT_METHOD_NAMES = {
     'end_step': 'on_end_step',
     'draw': 'on_draw',
     **{f'alarm_{i}': f'on_alarm_{i}' for i in range(12)},
-
-    # Thymio events
-    'thymio_button_forward': 'on_thymio_button_forward',
-    'thymio_button_backward': 'on_thymio_button_backward',
-    'thymio_button_left': 'on_thymio_button_left',
-    'thymio_button_right': 'on_thymio_button_right',
-    'thymio_button_center': 'on_thymio_button_center',
-    'thymio_any_button': 'on_thymio_any_button',
-    'thymio_proximity_update': 'on_thymio_proximity_update',
-    'thymio_ground_update': 'on_thymio_ground_update',
-    'thymio_timer_0': 'on_thymio_timer_0',
-    'thymio_timer_1': 'on_thymio_timer_1',
-    'thymio_tap': 'on_thymio_tap',
-    'thymio_sound_detected': 'on_thymio_sound_detected',
-    'thymio_sound_finished': 'on_thymio_sound_finished',
-    'thymio_message_received': 'on_thymio_message_received',
 }
 
 # Reverse mapping for parsing
 METHOD_TO_EVENT = {v: k for k, v in EVENT_METHOD_NAMES.items()}
+
+
+# ============================================================================
+# ROBOT PLATFORM PARSER SEAM
+# ============================================================================
+#
+# A robot-platform extension (currently just Thymio -- see
+# extensions/thymio/code_parsing.py's ThymioParser) plugs its own
+# Python<->action parsing rules in here without this module naming the
+# platform anywhere in the actual parsing logic below. The one exception is
+# the bootstrap registration at the bottom of this file: see its own
+# docstring for why a single, isolated line naming "thymio" is unavoidable
+# while keeping this module's long-standing "works standalone, no plugin
+# loading required" behavior.
+
+class RobotPlatformParser:
+    """Contract a robot-platform extension implements to extend
+    PythonToActionsParser / ActionsToPythonGenerator with its own
+    Python<->action vocabulary."""
+
+    #: The bare Python identifier the platform's calls hang off, e.g.
+    #: "thymio" for `thymio.move_forward(200)`.
+    namespace: str = ""
+
+    #: method_name -> (action_name, [positional parameter names]), merged
+    #: into the call-dispatch table _try_parse_call falls back to.
+    method_to_action: Dict[str, Tuple[str, List[str]]] = {}
+    #: action_name -> Python code template, merged into ACTION_TO_PYTHON.
+    action_to_python: Dict[str, str] = {}
+    #: action_name -> tuple of its double-quoted string param names, merged
+    #: into QUOTED_STRING_PARAMS.
+    quoted_string_params: Dict[str, Tuple[str, ...]] = {}
+    #: event_method_name -> event_name, merged into EVENT_METHOD_NAMES (and
+    #: its derived reverse map, METHOD_TO_EVENT).
+    event_method_names: Dict[str, str] = {}
+    #: action_name prefixes the generator must treat as conditionals (i.e.
+    #: route through _generate_conditional rather than a bare template).
+    conditional_action_prefixes: Tuple[str, ...] = ()
+
+    def detect(self, code: str) -> bool:
+        """Whether this platform's namespace is mentioned anywhere in the
+        raw source text being parsed. Default: a substring check on the
+        namespace identifier, matching the original (pre-seam) Thymio
+        behaviour (`'thymio' in code`)."""
+        return bool(self.namespace) and self.namespace in code
+
+    def try_parse_call(self, call: ast.Call, parser: "PythonToActionsParser") -> Optional[Dict[str, Any]]:
+        """`namespace.method(...)` -> an action dict, or None."""
+        return None
+
+    def try_parse_assignment(self, stmt: ast.Assign, parser: "PythonToActionsParser") -> Optional[Dict[str, Any]]:
+        """A plain `ast.Assign` -> an action dict, or None. Called for
+        EVERY assignment regardless of `detect()`, matching this hook's
+        pre-seam behaviour exactly -- an implementation that wants to gate
+        a loosely-structural heuristic should check
+        `self.namespace in parser._active_platform_names` itself."""
+        return None
+
+    def try_parse_aug_assignment(self, stmt: ast.AugAssign, parser: "PythonToActionsParser") -> Optional[Dict[str, Any]]:
+        """A plain `ast.AugAssign` -> an action dict, or None. Called for
+        every augmented assignment regardless of `detect()` (see
+        try_parse_assignment's docstring)."""
+        return None
+
+    def try_parse_conditional(self, stmt: ast.If, parser: "PythonToActionsParser") -> Optional[Dict[str, Any]]:
+        """A plain `ast.If` -> an action dict, or None."""
+        return None
+
+
+_REGISTERED_PLATFORMS: Dict[str, RobotPlatformParser] = {}
+
+
+def register_robot_platform_parser(platform: RobotPlatformParser) -> None:
+    """Merge a robot-platform extension's own parsing vocabulary into this
+    module's generic dispatch tables, and register it for the
+    try_parse_call/try_parse_assignment/try_parse_aug_assignment/
+    try_parse_conditional dispatch hooks below."""
+    _REGISTERED_PLATFORMS[platform.namespace] = platform
+    ACTION_TO_PYTHON.update(platform.action_to_python)
+    QUOTED_STRING_PARAMS.update(platform.quoted_string_params)
+    EVENT_METHOD_NAMES.update(platform.event_method_names)
+    METHOD_TO_EVENT.update({v: k for k, v in platform.event_method_names.items()})
 
 
 # ============================================================================
@@ -388,17 +373,20 @@ class PythonToActionsParser:
     def __init__(self):
         self.errors = []
         self.warnings = []
-        # Whether the code being parsed references the Thymio robot API at
-        # all. Used to gate the plain `name = constant` -> thymio_set_variable
-        # heuristic so ordinary variables in non-robot games aren't
-        # misclassified as Thymio actions (audit M18).
-        self._code_uses_thymio = False
+        # Which registered robot-platform namespaces the code being parsed
+        # actually mentions. A platform's own loosely-structural heuristics
+        # (e.g. Thymio's plain `name = constant` -> thymio_set_variable) use
+        # this to avoid misclassifying ordinary variables in non-robot games
+        # (audit M18) -- see RobotPlatformParser.try_parse_assignment.
+        self._active_platform_names: set = set()
 
     def parse_event_code(self, code: str, event_name: str) -> Dict[str, Any]:
         """Parse Python code for a single event, return event data with actions"""
         self.errors = []
         self.warnings = []
-        self._code_uses_thymio = 'thymio' in code
+        self._active_platform_names = {
+            name for name, p in _REGISTERED_PLATFORMS.items() if p.detect(code)
+        }
 
         try:
             tree = ast.parse(code)
@@ -416,7 +404,9 @@ class PythonToActionsParser:
         """Parse a full class definition with multiple event methods"""
         self.errors = []
         self.warnings = []
-        self._code_uses_thymio = 'thymio' in code
+        self._active_platform_names = {
+            name for name, p in _REGISTERED_PLATFORMS.items() if p.detect(code)
+        }
         events = {}
 
         try:
@@ -591,22 +581,31 @@ class PythonToActionsParser:
     def _try_parse_statement(self, stmt: ast.stmt) -> Optional[Dict[str, Any]]:
         """Try to parse a statement as an action"""
         if isinstance(stmt, ast.Assign):
-            # Check for Thymio sensor read assignment first
-            thymio_action = self._try_parse_thymio_assignment(stmt)
-            if thymio_action:
-                return thymio_action
+            # Give every registered robot-platform a first look (e.g.
+            # Thymio's sensor-read assignment), then fall back to generic.
+            for platform in _REGISTERED_PLATFORMS.values():
+                action = platform.try_parse_assignment(stmt, self)
+                if action:
+                    return action
             return self._try_parse_assignment(stmt)
         elif isinstance(stmt, ast.AugAssign):
-            # Check for Thymio variable augmented assignment
-            thymio_action = self._try_parse_thymio_aug_assignment(stmt)
-            if thymio_action:
-                return thymio_action
+            for platform in _REGISTERED_PLATFORMS.values():
+                action = platform.try_parse_aug_assignment(stmt, self)
+                if action:
+                    return action
             return self._try_parse_aug_assignment(stmt)
         elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
             return self._try_parse_call(stmt.value)
         elif isinstance(stmt, ast.If):
-            # Check for Thymio conditional
-            return self._try_parse_thymio_conditional(stmt)
+            # No generic "if" parsing exists at all -- every registered
+            # platform gets a look, and a non-match (or no registered
+            # platform claims it) falls through to the unrecognized-
+            # statement path, same as before this seam existed.
+            for platform in _REGISTERED_PLATFORMS.values():
+                action = platform.try_parse_conditional(stmt, self)
+                if action:
+                    return action
+            return None
         return None
 
     def _try_parse_assignment(self, stmt: ast.Assign) -> Optional[Dict[str, Any]]:
@@ -739,252 +738,14 @@ class PythonToActionsParser:
                     "parameters": {"sound": self._eval_value(call.args[0])}
                 }
 
-        # Handle thymio.method() calls
+        # Dispatch namespace.method() calls to a registered robot-platform
+        # parser (e.g. thymio.move_forward(200)).
         if (isinstance(call.func, ast.Attribute) and
             isinstance(call.func.value, ast.Name) and
-            call.func.value.id == 'thymio'):
-            return self._try_parse_thymio_call(call)
+            call.func.value.id in _REGISTERED_PLATFORMS):
+            return _REGISTERED_PLATFORMS[call.func.value.id].try_parse_call(call, self)
 
         return None
-
-    def _try_parse_thymio_call(self, call: ast.Call) -> Optional[Dict[str, Any]]:
-        """Try to parse a Thymio method call as an action"""
-        method_name = call.func.attr
-
-        # Check if this is a known Thymio method
-        if method_name in THYMIO_METHOD_TO_ACTION:
-            action_name, param_names = THYMIO_METHOD_TO_ACTION[method_name]
-
-            # Build parameters dict from positional arguments
-            params = {}
-            for i, param_name in enumerate(param_names):
-                if i < len(call.args):
-                    params[param_name] = self._eval_value(call.args[i])
-                else:
-                    # Use default value if available
-                    params[param_name] = 0
-
-            # Also handle keyword arguments
-            for kw in call.keywords:
-                if kw.arg in param_names:
-                    params[kw.arg] = self._eval_value(kw.value)
-
-            return {"action": action_name, "parameters": params}
-
-        return None
-
-    def _try_parse_thymio_assignment(self, stmt: ast.Assign) -> Optional[Dict[str, Any]]:
-        """Try to parse a Thymio-related assignment as an action"""
-        if len(stmt.targets) != 1:
-            return None
-
-        target = stmt.targets[0]
-        value = stmt.value
-
-        # Handle variable = thymio.read_*() patterns
-        if isinstance(target, ast.Name) and isinstance(value, ast.Call):
-            if (isinstance(value.func, ast.Attribute) and
-                isinstance(value.func.value, ast.Name) and
-                value.func.value.id == 'thymio'):
-
-                method_name = value.func.attr
-                var_name = target.id
-
-                if method_name == 'read_proximity' and value.args:
-                    return {
-                        "action": "thymio_read_proximity",
-                        "parameters": {
-                            "variable": var_name,
-                            "sensor_index": self._eval_value(value.args[0])
-                        }
-                    }
-                elif method_name == 'read_ground' and value.args:
-                    return {
-                        "action": "thymio_read_ground",
-                        "parameters": {
-                            "variable": var_name,
-                            "sensor_index": self._eval_value(value.args[0])
-                        }
-                    }
-                elif method_name == 'read_button' and value.args:
-                    return {
-                        "action": "thymio_read_button",
-                        "parameters": {
-                            "variable": var_name,
-                            "button": self._eval_value(value.args[0])
-                        }
-                    }
-
-        # Handle simple variable = value assignments (thymio_set_variable).
-        # Only when the code actually uses the Thymio API — otherwise an
-        # ordinary `points = 0` in a desktop game was misclassified as a
-        # robot action whose runtime handler int()-coerced the value, so
-        # `speed_mult = 1.5` stored 1 and `name = "Bob"` stored 0. Without a
-        # Thymio context it falls through to the execute_code fallback, which
-        # preserves the exact value (audit M18).
-        if (self._code_uses_thymio
-                and isinstance(target, ast.Name)
-                and isinstance(value, (ast.Constant, ast.Num))):
-            var_name = target.id
-            # Only treat as Thymio variable if it looks like a user variable (not Python builtins)
-            if not var_name.startswith('_') and var_name not in ('self', 'game', 'thymio'):
-                return {
-                    "action": "thymio_set_variable",
-                    "parameters": {
-                        "variable": var_name,
-                        "value": self._eval_value(value)
-                    }
-                }
-
-        return None
-
-    def _try_parse_thymio_aug_assignment(self, stmt: ast.AugAssign) -> Optional[Dict[str, Any]]:
-        """Try to parse Thymio variable increment/decrement"""
-        target = stmt.target
-        value = stmt.value
-
-        # Handle variable += amount or variable -= amount
-        if isinstance(target, ast.Name) and isinstance(value, (ast.Constant, ast.Num)):
-            var_name = target.id
-            amount = self._eval_value(value)
-
-            # Only treat as Thymio variable if it looks like a user variable
-            if not var_name.startswith('_') and var_name not in ('self', 'game', 'thymio'):
-                if isinstance(stmt.op, ast.Add):
-                    return {
-                        "action": "thymio_increase_variable",
-                        "parameters": {"variable": var_name, "amount": amount}
-                    }
-                elif isinstance(stmt.op, ast.Sub):
-                    return {
-                        "action": "thymio_decrease_variable",
-                        "parameters": {"variable": var_name, "amount": amount}
-                    }
-
-        return None
-
-    def _try_parse_thymio_conditional(self, stmt: ast.If) -> Optional[Dict[str, Any]]:
-        """Try to parse an if statement as a Thymio conditional action"""
-        if stmt.orelse:
-            # An if/else (or elif) cannot be represented by a thymio_if_*
-            # action — its sub_actions hold only the then-branch, so
-            # converting would silently delete the else branch (audit H5).
-            # Returning None routes the whole statement through the
-            # unrecognized-statement path, which preserves it verbatim as
-            # execute_code (the same lossless round-trip non-Thymio if/else
-            # statements already get).
-            return None
-
-        test = stmt.test
-
-        # Handle: if thymio.read_proximity(n) <comparison> threshold:
-        if isinstance(test, ast.Compare):
-            result = self._try_parse_thymio_compare(test, stmt.body)
-            if result:
-                return result
-
-        # Handle: if thymio.read_button("name"):
-        if isinstance(test, ast.Call):
-            result = self._try_parse_thymio_button_check(test, stmt.body, pressed=True)
-            if result:
-                return result
-
-        # Handle: if not thymio.read_button("name"):
-        if isinstance(test, ast.UnaryOp) and isinstance(test.op, ast.Not):
-            if isinstance(test.operand, ast.Call):
-                result = self._try_parse_thymio_button_check(test.operand, stmt.body, pressed=False)
-                if result:
-                    return result
-
-        return None
-
-    def _try_parse_thymio_compare(self, test: ast.Compare, body: List[ast.stmt]) -> Optional[Dict[str, Any]]:
-        """Parse a comparison with Thymio sensor read"""
-        if len(test.ops) != 1 or len(test.comparators) != 1:
-            return None
-
-        left = test.left
-        op = test.ops[0]
-        right = test.comparators[0]
-
-        # Check if left side is thymio.read_*()
-        if not (isinstance(left, ast.Call) and
-                isinstance(left.func, ast.Attribute) and
-                isinstance(left.func.value, ast.Name) and
-                left.func.value.id == 'thymio'):
-            return None
-
-        method_name = left.func.attr
-
-        # Get comparison operator
-        comparison = self._get_compare_op_str(op)
-        threshold = self._eval_value(right)
-
-        # Parse body as sub_actions
-        sub_actions = self._extract_actions_from_body(body)
-
-        if method_name == 'read_proximity' and left.args:
-            sensor_index = self._eval_value(left.args[0])
-            return {
-                "action": "thymio_if_proximity",
-                "parameters": {
-                    "sensor_index": sensor_index,
-                    "comparison": comparison,
-                    "threshold": threshold
-                },
-                "sub_actions": sub_actions
-            }
-
-        elif method_name == 'read_ground' and left.args:
-            sensor_index = self._eval_value(left.args[0])
-            # Determine if it's "dark" (< threshold) or "light" (>= threshold)
-            if isinstance(op, ast.Lt) or isinstance(op, ast.LtE):
-                return {
-                    "action": "thymio_if_ground_dark",
-                    "parameters": {
-                        "sensor_index": sensor_index,
-                        "threshold": threshold
-                    },
-                    "sub_actions": sub_actions
-                }
-            else:
-                return {
-                    "action": "thymio_if_ground_light",
-                    "parameters": {
-                        "sensor_index": sensor_index,
-                        "threshold": threshold
-                    },
-                    "sub_actions": sub_actions
-                }
-
-        return None
-
-    def _try_parse_thymio_button_check(self, call: ast.Call, body: List[ast.stmt], pressed: bool) -> Optional[Dict[str, Any]]:
-        """Parse if thymio.read_button("name"): or if not thymio.read_button("name"):"""
-        if not (isinstance(call.func, ast.Attribute) and
-                isinstance(call.func.value, ast.Name) and
-                call.func.value.id == 'thymio' and
-                call.func.attr == 'read_button'):
-            return None
-
-        if not call.args:
-            return None
-
-        button = self._eval_value(call.args[0])
-        sub_actions = self._extract_actions_from_body(body)
-
-        if pressed:
-            return {
-                "action": "thymio_if_button_pressed",
-                "parameters": {"button": button},
-                "sub_actions": sub_actions
-            }
-        else:
-            return {
-                "action": "thymio_if_button_released",
-                "parameters": {"button": button},
-                "sub_actions": sub_actions
-            }
 
     def _get_compare_op_str(self, op: ast.cmpop) -> str:
         """Get string representation of comparison operator"""
@@ -1172,7 +933,9 @@ class ActionsToPythonGenerator:
 
         # Handle conditional actions with sub_actions or then_actions/else_actions
         is_conditional = (
-            action_name.startswith('thymio_if_') or
+            any(action_name.startswith(prefix)
+                for platform in _REGISTERED_PLATFORMS.values()
+                for prefix in platform.conditional_action_prefixes) or
             action_name in ('if_collision_at', 'if_on_grid', 'if_next_room_exists',
                             'if_previous_room_exists', 'test_expression', 'test_variable',
                             'check_empty', 'if_can_push', 'if_condition',
@@ -1432,3 +1195,38 @@ def event_to_python(event_name: str, event_data: Dict[str, Any]) -> str:
     """
     generator = ActionsToPythonGenerator()
     return generator.generate_event_code(event_name, event_data)
+
+
+def _register_builtin_robot_platforms() -> None:
+    """Self-register the one shipped robot-platform parser (Thymio) so
+    this module keeps working standalone -- a plain `import
+    python_code_parser`, with no plugin/extension loading -- exactly as it
+    did before this seam existed, when Thymio's tables were hardcoded here
+    directly. Several existing tests rely on this (e.g.
+    test_audit_python_parser_string_escaping.py exercises
+    'thymio_if_button_pressed' codegen without ever importing
+    extensions.thymio), and the parser must also keep working regardless of
+    whether the Thymio extension is *enabled* (it defaults to disabled —
+    this is a parsing-engine concern, unrelated to that product flag).
+
+    This is the one place this module names a specific platform; the
+    import is lazy (deferred to here, not a module-level import up top) and
+    broadly guarded so a build that strips the extensions/ tree entirely
+    still gets a working, just robot-platform-free, parser instead of an
+    ImportError at import time.
+
+    Safe against the circular import this implies (extensions/thymio/
+    code_parsing.py imports register_robot_platform_parser from THIS
+    module): whichever module starts importing first finds the other
+    already present (if incomplete) in sys.modules, and every name either
+    side needs is already bound by the time it's referenced -- the
+    standard resolution for a mutual import where neither side calls into
+    the other until both have finished loading.
+    """
+    try:
+        import extensions.thymio.code_parsing  # noqa: F401 -- self-registers
+    except Exception:
+        pass
+
+
+_register_builtin_robot_platforms()
