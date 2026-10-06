@@ -353,9 +353,10 @@ SCENE_CODE = '''\n    def _init_extensions(self):
             self.canvas.after.add(self._raycast_group)
 
         cell_size = int(cfg.get('cell_size', 32))
-        if getattr(self, '_raycast_v_walls', None) is None \\
-                or getattr(self, '_raycast_cell_size', None) != cell_size:
-            self._build_raycast_walls(cell_size)
+        # Rebuilt every frame (parity with the desktop renderer.py fix,
+        # 2026-10-06) so a solid instance created/destroyed at runtime shows
+        # up immediately instead of only on room re-entry/cell_size change.
+        self._build_raycast_walls(cell_size)
 
         w = float(self.display_width)
         h = float(self.display_height)

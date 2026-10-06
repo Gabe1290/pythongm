@@ -119,7 +119,10 @@ Object.assign(GameRoom.prototype, {
     renderRaycastView(ctx) {
         const cfg = this.raycastCamera;
         const cellSize = cfg.cell_size || 32;
-        if (!this._vWalls || this._raycastCellSize !== cellSize) this.buildRaycastWalls(cellSize);
+        // Rebuilt every frame (parity with the desktop renderer.py fix,
+        // 2026-10-06) so a solid instance created/destroyed at runtime shows
+        // up immediately instead of only on room re-entry/cell_size change.
+        this.buildRaycastWalls(cellSize);
 
         const w = ctx.canvas.width, h = ctx.canvas.height;
         // DOOM-bar letterbox: the 3D view occupies only the top viewH px; the

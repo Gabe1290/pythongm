@@ -52,9 +52,14 @@ def build_raycast_walls(room, cell_size: int):
     cell row. h_walls holds (col, line_y) symmetrically.
 
     Reuses existing room content instead of a separate authoring
-    format. Built once and cached (room geometry is static at
-    runtime for this v1 — walls created/destroyed after room load
-    won't update the derived edges).
+    format. Rebuilt every frame from the live instance list (cheap --
+    a few hundred instances at most, dwarfed by the DDA ray casting
+    that follows), so a wall instance created or destroyed at runtime
+    (a door opening, a maze that grows) is reflected immediately. An
+    earlier version cached this and only rebuilt on a cell_size change,
+    which left the first-person view showing walls that had already
+    been destroyed (user report, 2026-10-06) -- fixed by just not
+    caching it; see render_raycast_view.
     """
     v_walls: Set[Tuple[int, int]] = set()
     h_walls: Set[Tuple[int, int]] = set()
@@ -234,8 +239,11 @@ def render_raycast_view(room, screen: pygame.Surface):
     st = raycast_state(room)
     cfg = st["camera"]
     cell_size = int(cfg.get('cell_size', 32))
-    if st["v_walls"] is None or st["cell_size"] != cell_size:
-        build_raycast_walls(room, cell_size)
+    # Rebuilt every frame -- see build_raycast_walls's docstring. Billboards
+    # (below) already read room.instances fresh each frame with no cache;
+    # walls now do too, so a create_instance/destroy_instance of a solid
+    # object is visible in the very next frame, not just on room re-entry.
+    build_raycast_walls(room, cell_size)
 
     camera = room._find_first_instance(cfg.get('camera_object', ''))
     w, h = screen.get_size()

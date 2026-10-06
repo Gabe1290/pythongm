@@ -382,6 +382,53 @@ class TestRenderRaycastView:
         assert screen.get_at((2, 2))[:3] == (0, 0, 255)          # ceiling
         assert screen.get_at((2, h - 2))[:3] == (0, 255, 0)       # floor
 
+    def test_destroying_a_wall_is_reflected_in_the_very_next_frame(self):
+        """Regression (user report, 2026-10-06): the wall-edge cache used to
+        be built once and only rebuilt on a cell_size change, so a solid
+        instance destroyed at runtime (a door opening, a maze that changes)
+        kept rendering in the first-person view even though the instance was
+        genuinely gone from room.instances -- a mismatch with movement
+        collision, which always reads the live instance list and let the
+        player walk straight through the "wall" that was still drawn."""
+        room = self._room_with_camera_and_wall()
+        screen = pygame.Surface((320, 240))
+        render_raycast_view(room, screen)
+        w, h = screen.get_size()
+        before = screen.get_at((w // 2, h // 2))[:3]
+        assert before[1] == 0 and before[2] == 0  # the red wall, as above
+
+        room.instances = [i for i in room.instances if i.object_name != "obj_wall"]
+        render_raycast_view(room, screen)
+        after = screen.get_at((w // 2, h // 2))[:3]
+        # With the wall gone the ray reaches max range and the column is
+        # left showing the ceiling/floor fill, not a stale red wall strip.
+        assert after != before
+        assert (after[1], after[2]) != (0, 0), f"still shows the destroyed wall: {after}"
+
+    def test_creating_a_wall_is_reflected_in_the_very_next_frame(self):
+        """The inverse of the destroy case: a solid instance created at
+        runtime (e.g. a door the player closed) starts blocking the view
+        immediately, not just after a room restart."""
+        room = _room(160, 160)
+        camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        raycast_state(room)["camera"] = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        render_raycast_view(room, screen)
+        w, h = screen.get_size()
+        before = screen.get_at((w // 2, h // 2))[:3]
+        assert (before[1], before[2]) != (0, 0)  # no wall yet: floor/ceiling only
+
+        room.instances.append(_solid_instance("obj_wall", 96, 64))
+        render_raycast_view(room, screen)
+        after = screen.get_at((w // 2, h // 2))[:3]
+        assert after[1] == 0 and after[2] == 0, f"new wall not reflected: {after}"
+
     def test_y_face_is_subtly_shaded_not_halved(self):
         """The y-face (side==1) gets a SUBTLE hint (RAYCAST_SIDE_SHADE) plus
         distance falloff -- NOT the old binary half-brightness. That 2:1 break
