@@ -4724,4 +4724,344 @@ Zdarzenia: {4}</translation>
         <translation>Nie</translation>
     </message>
 </context>
+<context>
+    <name>AssetTreeWidget</name>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="59"/>
+        <source>Assets</source>
+        <translation>Zasoby</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="91"/>
+        <source>No project loaded.
+Use File → New Project or File → Open Project to begin.</source>
+        <translation>Nie wczytano projektu.
+Użyj Plik → Nowy projekt lub Plik → Otwórz projekt, aby rozpocząć.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="124"/>
+        <source>Sprites</source>
+        <translation>Sprite'y</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="125"/>
+        <source>Sounds</source>
+        <translation>Dźwięki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="126"/>
+        <source>Backgrounds</source>
+        <translation>Tła</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="128"/>
+        <source>Objects</source>
+        <translation>Obiekty</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="129"/>
+        <source>Rooms</source>
+        <translation>Sale</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="130"/>
+        <source>Playgrounds</source>
+        <translation>Place zabaw</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="132"/>
+        <source>Scripts</source>
+        <translation>Skrypty</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="133"/>
+        <source>Fonts</source>
+        <translation>Czcionki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226"/>
+        <source>➕ Create New {0}...</source>
+        <translation>➕ Utwórz nowy {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="232"/>
+        <source>📥 Import {0}...</source>
+        <translation>📥 Importuj {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="239"/>
+        <source>📦 Import {0} Package...</source>
+        <translation>📦 Importuj pakiet {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="248"/>
+        <source>✏️ Rename</source>
+        <translation>✏️ Zmień nazwę</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="254"/>
+        <source>📥 Import Image...</source>
+        <translation>📥 Importuj obraz...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="259"/>
+        <source>🎬 Configure Animation...</source>
+        <translation>🎬 Konfiguruj animację...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="263"/>
+        <source>💾 Export as PNG…</source>
+        <translation>💾 Eksportuj jako PNG…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="268"/>
+        <source>📋 Duplicate</source>
+        <translation>📋 Duplikuj</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="273"/>
+        <source>🗑️ Delete</source>
+        <translation>🗑️ Usuń</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="281"/>
+        <source>📦 Export Package...</source>
+        <translation>📦 Eksportuj pakiet...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="305"/>
+        <source>⬆️ Move Up</source>
+        <translation>⬆️ Przesuń w górę</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="311"/>
+        <source>⬇️ Move Down</source>
+        <translation>⬇️ Przesuń w dół</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="319"/>
+        <source>⏫ Move to Top</source>
+        <translation>⏫ Przesuń na górę</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325"/>
+        <source>⏬ Move to Bottom</source>
+        <translation>⏬ Przesuń na dół</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="333"/>
+        <source>⚙️ Properties...</source>
+        <translation>⚙️ Właściwości...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="375"/>
+        <source>Import Assets</source>
+        <translation>Importuj zasoby</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="376"/>
+        <source>Please use the File menu to import {0}</source>
+        <translation>Użyj menu Plik, aby zaimportować {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
+        <source>Sprite &apos;{0}&apos; has no image file.</source>
+        <translation>Sprite „{0}” nie ma pliku obrazu.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="397"/>
+        <source>File Not Found</source>
+        <translation>Nie znaleziono pliku</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="398"/>
+        <source>Image file not found: {0}</source>
+        <translation>Nie znaleziono pliku obrazu: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="401"/>
+        <source>Export Sprite as PNG</source>
+        <translation>Eksportuj sprite jako PNG</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403"/>
+        <source>PNG Images (*.png)</source>
+        <translation>Obrazy PNG (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="409"/>
+        <source>Export Error</source>
+        <translation>Błąd eksportu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="410"/>
+        <source>Failed to export: {0}</source>
+        <translation>Nie udało się wyeksportować: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="425"/>
+        <source>Select Image for Sprite &apos;{0}&apos;</source>
+        <translation>Wybierz obraz dla sprite'a „{0}”</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="427"/>
+        <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+        <translation>Pliki obrazów (*.png *.jpg *.jpeg *.bmp *.gif);;Wszystkie pliki (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="439"/>
+        <source>Success</source>
+        <translation>Sukces</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="440"/>
+        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
+        <translation>Obraz zaimportowano pomyślnie dla sprite'a „{0}”</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="454"/>
+        <source>No Sprite Data</source>
+        <translation>Brak danych sprite'a</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="455"/>
+        <source>Could not load sprite data for &apos;{0}&apos;</source>
+        <translation>Nie można wczytać danych sprite'a dla „{0}”</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="392"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="464"/>
+        <source>No Image</source>
+        <translation>Brak obrazu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="465"/>
+        <source>Sprite &apos;{0}&apos; has no image file. Please import an image first.</source>
+        <translation>Sprite „{0}” nie ma pliku obrazu. Najpierw zaimportuj obraz.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="479"/>
+        <source>Image Not Found</source>
+        <translation>Nie znaleziono obrazu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="480"/>
+        <source>Could not find image file: {0}</source>
+        <translation>Nie można znaleźć pliku obrazu: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="509"/>
+        <source>Animation Configured</source>
+        <translation>Skonfigurowano animację</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="510"/>
+        <source>Sprite &apos;{0}&apos; configured with {1} frames at {2} FPS</source>
+        <translation>Sprite „{0}” skonfigurowano z {1} klatkami przy {2} FPS</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
+        <source>No Project</source>
+        <translation>Brak projektu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="522"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="577"/>
+        <source>No project is currently loaded</source>
+        <translation>Obecnie nie wczytano żadnego projektu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="543"/>
+        <source>Export {0}</source>
+        <translation>Eksportuj {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="560"/>
+        <source>Export Successful</source>
+        <translation>Eksport zakończony sukcesem</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="561"/>
+        <source>{0} &apos;{1}&apos; exported to:
+{2}</source>
+        <translation>{0} „{1}” wyeksportowano do:
+{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="566"/>
+        <source>Export Failed</source>
+        <translation>Eksport nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="567"/>
+        <source>Failed to export {0} &apos;{1}&apos;</source>
+        <translation>Nie udało się wyeksportować {0} „{1}”</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="595"/>
+        <source>Import {0} Package</source>
+        <translation>Importuj pakiet {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="615"/>
+        <source>Import Successful</source>
+        <translation>Import zakończony sukcesem</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="616"/>
+        <source>{0} &apos;{1}&apos; imported successfully!</source>
+        <translation>{0} „{1}” zaimportowano pomyślnie!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="621"/>
+        <source>Import Failed</source>
+        <translation>Import nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="622"/>
+        <source>Failed to import {0} package</source>
+        <translation>Nie udało się zaimportować pakietu {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="664"/>
+        <source>Create {0}</source>
+        <translation>Utwórz {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="665"/>
+        <source>Enter name for new {0}:</source>
+        <translation>Wprowadź nazwę nowego {0}:</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="380"/>
+        <source>🗑️ Delete {0} Selected</source>
+        <translation>🗑️ Usuń zaznaczone ({0})</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="856"/>
+        <source>
+  … and {0} more</source>
+        <translation>
+  … i {0} więcej</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="859"/>
+        <source>Delete {0} Assets</source>
+        <translation>Usuń {0} zasobów</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/asset_tree/asset_tree_widget.py" line="861"/>
+        <source>Delete these {0} asset(s)?
+
+{1}
+
+They will be moved to the project&apos;s trash and can be restored later.</source>
+        <translation>Usunąć te zasoby ({0})?
+
+{1}
+
+Zostaną przeniesione do kosza projektu i będzie je można później przywrócić.</translation>
+    </message>
+</context>
 </TS>
