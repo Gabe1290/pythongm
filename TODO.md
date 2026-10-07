@@ -599,6 +599,26 @@ Other:
 
 ## Translations / i18n
 
+### pt/ja/zh (and es/pt/`de`-split) have drifted behind `fr` by 11 contexts / hundreds of messages
+
+Found 2026-10-07 while planning the Polish translation (`docs/POLISH_I18N_PLAN.md`):
+`pygm2_pt.ts`/`_ja.ts`/`_zh.ts` were completed 2026-08-09/10 at 1488 active
+messages / 62 contexts and never backfilled since. `pygm2_fr.ts` (the
+original, continuously-maintained language) is now at **1849 / 73** —
+11 whole dialogs added after pt/ja/zh shipped exist only in `fr`:
+`AboutDialog`, `BackgroundEditor`, `BlockWorldEditorWindow`,
+`EventActionWidget`, `FindReplaceDialog`, `FontEditor`, `GM80EventsPanel`,
+`OrphanedFilesDialog`, `SoundEditor`, `TrashDialog`, `UnusedAssetsDialog` —
+plus large gaps within shared contexts (`PyGameMakerIDE` 361 vs 310,
+`ActionConfigDialog` 151 vs 64, `ObjectEventsPanel` 196 vs 106). `es`
+(1514/65) and the `de` split set (1151/53, summed) are behind `fr` too,
+by smaller margins. Net effect: those 11 dialogs currently show English
+text in pt/ja/zh/es/de/it/ru/sl/uk regardless of the app's selected
+language. Not fixed here — real scope of its own (closing the gap for up
+to 9 languages at once, likely via `gen_translation_ts.py` reusing `fr`
+as source for just the delta), logged as a candidate for a future session,
+not bundled into the Polish plan.
+
 ### ~~Wiki: `Tutorial-Platformer` / `Tutorial-LunarLander` translations are ~half the English length~~ (DONE 2026-09-10)
 
 Surfaced while adding per-step screenshots to the wiki tutorials
