@@ -6163,4 +6163,385 @@ Kliknij prawym przyciskiem na {1} i dodaj tam akcję.</translation>
         <translation>Wybrano {0} na ({1}, {2}) -- {3} obiektów nałożonych tutaj, kliknij ponownie, aby przełączać ({4}/{5})</translation>
     </message>
 </context>
+<context>
+    <name>ThymioPlaygroundWindow</name>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="173"/>
+        <source>Thymio Playground</source>
+        <translation>Plac zabaw Thymio</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="261"/>
+        <source>Robot: Arrow keys = buttons, Space = stop, R = reset | Edit: Click+drag to draw, Delete = remove | Zoom: +/- or scroll, Middle-drag to pan, Home = reset view</source>
+        <translation>Robot: Strzałki = przyciski, Spacja = stop, R = reset | Edycja: Kliknij i przeciągnij, aby rysować, Delete = usuń | Zoom: +/- lub kółko, Środkowy przycisk+przeciągnięcie = przesuwanie, Home = reset widoku</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="307"/>
+        <source>Angle: -90°</source>
+        <translation>Kąt: -90°</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="313"/>
+        <source>L: 0</source>
+        <translation>L: 0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="314"/>
+        <source>R: 0</source>
+        <translation>P: 0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="315"/>
+        <source>Motors:</source>
+        <translation>Silniki:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="322"/>
+        <location filename="../widgets/thymio_playground.py" line="850"/>
+        <source>LED: Off</source>
+        <translation>LED: Wyłączona</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="330"/>
+        <source>Robot Status</source>
+        <translation>Stan robota</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="339"/>
+        <source>Zoom: 100%</source>
+        <translation>Zoom: 100%</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="352"/>
+        <source>Pan: 0, 0</source>
+        <translation>Przesunięcie: 0, 0</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="355"/>
+        <source>View</source>
+        <translation>Widok</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="365"/>
+        <source>Custom</source>
+        <translation>Niestandardowy</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="391"/>
+        <source>Apply</source>
+        <translation>Zastosuj</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="395"/>
+        <source>Size</source>
+        <translation>Rozmiar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="403"/>
+        <source>Mode: Select</source>
+        <translation>Tryb: Wybór</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="407"/>
+        <source>Click: select | Drag: draw</source>
+        <translation>Kliknięcie: wybór | Przeciągnięcie: rysowanie</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="413"/>
+        <source>Edit</source>
+        <translation>Edycja</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="421"/>
+        <location filename="../widgets/thymio_playground.py" line="495"/>
+        <source>Reset Robot</source>
+        <translation>Resetuj robota</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="425"/>
+        <source>Reset World</source>
+        <translation>Resetuj świat</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="429"/>
+        <source>Toggle Sensors</source>
+        <translation>Pokaż/ukryj czujniki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="447"/>
+        <source>Select</source>
+        <translation>Wybór</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="450"/>
+        <source>Select mode - click to select elements, Delete to remove</source>
+        <translation>Tryb wyboru - kliknij, aby wybrać elementy, Delete, aby usunąć</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="455"/>
+        <source>Obstacle</source>
+        <translation>Przeszkoda</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="457"/>
+        <source>Draw rectangular obstacles - click and drag</source>
+        <translation>Rysuj prostokątne przeszkody - kliknij i przeciągnij</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="462"/>
+        <source>Line</source>
+        <translation>Linia</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="464"/>
+        <source>Draw line track segments - click and drag</source>
+        <translation>Rysuj segmenty trasy - kliknij i przeciągnij</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="472"/>
+        <source>Undo</source>
+        <translation>Anuluj</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="478"/>
+        <source>Clear Obstacles</source>
+        <translation>Wyczyść przeszkody</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="482"/>
+        <source>Clear Lines</source>
+        <translation>Wyczyść linie</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="489"/>
+        <source>Pause</source>
+        <translation>Pauza</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="502"/>
+        <source>Sensors</source>
+        <translation>Czujniki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="511"/>
+        <source>Zoom In (+)</source>
+        <translation>Powiększ (+)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="516"/>
+        <source>Zoom Out (-)</source>
+        <translation>Pomniejsz (-)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="521"/>
+        <source>Reset View</source>
+        <translation>Resetuj widok</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="526"/>
+        <source>Fit to Window</source>
+        <translation>Dopasuj do okna</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="535"/>
+        <source>Ready - Use arrow keys to control Thymio</source>
+        <translation>Gotowe - użyj strzałek, aby kontrolować Thymio</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="767"/>
+        <source>View reset to default</source>
+        <translation>Widok zresetowany do ustawień domyślnych</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="800"/>
+        <location filename="../widgets/thymio_playground.py" line="854"/>
+        <source>Zoom: {0}%</source>
+        <translation>Zoom: {0}%</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="801"/>
+        <source>Pan: {0}, {1}</source>
+        <translation>Przesunięcie: {0}, {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="861"/>
+        <source>Warning: Obstacle very close!</source>
+        <translation>Uwaga: przeszkoda bardzo blisko!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="863"/>
+        <source>Obstacle detected ahead</source>
+        <translation>Wykryto przeszkodę z przodu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="871"/>
+        <source>Moving forward</source>
+        <translation>Jedzie do przodu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="877"/>
+        <source>Moving backward</source>
+        <translation>Jedzie do tyłu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="883"/>
+        <source>Turning left</source>
+        <translation>Skręca w lewo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="889"/>
+        <source>Turning right</source>
+        <translation>Skręca w prawo</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="895"/>
+        <source>Stopped</source>
+        <translation>Zatrzymany</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="913"/>
+        <source>Selection cleared</source>
+        <translation>Wybór wyczyszczony</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="945"/>
+        <source>Robot reset to center</source>
+        <translation>Robot przywrócony do centrum</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="958"/>
+        <source>World reset to default</source>
+        <translation>Świat zresetowany do ustawień domyślnych</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="971"/>
+        <source>Interior obstacles cleared</source>
+        <translation>Przeszkody wewnętrzne wyczyszczone</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="973"/>
+        <source>No interior obstacles to clear</source>
+        <translation>Brak wewnętrznych przeszkód do wyczyszczenia</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="979"/>
+        <source>Sensor visualization: {0}</source>
+        <translation>Wizualizacja czujników: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="986"/>
+        <source>Simulation {0}</source>
+        <translation>Symulacja {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1066"/>
+        <source>Playground resized to {0}x{1}</source>
+        <translation>Zmieniono rozmiar placu zabaw na {0}x{1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1127"/>
+        <source>Mode: {0}</source>
+        <translation>Tryb: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1128"/>
+        <source>Edit mode: {0}</source>
+        <translation>Tryb edycji: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1179"/>
+        <source>Obstacle added</source>
+        <translation>Przeszkoda dodana</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1183"/>
+        <source>Line segment added</source>
+        <translation>Segment linii dodany</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1185"/>
+        <source>Element too small - drag to create larger area</source>
+        <translation>Element zbyt mały - przeciągnij, aby utworzyć większy obszar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1223"/>
+        <source>Obstacle selected - press Delete to remove</source>
+        <translation>Przeszkoda wybrana - naciśnij Delete, aby usunąć</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1230"/>
+        <source>Line segment selected - press Delete to remove</source>
+        <translation>Segment linii wybrany - naciśnij Delete, aby usunąć</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1233"/>
+        <source>No element selected</source>
+        <translation>Nie wybrano elementu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1257"/>
+        <source>Nothing to undo</source>
+        <translation>Nic do anulowania</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1265"/>
+        <source>Undid obstacle addition</source>
+        <translation>Anulowano dodanie przeszkody</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1269"/>
+        <source>Undid line addition</source>
+        <translation>Anulowano dodanie linii</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1272"/>
+        <source>Undid obstacle deletion</source>
+        <translation>Anulowano usunięcie przeszkody</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1275"/>
+        <source>Undid line deletion</source>
+        <translation>Anulowano usunięcie linii</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1283"/>
+        <source>Obstacle deleted</source>
+        <translation>Przeszkoda usunięta</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1289"/>
+        <source>Line segment deleted</source>
+        <translation>Segment linii usunięty</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1300"/>
+        <source>All line segments cleared</source>
+        <translation>Wszystkie segmenty linii wyczyszczone</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1302"/>
+        <source>No line segments to clear</source>
+        <translation>Brak segmentów linii do wyczyszczenia</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>on</source>
+        <translation>włączone</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1008"/>
+        <source>off</source>
+        <translation>wyłączone</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>paused</source>
+        <translation>wstrzymane</translation>
+    </message>
+    <message>
+        <location filename="../widgets/thymio_playground.py" line="1015"/>
+        <source>running</source>
+        <translation>działające</translation>
+    </message>
+</context>
 </TS>
