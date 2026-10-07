@@ -2623,4 +2623,215 @@ Czy mimo to zapisać?</translation>
         <translation>Przesunięcie od górnej krawędzi przed pierwszym rzędem kafelków, w pikselach</translation>
     </message>
 </context>
+<context>
+    <name>ProjectSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="265"/>
+        <source>Project Settings</source>
+        <translation>Ustawienia projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="275"/>
+        <source>Project Information</source>
+        <translation>Informacje o projekcie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="279"/>
+        <source>Project Name:</source>
+        <translation>Nazwa projektu:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="283"/>
+        <source>Project Path:</source>
+        <translation>Ścieżka projektu:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <source>Description:</source>
+        <translation>Opis:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="291"/>
+        <source>Settings</source>
+        <translation>Ustawienia</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="295"/>
+        <source>Auto-save:</source>
+        <translation>Autozapis:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Desktop</source>
+        <translation>Komputer</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Web</source>
+        <translation>Web</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="298"/>
+        <source>Mobile</source>
+        <translation>Mobilny</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="299"/>
+        <source>Target Platform:</source>
+        <translation>Platforma docelowa:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="304"/>
+        <source>Game Settings</source>
+        <translation>Ustawienia gry</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="310"/>
+        <source>Starting Lives:</source>
+        <translation>Początkowe życia:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="313"/>
+        <source>Show Lives in Caption:</source>
+        <translation>Pokaż życia w tytule:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="318"/>
+        <source>Starting Score:</source>
+        <translation>Początkowy wynik:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="321"/>
+        <source>Show Score in Caption:</source>
+        <translation>Pokaż wynik w tytule:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="326"/>
+        <source>Starting Health:</source>
+        <translation>Początkowe zdrowie:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="329"/>
+        <source>Show Health in Caption:</source>
+        <translation>Pokaż zdrowie w tytule:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="231"/>
+        <source>Extensions</source>
+        <translation>Rozszerzenia</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="311"/>
+        <source>used by {0} action(s)</source>
+        <translation>używane w {0} akcji</translation>
+    </message>
+</context>
+<context>
+    <name>SpriteStripDialog</name>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="208"/>
+        <source>Configure Sprite Strip</source>
+        <translation>Konfiguruj pasek sprite'ów</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="221"/>
+        <source>Sprite Sheet Preview</source>
+        <translation>Podgląd arkusza sprite'ów</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="229"/>
+        <source>Frame:</source>
+        <translation>Klatka:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="241"/>
+        <source>Animation Preview</source>
+        <translation>Podgląd animacji</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="248"/>
+        <source>Play</source>
+        <translation>Odtwórz</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="250"/>
+        <source>Stop</source>
+        <translation>Zatrzymaj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="263"/>
+        <source>Image Info</source>
+        <translation>Informacje o obrazie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="267"/>
+        <source>Width:</source>
+        <translation>Szerokość:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="268"/>
+        <source>Height:</source>
+        <translation>Wysokość:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="272"/>
+        <source>Frame Configuration</source>
+        <translation>Konfiguracja klatek</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="277"/>
+        <source>Horizontal Strip</source>
+        <translation>Pasek poziomy</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="278"/>
+        <source>Vertical Strip</source>
+        <translation>Pasek pionowy</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="279"/>
+        <source>Grid (Rows x Columns)</source>
+        <translation>Siatka (wiersze x kolumny)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="281"/>
+        <source>Strip Type:</source>
+        <translation>Typ paska:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="288"/>
+        <source>Frame Width:</source>
+        <translation>Szerokość klatki:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="294"/>
+        <source>Frame Height:</source>
+        <translation>Wysokość klatki:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="301"/>
+        <source>Columns:</source>
+        <translation>Kolumny:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="307"/>
+        <source>Rows:</source>
+        <translation>Wiersze:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="311"/>
+        <source>Total Frames:</source>
+        <translation>Łączna liczba klatek:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="316"/>
+        <source>Animation Settings</source>
+        <translation>Ustawienia animacji</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="324"/>
+        <source>Animation Speed:</source>
+        <translation>Szybkość animacji:</translation>
+    </message>
+</context>
 </TS>
