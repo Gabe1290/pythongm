@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Złap monety!</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/09_catch_the_coins.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128176;</p>
+        <p><strong>Złap każdą monetę &mdash; nie wpadając na wroga!</strong></p>
+        <p>Poruszaj się w lewo i w prawo, zbierz wszystkie spadające monety, aby wygrać, i unikaj wroga, inaczej koniec gry.</p>
+    </div>
+
+    <h2>Co zbudujemy</h2>
+    <p>Stworzysz kompletną grę z jasnym stanem wygranej i przegranej.
+    Gra będzie grywalna na końcu każdego etapu, więc możesz się zatrzymać i wypróbować
+    ją w dowolnym momencie.</p>
+
+    <h2>Jak działa ten tutorial</h2>
+
+    <div class="phase">
+        <strong>Etap 1 &mdash; Poruszający się gracz</strong><br>
+        Utwórz gracza, który porusza się w lewo i w prawo. Przetestuj go od razu!
+    </div>
+
+    <div class="phase">
+        <strong>Etap 2 &mdash; Monety i wróg</strong><br>
+        Dodaj monety spadające z nieba oraz jednego wroga. Umieść ich w sali.
+    </div>
+
+    <div class="phase">
+        <strong>Etap 3 &mdash; Łapanie i zderzenie</strong><br>
+        Łap monety za punkty, uderzenie wroga kończy grę.
+    </div>
+
+    <div class="phase">
+        <strong>Etap 4 &mdash; Wygranie gry</strong><br>
+        Dodaj ekran zwycięstwa, który pojawia się, gdy złapano wszystkie monety.
+    </div>
+
+    <h2>Czego się nauczysz</h2>
+    <ul>
+        <li>Tworzenie sprite'ów, obiektów i sal</li>
+        <li>Używanie zdarzeń klawiatury do sterowania graczem</li>
+        <li>Wykrywanie kolizji między obiektami</li>
+        <li>Śledzenie i wyświetlanie wyniku</li>
+        <li>Używanie przejść między salami dla ekranów końca gry i zwycięstwa</li>
+        <li>Używanie bloku <strong>Warunku Jeśli</strong> do sprawdzania, ile obiektów zostało</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Wymagany czas:</strong> ok. 15&ndash;20 minut
+    </div>
+
+    <div class="info">
+        <strong>Gotowy?</strong> Kliknij „Dalej”, aby zacząć budowę.
+    </div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Monety i wróg</h1>
+
+    <p>Teraz dodamy monety do zebrania i jednego wroga do unikania. Oba spadają prosto w dół.</p>
+
+    <h2>Utwórz sprite monety</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Sprite'y</strong> &rarr; <strong>Utwórz nowy sprite</strong></li>
+            <li>Nazwij go <code>spr_coin</code></li>
+            <li>Otwórz Edytor sprite'ów i narysuj żółty okrąg 24&times;24. Zapisz skrótem <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Utwórz sprite wroga</h2>
+    <div class="step">
+        <ol>
+            <li>Powtórz powyższe kroki dla sprite'a o nazwie <code>spr_enemy</code></li>
+            <li>Narysuj czerwony kwadrat 32&times;32, aby wróg był łatwo zauważalny</li>
+        </ol>
+    </div>
+
+    <h2>Utwórz obiekt monety</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_coin</code></li>
+            <li>Ustaw sprite na <code>spr_coin</code></li>
+            <li>Otwórz zakładkę <strong>Blockly</strong> i dodaj to:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Utwórz obiekt wroga</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz kolejny obiekt o nazwie <code>obj_enemy</code></li>
+            <li>Ustaw jego sprite na <code>spr_enemy</code></li>
+            <li>Dodaj to samo zdarzenie <strong>Gdy utworzony</strong>, aby on też spadał:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Przywróć przegapione monety na górę</h2>
+    <div class="step">
+        <p>Przegapiona moneta spada poza dolną krawędź sali &mdash; ale nadal istnieje, więc gra nigdy nie mogłaby policzyć „nie zostało monet”.
+        Daj <strong>obu</strong>, <code>obj_coin</code> i <code>obj_enemy</code>, to zdarzenie, aby wszystko, co spadnie poza dół,
+        pojawiło się ponownie na górze:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Poza salą</span><br>
+            <span class="block block-move block-indent">Ustaw zmienną <code>y</code> na <span class="block-num">0</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Dlaczego?</strong> Teraz jedynym sposobem pozbycia się monety jest złapanie jej, więc „złap każdą monetę” zawsze działa &mdash;
+            a wróg wciąż wraca, więc musisz ciągle unikać.
+        </div>
+    </div>
+
+    <h2>Umieść ich w sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_main</code></li>
+            <li>Umieść <strong>od 5 do 8 monet</strong> wzdłuż góry sali, rozłożonych poziomo</li>
+            <li>Umieść <strong>1 wroga</strong> gdzieś na górze, pomiędzy monetami</li>
+            <li>Upewnij się, że <code>obj_player</code> nadal znajduje się na dole, na środku</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Wskazówka:</strong> Liczba monet to wynik, który gracz musi osiągnąć, aby wygrać.
+            Zacznij od 5 dla szybkiej demonstracji &mdash; zawsze możesz dodać więcej później.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Monety i wróg powinny spadać z góry sali</li>
+            <li>Gracz może poruszać się w lewo i w prawo pod nimi</li>
+            <li>Dotykanie ich na razie nic nie robi &mdash; to następny etap!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby podłączyć punktację i kolizję kończącą grę.
+    </div>
+</body>
+</html>
