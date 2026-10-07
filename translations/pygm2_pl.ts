@@ -1326,4 +1326,508 @@ Czy mimo to zapisać?</translation>
         <translation>Dokonano zamian: %d</translation>
     </message>
 </context>
+<context>
+    <name>ImportAssetsDialog</name>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="22"/>
+        <source>Import Assets</source>
+        <translation>Importuj zasoby</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="32"/>
+        <location filename="../dialogs/import_dialogs.py" line="90"/>
+        <source>Select Files to Import</source>
+        <translation>Wybierz pliki do importu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="40"/>
+        <source>Add Files...</source>
+        <translation>Dodaj pliki...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="44"/>
+        <source>Add Folder...</source>
+        <translation>Dodaj folder...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="48"/>
+        <source>Clear All</source>
+        <translation>Wyczyść wszystko</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="57"/>
+        <source>Import Options</source>
+        <translation>Opcje importu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="60"/>
+        <source>Auto-detect asset type</source>
+        <translation>Automatycznie wykrywaj typ zasobu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="64"/>
+        <source>Copy files to project folder</source>
+        <translation>Kopiuj pliki do folderu projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="73"/>
+        <source>Cancel</source>
+        <translation>Anuluj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="76"/>
+        <source>Import</source>
+        <translation>Importuj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="92"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
+        <translation>Obrazy (*.png *.jpg *.jpeg *.bmp *.gif);;Dźwięki (*.wav *.mp3 *.ogg);;Wszystkie pliki (*)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/import_dialogs.py" line="107"/>
+        <source>Select Folder</source>
+        <translation>Wybierz folder</translation>
+    </message>
+</context>
+<context>
+    <name>BuildProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="797"/>
+        <source>Build Project</source>
+        <translation>Zbuduj projekt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="808"/>
+        <source>Build Configuration</source>
+        <translation>Konfiguracja budowania</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Debug</source>
+        <translation>Debugowanie</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="812"/>
+        <source>Release</source>
+        <translation>Wersja finalna</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="813"/>
+        <source>Build Type:</source>
+        <translation>Typ budowania:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>None</source>
+        <translation>Brak</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Basic</source>
+        <translation>Podstawowy</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="816"/>
+        <source>Full</source>
+        <translation>Pełny</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="817"/>
+        <source>Optimization:</source>
+        <translation>Optymalizacja:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="822"/>
+        <source>Build Options</source>
+        <translation>Opcje budowania</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="826"/>
+        <source>Clean Build:</source>
+        <translation>Czyste budowanie:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="829"/>
+        <source>Verbose Output:</source>
+        <translation>Szczegółowe dane wyjściowe:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="841"/>
+        <source>Build</source>
+        <translation>Buduj</translation>
+    </message>
+</context>
+<context>
+    <name>AutoSaveSettingsDialog</name>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="17"/>
+        <source>Auto-Save Settings</source>
+        <translation>Ustawienia autozapisu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="27"/>
+        <source>Auto-Save</source>
+        <translation>Autozapis</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="30"/>
+        <source>Enable automatic saving</source>
+        <translation>Włącz automatyczny zapis</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="35"/>
+        <source>When enabled, your project will be saved automatically at regular intervals.</source>
+        <translation>Gdy ta opcja jest włączona, projekt będzie zapisywany automatycznie w regularnych odstępach czasu.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="43"/>
+        <source>Save Interval</source>
+        <translation>Odstęp zapisu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="50"/>
+        <source> seconds</source>
+        <translation> sekund</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="53"/>
+        <source>Save every:</source>
+        <translation>Zapisuj co:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="58"/>
+        <source>15s</source>
+        <translation>15s</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="62"/>
+        <source>30s</source>
+        <translation>30s</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="66"/>
+        <source>1m</source>
+        <translation>1m</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="70"/>
+        <source>2m</source>
+        <translation>2m</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="74"/>
+        <source>5m</source>
+        <translation>5m</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="78"/>
+        <source>Presets:</source>
+        <translation>Ustawienia predefiniowane:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/auto_save_dialog.py" line="83"/>
+        <source>⚠️  Shorter intervals may impact performance on large projects.</source>
+        <translation>⚠️  Krótsze odstępy mogą wpływać na wydajność w dużych projektach.</translation>
+    </message>
+</context>
+<context>
+    <name>BaseEditor</name>
+    <message>
+        <location filename="../editors/base_editor.py" line="219"/>
+        <source>Loaded: {0}</source>
+        <translation>Wczytano: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="121"/>
+        <source>💾 Save</source>
+        <translation>💾 Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="126"/>
+        <location filename="../editors/base_editor.py" line="158"/>
+        <source>🔄 Auto-save: ON</source>
+        <translation>🔄 Autozapis: WŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="129"/>
+        <source>Toggle automatic saving (currently every 3 seconds)</source>
+        <translation>Przełącz automatyczny zapis (obecnie co 3 sekundy)</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="138"/>
+        <location filename="../editors/base_editor.py" line="195"/>
+        <source>↶ Undo</source>
+        <translation>↶ Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="141"/>
+        <location filename="../editors/base_editor.py" line="200"/>
+        <source>↷ Redo</source>
+        <translation>↷ Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="150"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="151"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="159"/>
+        <source>Auto-save is enabled. Click to disable.</source>
+        <translation>Autozapis jest włączony. Kliknij, aby wyłączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="161"/>
+        <source>⏸️ Auto-save: OFF</source>
+        <translation>⏸️ Autozapis: WYŁĄCZONY</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="162"/>
+        <source>Auto-save is disabled. Click to enable.</source>
+        <translation>Autozapis jest wyłączony. Kliknij, aby włączyć.</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="193"/>
+        <source>↶ Undo {0}</source>
+        <translation>↶ Cofnij {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="198"/>
+        <source>↷ Redo {0}</source>
+        <translation>↷ Ponów {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/base_editor.py" line="283"/>
+        <source>Auto-saved: {0}</source>
+        <translation>Zapisano automatycznie: {0}</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectPropertiesPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="25"/>
+        <source>Object Properties</source>
+        <translation>Właściwości obiektu</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="39"/>
+        <source>Sprite to display for this object</source>
+        <translation>Sprite wyświetlany dla tego obiektu</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="45"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="101"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="112"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="190"/>
+        <source>&lt;no parent&gt;</source>
+        <translation>&amp;lt;brak rodzica&amp;gt;</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="46"/>
+        <source>Parent object (inherits collision events)</source>
+        <translation>Obiekt nadrzędny (dziedziczy zdarzenia kolizji)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="51"/>
+        <source>Sprite:</source>
+        <translation>Sprite:</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="54"/>
+        <source>Parent:</source>
+        <translation>Rodzic:</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="65"/>
+        <source>Visible</source>
+        <translation>Widoczny</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="67"/>
+        <source>Object is visible in the game</source>
+        <translation>Obiekt jest widoczny w grze</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="74"/>
+        <source>Persistent</source>
+        <translation>Trwały</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="76"/>
+        <source>Object persists between rooms</source>
+        <translation>Obiekt zachowuje się między salami</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
+        <source>Solid</source>
+        <translation>Solidny</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="85"/>
+        <source>Solid objects block movement</source>
+        <translation>Solidne obiekty blokują ruch</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_properties_panel.py" line="87"/>
+        <source>Stay destroyed</source>
+        <translation>Pozostań zniszczony</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_properties_panel.py" line="90"/>
+        <source>Once destroyed, this object stays gone when the room restarts (resets on a full game restart)</source>
+        <translation>Po zniszczeniu ten obiekt pozostaje usunięty po ponownym uruchomieniu sali (resetuje się przy pełnym restarcie gry)</translation>
+    </message>
+</context>
+<context>
+    <name>ThymioEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="56"/>
+        <source>Thymio Programming</source>
+        <translation>Programowanie Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="72"/>
+        <source>Click on the robot to add events</source>
+        <translation>Kliknij robota, aby dodać zdarzenia</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="114"/>
+        <source>+ Event</source>
+        <translation>+ Zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="115"/>
+        <source>Add Thymio event</source>
+        <translation>Dodaj zdarzenie Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Event</source>
+        <translation>Zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="123"/>
+        <source>Actions</source>
+        <translation>Akcje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="153"/>
+        <source>Add Event</source>
+        <translation>Dodaj zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="213"/>
+        <source>Event Exists</source>
+        <translation>Zdarzenie już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="214"/>
+        <source>This event already exists.</source>
+        <translation>To zdarzenie już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="239"/>
+        <source>Add Action</source>
+        <translation>Dodaj akcję</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="261"/>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="346"/>
+        <source>Remove Event</source>
+        <translation>Usuń zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="268"/>
+        <source>Edit Action</source>
+        <translation>Edytuj akcję</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="271"/>
+        <source>Remove Action</source>
+        <translation>Usuń akcję</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/thymio_events_panel.py" line="347"/>
+        <source>Remove this event and all its actions?</source>
+        <translation>Usunąć to zdarzenie i wszystkie jego akcje?</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialPanel</name>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="343"/>
+        <source>Float</source>
+        <translation>Odłącz</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="339"/>
+        <source>Re-dock</source>
+        <translation>Zadokuj ponownie</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="345"/>
+        <source>Detach this tutorial into its own movable window</source>
+        <translation>Odłącz ten samouczek do własnego, przesuwalnego okna</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="341"/>
+        <source>Dock this tutorial back into the IDE</source>
+        <translation>Zadokuj ten samouczek z powrotem do IDE</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="39"/>
+        <source>Tutorials</source>
+        <translation>Samouczki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="56"/>
+        <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
+        <translation>&amp;lt;b&amp;gt;Samouczki&amp;lt;/b&amp;gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="80"/>
+        <source>Select a tutorial:</source>
+        <translation>Wybierz samouczek:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="87"/>
+        <source>Open Tutorial</source>
+        <translation>Otwórz samouczek</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="120"/>
+        <source>Back to List</source>
+        <translation>Powrót do listy</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="126"/>
+        <source>&lt; Previous</source>
+        <translation>&amp;lt; Poprzednia</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="130"/>
+        <source>Next &gt;</source>
+        <translation>Następna &amp;gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="158"/>
+        <source>No tutorials folder found</source>
+        <translation>Nie znaleziono folderu samouczków</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="202"/>
+        <source>No tutorials available</source>
+        <translation>Brak dostępnych samouczków</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="308"/>
+        <source>Page {0} of {1}</source>
+        <translation>Strona {0} z {1}</translation>
+    </message>
+</context>
 </TS>
