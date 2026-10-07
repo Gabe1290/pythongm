@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Latający lądownik</h1>
+
+    <p>W tym etapie tworzymy sprite'y, obiekty i sterowanie, aby latać lądownikiem z grawitacją księżycową.
+    Na koniec będziesz mieć grywalny lądownik, którym możesz latać!</p>
+
+    <h2>Utwórz sprite'y</h2>
+
+    <div class="step">
+        <p><strong>spr_lander</strong> (32x32) &mdash; Statek kosmiczny</p>
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Sprite'y</strong> &gt; <strong>Utwórz nowy sprite</strong></li>
+            <li>Nazwij go <code>spr_lander</code> (32x32 piksele)</li>
+            <li>Narysuj mały statek kosmiczny (trójkąt albo klasyczny kształt lądownika) albo zaimportuj z <code>Tutorials/08_lunar_lander/assets/</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>spr_ground</strong> (32x32) &mdash; Skalisty teren</p>
+        <ol>
+            <li>Utwórz nowy sprite o nazwie <code>spr_ground</code> (32x32 piksele)</li>
+            <li>Narysuj skalisty teren, używając kolorów szarych lub brązowych, albo zaimportuj z zasobów</li>
+        </ol>
+    </div>
+
+    <h2>Utwórz obiekty</h2>
+
+    <div class="step">
+        <p><strong>obj_ground</strong></p>
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &gt; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_ground</code>, przypisz <code>spr_ground</code></li>
+            <li>Zaznacz pole <strong>Solidny</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>obj_lander</strong></p>
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_lander</code></li>
+            <li>Przypisz <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Zaprogramuj lądownik (Blockly)</h2>
+    <p>Kliknij dwukrotnie <code>obj_lander</code> i otwórz zakładkę <strong>Blockly</strong>.</p>
+
+    <h2>1. Włącz grawitację (zdarzenie Gdy utworzony)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Ustaw kierunek grawitacji: <span class="block-val">270</span>, siła: <span class="block-val">0.05</span></span>
+        </div>
+        <p>Znajdź <strong>Gdy utworzony</strong> w kategorii <em>Zdarzenia</em>.
+        Następnie znajdź <strong>Ustaw grawitację</strong> w kategorii <em>Ruch</em>.
+        Ustaw kierunek na <strong>270</strong> (w dół) i siłę na <strong>0.05</strong>.</p>
+    </div>
+
+    <div class="info">
+        <strong>Dlaczego 0.05?</strong> Grawitacja Księżyca to około 1/6 grawitacji Ziemi.
+        Bardzo niska wartość, jak 0.05, nadaje lądownikowi powolne, unoszące się odczucie &mdash; dokładnie jak przy prawdziwym lądowaniu na Księżycu!
+    </div>
+
+    <h2>2. Ciąg w górę (przytrzymana strzałka w górę)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w górę (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-val">-2</span></span>
+        </div>
+        <p>Znajdź <strong>Klawiatura (przytrzymany)</strong> w <em>Zdarzeniach</em>, wybierz <strong>Strzałka w górę</strong>.
+        Dodaj <strong>Ustaw prędkość wertykalną</strong> (z kategorii <em>Ruch</em>) z wartością <strong>-2</strong>.
+        Ujemna prędkość wertykalna przesuwa lądownik w górę (ciąg przeciw grawitacji).</p>
+    </div>
+
+    <h2>3. Skręt w lewo (przytrzymana strzałka w lewo)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w lewo (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-val">-2</span></span>
+        </div>
+        <p>Znajdź <strong>Klawiatura (przytrzymany)</strong> w <em>Zdarzeniach</em>, wybierz <strong>Strzałka w lewo</strong>.
+        Dodaj <strong>Ustaw prędkość horyzontalną</strong> (z kategorii <em>Ruch</em>) z wartością <strong>-2</strong>.</p>
+    </div>
+
+    <h2>4. Skręt w prawo (przytrzymana strzałka w prawo)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w prawo (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-val">2</span></span>
+        </div>
+        <p>Znajdź <strong>Klawiatura (przytrzymany)</strong> w <em>Zdarzeniach</em>, wybierz <strong>Strzałka w prawo</strong>.
+        Dodaj <strong>Ustaw prędkość horyzontalną</strong> (z kategorii <em>Ruch</em>) z wartością <strong>2</strong>.</p>
+    </div>
+
+    <h2>5. Zatrzymanie poziome bez wciśniętego klawisza</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Brak klawisza</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-val">0</span></span>
+        </div>
+        <p>Znajdź <strong>Klawiatura: Brak klawisza</strong> w <em>Zdarzeniach</em>.
+        Dodaj <strong>Ustaw prędkość horyzontalną</strong> z wartością <strong>0</strong>.
+        To zatrzymuje ruch poziomy, gdy żadna strzałka nie jest wciśnięta, ale grawitacja nadal ciągnie lądownik w dół!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Ważne:</strong> Resetujemy tylko prędkość horyzontalną do 0, nie prędkość wertykalną.
+        Dzięki temu grawitacja nadal działa na lądownik, gdy żaden klawisz nie jest wciśnięty &mdash; lądownik wciąż spada!
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć <strong>5 bloków zdarzeń</strong> (Gdy utworzony + 3 klawiatura + Brak klawisza).</p>
+    </div>
+
+    <h2>Utwórz salę</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Sale</strong> &gt; <strong>Utwórz nową salę</strong></li>
+            <li>Nazwij ją <code>room_game</code></li>
+            <li>Ustaw rozmiar: <strong>640 x 480</strong></li>
+            <li>Ustaw kolor tła na <strong>czarny</strong> (przestrzeń kosmiczna!)</li>
+            <li>Włącz „Przyciąganie do siatki” (32x32)</li>
+            <li>Umieść bloki <code>obj_ground</code> wzdłuż całego dolnego rzędu</li>
+            <li>Umieść <code>obj_lander</code> blisko góry sali</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Lądownik powoli opada w kierunku gruntu (grawitacja księżycowa!)</li>
+            <li><strong>Strzałka w górę:</strong> Ciąg w górę, aby przeciwdziałać grawitacji</li>
+            <li><strong>Strzałki w lewo/prawo:</strong> Sterowanie poziome</li>
+            <li>Puść wszystkie klawisze i zobacz, jak lądownik powoli dryfuje w dół</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać lądowanie i rozbicie!
+    </div>
+</body>
+</html>
