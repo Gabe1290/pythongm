@@ -1,9 +1,11 @@
 # Polish (`pl`) translation — plan
 
-Written 2026-10-07. Status: **Phase 1 (Qt UI catalog) complete** as of
-2026-10-07 — all 70 real contexts / 1562 located-active messages in
-`translations/pygm2_pl.ts`, byte-identical in coverage to `fr`. Phases 2
-(Blockly) and 3 (Tutorials) not started.
+Written 2026-10-07. Status: **Phases 1 (Qt UI catalog) and 2 (Blockly)
+complete** as of 2026-10-07 — Phase 1: all 70 real contexts / 1562
+located-active messages in `translations/pygm2_pl.ts`, byte-identical in
+coverage to `fr`. Phase 2: all 4 `blockly_i18n.js` translation tables
+(377 entries), key-set-identical to `fr`. Phase 3 (Tutorials) not
+started.
 
 **Correction (2026-10-07, same day):** the counts below (1849 messages /
 73 contexts) were the plan's original naive count — a straight
@@ -224,16 +226,61 @@ for a brand-new language the monolithic form sidesteps entirely.
       (`tests/test_i18n_unfinished_pl.py`), live `QTranslator` resolution
       across a representative sample, full suite green.
 
-### Phase 2 — Blockly block-level translation (~240 entries)
+### Phase 2 — Blockly block-level translation — **COMPLETE 2026-10-07**
 
-- [ ] P2.1 — `BLOCK_MESSAGES['pl']`: port `fr`'s 231 entries (event/action
-      block labels + tooltips) into `blockly_i18n.js` as a new top-level
-      language block.
-- [ ] P2.2 — `KEY_NAMES['pl']`: port `fr`'s 9 entries.
-- [ ] P2.3 — count/key-set parity guard test against `fr`.
+**Scope correction, found while implementing:** `blockly_i18n.js` actually
+holds **four** top-level translation tables, not two. `BLOCK_MESSAGES`
+(231 entries) and `KEY_NAMES` (37, not the originally-estimated 9 — that
+was `fr`'s single-word-key subset only, undercounted the same way Phase
+1's naive scan was) are the two this section originally scoped. Also
+found: `CATEGORY_MESSAGES` (12 — the toolbox category labels: Events,
+Movement, Timing, Drawing, Score/Lives/Health, Instance, Room, Values,
+Sound, Output, Math, Logic) and `BLOCKLY_MSG_TRANSLATIONS` (97 — overrides
+for Blockly's own built-in Math/Logic/Text block labels and the
+right-click/toolbar menu: "Duplicate", "Delete Block", "Undo", etc.).
+Both are genuinely "shown in the visual programming workspace" per this
+plan's own scope statement, so both got real translations rather than
+being left as an English/stale fallback — true Phase 2 total: **377
+entries across 4 tables**, not ~240.
+
+- [x] P2.1 — `BLOCK_MESSAGES['pl']`: ported `fr`'s 231 entries.
+- [x] P2.2 — `KEY_NAMES['pl']`: ported `fr`'s 37 entries. Physical key
+      labels (`Enter`, `Escape`, `Tab`, `Backspace`, `Delete`, `Home`,
+      `End`, `Page Up/Down`, `Insert`) kept in English, matching what's
+      actually printed on a Polish (QWERTY) keyboard — unlike French,
+      which translates these because AZERTY keycaps print `Suppr`,
+      `Échap`, `Maj`, etc. for real. `Left`/`Right` modifier sides and
+      arrow directions are translated (`Lewy Shift`, `Strzałka w prawo`).
+- [x] P2.1b/P2.2b (added) — `CATEGORY_MESSAGES['pl']` (12) and
+      `BLOCKLY_MSG_TRANSLATIONS['pl']` (97).
+- [x] P2.3 — count/key-set parity guard test against `fr`:
+      `tests/test_blockly_i18n_pl.py` (7 tests, covers all 4 tables,
+      following `test_blockly_i18n_uk.py`'s established structural-parse
+      pattern since no Node.js is available in this environment).
+- [x] P2.3b — added `pl` to the `supportedLangs` gate array (the
+      IDE-language → Blockly-iframe `?lang=` query param allowlist) —
+      without this, selecting Polish in the IDE would silently leave the
+      embedded Blockly workspace in English even with a fully-populated
+      `BLOCK_MESSAGES['pl']`.
 - [ ] P2.4 — a real offscreen screenshot of the Blockly toolbox/workspace
-      with `pl` selected, same technique as Phase 1's Preferences check,
-      if feasible in this environment.
+      with `pl` selected (deferred — Blockly runs inside a `QWebEngineView`
+      rendering real HTML/JS, a materially different and heavier
+      verification path than Phase 1's native-Qt-widget
+      `QWidget.grab()` technique; not attempted this session).
+
+**Verification method** (no Node.js in this environment, consistent with
+the repo's established "no JS engine in CI" tier): built via a one-off
+Python script (not committed) that parses each table's `'fr': {...}`
+block with a tolerant regex into ordered `(key, value)` pairs, asserted
+the parsed count against each table's real total, then substituted in a
+hand-translated Polish dict keyed by the SAME source keys (not the fr
+values) and inserted the generated `'pl': {...}` block immediately after
+`'fr'` in each table — eliminating any risk of inserting a value under
+the wrong key. Verified post-insertion: brace/paren balance across the
+whole file, key-set equality against `fr` in all 4 tables (377/377, zero
+missing/extra), non-empty values, diacritics present, and the existing
+`test_blockly_i18n_uk.py` (which independently parses the same file)
+still passes unchanged.
 
 ### Phase 3 — Tutorials curriculum (14 lessons / 63 pages / ~34,500 English words)
 
