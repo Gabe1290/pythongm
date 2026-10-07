@@ -5397,4 +5397,392 @@ Zostaną przeniesione do kosza projektu i będzie je można później przywróci
         <translation>Nie udało się zapisać sprite'a: {0}</translation>
     </message>
 </context>
+<context>
+    <name>ObjectEventsPanel</name>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="84"/>
+        <source>Object Events</source>
+        <translation>Zdarzenia obiektu</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
+        <source>Event</source>
+        <translation>Zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="90"/>
+        <source>Actions</source>
+        <translation>Akcje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="150"/>
+        <source>+ Add Event</source>
+        <translation>+ Dodaj zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
+        <source>- Remove Event</source>
+        <translation>- Usuń zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="163"/>
+        <source>↑ Move Up</source>
+        <translation>↑ Przesuń w górę</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="166"/>
+        <source>Move selected action up (Ctrl+Up)</source>
+        <translation>Przesuń zaznaczoną akcję w górę (Ctrl+Góra)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="169"/>
+        <source>↓ Move Down</source>
+        <translation>↓ Przesuń w dół</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="172"/>
+        <source>Move selected action down (Ctrl+Down)</source>
+        <translation>Przesuń zaznaczoną akcję w dół (Ctrl+Dół)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="181"/>
+        <source>Ctrl+Up</source>
+        <translation>Ctrl+Góra</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="184"/>
+        <source>Ctrl+Down</source>
+        <translation>Ctrl+Dół</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="231"/>
+        <source>{0} Collision With...</source>
+        <translation>Kolizja {0} z...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="195"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="411"/>
+        <source>Event Exists</source>
+        <translation>Zdarzenie już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="196"/>
+        <source>The {0} event already exists.</source>
+        <translation>Zdarzenie {0} już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="243"/>
+        <source>No objects available</source>
+        <translation>Brak dostępnych obiektów</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="310"/>
+        <source>🤖 Thymio Events</source>
+        <translation>🤖 Zdarzenia Thymio</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="342"/>
+        <source>🤖 Visual Selector...</source>
+        <translation>🤖 Selektor wizualny...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="357"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="384"/>
+        <source>Key Event Exists</source>
+        <translation>Zdarzenie klawisza już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="358"/>
+        <source>The {0} arrow key event already exists.</source>
+        <translation>Zdarzenie strzałki {0} już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="385"/>
+        <source>The {0} key event already exists for {1}.</source>
+        <translation>Zdarzenie klawisza {0} już istnieje dla {1}.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="412"/>
+        <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+        <translation>Zdarzenie klawiatury «Brak klawisza» już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="447"/>
+        <source>Mouse Event Exists</source>
+        <translation>Zdarzenie myszy już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="448"/>
+        <source>This mouse event already exists.</source>
+        <translation>To zdarzenie myszy już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="473"/>
+        <source>Alarm Event Exists</source>
+        <translation>Zdarzenie alarmu już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="474"/>
+        <source>Alarm {0} event already exists.</source>
+        <translation>Zdarzenie Alarm {0} już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="569"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="664"/>
+        <source>Remove Event</source>
+        <translation>Usuń zdarzenie</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="570"/>
+        <source>Are you sure you want to remove the {0} event and all its actions?</source>
+        <translation>Czy na pewno usunąć zdarzenie {0} i wszystkie jego akcje?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="597"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="621"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="645"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="682"/>
+        <source>Add Action</source>
+        <translation>Dodaj akcję</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="616"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1775"/>
+        <source>Remove Collision Event</source>
+        <translation>Usuń zdarzenie kolizji</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="640"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1828"/>
+        <source>Remove Mouse Event</source>
+        <translation>Usuń zdarzenie myszy</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="704"/>
+        <source>Remove {0} Event</source>
+        <translation>Usuń zdarzenie {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1001"/>
+        <source>❌ NOT Colliding with {0}</source>
+        <translation>❌ NIE w kolizji z {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1005"/>
+        <source>💥 Collision with {0}</source>
+        <translation>💥 Kolizja z {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="709"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="719"/>
+        <source>Edit Action</source>
+        <translation>Edytuj akcję</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="712"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="722"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="958"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="978"/>
+        <source>Remove Action</source>
+        <translation>Usuń akcję</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="737"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="755"/>
+        <source>Cannot Add Action</source>
+        <translation>Nie można dodać akcji</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="738"/>
+        <source>Cannot add actions directly to Alarm.
+
+Please add actions to a specific alarm number instead:
+Right-click on Alarm 0, Alarm 1, etc.</source>
+        <translation>Nie można dodawać akcji bezpośrednio do Alarmu.
+
+Zamiast tego dodaj akcje do konkretnego numeru alarmu:
+kliknij prawym przyciskiem na Alarm 0, Alarm 1 itd.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="756"/>
+        <source>Cannot add actions directly to %1.
+
+Please add actions to specific arrow keys instead:
+Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
+        <translation>Nie można dodawać akcji bezpośrednio do %1.
+
+Zamiast tego dodaj akcje do konkretnych klawiszy strzałek:
+kliknij prawym przyciskiem na Strzałkę w lewo, w prawo, w górę lub w dół.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="843"/>
+        <source>Remove Key Event</source>
+        <translation>Usuń zdarzenie klawisza</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="844"/>
+        <source>Are you sure you want to remove the {0} arrow key event and all its actions?</source>
+        <translation>Czy na pewno usunąć zdarzenie strzałki {0} i wszystkie jego akcje?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
+        <source>Error</source>
+        <translation>Błąd</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="883"/>
+        <source>Could not open action editor: {0}</source>
+        <translation>Nie można otworzyć edytora akcji: {0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="959"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="979"/>
+        <source>Are you sure you want to remove this action?</source>
+        <translation>Czy na pewno usunąć tę akcję?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1008"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1077"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1125"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1155"/>
+        <source>{0} actions</source>
+        <translation>{0} akcji</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1044"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1111"/>
+        <source>{0} total actions</source>
+        <translation>łącznie {0} akcji</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1697"/>
+        <source>Collision Event Options</source>
+        <translation>Opcje zdarzenia kolizji</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1700"/>
+        <source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source>
+        <translation>&amp;lt;b&amp;gt;Kolizja z: {0}&amp;lt;/b&amp;gt;</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1703"/>
+        <source>❌ NOT colliding (trigger when NOT touching)</source>
+        <translation>❌ NIE w kolizji (uruchom, gdy NIE styka się)</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1704"/>
+        <source>Check this to trigger actions when the object is NOT colliding with the target</source>
+        <translation>Zaznacz, aby uruchomić akcje, gdy obiekt NIE jest w kolizji z celem</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1727"/>
+        <source>Collision Event Exists</source>
+        <translation>Zdarzenie kolizji już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1728"/>
+        <source>This collision event already exists.</source>
+        <translation>To zdarzenie kolizji już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1776"/>
+        <source>Are you sure you want to remove the collision event with {0}?</source>
+        <translation>Czy na pewno usunąć zdarzenie kolizji z {0}?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1829"/>
+        <source>Are you sure you want to remove the {0} event?</source>
+        <translation>Czy na pewno usunąć zdarzenie {0}?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="499"/>
+        <source>Thymio Event Exists</source>
+        <translation>Zdarzenie Thymio już istnieje</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="500"/>
+        <source>This Thymio event already exists.</source>
+        <translation>To zdarzenie Thymio już istnieje.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="612"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="636"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="660"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="698"/>
+        <source>🤖 Thymio Action...</source>
+        <translation>🤖 Akcja Thymio...</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="986"/>
+        <source>This action needs the '{0}' extension, which is currently disabled, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Ta akcja wymaga rozszerzenia „{0}”, które jest obecnie wyłączone, więc nie można jej tutaj edytować.
+
+Sama akcja nie jest naruszona i zostanie zachowana bez zmian podczas zapisu.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="993"/>
+        <source>This action ('{0}') needs an extension that isn't installed in this copy of PyGameMaker, so it can't be edited here.
+
+The action itself is unaffected and will be kept exactly as-is when you save.</source>
+        <translation>Ta akcja („{0}”) wymaga rozszerzenia, które nie jest zainstalowane w tej kopii PyGameMaker, więc nie można jej tutaj edytować.
+
+Sama akcja nie jest naruszona i zostanie zachowana bez zmian podczas zapisu.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1000"/>
+        <source>Extension Action</source>
+        <translation>Akcja rozszerzenia</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1295"/>
+        <source>{0} (needs {1})</source>
+        <translation>{0} (wymaga {1})</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="620"/>
+        <source>Paste {0} Actions</source>
+        <translation>Wklej {0} akcji</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="621"/>
+        <source>Paste Action</source>
+        <translation>Wklej akcję</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="630"/>
+        <source>Copy {0} Actions</source>
+        <translation>Kopiuj {0} akcji</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="631"/>
+        <source>Copy Action</source>
+        <translation>Kopiuj akcję</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="724"/>
+        <source>Add Key…</source>
+        <translation>Dodaj klawisz…</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="729"/>
+        <source>Add Alarm</source>
+        <translation>Dodaj alarm</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="860"/>
+        <source>Cannot add actions directly to &apos;{0}&apos;.
+
+Right-click on {1} and add the action there instead.</source>
+        <translation>Nie można dodawać akcji bezpośrednio do „{0}”.
+
+Kliknij prawym przyciskiem na {1} i dodaj tam akcję.</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/editors/object_editor/object_events_panel.py" line="1270"/>
+        <source>(empty comment)</source>
+        <translation>(pusty komentarz)</translation>
+    </message>
+</context>
 </TS>
