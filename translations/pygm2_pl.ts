@@ -2834,4 +2834,267 @@ Czy mimo to zapisać?</translation>
         <translation>Szybkość animacji:</translation>
     </message>
 </context>
+<context>
+    <name>ExportProjectDialog</name>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="419"/>
+        <source>Export Project</source>
+        <translation>Eksportuj projekt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="430"/>
+        <source>Export Target</source>
+        <translation>Cel eksportu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="435"/>
+        <source>Desktop Executable (.exe/.app)</source>
+        <translation>Plik wykonywalny komputerowy (.exe/.app)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="436"/>
+        <source>Web (HTML5)</source>
+        <translation>Web (HTML5)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="437"/>
+        <source>Mobile (Kivy)</source>
+        <translation>Mobilny (Kivy)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="438"/>
+        <source>Mobile (APK)</source>
+        <translation>Mobilny (APK)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="439"/>
+        <source>Source Code (.zip)</source>
+        <translation>Kod źródłowy (.zip)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="441"/>
+        <source>Target Platform:</source>
+        <translation>Platforma docelowa:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="446"/>
+        <source>Choose export location...</source>
+        <translation>Wybierz lokalizację eksportu...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="448"/>
+        <source>Browse...</source>
+        <translation>Przeglądaj...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="453"/>
+        <source>Output Location:</source>
+        <translation>Lokalizacja wyjściowa:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="458"/>
+        <source>Export Options</source>
+        <translation>Opcje eksportu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="463"/>
+        <source>Include Assets:</source>
+        <translation>Dołącz zasoby:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="467"/>
+        <source>Optimize for Release:</source>
+        <translation>Optymalizuj dla wersji finalnej:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="471"/>
+        <source>Include Debug Info:</source>
+        <translation>Dołącz informacje debugowania:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="488"/>
+        <source>Export</source>
+        <translation>Eksportuj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="510"/>
+        <source>Choose Export Location</source>
+        <translation>Wybierz lokalizację eksportu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Invalid Output</source>
+        <translation>Nieprawidłowe wyjście</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="524"/>
+        <source>Please choose an export location.</source>
+        <translation>Wybierz lokalizację eksportu.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="564"/>
+        <location filename="../dialogs/project_dialogs.py" line="594"/>
+        <location filename="../dialogs/project_dialogs.py" line="635"/>
+        <location filename="../dialogs/project_dialogs.py" line="675"/>
+        <location filename="../dialogs/project_dialogs.py" line="680"/>
+        <location filename="../dialogs/project_dialogs.py" line="698"/>
+        <location filename="../dialogs/project_dialogs.py" line="779"/>
+        <source>Export Error</source>
+        <translation>Błąd eksportu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="565"/>
+        <location filename="../dialogs/project_dialogs.py" line="676"/>
+        <source>Could not access project manager</source>
+        <translation>Nie można uzyskać dostępu do menedżera projektu</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="574"/>
+        <location filename="../dialogs/project_dialogs.py" line="613"/>
+        <location filename="../dialogs/project_dialogs.py" line="655"/>
+        <location filename="../dialogs/project_dialogs.py" line="751"/>
+        <source>Export Successful</source>
+        <translation>Eksport zakończony sukcesem</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="575"/>
+        <source>Kivy project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Projekt Kivy wyeksportowano do:
+{0}
+
+Czy chcesz otworzyć katalog eksportu?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="589"/>
+        <location filename="../dialogs/project_dialogs.py" line="630"/>
+        <location filename="../dialogs/project_dialogs.py" line="672"/>
+        <location filename="../dialogs/project_dialogs.py" line="770"/>
+        <source>Export Failed</source>
+        <translation>Eksport nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="590"/>
+        <source>Failed to export project. Check console for errors.</source>
+        <translation>Nie udało się wyeksportować projektu. Sprawdź konsolę w poszukiwaniu błędów.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="595"/>
+        <source>Error during export:
+{0}
+
+{1}</source>
+        <translation>Błąd podczas eksportu:
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="614"/>
+        <source>HTML5 game exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Gra HTML5 wyeksportowana do:
+{0}
+
+Czy chcesz otworzyć katalog eksportu?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="631"/>
+        <source>Failed to export HTML5 game. Check console for errors.</source>
+        <translation>Nie udało się wyeksportować gry HTML5. Sprawdź konsolę w poszukiwaniu błędów.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="636"/>
+        <source>Error during HTML5 export:
+{0}
+
+{1}</source>
+        <translation>Błąd podczas eksportu HTML5:
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="656"/>
+        <source>Project exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Projekt wyeksportowano do:
+{0}
+
+Czy chcesz otworzyć katalog eksportu?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="673"/>
+        <source>Failed to export ZIP file. Check console for errors.</source>
+        <translation>Nie udało się wyeksportować pliku ZIP. Sprawdź konsolę w poszukiwaniu błędów.</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="681"/>
+        <source>Error during ZIP export:
+{0}
+
+{1}</source>
+        <translation>Błąd podczas eksportu ZIP:
+{0}
+
+{1}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="699"/>
+        <source>Project file not found: {0}</source>
+        <translation>Nie znaleziono pliku projektu: {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="715"/>
+        <source>Initializing export...</source>
+        <translation>Inicjowanie eksportu...</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="716"/>
+        <source>Cancel</source>
+        <translation>Anuluj</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="720"/>
+        <source>Exporting Executable</source>
+        <translation>Eksportowanie pliku wykonywalnego</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="752"/>
+        <source>Executable exported to:
+{0}
+
+Would you like to open the export directory?</source>
+        <translation>Plik wykonywalny wyeksportowano do:
+{0}
+
+Czy chcesz otworzyć katalog eksportu?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="771"/>
+        <source>Failed to export executable:
+
+{0}</source>
+        <translation>Nie udało się wyeksportować pliku wykonywalnego:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/project_dialogs.py" line="780"/>
+        <source>Error during executable export:
+{0}
+
+{1}</source>
+        <translation>Błąd podczas eksportu pliku wykonywalnego:
+{0}
+
+{1}</translation>
+    </message>
+</context>
 </TS>
