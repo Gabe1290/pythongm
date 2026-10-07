@@ -3325,4 +3325,483 @@ Błąd: {0}</translation>
         <translation>Uruchom ten obiekt samodzielnie w małej sali testowej</translation>
     </message>
 </context>
+<context>
+    <name>WelcomeTab</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="86"/>
+        <source>Welcome to PyGameMaker IDE</source>
+        <translation>Witamy w PyGameMaker IDE</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="124"/>
+        <source>Get started</source>
+        <translation>Rozpocznij</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="128"/>
+        <source>📄  New Project</source>
+        <translation>📄  Nowy projekt</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="130"/>
+        <source>📂  Open Project...</source>
+        <translation>📂  Otwórz projekt…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="135"/>
+        <source>More options</source>
+        <translation>Więcej opcji</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="137"/>
+        <source>🗜  Open ZIP Project...</source>
+        <translation>🗜  Otwórz projekt ZIP…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="138"/>
+        <source>📥  Import GameMaker .gmk...</source>
+        <translation>📥  Importuj plik GameMaker .gmk…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="139"/>
+        <source>📥  Import Open Roberta XML...</source>
+        <translation>📥  Importuj Open Roberta XML…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="144"/>
+        <source>Try a sample game</source>
+        <translation>Wypróbuj przykładową grę</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="155"/>
+        <source>🎮  {0}</source>
+        <translation>🎮  {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="161"/>
+        <source>Choose a sample</source>
+        <translation>Wybierz przykład</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="163"/>
+        <source>(No bundled samples found in this build.)</source>
+        <translation>(W tej wersji nie znaleziono dołączonych przykładów.)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="178"/>
+        <source>Continue where you left off</source>
+        <translation>Kontynuuj od miejsca, w którym skończyłeś</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="197"/>
+        <source>Clear recent projects</source>
+        <translation>Wyczyść ostatnie projekty</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="289"/>
+        <source>Close current project</source>
+        <translation>Zamknij bieżący projekt</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="407"/>
+        <source>(current)</source>
+        <translation>(bieżący)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="210"/>
+        <source>Documentation</source>
+        <translation>Dokumentacja</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="211"/>
+        <source>Tutorials</source>
+        <translation>Samouczki</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="212"/>
+        <source>About</source>
+        <translation>O programie</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="240"/>
+        <source>(No recent projects yet.)</source>
+        <translation>(Brak ostatnich projektów.)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="424"/>
+        <source>Save sample project to...</source>
+        <translation>Zapisz przykładowy projekt do…</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="438"/>
+        <location filename="../widgets/welcome_tab.py" line="446"/>
+        <source>Sample import failed</source>
+        <translation>Import przykładu nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="439"/>
+        <source>Could not import the sample project:
+{0}</source>
+        <translation>Nie można zaimportować przykładowego projektu:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="447"/>
+        <source>The bundled sample could not be imported. See the console output for details.</source>
+        <translation>Nie udało się zaimportować dołączonego przykładu. Szczegóły znajdziesz w konsoli.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  Przewodniki do przykładów</translation>
+    </message>
+</context>
+<context>
+    <name>ActionConfigDialog</name>
+    <message>
+        <location filename="../events/action_editor.py" line="47"/>
+        <source>Configure {0}</source>
+        <translation>Konfiguruj {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="58"/>
+        <source>This action requires special configuration.</source>
+        <translation>Ta akcja wymaga specjalnej konfiguracji.</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="146"/>
+        <location filename="../events/action_editor.py" line="471"/>
+        <location filename="../events/action_editor.py" line="513"/>
+        <source>→ Next Room</source>
+        <translation>→ Następna sala</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="148"/>
+        <location filename="../events/action_editor.py" line="472"/>
+        <location filename="../events/action_editor.py" line="515"/>
+        <source>← Previous Room</source>
+        <translation>← Poprzednia sala</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="150"/>
+        <location filename="../events/action_editor.py" line="473"/>
+        <location filename="../events/action_editor.py" line="517"/>
+        <source>↺ Restart Current Room</source>
+        <translation>↺ Uruchom ponownie bieżącą salę</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="172"/>
+        <source>⚙️ Configure...</source>
+        <translation>⚙️ Konfiguruj...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="198"/>
+        <source>Number or expression</source>
+        <translation>Liczba lub wyrażenie</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="218"/>
+        <source>📋 Configure Actions...</source>
+        <translation>📋 Konfiguruj akcje...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="236"/>
+        <source>🎨 Choose Color...</source>
+        <translation>🎨 Wybierz kolor...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="262"/>
+        <source>(No sprites available)</source>
+        <translation>(Brak dostępnych sprite'ów)</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="279"/>
+        <source>(No sounds available)</source>
+        <translation>(Brak dostępnych dźwięków)</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="290"/>
+        <source>Enter code here...</source>
+        <translation>Wprowadź kod tutaj...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="304"/>
+        <source>X: </source>
+        <translation>X: </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="309"/>
+        <source>Y: </source>
+        <translation>Y: </translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="399"/>
+        <source>Choose Color</source>
+        <translation>Wybierz kolor</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="405"/>
+        <source>🎨 {0}</source>
+        <translation>🎨 {0}</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="344"/>
+        <source>Translations...</source>
+        <translation>Tłumaczenia...</translation>
+    </message>
+    <message>
+        <location filename="../events/action_editor.py" line="346"/>
+        <source>Add translations for different languages</source>
+        <translation>Dodaj tłumaczenia dla różnych języków</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/events/action_editor.py" line="623"/>
+        <source>Applies to</source>
+        <translation>Dotyczy</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/events/action_editor.py" line="632"/>
+        <source>Self</source>
+        <translation>Siebie</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/events/action_editor.py" line="633"/>
+        <source>Other</source>
+        <translation>Inny</translation>
+    </message>
+</context>
+<context>
+    <name>PlaygroundEditor</name>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="103"/>
+        <source>Playground Editor</source>
+        <translation>Edytor placu zabaw</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="108"/>
+        <source>Save</source>
+        <translation>Zapisz</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="109"/>
+        <source>Save playground (Ctrl+S)</source>
+        <translation>Zapisz plac zabaw (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="115"/>
+        <source>Undo</source>
+        <translation>Cofnij</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="116"/>
+        <source>Undo (Ctrl+Z)</source>
+        <translation>Cofnij (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="119"/>
+        <source>Redo</source>
+        <translation>Ponów</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="120"/>
+        <source>Redo (Ctrl+Y)</source>
+        <translation>Ponów (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="126"/>
+        <source>Grid</source>
+        <translation>Siatka</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="129"/>
+        <source>Toggle grid display</source>
+        <translation>Przełącz wyświetlanie siatki</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="132"/>
+        <source>Snap</source>
+        <translation>Przyciąganie</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="135"/>
+        <source>Snap to grid</source>
+        <translation>Przyciągaj do siatki</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="140"/>
+        <source> Thickness: </source>
+        <translation> Grubość: </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="147"/>
+        <source>Default wall thickness for drag-to-draw</source>
+        <translation>Domyślna grubość ściany dla rysowania przez przeciąganie</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="152"/>
+        <source> Block: </source>
+        <translation> Blok: </translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="159"/>
+        <source>Block size for block-paint mode</source>
+        <translation>Rozmiar bloku w trybie malowania blokami</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="166"/>
+        <source>Color for painted blocks</source>
+        <translation>Kolor malowanych bloków</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="173"/>
+        <location filename="../editors/playground_editor/__init__.py" line="501"/>
+        <source>Arena Settings</source>
+        <translation>Ustawienia areny</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="174"/>
+        <source>Configure arena dimensions and background</source>
+        <translation>Konfiguruj wymiary i tło areny</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="180"/>
+        <source>▶ Run</source>
+        <translation>▶ Uruchom</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="181"/>
+        <source>Simulate the playground with linked robot code</source>
+        <translation>Symuluj plac zabaw z powiązanym kodem robota</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="185"/>
+        <source>Export .playground</source>
+        <translation>Eksportuj .playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="186"/>
+        <source>Export as Aseba .playground file</source>
+        <translation>Eksportuj jako plik Aseba .playground</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="194"/>
+        <source>🪟 Float</source>
+        <translation>🪟 Odłącz</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="195"/>
+        <source>Open this editor in its own window</source>
+        <translation>Otwórz ten edytor we własnym oknie</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="349"/>
+        <source>Select Ground Texture</source>
+        <translation>Wybierz teksturę podłoża</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="351"/>
+        <source>Images (*.png *.jpg *.jpeg *.bmp)</source>
+        <translation>Obrazy (*.png *.jpg *.jpeg *.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="369"/>
+        <source>Texture Error</source>
+        <translation>Błąd tekstury</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="370"/>
+        <source>Could not copy texture:
+{}</source>
+        <translation>Nie można skopiować tekstury:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="507"/>
+        <source>Width:</source>
+        <translation>Szerokość:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="512"/>
+        <source>Height:</source>
+        <translation>Wysokość:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="519"/>
+        <source>Background:</source>
+        <translation>Tło:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="524"/>
+        <source>Grid size:</source>
+        <translation>Rozmiar siatki:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="530"/>
+        <location filename="../editors/playground_editor/__init__.py" line="538"/>
+        <location filename="../editors/playground_editor/__init__.py" line="543"/>
+        <source>(none)</source>
+        <translation>(brak)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="532"/>
+        <source>Browse...</source>
+        <translation>Przeglądaj...</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="533"/>
+        <source>Clear</source>
+        <translation>Wyczyść</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="551"/>
+        <source>Ground texture:</source>
+        <translation>Tekstura podłoża:</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="596"/>
+        <source>Run Failed</source>
+        <translation>Uruchomienie nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="597"/>
+        <source>Error launching simulator:
+{}</source>
+        <translation>Błąd podczas uruchamiania symulatora:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="625"/>
+        <source>Export Playground</source>
+        <translation>Eksportuj plac zabaw</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="627"/>
+        <source>Aseba Playground (*.playground)</source>
+        <translation>Plac zabaw Aseba (*.playground)</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="638"/>
+        <source>Export Successful</source>
+        <translation>Eksport zakończony sukcesem</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="639"/>
+        <source>Playground exported to:
+{}</source>
+        <translation>Plac zabaw wyeksportowano do:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="643"/>
+        <source>Export Failed</source>
+        <translation>Eksport nie powiódł się</translation>
+    </message>
+    <message>
+        <location filename="../editors/playground_editor/__init__.py" line="644"/>
+        <source>Error exporting playground:
+{}</source>
+        <translation>Błąd podczas eksportowania placu zabaw:
+{}</translation>
+    </message>
+</context>
 </TS>
