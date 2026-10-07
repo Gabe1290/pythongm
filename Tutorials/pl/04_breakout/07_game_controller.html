@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A65CA6; }
+        .block-output { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 4: Kontroler gry</h1>
+
+    <p>Ostatni krok! Dodamy niewidzialny kontroler gry, który zarządza życiami,
+    wyświetla wynik na ekranie i odejmuje życie, gdy piłka spadnie.</p>
+
+    <!-- ============= CREATE OBJECT ============= -->
+    <h2>Utwórz obiekt kontrolera gry</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_game_controller</code></li>
+            <li><strong>Sprite nie jest potrzebny</strong> (zostaw puste)</li>
+            <li>Zostaw Solidny <strong>odznaczone</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Czym jest kontroler gry?</strong> To niewidzialny obiekt, który zarządza
+        takimi rzeczami jak wynik i życia. Ponieważ nie ma sprite'a, nie pojawia się
+        w grze &mdash; po prostu działa w tle.
+    </div>
+
+    <!-- ============= INITIALIZE ============= -->
+    <h2>Zainicjuj życia i wynik</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_game_controller</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Zbuduj te bloki:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-score block-indent">Ustaw życia na <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">Ustaw wynik na <span class="block-num">0</span></span>
+        </div>
+        <p>Zdarzenie Gdy utworzony wykonuje się raz, gdy gra się uruchamia.
+        Daje graczowi 3 życia i resetuje wynik do zera.</p>
+    </div>
+
+    <!-- ============= DRAW ============= -->
+    <h2>Wyświetl wynik i życia</h2>
+    <div class="step">
+        <p>Dodaj drugi blok zdarzenia, aby pokazać wynik i życia na ekranie:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-score block-indent">Wyświetl wynik na x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Wyświetl życia na x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Zdarzenie Gdy rysowanie wykonuje się co klatkę. Maluje tekst wyniku i żyć na ekranie.</p>
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć <strong>2 bloki zdarzeń</strong>.</p>
+    </div>
+
+    <!-- ============= UPDATE BALL ============= -->
+    <h2>Zaktualizuj piłkę: utrata życia</h2>
+    <p>Obecnie piłka po prostu odradza się, gdy spadnie. Sprawmy, by odejmowała też życie.</p>
+
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_ball</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Znajdź blok zdarzenia <strong>kolizji z obj_death_zone</strong></li>
+            <li>Dodaj nowy blok <strong>przed</strong> blokiem przeskoku:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_death_zone</span><br>
+            <span class="block block-score block-indent">Dodaj <span class="block-num">-1</span> do żyć</span><br>
+            <span class="block block-move block-indent">Przeskocz do x: <span class="block-num">320</span> y: <span class="block-num">100</span></span>
+        </div>
+        <p><strong>Dodaj -1 do żyć</strong> (z kategorii <em>Wynik/Życia/Zdrowie</em>) odejmuje jedno życie
+        za każdym razem, gdy piłka minie paletkę i spadnie.</p>
+    </div>
+
+    <div class="step">
+    </div>
+
+    <!-- ============= PLACE IN ROOM ============= -->
+    <h2>Umieść kontroler gry w sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_breakout</code></li>
+            <li>Umieść <code>obj_game_controller</code> w dowolnym miejscu sali
+            (nie ma sprite'a, więc położenie nie ma znaczenia)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Nie zapomnij!</strong> Kontroler gry musi znajdować się w sali, aby życia i wynik działały.
+        Mimo że jest niewidzialny, musi istnieć w sali.
+    </div>
+
+    <!-- ============= GAME OVER ============= -->
+    <h2>Koniec gry i najlepsze wyniki</h2>
+    <p>Obecnie, gdy graczowi skończą się życia, piłka po prostu odradza się w nieskończoność.
+    Sprawmy, by gra pokazała komunikat <strong>Koniec gry</strong>, wyświetliła
+    tabelę najlepszych wyników, a następnie się zamknęła.</p>
+
+    <div class="info">
+        <strong>Zdarzenie <code>Brak żyć</code></strong> uruchamia się automatycznie w chwili,
+        gdy życia gracza spadną do zera. Nie musisz tego sprawdzać sam
+        &mdash; wystarczy dodać zdarzenie, a silnik je wywoła.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>obj_game_controller</code> w Edytorze obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Dodaj trzeci blok zdarzenia. W kategorii <em>Zdarzenia</em> wybierz <strong>Inne zdarzenia</strong>,
+                a następnie <strong>Brak żyć</strong></li>
+            <li>Wsuń te trzy bloki do środka, w tej kolejności:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy brak żyć</span><br>
+            <span class="block block-output block-indent">Wyświetl wiadomość „Koniec gry!”</span><br>
+            <span class="block block-game block-indent">Pokaż tabelę najlepszych wyników</span><br>
+            <span class="block block-game block-indent">Zakończ grę</span>
+        </div>
+        <ul>
+            <li><strong>Wyświetl wiadomość</strong> (z kategorii <em>Wyjście</em>) &mdash; pokazuje okno „Koniec gry!”</li>
+            <li><strong>Pokaż tabelę najlepszych wyników</strong> (z kategorii <em>Gra</em>) &mdash; wyświetla tabelę
+                najlepszych wyników i, jeśli gracz znalazł się w czołówce, pyta o jego imię</li>
+            <li><strong>Zakończ grę</strong> (z kategorii <em>Gra</em>) &mdash; zamyka okno gry</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Kolejność ma znaczenie!</strong> Umieść <em>Pokaż tabelę najlepszych wyników</em>
+        <strong>przed</strong> <em>Zakończ grę</em>. Jeśli najpierw zakończysz grę,
+        okno najlepszych wyników nigdy nie zdąży się pojawić.
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć teraz <strong>3 bloki zdarzeń</strong> na kontrolerze gry
+        (Gdy utworzony, Gdy rysowanie, Gdy brak żyć).</p>
+    </div>
+
+    <!-- ============= FINAL TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Gratulacje! Przetestuj swoją ukończoną grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Użyj klawiszy <strong>strzałek w lewo</strong> i <strong>w prawo</strong>, aby poruszać paletką</li>
+            <li>Zniszcz wszystkie cegły, aby wygrać!</li>
+            <li>Nie pozwól piłce spaść poza paletkę &mdash; masz tylko 3 życia!</li>
+            <li>Obserwuj wynik i życia w lewym górnym rogu</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Pomysły na wyzwania:</strong>
+        <ul>
+            <li>Nadaj różnym kolorom cegieł różne wartości punktów (czerwona = 40, pomarańczowa = 30, żółta = 20, zielona = 10)</li>
+            <li>Spraw, by piłka przyspieszała wraz z niszczeniem cegieł</li>
+            <li>Dodaj drugi poziom z innym układem cegieł</li>
+            <li>Odtwórz dźwięk, gdy gra się kończy (dodaj go do zdarzenia <em>Gdy brak żyć</em>)</li>
+        </ul>
+    </div>
+</body>
+</html>

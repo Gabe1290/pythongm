@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Obiekty, paletka i piłka</h1>
+
+    <p>Utwórzmy obiekty gry i zaprogramujmy je, aby szybko móc przetestować grę!</p>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Utwórz obiekty</h2>
+    <p>Potrzebujemy dwóch różnych typów ścian, aby piłka wiedziała, w którym kierunku się odbić.</p>
+
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Utwórz <code>obj_wall_side</code> &mdash; sprite: <code>spr_wall</code>, zaznacz <strong>Solidny</strong></li>
+            <li>Utwórz <code>obj_wall_top</code> &mdash; sprite: <code>spr_wall</code>, zaznacz <strong>Solidny</strong></li>
+            <li>Utwórz <code>obj_paddle</code> &mdash; sprite: <code>spr_paddle</code>, zaznacz <strong>Solidny</strong></li>
+            <li>Utwórz <code>obj_ball</code> &mdash; sprite: <code>spr_ball</code>, zostaw Solidny <strong>odznaczone</strong></li>
+            <li>Utwórz <code>obj_death_zone</code> &mdash; sprite: <code>spr_death_zone</code>, odznacz <strong>Widoczny</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Dlaczego dwa typy ścian?</strong> Gdy piłka trafi w boczną ścianę, odwraca swój
+        kierunek horyzontalny. Gdy trafi w górną ścianę, odwraca kierunek wertykalny.
+        Dwa obiekty pozwalają zaprogramować różne zachowania odbicia!
+    </div>
+
+    <!-- ============= PADDLE ============= -->
+    <h2>Zaprogramuj paletkę</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_paddle</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Jak działa Blockly:</strong> Przeciągaj bloki z palety po lewej do obszaru roboczego.
+        Wsuwaj bloki akcji wewnątrz bloków zdarzeń, aby określić, co się dzieje.
+        Twoje bloki są automatycznie zapisywane w panelu zdarzeń podczas edycji.
+    </div>
+
+    <h2>Ruch w lewo</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w lewo (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-num">-8</span></span>
+        </div>
+        <p>Znajdź <strong>Klawiatura (przytrzymany)</strong> w kategorii <em>Zdarzenia</em>, wybierz <strong>Strzałka w lewo</strong>.
+        Następnie wsuń <strong>Ustaw prędkość horyzontalną</strong> z kategorii <em>Ruch</em> do środka.
+        Wpisz <strong>-8</strong> (ujemne = w lewo).</p>
+    </div>
+
+    <h2>Ruch w prawo</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w prawo (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-num">8</span></span>
+        </div>
+        <p>Tak samo jak wyżej, ale wybierz <strong>Strzałka w prawo</strong> i wpisz <strong>8</strong> (dodatnie = w prawo).</p>
+    </div>
+
+    <h2>Zatrzymanie bez wciśniętego klawisza</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Brak klawisza</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span>
+        </div>
+        <p>To zapobiega wiecznemu ślizganiu się paletki po puszczeniu klawisza.</p>
+    </div>
+
+    <h2>Zatrzymanie przy bocznych ścianach</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_wall_side</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span>
+        </div>
+        <p>To utrzymuje paletkę wewnątrz obszaru gry.</p>
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć <strong>4 bloki zdarzeń</strong>.</p>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Zaprogramuj piłkę</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_ball</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Uruchom ruch piłki</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">-3</span></span>
+        </div>
+        <p>Zdarzenie Gdy utworzony wykonuje się raz, gdy gra się uruchamia.
+        Ustawienie obu prędkości sprawia, że piłka porusza się po skosie w górę.</p>
+    </div>
+
+    <div class="info">
+        <strong>Dlaczego dwie prędkości?</strong> Prędkość horyzontalna (3) przesuwa piłkę w bok.
+        Prędkość wertykalna (-3) przesuwa ją w górę (ujemne = w górę). Razem piłka porusza się po skosie!
+    </div>
+
+    <h2>Odbicie od bocznych ścian</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_wall_side</span><br>
+            <span class="block block-move block-indent">Odwróć ruch horyzontalny</span>
+        </div>
+        <p>Piłka odwraca kierunek lewo/prawo po trafieniu w boczną ścianę.</p>
+    </div>
+
+    <h2>Odbicie od górnej ściany</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_wall_top</span><br>
+            <span class="block block-move block-indent">Odwróć ruch wertykalny</span>
+        </div>
+        <p>Piłka odbija się w dół po trafieniu w górną ścianę.</p>
+    </div>
+
+    <h2>Odbicie od paletki</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_paddle</span><br>
+            <span class="block block-move block-indent">Odwróć ruch wertykalny</span>
+        </div>
+        <p>Tak samo jak przy górnej ścianie &mdash; piłka odbija się z powrotem w górę.</p>
+    </div>
+
+    <h2>Piłka spada poza ekran</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_death_zone</span><br>
+            <span class="block block-move block-indent">Przeskocz do x: <span class="block-num">320</span> y: <span class="block-num">100</span></span>
+        </div>
+        <p>Gdy piłka trafi w strefę śmierci na dole, odradza się nad paletką.
+        Życia dodamy później &mdash; na razie piłka po prostu wraca!</p>
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć <strong>5 bloków zdarzeń</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Jak działa odbijanie:</strong> Piłka zawsze porusza się po skosie. Gdy trafi w
+        powierzchnię pionową (boczna ściana), odwracamy ruch horyzontalny. Gdy trafi w powierzchnię
+        poziomą (górna ściana, paletka), odwracamy ruch wertykalny. To tworzy realistyczne odbicia!
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby utworzyć salę i zagrać!
+    </div>
+</body>
+</html>

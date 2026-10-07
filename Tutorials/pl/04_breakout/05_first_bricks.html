@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Pierwszy rząd cegieł</h1>
+
+    <p>Teraz dodajmy cegły do zniszczenia przez piłkę! Użyjemy sprytnej sztuczki zwanej
+    <strong>obiektem nadrzędnym</strong>, dzięki czemu później, gdy dodamy więcej kolorów cegieł,
+    nie będziemy musieli przepisywać kodu kolizji.</p>
+
+    <!-- ============= SPRITE ============= -->
+    <h2>Utwórz sprite cegły</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite o nazwie <code>spr_brick_red</code></li>
+        </ol>
+
+        <h3>Opcja A &mdash; Narysuj go sam</h3>
+        <div class="option-box">
+            <ol>
+                <li>Otwórz Edytor sprite'ów i narysuj jednolity <strong>czerwony</strong> prostokąt</li>
+                <li>Rozmiar: <strong>32&times;16 pikseli</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opcja B &mdash; Wczytaj przykładowy sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Kliknij prawym przyciskiem na <code>spr_brick_red</code> &rarr; <strong>Importuj obraz...</strong></li>
+                <li>Wybierz <code>Tutorials/04_breakout/assets/spr_brick_red.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ============= PARENT OBJECT ============= -->
+    <h2>Utwórz nadrzędny obiekt cegły</h2>
+    <p>Obiekt nadrzędny to szablon. Każdy obiekt, który go użyje jako rodzica, automatycznie
+    odziedziczy jego zachowanie przy kolizji. Dzięki temu kod „piłka trafia w cegłę” piszemy tylko <strong>raz</strong>.</p>
+
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_brick_parent</code></li>
+            <li><strong>Sprite nie jest potrzebny</strong> &mdash; to tylko szablon, nie pojawi się w grze</li>
+            <li>Zaznacz <strong>Solidny</strong></li>
+        </ol>
+    </div>
+
+    <!-- ============= RED BRICK ============= -->
+    <h2>Utwórz obiekt czerwonej cegły</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy obiekt o nazwie <code>obj_brick_red</code></li>
+            <li>Ustaw sprite na <code>spr_brick_red</code></li>
+            <li>Ustaw <strong>Rodzica</strong> na <code>obj_brick_parent</code></li>
+            <li>Zaznacz <strong>Solidny</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Co robi ustawienie rodzica?</strong> Gdy piłka sprawdza kolizję z
+        <code>obj_brick_parent</code>, wykryje również kolizje z <code>obj_brick_red</code>
+        i każdą inną cegłą potomną, którą dodamy później. Jedno zdarzenie kolizji obejmuje wszystkie kolory cegieł!
+    </div>
+
+    <!-- ============= BALL COLLISION ============= -->
+    <h2>Dodaj kolizję z cegłą do piłki</h2>
+    <p>Musimy powiedzieć piłce, co ma zrobić, gdy trafi w cegłę.</p>
+
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_ball</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong> &mdash; powinieneś zobaczyć swoje 5 istniejących bloków</li>
+            <li>Dodaj ten nowy blok zdarzenia:</li>
+        </ol>
+
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_brick_parent</span><br>
+            <span class="block block-move block-indent">Odwróć ruch wertykalny</span><br>
+            <span class="block block-instance block-indent">Zniszcz inną instancję</span><br>
+            <span class="block block-score block-indent">Dodaj <span class="block-num">10</span> do wyniku</span>
+        </div>
+
+        <p>Wsuń trzy bloki do środka:</p>
+        <ul>
+            <li><strong>Odwróć ruch wertykalny</strong> (z kategorii <em>Ruch</em>) &mdash; piłka odbija się z powrotem</li>
+            <li><strong>Zniszcz inną instancję</strong> (z kategorii <em>Instancja</em>) &mdash; niszczy cegłę, nie piłkę!</li>
+            <li><strong>Dodaj 10 do wyniku</strong> (z kategorii <em>Wynik/Życia/Zdrowie</em>) &mdash; zdobywasz punkty</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć teraz <strong>6 bloków zdarzeń</strong> dla piłki.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Kluczowa informacja:</strong> Kolizja jest z <code>obj_brick_parent</code>, nie z
+        <code>obj_brick_red</code>. Oznacza to, że będzie automatycznie działać z każdym kolorem
+        cegły, który dodamy później!
+    </div>
+
+    <!-- ============= UPDATE ROOM ============= -->
+    <h2>Dodaj cegły do sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_breakout</code></li>
+            <li>Umieść rząd <code>obj_brick_red</code> blisko góry, pomiędzy bocznymi ścianami</li>
+            <li>Włącz <strong>Przyciąganie do siatki</strong> (32&times;16) dla łatwego wyrównania</li>
+            <li>Wypełnij jeden pełny rząd czerwonymi cegłami</li>
+        </ol>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Piłka powinna odbijać się od cegieł i je niszczyć</li>
+            <li>Każda cegła dodaje 10 punktów do wyniku</li>
+            <li>Spróbuj zniszczyć wszystkie cegły!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać więcej kolorowych rzędów cegieł.
+    </div>
+</body>
+</html>
