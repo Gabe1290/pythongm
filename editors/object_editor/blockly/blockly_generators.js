@@ -184,6 +184,19 @@ function generateActionCode(block) {
             return {action: 'destroy_instance', parameters: {target: 'self'}};
         case 'instance_destroy_other':
             return {action: 'destroy_instance', parameters: {target: 'other'}};
+        case 'instance_create':
+            // Bug fix: this case was missing entirely, so every "Create
+            // instance of X at x: ... y: ..." block silently produced no
+            // action at all (generateBlockCode's switch fell through to
+            // default: return null) -- e.g. Tutorial 2's star spawner
+            // alarm event re-armed itself every frame but never actually
+            // created a star. OBJECT is a plain typed FieldTextInput, not
+            // a dropdown (see the block definition in blockly_blocks.js).
+            return {action: 'create_instance', parameters: {
+                object: block.getFieldValue('OBJECT'),
+                x: getInputValue(block, 'X', 0),
+                y: getInputValue(block, 'Y', 0)
+            }};
         case 'exit_event':
             return {action: 'exit_event', parameters: {}};
         case 'if_condition':
@@ -554,6 +567,19 @@ function getInputValue(block, inputName, defaultValue) {
             return 'game.lives';
         } else if (input.type === 'value_health') {
             return 'game.health';
+        } else if (input.type === 'math_random_int') {
+            // Blockly's standard Math category block ("random integer from
+            // %1 to %2", FROM/TO value inputs) -- used by Tutorial 2's star
+            // spawner to pick a random x. The three runtime engines (desktop
+            // Python, HTML5, Kivy) only implement single-argument irandom(n)
+            // (0..n inclusive), not a two-argument range function, so this
+            // is synthesized from it rather than emitting a call to a
+            // two-argument range function no target implements:
+            // irandom(b-a)+a covers [a, b] inclusive, matching
+            // math_random_int's own semantics exactly.
+            var rangeFrom = getInputValue(input, 'FROM', 0);
+            var rangeTo = getInputValue(input, 'TO', 0);
+            return 'irandom((' + rangeTo + ') - (' + rangeFrom + ')) + (' + rangeFrom + ')';
         }
     }
     return defaultValue;
