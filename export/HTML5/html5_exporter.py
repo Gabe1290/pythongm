@@ -315,6 +315,13 @@ class HTML5Exporter:
             try:
                 logger.info(f"Exporting {project_path.name} to HTML5...")
 
+                # Create the destination if needed. Every write below assumed
+                # it already existed, so exporting to a not-yet-created folder
+                # (CLI, or any caller not going through a folder picker)
+                # failed with a bare "No such file or directory".
+                output_path = Path(output_path)
+                output_path.mkdir(parents=True, exist_ok=True)
+
                 # Load project
                 project_file = project_path / "project.json"
                 with open(project_file, 'r', encoding='utf-8') as f:
