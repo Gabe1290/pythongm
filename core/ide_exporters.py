@@ -61,7 +61,26 @@ class IDEExporters:
         return reply == QMessageBox.Yes
 
     def export_html5(self):
-        """Export project as HTML5"""
+        """Export project as HTML5.
+
+        Any exception escaping the export is shown in a dialog. A Qt slot that
+        raises only prints to the console, so in the packaged IDE (no console)
+        a failure used to look like nothing happened at all -- which is how
+        the missing bundled templates went unnoticed (classroom report,
+        2026-10-07).
+        """
+        try:
+            self._export_html5()
+        except Exception as e:  # noqa: BLE001 - surfaced to the user below
+            from core.logger import get_logger
+            get_logger(__name__).exception("HTML5 export crashed")
+            QMessageBox.critical(
+                self.ide,
+                self.ide.tr("Export Failed"),
+                self.ide.tr("Failed to export game as HTML5:\n{0}").format(e))
+            self.ide.update_status(self.ide.tr("Export failed"))
+
+    def _export_html5(self):
         # Check if project is open
         if not self.ide.current_project_path:
             QMessageBox.warning(

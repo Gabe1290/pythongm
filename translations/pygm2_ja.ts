@@ -8076,5 +8076,12 @@ Replace it with this project?</source>
 
 このプロジェクトで置き換えますか？</translation>
     </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="80"/>
+        <source>Failed to export game as HTML5:
+{0}</source>
+        <translation>ゲームを HTML5 としてエクスポートできませんでした:
+{0}</translation>
+    </message>
 </context>
 </TS>

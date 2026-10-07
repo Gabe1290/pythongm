@@ -38,6 +38,9 @@ datas = [
     (str(project_dir / 'translations' / '*.qm'), 'translations'),
     # Theme configuration
     (str(project_dir / 'utils' / 'themes.json'), 'utils'),
+    # App icon: the IDE window icon (main.py) and the HTML5 export's
+    # fallback PWA icon (export/HTML5/html5_exporter.py).
+    (str(project_dir / 'resources' / 'icon.*'), 'resources'),
 ]
 
 # Add PySide6 data files
@@ -166,6 +169,12 @@ for _dir, _prefix in [
     # silently does nothing.
     ('extensions', 'extensions'),
     ('plugins', 'plugins'),
+    # HTML5 export: HTML5Exporter() reads engine.js / game_template.html and
+    # the vendored pako.min.js the moment it is constructed. Without these
+    # the packaged IDE's "Export as HTML5..." died on a FileNotFoundError
+    # with no dialog at all (classroom report, 2026-10-07).
+    ('export/HTML5/templates', 'export/HTML5/templates'),
+    ('resources/vendor', 'resources/vendor'),
 ]:
     _path = project_dir / _dir
     if _path.is_dir():

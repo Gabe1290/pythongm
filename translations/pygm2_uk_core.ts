@@ -2473,6 +2473,13 @@ Replace it with this project?</source>
 
 Замінити його цим проєктом?</translation>
     </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="80"/>
+        <source>Failed to export game as HTML5:
+{0}</source>
+        <translation>Не вдалося експортувати гру як HTML5:
+{0}</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

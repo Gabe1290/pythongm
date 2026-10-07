@@ -93,7 +93,7 @@ def test_every_message_has_a_real_non_empty_translation():
                 f"[{context}] {source!r}: translation equals the English source"
             )
         checked += 1
-    assert checked == 1564, checked  # +2: Save As "Replace Project?" dialog (2026-10-07)
+    assert checked == 1565, checked  # +2 Save As "Replace Project?" dialog, +1 HTML5 export crash dialog (2026-10-07)
 
 
 def test_diacritics_survive():
