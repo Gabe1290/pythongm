@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Kamera i sterowanie</h1>
+    <p>W grze 2.5D <strong>obiekt gracza jest kamerą</strong>: widok jest rysowany z miejsca, w którym stoi, patrząc tam, gdzie jest zwrócony.
+    Otwórz <code>obj_player</code>, kliknij zakładkę <strong>Blockly</strong> i dodaj te zdarzenia.</p>
+    <h2>Włącz widok 2.5D</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Gdy utworzony</span><br>
+        <span class="block block-view block-indent">Włącz widok Raycast &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span><br>
+    </div>
+    <div class="info" style="margin-top: 8px;"><strong>Co to robi:</strong> od teraz ta sala jest rysowana z pierwszej osoby.
+    <em>Cell Size</em> musi pasować do twojej siatki ścian (32). <em>Render Distance</em> to liczba pól, jak daleko kamera widzi.
+    Zostaw <em>Camera Object</em> puste &mdash; to oznacza „obiekt wykonujący tę akcję”, czyli gracza.</div></div>
+    <h2>Obrót w lewo i w prawo</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Klawiatura: Strzałka w lewo (przytrzymany)</span><br>
+        <span class="block block-view block-indent">Ustaw kąt patrzenia <span class="block-num">3</span> &nbsp;Względnie: tak</span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Klawiatura: Strzałka w prawo (przytrzymany)</span><br>
+        <span class="block block-view block-indent">Ustaw kąt patrzenia <span class="block-num">-3</span> &nbsp;Względnie: tak</span><br>
+    </div>
+    <p style="font-style: italic;"><strong>Kąt patrzenia</strong> to kierunek, w którym patrzysz, w stopniach (0 = prawo, 90 = góra, 180 = lewo, 270 = dół).
+    <em>Względnie</em> oznacza „dodaj do aktualnego kąta” &mdash; więc trzymanie klawisza wciąż obraca, po 3 stopnie naraz.</p></div>
+    <h2>Chodzenie do przodu i do tyłu</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Klawiatura: Strzałka w górę (przytrzymany)</span><br>
+        <span class="block block-move block-indent">Ustaw kierunek i prędkość &mdash; kierunek <span class="block-text">facing_angle</span> prędkość <span class="block-num">3</span></span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Klawiatura: Strzałka w dół (przytrzymany)</span><br>
+        <span class="block block-move block-indent">Ustaw kierunek i prędkość &mdash; kierunek <span class="block-text">facing_angle+180</span> prędkość <span class="block-num">3</span></span><br>
+    </div>
+    <div class="blockly-group">
+        <span class="block block-event">Klawiatura: Brak klawisza</span><br>
+        <span class="block block-move block-indent">Ustaw kierunek i prędkość &mdash; kierunek <span class="block-num">0</span> prędkość <span class="block-num">0</span></span><br>
+    </div>
+    <p style="font-style: italic;">Chodzenie używa <em>tego samego</em> kąta patrzenia co kamera, więc „do przodu” zawsze oznacza kierunek, w który patrzysz.</p></div>
+    <h2>Spraw, by ściany były solidne dla gracza</h2>
+    <div class="step"><div class="blockly-group">
+        <span class="block block-event">Gdy kolizja z obj_wall</span><br>
+        <span class="block block-move block-indent">(brak akcji &mdash; zostaw puste)</span><br>
+    </div>
+    <div class="highlight"><strong>Nie pomiń tego!</strong> Puste zdarzenie kolizji wygląda bezsensownie, ale bez niego gracz przechodzi
+    prosto przez każdą ścianę. Solidny obiekt zatrzymuje tylko inny obiekt, który ma dla niego zdarzenie kolizji &mdash; to zdarzenie może być puste.</div></div>
+    <div class="info">Kliknij „Dalej”, aby zagrać w swojej sali.</div>
+</body>
+</html>
