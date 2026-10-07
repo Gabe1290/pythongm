@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.cells { border-collapse: collapse; margin: 8px 0; }
+        table.cells td, table.cells th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Plansza</h1>
+
+    <p>Przed jakąkolwiek siecią zbudujmy planszę do kółka i krzyżyka, którą
+    można kliknąć &mdash; w pełni lokalną, testowalną samodzielnie od razu.
+    Wszystko w tej grze mieszka na <strong>jednym obiekcie</strong>, <code>obj_game</code>
+    &mdash; rysuje całą planszę, a (od Etapu 2) też hostuje lub dołącza, więc
+    nic innego nie musi wiedzieć o stanie planszy.</p>
+
+    <h2>Utwórz nowy projekt</h2>
+    <div class="step">
+        <ol>
+            <li>Przejdź do <code>Plik &gt; Nowy projekt</code></li>
+            <li>Nazwij go <strong>TicTacToeFiles</strong></li>
+            <li>Dla <strong>Szablonu</strong> wybierz <strong>„Pusty projekt”</strong></li>
+        </ol>
+    </div>
+
+    <h2>Utwórz obiekt gry i salę</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_game</code>, sprite nie jest potrzebny (zostaw niewidzialny)</li>
+            <li>Kliknij prawym przyciskiem na <strong>Sale</strong> &rarr; <strong>Utwórz nową salę</strong>,
+            nazwij ją <code>room_board</code></li>
+            <li>Umieść <strong>jedną instancję</strong> <code>obj_game</code>
+            w dowolnym miejscu w <code>room_board</code></li>
+        </ol>
+    </div>
+
+    <h2>Śledź dziewięć pól</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_game</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Dodaj zdarzenie <strong>Gdy utworzony</strong>, które ustawia dziewięć
+            pustych zmiennych &mdash; <code>cell_0_0</code>,
+            <code>cell_1_0</code>, <code>cell_2_0</code>,
+            <code>cell_0_1</code>, <code>cell_1_1</code>,
+            <code>cell_2_1</code>, <code>cell_0_2</code>,
+            <code>cell_1_2</code>, <code>cell_2_2</code> (kolumna, potem
+            wiersz) &mdash; po jednym bloku <strong>Ustaw zmienną</strong> dla każdej:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">cell_0_0</span> na <span class="block-text"></span></span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">cell_1_0</span> na <span class="block-text"></span></span><br>
+            <span class="block block-control block-indent">... (wszystkie dziewięć)</span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Dlaczego dziewięć zwykłych zmiennych zamiast dziewięciu obiektów?</strong>
+            W tym silniku nie ma sposobu, by dwie różne instancje
+            przekazywały sobie obliczoną nazwę do odczytu lub zapisu &mdash;
+            tylko <code>self</code>, <code>global</code> i (przy kolizji)
+            <code>other</code>. Dziewięć zmiennych na jednym obiekcie, każda
+            z własną stałą nazwą, całkowicie to omija: każda akcja poniżej
+            po prostu nazywa dokładne pole, które ma na myśli.
+        </div>
+    </div>
+
+    <h2>Narysuj siatkę</h2>
+    <div class="step">
+        <p>Plansza 300&times;300 zaczynająca się w (170, 90) &mdash; trzy
+        kolumny po 100 pikseli, trzy wiersze po 100 pikseli:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-draw block-indent">Ustaw kolor rysowania <span class="block-text">#ffffff</span></span><br>
+            <span class="block block-draw block-indent">Rysuj linię od x:<span class="block-num">270</span> y:<span class="block-num">90</span> do x:<span class="block-num">270</span> y:<span class="block-num">390</span></span><br>
+            <span class="block block-draw block-indent">Rysuj linię od x:<span class="block-num">370</span> y:<span class="block-num">90</span> do x:<span class="block-num">370</span> y:<span class="block-num">390</span></span><br>
+            <span class="block block-draw block-indent">Rysuj linię od x:<span class="block-num">170</span> y:<span class="block-num">190</span> do x:<span class="block-num">470</span> y:<span class="block-num">190</span></span><br>
+            <span class="block block-draw block-indent">Rysuj linię od x:<span class="block-num">170</span> y:<span class="block-num">290</span> do x:<span class="block-num">470</span> y:<span class="block-num">290</span></span>
+        </div>
+        <p><strong>Najpierw ustaw kolor rysowania!</strong> Linie i tekst są domyślnie rysowane na czarno, a nowa sala też jest czarna &mdash;
+        bez białego bloku <strong>Ustaw kolor rysowania</strong> na początku zdarzenia Gdy rysowanie zobaczyłbyś pusty ekran.
+        Kolor pozostaje ustawiony dla każdego kolejnego bloku rysującego, w tym dla znaków i wiadomości dodanych w kolejnych etapach.</p>
+    </div>
+
+    <h2>Oznacz pole kliknięciem</h2>
+    <div class="step">
+        <p>Jeden blok <strong>Jeśli</strong> na pole, sprawdzający pozycję
+        myszy względem prostokąta tego pola. Pole (0,0), w pełni rozpisane:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Mysz: Lewy przycisk wciśnięty</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">cell_0_0 == "" and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> wtedy</span><br>
+            <span class="block block-control block-indent2">Ustaw zmienną <span class="block-text">cell_0_0</span> na <span class="block-text">X</span></span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Powtórz dokładnie ten
+        sam kształt dla pozostałych ośmiu, każdy sprawdzając własną zmienną i
+        własny prostokąt:</p>
+        <table class="cells">
+            <tr><th>Pole</th><th>zakres x</th><th>zakres y</th></tr>
+            <tr><td>cell_1_0</td><td>270&ndash;370</td><td>90&ndash;190</td></tr>
+            <tr><td>cell_2_0</td><td>370&ndash;470</td><td>90&ndash;190</td></tr>
+            <tr><td>cell_0_1</td><td>170&ndash;270</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_1_1</td><td>270&ndash;370</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_2_1</td><td>370&ndash;470</td><td>190&ndash;290</td></tr>
+            <tr><td>cell_0_2</td><td>170&ndash;270</td><td>290&ndash;390</td></tr>
+            <tr><td>cell_1_2</td><td>270&ndash;370</td><td>290&ndash;390</td></tr>
+            <tr><td>cell_2_2</td><td>370&ndash;470</td><td>290&ndash;390</td></tr>
+        </table>
+        <p style="font-style: italic;">Na razie tylko X &mdash; naprzemienne
+        X i O dla dwóch prawdziwych graczy dodaje Etap 3.</p>
+    </div>
+
+    <h2>Narysuj każdy znak</h2>
+    <div class="step">
+        <p>Znowu pole (0,0), w pełni rozpisane &mdash; tekst wyśrodkowany
+        mniej więcej w swoim polu:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">cell_0_0 != ""</span> wtedy</span><br>
+            <span class="block block-draw block-indent2">Rysuj tekst <span class="block-text">cell_0_0</span> na x:<span class="block-num">205</span> y:<span class="block-num">115</span></span>
+        </div>
+        <p style="font-style: italic;">Ten sam kształt dla pozostałych ośmiu
+        (dodaj 100 do x na kolumnę, 100 do y na wiersz, zgodnie z powyższą tabelą).</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj planszę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Kliknij dowolne pole &rarr; pojawia się <strong>X</strong></li>
+            <li>Kliknij ponownie &rarr; nic się nie dzieje (jest już oznaczone)</li>
+            <li>Jeszcze bez tur, bez przeciwnika &mdash; to w następnym kroku</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby połączyć dwa komputery.
+    </div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Hostuj grę / Dołącz do gry</h1>
+
+    <p>Teraz połączmy dwa komputery przez wspólny folder. Jeden będzie
+    <strong>hostem</strong> (sędzią), a drugi <strong>dołączy</strong>.
+    Wszystko poniżej nadal odbywa się na <code>obj_game</code>, tym samym
+    obiekcie z Etapu 1.</p>
+
+    <div class="info">
+        <strong>Zanim zaczniesz:</strong> wybierz folder, do którego oba
+        komputery mają dostęp i mogą w nim zapisywać &mdash; wspólny dysk
+        sieciowy albo (aby najpierw samodzielnie zbudować i przetestować
+        połączenie) po prostu zwykłą nazwę folderu, utworzoną obok miejsca,
+        z którego gra jest uruchamiana. Wpiszemy ją w obu akcjach poniżej
+        jako <code>tictactoe_files</code> &mdash; dla prawdziwej gry na
+        dwóch komputerach zmień ją na ścieżkę dostępną dla obu maszyn
+        (zmapowaną literę dysku albo ścieżkę UNC jak
+        <code>\\serwer\udostepnienie\tictactoe</code>).
+    </div>
+
+    <h2>Hostuj klawiszem H, dołącz klawiszem J</h2>
+    <div class="step">
+        <p>Uruchom dokładnie ten sam projekt na obu komputerach i naciśnij
+        inny klawisz na każdym. Każda gałąź też raz ustala znak tej maszyny,
+        w <code>my_mark</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Klawisz wciśnięty: H</span><br>
+            <span class="block block-network block-indent">Hostuj grę (wymiana plików)
+            folder:<span class="block-text">tictactoe_files</span>
+            maks. graczy:<span class="block-num">2</span>
+            nazwa gracza:<span class="block-text">Gracz 1</span></span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">my_mark</span> na <span class="block-text">X</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawisz wciśnięty: J</span><br>
+            <span class="block block-network block-indent">Dołącz do gry (wymiana plików)
+            folder:<span class="block-text">tictactoe_files</span>
+            nazwa gracza:<span class="block-text">Gracz 2</span></span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">my_mark</span> na <span class="block-text">O</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Dlaczego klawisze, nie menu?</strong> To najprostszy
+            sposób na przetestowanie obu ról z tego samego projektu &mdash;
+            naciśnij H na jednym komputerze, J na drugim (albo oba, w dwóch
+            oknach Testuj grę na jednym komputerze, tak jak pozwala na to
+            dołączony przykład <code>fichier_1</code> do szybkiego
+            sprawdzenia solo). Prawdziwa gra klasowa mogłaby zamiast tego
+            zapytać „Hostuj czy Dołącz?” na ekranie tytułowym, ale to
+            kwestia wyglądu interfejsu, nie coś, czego musi uczyć ten tutorial.
+        </div>
+    </div>
+
+    <h2>Pokaż stan połączenia</h2>
+    <div class="step">
+        <ol>
+            <li>Dodaj do zdarzenia <strong>Gdy rysowanie</strong> obiektu
+            <code>obj_game</code>, przed rysowaniem siatki z Etapu 1:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">global.waiting_for_players == 1</span> wtedy</span><br>
+            <span class="block block-draw block-indent2">Rysuj tekst <span class="block-text">Oczekiwanie na przeciwnika...</span> na x:<span class="block-num">170</span> y:<span class="block-num">40</span></span><br>
+            <span class="block block-draw block-indent2">Zakończ zdarzenie</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-draw">Rysuj tekst <span class="block-text">"Grasz jako " + my_mark</span> na x:<span class="block-num">170</span> y:<span class="block-num">40</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Co to robi:</strong> <code>global.waiting_for_players</code>
+            wynosi <code>1</code>, dopóki gra nie ma tylu graczy, ile wynosi
+            jej ustawienie <strong>Maks. graczy</strong> (tutaj 2), a potem
+            <code>0</code> &mdash; nie musisz sam liczyć graczy.
+            <strong>Zakończ zdarzenie</strong> zatrzymuje rysowanie siatki
+            całkowicie podczas oczekiwania, tak jak dołączony przykład
+            utrzymuje ekran „naciśnij H / naciśnij J”, dopóki ktoś się nie
+            połączy. <code>global.player_id</code> jest przypisywany
+            automatycznie: host zawsze ma <code>0</code>, a każdy dołączający
+            gracz liczy dalej od tej wartości &mdash; nieużywany tu
+            bezpośrednio, ponieważ <code>my_mark</code> zawiera już tę samą
+            informację.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj połączenie!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5 na dwóch komputerach!</strong></p>
+        <ul>
+            <li>Naciśnij <strong>H</strong> na jednym, <strong>J</strong> na drugim</li>
+            <li>Oba powinny przestać pokazywać „Oczekiwanie na przeciwnika...” i
+            pokazać „Grasz jako X” / „Grasz jako O”, a potem planszę</li>
+            <li>Jeśli hosta nie da się osiągnąć, gra nadal działa w trybie
+            jednoosobowym &mdash; nigdy się nie zawiesza ani nie wypada z błędem</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby sprawić, by plansza była naprawdę grywalna na obu komputerach.
+    </div>
+</body>
+</html>

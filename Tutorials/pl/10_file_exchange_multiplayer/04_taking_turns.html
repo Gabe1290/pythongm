@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.cells { border-collapse: collapse; margin: 8px 0; }
+        table.cells td, table.cells th { border: 1px solid #ccc; padding: 4px 10px; font-family: monospace; font-size: 11px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-network { background-color: #16a085; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Prawdziwe tury</h1>
+
+    <p>Obecnie kliknięcie pola zmienia je tylko na <em>twoim</em> ekranie.
+    Ten etap sprawia, że kliknięcie podróżuje przez wspólny folder, aby
+    <strong>oba</strong> komputery zgadzały się co do planszy &mdash; i upewnia
+    się, że klikać może tylko gracz, którego jest tura.</p>
+
+    <h2>Śledź, czyja jest tura</h2>
+    <div class="step">
+        <ol>
+            <li>Dodaj do zdarzenia <strong>Gdy utworzony</strong> obiektu
+            <code>obj_game</code> (z Etapu 1): ustaw <code>last_round_acted</code>
+            na <code>0</code> i <code>my_turn</code> na <code>0</code></li>
+            <li>Dodaj zdarzenie <strong>Przy każdym kroku</strong>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-control">Jeśli <span class="block-text">(global.round_number mod 2 == 1 and my_mark == "X") or (global.round_number mod 2 == 0 and my_mark == "O")</span> wtedy</span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">my_turn</span> na <span class="block-text">1</span></span><br>
+            <span class="block block-control">Inaczej</span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">my_turn</span> na <span class="block-text">0</span></span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Pierwsza opublikowana
+        runda to runda <strong>1</strong>, nie 0 &mdash; więc X (host)
+        gra w rundach nieparzystych, O w parzystych.</p>
+        <p style="margin-top: 4px;">Nadal w tym samym zdarzeniu <strong>Przy
+        każdym kroku</strong>, zaraz po: gracz, który <em>nie</em> ma tury,
+        wciąż musi coś przesłać, inaczej runda czekałaby do końca pełnego
+        limitu czasu za każdym razem:</p>
+        <div class="blockly-group">
+            <span class="block block-control">Jeśli <span class="block-text">my_turn == 0 and last_round_acted != global.round_number</span> wtedy</span><br>
+            <span class="block block-network block-indent">Zakończ turę (wymiana plików)</span><br>
+            <span class="block block-control block-indent">Ustaw zmienną <span class="block-text">last_round_acted</span> na <span class="block-text">global.round_number</span></span>
+        </div>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Co to robi:</strong> „pas” &mdash; przesłany bez niczego
+            przygotowanego, raz na rundę (<code>last_round_acted</code>
+            zatrzymuje uruchamianie tego co klatkę). Aktywny gracz zamiast
+            tego prześle coś prawdziwego, z poniższej obsługi kliknięcia.
+        </div>
+    </div>
+
+    <h2>Przepisz obsługę kliknięcia</h2>
+    <div class="step">
+        <p>Zabezpiecz każde z dziewięciu sprawdzeń kliknięcia z Etapu 1
+        warunkiem <code>my_turn == 1</code> i zastąp lokalny blok
+        <strong>Ustaw zmienną</strong> prawdziwym zapisem sieciowym + przesłaniem.
+        Pole (0,0), w pełni rozpisane:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Mysz: Lewy przycisk wciśnięty</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">cell_0_0 == "" and my_turn == 1 and mouse_x &gt;= 170 and mouse_x &lt; 270 and mouse_y &gt;= 90 and mouse_y &lt; 190</span> wtedy</span><br>
+            <span class="block block-network block-indent2">Ustaw zmienną współdzieloną (wymiana plików)
+            nazwa:<span class="block-text">cell_0_0</span>
+            wartość:<span class="block-text">my_mark</span></span><br>
+            <span class="block block-network block-indent2">Zakończ turę (wymiana plików)</span>
+        </div>
+        <p style="margin-top: 8px; font-style: italic;">Ten sam kształt dla
+        pozostałych ośmiu &mdash; te same prostokąty co w tabeli z Etapu 1,
+        każdy zapisujący własną literalną nazwę pola.</p>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Co to robi:</strong> aktywny gracz zapisuje swój
+            znak do zmiennej współdzielonej tego pola pod jej literalną nazwą
+            (parametr <strong>Nazwa</strong> jest tu zawsze zwykłą wpisaną
+            nazwą, nigdy wyrażeniem obliczanym), a następnie <strong>Zakończ
+            turę (wymiana plików)</strong> przesyła to.
+        </div>
+    </div>
+
+    <h2>Rysuj z opublikowanej planszy, nie z lokalnego przypuszczenia</h2>
+    <div class="step">
+        <p>Zastąp sprawdzenie rysowania z Etapu 1 dla każdego pola &mdash;
+        odczytuj wersję <em>współdzieloną</em> zamiast lokalnej. Zmienna
+        współdzielona, której nikt jeszcze nie ustawił, odczytuje się jako
+        liczba <code>0</code>, nie pusty ciąg. Pole (0,0):</p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-control block-indent">Jeśli <span class="block-text">global.cell_0_0 != 0</span> wtedy</span><br>
+            <span class="block block-draw block-indent2">Rysuj tekst <span class="block-text">global.cell_0_0</span> na x:<span class="block-num">205</span> y:<span class="block-num">115</span></span>
+        </div>
+        <p style="font-style: italic;">Ten sam kształt dla pozostałych ośmiu,
+        te same pozycje co w Etapie 1.</p>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Co to robi:</strong> zmienna ustawiona za pomocą
+            <strong>Ustaw zmienną współdzieloną (wymiana plików)</strong> jest
+            odczytywalna <em>wszędzie</em>, na każdej maszynie, jako
+            <code>global.&lt;nazwa&gt;</code> &mdash; nie potrzeba dodatkowej
+            akcji, aby ją pobrać, dopóki nazwa jest literalna, jak tu
+            <code>cell_0_0</code> (nazwa budowana w czasie działania, jak
+            jedna wyprowadzona z pozycji, wymagałaby zamiast tego
+            <strong>Odczytaj zmienną współdzieloną (wymiana plików)</strong>,
+            ponieważ pole <strong>Nazwa</strong> tej akcji akceptuje
+            wyrażenie). Działa to dopiero, gdy host rzeczywiście opublikował
+            rundę, nie od razu po kliknięciu.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj prawdziwe tury!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5 na obu komputerach, hostuj i dołącz jak w Etapie 2!</strong></p>
+        <ul>
+            <li>Kliknąć pole może tylko gracz, którego jest tura</li>
+            <li>Znak pojawia się na <strong>obu</strong> ekranach po rozstrzygnięciu
+            rundy &mdash; nie natychmiast nawet na twoim własnym ekranie</li>
+            <li>Tury zmieniają się automatycznie: X, potem O, potem X&hellip;</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby sprawdzić zwycięzcę i pozwolić obu graczom zagrać ponownie.
+    </div>
+</body>
+</html>
