@@ -8060,5 +8060,21 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 Qualquer ação delas será ignorada, e o projeto pode parecer ou se comportar incorretamente. Atualize o PyGameMaker ou adicione a(s) pasta(s) de extensão ausente(s) para restaurá-las.</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>Substituir o projeto?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Já existe um projeto em:
+{0}
+
+Substituí-lo por este projeto?</translation>
+    </message>
 </context>
 </TS>

@@ -8606,5 +8606,21 @@ Zwiększa to wyeksportowany plik o około 15-20 MB. Wymaga teraz jednorazowego d
         <source>Clean Project</source>
         <translation>Wyczyść projekt</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>Zastąpić projekt?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Projekt już istnieje w:
+{0}
+
+Zastąpić go tym projektem?</translation>
+    </message>
 </context>
 </TS>

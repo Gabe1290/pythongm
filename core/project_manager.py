@@ -89,6 +89,57 @@ def _safe_asset_path(base_dir: Path, name: str, suffix: str = '.json') -> Option
     return candidate
 
 
+def _project_folder_name(project_name: str) -> str:
+    """A folder name for ``project_name`` that FAT/exFAT/Windows accept.
+
+    Save As often targets a USB stick, so the characters those filesystems
+    reject (< > : " / \\ | ? * and control chars) become '_', and trailing
+    dots/spaces are trimmed. Falls back to "project" for an empty result.
+    """
+    import re
+    cleaned = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', str(project_name)).strip(' .')
+    return cleaned or "project"
+
+
+def _has_entries(folder: Path) -> bool:
+    try:
+        return any(folder.iterdir())
+    except OSError:
+        return False
+
+
+def resolve_save_as_target(chosen: Path, project_name: str,
+                           current_path: Optional[Path] = None) -> tuple:
+    """Decide which folder "Save Project As" writes into.
+
+    Returns ``(target, replaces_existing)``. The folder picker only lets the
+    user choose a folder, and Save As used to write the project's files
+    straight into it. Students choosing the USB stick itself therefore spread
+    the project over the stick's root, where a second project overwrote the
+    first one's project.json and sprites/ (classroom report, 2026-10-07).
+
+    * the current project folder, or an empty folder: save right there;
+    * a folder that already holds a project (has project.json): that project
+      is replaced -- the caller must confirm;
+    * any other non-empty folder: save into ``<chosen>/<project name>/``,
+      which needs confirming only if it already exists and isn't empty.
+    """
+    chosen = Path(chosen)
+    current = Path(current_path).resolve() if current_path else None
+
+    if current is not None and chosen.resolve() == current:
+        return chosen, False
+    if not chosen.exists() or not _has_entries(chosen):
+        return chosen, False
+    if (chosen / ProjectManager.PROJECT_FILE).exists():
+        return chosen, True
+
+    target = chosen / _project_folder_name(project_name)
+    if current is not None and target.resolve() == current:
+        return target, False
+    return target, target.exists() and _has_entries(target)
+
+
 class ProjectManager(QObject):
     """
     Manages PyGameMaker projects - creation, loading, saving, and metadata

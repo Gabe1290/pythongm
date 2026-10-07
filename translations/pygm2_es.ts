@@ -7699,6 +7699,22 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 Cualquier acción de ellas se omitirá y el proyecto puede verse o comportarse mal. Actualice PyGameMaker o añada la(s) carpeta(s) de extensión que falta(n) para restaurarlas.</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>¿Reemplazar el proyecto?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Ya existe un proyecto en:
+{0}
+
+¿Reemplazarlo por este proyecto?</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>

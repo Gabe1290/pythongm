@@ -2593,6 +2593,22 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 Vsa dejanja iz njih bodo preskočena in projekt se lahko prikazuje ali obnaša napačno. Posodobite PyGameMaker ali dodajte manjkajočo mapo/mape razširitve, da jih obnovite.</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>Zamenjam projekt?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Projekt že obstaja v:
+{0}
+
+Ga zamenjam s tem projektom?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

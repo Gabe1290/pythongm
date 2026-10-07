@@ -2457,6 +2457,22 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 Будь-які дії з них будуть пропущені, і проєкт може виглядати або поводитися неправильно. Оновіть PyGameMaker або додайте відсутню папку(и) розширення, щоб відновити їх.</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>Замінити проєкт?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Проєкт уже існує в:
+{0}
+
+Замінити його цим проєктом?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

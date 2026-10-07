@@ -8060,5 +8060,21 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 其中的所有动作都将被跳过，项目可能显示或运行异常。请更新PyGameMaker或添加缺失的扩展文件夹以恢复它们。</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>替换项目？</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>以下位置已存在项目：
+{0}
+
+是否用此项目替换它？</translation>
+    </message>
 </context>
 </TS>
