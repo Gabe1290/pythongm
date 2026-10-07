@@ -2616,6 +2616,38 @@ Sostituirlo con questo progetto?</translation>
         <translation>Impossibile esportare il gioco come HTML5:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>Nessun progetto trovato</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>Nessun progetto trovato in:
+{0}
+
+Scegli la cartella del tuo progetto, o la cartella che la contiene.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>Scegli un progetto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>Sono stati trovati diversi progetti in:
+{0}
+
+Quale vuoi aprire?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

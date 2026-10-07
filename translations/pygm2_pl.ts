@@ -8629,5 +8629,37 @@ Zastąpić go tym projektem?</translation>
         <translation>Nie udało się wyeksportować gry jako HTML5:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>Nie znaleziono projektu</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>Nie znaleziono projektu w:
+{0}
+
+Wybierz folder swojego projektu albo folder, który go zawiera.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>Wybierz projekt</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>Znaleziono kilka projektów w:
+{0}
+
+Który chcesz otworzyć?</translation>
+    </message>
 </context>
 </TS>

@@ -69,30 +69,46 @@ class ProjectActionsMixin:
                 QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to create project"))
 
     def open_project(self):
-        file_path, _ = QFileDialog.getOpenFileName(
+        """Open a project by choosing its FOLDER.
+
+        Students didn't understand that they had to find and pick
+        project.json inside the project, so the dialog picks a folder. The
+        folder itself is opened if it is a project; otherwise the projects
+        directly inside it are offered (e.g. the USB stick holding several
+        projects). Zip projects have their own "Open Zip Project..." entry.
+        """
+        from core.project_manager import find_projects_in_folder
+
+        directory = QFileDialog.getExistingDirectory(
             self, self.tr("Open Project"),
-            Config.get("last_project_directory", str(Path.home())),
-            self.tr("Project Files (project.json);;Zip Files (*.zip);;All Files (*)")
+            Config.get("last_project_directory", str(Path.home()))
         )
+        if not directory:
+            return
 
-        if file_path:
-            file_path = Path(file_path)
+        folder = Path(directory)
+        projects = find_projects_in_folder(folder)
+        if not projects:
+            QMessageBox.information(
+                self, self.tr("No Project Found"),
+                self.tr("No project was found in:\n{0}\n\n"
+                        "Choose your project's folder, or the folder "
+                        "that contains it.").format(folder))
+            return
 
-            # Check if it's a .zip file
-            if file_path.suffix == '.zip':
-                from utils.project_compression import ProjectCompressor
-                if ProjectCompressor.is_project_zip(file_path):
-                    if self.project_manager.load_project_from_zip(file_path):
-                        Config.set("last_project_directory", str(file_path.parent))
-                        self.add_to_recent_projects(str(file_path))
-                    else:
-                        QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project from zip"))
-                else:
-                    QMessageBox.warning(self, self.tr("Invalid Zip"),
-                                    self.tr("This zip file does not contain a valid PyGameMaker project"))
-            else:
-                # Regular folder project
-                self.load_project(file_path.parent)
+        if len(projects) == 1:
+            self.load_project(projects[0])
+            return
+
+        from PySide6.QtWidgets import QInputDialog
+        names = [p.name for p in projects]
+        name, ok = QInputDialog.getItem(
+            self, self.tr("Choose a Project"),
+            self.tr("Several projects were found in:\n{0}\n\n"
+                    "Which one do you want to open?").format(folder),
+            names, 0, False)
+        if ok and name in names:
+            self.load_project(projects[names.index(name)])
 
     def open_recent_project(self, project_path):
         self.load_project(Path(project_path))

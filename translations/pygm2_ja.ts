@@ -8083,5 +8083,37 @@ Replace it with this project?</source>
         <translation>ゲームを HTML5 としてエクスポートできませんでした:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>プロジェクトが見つかりません</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>次の場所にプロジェクトが見つかりませんでした:
+{0}
+
+プロジェクトのフォルダー、またはそれを含むフォルダーを選んでください。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>プロジェクトを選択</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>次の場所に複数のプロジェクトが見つかりました:
+{0}
+
+どれを開きますか？</translation>
+    </message>
 </context>
 </TS>

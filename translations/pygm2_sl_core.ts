@@ -2616,6 +2616,38 @@ Ga zamenjam s tem projektom?</translation>
         <translation>Igre ni bilo mogoče izvoziti kot HTML5:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>Projekta ni mogoče najti</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>V tej mapi ni bilo mogoče najti projekta:
+{0}
+
+Izberite mapo svojega projekta ali mapo, ki jo vsebuje.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>Izberite projekt</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>V tej mapi je bilo najdenih več projektov:
+{0}
+
+Katerega želite odpreti?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

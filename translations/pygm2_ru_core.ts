@@ -2616,6 +2616,38 @@ Replace it with this project?</source>
         <translation>Не удалось экспортировать игру в HTML5:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>Проект не найден</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>Проект не найден в:
+{0}
+
+Выберите папку вашего проекта или папку, которая её содержит.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>Выбор проекта</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>Найдено несколько проектов в:
+{0}
+
+Какой из них открыть?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>
