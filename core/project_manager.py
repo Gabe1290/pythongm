@@ -625,9 +625,19 @@ class ProjectManager(QObject):
             return None
 
         # Sibling temp dir (same filesystem as the project, never inside it so
-        # the save loop and the samples guard don't see it).
-        backup_dir = Path(tempfile.mkdtemp(prefix=f".{save_path.name}.bak-",
-                                           dir=str(save_path.parent)))
+        # the save loop and the samples guard don't see it). When the sibling
+        # location isn't writable, fall back to the system temp dir: a project
+        # saved to the ROOT of a USB stick has /media/<user>/ as its parent,
+        # which is root-owned, and failing the snapshot there cancelled every
+        # save of that project (classroom report, 2026-10-07).
+        prefix = f".{save_path.name}.bak-"
+        try:
+            backup_dir = Path(tempfile.mkdtemp(prefix=prefix,
+                                               dir=str(save_path.parent)))
+        except OSError as e:
+            logger.debug(f"Sibling snapshot dir unavailable ({e}); "
+                         "using the system temp dir")
+            backup_dir = Path(tempfile.mkdtemp(prefix=prefix))
         try:
             for name in present:
                 src = save_path / name
