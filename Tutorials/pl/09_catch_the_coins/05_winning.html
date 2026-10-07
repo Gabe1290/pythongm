@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 4: Wygranie gry</h1>
+
+    <p>Obecnie gracz może przegrać, ale nie ma sposobu, by <em>wygrać</em>. Naprawimy to,
+    sprawdzając po każdym kroku: <strong>„Czy zostały jakieś monety?”</strong> &mdash;
+    jeśli nie, przechodzimy do zupełnie nowej sali zwycięstwa.</p>
+
+    <h2>Zbuduj salę zwycięstwa</h2>
+
+    <h2>Utwórz sprite zwycięstwa (opcjonalnie)</h2>
+    <div class="step">
+        <p>Jeśli chcesz świąteczny wygląd, utwórz sprite o nazwie <code>spr_win_text</code>.
+        Ten krok jest opcjonalny &mdash; tekst narysowany w następnym kroku działa bez sprite'a.</p>
+    </div>
+
+    <h2>Utwórz obiekt tekstu zwycięstwa</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_win_text</code></li>
+            <li>Otwórz zakładkę <strong>Blockly</strong> i dodaj te dwa zdarzenia:</li>
+        </ol>
+
+        <p style="margin-top: 8px;"><strong>Pokaż wiadomość zwycięstwa:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-draw block-indent">Rysuj tekst <span class="block-text">WYGRAŁEŚ!</span> na x:<span class="block-num">412</span> y:<span class="block-num">320</span></span><br>
+            <span class="block block-draw block-indent">Rysuj tekst <span class="block-text">Naciśnij SPACJĘ, aby zagrać ponownie</span> na x:<span class="block-num">340</span> y:<span class="block-num">400</span></span>
+        </div>
+
+        <p style="margin-top: 8px;"><strong>Restart po spacji:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Klawisz wciśnięty: Spacja</span><br>
+            <span class="block block-game block-indent">Uruchom grę ponownie</span>
+        </div>
+    </div>
+
+    <h2>Utwórz salę zwycięstwa</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Sale</strong> &rarr; <strong>Utwórz nową salę</strong></li>
+            <li>Nazwij ją <code>room_win</code></li>
+            <li>Ustaw kolor tła na świąteczny kolor (jasnozielony lub złoty)</li>
+            <li>Umieść jedną instancję <code>obj_win_text</code> w dowolnym miejscu sali (jej rysowanie odbywa się na stałych współrzędnych)</li>
+        </ol>
+    </div>
+
+    <h2>Sprawdzenie zwycięstwa</h2>
+    <p>Teraz najważniejsza część: co krok gracz sprawdza, czy zostały jakieś monety.
+    Gdy liczba osiągnie zero, przechodzimy do sali zwycięstwa.</p>
+
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>obj_player</code></li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Dodaj to zdarzenie <strong>Przy każdym kroku</strong>:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Przy każdym kroku</span><br>
+            <span class="block block-control block-indent">Jeśli liczba <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> wtedy</span><br>
+            <span class="block block-room block-indent2">Przejdź do poziomu <span class="block-text">room_win</span></span>
+        </div>
+
+        <div class="info" style="margin-top: 10px;">
+            <strong>Co to robi:</strong> Blok <strong>Jeśli liczba</strong> patrzy na salę
+            i liczy, ile instancji <code>obj_coin</code> wciąż żyje. Gdy złapiesz
+            je wszystkie, liczba wynosi zero, porównanie <code>== 0</code> jest prawdziwe, i
+            akcja <strong>Przejdź do poziomu</strong> się wykonuje.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją pełną grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Złap każdą monetę &rarr; pojawia się ekran <strong>WYGRAŁEŚ!</strong></li>
+            <li>Dotknij wroga &rarr; pojawia się ekran <strong>GAME OVER</strong></li>
+            <li>Naciśnij <strong>SPACJĘ</strong> na dowolnym zakończeniu, aby zagrać ponownie</li>
+        </ul>
+    </div>
+
+    <h2>Zbudowałeś kompletną grę!</h2>
+    <p>Gratulacje &mdash; to pełna pętla gry z:</p>
+    <ul>
+        <li>Wejściem gracza (ruch klawiaturą)</li>
+        <li>Dwoma rodzajami kolizji (dobra i zła)</li>
+        <li>Wynikiem, którego wzrost gracz może obserwować</li>
+        <li>Jasnym stanem wygranej i przegranej</li>
+        <li>Sposobem na restart i ponowną próbę</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Wypróbuj dalej:</strong> dodaj więcej monet, umieść drugiego wroga albo zmień
+        prędkości monety i wroga w ich zdarzeniach <strong>Gdy utworzony</strong>.
+        Każda zmiana to tylko liczba, którą możesz edytować i testować.
+    </div>
+</body>
+</html>
