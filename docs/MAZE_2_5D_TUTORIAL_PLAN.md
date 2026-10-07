@@ -1,7 +1,9 @@
 # "Make it 2.5D" bonus page for Tutorial 6 (Maze) — plan
 
 Written 2026-10-07, revised 2026-10-07 (scope grew after a user discussion —
-see "Decisions settled" #3). Status: **plan only, nothing implemented yet.**
+see "Decisions settled" #3). Status: **implemented 2026-10-07, all units
+U1-U7 done.** Not published to the live wiki (needs explicit approval,
+per the standing rule) — `wiki/` here means the local staging copy only.
 
 ## The ask
 
@@ -226,20 +228,20 @@ new objects, no grid-size parameter (default `cell_size` 32 already matches
 
 ## Units of work (one commit each, session-sized)
 
-- [ ] U1 — Part A: 4 new sprite assets + EN page-2 content update (new
+- [x] U1 — Part A: 4 new sprite assets + EN page-2 content update (new
       step, reusing the 4 existing keyboard events) + handout vocabulary.
-- [ ] U2 — Part A: FR translation of the same.
-- [ ] U3 — Part B: EN bonus page content + `index.json` entry + page-4
+- [x] U2 — Part A: FR translation of the same.
+- [x] U3 — Part B: EN bonus page content + `index.json` entry + page-4
       cross-link.
-- [ ] U4 — Part B: FR translation of the same.
-- [ ] U5 — `tools/tutorial_reference_projects.py`: Part A folded into the
+- [x] U4 — Part B: FR translation of the same.
+- [x] U5 — `tools/tutorial_reference_projects.py`: Part A folded into the
       existing `player_and_maze` phase; new `bonus_2_5d` phase 4 + its truth
       test.
-- [ ] U6 — `docs/handouts/06_maze/{student,teacher}.{en,fr}.md` updates
+- [x] U6 — `docs/handouts/06_maze/{student,teacher}.{en,fr}.md` updates
       (vocabulary, page count, bonus section, teacher "If Time Allows"
       note); regenerate `wiki/` locally (**not** published without explicit
       approval, per the standing publishing rule).
-- [ ] U7 — guard tests (Part A per-key sprite test; tutorial-panel renders
+- [x] U7 — guard tests (Part A per-key sprite test; tutorial-panel renders
       page 2 + page 5 for en/fr; facing-angle-per-key; raycast-renders-
       through-the-converted-maze smoke test).
 

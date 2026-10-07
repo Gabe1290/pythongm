@@ -6,11 +6,11 @@
 
 ---
 
-Document d'accompagnement du tutoriel intégré (**Aide > Tutoriels > Labyrinthe : Trouvez la Sortie**, 4 pages) et de la fiche élève et de la feuille d'exercices correspondantes. Les élèves doivent avoir terminé le Tutoriel 2 (événements, actions, collisions, score).
+Document d'accompagnement du tutoriel intégré (**Aide > Tutoriels > Labyrinthe : Trouvez la Sortie**, 5 pages : 4 de base + 1 bonus facultatif) et de la fiche élève et de la feuille d'exercices correspondantes. Les élèves doivent avoir terminé le Tutoriel 2 (événements, actions, collisions, score).
 
 ## Vue d'ensemble
 
-Les élèves construisent un jeu de labyrinthe en trois phases : un joueur et des murs, des pièces et une sortie, et un affichage du score. Notions nouvelles : le **mouvement fluide avec des touches maintenues**, les **murs solides**, les **objets à ramasser**, une **sortie qui recommence la salle**, et la **conception de niveau**.
+Les élèves construisent un jeu de labyrinthe en trois phases : un joueur et des murs, des pièces et une sortie, et un affichage du score. Notions nouvelles : le **mouvement fluide avec des touches maintenues**, la **direction regardée** (une image de joueur différente par direction), les **murs solides**, les **objets à ramasser**, une **sortie qui recommence la salle**, et la **conception de niveau**. Une 5ᵉ page facultative réutilise ensuite la direction regardée pour transformer le labyrinthe terminé en jeu 2.5D à la première personne (voir « S'il reste du temps » ci-dessous) — elle ne fait pas partie de la leçon principale ni de sa durée.
 
 > **Info:** Le plan du labyrinthe est la partie créative. Demandez aux élèves de le dessiner d'abord sur papier quadrillé (le tutoriel propose un exemple de 20×15) et de vérifier qu'il peut être résolu avant de le construire.
 
@@ -35,6 +35,7 @@ Pour une séance de 45 minutes, donnez le plan des murs sur papier, ou faites im
 **Phase 1 : joueur et labyrinthe**
 
 - Cinq événements sur le joueur : quatre flèches maintenues plus **Aucune touche** avec *Arrêter le mouvement*. Sans **Aucune touche**, le joueur ne s'arrête jamais.
+- **Direction regardée** (4 nouveaux sprites + un bloc *Définir le sprite* ajouté à chacun des 4 mêmes événements de touches fléchées) : purement esthétique pour le jeu de base, mais c'est exactement le principe que la page bonus facultative réutilisera plus tard pour l'angle de la caméra raycast — vaut la peine d'être présenté ainsi même si votre classe ne fait jamais la page bonus.
 - `obj_wall` **doit être Solide** et le joueur a besoin de **En collision avec obj_wall** avec *Arrêter le mouvement*. Les deux sont nécessaires.
 - **Tout placer sur la grille.** Activez **Aligner sur la grille** 32×32. Le joueur avance de 4 pixels par pas ; si le joueur ou un mur est ne serait-ce que de quelques pixels hors de la grille, le joueur se coince à l'entrée des couloirs d'une case (un joueur placé 8 pixels à côté ne peut pas du tout descendre un couloir). « Coincé dans les couloirs » signifie presque toujours un placement hors grille ; supprimez et replacez avec l'alignement.
 - Chaque couloir doit faire au moins une case de large, et le labyrinthe doit être résoluble. Le labyrinthe d'exemple du tutoriel fait 20×15 et est résoluble ; le projet de référence l'utilise.
@@ -58,6 +59,7 @@ Pour une séance de 45 minutes, donnez le plan des murs sur papier, ou faites im
 | Terme | Ce que cela signifie ici |
 |---|---|
 | Touche maintenue | Un événement actif tant que la touche est enfoncée |
+| Direction regardée | Le sens vers lequel un personnage est tourné ; détermine quel sprite s'affiche (et plus tard, l'angle de la caméra raycast) |
 | Solide | Objets qui bloquent les autres (les murs) |
 | Objet à ramasser | Un objet détruit quand le joueur le touche |
 | Recommencer la salle | Relancer le niveau depuis le début |
@@ -75,6 +77,10 @@ Pour une séance de 45 minutes, donnez le plan des murs sur papier, ou faites im
 
 - **Soutien :** donnez le projet de la phase 1 et laissez les élèves construire leur labyrinthe par-dessus ; importez les sprites d'exemple.
 - **Approfondissement :** plus de niveaux avec **Aller à la salle suivante** ; un compte à rebours ; des ennemis qui patrouillent ; des clés et des portes.
+
+## S'il reste du temps
+
+La page 5 est un **bonus facultatif**, qui ne fait pas partie de la leçon principale ni de la durée indiquée plus haut : elle transforme le même labyrinthe terminé en jeu 2.5D à la première personne (façon Doom/Wolfenstein), en réutilisant la direction regardée pour la caméra au lieu d'un sprite. Cinq nouvelles actions au total — un bloc *Activer la vue Raycast* dans l'événement **Création** du joueur, et un bloc *Définir l'angle de vue* ajouté à chacun des 4 mêmes événements de touches fléchées (0/180/90/270 pour droite/gauche/haut/bas). Les murs n'ont besoin d'aucune modification (l'événement *En collision avec obj_wall* de la Phase 1 les rend déjà solides pour le joueur, même à la première personne), et ils sont automatiquement texturés avec le sprite `spr_wall` de chaque mur — aucune texture de mur à définir. L'extension **2.5D Raycast View** doit être cochée dans **Fichier > Paramètres du projet... > Extensions** au préalable si la catégorie *Vue 3D* n'apparaît pas déjà dans la boîte à outils. Pratique pour les élèves qui terminent en avance ; à ignorer complètement pour une séance de 45 à 60 minutes.
 
 ## Corrigé de la feuille d'exercices
 
