@@ -2593,6 +2593,22 @@ Any actions from them will be skipped, and the project may look or behave wrong.
 
 Alle Aktionen daraus werden übersprungen, und das Projekt sieht möglicherweise falsch aus oder verhält sich falsch. Aktualisieren Sie PyGameMaker oder fügen Sie den/die fehlenden Erweiterungsordner hinzu, um sie wiederherzustellen.</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>Projekt ersetzen?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Hier existiert bereits ein Projekt:
+{0}
+
+Durch dieses Projekt ersetzen?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

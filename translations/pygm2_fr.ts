@@ -8365,6 +8365,22 @@ Ajoute environ 15 à 20 Mo au fichier exporté. Nécessite une connexion Interne
         <source>Clean Project</source>
         <translation>Nettoyer le projet</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>Replace Project?</source>
+        <translation>Remplacer le projet ?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="1"/>
+        <source>A project already exists in:
+{0}
+
+Replace it with this project?</source>
+        <translation>Un projet existe déjà dans :
+{0}
+
+Le remplacer par ce projet ?</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>

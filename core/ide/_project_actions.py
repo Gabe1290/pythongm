@@ -272,7 +272,23 @@ class ProjectActionsMixin:
             )
 
             if directory:
-                project_path = Path(directory)
+                # Picking a non-empty folder (typically the USB stick itself)
+                # saves into a project-named subfolder instead of spreading
+                # the files over it; replacing an existing project asks first.
+                from core.project_manager import resolve_save_as_target
+                project_name = (self.current_project_data.get('name')
+                                or (self.current_project_path.name
+                                    if self.current_project_path else "project"))
+                project_path, replaces = resolve_save_as_target(
+                    Path(directory), project_name, self.current_project_path)
+                if replaces:
+                    reply = QMessageBox.question(
+                        self, self.tr("Replace Project?"),
+                        self.tr("A project already exists in:\n{0}\n\n"
+                                "Replace it with this project?").format(project_path),
+                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                    if reply != QMessageBox.Yes:
+                        return False
                 if self.project_manager.save_project_as(project_path):
                     self.update_status(self.tr("Project saved"))
                     return True
