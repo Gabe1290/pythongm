@@ -4348,4 +4348,380 @@ Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
 Przykład: x &gt; 100 &amp;&amp; y &lt; 200</translation>
     </message>
 </context>
+<context>
+    <name>EnhancedPropertiesPanel</name>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="97"/>
+        <source>Asset Information</source>
+        <translation>Informacje o zasobie</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="100"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="475"/>
+        <source>No asset selected</source>
+        <translation>Nie wybrano zasobu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="104"/>
+        <source>Name:</source>
+        <translation>Nazwa:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="105"/>
+        <source>Type:</source>
+        <translation>Typ:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="106"/>
+        <source>Status:</source>
+        <translation>Stan:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="111"/>
+        <source>Properties</source>
+        <translation>Właściwości</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="118"/>
+        <source>Preview</source>
+        <translation>Podgląd</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="121"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="485"/>
+        <source>No preview available</source>
+        <translation>Brak dostępnego podglądu</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="193"/>
+        <source>Room (Editor)</source>
+        <translation>Sala (Edytor)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="194"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="688"/>
+        <source>Active</source>
+        <translation>Aktywny</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="714"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="771"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="835"/>
+        <source>None</source>
+        <translation>Brak</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="266"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="537"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="553"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="556"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="583"/>
+        <source>Width:</source>
+        <translation>Szerokość:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="267"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="538"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="554"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="557"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="584"/>
+        <source>Height:</source>
+        <translation>Wysokość:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="539"/>
+        <source>Background:</source>
+        <translation>Tło:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="270"/>
+        <source>Enable Views:</source>
+        <translation>Włącz widoki:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="268"/>
+        <source>Background Color:</source>
+        <translation>Kolor tła:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="276"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="541"/>
+        <source>Instances:</source>
+        <translation>Instancje:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="330"/>
+        <source>Choose Background Color</source>
+        <translation>Wybierz kolor tła</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="388"/>
+        <source>Room Preview
+{0}x{1}
+{2} instances</source>
+        <translation>Podgląd sali
+{0}x{1}
+{2} instancji</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="391"/>
+        <source>Preview
+Generation Failed</source>
+        <translation>Podgląd
+Generowanie nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="393"/>
+        <source>Preview
+Not Available</source>
+        <translation>Podgląd
+Niedostępny</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="397"/>
+        <source>Preview
+Update Error</source>
+        <translation>Podgląd
+Błąd aktualizacji</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="525"/>
+        <source>Loaded</source>
+        <translation>Wczytano</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="445"/>
+        <source>Room: {0}
+{1} x {2}</source>
+        <translation>Sala: {0}
+{1} x {2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="81"/>
+        <source>No project loaded.
+
+Open or create a project, then select an asset from the tree on the left to view its details here.</source>
+        <translation>Nie wczytano projektu.
+
+Otwórz lub utwórz projekt, a następnie wybierz zasób z drzewa po lewej, aby zobaczyć tutaj jego szczegóły.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="235"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="260"/>
+        <source>Configure...</source>
+        <translation>Konfiguruj...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
+        <source>Backgrounds:</source>
+        <translation>Tła:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="408"/>
+        <source>Room: {0}
+{1} x {2}
+{3} instances</source>
+        <translation>Sala: {0}
+{1} x {2}
+{3} instancji</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="431"/>
+        <source>Room: {0}
+{1}x{2}
+{3} instances</source>
+        <translation>Sala: {0}
+{1}x{2}
+{3} instancji</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="440"/>
+        <source>Preview generation failed</source>
+        <translation>Generowanie podglądu nie powiodło się</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="559"/>
+        <source>Frames:</source>
+        <translation>Klatki:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="560"/>
+        <source>Origin X:</source>
+        <translation>Początek X:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="561"/>
+        <source>Origin Y:</source>
+        <translation>Początek Y:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="562"/>
+        <source>Speed:</source>
+        <translation>Szybkość:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="568"/>
+        <source>Horizontal Strip</source>
+        <translation>Pasek poziomy</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="569"/>
+        <source>Vertical Strip</source>
+        <translation>Pasek pionowy</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="570"/>
+        <source>Grid</source>
+        <translation>Siatka</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="571"/>
+        <source>Single Frame</source>
+        <translation>Pojedyncza klatka</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="573"/>
+        <source>Animation:</source>
+        <translation>Animacja:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="577"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="587"/>
+        <source>File:</source>
+        <translation>Plik:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="603"/>
+        <source>{0}: {1}</source>
+        <translation>{0}: {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="638"/>
+        <source>No image file path found for {0}</source>
+        <translation>Nie znaleziono ścieżki pliku obrazu dla {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="643"/>
+        <source>Image file not found:
+{0}</source>
+        <translation>Nie znaleziono pliku obrazu:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="651"/>
+        <source>Failed to load image:
+{0}</source>
+        <translation>Nie udało się wczytać obrazu:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="670"/>
+        <source>{0}
+{1}x{2}</source>
+        <translation>{0}
+{1}x{2}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="677"/>
+        <source>Error loading image:
+{0}</source>
+        <translation>Błąd podczas wczytywania obrazu:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="687"/>
+        <source>Object (Editor)</source>
+        <translation>Obiekt (Edytor)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="741"/>
+        <source>Sprite:</source>
+        <translation>Sprite:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="747"/>
+        <source>{0} x {1}</source>
+        <translation>{0} x {1}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="749"/>
+        <source>Sprite Size:</source>
+        <translation>Rozmiar sprite'a:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="751"/>
+        <source>Visible:</source>
+        <translation>Widoczny:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="752"/>
+        <source>Solid:</source>
+        <translation>Solidny:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="753"/>
+        <source>Persistent:</source>
+        <translation>Trwały:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="757"/>
+        <source>Events:</source>
+        <translation>Zdarzenia:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="874"/>
+        <source>Object: {0}
+Sprite: {1}
+Size: {2}x{3}
+Events: {4}</source>
+        <translation>Obiekt: {0}
+Sprite: {1}
+Rozmiar: {2}x{3}
+Zdarzenia: {4}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="889"/>
+        <source>Object: {0}</source>
+        <translation>Obiekt: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="891"/>
+        <source>Sprite: {0}</source>
+        <translation>Sprite: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="893"/>
+        <source>No sprite assigned</source>
+        <translation>Nie przypisano sprite'a</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="894"/>
+        <source>Events: {0}</source>
+        <translation>Zdarzenia: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="898"/>
+        <source>Visible</source>
+        <translation>Widoczny</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="900"/>
+        <source>Solid</source>
+        <translation>Solidny</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="858"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="861"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="864"/>
+        <source>Yes</source>
+        <translation>Tak</translation>
+    </message>
+    <message>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="858"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="861"/>
+        <location filename="../../../../../home/edu-thulleng/pythongm/widgets/enhanced_properties_panel.py" line="864"/>
+        <source>No</source>
+        <translation>Nie</translation>
+    </message>
+</context>
 </TS>
