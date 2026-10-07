@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Paletki i odbijająca się piłka</h1>
+
+    <p>Utwórzmy wszystko, czego potrzeba do grywalnej gry Pong!</p>
+
+    <!-- ============= SPRITES ============= -->
+    <h2>Utwórz sprite'y</h2>
+    <div class="step">
+        <p>Utwórz te 3 sprite'y (narysuj je lub zaimportuj obrazy):</p>
+        <table>
+            <tr><th>Sprite</th><th>Rozmiar</th><th>Opis</th></tr>
+            <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Mały biały okrąg</td></tr>
+            <tr><td><code>spr_paddle</code></td><td>16&times;64</td><td>Wysoki wąski prostokąt</td></tr>
+            <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Szary blok</td></tr>
+        </table>
+    </div>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Utwórz obiekty</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz <code>obj_wall</code> &mdash; sprite: <code>spr_wall</code>, zaznacz <strong>Solidny</strong></li>
+            <li>Utwórz <code>obj_paddle_left</code> &mdash; sprite: <code>spr_paddle</code>, zaznacz <strong>Solidny</strong></li>
+            <li>Utwórz <code>obj_paddle_right</code> &mdash; sprite: <code>spr_paddle</code>, zaznacz <strong>Solidny</strong></li>
+            <li>Utwórz <code>obj_ball</code> &mdash; sprite: <code>spr_ball</code>, zostaw Solidny <strong>odznaczone</strong></li>
+        </ol>
+    </div>
+
+    <!-- ============= LEFT PADDLE ============= -->
+    <h2>Zaprogramuj lewą paletkę (Gracz 1: W/S)</h2>
+    <div class="step">
+        <p>Kliknij dwukrotnie <code>obj_paddle_left</code> &rarr; zakładka <strong>Blockly</strong>.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: W (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">-8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: S (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Brak klawisza</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_wall</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span>
+        </div>
+    </div>
+
+    <!-- ============= RIGHT PADDLE ============= -->
+    <h2>Zaprogramuj prawą paletkę (Gracz 2: Strzałki)</h2>
+    <div class="step">
+        <p>Kliknij dwukrotnie <code>obj_paddle_right</code> &rarr; zakładka <strong>Blockly</strong>. Ta sama struktura, ale inne klawisze:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w górę (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">-8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w dół (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">8</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Brak klawisza</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_wall</span><br>
+            <span class="block block-move block-indent">Zatrzymaj ruch</span>
+        </div>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Zaprogramuj piłkę</h2>
+    <div class="step">
+        <p>Kliknij dwukrotnie <code>obj_ball</code> &rarr; zakładka <strong>Blockly</strong>.</p>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-move block-indent">Przesuń w kierunku <span class="block-num">45</span> z prędkością <span class="block-num">6</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_wall</span><br>
+            <span class="block block-move block-indent">Odbij się od stałych obiektów</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_paddle_left</span><br>
+            <span class="block block-move block-indent">Odbij się od stałych obiektów</span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy kolizja z obj_paddle_right</span><br>
+            <span class="block block-move block-indent">Odbij się od stałych obiektów</span>
+        </div>
+    </div>
+
+    <!-- ============= ROOM ============= -->
+    <h2>Utwórz salę</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nową salę o nazwie <code>room_pong</code> (640&times;480)</li>
+            <li>Umieść <code>obj_wall</code> wzdłuż <strong>górnej i dolnej</strong> krawędzi</li>
+            <li>Umieść <code>obj_paddle_left</code> blisko lewej krawędzi, wyśrodkowaną pionowo</li>
+            <li>Umieść <code>obj_paddle_right</code> blisko prawej krawędzi, wyśrodkowaną pionowo</li>
+            <li>Umieść <code>obj_ball</code> na środku sali</li>
+        </ol>
+    </div>
+
+    <pre>
++--[WALL WALL WALL WALL WALL WALL]--+
+|                                     |
+|  [P1]                        [P2]  |
+|  [  ]         (o)            [  ]  |
+|  [  ]                        [  ]  |
+|                                     |
++--[WALL WALL WALL WALL WALL WALL]--+</pre>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li><strong>Gracz 1:</strong> W (góra) i S (dół)</li>
+            <li><strong>Gracz 2:</strong> Strzałka w górę i strzałka w dół</li>
+            <li>Piłka odbija się od ścian i paletek</li>
+            <li>Piłka wylatuje po bokach &mdash; bramki dodamy w następnym kroku!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać bramki i punktację.
+    </div>
+</body>
+</html>
