@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Cele i kontroler gry</h1>
+
+    <p>Dokończmy grę, dodając miejsca docelowe, informację zwrotną i kontroler z instrukcjami!</p>
+
+    <h2>Utwórz sprite'y celu i poprawnej skrzyni</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite: <code>spr_target</code> (32&times;32 piksele)</li>
+            <li>Narysuj czerwony lub żółty X, romb albo okrąg, aby oznaczyć miejsce docelowe</li>
+            <li>Albo zaimportuj z <code>Tutorials/05_sokoban/assets/</code></li>
+            <li>Naciśnij <strong>Ctrl+S</strong>, aby zapisać</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite: <code>spr_crate_ok</code> (32&times;32 piksele)</li>
+            <li>Narysuj zieloną wersję swojej skrzyni &mdash; pokazuje ona poprawnie ustawioną skrzynię</li>
+            <li>Naciśnij <strong>Ctrl+S</strong>, aby zapisać</li>
+        </ol>
+    </div>
+
+    <h2>Utwórz obiekt celu</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_target</code>, ustaw sprite na <code>spr_target</code></li>
+            <li><strong>NIE</strong> zaznaczaj pola Solidny &mdash; gracz i skrzynie muszą móc przechodzić po celach</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Dlaczego nie solidny?</strong> Cele to oznaczenia na podłodze. Gracz po nich chodzi, a
+        skrzynie na nich spoczywają. Gdyby cele były solidne, nic nie mogłoby ich osiągnąć!
+    </div>
+
+    <h2>Zaprogramuj skrzynię: informacja zwrotna</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_crate</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Dodaj zdarzenie <strong>Przy każdym kroku</strong> ze sprawdzeniem jeśli/inaczej:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Przy każdym kroku</span><br>
+            <span class="block block-control block-indent">Jeśli w kolizji z <span class="block-val">obj_target</span></span><br>
+            <span class="block block-instance block-indent2">Ustaw sprite na <span class="block-val">spr_crate_ok</span></span><br>
+            <span class="block block-control block-indent">Inaczej</span><br>
+            <span class="block block-instance block-indent2">Ustaw sprite na <span class="block-val">spr_crate</span></span>
+        </div>
+        <p>Znajdź <strong>Przy każdym kroku</strong> w kategorii <em>Zdarzenia</em>.
+        Następnie znajdź <strong>Sprawdź kolizję</strong> w kategorii <em>Sterowanie</em> i wpisz <code>obj_target</code>.
+        Wsuń blok <strong>Ustaw sprite</strong> (z kategorii <em>Instancja</em>) wewnątrz dla przypadku „wtedy” z <code>spr_crate_ok</code>.
+        Dodaj sekcję <strong>Inaczej</strong> z kolejnym blokiem <strong>Ustaw sprite</strong> dla <code>spr_crate</code>.</p>
+    </div>
+
+    <div class="info">
+        <strong>Informacja zwrotna:</strong> Gdy skrzynia stoi na celu, zmienia kolor na zielony. Gdy zostanie z niego zepchnięta, wraca do normalnego koloru.
+        To pokazuje graczowi, które skrzynie są poprawnie ustawione!
+    </div>
+
+    <h2>Utwórz kontroler gry</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_controller</code></li>
+            <li>Sprite nie jest potrzebny dla tego obiektu</li>
+        </ol>
+    </div>
+
+    <h2>Zaprogramuj kontroler: rysuj instrukcje</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_controller</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Dodaj zdarzenie <strong>Gdy rysowanie</strong>, aby pokazać instrukcje:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-draw block-indent">Rysuj tekst <span class="block-val">„Pchaj skrzynie na cele!”</span> na <span class="block-val">10</span>, <span class="block-val">10</span></span>
+        </div>
+        <p>Znajdź <strong>Gdy rysowanie</strong> w kategorii <em>Zdarzenia</em>.
+        Następnie znajdź <strong>Rysuj tekst</strong> w kategorii <em>Rysowanie</em>.
+        Wpisz <code>Pchaj skrzynie na cele!</code> jako tekst i ustaw X na <strong>10</strong>, Y na <strong>10</strong>.</p>
+    </div>
+
+    <h2>Zaprogramuj kontroler: restart poziomu</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Klawisz wciśnięty: R</span><br>
+            <span class="block block-game block-indent">Uruchom poziom ponownie</span>
+        </div>
+        <p>Znajdź <strong>Klawisz wciśnięty</strong> w <em>Zdarzeniach</em> i wybierz <strong>R</strong>.
+        Następnie znajdź <strong>Uruchom poziom ponownie</strong> w kategorii <em>Poziom</em>.
+        Pozwala to graczowi zresetować łamigłówkę, gdy utknie!</p>
+    </div>
+
+    <div class="step">
+        <p>Powinieneś mieć <strong>2 bloki zdarzeń</strong> (Gdy rysowanie + Klawisz wciśnięty R).</p>
+    </div>
+
+    <h2>Zaktualizuj salę</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_sokoban</code></li>
+            <li>Umieść instancje <code>obj_target</code> tam, gdzie mają trafić skrzynie</li>
+            <li>Upewnij się, że <strong>liczba celów równa się liczbie skrzyń</strong></li>
+            <li>Umieść <code>obj_controller</code> w dowolnym miejscu sali (nie ma sprite'a, więc nie będzie widoczny)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Ważne:</strong> Liczba skrzyń MUSI równać się liczbie celów!
+        Jeśli masz 2 skrzynie, umieść dokładnie 2 cele.
+    </div>
+
+    <div class="highlight">
+        <strong>Umieść cele jako pierwsze!</strong> Gra rysuje obiekty w kolejności, w jakiej umieściłeś je w sali, więc
+        cel umieszczony <em>po</em> skrzyni lub graczu jest rysowany na wierzchu &mdash; skrzynia na celu wyglądałaby
+        na czerwoną zamiast zieloną, a gracz zdawałby się znikać na celu. Dlatego: umieść najpierw cele, a potem
+        <strong>usuń gracza i skrzynie i umieść je ponownie</strong> na wierzchu.
+    </div>
+
+    <h2>Przykładowy układ poziomu</h2>
+    <pre>
+W W W W W W W W W W
+W . . . . . . . . W
+W . P . . . C . . W
+W . . W W . . . . W
+W . . W T . . C . W
+W . . . . . W W . W
+W . T . . . . . . W
+W . . . . . . . . W
+W . . . . . . . . W
+W W W W W W W W W W
+
+W = Ściana   T = Cel
+P = Gracz    C = Skrzynia
+. = Puste</pre>
+
+    <div class="info">
+        <strong>Wskazówka:</strong> Zacznij od prostej łamigłówki! Upewnij się, że gracz rzeczywiście może ją rozwiązać,
+        myślowo śledząc drogę przed umieszczeniem obiektów.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Użyj <strong>klawiszy strzałek</strong>, aby chodzić i pchać skrzynie</li>
+            <li>Przepchnij każdą skrzynię na miejsce docelowe &mdash; zmienia kolor na <strong>zielony</strong>!</li>
+            <li>Gdy wszystkie skrzynie są zielone, rozwiązałeś łamigłówkę</li>
+            <li>Naciśnij <strong>R</strong>, aby zrestartować poziom, jeśli utkniesz</li>
+            <li>Instrukcje pojawiają się u góry ekranu</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="text-align: center;"><strong>Gratulacje!</strong> Twoja gra Sokoban jest gotowa!</p>
+    </div>
+
+    <h2>Pomysły na wyzwania</h2>
+    <div class="challenge">
+        <ul>
+            <li><strong>Trudniejsze poziomy:</strong> Utwórz nowe sale z większą liczbą skrzyń i ciaśniejszymi korytarzami</li>
+            <li><strong>Licznik ruchów:</strong> Dodaj zmienną zliczającą liczbę ruchów gracza</li>
+            <li><strong>Wiele sal:</strong> Utwórz kilka sal o rosnącej trudności i użyj <code>Przejdź do następnej sali</code>, gdy wszystkie skrzynie są ustawione</li>
+            <li><strong>Funkcja cofania:</strong> Zapamiętaj poprzednią pozycję i pozwól graczowi nacisnąć U, aby cofnąć ostatni ruch</li>
+        </ul>
+    </div>
+</body>
+</html>
