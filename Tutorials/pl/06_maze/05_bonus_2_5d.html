@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Bonus: Przejdź na 2.5D</h1>
+
+    <div class="info">
+        <strong>Ta strona jest opcjonalna.</strong> Twoja gra typu labirynt jest już
+        ukończona &mdash; to dodatek dla tych, którzy chcą spróbować czegoś nowego. Żadnego
+        nowego labiryntu, żadnej nowej grafiki dla samego labiryntu: zobaczysz
+        <em>dokładnie ten sam labirynt</em> od środka, w stylu Doom/Wolfenstein.
+    </div>
+
+    <p>Pamiętasz Etap 1, gdzie twój gracz pokazywał inny obrazek dla każdego
+    kierunku ruchu? To był <strong>kierunek patrzenia</strong>. Kamera pierwszoosobowa
+    potrzebuje dokładnie tej samej idei &mdash; w którą stronę jest skierowana &mdash; tyle że
+    zamiast wybierać obrazek, używa tego kierunku, aby zdecydować, co narysować.
+    Znasz już ten wzorzec; zaraz go ponownie wykorzystasz.</p>
+
+    <h2>Włącz widok 2.5D</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-view block-indent">Włącz widok Raycast &mdash; Field of View <span class="block-num">66</span> Cell Size <span class="block-num">32</span> Render Distance <span class="block-num">20</span></span>
+        </div>
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_player</code>, aby otworzyć Edytor obiektów, i kliknij zakładkę <strong>Blockly</strong></li>
+            <li>Dodaj nowe zdarzenie <strong>Gdy utworzony</strong> (z kategorii <em>Zdarzenia</em>)</li>
+            <li>Znajdź <strong>Włącz widok Raycast</strong> w kategorii <em>Widok 3D</em> i wsuń do środka</li>
+            <li>Ustaw <em>Cell Size</em> (rozmiar pola) na <code>32</code> &mdash; musi pasować do siatki, na której zbudowany jest twój labirynt</li>
+            <li>Zostaw <em>Camera Object</em> (obiekt kamery) puste &mdash; oznacza to „ten, kto wykonuje tę akcję”, czyli gracza</li>
+        </ol>
+        <div class="info">
+            Nazwy parametrów pozostają w języku angielskim w IDE, podobnie jak
+            <em>Cell Size</em> i <em>Render Distance</em> (odległość renderowania)
+            powyżej. Nie widzisz <em>Widoku 3D</em> w palecie? Otwórz
+            <strong>Plik &rarr; Ustawienia projektu... &rarr;
+            Rozszerzenia</strong> i zaznacz <strong>2.5D Raycast
+            View</strong> (nazwa rozszerzenia też pozostaje w angielskim).
+        </div>
+    </div>
+
+    <h2>Spraw, by kamera patrzyła w tę samą stronę co twój sprite</h2>
+    <div class="step">
+        <p>Wróć do tych samych 4 zdarzeń strzałek z Etapu 1 i dodaj do każdego <strong>jeszcze jeden
+        blok</strong> &mdash; <strong>Ustaw kąt patrzenia</strong>
+        (z kategorii <em>Widok 3D</em>), używając tego samego znaczenia kąta co na
+        kompasie: 0 = prawo, 90 = góra, 180 = lewo, 270 = dół.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w prawo (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Ustaw sprite na <span class="block-str">spr_player_right</span></span><br>
+            <span class="block block-view block-indent">Ustaw kąt patrzenia <span class="block-num">0</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w lewo (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość horyzontalną na <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Ustaw sprite na <span class="block-str">spr_player_left</span></span><br>
+            <span class="block block-view block-indent">Ustaw kąt patrzenia <span class="block-num">180</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w górę (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">-4</span></span><br>
+            <span class="block block-instance block-indent">Ustaw sprite na <span class="block-str">spr_player_up</span></span><br>
+            <span class="block block-view block-indent">Ustaw kąt patrzenia <span class="block-num">90</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Klawiatura: Strzałka w dół (przytrzymany)</span><br>
+            <span class="block block-move block-indent">Ustaw prędkość wertykalną na <span class="block-num">4</span></span><br>
+            <span class="block block-instance block-indent">Ustaw sprite na <span class="block-str">spr_player_down</span></span><br>
+            <span class="block block-view block-indent">Ustaw kąt patrzenia <span class="block-num">270</span></span>
+        </div>
+
+        <div class="highlight">
+            <strong>Dlaczego nie użyć po prostu sprite'a?</strong> <code>Ustaw sprite</code>
+            wybiera obrazek; <code>Ustaw kąt patrzenia</code> wybiera liczbę (kąt).
+            Kamera potrzebuje tej liczby, aby obliczyć, co rzeczywiście byś widział
+            &mdash; ściany, korytarze, wszystko &mdash; z tego kierunku.
+        </div>
+    </div>
+
+    <h2>Ściany już są solidne dla gracza</h2>
+    <div class="info">
+        Nic tu nie trzeba dodawać! Twoje zdarzenie <strong>Gdy kolizja z obj_wall
+        &rarr; Zatrzymaj ruch</strong> z Etapu 1 już sprawia, że ściany blokują gracza
+        &mdash; działa to dokładnie tak samo, niezależnie od tego, czy sala jest rysowana
+        z góry, czy w pierwszej osobie.
+    </div>
+
+    <h2>Przetestuj swój labirynt 2.5D!</h2>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Sala pojawia się teraz w <strong>pierwszej osobie</strong> zamiast widoku z góry</li>
+            <li>Ściany są teksturowane twoim własnym obrazkiem <code>spr_wall</code> &mdash; nigdy nie ustawiałeś tekstury ściany, każda ściana po prostu automatycznie używa własnego sprite'a</li>
+            <li>Obrót dopasowuje się do trzymanej strzałki, dokładnie tak jak twój sprite w Etapie 1</li>
+            <li>Wpadasz na ściany zamiast przez nie przechodzić</li>
+            <li>Monety i wyjście nadal działają &mdash; unoszą się w powietrzu, zwrócone w twoją stronę, bez żadnych zmian</li>
+        </ul>
+    </div>
+
+    <h2>Jeśli coś wygląda nie tak</h2>
+    <table class="t"><tr><th>Co widzisz</th><th>Prawdopodobna przyczyna</th></tr>
+    <tr><td>Normalna sala widziana z góry, bez zmian</td><td>Brakuje zdarzenia <strong>Gdy utworzony</strong> z <strong>Włącz widok Raycast</strong>, albo <em>2.5D Raycast View</em> nie jest zaznaczona w Plik &rarr; Ustawienia projektu... &rarr; Rozszerzenia</td></tr>
+    <tr><td>Przechodzisz przez ściany</td><td><code>obj_wall</code> nie jest <strong>Solidny</strong>, albo zdarzenie <strong>Gdy kolizja z obj_wall</strong> z Etapu 1 zostało usunięte</td></tr>
+    <tr><td>Ściany wyglądają źle albo są w nich dziury</td><td>Blok ściany jest poza siatką 32 pikseli, albo <strong>Cell Size</strong> nie wynosi <code>32</code></td></tr>
+    <tr><td>Kamera nie obraca się, gdy się poruszasz</td><td>Brakuje bloku <strong>Ustaw kąt patrzenia</strong> w jednym z 4 zdarzeń strzałek, albo ma złą liczbę</td></tr>
+    <tr><td>Obrót wygląda odwrotnie (lewo pokazuje to, co powinno być po prawej)</td><td>Dwie wartości <strong>Ustaw kąt patrzenia</strong> zostały zamienione &mdash; sprawdź 0/90/180/270 względem powyższej tabeli</td></tr>
+    </table>
+
+    <h2>Chcesz więcej?</h2>
+    <div class="highlight">
+        Istnieją dwie kolejne akcje z kategorii Widok 3D, jeśli chcesz dalej
+        eksplorować samodzielnie: <strong>Narysuj minimapę</strong> (mała mapa
+        z góry w rogu ekranu) i <strong>Narysuj pasek DOOM</strong> (klasyczny
+        pasek stanu ze zdrowiem/wynikiem). Żadna z nich nie jest tu omówiona
+        &mdash; spróbuj wsunąć jedną do zdarzenia Gdy rysowanie swojego
+        <code>obj_game_controller</code> i zobacz, co się stanie!
+    </div>
+
+    <div class="info">
+        Właśnie zamieniłeś labirynt 2D widziany z góry w grę pierwszoosobową w stylu 3D,
+        używając dokładnie tej samej sali, dokładnie tych samych ścian i dokładnie tej
+        samej idei kierunku patrzenia z Etapu 1 &mdash; tyle że skierowanej na kamerę
+        zamiast na sprite'a.
+    </div>
+</body>
+</html>
