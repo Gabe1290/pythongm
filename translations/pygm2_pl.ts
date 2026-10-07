@@ -4073,4 +4073,279 @@ Niektóre zmiany mogą wymagać ponownego uruchomienia IDE, aby zaczęły obowi�
         <translation>Domyślnie działa tylko jedna instancja PyGameMaker IDE naraz, ponieważ dwie instancje zapisujące do tego samego folderu projektu uszkadzają go. Włącz tę opcję tylko wtedy, gdy w każdej instancji otwierasz inny projekt. Zaczyna obowiązywać przy następnym uruchomieniu IDE.</translation>
     </message>
 </context>
+<context>
+    <name>ConditionalActionEditor</name>
+    <message>
+        <location filename="../events/conditional_editor.py" line="27"/>
+        <source>Configure If Condition</source>
+        <translation>Konfiguruj warunek Jeśli</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="39"/>
+        <source>Condition</source>
+        <translation>Warunek</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="44"/>
+        <source>Condition Type:</source>
+        <translation>Typ warunku:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="47"/>
+        <source>instance_count</source>
+        <translation>liczba_instancji</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="48"/>
+        <source>variable_compare</source>
+        <translation>porównanie_zmiennej</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="49"/>
+        <source>position_check</source>
+        <translation>sprawdzenie_pozycji</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="50"/>
+        <source>collision_check</source>
+        <translation>sprawdzenie_kolizji</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="51"/>
+        <source>key_pressed</source>
+        <translation>klawisz_wciśnięty</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="52"/>
+        <source>mouse_check</source>
+        <translation>sprawdzenie_myszy</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="53"/>
+        <source>random_chance</source>
+        <translation>losowa_szansa</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="54"/>
+        <source>expression</source>
+        <translation>wyrażenie</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="101"/>
+        <source>Then Do (if condition is TRUE)</source>
+        <translation>Wtedy wykonaj (jeśli warunek jest PRAWDZIWY)</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="110"/>
+        <location filename="../events/conditional_editor.py" line="137"/>
+        <source>+ Add Action</source>
+        <translation>+ Dodaj akcję</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="114"/>
+        <location filename="../events/conditional_editor.py" line="141"/>
+        <source>Edit Action</source>
+        <translation>Edytuj akcję</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="118"/>
+        <location filename="../events/conditional_editor.py" line="145"/>
+        <source>- Remove</source>
+        <translation>- Usuń</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="128"/>
+        <source>Else Do (if condition is FALSE)</source>
+        <translation>W przeciwnym razie wykonaj (jeśli warunek jest FAŁSZYWY)</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="170"/>
+        <source>Object:</source>
+        <translation>Obiekt:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="187"/>
+        <source>Count is:</source>
+        <translation>Liczba wynosi:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="209"/>
+        <source>Variable:</source>
+        <translation>Zmienna:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="211"/>
+        <source>health, score, x, y, etc.</source>
+        <translation>zdrowie, wynik, x, y, itd.</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="217"/>
+        <location filename="../events/conditional_editor.py" line="253"/>
+        <location filename="../events/conditional_editor.py" line="319"/>
+        <source>Is:</source>
+        <translation>Jest:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="222"/>
+        <source>Value:</source>
+        <translation>Wartość:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="239"/>
+        <source>Check if:</source>
+        <translation>Sprawdź czy:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="242"/>
+        <source>x position</source>
+        <translation>pozycja x</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="243"/>
+        <source>y position</source>
+        <translation>pozycja y</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="244"/>
+        <source>in region</source>
+        <translation>w regionie</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="245"/>
+        <source>distance to object</source>
+        <translation>odległość do obiektu</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="275"/>
+        <source>Colliding with:</source>
+        <translation>W kolizji z:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="284"/>
+        <source>At offset X:</source>
+        <translation>Przy przesunięciu X:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="291"/>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="309"/>
+        <source>Key:</source>
+        <translation>Klawisz:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Space</source>
+        <translation>Spacja</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Enter</source>
+        <translation>Enter</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="312"/>
+        <source>Escape</source>
+        <translation>Escape</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Left Arrow</source>
+        <translation>Strzałka w lewo</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Right Arrow</source>
+        <translation>Strzałka w prawo</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Up Arrow</source>
+        <translation>Strzałka w górę</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="313"/>
+        <source>Down Arrow</source>
+        <translation>Strzałka w dół</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Shift</source>
+        <translation>Shift</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Control</source>
+        <translation>Ctrl</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="315"/>
+        <source>Alt</source>
+        <translation>Alt</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Pressed</source>
+        <translation>Wciśnięty</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Held</source>
+        <translation>Przytrzymany</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="321"/>
+        <source>Released</source>
+        <translation>Zwolniony</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="335"/>
+        <source>Mouse:</source>
+        <translation>Mysz:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="338"/>
+        <source>Left button pressed</source>
+        <translation>Lewy przycisk wciśnięty</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="339"/>
+        <source>Right button pressed</source>
+        <translation>Prawy przycisk wciśnięty</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="340"/>
+        <source>Middle button pressed</source>
+        <translation>Środkowy przycisk wciśnięty</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="341"/>
+        <source>Over object</source>
+        <translation>Nad obiektem</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="342"/>
+        <source>In region</source>
+        <translation>W regionie</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="357"/>
+        <source>Chance:</source>
+        <translation>Szansa:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="383"/>
+        <source>Custom GML Expression:</source>
+        <translation>Niestandardowe wyrażenie GML:</translation>
+    </message>
+    <message>
+        <location filename="../events/conditional_editor.py" line="387"/>
+        <source>Enter any GML expression that evaluates to true/false
+Example: x &gt; 100 &amp;&amp; y &lt; 200</source>
+        <translation>Wprowadź dowolne wyrażenie GML, które daje wartość prawda/fałsz
+Przykład: x &gt; 100 &amp;&amp; y &lt; 200</translation>
+    </message>
+</context>
 </TS>
