@@ -27,7 +27,7 @@ TRANS_DIR = REPO_ROOT / "translations"
 # PyGameMakerIDE both live in the "core" group, ObjectEventsPanel in
 # "editors"); es/fr/pt/ja/zh ship one monolithic file for everything.
 _SPLIT_LANGS = {"de", "it", "ru", "sl", "uk"}
-_ALL_LANGS = ["de", "es", "fr", "it", "pt", "ru", "sl", "uk", "ja", "zh"]
+_ALL_LANGS = ["de", "es", "fr", "it", "pt", "ru", "sl", "uk", "ja", "zh", "pl"]
 
 _CONTEXT_GROUP = {
     "PreferencesDialog": "core",
