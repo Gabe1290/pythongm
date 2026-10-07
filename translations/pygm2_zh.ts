@@ -8083,5 +8083,37 @@ Replace it with this project?</source>
         <translation>无法将游戏导出为 HTML5：
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>未找到项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>在以下位置未找到项目：
+{0}
+
+请选择你的项目文件夹，或包含它的文件夹。</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>选择项目</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>在以下位置找到多个项目：
+{0}
+
+要打开哪一个？</translation>
+    </message>
 </context>
 </TS>

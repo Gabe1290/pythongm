@@ -140,6 +140,28 @@ def resolve_save_as_target(chosen: Path, project_name: str,
     return target, target.exists() and _has_entries(target)
 
 
+def find_projects_in_folder(folder: Path) -> List[Path]:
+    """The project folders "Open Project..." should offer for ``folder``.
+
+    Students don't know that a project is "the folder with project.json in
+    it", so Open Project takes a folder rather than that file: the chosen
+    folder itself if it is a project, otherwise every project directly inside
+    it (one level down -- e.g. a USB stick holding several projects), sorted
+    by name. Hidden folders (.git, .Trash-1000, a project's .trash) are
+    skipped. Returns [] when there is no project to open.
+    """
+    folder = Path(folder)
+    if (folder / ProjectManager.PROJECT_FILE).is_file():
+        return [folder]
+    try:
+        children = [p for p in folder.iterdir()
+                    if p.is_dir() and not p.name.startswith('.')
+                    and (p / ProjectManager.PROJECT_FILE).is_file()]
+    except OSError:
+        return []
+    return sorted(children, key=lambda p: p.name.casefold())
+
+
 class ProjectManager(QObject):
     """
     Manages PyGameMaker projects - creation, loading, saving, and metadata

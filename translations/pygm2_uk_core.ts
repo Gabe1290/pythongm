@@ -2480,6 +2480,38 @@ Replace it with this project?</source>
         <translation>Не вдалося експортувати гру як HTML5:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>Проєкт не знайдено</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>Проєкт не знайдено в:
+{0}
+
+Виберіть папку вашого проєкту або папку, що її містить.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>Вибір проєкту</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>Знайдено кілька проєктів у:
+{0}
+
+Який із них відкрити?</translation>
+    </message>
 </context>
 <context>
     <name>WelcomeTab</name>

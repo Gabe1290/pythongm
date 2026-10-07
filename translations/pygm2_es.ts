@@ -7722,6 +7722,38 @@ Replace it with this project?</source>
         <translation>No se pudo exportar el juego como HTML5:
 {0}</translation>
     </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No Project Found</source>
+        <translation>No se encontró ningún proyecto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>No project was found in:
+{0}
+
+Choose your project&apos;s folder, or the folder that contains it.</source>
+        <translation>No se encontró ningún proyecto en:
+{0}
+
+Elija la carpeta de su proyecto, o la carpeta que la contiene.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Choose a Project</source>
+        <translation>Elegir un proyecto</translation>
+    </message>
+    <message>
+        <location filename="../core/ide/_project_actions.py" line="71"/>
+        <source>Several projects were found in:
+{0}
+
+Which one do you want to open?</source>
+        <translation>Se encontraron varios proyectos en:
+{0}
+
+¿Cuál desea abrir?</translation>
+    </message>
 </context>
 <context>
     <name>ResizeCanvasDialog</name>
