@@ -8,7 +8,7 @@
 
 ## How to Use This Handout
 
-This handout goes with the in-app tutorial **Help > Tutorials > Maze: Navigate to the Exit** (4 pages, about 20-25 minutes). Keep the tutorial open on one half of your screen. Tick each box when the step is done, and check the **You should see** line at the end of every phase. If something does not match, look at **Stuck?** before you call your teacher.
+This handout goes with the in-app tutorial **Help > Tutorials > Maze: Navigate to the Exit** (5 pages, 4 core + 1 optional bonus, about 20-25 minutes for the core game). Keep the tutorial open on one half of your screen. Tick each box when the step is done, and check the **You should see** line at the end of every phase. If something does not match, look at **Stuck?** before you call your teacher.
 
 ## What You Will Make
 
@@ -19,28 +19,38 @@ A maze game: you steer a character through corridors with the arrow keys, collec
 - [ ] **1.** Create two sprites (32×32): `spr_player` and `spr_wall`.
 - [ ] **2.** Create `obj_wall` (sprite `spr_wall`, **Solid** ticked) and `obj_player` (sprite `spr_player`, not solid).
 - [ ] **3.** In `obj_player` add five events: **Keyboard: Right Arrow (held)** with *Set horizontal speed to 4*; **Left Arrow (held)** with *-4*; **Down Arrow (held)** with *Set vertical speed to 4*; **Up Arrow (held)** with *-4*; and **Keyboard: No key** with *Stop movement*.
-- [ ] **4.** Add **Collision with obj_wall** with *Stop movement*.
-- [ ] **5.** Create `room_maze` (640×480) and turn on **Snap to Grid** 32×32. Place walls around the border and inside to make corridors, and place the player at the top left. Every corridor must be at least one tile wide.
+- [ ] **4.** Create four more sprites, `spr_player_up`/`_down`/`_left`/`_right`, and add a *Set sprite* block to each of the four arrow-key events from step 3 so the player's picture matches the direction it is moving.
+- [ ] **5.** Add **Collision with obj_wall** with *Stop movement*.
+- [ ] **6.** Create `room_maze` (640×480) and turn on **Snap to Grid** 32×32. Place walls around the border and inside to make corridors, and place the player at the top left. Every corridor must be at least one tile wide.
 
-> **Done:** **You should see:** press **F5**. The arrow keys move the player, it stops at walls, and it stops when you let go.
+> **Done:** **You should see:** press **F5**. The arrow keys move the player, its picture faces the direction you are moving, it stops at walls, and it stops when you let go.
 
 ## Phase 2: Coins and Exit
 
-- [ ] **6.** Create sprites `spr_coin` and `spr_exit` (32×32).
-- [ ] **7.** Create `obj_coin` and `obj_exit`, each with its sprite and **not** solid.
-- [ ] **8.** In `obj_coin`, add **Collision with obj_player**: *Add to score 10*, then *Destroy this instance*.
-- [ ] **9.** In `obj_exit`, add **Collision with obj_player**: *Show message* "You Win!", then *Restart room*.
-- [ ] **10.** In the room, scatter coins along the corridors and put the exit as far from the start as you can.
+- [ ] **7.** Create sprites `spr_coin` and `spr_exit` (32×32).
+- [ ] **8.** Create `obj_coin` and `obj_exit`, each with its sprite and **not** solid.
+- [ ] **9.** In `obj_coin`, add **Collision with obj_player**: *Add to score 10*, then *Destroy this instance*.
+- [ ] **10.** In `obj_exit`, add **Collision with obj_player**: *Show message* "You Win!", then *Restart room*.
+- [ ] **11.** In the room, scatter coins along the corridors and put the exit as far from the start as you can.
 
 > **Done:** **You should see:** press **F5**. Coins vanish when you touch them. Reaching the exit shows "You Win!" and the room starts again.
 
 ## Phase 3: Score Display
 
-- [ ] **11.** Create `obj_game_controller` (no sprite, not solid).
-- [ ] **12.** **Create** event: *Set score to 0*. **Draw** event: *Draw score at x 10, y 10*.
-- [ ] **13.** Place `obj_game_controller` anywhere in the room.
+- [ ] **12.** Create `obj_game_controller` (no sprite, not solid).
+- [ ] **13.** **Create** event: *Set score to 0*. **Draw** event: *Draw score at x 10, y 10*.
+- [ ] **14.** Place `obj_game_controller` anywhere in the room.
 
 > **Done:** **You should see:** "Score: 0" at the top left, going up by 10 for every coin. After "You Win!" the coins come back and the score is 0 again.
+
+## Phase 4: Make It 2.5D (optional bonus, page 5)
+
+Your game is finished after Phase 3 — this is only for students who want to try something extra. No new maze needed.
+
+- [ ] **B1.** In `obj_player`, add a **Create** event with *Enable Raycast View* (Cell Size 32).
+- [ ] **B2.** Add one *Set Facing Angle* block to each of the same four arrow-key events from step 3/4: Right = 0, Left = 180, Up = 90, Down = 270.
+
+> **Done:** **You should see:** press **F5**. The maze now looks first-person instead of top-down, textured with your own `spr_wall` picture, and turning follows whichever arrow you hold — exactly like your player's picture did in Phase 1.
 
 ## Stuck?
 
@@ -48,12 +58,15 @@ A maze game: you steer a character through corridors with the arrow keys, collec
 |---|---|---|
 | The player does not move | The events are on the wrong object, or the player is not in the room | Check the five events on `obj_player`; check the room |
 | The player slides forever | The **No key** event is missing | Add **Keyboard: No key** with *Stop movement* |
+| The player's picture never changes | A **Set sprite** block is missing from one of the four arrow-key events | Add it, matching the direction |
 | The player walks through walls | `obj_wall` is not Solid, or the player has no **Collision with obj_wall** | Tick **Solid**; add the event with *Stop movement* |
 | The player gets stuck in corridors | Walls or the player were not placed on the grid | Turn on **Snap to Grid** 32×32 and place them again |
 | Coins do nothing | The coin has no **Collision with obj_player** event | Add it to `obj_coin` |
 | The whole game freezes at the exit | *Show message* is waiting for a click | Click OK on the message |
 | No score on the screen | `obj_game_controller` is not in the room | Place it in the room |
 | The score does not go back to 0 after winning | *Set score to 0* is missing in the controller's **Create** | Add it |
+| (Bonus) The maze still looks top-down | *Enable Raycast View* is missing, or the 2.5D Raycast View extension is not checked in **File > Project Settings... > Extensions** | Add the Create event; check the extension |
+| (Bonus) The camera does not turn | A *Set Facing Angle* block is missing from one of the four arrow-key events | Add it, matching the table in step B2 |
 
 
 ## Challenges
@@ -71,6 +84,7 @@ A maze game: you steer a character through corridors with the arrow keys, collec
 | Exit | An object that ends or advances the level |
 | Snap to Grid | Placing objects exactly on a regular grid |
 | Level design | Planning the maze so it is fair and solvable |
+| Facing direction | Which way a character is pointing; used to pick a picture (Phase 1) or a camera angle (bonus) |
 
 
 ## Check Yourself

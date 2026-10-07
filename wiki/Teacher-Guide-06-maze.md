@@ -6,11 +6,11 @@
 
 ---
 
-Companion for the in-app tutorial (**Help > Tutorials > Maze: Navigate to the Exit**, 4 pages) and the matching student handout and worksheet. Students should have finished Tutorial 2 (events, actions, collisions, score).
+Companion for the in-app tutorial (**Help > Tutorials > Maze: Navigate to the Exit**, 5 pages: 4 core + 1 optional bonus) and the matching student handout and worksheet. Students should have finished Tutorial 2 (events, actions, collisions, score).
 
 ## Overview
 
-Students build a maze game in three phases: a player and walls, coins and an exit, and a score display. New ideas: **smooth movement with held keys**, **solid walls**, **collectibles**, an **exit that restarts the room**, and **level design**.
+Students build a maze game in three phases: a player and walls, coins and an exit, and a score display. New ideas: **smooth movement with held keys**, **facing direction** (a different player sprite per direction), **solid walls**, **collectibles**, an **exit that restarts the room**, and **level design**. An optional 5th page then reuses facing direction to turn the finished maze into a first-person 2.5D game (see "If Time Allows" below) — not part of the core lesson or its timing.
 
 > **Info:** The maze layout is the creative part. Ask students to draw the maze on grid paper first (the tutorial has a 20×15 example) and check it can be solved before building it.
 
@@ -35,6 +35,7 @@ For a 45-minute slot, give students the wall layout on paper, or import the samp
 **Phase 1: player and maze**
 
 - Five events on the player: four held arrows plus **No key** with *Stop movement*. Without **No key** the player never stops.
+- **Facing direction** (4 new sprites + a *Set Sprite* block added to each of the same 4 arrow-key events): purely cosmetic for the core game, but it is the exact pattern the optional bonus page reuses for the raycast camera's facing angle later — worth framing that way even if your class never does the bonus page.
 - `obj_wall` **must be Solid** and the player needs **Collision with obj_wall** with *Stop movement*. Both are needed.
 - **Place everything on the grid.** Turn on **Snap to Grid** 32×32. The player moves 4 pixels per step, so if the player or a wall is even a few pixels off the grid the player jams at the entrance of one-tile corridors (a player placed 8 pixels off cannot travel down a corridor at all). "Stuck in corridors" almost always means an off-grid placement; delete and place again with snapping.
 - Every corridor must be at least one tile wide, and the maze must be solvable. The tutorial's example maze is 20×15 and solvable; the reference project uses it.
@@ -58,6 +59,7 @@ For a 45-minute slot, give students the wall layout on paper, or import the samp
 | Term | What it means here |
 |---|---|
 | Held key | An event that is active for as long as the key is down |
+| Facing direction | Which way a character is pointing; drives which sprite shows (and later, the raycast camera's angle) |
 | Solid | Objects that block others (walls) |
 | Collectible | An object that is destroyed when the player touches it |
 | Restart room | Start the level again from the beginning |
@@ -75,6 +77,10 @@ For a 45-minute slot, give students the wall layout on paper, or import the samp
 
 - **Support:** give the Phase 1 checkpoint and let students build their own maze on top; import the sample sprites.
 - **Extension:** more levels with **Go to next room**; a timer; patrolling enemies; keys and doors.
+
+## If Time Allows
+
+Page 5 is an **optional bonus**, not part of the core lesson or its timing above: it turns the exact same finished maze into a first-person 2.5D game (Doom/Wolfenstein style), reusing facing direction for the camera instead of a sprite. Five new actions total — one *Enable Raycast View* in the player's **Create** event, and one *Set Facing Angle* added to each of the same 4 arrow-key events (0/180/90/270 for right/left/up/down). The walls need no changes (the *Collision with obj_wall* event from Phase 1 already makes them solid to the player in first person too), and they are textured automatically with each wall's own `spr_wall` sprite — no wall texture has to be set. The **2.5D Raycast View** extension must be checked in **File > Project Settings... > Extensions** first if the *3D View* category is not already showing in the toolbox. Good for students who finish early; skip it entirely for a 45-60 minute slot.
 
 ## Worksheet Answer Key
 
