@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Kontroler gry</h1>
+
+    <p>Gra działa, ale nie widać jeszcze wyniku na ekranie!
+    W tym ostatnim etapie utworzysz niewidzialny obiekt kontrolera gry,
+    który wyświetla wynik i resetuje go na początku gry.</p>
+
+    <div class="info">
+        <strong>Czym jest kontroler gry?</strong> To obiekt bez sprite'a, który zarządza
+        takimi rzeczami jak wyświetlanie wyniku. Ponieważ jest niewidzialny, nie będzie
+        przeszkadzał w grze &mdash; po prostu działa w tle.
+    </div>
+
+    <!-- ========== CREATE OBJECT ========== -->
+    <h2>Krok 1: Utwórz obiekt</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Obiekty</strong> &rarr; <strong>Utwórz nowy obiekt</strong></li>
+            <li>Nazwij go <code>obj_game_controller</code></li>
+            <li><strong>Sprite nie jest potrzebny</strong> &mdash; zostaw pole sprite'a puste</li>
+            <li>Zostaw „Solidny” odznaczone</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Krok 2: Zaprogramuj kontroler gry (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij dwukrotnie <code>obj_game_controller</code>, aby otworzyć Edytor obiektów</li>
+            <li>Kliknij zakładkę <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Zresetuj wynik na starcie</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy utworzony</span><br>
+            <span class="block block-score block-indent">Ustaw wynik na <span class="block-num">0</span></span>
+        </div>
+        <p>Z kategorii <em>Zdarzenia</em> przeciągnij blok <strong>Gdy utworzony</strong>.
+        Z kategorii <em>Wynik/Życia/Zdrowie</em> wsuń <strong>Ustaw wynik</strong> do środka i wpisz <strong>0</strong>.</p>
+        <p>To zapewnia, że wynik zaczyna się od zera za każdym razem, gdy sala się wczytuje.</p>
+    </div>
+
+    <h2>Wyświetl wynik na ekranie</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Gdy rysowanie</span><br>
+            <span class="block block-score block-indent">Wyświetl wynik na x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Z kategorii <em>Zdarzenia</em> przeciągnij blok <strong>Gdy rysowanie</strong>.
+        Z kategorii <em>Wynik/Życia/Zdrowie</em> wsuń <strong>Wyświetl wynik</strong> do środka.
+        Ustaw x na <strong>10</strong> i y na <strong>10</strong> (lewy górny róg).</p>
+    </div>
+
+    <h2>Zastosuj swoje bloki</h2>
+    <div class="step">
+        <ol>
+            <li>Powinieneś mieć <strong>2 bloki zdarzeń</strong> w swoim obszarze roboczym (Gdy utworzony i Gdy rysowanie)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Jak to działa:</strong> Zdarzenie Gdy utworzony wykonuje się raz, gdy obiekt pojawia się w sali,
+        ustawiając wynik na 0. Zdarzenie Gdy rysowanie wykonuje się co klatkę i wyświetla
+        „Wynik: X” w lewym górnym rogu. W miarę zbierania monet przez gracza
+        wynik aktualizuje się automatycznie!
+    </div>
+
+    <!-- ========== PLACE IN ROOM ========== -->
+    <h2>Krok 3: Umieść w sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_maze</code></li>
+            <li>Wybierz <code>obj_game_controller</code> i umieść go w dowolnym miejscu sali</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Nie zapomnij!</strong> Kontroler gry musi znajdować się w sali, aby wynik się wyświetlał.
+        Ponieważ nie ma sprite'a, nie zobaczysz go podczas gry,
+        ale nadal będzie działać.
+    </div>
+
+    <!-- ========== FINAL TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Wynik powinien wyświetlać się jako <strong>„Wynik: 0”</strong> w lewym górnym rogu</li>
+            <li>Zbieraj monety &mdash; wynik powinien zwiększać się o <strong>10</strong> za każdą monetę</li>
+            <li>Dotrzyj do wyjścia &mdash; pojawi się komunikat <strong>„Wygrałeś!”</strong></li>
+            <li>Po komunikacie sala uruchamia się ponownie, a wynik resetuje się do 0</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Gratulacje!</strong> Zbudowałeś kompletną grę typu labirynt!
+        </p>
+        <p>Twoja gra ma gracza poruszającego się po korytarzach, monety do zbierania,
+        wyświetlanie wyniku i wyjście zwycięstwa. Dobra robota!</p>
+    </div>
+
+    <!-- ========== CHALLENGES ========== -->
+    <h2>Pomysły na wyzwania</h2>
+    <div class="challenge">
+        <p>Chcesz ulepszyć swoją grę typu labirynt? Wypróbuj te wyzwania:</p>
+        <ul>
+            <li><strong>Wiele poziomów:</strong> Utwórz dodatkowe sale (<code>room_maze2</code>, <code>room_maze3</code>)
+            z trudniejszymi labiryntami. Zmień blok <strong>Uruchom salę ponownie</strong> przy wyjściu na <strong>Przejdź do następnego poziomu</strong>.</li>
+            <li><strong>Minutnik:</strong> Dodaj odliczanie czasu za pomocą zmiennej. Gdy czas się skończy, uruchom salę ponownie!</li>
+            <li><strong>Wrogowie:</strong> Utwórz patrolującego wroga, który porusza się tam i z powrotem.
+            Jeśli gracz zderzy się z wrogiem, uruchom salę ponownie.</li>
+            <li><strong>Klucze i drzwi:</strong> Dodaj obiekt klucza, który trzeba zebrać, zanim wyjście się otworzy.</li>
+            <li><strong>Przejdź na 2.5D:</strong> Chcesz zobaczyć swój labirynt od środka? Następna
+            strona to opcjonalny bonus, który zmienia go w pierwszoosobową
+            grę w stylu Doom &mdash; bez potrzeby nowego labiryntu.</li>
+        </ul>
+    </div>
+</body>
+</html>
