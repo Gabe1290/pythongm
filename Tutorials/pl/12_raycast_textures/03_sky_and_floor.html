@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table.t { border-collapse: collapse; margin: 8px 0; }
+        table.t td, table.t th { border: 1px solid #ccc; padding: 4px 10px; font-size: 11px; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-view { background-color: #16a085; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Etap 2: Niebo i podłoga</h1>
+    <h2>Narysuj niebo</h2>
+    <div class="step"><ol>
+        <li>Utwórz sprite o nazwie <code>spr_sky</code>, <strong>256&times;64</strong> piksele &mdash; szeroki i niski, jak pasek wycięty z panoramy</li>
+        <li>Wypełnij go błękitem nieba i dodaj kilka białych chmur, słońce albo góry wzdłuż dolnej krawędzi. Zapisz go.</li></ol>
+        <div class="info" style="margin-top: 8px;"><strong>Jak zachowuje się niebo:</strong> <em>przesuwa się w bok, gdy się obracasz</em> &mdash; jeden pełny obrót o 360&deg; przesuwa cały pasek dokładnie raz &mdash;
+        ale nie staje się większe ani mniejsze, gdy chodzisz. Dokładnie tak zachowuje się daleki horyzont, i tak klasyczne gry go udawały.</div></div>
+    <h2>Narysuj kafelek podłogi</h2>
+    <div class="step"><ol>
+        <li>Utwórz sprite o nazwie <code>spr_floor</code>, <strong>32&times;32</strong> piksele &mdash; rozmiar jednego pola siatki</li>
+        <li>Zrób szachownicę, kamienne płyty albo deski. Zapisz go.</li></ol>
+        <p style="font-style: italic;">Kafelek podłogi powtarza się raz na pole siatki i wyrównuje się z dołem ścian, więc podłoga nigdy nie wygląda, jakby się ślizgała.</p></div>
+    <h2>Włącz oba</h2>
+    <div class="step"><div class="blockly-group"><span class="block block-event">Gdy utworzony</span><br>
+        <span class="block block-view block-indent">Włącz widok Raycast &mdash; &hellip; Wall Texture <span class="block-text">spr_wall_texture</span> Sky Texture <span class="block-text">spr_sky</span> Floor Texture <span class="block-text">spr_floor</span></span><br>
+        </div></div>
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj to!</h1>
+    <div class="success"><p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5!</strong></p>
+    <ul><li>Obróć się w miejscu: niebo przesuwa się, podczas gdy ściany stoją nieruchomo</li>
+        <li>Spójrz w dół na podłogę: kafelki maleją w stronę horyzontu i schodzą się ze ścianami idealnie</li></ul></div>
+    <div class="highlight"><strong>Brak nieba? Użyj sufitu.</strong> Jeśli zostawisz <strong>Sky Texture</strong> puste, możesz zamiast tego ustawić <strong>Ceiling Texture</strong>:
+    jest rzutowana na sufit tak samo, jak podłoga jest rzutowana na ziemię &mdash; dobre dla sal wewnętrznych. Niebo, gdy jest ustawione, zawsze wygrywa.</div>
+    <div class="info">Kliknij „Dalej”, aby dostroić wygląd.</div>
+</body>
+</html>
