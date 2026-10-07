@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Etap 3: Więcej rzędów cegieł</h1>
+
+    <p>Dodajmy jeszcze trzy rzędy kolorowych cegieł! Dzięki obiektowi nadrzędnemu
+    nie musimy w ogóle zmieniać kodu piłki &mdash; każdy nowy kolor cegły
+    automatycznie dziedziczy zachowanie przy kolizji.</p>
+
+    <!-- ============= SPRITES ============= -->
+    <h2>Utwórz nowe sprite'y cegieł</h2>
+    <p>Utwórz trzy nowe sprite'y. Dla każdego narysuj jednolity prostokąt albo zaimportuj przykładowy obraz:</p>
+
+    <div class="step">
+        <table>
+            <tr><th>Sprite</th><th>Rozmiar</th><th>Kolor</th><th>Plik przykładowy</th></tr>
+            <tr><td><code>spr_brick_orange</code></td><td>32&times;16</td><td>Pomarańczowy</td><td><code>spr_brick_orange.png</code></td></tr>
+            <tr><td><code>spr_brick_yellow</code></td><td>32&times;16</td><td>Żółty</td><td><code>spr_brick_yellow.png</code></td></tr>
+            <tr><td><code>spr_brick_green</code></td><td>32&times;16</td><td>Zielony</td><td><code>spr_brick_green.png</code></td></tr>
+        </table>
+
+        <h3>Opcja A &mdash; Narysuj je sam</h3>
+        <div class="option-box">
+            <p>Dla każdego sprite'a otwórz Edytor sprite'ów i narysuj jednolity prostokąt
+            w pasującym kolorze. Rozmiar: <strong>32&times;16 pikseli</strong>.</p>
+        </div>
+
+        <h3>Opcja B &mdash; Wczytaj przykładowe sprite'y</h3>
+        <div class="option-box">
+            <p>Dla każdego sprite'a kliknij prawym przyciskiem &rarr; <strong>Importuj obraz...</strong> i wybierz
+            pasujący plik z <code>Tutorials/04_breakout/assets/</code>.</p>
+        </div>
+    </div>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Utwórz nowe obiekty cegieł</h2>
+    <p>Każda cegła korzysta z tego samego rodzica, więc kod kolizji piłki działa dla nich wszystkich.</p>
+
+    <div class="step">
+        <p>Dla każdego nowego koloru cegły:</p>
+        <ol>
+            <li>Utwórz obiekt o nazwie i sprite'cie z poniższej tabeli</li>
+            <li>Ustaw <strong>Rodzica</strong> na <code>obj_brick_parent</code></li>
+            <li>Zaznacz <strong>Solidny</strong></li>
+        </ol>
+        <table>
+            <tr><th>Obiekt</th><th>Sprite</th><th>Rodzic</th></tr>
+            <tr><td><code>obj_brick_orange</code></td><td><code>spr_brick_orange</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_yellow</code></td><td><code>spr_brick_yellow</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_green</code></td><td><code>spr_brick_green</code></td><td><code>obj_brick_parent</code></td></tr>
+        </table>
+    </div>
+
+    <div class="highlight">
+        <strong>Nie potrzeba programowania!</strong> Ponieważ wszystkie cegły dzielą tego samego rodzica
+        (<code>obj_brick_parent</code>), piłka już wie, jak się od nich odbić
+        i je zniszczyć. Na tym polega siła obiektów nadrzędnych!
+    </div>
+
+    <!-- ============= UPDATE ROOM ============= -->
+    <h2>Dodaj rzędy cegieł do sali</h2>
+    <div class="step">
+        <ol>
+            <li>Otwórz <code>room_breakout</code></li>
+            <li>Ułóż cegły w 4 rzędach blisko góry sali:</li>
+        </ol>
+    </div>
+
+    <pre>
+S T T T T T T T T T T T T T T T T T T S
+S                                     S
+S   [R][R][R][R][R][R][R][R][R][R]    S
+S   [O][O][O][O][O][O][O][O][O][O]    S
+S   [Y][Y][Y][Y][Y][Y][Y][Y][Y][Y]    S
+S   [G][G][G][G][G][G][G][G][G][G]    S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D D
+
+R = Czerwony   O = Pomarańczowy   Y = Żółty   G = Zielony</pre>
+
+    <div class="step">
+        <ul>
+            <li><strong>Górny rząd:</strong> Czerwone cegły (<code>obj_brick_red</code>)</li>
+            <li><strong>Drugi rząd:</strong> Pomarańczowe cegły (<code>obj_brick_orange</code>)</li>
+            <li><strong>Trzeci rząd:</strong> Żółte cegły (<code>obj_brick_yellow</code>)</li>
+            <li><strong>Czwarty rząd:</strong> Zielone cegły (<code>obj_brick_green</code>)</li>
+        </ul>
+        <p>Użyj <strong>Przyciągania do siatki</strong> (32&times;16) dla łatwego wyrównania.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Wskazówka:</strong> Zachowaj spójny rozmiar cegieł (32&times;16), aby ładnie układały się w rzędach!
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Wszystkie cztery kolory cegieł powinny znikać przy trafieniu piłką</li>
+            <li>Każda cegła daje 10 punktów</li>
+            <li>Spróbuj wyczyścić wszystkie rzędy!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Wyzwanie:</strong> W tej chwili wszystkie cegły dają 10 punktów. W klasycznym Breakout
+        górne rzędy są warte więcej, bo trudniej je trafić. Moglibyśmy przypisać różne wartości
+        punktów każdemu kolorowi &mdash; ale najpierw dodajmy właściwy kontroler gry
+        do zarządzania życiami i wyświetlania wyniku!
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać kontroler gry.
+    </div>
+</body>
+</html>

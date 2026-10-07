@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Utwórz salę &mdash; zagrajmy!</h1>
+
+    <p>Czas zbudować salę i przetestować grę! Umieścimy ściany wokół krawędzi,
+    strefę śmierci na dole, paletkę i piłkę.</p>
+
+    <h2>Utwórz salę</h2>
+    <div class="step">
+        <ol>
+            <li>Kliknij prawym przyciskiem na <strong>Sale</strong> i wybierz <strong>Utwórz nową salę</strong></li>
+            <li>Nazwij ją <code>room_breakout</code></li>
+            <li>Ustaw rozmiar na <strong>640&times;480</strong> pikseli</li>
+        </ol>
+    </div>
+
+    <h2>Układ sali</h2>
+    <pre>
+S T T T T T T T T T T T T T T T T T T S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D D
+
+S = Boczna ściana (obj_wall_side)
+T = Górna ściana (obj_wall_top)
+D = Strefa śmierci (obj_death_zone, niewidzialna)
+(o) = Piłka</pre>
+
+    <h2>Umieść obiekty</h2>
+
+    <h3>1. Boczne ściany</h3>
+    <div class="step">
+        <p>Umieść <code>obj_wall_side</code> wzdłuż <strong>lewej i prawej</strong> krawędzi,
+        od góry do dołu. Ustaw je jedna na drugiej, tworząc solidne kolumny.</p>
+    </div>
+
+    <h3>2. Górna ściana</h3>
+    <div class="step">
+        <p>Umieść <code>obj_wall_top</code> wzdłuż <strong>górnej</strong> krawędzi,
+        pomiędzy bocznymi ścianami.</p>
+    </div>
+
+    <h3>3. Strefa śmierci</h3>
+    <div class="step">
+        <p>Umieść <code>obj_death_zone</code> wzdłuż <strong>dolnej</strong> krawędzi.
+        Będzie niewidzialna podczas gry &mdash; wyłapuje piłkę, gdy spadnie.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Ważne:</strong> Na dole NIE MA ściany! Otwarty dół to miejsce, skąd
+        piłka może uciec. Niewidzialna strefa śmierci wykrywa, kiedy to się dzieje.
+    </div>
+
+    <h3>4. Paletka</h3>
+    <div class="step">
+        <p>Umieść <code>obj_paddle</code> blisko dołu sali, wyśrodkowaną poziomo.</p>
+    </div>
+
+    <h3>5. Piłka</h3>
+    <div class="step">
+        <p>Umieść <code>obj_ball</code> tuż nad paletką, blisko środka sali.</p>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Przetestuj swoją grę!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Naciśnij F5, aby zagrać!</strong></p>
+        <ul>
+            <li>Użyj klawiszy <strong>strzałek w lewo</strong> i <strong>w prawo</strong>, aby poruszać paletką</li>
+            <li>Piłka powinna odbijać się od ścian i paletki</li>
+            <li>Gdy piłka minie paletkę i spadnie, odradza się na środku</li>
+        </ul>
+        <p>Jeśli coś nie działa, wróć i sprawdź swoje bloki Blockly.
+        Twoje zmiany są zapisywane automatycznie podczas edycji, więc bloki paletki i piłki są już aktywne.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Dobra robota!</strong> Masz już grywalną grę z odbijającą się piłką.
+        Teraz uczyńmy ją ciekawszą, dodając cegły do zniszczenia!
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby dodać pierwszy rząd cegieł.
+    </div>
+</body>
+</html>

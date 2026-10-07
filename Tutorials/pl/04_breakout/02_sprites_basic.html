@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Etap 1: Utwórz sprite'y</h1>
+
+    <p>Zaczniemy tylko od tego, co potrzebne do gry z odbijającą się piłką &mdash; jeszcze bez cegieł!
+    Dla każdego sprite'a możesz go <strong>narysować sam</strong> albo <strong>wczytać przykładowy obraz</strong>.</p>
+
+    <table>
+        <tr><th>Sprite</th><th>Rozmiar</th><th>Opis</th></tr>
+        <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Mały żółty okrąg</td></tr>
+        <tr><td><code>spr_paddle</code></td><td>64&times;16</td><td>Szeroki niebieski prostokąt</td></tr>
+        <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Szary wzór cegły</td></tr>
+        <tr><td><code>spr_death_zone</code></td><td>32&times;32</td><td>Ciemny prostokąt (niewidzialny w grze)</td></tr>
+    </table>
+
+    <!-- ================================================== -->
+    <h2>spr_ball (16&times;16)</h2>
+    <div class="step">
+        <ol>
+            <li>W drzewie zasobów kliknij prawym przyciskiem na <strong>Sprite'y</strong> i wybierz <strong>Utwórz nowy sprite</strong></li>
+            <li>Nazwij go <code>spr_ball</code></li>
+        </ol>
+
+        <h3>Opcja A &mdash; Narysuj go sam</h3>
+        <div class="option-box">
+            <ol>
+                <li>Kliknij dwukrotnie <code>spr_ball</code>, aby otworzyć Edytor sprite'ów</li>
+                <li>Narysuj mały okrąg w jaskrawym kolorze, np. <strong>żółtym</strong> lub białym</li>
+                <li>Zachowaj rozmiar <strong>16&times;16 pikseli</strong></li>
+                <li>Zapisz swoją pracę skrótem <strong>Ctrl+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opcja B &mdash; Wczytaj przykładowy sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Kliknij prawym przyciskiem na <code>spr_ball</code> w drzewie zasobów</li>
+                <li>Wybierz <strong>Importuj obraz...</strong></li>
+                <li>Przejdź do <code>Tutorials/04_breakout/assets/</code> wewnątrz folderu PyGameMaker</li>
+                <li>Wybierz <code>spr_ball.png</code> i kliknij Otwórz</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_paddle (64&times;16)</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite o nazwie <code>spr_paddle</code></li>
+        </ol>
+
+        <h3>Opcja A &mdash; Narysuj go sam</h3>
+        <div class="option-box">
+            <ol>
+                <li>Otwórz Edytor sprite'ów i narysuj szeroki, płaski prostokąt</li>
+                <li>Użyj jaskrawego koloru, np. <strong>niebieskiego</strong></li>
+                <li>Rozmiar: <strong>64&times;16 pikseli</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opcja B &mdash; Wczytaj przykładowy sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Kliknij prawym przyciskiem na <code>spr_paddle</code> &rarr; <strong>Importuj obraz...</strong></li>
+                <li>Wybierz <code>Tutorials/04_breakout/assets/spr_paddle.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_wall (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite o nazwie <code>spr_wall</code></li>
+        </ol>
+
+        <h3>Opcja A &mdash; Narysuj go sam</h3>
+        <div class="option-box">
+            <ol>
+                <li>Narysuj wzór cegły lub kamienia, używając <strong>szarych</strong> kolorów</li>
+                <li>Rozmiar: <strong>32&times;32 piksele</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opcja B &mdash; Wczytaj przykładowy sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Kliknij prawym przyciskiem na <code>spr_wall</code> &rarr; <strong>Importuj obraz...</strong></li>
+                <li>Wybierz <code>Tutorials/04_breakout/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <h2>spr_death_zone (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Utwórz nowy sprite o nazwie <code>spr_death_zone</code></li>
+        </ol>
+
+        <h3>Opcja A &mdash; Narysuj go sam</h3>
+        <div class="option-box">
+            <ol>
+                <li>Narysuj jednolity prostokąt w dowolnym kolorze (np. ciemnoczerwonym)</li>
+                <li>Rozmiar: <strong>32&times;32 piksele</strong></li>
+            </ol>
+        </div>
+
+        <h3>Opcja B &mdash; Wczytaj przykładowy sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Kliknij prawym przyciskiem na <code>spr_death_zone</code> &rarr; <strong>Importuj obraz...</strong></li>
+                <li>Wybierz <code>Tutorials/04_breakout/assets/spr_death_zone.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="info">
+        <strong>Warto wiedzieć:</strong> Funkcja <strong>Importuj obraz</strong> pozwala wczytać dowolny plik PNG, GIF
+        lub BMP jako sprite. Jest to przydatne, gdy masz grafikę stworzoną w zewnętrznym programie
+        albo przykładowe zasoby dołączone do tutoriala.
+    </div>
+
+    <div class="highlight">
+        <strong>To wszystko na razie!</strong> Potrzebujemy tylko 4 sprite'ów, aby zacząć.
+        Sprite'y cegieł dodamy później, gdy będą potrzebne.
+    </div>
+
+    <div class="info">
+        Kliknij „Dalej”, aby utworzyć obiekty i zaprogramować paletkę i piłkę.
+    </div>
+</body>
+</html>
